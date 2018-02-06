@@ -329,13 +329,13 @@ switch($action)
 		$DB->BeginTrans();
 		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions'));
 
-		$customer_data_update = isset($invoice['customer_data_update']) || $invoice['customerid'] != $customerid;
-		if ($customer_data_update)
+		$use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
+		if ($use_current_customer_data)
 			$customer = $LMS->GetCustomer($invoice['customerid'], true);
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
-			FROM vdivisions WHERE id = ?',array($customer_data_update ? $customer['divisionid'] : $invoice['divisionid']));
+			FROM vdivisions WHERE id = ?',array($use_current_customer_data ? $customer['divisionid'] : $invoice['divisionid']));
 
 		if (!$invoice['number'])
 			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
@@ -374,17 +374,17 @@ switch($action)
 			'paytime' => $paytime,
 			'paytype' => $invoice['paytype'],
 			SYSLOG::RES_CUST => $invoice['customerid'],
-			'name' => $customer_data_update ? $customer['customername'] : $invoice['name'],
-			'address' => $customer_data_update ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+			'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
+			'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
 				? $customer['postoffice'] . ', ' : '') . $customer['address']) : $invoice['address'],
-			'ten' => $customer_data_update ? $customer['ten'] : $invoice['ten'],
-			'ssn' => $customer_data_update ? $customer['ssn'] : $invoice['ssn'],
-			'zip' => $customer_data_update ? $customer['zip'] : $invoice['zip'],
-			'city' => $customer_data_update ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+			'ten' => $use_current_customer_data ? $customer['ten'] : $invoice['ten'],
+			'ssn' => $use_current_customer_data ? $customer['ssn'] : $invoice['ssn'],
+			'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],
+			'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
 				: $invoice['city'],
-			SYSLOG::RES_COUNTRY => $customer_data_update ? (empty($customer['countryid']) ? null : $customer['countryid'])
+			SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
 				: (empty($invoice['countryid']) ? null : $invoice['countryid']),
-			SYSLOG::RES_DIV => $customer_data_update ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
+			SYSLOG::RES_DIV => $use_current_customer_data ? (empty($customer['divisionid']) ? null : $customer['divisionid'])
 				: (empty($invoice['divisionid']) ? null : $invoice['divisionid']),
 			'div_name' => ($division['name'] ? $division['name'] : ''),
 			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),

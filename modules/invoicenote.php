@@ -326,8 +326,8 @@ switch($action)
 			$invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
 		}
 
-		$customer_data_update = isset($cnote['customer_data_update']);
-		if ($customer_data_update)
+		$use_current_customer_data = isset($cnote['use_current_customer_data']);
+		if ($use_current_customer_data)
 			$customer = $LMS->GetCustomer($invoice['customerid'], true);
 
 		$args = array(
@@ -340,15 +340,15 @@ switch($action)
 			'paytype' => $cnote['paytype'],
 			SYSLOG::RES_USER => Auth::GetCurrentUser(),
 			SYSLOG::RES_CUST => $invoice['customerid'],
-			'name' => $customer_data_update ? $customer['customername'] : $invoice['name'],
-			'address' => $customer_data_update ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+			'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
+			'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
 				? $customer['postoffice'] . ', ' : '') . $customer['address']) : $invoice['address'],
-			'ten' => $customer_data_update ? $customer['ten'] : $invoice['ten'],
-			'ssn' => $customer_data_update ? $customer['ssn'] : $invoice['ssn'],
-			'zip' => $customer_data_update ? $customer['zip'] : $invoice['zip'],
-			'city' => $customer_data_update ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+			'ten' => $use_current_customer_data ? $customer['ten'] : $invoice['ten'],
+			'ssn' => $use_current_customer_data ? $customer['ssn'] : $invoice['ssn'],
+			'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],
+			'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
 				: $invoice['city'],
-			SYSLOG::RES_COUNTRY => $customer_data_update ? (empty($customer['countryid']) ? null : $customer['countryid'])
+			SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
 				: (empty($invoice['countryid']) ? null : $invoice['countryid']),
 			'reference' => $invoice['id'],
 			'reason' => $cnote['reason'],

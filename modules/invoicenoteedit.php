@@ -258,13 +258,13 @@ switch ($action) {
 
 		$DB->BeginTrans();
 
-		$customer_data_update = isset($cnote['customer_data_update']);
-		if ($customer_data_update)
+		$use_current_customer_data = isset($cnote['use_current_customer_data']);
+		if ($use_current_customer_data)
 			$customer = $LMS->GetCustomer($cnote['customerid'], true);
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
-			FROM vdivisions WHERE id = ?', array($customer_data_update ? $customer['divisionid'] : $cnote['divisionid']));
+			FROM vdivisions WHERE id = ?', array($use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid']));
 
 		if (!$cnote['number'])
 			$cnote['number'] = $LMS->GetNewDocumentNumber(array(
@@ -303,18 +303,18 @@ switch ($action) {
 			'paytime' => $paytime,
 			'paytype' => $cnote['paytype'],
 			SYSLOG::RES_CUST => $cnote['customerid'],
-			'name' => $customer_data_update ? $customer['customername'] : $cnote['name'],
-			'address' => $customer_data_update ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+			'name' => $use_current_customer_data ? $customer['customername'] : $cnote['name'],
+			'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
 				? $customer['postoffice'] . ', ' : '') . $customer['address']) : $cnote['address'],
-			'ten' => $customer_data_update ? $customer['ten'] : $cnote['ten'],
-			'ssn' => $customer_data_update ? $customer['ssn'] : $cnote['ssn'],
-			'zip' => $customer_data_update ? $customer['zip'] : $cnote['zip'],
-			'city' => $customer_data_update ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+			'ten' => $use_current_customer_data ? $customer['ten'] : $cnote['ten'],
+			'ssn' => $use_current_customer_data ? $customer['ssn'] : $cnote['ssn'],
+			'zip' => $use_current_customer_data ? $customer['zip'] : $cnote['zip'],
+			'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
 				: $cnote['city'],
-			SYSLOG::RES_COUNTRY => $customer_data_update ? (empty($customer['countryid']) ? null : $customer['countryid'])
+			SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
 				: (empty($cnote['countryid']) ? null : $cnote['countryid']),
 			'reason' => $cnote['reason'],
-			SYSLOG::RES_DIV => $customer_data_update ? $customer['divisionid'] : $cnote['divisionid'],
+			SYSLOG::RES_DIV => $use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
 			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
