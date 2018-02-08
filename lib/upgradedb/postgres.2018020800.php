@@ -33,7 +33,6 @@ $this->Execute("
 			JOIN vaddresses a ON a.id = d.address_id
 ");
 
-$this->
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018020800', 'dbversion'));
 
 $this->CommitTrans();
