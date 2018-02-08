@@ -187,6 +187,9 @@ version ?.??.?? (????-??-??):
   - enhancement: document cancellation support for debit notes [chilan]
   - enhancement: allow to decide if customer data should be updated during
     credit note creation, modification and invoice modification [chilan]
+  - enhancement: simple api support - netnodelist, netnodeadd, netnodedel, netnodeedit,
+    netdevlist, netdevadd, netdevdel, netdevedit, nodelist, nodeservicelist,
+    customerlist [chilan]
 
 version 1.11.22 (2017-06-08):
 
