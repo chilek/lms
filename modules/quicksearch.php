@@ -385,6 +385,7 @@ switch ($mode) {
 				$catids[] = $category['id'];
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
 				FROM rttickets t
+				JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & 1 > 0
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customerview c on (t.customerid = c.id)
 				WHERE ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
@@ -394,7 +395,11 @@ switch ($mode) {
 					OR LOWER(c.name) ?LIKE? LOWER($sql_search)
 					OR LOWER(c.lastname) ?LIKE? LOWER($sql_search))
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
-					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+					LIMIT ?",
+					array(
+						Auth::GetCurrentUser(),
+						intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
+					));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
