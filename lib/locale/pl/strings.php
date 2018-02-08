@@ -3837,4 +3837,7 @@ $_LANG['No address has been selected!'] = 'Nie wybrano adresu!';
 $_LANG['Use current customer data:'] = 'Użyj bieżących danych klienta:';
 $_LANG['Check it if you want to use current customer data'] = 'Zaznacz, jeśli chcesz użyć bieżących danych klienta';
 
+$_LANG['Enter Telecom Registry Number (optional)'] = 'Podaj numer w RPT (opcjonalnie)';
+$_LANG['Telecom number:'] = 'Numer w RPT:';
+
 ?>

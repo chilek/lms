@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -68,36 +68,7 @@ if (!empty($_POST['division'])) {
 		$error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
 
     if (!$error) {
-		$address_id = $LMS->InsertAddress( $division );
-
-		$args = array(
-			'name'            => $division['name'],
-			'shortname'       => $division['shortname'],
-			'ten'             => $division['ten'],
-			'regon'           => $division['regon'],
-			'rbe'             => $division['rbe'],
-			'rbename'         => $division['rbename'] ? $division['rbename'] : '',
-			'account'         => $division['account'],
-			'inv_header'      => $division['inv_header'],
-			'inv_footer'      => $division['inv_footer'],
-			'inv_author'      => $division['inv_author'],
-			'inv_cplace'      => $division['inv_cplace'],
-			'inv_paytime'     => $division['inv_paytime'],
-			'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
-			'description'     => $division['description'],
-			'tax_office_code' => $division['tax_office_code'],
-			'address_id'      => ($address_id >= 0 ? $address_id : null)
-		);
-
-		$DB->Execute('INSERT INTO divisions (name, shortname,
-			ten, regon, rbe, rbename, account, inv_header, inv_footer, inv_author,
-			inv_cplace, inv_paytime, inv_paytype, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_DIV] = $DB->GetLastInsertID('divisions');
-			$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
-		}
+		$LMS->AddDivision($division);
 
 		if (!isset($division['reuse'])) {
 			$SESSION->redirect('?m=divisionlist');

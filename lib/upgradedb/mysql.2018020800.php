@@ -3,9 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,14 +19,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$id = intval($_GET['id']);
+$this->BeginTrans();
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id)
-	$LMS->DeleteDivision($id);
+$this->Execute("DROP VIEW vdivisions");
+$this->Execute("ALTER TABLE divisions ADD COLUMN telecomnumber varchar(255) NOT NULL DEFAULT ''");
+$this->Execute("
+	CREATE VIEW vdivisions AS
+		SELECT d.*,
+			a.country_id as countryid, a.zip as zip, a.city as city, a.address
+		FROM divisions d
+			JOIN vaddresses a ON a.id = d.address_id
+");
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018020800', 'dbversion'));
+
+$this->CommitTrans();
 
 ?>

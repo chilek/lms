@@ -190,6 +190,7 @@ version ?.??.?? (????-??-??):
   - enhancement: simple api support - netnodelist, netnodeadd, netnodedel, netnodeedit,
     netdevlist, netdevadd, netdevdel, netdevedit, nodelist, nodeservicelist,
     customerlist [chilan]
+  - enhancement: added telecom number support for divisions [chilan]
 
 version 1.11.22 (2017-06-08):
 

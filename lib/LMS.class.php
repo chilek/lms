@@ -3387,6 +3387,23 @@ class LMS
 		return $manager->GetDivisions($params);
 	}
 
+	public function AddDivision($division) {
+		$manager = $this->getDivisionManager();
+		return $manager->AddDivision($division);
+	}
+
+	public function DeleteDivision($id) {
+		$manager = $this->getDivisionManager();
+		return $manager->DeleteDivision($divisionid);
+
+	}
+
+	public function UpdateDivision($division) {
+		$manager = $this->getDivisionManager();
+		return $manager->UpdateDivision($division);
+
+	}
+
 	/*
 	 * projects
 	 */
