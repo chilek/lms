@@ -190,6 +190,7 @@ switch($type)
 					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' > 0)
 					GROUP BY customerid) AS emails ' : '')
 			.'FROM rttickets
+			JOIN rtrights r ON r.queueid = rttickets.queueid AND r.rights & 1 > 0
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customeraddressview c ON (customerid = c.id)
 			WHERE 1 = 1 '
