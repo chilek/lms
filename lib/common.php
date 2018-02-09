@@ -465,7 +465,7 @@ function check_email( $email )
 	)
 		return FALSE;
 
-	return preg_match('/^[a-z0-9@\-._+]+$/i', $email) > 0;
+	return preg_match('/^[a-z0-9\-._+]+@[a-z0-9\-.]+$/i', $email) > 0;
 }
 
 function get_producer($mac) {
