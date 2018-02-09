@@ -465,16 +465,7 @@ function check_email( $email )
 	)
 		return FALSE;
 
-	$email_charset = 'qwertyuiopasdfghjklzxcvbnm1234567890@-._';
-	$i = 0;
-	while ( $i < $length )
-	{
-		$char = $email[$i++];
-		if ( stristr( $email_charset, $char ) === false )
-			return FALSE;
-	}
-
-	return TRUE;
+	return preg_match('/^[a-z0-9@\-._+]+$/i', $email) > 0;
 }
 
 function get_producer($mac) {
