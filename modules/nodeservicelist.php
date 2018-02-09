@@ -100,6 +100,7 @@ if (!empty($nodes)) {
 			'internet_fixed' => $internet_fixed,
 			'internet_mobile' => $internet_mobile,
 			'tv' => $tv,
+			'type' => $services[$nodeid]['customertype'],
 			'downrate' => empty($nodetariffs[$nodeid]['downrate']) ? null : $nodetariffs[$nodeid]['downrate'],
 			'downceil' => empty($nodetariffs[$nodeid]['downceil']) ? null : $nodetariffs[$nodeid]['downceil'] ,
 			'uprate' => empty($nodetariffs[$nodeid]['uprate']) ? null : $nodetariffs[$nodeid]['uprate'],
