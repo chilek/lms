@@ -563,11 +563,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							if (!isset($search['type']) || !strlen($search['addresstype']))
 								$searchargs[] = "(UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
 									OR UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
-									OR UPPER(ca.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
+									OR UPPER(ca2.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
 							elseif ($search['addresstype'] == BILLING_ADDRESS)
 								$searchargs[] = "UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							elseif ($search['addresstype'] == LOCATION_ADDRESS)
-								$searchargs[] = "UPPER(ca.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+								$searchargs[] = "UPPER(ca2.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							else
 								$searchargs[] = "UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							break;
@@ -725,7 +725,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 		LEFT JOIN (
 			SELECT customer_id, address, zip, city FROM customer_addresses
 			JOIN vaddresses va ON va.id = address_id
-		) ca ON ca.customer_id = c.id '
+		) ca2 ON ca2.customer_id = c.id '
                 . ($contracts == 1 ? '
                     LEFT JOIN (
                         SELECT COUNT(*), d.customerid FROM documents d
