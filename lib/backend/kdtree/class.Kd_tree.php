@@ -99,11 +99,8 @@ class Kd_tree {
         $this->best      = null;
         $this->best_dist = PHP_INT_MAX;
 
-        // find closest point on splitting line
-        $SLCP = $this->getLineClosestPoint($P, $this->root->loc);
-
         // find nearest neighbor
-        $this->_findNN($P, $this->root, $SLCP);
+        $this->_findNN($P, $this->root);
 
         return $this->best;
     }
@@ -113,14 +110,13 @@ class Kd_tree {
      *
      * \param  array   $P     Point coordinates
      * \param  kd_node $root
-     * \param  array   $SLCP  Splitting Line Closest Point
      * \param  int     $cd    Current dimension
      */
-    public function _findNN( array $P, $root, $SLCP, $cd = 0 ) {
+    public function _findNN( array $P, $root, $cd = 0 ) {
 
         // if root is empty or distance to splitting line is higher
         // that current best distance then return
-        if ( $root == null || $this->getDist($P, $SLCP) > $this->best_dist ) {
+        if ( $root == null ) {
             return null;
         }
 
@@ -137,11 +133,15 @@ class Kd_tree {
 
         // visit subtrees is most promising order
         if ( $P[$cd] < $root->loc[$cd] ) {
-            $this->_findNN($P, $root->left , $this->getLineClosestPoint($P, $root->loc, $cd), $cd+1);
-            $this->_findNN($P, $root->right, $this->getLineClosestPoint($P, $root->loc, $cd), $cd+1);
+            $this->_findNN($P, $root->left, $cd + 1);
+            if ( $this->getDist($P, $this->getLineClosestPoint($P, $root->loc, $cd + 1)) < $this->best_dist) {
+                $this->_findNN($P, $root->right, $cd + 1);
+            }
         } else {
-            $this->_findNN($P, $root->right, $this->getLineClosestPoint($P, $root->loc, $cd), $cd+1);
-            $this->_findNN($P, $root->left , $this->getLineClosestPoint($P, $root->loc, $cd), $cd+1);
+            $this->_findNN($P, $root->right, $cd + 1);
+            if ( $this->getDist($P, $this->getLineClosestPoint($P, $root->loc, $cd + 1)) < $this->best_dist) {
+                $this->_findNN($P, $root->left, $cd + 1);
+            }
         }
     }
 
@@ -175,6 +175,7 @@ class Kd_tree {
      * \return array
      */
     private function getLineClosestPoint( $P, $root_loc, $cd = 0 ) {
+        $cd = $cd % $this->k;
         $root_loc[$cd] = $P[$cd];
 
         return $root_loc;
