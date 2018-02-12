@@ -359,6 +359,7 @@ function writesyslog($message,$type)
 
 	switch(PHP_OS)
 	{
+		case 'FreeBSD':
 		case 'OpenBSD':
 		case 'Linux':
 			$access = date('Y/m/d H:i:s');
