@@ -428,10 +428,11 @@ switch($type)
 			.$type
 			.'&from='.$date['from']
 			.'&to='.$date['to']
-			. (!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
+			.(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
 			.(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
 			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
 			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')
+			.(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
 			.(!empty($_POST['numberplan']) ? '&numberplanid='.intval($_POST['numberplan']) : '')
 			.(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
 			.(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
