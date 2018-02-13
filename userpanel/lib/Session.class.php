@@ -77,7 +77,7 @@ class Session {
 				default:
 					return;
 			}
-			$customer = $this->db->GetRow("SELECT c.id, pin FROM customers c $join WHERE (REPLACE(ten, '-', '') = ? OR ssn = ?)"
+			$customer = $this->db->GetRow("SELECT c.id, pin FROM customers c $join WHERE c.deleted = 0 AND (REPLACE(ten, '-', '') = ? OR ssn = ?)"
 				. $where, $params);
 			if (!$customer) {
 				$this->error = trans('Credential reminder couldn\'t be sent!');
