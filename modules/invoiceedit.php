@@ -195,6 +195,14 @@ switch($action)
 		$oldnumber = $invoice['oldnumber'];
 		$oldnumberplanid = $invoice['oldnumberplanid'];
 		$closed   = $invoice['closed'];
+		$divisionid = $invoice['divisionid'];
+		$name = $invoice['name'];
+		$address = $invoice['address'];
+		$ten = $invoice['ten'];
+		$ssn = $invoice['ssn'];
+		$zip = $invoice['zip'];
+		$city = $invoice['city'];
+		$countryid = $invoice['countryid'];
 
 		unset($invoice);
 		unset($error);
@@ -209,6 +217,14 @@ switch($action)
 		$invoice['oldsdate'] = $oldsdate;
 		$invoice['oldnumber'] = $oldnumber;
 		$invoice['oldnumberplanid'] = $oldnumberplanid;
+		$invoice['divisionid'] = $divisionid;
+		$invoice['name'] = $name;
+		$invoice['address'] = $address;
+		$invoice['ten'] = $ten;
+		$invoice['ssn'] = $ssn;
+		$invoice['zip'] = $zip;
+		$invoice['city'] = $city;
+		$invoice['countryid'] = $countryid;
 
 		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
