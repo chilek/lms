@@ -205,9 +205,9 @@
 											<option value="-2" {if ($nodeinfo.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</option>
 											<option value="-1" {if ($nodeinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</option>
 											<option value="1" {if ($nodeinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</option>
-											{section name=project loop=$NNprojects}
-											<option value="{$NNprojects[project].id}" {if ($nodeinfo.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</option>
-											{/section}
+											{foreach $NNprojects as $project}
+											<option value="{$project.id}"{if ($nodeinfo.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+											{/foreach}
 										</select>
 										<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname"/>
 									</td>
