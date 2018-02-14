@@ -51,6 +51,16 @@ function parse_address($address) {
 	return $m;
 }
 
+switch ( intval($_GET['customertype']) ) {
+	case CTYPES_PRIVATE:
+	case CTYPES_COMPANY:
+		$ctype = $_GET['customertype'];
+		break;
+
+	default:
+		$ctype = -1; //all
+}
+
 $attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
 $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 $dontpublish = isset($_GET['dontpublish']);
@@ -135,7 +145,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$einvoice = intval($_GET['einvoice']);
 	$ids = $DB->GetCol('SELECT id FROM documents d
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?) AND d.cancelled = 0'
-				. ($einvoice ? ' AND d.customerid IN (SELECT id FROM customers WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
+				.($einvoice ? ' AND d.customerid IN (SELECT id FROM customers WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
+				.($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = "'.$ctype.'")' : '')
 				.(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
 				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
