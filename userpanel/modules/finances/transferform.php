@@ -181,7 +181,7 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
 // kwota słownie:
 
      $posx=205+$j*$SHIFT;
-     echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;">'.$KWOTA_X.'</span>');
+     echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;">'.$KWOTA_ZL .' zł '.$KWOTA_GR.' gr</span>');
 
 // dane płatnika:
 
