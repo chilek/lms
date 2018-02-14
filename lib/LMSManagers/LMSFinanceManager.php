@@ -1161,10 +1161,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['count'] += $result['invoice']['content'][$idx]['count'];
                     }
 
-					if ($row['taxvalue'] < 0)
+					if ($row['taxvalue'] < 0) {
 						$taxvalue = 0;
-					else
-						$taxvalue = $row['taxvalue'];
+						$rounded_taxvalue = round($taxvalue);
+					} else
+						$taxvalue = $rounded_taxvalue = $row['taxvalue'];
                     $result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $taxvalue) * 100), 2);
                     $result['content'][$idx]['total'] = round($row['value'] * $row['count'], 2);
                     $result['content'][$idx]['totalbase'] = round($result['content'][$idx]['total'] / (100 + $taxvalue) * 100, 2);
@@ -1172,15 +1173,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
 
-                    if (isset($result['taxest'][$row['taxvalue']])) {
-                        $result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
-                        $result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
-                        $result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+                    if (isset($result['taxest'][$rounded_taxvalue])) {
+                        $result['taxest'][$rounded_taxvalue]['base'] += $result['content'][$idx]['totalbase'];
+                        $result['taxest'][$rounded_taxvalue]['total'] += $result['content'][$idx]['total'];
+                        $result['taxest'][$rounded_taxvalue]['tax'] += $result['content'][$idx]['totaltax'];
                     } else {
-                        $result['taxest'][$row['taxvalue']]['base'] = $result['content'][$idx]['totalbase'];
-                        $result['taxest'][$row['taxvalue']]['total'] = $result['content'][$idx]['total'];
-                        $result['taxest'][$row['taxvalue']]['tax'] = $result['content'][$idx]['totaltax'];
-                        $result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
+                        $result['taxest'][$rounded_taxvalue]['base'] = $result['content'][$idx]['totalbase'];
+                        $result['taxest'][$rounded_taxvalue]['total'] = $result['content'][$idx]['total'];
+                        $result['taxest'][$rounded_taxvalue]['tax'] = $result['content'][$idx]['totaltax'];
+                        $result['taxest'][$rounded_taxvalue]['taxlabel'] = $row['taxlabel'];
                     }
 
                     $result['totalbase'] += $result['content'][$idx]['totalbase'];
@@ -1188,7 +1189,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['total'] += $result['content'][$idx]['total'];
 
                     // for backward compatybility
-                    $result['taxest'][$row['taxvalue']]['taxvalue'] = $taxvalue;
+                    $result['taxest'][$rounded_taxvalue]['taxvalue'] = $taxvalue;
                     $result['content'][$idx]['pkwiu'] = $row['prodid'];
 
                     $result['pdiscount'] += $row['pdiscount'];
