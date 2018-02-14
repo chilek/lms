@@ -473,7 +473,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 						}
 					} else
 						$jpk_data .= "\t\t<P_5B>" . preg_replace('/[\s\-]/', '', $invoice['ten']) . "</P_5B>\n";
-				else
+				elseif ($jpk_type != 'fa')
 					$jpk_data .= "\t\t<P_5B>brak</P_5B>\n";
 
 				if (isset($invoice['invoice'])) {
