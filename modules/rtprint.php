@@ -132,7 +132,7 @@ switch($type)
 		$dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
 
 		if($queue)
-			$where[] = 'queueid = '.$queue;
+			$where[] = 'rttickets.queueid = '.$queue;
 		if($customer)
 			$where[] = 'customerid = '.$customer;
 		if($days)
