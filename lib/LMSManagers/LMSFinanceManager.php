@@ -1162,8 +1162,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     }
 
 					if ($row['taxvalue'] < 0) {
+						$rounded_taxvalue = round($row['taxvalue']);
 						$taxvalue = 0;
-						$rounded_taxvalue = round($taxvalue);
 					} else
 						$taxvalue = $rounded_taxvalue = $row['taxvalue'];
                     $result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $taxvalue) * 100), 2);
