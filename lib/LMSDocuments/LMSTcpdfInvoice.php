@@ -856,11 +856,11 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_to_pay();
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance',true)))
 		    $this->invoice_balance();
+		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
+			$this->invoice_qr2pay_code();
 		$this->invoice_dates();
 		$this->invoice_expositor();
 		$this->invoice_footnote();
-		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
-			$this->invoice_qr2pay_code();
 		
 		$docnumber = docnumber(array(
 			'number' => $this->data['number'],
@@ -909,6 +909,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_to_pay();
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance',true)))
 		    $this->invoice_balance();
+		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
+			$this->invoice_qr2pay_code();		
 		$this->invoice_dates();
 		$this->invoice_expositor();
 		$this->invoice_footnote();
