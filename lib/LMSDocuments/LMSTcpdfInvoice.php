@@ -836,12 +836,12 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	public function invoice_qr2pay_code() {
 		$x = $this->backend->GetX();
 		$y = $this->backend->GetY();
-		$this->backend->writeHTMLCell(150, 0, '', '', "&nbsp;<BR>Skanuj i Płać<BR>Możesz zrobić przelew prosto i szybko za pomocą swojego telefonu.<BR>Aby zrobić przelew proszę zeskanować smartfonem QRcode w aplikacji Twojego banku.", 0, 1, 0, true, 'R');
-		$tmp = '|PL|'.bankaccount($this->data['customerid'], $this->data['account']).'|'.str_pad( $this->data['value'] * 100,  6, 0, STR_PAD_LEFT).'|'.$this->data['division_name'].'|QR Zaplata za Internet FV nr '.$docnumber.'|||';
+		$this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan with a QRcode smartphone in your bank's application."), 0, 1, 0, true, 'R');
+		$tmp = '|PL|'.bankaccount($this->data['customerid'], $this->data['account']).'|'.str_pad( $this->data['value'] * 100,  6, 0, STR_PAD_LEFT).'|'.$this->data['division_name'].'|' . trans('QR Payment for Internet Invoice no.').' '.$docnumber.'|||';
 		$style['position'] = 'R';
 		$this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y,30,30,$style);
 		unset($tmp);	
-	}		
+	}				
 
 	public function invoice_body_standard() {
 		$this->invoice_cancelled();
@@ -859,8 +859,9 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_dates();
 		$this->invoice_expositor();
 		$this->invoice_footnote();
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.qr2pay', false)) AND !isset($this->data['rebate'])) $this->invoice_qr2pay_code();
-
+		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
+			$this->invoice_qr2pay_code();
+		
 		$docnumber = docnumber(array(
 			'number' => $this->data['number'],
 			'template' => $this->data['template'],
