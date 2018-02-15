@@ -3840,4 +3840,7 @@ $_LANG['Check it if you want to use current customer data'] = 'Zaznacz, jeśli c
 $_LANG['Enter Telecom Registry Number (optional)'] = 'Podaj numer w RPT (opcjonalnie)';
 $_LANG['Telecom number:'] = 'Numer w RPT:';
 
+$_LANG["&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."] = '&nbsp;<BR>Skanuj i Płać<BR>Możesz zrobić przelew prosto i szybko za pomocą swojego telefonu.<BR>Aby zrobić przelew proszę zeskanować smartfonem QRcode w aplikacji Twojego banku.';
+$_LANG["QR Payment for Internet Invoice no."] = 'QR Zaplata za Internet FV nr';
+
 ?>
