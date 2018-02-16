@@ -220,29 +220,29 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 		if (array_key_exists('name', $data))
 			$args['name'] = $data['name'];
 		if (array_key_exists('description', $data))
-			$args['description'] = $data['description'];
+			$args['description'] = empty($data['description']) ? '' : $data['description'];
 		if (array_key_exists('producer', $data))
-			$args['producer'] = $data['producer'];
+			$args['producer'] = empty($data['producer']) ? '' : $data['producer'];
 		if (array_key_exists('model', $data))
-			$args['model'] = $data['model'];
+			$args['model'] = empty($data['model']) ? '' : $data['model'];
 		if (array_key_exists('serialnumber', $data))
-			$args['serialnumber'] = $data['serialnumber'];
+			$args['serialnumber'] = empty($data['serialnumber']) ? '' : $data['serialnumber'];
 		if (array_key_exists('ports', $data))
-			$args['ports'] = $data['ports'];
+			$args['ports'] = empty($data['ports']) ? 0 : $data['ports'];
 		if (array_key_exists('purchasetime', $data))
-			$args['purchasetime'] = $data['purchasetime'];
+			$args['purchasetime'] = empty($data['purchasetime']) ? 0 : $data['purchasetime'];
 		if (array_key_exists('guaranteeperiod', $data))
 			$args['guaranteeperiod'] = $data['guaranteeperiod'];
 		if (array_key_exists('shortname', $data))
-			$args['shortname'] = $data['shortname'];
+			$args['shortname'] = empty($data['shortname']) ? '' : $data['shortname'];
 		if (array_key_exists('nastype', $data))
-			$args['nastype'] = $data['nastype'];
+			$args['nastype'] = empty($data['nastype']) ? 0 : $data['nastype'];
 		if (array_key_exists('clients', $data))
-			$args['clients'] = $data['clients'];
+			$args['clients'] = empty($data['clients']) ? 0 : $data['clients'];
 		if (array_key_exists('secret', $data))
-			$args['secret'] = $data['secret'];
+			$args['secret'] = empty($data['secret']) ? '' : $data['secret'];
 		if (array_key_exists('community', $data))
-			$args['community'] = $data['community'];
+			$args['community'] = empty($data['community']) ? '' : $data['community'];
 		if (array_key_exists('channelid', $data))
 			$args['channelid'] = !empty($data['channelid']) ? $data['channelid'] : NULL;
 		if (array_key_exists('longitude', $data))
@@ -254,7 +254,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 		if (array_key_exists('netnodeid', $data))
 			$args['netnodeid'] = $data['netnodeid'];
 		if (array_key_exists('status', $data))
-			$args['status'] = $data['status'];
+			$args['status'] = empty($data['status']) ? 0 : $data['status'];
 		if (array_key_exists('netdevicemodelid', $data))
 			$args['netdevicemodelid'] = !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null;
 		if (array_key_exists('ownerid', $data))
