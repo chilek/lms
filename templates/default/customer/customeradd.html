@@ -187,12 +187,14 @@
 						{/if}
 					</td>
 					<script type="text/javascript">
+/*
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][1][location_street_name]"]').get(0),
 							'?m=customeradd&ajax=1&mode=street&what=', 0);
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][1][location_city_name]"]').get(0),
 							'?m=customeradd&ajax=1&mode=city&what=', 0);
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][1][location_zip]"]').get(0),
 							'?m=customeradd&ajax=1&mode=zip&what=', 0);
+*/
 					</script>
 				</tr>
 
@@ -215,12 +217,14 @@
 						{location_box_expandable data=$v}
 					</td>
 					<script type="text/javascript">
+/*
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][{$address_idx}][location_street_name]"]').get(0),
 							'?m=customeradd&ajax=1&mode=street&what=', 0);
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][{$address_idx}][location_city_name]"]').get(0),
 							'?m=customeradd&ajax=1&mode=city&what=', 0);
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][{$address_idx}][location_zip]"]').get(0),
 							'?m=customeradd&ajax=1&mode=zip&what=', 0);
+*/
 					</script>
 				</tr>
 				{/if}
