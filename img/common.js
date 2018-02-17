@@ -832,3 +832,21 @@ function GusApiFinished(fieldPrefix, details) {
 		}
 	});
 }
+
+function osm_get_zip_code(city, street, house, on_success) {
+	$.ajax({
+		url: 'https://nominatim.openstreetmap.org/search',
+		data: {
+			format: 'json',
+			"city": city,
+			"street": house + ' ' + street,
+			addressdetails: 1
+		}
+	}).done(function(data) {
+		if (typeof(on_success) == 'function') {
+			if (data[0].hasOwnProperty('address') && data[0].address.hasOwnProperty('postcode')) {
+				on_success(data[0].address.postcode);
+			}
+		}
+	});
+}

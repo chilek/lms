@@ -194,6 +194,7 @@ version ?.??.?? (????-??-??):
   - enhancement: aadded qr2pay payment method on TcpdfInvoice [wdjag/chilan]
   - enhancement: gusapi support added which allows to get company details from GUS REGON
     database (phpui.gusapi_key configuration variable stores API key) [chilan]
+  - enhancement: zip code auto and manual completion using OpenStreetMap API [chilan]
 
 version 1.11.22 (2017-06-08):
 

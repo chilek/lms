@@ -63,10 +63,13 @@ $(function() {
         });
     });
 
+	var timer = null;
+
     /*!
      * \brief Update address string name on box input change.
      */
     $('body').on('input', '.location-box-expandable input', function(){
+
         var box = getLocationBox(this);
 
         var city   = box.find('[data-address="city"]').val();
@@ -89,6 +92,20 @@ $(function() {
 
         box.find('[data-address="location"]').val( location );
         box.find('.address-full').text( location );
+
+        var elem = this;
+
+        if (timer) {
+            clearTimeout(timer);
+        }
+        if (city.length && street.length && house.length && !zip.length) {
+			timer = window.setTimeout(function () {
+				osm_get_zip_code(city, street, house, function (zip) {
+					box.find('[data-address="zip"]').val(zip);
+					$(elem).trigger('input');
+				});
+			}, 500);
+		}
     });
 
     /*!

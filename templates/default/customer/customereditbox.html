@@ -243,14 +243,14 @@
 						{if $customerinfo.tenexistencewarning}
 						<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
 						{/if}
-						<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}">&raquo;&raquo;&raquo;</a>
+						<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}" href="#">&raquo;&raquo;&raquo;</a>
 					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("REGON")}:</TD>
 					<TD style="width: 99%;">
 						<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-                        <a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}">&raquo;&raquo;&raquo;</a>
+                        <a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#">&raquo;&raquo;&raquo;</a>
 					</TD>
 				</TR>
 				<TR>
@@ -263,7 +263,7 @@
 					<TD style="width: 1%;" class="nobr">{trans("RBE")}:</TD>
 					<TD style="width: 99%;">
 						<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-                        <a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}">&raquo;&raquo;&raquo;</a>
+                        <a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#">&raquo;&raquo;&raquo;</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -431,15 +431,15 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-$('[name="customerdata[type]"]').change(function() {
-	if ($(this).val() == {$smarty.const.CTYPES_PRIVATE}) {
-		$('.gusapi-button').hide();
-	} else {
-		$('.gusapi-button').show();
-	}
-}).filter(':checked').change();
+	$('[name="customerdata[type]"]').change(function() {
+		if ($(this).val() == {$smarty.const.CTYPES_PRIVATE}) {
+			$('.gusapi-button').hide();
+		} else {
+			$('.gusapi-button').show();
+		}
+	}).filter(':checked').change();
 
-$(function() {
+	$(function() {
 		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
 
 		$('[name="customerdata[pin]"]').change(function() {
@@ -469,6 +469,24 @@ $(function() {
 				function(data) {
 					GusApiFinished('customerdata', data.details);
                 });
+			return false;
+		});
+
+		$('[data-address="zip"]').after('&nbsp;<a class="zip-code-button" href="#">&raquo;&raquo;&raquo;</a>');
+
+		$('.zip-code-button').click(function() {
+			var box = $(this).closest('.location-box-expandable')
+			var city   = box.find('[data-address="city"]').val();
+			var street = box.find('[data-address="street"]').val();
+			var house  = box.find('[data-address="house"]').val();
+			var zipelem = box.find('[data-address="zip"]');
+
+			if (city.length && street.length && house.length) {
+				osm_get_zip_code(city, street, house, function (zip) {
+					zipelem.val(zip).trigger('input');
+				});
+			}
+			return false;
 		});
 	});
 //-->

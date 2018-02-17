@@ -53,7 +53,7 @@ function smarty_function_location_box( $params = array(), $template )
     $input_name_address_id  = 'address_id';
 
     // check if prefix for input names is set
-    if ( isset($params['prefix']) && strlen(trim($params['prefix'])) > 0 ) {
+    if ( isset($params['prefix']) && mb_strlen(trim($params['prefix'])) > 0 ) {
         $p = trim( $params['prefix'] );
 
         $input_name             = $p . '[' . $input_name             . ']';
@@ -111,10 +111,10 @@ function smarty_function_location_box( $params = array(), $template )
         echo '" data-address="state-select">';
         echo '<option></option>';
 
-        $tmp_state = strtolower($params['location_state_name']);
+        $tmp_state = mb_strtolower($params['location_state_name']);
 
         foreach ( $states as $v ) {
-            echo '<option ' . (strtolower($v) == $tmp_state ? 'selected' : '')  . '>' . $v . '</option>';
+            echo '<option ' . (mb_strtolower($v) == $tmp_state ? 'selected' : '')  . '>' . $v . '</option>';
         }
 
         unset($tmp_state);
