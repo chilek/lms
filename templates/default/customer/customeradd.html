@@ -283,14 +283,14 @@
 									{if $customeradd.tenexistencewarning}
 									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
 									{/if}
-									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}" href="#">&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("REGON")}:</TD>
 								<TD style="width: 99%;">
 									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
-									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#">&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
@@ -303,7 +303,7 @@
 								<TD style="width: 1%;" class="nobr">{trans("RBE")}:</TD>
 								<TD style="width: 99%;">
 									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
-									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#">&raquo;&raquo;&raquo;</a>
+									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 						</TABLE>

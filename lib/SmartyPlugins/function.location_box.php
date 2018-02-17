@@ -164,7 +164,7 @@ function smarty_function_location_box( $params = array(), $template )
               <td class="nobr">' . trans('Postcode:') . '</td>
               <td>
                 <input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10">
-                <a class="zip-code-button" href="#">&raquo;&raquo;&raquo;</a>
+                <a class="zip-code-button" href="#" title="' . trans('Click here to autocomplete zip code') . '">&raquo;&raquo;&raquo;</a>
               </td>
           </tr>';
 
