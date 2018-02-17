@@ -193,7 +193,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added telecom number support for divisions [chilan]
   - enhancement: aadded qr2pay payment method on TcpdfInvoice [wdjag/chilan]
   - enhancement: gusapi support added which allows to get company details from GUS REGON
-    database [chilan]
+    database (phpui.gusapi_key configuration variable stores API key) [chilan]
 
 version 1.11.22 (2017-06-08):
 
