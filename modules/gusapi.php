@@ -117,7 +117,7 @@ try {
 				$fullReport->dane->praw_adSiedzKodPocztowy->__toString()),
 			'location_postoffice' => $fullReport->dane->praw_adSiedzMiejscowoscPoczty_Nazwa->__toString()
 				== $fullReport->dane->praw_adSiedzMiejscowosc_Nazwa->__toString() ? ''
-					: $fullReport->dane->praw_adSiedzMiejscPoczty_Nazwa->__toString(),
+					: $fullReport->dane->praw_adSiedzMiejscowoscPoczty_Nazwa->__toString(),
 			'location_state' => empty($location) ? 0 : $location['location_state'],
 			'location_city' => empty($location) ? 0 : $location['location_city'],
 			'location_street' => empty($location) ? 0 : $location['location_street'],
@@ -156,7 +156,7 @@ try {
 				$fullReport->dane->fiz_adSiedzKodPocztowy->__toString()),
 			'location_postoffice' => $fullReport->dane->fiz_adSiedzMiejscowoscPoczty_Nazwa->__toString()
 				== $fullReport->dane->fiz_adSiedzMiejscowosc_Nazwa->__toString() ? ''
-					: $fullReport->dane->fiz_adSiedzMiejscPoczty_Nazwa->__toString(),
+					: $fullReport->dane->fiz_adSiedzMiejscowoscPoczty_Nazwa->__toString(),
 			'location_state' => empty($location) ? 0 : $location['location_state'],
 			'location_city' => empty($location) ? 0 : $location['location_city'],
 			'location_street' => empty($location) ? 0 : $location['location_street'],
@@ -164,7 +164,6 @@ try {
 
 		$details['addresses'] = $addresses;
 	}
-
 
 	$detailsChild = $fullReport->addChild('details');
 	foreach ($details as $key => $value) {
