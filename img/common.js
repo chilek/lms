@@ -794,3 +794,41 @@ function lms_uniqid() {
 
     return uid;
 }
+
+function GusApiGetCompanyDetails(searchType, searchData, on_success) {
+	$.ajax({
+		url: '?m=gusapi',
+		data: {
+			searchtype: searchType,
+			searchdata: searchData
+		}
+	}).done(function(data) {
+		if (data.hasOwnProperty('error')) {
+			alert(data.error);
+			return;
+		}
+		if (data.hasOwnProperty('warning')) {
+			return;
+		}
+		on_success(data);
+	});
+}
+
+function GusApiFinished(fieldPrefix, details) {
+	$.each(details, function(key, value) {
+		if (key == 'addresses') {
+			$.each(value, function(addressnr, address) {
+				$.each(address, function(addresskey, addressvalue) {
+					$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][' + addresskey + ']"]').val(
+						typeof(addressvalue) == 'string' ? addressvalue : '');
+				});
+				if ((address.location_state > 0) != $('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').prop('checked')) {
+					$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][teryt]"]').click();
+				}
+				$('[name="' + fieldPrefix + '[addresses][' + addressnr + '][location_city_name]"]').trigger('input');
+			});
+		} else {
+			$('[name="' + fieldPrefix + '[' + key + ']"]').val(typeof(value) == 'string' ? value : '');
+		}
+	});
+}

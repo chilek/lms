@@ -101,8 +101,8 @@
 			<IMG src="img/folder.gif" alt="">
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT type="radio" name="customerdata[type]" value="0" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
-			<INPUT type="radio" name="customerdata[type]" value="1" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
+			<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
+			<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 		</TD>
 	</TR>
 
@@ -243,12 +243,14 @@
 						{if $customerinfo.tenexistencewarning}
 						<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
 						{/if}
+						<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_NIP}">&raquo;&raquo;&raquo;</a>
 					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("REGON")}:</TD>
 					<TD style="width: 99%;">
 						<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
+                        <a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}">&raquo;&raquo;&raquo;</a>
 					</TD>
 				</TR>
 				<TR>
@@ -261,6 +263,7 @@
 					<TD style="width: 1%;" class="nobr">{trans("RBE")}:</TD>
 					<TD style="width: 99%;">
 						<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+                        <a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}">&raquo;&raquo;&raquo;</a>
 					</TD>
 				</TR>
 			</TABLE>
@@ -428,7 +431,15 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	$(function() {
+$('[name="customerdata[type]"]').change(function() {
+	if ($(this).val() == {$smarty.const.CTYPES_PRIVATE}) {
+		$('.gusapi-button').hide();
+	} else {
+		$('.gusapi-button').show();
+	}
+}).filter(':checked').change();
+
+$(function() {
 		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
 
 		$('[name="customerdata[pin]"]').change(function() {
@@ -449,6 +460,15 @@
 
 		$('#submit').click(function() {
 			$('#submitbtn').click();
+		});
+
+		$('.gusapi-button').click(function() {
+			GusApiGetCompanyDetails(
+				$(this).attr('data-type'),
+				$(this).siblings('input[type="text"]').val().replace(/-/g, ''),
+				function(data) {
+					GusApiFinished('customerdata', data.details);
+                });
 		});
 	});
 //-->
