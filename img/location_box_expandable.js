@@ -108,6 +108,21 @@ $(function() {
 		}
     });
 
+	$('.zip-code-button').click(function() {
+		var box = $(this).closest('.location-box-expandable')
+		var city   = box.find('[data-address="city"]').val();
+		var street = box.find('[data-address="street"]').val();
+		var house  = box.find('[data-address="house"]').val();
+		var zipelem = box.find('[data-address="zip"]');
+
+		if (city.length && street.length && house.length) {
+			osm_get_zip_code(city, street, house, function (zip) {
+				zipelem.val(zip).trigger('input');
+			});
+		}
+		return false;
+	});
+
     /*!
      * \brief Function insert row content into table.
      * Before insert will be generated new id for
