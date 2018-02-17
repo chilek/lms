@@ -108,7 +108,7 @@ try {
 		$location = $LMS->TerytToLocation($terc, $simc, $ulic);
 
 		$addresses[] = array(
-			'location_state_name' => $fullReport->dane->praw_adSiedzWojewodztwo_Nazwa->__toString(),
+			'location_state_name' => mb_strtolower($fullReport->dane->praw_adSiedzWojewodztwo_Nazwa->__toString()),
 			'location_city_name' => $fullReport->dane->praw_adSiedzMiejscowosc_Nazwa->__toString(),
 			'location_street_name' => $fullReport->dane->praw_adSiedzUlica_Nazwa->__toString(),
 			'location_house' => $fullReport->dane->praw_adSiedzNumerNieruchomosci->__toString(),
@@ -147,7 +147,7 @@ try {
 		$location = $LMS->TerytToLocation($terc, $simc, $ulic);
 
 		$addresses[] = array(
-			'location_state_name' => $fullReport->dane->fiz_adSiedzWojewodztwo_Nazwa->__toString(),
+			'location_state_name' => mb_strtolower($fullReport->dane->fiz_adSiedzWojewodztwo_Nazwa->__toString()),
 			'location_city_name' => $fullReport->dane->fiz_adSiedzMiejscowosc_Nazwa->__toString(),
 			'location_street_name' => $fullReport->dane->fiz_adSiedzUlica_Nazwa->__toString(),
 			'location_house' => $fullReport->dane->fiz_adSiedzNumerNieruchomosci->__toString(),
