@@ -483,8 +483,6 @@
 			return;
 		});
 
-		$('[data-address="zip"]').after('&nbsp;<a class="zip-code-button" href="#">&raquo;&raquo;&raquo;</a>');
-
 		$('.zip-code-button').click(function() {
 			var box = $(this).closest('.location-box-expandable')
 			var city   = box.find('[data-address="city"]').val();

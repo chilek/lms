@@ -162,7 +162,10 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '<tr>
               <td class="nobr">' . trans('Postcode:') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10"></td>
+              <td>
+                <input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10">
+                <a class="zip-code-button" href="#">&raquo;&raquo;&raquo;</a>
+              </td>
           </tr>';
 
     echo '<tr>
