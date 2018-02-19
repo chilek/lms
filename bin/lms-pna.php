@@ -188,6 +188,30 @@ foreach ($state_lists as $states => $error_message) {
 
 fclose($stderr);
 
+$boroughs = $DB->GetAll("SELECT ls.name AS state_name, ld.name AS district_name,
+        lb.name AS borough_name, lb.type AS borough_type, lb.id
+	FROM location_boroughs lb
+	JOIN location_districts ld ON ld.id = lb.districtid
+	JOIN location_states ls ON ls.id = ld.stateid");
+if (empty($boroughs))
+    die("TERYT database is empty!" . PHP_EOL);
+
+$boroughs_ids = array();
+foreach ($boroughs as $borough)
+    $borough_ids[$borough['state_name'] . ':' . $borough['district_name'] . ':' . $borough['borough_name'] . ':' . $borough['borough_type']] =
+        $borough['id'];
+unset($boroughs);
+
+$borough_types = array(
+	1 => 'gm. miejska',
+	2 => 'gm. wiejska',
+	3 => 'gm. miejsko-wiejska',
+	4 => 'gm. miejsko-wiejska',
+	5 => 'gm. miejsko-wiejska',
+	8 => 'dzielnica gminy Warszawa-Centrum',
+	9 => 'dzielnica',
+);
+
 $cols = array(
 	PNA => "PNA",
 	CITY => "Miejscowość",
@@ -199,7 +223,7 @@ $cols = array(
 );
 
 function convert_pna_to_teryt($data) {
-	global $DB, $cols;
+	global $DB, $borough_ids, $borough_types, $cols;
 
 	$cities = array();
 	$cities[] = mb_ereg_replace("[[:blank:]]+\(.+\)$", "", $data[CITY]);
@@ -264,19 +288,25 @@ function convert_pna_to_teryt($data) {
 	else
 		$data[HOUSE] = array(array('from' => 0, 'to' => 0, 'parity' => 3));
 
+    $borough_ids_to_check = array();
+	$terc = $data[STATE] . ':' . $data[DISTRICT] . ':' . $data[BOROUGH] . ':';
+	foreach ($borough_types as $borough_type => $borough_type_name)
+        if (isset($borough_ids[$terc . $borough_type]))
+            $borough_ids_to_check[] = $borough_ids[$terc . $borough_type];
+    if (empty($borough_ids_to_check))
+        return;
+
 	if (empty($data[STREET][0]))
 		$teryt = $DB->GetRow("SELECT lc.id AS cid, lc2.cid AS cid2 
 				FROM location_cities lc 
 				LEFT JOIN (SELECT lc2.id AS cid, lc2.name AS name 
 					FROM location_cities lc2) lc2 ON lc2.cid = lc.cityid 
-				JOIN location_boroughs lb ON lb.id = lc.boroughid 
-				JOIN location_districts ld ON ld.id = lb.districtid 
-				JOIN location_states ls ON ls.id = ld.stateid 
-				WHERE lc.name = ? ".(!empty($data[CITY][1]) ? "AND lc2.name = ? " : "")
-					."AND lb.name = ? AND ld.name = ? AND ls.name = ?",
+				WHERE lc.name = ?" . (!empty($data[CITY][1]) ? " AND lc2.name = ?" : "")
+					." AND lc.boroughid" . (count($borough_ids_to_check) == 1 ? " = " . $borough_ids_to_check[0]
+                        : " IN (" . implode(',', $borough_ids_to_check) . ")"),
 				(!empty($data[CITY][1])
-					? array($data[CITY][0], $data[CITY][1], $data[BOROUGH], $data[DISTRICT], $data[STATE])
-					: array($data[CITY][0], $data[BOROUGH], $data[DISTRICT], $data[STATE])));
+					? array($data[CITY][0], $data[CITY][1])
+					: array($data[CITY][0])));
 	else
 		$teryt = $DB->GetRow("SELECT lst.id AS sid, lst.cityid AS cid 
 				FROM location_cities lc 
@@ -284,19 +314,18 @@ function convert_pna_to_teryt($data) {
 					FROM location_cities lc2) lc2 ON lc2.cid = lc.cityid 
 				JOIN location_streets lst ON (lst.cityid = lc.id OR lst.cityid = lc2.cid) 
 				JOIN location_street_types lstt ON lstt.id = lst.typeid 
-				JOIN location_boroughs lb ON lb.id = lc.boroughid 
-				JOIN location_districts ld ON ld.id = lb.districtid 
-				JOIN location_states ls ON ls.id = ld.stateid 
-				WHERE lc.name = ? ".(!empty($data[CITY][1]) ? "AND lc2.name = ? " : "")
-					."AND lb.name = ? AND ld.name = ? AND ls.name = ?"
-					.(!empty($street_suffix) ? " AND lstt.name = '".$street_suffix."'" : "")
-					." AND ((CASE WHEN lst.name2 IS NOT NULL THEN ".$DB->Concat('lst.name', "' '", 'lst.name2')
+				WHERE lc.name = ?" . (!empty($data[CITY][1]) ? " AND lc2.name = ?" : "")
+					. " AND lc.boroughid" . (count($borough_ids_to_check) == 1 ? " = " . $borough_ids_to_check[0]
+                        : " IN (" . implode(',', $borough_ids_to_check) . ")")
+					. (!empty($street_suffix) ? " AND lstt.name = '".$street_suffix."'" : "")
+					. " AND ((CASE WHEN lst.name2 IS NOT NULL THEN ".$DB->Concat('lst.name', "' '", 'lst.name2')
 						." ELSE lst.name END) IN ('".implode("','", $data[STREET])."') OR
 						(CASE WHEN lst.name2 IS NOT NULL THEN ".$DB->Concat('lst.name2', "' '", 'lst.name')
 						." ELSE lst.name END) IN ('".implode("','", $data[STREET])."'))",
 				(!empty($data[CITY][1])
-					? array($data[CITY][0], $data[CITY][1], $data[BOROUGH], $data[DISTRICT], $data[STATE])
-					: array($data[CITY][0], $data[BOROUGH], $data[DISTRICT], $data[STATE])));
+					? array($data[CITY][0], $data[CITY][1])
+					: array($data[CITY][0])));
+
 	if ($teryt)
 		foreach ($data[HOUSE] as $house)
 			if (!empty($teryt['sid']))
