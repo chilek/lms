@@ -832,7 +832,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	public function ReplaceNotificationSymbols($text, array $params) {
 		$text = str_replace('%tid', sprintf("%06d", $params['id']), $text);
 		$text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
-		$text = str_replace('%status', $params['status'], $text);
+		$text = str_replace('%status', $params['status']['label'], $text);
 		$text = str_replace('%cat', implode(' ; ', $params['categories']), $text);
 		$text = str_replace('%subject', $params['subject'], $text);
 		$text = str_replace('%body', $params['body'], $text);
