@@ -839,7 +839,7 @@ function osm_get_zip_code(city, street, house, on_success) {
 		data: {
 			format: 'json',
 			"city": city,
-			"street": house + ' ' + street,
+			"street": house + (street.length ? ' ' + street : ''),
 			addressdetails: 1
 		}
 	}).done(function(data) {

@@ -98,7 +98,7 @@ $(function() {
         if (timer) {
             clearTimeout(timer);
         }
-        if (city.length && street.length && house.length && !zip.length) {
+        if (city.length && house.length && !zip.length) {
 			timer = window.setTimeout(function () {
 				osm_get_zip_code(city, street, house, function (zip) {
 					box.find('[data-address="zip"]').val(zip);
@@ -115,7 +115,7 @@ $(function() {
 		var house  = box.find('[data-address="house"]').val();
 		var zipelem = box.find('[data-address="zip"]');
 
-		if (city.length && street.length && house.length) {
+		if (city.length && house.length) {
 			osm_get_zip_code(city, street, house, function (zip) {
 				zipelem.val(zip).trigger('input');
 			});
