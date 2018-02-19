@@ -676,9 +676,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LEFT JOIN vaddresses va ON va.id = ca.address_id
 			LEFT JOIN vnodes n ON n.id = t.nodeid
 			WHERE t.id=?
+			AND c.categoryid IN (
+				SELECT categoryid FROM rtcategoryusers
+				WHERE userid = ?
+			)
 			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, source, priority, t.address_id, t.nodeid, va.location,
 				t.nodeid, n.name, n.location, t.netnodeid',
-			array($ticketid));
+			array($ticketid, Auth::GetCurrentUser()));
 
         $note = "";
         $type = 0;
