@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -19,7 +19,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -52,7 +52,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2018 LMS Developers
 
 EOF;
 	exit(0);
@@ -61,7 +61,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2018 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -f, --fetch                     fetch PNA file from server;
@@ -79,7 +79,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-pna.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2018 LMS Developers
 
 EOF;
 }
@@ -133,16 +133,8 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
-$SYSLOG = SYSLOG::getInstance();
-
-// Initialize Session, Auth and LMS classes
-
-$AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
+$stderr = fopen('php://stderr', 'w');
 
 define('PNA', 0);
 define('CITY', 1);
@@ -152,30 +144,49 @@ define('BOROUGH', 4);
 define('DISTRICT', 5);
 define('STATE', 6);
 
-$states = array(
-	2 => 'dolnosląskie',
-	4 => 'kujawsko-pomorskie',
-	6 => 'lubelskie',
-	8 => 'lubuskie',
-	10 => 'łódzkie',
-	12 => 'małopolskie',
-	14 => 'mazowieckie',
-	16 => 'opolskie',
-	18 => 'podkarpackie',
-	20 => 'podlaskie',
-	22 => 'pomorskie',
-	24 => 'śląskie',
-	26 => 'świętokrzyskie',
-	28 => 'warmińsko-mazurskie',
-	30 => 'wielkopolskie',
-	32 => 'zachodniopomorskie',
+$all_states = array(
+	'dolnoslaskie' => 2,
+	'kujawsko-pomorskie' => 4,
+	'lubelskie' => 6,
+	'lubuskie' => 8,
+	'lodzkie' => 10,
+	'malopolskie' => 12,
+	'mazowieckie' => 14,
+	'opolskie' => 16,
+	'podkarpackie' => 18,
+	'podlaskie' => 20,
+	'pomorskie' => 22,
+	'slaskie' => 24,
+	'swietokrzyskie' => 26,
+	'warminsko-mazurskie' => 28,
+	'wielkopolskie' => 30,
+	'zachodniopomorskie' => 32,
 );
 
-$list = array_key_exists('list', $options) ? $options['list'] : '';
-if (preg_match('/^[0-9]+(,[0-9]+)*$/', $list)) {
-	$list = array_flip(explode(',', $list));
-	$states = array_intersect_key($states, $list);
+$states = ConfigHelper::getConfig('pna.state_list', '', true);
+
+$state_lists = array();
+if (!empty($states))
+	$state_lists[$states] = "Invalid state list format in ini file!";
+if (isset($options['list']))
+	$state_lists[$options['list']] = "Invalid state list format entered in command line!";
+foreach ($state_lists as $states => $error_message) {
+	$states = explode(',', $states);
+	foreach ($states as &$state) {
+		if (preg_match('/^[0-9]+$/', $state))
+			continue;
+		$state = iconv('UTF-8', 'ASCII//TRANSLIT', $state);
+		if (!isset($all_states[$state])) {
+			fwrite($stderr,  $error_message . PHP_EOL);
+			die;
+		}
+		$state = $all_states[$state];
+	}
+	unset($state);
+	$state_list = array_combine($states, array_fill(0, count($states), '1'));
 }
+
+fclose($stderr);
 
 $cols = array(
 	PNA => "PNA",
@@ -329,9 +340,9 @@ if ($update) {
 	$DB->Execute("DELETE FROM pna");
 	while (!feof($fh)) {
 		$line = fgets($fh, 200);
-		$line = mb_ereg_replace(PHP_EOL . "$", "", $line);
-		$data = mb_split(";", $line);
-		if (mb_ereg_match("^[0-9]{2}-[0-9]{3}$", $data[PNA]) && in_array($data[STATE], $states))
+		$data = explode(';', trim($line));
+		if (preg_match('/^[0-9]{2}-[0-9]{3}$/', $data[PNA])
+			&& (!isset($state_list) || (isset($state_list) && isset($state_list[$data[STATE]]))))
 			convert_pna_to_teryt($data);
 	}
 
