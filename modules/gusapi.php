@@ -95,6 +95,7 @@ try {
 			'regon' => property_exists($fullReport->dane, 'praw_regon9')
 				? $fullReport->dane->praw_regon9->__toString()
 				: $fullReport->dane->praw_regon14->__toString(),
+			'ten' => $fullReport->dane->praw_nip->__toString(),
 			'addresses' => array(),
 		);
 
