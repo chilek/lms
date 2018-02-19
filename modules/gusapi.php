@@ -164,6 +164,14 @@ try {
 		);
 
 		$details['addresses'] = $addresses;
+
+		$fullReport = $gus->getFullReport(
+			$sessionId,
+			$gusReport,
+			\GusApi\ReportTypes::REPORT_ACTIVITY_PHYSIC_PERSON
+		);
+
+		$details['ten'] = $fullReport->dane->fiz_nip->__toString();
 	}
 
 	$detailsChild = $fullReport->addChild('details');
