@@ -73,14 +73,13 @@ function check_zip($zip)
 	return preg_match('/^[0-9]{2}-[0-9]{3}$/', $zip);
 }
 
-function check_regon($regon)
-{
+function check_regon($regon) {
 	$regon = str_replace('-', '', $regon);
 	$regon = str_replace(' ', '', $regon);
+	$regon = preg_replace('/[0]{5}$/', '', $regon);
 	$sum_nb = 0;
 
-        if(strlen($regon) == 14)
-	{
+	if (strlen($regon) == 14) {
 		$steps = array(2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8);
 	
 		for($x = 0; $x < 13; $x++) $sum_nb += $steps[$x] * $regon[$x];
@@ -90,9 +89,7 @@ function check_regon($regon)
 		if($mod == 10) $mod = 0;
 	
 		if($mod == $regon[13]) return true;
-	}
-        else if(strlen($regon) == 9)
-	{
+	} else if (strlen($regon) == 9) {
 		$steps = array(8, 9, 2, 3, 4, 5, 6, 7);
 	
 		for($x = 0; $x < 8; $x++) $sum_nb += $steps[$x] * $regon[$x];
@@ -102,9 +99,7 @@ function check_regon($regon)
 		if($mod == 10) $mod = 0;
 	
 		if($mod == $regon[8]) return true;
-	}
-	elseif(strlen($regon) == 7)
-	{
+	} elseif (strlen($regon) == 7) {
 		$steps = array(2, 3, 4, 5, 6, 7);
 	
 		for ($x = 0; $x < 6; $x++) $sum_nb += $steps[$x] * $regon[$x];
