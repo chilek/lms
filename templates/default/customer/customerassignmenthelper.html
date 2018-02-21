@@ -349,12 +349,17 @@
 						</label>
 						<br>
 						<label>
+							{if $variables.id}
+							<INPUT type="checkbox" name="{$variable_prefix}[settlement]" value="1"{if $variables.settlement} checked{/if}>
+							{trans("with settlement of first deficient period")}
+							{else}
 							{trans("settlement type of first deficient period:")}
 							<SELECT name="{$variable_prefix}[settlement]">
 								<OPTION value="0">{trans("<!settlement>- none -")}</OPTION>
 								<OPTION value="1"{if $variables.settlement == 1} selected{/if}>{trans("<!settlement>next period")}</OPTION>
 								<OPTION value="2"{if $variables.settlement == 2} selected{/if}>{trans("<!settlement>current period")}</OPTION>
 							</SELECT>
+							{/if}
 						</label>
 					</TD>
 				</TR>
