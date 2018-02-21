@@ -425,7 +425,114 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				}
             }
         } else {
-        // Create one assignment record
+			// creates assignment record for partial period
+			if (isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
+				if (empty($data['tariffid']))
+					$val = $data['value'];
+				else {
+					$tariff = $this->db->GetRow('SELECT value, period FROM tariffs WHERE id = ?', array($data['tariffid']));
+					$val = $tariff['value'];
+					if ($tariff['period'] && $data['period'] != DISPOSABLE
+						&& $tariff['period'] != $data['period']) {
+						if ($tariff['period'] == YEARLY)
+							$val = $val / 12.0;
+						elseif ($tariff['period'] == HALFYEARLY)
+							$val = $val / 6.0;
+						elseif ($tariff['period'] == QUARTERLY)
+							$val = $val / 3.0;
+
+						if ($data['period'] == YEARLY)
+							$val = $val * 12.0;
+						elseif ($data['period'] == HALFYEARLY)
+							$val = $val * 6.0;
+						elseif ($data['period'] == QUARTERLY)
+							$val = $val * 3.0;
+						elseif ($data['period'] == WEEKLY)
+							$val = $val / 4.0;
+						elseif ($data['period'] == DAILY)
+							$val = $val / 30.0;
+					}
+				}
+				$discounted_val = $val;
+
+				if (!empty($data['pdiscount']))
+					$discounted_val = ((100 - $data['pdiscount']) * $val) / 100;
+				elseif (!empty($data['vdiscount']))
+					$discounted_val -= $data['vdiscount'];
+
+				list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
+				$nextat = mktime(0, 0, 0, $month + 1, $data['at'], $year);
+				$diffdays = sprintf("%d", ($nextat - $data['datefrom'] - 86400) / 86400);
+				if ($diffdays > 0) {
+					list ($y, $m, $d) = explode('/', date('Y/m/d', $nextat));
+					$month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+					$value = 0;
+					while ($diffdays) {
+						if ($d - $diffdays <= 0) {
+							$value += ($d - 1) * $discounted_val / $month_days;
+							$diffdays -= ($d - 1);
+						} else {
+							$value += $diffdays * $discounted_val / $month_days;
+							$diffdays = 0;
+						}
+						$date = mktime(0, 0, 0, $m, 0, $y);
+						$month_days = strftime("%d", $date);
+						$d = $month_days + 1;
+						$m = strftime("%m", $date);
+						$y = strftime("%Y", $date);
+					}
+					$partial_dateto = $nextat - 1;
+					$partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
+					$partial_at = $dom + 1;
+
+					if (!empty($data['value'])) {
+						$args = array(
+							'name' => $data['name'],
+							'value' => str_replace(',', '.', $data['value']),
+							SYSLOG::RES_TAX => intval($data['taxid']),
+							'prodid' => $data['prodid']
+						);
+						$this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
+					    VALUES (?, ?, ?, ?)', array_values($args));
+						$lid = $this->db->GetLastInsertID('liabilities');
+						if ($this->syslog) {
+							$args[SYSLOG::RES_LIAB] = $lid;
+							$args[SYSLOG::RES_CUST] = $data['customerid'];
+							$this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
+						}
+					}
+
+					$args = array(
+						SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
+						SYSLOG::RES_CUST    => $data['customerid'],
+						'period'            => $data['period'],
+						'at'                => $partial_at,
+						'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+						'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+						'settlement'        => 0,
+						SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+						'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+						'datefrom'          => $data['datefrom'],
+						'dateto'            => $partial_dateto,
+						'pdiscount'         => 0,
+						'vdiscount'         => $partial_vdiscount,
+						'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+						SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+						'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+						'docid'				=> empty($data['docid']) ? null : $data['docid'],
+						'commited'			=> $commited,
+					);
+
+					$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+					$this->insertNodeAssignments($data);
+					$this->insertPhoneAssignments($data);
+
+					$data['datefrom'] = $partial_dateto + 1;
+				}
+			}
+
+			// creates one assignment record
             if (!empty($data['value'])) {
                 $args = array(
                     'name' => $data['name'],

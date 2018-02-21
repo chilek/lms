@@ -3847,4 +3847,9 @@ $_LANG["QR Payment for Internet Invoice no."] = 'QR Zaplata za Internet FV nr';
 $_LANG['Click here to autocomplete company data from GUS REGON database'] = 'Kliknij tutaj, aby uzupelnić automatycznie dane firmy z bazy danych GUS REGON';
 $_LANG['Click here to autocomplete zip code'] = 'Kliknij tutaj, aby automatycznie uzupełnić kod pocztoey';
 
+$_LANG['settlement type of first deficient period:'] = 'sposób wyrównania początkowego okresu niepełnego:';
+$_LANG['<!settlement>- none -'] = '- brak -';
+$_LANG['<!settlement>next period'] = 'następny okres';
+$_LANG['<!settlement>current period'] = 'bieżący okres';
+
 ?>

@@ -76,7 +76,7 @@ if (isset($_POST['assignment'])) {
 			}
 		} else {
 			$LMS->UpdateExistingAssignments($a);
-			$tariffid =$LMS->AddAssignment($a);
+			$tariffid = $LMS->AddAssignment($a);
 		}
 
         if ($a['tarifftype'] == TARIFF_PHONE && !empty($a['phones'])) {
