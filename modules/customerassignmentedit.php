@@ -334,7 +334,7 @@ if (isset($_POST['assignment']))
 			'at' => $at,
 			'invoice' => isset($a['invoice']) ? $a['invoice'] : 0,
 			'separatedocument' => isset($a['separatedocument']) ? 1 : 0,
-			'settlement' => isset($a['settlement']) ? 1 : 0,
+			'settlement' => empty($a['settlement']) ? 0 : 1,
 			'datefrom' => $from,
 			'dateto' => $to,
 			'pdiscount' => str_replace(',', '.', $a['pdiscount']),
