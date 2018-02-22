@@ -391,7 +391,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
 		static $street_suffixes = array(
 			'/ul./', '/rondo/', '/park/', '/al./', '/pl./', '/bulw./', '/szosa/', '/inne/', '/skwer/', '/os./', '/rynek/',
-			'/droga/', '/ogród/', '/wyb./', '/wyspa/',
+			'/droga/', '/ogród/', '/wyb./', '/wyspa/', '/ul./',
 		);
 
 		preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', strtolower($house), $m);
