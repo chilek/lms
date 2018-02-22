@@ -25,7 +25,7 @@
  */
 
 // modules with access for everyone
-$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|quicksearch|calendar|persistentsetting)$';
+$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|quicksearch|calendar|persistentsetting|zipcode)$';
 
 $access_table = array(
 	'full_access' => array(

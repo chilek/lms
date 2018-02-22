@@ -385,4 +385,46 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 		}
 		return array_merge($result, $street);
 	}
+
+	public function GetZipCode(array $params) {
+		extract($params);
+
+		static $street_suffixes = array(
+			'/ul./', '/rondo/', '/park/', '/al./', '/pl./', '/bulw./', '/szosa/', '/inne/', '/skwer/', '/os./', '/rynek/',
+			'/droga/', '/ogród/', '/wyb./', '/wyspa/',
+		);
+
+		preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', strtolower($house), $m);
+		$number = intval($m['number']);
+		$letter = $m['letter'];
+		$parity = (intval($number) & 1) ? 1 : 2;
+
+		$from = '(fromnumber IS NULL OR (fromnumber < ' . $number . ')
+			OR (fromnumber = ' . $number . ' AND (fromletter IS NULL' . (empty($letter) ? '' : ' OR fromletter <= \'' . $letter . '\'') . ')))';
+		$to = '(tonumber IS NULL OR (tonumber > ' . $number . ')
+			OR (tonumber = ' . $number . ' AND (toletter IS NULL' . (empty($letter) ? '' : ' OR toletter >= \'' . $letter . '\'') . ')))';
+
+		if (isset($cityid))
+			// teryt compatible address
+			return $this->db->GetOne('SELECT zip FROM pna
+				WHERE cityid = ? AND parity & ? > 0' . (isset($streetid) ? ' AND streetid = ' . intval($streetid) : '') . '
+					AND ' . $from . ' AND ' . $to . '
+					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($cityid, $parity));
+		elseif (isset($city)) {
+			// non-teryt address
+			$street = trim(preg_replace($street_suffixes, array(), $street));
+			return $this->db->GetOne('SELECT zip FROM pna p
+				JOIN location_cities lc ON lc.id = p.cityid
+				LEFT JOIN location_cities lc2 ON lc2.id = lc.cityid
+				LEFT JOIN location_streets lst ON lst.id = p.streetid
+				WHERE (CASE WHEN lc2.id IS NULL THEN lc.name ELSE ' . $this->db->Concat('lc.name', "' '", 'lc2.name') . ' END) = ?
+					AND parity & ? > 0' . (isset($street) ? ' AND (lst.name = ' . $this->db->Escape($street) . '
+						OR (CASE WHEN lst.name2 IS NULL THEN \'\' 
+							ELSE ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' END) = ' . $this->db->Escape($street) . '
+						OR (CASE WHEN lst.name2 IS NULL THEN \'\' 
+							ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END) = ' . $this->db->Escape($street) . ')' : '') . '
+					AND ' . $from . ' AND ' . $to . '
+					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($city, $parity));
+		}
+	}
 }

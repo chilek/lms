@@ -2546,6 +2546,11 @@ class LMS
 		return $manager->TerytToLocation($terc, $simc, $ulic);
 	}
 
+	public function GetZipCode(array $params) {
+		$manager = $this->getLocationManager();
+		return $manager->GetZipCode($params);
+	}
+
 	public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');

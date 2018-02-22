@@ -57,4 +57,6 @@ interface LMSLocationManagerInterface
 	public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
 
 	public function TerytToLocation($terc, $simc, $ulic);
+
+	public function GetZipCode(array $params);
 }

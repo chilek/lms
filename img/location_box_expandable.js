@@ -72,13 +72,16 @@ $(function() {
 
         var box = getLocationBox(this);
 
-        var city   = box.find('[data-address="city"]').val();
+		var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
+		var city   = box.find('[data-address="city"]').val();
+		var cityid = teryt ? box.find('[data-address="city-hidden"]').val() : null;
         var street = box.find('[data-address="street"]').val();
-        var house  = box.find('[data-address="house"]').val();
+		var streetid = teryt ? box.find('[data-address="street-hidden"]').val() : null;
+		var house  = box.find('[data-address="house"]').val();
         var flat   = box.find('[data-address="flat"]').val();
         var zip    = box.find('[data-address="zip"]').val();
         var postoffice = box.find('[data-address="postoffice"]').val();
-        var adtype = box.find('[data-address="address_type"]').val();
+        //var adtype = box.find('[data-address="address_type"]').val();
 
         var location = location_str({
             city: city,
@@ -100,25 +103,41 @@ $(function() {
         }
         if (city.length && house.length && !zip.length) {
 			timer = window.setTimeout(function () {
-				osm_get_zip_code(city, street, house, function (zip) {
-					box.find('[data-address="zip"]').val(zip);
-					$(elem).trigger('input');
+				pna_get_zip_code(city, cityid, street, streetid, house, function(zip) {
+					if (zip.length) {
+						box.find('[data-address="zip"]').val(zip);
+						$(elem).trigger('input');
+					} else {
+						osm_get_zip_code(city, street, house, function (zip) {
+							box.find('[data-address="zip"]').val(zip);
+							$(elem).trigger('input');
+						});
+					}
 				});
 			}, 500);
 		}
     });
 
 	$('.zip-code-button').click(function() {
-		var box = $(this).closest('.location-box-expandable')
+		var box = $(this).closest('.location-box-expandable');
+        var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
 		var city   = box.find('[data-address="city"]').val();
+		var cityid = teryt ? box.find('[data-address="city-hidden"]').val() : null;
 		var street = box.find('[data-address="street"]').val();
+		var streetid = teryt ? box.find('[data-address="street-hidden"]').val() : null;
 		var house  = box.find('[data-address="house"]').val();
 		var zipelem = box.find('[data-address="zip"]');
 
 		if (city.length && house.length) {
-			osm_get_zip_code(city, street, house, function (zip) {
-				zipelem.val(zip).trigger('input');
-			});
+		    pna_get_zip_code(city, cityid, street, streetid, house, function(zip) {
+		       if (zip.length) {
+				   zipelem.val(zip).trigger('input');
+		       } else {
+				   osm_get_zip_code(city, street, house, function (zip) {
+					   zipelem.val(zip).trigger('input');
+				   });
+		       }
+            });
 		}
 		return false;
 	});

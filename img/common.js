@@ -850,3 +850,20 @@ function osm_get_zip_code(city, street, house, on_success) {
 		}
 	});
 }
+
+function pna_get_zip_code(city, cityid, street, streetid, house, on_success) {
+	$.ajax({
+		url: '?m=zipcode&api=1',
+		data: {
+			"city": city,
+			"cityid": cityid,
+			"street": street,
+			"streetid": streetid,
+			"house": house
+		}
+	}).done(function(data) {
+		if (typeof(on_success) == 'function') {
+			on_success(data);
+		}
+	});
+}
