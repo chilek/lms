@@ -249,6 +249,7 @@ function convert_pna_to_teryt($data) {
 
 		// remove parts in simple brackets
 		$street = preg_replace('/[[:blank:]]+\(.+\)$/', '', trim($data[STREET]));
+		$streets[] = $street;
 
 		// remove street prefixes/suffixes
 		if (preg_match('/[[:blank:]]+(?<suffix>al\.|bulw\.|park|os\.|pl\.|skw\.|wybrz\.)$/i', $street, $m))
