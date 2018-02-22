@@ -36,8 +36,7 @@ if(($right & 4) != 4)
 	die;
 }
 
-if ($taction == 'delete')
-{
+if ($taction == 'delete') {
 	$del = 1;
 	$nodel = 0;
 	$deltime = time();
@@ -46,7 +45,9 @@ if ($taction == 'delete')
 	$DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $ticket));
 	$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $ticket));
 	$DB->CommitTrans();
-}
+} elseif ($taction == 'delperm')
+	$DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
+
 $SESSION->redirect('?m=rtqueueview&id='.$queue);
 
 ?>
