@@ -103,17 +103,24 @@ $(function() {
         }
         if (city.length && house.length && !zip.length) {
 			timer = window.setTimeout(function () {
-				pna_get_zip_code(city, cityid, street, streetid, house, function(zip) {
-					if (zip.length) {
-						box.find('[data-address="zip"]').val(zip);
-						$(elem).trigger('input');
-					} else {
-						osm_get_zip_code(city, street, house, function (zip) {
+				if (lmsSettings.zipCodeBackend == 'pna') {
+					pna_get_zip_code(city, cityid, street, streetid, house, function (zip) {
+						if (zip.length) {
 							box.find('[data-address="zip"]').val(zip);
 							$(elem).trigger('input');
-						});
-					}
-				});
+						} else {
+							osm_get_zip_code(city, street, house, function (zip) {
+								box.find('[data-address="zip"]').val(zip);
+								$(elem).trigger('input');
+							});
+						}
+					});
+				} else {
+					osm_get_zip_code(city, street, house, function (zip) {
+						box.find('[data-address="zip"]').val(zip);
+						$(elem).trigger('input');
+					});
+				}
 			}, 500);
 		}
     });
@@ -129,15 +136,21 @@ $(function() {
 		var zipelem = box.find('[data-address="zip"]');
 
 		if (city.length && house.length) {
-		    pna_get_zip_code(city, cityid, street, streetid, house, function(zip) {
-		       if (zip.length) {
-				   zipelem.val(zip).trigger('input');
-		       } else {
-				   osm_get_zip_code(city, street, house, function (zip) {
-					   zipelem.val(zip).trigger('input');
-				   });
-		       }
-            });
+		    if (lmsSettings.zipCodeBackend == 'pna') {
+				pna_get_zip_code(city, cityid, street, streetid, house, function (zip) {
+					if (zip.length) {
+						zipelem.val(zip).trigger('input');
+					} else {
+						osm_get_zip_code(city, street, house, function (zip) {
+							zipelem.val(zip).trigger('input');
+						});
+					}
+				});
+			} else {
+				osm_get_zip_code(city, street, house, function (zip) {
+					zipelem.val(zip).trigger('input');
+				});
+			}
 		}
 		return false;
 	});

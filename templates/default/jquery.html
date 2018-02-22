@@ -14,7 +14,8 @@
 		settingsTimeout: {intval(ConfigHelper::getConfig('phpui.settings_timout', 28800))},
 		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if},
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
-		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}'
+		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
+        zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}'
 	};
 	var lmsMessages = {
 		persistentSettingSaveError: '{trans("AJAX: Error during persistent setting save on server:")}',

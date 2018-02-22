@@ -196,6 +196,8 @@ version ?.??.?? (????-??-??):
     database (phpui.gusapi_key configuration variable stores API key) [chilan]
   - enhancement: zip code auto and manual completion using OpenStreetMap API [chilan]
   - enhancement: zip code auto and manual completion using PNA database [chilan]
+  - enhancement: phpui.zipcode_backend controls which zip code auto completion backend
+    is used (by default: 'osm'; 'pna' is second supported backend) [chilan]
 
 version 1.11.22 (2017-06-08):
 
