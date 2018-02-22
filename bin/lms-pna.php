@@ -225,37 +225,48 @@ $cols = array(
 function convert_pna_to_teryt($data) {
 	global $DB, $borough_ids, $borough_types, $cols;
 
+	static $street_suffix_mappings = array(
+		'al.' => 'al.',
+		'bulw.' => 'bulw.',
+		'park' => 'park',
+		'os.' => 'os.',
+		'pl.' => 'pl.',
+		'skw.' => 'skwer',
+		'wybrz.' => 'wyb.',
+	);
+	static $street_long_parts = array('/Generała/', '/Księdza/', '/Świętego/', '/Świętej/', '/Arcybiskupa/', '/Rotmistrza/', '/Kardynała/');
+	static $street_short_parts = array('gen.', 'ks.', 'św.', 'św.', 'abp.', 'rtm.', 'kard.');
+
 	$cities = array();
-	$cities[] = mb_ereg_replace("[[:blank:]]+\(.+\)$", "", $data[CITY]);
+	$cities[] = preg_replace('/[[:blank:]]+\(.+\)$/', '', $data[CITY]);
 	if (mb_strlen(current($cities)) != mb_strlen($data[CITY]))
-		$cities[] = mb_ereg_replace(".+[[:blank:]]+\((.+)\)$", "\\1", $data[CITY]);
+		$cities[] = preg_replace('/.+[[:blank:]]+\((.+)\)$/', '\1', $data[CITY]);
 	$data[CITY] = $cities;
 
 	$street_suffix = NULL;
 	if (!empty($data[STREET])) {
-		$long = array("Generała", "Księdza", "Świętego", "Świętej", "Arcybiskupa", "Rotmistrza", "Kardynała");
-		$short = array("gen.", "ks.", "św.", "św.", "abp.", "rtm.", "kard.");
 		$streets = array();
-		$street = mb_ereg_replace("[[:blank:]]+\(.+\)$", "", $data[STREET]);
-		if (mb_ereg("[[:blank:]]+Al.$", $street))
-			$street_suffix = "al.";
-		elseif (mb_ereg("[[:blank:]]+Pl.$", $street))
-			$street_suffix = "pl.";
-		$street = mb_ereg_replace("[[:blank:]]+(Al|Pl).$", "", $street);
+
+		// remove parts in simple brackets
+		$street = preg_replace('/[[:blank:]]+\(.+\)$/', '', trim($data[STREET]));
+
+		// remove street prefixes/suffixes
+		if (preg_match('/[[:blank:]]+(?<suffix>al\.|bulw\.|park|os\.|pl\.|skw\.|wybrz\.)$/i', $street, $m))
+			$street_suffix = $street_suffix_mappings[strtolower($m['suffix'])];
+		$street = preg_replace('/[[:blank:]]+(al\.|bulw\.|park|os\.|pl\.|skw\.|wybrz\.)$/i', '', $street);
+
 		$streets[] = $street;
 		if (mb_ereg("([a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]{2,})-([a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]{2,})", $street, $regs) && count($regs) == 3)
 			$streets[] = mb_ereg_replace($regs[0], $regs[2]."-".$regs[1], $street);
-		for ($i = 0; $i < sizeof($long); $i++)
-			$street = mb_ereg_replace($long[$i], $short[$i], $street);
+		$street = preg_replace($street_long_parts, $street_short_parts, $street);
 		if (mb_strlen(current($streets)) != mb_strlen($street))
 			$streets[] = $street;
 		$street2 = implode(' ', array_reverse(mb_split(' ', $street)));
 		if ($street != $street2)
 			$streets[] = $street2;
 		if (mb_strlen($streets[0]) != mb_strlen($data[STREET])) {
-			$street2 = mb_ereg_replace(".+[[:blank:]]+\((.+)\)$", "\\1", $data[STREET]);
-			for ($i = 0; $i < sizeof($long); $i++)
-				$street2 = mb_ereg_replace($long[$i], $short[$i], $street2);
+			$street2 = preg_replace('/.+[[:blank:]]+\((.+)\)$/', '\1', $data[STREET]);
+			$street2 = preg_replace($street_long_parts, $street_short_parts, $street2);
 			$streets[] = $street2;
 		}
 		$data[STREET] = $streets;
@@ -264,21 +275,21 @@ function convert_pna_to_teryt($data) {
 		$data[STREET] = array($data[STREET]);
 
 	if (!empty($data[HOUSE])) {
-		$data[HOUSE] = mb_ereg_replace("[[:blank:]]", "", $data[HOUSE]);
-		$data[HOUSE] = mb_split(",", $data[HOUSE]);
+		$data[HOUSE] = preg_replace('/[[:blank:]]/', '', $data[HOUSE]);
+		$data[HOUSE] = explode(',', $data[HOUSE]);
 		$houses = array();
 		foreach ($data[HOUSE] as $token) {
 			$parity = 0;
-			if (mb_ereg("\(n\)$", $token))
+			if (preg_match('/\(n\)$/', $token))
 				$parity += 1;
-			elseif (mb_ereg("\(p\)$", $token))
+			elseif (preg_match('/\(p\)$/', $token))
 				$parity += 2;
 			else $parity = 3;
 			if ($parity < 3)
-				$token = mb_ereg_replace("\([pn]\)$", "", $token);
-			list ($from, $to) = mb_split("-", $token);
-			if ($to == "DK")
-				$to = "0";
+				$token = preg_replace('/\([pn]\)$/', '', $token);
+			list ($from, $to) = explode("-", $token);
+			if ($to == 'DK')
+				$to = '0';
 			elseif (empty($to) && !empty($from))
 				$to = $from;
 			$houses[] = array('from' => $from, 'to' => $to, 'parity' => $parity);
@@ -367,12 +378,15 @@ if ($update) {
 		die("Unable to open spispna.txt file!" . PHP_EOL);
 
 	$DB->Execute("DELETE FROM pna");
+
 	while (!feof($fh)) {
 		$line = fgets($fh, 200);
 		$data = explode(';', trim($line));
+		$state = $all_states[iconv('UTF-8', 'ASCII//TRANSLIT', $data[STATE])];
 		if (preg_match('/^[0-9]{2}-[0-9]{3}$/', $data[PNA])
-			&& (!isset($state_list) || (isset($state_list) && isset($state_list[$data[STATE]]))))
+			&& (!isset($state_list) || (isset($state_list) && isset($state_list[$state])))) {
 			convert_pna_to_teryt($data);
+		}
 	}
 
 	fclose($fh);
