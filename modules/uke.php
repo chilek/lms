@@ -760,6 +760,7 @@ $snetinterfaces = '';
 $sradiosectors = '';
 $snetranges = '';
 $snetbuildings = '';
+$teryt_netranges = array();
 if ($netnodes)
 foreach ($netnodes as $netnodename => &$netnode) {
 	// if teryt location is not set then try to get location address from network node name
@@ -1249,6 +1250,10 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					$commercialnodes[$servicetype] = $services;
 				}
 
+				// mark network range as handled - later used in potential range determination
+				$teryt_netranges[sprintf("%s_%07d_%05d_%s", $teryt['area_terc'], $teryt['area_simc'],
+					$teryt['address_symul'], $teryt['address_budynek'])] = true;
+
 				$data = array(
 					'zas_id' => $netbuildingid,
 					'zas_ownership' => 'Własna',
@@ -1387,6 +1392,10 @@ foreach ($netnodes as $netnodename => &$netnode) {
 	}
 	// unfortunately network node doesn't have range with the same location
 	if (!$range_netbuilding) {
+		// mark network range as handled - later used in potential range determination
+		$teryt_netranges[sprintf("%s_%07d_%05d_%s", $teryt['area_terc'], $teryt['area_simc'],
+			$teryt['address_symul'], $teryt['address_budynek'])] = true;
+
 		$data = array(
 			'zas_id' => $netbuildingid,
 			'zas_ownership' => 'Własna',
@@ -1525,13 +1534,18 @@ if ( $max_range > 0 ) {
         $kd->clear();
 
         foreach ($netnodes as $k=>$netnode) {
-            if ( isset($netnode['tech'][$link['type']]) ) {
+            if ( isset($netnode['tech'][$link['type']]) && !empty($netnode['accessports'])) {
                 $kd->insert( array(floatval($netnode['longitude']), floatval($netnode['latitude']), 'netnode'=>$k) );
             }
         }
 
         if ( $buildings ) {
             foreach ( $buildings as $k=>$b ) {
+		if (isset($teryt_netranges[sprintf('%02d%02d%02d%s_%07d_%05d_%s', $b['state_ident'],
+			$b['district_ident'], $b['borough_ident'], $b['borough_type'],
+			$b['city_ident'], $b['street_ident'], $b['house'])]))
+			continue;
+
                 $closest_p = $kd->findNN( $b );
 
                 $dist = getGPSdistance( $closest_p[0], $closest_p[1], $b[0], $b[1] );
