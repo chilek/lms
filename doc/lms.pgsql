@@ -962,12 +962,17 @@ CREATE TABLE pna (
 		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	streetid integer DEFAULT NULL
 		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	fromhouse varchar(10) DEFAULT NULL,
-	tohouse varchar(10) DEFAULT NULL,
+	fromnumber smallint DEFAULT NULL,
+	fromletter varchar(8) DEFAULT NULL,
+	tonumber smallint DEFAULT NULL,
+	toletter varchar(8) DEFAULT NULL,
 	parity smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
+	CONSTRAINT pna_zip_cityid_streetid_fromnumber_tonumber_key
+		UNIQUE (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity)
 );
+CREATE INDEX pna_fromnumber_idx ON pna (fromnumber);
+CREATE INDEX pna_tonumber_idx ON pna (tonumber);
 
 /* ---------------------------------------------------
  Structure of table "ewx_channels" (EtherWerX(R))
@@ -3271,6 +3276,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018020800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022200');
 
 COMMIT;
