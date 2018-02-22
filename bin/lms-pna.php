@@ -290,15 +290,36 @@ function convert_pna_to_teryt($data) {
 				$token = preg_replace('/\([pn]\)$/', '', $token);
 			list ($from, $to) = explode("-", $token);
 			if ($to == 'DK')
-				$to = '0';
+				$to = null;
 			elseif (empty($to) && !empty($from))
 				$to = $from;
-			$houses[] = array('from' => $from, 'to' => $to, 'parity' => $parity);
+
+			if (empty($from))
+			    $fromnumber = $fromletter = null;
+            else {
+				preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', $from, $m);
+				$fromnumber = $m['number'];
+				$fromletter = empty($m['letter']) ? null : $m['letter'];
+            }
+
+			if (empty($to))
+			    $tonumber = $toletter = null;
+            else {
+				preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', $to, $m);
+				$tonumber = $m['number'];
+				$toletter = empty($m['letter']) ? null : $m['letter'];
+			}
+
+			$houses[] = array('fromnumber' => $fromnumber, 'fromletter' => $fromletter,
+                'tonumber' => $tonumber, 'toletter' => $toletter,
+                'parity' => $parity);
 		}
 		$data[HOUSE] = $houses;
 	}
 	else
-		$data[HOUSE] = array(array('from' => 0, 'to' => 0, 'parity' => 3));
+		$data[HOUSE] = array(array('fromnumber' => null, 'fromletter' => null,
+            'tonumber' => null, 'toletter' => null,
+            'parity' => 3));
 
     $borough_ids_to_check = array();
 	$terc = $data[STATE] . ':' . $data[DISTRICT] . ':' . $data[BOROUGH] . ':';
@@ -341,13 +362,15 @@ function convert_pna_to_teryt($data) {
 	if ($teryt)
 		foreach ($data[HOUSE] as $house)
 			if (!empty($teryt['sid']))
-				$DB->Execute("INSERT INTO pna (zip, cityid, streetid, fromhouse, tohouse, parity)
-					VALUES (?, ?, ?, ?, ?, ?)",
-					array($data[PNA], $teryt['cid'], $teryt['sid'], $house['from'], $house['to'], $house['parity']));
+				$DB->Execute("INSERT INTO pna (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+					array($data[PNA], $teryt['cid'], $teryt['sid'], $house['fromnumber'], $house['fromletter'],
+                        $house['tonumber'], $house['toletter'], $house['parity']));
 			else
-				$DB->Execute("INSERT INTO pna (zip, cityid, fromhouse, tohouse, parity)
-					VALUES (?, ?, ?, ?, ?)",
-					array($data[PNA], $teryt['cid'], $house['from'], $house['to'], $house['parity']));
+				$DB->Execute("INSERT INTO pna (zip, cityid, fromnumber, fromletter, tonumber, toletter, parity)
+					VALUES (?, ?, ?, ?, ?, ?, ?)",
+					array($data[PNA], $teryt['cid'], $house['fromnumber'], $house['fromletter'],
+                        $house['tonumber'], $house['toletter'], $house['parity']));
 	else {
 		printf("city=%s", implode(",", $data[CITY]));
 		if (!empty($data[STREET][0]))
