@@ -32,8 +32,7 @@ $parameters = array(
 	'q' => 'quiet',
 	'h' => 'help',
 	'v' => 'version',
-	'f' => 'fetch',
-	'u' => 'update',
+	'f:' => 'file:',
 	'l:' => 'list:',
 );
 
@@ -64,8 +63,7 @@ lms-pna.php
 (C) 2001-2018 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
--f, --fetch                     fetch PNA file from server;
--u, --update                    update PNA database using PNA file;
+-f, --file                      PNA csv database file;
 -l, --list=<list>               comma-separated list of state IDs;
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
@@ -91,9 +89,6 @@ else
 
 if (!$quiet)
 	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
-
-$fetch = array_key_exists('fetch', $options);
-$update = array_key_exists('update', $options);
 
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
@@ -379,41 +374,29 @@ function convert_pna_to_teryt($data) {
 	}
 }
 
-if ($fetch) {
-	$fh = fopen("compress.zlib://http://lms.org.pl/spispna.txt.gz", "r");
-	if (!$fh)
-		die("Unable to fetch http://lms.org.pl/spispna.txt.gz!" . PHP_EOL);
-	$lh = fopen("spispna.txt", "w");
-	if (!$lh)
-		die("Unable to create spispna.txt file!" . PHP_EOL);
+if (!isset($options['file']))
+    due("Missed PNA csv database file parameter!" . PHP_EOL);
 
-	while (!feof($fh)) {
-		$line = fgets($fh, 1024);
-		fputs($lh, $line);
+$file = $options['file'];
+if (!file_exists($file))
+    die("PNA csv database file (" . $file . ") does not exist!" . PHP_EOL);
+
+$fh = fopen("compress.zlib://" . $file, "r");
+if (!$fh)
+	die("Unable to open PNA csv database file (" . $file . ")!" . PHP_EOL);
+
+$DB->Execute('DELETE FROM pna');
+
+while (!feof($fh)) {
+	$line = fgets($fh, 200);
+	$data = explode(';', trim($line));
+	$state = $all_states[iconv('UTF-8', 'ASCII//TRANSLIT', $data[STATE])];
+	if (preg_match('/^[0-9]{2}-[0-9]{3}$/', $data[PNA])
+		&& (!isset($state_list) || (isset($state_list) && isset($state_list[$state])))) {
+		convert_pna_to_teryt($data);
 	}
-
-	fclose($fh);
-	fclose($lh);
 }
 
-if ($update) {
-	$fh = fopen("spispna.txt", "r");
-	if (!$fh)
-		die("Unable to open spispna.txt file!" . PHP_EOL);
-
-	$DB->Execute("DELETE FROM pna");
-
-	while (!feof($fh)) {
-		$line = fgets($fh, 200);
-		$data = explode(';', trim($line));
-		$state = $all_states[iconv('UTF-8', 'ASCII//TRANSLIT', $data[STATE])];
-		if (preg_match('/^[0-9]{2}-[0-9]{3}$/', $data[PNA])
-			&& (!isset($state_list) || (isset($state_list) && isset($state_list[$state])))) {
-			convert_pna_to_teryt($data);
-		}
-	}
-
-	fclose($fh);
-}
+fclose($fh);
 
 ?>
