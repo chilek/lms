@@ -1108,18 +1108,20 @@ foreach ($netnodes as $netnodename => &$netnode) {
 		$teryt['area_terc'] = sprintf("%02d%02d%02d%s", $area_woj, $area_pow, $area_gmi, $area_rodz);
 		$teryt['area_simc'] = sprintf("%07d", $teryt['area_simc']);
 		$teryt['address_budynek'] = $range['location_house'];
+
 		if (empty($teryt['address_ulica'])) {
-			if ($DB->GetOne("SELECT COUNT(*) FROM location_streets WHERE cityid = ?", array($range['location_city']))) {
-				$teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
-				$teryt['address_symul'] = "99998";
-			} else {
-				$teryt['address_ulica'] = "BRAK ULICY";
-				$teryt['address_symul'] = "99999";
+			$teryt['address_ulica'] = "BRAK ULICY";
+			$teryt['address_symul'] = "99999";
+		} else {
+			if (empty($teryt['address_symul'])) {
+				if ($DB->GetOne("SELECT COUNT(*) FROM location_streets WHERE cityid = ?", array($range['location_city']))) {
+					$teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
+					$teryt['address_symul'] = "99998";
+				} else {
+					$teryt['address_ulica'] = "BRAK ULICY";
+					$teryt['address_symul'] = "99999";
+				}
 			}
-		}
-		if (empty($teryt['address_symul'])) {
-			$teryt['address_ulica'] = "ul. SPOZA ZAKRESU";
-			$teryt['address_symul'] = "99998";
 		}
 		$teryt['address_symul'] = sprintf("%05d", $teryt['address_symul']);
 
@@ -1541,10 +1543,14 @@ if ( $max_range > 0 ) {
 
         if ( $buildings ) {
             foreach ( $buildings as $k=>$b ) {
-		if (isset($teryt_netranges[sprintf('%02d%02d%02d%s_%07d_%05d_%s', $b['state_ident'],
-			$b['district_ident'], $b['borough_ident'], $b['borough_type'],
-			$b['city_ident'], $b['street_ident'], $b['house'])]))
-			continue;
+				if ( empty($b['street_ident'])) {
+					$b['street']       = "BRAK ULICY";
+					$b['street_ident'] = "99999";
+				}
+				if (isset($teryt_netranges[sprintf('%02d%02d%02d%s_%07d_%05d_%s', $b['state_ident'],
+					$b['district_ident'], $b['borough_ident'], $b['borough_type'],
+					$b['city_ident'], $b['street_ident'], $b['house'])]))
+					continue;
 
                 $closest_p = $kd->findNN( $b );
 
@@ -1553,11 +1559,6 @@ if ( $max_range > 0 ) {
 
                 if ( $dist < $link['range'] && !isset($customers[$key]) ) {
                     $node = $netnodes[ $closest_p['netnode'] ];
-
-                    if ( empty($b['street_ident'])) {
-                        $b['street']       = "BRAK ULICY";
-                        $b['street_ident'] = "99999";
-                    }
 
                     foreach ( $node['linkmaxspeed'][$link['type']] as $tech=>$max_speed ) {
                         $data = array(
