@@ -355,6 +355,7 @@ function convert_pna_to_teryt($data) {
 				. ' AND lc.boroughid' . (count($borough_ids_to_check) == 1 ? ' = ' . $borough_ids_to_check[0]
 					: ' IN (' . implode(',', $borough_ids_to_check) . ')'));
 	else {
+		$streets = array_unique($streets);
 		foreach ($streets as &$street)
 			$street = $DB->Escape($street);
 		unset($street);
