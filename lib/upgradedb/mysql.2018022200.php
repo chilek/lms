@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("DELETE FROM pna WHERE fromhouse REGEXP '[a-z]' OR tohouse REGEXP '[a-z]'")
+$this->Execute("DELETE FROM pna WHERE fromhouse REGEXP '[a-z]' OR tohouse REGEXP '[a-z]'");
 
 $this->Execute("ALTER TABLE pna CHANGE COLUMN fromhouse fromnumber smallint DEFAULT NULL");
 $this->Execute("ALTER TABLE pna ADD COLUMN fromletter varchar(8) DEFAULT NULL");
