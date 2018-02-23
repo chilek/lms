@@ -3698,7 +3698,7 @@ $_LANG['sort by'] = 'sortuj wg';
 $_LANG['Select sort cryterion'] = 'Wybierz kryterium sortowania';
 $_LANG['Document number'] = 'Numer dokumentu';
 
-$_LANG['Enter main bank account number'] = 'Wprowadź główny numer rachunku bankowego (opcjonalnie)';
+$_LANG['Enter main bank account number (optional)'] = 'Wprowadź główny numer rachunku bankowego (opcjonalnie)';
 $_LANG['Main bank account:'] = 'Główny numer rachunku:';
 
 $_LANG['Effective date'] = 'Data obowiązywania';
