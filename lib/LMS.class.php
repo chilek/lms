@@ -2584,9 +2584,9 @@ class LMS
 		return $manager->AddReceipt($receipt);
 	}
 
-	public function GetCashRegistries($cid = null, $disabled = true) {
+	public function GetCashRegistries($cid = null) {
 		$manager = $this->getFinanceManager();
-		return $manager->GetCashRegistries($cid, $disabled);
+		return $manager->GetCashRegistries($cid);
 	}
 
 	public function GetOpenedLiabilities($customerid) {

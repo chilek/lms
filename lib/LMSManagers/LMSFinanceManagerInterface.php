@@ -112,7 +112,7 @@ interface LMSFinanceManagerInterface
 
 	public function AddReceipt(array $receipt);
 
-	public function GetCashRegistries($cid = null, $disabled = true);
+	public function GetCashRegistries($cid = null);
 
 	public function GetOpenedLiabilities($customerid);
 

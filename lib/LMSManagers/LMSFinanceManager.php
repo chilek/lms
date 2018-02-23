@@ -2270,7 +2270,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		return empty($error) ? $rid : $error;
 	}
 
-	public function GetCashRegistries($cid = null, $disabled = true) {
+	public function GetCashRegistries($cid = null) {
 		$userid = Auth::GetCurrentUser();
 
 		if (empty($cid)) {
@@ -2288,7 +2288,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			FROM cashregs r
 			JOIN cashrights cr ON regid = r.id
 			' . $join . '
-			WHERE rights > 1 AND userid = ? ' . ($disabled ? '' : 'AND r.disabled = 0') . $where . '
+			WHERE rights > 1 AND userid = ? ' . $where . '
 			ORDER BY name', 'id', array($userid));
 		return $result;
 	}
