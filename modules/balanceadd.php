@@ -82,7 +82,19 @@ if(isset($addbalance['mcustomerid']))
 		if ($addbalance['value'] != 0) {
 			if ($addbalance['value'] > 0 && $addbalance['type'] == 1 && isset($_GET['receipt'])) {
 				$cashregistries = $LMS->GetCashRegistries($addbalance['customerid']);
-				if (!empty($cashregistries) && count($cashregistries) == 1) {
+				$instantpayment = false;
+				if (!empty($cashregistries)) {
+					if (count($cashregistries) == 1)
+						$instantpayment = true;
+					else {
+						$cashregistries = array_filter($cashregistries, function($cashreg) {
+							return !empty($cashreg['isdefault']);
+						});
+						if (count($cashregistries) == 1)
+							$instantpayment = true;
+					}
+				}
+				if ($instantpayment) {
 					// issues instant receipt
 					$liabilities = $LMS->GetOpenedLiabilities($addbalance['customerid']);
 					$cashregistry = reset($cashregistries);

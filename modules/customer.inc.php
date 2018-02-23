@@ -88,9 +88,17 @@ if(!empty($documents)) {
 }
 
 // try to determine preselected cash registry numberplan for instant cash receipt creations
-$cashregistries = $LMS->GetCashRegistries($customerid);
-if (!empty($cashregistries) && count($cashregistries) == 1) {
-	$SMARTY->assign('instantpayment', 1);
+$cashregistries = $LMS->GetCashRegistries($customerid, false);
+if (!empty($cashregistries)) {
+	if (count($cashregistries) == 1)
+		$SMARTY->assign('instantpayment', 1);
+	else {
+		$cashregistries = array_filter($cashregistries, function($cashreg) {
+			return !empty($cashreg['isdefault']);
+		});
+		if (count($cashregistries) == 1)
+			$SMARTY->assign('instantpayment', 1);
+	}
 }
 
 // prepare saved receipt to print
