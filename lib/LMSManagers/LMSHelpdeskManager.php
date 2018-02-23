@@ -672,8 +672,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				n.name AS node_name, n.location AS node_location, t.netnodeid
 			FROM rttickets t
 			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
-			LEFT JOIN customer_addresses ca ON ca.id = t.address_id
-			LEFT JOIN vaddresses va ON va.id = ca.address_id
+			LEFT JOIN vaddresses va ON va.id = t.address_id
 			LEFT JOIN vnodes n ON n.id = t.nodeid
 			WHERE t.id=?
 			AND c.categoryid IN (
