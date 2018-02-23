@@ -2551,6 +2551,11 @@ class LMS
 		return $manager->GetZipCode($params);
 	}
 
+	public function GetCitiesWithSections() {
+		$manager = $this->getLocationManager();
+		return $manager->GetCitiesWithSections();
+	}
+
 	public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');

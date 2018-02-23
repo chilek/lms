@@ -129,6 +129,10 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
+$SYSLOG = null;
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
+
 $stderr = fopen('php://stderr', 'w');
 
 define('PNA', 0);
@@ -218,7 +222,9 @@ $cols = array(
 );
 
 function convert_pna_to_teryt($data) {
-	global $DB, $borough_ids, $borough_types, $cols;
+	global $cities_with_sections, $borough_ids, $borough_types;
+
+	$DB = LMSDB::getInstance();
 
 	static $street_suffix_mappings = array(
 		'al.' => 'al.',
@@ -236,6 +242,9 @@ function convert_pna_to_teryt($data) {
 	$cities[] = preg_replace('/[[:blank:]]+\(.+\)$/', '', $data[CITY]);
 	if (mb_strlen(current($cities)) != mb_strlen($data[CITY]))
 		$cities[] = preg_replace('/.+[[:blank:]]+\((.+)\)$/', '\1', $data[CITY]);
+	foreach ($cities as $city)
+	    if (isset($cities_with_sections[mb_strtolower($city)]))
+	        $boroughs = $cities_with_sections[mb_strtolower($city)]['boroughs'];
 	$data[CITY] = $cities;
 
 	$street_suffix = NULL;
@@ -324,35 +333,39 @@ function convert_pna_to_teryt($data) {
     if (empty($borough_ids_to_check))
         return;
 
-	if (empty($data[STREET][0]))
+    if (empty($data[STREET][0]))
 		$teryt = $DB->GetRow("SELECT lc.id AS cid, lc2.cid AS cid2 
-				FROM location_cities lc 
-				LEFT JOIN (SELECT lc2.id AS cid, lc2.name AS name 
-					FROM location_cities lc2) lc2 ON lc2.cid = lc.cityid 
-				WHERE lc.name = ?" . (!empty($data[CITY][1]) ? " AND lc2.name = ?" : "")
-					." AND lc.boroughid" . (count($borough_ids_to_check) == 1 ? " = " . $borough_ids_to_check[0]
-                        : " IN (" . implode(',', $borough_ids_to_check) . ")"),
-				(!empty($data[CITY][1])
-					? array($data[CITY][0], $data[CITY][1])
-					: array($data[CITY][0])));
-	else
+            FROM location_cities lc 
+            LEFT JOIN (
+                SELECT lc2.id AS cid, lc2.name AS name 
+                FROM location_cities lc2
+            ) lc2 ON lc2.cid = lc.cityid 
+            WHERE lc.name = " . $DB->Escape($data[CITY][0]) . (!empty($data[CITY][1]) ? " AND lc2.name = " . $DB->Escape($data[CITY][1]) : "")
+                . " AND lc.boroughid" . (count($borough_ids_to_check) == 1 ? " = " . $borough_ids_to_check[0]
+                    : " IN (" . implode(',', $borough_ids_to_check) . ")"));
+	else {
+	    foreach ($data[STREET] as $idx => &$street)
+	        $street = $DB->Escape($street);
+	    unset($street);
+
 		$teryt = $DB->GetRow("SELECT lst.id AS sid, lst.cityid AS cid 
-				FROM location_cities lc 
-				LEFT JOIN (SELECT lc2.id AS cid, lc2.name AS name 
-					FROM location_cities lc2) lc2 ON lc2.cid = lc.cityid 
-				JOIN location_streets lst ON (lst.cityid = lc.id OR lst.cityid = lc2.cid) 
-				JOIN location_street_types lstt ON lstt.id = lst.typeid 
-				WHERE lc.name = ?" . (!empty($data[CITY][1]) ? " AND lc2.name = ?" : "")
-					. " AND lc.boroughid" . (count($borough_ids_to_check) == 1 ? " = " . $borough_ids_to_check[0]
-                        : " IN (" . implode(',', $borough_ids_to_check) . ")")
-					. (!empty($street_suffix) ? " AND lstt.name = '".$street_suffix."'" : "")
-					. " AND ((CASE WHEN lst.name2 IS NOT NULL THEN ".$DB->Concat('lst.name', "' '", 'lst.name2')
-						." ELSE lst.name END) IN ('".implode("','", $data[STREET])."') OR
-						(CASE WHEN lst.name2 IS NOT NULL THEN ".$DB->Concat('lst.name2', "' '", 'lst.name')
-						." ELSE lst.name END) IN ('".implode("','", $data[STREET])."'))",
-				(!empty($data[CITY][1])
-					? array($data[CITY][0], $data[CITY][1])
-					: array($data[CITY][0])));
+            FROM location_cities lc 
+            LEFT JOIN (
+                SELECT lc2.id AS cid, lc2.name AS name 
+                FROM location_cities lc2
+            ) lc2 ON lc2.cid = lc.cityid 
+            JOIN location_streets lst ON (lst.cityid = lc.id OR lst.cityid = lc2.cid) 
+            JOIN location_street_types lstt ON lstt.id = lst.typeid 
+            WHERE " . (isset($boroughs) ? "lc.boroughid IN (" . $boroughs . ")"
+                    : "lc.name = " . $DB->Escape($data[CITY][0]) . (!empty($data[CITY][1]) ? " AND lc2.name = " . $DB->Escape($data[CITY][1]) : "")
+                        . " AND lc.boroughid" . (count($borough_ids_to_check) == 1 ? " = " . $borough_ids_to_check[0]
+                            : " IN (" . implode(',', $borough_ids_to_check) . ")"))
+                . (!empty($street_suffix) ? " AND lstt.name = '".$street_suffix."'" : "")
+                . " AND ((CASE WHEN lst.name2 IS NOT NULL THEN ".$DB->Concat('lst.name', "' '", 'lst.name2')
+                    ." ELSE lst.name END) IN (".implode(",", $data[STREET]).") OR
+                    (CASE WHEN lst.name2 IS NOT NULL THEN ".$DB->Concat('lst.name2', "' '", 'lst.name')
+                    ." ELSE lst.name END) IN (".implode(",", $data[STREET])."))");
+	}
 
 	if ($teryt)
 		foreach ($data[HOUSE] as $house)
@@ -386,6 +399,8 @@ if (!$fh)
 	die("Unable to open PNA csv database file (" . $file . ")!" . PHP_EOL);
 
 $DB->Execute('DELETE FROM pna');
+
+$cities_with_sections = $LMS->GetCitiesWithSections();
 
 while (!feof($fh)) {
 	$line = fgets($fh, 200);

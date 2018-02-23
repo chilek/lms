@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -59,4 +59,6 @@ interface LMSLocationManagerInterface
 	public function TerytToLocation($terc, $simc, $ulic);
 
 	public function GetZipCode(array $params);
+
+	public function GetCitiesWithSections();
 }

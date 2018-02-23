@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,6 +30,7 @@
  */
 class LMSLocationManager extends LMSManager implements LMSLocationManagerInterface
 {
+	static private $cities_with_sections = null;
 
     /**
      * Inserts or updates country state
@@ -394,6 +395,8 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 			'/droga/', '/ogród/', '/wyb./', '/wyspa/', '/ul./',
 		);
 
+		$cities_with_sections = $this->GetCitiesWithSections();
+
 		preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', strtolower($house), $m);
 		$number = intval($m['number']);
 		$letter = $m['letter'];
@@ -426,5 +429,27 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 					AND ' . $from . ' AND ' . $to . '
 					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($city, $parity));
 		}
+	}
+
+	public function GetCitiesWithSections() {
+		if (!is_null(self::$cities_with_sections))
+			return self::$cities_with_sections;
+
+		self::$cities_with_sections = $this->db->GetAllByKey("SELECT lb2.cityid, LOWER(lb2.cityname) AS cityname,
+				(" . $this->db->GroupConcat('lc.id', ',', true) . ") AS cities,
+				(" . $this->db->GroupConcat('lc.boroughid', ',', true) . ") AS boroughs
+			FROM location_boroughs lb
+			JOIN location_cities lc ON lc.boroughid = lb.id
+			JOIN (SELECT lb.id, lb.districtid, lc.id AS cityid, lc.name AS cityname
+				FROM location_boroughs lb
+				JOIN location_cities lc ON lc.boroughid = lb.id
+				WHERE lb.type = 1
+			) lb2 ON lb2.districtid = lb.districtid
+			WHERE lb.type = 8 OR lb.type = 9
+			GROUP BY lb2.cityid, LOWER(lb2.cityname)", 'cityname');
+
+		if (empty(self::$cities_with_sections))
+			self::$cities_with_sections = array();
+		return self::$cities_with_sections;
 	}
 }

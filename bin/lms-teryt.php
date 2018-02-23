@@ -144,7 +144,9 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
-$SYSLOG = SYSLOG::getInstance();
+$SYSLOG = null;
+$AUTH = null;
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 /* ********************************************************************
    We should have all hard work here which is being done by our script!
@@ -187,28 +189,6 @@ function parse_teryt_xml_row($xml) {
 	return $row;
 }
 
-function get_cities_with_sections() {
-	$DB = LMSDB::getInstance();
-
-	$cities = $DB->GetAllByKey("SELECT lb2.cityid, LOWER(lb2.cityname) AS cityname,
-			(" . $DB->GroupConcat('lc.id', ',', true) . ") AS citysections
-		FROM location_boroughs lb
-		JOIN location_cities lc ON lc.boroughid = lb.id
-		JOIN (SELECT lb.id, lb.districtid, lc.id AS cityid, lc.name AS cityname
-			FROM location_boroughs lb
-			JOIN location_cities lc ON lc.boroughid = lb.id
-			WHERE lb.type = 1
-		) lb2 ON lb2.districtid = lb.districtid
-		WHERE lb.type = 8 OR lb.type = 9
-		GROUP BY lb2.cityid, LOWER(lb2.cityname)", 'cityname');
-	if (empty($cities))
-		return array();
-	foreach ($cities as &$city)
-		$city['citysections'] = explode(',', $city['citysections']);
-	unset($city);
-	return $cities;
-}
-
 function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches) {
 	$street = trim( preg_replace('/^(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street) );
 
@@ -218,7 +198,7 @@ function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches) 
 		SELECT s.id as streetid, " . $subcities['cityid'] . " AS cityid
 		FROM location_streets s WHERE
 			((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
-			AND s.cityid IN (" . implode(',', $subcities['citysections']) . ")",
+			AND s.cityid IN (" . $subcities['cities'] . ")",
 		array($street, $street));
 
 	if (empty($idents))
@@ -1226,7 +1206,7 @@ if ( isset($options['merge']) ) {
 
     $location_cache = array();
 
-	$cities_with_sections = get_cities_with_sections();
+	$cities_with_sections = $LMS->GetCitiesWithSections();
 
 	foreach ( $addresses as $a ) {
 		$city = empty($a['city']) ? '-' : $a['city'];
