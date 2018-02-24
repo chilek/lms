@@ -1069,7 +1069,8 @@ CREATE TABLE cash (
 CREATE TABLE pna (
 	id int(11)		NOT NULL auto_increment,
 	zip varchar(10)		NOT NULL,
-	cityid int(11)		NOT NULL,
+	cityid int(11)		DEFAULT NULL,
+	cityname varchar(100) DEFAULT NULL,
 	streetid int(11)	DEFAULT NULL,
 	streetname varchar(100) DEFAULT NULL,
 	fromnumber smallint	DEFAULT NULL,
@@ -3266,4 +3267,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022500');
