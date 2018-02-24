@@ -263,7 +263,7 @@ function convert_pna_to_teryt($data) {
 	$streets = array();
 	if (!empty($data[STREET])) {
 		// remove strange characters from beginning and ending of street name
-		$street = trim($data[STREET], " \t\n\r\0\x0B");
+		$street = trim($data[STREET]);
 		$street = preg_replace('/"(.+)"/', '$1', $street);
 
 		// replace double quotes by single quote
