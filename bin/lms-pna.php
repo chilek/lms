@@ -34,6 +34,7 @@ $parameters = array(
 	'v' => 'version',
 	'f:' => 'file:',
 	'l:' => 'list:',
+    'p' => 'subpattern-failback',
 );
 
 foreach ($parameters as $key => $val) {
@@ -65,6 +66,7 @@ lms-pna.php
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -f, --file                      PNA csv database file;
 -l, --list=<list>               comma-separated list of state IDs;
+-p, --subpattern-failback       street name subpattern matches;
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
@@ -132,6 +134,8 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 $SYSLOG = null;
 $AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
+
+$subpattern_failback = isset($options['subpattern-failback']);
 
 $stderr = fopen('php://stderr', 'w');
 
@@ -220,7 +224,7 @@ function get_city_ids() {
 }
 
 function convert_pna_to_teryt($data) {
-	global $LMS;
+	global $LMS, $subpattern_failback;
 	static $cities_with_sections = null;
 	static $city_ids = array();
 
@@ -368,12 +372,8 @@ function convert_pna_to_teryt($data) {
 			$street_common_parts = implode(',', $street_common_parts);
 		}
 
-		$streetid = $DB->GetOne('SELECT lst.id AS sid
+		$streetid = $DB->GetOne('SELECT lst.id
 			FROM location_cities lc
-			LEFT JOIN (
-				SELECT lc2.id AS cid, lc2.name AS name
-				FROM location_cities lc2
-			) lc2 ON lc2.cid = lc.cityid
 			JOIN location_streets lst ON (lst.cityid = lc.id)
 			JOIN location_street_types lstt ON lstt.id = lst.typeid
 			WHERE lc.id = ?'
@@ -383,8 +383,21 @@ function convert_pna_to_teryt($data) {
 					LOWER(CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name')
 					. ' ELSE lst.name END) IN (' . $streets . '))',
 			array($cityid));
+		if ($subpattern_failback && empty($streetid) && mb_strlen($orig_street_name) >= 10) {
+		    $patterned_streets = $DB->GetCol('SELECT lst.id
+		        FROM location_cities lc
+		        JOIN location_streets lst ON lst.cityid = lc.id
+		        WHERE lc.id = ? AND LENGTH(lst.name) >= 10
+		            AND LOWER(?) ?LIKE? ' . $DB->Concat("'%'", 'LOWER(lst.name)', "'%'"),
+                array($cityid, $orig_street_name));
+
+		    if (empty($patterned_streets) || count($patterned_streets) > 1)
+    		    $streetid = -1;
+		    else
+		        $streetid = $patterned_streets[0];
+		}
 		if (empty($streetid))
-			$streetid = -1;
+		    $streetid = -1;
 	}
 
 	foreach ($data[HOUSE] as $house)
