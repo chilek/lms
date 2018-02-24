@@ -231,8 +231,15 @@ function get_city_ids() {
 }
 
 function convert_pna_to_teryt($data) {
-	global $cities_with_sections;
+	global $LMS;
+	static $cities_with_sections = null;
 	static $city_ids = array();
+
+	if (is_null($cities_with_sections)) {
+		$cities_with_sections = $LMS->GetCitiesWithSections();
+		if (empty($cities_with_sections))
+			$cities_with_sections = array();
+	}
 
 	if (empty($city_ids)) {
 		$city_ids = get_city_ids();
@@ -354,13 +361,7 @@ function convert_pna_to_teryt($data) {
 	$DB = LMSDB::getInstance();
 
 	if (empty($streets))
-		$teryt = $DB->GetRow('SELECT lc.id AS cid, lc2.cid AS cid2
-			FROM location_cities lc
-			LEFT JOIN (
-				SELECT lc2.id AS cid, lc2.name AS name
-				FROM location_cities lc2
-			) lc2 ON lc2.cid = lc.cityid
-			WHERE lc.id = ?', array($cityid));
+		$streetid = null;
 	else {
 		$streets = array_unique($streets);
 		foreach ($streets as &$street)
@@ -376,7 +377,7 @@ function convert_pna_to_teryt($data) {
 			$street_common_parts = implode(',', $street_common_parts);
 		}
 
-		$teryt = $DB->GetRow('SELECT lst.id AS sid, lst.cityid AS cid
+		$streetid = $DB->GetOne('SELECT lst.id AS sid
 			FROM location_cities lc
 			LEFT JOIN (
 				SELECT lc2.id AS cid, lc2.name AS name
@@ -391,20 +392,16 @@ function convert_pna_to_teryt($data) {
 					LOWER(CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name')
 					. ' ELSE lst.name END) IN (' . $streets . '))',
 			array($cityid));
+		if (empty($streetid))
+			$streetid = -1;
 	}
 
-	if ($teryt)
+	if ($streetid != -1)
 		foreach ($data[HOUSE] as $house)
-			if (!empty($teryt['sid']))
-				$DB->Execute('INSERT INTO pna (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-					array($data[PNA], $teryt['cid'], $teryt['sid'], $house['fromnumber'], $house['fromletter'],
-						$house['tonumber'], $house['toletter'], $house['parity']));
-			else
-				$DB->Execute('INSERT INTO pna (zip, cityid, fromnumber, fromletter, tonumber, toletter, parity)
-					VALUES (?, ?, ?, ?, ?, ?, ?)',
-					array($data[PNA], $teryt['cid'], $house['fromnumber'], $house['fromletter'],
-						$house['tonumber'], $house['toletter'], $house['parity']));
+			$DB->Execute('INSERT INTO pna (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+				array($data[PNA], $cityid, $streetid, $house['fromnumber'], $house['fromletter'],
+					$house['tonumber'], $house['toletter'], $house['parity']));
 	else {
 		echo 'city=' . $city_name;
 		if (!empty($streets))
@@ -425,8 +422,6 @@ if (!$fh)
 	die('Unable to open PNA csv database file (' . $file . ')!' . PHP_EOL);
 
 $DB->Execute('DELETE FROM pna');
-
-$cities_with_sections = $LMS->GetCitiesWithSections();
 
 while (!feof($fh)) {
 	$line = fgets($fh, 200);
