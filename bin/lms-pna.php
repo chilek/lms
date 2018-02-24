@@ -378,7 +378,7 @@ function convert_pna_to_teryt($data) {
 			JOIN location_streets lst ON (lst.cityid = lc.id)
 			JOIN location_street_types lstt ON lstt.id = lst.typeid
 			WHERE ' . (isset($boroughs) ? 'lc.boroughid IN (' . $boroughs . ')'
-					: '((lc.name = ' . $city_name . (empty($city_name2) ? ')' : ' AND lc2.name = ' . $city_name2 . ')')
+					: '((lc.name = ' . $city_name . ')'
 						. (empty($city_name2) ? ')' : ' OR (lc.name = ' . $city_name2 . ' AND lc2.name = ' . $city_name . '))')
 						. ' AND lc.boroughid' . (count($borough_ids_to_check) == 1 ? ' = ' . $borough_ids_to_check[0]
 							: ' IN (' . implode(',', $borough_ids_to_check) . ')'))
