@@ -135,14 +135,6 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 $stderr = fopen('php://stderr', 'w');
 
-define('PNA', 0);
-define('CITY', 1);
-define('STREET', 2);
-define('HOUSE', 3);
-define('BOROUGH', 4);
-define('DISTRICT', 5);
-define('STATE', 6);
-
 $all_states = array(
 	'dolnoslaskie' => 2,
 	'kujawsko-pomorskie' => 4,
@@ -187,16 +179,13 @@ foreach ($state_lists as $states => $error_message) {
 
 fclose($stderr);
 
-
-$borough_types = array(
-	1 => 'gm. miejska',
-	2 => 'gm. wiejska',
-	3 => 'gm. miejsko-wiejska',
-	4 => 'gm. miejsko-wiejska',
-	5 => 'gm. miejsko-wiejska',
-	8 => 'dzielnica gminy Warszawa-Centrum',
-	9 => 'dzielnica',
-);
+define('PNA', 0);
+define('CITY', 1);
+define('STREET', 2);
+define('HOUSE', 3);
+define('BOROUGH', 4);
+define('DISTRICT', 5);
+define('STATE', 6);
 
 $cols = array(
 	PNA => 'PNA',
