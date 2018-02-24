@@ -1071,6 +1071,7 @@ CREATE TABLE pna (
 	zip varchar(10)		NOT NULL,
 	cityid int(11)		NOT NULL,
 	streetid int(11)	DEFAULT NULL,
+	streetname varchar(100) DEFAULT NULL,
 	fromnumber smallint	DEFAULT NULL,
 	fromletter varchar(8)	DEFAULT NULL,
 	tonumber smallint	DEFAULT NULL,
@@ -1079,7 +1080,7 @@ CREATE TABLE pna (
 	PRIMARY KEY (id),
 	INDEX fromnumber (fromnumber),
 	INDEX tonumber (tonumber),
-	UNIQUE KEY zip (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity),
+	UNIQUE KEY zip (zip, cityid, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity),
 	FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (streetid) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
@@ -3265,4 +3266,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022400');
