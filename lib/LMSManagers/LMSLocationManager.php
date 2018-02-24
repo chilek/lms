@@ -420,17 +420,19 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 				$boroughs = $cities_with_sections[mb_strtolower($city)]['boroughs'];
 
 			$street = trim(preg_replace($street_suffixes, array(), $street));
+			$escaped_street = $this->db->Escape($street);
 			return $this->db->GetOne('SELECT zip FROM pna p
 				JOIN location_cities lc ON lc.id = p.cityid
 				LEFT JOIN location_cities lc2 ON lc2.id = lc.cityid
 				LEFT JOIN location_streets lst ON lst.id = p.streetid
 				WHERE ' . (isset($boroughs) ? 'lc.boroughid IN (' . $boroughs . ')'
 						: '(CASE WHEN lc2.id IS NULL THEN lc.name ELSE ' . $this->db->Concat('lc.name', "' '", 'lc2.name') . ' END) = ' . $this->db->Escape($city)) . '
-					AND parity & ? > 0' . (isset($street) ? ' AND (lst.name = ' . $this->db->Escape($street) . '
+					AND parity & ? > 0' . (!empty($street) ? ' AND (lst.name = ' . $escaped_street . '
 						OR (CASE WHEN lst.name2 IS NULL THEN \'\' 
-							ELSE ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' END) = ' . $this->db->Escape($street) . '
+							ELSE ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' END) = ' . $escaped_street . '
 						OR (CASE WHEN lst.name2 IS NULL THEN \'\' 
-							ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END) = ' . $this->db->Escape($street) . ')' : '') . '
+							ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END) = ' . $escaped_street
+						. ' OR (p.streetname IS NOT NULL AND LOWER(p.streetname) = LOWER(' . $escaped_street . ')))' : '') . '
 					AND ' . $from . ' AND ' . $to . '
 					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($parity));
 		}

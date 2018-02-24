@@ -276,6 +276,8 @@ function convert_pna_to_teryt($data) {
 		// replace double quotes by single quote
 		$street = str_replace('""', '"', $street);
 
+		$orig_street_name = $street;
+
 		// fix mispelled common street sufixes/prefixes
         $street = strtr($street, $street_common_part_replaces);
 
@@ -396,13 +398,14 @@ function convert_pna_to_teryt($data) {
 			$streetid = -1;
 	}
 
-	if ($streetid != -1)
-		foreach ($data[HOUSE] as $house)
-			$DB->Execute('INSERT INTO pna (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-				array($data[PNA], $cityid, $streetid, $house['fromnumber'], $house['fromletter'],
-					$house['tonumber'], $house['toletter'], $house['parity']));
-	else {
+	foreach ($data[HOUSE] as $house)
+		$DB->Execute('INSERT INTO pna (zip, cityid, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array($data[PNA], $cityid, $streetid == -1 ? null : $streetid, $streetid == -1 ? $orig_street_name : null,
+				$house['fromnumber'], $house['fromletter'],
+				$house['tonumber'], $house['toletter'], $house['parity']));
+
+	if ($streetid == -1) {
 		echo 'city=' . $city_name;
 		if (!empty($streets))
 			echo ' street=' . $streets;

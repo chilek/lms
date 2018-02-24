@@ -198,6 +198,8 @@ version ?.??.?? (????-??-??):
   - enhancement: zip code auto and manual completion using PNA database [chilan]
   - enhancement: phpui.zipcode_backend controls which zip code auto completion backend
     is used (by default: 'osm'; 'pna' is second supported backend) [chilan]
+  - enhancement: pna codes which are not assigned to existing teryt locations are
+    also stored in database and are searchable by streetname [chilan]
 
 version 1.11.22 (2017-06-08):
 
