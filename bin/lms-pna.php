@@ -187,19 +187,6 @@ foreach ($state_lists as $states => $error_message) {
 
 fclose($stderr);
 
-$boroughs = $DB->GetAll('SELECT ls.name AS state_name, ld.name AS district_name,
-		lb.name AS borough_name, lb.type AS borough_type, lb.id
-	FROM location_boroughs lb
-	JOIN location_districts ld ON ld.id = lb.districtid
-	JOIN location_states ls ON ls.id = ld.stateid');
-if (empty($boroughs))
-	die('TERYT database is empty!' . PHP_EOL);
-
-$boroughs_ids = array();
-foreach ($boroughs as $borough)
-    $borough_ids[$borough['state_name'] . ':' . $borough['district_name'] . ':' . $borough['borough_name'] . ':' . $borough['borough_type']] =
-        $borough['id'];
-unset($boroughs);
 
 $borough_types = array(
 	1 => 'gm. miejska',
@@ -221,21 +208,53 @@ $cols = array(
 	STATE => 'Województwo'
 );
 
-function convert_pna_to_teryt($data) {
-	global $cities_with_sections, $borough_ids, $borough_types;
-
+function get_city_ids() {
 	$DB = LMSDB::getInstance();
 
-	$cities = array();
-	$cities[] = preg_replace('/[[:blank:]]+\(.+\)$/', '', $data[CITY]);
-	if (mb_strlen(current($cities)) != mb_strlen($data[CITY]))
-		$cities[] = preg_replace('/.+[[:blank:]]+\((.+)\)$/', '\1', $data[CITY]);
-	foreach ($cities as $city) {
-		$city = mb_strtolower($city);
-		if (isset($cities_with_sections[$city]))
-			$boroughs = $cities_with_sections[$city]['boroughs'];
+	$cities = $DB->GetAll('SELECT LOWER(ls.name) AS state_name, LOWER(ld.name) AS district_name,
+			LOWER(CASE WHEN ld.name = ? AND lb.name NOT ?LIKE? ? THEN ' . $DB->Concat("'Warszawa-'", 'lb.name') . ' ELSE lb.name END) AS borough_name,
+			LOWER(CASE WHEN ld.name = ? AND lc.name NOT ?LIKE? ? THEN ' . $DB->Concat("'Warszawa-'", 'lc.name') . ' ELSE lc.name END) AS city_name,
+			lc.id
+		FROM location_cities lc
+		JOIN location_boroughs lb ON lc.boroughid = lb.id
+		JOIN location_districts ld ON ld.id = lb.districtid
+		JOIN location_states ls ON ls.id = ld.stateid
+		WHERE lc.cityid IS NULL',
+		array('Warszawa', 'Warszawa%', 'Warszawa', 'Warszawa%'));
+
+	$city_ids = array();
+	foreach ($cities as $city)
+		$city_ids[$city['state_name'] . '_' . $city['district_name'] . '_'
+			. $city['borough_name'] . '_' . $city['city_name']] = $city['id'];
+
+	return $city_ids;
+}
+
+function convert_pna_to_teryt($data) {
+	global $cities_with_sections;
+	static $city_ids = array();
+
+	if (empty($city_ids)) {
+		$city_ids = get_city_ids();
+		if (empty($city_ids))
+			die('TERYT database is empty!' . PHP_EOL);
 	}
-	$data[CITY] = $cities;
+
+	$state_name = mb_strtolower($data[STATE]);
+	$district_name = mb_strtolower($data[DISTRICT]);
+	$borough_name = mb_strtolower($data[BOROUGH]);
+
+	$data[CITY] = mb_strtolower($data[CITY]);
+	$city_name = preg_replace('/[[:blank:]]+\(.+\)$/', '', $data[CITY]);
+	if (mb_strlen($city_name) != mb_strlen($data[CITY]) && isset($cities_with_sections[$city_name]))
+		$borough_name = $city_name = preg_replace('/^.+[[:blank:]]+\((.+)\)$/', ($city_name == 'warszawa' ? 'warszawa-' : '') . '$1', $data[CITY]);
+
+	if (!isset($city_ids[$state_name . '_' . $district_name . '_' . $borough_name
+			. '_' . $city_name])) {
+		echo 'city=' . $city_name . ' not found.' . PHP_EOL;
+		return;
+	}
+	$cityid = $city_ids[$state_name . '_' . $district_name . '_' . $borough_name . '_' . $city_name];
 
 	static $street_common_part_replaces = array('skw.' => 'skwer', 'wybrz.' => 'wyb.');
 	static $street_short_to_long_part_replaces = array('ul.' => 'ulica', 'al.' => 'aleja',
@@ -332,16 +351,7 @@ function convert_pna_to_teryt($data) {
 			'tonumber' => null, 'toletter' => null,
 			'parity' => 3));
 
-	$borough_ids_to_check = array();
-	$terc = $data[STATE] . ':' . $data[DISTRICT] . ':' . $data[BOROUGH] . ':';
-	foreach ($borough_types as $borough_type => $borough_type_name)
-		if (isset($borough_ids[$terc . $borough_type]))
-			$borough_ids_to_check[] = $borough_ids[$terc . $borough_type];
-	if (empty($borough_ids_to_check))
-		return;
-
-	$city_name = $DB->Escape($data[CITY][0]);
-	$city_name2 = empty($data[CITY][1]) ? '' : $DB->Escape($data[CITY][1]);
+	$DB = LMSDB::getInstance();
 
 	if (empty($streets))
 		$teryt = $DB->GetRow('SELECT lc.id AS cid, lc2.cid AS cid2
@@ -350,10 +360,7 @@ function convert_pna_to_teryt($data) {
 				SELECT lc2.id AS cid, lc2.name AS name
 				FROM location_cities lc2
 			) lc2 ON lc2.cid = lc.cityid
-			WHERE ((lc.name = ' . $city_name . (empty($city_name2) ? ')' : ' AND lc2.name = ' . $city_name2 . ')')
-				. (empty($city_name2) ? ')' : ' OR (lc.name = ' . $city_name2 . ' AND lc2.name = ' . $city_name . '))')
-				. ' AND lc.boroughid' . (count($borough_ids_to_check) == 1 ? ' = ' . $borough_ids_to_check[0]
-					: ' IN (' . implode(',', $borough_ids_to_check) . ')'));
+			WHERE lc.id = ?', array($cityid));
 	else {
 		$streets = array_unique($streets);
 		foreach ($streets as &$street)
@@ -377,16 +384,13 @@ function convert_pna_to_teryt($data) {
 			) lc2 ON lc2.cid = lc.cityid
 			JOIN location_streets lst ON (lst.cityid = lc.id)
 			JOIN location_street_types lstt ON lstt.id = lst.typeid
-			WHERE ' . (isset($boroughs) ? 'lc.boroughid IN (' . $boroughs . ')'
-					: '((lc.name = ' . $city_name . ')'
-						. (empty($city_name2) ? ')' : ' OR (lc.name = ' . $city_name2 . ' AND lc2.name = ' . $city_name . '))')
-						. ' AND lc.boroughid' . (count($borough_ids_to_check) == 1 ? ' = ' . $borough_ids_to_check[0]
-							: ' IN (' . implode(',', $borough_ids_to_check) . ')'))
+			WHERE lc.id = ?'
 				. (!empty($street_common_parts) ? ' AND LOWER(lstt.name) IN (' . $street_common_parts . ')' : '')
 				. ' AND (LOWER(CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name', "' '", 'lst.name2')
 					.' ELSE lst.name END) IN (' . $streets . ') OR
 					LOWER(CASE WHEN lst.name2 IS NOT NULL THEN ' . $DB->Concat('lst.name2', "' '", 'lst.name')
-					. ' ELSE lst.name END) IN (' . $streets . '))');
+					. ' ELSE lst.name END) IN (' . $streets . '))',
+			array($cityid));
 	}
 
 	if ($teryt)
@@ -402,7 +406,7 @@ function convert_pna_to_teryt($data) {
 					array($data[PNA], $teryt['cid'], $house['fromnumber'], $house['fromletter'],
 						$house['tonumber'], $house['toletter'], $house['parity']));
 	else {
-		echo 'city=' . implode(',', $data[CITY]);
+		echo 'city=' . $city_name;
 		if (!empty($streets))
 			echo ' street=' . $streets;
 		echo ' not found.' . PHP_EOL;
