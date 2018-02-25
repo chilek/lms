@@ -227,6 +227,9 @@ function convert_pna_to_teryt($data) {
 	global $LMS, $subpattern_failback;
 	static $cities_with_sections = null;
 	static $city_ids = array();
+	static $street_common_part_replaces = array('skw.' => 'skwer', 'wybrz.' => 'wyb.');
+	static $street_short_to_long_part_replaces = array('ul.' => 'ulica', 'al.' => 'aleja',
+		'pl.' => 'plac', 'os.' => 'osiedle', 'bulw.' => 'bulwar', 'wyb.' => 'wybrzeże');
 
 	if (is_null($cities_with_sections)) {
 		$cities_with_sections = $LMS->GetCitiesWithSections();
@@ -244,21 +247,18 @@ function convert_pna_to_teryt($data) {
 	$district_name = mb_strtolower($data[DISTRICT]);
 	$borough_name = mb_strtolower($data[BOROUGH]);
 
-	$data[CITY] = mb_strtolower($data[CITY]);
 	$city_name = preg_replace('/[[:blank:]]+\(.+\)$/', '', $data[CITY]);
+	$orig_city_name = $city_name;
+	$city_name = mb_strtolower($city_name);
 	if (mb_strlen($city_name) != mb_strlen($data[CITY]) && isset($cities_with_sections[$city_name]))
-		$borough_name = $city_name = preg_replace('/^.+[[:blank:]]+\((.+)\)$/', ($city_name == 'warszawa' ? 'warszawa-' : '') . '$1', $data[CITY]);
+		$borough_name = $city_name = preg_replace('/^.+[[:blank:]]+\((.+)\)$/', ($city_name == 'warszawa' ? 'warszawa-' : '') . '$1',
+            mb_strtolower($data[CITY]));
 
-	if (!isset($city_ids[$state_name . '_' . $district_name . '_' . $borough_name
-			. '_' . $city_name])) {
-		echo 'city=' . $city_name . ' not found.' . PHP_EOL;
-		return;
-	}
-	$cityid = $city_ids[$state_name . '_' . $district_name . '_' . $borough_name . '_' . $city_name];
+	if (isset($city_ids[$state_name . '_' . $district_name . '_' . $borough_name . '_' . $city_name]))
+		$cityid = $city_ids[$state_name . '_' . $district_name . '_' . $borough_name . '_' . $city_name];
+    else
+	    $cityid = null;
 
-	static $street_common_part_replaces = array('skw.' => 'skwer', 'wybrz.' => 'wyb.');
-	static $street_short_to_long_part_replaces = array('ul.' => 'ulica', 'al.' => 'aleja',
-		'pl.' => 'plac', 'os.' => 'osiedle', 'bulw.' => 'bulwar', 'wyb.' => 'wybrzeże');
 	$street_common_parts = array();
 	$streets = array();
 	if (!empty($data[STREET])) {
@@ -271,47 +271,49 @@ function convert_pna_to_teryt($data) {
 
 		$orig_street_name = $street;
 
-		// fix mispelled common street sufixes/prefixes
-        $street = strtr($street, $street_common_part_replaces);
+		if (!empty($cityid)) {
+			// fix mispelled common street sufixes/prefixes
+			$street = strtr($street, $street_common_part_replaces);
 
-		// remove parts in simple brackets
-		$street = preg_replace('/[[:blank:]]+\(.+\)$/', '', $street);
+			// remove parts in simple brackets
+			$street = preg_replace('/[[:blank:]]+\(.+\)$/', '', $street);
 
-		// changes letters to lowercase
-		$street = mb_strtolower($street);
+			// changes letters to lowercase
+			$street = mb_strtolower($street);
 
-		$streets[] = $street;
+			$streets[] = $street;
 
-		// analyze street prefixes/suffixes
-		if (preg_match('/^(?<prefix>ul\.|inne|al\.|rynek|pl\.|rondo|park|os\.|szosa|skwer|bulw\.|wyspa|ogród|wyb\.|droga)?[[:blank:]]/', $street, $pmatches)
-			 || preg_match('/.+[[:blank:]](?<suffix>ul\.|inne|al\.|rynek|pl\.|rondo|park|os\.|szosa|skwer|bulw\.|wyspa|ogród|wyb\.|droga)?$/', $street, $smatches)) {
-			$replaces = array();
-			if (isset($pmatches['prefix']) && !empty($pmatches['prefix'])) {
-				$street_common_parts[] = $street_common_part = $pmatches['prefix'];
-				$street_common_parts[] = strtr($street_common_part, $street_short_to_long_part_replaces);
-				$replaces[$street_common_part] = '';
+			// analyze street prefixes/suffixes
+			if (preg_match('/^(?<prefix>ul\.|inne|al\.|rynek|pl\.|rondo|park|os\.|szosa|skwer|bulw\.|wyspa|ogród|wyb\.|droga)?[[:blank:]]/', $street, $pmatches)
+				|| preg_match('/.+[[:blank:]](?<suffix>ul\.|inne|al\.|rynek|pl\.|rondo|park|os\.|szosa|skwer|bulw\.|wyspa|ogród|wyb\.|droga)?$/', $street, $smatches)) {
+				$replaces = array();
+				if (isset($pmatches['prefix']) && !empty($pmatches['prefix'])) {
+					$street_common_parts[] = $street_common_part = $pmatches['prefix'];
+					$street_common_parts[] = strtr($street_common_part, $street_short_to_long_part_replaces);
+					$replaces[$street_common_part] = '';
+				}
+				if (isset($smatches['suffix']) && !empty($smatches['suffix'])) {
+					$street_common_parts[] = $street_common_part = $smatches['suffix'];
+					$street_common_parts[] = strtr($street_common_part, $street_short_to_long_part_replaces);
+					$replaces[$street_common_part] = '';
+				}
+
+				$streets[] = $street_without_common_parts = trim(strtr($street, $replaces));
+
+				// streets with suffix used as prefix and prefix used as suffix
+				$streets[] = $street_without_common_parts . ' ' . $street_common_part;
+				$streets[] = $street_without_common_parts . ' ' . strtr($street_common_part, $street_short_to_long_part_replaces);
+				$streets[] = $street_common_part . ' ' . $street_without_common_parts;
+				$streets[] = strtr($street_common_part, $street_short_to_long_part_replaces) . ' ' . $street_without_common_parts;
 			}
-			if (isset($smatches['suffix']) && !empty($smatches['suffix'])) {
-				$street_common_parts[] = $street_common_part = $smatches['suffix'];
-				$street_common_parts[] = strtr($street_common_part, $street_short_to_long_part_replaces);
-				$replaces[$street_common_part] = '';
-			}
-
-			$streets[] = $street_without_common_parts = trim(strtr($street, $replaces));
-
-			// streets with suffix used as prefix and prefix used as suffix
-			$streets[] = $street_without_common_parts . ' ' . $street_common_part;
-			$streets[] = $street_without_common_parts . ' ' . strtr($street_common_part, $street_short_to_long_part_replaces);
-			$streets[] = $street_common_part . ' ' . $street_without_common_parts;
-			$streets[] = strtr($street_common_part, $street_short_to_long_part_replaces) . ' ' . $street_without_common_parts;
 		}
 	}
 
 	if (!empty($data[HOUSE])) {
-		$data[HOUSE] = preg_replace('/[[:blank:]]/', '', $data[HOUSE]);
-		$data[HOUSE] = explode(',', $data[HOUSE]);
+		$house_numbers = preg_replace('/[[:blank:]]/', '', $data[HOUSE]);
+		$house_numbers = explode(',', $house_numbers);
 		$houses = array();
-		foreach ($data[HOUSE] as $token) {
+		foreach ($house_numbers as $token) {
 			$parity = 0;
 			if (preg_match('/\(n\)$/', $token))
 				$parity += 1;
@@ -346,17 +348,23 @@ function convert_pna_to_teryt($data) {
 				'tonumber' => $tonumber, 'toletter' => $toletter,
 				'parity' => $parity);
 		}
-		$data[HOUSE] = $houses;
+		$house_numbers = $houses;
 	}
 	else
-		$data[HOUSE] = array(array('fromnumber' => null, 'fromletter' => null,
+		$house_numbers = array(array('fromnumber' => null, 'fromletter' => null,
 			'tonumber' => null, 'toletter' => null,
 			'parity' => 3));
 
 	$DB = LMSDB::getInstance();
 
-	if (empty($streets))
+    if (empty($cityid)) {
+		echo 'city: ' . $orig_city_name . (isset($orig_street_name) ? ', street: ' . $orig_street_name : '')
+            . ' not found.' . PHP_EOL;
 		$streetid = null;
+		if (!isset($orig_street_name))
+			$orig_street_name = null;
+    } elseif (empty($streets))
+		$streetid = $orig_street_name = null;
 	else {
 		$streets = array_unique($streets);
 		foreach ($streets as &$street)
@@ -392,27 +400,22 @@ function convert_pna_to_teryt($data) {
                 array($cityid, $orig_street_name));
 
 		    if (empty($patterned_streets) || count($patterned_streets) > 1)
-    		    $streetid = -1;
+    		    $streetid = null;
 		    else
 		        $streetid = $patterned_streets[0];
 		}
-		if (empty($streetid))
-		    $streetid = -1;
+		if (empty($streetid)) {
+			$streetid = null;
+			echo 'city: ' . $orig_city_name . ', street: ' . $orig_street_name . ' not found.' . PHP_EOL;
+		}
 	}
 
-	foreach ($data[HOUSE] as $house)
-		$DB->Execute('INSERT INTO pna (zip, cityid, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			array($data[PNA], $cityid, $streetid == -1 ? null : $streetid, $streetid == -1 ? $orig_street_name : null,
+	foreach ($house_numbers as $house)
+		$DB->Execute('INSERT INTO pna (zip, cityid, cityname, streetid, streetname, fromnumber, fromletter, tonumber, toletter, parity)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array($data[PNA], $cityid, $orig_city_name, $streetid, $orig_street_name,
 				$house['fromnumber'], $house['fromletter'],
 				$house['tonumber'], $house['toletter'], $house['parity']));
-
-	if ($streetid == -1) {
-		echo 'city=' . $city_name;
-		if (!empty($streets))
-			echo ' street=' . $streets;
-		echo ' not found.' . PHP_EOL;
-	}
 }
 
 if (!isset($options['file']))
