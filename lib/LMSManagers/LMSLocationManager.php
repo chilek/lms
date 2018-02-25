@@ -395,6 +395,8 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 			'/droga/', '/ogród/', '/wyb./', '/wyspa/', '/ul./',
 		);
 
+		$cities_with_sections = $this->GetCitiesWithSections();
+
 		preg_match('/^(?<number>[0-9]+)(?<letter>[a-z]*)$/', strtolower($house), $m);
 		$number = intval($m['number']);
 		$letter = $m['letter'];
@@ -413,11 +415,29 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($cityid, $parity));
 		elseif (isset($city)) {
 			// non-teryt address
+
+			if (isset($cities_with_sections[mb_strtolower($city)]))
+				$boroughs = $cities_with_sections[mb_strtolower($city)]['boroughs'];
+
 			$street = trim(preg_replace($street_suffixes, array(), $street));
-			return $this->db->GetOne('SELECT zip FROM pna
-				WHERE parity & ? > 0 AND cityname = ?' . (empty($street) ? '' : ' AND streetname = ' . $this->db->Escape($street))
-					. ' AND ' . $from . ' AND ' . $to . '
-					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($parity, $city));
+			$escaped_street = $this->db->Escape($street);
+			$escaped_city = $this->db->Escape($city);
+			return $this->db->GetOne('SELECT zip FROM pna p
+				JOIN location_cities lc ON lc.id = p.cityid
+				LEFT JOIN location_cities lc2 ON lc2.id = lc.cityid
+				LEFT JOIN location_streets lst ON lst.id = p.streetid
+				WHERE ' . (isset($boroughs) ? 'lc.boroughid IN (' . $boroughs . ')'
+						: '((p.cityid IS NOT NULL AND (CASE WHEN lc2.id IS NULL THEN lc.name ELSE '
+							. $this->db->Concat('lc.name', "' '", 'lc2.name') . ' END) = ' . $escaped_city . ')
+							OR LOWER(p.cityname) = LOWER(' . $escaped_city . '))') . '
+					AND parity & ? > 0' . (!empty($street) ? ' AND (lst.name = ' . $escaped_street . '
+						OR (CASE WHEN lst.name2 IS NULL THEN \'\'
+							ELSE ' . $this->db->Concat('lst.name', "' '", 'lst.name2') . ' END) = ' . $escaped_street . '
+						OR (CASE WHEN lst.name2 IS NULL THEN \'\'
+							ELSE ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' END) = ' . $escaped_street
+						. ' OR (p.streetname IS NOT NULL AND LOWER(p.streetname) = LOWER(' . $escaped_street . ')))' : '') . '
+					AND ' . $from . ' AND ' . $to . '
+					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($parity));
 		}
 	}
 
