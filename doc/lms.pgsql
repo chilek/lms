@@ -960,7 +960,7 @@ CREATE TABLE pna (
 	zip varchar(128) NOT NULL,
 	cityid integer DEFAULT NULL
 		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	cityname varchar(100) DEFAULT NULL
+	cityname varchar(100) DEFAULT NULL,
 	streetid integer DEFAULT NULL
 		REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	streetname varchar(100) DEFAULT NULL,
