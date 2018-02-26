@@ -101,7 +101,7 @@ $(function() {
         if (timer) {
             clearTimeout(timer);
         }
-        if (city.length && house.length && !zip.length) {
+		if (city.length && house.length && !$(this).is('[data-address="zip"]') && !zip.length) {
 			timer = window.setTimeout(function () {
 				if (lmsSettings.zipCodeBackend == 'pna') {
 					pna_get_zip_code(city, cityid, street, streetid, house, function (zip) {
