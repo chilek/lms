@@ -88,9 +88,9 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
 		);
 
 		$this->db->Execute('INSERT INTO divisions (name, shortname,
-			ten, regon, rbe, rbename, account, inv_header, inv_footer, inv_author,
+			ten, regon, rbe, rbename, telecomnumber, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		$divisionid = $this->db->GetLastInsertID('divisions');
 
