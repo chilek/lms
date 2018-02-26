@@ -200,6 +200,7 @@ version ?.??.?? (????-??-??):
     is used (by default: 'osm'; 'pna' is second supported backend) [chilan]
   - enhancement: pna codes which are not assigned to existing teryt locations are
     also stored in database and are searchable by streetname [chilan]
+  - bugfix: sql schema compatibility with PowerDNS 4.x [chilan]
 
 version 1.11.22 (2017-06-08):
 

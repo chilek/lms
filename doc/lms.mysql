@@ -1909,13 +1909,14 @@ CREATE TABLE records (
   id              INT(11) auto_increment,
   domain_id       INT(11) DEFAULT NULL,
   name            VARCHAR(255) DEFAULT NULL,
-  type            VARCHAR(6) DEFAULT NULL,
-  content         VARCHAR(255) DEFAULT NULL,
+  type            VARCHAR(10) DEFAULT NULL,
+  content         VARCHAR(65535) DEFAULT NULL,
   ttl             INT(11) DEFAULT NULL,
   prio            INT(11) DEFAULT NULL,
   change_date     INT(11) DEFAULT NULL,
   disabled        tinyint(1) DEFAULT '0',
   auth            tinyint(1) DEFAULT '1',
+  ordername varchar(255) DEFAULT NULL,
   PRIMARY KEY(id),
   INDEX domain_id (domain_id),
   INDEX name_type (name, type, domain_id),
@@ -1943,11 +1944,60 @@ CREATE TABLE domainmetadata (
 #
 CREATE TABLE supermasters (
   id            INT(11) auto_increment,
-  ip            VARCHAR(25) NOT NULL,
+  ip            VARCHAR(64) NOT NULL,
   nameserver    VARCHAR(255) NOT NULL,
   account       VARCHAR(40) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table comments
+#
+CREATE TABLE comments (
+	id				int(11) auto_increment,
+	domain_id		int(11) NOT NULL,
+	name			varchar(255) NOT NULL,
+	type			varchar(10) NOT NULL,
+	modified_at		int(11) NOT NULL,
+	account			varchar(40) CHARACTER SET 'utf8' DEFAULT NULL,
+	comment			text NOT NULL,
+	PRIMARY KEY (id),
+	INDEX domain_id (domain_id),
+	INDEX name (name, type),
+	INDEX modified_at (domain_id, modified_at),
+	CONSTRAINT comments_domain_id_fkey
+	FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
+) Engine=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table cryptokeys
+#
+CREATE TABLE cryptokeys (
+	id				int(11) auto_increment,
+	domain_id		int(11) NOT NULL,
+	flags			int(11) NOT NULL,
+	active			bool,
+	content			text,
+	PRIMARY KEY (id),
+	INDEX domain_id (domain_id),
+	CONSTRAINT cryptokeys_domain_id_fkey
+	FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
+) Engine=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table tsigkeys
+#
+CREATE TABLE tsigkeys (
+	id				int(11) auto_increment,
+	name			varchar(255),
+	algorithm		varchar(50),
+	secret			varchar(255),
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name, algorithm)
+) Engine=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -3267,4 +3317,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022600');

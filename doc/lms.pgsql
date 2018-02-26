@@ -1859,13 +1859,14 @@ CREATE TABLE records (
 	domain_id integer	DEFAULT NULL
 		REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	name varchar(255)	DEFAULT NULL,
-	type varchar(6)		DEFAULT NULL,
-	content varchar(255)	DEFAULT NULL,
+	type varchar(10)		DEFAULT NULL,
+	content varchar(65535)	DEFAULT NULL,
 	ttl integer		DEFAULT NULL,
 	prio integer		DEFAULT NULL,
 	change_date integer	DEFAULT NULL,
 	disabled boolean	DEFAULT '0',
 	auth boolean		DEFAULT '1',
+	ordername varchar(255) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX records_name_type_idx ON records (name, type, domain_id);
@@ -1892,10 +1893,64 @@ CREATE SEQUENCE supermasters_id_seq;
 DROP TABLE IF EXISTS supermasters CASCADE;
 CREATE TABLE supermasters (
 	id integer		DEFAULT nextval('supermasters_id_seq'::text) NOT NULL,
-	ip varchar(25)		NOT NULL,
+	ip inet			NOT NULL,
 	nameserver varchar(255) NOT NULL,
 	account varchar(40)	DEFAULT NULL,
 	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "comments" (DNS)
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS comments_id_seq;
+CREATE SEQUENCE comments_id_seq;
+DROP TABLE IF EXISTS comments CASCADE;
+CREATE TABLE comments (
+	id				integer DEFAULT nextval('comments_id_seq'::text) NOT NULL,
+	domain_id		integer NOT NULL
+		CONSTRAINT comments_domain_id_fkey REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	name			varchar(255) NOT NULL,
+	type			varchar(10) NOT NULL,
+	modified_at		integer NOT NULL,
+	account			varchar(40) DEFAULT NULL,
+	comment			varchar(65535) NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT comments_lowercase_name CHECK (((name)::text = LOWER((name)::text)))
+);
+CREATE INDEX comments_domain_id_idx ON comments (domain_id);
+CREATE INDEX comments_name_type_idx ON comments (name, type);
+CREATE INDEX comments_domain_id_modified_at_idx ON comments (domain_id, modified_at);
+
+/* ---------------------------------------------------
+ Structure of table "cryptokeys" (DNS)
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS cryptokeys_id_seq;
+CREATE SEQUENCE cryptokeys_id_seq;
+DROP TABLE IF EXISTS cryptokeys CASCADE;
+CREATE TABLE cryptokeys (
+	id				integer DEFAULT nextval('cryptokeys_id_seq'::text) NOT NULL,
+	domain_id		integer
+		CONSTRAINT cryptokeys_domain_id_fkey REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	flags			integer NOT NULL,
+	active			boolean,
+	content			text,
+	PRIMARY KEY (id)
+);
+CREATE INDEX cryptokeys_domain_id_idx ON cryptokeys (domain_id);
+
+/* ---------------------------------------------------
+ Structure of table "tsigkeys" (DNS)
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS tsigkeys_id_seq;
+CREATE SEQUENCE tsigkeys_id_seq;
+DROP TABLE IF EXISTS tsigkeys CASCADE;
+CREATE TABLE tsigkeys (
+	id				integer DEFAULT nextval('tsigkeys'::text) NOT NULL,
+	name			varchar(255),
+	algorithm		varchar(50),
+	secret			varchar(255),
+	CONSTRAINT tsigkeys_lowercase_name CHECK (((name)::text = LOWER((name)::text))),
+	CONSTRAINT tsigkeys_name_key UNIQUE (name, algorithm)
 );
 
 /* ---------------------------------------------------
@@ -3278,6 +3333,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018022600');
 
 COMMIT;
