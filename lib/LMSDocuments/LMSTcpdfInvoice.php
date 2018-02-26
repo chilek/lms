@@ -769,7 +769,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 	protected function invoice_footnote() {
 		if (!empty($this->data['division_footer'])) {
-			$this->backend->Ln(145);
+			//$this->backend->Ln(145);
 			//$this->backend->SetFont('arial', 'B', 10);
 			//$this->backend->Write(0, trans('Notes:'), '', 0, 'L', true, 0, false, false, 0);
 			$tmp = $this->data['division_footer'];
@@ -782,7 +782,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
 
 			$this->backend->SetFont('arial', '', 8);
-			$h = $this->backend->getStringHeight(0, $tmp);
+			//$h = $this->backend->getStringHeight(0, $tmp);
 			$tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
 			$this->backend->writeHTMLCell(0, 0, '', '', $tmp, 0, 1, 0, true, 'C');
 		}
@@ -848,6 +848,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_no_accountant();
 		$this->invoice_header_image();
 		$this->invoice_date();
+		$this->invoice_dates();
+		$this->invoice_expositor();
 		$this->invoice_title();
 		$this->invoice_seller();
 		$this->invoice_buyer();
@@ -858,8 +860,6 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		    $this->invoice_balance();
 		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
 			$this->invoice_qr2pay_code();
-		$this->invoice_dates();
-		$this->invoice_expositor();
 		$this->invoice_footnote();
 		
 		$docnumber = docnumber(array(
@@ -901,6 +901,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_no_accountant();
 		$this->invoice_header_image();
 		$this->invoice_date();
+		$this->invoice_dates();
+		$this->invoice_expositor();
 		$this->invoice_title();
 		$this->invoice_seller();
 		$this->invoice_buyer();
@@ -911,8 +913,6 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		    $this->invoice_balance();
 		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
 			$this->invoice_qr2pay_code();		
-		$this->invoice_dates();
-		$this->invoice_expositor();
 		$this->invoice_footnote();
 		if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
 			&& !isset($this->data['rebate'])) {
