@@ -2284,7 +2284,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		}
 
 		$result = $this->db->GetAllByKey('SELECT r.id, name,
-				in_numberplanid, out_numberplanid, np.isdefault
+				in_numberplanid, out_numberplanid
 			FROM cashregs r
 			JOIN cashrights cr ON regid = r.id
 			' . $join . '
