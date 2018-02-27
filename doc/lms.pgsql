@@ -175,7 +175,7 @@ CREATE TABLE addresses (
 	name       text NULL,
 	state      varchar(64) NULL,
 	state_id   integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	city       varchar(32) NULL,
+	city       varchar(100) NULL,
 	city_id    integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	postoffice varchar(32) DEFAULT NULL,
 	street     varchar(255) NULL,
