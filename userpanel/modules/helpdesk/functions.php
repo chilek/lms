@@ -390,6 +390,12 @@ function module_main() {
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
 			);
+
+			// try to use LMS url from userpanel configuration
+			$lms_url = ConfigHelper::getConfig('userpanel.lms_url', '');
+			if (!empty($lms_url))
+				$params['url'] = $lms_url;
+
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 			$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
 			$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
