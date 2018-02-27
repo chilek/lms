@@ -40,7 +40,7 @@
         <TR class="highlight {cycle}{if $eventlist[eventlist].closed} blend{/if}"  >
             <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$eventlist[eventlist].type])} {$_EVENTSTYLES[$eventlist[eventlist].type]}{/if}" class="text-center bold">
                 {$_EVENTTYPES[$eventlist[eventlist].type]}<BR>
-		{if $eventlist[eventlist].ticketid}<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}"><span style="color:white">{$eventlist[eventlist].ticketid|string_format:"%06d"}</span></A>{/if}
+		{if $eventlist[eventlist].ticketid}<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}">{$eventlist[eventlist].ticketid|string_format:"%06d"}</A>{/if}
             </TD>
             <TD class="text-left nobr" onClick="return self.location.href = '?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
                 <span class="bold">
