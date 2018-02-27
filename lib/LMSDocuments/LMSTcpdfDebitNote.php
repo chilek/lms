@@ -36,7 +36,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice {
 	}
 
 	public function note_title() {
-		$this->backend->SetY(30);
+		$this->backend->SetY(35);
 		$this->backend->SetFont('arial', 'B', 16);
 		$docnumber = docnumber(array(
 			'number' => $this->data['number'],
@@ -198,6 +198,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice {
 
 		$this->invoice_no_accountant();
 		$this->note_date();
+		$this->invoice_expositor();
 		$this->note_title();
 		$this->note_drawer();
 		$this->note_recipient();
