@@ -553,6 +553,7 @@ if ($notify) {
 		'categories' => $ticket['categorynames'],
 		'subject' => $mh_subject,
 		'body' => $mail_body,
+		'url' => $lms_url,
 	);
 	$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 	$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
