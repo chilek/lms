@@ -888,7 +888,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
 				AND (rtrights.rights & 8) > 0 AND deleted = 0'
-				. ($notify_author ? '' : ' AND users.id <> ?')
+				. (isset($args['user']) ? ' AND users.id <> ?' : '')
 				. ' AND (ntype & ?) > 0',
 			array_values($args))) {
 
