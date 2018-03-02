@@ -2274,17 +2274,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		$userid = Auth::GetCurrentUser();
 
 		if (empty($cid)) {
-			$where = '';
+			$select = '';
 			$join = '';
+			$where = '';
 		} else {
 			$divisionid = $this->db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cid));
+			$select = ', np.isdefault';
 			$join = ' JOIN numberplanassignments npa ON npa.planid = in_numberplanid
-			 	JOIN numberplans np ON np.id = in_numberplanid ';
+				JOIN numberplans np ON np.id = in_numberplanid ';
 			$where = ' AND npa.divisionid = ' . intval($divisionid);
 		}
 
 		$result = $this->db->GetAllByKey('SELECT r.id, name,
-				in_numberplanid, out_numberplanid
+				in_numberplanid, out_numberplanid' . $select . '
 			FROM cashregs r
 			JOIN cashrights cr ON regid = r.id
 			' . $join . '
