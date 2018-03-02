@@ -1129,7 +1129,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
 
             // update country states
-            if ( $v['location_zip'] && $v['location_state'] ) {
+            if ( $v['location_zip'] && $v['location_state'] && !isset($v['teryt'])) {
                 $location_manager->UpdateCountryState( $v['location_zip'], $v['location_state'] );
             }
         }
