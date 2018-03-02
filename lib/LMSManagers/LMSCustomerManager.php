@@ -521,10 +521,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
                 break;
             case -2:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
+			.'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             case -3:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND a.commited = 1 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND a.commited = 1 '
+			.'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             case -4:
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
