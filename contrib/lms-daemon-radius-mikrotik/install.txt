@@ -1,0 +1,23 @@
+HOW TO INSTALL
+on freeradius server:
+- create a directory lms-daemon-radius-mikrotik in /opt
+- copy source files to /opt/lms-daemon-radius-mikrotik
+- create virtual environment ./createVirtEnv.bash
+- configure ldrm daemon file: conf/ldrm.conf
+- in freeradius post-auth sections add:
+	
+		update control { 
+        			Auth-Type := `/opt/lms-daemon-radius-mikrotik/venv/bin/python /opt/lms-daemon-radius-mikrotik/client_ldrm.py '%{NAS-Identifier}' '%{NAS-IP-Address}' '%{NAS-Port}' '%{NAS-Port-Type}' '%{Calling-Station-Id}' '%{Framed-IP-Address}' '%{Called-Station-Id}' '%{User-Name}' '%{Password}'`
+		}
+		
+		
+USAGE
+
+- start daemon mode:
+/opt/lms-daemon-radius-mikrotik/venv/bin/python ldrm.py start
+- stop daemon mode:
+/opt/lms-daemon-radius-mikrotik/venv/bin/python ldrm.py stop
+
+If you want to run ldrm in debug mode then:
+/opt/lms-daemon-radius-mikrotik/venv/bin/python ldrm.py debug
+You can also increase the display level of messages by changing the configuration file ldrm.conf
