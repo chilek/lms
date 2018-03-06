@@ -50,7 +50,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$address = $this->data['division_address'];
 		$zip = $this->data['division_zip'];
 		$city = $this->data['division_city'];
-		$account = bankaccount($this->data['customerid'], $this->data['account']);
+		if (count($this->data['bankaccounts']) == 1)
+			$account = $this->data['bankaccounts'][0];
+		else
+			$account = bankaccount($this->data['customerid'], $this->data['account']);
 
 		$this->backend->text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, $shortname,350*$scale);
 		$this->backend->text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, $address,350*$scale);
@@ -99,7 +102,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$address = $this->data['division_address'];
 		$zip = $this->data['division_zip'];
 		$city = $this->data['division_city'];
-		$account = bankaccount($this->data['customerid'], $this->data['account']);
+		if (count($this->data['bankaccounts']) == 1)
+			$account = $this->data['bankaccounts'][0];
+		else
+			$account = bankaccount($this->data['customerid'], $this->data['account']);
 
 		$this->backend->text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,$name,950*$scale);
 		$this->backend->text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,$address." ".$zip." ".$city,950*$scale);
