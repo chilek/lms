@@ -28,7 +28,7 @@
  * \returns array  array with address fields
  * \returns null   can't explode string
  */
-function parse_address($address) {
+function parse_address($address, $address_contains_city = true) {
 	$address = trim($address);
 
 	$parts = array();
@@ -70,15 +70,8 @@ function parse_address($address) {
 		}
 	}
 
-/*
-	if ($address == 'Dąbrówka Barcińska 14') {
-		print_r($m);
-		die;
-	}
-*/
-
 	$parts = array_merge($parts, $m);
-	if (!isset($parts['city'])) {
+	if ($address_contains_city && !isset($parts['city'])) {
 		$parts['city'] = $parts['street'];
 		unset($parts['street']);
 	}
@@ -341,7 +334,7 @@ if ( $locations ) {
         $zip       = ($v['zip'])       ? $v['zip']  : null;
         $countryid = ($v['countryid']) ? $v['countryid']    : null;
 
-        $loc    = parse_address( $v['address'] );
+        $loc    = parse_address( $v['address'], false );
         $street = (!empty($loc['street'])) ? $loc['street'] : $v['address'];
         $house  = (!empty($loc['house']))  ? $loc['house']  : $v['house'];
         $flat   = (!empty($loc['flat']))   ? $loc['flat']   : null;
