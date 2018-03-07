@@ -38,7 +38,7 @@ $this->Execute("
 	ALTER TABLE pna RENAME COLUMN tohouse TO tonumber;
 	ALTER TABLE pna ADD COLUMN toletter varchar(8) DEFAULT NULL;
 
-	ALTER TABLE pna DROP CONSTRAINT pna_zip_cityid_streetid_fromhouse_tohouse_parity_key;
+	ALTER TABLE pna DROP CONSTRAINT pna_zip_key;
 	ALTER TABLE pna ADD CONSTRAINT pna_zip_cityid_streetid_fromnumber_tonumber_parity_key
 		UNIQUE (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity);
 
