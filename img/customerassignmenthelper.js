@@ -53,7 +53,7 @@ function CustomerAssignmentHelper(options) {
 	}
 
 	this.initEventHandlers = function() {
-		$('#asubmit-button').click(function () {
+		$('#submit-button').click(function () {
 			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
 		});
 
