@@ -370,6 +370,13 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 			$error['subject'] = trans('Unable to send message. No recipients selected!');
 	}
 
+	if (isset($_GET['count_recipients'])) {
+		header('Content-Type: application/json');
+		die(json_encode(array(
+			'recipients' => empty($error) ? count($recipients) : -1,
+		)));
+	}
+
 	if ($message['type'] == MSG_MAIL) {
 		$result = handle_file_uploads('files', $error);
 		extract($result);

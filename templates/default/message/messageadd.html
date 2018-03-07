@@ -127,6 +127,25 @@
 		}
 		$('textarea[name="message[' + messageelem + ']"]').html(message);
 	}
+
+	function submit_try() {
+		$.ajax('?m=messageadd&count_recipients=1', {
+				method: "POST",
+				dataType: "json",
+				data: $('form[name="message"]').serialize()
+			}
+		).done(function (data) {
+			if (data.recipients <= 50) {
+				document.message.submit();
+			} else {
+				var message = '{t}Are you sure you want to send messages to $a customer(s)?{/t}'.replace('$a', data.recipients);
+				if (confirm(message)) {
+					document.message.submit();
+				}
+			}
+		});
+		return false;
+	}
 -->
 </SCRIPT>
 <TABLE class="lmsbox">
@@ -426,7 +445,7 @@
 	</TR>
 	<TR>
 		<TD class="text-right" colspan="3">
-			 <A href="javascript:document.message.submit();" accesskey="s">{trans("Send")} <IMG src="img/save.gif" alt=""></A>
+			 <A href="#" onClick="submit_try();" accesskey="s">{trans("Send")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
