@@ -43,7 +43,7 @@ if(sizeof($ids))
 			WHERE id = ?', array($invoiceid)));
 		// add payment
 		if (ConfigHelper::checkConfig('phpui.invoice_check_payment') && $cid && !$closed) {
-			$value = $DB->GetOne('SELECT CASE reference WHEN 0 THEN SUM(a.value*a.count)
+			$value = $DB->GetOne('SELECT CASE WHEN reference IS NULL THEN SUM(a.value*a.count)
 				ELSE SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count) END
 				FROM documents d
 				JOIN invoicecontents a ON (a.docid = d.id)
