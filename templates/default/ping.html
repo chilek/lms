@@ -97,7 +97,7 @@
 		if (elem && document.getElementById('autoscroll').checked)
 			elem.scrollTop = elem.scrollHeight;
 		try {
-			var times = JSON.parse(document.getElementById('times').value);
+			var times = JSON.parse(decodeURIComponent(document.getElementById('times').value));
 			if (times.length) {
 				for (var i in times) {
 					var chunks = times[i].split(' ');
