@@ -83,8 +83,8 @@
 						<SELECT size="1" name="status" {tip text="You can select status to limit results"}>
 							<OPTION value="">- {trans("all")} -</OPTION>
 							<OPTION value="-1">{trans("not resolved")}</OPTION>
-							{foreach from=$_RT_STATES item=item key=key}
-							<OPTION value="{$key}">{$item}</OPTION>
+							{foreach $_RT_STATES as $key => $item}
+							<OPTION value="{$key}">{$item.label}</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>
