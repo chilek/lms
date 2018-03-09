@@ -1174,8 +1174,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			$range_netbuilding = true;
 
 		$netrange = array(
-			'longitude' => 0,
-			'latitude' => 0,
+			'longitude' => '',
+			'latitude' => '',
 			'count' => 0,
 		);
 
@@ -1193,6 +1193,10 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			$prjnodes[$prj][$status][] = $node;
 
 			if (isset($nodecoords[$node['nodeid']])) {
+				if (!strlen($netrange['longitude']))
+					$netrange['longitude'] = 0;
+				if (!strlen($netrange['latitude']))
+					$netrange['latitude'] = 0;
 				$netrange['longitude'] += $nodecoords[$node['nodeid']]['longitude'];
 				$netrange['latitude'] += $nodecoords[$node['nodeid']]['latitude'];
 				$netrange['count']++;
@@ -1273,8 +1277,10 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					'zas_ulic' => sprintf("%05d", $teryt['address_symul']),
 					'zas_house' => $teryt['address_budynek'],
 					'zas_zip' => $teryt['location_zip'],
-					'zas_latitude' => str_replace(',', '.', sprintf('%.6f', empty($netrange['latitude']) ? $netnode['latitude'] : $netrange['latitude'])),
-					'zas_longitude' => str_replace(',', '.', sprintf('%.6f', empty($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
+					'zas_latitude' => !strlen($netrange['latitude']) && !strlen($netnode['latitude'])
+						? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['latitude']) ? $netnode['latitude'] : $netrange['latitude'])),
+					'zas_longitude' => !strlen($netrange['longitude']) && !strlen($netnode['longitude'])
+						? '' : str_replace(',', '.', sprintf('%.6f', !strlen($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'])),
 					'zas_tech' => $technology,
 					'zas_ltech' => $linktechnology,
 				);
