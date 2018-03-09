@@ -380,6 +380,9 @@ function get_teryt_file($ch, $type, $outfile) {
 }
 
 if ( isset($options['fetch']) ) {
+	if (!function_exists('curl_init'))
+		die('PHP CURL extension required!' . PHP_EOL);
+
 	if (!$quiet) {
 		echo 'Downloading TERYT files...' . PHP_EOL;
 	}
