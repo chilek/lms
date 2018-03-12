@@ -405,7 +405,7 @@ switch ($action) {
 					'time' => $cdate,
 					'value' => $item['cash'],
 					'taxid' => $item['taxid'],
-					'customerid' => $customer['id'],
+					'customerid' => $cnote['id'],
 					'comment' => $item['name'],
 					'docid' => $iid,
 					'itemid' => $itemid
