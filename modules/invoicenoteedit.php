@@ -359,7 +359,7 @@ switch ($action) {
 					$args = array(
 						SYSLOG::RES_CASH => $cashid,
 						SYSLOG::RES_DOC => $iid,
-						SYSLOG::RES_CUST => $customer['id'],
+						SYSLOG::RES_CUST => $cnote['customerid'],
 					);
 					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
@@ -367,7 +367,7 @@ switch ($action) {
 				foreach ($itemids as $itemid) {
 					$args = array(
 						SYSLOG::RES_DOC => $iid,
-						SYSLOG::RES_CUST => $customer['id'],
+						SYSLOG::RES_CUST => $cnote['customerid'],
 						'itemid' => $itemid,
 					);
 					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
@@ -397,7 +397,7 @@ switch ($action) {
 					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$args[SYSLOG::RES_CUST] = $cnote['customerid'];
 					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
@@ -405,7 +405,7 @@ switch ($action) {
 					'time' => $cdate,
 					'value' => $item['cash'],
 					'taxid' => $item['taxid'],
-					'customerid' => $cnote['id'],
+					'customerid' => $cnote['customerid'],
 					'comment' => $item['name'],
 					'docid' => $iid,
 					'itemid' => $itemid
@@ -418,13 +418,13 @@ switch ($action) {
 					$args = array(
 						SYSLOG::RES_CASH => $cashid,
 						SYSLOG::RES_DOC => $iid,
-						SYSLOG::RES_CUST => $customer['id'],
+						SYSLOG::RES_CUST => $cnote['customerid'],
 					);
 					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_UPDATE, $args);
 				}
 			}
 			$DB->Execute('UPDATE cash SET customerid = ? WHERE docid = ?',
-				array($customer['id'], $iid));
+				array($cnote['customerid'], $iid));
 		}
 
 		$DB->CommitTrans();
