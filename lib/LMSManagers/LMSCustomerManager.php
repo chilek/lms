@@ -507,8 +507,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $withoutzip =1;
                     break;
             case 69:
-                    $withoutcity =1;
+                    $withoutcity = 1;
                     break;
+			case 70:
+				$withoutteryt = 1;
+				break;
         }
 
         switch($as){
@@ -768,6 +771,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($withoutbuildingnumber ? ' AND c.building IS NULL' : '')
                 . ($withoutzip ? ' AND c.zip IS NULL' : '')
                 . ($withoutcity ? ' AND c.city IS NULL' : '')
+				. ($withoutteryt ? ' AND c.id IN (SELECT DISTINCT ca.customer_id
+					FROM customer_addresses ca
+					JOIN addresses a ON a.id = ca.address_id
+					WHERE a.city_id IS NULL)' : '')
                 . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
                 . ($assigment ? ' AND c.id IN ('.$assigment.')' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
