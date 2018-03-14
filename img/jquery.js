@@ -177,6 +177,10 @@ $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
 
+	$('.lms-ui-submit-button').one('click', function(e) {
+		$(this).unbind('click');
+	});
+
 	init_datepickers('div.calendar input,input.calendar');
 
 	$.datetimepicker.setLocale(lmsSettings.language);
