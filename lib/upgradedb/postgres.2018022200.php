@@ -25,6 +25,11 @@ $this->BeginTrans();
 
 $this->Execute("DELETE FROM pna WHERE fromhouse ~ '[a-z]' OR tohouse ~ '[a-z]'");
 
+if ($this->ResourceExists('pna_zip_key', LMSDB::RESOURCE_TYPE_CONSTRAINT))
+	$this->Execute("ALTER TABLE pna DROP CONSTRAINT pna_zip_key");
+else
+	$this->Execute("ALTER TABLE pna DROP CONSTRAINT pna_zip_cityid_streetid_fromhouse_tohouse_parity_key");
+
 $this->Execute("
 	ALTER TABLE pna ALTER COLUMN fromhouse DROP DEFAULT;
 	ALTER TABLE pna ALTER COLUMN fromhouse TYPE smallint USING fromhouse::smallint;
@@ -38,7 +43,6 @@ $this->Execute("
 	ALTER TABLE pna RENAME COLUMN tohouse TO tonumber;
 	ALTER TABLE pna ADD COLUMN toletter varchar(8) DEFAULT NULL;
 
-	ALTER TABLE pna DROP CONSTRAINT pna_zip_key;
 	ALTER TABLE pna ADD CONSTRAINT pna_zip_cityid_streetid_fromnumber_tonumber_parity_key
 		UNIQUE (zip, cityid, streetid, fromnumber, fromletter, tonumber, toletter, parity);
 
