@@ -49,8 +49,8 @@
 			{$config.value|escape}
 		</TD>
 		<TD OnClick="return self.location.href='?m=configedit&id={$config.id}';">
-			{$config.description|truncate:1000:"..."}
-			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:1000:"..."}</p>{/if}
+			{$config.description|truncate:2000:"..."}
+			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"..."}</p>{/if}
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=configedit&id={$config.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
