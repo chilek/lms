@@ -49,7 +49,7 @@
 			{$config.value|escape}
 		</TD>
 		<TD OnClick="return self.location.href='?m=configedit&id={$config.id}';">
-			{$config.description|truncate:2000:"..."}
+			{$config.description|truncate:5000:"..."}
 			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"..."}</p>{/if}
 		</TD>
 		<TD class="text-right nobr">
