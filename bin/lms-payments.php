@@ -398,7 +398,8 @@ $query = "SELECT
 			FROM assignments a
 			JOIN customers c ON (a.customerid = c.id)
 			JOIN (
-				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid
+				SELECT ROUND(sum(price), 2) AS value, va.ownerid AS customerid,
+					a2.id AS assignmentid
 				FROM voip_cdr vc
 				JOIN voipaccounts va ON vc.callervoipaccountid = va.id
 				JOIN voip_numbers vn ON vn.voip_account_id = va.id AND vn.phone = vc.caller
@@ -419,8 +420,8 @@ $query = "SELECT
 						WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
 						WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
 					END)
-				GROUP BY va.ownerid
-			) voipcost ON voipcost.customerid = a.customerid
+				GROUP BY va.ownerid, a2.id
+			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
 			LEFT JOIN tariffs t ON (a.tariffid = t.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE
