@@ -378,14 +378,14 @@ $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
-$billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods');
+$billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
 $query = "SELECT
 			a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
 			a.pdiscount, a.vdiscount, a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value,
+			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
 			(SELECT COUNT(id)
 				FROM assignments
@@ -422,6 +422,12 @@ $query = "SELECT
 					END)
 				GROUP BY va.ownerid, a2.id
 			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
+			LEFT JOIN (
+				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone') . " AS phones
+				FROM voip_number_assignments vna2
+				LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
+				GROUP BY vna2.assignment_id
+			) voipphones ON voipphones.assignment_id = a.id
 			LEFT JOIN tariffs t ON (a.tariffid = t.id)
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
 	    WHERE
@@ -503,6 +509,10 @@ foreach ($assigns as $assign) {
 	$desc = preg_replace("/\%forward_period_aligned/"  , $forward_aligned_periods[$p] , $desc);
 	$desc = preg_replace("/\%period/"                  , $forward_periods[$p]         , $desc);
 	$desc = preg_replace("/\%aligned_period/"          , $forward_aligned_periods[$p] , $desc);
+
+	// for phone calls
+    if (isset($assign['phones']))
+        $desc = preg_replace('/\%phones/', $assign['phones'], $desc);
 
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
