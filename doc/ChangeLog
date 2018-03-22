@@ -2,6 +2,8 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+version 1.11.23 (2018-03-21):
+
   - improvement: create db dumps with multi records inserts statements which
     dramatically reduces db restore time [chilan]
   - enhancement: allow to backup all financial documents issued a given day
