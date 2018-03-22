@@ -67,10 +67,10 @@ function getLatitudeDistDiff( $m ) {
 
     // distance in meters => degree
     $dist_tab = array(
-        1854.277 => 1/60,
-        100      => 1/1111.9662,
-        30.87    => 1/3600,
-        1        => 1/111132
+        '1854.277' => 1/60,
+        '100'      => 1/1111.9662,
+        '30.87'    => 1/3600,
+        '1'        => 1/111132
     );
 
     $degree = 0;
@@ -98,9 +98,9 @@ function getLongitudeDistDiff( $m, $lat ) {
 
     // distance in meters => degree
     $dist_tab = array(
-        (string) ($parallel_len / 21.6)  => 1/60,
-        (string) ($parallel_len / 1296)  => 1/3600,
-        (string) ($parallel_len / 77760) => 1/216000
+        str_replace(',', '.', (string) ($parallel_len / 21.6))  => 1/60,
+        str_replace(',', '.', (string) ($parallel_len / 1296))  => 1/3600,
+        str_replace(',', '.', (string) ($parallel_len / 77760)) => 1/216000
     );
 
     $degree = 0;
@@ -1462,23 +1462,29 @@ if ( !empty($_POST['uke']['linktypes']) ) {
 
 if ( $max_range > 0 ) {
 
-    $top    = -1;
-    $right  = -1;
-    $bottom = PHP_INT_MAX;
     $left   = PHP_INT_MAX;
+    $top    = PHP_INT_MAX;
+    $right  = -PHP_INT_MAX;
+    $bottom = -PHP_INT_MAX;
 
     // find extreme points
     foreach ($netnodes as $v) {
-        if ( $v['latitude'] > $top ) {
-            $top = $v['latitude'];
-        } else if ( $v['latitude'] < $bottom ) {
-            $bottom = $v['latitude'];
+        if ( !empty($v['latitude']) ) {
+            if ( $v['latitude'] < $top ) {
+                $top = $v['latitude'];
+            }
+            if ( $v['latitude'] > $bottom ) {
+                $bottom = $v['latitude'];
+            }
         }
 
-        if ( $v['longitude'] < $left ) {
-            $left = $v['longitude'];
-        } else if ( $v['longitude'] > $right ) {
-            $right = $v['longitude'];
+        if ( !empty($v['longitude']) ) {
+            if ($v['longitude'] < $left ) {
+                $left = $v['longitude'];
+            }
+            if ( $v['longitude'] > $right ) {
+                $right = $v['longitude'];
+            }
         }
     }
 
@@ -1486,10 +1492,10 @@ if ( $max_range > 0 ) {
     $max_range = intval($max_range * 1.05);
 
     // enlarge searched area
-    $top    = ceil(  ($top    + getLatitudeDistDiff($max_range)) * 10000 ) / 10000;
-    $right  = ceil(  ($right  + getLongitudeDistDiff($max_range, ($top+$bottom)/2)) * 10000 ) / 10000;
-    $bottom = floor( ($bottom - getLatitudeDistDiff($max_range)) * 10000 ) / 10000;
-    $left   = floor( ($left   - getLongitudeDistDiff($max_range, ($top+$bottom)/2)) * 10000 ) / 10000;
+    $left   = floor( ($left   - getLongitudeDistDiff($max_range, ($bottom - $top) / 2)) * 10000 ) / 10000;
+    $top    = floor( ($top    - getLatitudeDistDiff($max_range)) * 10000 ) / 10000;
+    $right  = ceil( ($right  + getLongitudeDistDiff($max_range, ($bottom - $top) / 2)) * 10000 ) / 10000;
+    $bottom = ceil( ($bottom + getLatitudeDistDiff($max_range)) * 10000 ) / 10000;
 
     $top    = str_replace(',', '.', $top);
     $right  = str_replace(',', '.', $right);
@@ -1512,9 +1518,9 @@ if ( $max_range > 0 ) {
             LEFT JOIN location_states lsta      ON lsta.id = ldist.stateid
         WHERE
             longitude > ? AND longitude < ? AND
-            latitude  < ? AND latitude  > ?
+            latitude  > ? AND latitude  < ?
         ORDER BY
-            ls.name;',
+            ls.name',
         array($left, $right, $top, $bottom)
     );
 
