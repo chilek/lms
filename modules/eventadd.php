@@ -144,7 +144,7 @@ if (!isset($event['usergroup']))
 	$SESSION->restore('eventgid', $event['usergroup']);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
-	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
 if (isset($eventticketid))
 	$event['ticketid'] = $eventticketid;

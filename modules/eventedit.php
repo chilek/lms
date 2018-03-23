@@ -123,7 +123,7 @@ if (!isset($event['usergroup']))
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
-	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
