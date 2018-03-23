@@ -655,13 +655,32 @@ if (empty($types) || in_array('debtors', $types)) {
 	$limit = $notifications['debtors']['limit'];
 	// @TODO: check 'messages' table and don't send notifies to often
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
+			b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
 		FROM customers c
 		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (
 			SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
 		) b ON b.customerid = c.id
-		JOIN cash ON (c.id = cash.customerid)
+		LEFT JOIN (
+			SELECT cash.customerid, SUM(value) AS balance FROM cash
+			LEFT JOIN customers ON customers.id = cash.customerid
+			LEFT JOIN divisions ON divisions.id = customers.divisionid
+			LEFT JOIN documents d ON d.id = cash.docid
+			LEFT JOIN (
+				SELECT SUM(value) AS totalvalue, docid FROM cash
+				JOIN documents ON documents.id = cash.docid
+				WHERE documents.type = ?
+				GROUP BY docid
+			) tv ON tv.docid = cash.docid
+			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+				OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
+					(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) + ?) * 86400 < $currtime)))
+				OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
+					OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
+					OR (((d.type = ? AND tv.totalvalue < 0)
+						OR d.type IN (?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
+			GROUP BY cash.customerid
+		) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
 			WHERE (type & ?) = ?
@@ -672,28 +691,14 @@ if (empty($types) || in_array('debtors', $types)) {
 			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
-		LEFT JOIN documents d ON d.id = cash.docid
-		LEFT JOIN (
-			SELECT SUM(value) AS totalvalue, docid FROM cash
-			JOIN documents d2 ON d2.id = cash.docid
-			WHERE d2.type = ?
-			GROUP BY docid
-		) tv ON tv.docid = d.id
-		WHERE c.cutoffstop < $currtime AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
-			OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
-				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
-			OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
-				OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
-				OR (((d.type = ? AND tv.totalvalue < 0)
-				    OR d.type IN (?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime))))
-		GROUP BY c.id, c.pin, c.lastname, c.name, b.balance, m.email, x.phone, divisions.account
-		HAVING SUM(value) < ?", array(
+		WHERE c.cutoffstop < $currtime AND b2.balance < ?",
+		array(
+			DOC_CNOTE, $days, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days,
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-			DOC_CNOTE,
-			$days, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $limit));
+			$limit));
 
 	if (!empty($customers)) {
 		$notifications['debtors']['customers'] = array();
