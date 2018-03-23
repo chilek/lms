@@ -2,6 +2,8 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+  - A script automating the installation of LMS + PostgreSQL in the Centos 7 system has been added to the "sample" catalog [darton]
+  - A script automating the installation of LMS + MariaDB in the Centos 7 system has been added to the "sample" catalog [darton]
   - enhancement: allow to filter network devices by territ not specified [chilan]
 
 version 1.11.23 (2018-03-21):
