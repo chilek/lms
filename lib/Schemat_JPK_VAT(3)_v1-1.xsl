@@ -240,123 +240,123 @@
       <xsl:with-param name="fieldname" select="dir:DataWystawienia"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_10"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_11"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_12"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_13"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_14"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_15"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_16"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_17"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_18"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_19"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_20"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_21"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_22"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_23"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_24"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_25"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_26"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_27"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_28"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_29"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_30"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_31"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_32"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_33"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_34"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_35"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_36"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_37"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_38"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_39"/>
     </xsl:call-template>
     <xsl:value-of select="';;;;;;;;;;;;;;;;;;;;'"/>
@@ -406,35 +406,35 @@
       <xsl:with-param name="fieldname" select="dir:DataWplywu"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_43"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_44"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_45"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_46"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_47"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_48"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_49"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_50"/>
     </xsl:call-template>
     <xsl:value-of select="';;'"/>
@@ -480,6 +480,18 @@
       <xsl:otherwise>
         <!-- No need to enclose this field in quotes.
         -->
+        <xsl:value-of select="$fieldname"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="numeric_field">
+    <xsl:param name="fieldname"/>
+    <xsl:choose>
+      <xsl:when test="not($fieldname)">
+        <xsl:text>0</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
         <xsl:value-of select="$fieldname"/>
       </xsl:otherwise>
     </xsl:choose>
