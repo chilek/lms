@@ -87,6 +87,14 @@
 			</select>
 		</td>
 	</tr>
+        <TR>
+                <TD class="bold nobr">
+                        <img src="img/node.gif" alt=""> {trans("SNAT IP:")}
+                </TD>
+                <TD>
+                        <INPUT type="text" name="netadd[snat]" value="{$netadd.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
+                </TD>
+        </TR>
 	<TR>
 		<TD class="bold nobr">
 			<IMG SRC="img/netdev.gif" ALT=""> {trans("Type:")}
