@@ -272,6 +272,7 @@ $_LANG['Browse Configuration'] = 'Przeglądaj konfigurację';
 $_LANG['Bug Tracking System'] = 'System śledzenia błędów';
 $_LANG['bytes'] = 'bajtów';
 $_LANG['Incorrect IP address'] = 'Nieprawidłowy adres IP';
+$_LANG['Incorrect snat IP address'] = 'Nieprawidłowy adres snat IP';
 $_LANG['Cancel'] = 'Anuluj';
 $_LANG['Can\'t change value of tax rate which was used in the past!'] = 'Nie można zmienić wartości stawki podatkowej, która była już używana w przeszłości';
 $_LANG['No prefix groups assigned to tariff rule.'] = 'Nie przypisano grup do reguły taryfikacyjnej.';
@@ -597,6 +598,7 @@ $_LANG['Enter invoice number. WARNING! Changing this number can be DANGEROUS! (l
 $_LANG['Enter IP address'] = 'Wprowadź adres IP';
 $_LANG['Enter IP address and select mask'] = 'Wprowadź adres IP i wybierz maskę';
 $_LANG['Enter IP address (optional)'] = 'Wprowadź adres IP (opcjonalnie)';
+$_LANG['Enter network snat address(optional)'] = 'Wprowadź adres SNAT IP dla sieci (opcjonalnie)';
 $_LANG['Enter item description'] = 'Wprowadź opis pozycji';
 $_LANG['Enter item value'] = 'Wprowadź kwotę';
 $_LANG['Enter last address of DHCP range (optional)'] = 'Wprowadź końcowy adres zakresu DHCP (opcjonalnie)';
