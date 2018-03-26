@@ -122,9 +122,11 @@ if(isset($_POST['message']))
 				$message['replyto'] = '';
 			}
 
-			foreach ($files as &$file)
-				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-			unset($file);
+			if (!empty($files)) {
+				foreach ($files as &$file)
+					$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+				unset($file);
+			}
 			$message['headers'] = $headers;
 			$msgid = $LMS->TicketMessageAdd($message, $files);
 		}
