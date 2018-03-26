@@ -1138,6 +1138,7 @@ CREATE TABLE networks (
   id int(11) NOT NULL auto_increment,
   name varchar(128) NOT NULL DEFAULT '',
   address int(16) unsigned NOT NULL DEFAULT '0',
+  snat int(16) unsigned DEFAULT NULL,
   mask varchar(16) NOT NULL DEFAULT '',
   gateway varchar(16) NOT NULL DEFAULT '',
   interface varchar(16) NOT NULL DEFAULT '',
@@ -3319,4 +3320,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018032100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018032300');

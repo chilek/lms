@@ -56,9 +56,13 @@ if(isset($_POST['networkdata']))
 	$networkdata['size'] = pow(2,32-$networkdata['prefix']);
 	$networkdata['addresslong'] = ip_long($networkdata['address']);
 	$networkdata['mask'] = prefix2mask($networkdata['prefix']);
+	$networkdata['snatlong'] = ip_long($networkdata['snat']);
 
 	if (empty($networkdata['hostid']))
 		$error['hostid'] = trans('Host should be selected!');
+
+	if(!check_ip($networkdata['snat']))
+                $error['snat'] = trans('Incorrect snat IP address!');
 
 	if(!check_ip($networkdata['address']))
 		$error['address'] = trans('Incorrect network IP address!');
@@ -219,6 +223,8 @@ if(isset($_POST['networkdata']))
 	$network['hostid'] = $networkdata['hostid'];
 	$network['ownerid'] = $networkdata['ownerid'];
 	$network['authtype'] = $networkdata['authtype'];
+	$network['snat'] = $networkdata['snat'];
+	$network['snatlong'] = $networkdata['snatlong'];
 }
 
 $networks = $LMS->GetNetworks();

@@ -119,10 +119,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			'vlanid' => intval($netadd['vlanid']),
             SYSLOG::RES_HOST => $netadd['hostid'],
             'authtype' => $netadd['authtype'],
+            'snat' => $netadd['snat'],
         );
 		if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
-				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype)
-				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype, snat)
+				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, inet_aton(?))', array_values($args))) {
 			$netid = $this->db->GetLastInsertID('networks');
 			if (!$netid)
 				return false;
@@ -449,12 +450,13 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'notes' => $networkdata['notes'],
             SYSLOG::RES_HOST => $networkdata['hostid'],
             'authtype' => $networkdata['authtype'],
+            'snat' => $networkdata['snatlong'],
             SYSLOG::RES_NETWORK => $networkdata['id']
         );
 
         $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
             mask=?, interface=?, vlanid=?, gateway=?, dns=?, dns2=?, domain=?, wins=?,
-            dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=? WHERE id=?', array_values($args));
+            dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=?, snat=? WHERE id=?', array_values($args));
 
 		if ($res && $this->syslog)
 			$this->syslog->AddMessage(SYSLOG::RES_NETWORK, SYSLOG::OPER_UPDATE, $args);
@@ -589,7 +591,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
-                ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype,
+                ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype, inet_ntoa(ne.snat) AS snat,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes,
                 inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast
             FROM networks ne

@@ -163,6 +163,19 @@
 		</td>
 	</tr>
 	{/if}
+	<TR>
+		<TD class="bold nobr">
+			<img src="img/node.gif" alt=""> {trans("SNAT IP:")}
+		</TD>
+		<TD>
+			{if $unlockedit}
+			<INPUT type="text" name="networkdata[snat]" value="{$network.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
+			{else}
+			{$network.snat}
+			{/if}
+		</TD>
+		<TD colspan="3"></TD>
+	</TR>
 	{if $network.authtype || $unlockedit}
 	<TR>
 		<TD class="bold nobr">
