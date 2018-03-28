@@ -218,6 +218,17 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<TR>
+		<TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Device:")}</TD>
+		<TD class="nobr">
+			<SELECT name="ticket[netdevid]" {tip text="Select Netdevice" trigger="netdevid"}>
+				<OPTION value="">{trans("- none -")}</OPTION>
+			{foreach $netdevlist as $idx=>$d}
+				<OPTION value="{$d.id}" {if $idx == $ticket.netdevid} selected{/if}> {$d.name} ({$d.id})</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
 	<TR id="customernotify-row">
 		<TD class="bold nobr">
 			<label for="customernotify">

@@ -241,6 +241,17 @@
                                                                 </TD>
                                                         </TR>
                                                         {/if}
+							{if $ticket.netdevid}
+                                                        <TR>
+                                                                <TD class="bold nobr">
+                                                                        <IMG src="img/netdev.gif" alt="">
+                                                                        {trans("Device:")}
+                                                                </TD>
+                                                                <TD>
+                                                                        <A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}</A>
+                                                                </TD>
+                                                        </TR>
+                                                        {/if}
 						</TABLE>
 					</TD>
 				</TR>

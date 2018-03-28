@@ -35,6 +35,10 @@ if (!$categories) {
 	$SESSION->close();
 	die;
 }
+$netdevlist = $LMS->GetNetDevList(name, array());
+unset($netdevlist['total']);
+unset($netdevlist['order']);
+unset($netdevlist['direction']);
 
 $netnodelist = $LMS->GetNetNodeList(array(),name);
 unset($netnodelist['total']);
@@ -285,6 +289,7 @@ $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
+$SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->display('rt/rtticketadd.html');
