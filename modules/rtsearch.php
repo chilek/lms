@@ -112,6 +112,9 @@ function RTSearch($search, $order='createtime,desc')
 
 	if(!empty($search['netnodeid']))
 		$where[] = 'netnodeid = '.intval($search['netnodeid']);
+	
+	if(!empty($search['netdevid']))
+		$where[] = 'netdevid = '.intval($search['netdevid']);
 
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
@@ -156,6 +159,11 @@ $netnodelist = $LMS->GetNetNodeList(array(),name);
 unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
+
+$netdevicelist = $LMS->GetNetDevList(name,array());
+unset($netdevicelist['total']);
+unset($netdevicelist['order']);
+unset($netdevicelist['direction']);
 
 $layout['pagetitle'] = trans('Ticket Search');
 
@@ -264,6 +272,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
+$SMARTY->assign('netdevicelist', $netdevicelist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('search', isset($search) ? $search : NULL);
