@@ -35,15 +35,6 @@ if (!$categories) {
 	$SESSION->close();
 	die;
 }
-$netdevlist = $LMS->GetNetDevList(name, array());
-unset($netdevlist['total']);
-unset($netdevlist['order']);
-unset($netdevlist['direction']);
-
-$netnodelist = $LMS->GetNetNodeList(array(),name);
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
 
 if(isset($_POST['ticket']))
 {
@@ -280,6 +271,20 @@ if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
 		isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null));
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
 }
+
+$netnodelist = $LMS->GetNetNodeList(array(), 'name');
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
+
+if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid']))
+	$search = array('netnode' => $ticket['netnodeid']);
+else
+	$search = array();
+$netdevlist = $LMS->GetNetDevList('name', $search);
+unset($netdevlist['total']);
+unset($netdevlist['order']);
+unset($netdevlist['direction']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);

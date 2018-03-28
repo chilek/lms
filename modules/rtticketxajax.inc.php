@@ -56,8 +56,29 @@ function select_location($customerid, $address_id) {
 	return $JSResponse;
 }
 
+function netnode_changed($netnodeid, $netdevid) {
+	global $LMS, $SMARTY;
+
+	$JSResponse = new xajaxResponse();
+
+	$search = array();
+	if (!empty($netnodeid))
+		$search['netnode'] = $netnodeid;
+	$netdevlist = $LMS->GetNetDevList('name', $search);
+	unset($netdevlist['total']);
+	unset($netdevlist['order']);
+	unset($netdevlist['direction']);
+
+	$SMARTY->assign('netdevlist', $netdevlist);
+	$SMARTY->assign('ticket', array('netdevid' => $netdevid));
+	$content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtticketnetdevs.html');
+	$JSResponse->assign('rtticketnetdevs', 'innerHTML', $content);
+
+	return $JSResponse;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location'));
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

@@ -107,16 +107,6 @@ $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 
-$netnodelist = $LMS->GetNetNodeList(array(),name);
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
-
-$netdevlist = $LMS->GetNetDevList(name, array());
-unset($netdevlist['total']);
-unset($netdevlist['order']);
-unset($netdevlist['direction']);
-
 if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];
@@ -317,6 +307,20 @@ if ((empty($userpanel_enabled_modules) || strpos('helpdesk', $userpanel_enabled_
 if (!empty($ticket['customerid']))
 	$SMARTY->assign('nodes', $LMS->GetNodeLocations($ticket['customerid'],
 		isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null));
+
+$netnodelist = $LMS->GetNetNodeList(array(), 'name');
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
+
+if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid']))
+	$search = array('netnode' => $ticket['netnodeid']);
+else
+	$search = array();
+$netdevlist = $LMS->GetNetDevList('name', $search);
+unset($netdevlist['total']);
+unset($netdevlist['order']);
+unset($netdevlist['direction']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $queuelist);
