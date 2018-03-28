@@ -71,8 +71,9 @@ function netnode_changed($netnodeid, $netdevid) {
 
 	$SMARTY->assign('netdevlist', $netdevlist);
 	$SMARTY->assign('ticket', array('netdevid' => $netdevid));
-	$content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtticketnetdevs.html');
-	$JSResponse->assign('rtticketnetdevs', 'innerHTML', $content);
+	$SMARTY->assign('form', 'ticket');
+	$content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtnetdevs.html');
+	$JSResponse->assign('rtnetdevs', 'innerHTML', $content);
 
 	return $JSResponse;
 }

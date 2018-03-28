@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -155,16 +155,6 @@ function RTSearch($search, $order='createtime,desc')
 
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
-$netnodelist = $LMS->GetNetNodeList(array(),name);
-unset($netnodelist['total']);
-unset($netnodelist['order']);
-unset($netnodelist['direction']);
-
-$netdevicelist = $LMS->GetNetDevList(name,array());
-unset($netdevicelist['total']);
-unset($netdevicelist['order']);
-unset($netdevicelist['direction']);
-
 $layout['pagetitle'] = trans('Ticket Search');
 
 if(isset($_POST['search']))
@@ -267,12 +257,49 @@ else
 	$categories = $ncategories;
 }
 
+function netnode_changed($netnodeid, $netdevid) {
+	global $LMS, $SMARTY;
+
+	$JSResponse = new xajaxResponse();
+
+	$search = array();
+	if (!empty($netnodeid))
+		$search['netnode'] = $netnodeid;
+	$netdevlist = $LMS->GetNetDevList('name', $search);
+	unset($netdevlist['total']);
+	unset($netdevlist['order']);
+	unset($netdevlist['direction']);
+
+	$SMARTY->assign('netdevlist', $netdevlist);
+	$SMARTY->assign('ticket', array('netdevid' => $netdevid));
+	$SMARTY->assign('form', 'search');
+	$content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtnetdevs.html');
+	$JSResponse->assign('rtnetdevs', 'innerHTML', $content);
+
+	return $JSResponse;
+
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('netnode_changed');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$netnodelist = $LMS->GetNetNodeList(array(),name);
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
+
+$netdevlist = $LMS->GetNetDevList(name,array());
+unset($netdevlist['total']);
+unset($netdevlist['order']);
+unset($netdevlist['direction']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
-$SMARTY->assign('netdevicelist', $netdevicelist);
+$SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('search', isset($search) ? $search : NULL);
