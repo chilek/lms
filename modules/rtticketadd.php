@@ -113,9 +113,6 @@ if(isset($_POST['ticket']))
 
 		if (empty($ticket['netnodeid']))
 			$ticket['netnodeid'] = null;
-		else
-			if($ticket['netnodeid'] = 0)
-				$ticket['netnodeid'] = null;
 
 		if (empty($ticket['requestor_mail']))
 			$ticket['requestor_mail'] = null;
