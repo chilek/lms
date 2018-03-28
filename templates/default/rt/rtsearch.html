@@ -153,7 +153,7 @@
 	<TR>
         <TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Network Device Node:")}</TD>
 	<TD class="nobr">
-		<SELECT name="search[netnodeid]" {tip text="Select Netnode" trigger="netnodeid"}>
+		<SELECT name="search[netnodeid]" {tip text="Select network node (optional)" trigger="netnodeid"}>
 			<OPTION value="">{trans("- none -")}</OPTION>
 			{foreach $netnodelist as $idx=>$n}
 				<OPTION value="{$idx}"> {$n.name} ({$n.id})</OPTION>
@@ -163,10 +163,10 @@
 	<TR>
         <TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Assigned Network Device:")}</TD>
 	<TD class="nobr">
-		<SELECT name="search[netdevid]" {tip text="Select Netdevice" trigger="netdevid"}>
+		<SELECT name="search[netdevid]" {tip text="Select network device (optional)" trigger="netdevid"}>
 			<OPTION value="">{trans("- none -")}</OPTION>
-			{foreach $netdevicelist as $idx=>$netdev}
-				<OPTION value="{$idx}"> {$netdev.name} ({$netdev.id})</OPTION>
+			{foreach $netdevicelist as $netdev}
+			<OPTION value="{$netdev.id}">{$netdev.name} ({$netdev.id})</OPTION>
 			{/foreach}
 		</SELECT>
 	</TR>
