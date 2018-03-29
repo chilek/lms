@@ -81,6 +81,9 @@ $(function() {
         var flat   = box.find('[data-address="flat"]').val();
         var zip    = box.find('[data-address="zip"]').val();
         var postoffice = box.find('[data-address="postoffice"]').val();
+		var country = box.find('[data-address="country"] option:selected').text();
+		var countryid = box.find('[data-address="country"]').val();
+
         //var adtype = box.find('[data-address="address_type"]').val();
 
         var location = location_str({
@@ -103,20 +106,29 @@ $(function() {
         }
 		if (city.length && house.length && !$(this).is('[data-address="zip"]') && !zip.length) {
 			timer = window.setTimeout(function () {
+				var search = {
+					"city": city,
+					"cityid": cityid,
+					"street": street,
+					"streetid": streetid,
+					"house": house,
+					"country": country,
+					"countryid": countryid
+				}
 				if (lmsSettings.zipCodeBackend == 'pna') {
-					pna_get_zip_code(city, cityid, street, streetid, house, function (zip) {
+					pna_get_zip_code(search, function (zip) {
 						if (zip.length) {
 							box.find('[data-address="zip"]').val(zip);
 							$(elem).trigger('input');
 						} else {
-							osm_get_zip_code(city, street, house, function (zip) {
+							osm_get_zip_code(search, function (zip) {
 								box.find('[data-address="zip"]').val(zip);
 								$(elem).trigger('input');
 							});
 						}
 					});
 				} else {
-					osm_get_zip_code(city, street, house, function (zip) {
+					osm_get_zip_code(search, function (zip) {
 						box.find('[data-address="zip"]').val(zip);
 						$(elem).trigger('input');
 					});
@@ -134,20 +146,31 @@ $(function() {
 		var streetid = teryt ? box.find('[data-address="street-hidden"]').val() : null;
 		var house  = box.find('[data-address="house"]').val();
 		var zipelem = box.find('[data-address="zip"]');
+		var country = box.find('[data-address="country"] option:selected').text();
+		var countryid = box.find('[data-address="country"]').val();
 
 		if (city.length && house.length) {
+			var search = {
+				"city": city,
+				"cityid": cityid,
+				"street": street,
+				"streetid": streetid,
+				"house": house,
+				"country": country,
+				"countryid": countryid
+			}
 		    if (lmsSettings.zipCodeBackend == 'pna') {
-				pna_get_zip_code(city, cityid, street, streetid, house, function (zip) {
+				pna_get_zip_code(search, function (zip) {
 					if (zip.length) {
 						zipelem.val(zip).trigger('input');
 					} else {
-						osm_get_zip_code(city, street, house, function (zip) {
+						osm_get_zip_code(search, function (zip) {
 							zipelem.val(zip).trigger('input');
 						});
 					}
 				});
 			} else {
-				osm_get_zip_code(city, street, house, function (zip) {
+				osm_get_zip_code(search, function (zip) {
 					zipelem.val(zip).trigger('input');
 				});
 			}

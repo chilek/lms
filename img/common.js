@@ -833,15 +833,19 @@ function GusApiFinished(fieldPrefix, details) {
 	});
 }
 
-function osm_get_zip_code(city, street, house, on_success) {
+function osm_get_zip_code(search, on_success) {
+	var data = {
+		format: 'json',
+		city: search.city,
+		street: search.house + (search.street.length ? ' ' + search.street : ''),
+		addressdetails: 1
+	}
+	if (search.country.length) {
+		data.country = search.country;
+	}
 	$.ajax({
 		url: 'https://nominatim.openstreetmap.org/search',
-		data: {
-			format: 'json',
-			"city": city,
-			"street": house + (street.length ? ' ' + street : ''),
-			addressdetails: 1
-		}
+		"data": data
 	}).done(function(data) {
 		if (typeof(on_success) == 'function') {
 			if (data[0].hasOwnProperty('address') && data[0].address.hasOwnProperty('postcode')) {
@@ -851,16 +855,10 @@ function osm_get_zip_code(city, street, house, on_success) {
 	});
 }
 
-function pna_get_zip_code(city, cityid, street, streetid, house, on_success) {
+function pna_get_zip_code(search, on_success) {
 	$.ajax({
 		url: '?m=zipcode&api=1',
-		data: {
-			"city": city,
-			"cityid": cityid,
-			"street": street,
-			"streetid": streetid,
-			"house": house
-		}
+		data: search
 	}).done(function(data) {
 		if (typeof(on_success) == 'function') {
 			on_success(data);
