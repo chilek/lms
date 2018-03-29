@@ -240,6 +240,10 @@
       <xsl:with-param name="fieldname" select="dir:DataWystawienia"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
+    <xsl:call-template name="singular_field">
+      <xsl:with-param name="fieldname" select="dir:DataSprzedazy"/>
+    </xsl:call-template>
+    <xsl:value-of select="';'"/>
     <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_10"/>
     </xsl:call-template>
@@ -359,7 +363,7 @@
     <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:K_39"/>
     </xsl:call-template>
-    <xsl:value-of select="';;;;;;;;;;;;;;;;;;;;'"/>
+    <xsl:value-of select="';;;;;;;;;;;;;;;;;;;'"/>
     <xsl:text>&#10;</xsl:text>
   </xsl:template>
 
@@ -369,7 +373,7 @@
       <xsl:with-param name="fieldname" select="dir:LiczbaWierszySprzedazy"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:PodatekNalezny"/>
     </xsl:call-template>
     <xsl:value-of select="';;;;;;;;;;;;;;;;;'"/>
@@ -447,7 +451,7 @@
       <xsl:with-param name="fieldname" select="dir:LiczbaWierszyZakupow"/>
     </xsl:call-template>
     <xsl:value-of select="';'"/>
-    <xsl:call-template name="singular_field">
+    <xsl:call-template name="numeric_field">
       <xsl:with-param name="fieldname" select="dir:PodatekNaliczony"/>
     </xsl:call-template>
     <xsl:text>&#10;</xsl:text>
@@ -492,7 +496,7 @@
         <xsl:text>0</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$fieldname"/>
+        <xsl:value-of select="translate( $fieldname, '.', ',' )"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
