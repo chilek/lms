@@ -840,7 +840,7 @@ function osm_get_zip_code(search, on_success) {
 		street: search.house + (search.street.length ? ' ' + search.street : ''),
 		addressdetails: 1
 	}
-	if (search.country.length) {
+	if (search.countryid.length) {
 		data.country = search.country;
 	}
 	$.ajax({

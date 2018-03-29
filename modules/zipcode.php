@@ -26,7 +26,7 @@
 
 header('Content-Type: text/plain');
 
-if (isset($_GET['countryid']) && $LMS->GetCountryName($_GET['countryid']) != 'Poland')
+if (isset($_GET['countryid']) && !empty($_GET['countryid']) && $LMS->GetCountryName($_GET['countryid']) != 'Poland')
 	die;
 
 if (!isset($_GET['house']) || (!isset($_GET['city']) && !isset($_GET['cityid'])))
