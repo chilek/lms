@@ -632,6 +632,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.zip as location_zip, addr.country_id as location_country,
 				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
+				addr.postoffice AS location_postoffice,
 				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM netdevices d
 				LEFT JOIN vaddresses addr          ON addr.id = d.address_id
