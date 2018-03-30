@@ -31,13 +31,6 @@ $result = $LMS->GetNetNode($id);
 if (!$result)
 	$SESSION->redirect('?m=netnodelist');
 
-$tmp = array('city_name'      => $result['location_city_name'],
-             'location_house' => $result['location_house'],
-             'location_flat'  => $result['location_flat'],
-             'street_name'    => $result['location_street_name']);
-
-$result['location'] = location_str( $tmp );
-
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);

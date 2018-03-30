@@ -114,13 +114,13 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				lb.type AS location_borough_type,
 				ld.id AS location_district, ld.name AS location_district_name, ld.ident AS location_district_ident,
 				ls.id AS location_state, ls.name AS location_state_name, ls.ident AS location_state_ident,
-				addr.name as location_name,
+				addr.location, addr.name as location_name,
 				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
 				addr.house as location_house, addr.flat as location_flat
 			FROM netnodes n
 				LEFT JOIN divisions d ON d.id = n.divisionid
-				LEFT JOIN addresses addr        ON addr.id = n.address_id
+				LEFT JOIN vaddresses addr        ON addr.id = n.address_id
 				LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
 				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
@@ -132,12 +132,6 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
 		if ( $nlist ) {
 			foreach ($nlist as &$netnode) {
-				$netnode['location'] = location_str(
-					array('city_name' => $netnode['location_city_name'],
-						'location_house' => $netnode['location_house'],
-						'location_flat' => $netnode['location_flat'],
-						'street_name' => $netnode['location_street_name'])
-				);
 				$netnode['terc'] = empty($netnode['location_state_ident']) ? null
 					: $netnode['location_state_ident'] . $netnode['location_district_ident']
 						. $netnode['location_borough_ident'] . $netnode['location_borough_type'];
