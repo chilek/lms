@@ -85,9 +85,9 @@
 		    <td>{trans("Street")}:</td>
 		    <td>
 		        <select id="street_sel" name="street" {tip text="Select street"} style="width: 100%">
-		        {foreach from=$streets item=item}
-		            <option value="{$item.id}">{$item.name}</option>
-		        {/foreach}
+		            {foreach $streets as $street}
+		            <option value="{$street.id}" data-street-type="{$street.typename}" data-street-name-1="{$street.name1}"{if $street.name2} data-street-name-2="{$street.name2}"{/if}>{$street.name}</option>
+		            {/foreach}
 		        </select>
 		    </td>
 	    </tr>
@@ -137,24 +137,40 @@ $( "#state_sel, #district_sel, #city_sel" ).change( function() {
 });
 
 function update_selection(type, data, selected) {
-    var i, len, elem = document.getElementById(type),
-        select = document.getElementById(type+'_sel');
+    var elem = $('#' + type);
+        select = $('#' + type + '_sel');
 
-    select.options.length = 0;
+    select.empty();
+
+    var options = [];
+
     if (type != 'street') {
-        select.options[0] = new Option('', 0);
+        options.push($('<option>', {
+        	"id": 0,
+            "value": ""
+        }));
+	}
+
+	$.each(data, function(key, value) {
+    	var props = {
+			"value": value.id,
+    	}
+        if (type == 'street' && value.name.length) {
+    		props["data-street-type"] = value.typename;
+            props["data-street-name-1"] = value.name1;
+            if (value.name2) {
+                props["data-street-name-2"] = value.name2;
+            }
+    	}
+		options.push($('<option>', props).html(value.name));
+    });
+    select.append(options);
+
+    if (data.length) {
+        elem.show();
     }
 
-    for (i=0, len=data.length; i<len; i++) {
-        select.options[select.options.length] = new Option(data[i].name, data[i].id);
-    }
-
-    if ( i > 0 ) {
-        elem.style.display = '';
-    }
-
-    select.value = selected ? selected : 0;
-    select.focus();
+    select.val(selected ? selected : 0).focus();
 
     if ( type == 'street' ) {
         $( '#house,#flat' ).css( 'display', '' );
@@ -213,13 +229,12 @@ function submit_location() {
     }
 
     // SET STREET
-    input_str = street.value ? street.options[street.selectedIndex].text : '';
-
-    if ( input_str && /^([^,]+),\s*(.*)/.test(input_str) ) {
-        tmp = RegExp.$2 + ' ' + RegExp.$1;
-
-        location_box.find( "input[data-address='street']"        ).val( tmp );
-        location_box.find( "input[data-address='street-hidden']" ).val( street.value );
+    var street_option = $('option:selected', street);
+    if (street_option.val()) {
+        location_box.find( "input[data-address='street']"        ).val( street_option.attr('data-street-type')
+			+ (typeof(street_option.attr('data-street-name-2')) !== undefined ? ' ' + street_option.attr('data-street-name-2') : '')
+			+ ' ' + street_option.attr('data-street-name-1') );
+        location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );
     } else {
         location_box.find( "input[data-address='street']"        ).val( '' );
         location_box.find( "input[data-address='street-hidden']" ).val( '' );

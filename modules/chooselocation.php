@@ -38,7 +38,7 @@ function get_loc_streets($cityid) {
 			WHERE ld.stateid = ? AND lb.districtid = ? AND (lb.type = 8 OR lb.type = 9)",
 			array($borough['stateid'], $borough['districtid']));
 		if (!empty($subcities)) {
-			$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
+			$list = $DB->GetAll("SELECT s.id, s.name AS name1, s.name2 AS name2, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
 				FROM location_streets s
 				LEFT JOIN location_street_types t ON (s.typeid = t.id)
 				WHERE s.cityid IN (" . implode(',', $subcities) . ")
@@ -47,19 +47,16 @@ function get_loc_streets($cityid) {
 	}
 
 	if (!isset($list))
-		$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
+		$list = $DB->GetAll("SELECT s.id, s.name AS name1, s.name2 AS name2, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
 			FROM location_streets s
 			LEFT JOIN location_street_types t ON (s.typeid = t.id)
 			WHERE s.cityid = ?
 			ORDER BY s.name", array($cityid));
 
 	if ($list)
-		foreach ($list as $idx => $row) {
-			if ($row['typename']) {
+		foreach ($list as &$row) {
+			if ($row['typename'])
 				$row['name'] .= ', ' . $row['typename'];
-				unset($row['typename']);
-				$list[$idx] = $row;
-			}
 		}
 	else
 		$list = array();
