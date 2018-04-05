@@ -302,9 +302,9 @@ $LMS->lang = $_language;
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
-$plugin_manager->executeHook('smarty_initialized', $SMARTY);
-
 if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
+	$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+
 	$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 	$SMARTY->assignByRef('_language', $LMS->lang);
 }
