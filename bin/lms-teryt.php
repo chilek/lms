@@ -553,7 +553,7 @@ if ( isset($options['update']) ) {
 	// Read TERC xml file
 	//==============================================================================
 
-	if ($xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml') === false) {
+	if (@$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml') === false) {
 		fwrite($stderr, "Error: can't open TERC.xml file." . PHP_EOL);
 		die;
 	}
@@ -757,7 +757,7 @@ if ( isset($options['update']) ) {
 	if (!$quiet)
 		echo 'Parsing SIMC.xml' . PHP_EOL;
 
-	if ($xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml') === false) {
+	if (@$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml') === false) {
 		fwrite($stderr, "Error: can't open SIMC.xml file." . PHP_EOL);
 		die;
 	}
@@ -929,7 +929,7 @@ if ( isset($options['update']) ) {
 	if (!$quiet)
 		echo 'Parsing ULIC.xml' . PHP_EOL;
 
-	if ($xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml') === false) {
+	if (@$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml') === false) {
 		fwrite($stderr, "Error: can't open ULIC.xml file." . PHP_EOL);
 		die;
 	}
