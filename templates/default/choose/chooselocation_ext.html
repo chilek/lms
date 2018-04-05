@@ -231,8 +231,8 @@ function submit_location() {
     // SET STREET
     var street_option = $('option:selected', street);
     if (street_option.val()) {
-        location_box.find( "input[data-address='street']"        ).val( street_option.attr('data-street-type')
-			+ (typeof(street_option.attr('data-street-name-2')) !== undefined ? ' ' + street_option.attr('data-street-name-2') : '')
+    	location_box.find( "input[data-address='street']"        ).val( street_option.attr('data-street-type')
+			+ (typeof(street_option.attr('data-street-name-2')) !== 'undefined' ? ' ' + street_option.attr('data-street-name-2') : '')
 			+ ' ' + street_option.attr('data-street-name-1') );
         location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );
     } else {
