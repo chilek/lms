@@ -153,6 +153,8 @@ if(isset($_POST['ticket']))
 			$headers['Reply-To'] = $headers['From'];
 			$headers['Message-ID'] = $LMS->GetLastMessageID();
 
+			$queuedata = $LMS->GetQueue($queue);
+
 			if ($ticket['customerid']) {
 				$info = $LMS->GetCustomer($ticket['customerid'], true);
 
@@ -177,7 +179,6 @@ if(isset($_POST['ticket']))
 						ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 				}
 
-				$queuedata = $LMS->GetQueue($queue);
 				if (isset($ticket['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
 					&& !empty($emails)) {
 					$custmail_subject = $queuedata['newticketsubject'];
@@ -207,6 +208,7 @@ if(isset($_POST['ticket']))
 
 			$params = array(
 				'id' => $id,
+				'queue' => $queuedata['name'],
 				'customerid' => $ticket['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],

@@ -240,6 +240,7 @@ if(isset($_POST['ticket']))
 
 			$params = array(
 				'id' => $ticket['ticketid'],
+				'queue' => $queue['name'],
 				'customerid' => $ticketedit['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],

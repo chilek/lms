@@ -292,6 +292,7 @@ if(isset($_POST['message']))
 
 			$params = array(
 				'id' => $message['ticketid'],
+				'queue' => $queue['name'],
 				'messageid' => isset($msgid) ? $msgid : null,
 				'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
 				'status' => $ticketdata['status'],

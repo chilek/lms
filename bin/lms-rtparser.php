@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -51,7 +51,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-rtparser.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2018 LMS Developers
 
 EOF;
 	exit(0);
@@ -60,7 +60,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-rtparser.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2018 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -79,7 +79,7 @@ $quiet = array_key_exists('silent', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-rtparser.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2018 LMS Developers
 
 EOF;
 }
@@ -490,6 +490,8 @@ if ($notify) {
 	$headers['From'] = $mailfname . ' <' . $mailfrom . '>';
 	$headers['Reply-To'] = $headers['From'];
 
+	$queuedata = $LMS->GetQueue($queue);
+
 	if ($ticket['customerid'] && $reqcustid) {
 		$info = $LMS->GetCustomer($ticket['customerid'], true);
 
@@ -512,7 +514,6 @@ if ($notify) {
 			$sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 		}
 
-		$queuedata = $LMS->GetQueue($queue);
 		if ($new_ticket) {
 			$ticketsubject_variable = 'newticketsubject';
 			$ticketbody_variable = 'newticketbody';
@@ -547,6 +548,7 @@ if ($notify) {
 
 	$params = array(
 		'id' => $ticket_id,
+		'queue' => $queuedata['name'],
 		'messageid' => isset($msgid) ? $msgid : null,
 		'customerid' => $ticket['customerid'] && $reqcustid ? $ticket['customerid'] : null,
 		'status' => $ticket['status'],
