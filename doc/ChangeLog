@@ -10,6 +10,7 @@ version ?.??.?? (????-??-??):
   - enhancement: helpdesk/rt: introduced ticket netdevice assignment [interduo]
   - enhancement: added %queue symbol support for helpdesk notification templates [chilan]
   - enhancement: allow to select company/division for financial data export  [chilan]
+  - enhancement: added support for helpdesk notification for event add form [chilan]
 
 version 1.11.23 (2018-03-21):
 
