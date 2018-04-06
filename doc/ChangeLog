@@ -9,6 +9,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to filter network devices by territ not specified [chilan]
   - enhancement: helpdesk/rt: introduced ticket netdevice assignment [interduo]
   - enhancement: added %queue symbol support for helpdesk notification templates [chilan]
+  - enhancement: allow to select company/division for financial data export  [chilan]
 
 version 1.11.23 (2018-03-21):
 
