@@ -202,6 +202,8 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 		$unixto = mktime(23,59,59); //today
 	}
 
+	$divisionid = intval($_POST['division']);
+
 	$listdata = array();
 	$invoicelist = array();
 
@@ -212,7 +214,8 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 	$items = $DB->GetAll('SELECT docid, itemid, taxid, value, count, description, prodid, content, d.customerid
 		FROM documents d
 		LEFT JOIN invoicecontents ON docid = d.id 
-		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) 
+		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
+			' . ($divisionid ? ' AND d.divisionid = ' . $divisionid : '') . '
 			AND NOT EXISTS (
 		    		SELECT 1 FROM customerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -224,7 +227,9 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 			numberplans.template, reference, extnumber, paytime, closed
 		FROM documents 
 	        LEFT JOIN numberplans ON numberplanid = numberplans.id
-		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) ', 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?)
+			' . ($divisionid ? ' AND divisionid = ' . $divisionid : ''),
+		'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
     	// wysy�amy ...
 	header('Content-Type: application/octetstream');
@@ -399,6 +404,7 @@ $layout['pagetitle'] = trans('Export');
 
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->display('export.html');
 
 ?>
