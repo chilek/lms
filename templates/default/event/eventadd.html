@@ -204,7 +204,7 @@ $(function() {
                     <IMG src="img/ticket.gif" alt="">
                 </TD>
                 <TD class="bold">
-                    {trans("Add new request to Helpdesk")}
+					<label for="helpdesk-on">{trans("Add new request to Helpdesk")}</label>
                 </TD>
                 <TD>
                     <input type="checkbox" name="event[helpdesk]" {if !empty($event['helpdesk'])} checked{/if} id="helpdesk-on">
@@ -229,63 +229,76 @@ $(function() {
 		</TR>
 	</THEAD>
 	<TBODY>
-                <TR>
-                <TD>
-                    <IMG src="img/queue.gif" alt="">
-                </TD>
-                <TD class="bold">
-                    {trans("Queue:")}
-                </TD>
-                <TD>
-                    {if empty($event.ticketid)}
-                    <SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
-                    {foreach from=$queuelist item=item}
-                        <OPTION value="{$item.id}"{if $item.id == $event.rtqueue} selected{/if}>{$item.name}</OPTION>
-                    {/foreach}
-                    </SELECT>
-                    {else}
-                        {$tqname}
-                    {/if}
-                </TD>
-                </TR>
-                {if empty($event.ticketid)}
-	<TR {tip trigger="categories"}>
-                    <TD width="1%">
-                        <IMG src="img/queue.gif" alt="">
-                    </TD>
-                    <TD class="bold" width="1%">
-                        {trans("Categories:")}
-                    </TD>
-                    <TD>
-                    {if isset($error['categories'])}{$error['categories']}<BR>{/if}
-                    {foreach from=$categories item=category}
-                        <INPUT type="checkbox" name="event[categories][{$category.id}]" id="cat{$category.id}" value="1" {if !empty($category.checked) || $category.id =='0' }checked{/if}>
-                        <label for="cat{$category.id}">{$category.name}</label><BR>
-                    {/foreach}
-                    </TD>
-	</TR>
-                <TR>
-                    <TD class="bold"><IMG src="img/name.gif" alt=""></TD>
-                    <TD colspan="3" class="bold">{trans("Submitter:")}</TD>
+		<TR>
+			<TD>
+				<IMG src="img/queue.gif" alt="">
+			</TD>
+			<TD class="bold">
+				{trans("Queue:")}
+			</TD>
+			<TD>
+				{if empty($event.ticketid)}
+				<SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
+				{foreach from=$queuelist item=item}
+					<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $event.rtqueue} selected{/if}>{$item.name}</OPTION>
+				{/foreach}
+				</SELECT>
+				{else}
+					{$tqname}
+				{/if}
+			</TD>
 		</TR>
-                <TR>
+		{if empty($event.ticketid)}
+		<TR {tip trigger="categories"}>
+			<TD width="1%">
+				<IMG src="img/queue.gif" alt="">
+			</TD>
+			<TD class="bold" width="1%">
+				{trans("Categories:")}
+			</TD>
+			<TD>
+			{if isset($error['categories'])}{$error['categories']}<BR>{/if}
+			{foreach from=$categories item=category}
+				<INPUT type="checkbox" name="event[categories][{$category.id}]" id="cat{$category.id}" value="1"{if !empty($category.checked)} checked{/if}>
+				<label for="cat{$category.id}">{$category.name}</label><BR>
+			{/foreach}
+			</TD>
+		</TR>
+		<TR>
+			<TD class="bold"><IMG src="img/name.gif" alt=""></TD>
+			<TD colspan="3" class="bold">{trans("Submitter:")}</TD>
+		</TR>
+		<TR>
 		    <TD> </TD>
-                    <TD width="1%">{trans("Name/Surname:")}</TD>
-                    <TD width="99%">
-                        <INPUT type="text" name="event[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
-                    </TD>
-                </TR>
-                <TR>
+			<TD width="1%">{trans("Name/Surname:")}</TD>
+			<TD width="99%">
+				<INPUT type="text" name="event[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
+			</TD>
+		</TR>
+		<TR>
 		    <TD> </TD>
-                    <TD width="1%">{trans("Firstname")}:</TD>
-                    <TD width="99%"><INPUT type="text" name="event[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}></TD>
-                </TR>
-                <TR>
+			<TD width="1%">{trans("Firstname")}:</TD>
+			<TD width="99%"><INPUT type="text" name="event[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}></TD>
+		</TR>
+		<TR>
 		    <TD></TD>
-                    <TD width="1%">{trans("E-mail:")}</TD>
-                    <TD width="99%"><INPUT type="text" name="event[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
-                </TR>
-                {/if}
+			<TD width="1%">{trans("E-mail:")}</TD>
+			<TD width="99%"><INPUT type="text" name="event[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
+		</TR>
+		<TR id="customernotify-row">
+			<TD>
+				<IMG src="img/mail.gif" alt="">
+			</TD>
+			<TD class="bold nobr">
+				<label for="customernotify">
+					{trans("Notify customer:")}
+				</label>
+			</TD>
+			<TD>
+				<input type="checkbox" id="customernotify" name="event[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
+			</TD>
+		</TR>
+		{/if}
     </TBODY>
 </TABLE>
 </form>
@@ -293,6 +306,25 @@ $(function() {
 <!--
 $(function() {
 	$('form[name="event"] [name="event[title]"]').focus();
+
+	$('[name="event[rtqueue]"]').change(function() {
+		var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
+		if (newticket_notify === undefined) {
+			$('#customernotify-row').hide();
+			$('#customernotify').attr('checked', false);
+		} else {
+			$('#customernotify-row').show();
+			$('#customernotify').attr('checked', true);
+		}
+		//xajax_GetCategories($(this).val());
+	});
+
+	var newticket_notify = $('[name="event[rtqueue]"]').find(':selected').attr('data-newticket-notify');
+	if (newticket_notify === undefined) {
+		$('#customernotify-row').hide();
+	} else {
+		$('#customernotify-row').show();
+	}
 });
 
 function update_user_selection(users) {
