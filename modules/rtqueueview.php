@@ -132,8 +132,11 @@ if (isset($_GET['priority'])) {
 		$priority = array(intval($_GET['priority']));
 } elseif ($SESSION->is_set('rtprio'))
 	$SESSION->restore('rtprio', $priority);
-else
+else {
 	$priority = ConfigHelper::getConfig('phpui.ticketlist_priority');
+	if (strlen($priority))
+		$priority = explode(',', $priority);
+}
 $SESSION->save('rtprio', $priority);
 
 $layout['pagetitle'] = trans('Tickets List');
