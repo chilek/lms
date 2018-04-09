@@ -55,9 +55,9 @@
 		{if count($queuedata.id)!=1}{$queue[ticket].name}{/if}<br>
 		{if $queue[ticket].customerid}
 			{if $queue[ticket].address_id}
-				{$queue[ticket].vacity}, {$queue[ticket].street} {$queue[ticket].house}{if $queue[ticket].flat}/{$queue[ticket].flat}{/if}
+				{if $queue[ticket].vacity}{$queue[ticket].vacity}, {/if}{$queue[ticket].street} {$queue[ticket].house}{if $queue[ticket].flat}/{$queue[ticket].flat}{/if}
 			{else}
-				{$queue[ticket].city}, {$queue[ticket].address}
+				{if $queue[ticket].city}{$queue[ticket].city}, {/if}{$queue[ticket].address}
 			{/if}
 		{/if}
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
