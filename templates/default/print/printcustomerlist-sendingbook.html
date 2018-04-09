@@ -48,10 +48,13 @@
 	<TR class="text-center" height="50">{assign var=cid value=$customerlist[customerlist].id}
 		<TD style="border: 1px black solid">{counter}.</TD>
 		<TD style="border: 1px black solid"><B>{$customerlist[customerlist].customername}</B></TD>
-		<TD style="border: 1px black solid">{if $customerlist[customerlist].post_address!=''}
-				{$customerlist[customerlist].post_address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].post_zip} {$customerlist[customerlist].post_city}           {else}
-				{$customerlist[customerlist].address}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city},
-		{/if}</TD>
+		<TD style="border: 1px black solid">
+			{if $customerlist[customerlist].post_full_address!=''}
+				{$customerlist[customerlist].post_full_address}
+			{else}
+				{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}
+			{/if}
+		</TD>
 		<TD style="border: 1px black solid"></TD>
 		<TD style="border: 1px black solid"></TD>
 		<TD style="border: 1px black solid"></TD>
