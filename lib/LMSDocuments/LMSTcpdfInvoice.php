@@ -455,7 +455,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(7, 209, $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
 		/* account */
-		$this->backend->SetFont('arial', 'B', 8);
+		$this->backend->SetFont('arial', 'B', 9);
 		if (count($this->data['bankaccounts']) == 1)
 			$account = $this->data['bankaccounts'][0];
 		else
@@ -505,7 +505,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(67, 206, $this->data['division_address'] . ', ' . $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
 		/* account */
-		$this->backend->SetFont('arial', 'B', 8);
+		$this->backend->SetFont('arial', 'B', 9);
 		if (count($this->data['bankaccounts']) == 1)
 			$account = $this->data['bankaccounts'][0];
 		else
@@ -664,6 +664,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$buyer .= trans('TEN') . ': ' . $this->data['ten'] . '<br>';
 		elseif ($this->data['ssn'])
 			$buyer .= trans('SSN') . ': ' . $this->data['ssn'] . '<br>';
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_customerid', true)))
+			$buyer .= '<b>' . trans('Customer No.:') . ' ' . $this->data['customerid'] . '</b><br>';
 		$this->backend->SetFont('arial', '', 8);
 		$this->backend->writeHTMLCell(80, '', '', '', $buyer, 0, 1, 0, true, 'L');
 
@@ -762,9 +764,9 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_dates() {
-		$this->backend->SetFont('arial', '', 10);
+		$this->backend->SetFont('arial', '', 8);
 		if ($paytype != 8) {
-		$this->backend->writeHTMLCell(0, 0, '', 19, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
+		$this->backend->writeHTMLCell(0, 0, '', 17, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
 		}
 		$this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
 }
@@ -772,7 +774,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	protected function invoice_expositor() {
 		$expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
 		$this->backend->SetFont('arial', '', 8);
-		$this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . $expositor . '</b>', 0, 1, 0, true, 'R');
+		if (!ConfigHelper::checkConfig('invoices.hide_expositor'))
+			$this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . $expositor . '</b>', 0, 1, 0, true, 'R');
 	}
 
 	protected function invoice_footnote() {

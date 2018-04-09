@@ -386,6 +386,7 @@ $_LANG['Customer Liabilities:'] = 'Zobowiązania klienta:';
 $_LANG['customer name'] = 'nazwisko klienta';
 $_LANG['Customer name'] = 'Nazwisko klienta';
 $_LANG['Customer No.: $a'] = 'Numer klienta: $a';
+$_LANG['Customer No.:'] = 'Numer klienta:';
 $_LANG['Customer Nodes ($a):'] = 'Komputery klienta ($a):';
 $_LANG['Customer Networks ($a):'] = 'Sieci klienta ($a):';
 $_LANG['Customer not selected!'] = 'Nie wybrano klienta!';
