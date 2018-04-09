@@ -116,8 +116,11 @@ if (isset($_GET['s'])) {
 		$s = array(intval($_GET['s']));
 } elseif ($SESSION->is_set('rts'))
 	$SESSION->restore('rts', $s);
-else
+else {
 	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
+	if (strlen($s))
+		$s = explode(',', $s);
+}
 $SESSION->save('rts', $s);
 
 if (isset($_GET['priority'])) {
