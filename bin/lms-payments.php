@@ -687,7 +687,7 @@ foreach ($assigns as $assign) {
 		{
 			$alldays = 1;
 
-			$diffdays = sprintf("%d", ($today - $assign['datefrom']) / 86400);
+			$diffdays = sprintf("%d", round(($today - $assign['datefrom']) / 86400));
 			$period_start = mktime(0, 0, 0, $month, $dom - $diffdays, $year);
 			$period_end = mktime(0, 0, 0, $month, $dom - 1, $year);
 			$period = strftime($date_format, $period_start) . " - " . strftime($date_format, $period_end);
