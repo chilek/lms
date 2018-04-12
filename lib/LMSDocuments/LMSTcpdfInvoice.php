@@ -114,8 +114,14 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$h_head = 0;
 		/* invoice data table headers */
 		foreach ($heads as $item => $name) {
-			//$this->Cell($h_width[$item], 7, $heads[$item], 1, 0, 'C', 1, '', 1);
-			$h_cell = $this->backend->getStringHeight($h_width[$item], $heads[$item], true, false, 0, 1);
+//			$h_cell = $this->backend->getStringHeight($h_width[$item], $heads[$item], true, false, 0, 1);
+
+			$this->backend->startTransaction();
+			$old_y = $this->backend->GetY();
+			$this->backend->MultiCell($h_width[$item], 0, $heads[$item], 1, 'C', true, 1, '', '', true, 0, false, false, 0);
+			$h_cell = $this->backend->GetY() - $old_y;
+			$this->backend->rollbackTransaction(true);
+
 			if ($h_cell > $h_head)
 				$h_head = $h_cell;
 		}
