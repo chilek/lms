@@ -135,7 +135,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 				foreach ($this->data['invoice']['content'] as $item) {
 					$h = $this->backend->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
 					$this->backend->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
-					$this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 1, false, false, 0, 'M');
+					$this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, $h, 'M');
 					$this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
 					$this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
 					$this->backend->Cell($h_width['count'], $h, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
@@ -197,7 +197,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		foreach ($this->data['content'] as $item) {
 			$h = $this->backend->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
 			$this->backend->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
-			$this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 1, false, false, 0, 'M');
+			$this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, $h, 'M');
 			$this->backend->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
 			$this->backend->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
 			$this->backend->Cell($h_width['count'], $h, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
