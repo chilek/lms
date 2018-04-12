@@ -561,17 +561,15 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->StopTransform();
 		}
 
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
-			/* title */
-			$this->backend->SetFont('arial', '', 9);
-			$this->backend->writeHTMLCell(70, 10, 131, 262,
-				trans('Payment for liabilities'), $border = 0, $ln = 0, $fill = false, $reseth = true, $align = 'L', $autopadding = true);
-		} else {
-			/* title */
-			$this->backend->SetFont('arial', 'B', 9);
-			$this->backend->writeHTMLCell(70, 10, 131, 262,
-				trans('Payment for invoice No. $a', $barcode), $border = 0, $ln = 0, $fill = false, $reseth = true, $align = 'L', $autopadding = true);
-		}
+                if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+                        /* title */
+                        $this->backend->SetFont('arial', '', 9);
+                        $this->backend->Text(124, 264, trans('Payment for liabilities'));
+                } else {
+                        /* title */
+                        $this->backend->SetFont('arial', 'B', 9);
+                        $this->backend->Text(124, 264, trans('Payment for invoice No. $a', $barcode));
+                }
 
 		/* deadline */
 		$paytype = $this->data['paytype'];
