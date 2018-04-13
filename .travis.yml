@@ -60,7 +60,7 @@ install:
   - composer global require "squizlabs/php_codesniffer $PHPCS_VER"
 
 before_script:
-  - netstat -taunp
+  - find /var/run/postgresql
   - psql -c 'create database lms;' -U postgres
   - psql -U postgres -f doc/lms.pgsql
   - mysql -e 'CREATE DATABASE lms;'
