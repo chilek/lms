@@ -140,7 +140,7 @@ switch ($action) {
 			if (checkdate($smonth, $sday, $syear)) {
 				$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
 				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				if ($sdate < $invoice['sdate'])
+				if ($sdate < $cnote['oldsdate'])
 					$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
 			} else {
 				$error['sdate'] = trans('Incorrect date format! Using current date.');
@@ -153,7 +153,7 @@ switch ($action) {
 			list ($year, $month, $day) = explode('/', $cnote['cdate']);
 			if (checkdate($month, $day, $year)) {
 				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				if($cnote['cdate'] < $invoice['cdate'])
+				if($cnote['cdate'] < $cnote['oldcdate'])
 					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
 			} else {
 				$error['cdate'] = trans('Incorrect date format! Using current date.');
