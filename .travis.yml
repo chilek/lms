@@ -8,47 +8,58 @@ matrix:
       language: php
       php: 5.3
       dist: precise
+      addons:
+        postgresql: "8.4"
       env:
         PHPCS_VER="^2"
 
     - os: linux
       language: php
       php: 5.4
+      addons:
+        postgresql: "9.2"
       env:
         PHPCS_VER="^3"
 
     - os: linux
       language: php
       php: 5.5
+      addons:
+        postgresql: "9.2"
       env:
         PHPCS_VER="^3"
 
     - os: linux
       language: php
       php: 5.6
+      addons:
+        postgresql: "9.2"
       env:
         PHPCS_VER="^3"
 
     - os: linux
       language: php
       php: 7.0
+      addons:
+        postgresql: "9.2"
       env:
         PHPCS_VER="^3"
 
     - os: linux
       language: php
       php: 7.1
+      addons:
+        postgresql: "9.2"
       env:
         PHPCS_VER="^3"
 
     - os: linux
       language: php
       php: 7.2
+      addons:
+        postgresql: "9.2"
       env:
         PHPCS_VER="^3"
-
-addons:
-   postgresql: "8.4"
 
 services:
   - postgresql
@@ -60,7 +71,6 @@ install:
   - composer global require "squizlabs/php_codesniffer $PHPCS_VER"
 
 before_script:
-  - find /var/run/postgresql
   - psql -c 'create database lms;' -U postgres
   - psql -U postgres -f doc/lms.pgsql
   - mysql -e 'CREATE DATABASE lms;'
