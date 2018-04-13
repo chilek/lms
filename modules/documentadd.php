@@ -108,6 +108,12 @@ if (isset($_POST['document'])) {
 
 	$files = array();
 
+	if ($document['reference']) {
+		$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
+			WHERE id = ?', array($document['reference']));
+		$SMARTY->assignByRef('document', $document);
+	}
+
 	if ($document['templ']) {
 		foreach ($documents_dirs as $doc)
 			if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
@@ -121,11 +127,6 @@ if (isset($_POST['document'])) {
 
 		// read template information
 		include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
-		// set some variables (needed in e.g. plugin)
-		if ($document['reference'])
-			$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
-				WHERE id = ?', array($document['reference']));
-		$SMARTY->assignByRef('document', $document);
 
 		// call plugin
 		if (!empty($engine['plugin'])) {
