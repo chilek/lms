@@ -47,6 +47,12 @@ matrix:
       env:
         PHPCS_VER="^3"
 
+addons:
+   postgresql: "8.4"
+
+services:
+  - postgresql
+  - mysql
 
 install:
   - composer install
@@ -54,6 +60,10 @@ install:
   - composer global require "squizlabs/php_codesniffer $PHPCS_VER"
 
 before_script:
+  - psql -c 'create database lms;' -U postgres
+  - psql -U postgres -f doc/lms.pgsql
+  - mysql -e 'CREATE DATABASE lms;'
+  - mysql lms < doc/lms.mysql
   - if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
 
 script: true
