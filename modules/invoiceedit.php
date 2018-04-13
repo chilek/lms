@@ -226,60 +226,61 @@ switch($action)
 		$invoice['city'] = $city;
 		$invoice['countryid'] = $countryid;
 
-		if($invoice['cdate']) // && !$invoice['cdatewarning'])
-		{
-			list($year, $month, $day) = explode('/', $invoice['cdate']);
-			if(checkdate($month, $day, $year))
-			{
-				$oldday = date('d', $invoice['oldcdate']);
-				$oldmonth = date('m', $invoice['oldcdate']);
-				$oldyear = date('Y', $invoice['oldcdate']);
-
-				if($oldday != $day || $oldmonth != $month || $oldyear != $year)
-				{
-					$invoice['cdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
-				}
-				else // save hour/min/sec value if date is the same
-					$invoice['cdate'] = $invoice['oldcdate'];
-			}
-			else
+		if($invoice['cdate']) {
+			$invoice['cdate'] = date_to_timestamp($invoice['cdate']);
+			if(empty($invoice['cdate']))
 				$error['cdate'] = trans('Incorrect date format!');
-		}
 
-		if($invoice['sdate'])
-		{
-			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
-			if(checkdate($smonth, $sday, $syear))
-			{
-				$oldsday = date('d', $invoice['oldsdate']);
-				$oldsmonth = date('m', $invoice['oldsdate']);
-				$oldsyear = date('Y', $invoice['oldsdate']);
+			$day = date('d', $invoice['cdate']);
+			$month = date('m', $invoice['cdate']);
+			$year = date('Y', $invoice['cdate']);
+			$oldday = date('d', $invoice['oldcdate']);
+			$oldmonth = date('m', $invoice['oldcdate']);
+			$oldyear = date('Y', $invoice['oldcdate']);
 
-				if($oldsday != $sday || $oldsmonth != $smonth || $oldsyear != $syear)
-				{
-					$invoice['sdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $smonth, $sday, $syear);
-				}
-				else // save hour/min/sec value if date is the same
-					$invoice['sdate'] = $invoice['oldsdate'];
-			}
+			if($oldday != $day || $oldmonth != $month || $oldyear != $year)
+				$invoice['cdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
 			else
-				$error['sdate'] = trans('Incorrect date format!');
+				$invoice['cdate'] = $invoice['oldcdate'];
 		}
 
-		if ($invoice['deadline']) {
-			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
-			if (checkdate($dmonth, $dday, $dyear)) {
-				$olddday = date('d', $invoice['oldddate']);
-				$olddmonth = date('m', $invoice['oldddate']);
-				$olddyear = date('Y', $invoice['oldddate']);
+                if($invoice['sdate']) {
+                        $sdate = date_to_timestamp($invoice['sdate']);
+                        if(empty($sdate))
+                                $error['sdate'] = trans('Incorrect date format!');
+                        $day = date('d', $invoice['sdate']);
+                        $month = date('m', $invoice['sdate']);
+                        $year = date('Y', $invoice['sdate']);
+                        $oldday = date('d', $invoice['oldsdate']);
+                        $oldmonth = date('m', $invoice['oldsdate']);
+                        $oldyear = date('Y', $invoice['oldsdate']);
 
-				if ($olddday != $dday || $olddmonth != $dmonth || $olddyear != $dyear)
-					$invoice['deadline'] = mktime(date('G', time()), date('i', time()), date('s', time()), $dmonth, $dday, $dyear);
-				else // save hour/min/sec value if date is the same
-					$invoice['deadline'] = $invoice['olddeadline'];
-			} else
-				$error['deadline'] = trans('Incorrect date format!');
-		}
+                        if($oldday != $day || $oldmonth != $month || $oldyear != $year)
+                                $invoice['sdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
+                        else
+                                $invoice['sdate'] = $invoice['oldsdate'];
+                }
+                else
+                    $invoice['sdate'] = $invoice['oldsdate'];
+
+                if($invoice['deadline']) {
+                        $deadline = date_to_timestamp($invoice['deadline']);
+                        if(empty($deadline))
+                                $error['deadline'] = trans('Incorrect date format!');
+                        $day = date('d', $invoice['deadline']);
+                        $month = date('m', $invoice['deadline']);
+                        $year = date('Y', $invoice['deadline']);
+                        $oldday = date('d', $invoice['olddeadline']);
+                        $oldmonth = date('m', $invoice['olddeadline']);
+                        $oldyear = date('Y', $invoice['olddeadline']);
+
+                        if($oldday != $day || $oldmonth != $month || $oldyear != $year)
+                                $invoice['deadline'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
+                        else
+                                $invoice['deadline'] = $invoice['olddeadline'];
+                }
+                else
+                        $invoice['deadline'] = $invoice['olddeadline'];
 
 		if ($invoice['deadline'] < $invoice['cdate'])
 			$error['deadline'] = trans('Deadline date should be later than consent date!');

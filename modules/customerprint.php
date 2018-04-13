@@ -44,22 +44,19 @@ switch($type)
 
 		if($_POST['day'])
 		{
-			list($year, $month, $day) = explode('/', $_POST['day']);
-			$time = mktime(0,0,0,$month,$day+1,$year);
+			$time = date_to_timestamp($_POST['day'])+86400;
 		}
 
 		if($_POST['docfrom'])
 		{
-			list($year, $month, $day) = explode('/', $_POST['docfrom']);
-			$docfrom = mktime(0,0,0,$month,$day,$year);
+			$docfrom = date_to_timestamp($_POST['docfrom']);
 		}
 		else
 			$docfrom = 0;
 
 		if($_POST['docto'])
 		{
-			list($year, $month, $day) = explode('/', $_POST['docto']);
-			$docto = mktime(23,59,59,$month,$day,$year);
+			$docto = date_to_timestamp($_POST['docto'])+86399;
 		}
 		else
 			$docto = 0;
@@ -170,16 +167,13 @@ switch($type)
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
-		// date format 'yyyy/mm/dd'	
-		list($year, $month, $day) = explode('/',$from);
-		$date['from'] = mktime(0,0,0,$month,$day,$year);
+		$date['from'] = date_to_timestamp($from);
 
 		if($to) {
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
+			$date['to'] = date_to_timestamp($to)+86399;
 		} else {
 			$to = date('Y/m/d',time());
-			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+			$date['to'] = date_to_timestamp($to)+86399;
 		}
 
 		$layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)',

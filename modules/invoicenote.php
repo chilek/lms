@@ -135,18 +135,8 @@ switch($action)
 
 		if($cnote['sdate'])
 		{
-			list($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
-			if(checkdate($smonth, $sday, $syear))
-			{
-				$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
-				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				if($sdate < $invoice['sdate'])
-				{
-					$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
-				}
-			}
-			else
-			{
+			$cnote['sdate'] = date_to_timestamp($cnote['sdate']);
+			if(empty($cnote['sdate'])) {
 				$error['sdate'] = trans('Incorrect date format! Using current date.');
 				$cnote['sdate'] = $currtime;
 			}
@@ -154,19 +144,13 @@ switch($action)
 		else
 			$cnote['sdate'] = $currtime;
 
-		if($cnote['cdate'])
-		{
-			list($year, $month, $day) = explode('/', $cnote['cdate']);
-			if(checkdate($month, $day, $year))
-			{
-				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				if($cnote['cdate'] < $invoice['cdate'])
-				{
-					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
-				}
-			}
-			else
-			{
+		if($sdate < $invoice['sdate']) {
+			$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+		}
+
+		if($cnote['cdate']) {
+			$cnote['cdate'] = date_to_timestamp($cnote['cdate']);
+			if(empty($cnote['cdate'])) {
 				$error['cdate'] = trans('Incorrect date format! Using current date.');
 				$cnote['cdate'] = $currtime;
 			}
@@ -174,20 +158,21 @@ switch($action)
 		else
 			$cnote['cdate'] = $currtime;
 
+		if($cnote['cdate'] < $invoice['cdate']) {
+			$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
+		}
+
 		if ($cnote['deadline']) {
-			list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
-			if (checkdate($dmonth, $dday, $dyear))
-				$cnote['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
-			else {
+			$cnote['deadline'] = date_to_timestamp($cnote['deadline']);
+			if(empty($cnote['deadline'])) {
 				$error['deadline'] = trans('Incorrect date format!');
 				$cnote['deadline'] = $currtime;
-				break;
 			}
-		} else
+			if ($cnote['deadline'] < $cnote['cdate'])
+				$error['deadline'] = trans('Deadline date should be later than consent date!');
+		}
+		else
 			$cnote['deadline'] = $currtime;
-
-		if ($cnote['deadline'] < $cnote['cdate'])
-			$error['deadline'] = trans('Deadline date should be later than consent date!');
 
 		if($cnote['number'])
 		{

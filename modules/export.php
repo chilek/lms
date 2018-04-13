@@ -33,19 +33,22 @@ function form_num($num)
 
 if(isset($_GET['type']) && $_GET['type'] == 'cash')
 {
-	if($_POST['from'])
-	{
-		list($year, $month, $day) = explode('/', $_POST['from']);
-		$from = mktime(0,0,0, $month, $day, $year);
+	if($_POST['from']) {
+		$from = date_to_timestamp($_POST['from']);
+		if(empty($from))
+			$error['from'] = trans("Incorrect date!");
 	}
 	else
 		$from = mktime(0,0,0, date('m'), date('d'), date('Y'));
 		
-	if($_POST['to'])
-	{
-		list($year, $month, $day) = explode('/', $_POST['to']);
-		$to = mktime(23,59,59, $month, $day, $year);
+	if($_POST['to']) {
+		$to = date_to_timestamp($_POST['to']);
+		if(empty($to))
+			$error['to'] = trans("Incorrect date!");
+		else
+			$to=$to+86399;
 	}
+	else
 		$to = mktime(23,59,59, date('m'), date('d'), date('Y'));
 
 	$registry = intval($_POST['registry']);
@@ -183,24 +186,23 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 }
 elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 {
-	$from = $_POST['from'];
-	$to = $_POST['to'];
+	if($_POST['from']) {
+		$from = date_to_timestamp($_POST['from']);
+		if(empty($from))
+			$error['from'] = trans("Incorrect date!");
+	}
+	else
+		$from = mktime(0,0,0);
 
-	// date format 'yyyy/mm/dd'	
-	if($from) {
-		list($year, $month, $day) = explode('/',$from);
-		$unixfrom = mktime(0,0,0,$month,$day,$year);
-	} else { 
-		$from = date('Y/m/d',time());
-		$unixfrom = mktime(0,0,0); //today
+	if($_POST['to']) {
+		$to = date_to_timestamp($_POST['to']);
+		if(empty($to))
+			$error['to'] = trans("Incorrect date!");
+		else
+			$to = $to+86399;
 	}
-	if($to) {
-		list($year, $month, $day) = explode('/',$to);
-		$unixto = mktime(23,59,59,$month,$day,$year);
-	} else { 
-		$to = date('Y/m/d',time());
-		$unixto = mktime(23,59,59); //today
-	}
+	else
+		$to = mktime(23,59,59);
 
 	$divisionid = intval($_POST['division']);
 

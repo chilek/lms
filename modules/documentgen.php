@@ -58,20 +58,16 @@ if (isset($_POST['document'])) {
 		$error['number'] = trans('Document with specified number exists!');
 
 	if ($document['fromdate']) {
-		$date = explode('/', $document['fromdate']);
-		if (checkdate($date[1], $date[2], $date[0]))
-			$document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-		else
-			$error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+            $document['fromdate'] = date_to_timestamp($document['fromdate']);
+            if (empty($document['fromdate']))
+                $error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	} else
 		$document['fromdate'] = 0;
 
 	if ($document['todate']) {
-		$date = explode('/', $document['todate']);
-		if (checkdate($date[1], $date[2], $date[0]))
-			$document['todate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-		else
-			$error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+                $document['todate'] = date_to_timestamp($document['todate']);
+                if (empty($document['todate']))
+                    $error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
 	else
 		$document['todate'] = 0;

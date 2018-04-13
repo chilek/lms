@@ -46,20 +46,28 @@ switch ( intval($_POST['customer_type']) ) {
 		$ctype = -1; //all
 }
 
-// date format 'yyyy/mm/dd'
 if($from) {
-	list($year, $month, $day) = explode('/',$from);
-	$unixfrom = mktime(0,0,0,$month,$day,$year);
-} else {
+	$unixfrom = date_to_timestamp($from);
+	if(empty($unixfrom)) {
+		$unixfrom = mktime(0,0,0);
+		$from = date('Y/m/d',time());
+	}
+}
+else {
 	$from = date('Y/m/d',time());
 	$unixfrom = mktime(0,0,0); //today
 }
+
 if($to) {
-	list($year, $month, $day) = explode('/',$to);
-	$unixto = mktime(23,59,59,$month,$day,$year);
-} else {
+	$to = date_to_timestamp($to);
+	if(empty($unixto)) {
+		$unixto = mktime(23,59,59);
+		$to = date('Y/m/d',time());
+	}
+}
+else {
 	$to = date('Y/m/d',time());
-	$unixto = mktime(23,59,59); //today
+	$unixto = mktime(23,59,59);
 }
 
 $layout['pagetitle'] = trans('Sale Registry for period $a - $b', $from, $to);

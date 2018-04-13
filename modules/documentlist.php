@@ -72,15 +72,11 @@ if (empty($_GET['init']))
 		$periodtype = 'creationdate';
 	$SESSION->save('doclpt', $periodtype);
 
-    if(isset($_GET['from']))
+    if($_GET['from'])
     {
-        if($_GET['from'] != '')
-        {
-            list($year, $month, $day) = explode('/', $_GET['from']);
-            $from = mktime(0,0,0, $month, $day, $year);
-        }
-        else
-		    $from = 0;
+	$from = date_to_timestamp($_GET['from']);
+	if(empty($from))
+		$from = 0;
     }
     elseif($SESSION->is_set('doclfrom'))
 	    $SESSION->restore('doclfrom', $from);
@@ -88,15 +84,11 @@ if (empty($_GET['init']))
         $from = 0;
     $SESSION->save('doclfrom', $from);
 
-    if(isset($_GET['to']))
+    if($_GET['to'])
     {
-        if($_GET['to'] != '')
-        {
-            list($year, $month, $day) = explode('/', $_GET['to']);
-            $to = mktime(23,59,59, $month, $day, $year);
-        }
-        else
-		    $to = 0;
+	$to = date_to_timestamp($_GET['to']);
+	if(empty($to))
+	    $to = 0;
     }
     elseif($SESSION->is_set('doclto'))
 	    $SESSION->restore('doclto', $to);

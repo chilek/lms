@@ -95,19 +95,12 @@ switch($action)
 
 		if($note['cdate'])
 		{
-			list($year, $month, $day) = explode('/', $note['cdate']);
-			if(checkdate($month, $day, $year)) 
-			{
-				$note['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-				$currmonth = $month;
-			}
-			else
-			{
+			$note['cdate'] = date_to_timestamp($note['cdate']);
+			if(empty($note['cdate']))
 				$error['cdate'] = trans('Incorrect date format!');
-				$note['cdate'] = time();
-				break;
-			}
 		}
+		else
+				$note['cdate'] = time();
 
 		if($note['cdate'] && !isset($note['cdatewarning']))
 		{

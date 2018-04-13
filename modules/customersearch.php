@@ -26,32 +26,31 @@
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(isset($_POST['search']))
-{
+if(isset($_POST['search'])) {
 	$search = $_POST['search'];
 
 	if(!empty($search['tariffs']))
 		$search['tariffs'] = implode(",", $search['tariffs']);
 	
-	if($search['createdfrom'])
-	{
-		list($year, $month, $day) = explode('/', $search['createdfrom']);
-		$search['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
+	if($search['createdfrom']) {
+		$search['createdfrom'] = date_to_timestamp($search['createdfrom']);
+		if (empty($search['createdfrom']))
+			$search['createdfrom'] = mktime(0, 0, 0);
 	}
-	if($search['createdto'])
-	{
-		list($year, $month, $day) = explode('/', $search['createdto']);
-		$search['createdto'] = mktime(23, 59, 59, $month, $day, $year);
+	if($search['createdto']) {
+		$search['createdto'] = date_to_timestamp($search['createdfrom']);
+		if (empty($search['createdto']))
+			$search['createdto'] = mktime(23, 59, 59);
 	}
-	if($search['deletedfrom'])
-	{
-		list($year, $month, $day) = explode('/', $search['deletedfrom']);
-		$search['deletedfrom'] = mktime(0, 0, 0, $month, $day, $year);
+	if($search['deletedfrom']) {
+                $search['deletedfrom'] = date_to_timestamp($search['deletedfrom']);
+                if (empty($search['deletedfrom']))
+                        $search['deletedfrom'] = mktime(0, 0, 0);
 	}
-	if($search['deletedto'])
-	{
-		list($year, $month, $day) = explode('/', $search['deletedto']);
-		$search['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
+	if($search['deletedto']) {
+                $search['deletedto'] = date_to_timestamp($search['deletedto']);
+                if (empty($search['deletedto']))
+                        $search['deletedto'] = mktime(23, 59, 59);
 	}
 }
 

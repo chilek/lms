@@ -39,23 +39,23 @@ switch($type)
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
-		// date format 'yyyy/mm/dd'
-		if($from && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $from))
-		{
-			list($year, $month, $day) = explode('/',$from);
-			$date['from'] = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
+		if($from) {
+			$date['from'] = date_to_timestamp($from);
+			if(empty($date['from']))
+				$date['from'] = 0;
 		}
 		else
 			$date['from'] = 0;
 
-		if($to && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $to))
-		{
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else {
-			$to = date('Y/m/d',time());
-			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		if($to) {
+			$date['to'] = date_to_timestamp($to);
+			if(empty($date['to']))
+				$date['to'] = mktime(23,59,59);
+			else
+				$date['to'] = $date['to']+86399;
 		}
+		else
+			$date['to'] = mktime(23,59,59);
 
 		$id = intval($_POST['customer']);
 
@@ -137,8 +137,6 @@ switch($type)
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
-		$from = $_POST['balancefrom'];
-		$to = $_POST['balanceto'];
 		$net = intval($_POST['network']);
 		$group = intval($_POST['customergroup']);
 		$division = intval($_POST['division']);
@@ -146,20 +144,23 @@ switch($type)
 		$types = isset($_POST['types']) ? $_POST['types'] : NULL;
 		$docs = $_POST['docs'];
 
-		// date format 'yyyy/mm/dd'
-		if($from)
-		{
-			list($year, $month, $day) = explode('/',$from);
-			$date['from'] = mktime(0,0,0,(int)$month,(int)$day,(int)$year);
-		}
+                if($_POST['balancefrom']) {
+                        $date['balancefrom'] = date_to_timestamp($_POST['balancefrom']);
+                        if(empty($date['balancefrom']))
+                                $date['balancefrom'] = 0;
+                }
+                else
+                        $date['balancefrom'] = 0;
 
-		if($to) {
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else {
-			$to = date('Y/m/d',time());
-			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
-		}
+                if($_POST['balanceto']) {
+                        $date['balanceto'] = date_to_timestamp($_POST['balanceto']);
+                        if(empty($date['balanceto']))
+                                $date['balanceto'] = mktime(23,59,59);
+                        else
+                                $date['balanceto'] = $date['balanceto']+86399;
+                }
+                else
+                        $date['balanceto'] = mktime(23,59,59);
 
 		if($net)
 		        $net = $LMS->GetNetworkParams($net);
@@ -311,17 +312,23 @@ switch($type)
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
-		// date format 'yyyy/mm/dd'
-		list($year, $month, $day) = explode('/',$from);
-		$date['from'] = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
+                if($from) {
+                        $date['from'] = date_to_timestamp($from);
+                        if(empty($date['from']))
+                                $date['from'] = 0;
+                }
+                else
+                        $date['from'] = 0;
 
-		if($to) {
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else {
-			$to = date("Y/m/d",time());
-			$date['to'] = mktime(23,59,59); // end of today
-		}
+                if($to) {
+                        $date['to'] = date_to_timestamp($to);
+                        if(empty($date['to']))
+                                $date['to'] = mktime(23,59,59);
+                        else
+                                $date['to'] = $date['to']+86399;
+                }
+                else
+                        $date['to'] = mktime(23,59,59);
 
 		$layout['pagetitle'] = trans('Total Invoiceless Income ($a to $b)',($from ? $from : ''), $to);
 
@@ -353,21 +360,23 @@ switch($type)
 		$to = $_POST['importto'];
 		$source = $_POST['source'];
 
-		// date format 'yyyy/mm/dd'
-		if ($from) {
-			list($year, $month, $day) = explode('/',$from);
-			$date['from'] = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
-		} else {
-			$date['from'] = 0;
-		}
+	        if($from) {
+                        $date['from'] = date_to_timestamp($from);
+                        if(empty($date['from']))
+                                $date['from'] = 0;
+                }
+                else
+                        $date['from'] = 0;
 
-		if($to) {
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else {
-			$to = date("Y/m/d",time());
-			$date['to'] = mktime(23,59,59); // end of today
-		}
+                if($to) {
+                        $date['to'] = date_to_timestamp($to);
+                        if(empty($date['to']))
+                                $date['to'] = mktime(23,59,59);
+                        else
+                                $date['to'] = $date['to']+86399;
+                }
+                else
+                        $date['to'] = mktime(23,59,59);
 
 		$layout['pagetitle'] = trans('Cash Import History ($a to $b)', $from, $to);
 
@@ -399,22 +408,23 @@ switch($type)
 		$from = $_POST['invoicefrom'];
 		$to = $_POST['invoiceto'];
 
-		// date format 'yyyy/mm/dd'
-		if($to) {
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else {
-			$to = date('Y/m/d',time());
-			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
-		}
+                if($from) {
+                        $date['from'] = date_to_timestamp($from);
+                        if(empty($date['from']))
+                                $date['from'] = 0;
+                }
+                else
+                        $date['from'] = 0;
 
-		if($from) {
-			list($year, $month, $day) = explode('/',$from);
-			$date['from'] = mktime(0,0,0,$month,$day,$year);
-		} else {
-			$from = date('Y/m/d',time());
-			$date['from'] = mktime(0,0,0); //początek dnia dzisiejszego
-		}
+                if($to) {
+                        $date['to'] = date_to_timestamp($to);
+                        if(empty($date['to']))
+                                $date['to'] = mktime(23,59,59);
+                        else
+                                $date['to'] = $date['to']+86399;
+                }
+                else
+                        $date['to'] = mktime(23,59,59);
 
 		$type = '';
 		$type .= isset($_POST['invoiceorg']) ? '&original=1' : '';
@@ -452,20 +462,20 @@ switch($type)
 				$from = $_POST['invoicefrom'];
 				$to = $_POST['invoiceto'];
 
-				if ($to) {
-					list($year, $month, $day) = explode('/',$to);
-					$date['to'] = mktime(23,59,59,$month,$day,$year);
-				} else {
-					$to = date('Y/m/d',time());
-					$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+				if($from) {
+					$date['from'] = date_to_timestamp($from);
+					if(empty($date['from']))
+						$date['from'] = 0;
 				}
+				else
+					$date['from'] = 0;
 
-				if ($from) {
-					list($year, $month, $day) = explode('/',$from);
-					$date['from'] = mktime(0,0,0,$month,$day,$year);
-				} else {
-					$from = date('Y/m/d',time());
-					$date['from'] = mktime(0,0,0); //pocz�tek dnia dzisiejszego
+				if($to) {
+					$date['to'] = date_to_timestamp($to);
+					if(empty($date['to']))
+						$date['to'] = mktime(23,59,59);
+				else
+					$date['to'] = $date['to']+86399;
 				}
 
 				$_GET['from'] = $date['from'];
@@ -493,10 +503,10 @@ switch($type)
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
-		if (isset($_POST['day']) && $_POST['day'])
-		{
-			list($year, $month, $day) = explode('/', $_POST['day']);
-			$reportday = mktime(0, 0, 0, $month, $day, $year);
+		if ($_POST['day']) {
+			$reportday = date_to_timestamp($_POST['day']);
+			if(empty($reportday))
+				$reportday = mktime(0, 0, 0, $month, $day, $year);
 			$today = $reportday;
 		} else {
 			$reportday = time();
@@ -670,21 +680,24 @@ switch($type)
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.cash_operations'))
 			access_denied();
 
-		if($_POST['from'])
-		{
-			list($year, $month, $day) = explode('/', $_POST['from']);
-			$from = mktime(0,0,0, $month, $day, $year);
-		}
-		else
-			$from = mktime(0,0,0, date('m'), date('d'), date('Y'));
+                $from = $_POST['from'];
+                $to = $_POST['to'];
 
-		if($_POST['to'])
-		{
-			list($year, $month, $day) = explode('/', $_POST['to']);
-			$to = mktime(23,59,59, $month, $day, $year);
-		}
-		else
-			$to = mktime(23,59,59, date('m'), date('d'), date('Y'));
+                if($from) {
+                    $from = date_to_timestamp($from);
+                    if(empty($from))
+                        $from = 0;
+                }
+                else
+                    $from = 0;
+
+                if($to) {
+                   $to = date_to_timestamp($to);
+                   if(empty($to))
+                       $to = mktime(23,59,59);
+                   else
+	               $to = $to+86399;
+                }
 
 		$registry = intval($_POST['registry']);
 		$user = intval($_POST['user']);
