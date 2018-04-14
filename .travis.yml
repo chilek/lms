@@ -67,3 +67,11 @@ before_script:
   - if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
 
 script: true
+
+notifications:
+  email:
+#    recipients:
+#      - admin@chilan.com
+#      - r.pietraszewicz@gmail.com
+    on_success: change
+    on_failure: always
