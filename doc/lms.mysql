@@ -1916,7 +1916,7 @@ CREATE TABLE records (
   domain_id       INT(11) DEFAULT NULL,
   name            VARCHAR(255) DEFAULT NULL,
   type            VARCHAR(10) DEFAULT NULL,
-  content         VARCHAR(65535) DEFAULT NULL,
+  content         text DEFAULT NULL,
   ttl             INT(11) DEFAULT NULL,
   prio            INT(11) DEFAULT NULL,
   change_date     INT(11) DEFAULT NULL,
@@ -3323,4 +3323,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018032900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018041400');
