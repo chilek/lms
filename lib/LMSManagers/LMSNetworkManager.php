@@ -119,7 +119,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			'vlanid' => intval($netadd['vlanid']),
             SYSLOG::RES_HOST => $netadd['hostid'],
             'authtype' => $netadd['authtype'],
-            'snat' => $netadd['snat'],
+            'snat' => !empty($netadd['snat']) ? $netadd['snat'] : null,
         );
 		if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
 				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype, snat)
