@@ -60,7 +60,7 @@ $this->Execute("
 	
 	CREATE SEQUENCE tsigkeys_id_seq;
 	CREATE TABLE tsigkeys (
-		id						integer DEFAULT nextval('tsigkeys'::text) NOT NULL,
+		id						integer DEFAULT nextval('tsigkeys_id_seq'::text) NOT NULL,
 		name					varchar(255),
 		algorithm				varchar(50),
 		secret					varchar(255),
