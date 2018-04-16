@@ -320,7 +320,7 @@ $timestamp = time();
 */
 
 $prev_tid = 0;
-$inreplytoid = 0;
+$inreplytoid = null;
 $reftab = explode(' ', $mh_references);
 $lastref = array_pop($reftab);
 
