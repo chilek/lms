@@ -325,9 +325,10 @@ function checkElement(id)
 function CheckAll(form, elem, excl)
 {
     var i, len, n, e, f,
-        form = document.forms[form] ? document.forms[form] : document.getElementById(form),
         //inputs = form.getElementsByTagName('INPUT');
         inputs = form.elements;
+
+    form = document.forms[form] ? document.forms[form] : document.getElementById(form);
 
     for (i=0, len=inputs.length; i<len; i++) {
         e = inputs[i];
@@ -356,7 +357,9 @@ function start_login_timeout(sec)
 {
     if (!sec) sec = 600;
     lms_login_timeout_value = sec;
-    lms_login_timeout = window.setTimeout('window.location.reload(true)', (sec + 5) * 1000);
+    lms_login_timeout = window.setTimeout(function() {
+        window.location.reload(true)
+    }, (sec + 5) * 1000);
 }
 
 function reset_login_timeout()
@@ -372,8 +375,8 @@ function popup(content, frame, sticky, offset_x, offset_y)
 		return 0;
 
 	if (frame)
-		content = '<iframe id="autoiframe" width=100 height=10 frameborder=0 scrolling=no '
-			+'src="'+content+'&popup=1"></iframe>';
+		content = '<iframe id="autoiframe" width=100 height=10 frameborder=0 scrolling=no ' +
+			'src="'+content+'&popup=1"></iframe>';
 
 	if (!offset_x) offset_x = 15;
 	if (!offset_y) offset_y = 15;
@@ -595,13 +598,11 @@ if (typeof $ !== 'undefined') {
 			});
 		});
 
-		for (i in document.links) {
-			link = document.links[i];
-			if (link.rel && link.rel.indexOf('external') != -1) {
-				link.onclick = function() { window.open(this.href); return false; }
-				link.onkeypress = function() { window.open(this.href); return false; }
-			}
-		}
+		$('a[rel="external"]')
+			.on('click keypress', function() {
+				window.open(this.href);
+				return false;
+			});
 	});
 }
 
@@ -710,7 +711,7 @@ function _getAddressList( action, v, on_success ) {
         async  : async
     }).done(function(data) {
         $.each( data, function( i, v ) {
-            data[i]['location'] = $("<div/>").html( v['location'] ).text();
+            data[i].location = $("<div/>").html( v.location ).text();
         });
         if (async) {
             on_success(data);
