@@ -61,8 +61,10 @@ if(isset($_POST['networkdata']))
 	if (empty($networkdata['hostid']))
 		$error['hostid'] = trans('Host should be selected!');
 
-	if(!check_ip($networkdata['snat']))
-                $error['snat'] = trans('Incorrect snat IP address!');
+	if (!empty($networkdata['snat'])) {
+		if(!check_ip($networkdata['snat']))
+			$error['snat'] = trans('Incorrect snat IP address!');
+	}
 
 	if(!check_ip($networkdata['address']))
 		$error['address'] = trans('Incorrect network IP address!');

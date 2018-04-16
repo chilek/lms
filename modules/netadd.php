@@ -141,10 +141,13 @@ if (isset($_POST['netadd']))
 			$authtype |= intval($idx);
 	$netadd['authtype'] = $authtype;
 
-	if (!check_ip($netadd['snat']))
-                $error['snat'] = trans('Incorrect snat IP address!');
-	else
-		$netadd['snatlong'] = ip_long($netadd['snatlong']);
+	if ($netadd['snat']) {
+		if (!check_ip($netadd['snat'])) {
+			$error['snat'] = trans('Incorrect snat IP address!');
+		}
+		else
+			$netadd['snatlong'] = ip_long($netadd['snatlong']);
+	}
 
 	if (!$error)
 	{
