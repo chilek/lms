@@ -72,6 +72,8 @@ $(function() {
 
         var box = getLocationBox(this);
 
+		var address_type = box.find('[data-address="address_type"]').val();
+		var location_name = box.find('[data-address="location-name"]').val();
 		var teryt = box.find('[data-address="teryt-checkbox"]').prop('checked');
 		var city   = box.find('[data-address="city"]').val();
 		var cityid = teryt ? box.find('[data-address="city-hidden"]').val() : null;
@@ -84,8 +86,6 @@ $(function() {
 		var country = box.find('[data-address="country"] option:selected').text();
 		var countryid = box.find('[data-address="country"]').val();
 
-        //var adtype = box.find('[data-address="address_type"]').val();
-
         var location = location_str({
             city: city,
             street: street,
@@ -94,7 +94,7 @@ $(function() {
             zip: zip,
             postoffice: postoffice
         });
-        location = location.length > 0 ? location : '...';
+        location = (address_type == 1 || !location_name.length ? '' : location_name + ', ') + (location.length > 0 ? location : '...');
 
         box.find('[data-address="location"]').val( location );
         box.find('.address-full').text( location );
