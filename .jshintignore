@@ -1,0 +1,9 @@
+**/vendor/**
+**/xajax_js/deferred/**
+**/img/jquery*/**
+**/img/tinymce3/**
+**/img/xajax_js/**
+**/img/sprintf.min.js
+**/img/OpenLayers/**
+plugins/**
+**/*.min.js
