@@ -457,6 +457,8 @@ $PAYTYPES = array(
     6   => trans('barter'),
     7   => trans('contract'),
     8   => trans('paid'),
+    9   => trans('cash on delivery'),
+    10  => trans('instalments'),
 );
 
 // Contact types
