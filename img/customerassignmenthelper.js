@@ -364,7 +364,7 @@ function CustomerAssignmentHelper(options) {
 					$.each(data["addresses"], function(key, value) {
 						options += '<option value="' + value["address_id"] + '"'
 							+ (("recipient_address_id" in selected) && selected["recipient_address_id"] == value["address_id"] ? ' selected' : '') + '>'
-							+ value["location"] + '</option>';
+							+ (value['location_name'] ? value['location_name'] + ', ' : '') + value["location"] + '</option>';
 					});
 				}
 				$('#recipient-select').html(options);

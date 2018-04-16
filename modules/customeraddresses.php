@@ -47,9 +47,13 @@ switch ( strtolower($_GET['action']) ) {
         foreach ($caddr as $k => &$v) {
             if ( empty($v['location']) ) {
                 unset( $caddr[$k] );
+                continue;
             } elseif ($v['teryt']) {
                 $v['location'] = trans('$a (TERRIT)', $v['location']);
             }
+            if ($v['location_address_type'] == BILLING_ADDRESS || empty($v['location_name']))
+                continue;
+            $v['location'] = $v['location_name'] . ', ' . $v['location'];
         }
         unset($v);
 

@@ -114,7 +114,7 @@
 										{trans("Location:")}
 									</td>
 									<td>
-										{$nodeinfo.location}
+										{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
 									</td>
 								</tr>
 								{/if}

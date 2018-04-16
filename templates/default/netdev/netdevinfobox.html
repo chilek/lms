@@ -106,7 +106,7 @@
 		</TD>
 		<TD>
 			{if $netdevinfo.location}
-			{$netdevinfo.location}{if $netdevinfo.borough_name} ({$netdevinfo.state_name} / {$netdevinfo.district_name} / {$_BOROUGHTYPES[$netdevinfo.borough_type]} {$netdevinfo.borough_name}){/if}
+			{if $netdevinfo.location_name}{$netdevinfo.location_name}, {/if}{$netdevinfo.location}{if $netdevinfo.borough_name} ({$netdevinfo.state_name} / {$netdevinfo.district_name} / {$_BOROUGHTYPES[$netdevinfo.borough_type]} {$netdevinfo.borough_name}){/if}
 			{else}
 			{$netdevinfo.netnode.location}{if $netdevinfo.netnode.location_borough_name} ({$netdevinfo.netnode.location_state_name} / {$netdevinfo.netnode.location_district_name} / {$_BOROUGHTYPES[$netdevinfo.netnode.location_borough_type]} {$netdevinfo.netnode.location_borough_name}){/if}
 			{trans("(from network node)")}
