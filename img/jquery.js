@@ -108,8 +108,8 @@ function init_datepickers(selector) {
 				$(this).data('tooltip', input);
 			}
 			setTimeout(function() {
-				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
-					+ 'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
+				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary ' +
+					'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
 				var target = $(input);
 				var widget = target.datepicker("widget");
 				var buttonPane = widget.find(".ui-datepicker-buttonpane");
@@ -144,8 +144,8 @@ function init_datepickers(selector) {
 				if (buttonPane.find('.lms-ui-datepicker-clear').length) {
 					return;
 				}
-				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
-					+ 'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
+				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary ' +
+					'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
 				var btn = $(btnHtml);
 				btn.appendTo(buttonPane);
 
@@ -300,10 +300,10 @@ $(function() {
 			videoelem.currentTime = 0;
 			videoelem.play();
 		} else if ($(this).hasClass('documentview-pdf')) {
-			window.open(url, '_blank', 'left=' + (window.screen.availWidth * 0.1)
-				+ ',top=' + (window.screen.availHeight * 0.1)
-				+ ',width=' + (window.screen.availWidth * 0.8)
-				+ ',height=' + (window.screen.availHeight * 0.8));
+			window.open(url, '_blank', 'left=' + (window.screen.availWidth * 0.1) +
+				',top=' + (window.screen.availHeight * 0.1) +
+				',width=' + (window.screen.availWidth * 0.8) +
+				',height=' + (window.screen.availHeight * 0.8));
 			return false;
 		}
 		dialog.dialog('open');
@@ -667,7 +667,7 @@ $(function() {
 		if (init.searchColumns === undefined) {
 			init.searchColumns = [];
 		} else {
-			init.searchColumns = eval(init.searchColumns);
+			init.searchColumns = JSON.parse(init.searchColumns);
 		}
 		init.stateSave = $(this).attr('data-state-save');
 		init.stateSaveProps = true;
@@ -857,6 +857,14 @@ $(function() {
 		}
 	});
 
+	function toggle_visual_editor(id) {
+		if (tinyMCE.get(id)) {
+			tinyMCE.execCommand('mceToggleEditor', false, id);
+		} else {
+			tinyMCE.execCommand('mceAddControl', true, id);
+		}
+	}
+
 	var editors = $('textarea.lms-ui-wysiwyg-editor');
 	if (editors.length) {
 		tinyMCE.init({
@@ -892,14 +900,6 @@ $(function() {
 			skin: "lms",
 		});
 
-		function toggle_visual_editor(id) {
-			if (tinyMCE.get(id)) {
-				tinyMCE.execCommand('mceToggleEditor', false, id);
-			} else {
-				tinyMCE.execCommand('mceAddControl', true, id);
-			}
-		}
-
 		editors.each(function() {
 			var parent = $(this).parent();
 			var textareaid = $(this).uniqueId().attr('id');
@@ -918,7 +918,8 @@ $(function() {
 				'</TBODY>'));
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$('textarea', parent).change(function(e) {
-				if (ed = tinyMCE.get(textareaid)) {
+				var ed = tinyMCE.get(textareaid);
+				if (ed) {
 					//console.log(e.target.value);
 					ed.load();
 				}
