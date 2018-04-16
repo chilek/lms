@@ -256,8 +256,11 @@
 			selector = '[data-tariff-type]';
 		}
 
-		$('tr[data-tariff-type]').hide();
-		$('tr' + selector).show();
+		var backgrounds = ['lucid', 'light'];
+		$('tr[data-tariff-type]').hide().removeClass(backgrounds.join(' '));
+		$('tr' + selector).show().each(function(key) {
+			$(this).addClass(backgrounds[key & 1]);
+		});
 
 		var total_downceil = 0;
 		var total_upceil = 0;
@@ -278,12 +281,6 @@
 		$('#total-value').html(sprintf(money_format, total_value));
 		$('#total-disc-value').html('(' + sprintf(money_format, total_disc_value) + ')');
 		{/if}
-
-		var backgrounds = ['lucid', 'light'];
-		$('tr[data-tariff-type]').removeClass(backgrounds.join(' '));
-		$('tr[data-tariff-type]:visible').each(function(key) {
-			$(this).addClass(backgrounds[key & 1]);
-		});
 
 		if ($('tr[data-tariff-type]').length) {
 			$('tr[data-tariff-type]').closest('tbody').get(0).updateCheckAll();
