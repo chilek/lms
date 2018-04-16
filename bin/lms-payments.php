@@ -477,7 +477,8 @@ foreach ($assigns as $assign) {
 	$cid = $assign['customerid'];
 	$divid = ($assign['divisionid'] ? $assign['divisionid'] : 0);
 
-	if ($assign['value'] == 0) continue;
+	$assign['value'] = str_replace(',', '.', floatval($assign['value']));
+	if (empty($assign['value'])) continue;
 
 	if (!$assign['suspended'] && $assign['allsuspended'])
 		$assign['value'] = $assign['value'] * $suspension_percentage / 100;
