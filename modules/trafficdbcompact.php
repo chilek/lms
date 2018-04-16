@@ -124,7 +124,8 @@ if(isset($_GET['level']))
 				continue;
 
 			$values[] = sprintf('(%d, %d, %d, %d, %d)',
-				$node['id'], $record['maxtime'], $record['upload'], $record['download'], $record['nodesessionid']);
+				$node['id'], $record['maxtime'], $record['upload'], $record['download'],
+				empty($record['nodesessionid']) ? null : $record['nodesessionid']);
 		}
 
 		if (!empty($values))

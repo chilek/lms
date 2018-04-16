@@ -218,7 +218,8 @@ if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
 					continue;
 
 				$values[] = sprintf('(%d, %d, %d, %d, %d)',
-					$node['id'], $record['maxtime'], $record['upload'], $record['download'], $record['nodesessionid']);
+					$node['id'], $record['maxtime'], $record['upload'], $record['download'],
+					empty($record['nodesessionid']) ? null : $record['nodesessionid']);
 			}
 
 			if (!empty($values))
