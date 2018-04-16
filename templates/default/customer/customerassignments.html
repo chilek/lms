@@ -275,8 +275,8 @@
 		$('#total-downceil').html(total_downceil ? total_downceil + ' kbit/s' : '-');
 		$('#total-upceil').html(total_upceil ? total_upceil + ' kbit/s' : '-');
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-		$('#total-value').html(total_value ? sprintf(money_format, total_value) : '-');
-		$('#total-disc-value').html(total_disc_value ? sprintf(money_format, total_disc_value) : '-');
+		$('#total-value').html(sprintf(money_format, total_value));
+		$('#total-disc-value').html('(' + sprintf(money_format, total_disc_value) + ')');
 		{/if}
 
 		var backgrounds = ['lucid', 'light'];
