@@ -8,3 +8,4 @@
 plugins/**
 **/*.min.js
 **/overlib.js
+templates/default/**/*.js
