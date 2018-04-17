@@ -1,5 +1,5 @@
 // Relased under GPL 2.0
-// Author: Marcin Król
+// Author: Marcin KrÃ³l
 
 
 var ie=document.all;

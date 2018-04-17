@@ -18,7 +18,6 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.elem = elem;
 
 	this.request_delay = 250; // time in milliseconds
-	this.timer;               // delay handler
 
 	if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
 		this.placement = RegExp.$1;
@@ -73,11 +72,12 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	********************************************************/
 	elem.onkeydown = function(ev) {
 		var key = me.getKeyCode(ev);
+		var suggest;
 
 		if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
-			var suggest = RegExp.$1;
+			suggest = RegExp.$1;
 		else
-			var suggest = 'bottom';
+			suggest = 'bottom';
 
 		switch(key) {
 			case ENT:
@@ -204,8 +204,9 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			setTimeout("document.getElementById('" + this.form.id + "').onsubmit = function () { return true; }",10);
 			//Go to search results.
 			if (this.autosubmit) location.href = gotothisuri;
-			if (this.onsubmit !== undefined)
-				eval(this.onsubmit);
+			if (this.onsubmit !== undefined) {
+				(this.onsubmit)();
+			}
 		}
 	};
 
@@ -291,6 +292,10 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.createDiv = function() {
 		var ul = document.createElement('ul');
 
+		function onClick() {
+			me.useSuggestion();
+		}
+
 		//Create an array of LI's for the words.
 		for (var i=0, len=this.eligible.length; i<len; i++) {
 			var word = this.eligible[i];
@@ -305,7 +310,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 				a.innerHTML = word;
 				ds.innerHTML = desc;
 				a.appendChild(ds);
-				li.onclick = function() { me.useSuggestion(); }
+				li.onclick = onClick;
 				li.appendChild(a);
 			} else {
 				word_len = word.length;
@@ -315,7 +320,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 				else
 					li.innerHTML = word;
 
-				li.onclick = function() { me.useSuggestion(); }
+				li.onclick = onClick
 				ds.innerHTML = desc;
 				li.appendChild(ds);
 			}
@@ -383,21 +388,23 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	}
 
 	this.getEligible = function() {
-		this.eligible = Array();
-		this.descriptions = Array();
-		this.actions = Array();
+		try {
+			result = JSON.parse(xmlhttp.responseText);
+			this.eligible = result.eligible;
+			this.descriptions = typeof(result.descriptions) == 'undefined' ? [] : result.descriptions;
+			this.actions = typeof(result.actions) == 'undefined' ? [] : result.actions;
+		} catch(x) {
+			this.eligible = [];
+		}
 
-		try { eval(xmlhttp.responseText); }
-		  catch(x) { this.eligible = Array(); }
+		if (this.suggestions) {
+			for (var i=0, len=this.suggestions.length; i<len; i++) {
+				var suggestion = this.suggestions[i];
 
-        if (this.suggestions) {
-    		for (var i=0, len=this.suggestions.length; i<len; i++) {
-	    		var suggestion = this.suggestions[i];
-
-		    	if(suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
-			    	this.eligible[this.eligible.length] = suggestion;
-			    }
-		    }
+				if (suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
+					this.eligible[eligible.length] = suggestion;
+				}
+			}
 		}
 	};
 

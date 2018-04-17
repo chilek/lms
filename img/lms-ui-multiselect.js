@@ -212,8 +212,8 @@ function multiselect(options) {
 
 		var parent = $(e.target).parent().html().indexOf(old_element.attr('name'));
 
-		if ($(e.target).html().indexOf("<head>") > -1 || parent == -1
-			|| (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
+		if ($(e.target).html().indexOf("<head>") > -1 || parent == -1 ||
+			(parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
 			$(div).hide();
 			if (new_selected != old_selected)
 				new_element.triggerHandler('change');

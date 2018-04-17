@@ -1,12 +1,12 @@
-// Autorem skryptu jest: S£AWOMIR KOK£OWSKI
+// Autorem skryptu jest: S≈ÅAWOMIR KOK≈ÅOWSKI
 // www.kurshtml.boo.pl
-// Je∂li chcesz wykorzystaÊ ten skrypt na swojej stronie, nie usuwaj tego komentarza!
+// Je≈õli chcesz wykorzystaƒá ten skrypt na swojej stronie, nie usuwaj tego komentarza!
 
 function auto_iframe(margines)
 {
    if (parent != self && document.body && (document.body.scrollHeight || document.body.offsetHeight))
    {
-      if (isNaN(parseInt(margines))) var margines = 0;
+      if (isNaN(parseInt(margines))) margines = 0;
 
 //      if (parent.document.getElementById) parent.document.getElementById('autoiframe').height = 1;
 //      else if (parent.document.all) parent.document.all['autoiframe'].height = 1;
@@ -20,16 +20,15 @@ function auto_iframe(margines)
         }
         else if (parent.document.all)
         {
-          parent.document.all['autoiframe'].height = wysokosc + margines;
-          parent.document.all['autoiframe'].scrolling = 'no';
+          parent.document.all.autoiframe.height = wysokosc + margines;
+          parent.document.all.autoiframe.scrolling = 'no';
         }
       }
    }
 
   if (parent != self && document.body && (document.body.scrollWidth || document.body.offsetWidth))
   {
-      var undefined;
-      if (isNaN(parseInt(margines))) var margines = 0;
+      if (isNaN(parseInt(margines))) margines = 0;
 
 //      if (parent.document.getElementById) parent.document.getElementById('autoiframe').width = 1;
 //      else if (parent.document.all) parent.document.all['autoiframe'].width = 1;
@@ -43,8 +42,8 @@ function auto_iframe(margines)
         }
         else if (parent.document.all)
         {
-          parent.document.all['autoiframe'].width = szerokosc + margines;
-          parent.document.all['autoiframe'].scrolling = 'no';
+          parent.document.all.autoiframe.width = szerokosc + margines;
+          parent.document.all.autoiframe.scrolling = 'no';
         }
       }
    }

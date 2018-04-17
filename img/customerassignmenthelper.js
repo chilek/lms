@@ -5,37 +5,37 @@ function CustomerAssignmentHelper(options) {
 
 	if (typeof options === 'object') {
 		if ('customerid' in options) {
-			this.customerid = options["customerid"];
+			this.customerid = options.customerid;
 	    } else {
 			this.customerid = 0;
 		}
 
 		if ('selected' in options) {
-			this.selected = options["selected"];
+			this.selected = options.selected;
 		} else {
 			this.selected = {};
 		}
 
 		if ('internetTariffType' in options) {
-			this.internetTariffType = options["internetTariffType"];
+			this.internetTariffType = options.internetTariffType;
 		} else {
 			this.internetTariffType = 0;
 		}
 
 		if ('phoneTariffType' in options) {
-			this.phoneTariffType = options["phoneTariffType"];
+			this.phoneTariffType = options.phoneTariffType;
 		} else {
 			this.phoneTariffType = 0;
 		}
 
 		if ('tariffTypes' in options) {
-			this.tariffTypes = options["tariffTypes"];
+			this.tariffTypes = options.tariffTypes;
 		} else {
 			this.tariffTypes = tariffTypes;
 		}
 
 		if ('variablePrefix' in options) {
-			this.variablePrefix = options["variablePrefix"];
+			this.variablePrefix = options.variablePrefix;
 		} else {
 			this.variablePrefix = tariffTypes;
 		}
@@ -83,11 +83,11 @@ function CustomerAssignmentHelper(options) {
 				return false;
 			}
 			var selector  = '[name^="' + helper.variablePrefix + '[snodes][' + schemaid + '][' + label + ']"]';
-			if (helper.tariffTypes[tariffid] == helper.internetTariffType
-		        && (($('input' + selector).length && $('div#' + $(selector).closest('div').attr('id').replace('-layer', '') + ':visible').length
-						&& !$(selector + ':checked').length)
-					|| ($('select' + selector).length && !$(selector).val().length))
-			    && !confirm(lmsMessages.nodeAssignmentWarning)) {
+			if (helper.tariffTypes[tariffid] == helper.internetTariffType &&
+				(($('input' + selector).length && $('div#' + $(selector).closest('div').attr('id').replace('-layer', '') + ':visible').length &&
+						!$(selector + ':checked').length) ||
+					($('select' + selector).length && !$(selector).val().length)) &&
+				!confirm(lmsMessages.nodeAssignmentWarning)) {
 				cancelled = 1;
 			}
 		});
@@ -155,8 +155,8 @@ function CustomerAssignmentHelper(options) {
 		ms.getOptions().each(function(key) {
 			var authtype = parseInt($(this).attr('data-tariffaccess'));
 			var location = $(this).attr('data-location');
-			if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
-				&& (location == location_select || !location_select.length)) {
+			if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
+				(location == location_select || !location_select.length)) {
 				ms.showOption(key);
 			} else {
 				ms.hideOption(key);
@@ -203,8 +203,8 @@ function CustomerAssignmentHelper(options) {
 			if (checked) {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
-				if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
-					&& (location == location_select || !location_select.length)) {
+				if (((authtype && (authtype & tariffaccess)) || !tariffaccess) && 
+					(location == location_select || !location_select.length)) {
 					ms.showOption(key);
 				} else {
 					ms.hideOption(key);
@@ -256,30 +256,31 @@ function CustomerAssignmentHelper(options) {
 					var label = $(this).attr('data-label');
 					var td = $('<td/>');
 					var html = '';
+					var options;
 
-					if (data["nodes"]) {
-						html += '<div class="nodes"><img src="img/node.gif"> '
-							+ '<span class="bold">' + lmsMessages.nodes + '</span><br>';
-						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + ']['
-                            + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
+					if (data.nodes) {
+						html += '<div class="nodes"><img src="img/node.gif"> ' +
+							'<span class="bold">' + lmsMessages.nodes + '</span><br>';
+						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + '][' +
+							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
-						var options = '';
-						$.each(data["nodes"], function(key, node) {
-							var location = String(node["location"]);
+						options = '';
+						$.each(data.nodes, function(key, node) {
+							var location = String(node.location);
 							if (location.length > 50) {
-								location.substr(0, 50) + '...';
+								location = location.substr(0, 50) + '...';
 							}
-							var nodeid = String(node["id"]).lpad('0', 4);
-							options += '<option value="' + node["id"] + '"'
-								+ (("snodes" in selected) && (schemaid in selected["snodes"]) && (label in selected["snodes"][schemaid])
-								&& (selected["snodes"][schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
-								+ ' data-tariffaccess="' + node["authtype"] + '"'
-								+ ' data-location="' + node["location"] + '"'
-								+ ' data-html-content="<strong>' + node["name"] + '</strong>'
-								+ ' (' + nodeid + ')' + (location.length ? ' / ' + location : '') + '"';
+							var nodeid = String(node.id).lpad('0', 4);
+							options += '<option value="' + node.id + '"' +
+								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
+								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
+								' data-tariffaccess="' + node.authtype + '"' +
+								' data-location="' + node.location + '"' +
+								' data-html-content="<strong>' + node.name + '</strong>' +
+								' (' + nodeid + ')' + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
-							options += node["name"] + ' (' + nodeid + ')'
-								+ (location.length ? ' / ' + location : '');
+							options += node.name + ' (' + nodeid + ')' +
+								(location.length ? ' / ' + location : '');
 							options += '</option>';
 						});
 
@@ -287,29 +288,29 @@ function CustomerAssignmentHelper(options) {
 						html += '</select></div>';
 					}
 
-					if (data["netdevnodes"]) {
-						html += '<div class="netdevnodes"><img src="img/netdev.gif"> '
-							+ '<span class="bold">' + lmsMessages.netdevices + '</span><br>';
-						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + ']['
-                            + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
+					if (data.netdevnodes) {
+						html += '<div class="netdevnodes"><img src="img/netdev.gif"> ' +
+							'<span class="bold">' + lmsMessages.netdevices + '</span><br>';
+						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + '][' +
+							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
-						var options = '';
-						$.each(data["netdevnodes"], function(key, node) {
-							var location = String(node["location"]);
+						options = '';
+						$.each(data.netdevnodes, function(key, node) {
+							var location = String(node.location);
 							if (location.length > 50) {
-								location.substr(0, 50) + '...';
+								location = location.substr(0, 50) + '...';
 							}
-							var nodeid = String(node["id"]).lpad('0', 4);
-							options += '<option value="' + node["id"] + '"'
-								+ (("snodes" in selected) && (schemaid in selected["snodes"]) && (label in selected["snodes"][schemaid])
-								&& (selected["snodes"][schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
-								+ ' data-tariffaccess="' + node["authtype"] + '"'
-								+ ' data-location="' + node["location"] + '"'
-								+ ' data-html-content="<strong>' + node["name"] + '</strong>'
-								+ ' (' + nodeid + ')' + ' / ' + node["netdev_name"] + (location.length ? ' / ' + location : '') + '"';
+							var nodeid = String(node.id).lpad('0', 4);
+							options += '<option value="' + node.id + '"' +
+								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) && 
+								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
+								' data-tariffaccess="' + node.authtype + '"' +
+								' data-location="' + node.location + '"' +
+								' data-html-content="<strong>' + node.name + '</strong>' +
+								' (' + nodeid + ')' + ' / ' + node.netdev_name + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
-							options += node["name"] + ' (' + nodeid + ')'
-								+ (location.length ? ' / ' + location : '');
+							options += node.name + ' (' + nodeid + ')' +
+								(location.length ? ' / ' + location : '');
 							options += '</option>';
 						});
 
@@ -317,27 +318,27 @@ function CustomerAssignmentHelper(options) {
 						html += '</select></div>';
 					}
 
-					if (data["voipaccounts"]) {
-						html += '<div class="phones"><img src="img/voip.gif"> '
-							+ '<span class="bold">' + lmsMessages.voipAccounts + '</span><br>';
-						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + ']['
-							+ label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
+					if (data.voipaccounts) {
+						html += '<div class="phones"><img src="img/voip.gif"> ' +
+							'<span class="bold">' + lmsMessages.voipAccounts + '</span><br>';
+						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + '][' +
+							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
-						var options = '';
-						$.each(data["voipaccounts"], function(key, account) {
-							var location = String(account["location"]);
+						options = '';
+						$.each(data.voipaccounts, function(key, account) {
+							var location = String(account.location);
 							if (location.length > 50) {
-								location.substr(0, 50) + '...';
+								location = location.substr(0, 50) + '...';
 							}
-							$.each(account["phones"], function(key, phone) {
-								options += '<option value="' + phone["id"] + '"'
-									+ (("sphones" in selected) && (schemaid in selected["sphones"]) && (label in selected["sphones"][schemaid])
-									&& (selected["sphones"][schemaid][label].indexOf(phone["id"]) > -1) ? ' selected' : '')
-									+ ' data-location="' + account["location"] + '"'
-									+ ' data-html-content="<strong>' + phone["phone"] + '</strong>'
-									+ ' / ' + account["login"] + (location.length ? ' / ' + location : '') + '"';
+							$.each(account.phones, function(key, phone) {
+								options += '<option value="' + phone.id + '"' +
+									(("sphones" in selected) && (schemaid in selected.sphones) && (label in selected.sphones[schemaid]) &&
+									(selected.sphones[schemaid][label].indexOf(phone.id) > -1) ? ' selected' : '') +
+									' data-location="' + account.location + '"' +
+									' data-html-content="<strong>' + phone.phone + '</strong>' +
+									' / ' + account.login + (location.length ? ' / ' + location : '') + '"';
 								options += '>';
-								options += phone["phone"] + ' / ' + account["login"] + (location.length ? ' / ' + location : '');
+								options += phone.phone + ' / ' + account.login + (location.length ? ' / ' + location : '');
 								options += '</option>';
 							});
 						});
@@ -349,22 +350,22 @@ function CustomerAssignmentHelper(options) {
 					td.html(html).appendTo(this);
 				});
 
-				var options = '<option value="">' + lmsMessages.allLocations + '</option>';
-				if (data["locations"]) {
-					$.each(data["locations"], function(key, value) {
-						options += '<option value="' + value + '"'
-							+ (("location" in selected) && selected["location"] == value ? ' selected' : '') + '>'
-							+ value + '</option>';
+				options = '<option value="">' + lmsMessages.allLocations + '</option>';
+				if (data.locations) {
+					$.each(data.locations, function(key, value) {
+						options += '<option value="' + value + '"' +
+							(("location" in selected) && selected.location == value ? ' selected' : '') + '>' +
+							value + '</option>';
 					});
 				}
 				$('#location-select').html(options);
 
-				var options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
-				if (data["addresses"]) {
-					$.each(data["addresses"], function(key, value) {
-						options += '<option value="' + value["address_id"] + '"'
-							+ (("recipient_address_id" in selected) && selected["recipient_address_id"] == value["address_id"] ? ' selected' : '') + '>'
-							+ (value['location_name'] ? value['location_name'] + ', ' : '') + value["location"] + '</option>';
+				options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
+				if (data.addresses) {
+					$.each(data.addresses, function(key, value) {
+						options += '<option value="' + value.address_id + '"' +
+							(("recipient_address_id" in selected) && selected.recipient_address_id == value.address_id ? ' selected' : '') + '>' +
+							(value.location_name ? value.location_name + ', ' : '') + value.location + '</option>';
 					});
 				}
 				$('#recipient-select').html(options);
@@ -397,8 +398,8 @@ function checkAllNodes() {
 
 function updateCheckAllNodes() {
 	$('[name="allbox"]').prop('checked',
-		$('[name^="assignment[nodes]"]:visible,[name^="assignment[phones]"]:visible').length
-		== $('[name^="assignment[nodes]"]:visible:checked,[name^="assignment[phones]"]:visible:checked').length);
+		$('[name^="assignment[nodes]"]:visible,[name^="assignment[phones]"]:visible').length ==
+			$('[name^="assignment[nodes]"]:visible:checked,[name^="assignment[phones]"]:visible:checked').length);
 }
 
 $('[name^="assignment[nodes]"],[name^="assignment[phones]"]').click(function() {

@@ -10,6 +10,8 @@
  */
 
 function ClickShowHideMenu(params) {
+	var self = this;
+
 	if (typeof(params) == 'string') {
 		this.id = params;
 		this.maxOpened = 1;
@@ -30,11 +32,15 @@ function ClickShowHideMenu(params) {
     this.openedSections = [];
 
     this.init = function() {
-        if (!document.getElementById(this.id)) {
-            alert("Element '"+this.id+"' does not exist in this document. ClickShowHideMenu cannot be initialized");
+        if (!document.getElementById(self.id)) {
+            alert("Element '" + self.id + "' does not exist in this document. ClickShowHideMenu cannot be initialized");
             return;
         }
-        this.parse(document.getElementById(this.id).childNodes, this.tree, this.id);
+
+		var nodes = $('#' + self.id).children();
+		this.parse(nodes, this.tree, self.id);
+		this.initEventHandlers(nodes)
+
         this.load();
         if (window.attachEvent) {
             window.attachEvent("onunload", function(e) { self.save(); });
@@ -42,6 +48,41 @@ function ClickShowHideMenu(params) {
             window.addEventListener("unload", function(e) { self.save(); }, false);
         }
     }
+
+	this.initEventHandlers = function(nodes) {
+		var box1 = $('[class^="box1"]', nodes);
+		var box2 = $('[class^="box2"]', nodes);
+
+		box1.click(function(e) {
+			if (this.nodeType != 1) {
+				return false;
+			}
+			self.box1click(this.id);
+		});
+		if (self.box1Hover) {
+			box1.mouseover(function() {
+					if (this.nodeType == 1) {
+						self.box1over(this.id);
+					}
+				}).mouseout(function() {
+					if (this.nodeType == 1) {
+						self.box1out(this.id);
+					}
+				});
+		}
+
+		if (self.box2Hover) {
+			box2.mouseover(function() {
+					if (this.nodeType == 1) {
+						$('#' + this.id).addClass('box2-hover');
+					}
+				}).mouseout(function() {
+					if (this.nodeType == 1) {
+						$('#' + this.id).removeClass('box2-hover');
+					}
+				});
+		}
+	}
 
     this.parse = function(nodes, tree, id) {
         for (var i = 0; i < nodes.length; i++) {
@@ -52,9 +93,6 @@ function ClickShowHideMenu(params) {
                 if ("box1" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
                     tree[tree.length] = [];
-                    eval('nodes[i].onmouseover = function() { self.box1over("'+nodes[i].id+'"); }');
-                    eval('nodes[i].onmouseout = function() { self.box1out("'+nodes[i].id+'"); }');
-                    eval('nodes[i].onclick = function() { self.box1click("'+nodes[i].id+'"); }');
                 }
                 if ("section" == nodes[i].className) {
                     id = id + "-" + (tree.length - 1);
@@ -64,102 +102,87 @@ function ClickShowHideMenu(params) {
                 if ("box2" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
                     tree[tree.length] = [];
-                    eval('nodes[i].onmouseover = function() { self.box2over("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
-                    eval('nodes[i].onmouseout = function() { self.box2out("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
                 }
             }
-            if (this.highlightActive && nodes[i].tagName && nodes[i].tagName == "A") {
+            if (self.highlightActive && nodes[i].tagName && nodes[i].tagName == "A") {
                 if (document.location.href == nodes[i].href) {
                     nodes[i].className = (nodes[i].className ? ' active' : 'active')
                 }
             }
-            if (nodes[i].childNodes) {
-                this.parse(nodes[i].childNodes, tree, id);
-            }
+			var children = $(nodes[i]).children();
+			if (children.length) {
+				this.parse(children, tree, id);
+			}
         }
     }
 
-    this.box1over = function(id) {
-        if (!this.box1Hover) return;
-        if (!document.getElementById(id)) return;
+	this.box1over = function(id) {
+		if (!document.getElementById(id)) return;
 		var sections = document.getElementsByClassName('section');
 		for (var i = 0; i < sections.length; i++) {
 			var section = document.getElementById(sections[i].id.replace('-section', ''));
 			if (section.id == id)
 				section.className = (sections[i].style.display == 'block' ? "box1-open-hover" : "box1-hover");
 		}
-    }
+	}
 
-    this.box1out = function(id) {
-        if (!this.box1Hover) return;
-        if (!document.getElementById(id)) return;
+	this.box1out = function(id) {
+		if (!document.getElementById(id)) return;
 		var sections = document.getElementsByClassName('section');
 		for (var i = 0; i < sections.length; i++) {
 			var section = document.getElementById(sections[i].id.replace('-section', ''));
 			if (section.id == id)
 				section.className = (sections[i].style.display == 'block' ? "box1-open" : "box1");
 		}
-    }
+	}
 
-    this.box1click = function(id) {
+	this.box1click = function(id) {
 		if ((elem = document.getElementById(id)) === null)
 			return;
 		var section = document.getElementById(id + "-section");
-		if (this.openedSections.indexOf(id) > -1) {
+		if (self.openedSections.indexOf(id) > -1) {
 			this.hide(id);
-			if (this.box1Hover)
+			if (self.box1Hover)
 				elem.className = 'box1-hover';
 		} else {
 			this.show(id);
-			if (this.box1Hover) {
+			if (self.box1Hover) {
 				elem = document.getElementById(id);
 				elem.className = 'box1-open-hover';
 			}
 		}
-    }
+	}
 
-    this.box2over = function(id, className) {
-        if (!this.box2Hover) return;
-        if (!document.getElementById(id)) return;
-        document.getElementById(id).className = className + "-hover";
-    }
-
-    this.box2out = function(id, className) {
-        if (!this.box2Hover) return;
-        if (!document.getElementById(id)) return;
-        document.getElementById(id).className = className;
-    }
-
-    this.show = function(id) {
-		if ((section = document.getElementById(id + "-section")) !== null
-			&& section.childNodes.length > 1) {
+	this.show = function(id) {
+		if ((section = document.getElementById(id + "-section")) !== null &&
+			section.childNodes.length > 1) {
 			section.style.display = "block";
 			this.appendOpenedSection(id);
 		}
-    }
+	}
 
-    this.hide = function(id) {
-		if ((section = document.getElementById(id + "-section")) !== null
-			&& section.childNodes.length > 1) {
+	this.hide = function(id) {
+		if ((section = document.getElementById(id + "-section")) !== null &&
+			section.childNodes.length > 1) {
 			section.style.display = "";
 			this.removeOpenedSection(id);
 		}
-    }
+	}
 
-    this.save = function() {
+	this.save = function() {
 		var sections = document.getElementsByClassName('section');
 		var openedSections = [];
 		for (var i = 0; i < sections.length; i++)
 			if (sections[i].style.display == 'block')
 				openedSections.push(sections[i].id.replace('-section', ''));
 		if (openedSections.length)
-			this.cookie.set(this.id, openedSections.join(';'));
+			this.cookie.set(self.id, openedSections.join(';'));
 		else
-			this.cookie.del(this.id);
-    }
+			this.cookie.del(self.id);
+	}
 
-    this.load = function() {
-		var openedSections = this.cookie.get(this.id);
+	this.load = function() {
+		var openedSections = this.cookie.get(self.id);
 		if (openedSections) {
 			openedSections = openedSections.split(';');
 			for (var i = 0; i < openedSections.length; i++) {
@@ -167,7 +190,7 @@ function ClickShowHideMenu(params) {
 				document.getElementById(openedSections[i]).className = "box1-open";
 			}
 		}
-    }
+	}
 
 	this.appendOpenedSection = function(id) {
 		var index;
@@ -209,7 +232,6 @@ function ClickShowHideMenu(params) {
         }
     }
 
-    var self = this;
     this.tree = [];
     this.cookie = new Cookie();
 }

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -113,11 +113,11 @@ if (isset($_GET['ajax']) && isset($_GET['what'])) {
 			$actions[$idx] = sprintf("javascript: search_update(%d,%d,%d)", $row['id'], $row['districtid'], $row['stateid']);
 		}
 
-	if ($eligible) {
-		print "this.eligible = [\"" . implode('","', $eligible) . "\"];\n";
-		print "this.actions = [\"" . implode('","', $actions) . "\"];\n";
-	} else
-		print "false;\n";
+	header('Content-Type: application/json');
+	echo json_encode(array(
+		'eligible' => array_values($eligible),
+		'actions' => array_values($actions),
+	));
 	die;
 }
 

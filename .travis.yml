@@ -66,6 +66,8 @@ before_script:
   - mysql lms < doc/lms.mysql
   - if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
 #  - phpcs --standard=PSR2 -n --extensions=php --ignore=*/vendor/*,*/templates_c/* .
+  - npm install -g jshint
+  - jshint .
 
 script: true
 

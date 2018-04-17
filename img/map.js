@@ -42,12 +42,13 @@ OpenLayers.Renderer.LmsSVG = OpenLayers.Class(OpenLayers.Renderer.SVG, {
 		label.setAttributeNS(null, "y", -y);
 
 		//add this for rotation----------------------------------------
+		var transform;
 		if (style.angle || style.angle == 0) {
 			if (style.angle <= 90 || style.angle >= 270) {
-				var transform = 'rotate(' + style.angle + ',' + x + "," + -y + ') translate(0,-10)';
+				transform = 'rotate(' + style.angle + ',' + x + "," + -y + ') translate(0,-10)';
 				label.setAttributeNS(null, "transform", transform);
 			} else {
-				var transform = 'rotate(-' + (540 - style.angle) + ',' + x + "," + -y + ') translate(0,-10)';
+				transform = 'rotate(-' + (540 - style.angle) + ',' + x + "," + -y + ') translate(0,-10)';
 				label.setAttributeNS(null, "transform", transform);
 			}
 		}
@@ -112,7 +113,7 @@ OpenLayers.Renderer.LmsSVG = OpenLayers.Class(OpenLayers.Renderer.SVG, {
 			if (i == 0) {
 				var vfactor = OpenLayers.Renderer.SVG.LABEL_VFACTOR[align[1]];
 				if (vfactor == null) {
-					vfactor = -.5;
+					vfactor = -0.5;
 				}
 				tspan.setAttribute("dy", (vfactor*(numRows-1)) + "em");
 			} else {
@@ -159,14 +160,20 @@ function set_lastonline_limit(sec)
 
 function netdevmap_updater()
 {
+	var i, j, data;
+
 	if (maprequest.status == 200) {
 		try {
-			var data = JSON.parse(maprequest.responseText);
+			data = JSON.parse(maprequest.responseText);
 		} catch (e) {
 			alert('Network device map refresh error!');
 			map.getControlsBy('displayClass', 'lmsRefreshButton')[0].deactivate();
 			return 0;
 		}
+
+		var newfeature;
+		var features;
+
 		//var data = eval('(' + maprequest.responseText + ')');
 		var devices = data.devices;
 		var nodes = data.nodes;
@@ -174,11 +181,11 @@ function netdevmap_updater()
 		var devicelayer = map.getLayersByName(devicesLbl)[0];
 		for (i in devices)
 		{
-			var features = devicelayer.getFeaturesByAttribute('id', parseInt(devices[i].id));
+			features = devicelayer.getFeaturesByAttribute('id', parseInt(devices[i].id));
 			if (features.length && features[0].attributes.state != devices[i].state)
 			{
 				devices[i].id = parseInt(devices[i].id);
-				var newfeature = new OpenLayers.Feature.Vector(
+				newfeature = new OpenLayers.Feature.Vector(
 					features[0].geometry.clone(),
 					devices[i]);
 				devicelayer.removeFeatures([features[0]]);
@@ -189,11 +196,11 @@ function netdevmap_updater()
 		var nodelayer = map.getLayersByName(nodesLbl)[0];
 		for (i in nodes)
 		{
-			var features = nodelayer.getFeaturesByAttribute('id', parseInt(nodes[i].id));
+			features = nodelayer.getFeaturesByAttribute('id', parseInt(nodes[i].id));
 			if (features.length && features[0].attributes.state != nodes[i].state)
 			{
 				nodes[i].id = parseInt(nodes[i].id);
-				var newfeature = new OpenLayers.Feature.Vector(
+				newfeature = new OpenLayers.Feature.Vector(
 					features[0].geometry.clone(),
 					nodes[i]);
 				nodelayer.removeFeatures([features[0]]);
@@ -211,7 +218,9 @@ function netdevmap_refresh(live)
 		callback: netdevmap_updater
 	});
 	if (!live)
-		setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
+		setTimeout(function() {
+				netdevmap_refresh();
+			}, lastonline_limit * 1000);
 }
 
 function close_popup(id)
@@ -280,6 +289,8 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection, startLon, startLat)
 {
+	var i, j;
+
 	var linkstyles = [];
 	linkstyles[0] = { strokeColor: '#00ff00', strokeOpacity: 0.5 }; // wired link type
 	linkstyles[1] = { strokeColor: '#0000ff', strokeOpacity: 0.5 }; // wireless link type
@@ -334,22 +345,22 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			context: {
 				angle: function(feature) {
 					var attr = feature.attributes;
-					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
-						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString' ||
+						(map.getZoom() / map.getNumZoomLevels()) < 0.70)
 						return '';
 					else
 						return attr.azimuth - 90;
 				},
 				label: function(feature) {
 					var attr = feature.attributes;
-					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
-						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString' ||
+						(map.getZoom() / map.getNumZoomLevels()) < 0.70)
 						return '';
 					else
-						return attr.name + (attr.frequency != ''
-							? ' / ' + attr.frequency + (attr.frequency2 != '' ? ' / ' + attr.frequency2 : '')
-								+ (attr.bandwidth != ''
-									? ' (' + attr.bandwidth + ')' : '')
+						return attr.name + (attr.frequency != '' ?
+							' / ' + attr.frequency + (attr.frequency2 != '' ? ' / ' + attr.frequency2 : '') +
+								(attr.bandwidth != '' ?
+									' (' + attr.bandwidth + ')' : '')
 							: '');
 				}
 			}
@@ -371,22 +382,22 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			context: {
 				angle: function(feature) {
 					var attr = feature.attributes;
-					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
-						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString' ||
+						(map.getZoom() / map.getNumZoomLevels()) < 0.70)
 						return '';
 					else
 						return attr.azimuth + attr.width / 2 - 90;
 				},
 				label: function(feature) {
 					var attr = feature.attributes;
-					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
-						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString' ||
+						(map.getZoom() / map.getNumZoomLevels()) < 0.70)
 						return '';
 					else
-						return attr.name + (attr.frequency != ''
-							? ' / ' + attr.frequency + (attr.frequency2 != '' ? ' / ' + attr.frequency2 : '')
-								+ (attr.bandwidth != ''
-									? ' (' + attr.bandwidth + ')' : '')
+						return attr.name + (attr.frequency != '' ?
+							' / ' + attr.frequency + (attr.frequency2 != '' ? ' / ' + attr.frequency2 : '') +
+								(attr.bandwidth != '' ?
+									' (' + attr.bandwidth + ')' : '')
 							: '');
 				}
 			}
@@ -471,6 +482,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			}
 		});
 
+	var lonLat;
+
 	var area = new OpenLayers.Bounds();
 	var devices = [];
 	var areas2 = [];
@@ -481,7 +494,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		for (i in deviceArray)
 		{
 			var normalLonLat = new OpenLayers.LonLat(deviceArray[i].lon, deviceArray[i].lat);
-			var lonLat = normalLonLat.clone().transform(lmsProjection, map.getProjectionObject());
+			lonLat = normalLonLat.clone().transform(lmsProjection, map.getProjectionObject());
 			area.extend(lonLat);
 			devices.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point(
@@ -532,7 +545,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					directions5.push(rsFeature);
 				}
 
-				var rsFeature = new OpenLayers.Feature.Vector(
+				rsFeature = new OpenLayers.Feature.Vector(
 					rsCurve.getCentroid(true), radiosector);
 				if (radiosector.technology == 100) {
 					directions2.push(rsFeature);
@@ -554,11 +567,13 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	});
 	devicelayer.addFeatures(devices);
 
+	var points;
+
 	var devlinks = [];
 	if (devlinkArray)
 		for (i in devlinkArray)
 		{
-			var points = new Array(
+			points = new Array(
 				new OpenLayers.Geometry.Point(devlinkArray[i].srclon, devlinkArray[i].srclat)
 					.transform(lmsProjection, map.getProjectionObject()),
 				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
@@ -582,7 +597,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	if (nodeArray)
 		for (i in nodeArray)
 		{
-			var lonLat = new OpenLayers.LonLat(nodeArray[i].lon, nodeArray[i].lat)
+			lonLat = new OpenLayers.LonLat(nodeArray[i].lon, nodeArray[i].lat)
 				.transform(lmsProjection, map.getProjectionObject());
 			area.extend(lonLat);
 			nodes.push(new OpenLayers.Feature.Vector(
@@ -602,7 +617,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	if (nodelinkArray)
 		for (i in nodelinkArray)
 		{
-			var points = new Array(
+			points = new Array(
 				new OpenLayers.Geometry.Point(nodelinkArray[i].nodelon, nodelinkArray[i].nodelat)
 					.transform(lmsProjection, map.getProjectionObject()),
 				new OpenLayers.Geometry.Point(nodelinkArray[i].netdevlon, nodelinkArray[i].netdevlat)
@@ -686,17 +701,17 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					var features = findFeaturesIntersection(this, feature, featureLonLat);
 					if (features.length) {
 						var content = '<div class="lmsMapPopupContents">';
-						for (var i in features) {
+						for (i in features) {
 							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")
-								content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
-									+ (features[i].data.ipaddr.length ? 
-										'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
+								content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>' +
+									(features[i].data.ipaddr.length ? 
+										'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g,
 											'</div><div class="lmsMapPopupAddress">') + '</div>'
 										: '');
 							else
-								content += '<span class="bold">' + features[i].data.typename + '<br>'
-									+ (features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '')
-									+ features[i].data.speedname + '</span>';
+								content += '<span class="bold">' + features[i].data.typename + '<br>' +
+									(features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '') +
+									features[i].data.speedname + '</span>';
 						}
 						content += '</div>';
 						mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
@@ -730,14 +745,17 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	map.addControl(highlightlayer);
 	highlightlayer.activate();
 
+	var selectlayer;
+
 	if (selection)
 	{
-		var selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
+		selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
 			clickout: true, toggle: false,
 			multiple: true, hover: false,
 			toggleKey: "ctrlKey", // ctrl key removes from selection
 			multipleKey: "shiftKey", // shift key adds to selection
 			onSelect: function(feature) {
+				var i, j;
 				var map = feature.layer.map;
 				if (mappopup)
 				{
@@ -760,34 +778,34 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					//featurepopup.closeOnMove = true;
 					//featurepopup.keepInMap = true;
 					//featurepopup.panMapIfOutOfView = true;
-					var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitle">Info</div>'
-						+ '<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div></div>'
-						+ '<div class="lmsInfoPopupContents">';
-					for (var i in features) {
+					var content = '<div class="lmsPopupTitleBar"><div class="lmsPopupTitle">Info</div>' +
+						'<div id="' + featurepopup.id + '_popupCloseBox" class="olPopupCloseBox lmsPopupCloseBox">&nbsp;</div></div>' +
+						'<div class="lmsInfoPopupContents">';
+					for (i in features) {
 						content += '<div class="lmsInfoPopupName">' + features[i].data.name + '</div>';
 						if (features[i].data.type == 'netdevinfo') {
 							if (features[i].data.ipaddr.length) {
 								var ips = features[i].data.ipaddr.split(',');
 								var nodeids = features[i].data.nodeid.split(',');
-								for (var j in nodeids)
-									content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
-									+ featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-									+ ips[j] + '</a></div>';
+								for (j in nodeids)
+									content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\'' +
+										featurepopup.id + '\', \'' + ips[j] + '\')"><img src="img/ip.gif" alt="">&nbsp;' +
+										ips[j] + '</a></div>';
 							}
 						} else
-							content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\''
-								+ featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;'
-								+ features[i].data.ipaddr + '</a></div>';
-						content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
-							+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
+							content += '<div class="lmsInfoPopupAddress"><a href="#" onclick="ping_host(\'' +
+								featurepopup.id + '\', \'' + features[i].data.ipaddr + '\')"><img src="img/ip.gif" alt="">&nbsp;' +
+								features[i].data.ipaddr + '</a></div>';
+						content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">' +
+							'<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
 						if (features[i].data.url) {
 							var urls = features[i].data.url.split(',');
 							var comments = features[i].data.comment.split(',');
-							for (var j in urls) {
-								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '"'
-									+ (urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>'
-									+ '<img src="img/network.gif" alt=""> '
-									+ (comments[j].length ? comments[j] : urls[j]) + '</a></div>';
+							for (j in urls) {
+								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '"' +
+									(urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>' +
+									'<img src="img/network.gif" alt=""> ' +
+									(comments[j].length ? comments[j] : urls[j]) + '</a></div>';
 							}
 						}
 					}
@@ -872,7 +890,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						break;
 					case 'center':
 						var area = new OpenLayers.Bounds();
-						for (var i = 0; i < map.layers.length; i++) {
+						for (i = 0; i < map.layers.length; i++) {
 							if (!map.layers[i].isBaseLayer)
 								for (var j = 0; j < map.layers[i].features.length; j++) {
 									var feature = map.layers[i].features[j];
@@ -896,7 +914,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		panel.addControls([checkbutton, centerbutton, refreshbutton]);
 		map.addControl(panel);
 	} else {
-		var selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
+		selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
 			clickout: true, toggle: false,
 			multiple: true, hover: false,
 			toggleKey: "ctrlKey", // ctrl key removes from selection
@@ -915,10 +933,11 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	map.addControl(new OpenLayers.Control.ScaleLine());
 	//map.addControl(new OpenLayers.Control.NavToolbar());
 	/* in MSIE LayerSwitcher display rounded corners is broken */
+	var layerSwitcher;
 	if (navigator.appName == "Microsoft Internet Explorer") {
-		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCorner: false });
+		layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCorner: false });
 	} else {
-		var layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCornerColor: '#CEBD9B' });
+		layerSwitcher = new OpenLayers.Control.LayerSwitcher({ roundedCornerColor: '#CEBD9B' });
 	}
 	map.addControl(layerSwitcher);
 	map.addControl(new OpenLayers.Control.MousePosition({ displayProjection: lmsProjection }));
@@ -933,8 +952,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	var mapLayers = getCookie('mapLayers');
 	if (mapLayers != null) {
 		var visibleLayers = mapLayers.split(';');
-		for (var i = 0; i < visibleLayers.length, i < layerSwitcher.dataLayers.length; i++) {
-			for (var j = 0; j < layerSwitcher.dataLayers.length, layerSwitcher.layerStates[j].id != layerSwitcher.dataLayers[i].layer.id; j++);
+		for (i = 0; i < visibleLayers.length, i < layerSwitcher.dataLayers.length; i++) {
+			for (j = 0; j < layerSwitcher.dataLayers.length, layerSwitcher.layerStates[j].id != layerSwitcher.dataLayers[i].layer.id; j++);
 			layerSwitcher.dataLayers[i].layer.setVisibility((visibleLayers[i] == '1' ? true : false));
 		}
 	}
@@ -945,9 +964,9 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	if (mapSettings != null) {
 		var mapData = mapSettings.split(';');
 		if (mapData.length == 3) {
-			var lon = parseFloat(mapData[0]);
-			var lat = parseFloat(mapData[1]);
-			var zoom = parseInt(mapData[2]);
+			lon = parseFloat(mapData[0]);
+			lat = parseFloat(mapData[1]);
+			zoom = parseInt(mapData[2]);
 			loadedSettings = true;
 		}
 	}
