@@ -3,8 +3,9 @@
 function CheckAll(form, elem, excl)
 {
     var i, len, n, e, f,
-        form = document.forms[form] ? document.forms[form] : document.getElementById(form),
         inputs = form.getElementsByTagName('INPUT');
+
+    form = document.forms[form] ? document.forms[form] : document.getElementById(form);
 
     for (i=0, len=inputs.length; i<len; i++) {
         e = inputs[i];
