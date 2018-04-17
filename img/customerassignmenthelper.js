@@ -268,7 +268,7 @@ function CustomerAssignmentHelper(options) {
 						$.each(data.nodes, function(key, node) {
 							var location = String(node["location"]);
 							if (location.length > 50) {
-								location.substr(0, 50) + '...';
+								location = location.substr(0, 50) + '...';
 							}
 							var nodeid = String(node["id"]).lpad('0', 4);
 							options += '<option value="' + node["id"] + '"'
@@ -298,7 +298,7 @@ function CustomerAssignmentHelper(options) {
 						$.each(data["netdevnodes"], function(key, node) {
 							var location = String(node["location"]);
 							if (location.length > 50) {
-								location.substr(0, 50) + '...';
+								location = location.substr(0, 50) + '...';
 							}
 							var nodeid = String(node["id"]).lpad('0', 4);
 							options += '<option value="' + node["id"] + '"'
@@ -328,7 +328,7 @@ function CustomerAssignmentHelper(options) {
 						$.each(data["voipaccounts"], function(key, account) {
 							var location = String(account["location"]);
 							if (location.length > 50) {
-								location.substr(0, 50) + '...';
+								location = location.substr(0, 50) + '...';
 							}
 							$.each(account["phones"], function(key, phone) {
 								options += '<option value="' + phone["id"] + '"'
