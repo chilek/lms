@@ -53,8 +53,8 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
         this.popPnt = this.popup.events.getMousePosition(evt);
         var divelems = this.popup.div.getElementsByTagName('div');
         for (var i = 0; i < divelems.length, divelems[i].className != 'lmsPopupTitleBar'; i++);
-        if (i < divelems.length && (this.popPnt.x < divelems[i].offsetLeft || this.popPnt.x > divelems[i].offsetLeft + divelems[i].offsetWidth
-                || this.popPnt.y < divelems[i].offsetTop || this.popPnt.y > divelems[i].offsetTop + divelems[i].offsetHeight))
+        if (i < divelems.length && (this.popPnt.x < divelems[i].offsetLeft || this.popPnt.x > divelems[i].offsetLeft + divelems[i].offsetWidth ||
+                this.popPnt.y < divelems[i].offsetTop || this.popPnt.y > divelems[i].offsetTop + divelems[i].offsetHeight))
             return true;
         else
             this.down = true;
@@ -75,8 +75,8 @@ OpenLayers.Control.DragPopup = OpenLayers.Class(OpenLayers.Control, {
         if (closeElem != null)
         {
             var clickPnt = this.popup.events.getMousePosition(evt);
-            if (clickPnt.x >= closeElem.offsetLeft && clickPnt.x <= closeElem.offsetLeft + closeElem.offsetWidth
-                && clickPnt.y >= closeElem.offsetTop && clickPnt.y <= closeElem.offsetTop + closeElem.offsetHeight) {
+            if (clickPnt.x >= closeElem.offsetLeft && clickPnt.x <= closeElem.offsetLeft + closeElem.offsetWidth &&
+                clickPnt.y >= closeElem.offsetTop && clickPnt.y <= closeElem.offsetTop + closeElem.offsetHeight) {
                 if (this.feature) {
                     this.feature.popup = null;
                     for (var i = 0; i < this.map.controls.length, !(this.map.controls[i] instanceof OpenLayers.Control.SelectFeature); i++);
