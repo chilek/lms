@@ -140,13 +140,14 @@ switch ($mode) {
 					$descriptions[$row['id']] = '';
 				}
 			}
-			header('Content-type: text/plain');
+			header('Content-type: application/json');
 			if ($eglible) {
-				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-				print "this.actions = [\"".implode('","',$actions)."\"];\n";
-			} else {
-				print "false;\n";
+				$result = array(
+					'eligible' => array_values($eglible),
+					'descriptions' => array_values($descriptions),
+					'actions' => array_values($actions),
+				);
+				echo json_encode($result);
 			}
 			$SESSION->close();
 			$DB->Destroy();
@@ -204,13 +205,14 @@ switch ($mode) {
 				}
 				$descriptions[$row['id']] = '';
 			}
-			header('Content-type: text/plain');
+			header('Content-type: application/json');
 			if ($eglible) {
-				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-				print "this.actions = [\"".implode('","',$actions)."\"];\n";
-			} else {
-				print "false;\n";
+				$result = array(
+					'eligible' => array_values($eglible),
+					'descriptions' => array_values($descriptions),
+					'actions' => array_values($actions),
+				);
+				echo json_encode($result);
 			}
 			$SESSION->close();
 			$DB->Destroy();
@@ -242,13 +244,14 @@ switch ($mode) {
 
 				$descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone']);
 			}
-			header('Content-type: text/plain');
+			header('Content-type: application/json');
 			if ($eglible) {
-				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-				print "this.actions = [\"".implode('","',$actions)."\"];\n";
-			} else {
-				print "false;\n";
+				$result = array(
+					'eligible' => array_values($eglible),
+					'descriptions' => array_values($descriptions),
+					'actions' => array_values($actions),
+				);
+				echo json_encode($result);
 			}
 			$SESSION->close();
 			$DB->Destroy();
@@ -342,16 +345,17 @@ switch ($mode) {
 				}
 				$descriptions[$row['id']] = '';
 			}
-			header('Content-type: text/plain');
+			header('Content-type: application/json');
 			if ($eglible) {
-				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-				print "this.actions = [\"".implode('","',$actions)."\"];\n";
-			} else {
-				print "false;\n";
+				$result = array(
+					'eligible' => array_values($eglible),
+					'descriptions' => array_values($descriptions),
+					'actions' => array_values($actions),
+				);
+				echo json_encode($result);
 			}
-                        $SESSION->close();
-                        $DB->Destroy();
+			$SESSION->close();
+			$DB->Destroy();
 			exit;
 		}
 
@@ -413,16 +417,17 @@ switch ($mode) {
 				if (preg_match("~^$search~i",$row['lastname'])) { $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']); continue; }
 				$descriptions[$row['id']] = '';
 			}
-			header('Content-type: text/plain');
+			header('Content-type: application/json');
 			if ($eglible) {
-				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-				print "this.actions = [\"".implode('","',$actions)."\"];\n";
-			} else {
-				print "false;\n";
+				$result = array(
+					'eligible' => array_values($eglible),
+					'descriptions' => array_values($descriptions),
+					'actions' => array_values($actions),
+				);
+				echo json_encode($result);
 			}
-                        $SESSION->close();
-                        $DB->Destroy();
+			$SESSION->close();
+			$DB->Destroy();
 			exit;
 		}
 
@@ -472,16 +477,17 @@ switch ($mode) {
 				$eglible[$row['id']] = escape_js($row['login'].'@'.$row['domain']);
 				$descriptions[$row['id']] = '';
 			}
-			header('Content-type: text/plain');
+			header('Content-type: application/json');
 			if ($eglible) {
-				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-				print "this.actions = [\"".implode('","',$actions)."\"];\n";
-			} else {
-				print "false;\n";
+				$result = array(
+					'eligible' => array_values($eglible),
+					'descriptions' => array_values($descriptions),
+					'actions' => array_values($actions),
+				);
+				echo json_encode($result);
 			}
-                        $SESSION->close();
-                        $DB->Destroy();
+			$SESSION->close();
+			$DB->Destroy();
 			exit;
 		}
 
@@ -527,16 +533,17 @@ switch ($mode) {
 					$descriptions[$row['id']] = escape_js(truncate_str($row['customername'], 35));
 					//$descriptions[$row['id']] = trans('Document id:') . ' ' . $row['id'];
 				}
-			header('Content-type: text/plain');
+			header('Content-type: application/json');
 			if ($eglible) {
-				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-				print "this.actions = [\"".implode('","',$actions)."\"];\n";
-			} else {
-				print "false;\n";
+				$result = array(
+					'eligible' => array_values($eglible),
+					'descriptions' => array_values($descriptions),
+					'actions' => array_values($actions),
+				);
+				echo json_encode($result);
 			}
-                        $SESSION->close();
-                        $DB->Destroy();
+			$SESSION->close();
+			$DB->Destroy();
 			exit;
 		}
 

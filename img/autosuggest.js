@@ -383,21 +383,23 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	}
 
 	this.getEligible = function() {
-		this.eligible = Array();
-		this.descriptions = Array();
-		this.actions = Array();
+		try {
+			result = JSON.parse(xmlhttp.responseText);
+			this.eligible = result.eligible;
+			this.descriptions = result.descriptions;
+			this.actions = result.actions;
+		} catch(x) {
+			this.eligible = [];
+		}
 
-		try { eval(xmlhttp.responseText); }
-		  catch(x) { this.eligible = Array(); }
+		if (this.suggestions) {
+			for (var i=0, len=this.suggestions.length; i<len; i++) {
+				var suggestion = this.suggestions[i];
 
-        if (this.suggestions) {
-    		for (var i=0, len=this.suggestions.length; i<len; i++) {
-	    		var suggestion = this.suggestions[i];
-
-		    	if(suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
-			    	this.eligible[this.eligible.length] = suggestion;
-			    }
-		    }
+				if (suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
+					this.eligible[eligible.length] = suggestion;
+				}
+			}
 		}
 	};
 

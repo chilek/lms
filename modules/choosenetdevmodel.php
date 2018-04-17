@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -54,15 +54,16 @@ if (isset($_GET['ajax']) && isset($_GET['what'])) {
             ORDER BY name
             LIMIT 10'
         );
+        header('Content-Type: application/json');
         if (!empty($list)) {
             foreach ($list as $idx => $row) {
                 $eligible[$idx] = escape_js($row['name']);
                 $actions[$idx] = sprintf("javascript: search_producer(%d)", $row['id']);
             }
-            print "this.eligible = [\"" . implode('","', $eligible) . "\"];\n";
-            print "this.actions = [\"" . implode('","', $actions) . "\"];\n";
-        } else {
-            print "false;\n";
+            echo json_encode(array(
+                'eligible' => array_values($eligible),
+                'actions' => array_values($actions),
+            ));
         }
 	die;
 }

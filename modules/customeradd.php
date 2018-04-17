@@ -57,11 +57,11 @@ if (isset($_GET['ajax'])) {
 			$eglible[$row['item']] = escape_js($row['item']);
 			$descriptions[$row['item']] = escape_js($row['entries'] . ' ' . trans('entries'));
 		}
-	if ($eglible) {
-		print "this.eligible = [\"" . implode('","', $eglible) . "\"];\n";
-		print "this.descriptions = [\"" . implode('","', $descriptions) . "\"];\n";
-	} else
-		print "false;\n";
+	header('Content-Type: application/json');
+	echo json_encode(array(
+		'eligible' => array_values($eglible),
+		'descriptions' => array_values($descriptions),
+	));
 	exit;
 }
 

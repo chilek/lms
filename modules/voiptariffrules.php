@@ -163,13 +163,11 @@ if (isset($_GET['ajax'])) {
             $descriptions[$row['item']] = $row['id'] . ' :id';
         }
 
-    if ($eglible) {
-        print "this.eligible = [\"" . implode('","', $eglible) . "\"];\n";
-        print "this.descriptions = [\"" . implode('","', $descriptions) . "\"];\n";
-    }
-    else
-        print "false;\n";
-
+    header('Content-Type: application/json');
+    echo json_encode(array(
+        'eligible' => array_values($eglible),
+        'descriptions' => array_values($descriptions),
+    ));
     exit;
 }
 
