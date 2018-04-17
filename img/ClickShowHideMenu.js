@@ -54,9 +54,9 @@ function ClickShowHideMenu(params) {
                 if ("box1" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
                     tree[tree.length] = [];
-                    nodes[i].onmouseover = function() { self.box1over("'+nodes[i].id+'"); }
-                    nodes[i].onmouseout = function() { self.box1out("'+nodes[i].id+'"); }
-                    nodes[i].onclick = function() { self.box1click("'+nodes[i].id+'"); }
+                    nodes[i].onmouseover = function() { self.box1over(this.id); }
+                    nodes[i].onmouseout = function() { self.box1out(this.id); }
+                    nodes[i].onclick = function() { self.box1click(this.id); }
                 }
                 if ("section" == nodes[i].className) {
                     id = id + "-" + (tree.length - 1);
@@ -66,8 +66,8 @@ function ClickShowHideMenu(params) {
                 if ("box2" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
                     tree[tree.length] = [];
-                    nodes[i].onmouseover = function() { self.box2over("'+nodes[i].id+'", "'+nodes[i].className+'"); }
-                    nodes[i].onmouseout = function() { self.box2out("'+nodes[i].id+'", "'+nodes[i].className+'"); }
+                    nodes[i].onmouseover = function() { self.box2over(this.id); }
+                    nodes[i].onmouseout = function() { self.box2out(this.id); }
                 }
             }
             if (this.highlightActive && nodes[i].tagName && nodes[i].tagName == "A") {
@@ -120,17 +120,15 @@ function ClickShowHideMenu(params) {
 		}
     }
 
-    this.box2over = function(id, className) {
-        if (!this.box2Hover) return;
-        if (!document.getElementById(id)) return;
-        document.getElementById(id).className = className + "-hover";
-    }
+	this.box2over = function(id) {
+		if (!this.box2Hover) return;
+		$('#' + id).addClass('box2-hover');
+	}
 
-    this.box2out = function(id, className) {
-        if (!this.box2Hover) return;
-        if (!document.getElementById(id)) return;
-        document.getElementById(id).className = className;
-    }
+	this.box2out = function(id) {
+		if (!this.box2Hover) return;
+		$('#' + id).removeClass('box2-hover');
+	}
 
     this.show = function(id) {
 		if ((section = document.getElementById(id + "-section")) !== null &&
