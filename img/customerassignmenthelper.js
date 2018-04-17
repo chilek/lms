@@ -266,21 +266,21 @@ function CustomerAssignmentHelper(options) {
 
 						options = '';
 						$.each(data.nodes, function(key, node) {
-							var location = String(node["location"]);
+							var location = String(node.location);
 							if (location.length > 50) {
 								location = location.substr(0, 50) + '...';
 							}
-							var nodeid = String(node["id"]).lpad('0', 4);
-							options += '<option value="' + node["id"] + '"'
-								+ (("snodes" in selected) && (schemaid in selected["snodes"]) && (label in selected["snodes"][schemaid])
-								&& (selected["snodes"][schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
-								+ ' data-tariffaccess="' + node["authtype"] + '"'
-								+ ' data-location="' + node["location"] + '"'
-								+ ' data-html-content="<strong>' + node["name"] + '</strong>'
-								+ ' (' + nodeid + ')' + (location.length ? ' / ' + location : '') + '"';
+							var nodeid = String(node.id).lpad('0', 4);
+							options += '<option value="' + node.id + '"' +
+								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
+								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
+								' data-tariffaccess="' + node.authtype + '"' +
+								' data-location="' + node.location + '"' +
+								' data-html-content="<strong>' + node.name + '</strong>' +
+								' (' + nodeid + ')' + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
-							options += node["name"] + ' (' + nodeid + ')'
-								+ (location.length ? ' / ' + location : '');
+							options += node.name + ' (' + nodeid + ')' +
+								(location.length ? ' / ' + location : '');
 							options += '</option>';
 						});
 
@@ -295,22 +295,22 @@ function CustomerAssignmentHelper(options) {
 							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
 						options = '';
-						$.each(data["netdevnodes"], function(key, node) {
-							var location = String(node["location"]);
+						$.each(data.netdevnodes, function(key, node) {
+							var location = String(node.location);
 							if (location.length > 50) {
 								location = location.substr(0, 50) + '...';
 							}
-							var nodeid = String(node["id"]).lpad('0', 4);
-							options += '<option value="' + node["id"] + '"'
-								+ (("snodes" in selected) && (schemaid in selected["snodes"]) && (label in selected["snodes"][schemaid])
-								&& (selected["snodes"][schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
-								+ ' data-tariffaccess="' + node["authtype"] + '"'
-								+ ' data-location="' + node["location"] + '"' +
-								' data-html-content="<strong>' + node["name"] + '</strong>' +
-								' (' + nodeid + ')' + ' / ' + node["netdev_name"] + (location.length ? ' / ' + location : '') + '"';
+							var nodeid = String(node.id).lpad('0', 4);
+							options += '<option value="' + node.id + '"' +
+								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) && 
+								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
+								' data-tariffaccess="' + node.authtype + '"' +
+								' data-location="' + node.location + '"' +
+								' data-html-content="<strong>' + node.name + '</strong>' +
+								' (' + nodeid + ')' + ' / ' + node.netdev_name + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
-							options += node.name + ' (' + nodeid + ')'
-								+ (location.length ? ' / ' + location : '');
+							options += node.name + ' (' + nodeid + ')' +
+								(location.length ? ' / ' + location : '');
 							options += '</option>';
 						});
 
@@ -318,27 +318,27 @@ function CustomerAssignmentHelper(options) {
 						html += '</select></div>';
 					}
 
-					if (data["voipaccounts"]) {
-						html += '<div class="phones"><img src="img/voip.gif"> '
-							+ '<span class="bold">' + lmsMessages.voipAccounts + '</span><br>';
-						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + ']['
-							+ label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
+					if (data.voipaccounts) {
+						html += '<div class="phones"><img src="img/voip.gif"> ' +
+							'<span class="bold">' + lmsMessages.voipAccounts + '</span><br>';
+						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + '][' +
+							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
-						var options = '';
-						$.each(data["voipaccounts"], function(key, account) {
-							var location = String(account["location"]);
+						options = '';
+						$.each(data.voipaccounts, function(key, account) {
+							var location = String(account.location);
 							if (location.length > 50) {
 								location = location.substr(0, 50) + '...';
 							}
-							$.each(account["phones"], function(key, phone) {
-								options += '<option value="' + phone["id"] + '"'
-									+ (("sphones" in selected) && (schemaid in selected["sphones"]) && (label in selected["sphones"][schemaid])
-									&& (selected["sphones"][schemaid][label].indexOf(phone["id"]) > -1) ? ' selected' : '')
-									+ ' data-location="' + account["location"] + '"'
-									+ ' data-html-content="<strong>' + phone["phone"] + '</strong>'
-									+ ' / ' + account["login"] + (location.length ? ' / ' + location : '') + '"';
+							$.each(account.phones, function(key, phone) {
+								options += '<option value="' + phone.id + '"' +
+									(("sphones" in selected) && (schemaid in selected.sphones) && (label in selected.sphones[schemaid]) &&
+									(selected.sphones[schemaid][label].indexOf(phone.id) > -1) ? ' selected' : '') +
+									' data-location="' + account.location + '"' +
+									' data-html-content="<strong>' + phone.phone + '</strong>' +
+									' / ' + account.login + (location.length ? ' / ' + location : '') + '"';
 								options += '>';
-								options += phone["phone"] + ' / ' + account["login"] + (location.length ? ' / ' + location : '');
+								options += phone.phone + ' / ' + account.login + (location.length ? ' / ' + location : '');
 								options += '</option>';
 							});
 						});
@@ -350,22 +350,22 @@ function CustomerAssignmentHelper(options) {
 					td.html(html).appendTo(this);
 				});
 
-				var options = '<option value="">' + lmsMessages.allLocations + '</option>';
-				if (data["locations"]) {
-					$.each(data["locations"], function(key, value) {
-						options += '<option value="' + value + '"'
-							+ (("location" in selected) && selected["location"] == value ? ' selected' : '') + '>'
-							+ value + '</option>';
+				options = '<option value="">' + lmsMessages.allLocations + '</option>';
+				if (data.locations) {
+					$.each(data.locations, function(key, value) {
+						options += '<option value="' + value + '"' +
+							(("location" in selected) && selected.location == value ? ' selected' : '') + '>' +
+							value + '</option>';
 					});
 				}
 				$('#location-select').html(options);
 
-				var options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
-				if (data["addresses"]) {
-					$.each(data["addresses"], function(key, value) {
-						options += '<option value="' + value["address_id"] + '"'
-							+ (("recipient_address_id" in selected) && selected["recipient_address_id"] == value["address_id"] ? ' selected' : '') + '>'
-							+ (value['location_name'] ? value['location_name'] + ', ' : '') + value["location"] + '</option>';
+				options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
+				if (data.addresses) {
+					$.each(data.addresses, function(key, value) {
+						options += '<option value="' + value.address_id + '"' +
+							(("recipient_address_id" in selected) && selected.recipient_address_id == value.address_id ? ' selected' : '') + '>' +
+							(value.location_name ? value.location_name + ', ' : '') + value.location + '</option>';
 					});
 				}
 				$('#recipient-select').html(options);
@@ -398,8 +398,8 @@ function checkAllNodes() {
 
 function updateCheckAllNodes() {
 	$('[name="allbox"]').prop('checked',
-		$('[name^="assignment[nodes]"]:visible,[name^="assignment[phones]"]:visible').length
-		== $('[name^="assignment[nodes]"]:visible:checked,[name^="assignment[phones]"]:visible:checked').length);
+		$('[name^="assignment[nodes]"]:visible,[name^="assignment[phones]"]:visible').length ==
+			$('[name^="assignment[nodes]"]:visible:checked,[name^="assignment[phones]"]:visible:checked').length);
 }
 
 $('[name^="assignment[nodes]"],[name^="assignment[phones]"]').click(function() {
