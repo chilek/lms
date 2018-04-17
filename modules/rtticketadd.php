@@ -28,6 +28,8 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
+$ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
+$ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
 
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 if (!$categories) {
@@ -104,6 +106,9 @@ if(isset($_POST['ticket']))
 
 		if (empty($ticket['netnodeid']))
 			$ticket['netnodeid'] = null;
+
+		if (empty($ticket['netdevid']))
+			$ticket['netdevid'] = null;
 
 		if (empty($ticket['requestor_mail']))
 			$ticket['requestor_mail'] = null;

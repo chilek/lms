@@ -128,6 +128,7 @@ $_LANG['Add new queue'] = 'Utworzenie nowej kolejki';
 $_LANG['Add new standing payment'] = 'Dodanie nowej opłaty stałej';
 $_LANG['Add new subscription fee'] = 'Dodanie nowej taryfy abonamentowej';
 $_LANG['Add new ticket'] = 'Dodanie nowego zgłoszenia';
+$_LANG['Assigned tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Ticket ID:'] = 'Nr zgłoszenia:';
 $_LANG['Ticket ID'] = 'Nr zgłoszenia';
 $_LANG['Add option'] = 'Dodaj opcję';

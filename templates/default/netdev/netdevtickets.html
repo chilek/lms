@@ -1,0 +1,37 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR class="hand" onclick="showOrHideNetdevticketsPanel();">
+		<TD class="bold">
+			<IMG src="img/ticket.gif" alt="">
+			<A name="netdevtickets">{trans("Assigned tickets:")} ({$queue_count})</A>
+		</TD>
+		<TD class="text-right nobr">
+			<A href="?m=rtticketadd&netdevid={$queue_netdevid}"><IMG src="img/save.gif" alt="{trans("Add new")}"> {trans("Add new")}</A>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR id="netdevticketspanel" style="display: none;">
+		<TD width="100%" colspan="2">
+			<TABLE class="lmsbox-inner">
+			<TBODY>
+				{include "rt/rtqueueviewbox.html"}
+                        </TBODY>
+                        </TABLE>
+                </TD>
+        </TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('netdevticketspanel') == '1') {
+        xjx.$('netdevticketspanel').style.display = '';
+}
+
+function showOrHideNetdevticketsPanel() {
+        showOrHide('netdevticketspanel');
+}
+
+//-->
+</SCRIPT>

@@ -49,7 +49,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL) {
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL) {
 		if (!$order)
 			$order = 'createtime,desc';
 
@@ -96,6 +96,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			$priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
 		elseif (empty($priority))
 			$priorityfilter = '';
+
+                if (isset($netdevids) && is_array($netdevids))
+                        $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
+                elseif (empty($netdevids))
+                        $netdevidsfilter = '';
+
+                if (isset($netnodeids) && is_array($netnodeids))
+                        $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
+                elseif (empty($netnodeids))
+                        $netnodeidsfilter = '';
 
 		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$removedfilter = ' AND t.deleted = 0';
@@ -168,6 +178,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $priorityfilter
 			. $ownerfilter
 			. $removedfilter
+			. $netdevidsfilter
+			. $netnodeidsfilter
 			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
