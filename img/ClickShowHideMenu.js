@@ -10,6 +10,8 @@
  */
 
 function ClickShowHideMenu(params) {
+	var self = this;
+
 	if (typeof(params) == 'string') {
 		this.id = params;
 		this.maxOpened = 1;
@@ -52,9 +54,9 @@ function ClickShowHideMenu(params) {
                 if ("box1" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
                     tree[tree.length] = [];
-                    eval('nodes[i].onmouseover = function() { self.box1over("'+nodes[i].id+'"); }');
-                    eval('nodes[i].onmouseout = function() { self.box1out("'+nodes[i].id+'"); }');
-                    eval('nodes[i].onclick = function() { self.box1click("'+nodes[i].id+'"); }');
+                    nodes[i].onmouseover = function() { self.box1over("'+nodes[i].id+'"); }
+                    nodes[i].onmouseout = function() { self.box1out("'+nodes[i].id+'"); }
+                    nodes[i].onclick = function() { self.box1click("'+nodes[i].id+'"); }
                 }
                 if ("section" == nodes[i].className) {
                     id = id + "-" + (tree.length - 1);
@@ -64,8 +66,8 @@ function ClickShowHideMenu(params) {
                 if ("box2" == nodes[i].className.substr(0, 4)) {
                     nodes[i].id = id + "-" + tree.length;
                     tree[tree.length] = [];
-                    eval('nodes[i].onmouseover = function() { self.box2over("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
-                    eval('nodes[i].onmouseout = function() { self.box2out("'+nodes[i].id+'", "'+nodes[i].className+'"); }');
+                    nodes[i].onmouseover = function() { self.box2over("'+nodes[i].id+'", "'+nodes[i].className+'"); }
+                    nodes[i].onmouseout = function() { self.box2out("'+nodes[i].id+'", "'+nodes[i].className+'"); }
                 }
             }
             if (this.highlightActive && nodes[i].tagName && nodes[i].tagName == "A") {
@@ -131,16 +133,16 @@ function ClickShowHideMenu(params) {
     }
 
     this.show = function(id) {
-		if ((section = document.getElementById(id + "-section")) !== null
-			&& section.childNodes.length > 1) {
+		if ((section = document.getElementById(id + "-section")) !== null &&
+			section.childNodes.length > 1) {
 			section.style.display = "block";
 			this.appendOpenedSection(id);
 		}
     }
 
     this.hide = function(id) {
-		if ((section = document.getElementById(id + "-section")) !== null
-			&& section.childNodes.length > 1) {
+		if ((section = document.getElementById(id + "-section")) !== null &&
+			section.childNodes.length > 1) {
 			section.style.display = "";
 			this.removeOpenedSection(id);
 		}
@@ -209,7 +211,6 @@ function ClickShowHideMenu(params) {
         }
     }
 
-    var self = this;
     this.tree = [];
     this.cookie = new Cookie();
 }
