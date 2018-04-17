@@ -291,6 +291,10 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.createDiv = function() {
 		var ul = document.createElement('ul');
 
+		function onClick() {
+			me.useSuggestion();
+		}
+
 		//Create an array of LI's for the words.
 		for (var i=0, len=this.eligible.length; i<len; i++) {
 			var word = this.eligible[i];
@@ -305,7 +309,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 				a.innerHTML = word;
 				ds.innerHTML = desc;
 				a.appendChild(ds);
-				li.onclick = function() { me.useSuggestion(); }
+				li.onclick = onClick;
 				li.appendChild(a);
 			} else {
 				word_len = word.length;
@@ -315,7 +319,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 				else
 					li.innerHTML = word;
 
-				li.onclick = function() { me.useSuggestion(); }
+				li.onclick = onClick
 				ds.innerHTML = desc;
 				li.appendChild(ds);
 			}
@@ -386,8 +390,8 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 		try {
 			result = JSON.parse(xmlhttp.responseText);
 			this.eligible = result.eligible;
-			this.descriptions = result.descriptions;
-			this.actions = result.actions;
+			this.descriptions = typeof(result.descriptions) == 'undefined' ? [] : result.descriptions;
+			this.actions = typeof(result.actions) == 'undefined' ? [] : result.actions;
 		} catch(x) {
 			this.eligible = [];
 		}
