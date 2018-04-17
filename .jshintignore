@@ -7,3 +7,4 @@
 **/img/OpenLayers/**
 plugins/**
 **/*.min.js
+**/overlib.js
