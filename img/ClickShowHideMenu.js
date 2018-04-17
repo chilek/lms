@@ -74,11 +74,11 @@ function ClickShowHideMenu(params) {
 		if (self.box2Hover) {
 			box2.mouseover(function() {
 					if (this.nodeType == 1) {
-						$('#' + id).addClass('box2-hover');
+						$('#' + this.id).addClass('box2-hover');
 					}
 				}).mouseout(function() {
 					if (this.nodeType == 1) {
-						$('#' + id).removeClass('box2-hover');
+						$('#' + this.id).removeClass('box2-hover');
 					}
 				});
 		}
