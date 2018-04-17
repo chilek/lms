@@ -18,7 +18,6 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.elem = elem;
 
 	this.request_delay = 250; // time in milliseconds
-	this.timer;               // delay handler
 
 	if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
 		this.placement = RegExp.$1;
@@ -73,11 +72,12 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	********************************************************/
 	elem.onkeydown = function(ev) {
 		var key = me.getKeyCode(ev);
+		var suggest;
 
 		if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
-			var suggest = RegExp.$1;
+			suggest = RegExp.$1;
 		else
-			var suggest = 'bottom';
+			suggest = 'bottom';
 
 		switch(key) {
 			case ENT:
