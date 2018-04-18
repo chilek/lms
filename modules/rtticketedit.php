@@ -201,6 +201,8 @@ if(isset($_POST['ticket']))
 					$mailfname = $queue['name'];
 				elseif ($helpdesk_sender_name == 'user')
 					$mailfname = $user['name'];
+				else
+					$mailfname = $helpdesk_sender_name;
 
 				$mailfname = '"' . $mailfname . '"';
 			}
