@@ -2,4 +2,4 @@ Plugin for NOVITUS HD fiscal printer. It prints selected invoices and fiscalises
 This plugin doesn't print reciepts or other prints. 
 
 
-Pluging requires PHP 7 or above. If you want to use it in PHP < 7 You have to change array devinition `[]` to `array()` 
+Plugin requires PHP ver. 5.6 or above

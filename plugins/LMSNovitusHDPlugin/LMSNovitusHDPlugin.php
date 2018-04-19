@@ -44,7 +44,7 @@ class LMSNovitusHDPlugin extends LMSPlugin
 	 */
 	function registerHandlers()
 	{
-		$this->handlers = [
+		$this->handlers = array(
 			'modules_dir_initialized' => array(
 				'class' => 'InitHandler',
 				'method' => 'modulesDirInit'
@@ -57,6 +57,6 @@ class LMSNovitusHDPlugin extends LMSPlugin
 				'class' => 'InitHandler',
 				'method' => 'menuEntry'
 			),
-		];
+		);
 	}
 }

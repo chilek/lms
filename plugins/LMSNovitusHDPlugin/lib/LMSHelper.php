@@ -54,7 +54,7 @@ class LMSHelper
 	public static function isInvoiceFiscalized($id){
 		global $DB;
 
-		return $DB->Execute('SELECT 1 FROM novitus_fiscalized_invoices WHERE doc_id = ?', [(int)$id]);
+		return $DB->Execute('SELECT 1 FROM novitus_fiscalized_invoices WHERE doc_id = ?', array((int)$id));
 	}
 
 }

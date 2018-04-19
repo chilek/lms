@@ -50,9 +50,9 @@ class NovitusHD
 	protected $port;
 
 	/**
-	 *
+	 * Config options
 	 */
-	const CONFIGOPTIONS = [
+	const CONFIGOPTIONS = array(
 		'0' => 'Czas w sekundach, po jakim bezczynna drukarka ulegnie auto wyłączeniu',
 		'1' => 'Czas w sekundach, po jakim bezczynna drukarka ulegnie auto wygaszeniu',
 		'2' => 'Kontrast wydruku (0-9)',
@@ -79,12 +79,12 @@ class NovitusHD
 		'108' => 'Aktualny adres IP',
 		'116' => 'Automatyczny raport miesięczny. 0 - wyłączony, 1 - włączony',
 		'117' => 'Automatyczny raport okresowy. 0 - wyłączony, 1 - włączony'
-	];
+	);
 
 	/**
-	 *
+	 * Error codes
 	 */
-	const ERRORCODES = [
+	const ERRORCODES = array(
 		'0' => 'Brak błędów',
 		'1' => 'Nie zainicjowany zegar RTC',
 		'2' => 'Nieprawidłowy bajt kontrolny',
@@ -228,18 +228,18 @@ class NovitusHD
 		'1087' => 'Błąd IO systemu plików',
 		'1088' => 'Osiągnięto limit zerowań pamięci RAM',
 		'9999' => 'Błąd fatalny'
-	];
+	);
 
 	/**
 	 * TaxRates
 	 */
-	const TAXRATES = [
+	const TAXRATES = array(
 		'23.00' => 'A',
 		'8.00' => 'B',
 		'0.00' => 'C',
 		'5.00' => 'D',
 		'free' => 'G'
-	];
+	);
 
 	/**
 	 * NovitusHD constructor.
@@ -277,7 +277,7 @@ class NovitusHD
 			return false;
 		}
 
-		$result = [];
+		$result = array();
 		if(!function_exists('parseSimpleElement')) {
 			function parseSimpleElement(SimpleXMLElement $xml, &$res)
 			{
@@ -407,15 +407,15 @@ class NovitusHD
 					if ($enq = $this->getENQ()) {
 						if ($enq['attr']['intransaction'] === 'no') {
 							syslog(LOG_DEBUG, 'NOVITUS: Printer ready.');
-							return ['status' => 'OK'];
+							return array('status' => 'OK');
 						} else {
 							syslog(LOG_DEBUG, 'NOVITUS: '.trans('Printer in transaction state. You must close reciept/invoice').'.');
-							return ['status' => 'NOK', 'error' => 'NOVITUS: '.trans('Printer in transaction state. You must close reciept/invoice').'.'];
+							return array('status' => 'NOK', 'error' => 'NOVITUS: '.trans('Printer in transaction state. You must close reciept/invoice').'.');
 						}
 					}
 				} else {
 					syslog(LOG_DEBUG, 'NOVITUS: '.trans('Printer has errors or no paper. Check printer'));
-					return ['status' => 'NOK', 'error' => trans('Printer has errors or no paper. Check printer')];
+					return array('status' => 'NOK', 'error' => trans('Printer has errors or no paper. Check printer'));
 				}
 			};
 			syslog(LOG_DEBUG, 'NOVITUS: '.trans('No data recieved from printer. Check printer or paper').' ('.$checkCount.' of 10)');
@@ -423,7 +423,7 @@ class NovitusHD
 			sleep(1);
 			$checkCount++;
 		}
-		return ['status' => 'NOK', 'error' => trans('No data recieved from printer. Check printer or paper')];
+		return array('status' => 'NOK', 'error' => trans('No data recieved from printer. Check printer or paper'));
 
 	}
 
@@ -474,7 +474,7 @@ class NovitusHD
 	 *	];
 	 *
 	 */
-	public function setHeader(array $data )
+	public function setHeader($data)
 	{
 		$packet = '<packet><header action="set">';
 
@@ -497,7 +497,7 @@ class NovitusHD
 	 * while set must be given array of config option [ '0' => '60', ...  ]
 	 *
 	 */
-	public function configure(array $data, string $action = 'get')
+	public function configure($data, $action = 'get')
 	{
 		$packet = '<packet><config action="'.$action.'">';
 		if (is_array($data)){
@@ -589,16 +589,16 @@ class NovitusHD
 		if ($this->write($packet)) {
 
 			if ($this->isWriteSuccess()) {
-				return ['status' => 'OK'];
+				return array('status' => 'OK');
 			} else {
 				$err = $this->getLastError();
 
-				return ['status' => 'NOK', 'error' => trans('Sent data included logical errors. Check data').': '.trans($err['data']['attr']['desc'])];
+				return array('status' => 'NOK', 'error' => trans('Sent data included logical errors. Check data').': '.trans($err['data']['attr']['desc']));
 			}
 		} else {
 			syslog(LOG_DEBUG, 'NOVITUS: '.trans('Error sending data'));
 
-			return ['status' => 'NOK', 'error' => trans('Error sending data')];
+			return array('status' => 'NOK', 'error' => trans('Error sending data'));
 		}
 
 	}
@@ -620,7 +620,7 @@ class NovitusHD
 	 * @param string $type
 	 * @return bool
 	 */
-	public function getCashInformation(string $type = 'invoice'){
+	public function getCashInformation($type = 'invoice'){
 		$packet = '<packet><info action="checkout" type="'.$type.'" lasterror="?" isfiscal="?" receiptopen="?" lastreceipterror="?" resetcount="?" date="?" receiptcount="?" cash="?" uniqueno="?" lastreceipt="?" lastinvoice="?" lastprintout="?"></info></packet>';
 
 		return $this->readAfterWrite($packet);
@@ -666,7 +666,7 @@ class NovitusHD
 	 *
 	 * Fiscalizes invocie. as argument document id
 	 */
-	public function printInvoice(int $invoice)
+	public function printInvoice($invoice)
 	{
 		global $LMS;
 		$invoice = $LMS->GetInvoiceContent($invoice);
@@ -678,7 +678,7 @@ class NovitusHD
 
 		// Check if this invoice is fiscalized
 		if (LMSHelper::isInvoiceFiscalized($invoice['id']))
-			return ['status' => 'NOK', 'reason' => 2, 'error' => 'Faktura <strong>'.$invNo.'</strong> była już zafiskalizowana. Nie drukuję.'];
+			return array('status' => 'NOK', 'reason' => 2, 'error' => 'Faktura <strong>'.$invNo.'</strong> była już zafiskalizowana. Nie drukuję.');
 
 		// If printer is ready prepare data and send it to printer
 		$printerStatsus = $this->pinterReadyStatus();
@@ -743,19 +743,19 @@ class NovitusHD
 			if ($this->write($data)) {
 
 				if ($this->isWriteSuccess()) {
-					$this->db->Execute("INSERT INTO novitus_fiscalized_invoices (doc_id, fiscalized) VALUES (?, ?)", [$invoice['id'], true]);
-					return ['status' => 'OK', 'data' => $invoice];
+					$this->db->Execute("INSERT INTO novitus_fiscalized_invoices (doc_id, fiscalized) VALUES (?, ?)", array($invoice['id'], true));
+					return array('status' => 'OK', 'data' => $invoice);
 				} else {
 					syslog(LOG_DEBUG, 'NOVITUS: '. trans('Sent data included logical errors. Check data'));
-					return ['status' => 'NOK', 'error' => trans('Sent data included logical errors. Check data').' - '.$invNo];
+					return array('status' => 'NOK', 'error' => trans('Sent data included logical errors. Check data').' - '.$invNo);
 				}
 			} else {
 				syslog(LOG_DEBUG, 'NOVITUS: '.trans('Error sending data').' - '.$invoice['id']);
 
-				return ['status' => 'NOK', 'error' => trans('Error sending data').' - '.$invNo];
+				return array('status' => 'NOK', 'error' => trans('Error sending data').' - '.$invNo);
 			}
 		} else {
-			return ['status' => 'NOK', 'error' => $printerStatsus['error']];
+			return array('status' => 'NOK', 'error' => $printerStatsus['error']);
 		}
 
 	}
@@ -786,15 +786,15 @@ class NovitusHD
 		if ($this->write($packet)) {
 
 			if ($this->isWriteSuccess()) {
-				return ['status' => 'OK', 'data' => trans('Report task has been sent to printer')];
+				return array('status' => 'OK', 'data' => trans('Report task has been sent to printer'));
 			} else {
 				$err = $this->getLastError();
-				return ['status' => 'NOK', 'error' => trans('Error sending data').' - '.$err['attr']['desc']];
+				return array('status' => 'NOK', 'error' => trans('Error sending data').' - '.$err['attr']['desc']);
 			}
 		} else {
 			syslog(LOG_DEBUG, 'NOVITUS: '.trans('Error sending data'));
 
-			return ['status' => 'NOK', 'error' => trans('Error sending data')];
+			return array('status' => 'NOK', 'error' => trans('Error sending data'));
 		}
 	}
 
@@ -826,15 +826,15 @@ class NovitusHD
 		if ($this->write($packet)) {
 
 			if ($this->isWriteSuccess()) {
-				return ['status' => 'OK', 'data' => trans('Report task has been sent to printer')];
+				return array('status' => 'OK', 'data' => trans('Report task has been sent to printer'));
 			} else {
 				$err = $this->getLastError();
-				return ['status' => 'NOK', 'error' => trans('Error sending data').' - '.$err['attr']['desc']];
+				return array('status' => 'NOK', 'error' => trans('Error sending data').' - '.$err['attr']['desc']);
 			}
 		} else {
 			syslog(LOG_DEBUG, 'NOVITUS: '.trans('Error sending data'));
 
-			return ['status' => 'NOK', 'error' => trans('Error sending data')];
+			return array('status' => 'NOK', 'error' => trans('Error sending data'));
 		}
 	}
 
@@ -855,10 +855,10 @@ class NovitusHD
 		$this->write($packet);
 		if($this->isWriteSuccess()){
 			syslog(LOG_DEBUG, 'NOVITUS: Error handling set to printer');
-			return ['status' => 'OK'];
+			return array('status' => 'OK');
 		} else {
 			syslog(LOG_DEBUG, 'NOVITUS: Error sending data');
-			return ['status' => 'NOK', 'error' => trans('Error sending data')];
+			return array('status' => 'NOK', 'error' => trans('Error sending data'));
 		}
 
 	}
@@ -875,9 +875,9 @@ class NovitusHD
 
 		if ($res = $this->readAfterWrite($packet)) {
 			$res['attr']['desc'] = self::ERRORCODES[$res['attr']['value']];
-			return ['status' => 'OK', 'data' => $res];
+			return array('status' => 'OK', 'data' => $res);
 		} else {
-			return ['status' => 'NOK', 'error' => trans('Error reading data')];
+			return array('status' => 'NOK', 'error' => trans('Error reading data'));
 		}
 	}
 }

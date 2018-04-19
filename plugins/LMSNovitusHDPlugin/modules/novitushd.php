@@ -33,7 +33,7 @@ $type = htmlspecialchars($_GET['type']);
 
 global $LMS;
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(['getInvoices', 'printInvoice','printDailyReport','printPeriodReport','setTime','getConfig','setConfig','getLastTransaction','getCurrentTransaction','closeTransaction','setErrorHandler','getLastError','getHeader']);
+$LMS->RegisterXajaxFunction(array('getInvoices', 'printInvoice','printDailyReport','printPeriodReport','setTime','getConfig','setConfig','getLastTransaction','getCurrentTransaction','closeTransaction','setErrorHandler','getLastError','getHeader'));
 
 
 switch ($type) {
@@ -53,14 +53,12 @@ switch ($type) {
 		$SMARTY->assign('taxes', $taxes);
 		$SMARTY->assign('consttaxes', $consttaxes);
 		$SMARTY->assign('cashinfo', $cashInfo);
-				$SMARTY->assign('config', $config['children'][0]['children']);
-
+		$SMARTY->assign('config', $config['children'][0]['children']);
 		$SMARTY->display('info.tpl');
 
 		break;
 
 	case 'invoice':
-
 
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
@@ -98,7 +96,7 @@ function getInvoices($form, $fullData = false){
 	$obj = new xajaxResponse();
 
 	$formArray = json_decode($form, true);
-	$data = [];
+	$data = array();
 	foreach ($formArray as $item){ // item['name] $item['value']
 		$data[$item['name']] = $item['value'];
 	}
@@ -327,9 +325,9 @@ function setConfig($config)
 	$obj = new xajaxResponse();
 	$p = new NovitusHD();
 
-	$configData = [
+	$configData = array(
 		$config[0]['value'] => $config[1]['value']
-	];
+	);
 
 	$res = $p->configure($configData, 'set');
 
