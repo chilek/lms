@@ -1,0 +1,12 @@
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion_LMSNovitusHDPlugin', '2018032700');
+
+DROP TABLE IF EXISTS novitus_fiscalized_invoices;
+CREATE TABLE novitus_fiscalized_invoices ( doc_id int(11) NOT NULL,  fiscalized tinyint(1) NOT NULL DEFAULT 1, CONSTRAINT `documents_id_fk` FOREIGN KEY (doc_id) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE ) ENGINE=INNODB;
+
+INSERT INTO uiconfig (section, var, value, description) VALUES ('novitus','ip_address','','Fiskal Printer IP address');
+INSERT INTO uiconfig (section, var, value, description) VALUES ('novitus','port','6001','Fiskal Printer port');
+
+
+
+

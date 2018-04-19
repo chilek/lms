@@ -21,5 +21,6 @@ rtattachments/*
 *~
 *.swp
 *.swo
+.idea
 
 /vendor/

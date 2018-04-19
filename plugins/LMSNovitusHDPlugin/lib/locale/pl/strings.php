@@ -1,0 +1,55 @@
+<?php
+
+$_LANG['Novitus HD Fiskal Printer'] = 'Novitus HD durkarka fiskalna';
+$_LANG['Fiscal Printer'] = 'Drukarka fiskalna';
+$_LANG['Printer info'] = 'Informacje o drukarce';
+$_LANG['Print Invoices'] = 'Drukuj faktury';
+$_LANG['Clear transaction'] = 'Anuluj transakcje';
+$_LANG['Printer Information'] = 'Informacje o drukarce';
+$_LANG['Printer Config'] = 'Ustawienia drukarki';
+$_LANG['Start printing'] = 'Rozpocznij drukowanie';
+$_LANG['STOP printing'] = 'ZATRZYMAJ drukowanie';
+$_LANG['Fiscalized'] = 'Zafiskalizowana';
+$_LANG['Programed tax rates'] = 'Stawki podatkowe zaprogramowane w drukrce';
+$_LANG['Const tax rates in class'] = 'Definicja stałej stawek podatkowych w bibliotece drukarki';
+$_LANG['No not fiscalized invoices found'] = 'Nie znaleziono nie zafiskalizowanych faktur';
+$_LANG['Select only NOT fiscalized'] = 'Wybierz TYLKO nie zafiskalizowane';
+$_LANG['Printer actions'] = 'Akcje drukarki';
+$_LANG['Print daily report'] = 'Drukuj raport dobowy';
+$_LANG['Print report'] = 'Drukuj raport';
+$_LANG['Monthly full - fiscalized'] = 'Miesięczny - dokument fiskalny';
+$_LANG['Full from given dates - fiscalized'] = 'Pełny z zakresu dat - dokument fiskalny';
+$_LANG['Sales summary - not fiscalized'] = 'Podsumowanie sprzedaży - dokument nie fiskalny';
+$_LANG['Monthly summary - not fiscalized'] = 'Miesięcznie podsumowanie - dokument nie fiskalny';
+$_LANG['Full financial settlement'] = 'Raport rozliczeniowy pełny z zakresu podanych dat';
+$_LANG['Financial settlement from given dates'] = 'Podsumowanie raportu rozliczeniowego z zakresu podanych dat';
+$_LANG['Printing invoices has been stopped'] = 'Drukowanie faktur zostało zatrzymane';
+$_LANG['No invoices left to print'] = 'Brak faktur do wydrukowania';
+$_LANG['Transaction cleared'] = 'Wyczyszczona transakcję';
+$_LANG['No data or no properdata recieved'] = 'Brak danych lub otrzymano nie prawidłowe dane';
+$_LANG['Daily report task has been sent to printer'] = 'Zlecenie wydrukowania raportu dobowego wysłane';
+$_LANG['Report task has been sent to printer'] = 'Zlecenie wydrukowania raportu wysłane';
+$_LANG['Error sending data'] = 'Błąd wysyłki danych';
+$_LANG['Error reading data'] = 'Błąd odczytu danych';
+$_LANG['Printer in transaction state. You must close reciept/invoice'] = 'Drukarka w trbie Transakcji. Trzeba zamknąć paragon/fakture';
+$_LANG['Printer has errors or no paper. Check printer'] = 'Drukarka ma błędy lub brak paieru. Sprawdź drukarkę';
+$_LANG['No data recieved from printer. Check printer or paper'] = 'Nie odebrane dane od drukarki. Sprawdź drukarkę lub papier';
+$_LANG['Sent data included logical errors. Check data'] = 'Wyslane dane zawieraly bledy logiczne. Sprawdź dane';
+$_LANG['Printer config'] = 'Konfiguracja drukarki';
+$_LANG['Set current date'] = 'Ustaw bieżący czas';
+$_LANG['Set time has been sent to printer'] = 'Ustawienie czasu zostało wysłane do drukarki';
+$_LANG['Get last tranaction data'] = 'Pobierz dane ostatniej transakcji';
+$_LANG['Get current tranaction data'] = 'Pobierz dane bieżącej transakcji';
+$_LANG['Print number'] = 'Numer wydruku';
+$_LANG['Transaction state'] = 'Status operacji';
+$_LANG['Printer has no open transaction'] = 'Drukarka nie ma otwartych transakcji';
+$_LANG['Gross total'] = 'Wartość brutto';
+$_LANG['Set config option'] = 'Ustaw opcję konfiguracyjną';
+$_LANG['Select option'] = 'Wybierz opcję';
+$_LANG['Option set'] = 'Opcja ustawiona';
+$_LANG['Silent - don\'t show errors on display'] = 'Cichy - nie pokazje błędów na ekranie';
+$_LANG['Display - show errors on display'] = 'Wyświetlaj - nie pokazje błędów na ekranie';
+$_LANG['Set error handler'] = 'Ustaw wyświetlanie błędów na wyświetlaczu';
+$_LANG['Get last error'] = 'Pobierz ostatni błąd';
+
+
