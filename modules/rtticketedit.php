@@ -51,7 +51,7 @@ if ($id && !isset($_POST['ticket'])) {
 					$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 					if (!empty($helpdesk_sender_name)) {
 						if ($helpdesk_sender_name == 'queue')
-							$mailfname = $$queue['name'];
+							$mailfname = $queue['name'];
 						elseif ($helpdesk_sender_name == 'user')
 							$mailfname = $user['name'];
 
@@ -201,6 +201,8 @@ if(isset($_POST['ticket']))
 					$mailfname = $queue['name'];
 				elseif ($helpdesk_sender_name == 'user')
 					$mailfname = $user['name'];
+				else
+					$mailfname = $helpdesk_sender_name;
 
 				$mailfname = '"' . $mailfname . '"';
 			}
