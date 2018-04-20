@@ -27,20 +27,34 @@
 function GetReceipt($id) {
 	$db = LMSDB::getInstance();
 
-	if ($receipt = $db->GetRow('SELECT d.*, u.name AS user, n.template,
+	if ($receipt = $db->GetRow('SELECT d.*, cc.name AS country, cd.name AS div_country,
+					u.name AS user, n.template,
 					ds.name AS d_name, ds.address AS d_address,
-					ds.zip AS d_zip, ds.city AS d_city
+					ds.zip AS d_zip, ds.city AS d_city, cds.name AS d_country
 				FROM documents d
+				LEFT JOIN countries cc ON cc.id = d.countryid
+				LEFT JOIN countries cd ON cd.id = d.div_countryid
 				LEFT JOIN vusers u ON (d.userid = u.id)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN customers c ON (d.customerid = c.id)
 				LEFT JOIN vdivisions ds ON (ds.id = c.divisionid)
+				LEFT JOIN countries cds ON cds.id = ds.countryid
 				WHERE d.type = 2 AND d.id = ?', array($id))) {
 		// if division for receipt is not defined and there is only one division in database
 		// we try to use this division
+		if (!empty($receipt['divisionid'])) {
+			$receipt['d_name'] = $receipt['div_name'];
+			$receipt['d_address'] = $receipt['div_address'];
+			$receipt['d_zip'] = $receipt['div_zip'];
+			$receipt['d_city'] = $receipt['div_city'];
+			$receipt['d_countryid'] = $receipt['div_countryid'];
+			$receipt['d_country'] = $receipt['div_country'];
+		}
 		if (empty($receipt['d_name']) && $db->GetOne('SELECT COUNT(*) FROM divisions') == 1)
-			$receipt = array_merge($receipt, $db->GetRow('SELECT name AS d_name, address AS d_address,
-				zip AS d_zip, city AS d_city FROM vdivisions'));
+			$receipt = array_merge($receipt, $db->GetRow('SELECT d.name AS d_name, address AS d_address,
+					zip AS d_zip, city AS d_city, countryid AS d_countryid, c.name AS d_country
+				FROM vdivisions d
+				LEFT JOIN countries c ON c.id = d.countryid'));
 
 		$receipt['contents'] = $db->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
 		$receipt['total'] = 0;

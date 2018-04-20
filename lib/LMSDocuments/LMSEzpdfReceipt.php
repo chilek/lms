@@ -39,7 +39,10 @@ class LMSEzpdfReceipt extends LMSDocument {
 //		$this->backend->text_align_left($x + 2,$y + 2,$font_size - 4, trans('Stamp:'));
 		$y = $this->backend->text_wrap($x + 2, $y, 170, $font_size - 2, '<b>' . $this->data['d_name'] . '</b>', NULL);
 		$y = $this->backend->text_wrap($x + 2, $y, 170, $font_size - 2, '<b>' . $this->data['d_address'] . '</b>', NULL);
-		$this->backend->text_wrap($x + 2, $y, 170, $font_size - 2,'<b>' . $this->data['d_zip'] . ' ' . $this->data['d_city'] . '</b>', NULL);
+		$y = $this->backend->text_wrap($x + 2, $y, 170, $font_size - 2,'<b>' . $this->data['d_zip'] . ' ' . $this->data['d_city'] . '</b>', NULL);
+		if (!empty($this->data['countryid']) && !empty($this->data['d_countryid'])
+			&& $this->data['countryid'] != $this->data['d_countryid'])
+			$this->backend->text_wrap($x + 2, $y, 170, $font_size - 2,'<b>' . $this->data['d_country'] . '</b>', NULL);
 		$y = $yy - $font_size;
 
 		if($this->data['type'] == 'out')
@@ -88,7 +91,13 @@ class LMSEzpdfReceipt extends LMSDocument {
 		else
 			$this->backend->text_align_left($x+2,$y+2,$font_size-4, trans('From who:'));
 		$y = $this->backend->text_wrap($x+40,$y-4,240,$font_size-2,'<b>' . $this->data['name'] . '</b>', NULL);
-		$y = $this->backend->text_wrap($x+40,$y,240,$font_size-2,'<b>' . $this->data['zip'] . ' ' . $this->data['city'] . ' ' . $this->data['address'] . '</b>', NULL);
+		if (!empty($this->data['countryid']) && !empty($this->data['d_countryid'])
+			&& $this->data['countryid'] != $this->data['d_countryid'])
+			$country = ', ' . $this->data['country'];
+		else
+			$country = '';
+		$y = $this->backend->text_wrap($x+2,$y,240,$font_size-2,'<b>' . $this->data['zip'] . ' ' . $this->data['city']
+			. ', ' . $this->data['address'] . $country . '</b>', NULL);
 
 		$y += $font_size/2;
 		$this->backend->line($x, $yy, $x, $y);
