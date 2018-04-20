@@ -175,7 +175,7 @@ function update_selection(type, data, selected) {
     if ( type == 'street' ) {
         $( '#house,#flat' ).css( 'display', '' );
 
-        if ( !i ) {
+        if ( data.length <= 1) {
             $( '#house_input' ).focus().select();
         }
     }
