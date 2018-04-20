@@ -144,12 +144,10 @@ function update_selection(type, data, selected) {
 
     var options = [];
 
-    if (type != 'street') {
-        options.push($('<option>', {
-        	"id": 0,
-            "value": ""
-        }));
-	}
+	options.push($('<option>', {
+		"id": 0,
+		"value": ""
+	}));
 
 	$.each(data, function(key, value) {
     	var props = {
@@ -175,7 +173,7 @@ function update_selection(type, data, selected) {
     if ( type == 'street' ) {
         $( '#house,#flat' ).css( 'display', '' );
 
-        if ( data.length <= 1) {
+        if ( !data.length ) {
             $( '#house_input' ).focus().select();
         }
     }

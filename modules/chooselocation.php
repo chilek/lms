@@ -61,8 +61,6 @@ function get_loc_streets($cityid) {
 	else
 		$list = array();
 
-	array_unshift($list, array('id' => 0, 'name' => ''));
-
 	return $list;
 }
 
