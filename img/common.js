@@ -849,7 +849,7 @@ function osm_get_zip_code(search, on_success) {
 		"data": data
 	}).done(function(data) {
 		if (typeof(on_success) == 'function') {
-			if (data[0].hasOwnProperty('address') && data[0].address.hasOwnProperty('postcode')) {
+			if (data.length && data[0].hasOwnProperty('address') && data[0].address.hasOwnProperty('postcode')) {
 				on_success(data[0].address.postcode);
 			}
 		}

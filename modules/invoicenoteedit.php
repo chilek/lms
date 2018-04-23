@@ -33,6 +33,9 @@ if (isset($_GET['id']) && $action == 'edit') {
 
 	$cnote = $LMS->GetInvoiceContent($_GET['id']);
 
+	if (!empty($cnote['cancelled']))
+		return;
+
 	$invoice = array();
 	foreach ($cnote['invoice']['content'] as $item)
 		$invoice[$item['itemid']] = $item;

@@ -1864,7 +1864,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function DelBalance($id)
     {
         $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid,
-						(CASE WHEN d2 IS NULL THEN 0 ELSE 1 END) AS referenced
+						(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
 					LEFT JOIN documents d2 ON d2.reference = documents.id
@@ -2158,6 +2158,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				));
 		}
 
+		$division = $this->db->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace
+				FROM vdivisions WHERE id = ?', array($receipt['customer']['divisionid']));
+
 		$fullnumber = docnumber(array(
 			'number' => $receipt['number'],
 			'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
@@ -2179,12 +2183,30 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					? $customer['city'] . ', ' : '') . $customer['address']) : '',
 			'zip' => $customer ? $customer['zip'] : '',
 			'city' => $customer ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city']) : '',
+			SYSLOG::RES_COUNTRY => $receipt['customer']['countryid'] ? $receipt['customer']['countryid'] : null,
+			SYSLOG::RES_DIV => $receipt['customer']['divisionid'],
+			'div_name' => ($division['name'] ? $division['name'] : ''),
+			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
+			'div_address' => ($division['address'] ? $division['address'] : ''),
+			'div_city' => ($division['city'] ? $division['city'] : ''),
+			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
+			'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
+			'div_ten' => ($division['ten'] ? $division['ten'] : ''),
+			'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+			'div_account' => ($division['account'] ? $division['account'] : ''),
+			'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
+			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
+			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
+			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 			'closed' => $customer || $receipt['o_type'] != 'advance' ? 1 : 0,
 			'fullnumber' => $fullnumber,
 		);
-		$this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
-					fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+		$this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid,
+			name, address, zip, city, countryid, 
+			divisionid, div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace,
+			closed, fullnumber)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 		$this->db->UnLockTables();
 
 		$rid = $this->db->GetLastInsertId('documents');
