@@ -39,6 +39,9 @@ if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
 
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
+	if (!empty($invoice['cancelled']))
+		return;
+
 	$invoice['proforma'] = isset($_GET['proforma']) ? $action : null;
 
 	$SESSION->remove('invoicecontents');

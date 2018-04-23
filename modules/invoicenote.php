@@ -30,7 +30,11 @@ if (isset($_GET['id']) && $action == 'init')
 {
 	if ($LMS->isDocumentReferenced($_GET['id']))
 		$SESSION->redirect('?m=invoicelist');
+
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
+
+	if (!empty($invoice['cancelled']))
+		$SESSION->redirect('?m=invoicelist');
 
 	$taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
