@@ -1864,7 +1864,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function DelBalance($id)
     {
         $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid,
-						(CASE WHEN d2 IS NULL THEN 0 ELSE 1 END) AS referenced
+						(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
 					LEFT JOIN documents d2 ON d2.reference = documents.id
