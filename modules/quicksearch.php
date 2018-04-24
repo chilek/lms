@@ -104,8 +104,9 @@ switch ($mode) {
 				}
 				foreach ($candidates as $idx => $row) {
 					$actions[$row['id']] = '?m=customerinfo&id=' . $row['id'];
-					$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
-						. truncate_str($row['username'], 50) . ($row['deleted'] ? '</font>' : ''));
+					$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
+						. escape_js(truncate_str($row['username'], 50))
+						. ($row['deleted'] ? '</font>' : '');
 
 					if ($customer_count[$row['username']] > 1) {
 						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['address']);
@@ -196,8 +197,9 @@ switch ($mode) {
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
-				 . truncate_str($row['username'], 50).($row['deleted'] ? '</font>' : ''));
+				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
+					. escape_js(truncate_str($row['username'], 50))
+					. ($row['deleted'] ? '</font>' : '');
 
 				if (preg_match("~^$search\$~i",$row['id'])) {
 					$descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']);
@@ -239,8 +241,9 @@ switch ($mode) {
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
-				    .truncate_str($row['username'], 50).($row['deleted'] ? '</font>' : ''));
+				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
+					. escape_js(truncate_str($row['username'], 50))
+					. ($row['deleted'] ? '</font>' : '');
 
 				$descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone']);
 			}
@@ -387,7 +390,7 @@ switch ($mode) {
 			$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 			foreach($categories as $category)
 				$catids[] = $category['id'];
-			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
+			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, t.state, c.name, c.lastname
 				FROM rttickets t
 				JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & 1 > 0
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
@@ -409,7 +412,9 @@ switch ($mode) {
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=rtticketview&id='.$row['id'];
-				$eglible[$row['id']] = escape_js($row['subject']);
+				$eglible[$row['id']] = ($row['state'] == RT_RESOLVED ? '<font class="blend">' : '')
+					. escape_js($row['subject'])
+					. ($row['state'] == RT_RESOLVED ? '</font>' : '');
 				if (preg_match("~^$search\$~i",$row['id'])) 	{ $descriptions[$row['id']] = trans('Id').': '.$row['id']; continue; }
 				if (preg_match("~$search~i",$row['subject'])) 	{ $descriptions[$row['id']] = escape_js(trans('Subject:').' '.$row['subject']); continue; }
 				if (preg_match("~$search~i",$row['requestor'])) { $descriptions[$row['id']] = escape_js(trans('First/last name').': '.preg_replace('/ <.*/','',$row['requestor'])); continue; }
