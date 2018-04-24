@@ -18,6 +18,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added user notification about helpdesk ticket status change [chilan]
   - enhancement: current division properties are copied to new receipts [chilan]
   - improvement: resolved tickets in quick search displayed as blended [chilan]
+  - enhancement: additional operations on node search result - node group assign
+    and unassign [chilan]
 
 version 1.11.23 (2018-03-21):
 
