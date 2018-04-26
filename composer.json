@@ -45,8 +45,9 @@
         "gusapi/gusapi": "^3",
         "erusev/parsedown": "^1"
     },
-    "require_dev": {
-        "phpunit/phpunit": "5.1.*"
+    "require-dev": {
+        "phpunit/phpunit": "^4",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "classmap": ["lib/", "plugins/"]
