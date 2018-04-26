@@ -104,9 +104,9 @@ switch ($mode) {
 				}
 				foreach ($candidates as $idx => $row) {
 					$actions[$row['id']] = '?m=customerinfo&id=' . $row['id'];
-					$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
+					$eglible[$row['id']] = ($row['deleted'] ? '<span class="blend">' : '')
 						. truncate_str($row['username'], 50)
-						. ($row['deleted'] ? '</font>' : '');
+						. ($row['deleted'] ? '</span>' : '');
 
 					if ($customer_count[$row['username']] > 1) {
 						$descriptions[$row['id']] = trans('Address:') . ' ' . $row['address'];
@@ -197,9 +197,9 @@ switch ($mode) {
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
+				$eglible[$row['id']] = ($row['deleted'] ? '<span class="blend">' : '')
 					. truncate_str($row['username'], 50)
-					. ($row['deleted'] ? '</font>' : '');
+					. ($row['deleted'] ? '</span>' : '');
 
 				if (preg_match("~^$search\$~i",$row['id'])) {
 					$descriptions[$row['id']] = trans('Id:').' '.$row['id'];
@@ -241,9 +241,9 @@ switch ($mode) {
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
+				$eglible[$row['id']] = ($row['deleted'] ? '<span class="blend">' : '')
 					. truncate_str($row['username'], 50)
-					. ($row['deleted'] ? '</font>' : '');
+					. ($row['deleted'] ? '</span>' : '');
 
 				$descriptions[$row['id']] = trans('Phone:').' '.$row['phone'];
 			}
@@ -412,9 +412,9 @@ switch ($mode) {
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=rtticketview&id='.$row['id'];
-				$eglible[$row['id']] = ($row['state'] == RT_RESOLVED ? '<font class="blend">' : '')
+				$eglible[$row['id']] = ($row['state'] == RT_RESOLVED ? '<span class="blend">' : '')
 					. $row['subject']
-					. ($row['state'] == RT_RESOLVED ? '</font>' : '');
+					. ($row['state'] == RT_RESOLVED ? '</span>' : '');
 				if (preg_match("~^$search\$~i",$row['id'])) 	{
 					$descriptions[$row['id']] = trans('Id') . ': ' . $row['id'];
 					continue;

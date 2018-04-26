@@ -406,37 +406,53 @@ input:invalid {
 
 .pre		{ font-size:  8pt; font-family: Courier, Courier New; }
 
-.suggestion_list:hover { cursor: pointer; }
 .suggestion_list {
 	background-color: @lucid;
 	border: 1px solid;
 	padding: 0px;
 	min-width: 320px;
-	ul {
-		padding: 0;
-		margin: 0;
-		list-style-type: none;
+	&:hover {
+		cursor: pointer;
 	}
-	span {
-		float: right;
-		right: 0;
-		font-size: 9px;
-		margin-right: 2px;
-		color: brown;
-		padding-left: 20px;
+}
+
+ul.lms-ui-suggestion-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+li.lms-ui-suggestion-item {
+	display: flex;
+	justify-content: space-between;
+	&.selected {
+		background-color: @highlight;
+		a {
+			color: black;
+		}
 	}
 	a {
 		text-decoration: none;
 		padding-left: 2px;
 		color: black;
 	}
-	.selected {
-		background-color: @highlight;
-		a {
-			color: black;
-		}
+}
+
+.lms-ui-suggestion-name {
+	font-size: 9px;
+	color: black;
+	& .blend {
+		color: @blend;
 	}
 }
+
+.lms-ui-suggestion-description {
+	font-size: 9px;
+	margin-right: 2px;
+	color: brown;
+	padding-left: 20px;
+}
+
 #autosuggest { display: none; z-index: 10000; }
 
 .acl		{ list-style-type: square; }

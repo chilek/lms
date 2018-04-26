@@ -195,7 +195,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			this.elem.value = this.eligible[this.highlighted];
 			var gotothisuri = this.actions[this.highlighted];
 			this.hideDiv();
-			//It's impossible to cancel the Tab key's default behavior. 
+			//It's impossible to cancel the Tab key's default behavior.
 			//So this undoes it by moving the focus back to our field right after
 			//the event completes.
 			setTimeout("document.getElementById('" + this.elem.id + "').focus()",0);
@@ -257,9 +257,9 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			var li = lis[i];
 
 			if (this.highlighted == i) {
-				li.className = "selected";
+				$(li).addClass('selected');
 			} else {
-				li.className = "";
+				$(li).removeClass('selected');
 			}
 		}
 	};
@@ -290,7 +290,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	Build the HTML for the dropdown div
 	********************************************************/
 	this.createDiv = function() {
-		var ul = document.createElement('ul');
+		var ul = $('<ul class="lms-ui-suggestion-list" />').get(0);
 
 		function onClick() {
 			me.useSuggestion();
@@ -298,42 +298,36 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 		//Create an array of LI's for the words.
 		for (var i=0, len=this.eligible.length; i<len; i++) {
-			var word = this.eligible[i];
-			var desc = (this.descriptions[i])?this.descriptions[i]:'';
-			var dest = (this.actions[i])?this.actions[i]:'';
+			var name = this.eligible[i];
+			var desc = this.descriptions[i] ? this.descriptions[i] : '';
+			var dest = this.actions[i]? this.actions[i] : '';
 
-			var ds = document.createElement('span');
-			var li = document.createElement('li');
-			var a = document.createElement('a');
-			if ((dest)&&(!this.autosubmit)) {
-				a.href = dest;
-				a.innerHTML = word;
-				ds.innerHTML = desc;
-				a.appendChild(ds);
-				li.onclick = onClick;
+			var name_elem = $('<div class="lms-ui-suggestion-name" />').get(0);
+			var desc_elem = $('<div class="lms-ui-suggestion-description">' + desc + '</div>').get(0);
+			var li = $('<li class="lms-ui-suggestion-item" />').get(0);
+
+			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
+				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
+
+			if (dest && !this.autosubmit) {
+				var a = $('<a href="' + dest + '"/>').get(0);
+				a.appendChild(name_elem);
+				a.appendChild(desc_elem);
 				li.appendChild(a);
 			} else {
-				word_len = word.length;
-
-				if (word_len > AUTOSUGGEST_MAX_LENGTH)
-					li.innerHTML = word.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ...";
-				else
-					li.innerHTML = word;
-
-				li.onclick = onClick
-				ds.innerHTML = desc;
-				li.appendChild(ds);
+				li.appendChild(name_elem);
+				li.appendChild(desc_elem);
 			}
+			li.onclick = onClick;
 
 			if (me.highlighted == i) {
-				li.className = "selected";
+				$(li).addClass('selected');
 			}
 
 			ul.appendChild(li);
 		}
 
 		this.div.replaceChild(ul,this.div.childNodes[0]);
-
 
 		/********************************************************
 		mouseover handler for the dropdown ul
