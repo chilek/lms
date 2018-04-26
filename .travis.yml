@@ -63,8 +63,8 @@ services:
 
 install:
   - composer install
-  - export PATH="$PATH:$HOME/.composer/vendor/bin"
-  - composer global require "squizlabs/php_codesniffer $PHPCS_VER"
+#  - export PATH="$PATH:$HOME/.composer/vendor/bin"
+#  - composer global require "squizlabs/php_codesniffer $PHPCS_VER"
 
 before_script:
   - psql -c 'create database lms;' -U postgres
