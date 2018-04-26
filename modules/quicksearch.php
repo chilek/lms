@@ -105,16 +105,16 @@ switch ($mode) {
 				foreach ($candidates as $idx => $row) {
 					$actions[$row['id']] = '?m=customerinfo&id=' . $row['id'];
 					$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
-						. escape_js(truncate_str($row['username'], 50))
+						. truncate_str($row['username'], 50)
 						. ($row['deleted'] ? '</font>' : '');
 
 					if ($customer_count[$row['username']] > 1) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['address']);
+						$descriptions[$row['id']] = trans('Address:') . ' ' . $row['address'];
 						continue;
 					}
 
 					if (preg_match("~^$search\$~i", $row['id'])) {
-						$descriptions[$row['id']] = escape_js(trans('Id:') . ' ' . $row['id']);
+						$descriptions[$row['id']] = trans('Id:') . ' ' . $row['id'];
 						continue;
 					}
 					if (preg_match("~$search~i", $row['username'])) {
@@ -122,20 +122,20 @@ switch ($mode) {
 						continue;
 					}
 					if (preg_match("~$search~i", $row['address'])) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['address']);
+						$descriptions[$row['id']] = trans('Address:') . ' ' . $row['address'];
 						continue;
 					} else if (preg_match("~$search~i", $row['post_name'])) {
-						$descriptions[$row['id']] = escape_js(trans('Name:') . ' ' . $row['post_name']);
+						$descriptions[$row['id']] = trans('Name:') . ' ' . $row['post_name'];
 						continue;
 					} else if (preg_match("~$search~i", $row['post_address'])) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['post_address']);
+						$descriptions[$row['id']] = trans('Address:') . ' ' . $row['post_address'];
 						continue;
 					} else if (preg_match("~$search~i", $row['location_address'])) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['location_address']);
+						$descriptions[$row['id']] = trans('Address:') . ' ' . $row['location_address'];
 						continue;
 					}
 					if (preg_match("~$search~i", $row['email'])) {
-						$descriptions[$row['id']] = escape_js(trans('E-mail:') . ' ' . $row['email']);
+						$descriptions[$row['id']] = trans('E-mail:') . ' ' . $row['email'];
 						continue;
 					}
 					$descriptions[$row['id']] = '';
@@ -198,11 +198,11 @@ switch ($mode) {
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
 				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
-					. escape_js(truncate_str($row['username'], 50))
+					. truncate_str($row['username'], 50)
 					. ($row['deleted'] ? '</font>' : '');
 
 				if (preg_match("~^$search\$~i",$row['id'])) {
-					$descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']);
+					$descriptions[$row['id']] = trans('Id:').' '.$row['id'];
 					continue;
 				}
 				$descriptions[$row['id']] = '';
@@ -242,10 +242,10 @@ switch ($mode) {
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
 				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
-					. escape_js(truncate_str($row['username'], 50))
+					. truncate_str($row['username'], 50)
 					. ($row['deleted'] ? '</font>' : '');
 
-				$descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone']);
+				$descriptions[$row['id']] = trans('Phone:').' '.$row['phone'];
 			}
 			header('Content-type: application/json');
 			if ($eglible) {
@@ -316,14 +316,14 @@ switch ($mode) {
 			if ($candidates)
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
-				$eglible[$row['id']] = escape_js($row['name']);
+				$eglible[$row['id']] = $row['name'];
 
 				if (preg_match("~^$search\$~i", $row['id'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
+				    $descriptions[$row['id']] = trans('Id').': '.$row['id'];
 				    continue;
 				}
 				if (preg_match("~$search~i", $row['name'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
+				    $descriptions[$row['id']] = trans('Name').': '.$row['name'];
 				    continue;
 				}
 				if (preg_match("~$search~i", $row['ip'])) {
@@ -413,13 +413,29 @@ switch ($mode) {
 			foreach($candidates as $idx => $row) {
 				$actions[$row['id']] = '?m=rtticketview&id='.$row['id'];
 				$eglible[$row['id']] = ($row['state'] == RT_RESOLVED ? '<font class="blend">' : '')
-					. escape_js($row['subject'])
+					. $row['subject']
 					. ($row['state'] == RT_RESOLVED ? '</font>' : '');
-				if (preg_match("~^$search\$~i",$row['id'])) 	{ $descriptions[$row['id']] = trans('Id').': '.$row['id']; continue; }
-				if (preg_match("~$search~i",$row['subject'])) 	{ $descriptions[$row['id']] = escape_js(trans('Subject:').' '.$row['subject']); continue; }
-				if (preg_match("~$search~i",$row['requestor'])) { $descriptions[$row['id']] = escape_js(trans('First/last name').': '.preg_replace('/ <.*/','',$row['requestor'])); continue; }
-				if (preg_match("~^$search~i",$row['name'])) 	{ $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['name']); continue; }
-				if (preg_match("~^$search~i",$row['lastname'])) { $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']); continue; }
+				if (preg_match("~^$search\$~i",$row['id'])) 	{
+					$descriptions[$row['id']] = trans('Id') . ': ' . $row['id'];
+					continue;
+				}
+				if (preg_match("~$search~i",$row['subject'])) {
+					$descriptions[$row['id']] = trans('Subject:') . ' ' . $row['subject'];
+					continue;
+				}
+				if (preg_match("~$search~i",$row['requestor'])) {
+					$descriptions[$row['id']] = trans('First/last name') . ': '
+						. preg_replace('/ <.*/','', $row['requestor']);
+					continue;
+				}
+				if (preg_match("~^$search~i",$row['name'])) 	{
+					$descriptions[$row['id']] = trans('First/last name') . ': ' . $row['name'];
+					continue;
+				}
+				if (preg_match("~^$search~i",$row['lastname'])) {
+					$descriptions[$row['id']] = trans('First/last name') . ': ' . $row['lastname'];
+					continue;
+				}
 				$descriptions[$row['id']] = '';
 			}
 			header('Content-type: application/json');
@@ -479,7 +495,7 @@ switch ($mode) {
 				else
 					$actions[$row['id']] = '?m=accountinfo&id='.$row['id'];
 
-				$eglible[$row['id']] = escape_js($row['login'].'@'.$row['domain']);
+				$eglible[$row['id']] = $row['login'] . '@' . $row['domain'];
 				$descriptions[$row['id']] = '';
 			}
 			header('Content-type: application/json');
@@ -534,8 +550,8 @@ switch ($mode) {
 					}
 */
 					$actions[$row['id']] = '?m=customerinfo&id=' . $row['cid'];
-					$eglible[$row['id']] = escape_js($row['fullnumber']);
-					$descriptions[$row['id']] = escape_js(truncate_str($row['customername'], 35));
+					$eglible[$row['id']] = $row['fullnumber'];
+					$descriptions[$row['id']] = truncate_str($row['customername'], 35);
 					//$descriptions[$row['id']] = trans('Document id:') . ' ' . $row['id'];
 				}
 			header('Content-type: application/json');
