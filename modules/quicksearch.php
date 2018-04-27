@@ -70,15 +70,16 @@ if (!empty($_POST['qs'])) {
 	$search = urldecode(trim($_GET['what']));
 	$mode = $_GET['mode'];
 }
-
 $sql_search = $DB->Escape("%$search%");
 
 switch ($mode) {
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address, post_name, post_full_address AS post_address, deleted,
-			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS customername, va.address AS location_address
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
+				post_name, post_full_address AS post_address, deleted,
+			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername, va.address AS location_address,
+			    c.status
 				FROM customerview c
 				LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type = ?
 				LEFT JOIN vaddresses va ON va.id = ca.address_id
@@ -104,7 +105,13 @@ switch ($mode) {
 				}
 				foreach ($candidates as $idx => $row) {
 					$name = truncate_str($row['customername'], 50);
-					$name_class = $row['deleted'] ? 'blend' : '';
+
+					$name_classes = array();
+					if ($row['deleted'])
+						$name_classes[] = 'blend';
+					$name_classes[] = 'lms-ui-suggestion-customer-status-' . $CSTATUSES[$row['status']]['alias'];
+					$name_class = implode(' ', $name_classes);
+
 					$description = '';
 					$description_class = '';
 					$action = '?m=customerinfo&id=' . $row['id'];
@@ -169,7 +176,7 @@ switch ($mode) {
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
 			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
-				post_name, post_full_address AS post_address, deleted,
+				post_name, post_full_address AS post_address, deleted, c.status,
 			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
 				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
@@ -181,7 +188,13 @@ switch ($mode) {
 			if ($candidates) {
 				foreach ($candidates as $idx => $row) {
 					$name = truncate_str($row['customername'], 50);
-					$name_class = $row['deleted'] ? 'blend' : '';
+
+					$name_classes = array();
+					if ($row['deleted'])
+						$name_classes[] = 'blend';
+					$name_classes[] = 'lms-ui-suggestion-customer-status-' . $CSTATUSES[$row['status']]['alias'];
+					$name_class = implode(' ', $name_classes);
+
 					$description = '';
 					$description_class = '';
 					$action = '?m=customerinfo&id=' . $row['id'];
@@ -257,13 +270,13 @@ switch ($mode) {
 		    // MySQL is slow here when vnodes view is used
 		    if (ConfigHelper::getConfig('database.type') == 'postgres')
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access, lastonline
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             else
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access, lastonline
 				    FROM nodes n
 				    JOIN (
                         SELECT nodeid, GROUP_CONCAT(mac SEPARATOR \',\') AS mac
@@ -287,13 +300,26 @@ switch ($mode) {
 				array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$result = array();
-			if ($candidates)
+			if ($candidates) {
+				$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit');
 				foreach ($candidates as $idx => $row) {
 					$name = $row['name'];
-					$name_class = $row['access'] ? '' : 'blend';
+
+					$name_classes = array();
+					if (!$row['access'])
+						$name_classes[] = 'blend';
+					if (!$row['lastonline'])
+						$name_classes[] = 'lms-ui-suggestion-node-status-unknown';
+					else
+						if (time() - $row['lastonline'] <= $lastonline_limit)
+							$name_classes[] = 'lms-ui-suggestion-node-status-online';
+						else
+							$name_classes[] = 'lms-ui-suggestion-node-status-offline';
+					$name_class = implode(' ', $name_classes);
+
 					$description = '';
 					$description_class = '';
-					$action = '?m=nodeinfo&id='.$row['id'];
+					$action = '?m=nodeinfo&id=' . $row['id'];
 
 					if (preg_match("~^$search\$~i", $row['id'])) {
 						$description = trans('Id') . ': ' . $row['id'];
@@ -302,12 +328,12 @@ switch ($mode) {
 					} else if (preg_match("~$search~i", $row['ip'])) {
 						$description = trans('IP') . ': ' . $row['ip'];
 					} else if (preg_match("~$search~i", $row['ip_pub'])) {
-						$description= trans('IP') . ': ' . $row['ip_pub'];
-					} else if (preg_match("~".macformat($search)."~i", $row['mac'])) {
+						$description = trans('IP') . ': ' . $row['ip_pub'];
+					} else if (preg_match("~" . macformat($search) . "~i", $row['mac'])) {
 						$macs = explode(',', $row['mac']);
 						foreach ($macs as $mac) {
-							if (preg_match("~".macformat($search)."~i", $mac)) {
-								$description = trans('MAC').': '.$mac;
+							if (preg_match("~" . macformat($search) . "~i", $mac)) {
+								$description = trans('MAC') . ': ' . $mac;
 							}
 						}
 						if (count($macs) > 1) {
@@ -317,6 +343,7 @@ switch ($mode) {
 
 					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
+			}
 			header('Content-type: application/json');
 			if (!empty($result))
 				echo json_encode($result);
@@ -375,16 +402,30 @@ switch ($mode) {
 			if ($candidates)
 				foreach($candidates as $idx => $row) {
 					$name = $row['subject'];
+
+					$name_classes = array();
 					switch ($row['state']) {
-						case RT_RESOLVED:
-							$name_class = 'blend';
-							break;
 						case RT_NEW:
-							$name_class = 'red';
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-new';
 							break;
-						default:
-							$name_class = '';
+						case RT_OPEN:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-open';
+							break;
+						case RT_RESOLVED:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-resolved';
+							break;
+						case RT_DEAD:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-dead';
+							break;
+						case RT_SCHEDULED:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-scheduled';
+							break;
+						case RT_WAITING:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-waiting';
+							break;
 					}
+					$name_class = implode(' ', $name_classes);
+
 					$description = '';
 					$description_class = '';
 					$action = '?m=rtticketview&id=' . $row['id'];

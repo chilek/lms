@@ -438,6 +438,12 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-suggestion-icon {
+	content: "";
+	padding-right: 16px;
+	margin-right: 4px;
+}
+
 .lms-ui-suggestion-name {
 	font-size: 9px;
 	color: black;
@@ -446,6 +452,76 @@ li.lms-ui-suggestion-item {
 	}
 	&.red {
 		.red;
+	}
+	&.lms-ui-suggestion-customer-status-awaiting::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(wait.gif);
+	}
+	&.lms-ui-suggestion-customer-status-interested::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(unk.gif);
+	}
+	&.lms-ui-suggestion-customer-status-disconnected::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(node_off.gif);
+	}
+	&.lms-ui-suggestion-customer-status-debtcollection::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(money.gif);
+	}
+	&.lms-ui-suggestion-node-status-unknown::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(node_unk.gif);
+	}
+	&.lms-ui-suggestion-node-status-online::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(node_on.gif);
+	}
+	&.lms-ui-suggestion-node-status-offline::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(node_off.gif);
+	}
+	&.lms-ui-suggestion-customer-status-connected::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(customer.gif);
+	}
+	&.lms-ui-suggestion-ticket-state-new {
+		.red;
+		&::before {
+			.lms-ui-suggestion-icon;
+			background-image: url(new.gif);
+		}
+	}
+	&.lms-ui-suggestion-ticket-state-open {
+		&::before {
+			.lms-ui-suggestion-icon;
+			background-image: url(open.gif);
+		}
+	}
+	&.lms-ui-suggestion-ticket-state-resolved {
+		.blend;
+		&::before {
+			.lms-ui-suggestion-icon;
+			background-image: url(resolved.gif);
+		}
+	}
+	&.lms-ui-suggestion-ticket-state-dead {
+		&::before {
+			.lms-ui-suggestion-icon;
+			background-image: url(dead.gif);
+		}
+	}
+	&.lms-ui-suggestion-ticket-state-scheduled {
+		&::before {
+			.lms-ui-suggestion-icon;
+			background-image: url(calendar.gif);
+		}
+	}
+	&.lms-ui-suggestion-ticket-state-waiting {
+		&::before {
+			.lms-ui-suggestion-icon;
+			background-image: url(calendar.gif);
+		}
 	}
 }
 

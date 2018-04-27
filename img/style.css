@@ -578,6 +578,11 @@ li.lms-ui-suggestion-item a {
   padding-left: 2px;
   color: black;
 }
+.lms-ui-suggestion-icon {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+}
 .lms-ui-suggestion-name {
   font-size: 9px;
   color: black;
@@ -587,6 +592,96 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-suggestion-name.red {
   color: #FF0000;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-awaiting::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(wait.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-interested::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(unk.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-disconnected::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_off.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-debtcollection::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(money.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-node-status-unknown::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_unk.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-node-status-online::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_on.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-node-status-offline::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_off.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-connected::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(customer.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-new {
+  color: #FF0000;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-new::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(new.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-open::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(open.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-resolved {
+  color: #888888;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-resolved::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(resolved.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-dead::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(dead.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-scheduled::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(calendar.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-waiting::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(calendar.gif);
 }
 .lms-ui-suggestion-description {
   font-size: 9px;

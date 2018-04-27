@@ -20,6 +20,8 @@ version ?.??.?? (????-??-??):
   - improvement: resolved tickets in quick search displayed as blended [chilan]
   - enhancement: additional operations on node search result - node group assign
     and unassign [chilan]
+  - enhancement: added helper icons in quick search suggestions (customers, node,
+    tickets) [chilan]
 
 version 1.11.23 (2018-03-21):
 
