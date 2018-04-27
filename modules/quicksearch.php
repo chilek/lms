@@ -257,13 +257,13 @@ switch ($mode) {
 		    // MySQL is slow here when vnodes view is used
 		    if (ConfigHelper::getConfig('database.type') == 'postgres')
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             else
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access
 				    FROM nodes n
 				    JOIN (
                         SELECT nodeid, GROUP_CONCAT(mac SEPARATOR \',\') AS mac
@@ -290,7 +290,7 @@ switch ($mode) {
 			if ($candidates)
 				foreach ($candidates as $idx => $row) {
 					$name = $row['name'];
-					$name_class = '';
+					$name_class = $row['access'] ? '' : 'blend';
 					$description = '';
 					$description_class = '';
 					$action = '?m=nodeinfo&id='.$row['id'];
