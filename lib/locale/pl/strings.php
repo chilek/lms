@@ -3885,4 +3885,6 @@ $_LANG['This field must be greater then download ceil!'] = 'To pole musi mieć w
 $_LANG['This field must be less than upload ceil!'] = 'To pole musi mieć wartość mniejszą niż górne ograniczenie uploadu!';
 $_LANG['This field must be greater then upload ceil!'] = 'To pole musi mieć wartość większa niż górne ograniczenie uploadu!';
 
+$_LANG['Burst time, threshold and limit should not be empty values!'] = 'Czas, wyzwalacz i ograniczenie wzbudzenia nie powinny być pustymi wartościami!';
+
 ?>
