@@ -70,15 +70,16 @@ if (!empty($_POST['qs'])) {
 	$search = urldecode(trim($_GET['what']));
 	$mode = $_GET['mode'];
 }
-
 $sql_search = $DB->Escape("%$search%");
 
 switch ($mode) {
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address, post_name, post_full_address AS post_address, deleted,
-			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username, va.address AS location_address
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
+				post_name, post_full_address AS post_address, deleted,
+			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername, va.address AS location_address,
+			    c.status
 				FROM customerview c
 				LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type = ?
 				LEFT JOIN vaddresses va ON va.id = ca.address_id
@@ -90,66 +91,55 @@ switch ($mode) {
 					OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)
 					OR LOWER(va.address) ?LIKE? LOWER($sql_search)
 					OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)
-				ORDER by deleted, username, cc.contact, full_address
+				ORDER by deleted, customername, cc.contact, full_address
 				LIMIT ?", array(LOCATION_ADDRESS, CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
-			$eglible=array(); $actions=array(); $descriptions=array();
+			$result = array();
 			if ($candidates) {
 				$customer_count = array();
 				foreach ($candidates as $idx => $row) {
-					$customername = $row['username'];
+					$customername = $row['customername'];
 					if (!isset($customer_count[$customername]))
 						$customer_count[$customername] = 0;
 					$customer_count[$customername]++;
 				}
 				foreach ($candidates as $idx => $row) {
-					$actions[$row['id']] = '?m=customerinfo&id=' . $row['id'];
-					$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
-						. escape_js(truncate_str($row['username'], 50))
-						. ($row['deleted'] ? '</font>' : '');
+					$name = truncate_str($row['customername'], 50);
 
-					if ($customer_count[$row['username']] > 1) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['address']);
-						continue;
-					}
+					$name_classes = array();
+					if ($row['deleted'])
+						$name_classes[] = 'blend';
+					$name_classes[] = 'lms-ui-suggestion-customer-status-' . $CSTATUSES[$row['status']]['alias'];
+					$name_class = implode(' ', $name_classes);
 
-					if (preg_match("~^$search\$~i", $row['id'])) {
-						$descriptions[$row['id']] = escape_js(trans('Id:') . ' ' . $row['id']);
-						continue;
-					}
-					if (preg_match("~$search~i", $row['username'])) {
-						$descriptions[$row['id']] = '';
-						continue;
-					}
-					if (preg_match("~$search~i", $row['address'])) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['address']);
-						continue;
+					$description = '';
+					$description_class = '';
+					$action = '?m=customerinfo&id=' . $row['id'];
+
+					if ($customer_count[$row['customername']] > 1) {
+						$description = trans('Address:') . ' ' . $row['address'];
+					} else if (preg_match("~^$search\$~i", $row['id'])) {
+						$description = trans('Id:') . ' ' . $row['id'];
+					} else if (preg_match("~$search~i", $row['customername'])) {
+						$description = '';
+					} else if (preg_match("~$search~i", $row['address'])) {
+						$description = trans('Address:') . ' ' . $row['address'];
 					} else if (preg_match("~$search~i", $row['post_name'])) {
-						$descriptions[$row['id']] = escape_js(trans('Name:') . ' ' . $row['post_name']);
-						continue;
+						$description = trans('Name:') . ' ' . $row['post_name'];
 					} else if (preg_match("~$search~i", $row['post_address'])) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['post_address']);
-						continue;
+						$description = trans('Address:') . ' ' . $row['post_address'];
 					} else if (preg_match("~$search~i", $row['location_address'])) {
-						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['location_address']);
-						continue;
+						$description = trans('Address:') . ' ' . $row['location_address'];
+					} else if (preg_match("~$search~i", $row['email'])) {
+						$description = trans('E-mail:') . ' ' . $row['email'];
 					}
-					if (preg_match("~$search~i", $row['email'])) {
-						$descriptions[$row['id']] = escape_js(trans('E-mail:') . ' ' . $row['email']);
-						continue;
-					}
-					$descriptions[$row['id']] = '';
+
+					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			}
 			header('Content-type: application/json');
-			if ($eglible) {
-				$result = array(
-					'eligible' => array_values($eglible),
-					'descriptions' => array_values($descriptions),
-					'actions' => array_values($actions),
-				);
+			if (!empty($result))
 				echo json_encode($result);
-			}
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -185,37 +175,39 @@ switch ($mode) {
 	case 'customerext':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address, post_name, post_full_address AS post_address, deleted,
-			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
+				post_name, post_full_address AS post_address, deleted, c.status,
+			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
 				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
 				WHERE LOWER(c.extid) ?LIKE? LOWER($sql_search)
-				ORDER by deleted, username, cc.contact, full_address
+				ORDER by deleted, customername, cc.contact, full_address
 				LIMIT ?", array(CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
-			$eglible=array(); $actions=array(); $descriptions=array();
-			if ($candidates)
-			foreach($candidates as $idx => $row) {
-				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
-					. escape_js(truncate_str($row['username'], 50))
-					. ($row['deleted'] ? '</font>' : '');
+			$result = array();
+			if ($candidates) {
+				foreach ($candidates as $idx => $row) {
+					$name = truncate_str($row['customername'], 50);
 
-				if (preg_match("~^$search\$~i",$row['id'])) {
-					$descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']);
-					continue;
+					$name_classes = array();
+					if ($row['deleted'])
+						$name_classes[] = 'blend';
+					$name_classes[] = 'lms-ui-suggestion-customer-status-' . $CSTATUSES[$row['status']]['alias'];
+					$name_class = implode(' ', $name_classes);
+
+					$description = '';
+					$description_class = '';
+					$action = '?m=customerinfo&id=' . $row['id'];
+
+					if (preg_match("~^$search\$~i", $row['id']))
+						$description = trans('Id:') . ' ' . $row['id'];
+
+					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
-				$descriptions[$row['id']] = '';
 			}
 			header('Content-type: application/json');
-			if ($eglible) {
-				$result = array(
-					'eligible' => array_values($eglible),
-					'descriptions' => array_values($descriptions),
-					'actions' => array_values($actions),
-				);
+			if (!empty($result))
 				echo json_encode($result);
-			}
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -229,33 +221,28 @@ switch ($mode) {
 	case 'phone':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS phone, full_address AS address, post_name, post_full_address AS post_address, deleted,
-			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS phone, full_address AS address,
+				post_name, post_full_address AS post_address, deleted,
+			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
 				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)
 				WHERE REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? $sql_search
-				ORDER by deleted, username, cc.contact, full_address
+				ORDER by deleted, customername, cc.contact, full_address
 				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
-			$eglible=array(); $actions=array(); $descriptions=array();
+			$result = array();
 			if ($candidates)
-			foreach($candidates as $idx => $row) {
-				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = ($row['deleted'] ? '<font class="blend">' : '')
-					. escape_js(truncate_str($row['username'], 50))
-					. ($row['deleted'] ? '</font>' : '');
-
-				$descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone']);
-			}
+				foreach ($candidates as $idx => $row) {
+					$action = '?m=customerinfo&id='.$row['id'];
+					$name = truncate_str($row['customername'], 50);
+					$name_class = $row['deleted'] ? 'blend' : '';
+					$description = trans('Phone:') . ' ' . $row['phone'];
+					$description_class = '';
+					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+				}
 			header('Content-type: application/json');
-			if ($eglible) {
-				$result = array(
-					'eligible' => array_values($eglible),
-					'descriptions' => array_values($descriptions),
-					'actions' => array_values($actions),
-				);
+			if (!empty($result))
 				echo json_encode($result);
-			}
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -283,13 +270,13 @@ switch ($mode) {
 		    // MySQL is slow here when vnodes view is used
 		    if (ConfigHelper::getConfig('database.type') == 'postgres')
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access, lastonline
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             else
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access, lastonline
 				    FROM nodes n
 				    JOIN (
                         SELECT nodeid, GROUP_CONCAT(mac SEPARATOR \',\') AS mac
@@ -312,51 +299,54 @@ switch ($mode) {
 			$candidates = $DB->GetAll(str_replace('%where', $sql_where,	$sql_query),
 				array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
-			$eglible=array(); $actions=array(); $descriptions=array();
-			if ($candidates)
-			foreach($candidates as $idx => $row) {
-				$actions[$row['id']] = '?m=nodeinfo&id='.$row['id'];
-				$eglible[$row['id']] = escape_js($row['name']);
+			$result = array();
+			if ($candidates) {
+				$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit');
+				foreach ($candidates as $idx => $row) {
+					$name = $row['name'];
 
-				if (preg_match("~^$search\$~i", $row['id'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Id').': '.$row['id']);
-				    continue;
+					$name_classes = array();
+					if (!$row['access'])
+						$name_classes[] = 'blend';
+					if (!$row['lastonline'])
+						$name_classes[] = 'lms-ui-suggestion-node-status-unknown';
+					else
+						if (time() - $row['lastonline'] <= $lastonline_limit)
+							$name_classes[] = 'lms-ui-suggestion-node-status-online';
+						else
+							$name_classes[] = 'lms-ui-suggestion-node-status-offline';
+					$name_class = implode(' ', $name_classes);
+
+					$description = '';
+					$description_class = '';
+					$action = '?m=nodeinfo&id=' . $row['id'];
+
+					if (preg_match("~^$search\$~i", $row['id'])) {
+						$description = trans('Id') . ': ' . $row['id'];
+					} else if (preg_match("~$search~i", $row['name'])) {
+						$description = trans('Name') . ': ' . $row['name'];
+					} else if (preg_match("~$search~i", $row['ip'])) {
+						$description = trans('IP') . ': ' . $row['ip'];
+					} else if (preg_match("~$search~i", $row['ip_pub'])) {
+						$description = trans('IP') . ': ' . $row['ip_pub'];
+					} else if (preg_match("~" . macformat($search) . "~i", $row['mac'])) {
+						$macs = explode(',', $row['mac']);
+						foreach ($macs as $mac) {
+							if (preg_match("~" . macformat($search) . "~i", $mac)) {
+								$description = trans('MAC') . ': ' . $mac;
+							}
+						}
+						if (count($macs) > 1) {
+							$description .= ',...';
+						}
+					}
+
+					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
-				if (preg_match("~$search~i", $row['name'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
-				    continue;
-				}
-				if (preg_match("~$search~i", $row['ip'])) {
-				    $descriptions[$row['id']] = trans('IP').': '.$row['ip'];
-				    continue;
-				}
-				if (preg_match("~$search~i", $row['ip_pub'])) {
-				    $descriptions[$row['id']] = trans('IP').': '.$row['ip_pub'];
-				    continue;
-				}
-				if (preg_match("~".macformat($search)."~i", $row['mac'])) {
-				    $macs = explode(',', $row['mac']);
-				    foreach ($macs as $mac) {
-    				    if (preg_match("~".macformat($search)."~i", $mac)) {
-        				    $descriptions[$row['id']] = trans('MAC').': '.$mac;
-	                    }
-			        }
-			        if (count($macs) > 1) {
-			            $descriptions[$row['id']] .= ',...';
-			        }
-				    continue;
-				}
-				$descriptions[$row['id']] = '';
 			}
 			header('Content-type: application/json');
-			if ($eglible) {
-				$result = array(
-					'eligible' => array_values($eglible),
-					'descriptions' => array_values($descriptions),
-					'actions' => array_values($actions),
-				);
+			if (!empty($result))
 				echo json_encode($result);
-			}
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -408,29 +398,56 @@ switch ($mode) {
 						intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
 					));
 
-			$eglible=array(); $actions=array(); $descriptions=array();
+			$result = array();
 			if ($candidates)
-			foreach($candidates as $idx => $row) {
-				$actions[$row['id']] = '?m=rtticketview&id='.$row['id'];
-				$eglible[$row['id']] = ($row['state'] == RT_RESOLVED ? '<font class="blend">' : '')
-					. escape_js($row['subject'])
-					. ($row['state'] == RT_RESOLVED ? '</font>' : '');
-				if (preg_match("~^$search\$~i",$row['id'])) 	{ $descriptions[$row['id']] = trans('Id').': '.$row['id']; continue; }
-				if (preg_match("~$search~i",$row['subject'])) 	{ $descriptions[$row['id']] = escape_js(trans('Subject:').' '.$row['subject']); continue; }
-				if (preg_match("~$search~i",$row['requestor'])) { $descriptions[$row['id']] = escape_js(trans('First/last name').': '.preg_replace('/ <.*/','',$row['requestor'])); continue; }
-				if (preg_match("~^$search~i",$row['name'])) 	{ $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['name']); continue; }
-				if (preg_match("~^$search~i",$row['lastname'])) { $descriptions[$row['id']] = escape_js(trans('First/last name').': '.$row['lastname']); continue; }
-				$descriptions[$row['id']] = '';
-			}
+				foreach($candidates as $idx => $row) {
+					$name = $row['subject'];
+
+					$name_classes = array();
+					switch ($row['state']) {
+						case RT_NEW:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-new';
+							break;
+						case RT_OPEN:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-open';
+							break;
+						case RT_RESOLVED:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-resolved';
+							break;
+						case RT_DEAD:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-dead';
+							break;
+						case RT_SCHEDULED:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-scheduled';
+							break;
+						case RT_WAITING:
+							$name_classes[] = 'lms-ui-suggestion-ticket-state-waiting';
+							break;
+					}
+					$name_class = implode(' ', $name_classes);
+
+					$description = '';
+					$description_class = '';
+					$action = '?m=rtticketview&id=' . $row['id'];
+
+					if (preg_match("~^$search\$~i",$row['id'])) 	{
+						$description = trans('Id') . ': ' . $row['id'];
+					} else if (preg_match("~$search~i",$row['subject'])) {
+						$description = trans('Subject:') . ' ' . $row['subject'];
+					} else if (preg_match("~$search~i",$row['requestor'])) {
+						$description = trans('First/last name') . ': '
+							. preg_replace('/ <.*/','', $row['requestor']);
+					} else if (preg_match("~^$search~i",$row['name'])) {
+						$description = trans('First/last name') . ': ' . $row['name'];
+					} else if (preg_match("~^$search~i",$row['lastname'])) {
+						$description = trans('First/last name') . ': ' . $row['lastname'];
+					}
+
+					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+				}
 			header('Content-type: application/json');
-			if ($eglible) {
-				$result = array(
-					'eligible' => array_values($eglible),
-					'descriptions' => array_values($descriptions),
-					'actions' => array_values($actions),
-				);
+			if (!empty($result))
 				echo json_encode($result);
-			}
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -470,27 +487,24 @@ switch ($mode) {
 					ORDER BY login, domain
 					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
-			$eglible=array(); $actions=array(); $descriptions=array();
+			$result = array();
 
-			if ($candidates) foreach($candidates as $idx => $row)
-			{
-				if($row['type'])
-					$actions[$row['id']] = '?m=aliasinfo&id='.$row['id'];
-				else
-					$actions[$row['id']] = '?m=accountinfo&id='.$row['id'];
+			if ($candidates)
+				foreach($candidates as $idx => $row) {
+					$name = $row['login'] . '@' . $row['domain'];
+					$name_class = '';
+					$description = '';
+					$description_class = '';
+					if ($row['type'])
+						$action = '?m=aliasinfo&id=' . $row['id'];
+					else
+						$action = '?m=accountinfo&id=' . $row['id'];
 
-				$eglible[$row['id']] = escape_js($row['login'].'@'.$row['domain']);
-				$descriptions[$row['id']] = '';
-			}
+					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+				}
 			header('Content-type: application/json');
-			if ($eglible) {
-				$result = array(
-					'eligible' => array_values($eglible),
-					'descriptions' => array_values($descriptions),
-					'actions' => array_values($actions),
-				);
+			if (!empty($result))
 				echo json_encode($result);
-			}
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -515,38 +529,37 @@ switch ($mode) {
 					ORDER BY d.fullnumber
 					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
-			$eglible = array(); $actions = array(); $descriptions = array();
+			$result = array();
+
 			if ($candidates)
 				foreach ($candidates as $idx => $row) {
 /*
 					switch ($row['type']) {
 						case DOC_INVOICE:
-							$actions[$row['id']] = '?m=invoice&id=' . $row['id'];
+							$action = '?m=invoice&id=' . $row['id'];
 							break;
 						case DOC_RECEIPT:
-							$actions[$row['id']] = '?m=receipt&id=' . $row['id'];
+							$action = '?m=receipt&id=' . $row['id'];
 							break;
 						case DOC_CNOTE:
-							$actions[$row['id']] = '?m=note&id=' . $row['id'];
+							$action = '?m=note&id=' . $row['id'];
 							break;
 						default:
-							$actions[$row['id']] = '?m=documentview&id=' . $row['id'];
+							$action = '?m=documentview&id=' . $row['id'];
 					}
 */
-					$actions[$row['id']] = '?m=customerinfo&id=' . $row['cid'];
-					$eglible[$row['id']] = escape_js($row['fullnumber']);
-					$descriptions[$row['id']] = escape_js(truncate_str($row['customername'], 35));
-					//$descriptions[$row['id']] = trans('Document id:') . ' ' . $row['id'];
+					$name = $row['fullnumber'];
+					$name_class = '';
+					$description = truncate_str($row['customername'], 35);
+					//$description = trans('Document id:') . ' ' . $row['id'];
+					$description_class = '';
+					$action = '?m=customerinfo&id=' . $row['cid'];
+
+					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			header('Content-type: application/json');
-			if ($eglible) {
-				$result = array(
-					'eligible' => array_values($eglible),
-					'descriptions' => array_values($descriptions),
-					'actions' => array_values($actions),
-				);
+			if (!empty($result))
 				echo json_encode($result);
-			}
 			$SESSION->close();
 			$DB->Destroy();
 			exit;

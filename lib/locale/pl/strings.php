@@ -3861,4 +3861,8 @@ $_LANG['<!settlement>- none -'] = '- brak -';
 $_LANG['<!settlement>next period'] = 'następny okres';
 $_LANG['<!settlement>current period'] = 'bieżący okres';
 
+$_LANG['Assign to node group'] = 'Przypisz do grupy komputerów';
+$_LANG['Unassign from node group'] = 'Usuń z grupy komputerów';
+$_LANG['Previous operation has not been finished yet!'] = 'Poprzednia operacja nie została jeszcze zakończona!';
+
 ?>

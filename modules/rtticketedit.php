@@ -117,6 +117,7 @@ if ($id && !isset($_POST['ticket'])) {
 		}
 
 		$message = end($ticket['messages']);
+		$message['body'] = str_replace('<br>', "\n", $message['body']);
 
 		$params = array(
 			'id' => $id,
@@ -136,7 +137,6 @@ if ($id && !isset($_POST['ticket'])) {
 
 		$LMS->NotifyUsers(array(
 			'queue' => $ticket['queueid'],
-			'oldqueue' => $ticket['queueid'],
 			'mail_headers' => $headers,
 			'mail_body' => $body,
 			'sms_body' => $sms_body,
@@ -238,8 +238,8 @@ if(isset($_POST['ticket']))
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
 		$newticket_notify = ConfigHelper::getConfig('phpui.newticket_notify', false);
-		if ($ticket['queueid'] != $ticketedit['queueid']
-			&& !empty($newticket_notify)) {
+		if (($ticket['state'] != $ticketedit['state']) || ($ticket['queueid'] != $ticketedit['queueid']
+			&& !empty($newticket_notify))) {
 			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
@@ -289,6 +289,13 @@ if(isset($_POST['ticket']))
 				}
 			}
 
+			if ($ticket['queueid'] == $ticketedit['queueid']) {
+				$ticket = $LMS->GetTicketContents($id);
+				$message = end($ticket['messages']);
+				$message['body'] = str_replace('<br>', "\n", $message['body']);
+			} else
+				$message = reset($ticket['messages']);
+
 			$params = array(
 				'id' => $ticket['ticketid'],
 				'queue' => $queue['name'],
@@ -297,7 +304,7 @@ if(isset($_POST['ticket']))
 				'categories' => $ticketdata['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 				'subject' => $ticket['subject'],
-				'body' => $ticket['messages'][0]['body'],
+				'body' => $message['body'],
 			);
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 			$params['customerinfo'] =  isset($mail_customerinfo) ? $mail_customerinfo : null;
@@ -307,7 +314,7 @@ if(isset($_POST['ticket']))
 
 			$LMS->NotifyUsers(array(
 				'queue' => $ticketedit['queueid'],
-				'oldqueue' => $ticket['queueid'],
+				'oldqueue' => $ticket['queueid'] == $ticketedit['queueid'] ? null : $ticket['queueid'],
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,

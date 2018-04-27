@@ -549,38 +549,145 @@ input:invalid {
   font-size: 8pt;
   font-family: Courier, Courier New;
 }
-.suggestion_list:hover {
-  cursor: pointer;
-}
 .suggestion_list {
   background-color: #EBE4D6;
   border: 1px solid;
   padding: 0px;
   min-width: 320px;
 }
-.suggestion_list ul {
+.suggestion_list:hover {
+  cursor: pointer;
+}
+ul.lms-ui-suggestion-list {
+  list-style-type: none;
   padding: 0;
   margin: 0;
-  list-style-type: none;
 }
-.suggestion_list span {
-  float: right;
-  right: 0;
-  font-size: 9px;
-  margin-right: 2px;
-  color: brown;
-  padding-left: 20px;
+li.lms-ui-suggestion-item {
+  display: flex;
+  justify-content: space-between;
 }
-.suggestion_list a {
+li.lms-ui-suggestion-item.selected {
+  background-color: #CCFFCC;
+}
+li.lms-ui-suggestion-item.selected a {
+  color: black;
+}
+li.lms-ui-suggestion-item a {
   text-decoration: none;
   padding-left: 2px;
   color: black;
 }
-.suggestion_list .selected {
-  background-color: #CCFFCC;
+.lms-ui-suggestion-icon {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
 }
-.suggestion_list .selected a {
+.lms-ui-suggestion-name {
+  font-size: 9px;
   color: black;
+}
+.lms-ui-suggestion-name.blend {
+  color: #888888;
+}
+.lms-ui-suggestion-name.red {
+  color: #FF0000;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-awaiting::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(wait.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-interested::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(unk.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-disconnected::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_off.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-debtcollection::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(money.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-node-status-unknown::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_unk.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-node-status-online::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_on.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-node-status-offline::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(node_off.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-customer-status-connected::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(customer.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-new {
+  color: #FF0000;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-new::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(new.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-open::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(open.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-resolved {
+  color: #888888;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-resolved::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(resolved.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-dead::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(dead.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-scheduled::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(calendar.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-waiting::before {
+  content: "";
+  padding-right: 16px;
+  margin-right: 4px;
+  background-image: url(calendar.gif);
+}
+.lms-ui-suggestion-description {
+  font-size: 9px;
+  margin-right: 2px;
+  color: brown;
+  padding-left: 20px;
 }
 #autosuggest {
   display: none;

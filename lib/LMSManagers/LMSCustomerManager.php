@@ -637,8 +637,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'tariffs':
                             $searchargs[] = 'EXISTS (SELECT 1 FROM assignments a
 							WHERE a.customerid = c.id
-							AND datefrom <= ?NOW?
-							AND (dateto >= ?NOW? OR dateto = 0)
+							AND a.datefrom <= ?NOW?
+							AND (a.dateto >= ?NOW? OR a.dateto = 0)
 							AND (tariffid IN (' . $value . ')))';
                             break;
 						case 'addresstype':
@@ -647,8 +647,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $searchargs[] = 'EXISTS (SELECT 1 FROM assignments a
 							JOIN tariffs t ON t.id = a.tariffid
 							WHERE a.customerid = c.id
-							AND datefrom <= ?NOW?
-							AND (dateto >= ?NOW? OR dateto = 0)
+							AND a.datefrom <= ?NOW?
+							AND (a.dateto >= ?NOW? OR a.dateto = 0)
 							AND (t.type = ' . intval($value) . '))';
                             break;
                         default:

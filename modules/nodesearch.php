@@ -85,6 +85,34 @@ function connect_nodes($nodeids, $deviceid, $linktype, $linktechnology, $linkspe
 	return $JSResponse;
 }
 
+function assign_nodes($nodeids, $nodegroupid) {
+	$JSResponse = new xajaxResponse();
+
+	$DB = LMSDB::getInstance();
+
+	foreach ($nodeids as $nodeid)
+		$DB->Execute("INSERT INTO nodegroupassignments (nodeid, nodegroupid) VALUES (?, ?)",
+			array($nodeid, $nodegroupid));
+
+	$JSResponse->call('operation_finished');
+
+	return $JSResponse;
+}
+
+function unassign_nodes($nodeids, $nodegroupid) {
+	$JSResponse = new xajaxResponse();
+
+	$DB = LMSDB::getInstance();
+
+	foreach ($nodeids as $nodeid)
+		$DB->Execute("DELETE FROM nodegroupassignments WHERE nodeid = ? AND nodegroupid = ?",
+			array($nodeid, $nodegroupid));
+
+	$JSResponse->call('operation_finished');
+
+	return $JSResponse;
+}
+
 function macformat($mac) {
 	$res = str_replace('-', ':', $mac);
 	// allow eg. format "::ab:3::12", only whole addresses
@@ -138,7 +166,7 @@ $nodesearch['mac'] = macformat($nodesearch['mac']);
 $LMS->InitXajax();
 
 if (isset($_GET['search'])) {
-	$LMS->RegisterXajaxFunction('connect_nodes');
+	$LMS->RegisterXajaxFunction(array('connect_nodes', 'assign_nodes', 'unassign_nodes'));
 	$SMARTY->assign('xajax', $LMS->RunXajax());
 
 	$layout['pagetitle'] = trans('Nodes Search Results');
@@ -182,8 +210,10 @@ if (isset($_GET['search'])) {
 		$SMARTY->display('print/printnodelist.html');
 	elseif ($listdata['total'] == 1)
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodelist[0]['id']);
-	else
+	else {
+		$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 		$SMARTY->display('node/nodesearchresults.html');
+	}
 }
 else {
 	$LMS->RegisterXajaxFunction('select_location');

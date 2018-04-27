@@ -697,70 +697,70 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				t.nodeid, n.name, n.location, t.netnodeid, t.netdevid',
 			array($ticketid, Auth::GetCurrentUser()));
 
-        $note = "";
         $type = 0;
+		$notes = array();
 
         if($ticket['owner'] != $props['owner'] && isset($props['owner'])) {
-            $note .= trans('Ticket has been assigned to user $a.', $LMS->GetUserName($props['owner'])) .'<br>';
+            $notes[] = trans('Ticket has been assigned to user $a.', $LMS->GetUserName($props['owner']));
             $type = $type | RTMESSAGE_OWNER_CHANGE;
         } else
 			   $props['owner'] = $ticket['owner'];
 
         if($ticket['queueid'] != $props['queueid'] && isset($props['queueid'])) {
-            $note .= trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($props['queueid'])) .'<br>';
+            $notes[] = trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($props['queueid']));
             $type = $type | RTMESSAGE_QUEUE_CHANGE;
         } else
 			   $props['queueid'] = $ticket['queueid'];
 
         if($ticket['cause'] != $props['cause'] && isset($props['cause'])) {
-            $note .= trans('Ticket\'s cause has been changed from $a to $b.', $RT_CAUSE[$ticket['cause']], $RT_CAUSE[$props['cause']]) .'<br>';
+            $notes[] = trans('Ticket\'s cause has been changed from $a to $b.', $RT_CAUSE[$ticket['cause']], $RT_CAUSE[$props['cause']]);
             $type = $type | RTMESSAGE_CAUSE_CHANGE;
         } else
 			   $props['cause'] = $ticket['cause'];
         
-	if($ticket['source'] != $props['source'] && isset($props['source'])) {
-            $note .= trans('Ticket\'s source has been changed from $a to $b.', $RT_SOURCES[$ticket['source']], $RT_SOURCES[$props['source']]) .'<br>';
+		if($ticket['source'] != $props['source'] && isset($props['source'])) {
+            $notes[] = trans('Ticket\'s source has been changed from $a to $b.', $RT_SOURCES[$ticket['source']], $RT_SOURCES[$props['source']]);
             $type = $type | RTMESSAGE_SOURCE_CHANGE;
         } else
 			   $props['source'] = $ticket['source'];
 
         if($ticket['priority'] != $props['priority'] && isset($props['priority'])) {
-            $note .= trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]) .'<br>';
+            $notes[] = trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]);
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else
             $props['priority'] = $ticket['priority'];
 
         if($ticket['state'] != $props['state'] && isset($props['state'])) {
-            $note .= trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']]['label'], $RT_STATES[$props['state']]['label']) .'<br>';
+            $notes[] = trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']]['label'], $RT_STATES[$props['state']]['label']);
             $type = $type | RTMESSAGE_STATE_CHANGE;
         }else
             $props['state'] = $ticket['state'];
 
         if($ticket['subject'] != $props['subject'] && isset($props['subject'])) {
-            $note .= trans('Ticket\'s subject has been changed from $a to $b.', $ticket['subject'], $props['subject']) .'<br>';
+            $notes[] = trans('Ticket\'s subject has been changed from $a to $b.', $ticket['subject'], $props['subject']);
             $type = $type | RTMESSAGE_SUBJECT_CHANGE;
         }else
             $props['subject'] = $ticket['subject'];
 
         if($ticket['netnodeid'] != $props['netnodeid'] && isset($props['netnodeid'])) {
-            $note .= trans('Ticket\'s netnode assignments has been changed from $a to $b.', $ticket['netnodeid'], $props['netnodeid']) .'<br>';
+            $notes[] = trans('Ticket\'s netnode assignments has been changed from $a to $b.', $ticket['netnodeid'], $props['netnodeid']);
             $type = $type | RTMESSAGE_NETNODE_CHANGE;
         }else
             $props['netnodeid'] = $ticket['netnodeid'];
 
-	if($ticket['netdevid'] != $props['netdevid'] && isset($props['netdevid'])) {
-            $note .= trans('Ticket\'s netdev assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']) .'<br>';
+		if($ticket['netdevid'] != $props['netdevid'] && isset($props['netdevid'])) {
+            $notes[] = trans('Ticket\'s netdev assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']);
             $type = $type | RTMESSAGE_NETDEV_CHANGE;
         }else
             $props['netdevid'] = $ticket['netdevid'];
 
         if($ticket['customerid'] != $props['customerid'] && isset($props['customerid'])) {
 				if($ticket['customerid'])
-            	$note .= trans('Ticket has been moved from customer $a ($b) to customer $c ($d).',
-            		$LMS->getCustomerName($ticket['customerid']), $ticket['customerid'], $LMS->getCustomerName($props['customerid']), $props['customerid']) .'<br>';
+            	$notes[] = trans('Ticket has been moved from customer $a ($b) to customer $c ($d).',
+            		$LMS->getCustomerName($ticket['customerid']), $ticket['customerid'], $LMS->getCustomerName($props['customerid']), $props['customerid']);
             else
-            	$note .= trans('Ticket has been moved from $a to customer $b ($c).',
-            		$ticket['requestor'], $LMS->getCustomerName($props['customerid']), $props['customerid']) .'<br>';
+            	$notes[] = trans('Ticket has been moved from $a to customer $b ($c).',
+            		$ticket['requestor'], $LMS->getCustomerName($props['customerid']), $props['customerid']);
             $type = $type | RTMESSAGE_CUSTOMER_CHANGE;
         }else
             $props['customerid'] = $ticket['customerid'];
@@ -776,13 +776,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				foreach ($categories_removed as $category) {
 					$this->db->Execute('DELETE FROM rtticketcategories WHERE ticketid = ? AND categoryid = ?',
 						array($ticketid, $category));
-					$note .= trans('Category $a has been removed from ticket.', $categories[$category]['name']) . '<br>';
+					$notes[] = trans('Category $a has been removed from ticket.', $categories[$category]['name']);
 				}
 			if (!empty($categories_added))
 				foreach ($categories_added as $category) {
 					$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
 						array($ticketid, $category));
-					$note .= trans('Category $a has been added to ticket.', $categories[$category]['name']) . '<br>';
+					$notes[] = trans('Category $a has been added to ticket.', $categories[$category]['name']);
 				}
 			$type = $type | RTMESSAGE_CATEGORY_CHANGE;
 		}
@@ -793,7 +793,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 				$locations = $customer_manager->getCustomerAddresses($ticket['customerid']);
 				$props['location'] = $locations[$props['address_id']]['location'];
-				$note .= trans('Ticket\'s location has been changed from $a to $b.',
+				$notes[] = trans('Ticket\'s location has been changed from $a to $b.',
 					$ticket['location'], $props['location']);
 			}
 		} else
@@ -806,7 +806,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$node_locations = $node_manager->GetNodeLocations($ticket['customerid']);
 				$props['node_name'] = $node_locations[$props['nodeid']]['name'];
 				$props['node_location'] = $node_locations[$props['nodeid']]['location'];
-				$note .= trans('Ticket\'s node has been changed from $a ($b) to $c ($d).',
+				$notes[] = trans('Ticket\'s node has been changed from $a ($b) to $c ($d).',
 					$ticket['node_name'] . ': ' . $ticket['node_location'], $ticket['nodeid'],
 					$props['node_name'] . ': ' . $props['node_location'], $props['nodeid']);
 			}
@@ -814,6 +814,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			$props['nodeid'] = null;
 
 		if ($type) {
+			$note = implode('<br>', $notes);
 			if ($props['state'] == RT_RESOLVED) {
 				$resolvetime = time();
 				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {

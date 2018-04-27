@@ -30,7 +30,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.onsubmit = onsubmit;
 
 	//Arrow to store a subset of eligible suggestions that match the user's input
-	this.eligible = [];
+	this.suggestions = [];
 
 	//The text input by the user.
 	this.inputText = null;
@@ -98,28 +98,28 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 			case KEYUP:
 				if ((suggest == 'top' || suggest == 'bottom') && me.highlighted == -1)
-					me.highlighted = me.eligible.length - 1;
+					me.highlighted = me.suggestions.length - 1;
 				else if (me.highlighted > 0)
 					--me.highlighted;
 				else if (me.highlighted == 0)
-					me.highlighted = (me.eligible.length - 1);
+					me.highlighted = me.suggestions.length - 1;
 
 				me.changeHighlight(key);
 			break;
 
 			case KEYDN:
-				if ((suggest == 'top' || suggest == 'bottom') && me.highlighted < (me.eligible.length - 1))
+				if ((suggest == 'top' || suggest == 'bottom') && me.highlighted < (me.suggestions.length - 1))
 					++me.highlighted;
-				else if (me.highlighted != -1 && me.highlighted < (me.eligible.length - 1))
+				else if (me.highlighted != -1 && me.highlighted < (me.suggestions.length - 1))
 					++me.highlighted;
-				else if(me.highlighted == (me.eligible.length - 1))
+				else if(me.highlighted == (me.suggestions.length - 1))
 					me.highlighted = 0;
 
 				me.changeHighlight(key);
 			break;
 			
 			case KEYLEFT:
-				if (suggest == 'left' && me.highlighted == -1 && me.highlighted < (me.eligible.length - 1)) {
+				if (suggest == 'left' && me.highlighted == -1 && me.highlighted < (me.suggestions.length - 1)) {
 					me.highlighted++;
 					me.changeHighlight(key);
 				}
@@ -130,7 +130,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			break;
 			
 			case KEYRIGHT:
-				if (suggest == 'right' && me.highlighted == -1 && me.highlighted < (me.eligible.length - 1)) {
+				if (suggest == 'right' && me.highlighted == -1 && me.highlighted < (me.suggestions.length - 1)) {
 					me.highlighted++;
 					me.changeHighlight(key);
 				}
@@ -175,8 +175,8 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.HTTPloaded = function () {
 		if ((xmlhttp) && (xmlhttp.readyState == 4)) {
 			me.inputText = this.value;
-			me.getEligible();
-			if (me.eligible.length>0) {
+			me.getSuggestions();
+			if (me.suggestions.length) {
 				me.createDiv();
 				me.positionDiv();
 				me.showDiv();
@@ -192,10 +192,10 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	********************************************************/
 	this.useSuggestion = function() {
 		if (this.highlighted > -1 && this.div.style.display != 'none') {
-			this.elem.value = this.eligible[this.highlighted];
-			var gotothisuri = this.actions[this.highlighted];
+			this.elem.value = this.suggestions[this.highlighted].name;
+			var gotothisuri = this.suggestions[this.highlighted].action;
 			this.hideDiv();
-			//It's impossible to cancel the Tab key's default behavior. 
+			//It's impossible to cancel the Tab key's default behavior.
 			//So this undoes it by moving the focus back to our field right after
 			//the event completes.
 			setTimeout("document.getElementById('" + this.elem.id + "').focus()",0);
@@ -203,7 +203,9 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			this.form.onsubmit = function () { return false; };
 			setTimeout("document.getElementById('" + this.form.id + "').onsubmit = function () { return true; }",10);
 			//Go to search results.
-			if (this.autosubmit) location.href = gotothisuri;
+			if (this.autosubmit) {
+				location.href = gotothisuri;
+			}
 			if (this.onsubmit !== undefined) {
 				(this.onsubmit)();
 			}
@@ -252,16 +254,14 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	Modify the HTML in the dropdown to move the highlight.
 	********************************************************/
 	this.changeHighlight = function() {
-		var lis = this.div.getElementsByTagName('LI');
-		for (var i=0, len=lis.length; i<len; i++) {
-			var li = lis[i];
-
-			if (this.highlighted == i) {
-				li.className = "selected";
+		$('li', this.div).each(function(i, elem) {
+			if (me.highlighted == i) {
+				$(elem).addClass('selected');
 			} else {
-				li.className = "";
+				$(elem).removeClass('selected');
 			}
-		}
+
+		});
 	};
 
 	/********************************************************
@@ -290,50 +290,46 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	Build the HTML for the dropdown div
 	********************************************************/
 	this.createDiv = function() {
-		var ul = document.createElement('ul');
+		var ul = $('<ul class="lms-ui-suggestion-list" />').get(0);
 
 		function onClick() {
 			me.useSuggestion();
 		}
 
 		//Create an array of LI's for the words.
-		for (var i=0, len=this.eligible.length; i<len; i++) {
-			var word = this.eligible[i];
-			var desc = (this.descriptions[i])?this.descriptions[i]:'';
-			var dest = (this.actions[i])?this.actions[i]:'';
+		$.each(this.suggestions, function(i, elem) {
+			var name = elem.name;
+			var name_class = elem.name_class;
+			var desc = elem.description ? elem.description : '';
+			var desc_class = elem.description_class;
+			var action = elem.action ? elem.action : '';
 
-			var ds = document.createElement('span');
-			var li = document.createElement('li');
-			var a = document.createElement('a');
-			if ((dest)&&(!this.autosubmit)) {
-				a.href = dest;
-				a.innerHTML = word;
-				ds.innerHTML = desc;
-				a.appendChild(ds);
-				li.onclick = onClick;
+			var name_elem = $('<div class="lms-ui-suggestion-name ' + name_class +'" />').get(0);
+			var desc_elem = $('<div class="lms-ui-suggestion-description ' + desc_class + '">' + desc + '</div>').get(0);
+			var li = $('<li class="lms-ui-suggestion-item" />').get(0);
+
+			name_elem.innerHTML = name.length > AUTOSUGGEST_MAX_LENGTH ?
+				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
+
+			if (action && !me.autosubmit) {
+				var a = $('<a href="' + dest + '"/>').get(0);
+				a.appendChild(name_elem);
+				a.appendChild(desc_elem);
 				li.appendChild(a);
 			} else {
-				word_len = word.length;
-
-				if (word_len > AUTOSUGGEST_MAX_LENGTH)
-					li.innerHTML = word.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ...";
-				else
-					li.innerHTML = word;
-
-				li.onclick = onClick
-				ds.innerHTML = desc;
-				li.appendChild(ds);
+				li.appendChild(name_elem);
+				li.appendChild(desc_elem);
 			}
+			li.onclick = onClick;
 
 			if (me.highlighted == i) {
-				li.className = "selected";
+				$(li).addClass('selected');
 			}
 
 			ul.appendChild(li);
-		}
+		});
 
 		this.div.replaceChild(ul,this.div.childNodes[0]);
-
 
 		/********************************************************
 		mouseover handler for the dropdown ul
@@ -387,24 +383,20 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 		xmlhttp.send(null);
 	}
 
-	this.getEligible = function() {
+	this.getSuggestions = function() {
 		try {
-			result = JSON.parse(xmlhttp.responseText);
-			this.eligible = result.eligible;
-			this.descriptions = typeof(result.descriptions) == 'undefined' ? [] : result.descriptions;
-			this.actions = typeof(result.actions) == 'undefined' ? [] : result.actions;
+			this.suggestions = JSON.parse(xmlhttp.responseText);
 		} catch(x) {
-			this.eligible = [];
+			this.suggestions = [];
 		}
 
-		if (this.suggestions) {
-			for (var i=0, len=this.suggestions.length; i<len; i++) {
-				var suggestion = this.suggestions[i];
-
-				if (suggestion.toLowerCase().indexOf(this.inputText.toLowerCase()) == "0") {
-					this.eligible[eligible.length] = suggestion;
+		if (this.suggestions.length) {
+			$.each(this.suggestions, function(i, elem) {
+				var name = elem.name;
+				if (me.inputText && !name.toLowerCase().indexOf(me.inputText.toLowerCase())) {
+					this.suggestions.push(elem);
 				}
-			}
+			});
 		}
 	};
 
@@ -452,3 +444,21 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 //counter to help create unique ID's
 var idCounter = 0;
+
+// hide autosuggest after click out of the window
+$(document).click(function(e) {
+	var elem = e.target;
+	if (!$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
+		$('#autosuggest:visible').hide();
+	}
+	return;
+});
+
+// hide autosuggest after escape key press
+$(document).keydown(function(e) {
+	var key = e.keyCode;
+	var elem = e.target;
+	if (key == 27 && !$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
+		$('#autosuggest:visible').hide();
+	}
+});

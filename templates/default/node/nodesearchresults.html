@@ -97,34 +97,51 @@
 							<span class="bold">{trans("Operation:")}</span>
 							<select onChange="javascript:changeOperation(this.value);" id="operation">
 								<option value="1">{trans("Connect to device")}</option>
+								<option value="2">{trans("Assign to node group")}</option>
+								<option value="3">{trans("Unassign from node group")}</option>
 							</select>
 						</label>
 					</td>
-					<td id="deviceconnect" class="nobr">
-						<select id="device">
-							{foreach from=$netdevlist item=item}
-							<option value="{$item.id}">{$item.name}</option>
-							{/foreach}
-						</select>
-						<select id="linktype" onchange="change_linktype(this.options[this.selectedIndex].value)">
-							{foreach from=$_LINKTYPES item=item key=key}
-							<option value="{$key}">{$item}</option>
-							{/foreach}
-						</select>
-						<select id="linktechnology">
-							<option value="0">{trans("- unknown -")}</option>
-							{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-							<option value="{$linktechnologyidx}">{$linktechnology}</option>
-							{/foreach}
-						</select>
-						<select id="linkspeed">
-							{foreach from=$_LINKSPEEDS item=item key=key}
-							<option value="{$key}"{if $key==100000} selected{/if}>{$item}</option>
-							{/foreach}
-						</select>
+					<td class="nobr">
+						<table>
+							<tr id="deviceconnect" class="operationparams" style="display: none;">
+								<td>
+									<select id="device">
+										{foreach from=$netdevlist item=item}
+										<option value="{$item.id}">{$item.name}</option>
+										{/foreach}
+									</select>
+									<select id="linktype" onchange="change_linktype(this.options[this.selectedIndex].value)">
+										{foreach from=$_LINKTYPES item=item key=key}
+										<option value="{$key}">{$item}</option>
+										{/foreach}
+									</select>
+									<select id="linktechnology">
+										<option value="0">{trans("- unknown -")}</option>
+										{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+										<option value="{$linktechnologyidx}">{$linktechnology}</option>
+										{/foreach}
+									</select>
+									<select id="linkspeed">
+										{foreach from=$_LINKSPEEDS item=item key=key}
+										<option value="{$key}"{if $key==100000} selected{/if}>{$item}</option>
+										{/foreach}
+									</select>
+								</td>
+							</tr>
+							<tr id="nodegroups" class="operationparams" style="display: none;">
+								<td>
+									<select id="nodegroup">
+										{foreach $nodegroups as $nodegroup}
+										<option value="{$nodegroup.id}"{if $key==$nodegroup.id} selected{/if}>{$nodegroup.name}</option>
+										{/foreach}
+									</select>
+								</td>
+							</tr>
+						</table>
 					</td>
 					<td class="nobr">
-						<a href="javascript:applyOperation();"><img src="img/save.gif" alt=""> {trans("Submit")}</a>
+						<a id="submit-button" href="javascript:applyOperation();"><img src="img/save.gif" alt=""> {trans("Submit")}</a>
 					</td>
 				</tr>
 			</table>
@@ -163,44 +180,55 @@
 <SCRIPT type="text/javascript">
 <!--
 	function changeOperation(operation) {
+		$('.operationparams').hide();
+		switch (parseInt(operation)) {
+			case 1:
+				$('#deviceconnect').show();
+				break;
+			case 2:
+			case 3:
+				$('#nodegroups').show();
+				break;
+		}
 	}
 
-	var operationFinished = true;
+	changeOperation(1);
 
 	function applyOperation() {
-		if (!operationFinished) {
-			alert('Previous operation has not been finished yet!');
+		if (!$('#submit-button').is(':visible')) {
+			alert('{trans("Previous operation has not been finished yet!")}');
 			return;
 		}
-		operationFinished = false;
 
 		var nodeids = [];
-		var inputs = document.getElementsByTagName("INPUT");
-		for (i = 0, len = inputs.length; i < len; i++) {
-			var e = inputs[i];
-			if (e.type == 'checkbox' && e.name.match(/^marks/) && e.checked)
-				nodeids.push(e.value);
-		}
+		$('input[name^="mark"]:checked').each(function(key, elem) {
+			nodeids.push($(elem).val());
+		});
 		if (!nodeids.length) {
 			alert('{trans("You haven\'t selected any nodes!")}');
 			return;
 		}
 
-		var operation = parseInt(document.getElementById('operation').value);
+		$('#submit-button').hide();
+
+		var operation = parseInt($('#operation').val());
 		switch (operation) {
 			case 1:
 				xajax_connect_nodes(nodeids,
-					document.getElementById('device').value,
-					document.getElementById('linktype').value,
-					document.getElementById('linktechnology').value,
-					document.getElementById('linkspeed').value);
+					$('#device').val(), $('#linktype').val(),
+					$('#linktechnology').val(), $('#linkspeed').val());
+				break;
+			case 2:
+				xajax_assign_nodes(nodeids, $('#nodegroup').val());
+				break;
+			case 3:
+				xajax_unassign_nodes(nodeids, $('#nodegroup').val());
 				break;
 		}
 	}
 
-	function operation_finished()
-	{
-		operationFinished = true;
+	function operation_finished() {
+		$('#submit-button').show();
 	}
 
 	function change_linktype(linktype) {
