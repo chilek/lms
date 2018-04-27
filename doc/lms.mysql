@@ -2665,14 +2665,14 @@ CREATE VIEW vnodealltariffs_tariffs AS
 		   SUM(t.up_burst_limit) AS up_burst_limit,
 		   SUM(COALESCE(t.downrate_n, t.downrate)) AS downrate_n,
 		   SUM(COALESCE(t.downceil_n, t.downceil)) AS downceil_n,
-		   SUM(CAOLESCE(t.down_burst_time_n, t.down_burst_time)) AS down_burst_time_n,
-		   SUM(CAOLESCE(t.down_burst_threshold_n, t.down_burst_threshold)) AS down_burst_threshold_n,
-		   SUM(CAOLESCE(t.down_burst_limit_n, t.down_burst_limit)) AS down_burst_limit_n,
+		   SUM(COALESCE(t.down_burst_time_n, t.down_burst_time)) AS down_burst_time_n,
+		   SUM(COALESCE(t.down_burst_threshold_n, t.down_burst_threshold)) AS down_burst_threshold_n,
+		   SUM(COALESCE(t.down_burst_limit_n, t.down_burst_limit)) AS down_burst_limit_n,
 		   SUM(COALESCE(t.uprate_n, t.uprate)) AS uprate_n,
 		   SUM(COALESCE(t.upceil_n, t.upceil)) AS upceil_n,
-		   SUM(CAOLESCE(t.up_burst_time_n, t.up_burst_time)) AS up_burst_time_n,
-		   SUM(CAOLESCE(t.up_burst_threshold_n, t.up_burst_threshold)) AS up_burst_threshold_n,
-		   SUM(CAOLESCE(t.up_burst_limit_n, t.up_burst_limit)) AS up_burst_limit_n
+		   SUM(COALESCE(t.up_burst_time_n, t.up_burst_time)) AS up_burst_time_n,
+		   SUM(COALESCE(t.up_burst_threshold_n, t.up_burst_threshold)) AS up_burst_threshold_n,
+		   SUM(COALESCE(t.up_burst_limit_n, t.up_burst_limit)) AS up_burst_limit_n
 	FROM assignments a
 		JOIN tariffs t ON t.id = a.tariffid
 		JOIN vnodealltariffs_nodes n ON n.ownerid = a.customerid
