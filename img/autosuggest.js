@@ -444,3 +444,21 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 //counter to help create unique ID's
 var idCounter = 0;
+
+// hide autosuggest after click out of the window
+$(document).click(function(e) {
+	var elem = e.target;
+	if (!$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
+		$('#autosuggest:visible').hide();
+	}
+	return;
+});
+
+// hide autosuggest after escape key press
+$(document).keydown(function(e) {
+	var key = e.keyCode;
+	var elem = e.target;
+	if (key == 27 && !$(elem).is('.lms-ui-quick-search,.lms-ui-suggestion-list *')) {
+		$('#autosuggest:visible').hide();
+	}
+});
