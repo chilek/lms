@@ -87,22 +87,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 		}
 
-		if (isset($state) && is_array($state))
+		if (!empty($state) && is_array($state))
 			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
 		elseif (empty($state))
 			$statefilter = '';
 
-		if (isset($priority) && is_array($priority))
+		if (!empty($priority) && is_array($priority))
 			$priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
 		elseif (empty($priority))
 			$priorityfilter = '';
 
-                if (isset($netdevids) && is_array($netdevids))
+                if (!empty($netdevids) && is_array($netdevids))
                         $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
                 elseif (empty($netdevids))
                         $netdevidsfilter = '';
 
-                if (isset($netnodeids) && is_array($netnodeids))
+                if (!empty($netnodeids) && is_array($netnodeids))
                         $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
                 elseif (empty($netnodeids))
                         $netnodeidsfilter = '';
