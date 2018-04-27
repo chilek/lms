@@ -582,7 +582,7 @@ li.lms-ui-suggestion-item a {
   font-size: 9px;
   color: black;
 }
-.lms-ui-suggestion-name .blend {
+.lms-ui-suggestion-name.blend {
   color: #888888;
 }
 .lms-ui-suggestion-description {

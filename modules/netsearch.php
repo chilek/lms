@@ -103,24 +103,24 @@ if (isset($_GET['ajax'])) {
 		break;
 
 		default:
-			print 'false;';
 			exit;
 	}
 										
-	$eglible = $descriptions = array();
+	$result = array();
 
 	if ($candidates)
 		foreach ($candidates as $idx => $row) {
-			$eglible[$row['item']] = escape_js($row['item']);
-			$descriptions[$row['item']] = escape_js($row['entries'] . ' ' . trans('entries'));
+			$name = $row['item'];
+			$name_class = '';
+			$description = $row['entries'] . ' ' . trans('entries');
+			$description_class = '';
+			$action = '';
+
+			$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
 		}
 	header('Content-Type: application/json');
-	if ($eglible) {
-		echo json_encode(array(
-			'eligible' => array_values($eglible),
-			'descriptions' => array_values($descriptions),
-		));
-	}
+	if (!empty($result))
+		echo json_encode($result);
 	exit;
 }
 

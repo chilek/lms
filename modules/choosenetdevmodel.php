@@ -45,26 +45,27 @@ if (isset($_GET['ajax']) && isset($_GET['what'])) {
 		print "false;";
 		die;
 	}
-        $eligible = $actions = array();
-        $list = $DB->GetAll('
-            SELECT id, name
-            FROM netdeviceproducers
-            WHERE name ?LIKE? ' . $DB->Escape("%$search%") . '
-                OR alternative_name ?LIKE? ' . $DB->Escape("%$search%") . '
-            ORDER BY name
-            LIMIT 10'
-        );
-        header('Content-Type: application/json');
-        if (!empty($list)) {
-            foreach ($list as $idx => $row) {
-                $eligible[$idx] = escape_js($row['name']);
-                $actions[$idx] = sprintf("javascript: search_producer(%d)", $row['id']);
-            }
-            echo json_encode(array(
-                'eligible' => array_values($eligible),
-                'actions' => array_values($actions),
-            ));
-        }
+    $list = $DB->GetAll('SELECT id, name
+        FROM netdeviceproducers
+        WHERE name ?LIKE? ' . $DB->Escape("%$search%") . '
+            OR alternative_name ?LIKE? ' . $DB->Escape("%$search%") . '
+        ORDER BY name
+        LIMIT 10'
+    );
+
+	$result = array();
+	if ($list)
+	    foreach ($list as $idx => $row) {
+	    	$name = $row['name'];
+	    	$name_class = '';
+	    	$description = $description_class = '';
+    		$action = sprintf("javascript: search_producer(%d)", $row['id']);
+
+			$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+		}
+    header('Content-Type: application/json');
+    if (!empty($result))
+        echo json_encode($result);
 	die;
 }
 
