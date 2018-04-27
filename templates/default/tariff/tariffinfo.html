@@ -45,6 +45,22 @@
     {if $night}{$night|default:0}{else}{trans("not defined")}{/if})
 {/function}
 
+{function burst_time_restrictions}
+{if $day}{$day} s{else}{trans("not defined")}{/if}
+
+({trans("night:")}
+
+{if $night}{$night|default:"0"} s{else}{trans("not defined")}{/if})
+{/function}
+
+{function burst_restrictions}
+    {if $day}{$day} kbit/s{else}{trans("not defined")}{/if}
+
+    ({trans("night:")}
+
+    {if $night}{$night|default:"0"} kbit/s{else}{trans("not defined")}{/if})
+{/function}
+
 {function user_restrictions}
     {if !isset($limit) || !$limit}
         {trans("no limit")}
@@ -193,6 +209,21 @@
                                 <TD>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</TD>
                             </TR>
                             <TR>
+                                <TD></TD>
+                                <TD>{trans("Upload burst time:")}</TD>
+                                <TD>{burst_time_restrictions day=$tariff.up_burst_time night=$tariff.up_burst_time_n}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Upload burst threshold:")}</TD>
+                                <TD>{burst_restrictions day=$tariff.up_burst_threshold night=$tariff.up_burst_threshold_n}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Upload burst limit:")}</TD>
+                                <TD>{burst_restrictions day=$tariff.up_burst_limit night=$tariff.up_burst_limit_n}</TD>
+                            </TR>
+                            <TR>
                                 <TD><IMG SRC="img/downrate.gif" ALT=""></TD>
                                 <TD>{trans("Download rate:")}</TD>
                                 <TD>{bitrate_restrictions day=$tariff.downrate night=$tariff.downrate_n}</TD>
@@ -201,6 +232,21 @@
                                 <TD></TD>
                                 <TD>{trans("Download ceil:")}</TD>
                                 <TD>{bitrate_restrictions day=$tariff.downceil night=$tariff.downceil_n}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Download burst time:")}</TD>
+                                <TD>{burst_time_restrictions day=$tariff.down_burst_time night=$tariff.down_burst_time_n}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Download burst threshold:")}</TD>
+                                <TD>{burst_restrictions day=$tariff.down_burst_threshold night=$tariff.down_burst_threshold_n}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Download burst limit:")}</TD>
+                                <TD>{burst_restrictions day=$tariff.down_burst_limit night=$tariff.down_burst_limit_n}</TD>
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/options.gif" ALT=""></TD>

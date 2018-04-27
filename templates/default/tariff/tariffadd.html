@@ -143,72 +143,161 @@
 		    </TD>
 		    <TD WIDTH="50%" VALIGN="top" ID="tariff-capacity-settings">
 			<TABLE WIDTH="100%" CELLPADDING="3">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 98%;">
+				</COLGROUP>
 				<TR>
-				    <TD WIDTH="1%">
-					<IMG SRC="img/uprate.gif" ALT="">
+				    <TD>
+						<IMG SRC="img/uprate.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Upload rate:")}</B></TD>
-				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariff[uprate]" SIZE="6" VALUE="{if $tariff.uprate}{$tariff.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}>
-					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[uprate_n]" SIZE="6" VALUE="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
+				    <TD class="bold nobr">
+						{trans("Upload rate:")}
+					</TD>
+				    <TD>
+						<INPUT TYPE="TEXT" NAME="tariff[uprate]" SIZE="6" VALUE="{if $tariff.uprate}{$tariff.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[uprate_n]" SIZE="6" VALUE="{if $tariff.uprate_n}{$tariff.uprate_n}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate_n"}> kbit/s
 				    </TD>
 				</TR>
 				<TR>
-				    <TD WIDTH="1%">
+				    <TD>
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Upload ceil:")}</B></TD>
-				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariff[upceil]" SIZE="6" VALUE="{if $tariff.upceil}{$tariff.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}>
-					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[upceil_n]" SIZE="6" VALUE="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
+				    <TD class="bold nobr">
+						{trans("Upload ceil:")}
+					</TD>
+				    <TD>
+						<INPUT TYPE="TEXT" NAME="tariff[upceil]" SIZE="6" VALUE="{if $tariff.upceil}{$tariff.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[upceil_n]" SIZE="6" VALUE="{if $tariff.upceil_n}{$tariff.upceil_n}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil_n"}> kbit/s
+				    </TD>
+				</TR>
+
+				<TR>
+					<TD>
+					</TD>
+					<TD class="bold nobr">
+						{trans("Upload burst time:")}
+					</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="tariff[up_burst_time]" SIZE="6" VALUE="{if $tariff.up_burst_time}{$tariff.up_burst_time}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[up_burst_time_n]" SIZE="6" VALUE="{if $tariff.up_burst_time_n}{$tariff.up_burst_time_n}{/if}" {tip text="Enter upload burst time (optional)" trigger="up_burst_time_n"}> s
+					</TD>
+				</TR>
+				<TR>
+					<TD>
+					</TD>
+					<TD class="bold nobr">
+						{trans("Upload burst threshold:")}
+					</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="tariff[up_burst_threshold]" SIZE="6" VALUE="{if $tariff.up_burst_threshold}{$tariff.up_burst_threshold}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[up_burst_threshold_n]" SIZE="6" VALUE="{if $tariff.up_burst_threshold_n}{$tariff.up_burst_threshold_n}{/if}" {tip text="Enter upload burst threshold (optional)" trigger="up_burst_threshold_n"}> kbit/s
+					</TD>
+				</TR>
+				<TR>
+					<TD>
+					</TD>
+					<TD class="bold nobr">
+						{trans("Upload burst limit:")}
+					</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="tariff[up_burst_limit]" SIZE="6" VALUE="{if $tariff.up_burst_limit}{$tariff.up_burst_limit}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[up_burst_limit_n]" SIZE="6" VALUE="{if $tariff.up_burst_limit_n}{$tariff.up_burst_limit_n}{/if}" {tip text="Enter upload burst limit (optional)" trigger="up_burst_limit_n"}> kbit/s
+					</TD>
+				</TR>
+
+				<TR>
+				    <TD>
+						<IMG SRC="img/downrate.gif" ALT="">
+				    </TD>
+				    <TD class="bold nobr">
+						{trans("Download rate:")}
+					</TD>
+				    <TD>
+						<INPUT TYPE="TEXT" NAME="tariff[downrate]" SIZE="6" VALUE="{if $tariff.downrate}{$tariff.downrate}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[downrate_n]" SIZE="6" VALUE="{if $tariff.downrate_n}{$tariff.downrate_n}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate_n"}> kbit/s
 				    </TD>
 				</TR>
 				<TR>
-				    <TD WIDTH="1%">
-					<IMG SRC="img/downrate.gif" ALT="">
+				    <TD>
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Download rate:")}</B></TD>
-				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariff[downrate]" SIZE="6" VALUE="{if $tariff.downrate}{$tariff.downrate}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate"}>
-					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[downrate_n]" SIZE="6" VALUE="{if $tariff.downrate_n}{$tariff.downrate_n}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate_n"}> kbit/s
-				    </TD>
-				</TR>
-				<TR>
-				    <TD WIDTH="1%">
-				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Download ceil:")}</B></TD>
-				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariff[downceil]" SIZE="6" VALUE="{if $tariff.downceil}{$tariff.downceil}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil"}>
-					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[downceil_n]" SIZE="6" VALUE="{if $tariff.downceil_n}{$tariff.downceil_n}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil_n"}> kbit/s
+				    <TD class="bold nobr">
+						{trans("Download ceil:")}
+					</TD>
+				    <TD>
+						<INPUT TYPE="TEXT" NAME="tariff[downceil]" SIZE="6" VALUE="{if $tariff.downceil}{$tariff.downceil}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[downceil_n]" SIZE="6" VALUE="{if $tariff.downceil_n}{$tariff.downceil_n}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil_n"}> kbit/s
 				    </TD>
 				</TR>
+
 				<TR>
-				    <TD WIDTH="1%">
+					<TD>
+					</TD>
+					<TD class="bold nobr">
+						{trans("Download burst time:")}
+					</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="tariff[down_burst_time]" SIZE="6" VALUE="{if $tariff.down_burst_time}{$tariff.down_burst_time}{/if}" {tip text="Enter download burst time (optional)" trigger="down_burst_time"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[down_burst_time_n]" SIZE="6" VALUE="{if $tariff.down_burst_time_n}{$tariff.down_burst_time_n}{/if}" {tip text="Enter download burst time (optional)" trigger="down_burst_time_n"}> s
+					</TD>
+				</TR>
+				<TR>
+					<TD>
+					</TD>
+					<TD class="bold nobr">
+						{trans("Download burst threshold:")}
+					</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="tariff[down_burst_threshold]" SIZE="6" VALUE="{if $tariff.down_burst_threshold}{$tariff.down_burst_threshold}{/if}" {tip text="Enter download burst threshold (optional)" trigger="down_burst_threshold"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[down_burst_threshold_n]" SIZE="6" VALUE="{if $tariff.down_burst_threshold_n}{$tariff.down_burst_threshold_n}{/if}" {tip text="Enter download burst threshold (optional)" trigger="down_burst_threshold_n"}> kbit/s
+					</TD>
+				</TR>
+				<TR>
+					<TD>
+					</TD>
+					<TD class="bold nobr">
+						{trans("Download burst limit:")}
+					</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="tariff[down_burst_limit]" SIZE="6" VALUE="{if $tariff.down_burst_limit}{$tariff.down_burst_limit}{/if}" {tip text="Enter download burst limit (optional)" trigger="down_burst_limit"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[down_burst_limit_n]" SIZE="6" VALUE="{if $tariff.down_burst_limit_n}{$tariff.down_burst_limit_n}{/if}" {tip text="Enter download burst limit (optional)" trigger="down_burst_limit_n"}> kbit/s
+					</TD>
+				</TR>
+
+				<TR>
+				    <TD>
 				    	<IMG SRC="img/options.gif" ALT="">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Connection limit:")}</B></TD>
-				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariff[climit]" SIZE="6" VALUE="{if $tariff.climit}{$tariff.climit}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit"}>
-					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[climit_n]" SIZE="6" VALUE="{if $tariff.climit_n}{$tariff.climit_n}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit_n"}>
+				    <TD class="bold nobr">
+						{trans("Connection limit:")}
+					</TD>
+				    <TD>
+						<INPUT TYPE="TEXT" NAME="tariff[climit]" SIZE="6" VALUE="{if $tariff.climit}{$tariff.climit}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[climit_n]" SIZE="6" VALUE="{if $tariff.climit_n}{$tariff.climit_n}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit_n"}>
 				    </TD>
 				</TR>
 				<TR>
-				    <TD WIDTH="1%">
+				    <TD>
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Packet limit:")}</B></TD>
-				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariff[plimit]" SIZE="6" VALUE="{if $tariff.plimit}{$tariff.plimit}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit"}>
-					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[plimit_n]" SIZE="6" VALUE="{if $tariff.plimit_n}{$tariff.plimit_n}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit_n"}>
+				    <TD class="bold nobr">
+						{trans("Packet limit:")}
+					</TD>
+				    <TD>
+						<INPUT TYPE="TEXT" NAME="tariff[plimit]" SIZE="6" VALUE="{if $tariff.plimit}{$tariff.plimit}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit"}>
+						{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[plimit_n]" SIZE="6" VALUE="{if $tariff.plimit_n}{$tariff.plimit_n}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit_n"}>
 				    </TD>
 				</TR>
 				<TR>
-				    <TD WIDTH="1%">
+				    <TD>
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Data limit:")}</B></TD>
-				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" VALUE="{if $tariff.dlimit}{$tariff.dlimit}{/if}" SIZE="6" NAME="tariff[dlimit]" {tip text="Enter limit of data in time unit (optional)" trigger="dlimit"}> 
+				    <TD class="bold nobr">
+						{trans("Data limit:")}
+					</TD>
+				    <TD>
+						<INPUT TYPE="TEXT" VALUE="{if $tariff.dlimit}{$tariff.dlimit}{/if}" SIZE="6" NAME="tariff[dlimit]" {tip text="Enter limit of data in time unit (optional)" trigger="dlimit"}>
 				    </TD>
 				</TR>
-			    </TABLE>
+			</TABLE>
 			</TD>
 		    </TR>
 		    <TR ID="tariff-account-settings">
