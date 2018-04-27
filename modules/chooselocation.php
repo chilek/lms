@@ -111,11 +111,11 @@ if (isset($_GET['ajax']) && isset($_GET['what'])) {
 			$description = $description_class = '';
 			$action = sprintf("javascript: search_update(%d,%d,%d)", $row['id'], $row['districtid'], $row['stateid']);
 
-			$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+			$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 		}
 
 	header('Content-Type: application/json');
-	echo json_encode($result);
+	echo json_encode(array_values($result));
 	die;
 }
 

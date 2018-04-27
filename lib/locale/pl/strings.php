@@ -3865,4 +3865,25 @@ $_LANG['Assign to node group'] = 'Przypisz do grupy komputerów';
 $_LANG['Unassign from node group'] = 'Usuń z grupy komputerów';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia operacja nie została jeszcze zakończona!';
 
+$_LANG['Download burst time:'] = 'Download burst time:';
+$_LANG['Download burst threshold:'] = 'Download burst threshold:';
+$_LANG['Download burst limit:'] = 'Download burst limit:';
+
+$_LANG['Enter download burst time (optional)'] = 'Wprowadź czas wzbudzenia downloadu (opcjonalnie)';
+$_LANG['Enter download burst threshold (optional)'] = 'Wprowadź wyzwalacz wzbudzenia downloadu (opcjonalnie)';
+$_LANG['Enter download burst limit (optional)'] = 'Wprowadź ograniczenie wzbudzenia downloadu (opcjonalnie)';
+
+$_LANG['Upload burst time:'] = 'Upload burst time:';
+$_LANG['Upload burst threshold:'] = 'Upload burst threshold:';
+$_LANG['Upload burst limit:'] = 'Upload burst limit:';
+
+$_LANG['Enter upload burst time (optional)'] = 'Wprowadź czas wzbudzenia uploadu (opcjonalnie)';
+$_LANG['Enter upload burst threshold (optional)'] = 'Wprowadź wyzwalacz wzbudzenia uploadu (opcjonalnie)';
+$_LANG['Enter upload burst limit (optional)'] = 'Wprowadź ograniczenie wzbudzenia uploadu (opcjonalnie)';
+
+$_LANG['This field must be less than download ceil!'] = 'To pole musi mieć wartość mniejszą niż górne ograniczenie downloadu!';
+$_LANG['This field must be greater then download ceil!'] = 'To pole musi mieć wartość większa niż górne ograniczenie downloadu!';
+$_LANG['This field must be less than upload ceil!'] = 'To pole musi mieć wartość mniejszą niż górne ograniczenie uploadu!';
+$_LANG['This field must be greater then upload ceil!'] = 'To pole musi mieć wartość większa niż górne ograniczenie uploadu!';
+
 ?>

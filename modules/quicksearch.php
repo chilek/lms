@@ -134,12 +134,12 @@ switch ($mode) {
 						$description = trans('E-mail:') . ' ' . $row['email'];
 					}
 
-					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			}
 			header('Content-type: application/json');
 			if (!empty($result))
-				echo json_encode($result);
+				echo json_encode(array_values($result));
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -202,12 +202,12 @@ switch ($mode) {
 					if (preg_match("~^$search\$~i", $row['id']))
 						$description = trans('Id:') . ' ' . $row['id'];
 
-					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			}
 			header('Content-type: application/json');
 			if (!empty($result))
-				echo json_encode($result);
+				echo json_encode(array_values($result));
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -238,11 +238,11 @@ switch ($mode) {
 					$name_class = $row['deleted'] ? 'blend' : '';
 					$description = trans('Phone:') . ' ' . $row['phone'];
 					$description_class = '';
-					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			header('Content-type: application/json');
 			if (!empty($result))
-				echo json_encode($result);
+				echo json_encode(array_values($result));
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -341,12 +341,12 @@ switch ($mode) {
 						}
 					}
 
-					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			}
 			header('Content-type: application/json');
 			if (!empty($result))
-				echo json_encode($result);
+				echo json_encode(array_values($result));
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -443,11 +443,11 @@ switch ($mode) {
 						$description = trans('First/last name') . ': ' . $row['lastname'];
 					}
 
-					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			header('Content-type: application/json');
 			if (!empty($result))
-				echo json_encode($result);
+				echo json_encode(array_values($result));
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -500,11 +500,11 @@ switch ($mode) {
 					else
 						$action = '?m=accountinfo&id=' . $row['id'];
 
-					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			header('Content-type: application/json');
 			if (!empty($result))
-				echo json_encode($result);
+				echo json_encode(array_values($result));
 			$SESSION->close();
 			$DB->Destroy();
 			exit;
@@ -555,11 +555,11 @@ switch ($mode) {
 					$description_class = '';
 					$action = '?m=customerinfo&id=' . $row['cid'];
 
-					$result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
 			header('Content-type: application/json');
 			if (!empty($result))
-				echo json_encode($result);
+				echo json_encode(array_values($result));
 			$SESSION->close();
 			$DB->Destroy();
 			exit;

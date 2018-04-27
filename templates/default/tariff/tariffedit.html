@@ -28,6 +28,13 @@
     <INPUT TYPE="TEXT" VALUE="{if $var[$v_n]}{$var[$v_n]}{/if}" SIZE="6" NAME="tariff[{$v_n}]" {tip text="$tip" trigger="$v_n"}>
 {/function}
 
+{function burst_restrictions}
+    <INPUT TYPE="TEXT" VALUE="{if $var[$v]}{$var[$v]}{/if}" SIZE="6" NAME="tariff[{$v}]" {tip text="$tip" trigger="$v"}>
+    {trans("night:")}
+    <INPUT TYPE="TEXT" VALUE="{if $var[$v_n]}{$var[$v_n]}{/if}" SIZE="6" NAME="tariff[{$v_n}]" {tip text="$tip" trigger="$v_n"}>
+    s
+{/function}
+
 {function hosting_restrictions}
     <INPUT TYPE="TEXT" NAME="tariff[{$v}]" SIZE="5"
        {if $var[$v]}
@@ -185,6 +192,21 @@
                                 <TD>{bitrate_restrictions var=$tariff v="upceil" v_n="upceil_n" tip="Enter maximum upload value (optional)"}</TD>
                             </TR>
                             <TR>
+                                <TD></TD>
+                                <TD>{trans("Upload burst time:")}</TD>
+                                <TD>{burst_restrictions var=$tariff v="up_burst_time" v_n="up_burst_time_n" tip="Enter upload burst time (optional)"}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Upload burst threshold:")}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="up_burst_threshold" v_n="up_burst_threshold_n" tip="Enter upload burst threshold (optional)"}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Upload burst limit:")}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="up_burst_limit" v_n="up_burst_limit_n" tip="Enter upload burst limit (optional)"}</TD>
+                            </TR>
+                            <TR>
                                 <TD><IMG SRC="img/downrate.gif" alt=""></TD>
                                 <TD>{trans("Download rate:")}</TD>
                                 <TD>{bitrate_restrictions var=$tariff v="downrate" v_n="downrate_n" tip="Enter minimal warranted download value (optional)"}</TD>
@@ -193,6 +215,21 @@
                                 <TD></TD>
                                 <TD>{trans("Download ceil:")}</TD>
                                 <TD>{bitrate_restrictions var=$tariff v="downceil" v_n="downceil_n" tip="Enter maximum download value (optional)"}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Download burst time:")}</TD>
+                                <TD>{burst_restrictions var=$tariff v="down_burst_time" v_n="down_burst_time_n" tip="Enter download burst time (optional)"}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Download burst threshold:")}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="down_burst_threshold" v_n="down_burst_threshold_n" tip="Enter download burst threshold (optional)"}</TD>
+                            </TR>
+                            <TR>
+                                <TD></TD>
+                                <TD>{trans("Download burst limit:")}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="down_burst_limit" v_n="down_burst_limit_n" tip="Enter download burst limit (optional)"}</TD>
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/options.gif" alt=""></TD>
