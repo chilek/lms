@@ -375,7 +375,16 @@ switch ($mode) {
 			if ($candidates)
 				foreach($candidates as $idx => $row) {
 					$name = $row['subject'];
-					$name_class = $row['state'] == RT_RESOLVED ? 'blend' : '';
+					switch ($row['state']) {
+						case RT_RESOLVED:
+							$name_class = 'blend';
+							break;
+						case RT_NEW:
+							$name_class = 'red';
+							break;
+						default:
+							$name_class = '';
+					}
 					$description = '';
 					$description_class = '';
 					$action = '?m=rtticketview&id=' . $row['id'];

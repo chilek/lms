@@ -585,6 +585,9 @@ li.lms-ui-suggestion-item a {
 .lms-ui-suggestion-name.blend {
   color: #888888;
 }
+.lms-ui-suggestion-name.red {
+  color: #FF0000;
+}
 .lms-ui-suggestion-description {
   font-size: 9px;
   margin-right: 2px;
