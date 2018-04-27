@@ -165,10 +165,10 @@ if (isset($_GET['ajax'])) {
             $description_class = '';
             $action = '';
 
-            $result[] = compact('name', 'name_class', 'description', 'description_class', 'action');
+            $result[$row['item']] = compact('name', 'name_class', 'description', 'description_class', 'action');
         }
     header('Content-Type: application/json');
-    echo json_encode($result);
+    echo json_encode(array_values($result));
     exit;
 }
 
