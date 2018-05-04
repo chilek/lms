@@ -3887,4 +3887,6 @@ $_LANG['This field must be greater then upload ceil!'] = 'To pole musi mieć war
 
 $_LANG['Burst time, threshold and limit should not be empty values!'] = 'Czas, wyzwalacz i ograniczenie wzbudzenia nie powinny być pustymi wartościami!';
 
+$_LANG['Enter network device name or ip address'] = 'Wprowadź nazwę urządzenia lub jego adres IP';
+
 ?>
