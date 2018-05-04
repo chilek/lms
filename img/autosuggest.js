@@ -394,7 +394,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			$.each(this.suggestions, function(i, elem) {
 				var name = elem.name;
 				if (me.inputText && !name.toLowerCase().indexOf(me.inputText.toLowerCase())) {
-					this.suggestions.push(elem);
+					me.suggestions.push(elem);
 				}
 			});
 		}
