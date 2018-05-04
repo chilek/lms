@@ -25,6 +25,9 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for tariff burst properties [chilan]
   - enhancement: allow to search nodes by network devices to which
     they are connected to [chilan]
+  - enhancement: invoices.use_alert_color configuration variable ('false' by default)
+    specifies if deadline, quote to pay and bank accounts are printed as red on tcpdf
+    and ezpdf invoices [chilan]
 
 version 1.11.23 (2018-03-21):
 
