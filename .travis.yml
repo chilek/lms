@@ -73,6 +73,7 @@ before_script:
 #  - phpcs --standard=$PHPCS_STANDARD
   - npm install -g jshint
   - jshint .
+  - ./vendor/bin/phpunit
 
 script: true
 
