@@ -23,6 +23,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added helper icons in quick search suggestions (customers, node,
     tickets) [chilan]
   - enhancement: added support for tariff burst properties [chilan]
+  - enhancement: allow to search nodes by network devices to which
+    they are connected to [chilan]
 
 version 1.11.23 (2018-03-21):
 
