@@ -646,6 +646,9 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$account = format_bankaccount($account);
 		$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
 
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true)))
+			$tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . implode("\n", $accounts) . '<B>';
+
 		$tmp = preg_split('/\r?\n/', $tmp);
 		foreach ($tmp as $line)
 			$seller .= $line . '<br>';
@@ -697,17 +700,6 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 		$this->backend->SetFont('arial', 'B', 10);
 		$this->backend->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
-
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
-			$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
-			if (ConfigHelper::checkConfig('invoices.show_all_accounts'))
-				$accounts = array_merge($accounts, $this->data['bankaccounts']);
-			foreach ($accounts as &$account)
-				$account = format_bankaccount($account);
-			$bankaccount = trans('Bank account:') .'<br>' . implode('<br>', $accounts);
-			$this->backend->SetFont('arial', 'B', 8);
-			$this->backend->writeHTMLCell('', '', 120,  $oldy, $bankaccount, 0, 1, 0, true, 'L');
-		}
 
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
 			$pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';
