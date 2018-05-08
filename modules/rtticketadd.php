@@ -125,7 +125,7 @@ if(isset($_POST['ticket']))
 		if (!empty($files))
 			rrmdir($tmppath);
 
-		if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
+		if (isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.newticket_notify')) {
 			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
 			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
@@ -259,6 +259,9 @@ if(isset($_POST['ticket']))
 			|| (isset($_GET['catid']) && $category['id'] == intval($_GET['catid'])))
 			$category['checked'] = 1;
 	unset($category);
+
+	if (ConfigHelper::checkConfig('phpui.helpdesk_notify'))
+		$ticket['notify'] = TRUE;
 }
 
 $layout['pagetitle'] = trans('New Ticket');

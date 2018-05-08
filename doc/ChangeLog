@@ -30,6 +30,8 @@ version ?.??.?? (????-??-??):
   - enhancement: invoices.use_alert_color configuration variable ('false' by default)
     specifies if deadline, quote to pay and bank accounts are printed as red on tcpdf
     and ezpdf invoices [chilan]
+  - improvement: allow to manually disable user notification when new ticket
+    is created [chilan]
 
 version 1.11.23 (2018-03-21):
 
