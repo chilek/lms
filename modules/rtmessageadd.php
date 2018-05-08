@@ -378,9 +378,16 @@ $layout['pagetitle'] = trans('New Message');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('ticket', $LMS->GetTicketContents($message['ticketid']));
+
+$ticket = $LMS->GetTicketContents($message['ticketid']);
+$SMARTY->assign('ticket', $ticket);
+if (!isset($_POST['message'])) {
+	$message['source'] = $ticket['source'];
+	$message['priority'] = $ticket['priority'];
+}
+
+$SMARTY->assign('message', $message);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('queuelist', $LMS->GetQueueList(false));
 $SMARTY->display('rt/rtmessageadd.html');

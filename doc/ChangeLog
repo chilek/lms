@@ -32,7 +32,7 @@ version ?.??.?? (????-??-??):
     and ezpdf invoices [chilan]
   - improvement: allow to manually disable user notification when new ticket
     is created [chilan]
-  - improvement: allow to change ticket priority during new ticket message creation [chilan]
+  - improvement: allow to change ticket priority during new ticket message/note creation [chilan]
 
 version 1.11.23 (2018-03-21):
 
