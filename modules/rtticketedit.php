@@ -237,9 +237,10 @@ if(isset($_POST['ticket']))
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
-		$newticket_notify = ConfigHelper::getConfig('phpui.newticket_notify', false);
-		if (($ticket['state'] != $ticketedit['state']) || ($ticket['queueid'] != $ticketedit['queueid']
-			&& !empty($newticket_notify))) {
+		$newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
+		$ticket_state_change_notify = ConfigHelper::checkConfig('phpui.ticket_state_change_notify');
+		if (($ticket_state_change_notify && $ticket['state'] != $ticketedit['state'])
+			|| ($ticket['queueid'] != $ticketedit['queueid'] && !empty($newticket_notify))) {
 			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
