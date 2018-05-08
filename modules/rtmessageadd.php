@@ -202,7 +202,9 @@ if(isset($_POST['message']))
 			'queueid' => $message['queueid'],
 			'owner' => empty($message['owner']) ? null : $message['owner'],
 			'cause' => $message['cause'],
-			'state' => $message['state']
+			'state' => $message['state'],
+			'source' => $message['source'],
+			'priority' => $message['priority'],
 		);
 		$LMS->TicketChange($message['ticketid'], $props);
 
