@@ -36,6 +36,7 @@ version ?.??.?? (????-??-??):
   - enhancement: list assigned tickets in netdevinfo [interduo]
   - enhancement: list assigned tickets in netnodeinfo [interduo]
   - enhancement: added barcode in second title line of userpanel transfer form [chilan]
+  - improvement: warn about event user assignment overlaps [chilan]
 
 version 1.11.23 (2018-03-21):
 
