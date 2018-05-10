@@ -23,8 +23,9 @@
  *
  *  $Id$
  */
+$id = intval($_GET['id']);
 
-if (!$LMS->NetDevExists($_GET['id'])) {
+if (!$LMS->NetDevExists($id)) {
 	$SESSION->redirect('?m=netdevlist');
 }
 
@@ -33,23 +34,23 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'netdevxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled by netdevxajax.inc.php
-	$netdevinfo = $LMS->GetNetDev($_GET['id']);
-	$netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
-	$netcomplist = $LMS->GetNetdevLinkedNodes($_GET['id']);
-	$netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
+	$netdevinfo = $LMS->GetNetDev($id);
+	$netdevconnected = $LMS->GetNetDevConnectedNames($id);
+	$netcomplist = $LMS->GetNetdevLinkedNodes($id);
+	$netdevlist = $LMS->GetNotConnectedDevices($id);
 
 	if ($netdevinfo['ownerid']) {
 		$netdevinfo['owner'] = $LMS->getCustomerName( $netdevinfo['ownerid'] );
 	}
 
 	$nodelist = $LMS->GetUnlinkedNodes();
-	$netdevips = $LMS->GetNetDevIPs($_GET['id']);
+	$netdevips = $LMS->GetNetDevIPs($id);
 
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 	$layout['pagetitle'] = trans('Device Info: $a $b $c', $netdevinfo['name'], $netdevinfo['producer'], $netdevinfo['model']);
 
-	$netdevinfo['id'] = $_GET['id'];
+	$netdevinfo['id'] = $id;
 
 	if ($netdevinfo['netnodeid'])
 		$netdevinfo['netnode'] = $LMS->GetNetNode($netdevinfo['netnodeid']);
@@ -69,7 +70,25 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 				$netdevinfo['projectname'] = $prj['name'];
 		}
 	}
+	$queue = $LMS->GetQueueContents(null, null, null, null, -1, null, null, $id);
+	$queue_count = $queue['total'];
+	unset($queue['total']);
+	unset($queue['state']);
+	unset($queue['order']);
+	unset($queue['direction']);
+	unset($queue['owner']);
+	unset($queue['removed']);
+	unset($queue['priority']);
+
+	$start = 0;
+	$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
+
 	$SMARTY->assign('netdevinfo', $netdevinfo);
+	$SMARTY->assign('start', $start);
+	$SMARTY->assign('pagelimit', $pagelimit);
+	$SMARTY->assign('queue', $queue);
+	$SMARTY->assign('queue_count', $queue_count);
+	$SMARTY->assign('queue_netdevid', $id);
 	$SMARTY->assign('objectid', $netdevinfo['id']);
 	$SMARTY->assign('restnetdevlist', $netdevlist);
 	$SMARTY->assign('netdevips', $netdevips);

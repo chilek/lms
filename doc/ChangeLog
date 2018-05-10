@@ -33,6 +33,8 @@ version ?.??.?? (????-??-??):
   - improvement: allow to manually disable user notification when new ticket
     is created [chilan]
   - improvement: allow to change ticket priority during new ticket message/note creation [chilan]
+  - enhancement: list assigned tickets in netdevinfo [interduo]
+  - enhancement: list assigned tickets in netnodeinfo [interduo]
 
 version 1.11.23 (2018-03-21):
 

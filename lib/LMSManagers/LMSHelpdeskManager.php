@@ -49,7 +49,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL) {
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL) {
 		if (!$order)
 			$order = 'createtime,desc';
 
@@ -87,15 +87,33 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 		}
 
-		if (isset($state) && is_array($state))
-			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
-		elseif (empty($state))
+		if (empty($state)) {
 			$statefilter = '';
+		} elseif (is_array($state)) {
+			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
+		} else
+			$statefilter = ' AND t.state = '.$state;
 
-		if (isset($priority) && is_array($priority))
-			$priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
-		elseif (empty($priority))
+		if (empty($priority)) {
 			$priorityfilter = '';
+		} elseif (is_array($priority)) {
+			$priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+		} else
+			$priorityfilter = ' AND t.priority = '.$priority;
+
+		if (empty($netdevids)) {
+                        $netdevidsfilter = '';
+		} elseif (is_array($netdevids)) {
+                        $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
+		} else
+			$netdevidsfilter = ' AND t.netdevid = '.$netdevids;
+
+		if (empty($netnodeids)) {
+                        $netnodeidsfilter = '';
+		} elseif (is_array($netnodeids)) {
+                        $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
+		} else
+			$netnodeidsfilter = ' AND t.netnodeid = '.$netnodeids;
 
 		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$removedfilter = ' AND t.deleted = 0';
@@ -168,6 +186,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $priorityfilter
 			. $ownerfilter
 			. $removedfilter
+			. $netdevidsfilter
+			. $netnodeidsfilter
 			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
