@@ -87,25 +87,33 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 		}
 
-		if (!empty($state) && is_array($state))
-			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
-		elseif (empty($state))
+		if (empty($state)) {
 			$statefilter = '';
+		} elseif (is_array($state)) {
+			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
+		} else
+			$statefilter = ' AND t.state = '.$state;
 
-		if (!empty($priority) && is_array($priority))
-			$priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
-		elseif (empty($priority))
+		if (empty($priority)) {
 			$priorityfilter = '';
+		} elseif (is_array($priority)) {
+			$priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+		} else
+			$priorityfilter = ' AND t.priority = '.$priority;
 
-                if (!empty($netdevids) && is_array($netdevids))
-                        $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
-                elseif (empty($netdevids))
+		if (empty($netdevids)) {
                         $netdevidsfilter = '';
+		} elseif (is_array($netdevids)) {
+                        $netdevidsfilter = ' AND t.netdevid IN (' . implode(',', $netdevids) . ')';
+		} else
+			$netdevidsfilter = ' AND t.netdevid = '.$netdevids;
 
-                if (!empty($netnodeids) && is_array($netnodeids))
-                        $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
-                elseif (empty($netnodeids))
+		if (empty($netnodeids)) {
                         $netnodeidsfilter = '';
+		} elseif (is_array($netnodeids)) {
+                        $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
+		} else
+			$netnodeidsfilter = ' AND t.netnodeid = '.$netnodeids;
 
 		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$removedfilter = ' AND t.deleted = 0';
