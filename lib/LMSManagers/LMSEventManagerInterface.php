@@ -42,4 +42,6 @@ interface LMSEventManagerInterface
     public function EventSearch($search, $order = 'date,asc', $simple = false);
 
     public function GetCustomerIdByTicketId($id);
+
+	public function EventOverlaps(array $params);
 }

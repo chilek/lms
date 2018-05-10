@@ -33,6 +33,9 @@ if (!empty($_GET['ticketid'])) {
 	$tqname = $LMS->GetQueueNameByTicketId($eventticketid);
 }
 
+$userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
+	WHERE deleted = 0 AND access = 1 ORDER BY lastname ASC', 'id');
+
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
@@ -73,6 +76,22 @@ if(isset($_POST['event']))
 
 	if ($enddate && $date > $enddate)
 		$error['enddate'] = trans('End time must not precede start time!');
+
+	if (!$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
+			'begindate' => $date,
+			'begintime' => $event['begintime'],
+			'enddate' => $enddate,
+			'endtime' => $event['endtime'],
+			'users' => $event['userlist'],
+		)))) {
+		$users = array_map(function($userid) use ($userlist) {
+				return $userlist[$userid]['rname'];
+			}, $users);
+		$error['date'] = $error['enddate'] = $error['begintime'] = $error['endtime'] =
+			trans('Event is assigned to users which already have assigned an event in the same time: $a!',
+				implode(', ', $users));
+		$event['overlapwarned'] = 1;
+	}
 
 	if (!isset($event['customerid']))
 		$event['customerid'] = $event['custid'];
@@ -218,8 +237,10 @@ if(isset($_POST['event']))
 		unset($event['description']);
 		unset($event['categories']);
 	}
-} else
+} else {
 	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
+	$event['overlapwarned'] = 0;
+}
 
 if (isset($event['helpdesk'])) {
 	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
@@ -275,8 +296,6 @@ if (!isset($_GET['ticketid']))
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
-$userlist = $DB->GetAll('SELECT id, rname FROM vusers
-	WHERE deleted = 0 AND access = 1 ORDER BY lastname ASC');
 
 if (!isset($event['usergroup']))
 	$SESSION->restore('eventgid', $event['usergroup']);

@@ -50,6 +50,9 @@ if (empty($event['enddate']))
 else
 	$event['enddate'] = sprintf('%04d/%02d/%02d', date('Y',$event['enddate']),date('n',$event['enddate']),date('j',$event['enddate']));
 
+$userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
+	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC', 'id');
+
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
@@ -87,6 +90,22 @@ if(isset($_POST['event']))
 	if ($enddate && $date > $enddate)
 		$error['enddate'] = trans('End time must not precede start time!');
 
+	if (!$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
+			'begindate' => $date,
+			'begintime' => $event['begintime'],
+			'enddate' => $enddate,
+			'endtime' => $event['endtime'],
+			'users' => $event['userlist'],
+		)))) {
+		$users = array_map(function($userid) use ($userlist) {
+			return $userlist[$userid]['rname'];
+		}, $users);
+		$error['date'] = $error['enddate'] = $error['begintime'] = $error['endtime'] =
+			trans('Event is assigned to users which already have assigned an event in the same time: $a!',
+				implode(', ', $users));
+		$event['overlapwarned'] = 1;
+	}
+
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
 		if (isset($event['customerid']))
@@ -104,15 +123,14 @@ if(isset($_POST['event']))
 
 		$SESSION->redirect('?m=eventlist');
 	}
-}
+} else
+	$event['overlapwarned'] = 0;
 
 $layout['pagetitle'] = trans('Event Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
-$userlist = $DB->GetAll('SELECT id, rname FROM vusers
-	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC');
 
 if (isset($event['customerid']) || intval($event['customerid']))
 	$SMARTY->assign('nodes', $LMS->GetNodeLocations($event['customerid'],

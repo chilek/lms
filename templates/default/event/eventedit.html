@@ -26,6 +26,7 @@
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
 <FORM METHOD="POST" ACTION="?m=eventedit&id={$event.id}" NAME="event" ID="event">
+<input type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -52,13 +53,13 @@
 		</TD>
 		<TD width="98%">
 			{trans("Begin:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[date]" value="{$event.date}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-			<SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
+			<SELECT name="event[begintime]" size="1" {tip text="Select time of" trigger="begintime"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
 			{trans("End:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[enddate]" value="{$event.enddate}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
-			<SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
+			<SELECT name="event[endtime]" size="1" {tip text="Select time of" trigger="endtime"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}

@@ -215,4 +215,23 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         return $this->db->GetOne('SELECT customerid FROM rttickets WHERE id=?', array($id));
     }
+
+	public function EventOverlaps(array $params) {
+		$users = array();
+
+		if (empty($params['users']))
+			return $users;
+
+		extract($params);
+		if (empty($enddate))
+			$enddate = $begindate;
+		$users = array_map('intval', $users);
+
+		return $this->db->GetCol('SELECT DISTINCT a.userid FROM events e
+			JOIN eventassignments a ON a.eventid = e.id
+			WHERE a.userid IN (' . implode(',', $users) . ')
+				AND (date < ? OR (date = ? AND begintime <= ?))
+				AND (enddate > ? OR (enddate = ? AND endtime >= ?))',
+			array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime));
+	}
 }

@@ -3890,4 +3890,6 @@ $_LANG['Burst time, threshold and limit should not be empty values!'] = 'Czas, w
 
 $_LANG['Enter network device name or ip address'] = 'Wprowadź nazwę urządzenia lub jego adres IP';
 
+$_LANG['Event is assigned to users which already have assigned an event in the same time: $a!'] = 'Zdarzenie jest przypisane do użytkowników, którzy posiadają już przypisane zdarzenia w tym samym czasie: $a!';
+
 ?>

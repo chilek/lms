@@ -2415,11 +2415,17 @@ class LMS
         return $manager->GetCustomerIdByTicketId($id);
     }
 
-    public function GetEventsByTicketId($id)
+	public function EventOverlaps(array $params) {
+		$manager = $this->getEventManager();
+		return $manager->EventOverlaps($params);
+	}
+
+	public function GetEventsByTicketId($id)
     {
          $manager = $this->getHelpdeskManager();
          return $manager->GetEventsByTicketId($id);
     }
+
     public function GetNumberPlans($properties)
     {
         $manager = $this->getDocumentManager();
