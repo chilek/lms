@@ -19,7 +19,7 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD>
-			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG src="img/netnode.png" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
 			<A href="?m=netnodelist&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
@@ -104,7 +104,7 @@
 	{if $prev_item && $prev_item.ownerid && $prev_item.ownerid == $item.ownerid}{cycle print=false}{/if}
 	<TR class="highlight {cycle}">
 		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
+			<IMG src="img/netnode.png" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
 			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$item.type]} / {$_NETELEMENTSTATUSES[$item.status]}
 		</TD>
 		<TD class="nobr">
