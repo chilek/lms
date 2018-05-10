@@ -35,6 +35,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to change ticket priority during new ticket message/note creation [chilan]
   - enhancement: list assigned tickets in netdevinfo [interduo]
   - enhancement: list assigned tickets in netnodeinfo [interduo]
+  - enhancement: added barcode in second title line of userpanel transfer form [chilan]
 
 version 1.11.23 (2018-03-21):
 
