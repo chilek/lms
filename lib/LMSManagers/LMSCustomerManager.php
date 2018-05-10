@@ -568,11 +568,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							if (!isset($search['type']) || !strlen($search['addresstype']))
 								$searchargs[] = "(UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
 									OR UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
-									OR UPPER(ca2.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
+									OR EXISTS (SELECT 1 FROM customer_addresses ca2
+										JOIN vaddresses va ON va.id = ca2.address_id
+										WHERE ca2.customer_id = c.id
+											AND UPPER(va.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")))";
 							elseif ($search['addresstype'] == BILLING_ADDRESS)
 								$searchargs[] = "UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							elseif ($search['addresstype'] == LOCATION_ADDRESS)
-								$searchargs[] = "UPPER(ca2.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+								$searchargs[] = "EXISTS (SELECT 1 FROM customer_addresses ca2
+									JOIN vaddresses va ON va.id = ca2.address_id
+									WHERE ca2.customer_id = c.id
+										AND UPPER(va.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
 							else
 								$searchargs[] = "UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							break;
@@ -726,11 +732,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     FROM nodes
                     WHERE ownerid > 0 AND ipaddr <> 0
                     GROUP BY ownerid
-                ) s ON (s.ownerid = c.id)
-		LEFT JOIN (
-			SELECT customer_id, address, zip, city FROM customer_addresses
-			JOIN vaddresses va ON va.id = address_id
-		) ca2 ON ca2.customer_id = c.id '
+                ) s ON (s.ownerid = c.id) '
                 . ($contracts == 1 ? '
                     LEFT JOIN (
                         SELECT COUNT(*), d.customerid FROM documents d
