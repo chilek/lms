@@ -90,6 +90,31 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
+			<IMG src="img/volcano.png" alt="">{trans("Ticket source:")}
+		</TD>
+		<TD>
+			<SELECT size="1" name="note[source]" {tip text="Select ticket source" trigger="source"}>
+				{foreach $_RT_SOURCES as $sourceidx => $status}
+				<OPTION value="{$sourceidx}"{if $note.source == $sourceidx} selected{/if}>{$status}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/report.gif" alt="">
+			{trans("Priority:")}
+		</TD>
+		<TD>
+			<SELECT size="1" name="note[priority]" {tip text="Set ticket priority" trigger="priority"}>
+				{foreach $_RT_PRIORITIES as $priorityidx => $priority}
+				<OPTION value="{$priorityidx}"{if $note.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
 			<IMG src="img/queue.gif" alt=""> {trans("Queue:")}
 		</TD>
 		<TD>

@@ -101,14 +101,43 @@ if(isset($_POST['tariff']))
 	if (($tariff['downceil'] < 8 || $tariff['downceil'] < $tariff['downrate']) && $tariff['downceil'] != 0)
 		$error['downceil'] = trans('This field must be greater than 8 and greater than download rate');
 
-	if ($tariff['down_burst_threshold'] && $tariff['down_burst_threshold'] > $tariff['downceil'])
-		$error['down_burst_threshold'] = trans('This field must be less than download ceil!');
-	if ($tariff['down_burst_limit'] && $tariff['down_burst_limit'] < $tariff['downceil'])
-		$error['down_burst_limit'] = trans('This field must be greater then download ceil!');
-	if ($tariff['up_burst_threshold'] && $tariff['up_burst_threshold'] > $tariff['upceil'])
-		$error['up_burst_threshold'] = trans('This field must be less than upload ceil!');
-	if ($tariff['up_burst_limit'] && $tariff['up_burst_limit'] < $tariff['upceil'])
-		$error['up_burst_limit'] = trans('This field must be greater then upload ceil!');
+	$validated = 0;
+	foreach (array('down_burst_time', 'down_burst_threshold', 'down_burst_limit') as $item) {
+		if ($tariff[$item])
+			$validated++;
+	}
+	if ($validated && $validated < 3) {
+		$error['down_burst_time'] = $error['down_burst_threshold'] = $error['down_burst_limit'] =
+			trans('Burst time, threshold and limit should not be empty values!');
+	}
+	if ($validated == 3) {
+		if ($tariff['downceil']) {
+			if ($tariff['down_burst_threshold'] && $tariff['down_burst_threshold'] > $tariff['downceil'])
+				$error['down_burst_threshold'] = trans('This field must be less than download ceil!');
+			if ($tariff['down_burst_limit'] && $tariff['down_burst_limit'] < $tariff['downceil'])
+				$error['down_burst_limit'] = trans('This field must be greater then download ceil!');
+		} else
+			$error['downceil'] = trans('This field must be greater than 8');
+	}
+
+	$validated = 0;
+	foreach (array('up_burst_time', 'up_burst_threshold', 'up_burst_limit') as $item) {
+		if ($tariff[$item])
+			$validated++;
+	}
+	if ($validated && $validated < 3) {
+		$error['up_burst_time'] = $error['up_burst_threshold'] = $error['up_burst_limit'] =
+			trans('Burst time, threshold and limit should not be empty values!');
+	}
+	if ($validated == 3) {
+		if ($tariff['upceil']) {
+			if ($tariff['up_burst_threshold'] && $tariff['up_burst_threshold'] > $tariff['upceil'])
+				$error['up_burst_threshold'] = trans('This field must be less than upload ceil!');
+			if ($tariff['up_burst_limit'] && $tariff['up_burst_limit'] < $tariff['upceil'])
+				$error['up_burst_limit'] = trans('This field must be greater then upload ceil!');
+		} else
+			$error['upceil'] = trans('This field must be greater than 8');
+	}
 
 	$items = array('uprate_n', 'downrate_n', 'upceil_n', 'downceil_n',
 		'up_burst_time_n', 'up_burst_threshold_n', 'up_burst_limit_n',
@@ -131,14 +160,43 @@ if(isset($_POST['tariff']))
 	if (($tariff['downceil_n'] < 8 || $tariff['downceil_n'] < $tariff['downrate']) && $tariff['downceil_n'])
 		$error['downceil_n'] = trans('This field must contain number greater than 8 and greater than download rate');
 
-	if ($tariff['down_burst_threshold_n'] && $tariff['down_burst_threshold_n'] > $tariff['downceil_n'])
-		$error['down_burst_threshold_n'] = trans('This field must be less than download ceil!');
-	if ($tariff['down_burst_limit_n'] && $tariff['down_burst_limit_n'] < $tariff['downceil_n'])
-		$error['down_burst_limit_n'] = trans('This field must be greater then download ceil!');
-	if ($tariff['up_burst_threshold_n'] && $tariff['up_burst_threshold_n'] > $tariff['upceil_n'])
-		$error['up_burst_threshold_n'] = trans('This field must be less than upload ceil!');
-	if ($tariff['up_burst_limit_n'] && $tariff['up_burst_limit_n'] < $tariff['upceil_n'])
-		$error['up_burst_limit_n'] = trans('This field must be greater then upload ceil!');
+	$validated = 0;
+	foreach (array('down_burst_time_n', 'down_burst_threshold_n', 'down_burst_limit_n') as $item) {
+		if ($tariff[$item])
+			$validated++;
+	}
+	if ($validated && $validated < 3) {
+		$error['down_burst_time_n'] = $error['down_burst_threshold_n'] = $error['down_burst_limit_n'] =
+			trans('Burst time, threshold and limit should not be empty values!');
+	}
+	if ($validated == 3) {
+		if ($tariff['downceil_n']) {
+			if ($tariff['down_burst_threshold_n'] && $tariff['down_burst_threshold_n'] > $tariff['downceil_n'])
+				$error['down_burst_threshold_n'] = trans('This field must be less than download ceil!');
+			if ($tariff['down_burst_limit_n'] && $tariff['down_burst_limit_n'] < $tariff['downceil_n'])
+				$error['down_burst_limit_n'] = trans('This field must be greater then download ceil!');
+		} else
+			$error['downceil_n'] = trans('This field must be greater than 8');
+	}
+
+	$validated = 0;
+	foreach (array('up_burst_time_n', 'up_burst_threshold_n', 'up_burst_limit_n') as $item) {
+		if ($tariff[$item])
+			$validated++;
+	}
+	if ($validated && $validated < 3) {
+		$error['up_burst_time_n'] = $error['up_burst_threshold_n'] = $error['up_burst_limit_n'] =
+			trans('Burst time, threshold and limit should not be empty values!');
+	}
+	if ($validated == 3) {
+		if ($tariff['upceil_n']) {
+			if ($tariff['up_burst_threshold_n'] && $tariff['up_burst_threshold_n'] > $tariff['upceil_n'])
+				$error['up_burst_threshold_n'] = trans('This field must be less than upload ceil!');
+			if ($tariff['up_burst_limit_n'] && $tariff['up_burst_limit_n'] < $tariff['upceil_n'])
+				$error['up_burst_limit_n'] = trans('This field must be greater then upload ceil!');
+		} else
+			$error['upceil_n'] = trans('This field must be greater than 8');
+	}
 
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;

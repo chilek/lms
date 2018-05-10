@@ -321,9 +321,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     // ... if not found clone tariff
                     if (!$tariffid) {
                         $args = $this->db->GetRow('SELECT
-                        							  name, value, period, taxid, type, upceil,
-                                                  	  downceil, uprate, downrate, prodid, plimit, climit, dlimit, upceil_n,
-                                                  	  downceil_n, uprate_n, downrate_n, domain_limit, alias_limit, sh_limit,
+                        							  name, value, period, taxid, type,
+                        							  upceil, downceil, uprate, downrate,
+                                                  	  up_burst_time, up_burst_threshold, up_burst_limit, 
+                                                  	  down_burst_time, down_burst_threshold, down_burst_limit, 
+                                                  	  prodid, plimit, climit, dlimit,
+                                                  	  upceil_n, downceil_n, uprate_n, downrate_n,
+                                                  	  up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+                                                  	  down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+                                                  	  domain_limit, alias_limit, sh_limit,
                                                   	  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
                                                   	  quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype
 												   FROM
@@ -338,13 +344,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         unset($args['taxid']);
 
                         $this->db->Execute('INSERT INTO tariffs
-                        					   (name, value, period, type, upceil, downceil, uprate, downrate, prodid,
-                        					   plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
+                        					   (name, value, period, type,
+                        					   upceil, downceil, uprate, downrate,
+											   up_burst_time, up_burst_threshold, up_burst_limit, 
+											   down_burst_time, down_burst_threshold, down_burst_limit, 
+                        					   prodid, plimit, climit, dlimit,
+                        					   upceil_n, downceil_n, uprate_n, downrate_n,
+											   up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+											   down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
 				   							   domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
 											   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
 											   authtype, taxid)
 							                VALUES
-							                   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+							                   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+							                   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
                         $tariffid = $this->db->GetLastInsertId('tariffs');
 

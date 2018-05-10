@@ -342,7 +342,21 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 										break;
 								}
 							break;
-                        default:
+						case 'netdev':
+							if (check_ip($value)) {
+								$searchargs[] = 'n.netdev IN (
+										SELECT nd.id FROM netdevices nd
+										JOIN nodes n2 ON n2.netdev = nd.id AND n2.ownerid IS NULL
+										WHERE INET_NTOA(n2.ipaddr) = ' . $this->db->Escape($value) . '
+									)';
+							} else {
+								$searchargs[] = 'n.netdev IN (
+										SELECT nd.id FROM netdevices nd
+										WHERE LOWER(nd.name) ?LIKE? ' . $this->db->Escape("%$value%") . '
+									)';
+							}
+							break;
+						default:
                             $searchargs[] = 'n.' . $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }
                 }

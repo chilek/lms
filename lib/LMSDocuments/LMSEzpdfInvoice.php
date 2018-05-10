@@ -29,9 +29,12 @@
 
 class LMSEzpdfInvoice extends LMSInvoice {
 	const HEADER_IMAGE_HEIGHT = 40;
+	private $use_alert_color;
 
 	public function __construct($title, $pagesize = 'A4', $orientation = 'portrait') {
 		parent::__construct('LMSEzpdfBackend', $title, $pagesize, $orientation);
+
+		$this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
 	}
 
 	protected function invoice_simple_form_fill($x, $y, $scale) {
@@ -142,8 +145,14 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['cdate']));
 		$this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['sdate']));
-		$this->backend->text_align_right($x, $y, $font_size, trans('Deadline:').' ');
-		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['pdate']));
+		$this->backend->text_align_right($x, $y, $font_size,
+			($this->use_alert_color ? '<c:color:255,0,0>' : '')
+			. trans('Deadline:').' '
+			. ($this->use_alert_color ? '</c:color>' : ''));
+		$y = $y - $this->backend->text_align_left($x, $y, $font_size,
+			($this->use_alert_color ? '<c:color:255,0,0>' : '')
+			. date("Y/m/d", $this->data['pdate'])
+			. ($this->use_alert_color ? '</c:color>' : ''));
 		$this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['paytypename']);
 		return $y;
@@ -175,7 +184,13 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$accounts = array_merge($accounts, $this->data['bankaccounts']);
 		foreach ($accounts as &$account)
 			$account = format_bankaccount($account);
-		$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+		$account_text = ($this->use_alert_color ? '<c:color:255,0,0>' : '')
+			.  implode("</c:color>\n<c:color:255,0,0>", $accounts)
+			. ($this->use_alert_color ? '</c:color>' : '');
+		$tmp = str_replace('%bankaccount', $account_text, $tmp);
+
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true)))
+			$tmp .= "\n" . trans('Bank account:') . "\n" . '<b>' . $account_text . '</b>';
 
 		$tmp = preg_split('/\r?\n/', $tmp);
 		foreach ($tmp as $line)
@@ -858,7 +873,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		if (isset($this->data['rebate']))
 			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To repay:') . ' ' . moneyf($this->data['value']));
 		else
-			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To pay:') . ' ' . moneyf($this->data['value']));
+			$y = $y - $this->backend->text_align_left($x,$y,14,
+				($this->use_alert_color ? '<c:color:255,0,0>' : '')
+				. trans('To pay:') . ' ' . moneyf($this->data['value'])
+				. ($this->use_alert_color ? '</c:color>' : ''));
 		$y = $y - $this->backend->text_align_left($x,$y,10, trans('In words:') . ' ' . moneyf_in_words($this->data['value']));
 		return $y;
 	}

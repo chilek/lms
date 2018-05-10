@@ -25,8 +25,12 @@
  */
 
 class LMSTcpdfInvoice extends LMSInvoice {
+	private $use_alert_color;
+
 	public function __construct($title, $pagesize = 'A4', $orientation = 'portrait') {
 		parent::__construct('LMSTcpdfBackend', $title, $pagesize, $orientation);
+
+		$this->use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color');
 	}
 
 	protected function Table() {
@@ -644,7 +648,13 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$accounts = array_merge($accounts, $this->data['bankaccounts']);
 		foreach ($accounts as &$account)
 			$account = format_bankaccount($account);
-		$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+		$account_text = ($this->use_alert_color ? '<span style="color:red">' : '')
+			. implode("\n", $accounts)
+			. ($this->use_alert_color ? '</span>' : '');
+		$tmp = str_replace('%bankaccount', $account_text, $tmp);
+
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true)))
+			$tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
 
 		$tmp = preg_split('/\r?\n/', $tmp);
 		foreach ($tmp as $line)
@@ -698,17 +708,6 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->SetFont('arial', 'B', 10);
 		$this->backend->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
 
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
-			$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
-			if (ConfigHelper::checkConfig('invoices.show_all_accounts'))
-				$accounts = array_merge($accounts, $this->data['bankaccounts']);
-			foreach ($accounts as &$account)
-				$account = format_bankaccount($account);
-			$bankaccount = trans('Bank account:') .'<br>' . implode('<br>', $accounts);
-			$this->backend->SetFont('arial', 'B', 8);
-			$this->backend->writeHTMLCell('', '', 120,  $oldy, $bankaccount, 0, 1, 0, true, 'L');
-		}
-
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
 			$pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';
 			$pin .= '<b>PIN: ' . (strlen($this->data['customerpin']) < 4 ? sprintf('%04d', $this->data['customerpin']) : $this->data['customerpin']) . '</b><br>';
@@ -753,8 +752,13 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->SetFont('arial', 'B', 14);
 		if (isset($this->data['rebate']))
 			$this->backend->writeHTMLCell(0, 0, '', '', trans('To repay:') . ' ' . moneyf($this->data['value']), 0, 1, 0, true, 'L');
-		else
+		else {
+			if ($this->use_alert_color)
+				$this->backend->SetTextColorArray(array(255, 0, 0));
 			$this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value']), 0, 1, 0, true, 'L');
+			if ($this->use_alert_color)
+				$this->backend->SetTextColor();
+		}
 
 		$this->backend->SetFont('arial', '', 8);
 		$this->backend->writeHTMLCell(0, 5, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value']), 0, 1, 0, true, 'L');
@@ -770,10 +774,14 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	protected function invoice_dates() {
 		$this->backend->SetFont('arial', '', 8);
 		if ($paytype != 8) {
-		$this->backend->writeHTMLCell(0, 0, '', 17, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
+			if ($this->use_alert_color)
+					$this->backend->SetTextColorArray(array(255, 0, 0));
+			$this->backend->writeHTMLCell(0, 0, '', 17, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
+			if ($this->use_alert_color)
+					$this->backend->SetTextColorArray();
 		}
 		$this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
-}
+	}
 
 	protected function invoice_expositor() {
 		$expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];

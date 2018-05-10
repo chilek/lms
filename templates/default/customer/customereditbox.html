@@ -445,6 +445,15 @@
 		}
 	}).filter(':checked').change();
 
+	function init_email_validators() {
+		$('[name^="customerdata[emails]"][value="16"]').off('click').click(function() {
+			var checked = $(this).prop('checked');
+			if (!$('#chkinvoicenotice').prop('checked') && checked) {
+				alert('{trans("Customer has not checked \'electronic invoice\' consent and you are trying to mark this mail contact for invoice sending!")}');
+			}
+		});
+	}
+
 	$(function() {
 		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
 
@@ -456,12 +465,10 @@
 			}
 		});
 
+		init_email_validators();
 
-		$('[name^="customerdata[emails]"][value="16"]').click(function() {
-			var checked = $(this).prop('checked');
-			if (!$('#chkinvoicenotice').prop('checked') && checked) {
-				alert('{trans("Customer has not checked \'electronic invoice\' consent and you are trying to mark this mail contact for invoice sending!")}');
-			}
+		$('.contacts[data-type="email"] .newcontact a').click(function() {
+			init_email_validators();
 		});
 
 		$('#submit').click(function() {

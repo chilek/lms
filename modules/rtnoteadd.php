@@ -86,7 +86,9 @@ elseif(isset($_POST['note']))
 			'queueid' => $note['queueid'],
 			'owner' => empty($note['owner']) ? null : $note['owner'],
 			'cause' => $note['cause'],
-			'state' => $note['state']
+			'state' => $note['state'],
+			'source' => $note['source'],
+			'priority' => $note['priority'],
 		);
 		$LMS->TicketChange($note['ticketid'], $props);
 
@@ -188,8 +190,14 @@ $layout['pagetitle'] = trans('New Note');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$ticket = $LMS->GetTicketContents($note['ticketid']);
+$SMARTY->assign('ticket', $ticket);
+if (!isset($_POST['note'])) {
+	$note['source'] = $ticket['source'];
+	$note['priority'] = $ticket['priority'];
+}
+
 $SMARTY->assign('note', $note);
-$SMARTY->assign('ticket', $LMS->GetTicketContents($note['ticketid']));
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('error', $error);

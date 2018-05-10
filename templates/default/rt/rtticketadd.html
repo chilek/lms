@@ -109,6 +109,18 @@
 				{/foreach}
 			</TABLE>
 		</TD>
+	</TR>
+
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/mail.gif" alt="">
+			<label for="notify">{trans("Notify users:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
+		</TD>
+	</TR>
+
 			</TABLE>
 		</TD>
 		<TD style="width: 50%;" class="valign-top">
