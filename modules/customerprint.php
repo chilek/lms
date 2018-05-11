@@ -159,7 +159,7 @@ switch($type)
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch("$print_template");
-			html2pdf($output, trans('Reports'), $layout['pagetitle']);
+			html2pdf($output, trans('Reports'), $layout['pagetitle'], null, null, 'L');
 		} else {
 			$SMARTY->display("$print_template");
 		}
