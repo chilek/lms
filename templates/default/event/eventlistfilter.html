@@ -35,6 +35,7 @@
             </SELECT>
             {trans("Customer:")}
             {customerlist form="filter" customers=$customers selected=$listdata.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
+	    <a href="?m=eventlist&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}"><button type="button" style="background: #00A86B;">{trans("Today")}</button></a>
             {trans("Month:")}
             <SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
                 {section name=month loop=13 start=1}
