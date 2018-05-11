@@ -112,6 +112,10 @@ else
 
 $SHIFT=394; // drugi druczek przesunięcie o 394
 
+$barcode = new \Com\Tecnick\Barcode\Barcode();
+$bobj = $barcode->getBarcodeObj('C128', iconv('UTF-8', 'ASCII//TRANSLIT', $USER_TY), -1, -15, 'black');
+$barcode_image = base64_encode($bobj->getPngData());
+
 for ( $j=0; $j<2; $j++ ) // pętla główna
 {
 // teksty na druczku:
@@ -229,8 +233,10 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
      }
 
 
-     $posx=327+$j*$SHIFT;   // wolna linijka
-     echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">-</span>');
+     //$posx=327+$j*$SHIFT;   // wolna linijka
+	$posx=329+$j*$SHIFT;   // wolna linijka
+    echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; height: 15px; background-color: white; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">'
+        . '<img src="data:image/png;base64,' . $barcode_image . '"></span>');
 
 } //  koniec pętli głównej
 ?>
