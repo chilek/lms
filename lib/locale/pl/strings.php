@@ -266,6 +266,7 @@ $_LANG['Begin of DHCP range:'] = 'Początek zakresu DHCP:';
 $_LANG['Enter customer ID, first/lastname, email or address and press Enter'] = 'Wprowadź identyfikator klienta, imię, nazwisko, adres lub email i naciśnij Enter';
 $_LANG['Enter phone number and press Enter'] = 'Wprowadź numer telefonu i naciśnij Enter';
 $_LANG['Enter node ID, name, IP address or MAC address and press Enter'] = 'Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter';
+$_LANG['Enter node name, netdev name, netdev ID or netdev IP address and press Enter'] = 'Wprowadź nazwę węzła. nazwę urządzenia, ID urządzenia lub adres IP urządzenia i naciśnij Enter';
 $_LANG['Enter request tracker ID, subject or requestor name and press Enter'] = 'Wprowadź identyfikator zgłoszenia, temat lub nazwisko/nazwę zgłaszającego i naciśnij Enter';
 $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są wymagane dla zakresu DHCP!';
 $_LANG['Browse'] = 'Przeglądaj';

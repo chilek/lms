@@ -374,6 +374,77 @@ switch ($mode) {
 		$target = '?m=nodesearch&search';
 	break;
 
+        case 'netnode':
+                if(isset($_GET['ajax'])) // support for AutoSuggest
+                {
+                        $candidates = $DB->GetAll("SELECT id, name FROM netnodes
+                                WHERE ".(preg_match('/^[0-9]+$/', $sql_search) ? 'id = '.intval($sql_search).' OR ' : '')."
+				LOWER(name) ?LIKE? LOWER($sql_search) 
+                                ORDER by name
+                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+
+                        $result = array();
+                        if ($candidates) {
+                                foreach ($candidates as $idx => $row) {
+                                        $name = truncate_str($row['name'], 50);
+                                        $name_classes = array();
+
+                                        $description = '';
+                                        $description_class = '';
+                                        $action = '?m=netnodeinfo&id=' . $row['id'];
+
+                                        if (preg_match("~^$search\$~i", $row['id']))
+                                                $description = trans('Id:') . ' ' . $row['id'];
+
+                                        $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                                }
+                        }
+                        header('Content-type: application/json');
+                        if (!empty($result))
+                                echo json_encode(array_values($result));
+                        $SESSION->close();
+                        $DB->Destroy();
+                        exit;
+                }
+
+        break;
+
+	case 'netdevice':
+                if(isset($_GET['ajax'])) // support for AutoSuggest
+                {
+                        $candidates = $DB->GetAll("SELECT id, name FROM netdevices
+                                WHERE 
+				".(preg_match('/^[0-9]+$/', $sql_search) ? 'id = '.intval($sql_search).' OR ' : '')."
+				LOWER(name) ?LIKE? LOWER($sql_search)
+                                ORDER by name
+                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+
+                        $result = array();
+                        if ($candidates) {
+                                foreach ($candidates as $idx => $row) {
+                                        $name = truncate_str($row['name'], 50);
+                                        $name_classes = array();
+
+                                        $description = '';
+                                        $description_class = '';
+                                        $action = '?m=netdevinfo&id=' . $row['id'];
+
+                                        if (preg_match("~^$search\$~i", $row['id']))
+                                                $description = trans('Id:') . ' ' . $row['id'];
+
+                                        $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                                }
+                        }
+                        header('Content-type: application/json');
+                        if (!empty($result))
+                                echo json_encode(array_values($result));
+                        $SESSION->close();
+                        $DB->Destroy();
+                        exit;
+                }
+
+	break;
+
 	case 'ticket':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
