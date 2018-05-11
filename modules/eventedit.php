@@ -90,7 +90,8 @@ if(isset($_POST['event']))
 	if ($enddate && $date > $enddate)
 		$error['enddate'] = trans('End time must not precede start time!');
 
-	if (!$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
+	if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
+		&& !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
 			'begindate' => $date,
 			'begintime' => $event['begintime'],
 			'enddate' => $enddate,
