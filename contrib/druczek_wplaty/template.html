@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 //EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+  <title>Elektroniczne Biuro Obsługi Klienta</title>
+</head>
+<body>
+<div style="position: absolute; top: 60px; left: 10px"><img
+src="img/przelew2.png" alt="wpłata gotówkowa" border="0"></div><span
+style="position: absolute; top: 63px; left: 62px; font-family: Arial,
+Helvetica;color: #FF0000;font-size: 6pt;">nazwa odbiorcy</span><span
+style="position: absolute; top: 96px; left: 62px; font-family: Arial,
+Helvetica; color: #FF0000; font-size: 6pt;">nazwa odbiorcy
+cd.</span><span style="position: absolute; top: 131px; left: 62px;
+font-family: Arial, Helvetica;color: #FF0000;font-size:
+6pt;">l.k.</span><span style="position: absolute; top: 131px; left:
+102px; font-family: Arial, Helvetica; color: #FF0000;font-size: 6pt;">nr
+rachunku odbiorcy</span><span style="position: absolute; top: 163px;
+left: 352px; font-family: Arial, Helvetica; color: #FF0000;font-size:
+6pt;">kwota</span><span style="position: absolute; top: 194px; left:
+72px; font-family: Arial, Helvetica; color: #FF0000;font-size:
+6pt;">kwota słownie</span><span style="position: absolute; top: 222px;
+left: 72px; font-family: Arial, Helvetica; color: #FF0000;font-size:
+6pt;">nazwa zleceniodawcy</span><span style="position: absolute; top:
+253px; left: 72px; font-family: Arial, Helvetica; color:
+#FF0000;font-size: 6pt;">nazwa zleceniodawcy cd.</span><span
+style="position: absolute; top: 284px; left: 72px; font-family: Arial,
+Helvetica; color: #FF0000;font-size: 6pt;">tytułem</span><span
+style="position: absolute; top: 317px; left: 72px; font-family: Arial,
+Helvetica; color: #FF0000;font-size: 6pt;">tytułem cd.</span><span
+style="position: absolute; top: 395px; left: 337px; font-family: Arial,
+Helvetica; color: #FF0000;font-size: 6pt;">Opłata</span><span
+style="position: absolute; top: 425px; left: 337px; font-family: Arial,
+Helvetica; color: #FF0000;font-size: 6pt;">Podpis</span><span
+style="position: absolute; top: 174px; left: 272px; font-family:
+Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">P</span><span style="position: absolute; top: 174px; left: 291px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">L</span><span style="position: absolute; top: 174px; left: 310px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">N</span><span style="position: absolute; top: 75px; left: 62px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">{$division.name}</span><span
+style="position: absolute; top: 109px; left: 62px; font-family: Courier,
+Arial, Helvetica; font-size: 12pt; font-weight: bold;">{$division_address.street} {$division_address.house}{if $division_address.flat}/{$division_address.flat}{/if}, {$division_address.zip} {$division_address.city}</span><span style="position: absolute; top:
+141px; left: 62px; font-family: Courier, Arial, Helvetica; font-size:
+11pt; font-weight: bold; letter-spacing:10px;">{$customerinfo.bankaccount}</span>
+<span style="position: absolute; top:
+174px; left: 347px; font-family: Courier, Arial, Helvetica; font-size:
+11pt; letter-spacing:10px; font-weight: bold;">
+{$document.kwota}
+</span>
+<span style="position: absolute; top:
+205px; left: 62px; font-family: Courier, Arial, Helvetica; font-size:
+8pt; font-weight: bold;">
+<!--
+{if $_config.phpui.to_words_short_version}
+{$document.kwota|string_format:"%d"|to_words:0:"":1}
+{$document.kwota|string_format:"%02d"}/100 
+
+{else}
+
+{t a=$document.kwota|string_format:"%d"|to_words
+b=$document.kwota|to_words}$a dollars $b cents{/t}
+
+{/if}
+-->
+{$kwota_x}
+</span><span style="position: absolute; top: 235px; left: 62px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">{$customerinfo.customername}</span><span style="position: absolute; top: 265px; left: 62px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">{$customerinfo.address} {$customerinfo.zip} {$customerinfo.city}</span>
+
+<span style="position:
+absolute; top: 298px; left: 62px; font-family: Courier, Arial,
+Helvetica; font-size: 12pt; font-weight: bold;">INTERNET ID:{$customerinfo.id}</span>
+<div style="position: absolute; top: 454px; left:
+10px"><img src="img/przelew2.png" alt="wpłata gotówkowa"
+border="0"></div><span style="position: absolute; top: 457px; left:
+62px; font-family: Arial, Helvetica;color: #FF0000;font-size:
+6pt;">nazwa odbiorcy</span><span style="position: absolute; top: 490px;
+left: 62px; font-family: Arial, Helvetica; color: #FF0000; font-size:
+6pt;">nazwa odbiorcy cd.</span><span style="position: absolute; top:
+525px; left: 62px; font-family: Arial, Helvetica;color:
+#FF0000;font-size: 6pt;">l.k.</span><span style="position: absolute;
+top: 525px; left: 102px; font-family: Arial, Helvetica; color:
+#FF0000;font-size: 6pt;">nr rachunku odbiorcy</span><span
+style="position: absolute; top: 557px; left: 352px; font-family: Arial,
+Helvetica; color: #FF0000;font-size: 6pt;">kwota</span><span
+style="position: absolute; top: 588px; left: 72px; font-family: Arial,
+Helvetica; color: #FF0000;font-size: 6pt;">kwota słownie</span><span
+style="position: absolute; top: 616px; left: 72px; font-family: Arial,
+Helvetica; color: #FF0000;font-size: 6pt;">nazwa
+zleceniodawcy</span><span style="position: absolute; top: 647px; left:
+72px; font-family: Arial, Helvetica; color: #FF0000;font-size:
+6pt;">nazwa zleceniodawcy cd.</span><span style="position: absolute;
+top: 678px; left: 72px; font-family: Arial, Helvetica; color:
+#FF0000;font-size: 6pt;">tytułem</span><span style="position: absolute;
+top: 711px; left: 72px; font-family: Arial, Helvetica; color:
+#FF0000;font-size: 6pt;">tytułem cd.</span><span style="position:
+absolute; top: 789px; left: 337px; font-family: Arial, Helvetica; color:
+#FF0000;font-size: 6pt;">Opłata</span><span style="position: absolute;
+top: 819px; left: 337px; font-family: Arial, Helvetica; color:
+#FF0000;font-size: 6pt;">Podpis</span><span style="position: absolute;
+top: 568px; left: 272px; font-family: Courier, Arial, Helvetica;
+font-size: 12pt; font-weight: bold;">P</span><span style="position:
+absolute; top: 568px; left: 291px; font-family: Courier, Arial,
+Helvetica; font-size: 12pt; font-weight: bold;">L</span><span
+style="position: absolute; top: 568px; left: 310px; font-family:
+Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">N</span><span style="position: absolute; top: 469px; left: 62px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">{$division.name}</span><span
+style="position: absolute; top: 503px; left: 62px; font-family: Courier,
+Arial, Helvetica; font-size: 12pt; font-weight: bold;">{$division_address.street} {$division_address.house}{if $division_address.flat}/{$division_address.flat}{/if}, {$division_address.zip} {$division_address.city}</span><span style="position: absolute; top:
+535px; left: 62px; font-family: Courier, Arial, Helvetica; font-size:
+11pt; letter-spacing:10px; font-weight: bold;">{$customerinfo.bankaccount}</span>
+
+<span style="position: absolute; top:
+568px; left: 347px; font-family: Courier, Arial, Helvetica; font-size:
+11pt; letter-spacing:10px; font-weight: bold;">{$document.kwota}</span>
+
+<span style="position: absolute; top:
+599px; left: 62px; font-family: Courier, Arial, Helvetica; font-size:
+8pt; font-weight: bold;">
+<!--
+{if $_config.phpui.to_words_short_version}
+{$document.kwota|string_format:"%d"|to_words:0:"":1}
+{$document.kwota|string_format:"%02d"}/100
+
+{else}
+
+{t a=$document.kwota|string_format:"%d"|to_words
+b=$document.kwota|to_words}$a dollars $b cents{/t}
+
+{/if}
+-->
+{$kwota_x}
+</span><span style="position: absolute; top: 629px; left: 62px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">{$customerinfo.customername}</span><span style="position: absolute; top: 659px; left: 62px;
+font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight:
+bold;">{$customerinfo.address} {$customerinfo.zip} {$customerinfo.city}</span><span style="position:
+absolute; top: 692px; left: 62px; font-family: Courier, Arial,
+Helvetica; font-size: 12pt; font-weight: bold;">INTERNET ID:{$customerinfo.id}</span>
+
+</body></html>
+
+<span style="position: absolute; top:329px; left: 62px; height: 15px; background-color: white; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">
+	<img src="data:image/png;base64,{$barcode_image}">
+</span>
+
+<span style="position: absolute; top:723px; left: 62px; height: 15px; background-color: white; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">
+	<img src="data:image/png;base64,{$barcode_image}">
+</span>
