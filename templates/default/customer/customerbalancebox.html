@@ -80,6 +80,10 @@
 		document.getElementById('newdocanchor').href = url;
 	}
 
+	function new_transfer_form_type_changed() {
+		$('#newtransferformanchor').attr('href', $('[name="newtransferform"]').val());
+	}
+
 {if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 	function delpos()
 	{
@@ -124,6 +128,11 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
+			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_BALANCE}">{trans("Transfer form:")}</A>
+			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()">
+				<OPTION value="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_BALANCE}">{trans("balance value")}</OPTION>
+				<OPTION value="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_TARIFFS}">{trans("tariff value")}</OPTION>
+			</SELECT>
 			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
 			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
 				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>

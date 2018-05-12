@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-class LMSHtmlTrandferForm extends LMSHtmlDocument {
+class LMSHtmlTransferForm extends LMSHtmlDocument {
     const VALUE_BALANCE = 1;
     const VALUE_TARIFFS = 2;
 

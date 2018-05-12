@@ -1,7 +1,7 @@
-<?php 
+<?php
 
-/*
- *  LMS version 1.11-git
+/**
+ * LMS version 1.11-git
  *
  *  (C) Copyright 2001-2018 LMS Developers
  *
@@ -24,23 +24,11 @@
  *  $Id$
  */
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html; charset=utf-8" http-equiv="content-type">
-  <title>Wirtualne Biuro Obsługi Klienta</title>
-</head>
-<body>
-<?php
+$SMARTY->display('clearheader.html');
 
-global $SESSION;
-
-$doc = new LMSHtmlTransferForm(LMSHtmlTransferForm::VALUE_BALANCE);
+$doc = new LMSHtmlTransferForm($_GET['type']);
 echo $doc->Draw(array(
-    'customerid' => $SESSION->id,
+	'customerid' => $_GET['id'],
 ));
 
-?>
-</body>
-</html>
+$SMARTY->display('clearfooter.html');

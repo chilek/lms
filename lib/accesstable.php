@@ -42,7 +42,7 @@ $access_table = array(
 	),
 	'finances_management' => array(
 		'label' => trans('finances management'),
-		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$',
+		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform)$',
 	),
 	'published_document_modification' => array(
 		'label' => trans('published document modification'),
@@ -53,7 +53,7 @@ $access_table = array(
 	),
 	'customer_management' => array(
 		'label' => trans('customers management'),
-		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|customeraddresses|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi)$',
+		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|customertransferform|customeraddresses|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi)$',
 	),
 	'node_management' => array(
 		'label' => trans('nodes management'),
