@@ -3894,5 +3894,6 @@ $_LANG['Event is assigned to users which already have assigned an event in the s
 
 $_LANG['Transfer form:'] = 'Formularz przelewu:';
 $_LANG['tariffs'] = 'taryfy';
+$_LANG['balance'] = 'saldo';
 
 ?>
