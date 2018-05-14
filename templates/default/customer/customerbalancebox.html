@@ -85,7 +85,7 @@
 		$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' + type +
 			'value=' + $('[name="newtransferformcustomvalue"]').val());
 		if (type == {LMSHtmlTransferForm::VALUE_CUSTOM}) {
-			$('[name="newtransferformcustomvalue"]').show();
+			$('[name="newtransferformcustomvalue"]').show().focus();
 		} else {
 			$('[name="newtransferformcustomvalue"]').hide();
 		}
@@ -93,9 +93,10 @@
 
 	$(function() {
 		$('[name="newtransferformcustomvalue"]').on('change keypress', function() {
-			console.log('change');
-			$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' +
-				$('[name="newtransferform"]').val() + '&value=' + $('[name="newtransferformcustomvalue"]').val());
+			setTimeout(function() {
+					$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' +
+						$('[name="newtransferform"]').val() + '&value=' + $('[name="newtransferformcustomvalue"]').val());
+				}, 1);
 		});
 	});
 
