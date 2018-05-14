@@ -26,7 +26,7 @@
 
 class LMSHtmlTransferForm extends LMSHtmlDocument {
     const VALUE_BALANCE = 1;
-    const VALUE_TARIFFS = 2;
+    const VALUE_ASSIGNMENTS = 2;
 
     private $value_property;
 
@@ -217,8 +217,8 @@ class LMSHtmlTransferForm extends LMSHtmlDocument {
             case self::VALUE_BALANCE:
                 $KWOTA = trim($customer['balance'] * -1);
                 break;
-            case self::VALUE_TARIFFS:
-                $KWOTA = $LMS->GetCustomerTariffsValue($customer['id']);
+            case self::VALUE_ASSIGNMENTS:
+                $KWOTA = $LMS->GetCustomerAssignmentValue($customer['id']);
                 break;
             default:
                 $KWOTA = 0;

@@ -958,7 +958,13 @@ class LMS
         return $manager->GetCustomerTariffsValue($id);
     }
 
-    public function GetCustomerAssignments($id, $show_expired = false)
+	public function GetCustomerAssignmentValue($id)
+	{
+		$manager = $this->getFinanceManager();
+		return $manager->GetCustomerAssignmentValue($id);
+	}
+
+	public function GetCustomerAssignments($id, $show_expired = false)
     {
         $manager = $this->getFinanceManager();
         return $manager->GetCustomerAssignments($id, $show_expired);

@@ -36,6 +36,8 @@ interface LMSFinanceManagerInterface
 
     public function GetCustomerTariffsValue($id);
 
+	public function GetCustomerAssignmentValue($id);
+
     public function GetCustomerAssignments($id, $show_expired = false);
 
     public function DeleteAssignment($id);

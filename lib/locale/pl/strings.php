@@ -3893,7 +3893,7 @@ $_LANG['Enter network device name or ip address'] = 'Wprowadź nazwę urządzeni
 $_LANG['Event is assigned to users which already have assigned an event in the same time: $a!'] = 'Zdarzenie jest przypisane do użytkowników, którzy posiadają już przypisane zdarzenia w tym samym czasie: $a!';
 
 $_LANG['Transfer form:'] = 'Formularz przelewu:';
-$_LANG['tariffs'] = 'taryfy';
+$_LANG['assignments'] = 'zobowiązania';
 $_LANG['balance'] = 'saldo';
 
 ?>

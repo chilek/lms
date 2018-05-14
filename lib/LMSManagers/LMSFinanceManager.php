@@ -48,7 +48,32 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)', array($id));
     }
 
-    public function GetCustomerAssignments($id, $show_expired = false)
+	public function GetCustomerAssignmentValue($id) {
+		$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
+
+		return $this->db->GetOne('SELECT SUM((CASE a.suspended
+			WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+			ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+			* (CASE t.period
+			WHEN ' . MONTHLY . ' THEN 1
+			WHEN ' . YEARLY . ' THEN 1/12.0
+			WHEN ' . HALFYEARLY . ' THEN 1/6.0
+			WHEN ' . QUARTERLY . ' THEN 1/3.0
+			ELSE (CASE a.period
+				WHEN ' . MONTHLY . ' THEN 1
+				WHEN ' . YEARLY . ' THEN 1/12.0
+				WHEN ' . HALFYEARLY . ' THEN 1/6.0
+				WHEN ' . QUARTERLY . ' THEN 1/3.0
+				ELSE 0 END)
+			END))
+		    FROM assignments a
+		    LEFT JOIN tariffs t ON t.id = a.tariffid
+		    LEFT JOIN liabilities l ON l.id = a.liabilityid
+			WHERE customerid = ? AND suspended = 0 AND commited = 1 AND a.period <> ' . DISPOSABLE . '
+				AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)', array($id));
+	}
+
+	public function GetCustomerAssignments($id, $show_expired = false)
     {
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 

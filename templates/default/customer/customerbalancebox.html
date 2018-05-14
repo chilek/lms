@@ -128,9 +128,9 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_TARIFFS}">{trans("Transfer form:")}</A>
+			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()">
-				<OPTION value="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_TARIFFS}">{trans("tariffs")}</OPTION>
+				<OPTION value="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("assignments")}</OPTION>
 				<OPTION value="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_BALANCE}">{trans("balance")}</OPTION>
 			</SELECT>
 			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
