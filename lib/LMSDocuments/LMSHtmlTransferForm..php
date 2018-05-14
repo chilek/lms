@@ -27,6 +27,7 @@
 class LMSHtmlTransferForm extends LMSHtmlDocument {
     const VALUE_BALANCE = 1;
     const VALUE_ASSIGNMENTS = 2;
+    const VALUE_CUSTOM = 3;
 
     private $value_property;
 
@@ -220,6 +221,9 @@ class LMSHtmlTransferForm extends LMSHtmlDocument {
             case self::VALUE_ASSIGNMENTS:
                 $KWOTA = $LMS->GetCustomerAssignmentValue($customer['id']);
                 break;
+			case self::VALUE_CUSTOM:
+				$KWOTA = isset($data['value']) ? $data['value'] : 0;
+				break;
             default:
                 $KWOTA = 0;
 		}

@@ -81,8 +81,23 @@
 	}
 
 	function new_transfer_form_type_changed() {
-		$('#newtransferformanchor').attr('href', $('[name="newtransferform"]').val());
+		var type = $('[name="newtransferform"]').val();
+		$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' + type +
+			'value=' + $('[name="newtransferformcustomvalue"]').val());
+		if (type == {LMSHtmlTransferForm::VALUE_CUSTOM}) {
+			$('[name="newtransferformcustomvalue"]').show();
+		} else {
+			$('[name="newtransferformcustomvalue"]').hide();
+		}
 	}
+
+	$(function() {
+		$('[name="newtransferformcustomvalue"]').on('change keypress', function() {
+			console.log('change');
+			$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' +
+				$('[name="newtransferform"]').val() + '&value=' + $('[name="newtransferformcustomvalue"]').val());
+		});
+	});
 
 {if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 	function delpos()
@@ -130,9 +145,11 @@
 		<TD class="text-right nobr">
 			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()">
-				<OPTION value="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("assignments")}</OPTION>
-				<OPTION value="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_BALANCE}">{trans("balance")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("assignments")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("balance")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("custom")}</OPTION>
 			</SELECT>
+			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;">
 			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
 			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
 				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
