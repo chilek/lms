@@ -145,9 +145,9 @@
 		<TD class="text-right nobr">
 			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()">
-				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("assignments")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("balance")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("custom")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
 			</SELECT>
 			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;">
 			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
