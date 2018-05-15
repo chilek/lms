@@ -130,7 +130,7 @@ function RTSearch($search, $order='createtime,desc')
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
 			LEFT JOIN vusers ON (t.owner = vusers.id)
-			LEFT JOIN vusers AS e ON (t.verfier_userid = vusers.id)
+			LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
 			LEFT JOIN customers ON (t.customerid = customers.id)'
 			.(isset($where) ? $where : '')
 			.($sqlord !='' ? $sqlord.' '.$direction:'')))
