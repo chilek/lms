@@ -346,7 +346,8 @@ switch($action)
 		$iid   = $invoice['id'];
 
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions'));
+		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
+			'customerview', 'customercontacts', 'customers', 'customer_addresses', 'netdevices', 'nodes'));
 
 		$use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
 		if ($use_current_customer_data)
