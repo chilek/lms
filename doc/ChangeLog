@@ -39,6 +39,7 @@ version ?.??.?? (????-??-??):
   - improvement: warn about event user assignment overlaps - phpui.event_overlap_warning
     configuration variable controls if it is enabled ('false' by default) [chilan]
   - enhancement: allow to print transfer forms from customer balance box [chilan]
+  - improvement: allow to define ticket verifier [interduo]
 
 version 1.11.23 (2018-03-21):
 

@@ -140,6 +140,19 @@
 									{/if}
 								</TD>
 							</TR>
+                                                        <TR>
+                                                                <TD style="width: 1%;" class="bold nobr">
+                                                                        <IMG src="img/users.gif" alt="">
+                                                                        {trans("Verifier:")}
+                                                                </TD>
+                                                                <TD style="width: 99%;">
+                                                                        {if $ticket.verifierid}
+                                                                        <A href="?m=userinfo&id={$ticket.verifierid}">{$ticket.verifier_username}</A>
+                                                                        {else}
+                                                                        {trans("none")}
+                                                                        {/if}
+                                                                </TD>
+                                                        </TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<IMG src="img/queue.gif" alt="">

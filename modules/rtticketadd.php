@@ -119,6 +119,9 @@ if(isset($_POST['ticket']))
 		if (empty($ticket['requestor_userid']))
 			$ticket['requestor_userid'] = null;
 
+		if (empty($ticket['verifierid']))
+			$ticket['verifierid'] = null;
+
 		if (!empty($files)) {
 			foreach ($files as &$file)
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
