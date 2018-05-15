@@ -347,7 +347,8 @@ switch($action)
 
 		$DB->BeginTrans();
 		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
-			'customerview', 'customercontacts', 'customers', 'customer_addresses', 'netdevices', 'nodes'));
+			'customerview', 'customercontacts', 'customers', 'customer_addresses', 'netdevices', 'nodes',
+			'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata'));
 
 		$use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
 		if ($use_current_customer_data)
