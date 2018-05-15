@@ -348,7 +348,7 @@ switch($action)
 		$DB->BeginTrans();
 		$tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
 			'customerview', 'customercontacts', 'netdevices', 'nodes',
-			'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata'));
+			'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata');
 		if (ConfigHelper::getConfig('database.type') == 'postgres')
 			$tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
 		else
