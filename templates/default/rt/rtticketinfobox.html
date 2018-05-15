@@ -153,6 +153,19 @@
                                                                         {/if}
                                                                 </TD>
                                                         </TR>
+                                                        <TR>
+                                                                <TD style="width: 1%;" class="bold nobr">
+                                                                        <IMG src="img/calendar.gif" alt="">
+                                                                        {trans("Deadline time:")}
+                                                                </TD>
+                                                                <TD style="width: 99%;">
+								{if $ticket.deadlinetime}
+									{$ticket.deadlinetime|date_format:"%Y/%m/%d %H:%M:%S"}
+								{else}
+									{trans("none")}
+								{/if}
+                                                                </TD>
+                                                        </TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<IMG src="img/queue.gif" alt="">

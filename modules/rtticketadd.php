@@ -122,6 +122,11 @@ if(isset($_POST['ticket']))
 		if (empty($ticket['verifierid']))
 			$ticket['verifierid'] = null;
 
+		if (empty($ticket['deadlinetime']))
+			$ticket['deadlinetime'] = null;
+		else
+			$ticket['deadlinetime'] = datetime_to_timestamp($ticket['deadlinetime']);
+
 		if (!empty($files)) {
 			foreach ($files as &$file)
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];

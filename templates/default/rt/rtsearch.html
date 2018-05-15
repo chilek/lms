@@ -168,6 +168,23 @@
 			{include file="rt/rtnetdevs.html" form="search"}
 		</TD>
 	</TR>
+        <TR>
+		<TD class="bold nobr"><img src="img/users.gif" alt=""> {trans("Verifier:")}</TD>
+		<TD>
+                        <SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
+                                <OPTION value="0">{trans("- all owners -")}</OPTION>
+                                {foreach $userlist as $item}
+                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.name}</OPTION>
+                                {/foreach}
+                        </SELECT>
+		</TD>
+        </TR>
+        <TR>
+		<TD class="bold nobr"><img src="img/calendar.gif" alt=""> {trans("Deadline time expired:")}</TD>
+		<TD>
+			<INPUT TYPE="checkbox" NAME="search[expired]" VALUE="1" {tip text="Check if ticket is expired." trigger="expired"}>
+		</TD>
+        </TR>
 	<TR>
 		<TD class="buttons" colspan="2">
 			<A href="javascript:document.search.submit();" accesskey="s"><IMG src="img/search.gif" alt=""> {trans("Search")}</A>
