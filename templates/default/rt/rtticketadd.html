@@ -140,6 +140,20 @@
 			</SELECT>
 		</TD>
 	</TR>
+        <TR>
+                <TD style="width: 1%;" class="bold nobr">
+                        <IMG src="img/users.gif" alt="">
+                        {trans("Verifier:")}
+                </TD>
+                <TD style="width: 99%;">
+                        <SELECT size="1" name="ticket[verifierid]" {tip text="Select user" trigger="verifierid"}>
+                                <OPTION value="0">- {trans("select user")} -</OPTION>
+                                {foreach from=$userlist item=item}
+                                <OPTION value="{$item.id}"{if $item.id == $ticket.verifierid} selected{/if}>{$item.rname}</OPTION>
+                                {/foreach}
+                        </SELECT>
+                </TD>
+        </TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/queue.gif" alt="">

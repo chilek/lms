@@ -236,6 +236,7 @@ if(isset($_POST['ticket']))
 			'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
 			'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
 			'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
+			'verifierid' => empty($ticketedit['verifierid']) ? null : $ticketedit['verifierid'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
