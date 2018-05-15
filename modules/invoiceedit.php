@@ -350,9 +350,9 @@ switch($action)
 			'customerview', 'customercontacts', 'netdevices', 'nodes',
 			'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata');
 		if (ConfigHelper::getConfig('database.type') == 'postgres')
-			$tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
-		else
 			$tables = array_merge($tables, array('customers', 'customer_addresses'));
+		else
+			$tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
 		$DB->LockTables($tables);
 
 		$use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
