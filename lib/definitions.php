@@ -203,8 +203,8 @@ $RT_PRIORITIES = array(
 );
 
 $RT_PRIORITY_STYLES = array(
-	RT_PRIORITY_VERYLOW => 'background-color: lightgreen; color: black;',
-	RT_PRIORITY_LOW => 'background-color: yellow; color: black;',
+	RT_PRIORITY_VERYLOW => 'background-color: blue; color: white;',
+	RT_PRIORITY_LOW => 'background-color: lightgreen; color: black;',
 	RT_PRIORITY_NORMAL => 'background-color: transparent; color: black;',
 	RT_PRIORITY_URGENT => 'background-color: orange; color: white;',
 	RT_PRIORITY_CRITICAL => 'background-color: red; color: white;',
