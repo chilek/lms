@@ -131,11 +131,9 @@
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
-				{if $note.owner == 0}
-					<OPTION value="0" SELECTED>- {trans("select user")} -</OPTION>
-				{/if}
-				{foreach from=$userlist item=user}
-					<OPTION value="{$user.id}" {if $user.id == $note.owner}SELECTED{/if}>{$user.name}</OPTION>
+				<OPTION value="0">- {trans("select user")} -</OPTION>
+				{foreach $userlist as $user}
+				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.owner} selected{/if}>{$user.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
