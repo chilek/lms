@@ -23,7 +23,9 @@
  *
  *  $Id$
  */
-
+$_LANG['Ticket deadline could not be set in past.'] = 'Termin ostateczny nie może być w przeszłości.';
+$_LANG['Ticket owner could not be the same as verifier.'] = 'Właściciel zgłoszenia nie może być weryfikatorem';
+$_LANG['Ticket verifier could not be the same as owner.'] = 'Weryfikator zgłoszenia nie może być właścicielem';
 $_LANG['Deadline time:'] = 'Termin ostateczny:';
 $_LANG['Deadline time expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
 $_LANG['Ticket deadline has been set to $a:'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a:';

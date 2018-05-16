@@ -43,6 +43,17 @@ if(isset($_POST['ticket']))
 	$ticket = $_POST['ticket'];
 	$queue = $ticket['queue'];
 
+	if(!empty($ticket['verifierid']) && ($ticket['verifierid'] == $ticket['owner'])) {
+		$error['verifierid'] = trans("Ticket owner could not be the same as verifier.");
+		$error['owner'] = trans("Ticket verifier could not be the same as owner.");
+	};
+
+	if(!empty($ticket['deadline'])) {
+		$dtime = datetime_to_timestamp($ticket['deadline']);
+		if($dtime < time())
+			$error['deadline'] = trans("Ticket deadline could not be set in the past.");
+	}
+
 	if($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid'])
 	{
 		$SESSION->redirect('?m=rtticketadd&id='.$queue);
@@ -122,10 +133,10 @@ if(isset($_POST['ticket']))
 		if (empty($ticket['verifierid']))
 			$ticket['verifierid'] = null;
 
-		if (empty($ticket['deadlinetime']))
-			$ticket['deadlinetime'] = null;
+		if (empty($ticket['deadline']))
+			$ticket['deadline'] = null;
 		else
-			$ticket['deadlinetime'] = datetime_to_timestamp($ticket['deadlinetime']);
+			$ticket['deadline'] = $dtime;
 
 		if (!empty($files)) {
 			foreach ($files as &$file)

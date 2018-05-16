@@ -163,6 +163,19 @@ if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];
 	$ticketedit['ticketid'] = $ticket['ticketid'];
+	$dtime = datetime_to_timestamp($ticketedit['deadline']);
+
+        if(!empty($ticketedit['verifierid']))
+	{
+		if ($ticketedit['verifierid'] == $ticketedit['owner']) {
+			$error['verifierid'] = trans("Ticket owner could not be the same as verifier.");
+			$error['owner'] = trans("Ticket verifier could not be the same as owner.");
+		};
+	};
+	if (!empty($dtime)) {
+		if ($dtime < time())
+			$error['deadline'] = trans("Ticket deadline could not be set in past.");
+	};
 
 	if(!count($ticketedit['categories']))
 		$error['categories'] = trans('You have to select category!');
@@ -237,7 +250,7 @@ if(isset($_POST['ticket']))
 			'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],
 			'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
 			'verifierid' => empty($ticketedit['verifierid']) ? null : $ticketedit['verifierid'],
-			'deadlinetime' => empty($ticketedit['deadlinetime']) ? null : $ticketedit['deadlinetime'],
+			'deadline' => empty($ticketedit['deadline']) ? null : $ticketedit['deadline'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
