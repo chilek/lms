@@ -154,6 +154,15 @@
                         </SELECT>
                 </TD>
         </TR>
+        <TR>
+                <TD style="width: 1%;" class="bold nobr">
+                        <IMG src="img/calendar.gif" alt="">
+                        {trans("Deadline time:")}
+                </TD>
+                <TD style="width: 99%;">
+			<INPUT TYPE="TEXT" NAME="ticket[deadlinetime]" VALUE="{$ticket.deadlinetime|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline time in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadlinetime"}>
+                </TD>
+        </TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/queue.gif" alt="">

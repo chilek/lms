@@ -40,6 +40,7 @@ version ?.??.?? (????-??-??):
     configuration variable controls if it is enabled ('false' by default) [chilan]
   - enhancement: allow to print transfer forms from customer balance box [chilan]
   - improvement: allow to define ticket verifier [interduo]
+  - improvement: allow to define ticket deadline [interduo]
 
 version 1.11.23 (2018-03-21):
 
