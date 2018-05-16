@@ -205,7 +205,7 @@ if(isset($_POST['message']))
 			'state' => $message['state'],
 			'source' => $message['source'],
 			'priority' => $message['priority'],
-			'verifierid' => $message['verifierid'],
+			'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
 			'deadline' => $message['deadline'],
 		);
 		$LMS->TicketChange($message['ticketid'], $props);

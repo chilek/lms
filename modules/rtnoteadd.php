@@ -89,7 +89,7 @@ elseif(isset($_POST['note']))
 			'state' => $note['state'],
 			'source' => $note['source'],
 			'priority' => $note['priority'],
-			'verifierid' => $note['verifierid'],
+			'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
 			'deadline' => $note['deadline'],
 		);
 		$LMS->TicketChange($note['ticketid'], $props);
