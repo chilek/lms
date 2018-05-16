@@ -44,14 +44,14 @@ if(isset($_POST['ticket']))
 	$queue = $ticket['queue'];
 
 	if(!empty($ticket['verifierid']) && ($ticket['verifierid'] == $ticket['owner'])) {
-		$error['verifierid'] = trans("Ticket owner could not be the same as verifier.");
-		$error['owner'] = trans("Ticket verifier could not be the same as owner.");
+		$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
+		$error['owner'] = trans("Ticket verifier could not be the same as owner");
 	};
 
 	if(!empty($ticket['deadline'])) {
 		$dtime = datetime_to_timestamp($ticket['deadline']);
 		if($dtime < time())
-			$error['deadline'] = trans("Ticket deadline could not be set in the past.");
+			$error['deadline'] = trans("Ticket deadline could not be set in the past");
 	}
 
 	if($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid'])

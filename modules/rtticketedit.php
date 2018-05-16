@@ -168,13 +168,13 @@ if(isset($_POST['ticket']))
         if(!empty($ticketedit['verifierid']))
 	{
 		if ($ticketedit['verifierid'] == $ticketedit['owner']) {
-			$error['verifierid'] = trans("Ticket owner could not be the same as verifier.");
-			$error['owner'] = trans("Ticket verifier could not be the same as owner.");
+			$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
+			$error['owner'] = trans("Ticket verifier could not be the same as owner");
 		};
 	};
 	if (!empty($dtime)) {
 		if ($dtime < time())
-			$error['deadline'] = trans("Ticket deadline could not be set in past.");
+			$error['deadline'] = trans("Ticket deadline could not be set in past");
 	};
 
 	if(!count($ticketedit['categories']))
