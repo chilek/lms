@@ -1720,7 +1720,7 @@ CREATE TABLE rttickets (
   netnodeid int(11) DEFAULT NULL,
   netdevid int(11) DEFAULT NULL,
   verifierid int(11) DEFAULT NULL,
-  deadlinetime int(11) DEFAULT NULL,
+  deadline int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),

@@ -205,6 +205,8 @@ if(isset($_POST['message']))
 			'state' => $message['state'],
 			'source' => $message['source'],
 			'priority' => $message['priority'],
+			'verifierid' => $message['verifierid'],
+			'deadline' => $message['deadline'],
 		);
 		$LMS->TicketChange($message['ticketid'], $props);
 
@@ -324,7 +326,8 @@ else
 {
 	if ($_GET['ticketid']) {
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
-		$message = $DB->GetRow('SELECT id AS ticketid, subject, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($_GET['ticketid']));
+		$message = $DB->GetRow('SELECT id AS ticketid, subject, state, cause, queueid, owner, verifierid, deadline
+			FROM rttickets WHERE id = ?', array($_GET['ticketid']));
 		if ($queue['newmessagesubject'] && $queue['newmessagebody'])
 			$message['customernotify'] = 1;
 		if (ConfigHelper::checkConfig('phpui.helpdesk_notify'))
@@ -385,6 +388,8 @@ $SMARTY->assign('ticket', $ticket);
 if (!isset($_POST['message'])) {
 	$message['source'] = $ticket['source'];
 	$message['priority'] = $ticket['priority'];
+	$message['verifierid'] = $ticket['verifierid'];
+	$message['deadline'] = $ticket['deadline'];
 }
 
 $SMARTY->assign('message', $message);

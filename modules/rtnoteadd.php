@@ -89,6 +89,8 @@ elseif(isset($_POST['note']))
 			'state' => $note['state'],
 			'source' => $note['source'],
 			'priority' => $note['priority'],
+			'verifierid' => $note['verifierid'],
+			'deadline' => $note['deadline'],
 		);
 		$LMS->TicketChange($note['ticketid'], $props);
 
@@ -195,6 +197,8 @@ $SMARTY->assign('ticket', $ticket);
 if (!isset($_POST['note'])) {
 	$note['source'] = $ticket['source'];
 	$note['priority'] = $ticket['priority'];
+	$note['verifierid'] = $ticket['verifierid'];
+	$note['deadline'] = $ticket['deadline'];
 }
 
 $SMARTY->assign('note', $note);
