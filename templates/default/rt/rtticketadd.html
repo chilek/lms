@@ -160,7 +160,7 @@
                         {trans("Deadline time:")}
                 </TD>
                 <TD style="width: 99%;">
-			<INPUT TYPE="TEXT" NAME="ticket[deadlinetime]" class="calendar-time" VALUE="{$ticket.deadlinetime|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline time in YYYY/MM/DD HH:MM format or click to select it from applet" trigger="deadlinetime"}>
+			<INPUT TYPE="TEXT" NAME="ticket[deadlinetime]" VALUE="{$ticket.deadlinetime|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline time in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadlinetime"}>
                 </TD>
         </TR>
 	<TR>

@@ -772,7 +772,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                            $props['verifierid'] = $ticket['verifierid'];
 
         if($ticket['deadlinetime'] != $props['deadlinetime'] && isset($props['deadlinetime'])) {
-            $notes[] = trans('Ticket deadline has been set to $a.', $props['deadlinetime']);
+            $notes[] = trans('Ticket deadline has been set to $a:', $props['deadlinetime']);
             $type = $type | RTMESSAGE_DEADLINE_CHANGE;
             $props['deadlinetime'] = datetime_to_timestamp($props['deadlinetime']);
         } else
