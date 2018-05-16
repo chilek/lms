@@ -140,32 +140,32 @@
 									{/if}
 								</TD>
 							</TR>
-                                                        <TR>
-                                                                <TD style="width: 1%;" class="bold nobr">
-                                                                        <IMG src="img/users.gif" alt="">
-                                                                        {trans("Verifier:")}
-                                                                </TD>
-                                                                <TD style="width: 99%;">
-                                                                        {if $ticket.verifierid}
-                                                                        <A href="?m=userinfo&id={$ticket.verifierid}">{$ticket.verifier_username}</A>
-                                                                        {else}
-                                                                        {trans("none")}
-                                                                        {/if}
-                                                                </TD>
-                                                        </TR>
-                                                        <TR>
-                                                                <TD style="width: 1%;" class="bold nobr">
-                                                                        <IMG src="img/calendar.gif" alt="">
-                                                                        {trans("Deadline time:")}
-                                                                </TD>
-                                                                <TD style="width: 99%;">
-								{if $ticket.deadlinetime}
-									{$ticket.deadlinetime|date_format:"%Y/%m/%d %H:%M:%S"}
-								{else}
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/verifier.png" alt="">
+									{trans("Verifier:")}
+								</TD>
+								<TD style="width: 99%;">
+									{if $ticket.verifierid}
+									<A href="?m=userinfo&id={$ticket.verifierid}">{$ticket.verifier_username}</A>
+									{else}
 									{trans("none")}
-								{/if}
-                                                                </TD>
-                                                        </TR>
+									{/if}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/calendar.gif" alt="">
+									{trans("Deadline:")}
+								</TD>
+								<TD style="width: 99%;">
+									{if $ticket.deadline}
+										{$ticket.deadline|date_format:"%Y/%m/%d %H:%M:%S"}
+									{else}
+										{trans("none")}
+									{/if}
+								</TD>
+							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<IMG src="img/queue.gif" alt="">
