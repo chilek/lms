@@ -346,7 +346,14 @@ switch($action)
 		$iid   = $invoice['id'];
 
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions'));
+		$tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
+			'customerview', 'customercontacts', 'netdevices', 'nodes',
+			'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata');
+		if (ConfigHelper::getConfig('database.type') == 'postgres')
+			$tables = array_merge($tables, array('customers', 'customer_addresses'));
+		else
+			$tables = array_merge($tables, array('customers cv', 'customer_addresses ca'));
+		$DB->LockTables($tables);
 
 		$use_current_customer_data = isset($invoice['use_current_customer_data']) || $invoice['customerid'] != $customerid;
 		if ($use_current_customer_data)
