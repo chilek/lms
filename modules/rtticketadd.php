@@ -122,10 +122,10 @@ if(isset($_POST['ticket']))
 		if (empty($ticket['verifierid']))
 			$ticket['verifierid'] = null;
 
-		if (empty($ticket['deadlinetime']))
-			$ticket['deadlinetime'] = null;
+		if (empty($ticket['deadline']))
+			$ticket['deadline'] = null;
 		else
-			$ticket['deadlinetime'] = datetime_to_timestamp($ticket['deadlinetime']);
+			$ticket['deadline'] = datetime_to_timestamp($ticket['deadline']);
 
 		if (!empty($files)) {
 			foreach ($files as &$file)

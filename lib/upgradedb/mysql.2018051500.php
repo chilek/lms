@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE rttickets ADD COLUMN deadlinetime int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE rttickets ADD COLUMN deadline int(11) DEFAULT NULL");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018051500', 'dbversion'));
 
 $this->CommitTrans();

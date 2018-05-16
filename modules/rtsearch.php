@@ -120,7 +120,7 @@ function RTSearch($search, $order='createtime,desc')
 		$where[] = 't.verifierid = '.intval($search['verifierid']);
 
 	if(!empty($search['expired']))
-		$where[] = 't.deadlinetime < ?NOW?';
+		$where[] = 't.deadline < ?NOW?';
 
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
@@ -130,7 +130,7 @@ function RTSearch($search, $order='createtime,desc')
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
 			END AS requestor, t.requestor AS req, t.createtime,
 			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
-			t.priority, t.verifierid, t.deadlinetime
+			t.priority, t.verifierid, t.deadline
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid

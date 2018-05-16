@@ -138,6 +138,29 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/verifier.png" alt="">
+			{trans("Verifier:")}
+		</TD>
+		<TD>
+			<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"}>
+				<OPTION value="0">- {trans("select user")} -</OPTION>
+				{foreach $userlist as $user}
+				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.verifierid} selected{/if}>{$user.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/calendar.gif" alt="">
+			{trans("<!rt>Deadline:")}
+		</TD>
+		<TD>
+			<INPUT TYPE="TEXT" NAME="note[deadline]" VALUE="{$note.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+		</TD>
+	</TR>
     </TBODY>
 </TABLE>
 </FORM>
