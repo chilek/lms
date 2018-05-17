@@ -1,0 +1,6 @@
+<SELECT size="1" name="ticket[verifierid]" {tip text="Select user" trigger="verifierid"}>
+	<OPTION value="">- {trans("select user")} -</OPTION>
+	{foreach $userlist as $user}
+	<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}>{$user.rname}</OPTION>
+	{/foreach}
+</SELECT>

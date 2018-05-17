@@ -78,8 +78,23 @@ function netnode_changed($netnodeid, $netdevid) {
 	return $JSResponse;
 }
 
+function queue_changed($queue, $verifierid) {
+    global $LMS;
+
+    $JSResponse = new xajaxResponse();
+    if(empty($queue))
+        return $JSResponse;
+
+    $verifierid = $LMS->GetQueueVerifier($queue);
+    if(empty($verifierid))
+        return $JSResponse;
+
+    $JSResponse->call('update_queue', array_values($queue));
+    return $JSResponse;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed'));
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

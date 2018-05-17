@@ -1490,6 +1490,12 @@ class LMS
         return $manager->GetQueueIdByName($id);
     }
 
+    public function GetQueueVerifier($id)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetQueueVerifier($id);
+    }
+
     public function GetQueueNameByTicketId($id)
     {
         $manager = $this->getHelpdeskManager();

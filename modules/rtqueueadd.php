@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+$userlist = $LMS->getUserList();
+unset($userlist['total']);
 
 if(isset($_POST['queue']))
 {
@@ -71,12 +73,13 @@ if(isset($_POST['queue']))
 
 	if (!$error) {
 		$DB->Execute('INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, verifierid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(trim($queue['name']), $queue['email'], $queue['description'],
 					$queue['newticketsubject'], $queue['newticketbody'],
 					$queue['newmessagesubject'], $queue['newmessagebody'],
-					$queue['resolveticketsubject'], $queue['resolveticketbody']));
+					$queue['resolveticketsubject'], $queue['resolveticketbody'],
+					!empty($queue['verifierid']) ? $queue['verifierid'] : NULL ));
 
 		$id = $DB->GetLastInsertId('rtqueues');
 
@@ -111,6 +114,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueueadd.html');
 

@@ -46,6 +46,8 @@ interface LMSHelpdeskManagerInterface
 
     public function GetQueueIdByName($queue);
 
+    public function GetQueueVerifier($id);
+
     public function GetQueueName($id);
 
     public function GetQueueEmail($id);

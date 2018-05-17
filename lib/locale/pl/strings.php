@@ -30,6 +30,7 @@ $_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
 $_LANG['Ticket deadline has been set to $a:'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a:';
 $_LANG['Verifier:'] = 'Weryfikator:';
+$_LANG['Queue Verifier:'] = 'Weryfikator kolejki:';
 $_LANG['Unassigned'] = 'Nieprzypisany';
 $_LANG['Requestor:'] = 'Zgłaszający';
 $_LANG['documents'] = 'dokumenty';
