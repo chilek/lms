@@ -375,6 +375,7 @@ CREATE TABLE documents (
 	fullnumber varchar(50)	DEFAULT NULL,
 	cancelled smallint	DEFAULT 0 NOT NULL,
 	published smallint	DEFAULT 0 NOT NULL,
+	comment text DEFAULT NULL,
 	cuserid integer		DEFAULT NULL
 		CONSTRAINT documents_cuserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_address_id integer DEFAULT NULL
@@ -3400,6 +3401,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018051500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018052000');
 
 COMMIT;

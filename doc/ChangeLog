@@ -42,6 +42,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to define ticket verifier [interduo]
   - improvement: allow to define ticket deadline [interduo]
   - enhancement: introduced quick search for netnode and netdev [interduo]
+  - improvement: added optional invoice comment [interduo]
 
 version 1.11.23 (2018-03-21):
 

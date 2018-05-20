@@ -490,6 +490,7 @@ CREATE TABLE documents (
 	fullnumber varchar(50) DEFAULT NULL,
 	cancelled smallint DEFAULT 0 NOT NULL,
 	published tinyint(1) NOT NULL DEFAULT 0,
+	comment text DEFAULT NULL,
 	cuserid int(11) DEFAULT NULL,
 	recipient_address_id int(11),
 	post_address_id int(11),
@@ -3379,4 +3380,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018051500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018052000');

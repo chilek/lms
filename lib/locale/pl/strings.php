@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+$_LANG['Comments:'] = 'Komentarz:';
+$_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['Ticket deadline could not be set in past'] = 'Termin ostateczny nie może być datą minioną';
 $_LANG['Ticket owner could not be the same as verifier'] = 'Właściciel zgłoszenia nie może być weryfikatorem';
 $_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłoszenia nie może być właścicielem';

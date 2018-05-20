@@ -178,6 +178,12 @@
 			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
 		</td>
 	</tr>
+    <tr>
+        <td class="bold">{trans("Comments:")}</td>
+        <td>
+            <TEXTAREA NAME="invoice[comment]" ROWS="4" COLS="50" {tip text="Enter invoice comment"}>{$invoice.comment}</TEXTAREA>
+        </td>
+    </tr>
 	<TR>
 		<TD class="buttons" colspan="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
