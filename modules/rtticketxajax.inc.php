@@ -89,7 +89,7 @@ function queue_changed($queue, $verifierid) {
     if(empty($verifierid))
         return $JSResponse;
 
-    $JSResponse->call('update_queue', array_values($queue));
+    $JSResponse->call('update_queue', $queue);
     return $JSResponse;
 }
 

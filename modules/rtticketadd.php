@@ -315,11 +315,6 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-if (isset($ticket['queueid']) && !empty($ticket['verifierid']))
-    $verifierid = array('verifierid' => $ticket['verifierid']);
-else
-    $verifierid = array();
-
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $queuelist);
