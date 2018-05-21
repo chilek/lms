@@ -644,6 +644,20 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
   background-image: url(node_off.gif);
 }
+.lms-ui-suggestion-name.lms-ui-suggestion-netnode::before {
+  content: "";
+  padding-right: 17px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(netnode.png);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-netdevice::before {
+  content: "";
+  padding-right: 17px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(netdev.gif);
+}
 .lms-ui-suggestion-name.lms-ui-suggestion-customer-status-connected::before {
   content: "";
   padding-right: 17px;
