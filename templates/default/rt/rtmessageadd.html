@@ -177,7 +177,9 @@
 			<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
 				<OPTION value="0">- {trans("select user")} -</OPTION>
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.owner} selected{/if}>{$user.name}</OPTION>
+				{if ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access}
+				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.owner} selected{/if}>{$user.rname}</OPTION>
+				{/if}
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -191,7 +193,9 @@
 			<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
 				<OPTION value="0">- {trans("select user")} -</OPTION>
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.name}</OPTION>
+				{if ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access}
+				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.rname}</OPTION>
+				{/if}
 				{/foreach}
 			</SELECT>
 		</TD>
