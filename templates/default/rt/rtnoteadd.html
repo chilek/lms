@@ -133,7 +133,7 @@
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
 				<OPTION value="0">- {trans("select user")} -</OPTION>
 				{foreach $userlist as $user}
-				{if ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access}
+				{if (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access) || $user.id == $note.owner}
 				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.owner} selected{/if}>{$user.rname}</OPTION>
 				{/if}
 				{/foreach}
@@ -149,7 +149,7 @@
 			<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"}>
 				<OPTION value="0">- {trans("select user")} -</OPTION>
 				{foreach $userlist as $user}
-				{if ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access}
+				{if (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access) || $user.id == $note.verifierid}
 				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $note.verifierid} selected{/if}>{$user.rname}</OPTION>
 				{/if}
 				{/foreach}

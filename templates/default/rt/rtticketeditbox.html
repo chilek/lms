@@ -95,7 +95,7 @@
 										<OPTION value="0" SELECTED>- {trans("select user")} -</OPTION>
 										{/if}
 										{foreach $userlist as $user}
-										{if ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access}
+										{if (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access) || $user.id == $ticket.owner}
 										<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.rname}</OPTION>
 										{/if}
 										{/foreach}
@@ -111,7 +111,7 @@
 									<SELECT size="1" name="ticket[verifierid]" {tip text="Select user" trigger="verifierid"}>
 										<OPTION value="0">- {trans("select user")} -</OPTION>
 										{foreach $userlist as $user}
-										{if ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access}
+										{if (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access) || $user.id == $ticket.verifierid}
 										<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.verifierid} selected{/if}>{$user.rname}</OPTION>
 										{/if}
 										{/foreach}
