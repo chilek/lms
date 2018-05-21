@@ -387,7 +387,7 @@ switch ($mode) {
                         if ($candidates) {
                                 foreach ($candidates as $idx => $row) {
                                         $name = truncate_str($row['name'], 50);
-                                        $name_classes = array();
+                                    	$name_class = 'lms-ui-suggestion-netnode';
 
                                         $description = '';
                                         $description_class = '';
@@ -423,7 +423,7 @@ switch ($mode) {
                         if ($candidates) {
                                 foreach ($candidates as $idx => $row) {
                                         $name = truncate_str($row['name'], 50);
-                                        $name_classes = array();
+                                        $name_class = 'lms-ui-suggestion-netdevice';
 
                                         $description = '';
                                         $description_class = '';
