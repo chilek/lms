@@ -373,7 +373,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
-	." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, value DESC";
+	." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, value DESC";
 $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
@@ -444,7 +444,7 @@ $query = "SELECT
 		   a.datefrom <= ? AND
 		  (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
-	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, voipcost.value DESC";
+	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, a.separatedocument, voipcost.value DESC";
 
 $billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, TARIFF_PHONE,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
