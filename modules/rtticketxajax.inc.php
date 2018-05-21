@@ -79,7 +79,7 @@ function netnode_changed($netnodeid, $netdevid) {
 }
 
 function queue_changed($queue, $verifierid) {
-    global $LMS;
+    global $LMS, $SMARTY;
 
     $JSResponse = new xajaxResponse();
     if(empty($queue))
