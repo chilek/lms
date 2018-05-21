@@ -85,11 +85,14 @@ function queue_changed($queue, $verifierid) {
     if(empty($queue))
         return $JSResponse;
 
-    $verifierid = $LMS->GetQueueVerifier($queue);
-    if(empty($verifierid))
+    $vid = $LMS->GetQueueVerifier($queue);
+    if(empty($vid))
         return $JSResponse;
 
-    $JSResponse->call('update_queue', $queue);
+    $SMARTY->assign('ticket', array('verifierid' => $vid));
+	$content = $SMARTY->fetch('rt/rtverifiers.html');
+
+	$JSResponse->assign(rtticketverifiers, 'innerHTML', $content);
     return $JSResponse;
 }
 
