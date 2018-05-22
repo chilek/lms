@@ -78,7 +78,7 @@ function netnode_changed($netnodeid, $netdevid) {
 	return $JSResponse;
 }
 
-function queue_changed($queue, $verifierid) {
+function queue_changed($queue) {
     global $LMS, $SMARTY;
 
     $JSResponse = new xajaxResponse();
@@ -86,13 +86,17 @@ function queue_changed($queue, $verifierid) {
         return $JSResponse;
 
     $vid = $LMS->GetQueueVerifier($queue);
+
     if(empty($vid))
         return $JSResponse;
 
-    $SMARTY->assign('ticket', array('verifierid' => $vid));
-	$content = $SMARTY->fetch('rt/rtverifiers.html');
+    $userlist = $LMS->GetUserNames();
 
-	$JSResponse->assign(rtticketverifiers, 'innerHTML', $content);
+    $SMARTY->assign('userlist', $userlist);
+    $SMARTY->assign('ticket', array('verifierid'=>$vid));
+    $content = $SMARTY->fetch('rt/rtverifiers.html');
+
+	$JSResponse->assign('rtverifiers','innerHTML', $content);
     return $JSResponse;
 }
 

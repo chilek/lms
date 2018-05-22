@@ -147,8 +147,8 @@
 			<IMG src="img/verifier.png" alt="">
 			{trans("Verifier:")}
 		</TD>
-		<TD style="width: 99%;" id="rtticketverifiers">
-			{include file="rt/rtverifiers.html" form="ticket2"}
+		<TD style="width: 99%;" id="rtverifiers">
+			{include file="rt/rtverifiers.html"}
 		</TD>
 	</TR>
 	<TR>
@@ -166,7 +166,7 @@
 			{trans("Queue:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtticketverifiers').val())">
+			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 				{foreach from=$queuelist item=item}
 				<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
 				{/foreach}
