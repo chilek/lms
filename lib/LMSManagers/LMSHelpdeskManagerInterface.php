@@ -34,7 +34,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetQueue($id);
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = 0, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL);
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = 0, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL, $deadline = NULL);
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL);
 
