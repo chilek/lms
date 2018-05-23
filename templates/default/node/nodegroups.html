@@ -59,7 +59,7 @@
 					</TD>
 					<TD COLSPAN="3">
 						{if !empty($othernodegroups)}
-						<SELECT SIZE="1" NAME="nodegroupid[]" class="lms-ui-multiselect" {tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}">
+						<SELECT SIZE="1" NAME="nodegroupid[]" class="lms-ui-multiselect" {tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}" data-shorten-to-default-value="false">
 							{foreach $othernodegroups as $item}
 							<OPTION VALUE="{$item.id}">{$item.name} ({$item.id|string_format:"%04d"})</OPTION>
 							{/foreach}

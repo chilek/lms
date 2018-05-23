@@ -181,7 +181,7 @@ $(function() {
 		</TD>
 
 		<TD style="width: 98%;" class="multiselect nobr">
-			<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}">
+			<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 				{foreach $userlist as $user}
 				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</OPTION>
 				{/foreach}
