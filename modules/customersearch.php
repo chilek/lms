@@ -105,8 +105,9 @@ $SESSION->save('csld', $division);
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
-	$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division"));
-	
+	$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search",
+		"time", "sqlskey", "nodegroup", "division", "balance", "balance_relation"));
+
 	$listdata['total'] = $customerlist['total'];
 	$listdata['direction'] = $customerlist['direction'];
 	$listdata['order'] = $customerlist['order'];

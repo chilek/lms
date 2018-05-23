@@ -3907,4 +3907,7 @@ $_LANG['<!transferform>assignments'] = 'zobowiązania';
 $_LANG['<!transferform>balance'] = 'saldo';
 $_LANG['<!transferform>custom'] = 'dowolne';
 
+$_LANG['less or equal'] = 'mniejsze lub równe';
+$_LANG['greater or equal'] = 'większe lub równe';
+
 ?>

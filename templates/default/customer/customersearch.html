@@ -335,6 +335,22 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD class="bold nobr">
+			<img src="img/money.gif" alt=""> {trans("Balance:")}
+		</TD>
+		<TD>
+			<label>
+				<input type="radio" name="search[balance_relation]" value="-1" checked>
+				{trans("less or equal")}
+			</label>
+			<label>
+				<input type="radio" name="search[balance_relation]" value="1">
+				{trans("greater or equal")}
+			</label>
+			&nbsp;<input type="text" name="search[balance]" size="7">
+		</TD>
+	</TR>
+	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/network.gif" alt=""> {trans("Network:")}
 		</TD>
