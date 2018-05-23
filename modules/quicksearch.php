@@ -412,10 +412,11 @@ switch ($mode) {
 	case 'netdevice':
                 if(isset($_GET['ajax'])) // support for AutoSuggest
                 {
-                        $candidates = $DB->GetAll("SELECT id, name FROM netdevices
+                        $candidates = $DB->GetAll("SELECT id, name, serialnumber FROM netdevices
                                 WHERE 
-				".(preg_match('/^[0-9]+$/', $sql_search) ? 'id = '.intval($sql_search).' OR ' : '')."
-				LOWER(name) ?LIKE? LOWER($sql_search)
+					".(preg_match('/^[0-9]+$/', $sql_search) ? 'id = '.intval($sql_search).' OR ' : '')."
+						LOWER(name) ?LIKE? LOWER($sql_search)
+						OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)
                                 ORDER by name
                                 LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
@@ -429,8 +430,13 @@ switch ($mode) {
                                         $description_class = '';
                                         $action = '?m=netdevinfo&id=' . $row['id'];
 
-                                        if (preg_match("~^$search\$~i", $row['id']))
+                                        if (preg_match("~^$search\$~i", $row['id'])) {
                                                 $description = trans('Id:') . ' ' . $row['id'];
+										} else if (preg_match("~$search~i", $row['name'])) {
+											$description = trans('Name') . ': ' . $row['name'];
+										} else if (preg_match("~$search~i", $row['serialnumber'])) {
+											$description = trans('Serial number:') . ' ' . $row['serialnumber'];
+										}
 
                                         $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                                 }
