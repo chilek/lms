@@ -644,19 +644,19 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
   background-image: url(node_off.gif);
 }
-.lms-ui-suggestion-name.lms-ui-suggestion-netnode::before {
-  content: "";
-  padding-right: 17px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url(netnode.png);
-}
 .lms-ui-suggestion-name.lms-ui-suggestion-netdevice::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
   background-image: url(netdev.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-netnode::before {
+  content: "";
+  padding-right: 17px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(netnode.png);
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-customer-status-connected::before {
   content: "";
@@ -718,6 +718,21 @@ li.lms-ui-suggestion-item a {
   margin-right: 2px;
   color: brown;
   padding-left: 20px;
+}
+.lms-ui-customer-status-connected {
+  color: black;
+}
+.lms-ui-customer-status-awaiting {
+  color: green;
+}
+.lms-ui-customer-status-interested {
+  color: black;
+}
+.lms-ui-customer-status-disconnected {
+  text-decoration-line: line-through;
+}
+.lms-ui-customer-status-debt-collection {
+  color: red;
 }
 #autosuggest {
   display: none;

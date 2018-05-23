@@ -542,6 +542,24 @@ li.lms-ui-suggestion-item {
 	padding-left: 20px;
 }
 
+.lms-ui-customer-status {
+	&-connected {
+		color: black;
+	}
+	&-awaiting {
+		color: green;
+	}
+	&-interested {
+		color: black;
+	}
+	&-disconnected {
+		text-decoration-line: line-through;
+	}
+	&-debt-collection {
+		color: red;
+	}
+}
+
 #autosuggest { display: none; z-index: 10000; }
 
 .acl		{ list-style-type: square; }
