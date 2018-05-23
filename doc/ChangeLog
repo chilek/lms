@@ -44,6 +44,7 @@ version ?.??.?? (????-??-??):
   - enhancement: introduced quick search for netnode and netdev [interduo]
   - improvement: phpui.helpdesk_hide_disabled_users configuration variable controls if
     disabled users are shown in user lists used in helpdesk forms [chilan]
+  - improvement: allow to search customers with selected balance relation and value [chilan]
 
 version 1.11.23 (2018-03-21):
 
