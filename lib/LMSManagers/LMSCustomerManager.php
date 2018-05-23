@@ -657,6 +657,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							AND (a.dateto >= ?NOW? OR a.dateto = 0)
 							AND (t.type = ' . intval($value) . '))';
                             break;
+						case 'balance':
+						case 'balance_relation':
+							if ($key == 'balance' && isset($search['balance_relation'])) {
+								$balance_relation = intval($search['balance_relation']);
+								$searchargs[] = 'b.value' . ($balance_relation == -1 ? '<=' : '>=') . ' ' . floatval($value);
+							}
+							break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }

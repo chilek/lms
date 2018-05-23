@@ -1656,6 +1656,8 @@ CREATE TABLE rtqueues (
   deltime integer	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
 	CONSTRAINT rtqueues_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  verifierid integer DEFAULT NULL
+    CONSTRAINT rtqueues_verifierid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   PRIMARY KEY (id),
   UNIQUE (name)
 );

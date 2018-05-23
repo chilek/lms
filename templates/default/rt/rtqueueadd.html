@@ -48,6 +48,20 @@
 									<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 								</TD>
 							</TR>
+                            <TR>
+                                <TD style="width: 1%;" class="bold nobr">
+                                    <IMG src="img/verifier.png" alt="">
+                                </TD>
+								<TD style="width: 1%;" class="bold">{trans("<!rt>Verifier:")}</TD>
+                                <TD style="width: 99%;">
+                                    <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
+                                        <OPTION value="">- {trans("select user")} -</OPTION>
+                                        {foreach $userlist as $user}
+                                        <OPTION value="{$user.id}" {if $user.id == $queue[verifierid]} selected{/if}>{$user.name}</OPTION>
+                                        {/foreach}
+                                    </SELECT>
+                                </TD>
+                            </TR>
 							<TR>
 								<TD style="width: 1%;">
 									<IMG src="img/users.gif" ALT="">

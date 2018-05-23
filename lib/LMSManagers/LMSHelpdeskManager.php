@@ -35,6 +35,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetQueue($id)
     {
         if ($queue = $this->db->GetRow('SELECT * FROM rtqueues WHERE id=?', array($id))) {
+            $queue['verifier'] = $this->db->GetRow('SELECT id,name FROM vusers WHERE id=(SELECT verifierid FROM rtqueues WHERE id=?)', array($id));
             $users = $this->db->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
             foreach ($users as $user) {
                 $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
@@ -49,7 +50,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL) {
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL, $deadline = NULL) {
 		if (!$order)
 			$order = 'createtime,desc';
 
@@ -81,6 +82,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 			case 'priority':
 				$sqlord = ' ORDER BY t.priority';
+				break;
+			case 'deadline':
+				$sqlord = ' ORDER BY t.deadline';
 				break;
 			default:
 				$sqlord = ' ORDER BY t.createtime';
@@ -146,9 +150,27 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 		}
 
+	if (!empty($deadline)) {
+		switch ($deadline) {
+			case '1':
+				$deadlinefilter = ' AND t.deadline IS NOT NULL';
+				break;
+			case '-1':
+				$deadlinefilter = ' AND t.deadline IS NULL';
+				break;
+			case '-2':
+				$deadlinefilter = ' AND t.deadline < ?NOW?';
+				break;
+			default:
+				$deadlinefilter = '';
+				break;
+	}
+	} else
+		$deadlinefilter = '';
+
 		if ($result = $this->db->GetAll(
 			'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
-				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.requestor_userid,
+				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid,
 				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
 			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
@@ -188,6 +210,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $removedfilter
 			. $netdevidsfilter
 			. $netnodeidsfilter
+			. $deadlinefilter
 			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
@@ -217,6 +240,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$result['owner'] = $owner;
 		$result['removed'] = $removed;
 		$result['priority'] = $priority;
+		$result['deadline'] = $deadline;
 
 		return $result;
 	}
@@ -268,6 +292,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetQueueIdByName($queue)
     {
         return $this->db->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue));
+    }
+
+    public function GetQueueVerifier($id)
+    {
+        return $this->db->GetOne('SELECT verifierid FROM rtqueues WHERE id=?', array($id));
     }
 
     public function GetQueueNameByTicketId($id)

@@ -107,6 +107,12 @@ else
 	$r = $_GET['r'];
 	$SESSION->save('rtr', $r);
 
+if(!isset($_GET['d']))
+    $SESSION->restore('rtd', $deadline);
+else
+    $deadline = $_GET['d'];
+$SESSION->save('rtd', $deadline);
+
 if (isset($_GET['s'])) {
 	if (is_array($_GET['s']))
 		$s = $_GET['s'];
@@ -140,7 +146,7 @@ else {
 $SESSION->save('rtprio', $priority);
 
 $layout['pagetitle'] = trans('Tickets List');
-$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $priority, $owner, $queuedata['catid'], $r);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $priority, $owner, $queuedata['catid'], $r, null, null, $deadline);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -154,6 +160,7 @@ $queuedata['order'] = $queue['order'];
 $queuedata['direction'] = $queue['direction'];
 $queuedata['owner'] = $queue['owner'];
 $queuedata['removed'] = $queue['removed'];
+$queuedata['deadline'] = $queue['deadline'];
 
 unset($queue['total']);
 unset($queue['state']);
@@ -162,6 +169,7 @@ unset($queue['order']);
 unset($queue['direction']);
 unset($queue['owner']);
 unset($queue['removed']);
+unset($queue['deadline']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);

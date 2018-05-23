@@ -72,12 +72,13 @@ if(isset($_POST['queue']))
 		$DB->Execute('UPDATE rtqueues SET name=?, email=?, description=?,
 				newticketsubject=?, newticketbody=?,
 				newmessagesubject=?, newmessagebody=?,
-				resolveticketsubject=?, resolveticketbody=? WHERE id=?',
+				resolveticketsubject=?, resolveticketbody=?, verifierid=? WHERE id=?',
 				array(trim($queue['name']),
 					$queue['email'], $queue['description'],
 					$queue['newticketsubject'], $queue['newticketbody'],
 					$queue['newmessagesubject'], $queue['newmessagebody'],
 					$queue['resolveticketsubject'], $queue['resolveticketbody'],
+					!empty($queue['verifierid']) ? $queue['verifierid'] : NULL,
 					$queue['id']));
 
 		$DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
@@ -113,11 +114,15 @@ if(isset($_POST['queue']))
 	unset($category);
 }
 
+$userlist = $LMS->getUserList();
+unset($userlist['total']);
+
 $layout['pagetitle'] = trans('Queue Edit: $a', $queue['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
+$SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueueedit.html');

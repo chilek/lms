@@ -147,15 +147,8 @@
 			<IMG src="img/verifier.png" alt="">
 			{trans("Verifier:")}
 		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[verifierid]" {tip text="Select user" trigger="verifierid"}>
-				<OPTION value="0">- {trans("select user")} -</OPTION>
-				{foreach $userlist as $user}
-				{if (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access) || $user.id == $ticket.verifierid}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.verifierid} selected{/if}>{$user.rname}</OPTION>
-				{/if}
-				{/foreach}
-			</SELECT>
+		<TD style="width: 99%;" id="rtverifiers">
+			{include file="rt/rtverifiers.html"}
 		</TD>
 	</TR>
 	<TR>
@@ -173,7 +166,7 @@
 			{trans("Queue:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"}>
+			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 				{foreach from=$queuelist item=item}
 				<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
 				{/foreach}

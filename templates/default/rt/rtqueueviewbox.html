@@ -70,6 +70,17 @@
 		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
 		<span class="brown">
 		{/if}
+		{if $queue[ticket].deadline}{$queue[ticket].deadline|date_format:"%Y/%m/%d %H:%M"|default:"-"}{else}-{/if}<br>
+		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
+		</span>
+		{/if}
+	</TD>
+	<TD class="nobr">
+		{if $queue[ticket].state == $smarty.const.RT_NEW}
+		<span class="red">
+		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
+		<span class="brown">
+		{/if}
 		{if $queue[ticket].ownername}{$queue[ticket].ownername|truncate:25:"...":true}{else}-{/if}<br>
 		{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}

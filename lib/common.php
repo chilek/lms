@@ -581,12 +581,6 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
 	$result = str_replace('%I', $ext_num, $result);
 
 	// main document number
-	// code for php < 5.3
-/*
-	$result = preg_replace_callback('/%(\\d*)N/',
-		create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);"),
-		$result);
-*/
 	$result = preg_replace_callback('/%(\\d*)N/',
 		function ($m) use ($number) {
 			return sprintf('%0' . $m[1] . 'd', $number);
@@ -655,7 +649,9 @@ function qp_encode($string) {
 
 	$encoded = preg_replace_callback(
 		'/([\x2C\x3F\x80-\xFF])/',
-		create_function('$m', 'return "=".sprintf("%02X", ord($m[1]));'),
+		function($m) {
+			return '=' . sprintf("%02X", ord($m[1]));
+		},
 		$string);
 
 	// replace spaces with _

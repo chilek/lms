@@ -23,8 +23,12 @@
  *
  *  $Id$
  */
+
 $_LANG['Comments:'] = 'Komentarz:';
 $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
+$_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
+$_LANG['<!rt>Without deadline'] = '<!rt>Bez terminu ostatecznego';
+$_LANG['<!rt>With deadline'] = '<!rt>Z terminem ostatecznym';
 $_LANG['Ticket deadline could not be set in past'] = 'Termin ostateczny nie może być datą minioną';
 $_LANG['Ticket owner could not be the same as verifier'] = 'Właściciel zgłoszenia nie może być weryfikatorem';
 $_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłoszenia nie może być właścicielem';
@@ -32,6 +36,7 @@ $_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
 $_LANG['Ticket deadline has been set to $a:'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a:';
 $_LANG['Verifier:'] = 'Weryfikator:';
+$_LANG['<!rt>Verifier:'] = 'Weryfikator:';
 $_LANG['Unassigned'] = 'Nieprzypisany';
 $_LANG['Requestor:'] = 'Zgłaszający';
 $_LANG['documents'] = 'dokumenty';
@@ -275,7 +280,7 @@ $_LANG['Enter customer ID, first/lastname, email or address and press Enter'] = 
 $_LANG['Enter phone number and press Enter'] = 'Wprowadź numer telefonu i naciśnij Enter';
 $_LANG['Enter node ID, name, IP address or MAC address and press Enter'] = 'Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter';
 $_LANG['Enter netnode ID or name and press Enter'] = 'Wprowadź ID lub nazwę węzła i naciśnij Enter';
-$_LANG['Enter netdevice ID or name and press Enter'] = 'Wprowadź ID lub nazwę urządzenia i naciśnij Enter';
+$_LANG['Enter device ID, name oraz serial number and press Enter'] = 'Wprowadź ID, nazwę urządzenia lub numer seryjny i naciśnij Enter';
 $_LANG['Enter request tracker ID, subject or requestor name and press Enter'] = 'Wprowadź identyfikator zgłoszenia, temat lub nazwisko/nazwę zgłaszającego i naciśnij Enter';
 $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są wymagane dla zakresu DHCP!';
 $_LANG['Browse'] = 'Przeglądaj';
@@ -3908,5 +3913,8 @@ $_LANG['Transfer form:'] = 'Formularz przelewu:';
 $_LANG['<!transferform>assignments'] = 'zobowiązania';
 $_LANG['<!transferform>balance'] = 'saldo';
 $_LANG['<!transferform>custom'] = 'dowolne';
+
+$_LANG['less or equal'] = 'mniejsze lub równe';
+$_LANG['greater or equal'] = 'większe lub równe';
 
 ?>

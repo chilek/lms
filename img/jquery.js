@@ -88,6 +88,7 @@ function init_multiselects(selector) {
 			new multiselect({
 				id: $(this).uniqueId().attr('id'),
 				defaultValue: $(this).attr('data-default-value'),
+				shortenToDefaultValue: $(this).attr('data-shorten-to-default-value'),
 				type: $(this).attr('data-type'),
 				separator: $(this).attr('data-separator')
 			});
