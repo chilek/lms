@@ -378,7 +378,7 @@ switch ($mode) {
                 if(isset($_GET['ajax'])) // support for AutoSuggest
                 {
                         $candidates = $DB->GetAll("SELECT id, name FROM netnodes
-                                WHERE ".(preg_match('/^[0-9]+$/', $sql_search) ? 'id = '.intval($sql_search).' OR ' : '')."
+                                WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
 				LOWER(name) ?LIKE? LOWER($sql_search) 
                                 ORDER by name
                                 LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
@@ -407,14 +407,21 @@ switch ($mode) {
                         exit;
                 }
 
-        break;
+			if (is_numeric($search)) {
+				if ($netnodeid = $DB->GetOne('SELECT id FROM netnodes WHERE id = ' . $search)) {
+					$target = '?m=netnodeinfo&id=' . $netnodeid;
+					break;
+				}
+			}
+
+			break;
 
 	case 'netdevice':
                 if(isset($_GET['ajax'])) // support for AutoSuggest
                 {
                         $candidates = $DB->GetAll("SELECT id, name, serialnumber FROM netdevices
                                 WHERE 
-					".(preg_match('/^[0-9]+$/', $sql_search) ? 'id = '.intval($sql_search).' OR ' : '')."
+					".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
 						LOWER(name) ?LIKE? LOWER($sql_search)
 						OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)
                                 ORDER by name
@@ -449,7 +456,14 @@ switch ($mode) {
                         exit;
                 }
 
-	break;
+		if (is_numeric($search)) {
+			if ($netdevid = $DB->GetOne('SELECT id FROM netdevices WHERE id = ' . $search)) {
+				$target = '?m=netdevinfo&id=' . $netdevid;
+				break;
+			}
+		}
+
+		break;
 
 	case 'ticket':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
