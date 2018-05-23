@@ -59,7 +59,7 @@ function multiselect(options) {
 			selected.push($(this).html());
 		});
 		if (selected.length) {
-			if (shorten_to_def && def.length && selected.length == $('input', ul).length) {
+			if (def && shorten_to_def && def.length && selected.length == $('input', ul).length) {
 				selected = [ def ];
 			}
 		} else {
