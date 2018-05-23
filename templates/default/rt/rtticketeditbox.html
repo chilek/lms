@@ -108,14 +108,7 @@
 									{trans("Verifier:")}
 								</TD>
 								<TD style="width: 99%;">
-									<SELECT size="1" name="ticket[verifierid]" {tip text="Select user" trigger="verifierid"}>
-										<OPTION value="0">- {trans("select user")} -</OPTION>
-										{foreach $userlist as $user}
-										{if (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access) || $user.id == $ticket.verifierid}
-										<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.verifierid} selected{/if}>{$user.rname}</OPTION>
-										{/if}
-										{/foreach}
-									</SELECT>
+									{include file="rt/rtverifiers.html" form="ticket2"}
 								</TD>
 							</TR>
 							<TR>

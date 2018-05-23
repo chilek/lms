@@ -23,6 +23,9 @@
  *
  *  $Id$
  */
+$_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
+$_LANG['<!rt>Without deadline'] = '<!rt>Bez terminu ostatecznego';
+$_LANG['<!rt>With deadline'] = '<!rt>Z terminem ostatecznym';
 $_LANG['Ticket deadline could not be set in past'] = 'Termin ostateczny nie może być datą minioną';
 $_LANG['Ticket owner could not be the same as verifier'] = 'Właściciel zgłoszenia nie może być weryfikatorem';
 $_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłoszenia nie może być właścicielem';
@@ -30,6 +33,7 @@ $_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
 $_LANG['Ticket deadline has been set to $a:'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a:';
 $_LANG['Verifier:'] = 'Weryfikator:';
+$_LANG['Queue Verifier:'] = 'Weryfikator kolejki:';
 $_LANG['Unassigned'] = 'Nieprzypisany';
 $_LANG['Requestor:'] = 'Zgłaszający';
 $_LANG['documents'] = 'dokumenty';

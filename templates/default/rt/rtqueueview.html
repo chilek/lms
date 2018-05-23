@@ -12,12 +12,13 @@
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
+        <COL style="width: 1%;">
     </COLGROUP>
     <THEAD>
         {include file="rt/rtfilter.html"}
         {if $queuedata.total != 0}
         <TR>
-            <TD class="pagination text-center" colspan="6">
+            <TD class="pagination text-center" colspan="7">
                 {include file="scroller.html" listdata=$queuedata loop=$queue}
             </TD>
             <TD class="pagination text-right">
@@ -33,7 +34,7 @@
     <TFOOT>
         {if $queuedata.total != 0}
         <TR>
-            <TD class="pagination text-center" colspan="6">
+            <TD class="pagination text-center" colspan="7">
                 {include file="scroller.html" listdata=$queuedata loop=$queue}
             </TD>
             <TD class="pagination text-right">
