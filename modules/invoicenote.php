@@ -256,6 +256,8 @@ switch($action)
 
 			if ($contents[$idx]['valuenetto'] != $item['valuenetto'])
 				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
+			elseif (f_round($contents[$idx]['valuebrutto']) == f_round($item['valuebrutto']))
+				$contents[$idx]['valuebrutto'] = $item['valuebrutto'];
 
 			if (isset($item['deleted']) && $item['deleted']) {
 				$contents[$idx]['valuebrutto'] = 0;
