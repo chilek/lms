@@ -23,6 +23,9 @@
  *
  *  $Id$
  */
+
+$_LANG['Comment:'] = 'Komentarz:';
+$_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
 $_LANG['<!rt>Without deadline'] = '<!rt>Bez terminu ostatecznego';
 $_LANG['<!rt>With deadline'] = '<!rt>Z terminem ostatecznym';

@@ -76,6 +76,7 @@ if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
 	$invoice['olddeadline'] = $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
 	$invoice['oldnumber'] = $invoice['number'];
 	$invoice['oldnumberplanid'] = $invoice['numberplanid'];
+	$invoice['oldcomment'] = $invoice['comment'];
 
 	if ($invoice['proforma'] == 'convert') {
 		$currtime = time();
@@ -197,6 +198,7 @@ switch($action)
 		$oldsdate = $invoice['oldsdate'];
 		$oldnumber = $invoice['oldnumber'];
 		$oldnumberplanid = $invoice['oldnumberplanid'];
+		$oldcomment = $invoice['oldcomment'];
 		$closed   = $invoice['closed'];
 		$divisionid = $invoice['divisionid'];
 		$name = $invoice['name'];
@@ -220,6 +222,7 @@ switch($action)
 		$invoice['oldsdate'] = $oldsdate;
 		$invoice['oldnumber'] = $oldnumber;
 		$invoice['oldnumberplanid'] = $oldnumberplanid;
+		$invoice['oldcomment'] = $oldcomment;
 		$invoice['divisionid'] = $divisionid;
 		$invoice['name'] = $name;
 		$invoice['address'] = $address;
@@ -342,6 +345,7 @@ switch($action)
 		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
 		$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
 		$deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
+		$comment = $invoice['comment'] ? $invoice['comment'] : NULL;
 		$paytime = round(($deadline - $cdate) / 86400);
 		$iid   = $invoice['id'];
 
@@ -425,6 +429,7 @@ switch($action)
 			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+			'comment' => ($invoice['comment'] ? $invoice['comment'] : null),
 		);
 
 		$args['type'] = $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
@@ -445,7 +450,7 @@ switch($action)
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?, type = ?, number = ?, fullnumber = ?, numberplanid = ?
+				div_inv_author = ?, div_inv_cplace = ?, comment = ?, type = ?, number = ?, fullnumber = ?, numberplanid = ?
 				WHERE id = ?', array_values($args));
 		if ($SYSLOG)
 			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,

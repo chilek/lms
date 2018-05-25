@@ -388,6 +388,16 @@
 			<BR>
 		</TD>
 	</TR>
+{if $invoice.comment}
+        <TR>
+                <TD WIDTH="100%" COLSPAN="2">
+                        <B>{trans("Comment:")}</B><BR>
+			<BLOCKQUOTE>
+			{$invoice.comment}
+			</BLOCKQUOTE>
+		</TD>
+        </TR>
+{/if}
 </TABLE>
 </TD>
 </TR>

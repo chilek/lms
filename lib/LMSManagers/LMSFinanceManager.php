@@ -1080,6 +1080,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
+            'comment' => $invoice['invoice']['comment'],
             'recipient_address_id' => $invoice['invoice']['recipient_address_id'],
 			'post_address_id' => $invoice['invoice']['post_address_id'],
         );
@@ -1089,8 +1090,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			recipient_address_id, post_address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			comment, recipient_address_id, post_address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -1234,7 +1235,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
-				d.closed, d.cancelled, d.published, d.reference, d.reason, d.divisionid,
+				d.closed, d.cancelled, d.published, d.comment AS comment, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM vusers WHERE id = d.userid) AS user, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
