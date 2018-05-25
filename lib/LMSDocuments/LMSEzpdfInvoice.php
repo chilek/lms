@@ -890,6 +890,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		return $y;
 	}
 
+	protected function invoice_comment($x, $y) {
+		if (!empty($this->data['comment'])) {
+			return $y - $this->backend->text_align_left($x, $y, 10, trans('Comment:') . ' ' . $this->data['comment']);
+		}
+	}
+
 	protected function invoice_footnote($x, $y, $width, $font_size) {
 		if (!empty($this->data['division_footer'])) {
 			$y = $y - $this->backend->getFontHeight($font_size);
@@ -977,6 +983,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$top = $return[2] - 20;
 		$top = $this->invoice_to_pay(30, $top);
 		$top = $top - 20;
+		$top = $this->invoice_comment(30, $top);
 		$this->invoice_footnote(30, $top, 530, 10);
 		$page = $this->backend->ezStopPageNumbers(1, 1, $page);
 	}
@@ -1002,6 +1009,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$top = $this->invoice_recipient(30, $top) - 7;
 		}
 
+		$top = $this->invoice_comment(470, $top);
 		$this->invoice_footnote(470, $top, 90, 8);
 		$return = $this->new_invoice_data(30, $top, 430, 6, 1);
 		$top = $return[2] - 10;

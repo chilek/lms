@@ -790,6 +790,12 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . $expositor . '</b>', 0, 1, 0, true, 'R');
 	}
 
+	protected function invoice_comment() {
+		if (!empty($this->data['comment'])) {
+			$this->backend->writeHTMLCell(0, 0, '', '', trans('Comment:') . ' ' . $this->data['comment'], 0, 1, 0, true, 'C');
+		}
+	}
+
 	protected function invoice_footnote() {
 		if (!empty($this->data['division_footer'])) {
 			//$this->backend->Ln(145);
@@ -935,7 +941,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance',true)))
 		    $this->invoice_balance();
 		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
-			$this->invoice_qr2pay_code();		
+			$this->invoice_qr2pay_code();
+		$this->invoice_comment();
 		$this->invoice_footnote();
 		if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
 			&& !isset($this->data['rebate'])) {
