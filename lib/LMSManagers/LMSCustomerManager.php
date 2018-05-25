@@ -222,7 +222,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result['list'] = $this->db->GetAll(
             '(SELECT cash.id AS id, time, cash.type AS type,
                 cash.value AS value, taxes.label AS tax, cash.customerid AS customerid,
-                comment, docid, vusers.name AS username,
+                cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, cash.importid,
                 (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
