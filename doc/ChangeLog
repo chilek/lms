@@ -48,6 +48,7 @@ version ?.??.?? (????-??-??):
   - improvement: lms-ui-multiselect supports all element selection shortening
     to default value [chilan]
   - improvement: added optional invoice comment [interduo]
+  - enhancement: allow to change customer PIN in userpanel [chilan]
 
 version 1.11.23 (2018-03-21):
 

@@ -21,6 +21,9 @@
 		<li class="list-group-item">
 			<strong>{trans("ID")}:</strong>
 			{$userinfo.id|string_format:"%04d"}
+			<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
+				{trans("Update PIN")}
+			</button>
 		</li>
 		<li class="list-group-item">
 			<strong>{if $userinfo.type == 0}{trans("Last and first name")}{else}{trans("Company name")}{/if}:</strong>
@@ -147,8 +150,8 @@
 	{/if}
 </ul>
 </div>
-
 {/box}
+
 <!-- Modal -->
 <div class="modal fade" id="updateuserinfobox" tabindex="-1" role="dialog" aria-labelledby="updateuserinfobox" aria-hidden="true">
 	<div class="modal-dialog" role="document">
@@ -303,3 +306,49 @@
 		</div>
 	</div>
 </div>
+
+<div class="modal fade" id="updatepinbox" tabindex="-1" role="dialog" aria-labelledby="updatepinbox" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">{trans("PIN Update")}</h4>
+			</div>
+			<div class="modal-body">
+				{if $error.oldpin}
+				<div class="alert alert-danger">{$error.oldpin}</div>
+				{/if}
+				{if $error.pin}
+				<div class="alert alert-danger">{$error.pin}</div>
+				{/if}
+				<form name="userpin" method="post" action="?m=info&f=updatepin">
+					<div class="form-group">
+						<label for="oldpin">{trans("Current PIN")}:</label>
+						<input id="oldpin" type="password" class="form-control" name="userdata[oldpin]" placeholder="{trans("Enter current PIN")}">
+					</div>
+					<div class="form-group">
+						<label for="pin">{trans("New PIN")}:</label>
+						<input id="pin" type="password" class="form-control" name="userdata[pin]" placeholder="{trans("Enter new PIN")}">
+					</div>
+					<div class="form-group">
+						<label for="pin2">{trans("New PIN confirm")}:</label>
+						<input id="pin2" type="password" class="form-control" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+				<a class="btn btn-danger" href="javascript:document.userpin.submit()" accesskey="A">{trans("Save")}</a>
+			</div>
+		</div>
+	</div>
+</div>
+{if $error.oldpin || $error.pin || $error.pin2}
+<script>
+	$(function() {
+		$('#updatepinbox').modal('show');
+	});
+</script>
+{/if}

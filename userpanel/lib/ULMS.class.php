@@ -70,6 +70,13 @@ class ULMS extends LMS {
 			return NULL;
 	}
 
+	public function UpdateCustomerPIN($id, $pin) {
+		$res = $this->DB->Execute('UPDATE customers SET pin = ? WHERE id = ?',
+			array($pin, $id));
+		$_SESSION['session_passwd'] = $pin;
+		return $res;
+	}
+
 	public function GetCustomerMessage($id) {
 		return $this->DB->GetOne('SELECT message FROM customers WHERE id=?', array($id));
 	}

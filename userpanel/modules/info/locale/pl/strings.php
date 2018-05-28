@@ -111,4 +111,18 @@ $_LANG['Enter customer data change rejection mail subject'] = 'Wprowadź temat l
 $_LANG['Rejection mail body:'] = 'Treść listu z odmową:';
 $_LANG['Enter customer data change rejection mail body'] = 'Wprowadź treść listu z odmową zmiany danych klienta';
 
+$_LANG['Update PIN'] = 'Zmień PIN';
+$_LANG['PIN Update'] = 'Aktualizacja PIN';
+$_LANG['Current PIN'] = 'Aktualny PIN';
+$_LANG['Enter current PIN'] = 'Wprowadź aktualny PIN';
+$_LANG['New PIN'] = 'Nowy PIN';
+$_LANG['Enter new PIN'] = 'Wprowadź nowy PIN';
+$_LANG['New PIN confirm'] = 'Potwierdzenie nowego PIN';
+$_LANG['Enter new PIN (again)'] = 'Wprowadź nowy PIN (ponownie)';
+$_LANG['Incorrect current PIN!'] = 'Niepoprawny aktualny PIN!';
+$_LANG['Entered PINs do not match!'] = 'Wprowadzone kody PIN nie pasują do siebie!';
+$_LANG['PINs cannot be empty!'] = "Kody PIN nie mogą być puste!";
+$_LANG['New PIN should be different than old PIN!'] = 'Nowy PIN powinien być inny niż stary PIN!';
+$_LANG['PIN should have at least $a, maximum $b characters and contain only \'$c\' characters!'] = 'PIN powinien posiadać co najmniej $a, maksimum $b znaków oraz składać się ze znaków \'$c\'!';
+
 ?>
