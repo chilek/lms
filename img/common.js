@@ -326,9 +326,10 @@ function CheckAll(form, elem, excl)
 {
     var i, len, n, e, f,
         //inputs = form.getElementsByTagName('INPUT');
-        inputs = form.elements;
 
     form = document.forms[form] ? document.forms[form] : document.getElementById(form);
+
+    var inputs = form.elements;
 
     for (i=0, len=inputs.length; i<len; i++) {
         e = inputs[i];
@@ -336,7 +337,7 @@ function CheckAll(form, elem, excl)
         if (e.tagName.toUpperCase() != 'INPUT' || e.type != 'checkbox' || e == elem)
             continue;
 
-        if (excl && excl.length) {
+        if (typeof(excl) !== 'undefined' && excl.length) {
             f = 0;
             for (n=0; n<excl.length; n++)
                 if (e.name == excl[n])
