@@ -21,9 +21,11 @@
 		<li class="list-group-item">
 			<strong>{trans("ID")}:</strong>
 			{$userinfo.id|string_format:"%04d"}
+			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
 			<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
 				{trans("Update PIN")}
 			</button>
+			{/if}
 		</li>
 		<li class="list-group-item">
 			<strong>{if $userinfo.type == 0}{trans("Last and first name")}{else}{trans("Company name")}{/if}:</strong>

@@ -273,7 +273,7 @@ function module_updatepinform() {
 function module_updatepin() {
 	global $LMS, $SMARTY, $SESSION;
 
-	if (!isset($_POST['userdata']))
+	if (!ConfigHelper::checkConfig('userpanel.pin_changes') || !isset($_POST['userdata']))
 		header('Location: ?m=info');
 
 	$error = null;
@@ -534,6 +534,7 @@ if(defined('USERPANEL_SETUPMODE'))
 		$SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
 		$SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
 		$SMARTY->assign('show_confirmed_documents_only', ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'));
+		$SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
 		$SMARTY->assign('change_notification_mail_sender', ConfigHelper::getConfig('userpanel.change_notification_mail_sender'));
 		$SMARTY->assign('change_notification_mail_recipient', ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'));
 		$SMARTY->assign('change_notification_mail_subject', ConfigHelper::getConfig('userpanel.change_notification_mail_subject'));
@@ -555,6 +556,8 @@ if(defined('USERPANEL_SETUPMODE'))
 			array($_POST['consent_text'], 'userpanel', 'data_consent_text'));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 			array(isset($_POST['show_confirmed_documents_only']) ? 'true' : 'false', 'userpanel', 'show_confirmed_documents_only'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array(isset($_POST['pin_changes']) ? 'true' : 'false', 'userpanel', 'pin_changes'));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 			array($_POST['change_notification_mail_sender'], 'userpanel', 'change_notification_mail_sender'));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

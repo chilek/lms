@@ -30,7 +30,14 @@
 				<TEXTAREA NAME="consent_text" rows="4" cols="50" {tip text="Enter text of agreement for personal data processing"}>{$consent_text}</TEXTAREA>
 			</TD>
 		</TR>
-
+		<TR>
+			<TD class="nobr">
+				<label for="pin_changes">{trans("PIN changes:")}</label>
+			</TD>
+			<TD class="nobr">
+				<input type="checkbox" name="pin_changes" id="pin_changes" value="1"{if $pin_changes} checked{/if} {tip text="Allow customer to change PIN"}>
+			</TD>
+		</TR>
 		<TR>
 			<TD class="nobr" colspan="2">
 				<fieldset>

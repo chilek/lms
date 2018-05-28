@@ -141,7 +141,9 @@
 	}
 	<tr>
 		<td width="100%" colspan="3" align="right">
+			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
 			<a href="?m=info&f=updatepinform" accesskey="P">{trans("Update PIN")} {img src="pin.gif" alt="PIN"}</a>
+			{/if}
 			<a href="?m=info&amp;f=updateuserform" accesskey="A">{trans("Actualize data")} {img src="edit.gif" alt="Edit"}</a>
 		</td>
 	</tr>

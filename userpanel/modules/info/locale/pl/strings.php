@@ -124,5 +124,7 @@ $_LANG['Entered PINs do not match!'] = 'Wprowadzone kody PIN nie pasują do sieb
 $_LANG['PINs cannot be empty!'] = "Kody PIN nie mogą być puste!";
 $_LANG['New PIN should be different than old PIN!'] = 'Nowy PIN powinien być inny niż stary PIN!';
 $_LANG['PIN should have at least $a, maximum $b characters and contain only \'$c\' characters!'] = 'PIN powinien posiadać co najmniej $a, maksimum $b znaków oraz składać się ze znaków \'$c\'!';
+$_LANG['PIN changes:'] = 'Zmiany kodu PIN:';
+$_LANG['Allow customer to change PIN'] = 'Pozwól klientowi na zmianę kodu PIN';
 
 ?>
