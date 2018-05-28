@@ -22,7 +22,7 @@
 	    </TD>
 	</TR>
     </THEAD>
-    <TBODY>
+    <TBODY class="lms-ui-multi-check">
 	<TR>
 	    <TD>
 		<IMG src="img/info1.gif" ALT="">
@@ -58,7 +58,7 @@
 				<A href="?m=userinfo&amp;id={$user.id}">{$user.name}</A>
 			    </TD>
 			    <TD class="text-center">
-				    <INPUT type="checkbox" name="category[users][{$user.id}]" value="1" {if $user.owner > 0}CHECKED{/if}>
+				    <INPUT type="checkbox" name="category[users][{$user.id}]" class="lms-ui-multi-check" value="1" {if $user.owner > 0}CHECKED{/if}>
 			    </TD>
 			</TR>
 			{/foreach}
@@ -67,7 +67,7 @@
                                         <label for="allbox">{trans("Check All")}</label>
                                 </TD>
 				<TD class="text-center">
-                                        <INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('category', this)">
+                                        <INPUT TYPE="checkbox" NAME="allbox" id="allbox" class="lms-ui-multi-check-all">
                                 </TD>
                         </TR> 
                         </TBODY>
