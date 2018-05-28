@@ -35,7 +35,7 @@ if ($invoice_type == 'pdf') {
 	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
 	$pdf_type = ucwords($pdf_type);
 	$classname = 'LMS' . $pdf_type . 'Invoice';
-	$document = new $classname('A4', 'portrait', trans('Invoices'));
+	$document = new $classname(trans('Invoices'));
 } else {
 	// use LMS templates directory
 	define('SMARTY_TEMPLATES_DIR', ConfigHelper::getConfig('directories.smarty_templates_dir', ConfigHelper::getConfig('directories.sys_dir').'/templates'));
