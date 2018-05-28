@@ -16,8 +16,8 @@
     <THEAD>
 	{include file="rt/rtheader.html"}
 	{if $queuedata.total != 0}
-	<TR>
-		<TD class="pagination" colspan="6">
+	<TR class="pagination">
+		<TD class="text-center" colspan="7">
 			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
 		</TD>
 		<TD>
@@ -30,10 +30,13 @@
 	{include file="rt/rtqueueviewbox.html"}
     </TBODY>
 	<TFOOT>
-	<TR>
-		<TD COLSPAN="7" class="dark buttons">
-			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
-		</TD>
+	<TR class="pagination">
+                <TD class="text-center" colspan="7">
+                        {include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
+                </TD>
+                <TD>
+                        <A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+                </TD>
 	</TR>
 	</TFOOT>
 </TABLE>
