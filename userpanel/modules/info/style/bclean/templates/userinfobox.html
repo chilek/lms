@@ -21,7 +21,7 @@
 		<li class="list-group-item">
 			<strong>{trans("ID")}:</strong>
 			{$userinfo.id|string_format:"%04d"}
-			<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
+			<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
 				{trans("Update PIN")}
 			</button>
 		</li>
@@ -345,10 +345,14 @@
 		</div>
 	</div>
 </div>
-{if $error.oldpin || $error.pin || $error.pin2}
 <script>
 	$(function() {
+		$('[data-toggle="modal"]').click(function() {
+			$($(this).attr('data-target')).find('.alert').remove();
+		});
+
+		{if $error.oldpin || $error.pin || $error.pin2}
 		$('#updatepinbox').modal('show');
+		{/if}
 	});
 </script>
-{/if}
