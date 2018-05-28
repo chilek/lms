@@ -70,8 +70,10 @@
 						<tr>
 							<td colspan="5">&nbsp;</td>
 							<td>
-								<label>{trans("Check all")}</label>
-								<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
+								<label>
+									{trans("Check all")}
+									<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
+								</label>
 								<br>
 								<a class="btn btn-primary btn-sm" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
 							</td>
