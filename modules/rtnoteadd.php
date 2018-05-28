@@ -158,6 +158,7 @@ elseif(isset($_POST['note']))
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+				'deadline' => $ticketdata['deadline'],
 				'subject' => $ticketdata['subject'],
 				'body' => $note['body'],
 			);

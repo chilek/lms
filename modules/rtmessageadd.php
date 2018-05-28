@@ -302,6 +302,7 @@ if(isset($_POST['message']))
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+				'deadline' => $ticketdata['deadline'],
 				'subject' => $message['subject'],
 				'body' => $message['body'],
 			);

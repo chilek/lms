@@ -128,6 +128,7 @@ if ($id && !isset($_POST['ticket'])) {
 				'status' => $ticket['status'],
 				'categories' => $ticket['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticket['priority']],
+				'deadline' => $ticket['deadline'],
 				'subject' => $ticket['subject'],
 				'body' => $message['body'],
 			);
