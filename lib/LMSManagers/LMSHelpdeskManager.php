@@ -920,6 +920,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$text = str_replace('%subject', $params['subject'], $text);
 		$text = str_replace('%body', $params['body'], $text);
 		$text = str_replace('%priority', $params['priority'], $text);
+		$text = (isset($params['deadline']) && !empty($params['deadline'])) ? str_replace('%deadline', $params['deadline'], $text) : str_replace('%deadline', '-', $text);
 		$url = (isset($params['url']) && !empty($params['url']) ? $params['url']
 			: 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
 				. $_SERVER['HTTP_HOST']
