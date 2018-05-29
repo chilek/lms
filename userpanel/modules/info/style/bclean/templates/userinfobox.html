@@ -355,6 +355,8 @@
 
 		{if $error.oldpin || $error.pin || $error.pin2}
 		$('#updatepinbox').modal('show');
+		{elseif isset($error)}
+		$('#updateuserinfobox').modal('show');
 		{/if}
 	});
 </script>
