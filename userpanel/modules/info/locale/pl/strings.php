@@ -91,6 +91,9 @@ $_LANG['building'] = 'budynek';
 $_LANG['apartment'] = 'lokal';
 $_LANG['lastname'] = 'nazwa/nazwisko';
 
+$_LANG['Incorrect Social Security Number!'] = 'Niepoprawny numer PESEL!';
+$_LANG['Incorrect Tax Exempt Number!'] = 'Niepoprawny numer NIP!';
+
 $_LANG['Customer data change notifications sent to operator'] = 'Powiadomienia o zmianie danych klienta wysyłane do operatora';
 $_LANG['Mail sender:'] = 'Nadawca listu:';
 $_LANG['Enter customer data change notification mail sender'] = 'Wprowadź nadawcę listu z powiadomieniem o zmianie danych klienta';
