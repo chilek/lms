@@ -324,12 +324,9 @@ function checkElement(id)
 
 function CheckAll(form, elem, excl)
 {
-    var i, len, n, e, f,
-        //inputs = form.getElementsByTagName('INPUT');
-
-    form = document.forms[form] ? document.forms[form] : document.getElementById(form);
-
-    var inputs = form.elements;
+    var i, len, n, e, f;
+    var formelem = document.forms[form] ? document.forms[form] : document.getElementById(form);
+    var inputs = formelem.elements;
 
     for (i=0, len=inputs.length; i<len; i++) {
         e = inputs[i];
