@@ -46,6 +46,9 @@ function readfile_chunked($filename,$retbytes=true)
 	return $status;
 }
 
+if (!preg_match('/^[0-9]+-[0-9]+$/', $_GET['db']))
+	die;
+
 $filename = ConfigHelper::getConfig('directories.backup_dir').'/lms-'.$_GET['db'].'.sql';
 
 header('Content-Type: application/octet-stream');
