@@ -891,9 +891,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_comment($x, $y) {
-		if (!empty($this->data['comment'])) {
+		if (empty($this->data['comment']))
+			return $y;
+		else
 			return $y - $this->backend->text_align_left($x, $y, 10, trans('Comment:') . ' ' . $this->data['comment']);
-		}
 	}
 
 	protected function invoice_footnote($x, $y, $width, $font_size) {
