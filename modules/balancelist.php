@@ -78,7 +78,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 		$where .= ' AND cash.time <= '.intval($to);
 
 	if($res = $DB->Exec('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
-				cash.customerid AS customerid, comment, docid, cash.type AS type,
+				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed,
 				documents.published, '
 				.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
