@@ -177,7 +177,7 @@ $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('rtp', $page);
 
-$queues = $LMS->GetQueueList(false);
+$queues = $LMS->GetQueueListByUser(Auth::GetCurrentUser(), false);
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 $SMARTY->assign('queues', $queues);

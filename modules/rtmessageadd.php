@@ -395,7 +395,7 @@ if (!isset($_POST['message'])) {
 
 $SMARTY->assign('message', $message);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('queuelist', $LMS->GetQueueList(false));
+$SMARTY->assign('queuelist', $LMS->GetQueueListByUser(Auth::GetCurrentUser(), false));
 $SMARTY->display('rt/rtmessageadd.html');
 
 ?>

@@ -230,7 +230,7 @@ switch($type)
 
 		if (!ConfigHelper::checkConfig('phpui.big_networks'))
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		$SMARTY->assign('queues', $LMS->GetQueueList());
+		$SMARTY->assign('queues', $LMS->GetQueueListByUser(Auth::GetCurrentUser()));
 		$SMARTY->assign('categories', $categories);
 		$SMARTY->display('rt/rtprintindex.html');
 	break;

@@ -204,7 +204,7 @@ if (!isset($_POST['note'])) {
 
 $SMARTY->assign('note', $note);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('queuelist', $LMS->GetQueueNames());
+$SMARTY->assign('queuelist', $LMS->GetQueueListByUser(Auth::GetCurrentUser(), false));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtnoteadd.html');
 
