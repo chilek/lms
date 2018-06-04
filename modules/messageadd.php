@@ -294,7 +294,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 	$msgtmplid = intval($message['tmplid']);
 	$msgtmploper = intval($message['tmploper']);
 	$msgtmplname = $message['tmplname'];
-	if ($msgtmploper > 1) {
+	if (!isset($_GET['count_recipients']) && $msgtmploper > 1) {
 		switch ($message['type']) {
 			case MSG_MAIL:
 				$msgtmpltype = TMPL_MAIL;
