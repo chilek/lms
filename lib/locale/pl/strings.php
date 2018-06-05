@@ -3917,4 +3917,6 @@ $_LANG['<!transferform>custom'] = 'dowolne';
 $_LANG['less or equal'] = 'mniejsze lub równe';
 $_LANG['greater or equal'] = 'większe lub równe';
 
+$_LANG['configuration file'] = 'plik konfiguracyjny';
+
 ?>

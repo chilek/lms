@@ -341,6 +341,7 @@ define('DOC_PRICELIST', -11);
 define('DOC_PROMOTION', -12);
 define('DOC_WARRANTY', -13);
 define('DOC_REGULATIONS', -14);
+define('DOC_CONF_FILE', -15);
 
 
 $DOCTYPES = array(
@@ -365,6 +366,7 @@ $DOCTYPES = array(
     DOC_PROMOTION       =>  trans('promotion'), // promocja
     DOC_WARRANTY       =>  trans('warranty'), // gwarancja
     DOC_REGULATIONS       =>  trans('regulations'), // regulamin
+    DOC_CONF_FILE   =>  trans('configuration file'),
     DOC_OTHER       =>  trans('other')
 );
 
