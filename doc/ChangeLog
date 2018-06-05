@@ -49,7 +49,8 @@ version ?.??.?? (????-??-??):
     to default value [chilan]
   - improvement: added optional invoice comment [interduo]
   - enhancement: allow to change customer PIN in userpanel [chilan]
-  - improvement: allow to select multiple customer groups in invoice list [chilan]
+  - improvement: allow to select multiple customer groups in invoice list and multiple
+    network in customer search form [chilan]
 
 version 1.11.23 (2018-03-21):
 
