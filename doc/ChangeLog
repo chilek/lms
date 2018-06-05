@@ -51,6 +51,8 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to change customer PIN in userpanel [chilan]
   - improvement: allow to select multiple customer groups in invoice list and multiple
     network in customer search form [chilan]
+  - improvement: allow to select multiple customer groups and number plans
+    in invoice report [chilan]
 
 version 1.11.23 (2018-03-21):
 
