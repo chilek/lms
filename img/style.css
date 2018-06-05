@@ -553,7 +553,7 @@ input:invalid {
   background-color: #EBE4D6;
   border: 1px solid;
   padding: 0px;
-  min-width: 360px;
+  min-width: 320px;
 }
 .suggestion_list:hover {
   cursor: pointer;
@@ -585,10 +585,9 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
 }
 .lms-ui-suggestion-name {
-  padding-top: 5px;
-  font-size: 12px;
+  font-size: 9px;
   color: black;
-  min-height: 18px;
+  min-height: 16px;
 }
 .lms-ui-suggestion-name.blend {
   color: #888888;
@@ -715,7 +714,7 @@ li.lms-ui-suggestion-item a {
   background-image: url(calendar.gif);
 }
 .lms-ui-suggestion-description {
-  font-size: 10px;
+  font-size: 9px;
   margin-right: 2px;
   color: brown;
   padding-left: 20px;
