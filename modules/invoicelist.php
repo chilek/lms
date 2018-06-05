@@ -97,6 +97,9 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 	if($hideclosed)
 		$where .= ' AND d.closed = 0';
 
+	if (!empty($group['group']))
+		$group['group'] = array_filter($group['group'], 'intval');
+
 	if($res = $DB->Exec('SELECT d.id AS id, d.number, d.cdate, d.type,
 			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
 			CASE WHEN d.reference IS NULL THEN
@@ -129,7 +132,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			.$where
 			.(!empty($group['group']) ?
 			            ' AND '.(!empty($group['exclude']) ? 'NOT' : '').' EXISTS (
-			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
+			            SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group['group']) . ')
 			            AND customerid = d.customerid)' : '')
 			.' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid, 
 			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
@@ -212,8 +215,11 @@ elseif (($h = $SESSION->get('ilh')) === NULL)
 	$h = ConfigHelper::checkConfig('invoices.hide_closed');
 $SESSION->save('ilh', $h);
 
-if(isset($_POST['group'])) {
-	$g = $_POST['group'];
+if (isset($_POST['group'])) {
+	if ($_POST['group'] == 'all')
+		$g = array();
+	else
+		$g = $_POST['group'];
 	$ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : NULL;
 } else {
 	$SESSION->restore('ilg', $g);

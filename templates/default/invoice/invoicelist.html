@@ -115,11 +115,11 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					<OPTION value="cnotes"{if $listdata.cat == "cnotes"} SELECTED{/if}>{trans("show only credit notes")}</OPTION>
 				</SELECT>&nbsp;
 				{trans("Group:")}
-				<SELECT size="1" name="group">
-					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{trans("- all groups -")}</OPTION>
-					{section name="grouplist" loop=$grouplist}
-					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
-					{/section}
+				<input type="hidden" name="group" value="all">
+				<SELECT size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
+					{foreach $grouplist as $group}
+					<OPTION value="{$group.id}"{if in_array($group.id, $listdata.group)} selected{/if}>{$group.name|truncate:30:"...":true}</OPTION>
+					{/foreach}
 				</SELECT>
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
 				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
