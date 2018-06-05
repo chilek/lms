@@ -118,6 +118,8 @@ switch ($mode) {
 
 					if ($customer_count[$row['customername']] > 1) {
 						$description = trans('Address:') . ' ' . $row['address'];
+						if (!empty($row['post_address']))
+							$description .= '<BR>' . trans('Postal address:') . ' '.$row['post_address'];
 					} else if (preg_match("~^$search\$~i", $row['id'])) {
 						$description = trans('Id:') . ' ' . $row['id'];
 					} else if (preg_match("~$search~i", $row['customername'])) {
