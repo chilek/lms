@@ -796,13 +796,13 @@
 							{trans("Group:")}
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
-							<SELECT size="1" name="group">
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
-			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
-							    {/section}
-							</SELECT>
-    							<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoices-groupexclude">{trans("exclude group")}</label>
+								<input type="hidden" name="group" value="all">
+								<SELECT size="1" name="group[]" class="lms-ui-multiselect" data-default-value="{trans("- all groups -")}" multiple>
+									{foreach $customergroups as $customergroup}
+									<OPTION value="{$customergroup.id}">{$customergroup.name|truncate:30:"...":true}</OPTION>
+									{/foreach}
+								</SELECT>
+								<INPUT type="checkbox" name="groupexclude" id="invoices-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoices-groupexclude">{trans("exclude group")}</label>
 						    </TD>
 						</TR>
 						<TR>
@@ -813,13 +813,13 @@
 							{trans("Plan:")}
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
-							<SELECT name="numberplan" {tip text="Select numbering plan"}>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
-    							    {foreach item=plan from=$numberplans}
-					    		    {assign var=period value=$plan.period}
-							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-							    {/foreach}
-							</SELECT>
+								<input type="hidden" name="numberplan" value="all">
+								<SELECT name="numberplan[]" {tip class="lms-ui-multiselect" text="Select numbering plan"} data-default-value="- {trans("all")} -" multiple>
+									{foreach $numberplans as $plan}
+									{assign var=period value=$plan.period}
+									<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+									{/foreach}
+								</SELECT>
 						    </TD>
 						</TR>
 					    </TABLE>

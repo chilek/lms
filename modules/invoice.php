@@ -149,14 +149,19 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				.($ctype !=  -1 ? ' AND d.customerid IN (SELECT id FROM customers WHERE type = ' . intval($ctype) .')' : '')
 				.(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
-				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
+				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
+						? ' IN (' . implode(',', array_filter($_GET['numberplanid'], 'intval')) . ')'
+						: ' = ' . intval($_GET['numberplanid']))
+					: '')
 				.(!empty($_GET['autoissued']) ? ' AND d.userid IS NULL' : '')
 				.(!empty($_GET['manualissued']) ? ' AND d.userid IS NOT NULL' : '')
 				.(!empty($_GET['groupid']) ?
-				' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
+				' AND ' . (!empty($_GET['groupexclude']) ? 'NOT' : '') . '
 					EXISTS (SELECT 1 FROM customerassignments a
-					WHERE a.customergroupid = '.intval($_GET['groupid']).'
-						AND a.customerid = d.customerid)' : '')
+					WHERE a.customerid = d.customerid AND a.customergroupid' . (is_array($_GET['groupid'])
+						? ' IN (' . implode(',', array_filter($_GET['groupid'], 'intval')) . ')'
+						: ' = ' . intval($_GET['groupid'])) . ')'
+					: '')
 				.' AND NOT EXISTS (
 					SELECT 1 FROM customerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
