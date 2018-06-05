@@ -355,11 +355,11 @@
 			<IMG src="img/network.gif" alt=""> {trans("Network:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="n">
-				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
-				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $listdata.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</OPTION>
-				{/section}
+			<input type="hidden" name="n" value="all">
+			<SELECT SIZE="1" name="n[]" class="lms-ui-multiselect" data-default-value="{trans("- all networks -")}" multiple>
+				{foreach $networks as $network}
+				<OPTION value="{$network.id}"{if in_array($network.id, $listdata.network)} selected{/if}>{$network.name|truncate:50:"...":true}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
