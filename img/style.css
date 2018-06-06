@@ -553,7 +553,7 @@ input:invalid {
   background-color: #EBE4D6;
   border: 1px solid;
   padding: 0px;
-  min-width: 360px;
+  min-width: 350px;
 }
 .suggestion_list:hover {
   cursor: pointer;
@@ -585,8 +585,8 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
 }
 .lms-ui-suggestion-name {
-  padding-top: 5px;
   font-size: 12px;
+  padding-top: 0px;
   color: black;
   min-height: 18px;
 }
