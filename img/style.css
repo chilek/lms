@@ -719,6 +719,7 @@ li.lms-ui-suggestion-item a {
   margin-right: 2px;
   color: brown;
   padding-left: 20px;
+  text-align: right;
 }
 .lms-ui-customer-status-connected {
   color: black;
