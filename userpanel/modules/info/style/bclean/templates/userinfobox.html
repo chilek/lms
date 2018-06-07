@@ -1,4 +1,10 @@
 {box title="Information about the subscriber"}
+<style>
+	#updatepinbtn,
+	#updatedatabtn {
+		margin-left: 10px;
+	}
+</style>
 {if $fields_changed}
 	<div class="alert alert-info">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}.</div>
 {/if}
@@ -11,7 +17,7 @@
 		{/if}
 		{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
-				<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateuserinfobox" accesskey="A">
+				<button id="updatedatabtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateuserinfobox" accesskey="A">
 					{trans("Actualize data")}
 				</button>
 			{/if}
