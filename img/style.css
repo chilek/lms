@@ -588,9 +588,7 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-suggestion-name {
   font-size: 12px;
-  padding-top: 0px;
   color: black;
-  min-height: 18px;
 }
 .lms-ui-suggestion-name.blend {
   color: #888888;
