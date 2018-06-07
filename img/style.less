@@ -426,7 +426,9 @@ li.lms-ui-suggestion-item {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	border-bottom: @dark dotted 1px;
+	&:not(:last-child) {
+		border-bottom: @dark dotted 1px;
+	}
 	&.selected {
 		background-color: @highlight;
 		a {

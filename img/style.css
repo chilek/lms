@@ -567,6 +567,8 @@ li.lms-ui-suggestion-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+li.lms-ui-suggestion-item:not(:last-child) {
   border-bottom: #CEBD9B dotted 1px;
 }
 li.lms-ui-suggestion-item.selected {
