@@ -203,7 +203,6 @@ switch($type)
 			if ($content = $DB->GetAll('(SELECT body, ticketid, createtime, rtmessages.type AS note
 				FROM rtmessages
 				WHERE ticketid in ('.$tickets.'))
-				WHERE ticketid in ('.$tickets.'))
 			        ORDER BY createtime'))
 			{
 				foreach ($content as $idx => $row)
