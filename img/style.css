@@ -590,6 +590,7 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-suggestion-name {
   font-size: 12px;
+  padding-top: 2px;
   color: black;
 }
 .lms-ui-suggestion-name.blend {
