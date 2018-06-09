@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Comment:'] = 'Komentarz:';
 $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
