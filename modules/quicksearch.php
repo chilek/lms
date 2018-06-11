@@ -116,10 +116,10 @@ switch ($mode) {
 					$description_class = '';
 					$action = '?m=customerinfo&id=' . $row['id'];
 
-					if ($customer_count[$row['customername']] > 1) {
-						$description = trans('Address:') . ' ' . $row['address'];
+					if ($customer_count[$row['customername']]) {
+						$description = $row['address'];
 						if (!empty($row['post_address'])) {
-							$description .= '<BR>' . trans('Postal address:') . ' '.$row['post_address'];
+							$description .= '<BR>'.$row['post_address'];
 							if (!empty($row['post_name']))
 								$description .= '<BR>'.$row['post_name'];
 						}
