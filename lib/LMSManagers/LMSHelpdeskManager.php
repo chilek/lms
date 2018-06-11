@@ -175,7 +175,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
-				eventcountopened, eventcountclosed, delcount, tc2.categories
+				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
@@ -183,7 +183,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LEFT JOIN customeraddressview c ON (t.customerid = c.id)
 			LEFT JOIN vusers u ON (t.creatorid = u.id)
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
+			LEFT JOIN netnodes nn ON nn.id = t.netnodeid
+			LEFT JOIN netdevices nd ON nd.id = t.netdevid
 			LEFT JOIN vaddresses as va ON (t.address_id = va.id)
+			LEFT JOIN vaddresses as vb ON (nn.address_id = vb.id)
 			LEFT JOIN (
 				SELECT SUM(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
 					SUM(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,

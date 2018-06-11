@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Netnode location:'] = 'Adres węzła sieciowego:';
 $_LANG['Comment:'] = 'Komentarz:';
 $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
