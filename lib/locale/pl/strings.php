@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$_LANG['Netnode location:'] = 'Adres węzła sieciowego:';
+$_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
 $_LANG['Comment:'] = 'Komentarz:';
 $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
@@ -3229,7 +3229,6 @@ $_LANG['under construction'] = 'w realizacji';
 $_LANG['planned'] = 'planowane';
 $_LANG['Project:'] = 'Projekt:';
 $_LANG['without project'] = 'bez projektu';
-$_LANG['Network node:'] = 'Węzeł sieciowy:';
 $_LANG['Ownership:'] = 'Własność:';
 $_LANG['None'] = 'Brak';
 $_LANG['New project'] = 'Nowy projekt';
