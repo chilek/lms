@@ -2397,6 +2397,7 @@ $_LANG['comment'] = 'komentarz';
 $_LANG['$a records for deleted nodes have been removed.<BR>'] = '$a rekordów nieistniejących komputerów zostało usuniętych.<BR>';
 $_LANG['- select category -'] = '- wybierz kategorię -';
 $_LANG['Category style:'] = 'Styl kategorii:';
+$_LANG['Enter category CSS style (optional):'] = 'Wprowadź styl CSS kategorii (opcjonalnie):';
 $_LANG['Available<!plural>:'] = 'Dostępne:';
 $_LANG['Selected<!plural>:'] = 'Wybrane:';
 $_LANG['Avg [bit/s]'] = 'Średnio [bit/s]';

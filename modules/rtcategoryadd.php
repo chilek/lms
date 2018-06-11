@@ -45,8 +45,8 @@ if(isset($_POST['category']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO rtcategories (name, description) VALUES (?, ?)',
-				array(trim($category['name']), $category['description']));
+		$DB->Execute('INSERT INTO rtcategories (name, description, style) VALUES (?, ?, ?)',
+				array(trim($category['name']), $category['description'], $category['style']));
 
 		$id = $DB->GetLastInsertId('rtcategories');
 
