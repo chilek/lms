@@ -79,6 +79,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	unset($queue['owner']);
 	unset($queue['removed']);
 	unset($queue['priority']);
+	unset($queue['deadline']);
 
 	$start = 0;
 	$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
