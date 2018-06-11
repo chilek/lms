@@ -19,6 +19,12 @@ DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vusers;
 DROP VIEW IF EXISTS vdivisions;
+DROP VIEW IF EXISTS vnodetariffs_allsuspended;
+DROP VIEW IF EXISTS vnodetariffs_tariffs;
+DROP VIEW IF EXISTS vnodetariffs;
+DROP VIEW IF EXISTS vnodealltariffs_nodes;
+DROP VIEW IF EXISTS vnodealltariffs_tariffs;
+DROP VIEW IF EXISTS vnodealltariffs;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
