@@ -50,6 +50,7 @@ unset($queue['direction']);
 unset($queue['owner']);
 unset($queue['removed']);
 unset($queue['priority']);
+unset($queue['deadline']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queue_count', $queue_count);

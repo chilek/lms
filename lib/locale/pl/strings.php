@@ -25,6 +25,7 @@
  */
 
 $_LANG['<!rt>hours'] = 'godzin';
+$_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
 $_LANG['Comment:'] = 'Komentarz:';
 $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
 $_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
@@ -2398,6 +2399,7 @@ $_LANG['comment'] = 'komentarz';
 $_LANG['$a records for deleted nodes have been removed.<BR>'] = '$a rekordów nieistniejących komputerów zostało usuniętych.<BR>';
 $_LANG['- select category -'] = '- wybierz kategorię -';
 $_LANG['Category style:'] = 'Styl kategorii:';
+$_LANG['Enter category CSS style (optional):'] = 'Wprowadź styl CSS kategorii (opcjonalnie):';
 $_LANG['Available<!plural>:'] = 'Dostępne:';
 $_LANG['Selected<!plural>:'] = 'Wybrane:';
 $_LANG['Avg [bit/s]'] = 'Średnio [bit/s]';
@@ -3170,6 +3172,7 @@ $_LANG['backup access forbidden'] = 'brak dostępu do kopii zapasowych';
 $_LANG['Tariff type:'] = 'Typ taryfy:';
 
 $_LANG['Consent required:'] = 'Wymagana zgoda:';
+$_LANG['Check if ticket is expired'] = 'Zaznacz jeśli zgłoszenie ma przekroczony termin ostateczny';
 $_LANG['Check if customer consent to messages delivery via e-mail or sms is required'] = 'Zaznacz jeśli wymagana jest zgoda klienta na dostarczanie informacji pocztą elektr. lub sms-em';
 
 $_LANG['Select link technology'] = 'Wybierz technologię łącza';
@@ -3229,7 +3232,6 @@ $_LANG['under construction'] = 'w realizacji';
 $_LANG['planned'] = 'planowane';
 $_LANG['Project:'] = 'Projekt:';
 $_LANG['without project'] = 'bez projektu';
-$_LANG['Network node:'] = 'Węzeł sieciowy:';
 $_LANG['Ownership:'] = 'Własność:';
 $_LANG['None'] = 'Brak';
 $_LANG['New project'] = 'Nowy projekt';

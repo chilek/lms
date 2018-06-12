@@ -42,6 +42,9 @@
 				{/if}
 			{/if}
 		{/if}
+		{if $queue[ticket].netnodeid && $queue[ticket].customerid}<br>{/if}
+		{if $queue[ticket].netnodeid}{trans("Network node:")} <A href="?m=netnodeinfo&id={$queue[ticket].netnodeid}">{$queue[ticket].netnode_name}({$queue[ticket].netnodeid})</A>{/if}
+		{if $queue[ticket].netdevid} {if $queue[ticket].netnodeid}<BR>{/if}{trans("Network device:")} <A href="?m=netdevinfo&id={$queue[ticket].netdevid}">{$queue[ticket].netdev_name}({$queue[ticket].netdevid})</A>{/if}
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
 		</span>
 		{/if}
@@ -52,7 +55,7 @@
 		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
 		<span class="brown">
 		{/if}
-		{if count($queuedata.id)!=1}{$queue[ticket].name}{/if}<br>
+		{if count($queuedata.id)!=1}{$queue[ticket].name}{/if}
 		{if $queue[ticket].customerid}
 			{if $queue[ticket].address_id}
 				{if $queue[ticket].vacity}{$queue[ticket].vacity}, {/if}{$queue[ticket].street} {$queue[ticket].house}{if $queue[ticket].flat}/{$queue[ticket].flat}{/if}
@@ -60,6 +63,7 @@
 				{if $queue[ticket].city}{$queue[ticket].city}, {/if}{$queue[ticket].address}
 			{/if}
 		{/if}
+		{if $queue[ticket].netnode_location && !$queue[ticket].customerid}{$queue[ticket].netnode_location}{elseif $queue[ticket].netnode_location}<br>{trans("Network node location:")}{$queue[ticket].netnode_location}{/if}
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
 		</span>
 		{/if}
