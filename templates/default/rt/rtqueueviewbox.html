@@ -70,8 +70,9 @@
 		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
 		<span class="brown">
 		{/if}
+		{$queue[ticket].isexpired}
 		{if $queue[ticket].deadline}
-			{if $queue[ticket].deadline_days < 0}
+			{if $queue[ticket].deadline_diff < 0}
 				<span style="background-color: red; color: white;">{trans("<!rt>Expired")}</span><br>
 			{/if}
 			{$queue[ticket].deadline_days} {trans("days")}
