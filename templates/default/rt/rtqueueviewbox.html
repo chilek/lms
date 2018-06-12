@@ -68,13 +68,22 @@
 		</span>
 		{/if}
 	</TD>
-	<TD class="nobr">
+	<TD class="nobr text-center">
 		{if $queue[ticket].state == $smarty.const.RT_NEW}
 		<span class="red">
 		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
 		<span class="brown">
 		{/if}
-		{if $queue[ticket].deadline}{$queue[ticket].deadline|date_format:"%Y/%m/%d %H:%M"|default:"-"}{else}-{/if}<br>
+		{$queue[ticket].isexpired}
+		{if $queue[ticket].deadline}
+			{if $queue[ticket].deadline_diff < 0}
+				<span style="background-color: red; color: white;">{trans("<!rt>Expired")}</span><br>
+			{/if}
+			{$queue[ticket].deadline_days} {trans("days")}
+			{$queue[ticket].deadline_hours} {trans("<!rt>hours")}
+				
+		{else}-
+		{/if}<br>
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
 		</span>
 		{/if}

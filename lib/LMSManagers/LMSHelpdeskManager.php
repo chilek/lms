@@ -231,7 +231,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$ticket['categories'] = $categories;
 				} else
 					unset($ticket['categories']);
-			
+
+				if(!empty($ticket['deadline'])) {
+					$ticket['deadline_diff'] = $ticket['deadline']-time();
+					$days = floor(($ticket['deadline_diff']/86400));
+					$hours = round(($ticket['deadline_diff']-($days*86400))/3600);
+					$ticket['deadline_days'] = abs($days);
+					$ticket['deadline_hours'] = abs($hours);
+				}
+	
 				$result[$idx] = $ticket;
 			}
 		}
