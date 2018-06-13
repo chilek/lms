@@ -47,12 +47,13 @@ if(isset($_GET['ticketid']))
 elseif(isset($_POST['note']))
 {
 	$note = $_POST['note'];
-	$ticket = $LMS->GetTicketContents($note['ticketid']);
+	$ticketdata = $LMS->GetTicketContents($note['ticketid']);
 
         if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {
-            if($ticket['state'] == RT_RESOLVED && !empty($ticket['openeventscount']))
+            if($note['state'] == RT_RESOLVED && !empty($ticketdata['openeventcount'])) {
                 $error['state'] = trans('Ticket have open assigned events!');
-        }
+	    }
+	}
 
 	if($note['body'] == '')
 		$error['body'] = trans('Note body not specified!');
