@@ -42,6 +42,14 @@ if(isset($_POST['message']))
 	if($message['destination']!='' && $message['sender']=='customer')
 		$error['destination'] = trans('Customer cannot send message!');
 
+    $ticketcontent = $LMS->GetTicketContents($message['ticketid']);
+    $oec = $ticketcontent['openeventcount'];
+
+    if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {
+        if ($message['state'] == RT_RESOLVED && !empty($oec))
+            $error['state'] = trans('Ticket have open assigned events!');
+    }
+
 	$result = handle_file_uploads('files', $error);
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
@@ -327,8 +335,7 @@ else
 {
 	if ($_GET['ticketid']) {
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
-		$message = $DB->GetRow('SELECT id AS ticketid, subject, state, cause, queueid, owner, verifierid, deadline
-			FROM rttickets WHERE id = ?', array($_GET['ticketid']));
+		$message = $LMS->GetTicketContents($_GET['ticketid']);
 		if ($queue['newmessagesubject'] && $queue['newmessagebody'])
 			$message['customernotify'] = 1;
 		if (ConfigHelper::checkConfig('phpui.helpdesk_notify'))
@@ -336,7 +343,7 @@ else
 	}
 
 	$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
-	
+
 	$message['ticketid'] = $_GET['ticketid'];
 	$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
 	
