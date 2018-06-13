@@ -304,7 +304,7 @@
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;assign"><IMG src="img/users.gif" alt=""> {trans("Assign to me")}</A>
 			{/if}
 			{if $ticket.state < 2}
-				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events'))}
+				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
 				<span class="blend"><IMG src="img/resolved.gif" alt=""> {trans("Ticket have open assigned events!")}</A>&nbsp;</span>
 				{else}
 				<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;state=2"><IMG src="img/resolved.gif" alt=""> {trans("Resolve")}</A>&nbsp;
