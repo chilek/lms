@@ -189,6 +189,11 @@ if(isset($_POST['ticket']))
 	if($ticketedit['subject'] == '')
 		$error['subject'] = trans('Ticket must have its title!');
 
+	if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {
+		if($ticketedit['state'] == RT_RESOLVED && !empty($ticket['unclosedeventscount']))
+			$error['state'] = trans('Ticket have open assigned events!');
+	}
+
 	if($ticketedit['state'] != RT_NEW && !$ticketedit['owner'])
 		$error['owner'] = trans('Only \'new\' ticket can be owned by no one!');
 

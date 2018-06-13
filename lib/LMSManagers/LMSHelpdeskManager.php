@@ -658,7 +658,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
 				t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
 				t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name,
-				t.verifierid, e.name AS verifier_username, t.deadline
+				t.verifierid, e.name AS verifier_username, t.deadline, openeventcount
 				FROM rttickets t
 				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
 				LEFT JOIN vusers o ON (t.owner = o.id)
@@ -670,6 +670,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				LEFT JOIN netnodes nn ON nn.id = t.netnodeid
 				LEFT JOIN netdevices nd ON nd.id = t.netdevid
 				LEFT JOIN vusers e ON (t.verifierid = e.id)
+				LEFT JOIN (
+					SELECT SUM(CASE WHEN closed !=1 THEN 1 ELSE 0 END) AS openeventcount,
+					ticketid FROM events WHERE ticketid IS NOT NULL GROUP BY ticketid
+				) ev ON ev.ticketid = t.id
 				WHERE 1=1 '
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND t.deleted = 0' : '')
 				. (' AND t.id = ?'), array($id));
