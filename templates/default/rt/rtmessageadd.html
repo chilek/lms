@@ -114,7 +114,7 @@
 			<label for="state">{trans("Resolve ticket:")}</label>
 		</TD>
 		<TD>
-			<INPUT type="checkbox" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}>
+			<INPUT type="checkbox" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="state"}>
 		</TD>
 	</TR>
 	<TR>
