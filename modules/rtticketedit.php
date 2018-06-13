@@ -174,8 +174,10 @@ if(isset($_POST['ticket']))
 		};
 	};
 	if (!empty($dtime)) {
-		if ($dtime < time())
-			$error['deadline'] = trans("Ticket deadline could not be set in past");
+		if ($dtime != $ticket['deadline']) {
+			if ($dtime < time())
+				$error['deadline'] = trans("Ticket deadline could not be set in past");
+		}
 	};
 
 	if(!count($ticketedit['categories']))
@@ -187,11 +189,13 @@ if(isset($_POST['ticket']))
 	if($ticketedit['subject'] == '')
 		$error['subject'] = trans('Ticket must have its title!');
 
-	if($ticketedit['state']>0 && !$ticketedit['owner'])
+	if($ticketedit['state'] != RT_NEW && !$ticketedit['owner'])
 		$error['owner'] = trans('Only \'new\' ticket can be owned by no one!');
 
-	if($ticketedit['state']==0 && $ticketedit['owner'])
-		$ticketedit['state'] = 1;
+	if(!ConfigHelper::checkConfig('phpui.allow_change_ticket_state_from_open_to_new')) {
+	if($ticketedit['state'] == RT_NEW && $ticketedit['owner'])
+		$ticketedit['state'] = RT_OPEN;
+	}
 
 	$ticketedit['customerid'] = ($ticketedit['custid'] ? $ticketedit['custid'] : 0);
 
