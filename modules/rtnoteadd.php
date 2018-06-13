@@ -97,7 +97,6 @@ elseif(isset($_POST['note']))
 			'verifierid' => empty($note['verifierid']) ? null : $note['verifierid'],
 			'deadline' => $note['deadline'],
 		);
-
 		$LMS->TicketChange($note['ticketid'], $props);
 
 		if(isset($note['notify']))
