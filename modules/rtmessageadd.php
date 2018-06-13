@@ -42,10 +42,9 @@ if(isset($_POST['message']))
 	if($message['destination']!='' && $message['sender']=='customer')
 		$error['destination'] = trans('Customer cannot send message!');
 
-    $ticketcontent = $LMS->GetTicketContents($message['ticketid']);
-    $oec = $ticketcontent['openeventcount'];
-
     if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {
+    	$ticketcontent = $LMS->GetTicketContents($message['ticketid']);
+	$oec = $ticketcontent['openeventcount'];
         if ($message['state'] == RT_RESOLVED && !empty($oec))
             $error['state'] = trans('Ticket have open assigned events!');
     }
