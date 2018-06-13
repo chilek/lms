@@ -54,7 +54,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to select multiple customer groups and number plans
     in invoice report [chilan]
   - improvement: allow to change ticket state from RT_NEW to RT_OPEN when variable
-    phpui.helpdesk_allow_change_ticket_state_rtopen_to_rtnew is set [interduo]
+    phpui.allow_change_ticket_state_from_open_to_new is set [interduo]
 
 version 1.11.23 (2018-03-21):
 
