@@ -57,6 +57,8 @@ version ?.??.?? (????-??-??):
     phpui.helpdesk_allow_change_ticket_state_from_open_to_new is set [interduo]
   - improvement: block ticket close with open events when
     phpui.helpdesk_block_ticket_close_with_open_events is enabled [interduo]
+  - improvement: phpui.protect_passwords configuration variable controls if password
+    are displayed in plain text; protected passwords can be still copied to clipboard [chilan]
 
 version 1.11.23 (2018-03-21):
 
