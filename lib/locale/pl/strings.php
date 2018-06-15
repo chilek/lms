@@ -3923,4 +3923,6 @@ $_LANG['greater or equal'] = 'większe lub równe';
 
 $_LANG['configuration file'] = 'plik konfiguracyjny';
 
+$_LANG['Copy to clipboard'] = 'Kopiuj do schowka';
+
 ?>
