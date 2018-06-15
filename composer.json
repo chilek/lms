@@ -45,7 +45,8 @@
         "pear/mail": "^1.3",
         "gusapi/gusapi": "^3",
         "erusev/parsedown": "^1",
-        "tecnickcom/tc-lib-barcode": "^1"
+        "tecnickcom/tc-lib-barcode": "^1",
+        "zenorocha/clipboardjs": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
