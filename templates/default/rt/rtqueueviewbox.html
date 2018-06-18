@@ -106,6 +106,7 @@
 		{if $queue[ticket].eventcountclosed}<A href="?m=eventsearch&ticketid={$queue[ticket].id}"> {$queue[ticket].eventcountclosed}</A>{else} -{/if}
 	</TD>
 	<TD class="nobr text-right">
+		{if !$queue[ticket].ownerid}<A href="?m=rtticketedit&id={$queue[ticket].id}&assign" target="_BLANK"><img src="img/users.gif" alt="" title="{trans("Assign to me")}"></A>{/if}
 		<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><img src="img/print.gif" alt="" title="{trans("Print")}"></A>
 		{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 		<A href="?m=rtrestore&id={$queue[ticket].id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}"></A>
