@@ -125,7 +125,7 @@
 			<IMG SRC="img/pin.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$customerinfo.pin}" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			{if ConfigHelper::checkConfig('phpui.protect_passwords')}{$customerinfo.pin|regex_replace:".":"*"}{else}{$customerinfo.pin}{/if}
+			{if ConfigHelper::checkConfig('phpui.protect_passwords')}{$customerinfo.pin|regex_replace:"/./":"*"}{else}{$customerinfo.pin}{/if}
 		</TD>
 	</TR>
 {/if}
