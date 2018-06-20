@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Only verifier can change this now'] = 'Tylko weryfikator może to zmienić w tej chwili';
 $_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
 $_LANG['Ticket have open assigned events!'] = 'Zgłoszenie posiada otwarte zdarzenia!';
