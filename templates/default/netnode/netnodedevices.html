@@ -38,7 +38,7 @@
 				{section name=netdevlist loop=$netdevlist start=$start}
 				<tr class="highlight {cycle}"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" >
 					<td width="95%" style="vertical-align: top;" class="nobr">
-						<img src="img/netdev.gif" alt=""> <b>{$netdevlist[netdevlist].name}</b><br/>
+						<img src="img/netdev.gif" alt=""> <b>{$netdevlist[netdevlist].name}</b><br>
 							<img src="img/producer.gif" alt=""> {$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
 					</td>
 					<td>

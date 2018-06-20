@@ -46,7 +46,7 @@
 				({if isset($fields_changed.street)}<span class="lms-ui-customer-property-changed">{$fields_changed.street.fieldvalue}</span>{else}{$userinfo.street}{/if}
 				{if isset($fields_changed.building)}<span class="lms-ui-customer-property-changed">{$fields_changed.building.fieldvalue}</span>{else}{$userinfo.building}{/if}{if isset($fields_changed.apartment)}<span class="lms-ui-customer-property-changed">/{$fields_changed.apartment.fieldvalue}</span>{else}/{$userinfo.apartment}{/if})
 			{/if}
-			<br/>
+			<br>
 			{$userinfo.zip} {$userinfo.city}
 			{if isset($fields_changed.zip) || isset($fields_changed.city)}
 			({if isset($fields_changed.zip)}<span class="lms-ui-customer-property-changed">{$fields_changed.zip.fieldvalue}</span>{else}{$userinfo.zip}{/if}

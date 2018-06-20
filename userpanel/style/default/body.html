@@ -6,10 +6,10 @@
 			<img src="{$company_logo}" alt=""/>
 		{/if}
 		{if $page_header}
-			{if $company_logo}<br/>{/if}{$page_header}
+			{if $company_logo}<br>{/if}{$page_header}
 		{/if}
 		{if !$page_header && !$company_logo}
-			LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br/>
+			LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br>
 			@ {$layout.hostname}
 		{/if}
 		</h2>
