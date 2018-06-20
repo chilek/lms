@@ -31,7 +31,7 @@ $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_address_id_fkey
 $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_nodeid_fkey
 	FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022601', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018062000', 'dbversion'));
 
 $this->CommitTrans();
 
