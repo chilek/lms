@@ -46,14 +46,14 @@ IMG		{ border: 0; }
 		{if $customerinfo.id}
 		    {if $nodeinfo.access}
 			{$customerinfo.message}
-			<br/><br/>
+			<br><br>
 			<a href="index.php?readed=1&oldurl={$layout.oldurl}">{t}Click here to mark this message as readed.{/t}</a>
 		    {else}
-			{t}Access to network on this computer is locked.{/t}<br/><br/>
+			{t}Access to network on this computer is locked.{/t}<br><br>
 			{$customerinfo.message}
 		    {/if}
 		{else}
-		    {t}Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.{/t}<br/><br/>
+		    {t}Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.{/t}<br><br>
 		    {t}Please contact with our Customer Service.{/t}
 		{/if}
 	    </div>

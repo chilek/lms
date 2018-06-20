@@ -9,10 +9,10 @@
 	{foreach from=$ticket.messages item=message}
         <tr class="darkest">
 		<td width="1%" align="right">
-			<b>{$message.createtime|date_format:"%Y/%m/%d<br/>%H:%M"}</b>
+			<b>{$message.createtime|date_format:"%Y/%m/%d<br>%H:%M"}</b>
 		</td>
 		<td width="1%" align="right">
-			<b>{trans("From:")}<br/>{trans("Subject:")}</b>
+			<b>{trans("From:")}<br>{trans("Subject:")}</b>
 		</td>
 		<td width="96%" class="nobr">
 			    {if $message.customerid}
@@ -46,7 +46,7 @@
 	</tr>
 	<tr>
 		<td colspan="5">
-			{$message.body|escape|replace:"\n":"<br/>"}
+			{$message.body|escape|replace:"\n":"<br>"}
 		</td>
 	</tr>
 	{/foreach}

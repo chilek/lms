@@ -10,7 +10,7 @@
 			{if $usernodes[usernodes].id}
 				<tr class="{if !$usernodes[usernodes].access}text-muted{/if}">
 					<td>{$usernodes[usernodes].name}</td>
-					<td>{$usernodes[usernodes].mac|replace:",":"<br/>"}</td>
+					<td>{$usernodes[usernodes].mac|replace:",":"<br>"}</td>
 					<td>{$usernodes[usernodes].ip}</td>
 				</tr>
 			{/if}

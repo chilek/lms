@@ -4,15 +4,15 @@
 {box title="Help Center"}
 {if $solution.title}
 <h2>{$solution.title}</h2>
-{$solution.body}<br/><br/>
+{$solution.body}<br><br>
 {if $questions}
-{trans("Select:")}<br/>
+{trans("Select:")}<br>
 <ul>
 {section name=mysec loop=$questions}
 <li><a href="?m=help&pr={$questions[mysec].id}">{$questions[mysec].title}</a></li>
 {/section}
 {else}
-{trans("Now, you can only select:")}<br/>
+{trans("Now, you can only select:")}<br>
 <ul>
 <li><a href="?m=helpdesk&subject={$solution.title}">{trans("Contact with administrators")}</a></li>
 <li><a href="?m=help">{trans("Back to beginning")}</a></li>
@@ -22,9 +22,9 @@
 {/if}
 </ul>
 {else}
-<br/><br/><br/>
+<br><br><br>
 <div style="text-align:center"><b>{trans("This module is not configured yet.")}</b></div>
-<br/><br/><br/>
+<br><br><br>
 {/if}
 {/box}
 </td></tr></table>
