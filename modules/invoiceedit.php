@@ -406,7 +406,7 @@ switch($action)
 			SYSLOG::RES_CUST => $invoice['customerid'],
 			'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
 			'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
-				? $customer['postoffice'] . ', ' : '') . $customer['address']) : $invoice['address'],
+				? $customer['city'] . ', ' : '') . $customer['address']) : $invoice['address'],
 			'ten' => $use_current_customer_data ? $customer['ten'] : $invoice['ten'],
 			'ssn' => $use_current_customer_data ? $customer['ssn'] : $invoice['ssn'],
 			'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],

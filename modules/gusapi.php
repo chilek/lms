@@ -179,7 +179,7 @@ try {
 		if ($key == 'addresses') {
 			$addressesChild = $detailsChild->addChild('addresses');
 			foreach ($value as $addressnr => $address) {
-				$addressChild = $addressesChild->addChild('address' + addressnr);
+				$addressChild = $addressesChild->addChild('address');
 				foreach ($address as $addresskey => $addressvalue)
 					$addressChild->addChild($addresskey, $addressvalue);
 			}

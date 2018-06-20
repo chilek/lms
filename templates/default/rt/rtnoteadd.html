@@ -69,10 +69,9 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[state]" {tip text="Select status" trigger="state"}>
-				<OPTION value="{$smarty.const.RT_NEW}" {if $note.state == $smarty.const.RT_NEW}SELECTED{/if}>{trans("new")}</OPTION>
-				<OPTION value="{$smarty.const.RT_OPEN}" {if $note.state == $smarty.const.RT_OPEN}SELECTED{/if}>{trans("opened")}</OPTION>
-				<OPTION value="{$smarty.const.RT_RESOLVED}" {if $note.state == $smarty.const.RT_RESOLVED}SELECTED{/if}>{trans("resolved")}</OPTION>
-				<OPTION value="{$smarty.const.RT_DEAD}" {if $note.state == $smarty.const.RT_DEAD}SELECTED{/if}>{trans("dead")}</OPTION>
+                        {foreach $_RT_STATES as $stateidx => $state}
+                                <OPTION value="{$stateidx}"{if $note.states == $stateidx} selected{/if}>{$state.label}</OPTION>
+                        {/foreach}
 			</SELECT>
 		</TD>
 	</TR>

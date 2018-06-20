@@ -980,6 +980,8 @@ $(function() {
 		newInput.addClass('lms-ui-quick-search-active').focus();
 		e.preventDefault();
 	});
+
+	new ClipboardJS('.lms-ui-clipboard-button');
 });
 
 function restoreSortable(sortable, value) {

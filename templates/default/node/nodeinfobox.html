@@ -49,7 +49,7 @@
 								</tr>
 								<tr>
 									<TD style="width: 1%;">
-				                       <img src="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip}" alt="">
+				                       <img src="img/ip.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeinfo.ip}" alt="">
 									</td>
 									<td>
 										{trans("IP address:")}
@@ -62,7 +62,7 @@
 								{if $nodeinfo.ip_pub != "0.0.0.0"}
 								<tr>
 									<td>
-										<img src="img/ip_pub.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip_pub}"s alt="">
+										<img src="img/ip_pub.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeinfo.ip_pub}"s alt="">
 									</td>
 									<td>
 										{trans("Pub. IP address:")}
@@ -94,13 +94,13 @@
 								{if $nodeinfo.passwd}
 								<tr>
 									<td>
-										<img src="img/passwd.gif" alt="">
+										<img src="img/passwd.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeinfo.passwd}" alt="">
 									</td>
 									<td>
 										{trans("Password:")}
 									</td>
 									<td>
-										{$nodeinfo.passwd}
+										{if ConfigHelper::checkConfig('phpui.protect_passwords')}{$nodeinfo.passwd|regex_replace:"/./":"*"}{else}{$nodeinfo.passwd}{/if}
 									</td>
 								</tr>
 								{/if}
@@ -422,11 +422,9 @@
     </tbody>
 </table>
 
-<script src="img/clipboard.min.js"></script>
 <script type="text/javascript">
 <!--
     xajax_getNodeStats({$nodeinfo.id});
-    new Clipboard('.CopyIp');
 
     {if !$disable_active_links}
     $( function() {

@@ -180,6 +180,11 @@ $SESSION->save('rtp', $page);
 $queues = $LMS->GetQueueListByUser(Auth::GetCurrentUser(), false);
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
+if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {
+    $LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
+    $SESSION->redirect(str_replace('&assign','',"$_SERVER[REQUEST_URI]"));
+}
+
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
