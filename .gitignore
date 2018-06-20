@@ -23,4 +23,5 @@ rtattachments/*
 *.swp
 *.swo
 
+/components/*
 /vendor/
