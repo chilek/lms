@@ -209,6 +209,9 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
+	$('.lms-ui-clipboard-button').attr('title', lmsMessages.clickCopiesToClipboard);
+	new ClipboardJS('.lms-ui-clipboard-button');
+
 	$('[title]').each(function() {
 		$(this).one('mouseenter', function() {
 			tooltipClass = '';
@@ -980,8 +983,6 @@ $(function() {
 		newInput.addClass('lms-ui-quick-search-active').focus();
 		e.preventDefault();
 	});
-
-	new ClipboardJS('.lms-ui-clipboard-button');
 });
 
 function restoreSortable(sortable, value) {
