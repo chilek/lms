@@ -55,24 +55,23 @@ if(isset($_POST['event']))
 	elseif(strlen($event['title']) > 255)
 		$error['title'] = trans('Event title is too long!');
 
-	if ($event['date'] == '')
-		$error['date'] = trans('You have to specify event day!');
-	else {
-		list ($year, $month, $day) = explode('/',$event['date']);
-		if (checkdate($month, $day, $year))
-			$date = mktime(0, 0, 0, $month, $day, $year);
-		else
+	if ($event['date']) {
+		$date = date_to_timestamp($event['date']);
+		if(empty($date))
 			$error['date'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+	}
+	else {
+		$date = mktime();
 	}
 
 	$enddate = 0;
-	if ($event['enddate'] != '') {
-		list ($year, $month, $day) = explode('/', $event['enddate']);
-		if (checkdate($month, $day, $year))
-			$enddate = mktime(0, 0, 0, $month, $day, $year);
-		else
+	if ($event['enddate']) {
+		$enddate = date_to_timestamp($event['enddate']);
+		if(empty($enddate))
 			$error['enddate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
+	else
+		$enddate = mktime(0, 0, 0, $month, $day, $year);
 
 	if ($enddate && $date > $enddate)
 		$error['enddate'] = trans('End time must not precede start time!');

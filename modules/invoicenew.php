@@ -197,39 +197,21 @@ switch($action)
 
 		$currtime = time();
 
-		if($invoice['sdate'])
-		{
-			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
-			if(checkdate($smonth, $sday, $syear)) 
-			{
-				$invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				$scurrmonth = $smonth;
-			}
-			else
-			{
-				$error['sdate'] = trans('Incorrect date format!');
-				$invoice['sdate'] = $currtime;
-				break;
-			}
+		if($invoice['sdate']) {
+                        $invoice['sdate'] = date_to_timestamp($invoice['sdate']);
+                        if(empty($invoice['sdate']))
+                                $error['sdate'] = trans('Incorrect date format!');
 		}
 		else
 			$invoice['sdate'] = $currtime;
 
-		if($invoice['cdate'])
-		{
-			list($year, $month, $day) = explode('/', $invoice['cdate']);
-			if(checkdate($month, $day, $year)) 
-			{
-				$invoice['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				$currmonth = $month;
-			}
-			else
-			{
-				$error['cdate'] = trans('Incorrect date format!');
-				$invoice['cdate'] = $currtime;
-				break;
-			}
+		if($invoice['cdate']) {
+                        $invoice['sdate'] = date_to_timestamp($invoice['sdate']);
+                        if(empty($invoice['sdate']))
+                                $error['sdate'] = trans('Incorrect date format!');
 		}
+		else
+			$invoice['sdate'] = $currtime;
 
 		if($invoice['cdate'] && !isset($invoice['cdatewarning']))
 		{
@@ -247,23 +229,19 @@ switch($action)
 			$invoice['cdate'] = $currtime;
 
 		if ($invoice['deadline']) {
-			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
-			if (checkdate($dmonth, $dday, $dyear)) {
-				$invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
-				$dcurrmonth = $dmonth;
-			} else {
+			$invoice['deadline'] = date_to_timestamp($invoice['deadline']);
+			if(empty($invoice['deadline']))
 				$error['deadline'] = trans('Incorrect date format!');
-				$invoice['deadline'] = $currtime;
-				break;
-			}
-		} else {
 			if ($customer_paytime != -1)
 				$paytime = $customer_paytime;
 			elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
-				WHERE id = ?', array($customer['divisionid']))) === NULL)
+				WHERE id = ?', array($customer['divisionid']))) === NULL) {
 				$paytime = ConfigHelper::getConfig('invoices.paytime');
 			$invoice['deadline'] = $invoice['cdate'] + $paytime * 86400;
+			}
 		}
+		else
+			$invoice['deadline'] = $currtime;
 
 		if ($invoice['deadline'] < $invoice['cdate'])
 			$error['deadline'] = trans('Deadline date should be later than consent date!');

@@ -120,25 +120,24 @@ switch($action)
 		if ($note['paytime'] < 0)
 			$note['paytime'] = 14;
 
-		if($note['cdate']) // && !$note['cdatewarning'])
-		{
-			list($year, $month, $day) = explode('/',$note['cdate']);
-			if(checkdate($month, $day, $year))
-			{
-				$oldday = date('d', $note['oldcdate']);
-				$oldmonth = date('m', $note['oldcdate']);
-			        $oldyear = date('Y', $note['oldcdate']);
-				
-				if($oldday != $day || $oldmonth != $month || $oldyear != $year)
-				{
-					$note['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-				}
-				else // save hour/min/sec value if date is the same
-					$note['cdate'] = $note['oldcdate'];
-			}
-			else
+		if($note['cdate']) {
+			$cdate = date_to_timestamp($note['cdate']);
+			if(empty($cdate))
 				$error['cdate'] = trans('Incorrect date format!');
+			$day = date('d', $note['cdate']);
+			$month = date('m', $note['cdate']);
+			$year = date('Y', $note['cdate']);
+			$oldday = date('d', $note['oldcdate']);
+                        $oldmonth = date('m', $note['oldcdate']);
+                        $oldyear = date('Y', $note['oldcdate']);
+
+			if($oldday != $day || $oldmonth != $month || $oldyear != $year)
+				$invoice['cdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
+                        else
+				$invoice['cdate'] = $invoice['oldcdate'];
 		}
+		else
+			$note['cdate'] = time();
 
 		$note['customerid'] = $_POST['customerid'];
 

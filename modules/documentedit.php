@@ -97,23 +97,17 @@ if(isset($_POST['document']))
 			$error['number'] = trans('Document with specified number exists!');
 	}
 
-	if($documentedit['fromdate'])
-	{
-		$date = explode('/',$documentedit['fromdate']);
-		if(checkdate($date[1],$date[2],$date[0]))
-			$documentedit['fromdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
-		else
+	if($documentedit['fromdate']) {
+		$documentedit['fromdate'] = date_to_timestamp($documentedit['fromdate']);
+		if(empty($documentedit['fromdate']))
 			$error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
 	else 
 		$documentedit['fromdate'] = 0;
 
-	if($documentedit['todate'])
-	{
-		$date = explode('/',$documentedit['todate']);
-		if(checkdate($date[1],$date[2],$date[0]))
-			$documentedit['todate'] = mktime(23,59,59,$date[1],$date[2],$date[0]);
-		else
+	if($documentedit['todate']) {
+		$documentedit['todate'] = date_to_timestamp($documentedit['todate']);
+		if(empty($documentedit['todate']))
 			$error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
 	else

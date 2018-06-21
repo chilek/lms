@@ -29,28 +29,28 @@ $customerid = intval($_GET['customerid']);
 if (!$LMS->CustomerExists($customerid))
 	$SESSION->redirect('?m=customerlist');
 
-if (isset($_GET['cutoffstop'])) {
+if ($_GET['cutoffstop']) {
 	if (isset($_GET['cutoffstopindefinitely']))
 		$cutoffstop = intval(pow(2, 31) - 1);
-	elseif ($_GET['cutoffstop'] == '')
-		$cutoffstop = 0;
-	elseif (check_date($_GET['cutoffstop'])) {
-		list ($y, $m, $d) = explode('/', $_GET['cutoffstop']);
-		if (checkdate($m, $d, $y))
+	else {
+		$cutoffstop = date_to_timestamp($_GET['cutoffstop']);
+		if(empty($cutoffstop))
+			$cutoffstop = 0;
+		else
 			$cutoffstop = mktime(23, 59, 59, $m, $d, $y);
-	}
-	// excluded groups check
-	if (!$DB->GetOne('SELECT 1 FROM customerassignments a
-			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user() AND a.customerid = ?',
-			array($customerid))) {
-		$args = array(
-			'cutoffstop' => $cutoffstop,
-			SYSLOG::RES_CUST => $customerid,
-		);
-		$DB->Execute('UPDATE customers SET cutoffstop = ? WHERE id = ?', array_values($args));
-		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        	// excluded groups check
+	        if (!$DB->GetOne('SELECT 1 FROM customerassignments a
+                        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+                        WHERE e.userid = lms_current_user() AND a.customerid = ?',
+                        array($customerid))) {
+                $args = array(
+                        'cutoffstop' => $cutoffstop,
+                        SYSLOG::RES_CUST => $customerid,
+                );
+                $DB->Execute('UPDATE customers SET cutoffstop = ? WHERE id = ?', array_values($args));
+                if ($SYSLOG)
+                        $SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
+        	}
 	}
 }
 

@@ -49,14 +49,12 @@ if(isset($_POST['event']))
 
 	if($event['datefrom'])
 	{
-		list($year, $month, $day) = explode('/', $event['datefrom']);
-		$event['datefrom'] = mktime(0,0,0, $month, $day, $year);
+		$event['datefrom'] = date_to_timestamp($event['datefrom']);
 	}
 
 	if($event['dateto'])
 	{
-		list($year, $month, $day) = explode('/', $event['dateto']);
-		$event['dateto'] = mktime(0,0,0, $month, $day, $year);
+		$event['dateto'] = date_to_timestamp($event['datefrom']);
 	}
 
 	if($event['custid'])

@@ -166,53 +166,40 @@ if (isset($_POST['assignment']))
 		default: // DISPOSABLE
             $period = DISPOSABLE;
 
-	        if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at']))
-			{
-				list($y, $m, $d) = explode('/', $a['at']);
-				if (checkdate($m, $d, $y))
-				{
-					$at = mktime(0, 0, 0, $m, $d, $y);
-					if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
-						$a['atwarning'] = TRUE;
-						$error['at'] = trans('Incorrect date!');
-					}
-				}
-				else
-					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-			}
-			else
+	        if ($a['at']) {
+			$at = date_to_timestamp($a['at']);
+			if(empty($at)) {
 				$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			}
+
+			if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
+					$a['atwarning'] = TRUE;
+					$error['at'] = trans('Incorrect date!');
+			}
+		}
 		break;
 	}
 
-	if ($a['datefrom'] == '')
-		$from = 0;
-	elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['datefrom']))
-	{
-		list($y, $m, $d) = explode('/', $a['datefrom']);
-		if (checkdate($m, $d, $y))
-			$from = mktime(0, 0, 0, $m, $d, $y);
-		else
+	if ($a['datefrom']) {
+		$from = date_to_timestamp($a['datefrom']);
+		if(empty($from))
 			$error['datefrom'] = trans('Incorrect charging start time!');
 	}
 	else
-		$error['datefrom'] = trans('Incorrect charging start time!');
+		$from = 0;
 
-	if ($a['dateto'] == '')
-		$to = 0;
-	elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto']))
-	{
-		list($y, $m, $d) = explode('/', $a['dateto']);
-		if (checkdate($m, $d, $y))
-			$to = mktime(23, 59, 59, $m, $d, $y);
-		else
-			$error['dateto'] = trans('Incorrect charging end time!');
+	if ($a['dateto']) {
+		$to = date_to_timestamp($a['dateto'])+86399;
+		if(empty($to));
+			$error['dateto'] = trans('Incorrect charging start time!');
 	}
 	else
-		$error['dateto'] = trans('Incorrect charging end time!');
+		$to=0;
 
-	if ($to < $from && $to != 0 && $from != 0)
+	if ($to < $from && $to != 0 && $from != 0) {
+		$error['datefrom'] = trans('Incorrect date range!');
 		$error['dateto'] = trans('Incorrect date range!');
+	}
 
 	$a['discount'] = str_replace(',', '.', $a['discount']);
 	$a['pdiscount'] = 0.0;
