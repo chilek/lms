@@ -86,8 +86,10 @@ if(isset($_POST['account']))
         else
         {
                 $date = date_to_timestamp($account['expdate']);
-                if(empty($date))
+                if (empty($date))
                         $error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+                else
+                        $account['expdate'] = $date;
         }
 
 	if($account['domainid'] && $account['ownerid'])
