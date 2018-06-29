@@ -312,8 +312,19 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
 	}
 } else {
 	$charset = $partdata['content-charset'];
-	$mail_body = iconv($charset, 'UTF-8',
-		substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']));
+	$mail_body = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
+
+	$transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
+	switch ($transfer_encoding) {
+		case 'base64':
+			$mail_body = base64_decode($mail_body);
+			break;
+		case 'quoted-printable':
+			$mail_body = quoted_printable_decode($mail_body);
+			break;
+	}
+
+	$mail_body = iconv($charset, 'UTF-8', $mail_body);
 }
 
 mailparse_msg_free($mail);
