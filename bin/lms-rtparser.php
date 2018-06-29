@@ -284,7 +284,8 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
 					$mail_body = iconv($charset, 'UTF-8', $mail_body);
 				}
 			}
-		} elseif (isset($partdata['content-disposition']) && $partdata['content-disposition'] == 'attachment') {
+		} elseif (isset($partdata['content-disposition']) && ($partdata['content-disposition'] == 'attachment'
+				|| $partdata['content-disposition'] == 'inline')) {
 			$file_content = substr($buffer, $partdata['starting-pos-body'], $partdata['ending-pos-body'] - $partdata['starting-pos-body']);
 			$transfer_encoding = isset($partdata['transfer-encoding']) ? $partdata['transfer-encoding'] : '';
 			switch ($transfer_encoding) {
@@ -295,8 +296,14 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
 					$file_content = quoted_printable_decode($file_content);
 					break;
 			}
+			$file_name = isset($partdata['content-name']) ? $partdata['content-name'] :
+				(isset($partdata['disposition-filename']) ? $partdata['disposition-filename'] : '');
+			if (!$file_name) {
+				unset($file_conntent);
+				continue;
+			}
 			$attachments[] = array(
-				'name' => $partdata['content-name'],
+				'name' => $file_name,
 				'type' => $partdata['content-type'],
 				'content' => $file_content,
 			);
