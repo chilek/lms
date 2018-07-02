@@ -59,6 +59,7 @@ version ?.??.?? (????-??-??):
     phpui.helpdesk_block_ticket_close_with_open_events is enabled [interduo]
   - improvement: phpui.protect_passwords configuration variable controls if password
     are displayed in plain text; protected passwords can be still copied to clipboard [chilan]
+  - improvement: updated textual representation of teryt street names (name parts reversed) [chilan]
 
 version 1.11.23 (2018-03-21):
 
