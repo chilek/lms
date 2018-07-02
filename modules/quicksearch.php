@@ -81,7 +81,7 @@ switch ($mode) {
 			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername, va.address AS location_address,
 			    c.status
 				FROM customerview c
-				LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type = ?
+				LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type IN (?, ?)
 				LEFT JOIN vaddresses va ON va.id = ca.address_id
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
 				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'c.id = '.intval($search).' OR ' : '')."
@@ -92,7 +92,7 @@ switch ($mode) {
 					OR LOWER(va.address) ?LIKE? LOWER($sql_search)
 					OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)
 				ORDER by deleted, customername, cc.contact, full_address
-				LIMIT ?", array(LOCATION_ADDRESS, CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+				LIMIT ?", array(DEFAULT_LOCATION_ADDRESS, LOCATION_ADDRESS, CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$result = array();
 			if ($candidates) {
