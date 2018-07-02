@@ -101,6 +101,10 @@ $SESSION->save('rtowner', $owner);
 if (is_null($owner))
 	$owner = -1;
 
+if (!isset($_GET['catid']))
+	$SESSION->restore('rtc', $queuedata['catid']);
+$SESSION->save('rtc', $queuedata['catid']);
+
 if(!isset($_GET['r']))
 	$SESSION->restore('rtr', $r);
 else
