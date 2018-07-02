@@ -105,7 +105,7 @@ if(!isset($_GET['r']))
 	$SESSION->restore('rtr', $r);
 else
 	$r = $_GET['r'];
-	$SESSION->save('rtr', $r);
+$SESSION->save('rtr', $r);
 
 if(!isset($_GET['d']))
     $SESSION->restore('rtd', $deadline);
