@@ -195,8 +195,11 @@ function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches) 
 	$DB = LMSDB::getInstance();
 
 	$idents = $DB->GetAll("
-		SELECT s.id as streetid, " . $subcities['cityid'] . " AS cityid
-		FROM location_streets s WHERE
+		SELECT s.id as streetid, " . $subcities['cityid'] . " AS cityid,
+			(" . $DB->Concat('t.name', "' '", '(CASE WHEN s.name2 IS NULL THEN s.name ELSE ' . $DB->Concat('s.name2', "' '", 's.name') . ' END)') . ") AS streetname
+		FROM location_streets s
+		JOIN location_street_types t ON t.id = s.typeid
+		WHERE
 			((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
 			AND s.cityid IN (" . $subcities['cities'] . ")",
 		array($street, $street));
@@ -222,14 +225,16 @@ function getIdents( $city = null, $street = null, $only_unique_city_matches = fa
 	$DB = LMSDB::getInstance();
 
     if ( $city && $street ) {
-        $idents = $DB->GetAll("
-            SELECT s.id as streetid, s.cityid
-            FROM location_streets s
-                JOIN location_cities c ON (s.cityid = c.id)
-            WHERE
-                ((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
-                AND c.name ?LIKE? ?
-            ORDER BY c.cityid", array($street, $street, $city));
+		$idents = $DB->GetAll("
+			SELECT s.id as streetid, s.cityid
+				(" . $DB->Concat('t.name', "' '", '(CASE WHEN s.name2 IS NULL THEN s.name ELSE ' . $DB->Concat('s.name2', "' '", 's.name') . ' END)') . ") AS streetname
+			FROM location_streets s
+			JOIN location_street_types t ON t.id = s.typeid
+			JOIN location_cities c ON (s.cityid = c.id)
+			WHERE
+				((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
+				AND c.name ?LIKE? ?
+			ORDER BY c.cityid", array($street, $street, $city));
 
 		if (empty($idents))
 			return array();
@@ -1241,8 +1246,8 @@ if ( isset($options['merge']) ) {
 		if (!$quiet)
 			echo 'found' . PHP_EOL;
 
-		$DB->Execute("UPDATE addresses SET city_id = ?, street_id = ? WHERE id = ?",
-			array($idents['cityid'], $idents['streetid'], $a['id']));
+		$DB->Execute("UPDATE addresses SET city_id = ?, street_id = ?, street_name = ? WHERE id = ?",
+			array($idents['cityid'], $idents['streetid'], $idents['streetname'], $a['id']));
 
 		$updated++;
 	}
