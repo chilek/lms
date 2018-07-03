@@ -105,17 +105,6 @@
                         </TD>
                     </TR>
                     {/foreach}
-                    <TR>
-                        <TD class="fall text-center" colspan="11">
-                            {if !empty($ticket.next_ticketid)}
-                            <A href="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
-                            <A href="?m=rtticketview&id={$ticket.next_ticketid}">&nbsp;&nbsp; {trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
-                            {else}
-                            &laquo;&laquo;&nbsp;{trans("Previous ticket")}
-                            &nbsp;&nbsp;{trans("Next ticket")}&raquo;&raquo;&raquo;
-                            {/if}
-                        </TD>
-                    </TR>
                 </TBODY>
             </table>
         </TD>
