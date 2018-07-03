@@ -237,7 +237,7 @@ switch ($action) {
 			$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] != '' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
 			$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
 			$contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
-			$contents[$idx]['count'] = f_round($contents[$idx]['count']);
+			$contents[$idx]['count'] = f_round($contents[$idx]['count'], 3);
 			$contents[$idx]['pdiscount'] = f_round($contents[$idx]['pdiscount']);
 			$contents[$idx]['vdiscount'] = f_round($contents[$idx]['vdiscount']);
 			$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];

@@ -149,8 +149,9 @@ switch($action)
 		if ($error)
 			break;
 
-		foreach(array('count', 'discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
-			$itemdata[$key] = round((float) str_replace(',', '.', $itemdata[$key]), 2);
+		foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
+			$itemdata[$key] = f_round($itemdata[$key]);
+		$itemdata['count'] = f_round($itemdata['count'], 3);
 
 		if ($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
@@ -171,7 +172,7 @@ switch($action)
 			// str_replace here is needed because of bug in some PHP versions (4.3.10)
 			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] / ($taxvalue / 100 + 1));
 			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
-			$itemdata['count'] = f_round($itemdata['count']);
+			$itemdata['count'] = f_round($itemdata['count'], 3);
 			$itemdata['discount'] = f_round($itemdata['discount']);
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
 			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);

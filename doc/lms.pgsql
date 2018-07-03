@@ -842,7 +842,7 @@ CREATE TABLE invoicecontents (
 		CONSTRAINT invoicecontents_taxid_fkey REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
-	count numeric(9,2) 	DEFAULT 0 NOT NULL,
+	count numeric(9,3) 	DEFAULT 0 NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	tariffid integer 	DEFAULT NULL
 		CONSTRAINT invoicecontents_tariffid_fkey REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -3404,6 +3404,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070300');
 
 COMMIT;

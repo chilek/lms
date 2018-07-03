@@ -153,7 +153,7 @@
 		{$item.content}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
-		{$item.count|string_format:"%.2f"}
+		{$item.count|string_format:"%.3f"}
 	</TD>
 	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
@@ -242,7 +242,7 @@
 		{$item.content}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
-		{$item.count|string_format:"%.2f"}
+		{$item.count|string_format:"%.3f"}
 	</TD>
 	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>

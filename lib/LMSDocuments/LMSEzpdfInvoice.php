@@ -367,7 +367,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
-				$tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.2f', $item['count']));
+				$tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.3f', $item['count']));
 				if (!empty($this->data['pdiscount']))
 					$tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
 				if (!empty($this->data['vdiscount'])) {
@@ -393,7 +393,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
-				$tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.2f', $item['count']));
+				$tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.3f', $item['count']));
 				if (!empty($this->data['pdiscount']))
 					$tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
 				if (!empty($this->data['vdiscount'])) {
@@ -434,7 +434,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 					$t_data[$v++] = $item['description'];
 					$t_data[$v++] = $item['prodid'];
 					$t_data[$v++] = $item['content'];
-					$t_data[$v++] = sprintf('%.2f',$item['count']);
+					$t_data[$v++] = sprintf('%.3f',$item['count']);
 					$item['pdiscount'] = floatval($item['pdiscount']);
 					$item['vdiscount'] = floatval($item['vdiscount']);
 					if (!empty($item['pdiscount']))
@@ -501,7 +501,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$t_data[$v++] = $item['description'];
 				$t_data[$v++] = $item['prodid'];
 				$t_data[$v++] = $item['content'];
-				$t_data[$v++] = sprintf('%.2f',$item['count']);
+				$t_data[$v++] = sprintf('%.3f',$item['count']);
 				$item['pdiscount'] = floatval($item['pdiscount']);
 				$item['vdiscount'] = floatval($item['vdiscount']);
 				if (!empty($item['pdiscount']))
@@ -619,7 +619,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$tt_width['name'] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
-				$tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.2f',$item['count']));
+				$tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.3f',$item['count']));
 				if (!empty($this->data['pdiscount']))
 					$tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
 				if (!empty($this->data['vdiscount'])) {
@@ -643,7 +643,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$tt_width['name'] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
-				$tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.2f', $item['count']));
+				$tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.3f', $item['count']));
 				if (!empty($this->data['pdiscount']))
 					$tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
 				if (!empty($this->data['vdiscount'])) {
@@ -716,7 +716,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$data[$i]['name'] = $item['description'];
 				$data[$i]['prodid'] = $item['prodid'];
 				$data[$i]['content'] = $item['content'];
-				$data[$i]['count'] = sprintf('%.2f', $item['count']);
+				$data[$i]['count'] = sprintf('%.3f', $item['count']);
 				$item['pdiscount'] = floatval($item['pdiscount']);
 				$item['vdiscount'] = floatval($item['vdiscount']);
 				if (!empty($item['pdiscount']))
@@ -788,7 +788,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$data[$i]['name'] = $item['description'];
 				$data[$i]['prodid'] = $item['prodid'];
 				$data[$i]['content'] = $item['content'];
-				$data[$i]['count'] = sprintf('%.2f', $item['count']);
+				$data[$i]['count'] = sprintf('%.3f', $item['count']);
 				$item['pdiscount'] = floatval($item['pdiscount']);
 				$item['vdiscount'] = floatval($item['vdiscount']);
 				if (!empty($item['pdiscount']))

@@ -961,7 +961,7 @@ CREATE TABLE invoicecontents (
 	taxid int(11) NOT NULL,
 	prodid varchar(255) NOT NULL DEFAULT '',
 	content varchar(16) NOT NULL DEFAULT '',
-	count decimal(9,2) NOT NULL DEFAULT '0',
+	count decimal(9,3) NOT NULL DEFAULT '0',
 	description text NOT NULL DEFAULT '',
 	tariffid int(11) DEFAULT NULL,
 	INDEX docid (docid),
@@ -3390,4 +3390,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070300');

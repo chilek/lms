@@ -591,10 +591,10 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
 }
 
 // our finance round
-function f_round($value)
+function f_round($value, $precision = 2)
 {
 	$value = str_replace(',','.', $value);
-	$value = round ( (float) $value, 2);
+	$value = round ( (float) $value, $precision);
 	return $value;
 }
 

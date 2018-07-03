@@ -112,8 +112,9 @@ switch($action)
 		if ($error)
 			break;
 
-		foreach(array('count', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
+		foreach (array('pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = f_round($itemdata[$key]);
+		$itemdata['count'] = f_round($itemdata['count'], 3);
 
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
@@ -134,7 +135,7 @@ switch($action)
 			// str_replace->f_round here is needed because of bug in some PHP versions
 			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] /  ($taxvalue / 100 + 1));
 			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
-			$itemdata['count'] = f_round($itemdata['count']);
+			$itemdata['count'] = f_round($itemdata['count'], 3);
 			$itemdata['discount'] = f_round($itemdata['discount']);
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
 			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
@@ -160,7 +161,7 @@ switch($action)
 				$itemdata['discount'] = 0;
 				$itemdata['pdiscount'] = 0;
 				$itemdata['vdiscount'] = 0;
-				$itemdata['count'] = f_round($_POST['l_count'][$id]);
+				$itemdata['count'] = f_round($_POST['l_count'][$id], 3);
 				$itemdata['valuebrutto'] = f_round((-$cash['value'])/$itemdata['count']);
 				$itemdata['s_valuebrutto'] = f_round(-$cash['value']);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) / 100 + 1), 2);

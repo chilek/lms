@@ -182,9 +182,9 @@
 		</TD>
 		<TD WIDTH="1%">
 		    {if $invoice.closed}
-		    {$item.count|string_format:"%.2f"}<BR>{$item.jm}
+		    {$item.count|string_format:"%.3f"}<BR>{$item.jm}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$item.itemid}]">{$item.count|string_format:"%.2f"}
+			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$item.itemid}]">{$item.count|string_format:"%.3f"}
 			<INPUT TYPE="hidden" VALUE="{$item.jm}" NAME="jm[{$item.itemid}]">{$item.jm}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$item.itemid}]" SIZE="3">

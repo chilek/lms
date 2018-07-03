@@ -182,9 +182,9 @@
 		</TD>
 		<TD WIDTH="1%">
 		    {if $cnote.closed}
-		    {$item.count|string_format:"%.2f"}<BR>{$item.content}
+		    {$item.count|string_format:"%.3f"}<BR>{$item.content}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.2f"}
+			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.3f"}
 			<INPUT TYPE="hidden" VALUE="{$item.content}" NAME="content[{$itemid}]">{$item.content}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$itemid}]" SIZE="3">
