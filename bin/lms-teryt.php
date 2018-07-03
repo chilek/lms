@@ -1204,9 +1204,12 @@ if ( isset($options['merge']) ) {
 		echo 'Merging TERYT with LMS database...' . PHP_EOL;
     $updated = 0;
 
-    $addresses = $DB->GetAll("SELECT id, city, street
-        FROM addresses
-        WHERE city IS NOT NULL AND (city_id IS NULL OR (street IS NOT NULL AND street_id IS NULL))");
+	$addresses = $DB->GetAll("SELECT a.id, a.city, a.street
+		FROM addresses a
+		LEFT JOIN documents d ON (d.recipient_address_id = a.id OR d.post_address_id = a.id)
+		WHERE a.city IS NOT NULL
+			AND d.id IS NULL
+			AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))");
 
     if ( !$addresses ) {
         $addresses = array();
