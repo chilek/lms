@@ -382,7 +382,7 @@ $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice
 
 $query = "SELECT
 			a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
-			a.pdiscount, a.vdiscount, a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
+			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, voipphones.phones,
