@@ -110,7 +110,11 @@
 									{trans("Verifier:")}
 								</TD>
 								<TD style="width: 99%;">
-									{include file="rt/rtverifiers.html" form="ticket2"}
+									{if !$ticket.verifierid || $ticket.verifier_username == $layout.logname }
+										{include file="rt/rtverifiers.html" form="ticket2"}
+									{else}
+										<span {tip text="{trans("Only verifier can change this")}"}>{$ticket.verifier_username}</span>
+									{/if}
 								</TD>
 							</TR>
 							<TR>
