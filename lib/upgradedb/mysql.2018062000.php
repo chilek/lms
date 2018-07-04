@@ -23,12 +23,12 @@
 
 $this->BeginTrans();
 
-if ($this->ResourceExists('rttickets_address_id_fk', LMSDB::RESOURCE_TYPE_CONTRAINT))
+if ($this->ResourceExists('rttickets_address_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT))
 	$this->Execute("ALTER TABLE rttickets DROP FOREIGN KEY rttickets_address_id_fk");
 else
 	$this->Execute("ALTER TABLE rttickets DROP FOREIGN KEY rttickets_address_id_fkey");
 
-if ($this->ResourceExists('rttickets_nodeid_fk', LMSDB::RESOURCE_TYPE_CONTRAINT))
+if ($this->ResourceExists('rttickets_nodeid_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT))
 	$this->Execute("ALTER TABLE rttickets DROP FOREIGN KEY rttickets_nodeid_fk");
 else
 	$this->Execute("ALTER TABLE rttickets DROP FOREIGN KEY rttickets_nodeid_fkey");
