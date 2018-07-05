@@ -707,11 +707,11 @@ $EVENTSTYLES = array(
 	EVENT_NETWORK => 'background-color: blue; color: white;',
 	EVENT_SERVICE => 'background-color: red; color: white;',
 	EVENT_INSTALLATION => 'background-color: green; color: white;',
-	EVENT_MEETING => 'background-color: yellow; color: black;',
+	EVENT_MEETING => 'background-color: gold; color: black;',
 	EVENT_VACATION => 'background-color: white; color: black;',
 	EVENT_DUTY => 'background-color: brown; color: white;',
-	EVENT_PHONE => 'background-color: white; color: black;',
-	EVENT_TV => 'background-color: white; color: blue;',
+	EVENT_PHONE => 'background-color: yellow; color: black;',
+	EVENT_TV => 'background-color: greenyellow; color: blue;',
 );
 
 define('SESSIONTYPE_PPPOE', 1);
