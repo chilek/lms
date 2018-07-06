@@ -118,11 +118,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed='') {
         $t = time();
 
-        if(isset($year))
+        if(!isset($year))
 		    $year = date('Y', $t);
-        if(isset($month))
+        if(!isset($month))
 		    $month = date('n', $t);
-        if(isset($day))
+        if(!isset($day))
 		    $day = date('j', $t);
 
         switch ($privacy) {
