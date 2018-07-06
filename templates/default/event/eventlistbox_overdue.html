@@ -1,0 +1,27 @@
+{block name="eventlistbox_overdue"}
+{cycle values="light,lucid" print=false}
+
+<TABLE class="lmsbox" {if !empty($overdue_events)}style="border: 2px red solid"}{/if}>
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%; min-width:90px;">
+        <COL style="width: 95%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;" class="no-print">
+    </COLGROUP>
+    <THEAD>
+        <TR class="superdark">
+            <TD class="bold nobr" colspan="6">
+                <IMG src="img/calendar.gif" alt="">
+                {trans("Overdue events")}
+            </TD>
+        </TR>
+    </THEAD>
+    <TBODY>
+    {foreach $overdue_events as $event}
+        {include file="event/eventlistboxrow.html"}
+    {/foreach}
+    </TBODY>
+</TABLE>
+{/block}
