@@ -18,12 +18,12 @@
         {include file="rt/rtfilter.html"}
         <TR>
             <TD class="pagination text-center" colspan="7">
+                {if $queuedata.total != 0}
                 {include file="scroller.html" listdata=$queuedata loop=$queue}
+                {/if}
             </TD>
             <TD class="pagination text-right nobr">
-                {if $queuedata.total != 0}
                 <A HREF="?m=rtticketadd{if isset($queuedata.id) && (!is_array($queuedata.id) || count($queuedata.id) == 1)}&id={$queuedata.id[0]}{/if}"><IMG src="img/save.gif" ALT=""> {trans("Create")}</A>
-                {/if}
             </TD>
         </TR>
         {include file="rt/rtheader.html"}
@@ -34,12 +34,12 @@
     <TFOOT>
         <TR>
             <TD class="pagination text-center" colspan="7">
+                {if $queuedata.total != 0}
                 {include file="scroller.html" listdata=$queuedata loop=$queue}
+                {/if}
             </TD>
             <TD class="pagination text-right nobr">
-                {if $queuedata.total != 0}
                 <A HREF="?m=rtticketadd{if isset($queuedata.id) && (!is_array($queuedata.id) || count($queuedata.id) == 1)}&id={$queuedata.id[0]}{/if}"><IMG src="img/save.gif" ALT=""> {trans("Create")}</A>
-                {/if}
             </TD>
         </TR>
     </TFOOT>
