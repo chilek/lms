@@ -24,6 +24,23 @@
  *  $Id$
  */
 
+$_LANG['<!rt>Unset'] = '<!rt>Nieokreślony';
+$_LANG['<!rt>Undetermined'] = '<!rt>Nieokreślona';
+$_LANG['Service type:'] = 'Usługa:';
+$_LANG['Ticket type:'] = 'Rodzaj zgłoszenia:';
+$_LANG['Television'] = 'Telewizja';
+$_LANG['Video surveillance'] = 'Monitoring wizyjny';
+$_LANG['IT Services'] = 'Usługi IT';
+$_LANG['<!rt>Other'] = 'Inna';
+$_LANG['Other'] = 'Inny';
+$_LANG['Offer'] = 'Oferta';
+$_LANG['Fault'] = 'Usterka';
+$_LANG['Instalation'] = 'Instalacja';
+$_LANG['Modification'] = 'Modyfikacja';
+$_LANG['Start service'] = 'Uruchomienie usługi';
+$_LANG['Hold service'] = 'Wstrzymanie usługi';
+$_LANG['Deinstalation'] = 'Demontaż';
+$_LANG['Only verifier can change this'] = 'Tylko weryfikator może to zmienić';
 $_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
 $_LANG['Ticket have open assigned events!'] = 'Zgłoszenie posiada otwarte zdarzenia!';
@@ -38,6 +55,8 @@ $_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłosze
 $_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
 $_LANG['Ticket deadline has been set to $a:'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a:';
+$_LANG['Ticket type has been set to $a:'] = 'Rodzaj zgłoszenia został ustawiony jako $a:';
+$_LANG['Ticket service has been set to $a:'] = 'Usługa, którego dotyczy zgłoszenie to $a:';
 $_LANG['Verifier:'] = 'Weryfikator:';
 $_LANG['<!rt>Verifier:'] = 'Weryfikator:';
 $_LANG['Unassigned'] = 'Nieprzypisany';

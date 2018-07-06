@@ -79,7 +79,7 @@ if (isset($_POST['assignment'])) {
 			$tariffid = $LMS->AddAssignment($a);
 		}
 
-        if ($a['tarifftype'] == TARIFF_PHONE && !empty($a['phones'])) {
+        if ($a['tarifftype'] == SERVICE_PHONE && !empty($a['phones'])) {
             $tariffid = $tariffid[0];
 
             foreach($a['phones'] as $p)

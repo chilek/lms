@@ -68,7 +68,7 @@
 				    <TD WIDTH="1%" nowrap><B>{trans("Type:")}</B></TD>
 				    <TD WIDTH="98%">
 					<SELECT SIZE="1" ID="tariff-type" NAME="tariff[type]" {tip text="Select tariff type" trigger="type"}>
-					{foreach item=item from=$_TARIFFTYPES key=key}
+					{foreach item=item from=$_SERVICETYPES key=key}
 					    <OPTION VALUE="{$key}"{if $tariff.type == $key} selected{/if}>{$item}</OPTION>
 					{/foreach}
 					</SELECT>
@@ -423,14 +423,14 @@
             var selected_item = $( "#tariff-type" ).val();
 
             switch (selected_item) {
-                case "{$smarty.const.TARIFF_PHONE}":
+                case "{$smarty.const.SERVICE_PHONE}":
                     $( '#tariff-account-settings' ).hide();
                     $( '#tariff-capacity-settings' ).hide();
                     $( '#tariff-phone-settings' ).show();
                 break;
 
-                case "{$smarty.const.TARIFF_INTERNET}":
-                case "{$smarty.const.TARIFF_TV}":
+                case "{$smarty.const.SERVICE_INTERNET}":
+                case "{$smarty.const.SERVICE_TV}":
                     $( '#tariff-account-settings' ).hide();
                     $( '#tariff-capacity-settings' ).show();
                     $( '#tariff-phone-settings' ).hide();

@@ -786,21 +786,24 @@ button.lms-ui-button {
   border: 1px solid #615847;
   background-color: #DFD5BD;
   color: black;
-}
-button.lms-ui-button:hover,
-button.lms-ui-button:focus {
-  box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
-  background-color: #DFD5BD;
-  border: 1px solid #615847;
-  outline: none;
-  color: black;
   text-decoration: none;
 }
-button.lms-ui-button:active,
-button.lms-ui-button:focus {
-  box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
-  background: #CEBD9B;
+button.lms-ui-button:hover,
+button.lms-ui-button:focus,
+button.lms-ui-button:active {
+  text-decoration: none;
   border: 1px solid #615847;
+  color: black;
+  outline: none;
+}
+button.lms-ui-button:hover {
+  background-color: #DFD5BD;
+  box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
+}
+button.lms-ui-button:focus,
+button.lms-ui-button:active {
+  background-color: #CEBD9B;
+  box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
 }
 .lms-ui-rt-deleted.light:not(:hover) {
   background-color: #ffb1b1;

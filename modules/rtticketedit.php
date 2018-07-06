@@ -129,6 +129,8 @@ if ($id && !isset($_POST['ticket'])) {
 				'categories' => $ticket['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticket['priority']],
 				'deadline' => $ticket['deadline'],
+				'service' => $ticket['service'],
+                'type' => $ticket['type'],
 				'subject' => $ticket['subject'],
 				'body' => $message['body'],
 			);
@@ -261,6 +263,8 @@ if(isset($_POST['ticket']))
 			'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
 			'verifierid' => empty($ticketedit['verifierid']) ? null : $ticketedit['verifierid'],
 			'deadline' => empty($ticketedit['deadline']) ? null : $ticketedit['deadline'],
+            'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
+            'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 

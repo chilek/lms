@@ -250,7 +250,7 @@ if (isset($_POST['assignment']))
 		}
 	}
 
-	if ($a['tarifftype'] == TARIFF_PHONE) {
+	if ($a['tarifftype'] == SERVICE_PHONE) {
 		unset($a['nodes']);
 	} else {
 		unset($a['phones']);

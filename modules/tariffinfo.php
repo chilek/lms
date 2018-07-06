@@ -48,7 +48,7 @@ $layout['pagetitle'] = trans('Subscription Info: $a',$tariff['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 // if selected tariff is phone tariff then load prefixes assigned to this tariff
-if ($tariff['type'] == TARIFF_PHONE) {
+if ($tariff['type'] == SERVICE_PHONE) {
 	$SMARTY->assign('voip_fields', $DB->GetRow("SELECT
                                                     vt.name as pricelist, vt.id as pricelist_id,
                                                     vr.name as rule_name, vr.id as rule_name_id

@@ -1,4 +1,5 @@
 {block name="rtfilter"}
+
 <TR>
     <TD colspan="8">
         <FORM method="GET" action="?m=rtqueueview" name="filter">
@@ -8,10 +9,22 @@
             <span class="bold">{trans("Filter:")}</span>
             {trans("Queue:")}
             <SELECT size="1" name="id[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
-                    {foreach $queues as $q}
+                {foreach $queues as $q}
                     <OPTION value="{$q.id}"{if is_array($queuedata.id) && in_array($q.id, $queuedata.id)} SELECTED{/if}>{$q.name}</OPTION>
                 {/foreach}
             </SELECT>
+            {trans("Service type:")}
+            <SELECT size="1" name="ts[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
+                {foreach $_SERVICETYPES as $key => $ts}
+                    <OPTION value="{$key}"{if is_array($queuedata.service) && in_array($key, $queuedata.service)} SELECTED{/if}>{$ts}</OPTION>
+                {/foreach}
+            </SELECT>
+            {trans("Ticket type:")}
+                <SELECT size="1" name="tt[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
+                {foreach $_RT_TYPES as $key => $tt}
+                    <OPTION value="{$key}"{if is_array($queuedata.type) && in_array($key, $queuedata.type)} SELECTED{/if}>{$tt.label}</OPTION>
+                {/foreach}
+                </SELECT>
             {trans("Category:")}
             <SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                     {foreach $categories $c}

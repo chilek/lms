@@ -85,7 +85,7 @@ class SqlProvider extends VoipDataProvider {
                           WHERE
                             vn.phone ?LIKE? ? AND
                             t.type = ?',
-                          array($number, TARIFF_PHONE));
+                          array($number, SERVICE_PHONE));
 
         return $c;
     }

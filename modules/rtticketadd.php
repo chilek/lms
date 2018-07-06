@@ -138,6 +138,12 @@ if(isset($_POST['ticket']))
 		else
 			$ticket['deadline'] = $dtime;
 
+        if (empty($ticket['type']))
+            $ticket['type'] = null;
+
+        if (empty($ticket['service']))
+            $ticket['service'] = null;
+
 		if (!empty($files)) {
 			foreach ($files as &$file)
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
@@ -214,6 +220,7 @@ if(isset($_POST['ticket']))
 					$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
 					$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
 					$custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+                    $custmail_body = str_replace('%service', $ticket['service'], $custmail_body);
 					$custmail_headers = array(
 						'From' => $headers['From'],
 						'Reply-To' => $headers['From'],
@@ -238,6 +245,8 @@ if(isset($_POST['ticket']))
 				'categories' => $ticketdata['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 				'deadline' => $ticketdata['deadline'],
+				'service' => $ticketdata['service'],
+				'type' => $ticketdata['type'],
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
 			);

@@ -35,6 +35,24 @@ if (isset($_GET['id'])) {
 		$queuedata['id'] = array_filter($queuedata['id'], array($LMS, 'QueueExists'));
 }
 
+if (isset($_GET['ts'])) {
+    if (is_array($_GET['ts']))
+        $queuedata['service'] = array_filter($_GET['ts'], 'intval');
+	elseif (intval($_GET['ts']))
+        $queuedata['service'] = array(intval($_GET['ts']));
+    if (!isset($queuedata['service']) || empty($queuedata['service']))
+        $SESSION->redirect('?m=rtqueuelist');
+}
+
+if (isset($_GET['tt'])) {
+    if (is_array($_GET['tt']))
+        $queuedata['type'] = array_filter($_GET['tt'], 'intval');
+	elseif (intval($_GET['tt']))
+        $queuedata['type'] = array(intval($_GET['tt']));
+    if (!isset($queuedata['type']) || empty($queuedata['type']))
+        $SESSION->redirect('?m=rtqueuelist');
+}
+
 if (isset($_GET['catid'])) {
 	if (is_array($_GET['catid']))
 		$queuedata['catid'] = array_filter($_GET['catid'], 'intval');
@@ -149,8 +167,20 @@ else {
 }
 $SESSION->save('rtprio', $priority);
 
+if(!isset($_GET['ts']))
+    $SESSION->restore('ts', $ts);
+else
+    $ts = $_GET['ts'];
+$SESSION->save('rtts', $ts);
+
+if(!isset($_GET['tt']))
+    $SESSION->restore('tt', $tt);
+else
+    $tt = $_GET['tt'];
+$SESSION->save('tt', $tt);
+
 $layout['pagetitle'] = trans('Tickets List');
-$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $priority, $owner, $queuedata['catid'], $r, null, null, $deadline);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $priority, $owner, $queuedata['catid'], $r, null, null, $deadline, $queuedata['service'], $queuedata['type']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -165,6 +195,8 @@ $queuedata['direction'] = $queue['direction'];
 $queuedata['owner'] = $queue['owner'];
 $queuedata['removed'] = $queue['removed'];
 $queuedata['deadline'] = $queue['deadline'];
+$queuedata['service'] = $queue['service'];
+$queuedata['type'] = $queue['type'];
 
 unset($queue['total']);
 unset($queue['state']);
@@ -174,6 +206,8 @@ unset($queue['direction']);
 unset($queue['owner']);
 unset($queue['removed']);
 unset($queue['deadline']);
+unset($queue['service']);
+unset($queue['type']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);
@@ -197,6 +231,7 @@ $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('users', $LMS->GetUserNames());
+
 $SMARTY->display('rt/rtqueueview.html');
 
 ?>

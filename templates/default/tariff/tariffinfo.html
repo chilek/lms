@@ -104,7 +104,7 @@
                             <TR>
                                 <TD><IMG SRC="img/money.gif" ALT=""></TD>
                                 <TD>{trans("Type:")}</TD>
-                                <TD>{$_TARIFFTYPES[$tariff.type]}</TD>
+                                <TD>{$_SERVICETYPES[$tariff.type]}</TD>
                             </TR>
 
                             {if isset($tariff.numberplan)}
@@ -195,7 +195,7 @@
 
                         </TABLE>
                     </TD>
-                    {if $tariff.type != $smarty.const.TARIFF_PHONE}
+                    {if $tariff.type != $smarty.const.SERVICE_PHONE}
                     <TD WIDTH="50%" CLASS="valign-top">
                         <TABLE CLASS="tariff_tab bold-second">
                             <TR>
@@ -270,7 +270,7 @@
             </TABLE>
         </TD>
     </TR>
-    {if $tariff.type != $smarty.const.TARIFF_PHONE && $tariff.type != $smarty.const.TARIFF_TV && $tariff.type != $smarty.const.TARIFF_INTERNET}
+    {if $tariff.type != $smarty.const.SERVICE_PHONE && $tariff.type != $smarty.const.SERVICE_TV && $tariff.type != $smarty.const.SERVICE_INTERNET}
     <TR>
         <TD COLSPAN="2">
             <TABLE CLASS="tariff_tab bold-first">
@@ -304,7 +304,7 @@
             </TABLE>
         </TD>
     </TR>
-    {else if $tariff.type == $smarty.const.TARIFF_PHONE}
+    {else if $tariff.type == $smarty.const.SERVICE_PHONE}
     <TR>
         <TD COLSPAN="2">
             <TABLE CLASS="tariff_tab bold-first">

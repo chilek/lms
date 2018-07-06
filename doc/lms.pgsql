@@ -1701,6 +1701,8 @@ CREATE TABLE rttickets (
   verifierid integer DEFAULT NULL
         CONSTRAINT rttickets_verifierid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   deadline integer DEFAULT NULL,
+  service integer DEFAULT NULL,
+  type integer DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -3404,6 +3406,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070600');
 
 COMMIT;

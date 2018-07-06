@@ -238,6 +238,8 @@ define('RTMESSAGE_PRIORITY_CHANGE', 2048);
 define('RTMESSAGE_NETDEV_CHANGE', 4096);
 define('RTMESSAGE_VERIFIER_CHANGE', 8192);
 define('RTMESSAGE_DEADLINE_CHANGE', 16384);
+define('RTMESSAGE_SERVICE_CHANGE', 32768);
+define('RTMESSAGE_TYPE_CHANGE', 65536);
 
 // Messages status and type
 define('MSG_NEW', 1);
@@ -412,13 +414,13 @@ $NUM_PERIODS = array(
     DAILY	=>	trans('daily'),
 );
 
-// Tariff types
-define('TARIFF_INTERNET', 1);
-define('TARIFF_HOSTING', 2);
-define('TARIFF_SERVICE', 3);
-define('TARIFF_PHONE', 4);
-define('TARIFF_TV', 5);
-define('TARIFF_OTHER', -1);
+// Service Types
+define('SERVICE_INTERNET', 1);
+define('SERVICE_HOSTING', 2);
+define('SERVICE_SERVICE', 3);
+define('SERVICE_PHONE', 4);
+define('SERVICE_TV', 5);
+define('SERVICE_OTHER', -1);
 
 // VoIP call types
 define('CALL_INCOMING', 1);
@@ -443,13 +445,13 @@ $VOIP_POOL_NUMBER_TYPES = array(
 define('CALL_FLAG_ADMIN_RECORDING', 1);
 define('CALL_FLAG_CUSTOMER_RECORDING', 2);
 
-$TARIFFTYPES = array(
-	TARIFF_INTERNET	=> ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
-	TARIFF_HOSTING	=> ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
-	TARIFF_SERVICE	=> ConfigHelper::getConfig('tarifftypes.service', trans('service')),
-	TARIFF_PHONE	=> ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
-	TARIFF_TV	=> ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
-	TARIFF_OTHER	=> ConfigHelper::getConfig('tarifftypes.other', trans('other')),
+$SERVICETYPES = array(
+    SERVICE_INTERNET => ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
+    SERVICE_HOSTING => ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
+    SERVICE_SERVICE	=> ConfigHelper::getConfig('tarifftypes.service', trans('service')),
+    SERVICE_PHONE => ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
+    SERVICE_TV => ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
+    SERVICE_OTHER => ConfigHelper::getConfig('tarifftypes.other', trans('other')),
 );
 
 $PAYTYPES = array(
@@ -707,11 +709,11 @@ $EVENTSTYLES = array(
 	EVENT_NETWORK => 'background-color: blue; color: white;',
 	EVENT_SERVICE => 'background-color: red; color: white;',
 	EVENT_INSTALLATION => 'background-color: green; color: white;',
-	EVENT_MEETING => 'background-color: yellow; color: black;',
+	EVENT_MEETING => 'background-color: gold; color: black;',
 	EVENT_VACATION => 'background-color: white; color: black;',
 	EVENT_DUTY => 'background-color: brown; color: white;',
-	EVENT_PHONE => 'background-color: white; color: black;',
-	EVENT_TV => 'background-color: white; color: blue;',
+	EVENT_PHONE => 'background-color: yellow; color: black;',
+	EVENT_TV => 'background-color: greenyellow; color: blue;',
 );
 
 define('SESSIONTYPE_PPPOE', 1);
@@ -760,6 +762,66 @@ $EXISTINGASSIGNMENTS = array(
 	EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
 );
 
+//Request Tracker Ticket Types
+define('RT_TYPE_OFFER', 1);
+define('RT_TYPE_DOCS', 2);
+define('RT_TYPE_FAULT', 3);
+define('RT_TYPE_INST', 4);
+define('RT_TYPE_MOD', 5);
+define('RT_TYPE_START', 6);
+define('RT_TYPE_STOP', 7);
+define('RT_TYPE_REMOVE', 8);
+define('RT_TYPE_OTHER', 9);
+
+
+$RT_TYPES = array(
+    RT_TYPE_OFFER => array(
+        'label' => trans('Offer'),
+        'class' => 'lms-ui-rt-ticket-type-offer',
+        'name' => 'RT_TYPE_OFFER'
+    ),
+    RT_TYPE_DOCS => array(
+        'label' => trans('Documents'),
+        'class' => 'lms-ui-rt-ticket-type-docs',
+        'name' => 'RT_TYPE_DOCS'
+        ),
+    RT_TYPE_FAULT => array(
+        'label' => trans('Fault'),
+        'class' => 'lms-ui-rt-ticket-type-fault',
+        'name' => 'RT_TYPE_FAULT'
+        ),
+    RT_TYPE_INST => array(
+        'label' => trans('Instalation'),
+        'class' => 'lms-ui-rt-ticket-type-inst',
+        'name' => 'RT_TYPE_INST'
+        ),
+    RT_TYPE_MOD => array(
+        'label' => trans('Modification'),
+        'class' => 'lms-ui-rt-ticket-type-mod',
+        'name' => 'RT_TYPE_MOD'
+        ),
+    RT_TYPE_START => array(
+        'label' => trans('Start service'),
+        'class' => 'lms-ui-rt-ticket-type-start',
+        'name' => 'RT_TYPE_START'
+        ),
+    RT_TYPE_STOP => array(
+        'label' => trans('Hold service'),
+        'class' => 'lms-ui-rt-ticket-type-stop',
+        'name' => 'RT_TYPE_STOP'
+        ),
+    RT_TYPE_REMOVE => array(
+        'label' => trans('Deinstalation'),
+        'class' => 'lms-ui-rt-ticket-type-remove',
+        'name' => 'RT_TYPE_REMOVE'
+        ),
+    RT_TYPE_OTHER => array(
+	'label' => trans('Other'),
+        'class' => 'lms-ui-rt-ticket-type-other',
+	'name' => 'RT_TYPE_OTHER'
+	),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -774,7 +836,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_RT_PRIORITIES', $RT_PRIORITIES);
 	$SMARTY->assign('_RT_PRIORITY_STYLES', $RT_PRIORITY_STYLES);
 	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
-	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
+	$SMARTY->assign('_SERVICETYPES', $SERVICETYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);
 	$SMARTY->assign('_CONTACTTYPES', $CONTACTTYPES);
 	$SMARTY->assign('_DISCOUNTTYPES', $DISCOUNTTYPES);
@@ -793,6 +855,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
 	$SMARTY->assign('_CATEGORY_DEFAULT_STYLE', $CATEGORY_DEFAULT_STYLE);
 	$SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
+	$SMARTY->assign('_RT_TYPES', $RT_TYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
