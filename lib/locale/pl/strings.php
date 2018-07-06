@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Overdue events'] = 'Zaległe zdarzenia';
 $_LANG['Only verifier can change this'] = 'Tylko weryfikator może to zmienić';
 $_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';

@@ -2426,6 +2426,12 @@ class LMS
         return $manager->EventSearch($search, $order, $simple);
     }
 
+    public function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed = '')
+    {
+        $manager = $this->getEventManager();
+        return $manager->GetEventList($year, $month, $day, $forward, $customerid, $userid, $type, $privacy, $closed);
+    }
+
     public function GetCustomerIdByTicketId($id)
     {
         $manager = $this->getEventManager();
