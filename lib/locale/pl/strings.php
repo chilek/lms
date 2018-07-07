@@ -3927,4 +3927,6 @@ $_LANG['configuration file'] = 'plik konfiguracyjny';
 
 $_LANG['Click copies to clipboard'] = 'Kliknięcie kopiuje do schowka';
 
+$_LANG['(payment without title)'] = '(płatność bez tytułu)';
+
 ?>

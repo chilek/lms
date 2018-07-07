@@ -186,6 +186,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time"));
 			extract($hook_data);
 
+			if (!strlen($comment))
+				$comment = trans('(payment without title)');
 			if (!empty($pattern['comment_replace']))
 				$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 			$cid = $id;
