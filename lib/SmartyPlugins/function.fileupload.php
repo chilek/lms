@@ -34,13 +34,21 @@ function smarty_function_fileupload($params, $template) {
 		else
 			return $result;
 
+	// special treatment of 'files' key in error associative array
+	$tmpl = $template->getTemplateVars('error');
+	if (isset($tmpl['files']))
+		$error_tip_params = array(
+			'text' => $tmpl['files'],
+			'trigger' => $id . '_button');
+
 	$result = '<div class="fileupload" id="' . $id . '">
 			<div class="fileupload" id="' . $id . '-progress-dialog" title="' . trans("Uploading files ...") . '" style="display: none;">
 				<div style="padding: 10px;">' . trans("Uploading files to server ...") . '</div>
 				<div class="fileupload-progressbar"><div class="fileupload-progress-label"></div></div>
 			</div>
 			<div class="fileupload-btn" style="padding: 3px;">
-				<button type="button" class="dark">' . trans("Select files") . '</button>
+				<button type="button" class="dark' . (isset($error_tip_params) ? ' alert' : '') . '" id="' . $id . '_button" '
+					. (isset($error_tip_params) ? smarty_function_tip($error_tip_params, $template) : '') . '>' . trans("Select files") . '</button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;">
 			</div>
 			<div class="fileupload-files">';

@@ -331,6 +331,9 @@ BUTTON {
   font-weight: bold;
   padding: 5px;
 }
+BUTTON.alert {
+  background-color: #FF9B9B;
+}
 IMG {
   vertical-align: middle;
   border: 0;
