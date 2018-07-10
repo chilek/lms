@@ -35,7 +35,7 @@ function smarty_function_fileupload($params, $template) {
 			return $result;
 
 	// special treatment of file upload errors marked in error associative array
-	static $tmpl = $template->getTemplateVars('error');
+	$tmpl = $template->getTemplateVars('error');
 	if (isset($tmpl[$id . '_button']))
 		$error_variable = $id . '_button';
 	elseif (isset($tmpl['files']))
