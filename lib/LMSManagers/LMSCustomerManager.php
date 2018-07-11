@@ -1285,8 +1285,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         // hosting
-        $this->db->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
-        $this->db->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
+        $this->db->Execute('UPDATE passwd SET ownerid=NULL WHERE ownerid=?', array($id));
+        $this->db->Execute('UPDATE domains SET ownerid=NULL WHERE ownerid=?', array($id));
 
         // Remove Userpanel rights
         $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
