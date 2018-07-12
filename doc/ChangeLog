@@ -61,7 +61,10 @@ version ?.??.?? (????-??-??):
     are displayed in plain text; protected passwords can be still copied to clipboard [chilan]
   - improvement: updated textual representation of teryt street names (name parts reversed) [chilan]
   - enhancement: changed invoice content count precision from 2 to 3 digits [chilan]
-  - improvement: overdue events are presented at top of timetable, variable: phpui.timetable_overdue_events [interduo]
+  - improvement: overdue events are presented at top of timetable, variable:
+    phpui.timetable_overdue_events [interduo]
+  - improvement: phpui.disable_contacts_during_customer_delete controls if customers
+    contacts are disabled after customer delete [chilan]
 
 version 1.11.23 (2018-03-21):
 
