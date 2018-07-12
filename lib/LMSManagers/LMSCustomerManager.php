@@ -346,7 +346,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'cutoffstop'     => $customeradd['cutoffstop'],
             'consentdate'    => $customeradd['consentdate'],
             'einvoice'       => $customeradd['einvoice'],
-            SYSLOG::RES_DIV  => $customeradd['divisionid'],
+            SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
             'invoicenotice'  => $customeradd['invoicenotice'],
@@ -1129,7 +1129,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'einvoice'       => $customerdata['einvoice'],
             'invoicenotice'  => $customerdata['invoicenotice'],
             'mailingnotice'  => $customerdata['mailingnotice'],
-            SYSLOG::RES_DIV  => $customerdata['divisionid'],
+            SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ? null : $customerdata['divisionid'],
             'paytime'        => $customerdata['paytime'],
             'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
             SYSLOG::RES_CUST => $customerdata['id']
