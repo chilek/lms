@@ -1197,6 +1197,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function deleteCustomer($id)
     {
         global $LMS;
+
+        $disable_customer_contacts = ConfigHelper::checkConfig('phpui.disable_contacts_during_customer_delete');
+
         $this->db->BeginTrans();
 
         $this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
@@ -1248,6 +1251,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                         }
                 }
+
+			if ($disable_customer_contacts) {
+				$contacts = $this->db->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($id));
+				if (!empty($contacts))
+					foreach ($contacts as $contact) {
+						$args = array(
+							SYSLOG::RES_CUSTCONTACT => $contact,
+							SYSLOG::RES_CUST => $id,
+						);
+						$this->syslog->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $args);
+					}
+			}
         }
 
         $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid IS NOT NULL AND customerid = ?', array($id));
@@ -1287,6 +1302,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         // hosting
         $this->db->Execute('UPDATE passwd SET ownerid=NULL WHERE ownerid=?', array($id));
         $this->db->Execute('UPDATE domains SET ownerid=NULL WHERE ownerid=?', array($id));
+
+		if ($disable_customer_contacts)
+			$this->db->Execute('UPDATE customercontacts SET type = type | ? WHERE customerid = ?',
+				array(CONTACT_DISABLED, $id));
 
         // Remove Userpanel rights
         $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
