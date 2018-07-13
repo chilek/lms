@@ -119,6 +119,18 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
+			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="message[state]" {tip text="Select status" trigger="state"}>
+				{foreach $_RT_STATES as $stateidx => $state}
+				<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
 			<IMG src="img/desc.gif" alt="">
 			{trans("Cause:")}
 		</TD>

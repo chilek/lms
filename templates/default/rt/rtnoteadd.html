@@ -69,9 +69,9 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[state]" {tip text="Select status" trigger="state"}>
-                        {foreach $_RT_STATES as $stateidx => $state}
-                                <OPTION value="{$stateidx}"{if $note.states == $stateidx} selected{/if}>{$state.label}</OPTION>
-                        {/foreach}
+				{foreach $_RT_STATES as $stateidx => $state}
+				<OPTION value="{$stateidx}"{if $note.state == $stateidx} selected{/if}>{$state.label}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

@@ -397,6 +397,8 @@ if (!isset($_POST['message'])) {
 	$message['priority'] = $ticket['priority'];
 	$message['verifierid'] = $ticket['verifierid'];
 	$message['deadline'] = $ticket['deadline'];
+	if ($message['state'] == RT_NEW)
+		$message['state'] = RT_OPEN;
 }
 
 $SMARTY->assign('message', $message);
