@@ -8,7 +8,7 @@
     </TD>
     <TD class="text-left nobr" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
                 <span class="bold">
-                    {if $overdue = 1}
+                    {if $overdue == 1}
                         {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
                         {if $event.begintime != $event.endtime}
                         - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}

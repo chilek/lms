@@ -20,7 +20,7 @@
     </THEAD>
     <TBODY>
     {foreach $overdue_events as $event}
-        {include file="event/eventlistboxrow.html"}
+        {include file="event/eventlistboxrow.html" overdue=1}
     {/foreach}
     </TBODY>
 </TABLE>
