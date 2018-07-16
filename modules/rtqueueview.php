@@ -128,8 +128,11 @@ if (isset($_GET['s'])) {
 	$SESSION->restore('rts', $s);
 else {
 	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
-	if (strlen($s))
+	if (strlen($s)) {
 		$s = explode(',', $s);
+		if (count($s) == 1)
+			$s = $s[0];
+	}
 }
 $SESSION->save('rts', $s);
 
