@@ -742,6 +742,9 @@ li.lms-ui-suggestion-item a {
 .lms-ui-customer-status-debt-collection {
   color: red;
 }
+.lms-ui-assignment-not-commited {
+  text-decoration: line-through;
+}
 #autosuggest {
   display: none;
   z-index: 10000;

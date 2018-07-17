@@ -3929,4 +3929,7 @@ $_LANG['Click copies to clipboard'] = 'Kliknięcie kopiuje do schowka';
 
 $_LANG['(payment without title)'] = '(płatność bez tytułu)';
 
+$_LANG['<!assignment>Expired'] = 'Przeterminowane';
+$_LANG['<!assignment>Commited'] = 'Zatwierdzone';
+
 ?>

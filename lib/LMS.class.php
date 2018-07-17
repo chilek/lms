@@ -964,10 +964,10 @@ class LMS
 		return $manager->GetCustomerAssignmentValue($id);
 	}
 
-	public function GetCustomerAssignments($id, $show_expired = false)
+	public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
         $manager = $this->getFinanceManager();
-        return $manager->GetCustomerAssignments($id, $show_expired);
+        return $manager->GetCustomerAssignments($id, $show_expired, $show_approved);
     }
 
     public function DeleteAssignment($id)
