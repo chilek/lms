@@ -65,6 +65,7 @@ version ?.??.?? (????-??-??):
     phpui.timetable_overdue_events [interduo]
   - improvement: phpui.disable_contacts_during_customer_delete controls if customers
     contacts are disabled after customer delete [chilan]
+  - enhancement: added new filters in customer assignments box - expired and commited filters [chilan]
 
 version 1.11.23 (2018-03-21):
 
