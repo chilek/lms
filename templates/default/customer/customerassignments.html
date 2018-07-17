@@ -314,6 +314,10 @@
 	}
 
 	$(function() {
+		// don't allow to trigger click event on title bar
+		$('#expired_filter,#commited_filter').click(function(e) {
+			e.stopPropagation();
+		});
 		$('#assignment_type').change(updateAssignments).trigger('change');
 		$('#document').change(updateAssignments);
 		$('#expired').change(updateAssignments);
