@@ -247,7 +247,7 @@
 		$('#document_filter').hide();
 	}
 	$('#expired').prop('checked', {if $expired}true{else}parseInt(expired_checked) == 1{/if});
-	$('#commited').prop('checked', {if $commited}true{else}parseInt(commited_checked) == 1{/if});
+	$('#commited').prop('checked', {if $commited}true{else}commited_checked === null ? true : (parseInt(commited_checked) == 1){/if});
 
 /*
 	if (assignment_types.length <= 1 && documents.length <= 1) {
