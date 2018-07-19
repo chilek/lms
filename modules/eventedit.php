@@ -107,12 +107,11 @@ if(isset($_POST['event']))
 		$event['overlapwarned'] = 1;
 	}
 
+	if (!isset($event['customerid']))
+		$event['customerid'] = $event['custid'];
+
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
-		if (isset($event['customerid']))
-			$event['custid'] = $event['customerid'];
-		if ($event['custid'] == '')
-			$event['custid'] = 0;
 
 		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
 		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
