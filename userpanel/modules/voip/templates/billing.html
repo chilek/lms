@@ -60,7 +60,7 @@
         border: 0;
     }
     .lms-input { padding: 4px; }
-    .pagination a {
+    .lms-ui-pagination a {
         font-size: 1.1em;
     }
     .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
@@ -217,7 +217,7 @@
             <TR>
                 {assign var=pagin_result value=$pagination->getPages()}
                 {if count($pagin_result.pages) > 1}
-                    <TD CLASS="pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+                    <TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
                     {include file="pagination.html"}
                     </TD>
                 {else}
@@ -304,7 +304,7 @@
             <TR>
                 {assign var=pagin_result value=$pagination->getPages()}
                 {if count($pagin_result.pages) > 1}
-                    <TD CLASS="pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+                    <TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
                         {include file="pagination.html"}
                     </TD>
                 {else}

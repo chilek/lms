@@ -29,6 +29,8 @@ TEXTAREA.alert:focus {
 	background-color: #FF9B9B;
 }
 
+.text-center	{ text-align: center; }
+
 div.g-recaptcha > div {
     margin: 0 auto 20px;
     display: table;
@@ -41,4 +43,26 @@ li.list-group-item > strong {
 div.form-group.row > label.col-form-label {
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.pagin-box .pagin-button {
+    display: inline-block;
+    text-decoration: none;
+    padding: 7px;
+    border-radius: 3px;
+    color: black;
+    border: 1px solid gray;
+}
+
+.pagin-box .active:hover {
+    cursor: pointer;
+    background-color: #940000;
+    color: white;
+    border: 1px solid black;
+}
+
+.pagin-box .inactive {
+    background-color: lightgray;
+    pointer-events: none;
+    cursor: default;
 }
