@@ -679,8 +679,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($count) {
             $sql .= 'SELECT COUNT(DISTINCT c.id) AS total,
-            	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS over,
-            	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS below ';
+            	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS balanceover,
+            	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS balancebelow ';
         } else {
             $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
             	c.type,
@@ -844,7 +844,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             return $customerlist;
         } else {
-            return $this->db->getRow($sql);
+            $result = $this->db->getRow($sql);
+            if (!empty($result)) {
+                $result['over'] = $result['balanceover'];
+                unset($result['balanceover']);
+                $result['below'] = $result['balancebelow'];
+                unset($result['balancebelow']);
+            }
+            return $result;
         }
     }
 
