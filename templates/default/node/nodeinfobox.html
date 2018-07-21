@@ -94,13 +94,17 @@
 								{if $nodeinfo.passwd}
 								<tr>
 									<td>
-										<img src="img/passwd.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeinfo.passwd}" alt="">
+										<img src="img/passwd.gif" alt="">
 									</td>
 									<td>
 										{trans("Password:")}
 									</td>
 									<td>
-										{if ConfigHelper::checkConfig('phpui.protect_passwords')}{$nodeinfo.passwd|regex_replace:"/./":"*"}{else}{$nodeinfo.passwd}{/if}
+										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
+										<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$nodeinfo.passwd}">{trans("Copy")}</button>
+										{else}
+											{$nodeinfo.passwd}
+										{/if}
 									</td>
 								</tr>
 								{/if}
