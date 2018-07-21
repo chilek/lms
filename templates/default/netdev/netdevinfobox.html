@@ -202,11 +202,15 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Secret:")}</B>
+		<TD WIDTH="1%" class="nowrap bold">
+			{trans("Secret:")}
 		</TD>
 		<TD WIDTH="98%">
-		        {$netdevinfo.secret}
+			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
+				<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$netdevinfo.secret}">{trans("Copy")}</button>
+			{else}
+				{$netdevinfo.secret}
+			{/if}
 		</TD>
 	</TR>
 	{/if}
