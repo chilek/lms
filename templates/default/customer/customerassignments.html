@@ -23,16 +23,19 @@
 					<option value="">{trans("- all -")}</option>
 				</select>
 			</label>
+			<label id="expired_filter">
+				{trans("<!assignment>Expired")}
+				<input type="checkbox" id="expired" value="1"{if $expired} checked{/if}>
+			</label>
+			<label id="commited_filter">
+				{trans("<!assignment>Commited")}
+				<input type="checkbox" id="commited" value="1"{if $commited} checked{/if}>
+			</label>
 			<a id="clear_filter" href="#"><img src="img/delete.gif"><a>
 		</TD>
 		<TD class="text-right nobr">
 			{if !$customerinfo.deleted}
 			<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
-				{if $layout.module == 'customerassignmentedit'}
-				<A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={$assignment.id}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>
-				{else}
-				<A href="?m={$layout.module}&expired={if $expired}0{else}1{/if}&id={if $nodeinfo}{$nodeinfo.id}{else}{$customerinfo.id}{/if}">{if $expired}{trans("Hide expired")}{else}{trans("Show expired")}{/if} &raquo;</A>
-				{/if}
 			<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete all liabilities?")}')" href="?m=customerassignmentdel&amp;cid={$customerinfo.id}">{trans("Delete all")} &raquo;</A>
 			{/if}
 		</TD>
@@ -78,8 +81,11 @@
 				{foreach $assignments as $a}
 				{block name="customerassignments-list-row"}
 				<TR class="highlight {*cycle name=assign*}
-					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
+					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}
+					{if !$a.commited} lms-ui-assignment-not-commited{/if}"
 					data-tariff-type="{$a.tarifftype}"
+					data-expired="{$a.expired}"
+					data-commited="{$a.commited}"
 					data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
 					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					data-value="{$a.real_value|default:"0"|replace:",":"."}"
@@ -222,6 +228,8 @@
 
 	var selected_type = getCookie('customerassignment_tariff_type_{$customerinfo.id}');
 	var selected_document = getCookie('customerassignment_document_{$customerinfo.id}');
+	var expired_checked = getCookie('customerassignment_expired_{$customerinfo.id}');
+	var commited_checked = getCookie('customerassignment_commited_{$customerinfo.id}');
 
 	$.each(assignment_types, function(key, value) {
 		$('#assignment_type').append('<option value="' + value + '"'
@@ -238,19 +246,32 @@
 	if (documents.length <= 1) {
 		$('#document_filter').hide();
 	}
+	$('#expired').prop('checked', {if $expired}true{else}parseInt(expired_checked) == 1{/if});
+	$('#commited').prop('checked', {if $commited}true{else}commited_checked === null ? true : (parseInt(commited_checked) == 1){/if});
+
+/*
 	if (assignment_types.length <= 1 && documents.length <= 1) {
 		$('#clear_filter').hide();
 	}
+*/
 
 	function updateAssignments() {
 		var selected_type = $('#assignment_type').val();
 		var selected_document = $('#document').val();
+		var expired_checked = $('#expired').prop('checked');
+		var commited_checked = $('#commited').prop('checked');
 		var selector = '';
 		if (selected_type.length) {
 			selector += '[data-tariff-type="' + selected_type + '"]';
 		}
 		if (selected_document.length) {
 			selector += '[data-document="' + selected_document + '"]';
+		}
+		if (!expired_checked) {
+			selector += '[data-expired="0"]';
+		}
+		if (commited_checked) {
+			selector += '[data-commited="1"]';
 		}
 		if (!selector.length) {
 			selector = '[data-tariff-type]';
@@ -288,14 +309,24 @@
 
 		setCookie('customerassignment_tariff_type_{$customerinfo.id}', selected_type);
 		setCookie('customerassignment_document_{$customerinfo.id}', selected_document);
+		setCookie('customerassignment_expired_{$customerinfo.id}', expired_checked ? 1 : 0);
+		setCookie('customerassignment_commited_{$customerinfo.id}', commited_checked ? 1 : 0);
 	}
 
 	$(function() {
+		// don't allow to trigger click event on title bar
+		$('#expired_filter,#commited_filter').click(function(e) {
+			e.stopPropagation();
+		});
 		$('#assignment_type').change(updateAssignments).trigger('change');
 		$('#document').change(updateAssignments);
+		$('#expired').change(updateAssignments);
+		$('#commited').change(updateAssignments);
 		$('#clear_filter').click(function() {
 			$('#document').val('');
-			$('#assignment_type').val('').trigger('change');
+			$('#assignment_type').val('');
+			$('#expired').prop('checked', false);
+			$('#commited').prop('checked', true).trigger('change');
 			return false;
 		});
 	});

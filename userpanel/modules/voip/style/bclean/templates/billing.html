@@ -67,7 +67,18 @@
 			</div>
 			<INPUT TYPE="submit" CLASS="btn btn-danger" VALUE="{trans("Search")} &raquo;">
 		</FORM>
-		<hr>
+		<table class="table table-sm table-condensed">
+			<TR>
+				{assign var=pagin_result value=$pagination->getPages()}
+				{if count($pagin_result.pages) > 1}
+					<TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+						{include file="pagination.html"}
+					</TD>
+				{else}
+					<TD COLSPAN="100%" STYLE="padding:10px 0;"></TD>
+					{/if}
+			</TR>
+		</table>
 		{box title="Billing list"}
 		{if $billings}
 			<TABLE CLASS="table table-sm table-condensed">
@@ -133,7 +144,7 @@
 				<TR>
 					{assign var=pagin_result value=$pagination->getPages()}
 					{if count($pagin_result.pages) > 1}
-						<TD CLASS="pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+						<TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
 							{include file="pagination.html"}
 						</TD>
 					{else}

@@ -1176,6 +1176,7 @@ function handle_file_uploads($elemid, &$error) {
 					'error' => $error[$elemid],
 				);
 			else {
+				$errors = array();
 				if (isset($fileupload) && !empty($tmpdir)) {
 					$files2 = array();
 					foreach ($files as &$file) {
@@ -1185,7 +1186,8 @@ function handle_file_uploads($elemid, &$error) {
 								if ($file['name'] == $file2['name'])
 									continue 2;
 						if (!file_exists($tmppath . DIRECTORY_SEPARATOR . $file['name'])) {
-							@move_uploaded_file($file['tmp_name'], $tmppath . DIRECTORY_SEPARATOR . $file['name']);
+							if (!@move_uploaded_file($file['tmp_name'], $tmppath . DIRECTORY_SEPARATOR . $file['name']))
+								$errors[] = trans('Unable to write file: $a', $file['name']);
 							unset($file['tmp_name']);
 						}
 						$files2[] = $file;
@@ -1194,11 +1196,16 @@ function handle_file_uploads($elemid, &$error) {
 					$files = $files2;
 					unset($files2, $file2);
 				}
-				$result = array(
-					'error' => '',
-					'tmpdir' => $tmpdir,
-					'files' => $files,
-				);
+				if (!empty($errors))
+					$result = array(
+						'error' => implode('<br>', $errors),
+					);
+				else
+					$result = array(
+						'error' => '',
+						'tmpdir' => $tmpdir,
+						'files' => $files,
+					);
 			}
 			header('Content-type: application/json');
 			print json_encode($result);

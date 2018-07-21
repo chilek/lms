@@ -346,7 +346,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'cutoffstop'     => $customeradd['cutoffstop'],
             'consentdate'    => $customeradd['consentdate'],
             'einvoice'       => $customeradd['einvoice'],
-            SYSLOG::RES_DIV  => $customeradd['divisionid'],
+            SYSLOG::RES_DIV  => empty($customeradd['divisionid']) ? null : $customeradd['divisionid'],
             'paytime'        => $customeradd['paytime'],
             'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
             'invoicenotice'  => $customeradd['invoicenotice'],
@@ -679,8 +679,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($count) {
             $sql .= 'SELECT COUNT(DISTINCT c.id) AS total,
-            	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS over,
-            	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS below ';
+            	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS balanceover,
+            	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS balancebelow ';
         } else {
             $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
             	c.type,
@@ -844,7 +844,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             return $customerlist;
         } else {
-            return $this->db->getRow($sql);
+            $result = $this->db->getRow($sql);
+            if (!empty($result)) {
+                $result['over'] = $result['balanceover'];
+                unset($result['balanceover']);
+                $result['below'] = $result['balancebelow'];
+                unset($result['balancebelow']);
+            }
+            return $result;
         }
     }
 
@@ -1129,7 +1136,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'einvoice'       => $customerdata['einvoice'],
             'invoicenotice'  => $customerdata['invoicenotice'],
             'mailingnotice'  => $customerdata['mailingnotice'],
-            SYSLOG::RES_DIV  => $customerdata['divisionid'],
+            SYSLOG::RES_DIV  => empty($customerdata['divisionid']) ? null : $customerdata['divisionid'],
             'paytime'        => $customerdata['paytime'],
             'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
             SYSLOG::RES_CUST => $customerdata['id']
@@ -1197,6 +1204,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function deleteCustomer($id)
     {
         global $LMS;
+
+        $disable_customer_contacts = ConfigHelper::checkConfig('phpui.disable_contacts_during_customer_delete');
+
         $this->db->BeginTrans();
 
         $this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
@@ -1248,6 +1258,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                         }
                 }
+
+			if ($disable_customer_contacts) {
+				$contacts = $this->db->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($id));
+				if (!empty($contacts))
+					foreach ($contacts as $contact) {
+						$args = array(
+							SYSLOG::RES_CUSTCONTACT => $contact,
+							SYSLOG::RES_CUST => $id,
+						);
+						$this->syslog->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $args);
+					}
+			}
         }
 
         $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid IS NOT NULL AND customerid = ?', array($id));
@@ -1285,8 +1307,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         // hosting
-        $this->db->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
-        $this->db->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
+        $this->db->Execute('UPDATE passwd SET ownerid=NULL WHERE ownerid=?', array($id));
+        $this->db->Execute('UPDATE domains SET ownerid=NULL WHERE ownerid=?', array($id));
+
+		if ($disable_customer_contacts)
+			$this->db->Execute('UPDATE customercontacts SET type = type | ? WHERE customerid = ?',
+				array(CONTACT_DISABLED, $id));
 
         // Remove Userpanel rights
         $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');

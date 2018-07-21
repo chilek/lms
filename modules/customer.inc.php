@@ -35,8 +35,10 @@ if ($layout['module'] != 'customeredit') {
 }
 
 $expired              = !empty($_GET['expired']) ? true : false;
+$commited             = !empty($_GET['commited']) ? true : false;
 $allevents            = isset($_GET['allevents']) && !empty($_GET['allevents']);
-$assignments          = $LMS->GetCustomerAssignments($customerid, !empty($expired) ? $expired : NULL);
+//$assignments          = $LMS->GetCustomerAssignments($customerid, !empty($expired) ? $expired : NULL);
+$assignments          = $LMS->GetCustomerAssignments($customerid, true, false);
 $customergroups       = $LMS->CustomergroupGetForCustomer($customerid);
 $othercustomergroups  = $LMS->GetGroupNamesWithoutCustomer($customerid);
 $balancelist          = $LMS->GetCustomerBalanceList($customerid);
@@ -109,6 +111,7 @@ if ($receipt = $SESSION->get('receiptprint')) {
 
 $SMARTY->assign(array(
 	'expired' => $expired,
+	'commited' => $commited,
 	'allevents' => $allevents,
 	'time' => $SESSION->get('addbt'),
 	'taxid' => $SESSION->get('addbtax'),

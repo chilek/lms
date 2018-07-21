@@ -39,7 +39,7 @@ $_LANG['Instalation'] = 'Instalacja';
 $_LANG['Modification'] = 'Modyfikacja';
 $_LANG['Start service'] = 'Uruchomienie usługi';
 $_LANG['Hold service'] = 'Wstrzymanie usługi';
-$_LANG['Deinstalation'] = 'Demontaż';
+$_LANG['Overdue events'] = 'Zaległe zdarzenia';
 $_LANG['Only verifier can change this'] = 'Tylko weryfikator może to zmienić';
 $_LANG['<!rt>hours'] = 'godzin';
 $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
@@ -3943,5 +3943,10 @@ $_LANG['greater or equal'] = 'większe lub równe';
 $_LANG['configuration file'] = 'plik konfiguracyjny';
 
 $_LANG['Click copies to clipboard'] = 'Kliknięcie kopiuje do schowka';
+
+$_LANG['(payment without title)'] = '(płatność bez tytułu)';
+
+$_LANG['<!assignment>Expired'] = 'Przeterminowane';
+$_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 
 ?>

@@ -39,6 +39,8 @@ interface LMSEventManagerInterface
 
 	public function GetEvent($id);
 
+    public function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed='');
+
     public function EventSearch($search, $order = 'date,asc', $simple = false);
 
     public function GetCustomerIdByTicketId($id);

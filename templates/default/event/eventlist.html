@@ -2,6 +2,11 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+{if !empty($overdue_events)}
+    <H1>{trans("Overdue events")}</H1>
+    {include file="event/eventlistbox_overdue.html" overdue="1"}
+{/if}
+
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -16,7 +21,7 @@
         {include file="event/eventlistfilter.html"}
     </THEAD>
     <TBODY>
-        {include file="event/eventlistbox.html"}
+        {include file="event/eventlistbox.html" overdue="0"}
     </TBODY>
 </TABLE>
 {/block}

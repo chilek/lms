@@ -166,7 +166,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
 			.$sqlord, array(Auth::GetCurrentUser()));
 
-		if (!empty($list))
+		if (empty($list))
+			$list = array();
+		else
 			foreach ($list as &$document) {
 				$document['attachments'] = $this->db->GetAll('SELECT id, filename, md5sum, contenttype, main
 				FROM documentattachments WHERE docid = ? ORDER BY main DESC, filename', array($document['docid']));
@@ -176,7 +178,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				}
 			}
 
-		$list['total'] = sizeof($list);
+		$list['total'] = count($list);
 		$list['direction'] = $direction;
 		$list['order'] = $order;
 

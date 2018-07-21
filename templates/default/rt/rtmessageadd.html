@@ -111,10 +111,22 @@
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/resolved.gif" alt="">
-			<label for="state">{trans("Resolve ticket:")}</label>
+			<label for="resolve">{trans("Resolve ticket:")}</label>
 		</TD>
 		<TD>
-			<INPUT type="checkbox" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="state"}>
+			<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="message[state]" {tip text="Select status" trigger="state"}>
+				{foreach $_RT_STATES as $stateidx => $state}
+				<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR>

@@ -964,10 +964,10 @@ class LMS
 		return $manager->GetCustomerAssignmentValue($id);
 	}
 
-	public function GetCustomerAssignments($id, $show_expired = false)
+	public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
         $manager = $this->getFinanceManager();
-        return $manager->GetCustomerAssignments($id, $show_expired);
+        return $manager->GetCustomerAssignments($id, $show_expired, $show_approved);
     }
 
     public function DeleteAssignment($id)
@@ -1873,6 +1873,7 @@ class LMS
 				$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 			$headers['Mime-Version'] = '1.0';
 			$headers['Subject'] = qp_encode($headers['Subject']);
+			$headers['Precedence'] = 'bulk';
 
 			$debug_email = ConfigHelper::getConfig('mail.debug_email');
 			if (!empty($debug_email)) {
@@ -1969,6 +1970,7 @@ class LMS
 						$this->mail_object->MessageID = $headers[$header_name];
 					else
 						$this->mail_object->addCustomHeader($header_name . ': ' . $headers[$header_name]);
+			$this->mail_object->addCustomHeader('Precedence: bulk');
 
 			if (isset($headers['Disposition-Notification-To']))
 				$this->mail_object->ConfirmReadingTo = $headers['Disposition-Notification-To'];
@@ -2424,6 +2426,12 @@ class LMS
     {
         $manager = $this->getEventManager();
         return $manager->EventSearch($search, $order, $simple);
+    }
+
+    public function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed = '')
+    {
+        $manager = $this->getEventManager();
+        return $manager->GetEventList($year, $month, $day, $forward, $customerid, $userid, $type, $privacy, $closed);
     }
 
     public function GetCustomerIdByTicketId($id)

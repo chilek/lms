@@ -60,7 +60,7 @@
         border: 0;
     }
     .lms-input { padding: 4px; }
-    .pagination a {
+    .lms-ui-pagination a {
         font-size: 1.1em;
     }
     .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
@@ -213,6 +213,18 @@
                     </FORM>
                 </TD>
             </TR>
+            {if $billings}
+            <TR>
+                {assign var=pagin_result value=$pagination->getPages()}
+                {if count($pagin_result.pages) > 1}
+                    <TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+                    {include file="pagination.html"}
+                    </TD>
+                {else}
+                    <TD COLSPAN="100%" STYLE="padding:10px 0;"></TD>
+                {/if}
+            </TR>
+            {/if}
             <TR>
                 <TD ALIGN="CENTER">
                     {box title="Billing list"}
@@ -277,16 +289,6 @@
                                         </TD>
                                     </TR>
                                 {/section}
-                                <TR CLASS="darkest">
-                                    {assign var=pagin_result value=$pagination->getPages()}
-                                    {if count($pagin_result.pages) > 1}
-                                        <TD CLASS="pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
-                                            {include file="pagination.html"}
-                                        </TD>
-                                    {else}
-                                        <TD COLSPAN="100%" STYLE="padding:10px 0;"></TD>
-                                    {/if}
-                                </TR>
                             {else}
                                 <TR CLASS="darkest">
                                     <TD COLSPAN="100%" CLASS="bold text-center" STYLE="padding:20px 0;">
@@ -298,6 +300,18 @@
                     {/box}
                 </TD>
             </TR>
+            {if $billings}
+            <TR>
+                {assign var=pagin_result value=$pagination->getPages()}
+                {if count($pagin_result.pages) > 1}
+                    <TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+                        {include file="pagination.html"}
+                    </TD>
+                {else}
+                    <TD COLSPAN="100%" STYLE="padding:10px 0;"></TD>
+                {/if}
+            </TR>
+            {/if}
         </TABLE>
     </DIV>
 

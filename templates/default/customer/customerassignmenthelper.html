@@ -103,7 +103,7 @@
 																	{foreach $item.selection.items as $item}
 																	<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"
 																			data-tarifftype="{$item.type}"
-																			{if in_array($item.tariffid, $variables.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
+																			{if in_array($item.tariffid, (array)$variables.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
 																	{/foreach}
 																</select>
 															</td>
@@ -447,7 +447,7 @@
 						{foreach $voipaccounts as $account}
 						{foreach $account.phones as $phone}
 						<label>
-							<input type="checkbox" name="{$variable_prefix}[phones][]" value="{$phone.id}" {if !empty($variables.phones) && in_array($phone.id, $variables.phones)} checked{/if}>
+							<input type="checkbox" name="{$variable_prefix}[phones][]" value="{$phone.id}" {if !empty($variables.phones) && in_array($phone.id, (array)$variables.phones)} checked{/if}>
 							<span class="bold">{$phone.phone}</span> / {$account.login}
 						</label>
 						<br>
@@ -457,7 +457,7 @@
 				</tr>
 				{/if}
 
-				{if count($customernodes) || count($customernetdevnodes) || count($voipaccounts)}
+				{if ($customernodes && count($customernodes)) || ($customernetdevnodes && count($customernetdevnodes)) || ($voipaccounts && count($voipaccounts))}
 				<tr id="a_checkall" style="display: none;">
 					<td colspan=2"></td>
 					<td>

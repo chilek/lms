@@ -105,6 +105,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vusers ON (vusers.id = userid)
 			WHERE e.id = ?', array($id));
 
+		$event['helpdesk'] = !empty($event['ticketid']);
 		$event['userlist'] = $this->db->GetCol('SELECT userid AS id
 			FROM vusers, eventassignments
 			WHERE vusers.id = userid
@@ -114,6 +115,113 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
 		return $event;
 	}
+
+    function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed='') {
+        $t = time();
+
+        if(!isset($year))
+		    $year = date('Y', $t);
+        if(!isset($month))
+		    $month = date('n', $t);
+        if(!isset($day))
+		    $day = date('j', $t);
+
+        switch ($privacy) {
+            case 0:
+                $privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval(Auth::GetCurrentUser()) . '))';
+                break;
+            case 1:
+                $privacy_condition = 'private = 0';
+                break;
+            case 2:
+                $privacy_condition = 'private = 1 AND userid = ' . intval(Auth::GetCurrentUser());
+                break;
+        }
+
+        if ($forward=='-1') {
+            $closed = 0;
+            $overduefilter = ' AND closed = 0 ';
+            $startdate = 0;
+            $enddate = strtotime("midnight", $t);
+        } else {
+            $startdate = mktime(0,0,0, $month, $day, $year);
+            $enddate = mktime(0,0,0, $month, $day+$forward, $year);
+        }
+
+        if ($closed != '')
+            $closedfilter = ' AND closed = '.intval($closed);
+
+        if(!isset($userid) && empty($userid))
+            $userfilter = '';
+        else
+        {
+            if(is_array($userid))
+            {
+                $userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN ('.implode(',', $userid).'))';
+                if(in_array('-1', $userid))
+                    $userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
+            }
+        }
+
+        $list = $this->db->GetAll(
+            'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
+            . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
+		userid, vusers.name AS username, ' . $this->db->Concat('c.city',"', '",'c.address').' AS customerlocation,
+		events.address_id, va.location, nodeid, vn.location AS nodelocation, ticketid
+		FROM events
+		LEFT JOIN vaddresses va ON va.id = events.address_id
+		LEFT JOIN vnodes as vn ON (nodeid = vn.id)
+		LEFT JOIN customerview c ON (customerid = c.id)
+		LEFT JOIN vusers ON (userid = vusers.id)
+		WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+            . $privacy_condition
+            .($customerid ? ' AND customerid = '.intval($customerid) : '')
+            . $userfilter
+            . $overduefilter
+            . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+            . $closedfilter
+            .' ORDER BY date, begintime',
+            array($startdate, $enddate, $enddate, $startdate, Auth::GetCurrentUser()));
+        $list2 = array();
+        if ($list)
+            foreach ($list as $idx => $row) {
+                $row['userlist'] = $this->db->GetAll('SELECT userid AS id, vusers.name
+					FROM eventassignments, vusers
+					WHERE userid = vusers.id AND eventid = ? ',
+                    array($row['id']));
+                $endtime = $row['endtime'];
+                if ($row['enddate'] && $row['enddate'] - $row['date']) {
+                    $days = round(($row['enddate'] - $row['date']) / 86400);
+                    $row['enddate'] = $row['date'] + 86400;
+                    $row['endtime'] = 0;
+                    $dst = date('I', $row['date']);
+                    $list2[] = $row;
+                    while ($days) {
+                        if ($days == 1)
+                            $row['endtime'] = $endtime;
+                        $row['date'] += 86400;
+                        $newdst = date('I', $row['date']);
+                        if ($newdst != $dst) {
+                            if ($newdst < $dst)
+                                $row['date'] += 3600;
+                            else
+                                $row['date'] -= 3600;
+                            $newdst = date('I', $row['date']);
+                        }
+                        list ($year, $month, $day) = explode('/', date('Y/n/j', $row['date']));
+                        $row['date'] = mktime(0, 0, 0, $month, $day, $year);
+                        $row['enddate'] = $row['date'] + 86400;
+                        if ($days > 1 || $endtime)
+                            $list2[] = $row;
+                        $days--;
+                        $dst = $newdst;
+                    }
+                } else
+                    $list2[] = $row;
+            }
+        unset($t);
+        return $list2;
+    }
 
     public function EventSearch($search, $order = 'date,asc', $simple = false)
     {

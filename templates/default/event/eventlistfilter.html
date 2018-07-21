@@ -53,7 +53,7 @@
             </SELECT>
             {trans("Status:")}
             <SELECT name="closed" onchange="document.filter.submit();">
-                <OPTION value=""{if $listdata.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
+                <OPTION value="" {if $listdata.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
                 <OPTION value="0"{if $listdata.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
                 <OPTION value="1"{if $listdata.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
             </SELECT>

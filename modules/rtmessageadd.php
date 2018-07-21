@@ -197,10 +197,8 @@ if(isset($_POST['message']))
 			rrmdir($tmppath);
 
 		// setting status and the ticket owner
-		if (isset($message['state']))
+		if (isset($message['resolve']))
 			$message['state'] = RT_RESOLVED;
-		else if (!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
-			$message['state'] = RT_OPEN;
 
 		if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$message['owner'] = Auth::GetCurrentUser();
@@ -397,6 +395,8 @@ if (!isset($_POST['message'])) {
 	$message['priority'] = $ticket['priority'];
 	$message['verifierid'] = $ticket['verifierid'];
 	$message['deadline'] = $ticket['deadline'];
+	if ($message['state'] == RT_NEW)
+		$message['state'] = RT_OPEN;
 }
 
 $SMARTY->assign('message', $message);

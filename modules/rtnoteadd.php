@@ -206,6 +206,8 @@ if (!isset($_POST['note'])) {
 	$note['priority'] = $ticket['priority'];
 	$note['verifierid'] = $ticket['verifierid'];
 	$note['deadline'] = $ticket['deadline'];
+	if ($note['state'] == RT_NEW)
+		$note['state'] = RT_OPEN;
 }
 
 $SMARTY->assign('note', $note);

@@ -1,0 +1,70 @@
+{block name="eventlistboxrow"}
+<TR class="highlight {cycle}{if $event.closed} blend{/if}"  >
+    <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold">
+        {$_EVENTTYPES[$event.type]}<BR>
+        {if $event.ticketid}
+            <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticketid|string_format:"%06d"}</A>
+        {/if}
+    </TD>
+    <TD class="text-left nobr" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
+                <span class="bold">
+                    {if $overdue == 1}
+                        {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+                        {if $event.begintime != $event.endtime}
+                        - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+                        {/if}<br>
+                        {$event.date|date_format:"%x"}
+                    {else}
+                        {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+                        {if $event.begintime != $event.endtime}
+                        - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+                        {/if}
+                    {/if}
+                </span><BR>
+        {foreach $event.userlist as $user}
+            <A href="?m=userinfo&amp;id={$user.id}">{$user.name|truncate:"25":"...":true}</A><BR>
+        {/foreach}
+    </TD>
+    <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
+        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$event.title}</span>
+        &nbsp;<a href="?m=eventinfo&id={$event.id}">&raquo;&raquo;&raquo;</a><BR>
+        {if $event.description != ''}<IMG src="img/info1.gif" alt=""> {$event.description}{/if}<br>
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><IMG src="img/note.gif" alt=""> {$event.note}</span>{/if}
+    </TD>
+    <TD class="nobr" colspan="2">
+        {if $event.customername}
+        <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+        {if !empty($event.address_id)}
+        {$event.location}
+        {elseif !empty($event.nodeid)}
+        <a href="?m=nodeinfo&id={$event.nodeid}">{$event.nodelocation}</a>
+        {else}
+        {$event.customerlocation}
+        {/if}
+        {/if}
+    </TD>
+    <TD class="text-right nobr">
+        <div class="no-print">
+            {if ConfigHelper::checkPrivilege('timetable_management')}
+            {if $event.closed}
+            <A href="?m=eventedit&amp;id={$event.id}&amp;action=open"><IMG src="img/resolved.gif" alt="{trans("Open")}"title="&nbsp;{trans("Open")}&nbsp;"></A>
+            {else}
+            <A href="?m=eventedit&amp;id={$event.id}&amp;action=close"><IMG src="img/open.gif" alt="{trans("Close")}"title="&nbsp;{trans("Close")}&nbsp;"></A>
+            {/if}
+            <A href="?m=eventdel&amp;id={$event.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
+                <IMG src="img/delete.gif" alt="{trans("Delete")}"title="&nbsp;{trans("Delete")}&nbsp;">
+            </A>
+            <A href="?m=eventedit&amp;id={$event.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}"title="&nbsp;{trans("Edit")}&nbsp;"></A>
+            {/if}
+            {if $event.note == ''}
+                {foreach item=user from=$event.userlist}
+                    {if $layout.logid == $user.id}
+                    <A href="?m=eventnote&id={$event.id}">
+                    <IMG src="img/note.gif" alt="{trans("Add Note")}" title="{trans("Add Note")}"></A>
+                    {/if}
+                {/foreach}
+            {/if}
+        </div>
+    </TD>
+</TR>
+{/block}
