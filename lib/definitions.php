@@ -121,6 +121,7 @@ define('RT_RESOLVED', 2);
 define('RT_DEAD', 3);
 define('RT_SCHEDULED', 4);
 define('RT_WAITING', 5);
+define('RT_EXPIRED', 6);
 
 $RT_STATES = array(
 	RT_NEW => array(
@@ -163,6 +164,12 @@ $RT_STATES = array(
 		'color' => '#b26b00',
 		'img' => 'img/calendar.gif',
 		'name' => 'RT_WAITING'
+	),
+	RT_EXPIRED => array(
+		'label' => trans('<!rt>expired'),
+		'color' => '#278981',
+		'img' => 'img/calendar.gif',
+		'name' => 'RT_EXPIRED'
 	)
 );
 
