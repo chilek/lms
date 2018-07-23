@@ -349,7 +349,7 @@
 			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
 		</TD>
 		<TD style="width: 1%;" class="dark nobr">
-			<span class="bold">{$customerinfo.customername}</span>
+			<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
 			&nbsp;&raquo;&nbsp; {$customerinfo.address} &nbsp; {$customerinfo.zip} {$customerinfo.city}
 			{if $customerinfo.phone}&nbsp;&raquo;&nbsp; {$customerinfo.phone}{/if}
 			&nbsp;&raquo;&nbsp; {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
