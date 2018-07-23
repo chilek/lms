@@ -847,6 +847,8 @@ table.lmsbox td,
 table.lmsbox-inner td,
 table.lmsbox-innerbox td {
   padding: 2px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 table.lmsbox > thead,
 table.lmsbox-inner > thead,
