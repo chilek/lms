@@ -317,7 +317,7 @@ $(function() {
 			$('#customernotify-row').show();
 			$('#customernotify').attr('checked', true);
 		}
-		//xajax_GetCategories($(this).val());
+		xajax_GetCategories($(this).val());
 	});
 
 	var newticket_notify = $('[name="event[rtqueue]"]').find(':selected').attr('data-newticket-notify');

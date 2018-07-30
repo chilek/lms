@@ -267,6 +267,12 @@ if (isset($event['helpdesk'])) {
 			$queue = $firstqueue['id'];
 			if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody'])
 				$ticket['customernotify'] = 1;
+
+			$queuecategories = $LMS->GetQueueCategories($queue);
+			foreach ($categories as &$category)
+				if (isset($queuecategories[$category['id']]) || count($categories) == 1)
+					$category['checked'] = 1;
+			unset($category);
 		}
 	}
 

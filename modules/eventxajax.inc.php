@@ -51,8 +51,30 @@ function getUsersForGroup($groupid) {
 	return $JSResponse;
 }
 
+function GetCategories($queueid) {
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
+	$result = new xajaxResponse();
+
+	if (empty($queueid))
+		return $result;
+
+	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	if (empty($categories))
+		return $result;
+
+	$queuecategories = $LMS->GetQueueCategories($queueid);
+
+	foreach ($categories as $category)
+		$result->assign('cat' . $category['id'], 'checked', isset($queuecategories[$category['id']]));
+
+	return $result;
+}
+
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('select_location', 'getUsersForGroup'));
+$LMS->RegisterXajaxFunction(array('select_location', 'getUsersForGroup', 'GetCategories'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>
