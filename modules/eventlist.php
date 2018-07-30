@@ -33,9 +33,9 @@ if (!empty($_POST)) {
 	else
 		$a = NULL;
 
-    if(isset($_POST['u']))
-	    $u = $_POST['u'];
-    else
+    if (isset($_POST['u']))
+		$u = $_POST['u'];
+	else
 		$u = NULL;
 
     if (isset($_POST['month']))
@@ -92,16 +92,11 @@ if (!empty($_POST)) {
 	$SESSION->restore('elc', $closed);
 }
 
-if(isset($u))
-    $SESSION->save('elu', $u);
-if(isset($a))
-    $SESSION->save('ela', $a);
-if(isset($type))
-    $SESSION->save('elt', $type);
-if(isset($privacy))
-    $SESSION->save('elp', $privacy);
-if(isset($closed))
-    $SESSION->save('elc', $closed);
+$SESSION->save('ela', $a);
+$SESSION->save('elt', $type);
+$SESSION->save('elu', $u);
+$SESSION->save('elp', $privacy);
+$SESSION->save('elc', $closed);
 
 if(!isset($day))
     $day = date('j');
