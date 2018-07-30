@@ -58,6 +58,11 @@ function show_pagecontent() {
 	$('div#pagecontent').show();
 	if (location.hash.length && $(location.hash).length) {
 		$(location.hash)[0].scrollIntoView();
+	} else if (history.state) {
+		window.setTimeout(function(scrollTop) {
+				console.log(scrollTop);
+				$(window).scrollTop(scrollTop) || $('html,body').scrollTop(scrollTop);
+			}, 0, history.state.scrollTop);
 	}
 }
 
@@ -177,6 +182,10 @@ function init_datepickers(selector) {
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
+
+	$(window).scroll(function(e) {
+		history.replaceState({ scrollTop: $(this).scrollTop()}, window.title );
+	});
 
 	$('.lms-ui-submit-button').one('click', function(e) {
 		$(this).unbind('click');
