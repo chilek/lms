@@ -194,6 +194,7 @@ $notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '', t
 $reply_email = ConfigHelper::getConfig($config_section . '.reply_email', '', true);
 $dsn_email = ConfigHelper::getConfig($config_section . '.dsn_email', '', true);
 $mdn_email = ConfigHelper::getConfig($config_section . '.mdn_email', '', true);
+$mail_format = ConfigHelper::getConfig($config_section . '.mail_format', 'text');
 
 $debug_phone = ConfigHelper::getConfig($config_section . '.debug_phone', '', true);
 $script_service = ConfigHelper::getConfig($config_section . '.service', '', true);
@@ -339,7 +340,7 @@ function create_message($type, $subject, $template) {
 }
 
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
-	global $LMS, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email;
+	global $LMS, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email, $mail_format;
 	global $smtp_options;
 
 	$DB = LMSDB::getInstance();
@@ -356,6 +357,9 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 		'Subject' => $subject,
 		'Reply-To' => empty($reply_email) ? $mail_from : $reply_email,
 	);
+
+	if ($mail_format == 'html')
+	    $headers['X-LMS-Format'] = 'html';
 
 	if (!empty($mdn_email)) {
 		$headers['Return-Receipt-To'] = $mdn_email;
