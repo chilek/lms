@@ -186,7 +186,11 @@ elseif(isset($_POST['note']))
 			));
 		}
 
-		$SESSION->redirect('?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+		$backto = $SESSION->get('backto');
+		if (strpos($backto, 'rtqueueview') === false && isset($msgid)) {
+			$SESSION->redirect('?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+		} else
+			$SESSION->redirect('?' . $backto);
 	}
 }
 else
@@ -196,8 +200,6 @@ else
 }
 
 $layout['pagetitle'] = trans('New Note');
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $ticket = $LMS->GetTicketContents($note['ticketid']);
 $SMARTY->assign('ticket', $ticket);

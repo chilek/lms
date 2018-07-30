@@ -325,7 +325,11 @@ if(isset($_POST['message']))
 			));
 		}
 
-		$SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+		$backto = $SESSION->get('backto');
+		if (strpos($backto, 'rtqueueview') === false && isset($msgid))
+			$SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+		else
+			$SESSION->redirect('?' . $backto);
 	}
 }
 else
@@ -383,8 +387,6 @@ else
 }
 
 $layout['pagetitle'] = trans('New Message');
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 
