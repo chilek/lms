@@ -60,7 +60,7 @@ function show_pagecontent() {
 		$(location.hash)[0].scrollIntoView();
 	} else if (history.state) {
 		window.setTimeout(function(scrollTop) {
-				$(window).scrollTop(scrollTop) || $('html,body').scrollTop(scrollTop);
+				$(window).scrollTop(scrollTop);
 			}, 0, history.state.scrollTop);
 	}
 }
