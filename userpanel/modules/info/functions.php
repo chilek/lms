@@ -294,11 +294,14 @@ function module_updatepin() {
 		$pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
 		$pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
 		$pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
-		if (!validate_random_string($userdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters))
+		if (!validate_random_string($userdata['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters)) {
+			$pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+			$pin_allowed_characters = str_split($pin_allowed_characters, 30);
 			$error['pin'] = $error['pin2'] = trans('PIN should have at least $a, maximum $b characters and contain only \'$c\' characters!',
 				ConfigHelper::getConfig('phpui.pin_min_size', 4),
 				ConfigHelper::getConfig('phpui.pin_max_size', 6),
-				ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789'));
+				implode('<br>', $pin_allowed_characters));
+		}
 	}
 
 	if (isset($error)) {
