@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$LMS->UpdateTicketLastView($message['ticketid']);
-
 if(isset($_POST['message']))
 {
 	$message = $_POST['message'];
+
+	$LMS->UpdateTicketLastView($message['ticketid']);
 
 	if($message['subject'] == '')
 		$error['subject'] = trans('Message subject not specified!');
@@ -348,8 +348,11 @@ else
 	$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
 	$message['ticketid'] = $_GET['ticketid'];
+
+	$LMS->UpdateTicketLastView($message['ticketid']);
+
 	$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
-	
+
 	if(isset($_GET['id']))
 	{
 		$reply = $LMS->GetMessage($_GET['id']);
