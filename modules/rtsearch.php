@@ -153,7 +153,7 @@ function RTSearch($search, $order='createtime,desc')
 		}
 	}
 
-	$result['total'] = sizeof($result);
+	$result['total'] = count($result);
 	$result['order'] = $order;
 	$result['direction'] = $direction;
 

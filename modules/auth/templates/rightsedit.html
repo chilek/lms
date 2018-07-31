@@ -25,7 +25,7 @@
 			</TD> 
 			<TD width="1%">
 				{cycle print=false}
-				<INPUT type="checkbox" class="box {cycle}" name="rights[{$key}]" value="1" {if sizeof($rights.$key)==$module.count || $rights.$key == 1}CHECKED{/if}>
+				<INPUT type="checkbox" class="box {cycle}" name="rights[{$key}]" value="1" {if count($rights.$key)==$module.count || $rights.$key == 1}CHECKED{/if}>
 			</TD> 
 		    </TR>
 		    {cycle print=false}

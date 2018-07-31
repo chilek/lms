@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('New Config Option');
 
 $config = isset($_POST['config']) ? $_POST['config'] : array();
 
-if (sizeof($config)) {
+if (count($config)) {
 	foreach($config as $key => $val)
 		if ($key != 'wysiwyg')
 			$config[$key] = trim($val);

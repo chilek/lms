@@ -44,7 +44,7 @@ else
 
 $taxrateedit = isset($_POST['taxrateedit']) ? $_POST['taxrateedit'] : NULL;
 
-if(sizeof($taxrateedit)) 
+if(count($taxrateedit))
 {
 	foreach($taxrateedit as $idx => $key)
 		$taxrateedit[$idx] = trim($key);

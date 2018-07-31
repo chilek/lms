@@ -90,7 +90,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		foreach ($_POST['marks'] as $idx => $mark)
 			$ilm[$idx] = intval($mark);
 
-	if (sizeof($ilm))
+	if (count($ilm))
 		foreach ($ilm as $mark)
 			$ids[] = $mark;
 
@@ -114,9 +114,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if (!empty($_GET['copy'])) $which[] = trans('COPY');
 	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	if (!sizeof($which)) $which[] = trans('ORIGINAL');
+	if (!count($which)) $which[] = trans('ORIGINAL');
 
-	$count = sizeof($ids) * sizeof($which);
+	$count = count($ids) * count($which);
 	$i = 0;
 
 	foreach ($ids as $idx => $invoiceid) {
@@ -177,9 +177,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if (!empty($_GET['copy'])) $which[] = trans('COPY');
 	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	if (!sizeof($which)) $which[] = trans('ORIGINAL');
+	if (!count($which)) $which[] = trans('ORIGINAL');
 
-	$count = sizeof($ids) * sizeof($which);
+	$count = count($ids) * count($which);
 	$i = 0;
 
 	if ($jpk) {
@@ -750,17 +750,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if (!empty($_GET['copy'])) $which[] = trans('COPY');
 	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	if (!sizeof($which)) {
+	if (!count($which)) {
 		$tmp = explode(',', ConfigHelper::getConfig('invoices.default_printpage'));
 		foreach ($tmp as $t)
 			if (trim($t) == 'original') $which[] = trans('ORIGINAL');
 			elseif (trim($t) == 'copy') $which[] = trans('COPY');
 			elseif (trim($t) == 'duplicate') $which[] = trans('DUPLICATE');
 
-		if (!sizeof($which)) $which[] = trans('ORIGINAL');
+		if (!count($which)) $which[] = trans('ORIGINAL');
 	}
 
-	$count = sizeof($which);
+	$count = count($which);
 	$i = 0;
 
 	$invoice['dontpublish'] = $dontpublish;

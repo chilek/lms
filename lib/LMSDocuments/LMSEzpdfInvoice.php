@@ -297,7 +297,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 		$left = $x+$margin;
 		$ny = $fy;
-		$cols = sizeof($data);
+		$cols = count($data);
 		for ($i = 1; $i <= $cols; $i++) {
 			$ly = $this->backend->text_wrap($left+$margin, $fy, $t_width[$i]-2*$margin, $font_size,$data[$i],$t_justify[$i]);
 			$left = $left + $t_width[$i]+2*$margin;
@@ -319,7 +319,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 		$left = $x+$margin;
 		$ny = $fy;
-		$cols = sizeof($data);
+		$cols = count($data);
 		for ($i = $cols-3; $i <= $cols; $i++) {
 			$ly = $this->backend->text_wrap($left+$margin, $fy, $t_width[$i]-2*$margin, $font_size,$data[$i],$t_justify[$i]);
 			$left = $left + $t_width[$i]+2*$margin;

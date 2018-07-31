@@ -1988,12 +1988,12 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	echo '<B>'.trans('Generating customers...').'</B>';	flush();
 	$startip = ip_long('192.168.0.0')+1;
 	$cnt = 0;
-	$lnsize = sizeof($lastnames);
-	$nsize = sizeof($names);
-	$nodsize = sizeof($nodenames);
-	$ppsize = sizeof($phoneprefix);
-	$ssize = sizeof($streets);
-	$esize = sizeof($emaildomains);
+	$lnsize = count($lastnames);
+	$nsize = count($names);
+	$nodsize = count($nodenames);
+	$ppsize = count($phoneprefix);
+	$ssize = count($streets);
+	$esize = count($emaildomains);
 	for($i = 0; $i < sprintf('%d',$_GET['l']); $i++)
 	{
 		$customeradd = array();
@@ -2090,7 +2090,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating network hardware and connections...').'</B>'; flush();
 	$nodes = $DB->GetOne('SELECT count(id) FROM vnodes');
-	$sprod = sizeof($producer);
+	$sprod = count($producer);
 	$i = 0;
 	while($nodes)
 	{

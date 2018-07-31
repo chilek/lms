@@ -140,7 +140,7 @@ if(isset($_GET['id']))
 // receipt positions adding with double click protection
 function additem(&$content, $item)
 {
-        for($i=0, $x=sizeof($content); $i<$x; $i++)
+        for($i=0, $x=count($content); $i<$x; $i++)
 	        if($content[$i]['value'] == $item['value']
 			&& $content[$i]['description'] == $item['description']
 			&& $content[$i]['posuid'] > $item['posuid'] - 1)
@@ -187,7 +187,7 @@ switch($action)
 	break;
 	case 'deletepos':
 
-		if(sizeof($contents))
+		if(count($contents))
 			foreach($contents as $idx => $row)
 				if($row['posuid'] == $_GET['posuid']) 
 					unset($contents[$idx]);
@@ -625,7 +625,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 
 $SMARTY->assign('cashreglist', $cashreglist);
-$SMARTY->assign('cashregcount', sizeof($cashreglist));
+$SMARTY->assign('cashregcount', count($cashreglist));
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);

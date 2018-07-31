@@ -30,7 +30,7 @@ $name = $state['name'];
 
 $stateedit = isset($_POST['stateedit']) ? $_POST['stateedit'] : NULL;
 
-if(sizeof($stateedit)) 
+if(count($stateedit))
 {
 	$stateedit['name'] = trim($stateedit['name']);
 	$stateedit['description'] = trim($stateedit['description']);

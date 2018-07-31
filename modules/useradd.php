@@ -27,7 +27,7 @@
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
-if(sizeof($useradd))
+if(count($useradd))
 {
 
         $error = array();

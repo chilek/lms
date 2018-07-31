@@ -65,7 +65,7 @@ if(isset($_POST['event']))
 	$eventlist = $LMS->EventSearch($event);
 	$daylist = array();
 
-	if(sizeof($eventlist))
+	if(count($eventlist))
 		foreach($eventlist as $event)
 			if(!in_array($event['date'], $daylist))
 				$daylist[] = $event['date'];

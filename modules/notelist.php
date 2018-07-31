@@ -222,7 +222,7 @@ unset($notelist['page']);
 unset($notelist['order']);
 unset($notelist['direction']);
 
-$listdata['total'] = sizeof($notelist);
+$listdata['total'] = count($notelist);
 
 if($note = $SESSION->get('noteprint'))
 {

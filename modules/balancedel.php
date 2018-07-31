@@ -26,7 +26,7 @@
 
 if (!empty($_GET['id']))
 	$LMS->DelBalance($_GET['id']);
-elseif (sizeof($_POST['marks'])) {
+elseif (count($_POST['marks'])) {
 	$ids = array();
 	$docitems = array();
 	foreach ($_POST['marks'] as $markid => $mark)

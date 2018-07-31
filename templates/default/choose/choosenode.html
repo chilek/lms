@@ -44,7 +44,7 @@
 <form name="nodelist">
 <table width="100%" cellpadding="3" id="table">
 	{cycle values="light,lucid" print=false}
-	{if sizeof($nodelist) > 0}
+	{if count($nodelist) > 0}
 	{section name=nodelist loop=$nodelist}
 	{if $nodelist[nodelist].id}
 	<tr class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
@@ -84,7 +84,7 @@
 		    <table width="100%" cellpadding="3" id="table">
 			<tr>
 			    <td align="left" class="nobr">
-			        {if sizeof($nodelist) > 1}
+			        {if count($nodelist) > 1}
 				<input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('nodelist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				{/if}
 			    </td>

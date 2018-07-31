@@ -414,7 +414,7 @@ elseif($graph == '')
 	$SMARTY->assign('start', $start);
 	$SMARTY->assign('mini', $mini);
 	$SMARTY->assign('type', $type);
-	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
+	$SMARTY->assign('emptydb', count($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gd', function_exists('imagepng'));
 	$SMARTY->assign('ming', function_exists('ming_useswfversion'));
 	$SMARTY->display('netdev/netdevmap.html');

@@ -35,7 +35,7 @@
 </FORM>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
-			{if sizeof($nodegroups) > 1 && $nodegroup.count}
+			{if count($nodegroups) > 1 && $nodegroup.count}
 			<FORM name="tmove" method="get" action="">
 			    <input type="hidden" name="is_sure" value="1">
 		            <input type="hidden" name="m" value="nodegroupmove">

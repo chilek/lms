@@ -274,7 +274,7 @@ if(isset($_POST['extended']))
 {
 	$pages = array();
 	$totals = array();
-	$reccount = sizeof($invoicelist);
+	$reccount = count($invoicelist);
 
 	// hidden option: records count for one page of printout
 	// I thinks 20 records is fine, but someone needs 19.
@@ -319,7 +319,7 @@ if(isset($_POST['extended']))
 	$SMARTY->assign('pages', $pages);
 	$SMARTY->assign('rows', $rows);
 	$SMARTY->assign('totals', $totals);
-	$SMARTY->assign('pagescount', sizeof($pages));
+	$SMARTY->assign('pagescount', count($pages));
 	$SMARTY->assign('reccount', $reccount);
 	if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 		$SMARTY->assign('printcustomerid', $_POST['printcustomerid']);

@@ -101,7 +101,7 @@ if(isset($_POST['alias']))
 
 	if(empty($_GET['addaccount']) && empty($_GET['delaccount'])
 		&& empty($_GET['addaccount']) && empty($_GET['delaccount'])
-		&& !sizeof($alias['accounts']) && !sizeof($alias['mailforwards']))
+		&& !count($alias['accounts']) && !count($alias['mailforwards']))
 	{
 		$error['accountid'] = trans('You have to select destination account!');
 		$error['mailforward'] = trans('You have to specify forward e-mail!');
@@ -121,12 +121,12 @@ if(isset($_POST['alias']))
 		$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?',
 			array($alias['id']));
 		
-		if(sizeof($alias['accounts']))
+		if(count($alias['accounts']))
 			foreach($alias['accounts'] as $account)
 				$DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
 					VALUES(?,?)', array($alias['id'], $account['id']));
 
-		if(sizeof($alias['mailforwards']))
+		if(count($alias['mailforwards']))
 			foreach($alias['mailforwards'] as $mailforward)
 				$DB->Execute('INSERT INTO aliasassignments (aliasid, mail_forward)
 					VALUES(?,?)', array($alias['id'], $mailforward));
@@ -150,14 +150,14 @@ else
 			ORDER BY mail_forward',
 			'mail_forward', array($alias['id']));
 	$alias['mailforwards'] = array();
-	if (sizeof($mailforwards))
+	if (count($mailforwards))
 		foreach ($mailforwards as $mailforward => $idx)
 			$alias['mailforwards'][] = $mailforward;
 	if($alias['login'] == '')
 		$alias['domainalias'] = TRUE;
 }
 
-if(isset($alias['accounts']) && sizeof($alias['accounts']))
+if(isset($alias['accounts']) && count($alias['accounts']))
 {
 	$where = 'AND passwd.id NOT IN ('.implode(',',array_keys($alias['accounts'])).')';
 }

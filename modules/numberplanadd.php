@@ -26,7 +26,7 @@
 
 $numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : NULL;
 
-if(sizeof($numberplanadd)) 
+if(count($numberplanadd)) 
 {
 	$numberplanadd['template'] = trim($numberplanadd['template']);
 

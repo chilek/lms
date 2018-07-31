@@ -60,7 +60,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
                 $totalcount += $row['userscount'];
             }
 
-            $usergrouplist['total'] = sizeof($usergrouplist);
+            $usergrouplist['total'] = count($usergrouplist);
             $usergrouplist['totalcount'] = $totalcount;
         }
 
@@ -73,7 +73,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
                 . 'WHERE vu.id = userid AND usergroupid = ? '
                 . ' GROUP BY vu.id, vu.name, vu.lastname ORDER BY vu.lastname', array($id));
 
-        $result['userscount'] = sizeof($result['users']);
+        $result['userscount'] = count($result['users']);
         $result['count'] = $result['userscount'];
         return $result;
     }

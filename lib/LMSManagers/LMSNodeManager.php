@@ -303,7 +303,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 break;
         }
 
-        if (sizeof($search))
+        if (count($search))
             foreach ($search as $idx => $value) {
                 if ($value != '') {
                     switch ($idx) {
@@ -453,7 +453,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				}
 				unset($row);
 
-				$nodelist['total'] = sizeof($nodelist);
+				$nodelist['total'] = count($nodelist);
 				$nodelist['order'] = $order;
 				$nodelist['direction'] = $direction;
 				$nodelist['totalon'] = $totalon;

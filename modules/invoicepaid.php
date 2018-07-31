@@ -27,15 +27,15 @@
 $SESSION->restore('ilm', $ilm);
 $SESSION->remove('ilm');
 
-if(sizeof($_POST['marks']))
+if(count($_POST['marks']))
 	foreach($_POST['marks'] as $id => $mark)
 		$ilm[$id] = $mark;
 
-if(sizeof($ilm))
+if(count($ilm))
 	foreach($ilm as $mark)
 		$ids[] = $mark;
 
-if(sizeof($ids))
+if(count($ids))
 {
 	foreach($ids as $invoiceid)
 	{

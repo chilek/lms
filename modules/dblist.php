@@ -90,7 +90,7 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 if(isset($dblist['time']))
 	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name'],$dblist['hsize']);
 
-$dblist['total'] = isset($dblist['time']) ? sizeof($dblist['time']) : 0;
+$dblist['total'] = isset($dblist['time']) ? count($dblist['time']) : 0;
 
 $SMARTY->assign('dblist', $dblist);
 $SMARTY->display('dblist.html');

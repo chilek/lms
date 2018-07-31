@@ -385,7 +385,7 @@ function rmkdir($dir)
 		$dir = getcwd() . DIRECTORY_SEPARATOR . $dir;
 	$directories = explode(DIRECTORY_SEPARATOR, $dir);
 	$makedirs = 0;
-	for($i=1;$i<sizeof($directories);$i++)
+	for($i=1;$i<count($directories);$i++)
 	{
 		$cdir = '';
 		for($j=1;$j<$i+1;$j++)

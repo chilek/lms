@@ -60,7 +60,7 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
                 $totalcount += $row['tariffscount'];
             }
 
-            $tarifftaglist['total'] = sizeof($tarifftaglist);
+            $tarifftaglist['total'] = count($tarifftaglist);
             $tarifftaglist['totalcount'] = $totalcount;
         }
 
@@ -73,7 +73,7 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
                 . 'WHERE t.id = tariffid AND tarifftagid = ? '
                 . ' GROUP BY t.id, t.name ORDER BY t.name', array($id));
 
-        $result['tariffscount'] = sizeof($result['tariffs']);
+        $result['tariffscount'] = count($result['tariffs']);
         $result['count'] = $result['tariffscount'];
         return $result;
     }

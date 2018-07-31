@@ -54,7 +54,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 		global $LMS;
 
 		$file = preg_split('/\r?\n/', $contents);
-		$patterns_cnt = isset($patterns) ? sizeof($patterns) : 0;
+		$patterns_cnt = isset($patterns) ? count($patterns) : 0;
 		$ln = 0;
 		$sum = array();
 		$data = array();

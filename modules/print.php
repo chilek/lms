@@ -120,7 +120,7 @@ switch($type)
 				}
 			}
 
-			$list['total'] = sizeof($list['id']);
+			$list['total'] = count($list['id']);
 		}
 
 		$SMARTY->assign('balancelist', $list);
@@ -654,7 +654,7 @@ switch($type)
 			$SMARTY->assign('reportlist', $reportlist);
 			$SMARTY->assign('total', $total);
 			$SMARTY->assign('taxes', $taxes);
-			$SMARTY->assign('taxescount', sizeof($taxes));
+			$SMARTY->assign('taxescount', count($taxes));
 		}
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
@@ -819,7 +819,7 @@ switch($type)
 			{
 				// tutaj musimy troch� pokombinowa�, bo liczba
 				// rekord�w na stronie b�dzie zmienna
-				$tmp = is_array($row['title']) ? sizeof($row['title']) : 2;
+				$tmp = is_array($row['title']) ? count($row['title']) : 2;
 				$counter -= max($tmp,2);
 				if($counter<0)
 				{
@@ -850,8 +850,8 @@ switch($type)
 
 			$SMARTY->assign('pages', $pages);
 			$SMARTY->assign('totals', $totals);
-			$SMARTY->assign('pagescount', sizeof($pages));
-			$SMARTY->assign('reccount', sizeof($list));
+			$SMARTY->assign('pagescount', count($pages));
+			$SMARTY->assign('reccount', count($list));
 			if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 				$output = $SMARTY->fetch('print/printreceiptlist-ext.html');
 				html2pdf($output, trans('Reports'), $layout['pagetitle']);

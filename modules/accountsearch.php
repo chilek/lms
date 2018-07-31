@@ -88,7 +88,7 @@ function GetAccountList($order='login,asc', $search, $customer=NULL, $type=NULL,
 		.($sqlord != '' ? $sqlord : '')
 		);
 
-	$list['total'] = sizeof($list);
+	$list['total'] = count($list);
 	$list['order'] = $order;
 	$list['type'] = $type;
 	$list['kind'] = $kind;
@@ -114,7 +114,7 @@ $SESSION->save('aso', $o);
 
 if(isset($_GET['u']))
 	$u = $_GET['u'];
-elseif(sizeof($search))
+elseif(count($search))
 	$u = isset($search['ownerid']) ? $search['ownerid'] : '';
 else
 	$SESSION->restore('asu', $u);
@@ -122,7 +122,7 @@ $SESSION->save('asu', $u);
 
 if(isset($_GET['t']))
 	$t = $_GET['t'];
-elseif(sizeof($search))
+elseif(count($search))
 	$t = isset($search['type']) ? $search['type'] : 0;
 else
 	$SESSION->restore('ast', $t);
@@ -130,7 +130,7 @@ $SESSION->save('ast', $t);
 
 if(isset($_GET['k']))
 	$k = $_GET['k'];
-elseif(sizeof($search))
+elseif(count($search))
 	$k = isset($search['kind']) ? $search['kind'] : 0;
 else
 	$SESSION->restore('ask', $k);
@@ -138,7 +138,7 @@ $SESSION->save('ask', $k);
 
 if(isset($_GET['d']))
 	$d = $_GET['d'];
-elseif(sizeof($search))
+elseif(count($search))
 	$d = 0;
 else
 	$SESSION->restore('asd', $d);
@@ -147,9 +147,9 @@ $SESSION->save('asd', $d);
 if ($SESSION->is_set('asp') && !isset($_GET['page']) && !isset($search))
 	$SESSION->restore('asp', $_GET['page']);
 
-if(sizeof($search) || isset($_GET['s']))
+if(count($search) || isset($_GET['s']))
 {
-	$search = sizeof($search) ? $search : $SESSION->get('accountsearch');
+	$search = count($search) ? $search : $SESSION->get('accountsearch');
 
 	if(!$error)
 	{

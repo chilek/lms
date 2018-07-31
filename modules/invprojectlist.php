@@ -27,7 +27,7 @@
 
 $invprojectlist = $LMS->GetProjects();
 
-$listdata['total'] = sizeof($invprojectlist);
+$listdata['total'] = count($invprojectlist);
   
 if ($SESSION->is_set('ciplp') && !isset($_GET['page']))
         $SESSION->restore('ciplp', $_GET['page']);

@@ -203,7 +203,7 @@ function GetTariffList($order = 'name,asc', $type = NULL, $access = 0, $customer
 				}
 	}
 
-	$tarifflist['total'] = sizeof($tarifflist);
+	$tarifflist['total'] = count($tarifflist);
 	$tarifflist['totalincome'] = $totalincome;
 	$tarifflist['totalcustomers'] = $totalcustomers;
 	$tarifflist['totalcount'] = $totalcount;

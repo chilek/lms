@@ -60,7 +60,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 		break;
 	}
 
-	if(sizeof($search)) foreach($search as $idx => $value)
+	if(count($search)) foreach($search as $idx => $value)
 	{
 		$value = trim($value);
 	        if($value!='')
@@ -108,7 +108,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
-	$netdevlist['total'] = sizeof($netdevlist);
+	$netdevlist['total'] = count($netdevlist);
 	$netdevlist['order'] = $order;
 	$netdevlist['direction'] = $direction;
 

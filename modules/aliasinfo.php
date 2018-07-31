@@ -41,7 +41,7 @@ $mailforwards = $DB->GetAllByKey('SELECT mail_forward
 		FROM aliasassignments WHERE aliasid = ? AND accountid IS NULL AND mail_forward <> \'\'',
 		'mail_forward', array($alias['id']));
 $alias['mailforwards'] = array();
-if(sizeof($mailforwards))
+if(count($mailforwards))
 	foreach($mailforwards as $mailforward => $idx)
 		$alias['mailforwards'][] = $mailforward;
 

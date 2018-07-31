@@ -374,7 +374,7 @@
 		</TD>
 		<TD style="width: 98%;" class="dark text-right red bold">
 			{if $customerinfo.groups}
-			({foreach from=$customerinfo.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customerinfo.groups)}, {/if}{/foreach})
+			({foreach from=$customerinfo.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customerinfo.groups)}, {/if}{/foreach})
 			{/if}
 		</TD>
 	</TR>

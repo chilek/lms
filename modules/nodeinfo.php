@@ -28,7 +28,7 @@ if (isset($_GET['nodegroups'])) {
 	$nodegroups = $LMS->GetNodeGroupNamesByNode(intval($_GET['id']));
 
 	$SMARTY->assign('nodegroups', $nodegroups);
-	$SMARTY->assign('total', sizeof($nodegroups));
+	$SMARTY->assign('total', count($nodegroups));
 	$SMARTY->display('node/nodegrouplistshort.html');
 	die;
 }

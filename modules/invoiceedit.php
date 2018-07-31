@@ -186,7 +186,7 @@ switch($action)
 		if ($invoice['closed'])
 			break;
 
-		if (sizeof($contents))
+		if (count($contents))
 			foreach($contents as $idx => $row)
 				if ($row['posuid'] == $_GET['posuid']) 
 					unset($contents[$idx]);

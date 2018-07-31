@@ -11,7 +11,7 @@ if (!$id || !$LMS->UsergroupExists($id)){
 
 $usergroup = $LMS->UsergroupGet($id);
 $users = $LMS->GetUserWithoutGroupNames($id);
-$userscount = sizeof($users);
+$userscount = count($users);
 
 $layout['pagetitle'] = trans('Group Info: $a',$usergroup['name']);
 

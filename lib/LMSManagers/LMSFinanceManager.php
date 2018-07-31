@@ -1715,7 +1715,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			WHERE tariffid = ? AND commited = 1', array($id));
 
         // count of all customers with that tariff
-        $result['customerscount'] = sizeof($result['customers']);
+        $result['customerscount'] = count($result['customers']);
         // count of all assignments
         $result['count'] = $all['count'];
         // count of 'active' assignments
@@ -2008,7 +2008,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $paymentlist[$idx] = $row;
             }
 
-        $paymentlist['total'] = sizeof($paymentlist);
+        $paymentlist['total'] = count($paymentlist);
 
         return $paymentlist;
     }

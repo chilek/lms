@@ -29,7 +29,7 @@
 	</form>
 	    <tr>
 		<td width="100%" colspan="3" align="right">
-		    {if sizeof($usergroups) > 1 && $usergroup.count}
+		    {if count($usergroups) > 1 && $usergroup.count}
 			<form name="tmove" method="get" action="">
 			    <input type="hidden" name="is_sure" value="1">
 			    <input type="hidden" name="m" value="usergroupmove">

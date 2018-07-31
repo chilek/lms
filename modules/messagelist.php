@@ -183,7 +183,7 @@ unset($messagelist['status']);
 unset($messagelist['order']);
 unset($messagelist['direction']);
 
-$listdata['total'] = sizeof($messagelist);
+$listdata['total'] = count($messagelist);
 
 if ($SESSION->is_set('mlp') && !isset($_GET['page']))
         $SESSION->restore('mlp', $_GET['page']);

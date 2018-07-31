@@ -198,7 +198,7 @@ switch($type)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
 
-		if(sizeof($saldolist['id']) > 0)
+		if(count($saldolist['id']) > 0)
 		{
 			foreach($saldolist['id'] as $i => $v)
 			{
@@ -220,7 +220,7 @@ switch($type)
 				}
 			}
 
-			$list['total'] = sizeof($list['id']);
+			$list['total'] = count($list['id']);
 
 		} else
 			$list['balance'] = 0;

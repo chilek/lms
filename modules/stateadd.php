@@ -26,7 +26,7 @@
 
 $stateadd = isset($_POST['stateadd']) ? $_POST['stateadd'] : NULL;
 
-if(sizeof($stateadd)) 
+if(count($stateadd)) 
 {
 	$stateadd['name'] = trim($stateadd['name']);
 

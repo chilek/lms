@@ -58,7 +58,7 @@ if (!empty($_POST['marks'])) {
 				}
 		}
 
-		if ($other && sizeof($list) > 1)
+		if ($other && count($list) > 1)
 			die('Currently you can only print many documents of type text/html or application/pdf!');
 
 		$ctype = $list[0]['contenttype'];
