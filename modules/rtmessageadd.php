@@ -28,7 +28,7 @@ if(isset($_POST['message']))
 {
 	$message = $_POST['message'];
 
-	$LMS->UpdateTicketLastView($message['ticketid']);
+	$LMS->MarkTicketAsRead($message['ticketid']);
 
 	if($message['subject'] == '')
 		$error['subject'] = trans('Message subject not specified!');
@@ -349,7 +349,7 @@ else
 
 	$message['ticketid'] = $_GET['ticketid'];
 
-	$LMS->UpdateTicketLastView($message['ticketid']);
+	$LMS->MarkTicketAsRead($message['ticketid']);
 
 	$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));
 

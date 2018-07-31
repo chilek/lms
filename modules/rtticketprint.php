@@ -36,7 +36,7 @@ if(! $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $_GET['id']))
 	die;
 }
 
-$LMS->UpdateTicketLastView($_GET['id']);
+$LMS->MarkTicketAsRead($_GET['id']);
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
 

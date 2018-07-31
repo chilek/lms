@@ -99,7 +99,7 @@ foreach ($categories as $category)
 $categories = $ncategories;
 $assignedevents = $LMS->GetEventsByTicketId($id);
 
-$LMS->UpdateTicketLastView($id);
+$LMS->MarkTicketAsRead($id);
 
 $layout['pagetitle'] = trans('Ticket Review: $a',sprintf("%06d", $ticket['ticketid']));
 

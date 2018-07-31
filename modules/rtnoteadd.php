@@ -35,7 +35,7 @@ if(isset($_GET['ticketid']))
 	        die;
 	}
 
-	$LMS->UpdateTicketLastView($_GET['ticketid']);
+	$LMS->MarkTicketAsRead($_GET['ticketid']);
 
 	$note = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
 	$reply = $LMS->GetFirstMessage($note['ticketid']);
@@ -65,7 +65,7 @@ elseif(isset($_POST['note']))
 		$SESSION->redirect('?m=rtqueuelist');
 	}
 
-	$LMS->UpdateTicketLastView($note['ticketid']);
+	$LMS->MarkTicketAsRead($note['ticketid']);
 
 	$result = handle_file_uploads('files', $error);
 	extract($result);

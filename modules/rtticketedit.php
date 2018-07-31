@@ -27,7 +27,7 @@
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 
 $id = intval($_GET['id']);
-$LMS->UpdateTicketLastView($id);
+$LMS->MarkTicketAsRead($id);
 
 if ($id && !isset($_POST['ticket'])) {
 	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id) & 2) != 2

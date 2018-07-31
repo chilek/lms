@@ -1657,9 +1657,9 @@ class LMS
 		return $manager->NotifyUsers($params);
 	}
 
-	public function UpdateTicketLastView($ticketid) {
+	public function MarkTicketAsRead($ticketid) {
 		$manager = $this->getHelpdeskManager();
-		return $manager->UpdateTicketLastView($ticketid);
+		return $manager->MarkTicketAsRead($ticketid);
 	}
 
 	/*

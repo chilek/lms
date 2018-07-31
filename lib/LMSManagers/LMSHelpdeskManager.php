@@ -1128,7 +1128,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		}
 	}
 
-	public function UpdateTicketLastView($ticketid) {
+	public function MarkTicketAsRead($ticketid) {
 		$userid = Auth::GetCurrentUser();
 		if ($this->db->GetOne('SELECT 1 FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
 			array($ticketid, $userid)))

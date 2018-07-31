@@ -105,5 +105,5 @@ interface LMSHelpdeskManagerInterface
 
 	public function NotifyUsers(array $params);
 
-	public function UpdateTicketLastView($ticketid);
+	public function MarkTicketAsRead($ticketid);
 }
