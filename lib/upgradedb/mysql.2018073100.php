@@ -25,8 +25,8 @@ $this->BeginTrans();
 
 $this->Execute("
 	CREATE TABLE rtticketlastview (
-		ticketid int(11) NOT NULL
-		userid int(11) NOT NULL
+		ticketid int(11) NOT NULL,
+		userid int(11) NOT NULL,
 		vdate int(11) NOT NULL,
 		INDEX vdate (vdate),
 		CONSTRAINT rtticketlastview_ticketid_fkey
