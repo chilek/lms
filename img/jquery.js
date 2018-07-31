@@ -196,6 +196,7 @@ $(function() {
 	var datetimepickeroptions = {
 		step: 30,
 		closeOnDateSelect: true,
+		dayOfWeekStart: 1,
 		onShow: function (current_time, input) {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('disable');
