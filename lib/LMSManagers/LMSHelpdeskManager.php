@@ -1096,7 +1096,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			return $this->db->Execute('UPDATE rtticketlastview SET vdate = ?NOW? WHERE ticketid = ? AND userid = ?',
 				array($ticketid, $userid));
 		else
-			return $this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate) VALUES (?, ?, ?NOW)',
+			return $this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate) VALUES (?, ?, ?NOW?)',
 				array($ticketid, $userid));
 	}
 }
