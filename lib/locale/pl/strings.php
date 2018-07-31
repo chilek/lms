@@ -36,6 +36,7 @@ $_LANG['Other'] = 'Inny';
 $_LANG['Offer'] = 'Oferta';
 $_LANG['Fault'] = 'Usterka';
 $_LANG['Instalation'] = 'Instalacja';
+$_LANG['Deinstalation'] = 'Demontaż';
 $_LANG['Modification'] = 'Modyfikacja';
 $_LANG['Start service'] = 'Uruchomienie usługi';
 $_LANG['Hold service'] = 'Wstrzymanie usługi';
