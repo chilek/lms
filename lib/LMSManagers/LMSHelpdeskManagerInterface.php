@@ -104,4 +104,6 @@ interface LMSHelpdeskManagerInterface
 	public function ReplaceNotificationCustomerSymbols($text, array $params);
 
 	public function NotifyUsers(array $params);
+
+	public function UpdateTicketLastView($ticketid);
 }

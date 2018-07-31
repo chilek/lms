@@ -1657,9 +1657,14 @@ class LMS
 		return $manager->NotifyUsers($params);
 	}
 
-    /*
-     *  LMS-UI configuration
-     */
+	public function UpdateTicketLastView($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->UpdateTicketLastView($ticketid);
+	}
+
+	/*
+	 *  LMS-UI configuration
+	 */
 
     public function GetConfigOptionId($var, $section)
     {

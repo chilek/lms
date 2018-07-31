@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,6 +35,8 @@ if(isset($_GET['ticketid']))
 	        die;
 	}
 
+	$LMS->UpdateTicketLastView($_GET['ticketid']);
+
 	$note = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
 	$reply = $LMS->GetFirstMessage($note['ticketid']);
 	$note['inreplyto'] = $reply['id'];
@@ -62,6 +64,8 @@ elseif(isset($_POST['note']))
 	{
 		$SESSION->redirect('?m=rtqueuelist');
 	}
+
+	$LMS->UpdateTicketLastView($note['ticketid']);
 
 	$result = handle_file_uploads('files', $error);
 	extract($result);

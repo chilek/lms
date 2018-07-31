@@ -1088,4 +1088,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$LMS->SendSMS($phone, $params['sms_body']);
 		}
 	}
+
+	public function UpdateTicketLastView($ticketid) {
+		$userid = Auth::GetCurrentUser();
+		if ($this->db->GetOne('SELECT 1 FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
+			array($ticketid, $userid)))
+			return $this->db->Execute('UPDATE rtticketlastview SET vdate = ?NOW? WHERE ticketid = ? AND userid = ?',
+				array($ticketid, $userid));
+		else
+			return $this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate) VALUES (?, ?, ?NOW)',
+				array($ticketid, $userid));
+	}
 }
