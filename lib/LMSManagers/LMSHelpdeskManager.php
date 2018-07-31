@@ -246,7 +246,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			}
 		}
 
-		$result['total'] = sizeof($result);
+		$result['total'] = empty($result) ? 0 : count($result);
 		$result['state'] = $state;
 		$result['order'] = $order;
 		$result['direction'] = $direction;
