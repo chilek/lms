@@ -252,7 +252,7 @@ class LMS
 				'nodegroupassignments', 'nodeassignments', 'tarifftags', 'tariffassignments',
 				'promotions', 'promotionschemas', 'promotionassignments', 'payments',
 				'numberplanassignments', 'customergroups', 'customerassignments', 'nodesessions',
-				'stats', 'netlinks', 'rtqueues', 'rttickets', 'rtmessages', 'rtrights',
+				'stats', 'netlinks', 'rtqueues', 'rttickets', 'rtticketlastview', 'rtmessages', 'rtrights',
 				'rtattachments', 'rtcategories', 'rtcategoryusers', 'rtticketcategories',
 				'rtqueuecategories', 'domains', 'passwd', 'records', 'domainmetadata',
 				'supermasters', 'aliases', 'aliasassignments', 'uiconfig', 'events',

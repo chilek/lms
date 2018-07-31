@@ -70,6 +70,7 @@ DROP TABLE IF EXISTS rtcategories;
 DROP TABLE IF EXISTS rtattachments;
 DROP TABLE IF EXISTS rtrights;
 DROP TABLE IF EXISTS rtmessages;
+DROP TABLE IF EXISTS rtticketlastview;
 DROP TABLE IF EXISTS rttickets;
 DROP TABLE IF EXISTS rtqueues;
 DROP TABLE IF EXISTS netlinks;
@@ -1762,6 +1763,21 @@ CREATE TABLE rttickets (
 
 # --------------------------------------------------------
 #
+# Structure of table  rtticketlastview
+#
+CREATE TABLE rtticketlastview (
+	ticketid int(11) NOT NULL
+	userid int(11) NOT NULL
+	vdate int(11) NOT NULL,
+	INDEX vdate (vdate),
+	CONSTRAINT rtticketlastview_ticketid_fkey
+		FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT rtticketlastview_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table  rtmessages
 #
 CREATE TABLE rtmessages (
@@ -3392,4 +3408,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018073100');

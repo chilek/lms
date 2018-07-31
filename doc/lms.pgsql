@@ -1711,6 +1711,16 @@ CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
 CREATE INDEX rttickets_creatorid_idx ON rttickets (creatorid);
 CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
 
+DROP TABLE IF EXISTS rtticketlastview CASCADE;
+CREATE TABLE rtticketlastview (
+	ticketid integer NOT NULL
+		CONSTRAINT rtticketlastview_ticketid_fkey REFERENCES rttickets (id) ON UPDATE CASCADE ON DELETE CASCADE,
+	userid integer NOT NULL
+		CONSTRAINT rtticketlastview_userid_fkey REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+	vdate integer NOT NULL
+);
+CREATE INDEX rtticketlastview_vdate_idx ON rtticketlastview (vdate);
+
 DROP SEQUENCE IF EXISTS rtmessages_id_seq;
 CREATE SEQUENCE rtmessages_id_seq;
 DROP TABLE IF EXISTS rtmessages CASCADE;
@@ -3406,6 +3416,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018070600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018073100');
 
 COMMIT;
