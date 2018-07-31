@@ -260,7 +260,7 @@
 		<TD style="width: 99%;">
 			<SELECT SIZE="1" name="search[tarifftype]">
 				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
-				{foreach $_TARIFFTYPES as $id => $name}
+				{foreach $_SERVICETYPES as $id => $name}
 				 	<OPTION VALUE="{$id}">{$name}</OPTION>
 				{/foreach}
 			</SELECT>

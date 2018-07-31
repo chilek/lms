@@ -63,7 +63,7 @@ if (!empty($nodes)) {
 				AND t.type IN (?, ?, ?)
 		) s ON s.nodeid = n.id
 		GROUP BY n.id, c.type
-		ORDER BY n.id", 'id', array(TARIFF_INTERNET, TARIFF_PHONE, TARIFF_TV));
+		ORDER BY n.id", 'id', array(SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV));
 	if (empty($services))
 		$services = array();
 	else {
@@ -75,16 +75,16 @@ if (!empty($nodes)) {
 	foreach ($nodes as &$node) {
 		$nodeid = $node['id'];
 
-		$phone_pots = isset($services[$nodeid]['tarifftypes'][TARIFF_PHONE]) && $node['linktechnology'] == 12 ? 1 : 0;
-		$phone_voip = isset($services[$nodeid]['tarifftypes'][TARIFF_PHONE]) && $node['linktechnology'] != 12
+		$phone_pots = isset($services[$nodeid]['tarifftypes'][SERVICE_PHONE]) && $node['linktechnology'] == 12 ? 1 : 0;
+		$phone_voip = isset($services[$nodeid]['tarifftypes'][SERVICE_PHONE]) && $node['linktechnology'] != 12
 			&& ($node['linktechnology'] < 105 || $node['linktechnology'] >= 200) ? 1 : 0;
-		$phone_mobile = isset($services[$nodeid]['tarifftypes'][TARIFF_PHONE])
+		$phone_mobile = isset($services[$nodeid]['tarifftypes'][SERVICE_PHONE])
 			&& $node['linktechnology'] >= 105 && $node['linktechnology'] < 200 ? 1 : 0;
-		$internet_fixed = isset($services[$nodeid]['tarifftypes'][TARIFF_INTERNET])
+		$internet_fixed = isset($services[$nodeid]['tarifftypes'][SERVICE_INTERNET])
 			&& ($node['linktechnology'] < 105 || $node['linktechnology'] >= 200) ? 1 : 0;
-		$internet_mobile = isset($services[$nodeid]['tarifftypes'][TARIFF_INTERNET])
+		$internet_mobile = isset($services[$nodeid]['tarifftypes'][SERVICE_INTERNET])
 			&& $node['linktechnology'] >= 105 && $node['linktechnology'] < 200 ? 1 : 0;
-		$tv = isset($services[$nodeid]['tarifftypes'][TARIFF_TV]) ? 1 : 0;
+		$tv = isset($services[$nodeid]['tarifftypes'][SERVICE_TV]) ? 1 : 0;
 		if (!$phone_pots && !$phone_voip && !$phone_mobile && !$internet_fixed && !$internet_mobile && !$tv)
 			continue;
 

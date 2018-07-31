@@ -2124,7 +2124,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			WHERE customerid = ? AND tariffid IS NOT NULL
 				AND commited = 1
 				AND (dateto > ?NOW? OR dateto = 0)
-				AND (datefrom < ?NOW? OR datefrom = 0))', array(TARIFF_INTERNET, TARIFF_PHONE, TARIFF_TV, $customerid))) {
+				AND (datefrom < ?NOW? OR datefrom = 0))', array(SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV, $customerid))) {
 			foreach ($limits as $row) {
 				foreach ($row as $idx => $val)
 					if ($idx == 'alias_limit' || $idx == 'domain_limit')

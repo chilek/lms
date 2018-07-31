@@ -19,6 +19,8 @@
 		{/if}
 	</TD>
 	<TD class="nobr valign-top">
+		<span>{$_SERVICETYPES[$queue[ticket].service]}</span>
+		<span>{$_RT_TYPES[$queue[ticket].type].label}</span>
 		{if $queue[ticket].state == $smarty.const.RT_NEW}
 		<span class="red">
 		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}

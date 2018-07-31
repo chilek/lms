@@ -103,8 +103,8 @@
 	var assignment_settings = {
 		customerid: {$customerinfo.id},
 		selected: selected,
-		internetTariffType: {$smarty.const.TARIFF_INTERNET},
-		phoneTariffType: {$smarty.const.TARIFF_PHONE},
+		internetTariffType: {$smarty.const.SERVICE_INTERNET},
+		phoneTariffType: {$smarty.const.SERVICE_PHONE},
 		tariffTypes: tariffTypes,
 		variablePrefix: 'assignment',
         hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
@@ -130,7 +130,7 @@
                     	return;
 					break;
 				default:
-					if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET}
+					if (tariffTypes[tariffid] == {$smarty.const.SERVICE_INTERNET}
 				        && !$('#nodelist :checked:not([name="allbox"])').length
 				        && !confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
 					    e.stopImmediatePropagation();

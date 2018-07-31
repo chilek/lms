@@ -57,6 +57,24 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/service-type.png" alt="">
+									{trans("Service type:")}
+								</TD>
+								<TD style="width: 99%;" class="nobr">
+                                    {$_SERVICETYPES[$ticket.service]}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/ticket-type.png" alt="">
+									{trans("Ticket type:")}
+								</TD>
+								<TD style="width: 99%;" class="nobr">
+                                    {$_RT_TYPES[$ticket.type].label}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
 									<IMG src="img/customer.gif" alt="">
 									{trans("Requestor:")}
 								</TD>

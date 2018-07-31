@@ -1121,27 +1121,27 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
 	p->check_invoices = g->config_getbool(p->base.ini, p->base.instance, "check_invoices", 0);
 
-	p->tariff_internet = _TARIFF_INTERNET_;
-	p->tariff_hosting = _TARIFF_HOSTING_;
-	p->tariff_service = _TARIFF_SERVICE_;
-	p->tariff_phone = _TARIFF_PHONE_;
-	p->tariff_tv = _TARIFF_TV_;
-	p->tariff_other = _TARIFF_OTHER_;
+	p->tariff_internet = _SERVICE_INTERNET_;
+	p->tariff_hosting = _SERVICE_HOSTING_;
+	p->tariff_service = _SERVICE_SERVICE_;
+	p->tariff_phone = _SERVICE_PHONE_;
+	p->tariff_tv = _SERVICE_TV_;
+	p->tariff_other = _SERVICE_OTHER_;
 
 	res = g->db->query(g->db->conn, "SELECT var, value FROM uiconfig WHERE section='tarifftypes' AND disabled=0");
 	for (i = 0; i < g->db->nrows(res); i++) {
 		char *val = g->db->get_data(res, i, "value");
-		if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_INTERNET_))
+		if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_INTERNET_))
 			p->tariff_internet = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_HOSTING_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_HOSTING_))
 			p->tariff_hosting = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_SERVICE_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_SERVICE_))
 			p->tariff_service = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_PHONE_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_PHONE_))
 			p->tariff_phone = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_TV_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_TV_))
 			p->tariff_tv = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_OTHER_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_OTHER_))
 			p->tariff_other = strdup(val);
 	}
 	g->db->free(&res);

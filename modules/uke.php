@@ -1151,9 +1151,9 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
 		// get info about computers connected to network node
 		$nodes = $DB->GetAll("SELECT na.nodeid, c.type, n.invprojectid, nd.id AS netdevid, nd.status,"
-			. $DB->GroupConcat("DISTINCT (CASE t.type WHEN ".TARIFF_INTERNET." THEN 'INT'
-				WHEN ".TARIFF_PHONE." THEN 'TEL'
-				WHEN ".TARIFF_TV." THEN 'TV'
+			. $DB->GroupConcat("DISTINCT (CASE t.type WHEN ".SERVICE_INTERNET." THEN 'INT'
+				WHEN ".SERVICE_PHONE." THEN 'TEL'
+				WHEN ".SERVICE_TV." THEN 'TV'
 				ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
 			FROM nodeassignments na
 			JOIN nodes n             ON n.id = na.nodeid

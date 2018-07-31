@@ -1918,7 +1918,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
 			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
 			    'domain_limit' => 0, 'alias_limit' => 0,
-			    'type' => TARIFF_INTERNET, 'authtype' => 0);
+			    'type' => SERVICE_INTERNET, 'authtype' => 0);
 	$t1 = $LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 
 			    'value' => '60', 'taxid' => '2', 'prodid' => '', 
@@ -1932,7 +1932,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
 			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
 			    'domain_limit' => 0, 'alias_limit' => 0,
-			    'type' => TARIFF_INTERNET, 'authtype' => 0);
+			    'type' => SERVICE_INTERNET, 'authtype' => 0);
 	$t2 = $LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 
 			    'value' => '120', 'taxid' => '3', 'prodid' => '', 
@@ -1946,7 +1946,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
 			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
 			    'domain_limit' => 0, 'alias_limit' => 0,
-			    'type' => TARIFF_INTERNET, 'authtype' => 0);
+			    'type' => SERVICE_INTERNET, 'authtype' => 0);
 	$t3 = $LMS->TariffAdd($tariffdata);
 	echo ($t1 && $t2 && $t3) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
 

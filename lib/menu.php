@@ -218,7 +218,7 @@ $menu = array(
 				),
 				array(
 					'name' => trans('Subscription List'),
-					'link' => '?m=tarifflist&t=' . TARIFF_PHONE,
+					'link' => '?m=tarifflist&t=' . SERVICE_PHONE,
 					'tip' => trans('Phone tariff list'),
 					'prio' => 40,
 				),

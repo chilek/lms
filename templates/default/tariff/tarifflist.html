@@ -54,7 +54,7 @@
 				{trans("Type:")}
 				<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.type} SELECTED{/if}>{trans("- all -")}</OPTION>
-					{foreach from=$_TARIFFTYPES item=item key=key}
+					{foreach from=$_SERVICETYPES item=item key=key}
 					<OPTION value="{$key}" {if $listdata.type == $key} SELECTED {/if}>{$item}</OPTION>
 					{/foreach}
 				</SELECT>

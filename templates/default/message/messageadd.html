@@ -215,7 +215,7 @@
 					<TD style="width: 93%;">
 						<SELECT name="message[tarifftype]" {tip trigger="network" text="Select tariff type"}>
 							<option value="0">{trans("- all -")}</option>
-							{foreach $_TARIFFTYPES as $key => $type}
+							{foreach $_SERVICETYPES as $key => $type}
 							<option value="{$key}"{if $message.tarifftype == $key} selected{/if}>{$type}</option>
 							{/foreach}
 						</SELECT>

@@ -446,7 +446,7 @@ $query = "SELECT
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, a.separatedocument, voipcost.value DESC";
 
-$billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, TARIFF_PHONE,
+$billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
@@ -488,7 +488,7 @@ foreach ($assigns as $assign) {
 	else
 		$desc = $comment;
 
-	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
+	$desc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
 	$desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
 	$desc = preg_replace("/\%desc/", $assign['description'], $desc);
@@ -731,7 +731,7 @@ foreach ($assigns as $assign) {
 			//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value" . PHP_EOL;
 
 			$sdesc = $s_comment;
-			$sdesc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $sdesc);
+			$sdesc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $sdesc);
 			$sdesc = preg_replace("/\%tariff/", $assign['name'], $sdesc);
 			$sdesc = preg_replace("/\%attribute/", $assign['attribute'], $sdesc);
 			$sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);

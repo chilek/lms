@@ -46,8 +46,8 @@
 	var assignment_settings = {
 		customerid: {if !empty($cid)}{$cid}{else}0{/if},
 		selected: selected,
-		internetTariffType: {$smarty.const.TARIFF_INTERNET},
-		phoneTariffType: {$smarty.const.TARIFF_PHONE},
+		internetTariffType: {$smarty.const.SERVICE_INTERNET},
+		phoneTariffType: {$smarty.const.SERVICE_PHONE},
 		tariffTypes: tariffTypes,
 		variablePrefix: 'document[assignment]',
 		hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
