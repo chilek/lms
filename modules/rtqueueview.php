@@ -182,8 +182,14 @@ else
     $tt = $_GET['tt'];
 $SESSION->save('tt', $tt);
 
+if (isset($_GET['unread']))
+	$unread = $_GET['unread'];
+else
+	$SESSION->restore('rtunread', $unread);
+$SESSION->save('rtunread', $unread);
+
 $layout['pagetitle'] = trans('Tickets List');
-$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $priority, $owner, $queuedata['catid'], $r, null, null, $deadline, $queuedata['service'], $queuedata['type']);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $priority, $owner, $queuedata['catid'], $r, null, null, $deadline, $queuedata['service'], $queuedata['type'], $unread);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -200,6 +206,7 @@ $queuedata['removed'] = $queue['removed'];
 $queuedata['deadline'] = $queue['deadline'];
 $queuedata['service'] = $queue['service'];
 $queuedata['type'] = $queue['type'];
+$queuedata['unread'] = $queue['unread'];
 
 unset($queue['total']);
 unset($queue['state']);
@@ -211,6 +218,7 @@ unset($queue['removed']);
 unset($queue['deadline']);
 unset($queue['service']);
 unset($queue['type']);
+unset($queue['unread']);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);

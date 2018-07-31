@@ -50,7 +50,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL, $deadline = NULL, $serviceids = NULL, $typeids = NULL) {
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL, $deadline = NULL, $serviceids = NULL, $typeids = NULL, $unread = null) {
 		if (!$order)
 			$order = 'createtime,desc';
 
@@ -190,6 +190,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	} else
 		$deadlinefilter = '';
 
+		if (isset($unread) && $unread >= 0) {
+			switch ($unread) {
+				case 0:
+					$unreadfilter = ' AND lv.vdate >= m2.maxcreatetime';
+					break;
+				case 1:
+					$unreadfilter = ' AND lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime';
+					break;
+			}
+		} else
+			$unread = -1;
+
+		$userid = Auth::GetCurrentUser();
+
 		if ($result = $this->db->GetAll(
 			'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
 				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid,
@@ -197,7 +211,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
-				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type
+				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type,
+				(CASE WHEN lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime THEN 1 ELSE 0 END) AS unread 
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
@@ -226,9 +241,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rtticketcategories
 				GROUP BY ticketid
 			) tc2 ON tc2.ticketid = t.id
+			LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
+			LEFT JOIN (
+				SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
+				GROUP BY ticketid
+			) m2 ON m2.ticketid = t.id
 			WHERE 1=1 '
 			. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
 			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
+			. $unreadfilter
 			. $statefilter
 			. $priorityfilter
 			. $ownerfilter
@@ -238,11 +259,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $deadlinefilter
 			. $serviceidsfilter
 			. $typeidsfilter
-			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
+			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''), array($userid))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
 				JOIN rtcategoryusers cu ON cu.categoryid = c.id
-				WHERE cu.userid = ?', 'categoryid', array(Auth::GetCurrentUser()));
+				WHERE cu.userid = ?', 'categoryid', array($userid));
 			foreach ($result as $idx => $ticket) {
 				if (ConfigHelper::checkConfig('rt.show_ticket_categories')) {
 					$categories = explode(',', $ticket['categories']);
@@ -278,6 +299,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$result['deadline'] = $deadline;
 		$result['service'] = $serviceids;
 		$result['type'] = $typeids;
+		$result['unread'] = $unread;
 
 		return $result;
 	}
@@ -408,7 +430,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			) lm ON lm.ticketid = t.id
 			LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
 			WHERE t.queueid = ?
-				AND (lv.ticketid IS NULL OR (lv.ticketid IS NOT NULL AND lv.vdate < lm.maxcreatetime))',
+				AND (lv.ticketid IS NULL OR lv.vdate < lm.maxcreatetime)',
 			array(Auth::GetCurrentUser(), $id));
 
         return $stats;
@@ -511,7 +533,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved,
-				    COUNT(CASE WHEN lv.ticketid IS NULL OR (lv.ticketid IS NOT NULL AND lv.vdate < maxcreatetime) THEN 1 END) AS unread
+				    COUNT(CASE WHEN lv.ticketid IS NULL OR lv.vdate < maxcreatetime THEN 1 END) AS unread
 				    FROM rtcategories c
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid

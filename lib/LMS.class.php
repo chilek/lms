@@ -1454,10 +1454,10 @@ class LMS
         return $manager->GetQueue($id);
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = 0, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL, $deadline = NULL, $serviceids = NULL, $typeids = NULL)
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = 0, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL, $deadline = NULL, $serviceids = NULL, $typeids = NULL, $unread = null)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueContents($ids, $order, $state, $priority, $owner, $catids, $removed, $netdevids, $netnodeids, $deadline, $serviceids, $typeids);
+        return $manager->GetQueueContents($ids, $order, $state, $priority, $owner, $catids, $removed, $netdevids, $netnodeids, $deadline, $serviceids, $typeids, $unread);
     }
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL)
