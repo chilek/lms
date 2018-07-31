@@ -69,6 +69,7 @@ version ?.??.?? (????-??-??):
   - improvement: added support for html mail format in lms-notify.php backend script" [chilan]
   - enhancement: introduced ticket service types and ticket types, added variable %service, %type 
     for helpdesk notify messages [interduo]
+  - ehnancement: helpdesk ticket unread status introduced [chilan]
 
 version 1.11.23 (2018-03-21):
 
