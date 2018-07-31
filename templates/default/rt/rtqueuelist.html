@@ -5,6 +5,7 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
         <COLGROUP>
+				<COL style="width: 1%;">
                 <COL style="width: 25%;">
                 <COL style="width: 70%;">
                 <COL style="width: 1%;">
@@ -18,6 +19,8 @@
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/queue.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">
 			{trans("Queue")}:
 		</TD>
 		<TD>
@@ -49,8 +52,10 @@
 	{foreach from=$queues item=queue}
 	<TR class="highlight {cycle} lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 		<TD class="nobr bold">
-			<IMG src="img/queue.gif" ALT="">
-			&nbsp;{$queue.name}
+			{if $queue.unread}<img src="img/ring-blue.png" alt="">{else}<IMG src="img/queue.gif" ALT="">{/if}
+		</TD>
+		<TD class="nobr bold">
+			{$queue.name}
 		</TD>
 		<TD>
 			{if $queue.description}
@@ -85,7 +90,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="8" class="empty-table">
+		<TD colspan="9" class="empty-table">
 			<p>{trans("There are no queues.")} {trans('Click $a to create.', '<a href="?m=rtqueueadd">'|cat: trans('here')|cat: '</a>')} </p>
 		</TD>
 	</TR>
@@ -93,7 +98,7 @@
         </TBODY>
         <TFOOT>
 	<TR>
-		<TD COLSPAN="3" class="text-right bold">
+		<TD COLSPAN="4" class="text-right bold">
 			<IMG src="img/info2.gif" ALT="">
 			{trans("Total:")}
 		</TD>
