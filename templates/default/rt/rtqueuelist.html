@@ -6,11 +6,12 @@
 <TABLE class="lmsbox">
         <COLGROUP>
                 <COL style="width: 25%;">
-                <COL style="width: 71%;">
+                <COL style="width: 70%;">
                 <COL style="width: 1%;">
                 <COL style="width: 1%;">
                 <COL style="width: 1%;">
                 <COL style="width: 1%;">
+				<COL style="width: 1%;">
                 <COL style="width: 1%;">
         </COLGROUP>
     <THEAD>
@@ -31,6 +32,9 @@
 		</TD>
 		<TD class="text-right">
 			{trans("Opened:")}
+		</TD>
+		<TD class="text-right">
+			{trans("Unread:")}
 		</TD>
 		<TD class="text-right">
 			{trans("Last:")}
@@ -62,6 +66,9 @@
 			{$queue.open|default:0}
 		</TD>
 		<TD class="text-center nobr">
+			{$queue.unread|default:0}
+		</TD>
+		<TD class="text-center nobr">
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD class="nobr">
@@ -78,7 +85,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="7" class="empty-table">
+		<TD colspan="8" class="empty-table">
 			<p>{trans("There are no queues.")} {trans('Click $a to create.', '<a href="?m=rtqueueadd">'|cat: trans('here')|cat: '</a>')} </p>
 		</TD>
 	</TR>
@@ -95,6 +102,9 @@
 		</TD>
 		<TD class="text-center bold">
 			{sum array=$queues column=open}
+		</TD>
+		<TD class="text-center bold">
+			{sum array=$queues column=unread}
 		</TD>
 		<TD COLSPAN="2">
 			&nbsp;

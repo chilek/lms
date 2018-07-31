@@ -297,21 +297,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return ($rights ? $rights : 0);
     }
 
-    public function GetQueueList($stats = true)
-    {
-	$del = 0;
-        if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
+	public function GetQueueList($stats = true) {
+		$del = 0;
+		if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q'
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
 				WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array(Auth::GetCurrentUser(), $del))) {
-            if ($stats)
-                foreach ($result as $idx => $row)
-                    foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
-                        $result[$idx][$sidx] = $row2;
-        }
-        return $result;
-    }
+			if ($stats)
+				foreach ($result as $idx => $row)
+					foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
+						$result[$idx][$sidx] = $row2;
+		}
+		return $result;
+	}
 
 	public function GetQueueListByUser($userid, $stats = true) {
 		if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
@@ -401,6 +400,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE queueid = ? ORDER BY createtime DESC', array($id));
         $stats['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
 			WHERE queueid = ? AND deleted = 1', array($id));
+		$stats['unread'] = $this->db->GetOne('SELECT COUNT(t.id) FROM rttickets t
+			LEFT JOIN (
+				SELECT ticketid, MAX(createtime) AS maxcreatetime
+				FROM rtmessages
+				GROUP BY ticketid
+			) lm ON lm.ticketid = t.id
+			LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
+			WHERE t.queueid = ?
+				AND (lv.ticketid IS NULL OR (lv.ticketid IS NOT NULL AND lv.vdate < lm.maxcreatetime))',
+			array(Auth::GetCurrentUser(), $id));
 
         return $stats;
     }
