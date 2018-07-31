@@ -11,9 +11,9 @@
 <div class="card">
 	<div class="card-header">
 		{if $userinfo.type == 0}
-			{trans("Personal data")}
+			<strong>{trans("Personal data")}</strong>
 		{else}
-			{trans("Company data")}
+			<strong>{trans("Company data")}</strong>
 		{/if}
 		{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
@@ -25,8 +25,10 @@
 	</div>
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">
-			<strong>{trans("ID")}:</strong>
-			{$userinfo.id|string_format:"%04d"}
+			<strong>{trans("ID")}:</strong>{$userinfo.id|string_format:"%04d"}
+		</li>
+		<li class="list-group-item">
+			<strong>{trans("PIN")}:</strong>******
 			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
 			<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
 				{trans("Update PIN")}
@@ -34,7 +36,7 @@
 			{/if}
 		</li>
 		<li class="list-group-item">
-			<strong>{if $userinfo.type == 0}{trans("Last and first name")}{else}{trans("Company name")}{/if}:</strong>
+			<strong>{if $userinfo.type == 0}{trans("Last and first name")}{else}{trans("Company name")}{/if}:</strong><BR />
 			{if isset($fields_changed.lastname) || isset($fields_changed.name)}
 			    <del>{$userinfo.customername}</del>&rarr;
 			    {if isset($fields_changed.lastname) && $fields_changed.lastname.fieldvalue != $userinfo.lastname}<mark>{$fields_changed.lastname.fieldvalue}</mark>{else}{$userinfo.lastname}{/if}
@@ -45,7 +47,7 @@
 		</li>
 		{if $userinfo.emails}
 			<li class="list-group-item">
-				<strong>{trans("E-mail:")}</strong>
+				<strong>{trans("E-mail:")}</strong><BR />
 				{foreach $userinfo.emails as $email}
 				    {$emailid='email'|cat:$email.id}
 				    {if isset($fields_changed[$emailid])}
@@ -55,10 +57,10 @@
 				    {/if}
 				    {if !$email@last}<br>{/if}
 				{/foreach}
-			</li>
+		</li>
 		{/if}
 		<li class="list-group-item">
-			<strong>{trans("Address:")}</strong>
+			<strong>{trans("Address:")}</strong><BR />
 			{if isset($fields_changed.street) || isset($fields_changed.building) || isset($fields_changed.apartment)}
 			    <del>{$userinfo.address}</del>&rarr;
 			    {if isset($fields_changed.street) && $fields_changed.street.fieldvalue != $userinfo.street}<mark>{$fields_changed.street.fieldvalue}</mark>{else}{$userinfo.street}{/if}
@@ -77,13 +79,13 @@
 		</li>
 		{if $userinfo.serviceaddr}
 			<li class="list-group-item">
-				<strong>{trans("Postal address:")}</strong>
+				<strong>{trans("Postal address:")}</strong><BR />
 				{$userinfo.serviceaddr}
 			</li>
 		{/if}
 		{if $userinfo.contacts}
 			<li class="list-group-item">
-				<strong>{trans("Phones:")}</strong>
+				<strong>{trans("Phones:")}</strong><BR />
 				{foreach $userinfo.contacts as $item}
 				    {$phoneid='phone'|cat:$item.id}
 				    {if isset($fields_changed[$phoneid])}
@@ -108,7 +110,7 @@
 					{elseif $item.type & $smarty.const.CONTACT_IM_FACEBOOK}
 						{trans("Facebook")}
 					{/if}
-				</strong>
+				</strong><BR />
 				{$item.uid}
 				{$imid='im'|cat:$item.id}
 				{if isset($fields_changed[$imid])}
@@ -145,7 +147,7 @@
 	</li>
 	{if $userinfo.bankaccount || $userinfo.accounts}
 		<li class="list-group-item">
-			<strong>{trans("Bank accounts:")}</strong>
+			<strong>{trans("Bank accounts:")}</strong><BR />
 			{if $userinfo.bankaccount}
 				{format_bankaccount($userinfo.bankaccount)|replace:" ":"&nbsp;"}
 			{/if}
