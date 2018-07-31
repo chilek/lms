@@ -984,7 +984,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$resolvetime = time();
 				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?,
-						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?. type = ? WHERE id = ?', array(
+						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?, type = ? WHERE id = ?', array(
 						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'],
 						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
 						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $ticketid));
