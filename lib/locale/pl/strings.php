@@ -3953,5 +3953,6 @@ $_LANG['<!assignment>Expired'] = 'Przeterminowane';
 $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 
 $_LANG['Unread:'] = 'Nieprzeczytane:';
+$_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytany';
 
 ?>

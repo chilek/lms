@@ -1138,4 +1138,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			return $this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate) VALUES (?, ?, ?NOW?)',
 				array($ticketid, $userid));
 	}
+
+	public function MarkTicketAsUnread($ticketid) {
+		return $this->db->Execute('DELETE FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
+			array($ticketid, Auth::GetCurrentUser()));
+	}
 }

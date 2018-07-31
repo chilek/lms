@@ -1662,6 +1662,11 @@ class LMS
 		return $manager->MarkTicketAsRead($ticketid);
 	}
 
+	public function MarkTicketAsUnread($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->MarkTicketAsUnread($ticketid);
+	}
+
 	/*
 	 *  LMS-UI configuration
 	 */

@@ -27,7 +27,8 @@
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 
 $id = intval($_GET['id']);
-$LMS->MarkTicketAsRead($id);
+if (!isset($_GET['unread']))
+	$LMS->MarkTicketAsRead($id);
 
 if ($id && !isset($_POST['ticket'])) {
 	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id) & 2) != 2
@@ -156,6 +157,11 @@ if ($id && !isset($_POST['ticket'])) {
 	if (isset($_GET['assign'])) {
 		$LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
 		$SESSION->redirect('?m=rtticketview&id=' . $id);
+	}
+
+	if (isset($_GET['unread'])) {
+		$LMS->MarkTicketAsUnread($id);
+		$SESSION->redirect('?' . $SESSION->get('backto'));
 	}
 }
 

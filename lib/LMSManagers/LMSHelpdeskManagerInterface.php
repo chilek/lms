@@ -106,4 +106,6 @@ interface LMSHelpdeskManagerInterface
 	public function NotifyUsers(array $params);
 
 	public function MarkTicketAsRead($ticketid);
+
+	public function MarkTicketAsUnread($ticketid);
 }
