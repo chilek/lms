@@ -53,12 +53,12 @@
 		</TD>
 	{if $ticket.message}
 	<TR>
-		<TD class="bold nobr">
+		<TD class="bold">
 			<IMG src="img/info.gif" alt="">
 			{trans("Body:")}
 		</TD>
 		<TD>
-			<TABLE width="{if strlen($ticket.message)<50}100%{else}300{/if}" cellpadding="5">
+			<TABLE width="{if strlen($ticket.message)<50}100%{/if}" cellpadding="5">
 				<TR>
 					<TD class="fall superlight">
 						{$ticket.message|replace:"\n":"<BR>"}
