@@ -29,6 +29,7 @@ $this->Execute("
 		userid int(11) NOT NULL,
 		vdate int(11) NOT NULL,
 		INDEX vdate (vdate),
+		UNIQUE KEY rtticketlastview_ticketid_key (ticketid, userid),
 		CONSTRAINT rtticketlastview_ticketid_fkey
 			FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON UPDATE CASCADE ON DELETE CASCADE,
 		CONSTRAINT rtticketlastview_userid_fkey

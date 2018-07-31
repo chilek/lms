@@ -29,7 +29,8 @@ $this->Execute("
 			CONSTRAINT rtticketlastview_ticketid_fkey REFERENCES rttickets (id) ON UPDATE CASCADE ON DELETE CASCADE,
 		userid integer NOT NULL
 			CONSTRAINT rtticketlastview_userid_fkey REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
-		vdate integer NOT NULL
+		vdate integer NOT NULL,
+		CONSTRAINT rtticketlastview_ticketid_key UNIQUE (ticketid, userid)
 	);
 	CREATE INDEX rtticketlastview_vdate_idx ON rtticketlastview (vdate);
 ");
