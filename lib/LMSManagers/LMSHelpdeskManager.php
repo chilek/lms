@@ -499,7 +499,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function RTStats()
     {
-        $categories = $this->GetCategoryListByUser(Auth::GetCurrentUser());
+        $userid = Auth::GetCurrentUser();
+    	$categories = $this->GetCategoryListByUser($userid);
         if (empty($categories))
             return NULL;
         foreach ($categories as $category)
@@ -509,13 +510,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    COUNT(CASE state WHEN ' . RT_OPEN . ' THEN 1 END) AS opened,
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
-				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved
+				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved,
+				    COUNT(CASE WHEN lv.ticketid IS NULL OR (lv.ticketid IS NOT NULL AND lv.vdate < maxcreatetime) THEN 1 END) AS unread
 				    FROM rtcategories c
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid
+				    LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
+				    LEFT JOIN (
+				    	SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
+				    	GROUP BY ticketid
+				    ) m ON m.ticketid = t.id
 				    WHERE c.id IN (' . implode(',', $catids) . ')
 				    GROUP BY c.id, c.name
-				    ORDER BY c.name');
+				    ORDER BY c.name',
+			array($userid));
     }
 
     public function GetQueueByTicketId($id)
