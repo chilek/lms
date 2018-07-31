@@ -28,7 +28,7 @@
 					</TD>
 					<TD>
                         <SELECT name="ticket[service]">
-							<OPTION>{trans("<!rt>Undetermined")}</OPTION>
+							<OPTION value="">{trans("<!rt>Undetermined")}</OPTION>
                             {foreach $_SERVICETYPES as $key => $service}
                             <OPTION value="{$key}">{$service}</OPTION>
                             {/foreach}
@@ -41,7 +41,7 @@
 					</TD>
 					<TD>
                         <SELECT name="ticket[type]">
-							<OPTION>{trans("<!rt>Unset")}</OPTION>
+							<OPTION value="">{trans("<!rt>Unset")}</OPTION>
                             {foreach $_RT_TYPES as $key => $type}
                             <OPTION value="{$key}">{$type.label}</OPTION>
                             {/foreach}
