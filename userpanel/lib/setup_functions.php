@@ -53,7 +53,7 @@ function module_setup()
 	} else
 		$enabled_modules = explode(',', $enabled_modules);
     $SMARTY->assign('enabled_modules', $enabled_modules);
-    $SMARTY->assign('total', sizeof($USERPANEL->MODULES));
+    $SMARTY->assign('total', count($USERPANEL->MODULES));
     $SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup.html');
 }
 

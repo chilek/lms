@@ -198,7 +198,7 @@
 		</TD>
 		<TD WIDTH="98%" align="right">
 			{if $customer.groups}<span class="red bold">
-			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
+			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customer.groups)}, {/if}{/foreach})
 			</span>{/if}
 		</TD>
 	</TR>

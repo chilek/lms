@@ -239,7 +239,7 @@ $layout['pagetitle'] = trans('Network Edit: $a',$network['name']);
 $SMARTY->assign('unlockedit',TRUE);
 $SMARTY->assign('network',$network);
 $SMARTY->assign('networks',$networks);
-$SMARTY->assign('netlistsize',sizeof($networks));
+$SMARTY->assign('netlistsize',count($networks));
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->assign('error',$error);

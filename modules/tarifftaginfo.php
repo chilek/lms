@@ -34,7 +34,7 @@ $tarifftag = $LMS->TarifftagGet($id);
 
 $tariffs = $LMS->GetTariffWithoutTagNames($id);
 
-$tariffscount = sizeof($tariffs);
+$tariffscount = count($tariffs);
 
 $layout['pagetitle'] = trans('Tag Info: $a', $tarifftag['name']);
 

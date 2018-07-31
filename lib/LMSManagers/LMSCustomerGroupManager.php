@@ -196,7 +196,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 			(ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                 . ' GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
 
-        $result['customerscount'] = sizeof($result['customers']);
+        $result['customerscount'] = count($result['customers']);
         $result['count'] = $network ? $this->CustomergroupWithCustomerGet($id) : $result['customerscount'];
 
         return $result;
@@ -226,7 +226,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
                 $totalcount += $row['customerscount'];
             }
 
-            $customergrouplist['total'] = sizeof($customergrouplist);
+            $customergrouplist['total'] = count($customergrouplist);
             $customergrouplist['totalcount'] = $totalcount;
         }
 

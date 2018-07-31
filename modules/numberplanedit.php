@@ -31,7 +31,7 @@ $template = $numberplan['template'];
 
 $numberplanedit = isset($_POST['numberplanedit']) ? $_POST['numberplanedit'] : NULL;
 
-if(sizeof($numberplanedit)) 
+if(count($numberplanedit)) 
 {
 	$numberplanedit['template'] = trim($numberplanedit['template']);
 	$numberplanedit['id'] = $numberplan['id'];

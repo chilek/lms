@@ -265,7 +265,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $row['date'] = date('Y/m/d H:i', $row['time']);
             }
 
-            $result['total'] = sizeof($result['list']);
+            $result['total'] = count($result['list']);
         }
 
         $result['sendinvoices'] = ($this->db->GetOne('SELECT 1 FROM customercontacts cc
@@ -547,7 +547,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $over = 0;
         $below = 0;
 
-        if (sizeof($search))
+        if (count($search))
             foreach ($search as $key => $value) {
                 if ($value != '') {
                     switch ($key) {
@@ -835,7 +835,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 }
             }
 
-            $customerlist['total'] = sizeof($customerlist);
+            $customerlist['total'] = count($customerlist);
             $customerlist['state'] = $state;
             $customerlist['order'] = $order;
             $customerlist['direction'] = $direction;

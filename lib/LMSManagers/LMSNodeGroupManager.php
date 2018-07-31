@@ -98,7 +98,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
 				FROM nodegroups WHERE id = ?', array($id));
 
         $result['nodes'] = $this->GetNodesWithGroup($id, $network);
-        $result['nodescount'] = sizeof($result['nodes']);
+        $result['nodescount'] = count($result['nodes']);
 
         return $result;
     }

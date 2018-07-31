@@ -24,7 +24,7 @@
         </form>
         <tr>
             <td width="100%" colspan="2" align="right">
-                {if sizeof($tarifftags) > 1 && $tarifftag.count}
+                {if count($tarifftags) > 1 && $tarifftag.count}
                     <form name="tmove" method="get" action="">
                         <input type="hidden" name="is_sure" value="1">
                         <input type="hidden" name="m" value="tarifftagmove">

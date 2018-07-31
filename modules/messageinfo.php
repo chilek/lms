@@ -158,7 +158,7 @@ unset($itemlist['status']);
 unset($itemlist['order']);
 unset($itemlist['direction']);
 
-$listdata['total'] = sizeof($itemlist);
+$listdata['total'] = count($itemlist);
 
 if ($SESSION->is_set('milp') && !isset($_GET['page']))
 	$SESSION->restore('milp', $_GET['page']);

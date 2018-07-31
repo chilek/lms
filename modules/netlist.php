@@ -43,7 +43,7 @@ unset($netlist['online']);
 unset($netlist['order']);
 unset($netlist['direction']);
 
-$listdata['total'] = sizeof($netlist);
+$listdata['total'] = count($netlist);
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netlist',$netlist);

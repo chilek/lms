@@ -35,7 +35,7 @@ function GroupList()
 			) AS nodescount
 	                FROM nodegroups ORDER BY prio ASC, name ASC'))
 	{
-	        $nodegrouplist['total'] = sizeof($nodegrouplist);
+	        $nodegrouplist['total'] = count($nodegrouplist);
 	        $nodegrouplist['nodestotal'] = 0;
 		
 	        foreach($nodegrouplist as $idx => $row)

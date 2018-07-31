@@ -59,7 +59,7 @@ function GetCashLog($order='time,asc', $regid=0)
 			    '.($sqlord != '' ? $sqlord : ''),
 			    array($regid));
 
-	$list['total'] = sizeof($list);
+	$list['total'] = count($list);
 	$list['order'] = $order;
 	$list['direction'] = $direction;
 

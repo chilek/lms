@@ -577,7 +577,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			unset($netdev);
 		}
 
-        $netdevlist['total'] = sizeof($netdevlist);
+        $netdevlist['total'] = count($netdevlist);
         $netdevlist['order'] = $order;
         $netdevlist['direction'] = $direction;
 

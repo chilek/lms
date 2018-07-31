@@ -45,7 +45,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if (!empty($_POST['marks']))
 		foreach($_POST['marks'] as $id => $mark)
 			$ilm[$id] = $mark;
-	if (sizeof($ilm))
+	if (count($ilm))
 		foreach($ilm as $mark)
 			$ids[] = intval($mark);
 
@@ -64,7 +64,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 	sort($ids);
 
-	$count = sizeof($ids);
+	$count = count($ids);
 	$i = 0;
 	foreach($ids as $idx => $noteid) {
 		$note = $LMS->GetNoteContent($noteid);
@@ -107,7 +107,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		die;
 	}
 
-	$count = sizeof($ids);
+	$count = count($ids);
 	$i = 0;
 
 	foreach ($ids as $idx => $noteid) {

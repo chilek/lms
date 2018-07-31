@@ -55,10 +55,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 						WHERE id = ?', array($doc['reference']));
 			}
             if ($limit) {
-                $index = (sizeof($list) - $limit) > 0 ? sizeof($list) - $limit : 0;
+                $index = (count($list) - $limit) > 0 ? count($list) - $limit : 0;
                 $result = array();
 
-                for ($i = $index; $i < sizeof($list); $i++)
+                for ($i = $index; $i < count($list); $i++)
                     $result[] = $list[$i];
 
                 return $result;

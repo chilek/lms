@@ -62,7 +62,7 @@
 		</TD>
 		<TD>
 			{foreach from=$category.owners item=owner key=key}
-				<A HREF="?m=userinfo&amp;id={$owner.id}">{$owner.name}</A>{if $key+1<sizeof($category.owners)}, {/if}
+				<A HREF="?m=userinfo&amp;id={$owner.id}">{$owner.name}</A>{if $key+1<count($category.owners)}, {/if}
 			{/foreach}
 		</TD>
 		<TD class="text-center" onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';">

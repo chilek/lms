@@ -72,7 +72,7 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
-	$list['total'] = sizeof($list);
+	$list['total'] = count($list);
 	$list['order'] = $order;
 	$list['type'] = $type;
 	$list['kind'] = $kind;

@@ -248,7 +248,7 @@ if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 	WHERE i.closed = 0 AND i.value > 0
 	ORDER BY i.id'))
 {
-	$listdata['total'] = sizeof($importlist);
+	$listdata['total'] = count($importlist);
 
 	foreach($importlist as $idx => $row)
 	{

@@ -136,7 +136,7 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 
 $SESSION->restore('rlm', $marks);
 $marked = isset($_POST['marks']) ? $_POST['marks'] : array();
-if(sizeof($marked))
+if(count($marked))
         foreach($marked as $id => $mark)
 	        $marks[$id] = $mark;
 $SESSION->save('rlm', $marks);
@@ -237,7 +237,7 @@ unset($receiptlist['direction']);
 unset($receiptlist['totalincome']);
 unset($receiptlist['totalexpense']);
 
-$listdata['total'] = sizeof($receiptlist);
+$listdata['total'] = count($receiptlist);
 $listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
 if($from > 0)
 	$listdata['startbalance'] = $DB->GetOne(

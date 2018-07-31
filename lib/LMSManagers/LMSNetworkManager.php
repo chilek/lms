@@ -482,7 +482,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 $nodes[] = $network['nodes']['addresslong'][$idx];
 
         for ($i = $address + 1; $i < $broadcast; $i++) {
-            if (!sizeof($nodes))
+            if (!count($nodes))
                 break;
 
             // skip special and dhcp range addresses
@@ -497,7 +497,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             // don't change assigned special addresses
             if (in_array($ip, $specials)) {
                 array_unshift($nodes, $ip);
-                $size = sizeof($nodes);
+                $size = count($nodes);
 
                 foreach ($nodes as $idx => $ip)
                     if (!in_array($ip, $specials)) {
@@ -505,7 +505,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         break;
                     }
 
-                if ($size == sizeof($nodes))
+                if ($size == count($nodes))
                     break;
             }
 
@@ -551,7 +551,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         $counter = 0;
 
         for ($i = $address; $i < $broadcast; $i++) {
-            if (!sizeof($nodes))
+            if (!count($nodes))
                 break;
             $ip = array_pop($nodes);
 
@@ -614,7 +614,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         if ($network['hostid'])
             $network['hostname'] = $this->db->GetOne('SELECT name FROM hosts WHERE id=?', array($network['hostid']));
         $network['size'] = pow(2, 32 - $network['prefix']);
-        $network['assigned'] = sizeof($nodes);
+        $network['assigned'] = count($nodes);
         $network['free'] = $network['size'] - $network['assigned'] - 2;
         if ($network['dhcpstart'])
             $network['free'] = $network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1);
@@ -671,7 +671,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 break;
         }
 
-        $network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
+        $network['rows'] = ceil(count($network['nodes']['address']) / 4);
         $network['page'] = $page + 1;
 
         return $network;

@@ -69,7 +69,7 @@ if ($kind == 2)
 else
 	$document = new LMSEzpdfMipTransferForm(trans('Form of Cash Transfer'), 'A4', 'portrait');
 
-$count = sizeof($list);
+$count = count($list);
 $i = 0;
 
 foreach ($list as $row) {

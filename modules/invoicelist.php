@@ -258,7 +258,7 @@ unset($invoicelist['page']);
 unset($invoicelist['order']);
 unset($invoicelist['direction']);
 
-$listdata['total'] = sizeof($invoicelist);
+$listdata['total'] = count($invoicelist);
 
 if($invoice = $SESSION->get('invoiceprint'))
 {

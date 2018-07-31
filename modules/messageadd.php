@@ -396,7 +396,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 		}
 
 		$SMARTY->assign('message', $message);
-		$SMARTY->assign('recipcount', sizeof($recipients));
+		$SMARTY->assign('recipcount', count($recipients));
 		$SMARTY->display('message/messagesend.html');
 
 		$DB->BeginTrans();
@@ -504,8 +504,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 					echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
 				}
 
-				echo trans('$a of $b ($c) $d:', ($key + 1), sizeof($recipients),
-				sprintf('%02.1f%%', round((100 / sizeof($recipients)) * ($key + 1), 1)),
+				echo trans('$a of $b ($c) $d:', ($key + 1), count($recipients),
+				sprintf('%02.1f%%', round((100 / count($recipients)) * ($key + 1), 1)),
 					$row['customername'] . ' &lt;' . $destination . '&gt;');
 				flush();
 

@@ -98,14 +98,14 @@ if ($receipt_type == 'pdf') {
 } else
 	$document = new LMSHtmlReceipt($SMARTY);
 
-if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'])) {
+if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks'])) {
 	$SESSION->restore('rlm', $rlm);
 	$SESSION->remove('rlm');
 
-	if (sizeof($_POST['marks']))
+	if (count($_POST['marks']))
 		foreach ($_POST['marks'] as $id => $mark)
 			$rlm[$id] = $mark;
-	if (sizeof($rlm))
+	if (count($rlm))
 		foreach ($rlm as $mark)
 			$ids[] = intval($mark);
 
@@ -130,7 +130,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 		$type = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
 
 	$i = 0;
-	$count = sizeof($ids);
+	$count = count($ids);
 	foreach ($ids as $idx => $receiptid) {
 		if ($receipt = GetReceipt($receiptid)) {
 			if ($count == 1)

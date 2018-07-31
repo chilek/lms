@@ -26,7 +26,7 @@
 
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
-if(sizeof($useradd))
+if(count($useradd))
 {
 	foreach($useradd as $key => $value)
 		$useradd[$key] = trim($value);
