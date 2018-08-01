@@ -1082,7 +1082,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					$where = ' AND UPPER(d.address) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
 					break;
 				case 'value':
-					$having = ' CASE d.reference WHEN 0 THEN
+					$having = ' HAVING CASE WHEN d.reference IS NULL THEN
 							SUM(a.value*a.count)
 						ELSE
 							SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
@@ -1094,42 +1094,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if($hideclosed)
 			$where .= ' AND d.closed = 0';
 
-		if (!empty($group['group']))
-			$group['group'] = array_filter($group['group'], 'intval');
-
-		$sql = '';
+		if (!empty($group))
+			$group = array_filter($group, 'intval');
 
 		if ($count) {
-			$sql .= 'SELECT COUNT(*) AS total
-				FROM documents d
-				LEFT JOIN documents d2 ON d2.reference = d.id
-				LEFT JOIN countries ON (countries.id = d.countryid)
-				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
-				LEFT JOIN (
-				SELECT DISTINCT a.customerid FROM customerassignments a
-					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user()
-					) e ON (e.customerid = d.customerid)
-				WHERE e.customerid IS NULL AND '
-					. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
-						: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
-					.$where
-					.(!empty($group) ?
-						' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
-				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
-					AND customerid = d.customerid)' : '')
-					.(isset($having) ? ' AND ' . $having : '');
-		} else {
-			$sql .= 'SELECT d.id AS id, d.number, d.cdate, d.type,
-				d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
-				CASE WHEN d.reference IS NULL THEN
-					SUM(a.value*a.count)
-				ELSE
-					SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
-				END AS value,
-				COUNT(a.docid) AS count,
-				i.sendinvoices,
-				(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
+			$ids = $this->db->GetCol('SELECT d.id AS total
 				FROM documents d
 				JOIN invoicecontents a ON (a.docid = d.id)
 				LEFT JOIN documents d2 ON d2.reference = d.id
@@ -1137,35 +1106,65 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN countries ON (countries.id = d.countryid)
 				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 				LEFT JOIN (
-				SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customers c
-					JOIN customercontacts cc ON cc.customerid = c.id
-					WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
-				) i ON i.customerid = d.customerid
-				LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM customerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user()
 					) e ON (e.customerid = d.customerid)
 				WHERE e.customerid IS NULL AND '
-					. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
-						: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
-					.$where
-					.(!empty($group) ?
-						' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+				. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
+					: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
-							AND customerid = d.customerid)' : '')
-					.' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
-				d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
-					.(isset($having) ? ' HAVING ' . $having : '')
-					.$sqlord.' '.$direction
-					. (isset($limit) ? ' LIMIT ' . $limit : '')
-					. (isset($offset) ? ' OFFSET ' . $offset : '');
+					AND customerid = d.customerid)' : '')
+				. ' GROUP BY d.id '
+				. (isset($having) ? $having : ''));
+			if (empty($ids))
+				return 0;
+			return count($ids);
 		}
 
-		if ($count)
-			return intval($this->db->GetOne($sql));
-
-		$invoicelist = $this->db->GetAll($sql);
+		$invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,
+			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
+			CASE WHEN d.reference IS NULL THEN
+				SUM(a.value*a.count)
+			ELSE
+				SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+			END AS value,
+			COUNT(a.docid) AS count,
+			i.sendinvoices,
+			(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
+			FROM documents d
+			JOIN invoicecontents a ON (a.docid = d.id)
+			LEFT JOIN documents d2 ON d2.reference = d.id
+			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+			LEFT JOIN countries ON (countries.id = d.countryid)
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+			SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customers c
+				JOIN customercontacts cc ON cc.customerid = c.id
+				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+			) i ON i.customerid = d.customerid
+			LEFT JOIN (
+			SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL AND '
+			. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
+				: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
+			.$where
+			.(!empty($group) ?
+				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+			SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
+						AND customerid = d.customerid)' : '')
+			.' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
+			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
+			. (isset($having) ? $having : '')
+			.$sqlord.' '.$direction
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''));
 
 		$invoicelist['order'] = $order;
 		$invoicelist['direction'] = $direction;
