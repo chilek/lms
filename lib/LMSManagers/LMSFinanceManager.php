@@ -1098,7 +1098,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			$group = array_filter($group, 'intval');
 
 		if ($count) {
-			$ids = $this->db->GetCol('SELECT d.id AS total
+			$ids = $this->db->GetCol('SELECT d.id
 				FROM documents d
 				JOIN invoicecontents a ON (a.docid = d.id)
 				LEFT JOIN documents d2 ON d2.reference = d.id
