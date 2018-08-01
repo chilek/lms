@@ -204,7 +204,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetUnlinkedNodes()
     {
-        return $this->db->GetAll('SELECT n.*, inet_ntoa(n.ipaddr) AS ip, net.name AS netname
+        return $this->db->GetAll('SELECT n.id, n.name, inet_ntoa(n.ipaddr) AS ip, net.name AS netname
 			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
 			WHERE netdev IS NULL ORDER BY name ASC');
