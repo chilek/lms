@@ -829,6 +829,18 @@ button.lms-ui-button:active {
 .lms-ui-rtmessage-deleted.lucid {
   background-color: #fccdcd;
 }
+.lms-ui-rtmessage-current td:first-child {
+  border-left: 3px solid blue;
+}
+.lms-ui-rtmessage-current td:last-child {
+  border-right: 3px solid blue;
+}
+thead.lms-ui-rtmessage-current td {
+  border-top: 3px solid blue;
+}
+tbody.lms-ui-rtmessage-current td {
+  border-bottom: 3px solid blue;
+}
 .lms-ui-multi-check-all {
   -webkit-user-select: none;
   -moz-user-select: none;

@@ -672,6 +672,22 @@ button.lms-ui-button {
 	}
 }
 
+@rtmessage-current: 3px solid blue;
+.lms-ui-rtmessage-current {
+	& td:first-child {
+		border-left: @rtmessage-current;
+	}
+	& td:last-child {
+		border-right: @rtmessage-current;
+	}
+	thead& td {
+		border-top: @rtmessage-current;
+	}
+	tbody& td {
+		border-bottom: @rtmessage-current;
+	}
+}
+
 .lms-ui-multi-check-all {
 	.lms-ui-no-user-select;
 }

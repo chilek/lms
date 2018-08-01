@@ -150,4 +150,8 @@
 <script type="text/javascript">
     var myTextEl = document.getElementById( 'messages' );
     myTextEl.innerHTML = Autolinker.link( myTextEl.innerHTML );
+	if (location.hash.length) {
+		$('tr' + location.hash).parent().addClass('lms-ui-rtmessage-current')
+			.next().addClass('lms-ui-rtmessage-current');
+	}
 </script>
