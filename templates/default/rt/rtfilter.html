@@ -26,6 +26,7 @@
                 {/foreach}
                 </SELECT>
             {trans("Category:")}
+            <input type="hidden" name="catid" value="all">
             <SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                     {foreach $categories $c}
                     <OPTION value="{$c.id}"{if is_array($queuedata.catid) && in_array($c.id, $queuedata.catid)} SELECTED{/if}>{$c.name}</OPTION>
