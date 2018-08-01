@@ -43,7 +43,8 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 		$netdevinfo['owner'] = $LMS->getCustomerName( $netdevinfo['ownerid'] );
 	}
 
-	$nodelist = $LMS->GetUnlinkedNodes();
+	if ($netdevinfo['ports'] > $netdevinfo['takenports'])
+		$nodelist = $LMS->GetUnlinkedNodes();
 	$netdevips = $LMS->GetNetDevIPs($id);
 
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);

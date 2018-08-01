@@ -691,7 +691,8 @@ if (isset($netdevdata)) {
 $netdevdata['id'] = $id;
 
 $netdevips       = $LMS->GetNetDevIPs($id);
-$nodelist        = $LMS->GetUnlinkedNodes();
+if ($netdevdata['ports'] > $netdevdata['takenports'])
+	$nodelist        = $LMS->GetUnlinkedNodes();
 $netdevconnected = $LMS->GetNetDevConnectedNames($id);
 $netcomplist     = $LMS->GetNetDevLinkedNodes($id);
 $netdevlist      = $LMS->GetNotConnectedDevices($id);
