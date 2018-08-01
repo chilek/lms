@@ -110,8 +110,9 @@
 				</TR>
 				</TBODY>
 				{counter print=false}
-				{elseif $message.type != $smarty.const.RTMESSAGE_NOTE}
-					<tr class="blend">
+				{else}
+				<TBODY>
+					<tr id="rtmessage-{$message.id}" class="blend">
 						<td width="1%" class="fbt text-right nobr valign-top">
 							<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 						</td>
@@ -123,22 +124,7 @@
 							{$message.body}
 						</td>
 					</tr>
-				{else}
-				<THEAD>
-				<TR>
-					<TD style="width: 97%;" class="text-right nobr">
-						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
-					</TD>
-				</TR>
-				</THEAD>
-				<TBODY>
-					<TR>
-						<TD colspan="4" class="fbt superlight blend">
-							{$message.body|escape|replace:"\n":"<BR>"}
-						</TD>
-					</TR>
 				</TBODY>
-				{counter print=false}
 				{/if}
 				{/foreach}
 			</TABLE>
@@ -151,7 +137,8 @@
     var myTextEl = document.getElementById( 'messages' );
     myTextEl.innerHTML = Autolinker.link( myTextEl.innerHTML );
 	if (location.hash.length) {
-		$('tr' + location.hash).parent().addClass('lms-ui-rtmessage-current')
-			.next().addClass('lms-ui-rtmessage-current');
+		$('tr' + location.hash).parent('thead').addClass('lms-ui-rtmessage-current')
+			.next('tbody').addClass('lms-ui-rtmessage-current');
+		$('tr' + location.hash).parent('tbody').addClass('lms-ui-rtsystemmessage-current');
 	}
 </script>

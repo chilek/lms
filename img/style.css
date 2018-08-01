@@ -841,6 +841,16 @@ thead.lms-ui-rtmessage-current td {
 tbody.lms-ui-rtmessage-current td {
   border-bottom: 2px solid brown;
 }
+.lms-ui-rtsystemmessage-current td:first-child {
+  border-left: 2px solid brown;
+}
+.lms-ui-rtsystemmessage-current td:last-child {
+  border-right: 2px solid brown;
+}
+tbody.lms-ui-rtsystemmessage-current td {
+  border-top: 2px solid brown;
+  border-bottom: 2px solid brown;
+}
 .lms-ui-multi-check-all {
   -webkit-user-select: none;
   -moz-user-select: none;
