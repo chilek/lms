@@ -60,6 +60,8 @@
 			{$reg.description}
 		</TD>
 		<TD class="text-right nobr">
+			<A HREF="?m=receiptadd&type=in&action=init&regid={$reg.id}"><IMG SRC="img/kp.png" alt="New Cash-in Receipt")}" title="{trans("New Cash-in Receipt")}"></A>
+			<A HREF="?m=receiptadd&type=out&action=init&regid={$reg.id}"><IMG SRC="img/kw.png" alt="New Cash-out Receipt")}" title="{trans("New Cash-out Receipt")}"></A>
 			<A HREF="?m=receiptlist&amp;regid={$reg.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
 			<A HREF="?m=cashregdel&amp;id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=cashregedit&amp;id={$reg.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
