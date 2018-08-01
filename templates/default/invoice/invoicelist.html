@@ -48,21 +48,6 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		document.page.target="";
 		document.page.submit();
 	}
-
-{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
-	function pagechange1()
-	{
-		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page1'].value;
-		document.page.target="";
-		document.page.submit();
-	}
-	function pagechange2()
-	{
-		document.page.action="?m=invoicelist&page=" + document.forms['page'].elements['page2'].value;
-		document.page.target="";
-		document.page.submit();
-	}
-{/if}
 //-->
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
@@ -125,18 +110,18 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
 				&nbsp;<A href="javascript:filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
-	</TR>		
-	{if $listdata.total != 0}
+	</TR>
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="7">
-			{include file="scroller.html" loop=$invoicelist scrollerno=1}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	{cycle values="light,lucid" print=false}
-	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
+	{section name=invoicelist loop=$invoicelist}
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
 	<TR class="highlight {cycle}{if $invoice.closed} blend {elseif $invoice.cancelled} cancel{/if}">
@@ -235,10 +220,10 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	{/section}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="7">
-			{include file="scroller.html" loop=$invoicelist scrollerno=2}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}

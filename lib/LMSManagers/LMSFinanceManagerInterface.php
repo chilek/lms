@@ -48,6 +48,8 @@ interface LMSFinanceManagerInterface
 
 	public function SuspendAssignment($id, $suspend = TRUE);
 
+	public function GetInvoiceList(array $params);
+
     public function AddInvoice($invoice);
 
     public function InvoiceDelete($invoiceid);

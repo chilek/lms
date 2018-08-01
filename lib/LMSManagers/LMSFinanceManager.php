@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1013,7 +1013,167 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
-    public function AddInvoice($invoice)
+	public function GetInvoiceList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed', 'page') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($order))
+			$order = '';
+		if (!isset($proforma))
+			$proforma = 0;
+		if (!isset($count))
+			$count = false;
+
+		if($order=='')
+			$order='id,asc';
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'id':
+				$sqlord = ' ORDER BY d.id';
+				break;
+			case 'cdate':
+				$sqlord = ' ORDER BY d.cdate';
+				break;
+			case 'number':
+				$sqlord = ' ORDER BY d.number';
+				break;
+			case 'value':
+				$sqlord = ' ORDER BY value';
+				break;
+			case 'count':
+				$sqlord = ' ORDER BY count';
+				break;
+			case 'name':
+				$sqlord = ' ORDER BY d.name';
+				break;
+		}
+
+		$where = '';
+
+		if($search!='' && $cat)
+		{
+			switch($cat)
+			{
+				case 'number':
+					$where = ' AND d.number = '.intval($search);
+					break;
+				case 'cdate':
+					$where = ' AND d.cdate >= '.intval($search).' AND d.cdate < '.(intval($search)+86400);
+					break;
+				case 'month':
+					$last = mktime(23,59,59, date('n', $search) + 1, 0, date('Y', $search));
+					$where = ' AND d.cdate >= '.intval($search).' AND d.cdate <= '.$last;
+					break;
+				case 'ten':
+					$where = ' AND d.ten = ' . $thos->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND d.customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND UPPER(d.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'address':
+					$where = ' AND UPPER(d.address) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'value':
+					$having = ' CASE d.reference WHEN 0 THEN
+							SUM(a.value*a.count)
+						ELSE
+							SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+						END = '.str_replace(',','.',f_round($search)).' ';
+					break;
+			}
+		}
+
+		if($hideclosed)
+			$where .= ' AND d.closed = 0';
+
+		if (!empty($group['group']))
+			$group['group'] = array_filter($group['group'], 'intval');
+
+		$sql = '';
+
+		if ($count) {
+			$sql .= 'SELECT COUNT(*) AS total
+				FROM documents d
+				LEFT JOIN documents d2 ON d2.reference = d.id
+				LEFT JOIN countries ON (countries.id = d.countryid)
+				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+				LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+					) e ON (e.customerid = d.customerid)
+				WHERE e.customerid IS NULL AND '
+					. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
+						: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
+					.$where
+					.(!empty($group) ?
+						' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
+					AND customerid = d.customerid)' : '')
+					.(isset($having) ? ' AND ' . $having : '');
+		} else {
+			$sql .= 'SELECT d.id AS id, d.number, d.cdate, d.type,
+				d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
+				CASE WHEN d.reference IS NULL THEN
+					SUM(a.value*a.count)
+				ELSE
+					SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+				END AS value,
+				COUNT(a.docid) AS count,
+				i.sendinvoices,
+				(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
+				FROM documents d
+				JOIN invoicecontents a ON (a.docid = d.id)
+				LEFT JOIN documents d2 ON d2.reference = d.id
+				LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+				LEFT JOIN countries ON (countries.id = d.countryid)
+				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+				LEFT JOIN (
+				SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customers c
+					JOIN customercontacts cc ON cc.customerid = c.id
+					WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+				) i ON i.customerid = d.customerid
+				LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+					) e ON (e.customerid = d.customerid)
+				WHERE e.customerid IS NULL AND '
+					. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
+						: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
+					.$where
+					.(!empty($group) ?
+						' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
+							AND customerid = d.customerid)' : '')
+					.' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
+				d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
+					.(isset($having) ? ' HAVING ' . $having : '')
+					.$sqlord.' '.$direction
+					. (isset($limit) ? ' LIMIT ' . $limit : '')
+					. (isset($offset) ? ' OFFSET ' . $offset : '');
+		}
+
+		if ($count)
+			return intval($this->db->GetOne($sql));
+
+		$invoicelist = $this->db->GetAll($sql);
+
+		$invoicelist['order'] = $order;
+		$invoicelist['direction'] = $direction;
+
+		return $invoicelist;
+	}
+
+	public function AddInvoice($invoice)
     {
         $currtime = time();
         $cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : $currtime;

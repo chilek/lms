@@ -998,7 +998,12 @@ class LMS
         return $manager->SuspendAssignment($id, $suspend);
     }
 
-    public function AddInvoice($invoice)
+	public function GetInvoiceList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetInvoiceList($params);
+	}
+
+	public function AddInvoice($invoice)
     {
         $manager = $this->getFinanceManager();
         return $manager->AddInvoice($invoice);
