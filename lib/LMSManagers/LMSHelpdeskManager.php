@@ -196,7 +196,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$unreadfilter = ' AND lv.vdate >= m2.maxcreatetime';
 					break;
 				case 1:
-					$unreadfilter = ' AND lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime';
+					$unreadfilter = ' AND (lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime)';
 					break;
 			}
 		} else
