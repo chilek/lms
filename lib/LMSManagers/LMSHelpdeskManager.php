@@ -212,7 +212,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
 				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type,
-				(CASE WHEN lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime THEN 1 ELSE 0 END) AS unread 
+				(CASE WHEN lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime THEN 1 ELSE 0 END) AS unread,
+				m3.firstunread
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
@@ -246,6 +247,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
 				GROUP BY ticketid
 			) m2 ON m2.ticketid = t.id
+			LEFT JOIN (
+				SELECT m4.ticketid, MIN(m4.id) AS firstunread FROM rtmessages m4
+				LEFT JOIN rtticketlastview lv2 ON lv2.ticketid = m4.ticketid AND lv2.userid = ?
+				WHERE lv2.vdate < m4.createtime
+				GROUP BY m4.ticketid
+			) m3 ON m3.ticketid = t.id
 			WHERE 1=1 '
 			. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
 			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
@@ -259,7 +266,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $deadlinefilter
 			. $serviceidsfilter
 			. $typeidsfilter
-			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''), array($userid))) {
+			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''), array($userid, $userid))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
 				JOIN rtcategoryusers cu ON cu.categoryid = c.id
