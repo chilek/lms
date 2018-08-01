@@ -67,9 +67,10 @@ version ?.??.?? (????-??-??):
     contacts are disabled after customer delete [chilan]
   - enhancement: added new filters in customer assignments box - expired and commited filters [chilan]
   - improvement: added support for html mail format in lms-notify.php backend script" [chilan]
-  - enhancement: introduced ticket service types and ticket types, added variable %service, %type 
+  - enhancement: introduced ticket service types and ticket types, added variable %service, %type
     for helpdesk notify messages [interduo]
   - ehnancement: helpdesk ticket unread status introduced [chilan]
+  - improvement: mark current ticket message with blue color border [chilan]
 
 version 1.11.23 (2018-03-21):
 
