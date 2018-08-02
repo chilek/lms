@@ -1070,7 +1070,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					$where = ' AND d.cdate >= '.intval($search).' AND d.cdate <= '.$last;
 					break;
 				case 'ten':
-					$where = ' AND d.ten = ' . $thos->db->Escape($search);
+					$where = ' AND d.ten = ' . $this->db->Escape($search);
 					break;
 				case 'customerid':
 					$where = ' AND d.customerid = '.intval($search);
@@ -2365,6 +2365,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		foreach (array('from', 'to', 'advances') as $var)
 			if (!isset($$var))
 				$$var = 0;
+		if (!isset($count))
+			$count = false;
 
 		list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -2422,27 +2424,49 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if($advances)
 			$where = ' AND closed = 0';
 
-		if($list = $this->db->GetAll(
+		if ($count) {
+			$summary = $this->db->GetRow(
+				'SELECT COUNT(documents.id) AS total,
+					SUM(d.income) AS totalincome,
+					SUM(d.expense) AS totalexpense
+ 				FROM documents
+				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+				LEFT JOIN vusers ON (userid = vusers.id)
+				JOIN (
+					SELECT documents.id AS id,
+						(CASE WHEN SUM(value) > 0 THEN SUM(value) ELSE 0 END) AS income,
+						(CASE WHEN SUM(value) < 0 THEN -SUM(value) ELSE 0 END) AS expense 
+					FROM documents
+					JOIN receiptcontents ON documents.id = docid AND type = ?
+					WHERE regid = ?
+					GROUP BY documents.id '
+					. $having . '
+				) d ON d.id = documents.id
+				WHERE 1=1 '
+				.$where,
+				array(DOC_RECEIPT, DOC_RECEIPT, $registry));
+			if (empty($summary))
+				return array('total' => 0, 'totalincome' => 0, 'totalexpense' => 0);
+			return $summary;
+		}
+
+		if ($list = $this->db->GetAll(
 			'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid,
-		documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
-		MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user
-		FROM documents
-		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-		LEFT JOIN vusers ON (userid = vusers.id)
-		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
-		WHERE regid = ?'
+			documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
+			MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user
+			FROM documents
+			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			LEFT JOIN vusers ON (userid = vusers.id)
+			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
+			WHERE regid = ?'
 			.$where
 			.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, numberplans.template, vusers.name, extnumber, closed '
 			.$having
-			.($sqlord != '' ? $sqlord : ''),
-			array(DOC_RECEIPT, $registry)
-		))
-		{
-			$totalincome = 0;
-			$totalexpense = 0;
-
-			foreach($list as $idx => $row)
-			{
+			.($sqlord != '' ? $sqlord : '')
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''),
+			array(DOC_RECEIPT, $registry))) {
+			foreach ($list as $idx => $row) {
 				$list[$idx]['number'] = docnumber(array(
 					'number' => $row['number'],
 					'template' => $row['template'],
@@ -2455,21 +2479,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				// don't retrive descriptions of all items to not decrease speed
 				// but we want to know that there is something hidden ;)
 				if($row['posnumber'] > 1) $list[$idx]['title'] .= ' ...';
-
-				// summary
-				if($row['value'] > 0)
-					$totalincome += $row['value'];
-				else
-					$totalexpense += -$row['value'];
 			}
 
-			$list['totalincome'] = $totalincome;
-			$list['totalexpense'] = $totalexpense;
 			$list['order'] = $order;
 			$list['direction'] = $direction;
 
 			return $list;
 		}
+
+		return null;
 	}
 
 	public function AddReceipt(array $receipt) {

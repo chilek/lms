@@ -108,8 +108,18 @@ if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid = ? AND regid = ? A
 	die;
 }
 
+$summary = $LMS->GetReceiptList(array('registry' => $regid, 'order' => $o, 'search' => $s,
+	'cat' => $c, 'from' => $from, 'to' => $to, 'advances' => $a, 'count' => true));
+$total = intval($summary['total']);
+
+$limit = intval(ConfigHelper::getConfig('phpui.receiptlist_pagelimit'));
+$page = intval(!isset($_GET['page']) ? ceil($total / $limit) : $_GET['page']);
+$offset = ($page - 1) * $limit;
+
 $receiptlist = $LMS->GetReceiptList(array('registry' => $regid, 'order' => $o, 'search' => $s,
-	'cat' => $c, 'form' => $from, 'to' => $to, 'advances' => $a));
+	'cat' => $c, 'from' => $from, 'to' => $to, 'advances' => $a, 'count' => false));
+
+$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $SESSION->restore('rlc', $listdata['cat']);
 $SESSION->restore('rls', $listdata['search']);
@@ -119,16 +129,14 @@ $SESSION->restore('rla', $listdata['advances']);
 
 $listdata['order'] = $receiptlist['order'];
 $listdata['direction'] = $receiptlist['direction'];
-$listdata['totalincome'] = $receiptlist['totalincome'];
-$listdata['totalexpense'] = $receiptlist['totalexpense'];
+$listdata['totalincome'] = $summary['totalincome'];
+$listdata['totalexpense'] = $summary['totalexpense'];
 $listdata['regid'] = $regid;
 
 unset($receiptlist['order']);
 unset($receiptlist['direction']);
-unset($receiptlist['totalincome']);
-unset($receiptlist['totalexpense']);
 
-$listdata['total'] = count($receiptlist);
+$listdata['total'] = $total;
 $listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
 if($from > 0)
 	$listdata['startbalance'] = $DB->GetOne(
@@ -159,6 +167,7 @@ if($receipt = $SESSION->get('receiptprint'))
 $SMARTY->assign('error',$error);
 $SMARTY->assign('logentry', $logentry);
 $SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);

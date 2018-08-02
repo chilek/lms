@@ -99,18 +99,18 @@
 				<INPUT type="checkbox" id="advances" name="advances" value="1"{if $listdata.advances} checked{/if}><label for="advances">{trans("not settled adv. only")}</label>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
-	</TR>		
-	{if $listdata.total != 0}
+	</TR>
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="7">
-			{include file="scroller.html" loop=$receiptlist scrollerno=1}
+		<TD class="pagination" COLSPAN="7">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	{cycle values="light,lucid" print=false}
-	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
+	{section name=receiptlist loop=$receiptlist}
 	{assign var=receipt value=$receiptlist[receiptlist]}
 	{assign var=receiptid value=$receipt.id}
 	<TR class="highlight {cycle}"  >
@@ -158,10 +158,10 @@
 	{/section}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
-	<TR id="end">
-		<TD class="pagination" WIDTH="100%" COLSPAN="7">
-			{include file="scroller.html" loop=$receiptlist scrollerno=2}
+	{if $pagination->getTotal() != 0}
+	<TR>
+		<TD class="pagination" COLSPAN="7">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}

@@ -97,7 +97,7 @@ $total = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 
 	'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit'));
-$page = !$_GET['page'] ? 1 : intval($_GET['page']);
+$page = intval(!isset($_GET['page']) ? ceil($total / $limit) : $_GET['page']);
 $offset = ($page - 1) * $limit;
 
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
