@@ -54,7 +54,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		extract($params);
 		foreach (array('state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
 			'serviceids', 'typeids', 'unread') as $var)
-			if (isset($$var))
+			if (!isset($$var))
 				$$var = null;
 		if (!isset($order) || !$order)
 			$order = 'createtime,desc';
