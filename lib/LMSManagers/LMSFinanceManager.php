@@ -2355,6 +2355,123 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 	}
 
+	public function GetReceiptList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($order))
+			$order = '';
+		foreach (array('from', 'to', 'advances') as $var)
+			if (!isset($$var))
+				$$var = 0;
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+
+		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+
+		switch($order)
+		{
+			case 'number':
+				$sqlord = " ORDER BY documents.number $direction";
+				break;
+			case 'name':
+				$sqlord = " ORDER BY documents.name $direction, documents.cdate";
+				break;
+			case 'user':
+				$sqlord = " ORDER BY vusers.lastname $direction, documents.cdate";
+				break;
+			case 'cdate':
+			default:
+				$sqlord = " ORDER BY documents.cdate $direction, number";
+				break;
+		}
+
+		$where = ''; $having = '';
+
+		if($search && $cat)
+		{
+			switch($cat)
+			{
+				case 'value':
+					$having = ' HAVING SUM(value) = ' . $this->db->Escape(str_replace(',','.', $search));
+					break;
+				case 'number':
+					$where = ' AND number = '.intval($search);
+					break;
+				case 'ten':
+					$where = ' AND ten = ' . $this->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND documents.name ?LIKE? ' . $this->db->Escape('%' . $search . '%');
+					break;
+				case 'address':
+					$where = ' AND address ?LIKE? ' . $this->db->Escape('%' . $search . '%');
+					break;
+			}
+		}
+
+		if($from)
+			$where .= ' AND cdate >= '.intval($from);
+		if($to)
+			$where .= ' AND cdate <= '.intval($to);
+
+		if($advances)
+			$where = ' AND closed = 0';
+
+		if($list = $this->db->GetAll(
+			'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid,
+		documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
+		MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user
+		FROM documents
+		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+		LEFT JOIN vusers ON (userid = vusers.id)
+		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
+		WHERE regid = ?'
+			.$where
+			.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, numberplans.template, vusers.name, extnumber, closed '
+			.$having
+			.($sqlord != '' ? $sqlord : ''),
+			array(DOC_RECEIPT, $registry)
+		))
+		{
+			$totalincome = 0;
+			$totalexpense = 0;
+
+			foreach($list as $idx => $row)
+			{
+				$list[$idx]['number'] = docnumber(array(
+					'number' => $row['number'],
+					'template' => $row['template'],
+					'cdate' => $row['cdate'],
+					'ext_num' => $row['extnumber'],
+					'customerid' => $row['customerid'],
+				));
+				$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+
+				// don't retrive descriptions of all items to not decrease speed
+				// but we want to know that there is something hidden ;)
+				if($row['posnumber'] > 1) $list[$idx]['title'] .= ' ...';
+
+				// summary
+				if($row['value'] > 0)
+					$totalincome += $row['value'];
+				else
+					$totalexpense += -$row['value'];
+			}
+
+			$list['totalincome'] = $totalincome;
+			$list['totalexpense'] = $totalexpense;
+			$list['order'] = $order;
+			$list['direction'] = $direction;
+
+			return $list;
+		}
+	}
+
 	public function AddReceipt(array $receipt) {
 		$this->db->BeginTrans();
 		$this->db->LockTables(array('documents', 'numberplans'));

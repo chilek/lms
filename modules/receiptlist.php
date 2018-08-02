@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,116 +23,6 @@
  *
  *  $Id$
  */
-
-function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, $to=0, $advances=0)
-{
-	global $DB;
-
-	list($order,$direction) = sscanf($order, '%[^,],%s');
-
-	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
-
-	switch($order)
-	{
-		case 'number':
-			$sqlord = " ORDER BY documents.number $direction";
-		break;
-		case 'name':
-			$sqlord = " ORDER BY documents.name $direction, documents.cdate";
-		break;
-		case 'user':
-			$sqlord = " ORDER BY vusers.lastname $direction, documents.cdate";
-		break;
-		case 'cdate':
-		default:
-			$sqlord = " ORDER BY documents.cdate $direction, number";
-		break;
-	}
-
-	$where = ''; $having = '';
-
-	if($search && $cat)
-	{
-		switch($cat)
-		{
-			case 'value':
-				$having = ' HAVING SUM(value) = '.$DB->Escape(str_replace(',','.',$search));
-				break;
-			case 'number':
-				$where = ' AND number = '.intval($search);
-				break;
-			case 'ten':
-				$where = ' AND ten = '.$DB->Escape($search);
-				break;
-			case 'customerid':
-				$where = ' AND customerid = '.intval($search);
-				break;
-			case 'name':
-				$where = ' AND documents.name ?LIKE? '.$DB->Escape('%'.$search.'%');
-				break;
-			case 'address':
-				$where = ' AND address ?LIKE? '.$DB->Escape('%'.$search.'%');
-				break;
-		}
-	}
-
-	if($from)
-		$where .= ' AND cdate >= '.intval($from);
-	if($to)
-		$where .= ' AND cdate <= '.intval($to);
-
-	if($advances)
-		$where = ' AND closed = 0';
-
-	if($list = $DB->GetAll(
-	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid,
-		documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
-		MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user
-		FROM documents
-		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-		LEFT JOIN vusers ON (userid = vusers.id)
-		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
-		WHERE regid = ?'
-		.$where
-		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, numberplans.template, vusers.name, extnumber, closed '
-		.$having
-		.($sqlord != '' ? $sqlord : ''),
-		array(DOC_RECEIPT, $registry)
-		))
-	{
-		$totalincome = 0;
-		$totalexpense = 0;
-
-		foreach($list as $idx => $row)
-		{
-			$list[$idx]['number'] = docnumber(array(
-				'number' => $row['number'],
-				'template' => $row['template'],
-				'cdate' => $row['cdate'],
-				'ext_num' => $row['extnumber'],
-				'customerid' => $row['customerid'],
-			));
-			$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
-
-			// don't retrive descriptions of all items to not decrease speed
-			// but we want to know that there is something hidden ;)
-			if($row['posnumber'] > 1) $list[$idx]['title'] .= ' ...';
-
-			// summary
-			if($row['value'] > 0)
-				$totalincome += $row['value'];
-			else
-				$totalexpense += -$row['value'];
-		}
-
-		$list['totalincome'] = $totalincome;
-		$list['totalexpense'] = $totalexpense;
-		$list['order'] = $order;
-		$list['direction'] = $direction;
-
-		return $list;
-	}
-}
 
 $SESSION->restore('rlm', $marks);
 $marked = isset($_POST['marks']) ? $_POST['marks'] : array();
@@ -218,7 +108,8 @@ if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid = ? AND regid = ? A
 	die;
 }
 
-$receiptlist = GetReceiptList($regid, $o, $s, $c, $from, $to, $a);
+$receiptlist = $LMS->GetReceiptList(array('registry' => $regid, 'order' => $o, 'search' => $s,
+	'cat' => $c, 'form' => $from, 'to' => $to, 'advances' => $a));
 
 $SESSION->restore('rlc', $listdata['cat']);
 $SESSION->restore('rls', $listdata['search']);

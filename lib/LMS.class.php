@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -2622,6 +2622,11 @@ class LMS
 	public function isDocumentReferenced($id) {
 		$manager = $this->getFinanceManager();
 		return $manager->isDocumentReferenced($id);
+	}
+
+	public function GetReceiptList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetReceiptList($params);
 	}
 
 	public function AddReceipt(array $receipt)

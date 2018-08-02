@@ -112,6 +112,8 @@ interface LMSFinanceManagerInterface
 
 	public function isDocumentReferenced($id);
 
+	public function GetReceiptList(array $params);
+
 	public function AddReceipt(array $receipt);
 
 	public function GetCashRegistries($cid = null);
