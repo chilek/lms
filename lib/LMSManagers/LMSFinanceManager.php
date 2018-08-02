@@ -1098,7 +1098,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			$group = array_filter($group, 'intval');
 
 		if ($count) {
-			$ids = $this->db->GetCol('SELECT d.id
+			return $this->db->GetOne('SELECT COUNT(id) FROM (SELECT d.id
 				FROM documents d
 				JOIN invoicecontents a ON (a.docid = d.id)
 				LEFT JOIN documents d2 ON d2.reference = d.id
@@ -1119,10 +1119,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
 				. ' GROUP BY d.id '
-				. (isset($having) ? $having : ''));
-			if (empty($ids))
-				return 0;
-			return count($ids);
+				. (isset($having) ? $having : '') . ') a');
 		}
 
 		$invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,

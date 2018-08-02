@@ -93,8 +93,8 @@ elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
         $s = mktime(0,0,0, $month, 1, $year);
 }
 
-$total = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-	'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true));
+$total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
+	'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
