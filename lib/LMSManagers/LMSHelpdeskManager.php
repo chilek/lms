@@ -50,8 +50,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents(array $params) {
-    	foreach (array('state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+	public function GetQueueContents(array $params) {
+		extract($params);
+		foreach (array('state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
 			'serviceids', 'typeids', 'unread') as $var)
 			if (isset($$var))
 				$$var = null;
