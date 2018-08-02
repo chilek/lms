@@ -190,10 +190,10 @@ $SESSION->save('rtunread', $unread);
 
 $layout['pagetitle'] = trans('Tickets List');
 
-$total = $LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
+$total = intval($LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
 	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
-	'count' => true));
+	'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total));
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
@@ -203,6 +203,8 @@ $queue = $LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
 	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
 	'count' => false, 'offset' => $offset, 'limit' => $limit));
+
+$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -233,10 +235,6 @@ unset($queue['service']);
 unset($queue['type']);
 unset($queue['unread']);
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);
-$start = ($page - 1) * $pagelimit;
-
 $SESSION->save('rtp', $page);
 
 $queues = $LMS->GetQueueListByUser(Auth::GetCurrentUser(), false);
@@ -247,13 +245,11 @@ if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {
     $SESSION->redirect(str_replace('&assign','',"$_SERVER[REQUEST_URI]"));
 }
 
+$SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuedata', $queuedata);
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
 $SMARTY->assign('users', $LMS->GetUserNames());
 
 $SMARTY->display('rt/rtqueueview.html');

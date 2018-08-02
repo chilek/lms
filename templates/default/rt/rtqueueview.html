@@ -17,9 +17,9 @@
     <THEAD>
         {include file="rt/rtfilter.html"}
         <TR>
-            <TD class="pagination text-center" colspan="7">
-                {if $queuedata.total != 0}
-                {include file="scroller.html" listdata=$queuedata loop=$queue}
+            <TD class="pagination" COLSPAN="7">
+                {if $pagination->getTotal() != 0}
+                {include file="pagination.html"}
                 {/if}
             </TD>
             <TD class="pagination text-right nobr">
@@ -33,9 +33,9 @@
     </TBODY>
     <TFOOT>
         <TR>
-            <TD class="pagination text-center" colspan="7">
-                {if $queuedata.total != 0}
-                {include file="scroller.html" listdata=$queuedata loop=$queue}
+            <TD class="pagination" COLSPAN="7">
+                {if $pagination->getTotal() != 0}
+                {include file="pagination.html"}
                 {/if}
             </TD>
             <TD class="pagination text-right nobr">
