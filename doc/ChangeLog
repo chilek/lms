@@ -70,7 +70,8 @@ version ?.??.?? (????-??-??):
   - enhancement: introduced ticket service types and ticket types, added variable %service, %type
     for helpdesk notify messages [interduo]
   - ehnancement: helpdesk ticket unread status introduced [chilan]
-  - improvement: mark current ticket message with blue color border [chilan]
+  - improvement: mark current ticket message with brown color border [chilan]
+  - improvement: show user info column in customer message box [chilan]
 
 version 1.11.23 (2018-03-21):
 
