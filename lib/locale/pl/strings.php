@@ -3648,6 +3648,7 @@ $_LANG['Check if URL address should be disabled'] = 'Zaznacz, jeśli adres URL p
 $_LANG['Incorrect URL address!'] = 'Niepoprawny adres URL!';
 $_LANG['URL address is required!'] = 'Adres URL jest wymagany!';
 
+$_LANG['Enter deadline date in YYYY/MM/DD HH:MM format or click to select it from applet'] = 'Podaj termin ostateczny w formacie RRRR/MM/DD HH:MM lub kliknij by wybrać go z kalendarza';
 $_LANG['Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar'] = 'Podaj termin płatności w formacie RRRR/MM/DD lub kliknij by wybrać go z kalendarza';
 $_LANG['Deadline date should be later than consent date!'] = 'Termin płatności powinien być późniejszy niż data wystawienia!';
 
