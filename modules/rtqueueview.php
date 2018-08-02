@@ -189,16 +189,27 @@ else
 $SESSION->save('rtunread', $unread);
 
 $layout['pagetitle'] = trans('Tickets List');
+
+$total = $LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
+	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
+	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
+	'count' => true));
+
+$limit = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total));
+$page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+$offset = ($page - 1) * $limit;
+
 $queue = $LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
-	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread));
+	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
+	'count' => false, 'offset' => $offset, 'limit' => $limit));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if ($SESSION->is_set('rtp') && !isset($_GET['page']))
 	$SESSION->restore('rtp', $_GET['page']);
 
-$queuedata['total'] = $queue['total'];
+$queuedata['total'] = $total;
 $queuedata['state'] = $queue['state'];
 $queuedata['priority'] = $queue['priority'];
 $queuedata['order'] = $queue['order'];

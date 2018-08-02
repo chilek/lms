@@ -58,6 +58,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$$var = null;
 		if (!isset($order) || !$order)
 			$order = 'createtime,desc';
+		if (!isset($count))
+			$count = false;
 
 		list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -209,18 +211,82 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		$userid = Auth::GetCurrentUser();
 
+		if ($count) {
+			return $this->db->GetOne('SELECT COUNT(DISTINCT t.id)
+				FROM rttickets t
+				LEFT JOIN (
+					SELECT MAX(createtime) AS lastmodified, ticketid
+					FROM rtmessages
+					GROUP BY ticketid
+				) m ON m.ticketid = t.id
+				LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
+				LEFT JOIN vusers ON (owner = vusers.id)
+				LEFT JOIN customeraddressview c ON (t.customerid = c.id)
+				LEFT JOIN vusers u ON (t.creatorid = u.id)
+				LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
+				LEFT JOIN netnodes nn ON nn.id = t.netnodeid
+				LEFT JOIN netdevices nd ON nd.id = t.netdevid
+				LEFT JOIN vaddresses as va ON (t.address_id = va.id)
+				LEFT JOIN vaddresses as vb ON (nn.address_id = vb.id)
+				LEFT JOIN (
+					SELECT SUM(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
+						SUM(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,
+						ticketid FROM events
+					WHERE ticketid IS NOT NULL
+					GROUP BY ticketid
+				) ev ON ev.ticketid = t.id
+				LEFT JOIN (
+					SELECT COUNT(id) AS delcount, ticketid FROM rtmessages
+					WHERE deleted = 1 AND deltime <> 0
+					GROUP BY ticketid
+				) dm ON dm.ticketid = t.id
+				LEFT JOIN (
+					SELECT ' . $this->db->GroupConcat('categoryid') . ' AS categories, ticketid
+					FROM rtticketcategories
+					GROUP BY ticketid
+				) tc2 ON tc2.ticketid = t.id
+				LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
+				LEFT JOIN (
+					SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
+					GROUP BY ticketid
+				) m2 ON m2.ticketid = t.id
+				LEFT JOIN (
+					SELECT m4.ticketid, MIN(m4.id) AS firstunread FROM rtmessages m4
+					LEFT JOIN rtticketlastview lv2 ON lv2.ticketid = m4.ticketid AND lv2.userid = ?
+					WHERE lv2.vdate < m4.createtime
+					GROUP BY m4.ticketid
+				) m3 ON m3.ticketid = t.id
+				WHERE 1=1 '
+				. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
+				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
+				. $unreadfilter
+				. $statefilter
+				. $priorityfilter
+				. $ownerfilter
+				. $removedfilter
+				. $netdevidsfilter
+				. $netnodeidsfilter
+				. $deadlinefilter
+				. $serviceidsfilter
+				. $typeidsfilter, array($userid, $userid));
+		}
+
 		if ($result = $this->db->GetAll(
 			'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
 				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.deadline, t.requestor_userid,
 				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
-			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
+				. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
 				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type,
 				(CASE WHEN lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime THEN 1 ELSE 0 END) AS unread,
 				m3.firstunread
 			FROM rttickets t
-			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
+			LEFT JOIN (
+				SELECT MAX(createtime) AS lastmodified, ticketid
+				FROM rtmessages
+				GROUP BY ticketid
+			) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 			LEFT JOIN vusers ON (owner = vusers.id)
 			LEFT JOIN customeraddressview c ON (t.customerid = c.id)
@@ -271,7 +337,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $deadlinefilter
 			. $serviceidsfilter
 			. $typeidsfilter
-			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''), array($userid, $userid))) {
+			. ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''),
+			array($userid, $userid))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
 				JOIN rtcategoryusers cu ON cu.categoryid = c.id
