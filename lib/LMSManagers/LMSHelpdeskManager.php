@@ -908,20 +908,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['verifierid'] = $ticket['verifierid'];
 
         if($ticket['deadline'] != $props['deadline'] && isset($props['deadline'])) {
-            $notes[] = trans('Ticket deadline has been set to $a:', $props['deadline']);
+            $notes[] = trans('Ticket deadline has been set to $a.', $props['deadline']);
             $type = $type | RTMESSAGE_DEADLINE_CHANGE;
             $props['deadline'] = datetime_to_timestamp($props['deadline']);
         } else
         	$props['deadline'] = $ticket['deadline'];
 
         if($ticket['service'] != $props['service'] && isset($props['service'])) {
-            $notes[] = trans('Ticket service has been set to $a:', $props['service']);
+            $notes[] = trans('Ticket service has been set to $a.', $props['service']);
             $type = $type | RTMESSAGE_SERVICE_CHANGE;
         } else
             $props['service'] = $ticket['service'];
 
         if($ticket['type'] != $props['type'] && isset($props['type'])) {
-            $notes[] = trans('Ticket type has been set to $a:', $props['type']);
+            $notes[] = trans('Ticket type has been set to $a.', $props['type']);
             $type = $type | RTMESSAGE_TYPE_CHANGE;
         } else
             $props['type'] = $ticket['type'];
