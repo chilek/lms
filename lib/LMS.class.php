@@ -1103,7 +1103,12 @@ class LMS
         return $manager->AddBalance($addbalance);
     }
 
-    public function DelBalance($id)
+	public function GetBalanceList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetBalanceList($params);
+	}
+
+	public function DelBalance($id)
     {
         $manager = $this->getFinanceManager();
         return $manager->DelBalance($id);

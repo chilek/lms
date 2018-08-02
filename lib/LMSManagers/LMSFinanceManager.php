@@ -2071,7 +2071,158 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         	$this->DebitNoteDelete($docid);
     }
 
-    public function AddBalance($addbalance)
+	public function GetBalanceList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat', 'group', 'exclude') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($count))
+			$count = false;
+
+		$where = '';
+
+		if($search && $cat)
+		{
+			switch($cat)
+			{
+				case 'value':
+					$val = intval($search) > 0 ? intval($search) : intval($search)*-1;
+					$where = ' AND ABS(cash.value) = '.$val;
+					break;
+				case 'number':
+					$where = ' AND documents.number = '.intval($search);
+					break;
+				case 'cdate':
+					$where = ' AND cash.time >= '.intval($search).' AND cash.time < '.(intval($search)+86400);
+					break;
+				case 'ten':
+					$where = ' AND c.ten = ' . $this->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND cash.customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND ' . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? ' . $this->db->Escape("%$search%");
+					break;
+				case 'address':
+					$where = ' AND c.address ?LIKE? ' . $this->db->Escape("%$search%");
+					break;
+				case 'comment':
+					$where = ' AND cash.comment ?LIKE? ' . $this->db->Escape("%$search%");
+					break;
+				case 'cashimport':
+					$where = ' AND cash.importid IN (SELECT i.id FROM cashimport i JOIN sourcefiles f ON f.id = i.sourcefileid WHERE f.name = ' . $this->db->Escape("$search") . ')';
+					break;
+			}
+		}
+		elseif($cat)
+		{
+			switch($cat)
+			{
+				case 'documented': $where = ' AND cash.docid IS NOT NULL'; break;
+				case 'notdocumented': $where = ' AND cash.docid IS NULL'; break;
+			}
+		}
+
+		if($from)
+			$where .= ' AND cash.time >= '.intval($from);
+		if($to)
+			$where .= ' AND cash.time <= '.intval($to);
+
+		if ($count) {
+			$summary = $this->db->GetRow('SELECT COUNT(cash.id) AS total,
+					SUM(CASE WHEN cash.customerid IS NOT NULL AND cash.type = 0 THEN -value ELSE 0 END) AS liability,
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN value ELSE 0 END) AS income, 
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -value ELSE 0 END) AS expense 
+				FROM cash
+				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN (
+					SELECT DISTINCT a.customerid
+					FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = cash.customerid)
+				WHERE e.customerid IS NULL'
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					AND customerid = cash.customerid)' : ''));
+			if (empty($summary))
+				return array('total' => 0, 'liability' => 0, 'income' => 0, 'expense' => 0, 'after' => 0);
+
+			return $summary;
+		}
+
+		if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
+				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
+				documents.type AS doctype, documents.closed AS closed,
+				documents.published, '
+			 . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
+				FROM cash
+				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN (
+					SELECT DISTINCT a.customerid
+					FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = cash.customerid)
+				WHERE e.customerid IS NULL'
+			.$where
+			.(!empty($group) ?
+				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					AND customerid = cash.customerid)' : '')
+			.' ORDER BY time, cash.id'
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''))) {
+			$userlist = $this->db->GetAllByKey('SELECT id, name FROM vusers','id');
+
+			$after = $this->db->GetOne('SELECT SUM(value) FROM (
+				SELECT (CASE WHEN cash.customerid IS NULL OR cash.type <> 0 THEN value ELSE 0 END) AS value
+				FROM cash
+				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN (
+					SELECT DISTINCT a.customerid
+					FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = cash.customerid)
+				WHERE e.customerid IS NULL'
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					AND customerid = cash.customerid)' : '')
+				.' ORDER BY time, cash.id '
+				. (isset($offset) ? ' LIMIT ' . $offset : '')
+				. ') a'
+			);
+
+			foreach ($balancelist as &$row) {
+				$row['user'] = isset($userlist[$row['userid']]['name']) ? $userlist[$row['userid']]['name'] : '';
+				$row['before'] = $after;
+
+				if ($row['customerid'] && $row['type'] == 0) {
+					// customer covenant
+					$row['after'] = $row['before'];
+					$row['covenant'] = true;
+				} else {
+					$row['after'] = $row['before'] + $row['value'];
+				}
+
+				$after = $row['after'];
+			}
+			unset($row);
+
+			return $balancelist;
+		}
+	}
+
+	public function AddBalance($addbalance)
     {
         $args = array(
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),

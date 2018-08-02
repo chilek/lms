@@ -82,7 +82,9 @@ interface LMSFinanceManagerInterface
 
 	public function DebitNoteContentDelete($docid, $itemid = 0);
 
-    public function AddBalance($addbalance);
+	public function GetBalanceList(array $params);
+
+	public function AddBalance($addbalance);
 
     public function DelBalance($id);
 

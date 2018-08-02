@@ -156,17 +156,17 @@
                         <A href="javascript:filter();">&raquo;&raquo;&raquo;</A><BR>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="10">
-			{include file="scroller.html" loop=$balancelist scrollerno=1}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	{cycle values="light,lucid" print=false}
-	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
+	{section name=balancelist loop=$balancelist}
 	<TR class="highlight {cycle}"{if $balancelist[balancelist].docid} data-published="{$balancelist[balancelist].published}"{/if}>
 		<TD class="nobr">
                         {$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
@@ -244,10 +244,10 @@
 			</label>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="10">
-			{include file="scroller.html" loop=$balancelist scrollerno=2}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
