@@ -181,9 +181,15 @@ function init_datepickers(selector) {
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
+	var scrollTimeout = null;
 
 	$(window).scroll(function(e) {
-		history.replaceState({ scrollTop: $(this).scrollTop()}, window.title );
+		if (scrollTimeout) {
+			clearTimeout(scrollTimeout);
+		}
+		scrollTimeout = setTimeout(function() {
+				history.replaceState({ scrollTop: $(this).scrollTop()}, window.title );
+			}, 200);
 	});
 
 	$('.lms-ui-submit-button').one('click', function(e) {
