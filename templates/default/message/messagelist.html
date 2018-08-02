@@ -67,11 +67,11 @@
 			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
 		</TD>
-	</TR>		
-	{if $listdata.total != 0}
+	</TR>
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="5">
-			{include file="scroller.html" loop=$messagelist scrollerno=1}
+		<TD class="pagination" COLSPAN="5">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
@@ -79,7 +79,7 @@
     <TBODY class="lms-ui-multi-check">
 	<form method="post" name="messages">
 	{cycle values="light,lucid" print=false}
-	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
+	{section name=messagelist loop=$messagelist}
 	{assign var=message value=$messagelist[messagelist]}
 	<TR class="highlight {cycle}{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}">
 		<TD class="nobr" onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
@@ -118,10 +118,10 @@
 	</form>
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="5">
-			{include file="scroller.html" loop=$messagelist scrollerno=2}
+		<TD class="pagination" COLSPAN="5">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}

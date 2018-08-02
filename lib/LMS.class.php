@@ -2796,7 +2796,12 @@ class LMS
         return $manager->GetMessageTemplates($type);
     }
 
-    /**
+	public function GetMessageList(array $params) {
+		$manager = $this->getMessageManager();
+		return $manager->GetMessageList($params);
+	}
+
+		/**
      * Returns user manager
      * 
      * @return \LMSUserManagerInterface User manager
