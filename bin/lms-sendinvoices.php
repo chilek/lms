@@ -320,7 +320,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 		. ($backup ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
 		. " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.type IN (?, ?, ?, ?)" . ($backup ? '' : " AND c.invoicenotice = 1") . "
+		WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup ? '' : " AND c.invoicenotice = 1") . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number" . (!empty($count_limit) ? " LIMIT $count_limit OFFSET $count_offset" : '');
