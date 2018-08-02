@@ -191,7 +191,7 @@ $SESSION->save('rtunread', $unread);
 $layout['pagetitle'] = trans('Tickets List');
 $queue = $LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
-	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread);
+	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
