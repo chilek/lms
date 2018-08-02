@@ -28,6 +28,7 @@
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
+					<COL style="width: 1%;">
 				</COLGROUP>
 				<THEAD>
 				<TR>
@@ -36,6 +37,9 @@
 					</TH>
 					<TH class="bold nobr">
 						{trans("Subject:")}
+					</TH>
+					<TH class="bold nobr">
+						{trans("User:")}
 					</TH>
 					<TH class="nobr">
 						{trans("Destination:")}
@@ -67,6 +71,9 @@
 						{/if}
 						{$item.subject}
 					</TD>
+					<TD class="text-center nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
+						<a href="?m=userinfo&id={$item.userid}">{$item.username}</a>
+					</TD>
 					<TD class="text-right nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.destination}
 					</TD>
@@ -85,7 +92,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD class="empty-table" colspan="6">
+					<TD class="empty-table" colspan="7">
 						<P>{trans("There are no messages in database.")}</P>
 					</TD>
 				</TR>
