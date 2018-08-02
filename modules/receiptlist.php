@@ -112,12 +112,16 @@ $summary = $LMS->GetReceiptList(array('registry' => $regid, 'order' => $o, 'sear
 	'cat' => $c, 'from' => $from, 'to' => $to, 'advances' => $a, 'count' => true));
 $total = intval($summary['total']);
 
-$limit = intval(ConfigHelper::getConfig('phpui.receiptlist_pagelimit'));
-$page = intval(!isset($_GET['page']) ? ceil($total / $limit) : $_GET['page']);
+$limit = intval(ConfigHelper::getConfig('phpui.receiptlist_pagelimit', 100));
+$page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
+if (empty($page))
+	$page = 1;
+$page = intval($page);
 $offset = ($page - 1) * $limit;
 
 $receiptlist = $LMS->GetReceiptList(array('registry' => $regid, 'order' => $o, 'search' => $s,
-	'cat' => $c, 'from' => $from, 'to' => $to, 'advances' => $a, 'count' => false));
+	'cat' => $c, 'from' => $from, 'to' => $to, 'advances' => $a,
+	'offset' => $offset, 'limit' => $limit, 'count' => false));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 

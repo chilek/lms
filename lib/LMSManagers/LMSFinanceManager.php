@@ -2429,7 +2429,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				'SELECT COUNT(documents.id) AS total,
 					SUM(d.income) AS totalincome,
 					SUM(d.expense) AS totalexpense
- 				FROM documents
+				FROM documents
 				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
 				JOIN (
@@ -2442,9 +2442,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					GROUP BY documents.id '
 					. $having . '
 				) d ON d.id = documents.id
-				WHERE 1=1 '
+				WHERE documents.type = ?'
 				.$where,
-				array(DOC_RECEIPT, DOC_RECEIPT, $registry));
+				array(DOC_RECEIPT, $registry, DOC_RECEIPT));
 			if (empty($summary))
 				return array('total' => 0, 'totalincome' => 0, 'totalexpense' => 0);
 			return $summary;

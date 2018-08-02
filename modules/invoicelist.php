@@ -96,8 +96,11 @@ elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
 $total = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
 	'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true));
 
-$limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit'));
-$page = intval(!isset($_GET['page']) ? ceil($total / $limit) : $_GET['page']);
+$limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
+$page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
+if (empty($page))
+	$page = 1;
+$page = intval($page);
 $offset = ($page - 1) * $limit;
 
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
