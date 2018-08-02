@@ -71,7 +71,8 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 				$netdevinfo['projectname'] = $prj['name'];
 		}
 	}
-	$queue = $LMS->GetQueueContents(null, null, null, null, -1, null, null, $id);
+	$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
+		'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => $id));
 	$queue_count = $queue['total'];
 	unset($queue['total']);
 	unset($queue['state']);

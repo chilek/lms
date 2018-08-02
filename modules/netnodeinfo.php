@@ -41,7 +41,8 @@ $SMARTY->assign('objectid', $result['id']);
 $nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name", array($id));
 $SMARTY->assign('netdevlist', $nlist);
 
-$queue = $LMS->GetQueueContents(null, null, null, null, -1, null, null, null, $id);
+$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
+	'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => null, 'netnodeids' => $id));
 $queue_count = $queue['total'];
 unset($queue['total']);
 unset($queue['state']);

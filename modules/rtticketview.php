@@ -79,7 +79,9 @@ if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customeri
 
 foreach($categories as $category)
 	$catids[] = $category['id'];
-$iteration = $LMS->GetQueueContents($ticket['queueid'], $order='createtime,desc', $state=-1, 0, -1, $catids);
+$iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc', 'state' => -1, 'priority' => 0,
+	'owner' => -1, 'catids' => $catids));
+
 if (!empty($iteration['total'])) {
 	foreach ($iteration as $idx => $element)
 		if (isset($element['id']) && intval($element['id']) == intval($_GET['id'])) {
