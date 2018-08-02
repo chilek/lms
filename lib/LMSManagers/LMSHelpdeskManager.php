@@ -50,8 +50,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL, $netdevids = NULL, $netnodeids = NULL, $deadline = NULL, $serviceids = NULL, $typeids = NULL, $unread = null) {
-		if (!$order)
+    public function GetQueueContents(array $params) {
+    	foreach (array('state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+			'serviceids', 'typeids', 'unread') as $var)
+			if (isset($$var))
+				$$var = null;
+		if (!isset($order) || !$order)
 			$order = 'createtime,desc';
 
 		list($order, $direction) = sscanf($order, '%[^,],%s');
