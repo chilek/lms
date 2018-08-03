@@ -177,17 +177,17 @@
 			</table>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="5">
-			{include file="scroller.html" loop=$documentlist}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	{cycle values="light,lucid" print=false}
-	{section loop=$documentlist name=documentlist start=$start max=$pagelimit}
+	{section loop=$documentlist name=documentlist}
 	{assign var=doc value=$documentlist[documentlist]}
 	{assign var=docid value=$doc.docid}
 	<TR class="highlight {cycle}{if $doc.closed} blend{/if}"  >
@@ -261,10 +261,10 @@
 	{/section}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="5">
-			{include file="scroller.html" loop=$documentlist}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}

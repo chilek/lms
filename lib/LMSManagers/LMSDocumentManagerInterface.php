@@ -32,7 +32,7 @@ interface LMSDocumentManagerInterface
 {
     public function GetDocuments($customerid = NULL, $limit = NULL);
 
-	public function GetDocumentList($order='cdate,asc', $search);
+	public function GetDocumentList(array $params);
 
 	public function GetNumberPlans($properties);
 

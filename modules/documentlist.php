@@ -111,7 +111,8 @@ if (empty($_GET['init']))
 	$SESSION->save('docls', $s);
 }
 
-$documentlist = $LMS->GetDocumentList($o, array(
+$total = intval($LMS->GetDocumentList(array(
+	'order' => $o,
 	'type' => $t,
 	'customer' => $c,
 	'numberplan' => $p,
@@ -121,9 +122,32 @@ $documentlist = $LMS->GetDocumentList($o, array(
 	'from' => $from,
 	'to' => $to,
 	'status' => $s,
+	'count' => true,
+)));
+
+$limit = intval(ConfigHelper::getConfig('phpui.documentlist_pagelimit', 100));
+$page = intval(!isset($_GET['page']) ? ceil($total / $limit) : $_GET['page']);
+$offset = ($page - 1) * $limit;
+
+$documentlist = $LMS->GetDocumentList(array(
+	'order' => $o,
+	'type' => $t,
+	'customer' => $c,
+	'numberplan' => $p,
+	'usertype' => $usertype,
+	'userid' => $u,
+	'periodtype' => $periodtype,
+	'from' => $from,
+	'to' => $to,
+	'status' => $s,
+	'count' => false,
+	'offset' => $offset,
+	'limit' => $limit,
 ));
 
-$listdata['total'] = $documentlist['total'];
+$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
+$listdata['total'] = $total;
 $listdata['order'] = $documentlist['order'];
 $listdata['direction'] = $documentlist['direction'];
 $listdata['type'] = $t;
@@ -139,10 +163,6 @@ $listdata['status'] = $s;
 unset($documentlist['total']);
 unset($documentlist['order']);
 unset($documentlist['direction']);
-
-$pagelimit = ConfigHelper::getConfig('phpui.documentlist_pagelimit');
-$page = !isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : intval($_GET['page']);
-$start = ($page - 1) * $pagelimit;
 
 $layout['pagetitle'] = trans('Documents List');
 
@@ -168,9 +188,7 @@ $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
 	'doctype' => array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_PRICELIST, DOC_PROMOTION, DOC_WARRANTY, DOC_REGULATIONS, DOC_OTHER),
 )));
 $SMARTY->assign('documentlist', $documentlist);
-$SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
+$SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('document/documentlist.html');
 

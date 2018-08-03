@@ -67,16 +67,20 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
-	public function GetDocumentList($order='cdate,asc', $search) {
-		$type = isset($search['type']) ? $search['type'] : NULL;
-		$customer = isset($search['customer']) ? $search['customer'] : NULL;
-		$numberplan = isset($search['numberplan']) ? $search['numberplan'] : NULL;
-		$usertype = isset($search['usertype']) ? $search['usertype'] : 'creator';
-		$userid = isset($search['userid']) ? $search['userid'] : NULL;
-		$periodtype = isset($search['periodtype']) ? $search['periodtype'] : 'creationdate';
-		$from = isset($search['from']) ? $search['from'] : 0;
-		$to = isset($search['to']) ? $search['to'] : 0;
-		$status = isset($search['status']) ? $search['status'] : -1;
+	public function GetDocumentList(array $params) {
+		$order = isset($params['order']) ? $params['order'] : 'cdate,asc';
+		$type = isset($params['type']) ? $params['type'] : NULL;
+		$customer = isset($params['customer']) ? $params['customer'] : NULL;
+		$numberplan = isset($params['numberplan']) ? $params['numberplan'] : NULL;
+		$usertype = isset($params['usertype']) ? $params['usertype'] : 'creator';
+		$userid = isset($params['userid']) ? $params['userid'] : NULL;
+		$periodtype = isset($params['periodtype']) ? $params['periodtype'] : 'creationdate';
+		$from = isset($params['from']) ? $params['from'] : 0;
+		$to = isset($params['to']) ? $params['to'] : 0;
+		$status = isset($params['status']) ? $params['status'] : -1;
+		$limit = isset($params['limit']) ? $params['limit'] : null;
+		$offset = isset($params['offset']) ? $params['offset'] : null;
+		$count = isset($params['count']) ? $params['count'] : false;
 
 		if($order=='')
 			$order='cdate,asc';
@@ -137,6 +141,35 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				$datefield = 'd.cdate';
 		}
 
+		if ($count) {
+			return $this->db->GetOne('SELECT COUNT(docid)
+				FROM documentcontents
+				JOIN documents d ON (d.id = documentcontents.docid)
+				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
+				JOIN vusers u ON u.id = d.userid
+				LEFT JOIN vusers u2 ON u2.id = d.cuserid
+				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+				LEFT JOIN (
+					SELECT DISTINCT c.id AS customerid, 1 AS senddocuments FROM customers c
+					JOIN customercontacts cc ON cc.customerid = c.id
+					WHERE cc.type & ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED) . ' = ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS) . '
+				) i ON i.customerid = d.customerid
+				LEFT JOIN (
+					SELECT DISTINCT a.customerid FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid)
+				WHERE e.customerid IS NULL '
+					.($customer ? 'AND d.customerid = '.intval($customer) : '')
+					.($type ? ' AND d.type = '.intval($type) : '')
+					. ($userid ? ' AND ' . $userfield . ' = ' . intval($userid) : '')
+					. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
+					.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
+					.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
+					.($status == -1 ? '' : ' AND d.closed = ' . intval($status)),
+				array(Auth::GetCurrentUser()));
+		}
+
 		$list = $this->db->GetAll('SELECT docid, d.number, d.type, title, d.cdate, u.name AS username, u.lastname, fromdate, todate, description, 
 				numberplans.template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername, u2.lastname AS clastname,
 				d.reference, i.senddocuments
@@ -164,7 +197,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
 			.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
 			.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
-			.$sqlord, array(Auth::GetCurrentUser()));
+			.$sqlord
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''),
+			array(Auth::GetCurrentUser()));
 
 		if (empty($list))
 			$list = array();

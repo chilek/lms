@@ -2408,9 +2408,9 @@ class LMS
         return $manager->GetDocuments($customerid, $limit);
     }
 
-	public function GetDocumentList($order='cdate,asc', $search) {
+	public function GetDocumentList(array $params) {
 		$manager = $this->getDocumentManager();
-		return $manager->GetDocumentList($order, $search);
+		return $manager->GetDocumentList($params);
 	}
 
 	public function GetTaxes($from = NULL, $to = NULL)
