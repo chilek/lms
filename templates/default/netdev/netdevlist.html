@@ -80,17 +80,17 @@
 			</SELECT>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="6">
-			{include file="scroller.html" loop=$netdevlist}
+		<TD class="pagination" COLSPAN="6">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY>
 	{cycle values="light,lucid" print=false}
-	{section name=netdevlist loop=$netdevlist start=$start max=$pagelimit}
+	{section name=netdevlist loop=$netdevlist}
 	<TR class="highlight {cycle}" onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';">
 		<TD class="valign-top">
 			<IMG src="img/netdev.gif" ALT=""> <a href="?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}" name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
@@ -147,10 +147,10 @@
 	{/section}
     </TBODY>
 	<TFOOT>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="6">
-			{include file="scroller.html" loop=$netdevlist}
+		<TD class="pagination" COLSPAN="6">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}

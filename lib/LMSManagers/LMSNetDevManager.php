@@ -451,9 +451,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			ORDER BY name', array($id, $id, $id, $id, $id, $id, $id));
     }
 
-    public function GetNetDevList($order = 'name,asc', $search = array())
-    {
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+	public function GetNetDevList($order = 'name,asc', $search = array()) {
+		if (!isset($search['count']))
+			$count = false;
+		if (!isset($search['offset']))
+			$offset = null;
+		if (!isset($search['limit']))
+			$limit = null;
+
+		list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -533,6 +539,20 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				break;
 		}
 
+		if ($count) {
+			return $this->db->GetOne('SELECT COUNT(d.id)
+				FROM netdevices d
+				LEFT JOIN vaddresses addr       ON d.address_id = addr.id
+				LEFT JOIN invprojects p         ON p.id = d.invprojectid
+				LEFT JOIN netnodes n            ON n.id = d.netnodeid
+				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
+				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
+				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+				LEFT JOIN location_districts ld ON ld.id = lb.districtid
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+				. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : ''));
+		}
+
 		$netdevlist = $this->db->GetAll('SELECT d.id, d.name,
 				d.description, d.producer, d.model, d.serialnumber, d.ports, d.ownerid,
 				d.invprojectid, p.name AS project, d.status,
@@ -559,7 +579,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
 				. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
+                . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+				. (isset($limit) ? ' LIMIT ' . $limit : '')
+				. (isset($offset) ? ' OFFSET ' . $offset : ''));
 
 		if ($netdevlist) {
 			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);

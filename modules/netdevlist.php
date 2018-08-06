@@ -89,13 +89,28 @@ if ($api) {
 		'netnode' => $n,
 		'producer' => $producer,
 		'model' => $model,
+		'count' => true,
 	);
+
+	$total = intval($LMS->GetNetDevList($o, $search));
+
+	$limit = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
+	if ($SESSION->is_set('ndlp') && !isset($_GET['page']))
+		$SESSION->restore('ndlp', $_GET['page']);
+	$page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
+	$offset = ($page - 1) * $limit;
+
+	$search['count'] = false;
+	$search['offset'] = $offset;
+	$search['limit'] = $limit;
 }
 
 $netdevlist = $LMS->GetNetDevList($o, $search);
 
 if (!$api) {
-	$listdata['total'] = $netdevlist['total'];
+	$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
+	$listdata['total'] = $total;
 	$listdata['order'] = $netdevlist['order'];
 	$listdata['direction'] = $netdevlist['direction'];
 	$listdata['status'] = $s;
@@ -115,13 +130,6 @@ if ($api) {
 	die;
 }
 
-if (!isset($_GET['page']))
-	$SESSION->restore('ndlp', $_GET['page']);
-	
-$page = (! $_GET['page'] ? 1 : $_GET['page']);
-$pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
-$start = ($page - 1) * $pagelimit;
-
 $SESSION->save('ndlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -130,10 +138,8 @@ $netnodes = $LMS->GetNetNodeList(array(), 'name,ASC');
 unset($netnodes['total'], $netnodes['order'], $netnodes['direction']);
 $SMARTY->assign('netnodes', $netnodes);
 
-$SMARTY->assign('page',$page);
-$SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('start',$start);
 $SMARTY->assign('netdevlist',$netdevlist);
+$SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('producers', $producers);
