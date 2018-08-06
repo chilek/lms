@@ -1545,7 +1545,138 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             return FALSE;
     }
 
-    public function GetNoteContent($id)
+	public function GetNoteList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($order))
+			$order = '';
+		if (!isset($count))
+			$count = false;
+
+		if($order=='')
+			$order='id,asc';
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'id':
+				$sqlord = ' ORDER BY d.id';
+				break;
+			case 'cdate':
+				$sqlord = ' ORDER BY d.cdate';
+				break;
+			case 'number':
+				$sqlord = ' ORDER BY number';
+				break;
+			case 'value':
+				$sqlord = ' ORDER BY value';
+				break;
+			case 'count':
+				$sqlord = ' ORDER BY count';
+				break;
+			case 'name':
+				$sqlord = ' ORDER BY name';
+				break;
+		}
+
+		$where = '';
+
+		if($search!='' && $cat)
+		{
+			switch($cat)
+			{
+				case 'number':
+					$where = ' AND number = '.intval($search);
+					break;
+				case 'cdate':
+					$where = ' AND cdate >= '.intval($search).' AND cdate < '.(intval($search)+86400);
+					break;
+				case 'month':
+					$last = mktime(23,59,59, date('n',$search) + 1, 0, date('Y', $search));
+					$where = ' AND cdate >= '.intval($search).' AND cdate <= '.$last;
+					break;
+				case 'ten':
+					$where = ' AND ten = ' . $this->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND d.customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND UPPER(d.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'address':
+					$where = ' AND UPPER(address) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'value':
+					$having = ' HAVING SUM(n.value) = '.str_replace(',','.',f_round($search)).' ';
+					break;
+			}
+		}
+
+		if($hideclosed)
+			$where .= ' AND closed = 0';
+
+		if ($count) {
+			return $this->db->GetOne('SELECT COUNT(*) FROM (SELECT d.id
+			FROM documents d
+			JOIN debitnotecontents n ON (n.docid = d.id)
+			LEFT JOIN countries c ON (c.id = d.countryid)
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL AND type = '.DOC_DNOTE
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+						SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+						AND customerid = d.customerid)' : '')
+				.' GROUP BY d.id, number, cdate, d.customerid,
+			d.name, address, zip, city, d.template, closed, published, c.name '
+				.(isset($having) ? $having : '') . ') a');
+		}
+
+		$result = $this->db->GetAll('SELECT d.id AS id, number, cdate, d.template, closed, published, cancelled,
+			d.customerid, d.name, address, zip, city, c.name AS country,
+			SUM(n.value) AS value, COUNT(n.docid) AS count
+			FROM documents d
+			JOIN debitnotecontents n ON (n.docid = d.id)
+			LEFT JOIN countries c ON (c.id = d.countryid)
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL AND type = '.DOC_DNOTE
+			.$where
+			.(!empty($group) ?
+				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+			            AND customerid = d.customerid)' : '')
+			.' GROUP BY d.id, number, cdate, d.customerid,
+			d.name, address, zip, city, d.template, closed, published, c.name '
+			.(isset($having) ? $having : '')
+			.$sqlord.' '.$direction
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''));
+
+		if (empty($result))
+			$result = array();
+
+		$result['order'] = $order;
+		$result['direction'] = $direction;
+
+		return $result;
+	}
+
+	public function GetNoteContent($id)
     {
 		global $LMS;
 

@@ -34,22 +34,6 @@ window.open('?m=note&amp;id={$note}');
 		document.page.target="";
 		document.page.submit();
 	}
-
-{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
-	function pagechange1()
-	{
-		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page1'].value;
-		document.page.target="";
-		document.page.submit();
-	}
-
-	function pagechange2()
-	{
-		document.page.action="?m=notelist&page=" + document.forms['page'].elements['page2'].value;
-		document.page.target="";
-		document.page.submit();
-	}
-{/if}
 //-->
 </SCRIPT>
 <FORM METHOD="POST" NAME="page">
@@ -115,17 +99,17 @@ window.open('?m=note&amp;id={$note}');
 				&nbsp;<A href="javascript:filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="7">
-			{include file="scroller.html" loop=$notelist scrollerno=1}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
+    <TBODY class="lms-ui-multi-check">
 	{cycle values="light,lucid" print=false}
-	{section name=notelist loop=$notelist start=$start max=$pagelimit}
+	{section name=notelist loop=$notelist}
 	{assign var=note value=$notelist[notelist]}
 	{assign var=noteid value=$note.id}
 	<TR class="highlight {cycle}{if $note.closed} blend{elseif $note.cancelled} cancel{/if}">
@@ -167,7 +151,7 @@ window.open('?m=note&amp;id={$note}');
 			<A HREF="?m=note&id={$note.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
 			{/if}
 			<A HREF="?m=note&id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
-			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if}>
+			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if} class="lms-ui-multi-check">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -179,10 +163,10 @@ window.open('?m=note&amp;id={$note}');
 	{/section}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" COLSPAN="7">
-			{include file="scroller.html" loop=$notelist scrollerno=2}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
@@ -197,7 +181,7 @@ window.open('?m=note&amp;id={$note}');
 					<TD class="text-right nobr">
 						<label>
 							{trans("Check All")}
-							<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1">
+							<INPUT TYPE="checkbox" NAME="allbox" VALUE="1" class="lms-ui-multi-check-all">
 						</label>
 					</TD>
 				</TR>

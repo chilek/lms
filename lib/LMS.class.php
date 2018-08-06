@@ -1027,7 +1027,12 @@ class LMS
         return $manager->GetInvoiceContent($invoiceid);
     }
 
-    public function GetNoteContent($id)
+	public function GetNoteList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetNoteList($params);
+	}
+
+	public function GetNoteContent($id)
     {
         $manager = $this->getFinanceManager();
         return $manager->GetNoteContent($id);

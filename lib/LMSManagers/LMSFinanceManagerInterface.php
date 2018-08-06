@@ -58,7 +58,9 @@ interface LMSFinanceManagerInterface
 
     public function GetInvoiceContent($invoiceid);
 
-    public function GetNoteContent($id);
+	public function GetNoteList(array $params);
+
+	public function GetNoteContent($id);
 
     public function TariffAdd($tariff);
 
