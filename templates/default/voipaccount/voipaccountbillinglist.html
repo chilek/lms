@@ -297,13 +297,13 @@
                 {trans("all")}:
             </td>
             <td>
-                {gmdate("H:i:s", $call_time)}<br>
-                {gmdate("H:i:s", $stats.totaltime)}
+                {if $call_time / 86400 >= 1}{floor($call_time / 86400)}d {/if}{gmdate("H:i:s", $call_time % 86400)}<br>
+                {if $stats.totaltime / 86400 >= 1}{floor($stats.totaltime / 86400)}d {/if}{gmdate("H:i:s", $stats.totaltime % 86400)}
             </td>
 
             <td>
-                {gmdate("H:i:s", $call_talk)}<br>
-                {gmdate("H:i:s", $stats.billedtime)}
+                {if $call_talk / 86400 >= 1}{floor($call_talk / 86400)}d {/if}{gmdate("H:i:s", $call_talk % 86400)}<br>
+                {if $stats.billedtime / 86400 >= 1}{floor($stats.billedtime / 86400)}d {/if}{gmdate("H:i:s", $stats.billedtime % 86400)}
             </td>
             <td colspan="3" class="text-right">
                 {$sum|money_format}<br>
