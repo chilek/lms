@@ -517,6 +517,18 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @return array $result Array with billings
      */
     public function getVoipBillings(array $params) {
+		if (isset($params['count']))
+			$count = $params['count'];
+		else
+			$count = false;
+		if (isset($params['offset']))
+			$offset = $params['offset'];
+		else
+			$offset = null;
+		if (isset($params['limit']))
+			$limit = $params['limit'];
+		else
+			$limit = null;
 
         $order = explode(',', $params['o']);
         if (empty($order[1]) || $order[1] != 'desc')
@@ -592,6 +604,22 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $where_string = ($where) ? ' WHERE ' . implode(' AND ', $where) : '';
 
         $DB = $this->db;
+
+		if ($count) {
+            return $DB->GetOne('SELECT COUNT(cdr.id)
+                                  FROM
+                                     voip_cdr cdr
+                                     LEFT JOIN voipaccounts      vacc ON cdr.callervoipaccountid = vacc.id
+                                     LEFT JOIN voipaccounts     vacc2 ON cdr.calleevoipaccountid = vacc2.id
+                                     LEFT JOIN customers           c1 ON c1.id = vacc.ownerid
+                                     LEFT JOIN customers           c2 ON c2.id = vacc2.ownerid
+                                     LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c1.id AND ca1.type = ' . BILLING_ADDRESS . '
+                                     LEFT JOIN        addresses addr1 ON ca1.address_id = addr1.id
+                                     LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
+                                     LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
+                                     ' . $where_string);
+		}
+
         $bill_list = $DB->GetAll('SELECT
                                      cdr.id, caller, callee, price, call_start_time as begintime, cdr.uniqueid,
                                      totaltime as callbegintime, billedtime as callanswertime,
@@ -612,7 +640,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      LEFT JOIN        addresses addr1 ON ca1.address_id = addr1.id
                                      LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                                      LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
-                                     ' . $where_string . $order_string);
+                                     ' . $where_string . $order_string
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''));
 
         return $bill_list;
     }
