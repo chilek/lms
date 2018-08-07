@@ -213,8 +213,8 @@
 		<TD colspan="3" align="right">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>{/if}
 			<A href="?m=cashreglogview&regid={$listdata.regid}">{trans("Cash history")} <img src="img/value.gif" alt=""></A>&nbsp;
-			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A>&nbsp;
-			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}"><img src="img/kp.png" alt=""> {trans("New Cash-in Receipt")}</A>&nbsp;
+			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}"><img src="img/kw.png" alt=""> {trans("New Cash-out Receipt")}</A>
 		</TD>
 	</TR>
     </TFOOT>
