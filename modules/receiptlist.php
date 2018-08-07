@@ -153,6 +153,8 @@ $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] -
 
 $pagelimit = ConfigHelper::getConfig('phpui.receiptlist_pagelimit');
 $page = (!isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : $_GET['page']);
+if (empty($page))
+	$page = 1;
 $start = ($page - 1) * $pagelimit;
 
 $logentry = $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ?
