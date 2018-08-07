@@ -504,7 +504,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $stats['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
 			WHERE queueid = ? AND deleted = 1', array($id));
         $stats['critical'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
-			WHERE queueid = ? AND priority = 2 AND state != 2', array($id));
+			WHERE queueid = ? AND priority = '.RT_PRIORITY_CRITICAL.' AND state != '.RT_RESOLVED, array($id));
         $stats['unread'] = $this->db->GetOne('SELECT COUNT(t.id) FROM rttickets t
 			LEFT JOIN (
 				SELECT ticketid, MAX(createtime) AS maxcreatetime
