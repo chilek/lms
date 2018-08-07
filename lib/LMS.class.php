@@ -2041,6 +2041,11 @@ class LMS
 			foreach (explode(",", $recipients) as $recipient)
 				$this->mail_object->addAddress($recipient);
 
+			if (isset($headers['X-Priority']) && intval($headers['X-Priority'])) {
+				$this->mail_object->Priority = intval($headers['X-Priority']);
+				unset($headers['X-Priority']);
+			}
+
 			foreach ($headers as $name => $value) {
 				if (strpos(strtolower($name), 'x') === 0) {
 					$this->mail_object->addCustomHeader($name, $value);

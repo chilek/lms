@@ -217,6 +217,14 @@ $RT_PRIORITY_STYLES = array(
 	RT_PRIORITY_CRITICAL => 'background-color: red; color: white;',
 );
 
+$RT_MAIL_PRIORITIES = array(
+	RT_PRIORITY_VERYLOW => 5,
+	RT_PRIORITY_LOW => 4,
+	RT_PRIORITY_NORMAL => 3,
+	RT_PRIORITY_URGENT => 2,
+	RT_PRIORITY_CRITICAL => 1,
+);
+
 // Helpdesk cause type
 define('RT_CAUSE_OTHER', 0);
 define('RT_CAUSE_CUSTOMER', 1);

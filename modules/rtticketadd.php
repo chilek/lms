@@ -250,6 +250,7 @@ if(isset($_POST['ticket']))
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
 			);
+			$headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 			$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
 			$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
