@@ -42,11 +42,11 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'assign') {
-    $LMS->AssignCurrentUserToEvent($_GET['id'], Auth::GetCurrentUser());
+    $LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
     $SESSION->redirect('?' . $SESSION->get('backto'));
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'deassign') {
-    $LMS->DeassignCurrentUserFromEvent($_GET['id'], Auth::GetCurrentUser());
+    $LMS->UnassignUserFromEevent($_GET['id'], Auth::GetCurrentUser());
     $SESSION->redirect('?' . $SESSION->get('backto'));
 }
 

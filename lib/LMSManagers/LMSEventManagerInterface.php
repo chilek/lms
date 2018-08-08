@@ -47,7 +47,7 @@ interface LMSEventManagerInterface
 
 	public function EventOverlaps(array $params);
 
-    public function AssignCurrentUserToEvent($id, $userid);
+    public function AssignUserToEvent($id, $userid);
 
-    public function DeassignCurrentUserFromEvent($id, $userid);
+    public function UnassignUserFromEevent($id, $userid);
 }
