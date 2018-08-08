@@ -24,7 +24,7 @@
         {/foreach}
 
         {if $imadded == 1}
-        <a href="?m=eventedit&id={$event.id}&action=deassign"><button class="lms-ui-button">-</button></a>
+        <a href="?m=eventedit&id={$event.id}&action=unassign"><button class="lms-ui-button">-</button></a>
         {else}
         <a href="?m=eventedit&id={$event.id}&action=assign"><button class="lms-ui-button">+</button></a>
         {/if}
