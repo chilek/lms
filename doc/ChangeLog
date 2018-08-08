@@ -75,6 +75,8 @@ version ?.??.?? (????-??-??):
   - improvement: performance optimalisation for loading long record lists [chilan]
   - improvement: helpdesk ticket priorities are mapped to X-Priority header from
     user mail notifications [chilan]
+  - enhancement: added button in event list row which assigns currently logged user
+    to event [interduo]
 
 version 1.11.23 (2018-03-21):
 

@@ -46,4 +46,8 @@ interface LMSEventManagerInterface
     public function GetCustomerIdByTicketId($id);
 
 	public function EventOverlaps(array $params);
+
+    public function AssignUserToEvent($id, $userid);
+
+    public function UnassignUserFromEevent($id, $userid);
 }
