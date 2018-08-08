@@ -41,6 +41,14 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 	$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE id = ?',array(Auth::GetCurrentUser(), $_GET['id']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
+elseif(isset($_GET['action']) && $_GET['action'] == 'assign') {
+    $LMS->AssignCurrentUserToEvent($_GET['id'], Auth::GetCurrentUser());
+    $SESSION->redirect('?' . $SESSION->get('backto'));
+}
+elseif(isset($_GET['action']) && $_GET['action'] == 'deassign') {
+    $LMS->DeassignCurrentUserFromEvent($_GET['id'], Auth::GetCurrentUser());
+    $SESSION->redirect('?' . $SESSION->get('backto'));
+}
 
 $event = $LMS->GetEvent($_GET['id']);
 

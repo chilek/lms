@@ -2469,6 +2469,16 @@ class LMS
 		return $manager->EventOverlaps($params);
 	}
 
+    public function AssignCurrentUserToEvent($id, $userid) {
+        $manager = $this->getEventManager();
+        return $manager->AssignCurrentUserToEvent($id, $userid);
+    }
+
+    public function DeassignCurrentUserFromEvent($id, $userid) {
+        $manager = $this->getEventManager();
+        return $manager->DeassignCurrentUserFromEvent($id, $userid);
+    }
+
 	public function GetEventsByTicketId($id)
     {
          $manager = $this->getHelpdeskManager();

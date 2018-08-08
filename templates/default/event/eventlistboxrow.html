@@ -6,24 +6,28 @@
             <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticketid|string_format:"%06d"}</A>
         {/if}
     </TD>
-    <TD class="text-left nobr" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
-                <span class="bold">
-                    {if $overdue == 1}
-                        {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
-                        {if $event.begintime != $event.endtime}
-                        - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
-                        {/if}<br>
-                        {$event.date|date_format:"%x"}
-                    {else}
-                        {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
-                        {if $event.begintime != $event.endtime}
-                        - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
-                        {/if}
-                    {/if}
-                </span><BR>
+    <TD class="text-left nobr bold" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
+                {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+                {if $event.begintime != $event.endtime}
+                - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+                {/if}<br>
+                {if $overdue == 1}
+                    {$event.date|date_format:"%x"}
+                {/if}
+                <br>
         {foreach $event.userlist as $user}
-            <A href="?m=userinfo&amp;id={$user.id}">{$user.name|truncate:"25":"...":true}</A><BR>
+        {if $userid == $user.id}
+        {assign var=imadded value=1}
+        {/if}
+
+        <a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a><br>
         {/foreach}
+
+        {if $imadded == 1}
+        <a href="?m=eventedit&id={$event.id}&action=deassign"><button class="lms-ui-button">-</button></a>
+        {else}
+        <a href="?m=eventedit&id={$event.id}&action=assign"><button class="lms-ui-button">+</button></a>
+        {/if}
     </TD>
     <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
         <IMG src="img/calendar.gif" alt=""> <span class="bold">{$event.title}</span>
