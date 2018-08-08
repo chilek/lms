@@ -52,7 +52,15 @@
 	{foreach from=$queues item=queue}
 	<TR class="highlight {cycle} lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 		<TD class="nobr bold">
-			{if $queue.unread}<img src="img/ring-blue.png" alt="">{else}<IMG src="img/queue.gif" ALT="">{/if}
+		{if $queue.critical != 0}
+			<img src="img/ring-red.png" alt="">
+		{else}
+			{if $queue.unread}
+				<img src="img/ring-blue.png" alt="">
+			{else}
+				<IMG src="img/queue.gif" ALT="">
+			{/if}
+		{/if}
 		</TD>
 		<TD class="nobr bold">
 			{$queue.name}
