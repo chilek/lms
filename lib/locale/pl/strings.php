@@ -3955,5 +3955,6 @@ $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 
 $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytany';
+$_LANG['Mark as read'] = 'Oznacz jako przeczytany';
 
 ?>

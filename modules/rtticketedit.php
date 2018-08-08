@@ -160,7 +160,10 @@ if ($id && !isset($_POST['ticket'])) {
 	}
 
 	if (isset($_GET['unread'])) {
-		$LMS->MarkTicketAsUnread($id);
+		if (intval($_GET['unread']))
+			$LMS->MarkTicketAsUnread($id);
+		else
+			$LMS->MarkTicketAsRead($id);
 		$SESSION->redirect('?' . $SESSION->get('backto'));
 	}
 }
