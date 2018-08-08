@@ -173,6 +173,8 @@ elseif(isset($_POST['note']))
 				'body' => $note['body'],
 			);
 
+			$headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
+
 			if(ConfigHelper::checkConfig('rt.note_send_re_in_subject'))
 				$params['subject'] = 'Re: '.$ticketdata['subject'];
 
