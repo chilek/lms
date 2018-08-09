@@ -23,9 +23,8 @@
 		<tr>
 			<td class="text-center valign-top bottomline">
 				<br>
-				<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br>
-				<span class="bold">LMS {$layout.lmsv}</span><br>
-				&nbsp;<br>
+				<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br><br>
+				<span class="bold"><A href="?m=copyrights">&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</A></span><br><br>
 			</td>
 		</tr>
 	</table>
@@ -66,14 +65,7 @@
 			</td>
 		</tr>
 	</table>
-	<table width="100%">
-		<tr>
-			<td class="text-center bold nobr" style="font-size: 7pt;">
-				LMS {$layout.lmsv}<br>{if $layout.lmsvr}({$layout.lmsvr})<br>{/if}
-				DB: {$layout.dbschversion}<br>@ {$layout.hostname}&nbsp;<br>&nbsp;<br>
-			</td>
-		</tr>
-	</table>
+	<br>
 	<script type="text/javascript">
 		var mainMenu = new ClickShowHideMenu({
 			id: 'main-menu',
