@@ -154,7 +154,6 @@ $SMARTY->assign('month',$month);
 $SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
 $SMARTY->assign('error',$error);
-$SMARTY->assign('userid',intval(Auth::GetCurrentUser()));
 $SMARTY->assign('userlist',$LMS->GetUserNames());
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist',$LMS->GetCustomerNames());

@@ -3957,4 +3957,7 @@ $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytany';
 $_LANG['Mark as read'] = 'Oznacz jako przeczytany';
 
+$_LANG['<!event>Assign'] = 'Przypisz';
+$_LANG['<!event>Unassign'] = 'Cofnij przypisanie';
+
 ?>

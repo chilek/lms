@@ -15,19 +15,13 @@
                     {$event.date|date_format:"%x"}
                 {/if}
                 <br>
+        {$imadded=0}
         {foreach $event.userlist as $user}
-        {if $userid == $user.id}
-        {assign var=imadded value=1}
+        {if $layout.logid == $user.id}
+        {$imadded=1}
         {/if}
-
         <a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a><br>
         {/foreach}
-
-        {if $imadded == 1}
-        <a href="?m=eventedit&id={$event.id}&action=unassign"><button class="lms-ui-button">-</button></a>
-        {else}
-        <a href="?m=eventedit&id={$event.id}&action=assign"><button class="lms-ui-button">+</button></a>
-        {/if}
     </TD>
     <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
         <IMG src="img/calendar.gif" alt=""> <span class="bold">{$event.title}</span>
@@ -49,24 +43,24 @@
     </TD>
     <TD class="text-right nobr">
         <div class="no-print">
+            {if $imadded}
+            <a href="?m=eventedit&id={$event.id}&action=unassign"><img src="img/users.gif" alt="{trans("<!event>Unassign")}" title=" {trans("<!event>Unassign")} "></a>
+            {else}
+            <a href="?m=eventedit&id={$event.id}&action=assign"><img src="img/users.gif" alt="{trans("<!event>Assign")}" title=" {trans("<!event>Assign")} "></a>
+            {/if}
             {if ConfigHelper::checkPrivilege('timetable_management')}
             {if $event.closed}
-            <A href="?m=eventedit&amp;id={$event.id}&amp;action=open"><IMG src="img/resolved.gif" alt="{trans("Open")}"title="&nbsp;{trans("Open")}&nbsp;"></A>
+            <A href="?m=eventedit&amp;id={$event.id}&amp;action=open"><IMG src="img/resolved.gif" alt="{trans("Open")}" title="&nbsp;{trans("Open")}&nbsp;"></A>
             {else}
-            <A href="?m=eventedit&amp;id={$event.id}&amp;action=close"><IMG src="img/open.gif" alt="{trans("Close")}"title="&nbsp;{trans("Close")}&nbsp;"></A>
+            <A href="?m=eventedit&amp;id={$event.id}&amp;action=close"><IMG src="img/open.gif" alt="{trans("Close")}" title="&nbsp;{trans("Close")}&nbsp;"></A>
             {/if}
             <A href="?m=eventdel&amp;id={$event.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
                 <IMG src="img/delete.gif" alt="{trans("Delete")}"title="&nbsp;{trans("Delete")}&nbsp;">
             </A>
             <A href="?m=eventedit&amp;id={$event.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}"title="&nbsp;{trans("Edit")}&nbsp;"></A>
             {/if}
-            {if $event.note == ''}
-                {foreach item=user from=$event.userlist}
-                    {if $layout.logid == $user.id}
-                    <A href="?m=eventnote&id={$event.id}">
-                    <IMG src="img/note.gif" alt="{trans("Add Note")}" title="{trans("Add Note")}"></A>
-                    {/if}
-                {/foreach}
+            {if $imadded && $event.note == ''}
+            <A href="?m=eventnote&id={$event.id}"><IMG src="img/note.gif" alt="{trans("Add Note")}" title="{trans("Add Note")}"></A>
             {/if}
         </div>
     </TD>
