@@ -63,11 +63,11 @@
 					{/block}
 					<hr>
 				</div>
+				{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
 				<div style="border-bottom: 1px solid black; padding-top: 4px; padding-bottom: 4px;" class="no-print">
-					{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
 					{include file="toolbar.html"}
-					{/if}
 				</div>
+				{/if}
 				{block name=module_content}{/block}
 				{block name="footer"}
 					{if $layout.dberrors}

@@ -32,27 +32,35 @@
 		}
 		//-->
 	</script>
-	{block name="quicksearch"}
-    	<div id="autosuggest"><ul><li></li></ul></div>
-    	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch" class="no-print">
-	<table width="100%" cellpadding="0" cellspacing="0">
-		<tr>
-		    <td style="width: 1%" class="nobr">
-			{trans("Search:")}
-			{include file="quicksearchcontents.html"}
-			{* Enter key submit hack for IE *}
-			{* don't change this to img element as it breaks auto search after pressing enter outside autosuggest box *}
-			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
-		    </td>
-		    <td style="width: 99%" class="text-right nobr">
-			&nbsp;<A href="?m=copyrights">&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</A>
-		    </td>
-		</tr>
-	</table>
-	</form>
-	{/block}
+	<div style="display: flex; border-bottom: 1px solid black; padding-bottom: 4px;" class="no-print">
+		{block name=quicksearch}
+		<div id="quicksearch">
+			<div id="autosuggest"><ul><li></li></ul></div>
+			<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
+				<table width="100%" cellpadding="0" cellspacing="0">
+					<tr>
+						<td style="width: 1%" class="nobr">
+						{trans("Search:")}
+						{include file="quicksearchcontents.html"}
+						{* Enter key submit hack for IE *}
+						{* don't change this to img element as it breaks auto search after pressing enter outside autosuggest box *}
+						<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		{/block}
+		{block name=indicators}
+		<div id="indicators" class="nobr">
+			{include file="indicators.html"}
+		</div>
+		{/block}
+		<hr>
+	</div>
 	{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
+	<div style="border-bottom: 1px solid black; padding-top: 4px; padding-bottom: 4px;" class="no-print">
 		{include file="toolbar.html"}
+	</div>
 	{/if}
-	<hr>
 {/if}
