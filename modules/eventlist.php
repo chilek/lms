@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -109,10 +109,14 @@ if(!isset($year))
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = $LMS->GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $privacy, $closed);
+//	function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed='') {
+$eventlist = $LMS->GetEventList(array('year' => $year, 'month' => $month, 'day' => $day,
+	'forward' => ConfigHelper::getConfig('phpui.timetable_days_forward'), 'customerid' => $u, 'userid' => $a,
+	'type' => $type, 'privacy' => $privacy, 'closed' => $closed));
 
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
-	$overdue_events = $LMS->GetEventList($year, $month, $day, '-1', $u, $a, $type, $privacy, 0);
+	$overdue_events = $LMS->GetEventList(array('year' => $year, 'month' => $month, 'day' => $day,
+		'forward' => '-1', 'customerid' => $u, 'userid' => $a, 'type' => $type, 'privacy' => $privacy, 'closed' => 0));
 
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);
