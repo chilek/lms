@@ -108,4 +108,6 @@ interface LMSHelpdeskManagerInterface
 	public function MarkTicketAsRead($ticketid);
 
 	public function MarkTicketAsUnread($ticketid);
+
+	public function GetIndicatorStats();
 }

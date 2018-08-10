@@ -1681,6 +1681,11 @@ class LMS
 		return $manager->MarkTicketAsUnread($ticketid);
 	}
 
+	public function GetIndicatorStats() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetIndicatorStats();
+	}
+
 	/*
 	 *  LMS-UI configuration
 	 */

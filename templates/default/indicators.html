@@ -1,6 +1,25 @@
 {block name=indicatorcontents}
-<a href="?m=eventlist"><img src="img/calendar.gif" alt="{$eventcount.today}"></a>&nbsp;
-<a href="?m=rtqueueview"><img src="img/24-ring-red.png" alt="{$ticketcount.critical}"></a>&nbsp;
-<a href="?m=rtqueueview"><img src="img/ring-orange.png" alt="{$ticketcount.high}"></a>&nbsp;
-<a href="?m=rtqueueview"><img src="img/ring-blue.png" alt="{$ticketcount.unread}"></a>&nbsp;
+<a href="?m=eventlist"><img src="img/calendar.gif"><span class="lms-ui-indicator-counter" id="indicator-events">0</span></a>&nbsp;
+<a href="?m=rtqueueview"><img src="img/24-ring-red.png"><span class="lms-ui-indicator-counter" id="indicator-critical">0</span></a>&nbsp;
+<a href="?m=rtqueueview"><img src="img/ring-orange.png"><span class="lms-ui-indicator-counter" id="indicator-urgent">0</span></a>&nbsp;
+<a href="?m=rtqueueview"><img src="img/ring-blue.png"><span class="lms-ui-indicator-counter" id="indicator-unread">0</span></a>&nbsp;
+<script>
+    function getIndicatorStats() {
+		$.ajax('?m=indicators&api=1', {
+				method: "POST",
+				dataType: "json"
+			}
+		).done(function (data) {
+			$.each(data, function (idx, value) {
+				$('#indicator-' + idx).html(value);
+			});
+		});
+	}
+
+    getIndicatorStats();
+
+    setInterval(function() {
+    	    getIndicatorStats();
+        }, 30000);
+</script>
 {/block}
