@@ -109,7 +109,6 @@ if(!isset($year))
 
 $layout['pagetitle'] = trans('Timetable');
 
-//	function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed='') {
 $eventlist = $LMS->GetEventList(array('year' => $year, 'month' => $month, 'day' => $day,
 	'forward' => ConfigHelper::getConfig('phpui.timetable_days_forward'), 'customerid' => $u, 'userid' => $a,
 	'type' => $type, 'privacy' => $privacy, 'closed' => $closed));
