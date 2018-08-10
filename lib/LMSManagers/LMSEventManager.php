@@ -175,8 +175,6 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
         }
 
-		$userid = Auth::GetCurrentUser();
-
 		if ($count)
 			return $this->db->GetOne(
 				'SELECT COUNT(events.id)
@@ -192,7 +190,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				. $overduefilter
 				. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
 				. $closedfilter,
-				array($startdate, $enddate, $enddate, $startdate, $userid));
+				array($startdate, $enddate, $enddate, $startdate));
 
 		$list = $this->db->GetAll(
 			'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
@@ -214,7 +212,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			.' ORDER BY date, begintime'
 			. (isset($limit) ? ' LIMIT ' . $limit : '')
 			. (isset($offset) ? ' OFFSET ' . $offset : ''),
-			array($startdate, $enddate, $enddate, $startdate, $userid));
+			array($startdate, $enddate, $enddate, $startdate));
         $list2 = array();
         if ($list)
             foreach ($list as $idx => $row) {
