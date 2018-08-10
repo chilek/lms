@@ -163,17 +163,23 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         if ($closed != '')
             $closedfilter = ' AND closed = '.intval($closed);
 
-        if(!isset($userid) && empty($userid))
-            $userfilter = '';
-        else
-        {
-            if(is_array($userid))
-            {
-                $userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN ('.implode(',', $userid).'))';
-                if(in_array('-1', $userid))
-                    $userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
-            }
-        }
+		if (!isset($userid) || empty($userid))
+			$userfilter = '';
+		else {
+			if (is_array($userid)) {
+				if (in_array('-1', $userid))
+					$userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
+				else
+					$userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN ('.implode(',', $userid).'))';
+			} else {
+				$userid = intval($userid);
+				if ($userid == -1)
+					$userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
+				else
+					$userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid = ' . $userid . ')';
+
+			}
+		}
 
 		if ($count)
 			return $this->db->GetOne(
