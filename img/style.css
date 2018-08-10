@@ -1749,3 +1749,9 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   height: 16px;
   background: url("cms.gif");
 }
+.lms-ui-indicator:hover {
+  text-decoration: none;
+}
+.lms-ui-indicator-counter {
+  font-size: 120%;
+}
