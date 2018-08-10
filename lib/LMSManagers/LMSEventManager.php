@@ -126,6 +126,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				$$var = 0;
 		if (!isset($closed))
 			$closed = '';
+		if (!isset($count))
+			$count = false;
 
         $t = time();
 
@@ -173,25 +175,46 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             }
         }
 
-        $list = $this->db->GetAll(
-            'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
-            . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-		userid, vusers.name AS username, ' . $this->db->Concat('c.city',"', '",'c.address').' AS customerlocation,
-		events.address_id, va.location, nodeid, vn.location AS nodelocation, ticketid
-		FROM events
-		LEFT JOIN vaddresses va ON va.id = events.address_id
-		LEFT JOIN vnodes as vn ON (nodeid = vn.id)
-		LEFT JOIN customerview c ON (customerid = c.id)
-		LEFT JOIN vusers ON (userid = vusers.id)
-		WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
-            . $privacy_condition
-            .($customerid ? ' AND customerid = '.intval($customerid) : '')
-            . $userfilter
-            . $overduefilter
-            . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
-            . $closedfilter
-            .' ORDER BY date, begintime',
-            array($startdate, $enddate, $enddate, $startdate, Auth::GetCurrentUser()));
+		$userid = Auth::GetCurrentUser();
+
+		if ($count)
+			return $this->db->GetOne(
+				'SELECT COUNT(events.id)
+				FROM events
+				LEFT JOIN vaddresses va ON va.id = events.address_id
+				LEFT JOIN vnodes as vn ON (nodeid = vn.id)
+				LEFT JOIN customerview c ON (customerid = c.id)
+				LEFT JOIN vusers ON (userid = vusers.id)
+				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+				. $privacy_condition
+				. ($customerid ? ' AND customerid = '.intval($customerid) : '')
+				. $userfilter
+				. $overduefilter
+				. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+				. $closedfilter,
+				array($startdate, $enddate, $enddate, $startdate, $userid));
+
+		$list = $this->db->GetAll(
+			'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
+				. $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
+				userid, vusers.name AS username, ' . $this->db->Concat('c.city',"', '",'c.address').' AS customerlocation,
+				events.address_id, va.location, nodeid, vn.location AS nodelocation, ticketid
+			FROM events
+			LEFT JOIN vaddresses va ON va.id = events.address_id
+			LEFT JOIN vnodes as vn ON (nodeid = vn.id)
+			LEFT JOIN customerview c ON (customerid = c.id)
+			LEFT JOIN vusers ON (userid = vusers.id)
+			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+			. $privacy_condition
+			.($customerid ? ' AND customerid = '.intval($customerid) : '')
+			. $userfilter
+			. $overduefilter
+			. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+			. $closedfilter
+			.' ORDER BY date, begintime'
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''),
+			array($startdate, $enddate, $enddate, $startdate, $userid));
         $list2 = array();
         if ($list)
             foreach ($list as $idx => $row) {
