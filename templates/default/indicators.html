@@ -36,6 +36,6 @@
 
     setInterval(function() {
     	    getIndicatorStats();
-        }, 30000);
+        }, {ConfigHelper::getConfig('phpui.indicator_refresh_interval', 120)} * 1000);
 </script>
 {/block}
