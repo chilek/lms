@@ -3960,4 +3960,9 @@ $_LANG['Mark as read'] = 'Oznacz jako przeczytany';
 $_LANG['<!event>Assign'] = 'Przypisz';
 $_LANG['<!event>Unassign'] = 'Cofnij przypisanie';
 
+$_LANG['Today\'s events assigned to you'] = 'Dzisiejsze zdarzenia przypisane do Ciebie';
+$_LANG['Critical tickets'] = 'Zgłoszenia krytyczne';
+$_LANG['Urgent tickets'] = 'Zgłoszenia pilne';
+$_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
+
 ?>
