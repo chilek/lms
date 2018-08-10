@@ -1,6 +1,6 @@
 {block name=indicatorcontents}
 {if ConfigHelper::CheckPrivilege('timetable_management')}
-<a href="?m=eventlist">
+<a href="?m=eventlist&u=all&a[]={$layout.logid}&type=all&closed=all&privacy=all">
     <img src="img/calendar.gif">
     <span class="lms-ui-indicator-counter" id="indicator-events">0</span>
 </a>

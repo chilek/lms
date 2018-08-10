@@ -85,11 +85,30 @@ if (!empty($_POST)) {
 			$year = $_GET['year'];
 	}
 
-	$SESSION->restore('elu', $u);
-	$SESSION->restore('ela', $a);
-	$SESSION->restore('elt', $type);
-	$SESSION->restore('elp', $privacy);
-	$SESSION->restore('elc', $closed);
+	if (isset($_GET['a']))
+		$a = $_GET['a'];
+	else
+		$SESSION->restore('ela', $a);
+
+	if (isset($_GET['u']))
+		$u = $_GET['u'] == 'all' ? null : $_GET['u'];
+	else
+		$SESSION->restore('elu', $u);
+
+	if (isset($_GET['type']))
+		$type = $_GET['type'] == 'all' ? null : $_GET['type'];
+	else
+		$SESSION->restore('elt', $type);
+
+	if (isset($_GET['privacy']))
+		$privacy = $_GET['privacy'] == 'all' ? null : $_GET['privacy'];
+	else
+		$SESSION->restore('elp', $privacy);
+
+	if (isset($_GET['closed']))
+		$closed = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
+	else
+		$SESSION->restore('elc', $closed);
 }
 
 $SESSION->save('ela', $a);
