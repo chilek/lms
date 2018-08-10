@@ -156,12 +156,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $startdate = 0;
             $enddate = strtotime("midnight", $t);
         } else {
+        	$overduefilter = '';
             $startdate = mktime(0,0,0, $month, $day, $year);
             $enddate = mktime(0,0,0, $month, $day+$forward, $year);
         }
 
         if ($closed != '')
             $closedfilter = ' AND closed = '.intval($closed);
+        else
+        	$closedfilter = '';
 
 		if (!isset($userid) || empty($userid))
 			$userfilter = '';
