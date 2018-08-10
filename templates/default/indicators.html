@@ -1,8 +1,24 @@
 {block name=indicatorcontents}
-<a href="?m=eventlist"><img src="img/calendar.gif"><span class="lms-ui-indicator-counter" id="indicator-events">0</span></a>&nbsp;
-<a href="?m=rtqueueview"><img src="img/24-ring-red.png"><span class="lms-ui-indicator-counter" id="indicator-critical">0</span></a>&nbsp;
-<a href="?m=rtqueueview"><img src="img/ring-orange.png"><span class="lms-ui-indicator-counter" id="indicator-urgent">0</span></a>&nbsp;
-<a href="?m=rtqueueview"><img src="img/ring-blue.png"><span class="lms-ui-indicator-counter" id="indicator-unread">0</span></a>&nbsp;
+{if ConfigHelper::CheckPrivilege('timetable_management')}
+<a href="?m=eventlist">
+    <img src="img/calendar.gif">
+    <span class="lms-ui-indicator-counter" id="indicator-events">0</span>
+</a>
+{/if}
+{if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
+<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_CRITICAL}&ownerid=-1&o=lastmodified">
+    <img src="img/24-ring-red.png">
+    <span class="lms-ui-indicator-counter" id="indicator-critical">0</span>
+</a>&nbsp;
+<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_URGENT}&ownerid=-1&o=lastmodified">
+    <img src="img/ring-orange.png">
+    <span class="lms-ui-indicator-counter" id="indicator-urgent">0</span>
+</a>&nbsp;
+<a href="?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&unread=1&o=lastmodified">
+    <img src="img/ring-blue.png">
+    <span class="lms-ui-indicator-counter" id="indicator-unread">0</span>
+</a>&nbsp;
+{/if}
 <script>
     function getIndicatorStats() {
 		$.ajax('?m=indicators&api=1', {
