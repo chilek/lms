@@ -278,6 +278,7 @@ if ($AUTH->islogged) {
 			$SYSLOG->NewTransaction($module);
 
 		if ($global_allow || $allow) {
+			$istats = $LMS->GetIndicatorStats();
 			$layout['module'] = $module;
 			$LMS->InitUI();
 			$LMS->executeHook($module.'_on_load');
@@ -307,6 +308,7 @@ if ($AUTH->islogged) {
 		$layout['pagetitle'] = trans('Error!');
 
 		if (!$api) {
+			$SMARTY->assign('istats', $istats);
 			$SMARTY->assign('layout', $layout);
 			$SMARTY->assign('server', $_SERVER);
 			$SMARTY->display('notfound.html');
