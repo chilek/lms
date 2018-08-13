@@ -1,24 +1,34 @@
 {block name=indicatorcontents}
 {if ConfigHelper::CheckPrivilege('timetable_management')}
-<a href="?m=eventlist&u=all&a[]={$layout.logid}&type=all&closed=all&privacy=all" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}">
-    <img src="img/calendar.gif">
-    <span class="lms-ui-indicator-counter" id="indicator-events">0</span>
-</a>
+	{if $istats.events > 0}
+	<a href="?m=eventlist&u=all&a[]={$layout.logid}&type=all&closed=all&privacy=all" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}">
+	<img src="img/calendar.gif">
+	<span class="lms-ui-indicator-counter" id="indicator-events"></span>
+	</a>
+	{/if}
 {/if}
+
 {if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
-<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_CRITICAL}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Critical tickets")}">
-    <img src="img/24-ring-red.png">
-    <span class="lms-ui-indicator-counter" id="indicator-critical">0</span>
-</a>&nbsp;
-<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_URGENT}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Urgent tickets")}">
-    <img src="img/ring-orange.png">
-    <span class="lms-ui-indicator-counter" id="indicator-urgent">0</span>
-</a>&nbsp;
-<a href="?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&unread=1&o=lastmodified" class="lms-ui-indicator" title="{trans("Unread tickets")}">
-    <img src="img/ring-blue.png">
-    <span class="lms-ui-indicator-counter" id="indicator-unread">0</span>
-</a>&nbsp;
+	{if $istats.critical > 0}
+	<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_CRITICAL}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Critical tickets")}">
+		<img src="img/24-ring-red.png">
+		<span class="lms-ui-indicator-counter" id="indicator-critical"></span>
+	</a>&nbsp;
+	{/if}
+	{if $istats.urgent > 0}
+	<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_URGENT}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Urgent tickets")}">
+		<img src="img/ring-orange.png">
+		<span class="lms-ui-indicator-counter" id="indicator-urgent"></span>
+	</a>
+	{/if}
+	{if $istats.unread > 0}
+	<a href="?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&unread=1&o=lastmodified" class="lms-ui-indicator" title="{trans("Unread tickets")}">
+		<img src="img/ring-blue.png">
+		<span class="lms-ui-indicator-counter" id="indicator-unread">0</span>
+	</a>&nbsp;
+	{/if}
 {/if}
+
 <script>
     function getIndicatorStats() {
 		$.ajax('?m=indicators&api=1', {
