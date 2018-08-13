@@ -1,23 +1,23 @@
 {block name=indicatorcontents}
 {if ConfigHelper::CheckPrivilege('timetable_management')}
-<a href="?m=eventlist&u=all&a[]={$layout.logid}&type=all&closed=all&privacy=all" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}">
+<a href="?m=eventlist&u=all&a[]={$layout.logid}&type=all&closed=all&privacy=all" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
     <img src="img/calendar.gif">
-    <span class="lms-ui-indicator-counter" id="indicator-events">0</span>
+    <span class="lms-ui-indicator-counter">0</span>
 </a>
 {/if}
 {if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
-<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_CRITICAL}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Critical tickets")}">
+<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_CRITICAL}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Critical tickets")}" id="indicator-critical" style="display: none;">
     <img src="img/24-ring-red.png">
-    <span class="lms-ui-indicator-counter" id="indicator-critical">0</span>
-</a>&nbsp;
-<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_URGENT}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Urgent tickets")}">
+    <span class="lms-ui-indicator-counter">0</span>
+</a>
+<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_URGENT}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Urgent tickets")}" id="indicator-urgent" style="display: none;">
     <img src="img/ring-orange.png">
-    <span class="lms-ui-indicator-counter" id="indicator-urgent">0</span>
-</a>&nbsp;
-<a href="?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&unread=1&o=lastmodified" class="lms-ui-indicator" title="{trans("Unread tickets")}">
+    <span class="lms-ui-indicator-counter">0</span>
+</a>
+<a href="?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&unread=1&o=lastmodified" class="lms-ui-indicator" title="{trans("Unread tickets")}" id="indicator-unread" style="display: none;">
     <img src="img/ring-blue.png">
-    <span class="lms-ui-indicator-counter" id="indicator-unread">0</span>
-</a>&nbsp;
+    <span class="lms-ui-indicator-counter">0</span>
+</a>
 {/if}
 <script>
     function getIndicatorStats() {
@@ -27,7 +27,11 @@
 			}
 		).done(function (data) {
 			$.each(data, function (idx, value) {
-				$('#indicator-' + idx).html(value);
+				if (parseInt(value))
+                    $('#indicator-' + idx).show();
+				else
+					$('#indicator-' + idx).hide();
+				$('#indicator-' + idx + ' .lms-ui-indicator-counter').html(value);
 			});
 		});
 	}
