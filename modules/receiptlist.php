@@ -79,13 +79,10 @@ if (isset($_POST['to'])) {
 else
 	$to = 0;
 
-if ($from && $to)
-	if($from > $to) {
-		$error['datefrom'] = trans('Incorrect date range!');
-		$error['dateto'] = trans('Incorrect date range!');
-	}
-else
-{
+if ($from && $to && $from > $to) {
+	$error['datefrom'] = trans('Incorrect date range!');
+	$error['dateto'] = trans('Incorrect date range!');
+} else {
 	$SESSION->save('rlf', $from);
 	$SESSION->save('rlt', $to);
 }
