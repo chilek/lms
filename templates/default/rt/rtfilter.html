@@ -79,6 +79,14 @@
                     <option value="1"{if $queuedata.unread == 1} selected{/if}>{trans("yes")}</option>
                 </SELECT>
             </label>
+            <br>
+            <label>
+                {trans("Indicator panel:")}
+                <SELECT size="1" name="rights" OnChange="document.filter.submit();">
+                    <option value="0"{if $queuedata.rights == 0} selected{/if}>{trans("- all -")}</option>
+                    <option value="{$smarty.const.RT_RIGHT_INDICATOR}" {if $queuedata.rights == $smarty.const.RT_RIGHT_INDICATOR} selected{/if}>{trans("yes")}</option>
+                </SELECT>
+            </label>
         </FORM>
     </TD>
 </TR>

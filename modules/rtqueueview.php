@@ -188,12 +188,18 @@ else
 	$SESSION->restore('rtunread', $unread);
 $SESSION->save('rtunread', $unread);
 
+if (isset($_GET['rights']))
+	$rights = $_GET['rights'];
+else
+	$SESSION->restore('rtrights', $rights);
+$SESSION->save('rtrights', $rights);
+
 $layout['pagetitle'] = trans('Tickets List');
 
 $total = intval($LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
 	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
-	'count' => true)));
+	'rights' => $rights, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total));
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
@@ -202,7 +208,7 @@ $offset = ($page - 1) * $limit;
 $queue = $LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
 	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
-	'count' => false, 'offset' => $offset, 'limit' => $limit));
+	'rights' => $rights, 'count' => false, 'offset' => $offset, 'limit' => $limit));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -222,6 +228,7 @@ $queuedata['deadline'] = $queue['deadline'];
 $queuedata['service'] = $queue['service'];
 $queuedata['type'] = $queue['type'];
 $queuedata['unread'] = $queue['unread'];
+$queuedata['rights'] = $queue['rights'];
 
 unset($queue['total']);
 unset($queue['state']);
@@ -234,6 +241,7 @@ unset($queue['deadline']);
 unset($queue['service']);
 unset($queue['type']);
 unset($queue['unread']);
+unset($queue['rights']);
 
 $SESSION->save('rtp', $page);
 

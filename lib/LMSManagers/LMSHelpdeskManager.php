@@ -406,6 +406,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$result['service'] = $serviceids;
 		$result['type'] = $typeids;
 		$result['unread'] = $unread;
+		$result['rights'] = $rights;
 
 		return $result;
 	}

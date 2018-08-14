@@ -3966,4 +3966,6 @@ $_LANG['Critical tickets'] = 'Zgłoszenia krytyczne';
 $_LANG['Urgent tickets'] = 'Zgłoszenia pilne';
 $_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
 
+$_LANG['Indicator panel:'] = 'Panel wskaźników:';
+
 ?>
