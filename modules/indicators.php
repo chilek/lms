@@ -24,6 +24,69 @@
  *  $Id$
  */
 
-$stats = $LMS->GetIndicatorStats();
-header('Content-Type: application/json');
-die(json_encode($stats));
+if (isset($_GET['ajax'])) {
+	$stats = $LMS->GetIndicatorStats();
+	header('Content-Type: application/json');
+	die(json_encode($stats));
+}
+
+$action = $_GET['action'];
+$redirect = '';
+
+switch ($action) {
+	case 'events':
+		if (ConfigHelper::CheckPrivilege('timetable_management')) {
+			$count = $LMS->GetEventList(array('userid' => Auth::GetCurrentUser(),
+				'forward' => 1, 'closed' => 0, 'count' => true));
+			if ($count == 1) {
+				$events = $LMS->GetEventList(array('userid' => Auth::GetCurrentUser(),
+					'forward' => 1, 'closed' => 0, 'count' => false));
+				$event = reset($events);
+				$redirect = '?m=eventinfo&id=' . $event['id'];
+			} else
+				$redirect = '?m=eventlist&u=all&a[]=' . Auth::GetCurrentUser() . '&type=all&closed=all&privacy=all';
+		}
+		break;
+	case 'critical':
+		if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+			$count = $LMS->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
+				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+			if ($count == 1) {
+				$tickets = $LMS->GetQueueContents(array('count' => false, 'priority' => RT_PRIORITY_CRITICAL,
+					'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+				$ticket = reset($tickets);
+				$redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
+			} else
+				$redirect = '?m=rtqueueview&catid=all&state=-1&priority=' . RT_PRIORITY_CRITICAL . '&ownerid=-1&o=lastmodified';
+		}
+		break;
+	case 'urgent':
+		if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+			$count = $LMS->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
+				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+			if ($count == 1) {
+				$tickets = $LMS->GetQueueContents(array('count' => false, 'priority' => RT_PRIORITY_URGENT,
+					'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+				$ticket = reset($tickets);
+				$redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
+			} else
+				$redirect = '?m=rtqueueview&catid=all&state=-1&priority=' . RT_PRIORITY_URGENT . '&ownerid=-1&o=lastmodified';
+		}
+		break;
+	case 'unread':
+		if (ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')) {
+			$count = $LMS->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
+				'rights' => RT_RIGHT_INDICATOR));
+			if ($count == 1) {
+				$tickets = $LMS->GetQueueContents(array('count' => false, 'state' => -1, 'unread' => 1,
+					'rights' => RT_RIGHT_INDICATOR));
+				$ticket = reset($tickets);
+				$redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
+			} else
+				$redirect = '?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&unread=1&o=lastmodified';
+		}
+		break;
+}
+
+if (!empty($redirect))
+	$SESSION->redirect($redirect);

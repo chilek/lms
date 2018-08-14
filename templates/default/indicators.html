@@ -1,27 +1,27 @@
 {block name=indicatorcontents}
 {if ConfigHelper::CheckPrivilege('timetable_management')}
-<a href="?m=eventlist&u=all&a[]={$layout.logid}&type=all&closed=all&privacy=all" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
+<a href="?m=indicators&action=events" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
     <img src="img/calendar.gif">
 </a>
 {/if}
 {if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
-<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_CRITICAL}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Critical tickets")}" id="indicator-critical" style="display: none;">
+<a href="?m=indicators&action=critical" class="lms-ui-indicator" title="{trans("Critical tickets")}" id="indicator-critical" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
     <img src="img/24-ring-red.png">
 </a>
-<a href="?m=rtqueueview&catid=all&state=-1&priority={$smarty.const.RT_PRIORITY_URGENT}&ownerid=-1&o=lastmodified" class="lms-ui-indicator" title="{trans("Urgent tickets")}" id="indicator-urgent" style="display: none;">
+<a href="?m=indicators&action=urgent" class="lms-ui-indicator" title="{trans("Urgent tickets")}" id="indicator-urgent" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
     <img src="img/ring-orange.png">
 </a>
-<a href="?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&unread=1&o=lastmodified" class="lms-ui-indicator" title="{trans("Unread tickets")}" id="indicator-unread" style="display: none;">
+<a href="?m=indicators&action=unread" class="lms-ui-indicator" title="{trans("Unread tickets")}" id="indicator-unread" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
     <img src="img/ring-blue.png">
 </a>
 {/if}
 <script>
     function getIndicatorStats() {
-		$.ajax('?m=indicators&api=1', {
+		$.ajax('?m=indicators&ajax=1&api=1', {
 				method: "POST",
 				dataType: "json"
 			}
