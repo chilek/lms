@@ -1795,7 +1795,7 @@ CREATE TABLE rtmessages (
   headers text NOT NULL DEFAULT '',
   body mediumtext NOT NULL DEFAULT '',
   createtime int(11) NOT NULL DEFAULT '0',
-  type smallint NOT NULL DEFAULT 0,
+  type int(11) NOT NULL DEFAULT 0,
   deleted tinyint(1) NOT NULL DEFAULT '0',
   deltime int(11) NOT NULL DEFAULT '0',
   deluserid int(11) DEFAULT NULL,
@@ -3409,4 +3409,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018073100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018081400');
