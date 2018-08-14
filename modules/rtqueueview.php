@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -139,7 +139,7 @@ if (isset($_GET['s'])) {
 	if (is_array($_GET['s']))
 		$s = $_GET['s'];
 	elseif ($_GET['s'] == -1)
-		$s = null;
+		$s = -1;
 	else
 		$s = array(intval($_GET['s']));
 } elseif ($SESSION->is_set('rts'))

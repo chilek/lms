@@ -50,6 +50,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
+	// virtual ticket states:
+	// -1 = not resolved
+	// -2 or empty = all
 	public function GetQueueContents(array $params) {
 		extract($params);
 		foreach (array('state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
@@ -108,7 +111,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 		}
 
-		if (empty($state)) {
+		if (empty($state) || $state == -2) {
 			$statefilter = '';
 		} elseif (is_array($state)) {
 			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
