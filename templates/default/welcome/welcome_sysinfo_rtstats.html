@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <td class="text-right bold nobr">
-                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&s[]={$smarty.const.RT_NEW}&s[]={$smarty.const.RT_OPEN}&s[]={$smarty.const.RT_DEAD}&s[]={$smarty.const.RT_SCHEDULED}&s[]={$smarty.const.RT_WAITING}&priority=all&unread=-1&o=lastmodified,desc">{trans("Unresolved:")}</a>
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&s=-1&priority=all&unread=-1&o=lastmodified,desc">{trans("Unresolved:")}</a>
                         </td>
                         <td>
                             {$rtcategorystats.unresolved|default:"0"}

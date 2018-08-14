@@ -51,7 +51,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     }
 
 	// virtual ticket states:
-	// -1 = not resolved
+	// -1 = unresolved
 	// -2 or empty = all
 	public function GetQueueContents(array $params) {
 		extract($params);
