@@ -58,6 +58,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$$var = null;
 		if (!isset($order) || !$order)
 			$order = 'createtime,desc';
+		if (!isset($rights))
+			$rights = 0;
+		else
+			$rights = intval($rights);
 		if (!isset($count))
 			$count = false;
 
@@ -258,6 +262,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					GROUP BY m4.ticketid
 				) m3 ON m3.ticketid = t.id
 				WHERE 1=1 '
+				. ($rights ? ' AND t.queueid IN (
+						SELECT q.id FROM rtqueues q
+						JOIN rtrights r ON r.queueid = q.id
+						WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' =  ' . $rights . '
+					) AND tc.categoryid IN (
+						SELECT categoryid
+						FROM rtcategoryusers WHERE userid = ' . $userid
+					. ')' : '')
 				. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
 				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 				. $unreadfilter
@@ -326,6 +338,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
 			WHERE 1=1 '
+			. ($rights ? ' AND t.queueid IN (
+					SELECT q.id FROM rtqueues q
+					JOIN rtrights r ON r.queueid = q.id
+					WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' = ' . $rights . '
+				) AND tc.categoryid IN (
+					SELECT categoryid
+					FROM rtcategoryusers
+					WHERE userid = ' . $userid
+				. ')' : '')
 			. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
 			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 			. $unreadfilter
@@ -1234,9 +1255,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
 		$result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(), 'forward' => 1, 'closed' => 0, 'count' => true));
 
-		$result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL, 'state' => -1));
-		$result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT, 'state' => -1));
-		$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1));
+		$result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL, 'state' => -1, 'rights' => 1 | 8));
+		$result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT, 'state' => -1, 'rights' => 1 | 8));
+		$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1, 'rights' => 1 | 8));
 
 		return $result;
 	}
