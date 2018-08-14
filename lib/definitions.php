@@ -178,12 +178,14 @@ define('RT_RIGHT_READ', 1);
 define('RT_RIGHT_WRITE', 2);
 define('RT_RIGHT_DELETE', 4);
 define('RT_RIGHT_NOTICE', 8);
+define('RT_RIGHT_INDICATOR', 16);
 
 $RT_RIGHTS = array(
 	RT_RIGHT_READ => trans("Read"),
 	RT_RIGHT_WRITE => trans("Write (+R)"),
 	RT_RIGHT_DELETE => trans("Delete (+R)"),
 	RT_RIGHT_NOTICE => trans("Notice (+R)"),
+	RT_RIGHT_INDICATOR => trans("Indicator (+R)"),
 );
 
 //Helpdesk ticket source

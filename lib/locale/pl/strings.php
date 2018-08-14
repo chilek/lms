@@ -885,6 +885,7 @@ $_LANG['Incorrect WINS server IP address!'] = 'Niepoprawny adres IP serwera WINS
 $_LANG['Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.'] = 'Niepoprawny kod pocztowy! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['in debt'] = 'zadłużeni';
 $_LANG['in debt (expired)'] = 'zadłużeni (przeterminowane)';
+$_LANG['Indicator (+R)'] = 'Wskaźniki (+O)';
 $_LANG['Nodes List for Customers In Debt'] = 'Lista komputerów zadłużonych klientów';
 $_LANG['Indebted Customers List $a$b'] = 'Lista klientów zadłużonych $a$b';
 $_LANG['indebted owner'] = 'zadłużony właściciel';

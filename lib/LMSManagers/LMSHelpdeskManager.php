@@ -1250,18 +1250,27 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	}
 
 	public function GetIndicatorStats() {
-		$result = array();
+		$result = array(
+			'events' => 0,
+			'critical' => 0,
+			'urgent' => 0,
+			'unread' => 0,
+		);
 
-		$event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
-		$result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
-			'forward' => 1, 'closed' => 0, 'count' => true));
+		if (ConfigHelper::CheckPrivilege('timetable_management')) {
+			$event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
+				'forward' => 1, 'closed' => 0, 'count' => true));
+		}
 
-		$result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
-			'state' => -1, 'rights' => RT_RIGHT_NOTICE));
-		$result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
-			'state' => -1, 'rights' => RT_RIGHT_NOTICE));
-		$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
-			'rights' => RT_RIGHT_NOTICE));
+		if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_adninistration')) {
+			$result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
+				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+			$result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
+				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+			$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
+				'rights' => RT_RIGHT_INDICATOR));
+		}
 
 		return $result;
 	}
