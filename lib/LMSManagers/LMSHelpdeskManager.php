@@ -645,15 +645,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    FROM rtcategories c
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid
+				    LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 				    LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
 				    LEFT JOIN (
 				    	SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
 				    	GROUP BY ticketid
 				    ) m ON m.ticketid = t.id
-				    WHERE c.id IN (' . implode(',', $catids) . ')
+				    WHERE c.id IN (' . implode(',', $catids) . ') AND r.rights > 0
 				    GROUP BY c.id, c.name
 				    ORDER BY c.name',
-			array($userid));
+			array($userid, $userid));
     }
 
     public function GetQueueByTicketId($id)
