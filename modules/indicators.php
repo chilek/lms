@@ -57,7 +57,7 @@ switch ($action) {
 				$ticket = reset($tickets);
 				$redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
 			} else
-				$redirect = '?m=rtqueueview&catid=all&state=-1&priority=' . RT_PRIORITY_CRITICAL . '&ownerid=-2&s=-1&unread=-1&o=lastmodified';
+				$redirect = '?m=rtqueueview&catid=all&priority=' . RT_PRIORITY_CRITICAL . '&ownerid=-2&s=-1&unread=-1&o=lastmodified';
 		}
 		break;
 	case 'urgent':
@@ -70,7 +70,7 @@ switch ($action) {
 				$ticket = reset($tickets);
 				$redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
 			} else
-				$redirect = '?m=rtqueueview&catid=all&state=-1&priority=' . RT_PRIORITY_URGENT . '&ownerid=-1&s=-1&unread=-1&o=lastmodified';
+				$redirect = '?m=rtqueueview&catid=all&priority=' . RT_PRIORITY_URGENT . '&ownerid=-1&s=-1&unread=-1&o=lastmodified';
 		}
 		break;
 	case 'unread':
@@ -83,7 +83,7 @@ switch ($action) {
 				$ticket = reset($tickets);
 				$redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
 			} else
-				$redirect = '?m=rtqueueview&catid=all&state=0&priority=all&ownerid=-1&s=-1&unread=1&o=lastmodified';
+				$redirect = '?m=rtqueueview&catid=all&priority=all&ownerid=-1&s=-1&unread=1&o=lastmodified';
 		}
 		break;
 }
