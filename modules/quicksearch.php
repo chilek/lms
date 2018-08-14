@@ -478,7 +478,7 @@ switch ($mode) {
 				$catids[] = $category['id'];
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, t.state, c.name, c.lastname
 				FROM rttickets t
-				JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & 1 > 0
+				JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & " . RT_RIGHT_READ . " > 0
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customerview c on (t.customerid = c.id)
 				WHERE ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")

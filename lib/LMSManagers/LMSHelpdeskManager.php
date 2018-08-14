@@ -1185,7 +1185,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if ($recipients = $this->db->GetCol('SELECT DISTINCT email
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
-				AND (rtrights.rights & 8) > 0 AND deleted = 0'
+				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0'
 				. (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
 				. ' AND (ntype & ?) > 0',
 			array_values($args))) {
@@ -1194,7 +1194,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$oldrecipients = $this->db->GetCol('SELECT DISTINCT email
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) > 0 AND deleted = 0
+						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0
 						AND (ntype & ?) > 0',
 					array($params['oldqueue'], MSG_MAIL));
 				if (!empty($oldrecipients))
@@ -1212,7 +1212,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if (!empty($sms_service) && ($recipients = $this->db->GetCol('SELECT DISTINCT phone
 			FROM users, rtrights
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
-					AND (rtrights.rights & 8) > 0 AND deleted = 0'
+					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0'
 					. (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
 					. ' AND (ntype & ?) > 0',
 				array_values($args)))) {
@@ -1221,7 +1221,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$oldrecipients = $this->db->GetCol('SELECT DISTINCT phone
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & 8) > 0 AND deleted = 0
+						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0
 						AND (ntype & ?) > 0',
 					array($params['oldqueue'], MSG_SMS));
 				if (!empty($oldrecipients))
@@ -1253,11 +1253,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$result = array();
 
 		$event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
-		$result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(), 'forward' => 1, 'closed' => 0, 'count' => true));
+		$result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
+			'forward' => 1, 'closed' => 0, 'count' => true));
 
-		$result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL, 'state' => -1, 'rights' => 1 | 8));
-		$result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT, 'state' => -1, 'rights' => 1 | 8));
-		$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1, 'rights' => 1 | 8));
+		$result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
+			'state' => -1, 'rights' => RT_RIGHT_NOTICE));
+		$result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
+			'state' => -1, 'rights' => RT_RIGHT_NOTICE));
+		$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
+			'rights' => RT_RIGHT_NOTICE));
 
 		return $result;
 	}

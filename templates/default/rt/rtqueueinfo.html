@@ -59,42 +59,39 @@
 	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
 	    <TD width="98%">
 		    <TABLE class="lmsbox">
-                        <THEAD>
-			<TR>
-			    <TD width="96%"><B>{trans("User")}</B>
-			    </TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Delete (+R)")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Notice (+R)")}</B></TD>
-			</TR>
-                        </THEAD>
-                        <TBODY>
-			{cycle values="light,lucid" print=false}
-			{foreach from=$queue.rights item=right}
-			{if $right.rights}
-			<TR class="highlight {cycle}"  >
-			    <TD width="96%">
-				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				{if $right.rights > 0}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 2) == 2}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 4) == 4}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 8) == 8}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			</TR>
-			{/if}
-			{/foreach}
-                        </TBODY>
-		</TABLE>
+				<COLGROUP>
+					<COL style="width: {100-count($_RT_RIGHTS)}%;">
+					{foreach $_RT_RIGHTS as $label}
+					<COL style="width: 1%;">
+					{/foreach}
+				</COLGROUP>
+				<THEAD>
+					<TR>
+						<TD class="bold">{trans("User")}</TD>
+						{foreach $_RT_RIGHTS as $label}
+						<TD class="text-center bold nobr">{trans("Read")}</TD>
+						{/foreach}
+					</TR>
+				</THEAD>
+				<TBODY>
+					{cycle values="light,lucid" print=false}
+					{foreach from=$queue.rights item=right}
+					{if $right.rights}
+					<TR class="highlight {cycle}"  >
+						<TD>
+							<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
+							<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
+						</TD>
+						{foreach $_RT_RIGHTS as $rightvalue => $label}
+						<TD class="text-center">
+							{if ($right.rights & $rightvalue) == $rightvalue}<IMG src="img/pass.gif" alt="">{/if}
+						</TD>
+						{/foreach}
+					</TR>
+					{/if}
+					{/foreach}
+				</TBODY>
+			</TABLE>
 	    </TD>
 	</TR>
 	{if !empty($queue.categories)}
