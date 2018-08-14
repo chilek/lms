@@ -380,6 +380,7 @@ if(isset($_POST['ticket']))
 	$ticket['nodeid'] = $ticketedit['nodeid'];
 	$ticket['netnodeid'] = $ticketedit['netnodeid'];
 	$ticket['netdevid'] = $ticketedit['netdevid'];
+	$ticket['priority'] = $ticketedit['priority'];
 }
 else
 	$ticketedit['categories'] = $ticket['categories'];
