@@ -57,7 +57,7 @@ switch ($action) {
 				$ticket = reset($tickets);
 				$redirect = '?m=rtticketview&id=' . $ticket['id'] . (empty($ticket['firstunread']) ? '' : '#rtmessage-' . $ticket['firstunread']);
 			} else
-				$redirect = '?m=rtqueueview&catid=all&state=-1&priority=' . RT_PRIORITY_CRITICAL . '&ownerid=-2&s=0&unread=-1&o=lastmodified';
+				$redirect = '?m=rtqueueview&catid=all&state=-1&priority=' . RT_PRIORITY_CRITICAL . '&ownerid=-2&s=-2&unread=-1&o=lastmodified';
 		}
 		break;
 	case 'urgent':
