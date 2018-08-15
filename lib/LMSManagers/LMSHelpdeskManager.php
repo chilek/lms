@@ -55,7 +55,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	// -2 or empty = all
 	public function GetQueueContents(array $params) {
 		extract($params);
-		foreach (array('state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+		foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
 			'serviceids', 'typeids', 'unread') as $var)
 			if (!isset($$var))
 				$$var = null;
@@ -213,9 +213,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				case 1:
 					$unreadfilter = ' AND (lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime)';
 					break;
+                default:
+                    $unreadfilter = '';
 			}
 		} else
-			$unread = -1;
+			$unreadfilter = '';
 
 		$userid = Auth::GetCurrentUser();
 
