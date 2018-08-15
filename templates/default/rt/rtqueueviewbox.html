@@ -61,7 +61,7 @@
 		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
 		<span class="brown">
 		{/if}
-		{if count($queuedata.id)!=1}{$queue[ticket].name}{/if}
+		{if is_array($queuedata.id) && count($queuedata.id) != 1}{$queue[ticket].name}{/if}
 		{if $queue[ticket].customerid}
 			{if $queue[ticket].address_id}
 				{if $queue[ticket].vacity}{$queue[ticket].vacity}, {/if}{$queue[ticket].street} {$queue[ticket].house}{if $queue[ticket].flat}/{$queue[ticket].flat}{/if}
