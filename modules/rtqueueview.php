@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+$queuedata = array(
+	'id' => null,
+	'service' => null,
+	'type' => null,
+);
+
 if (isset($_GET['id'])) {
 	if (is_array($_GET['id']))
 		$queuedata['id'] = array_filter($_GET['id'], 'intval');
