@@ -210,6 +210,7 @@ $RT_SOURCES = array(
 );
 
 //Helpdesk ticket priority
+define('RT_PRIORITY_ALAP', -3);
 define('RT_PRIORITY_VERYLOW', -2);
 define('RT_PRIORITY_LOW', -1);
 define('RT_PRIORITY_NORMAL', 0);
