@@ -29,8 +29,7 @@ $taction = ($_GET['taction']);
 $queue = $DB->GetOne('SELECT queueid FROM rttickets WHERE id = ?', array($ticket));
 $right = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue);
 
-if(($right & 4) != 4)
-{
+if ($right & RT_RIGHT_DELETE) {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
 	die;
@@ -48,6 +47,6 @@ if ($taction == 'delete') {
 } elseif ($taction == 'delperm')
 	$DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
 
-$SESSION->redirect('?m=rtqueueview&id='.$queue);
+$SESSION->redirect('?m=rtqueueview');
 
 ?>
