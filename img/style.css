@@ -811,6 +811,11 @@ button.lms-ui-button:active {
   background-color: #CEBD9B;
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
 }
+
+.lms-ui-ticket-list {
+	border-bottom: 1px dotted gray;
+}
+
 .lms-ui-rt-deleted.light:not(:hover) {
   background-color: #ffb1b1;
 }
@@ -1748,4 +1753,10 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   width: 16px;
   height: 16px;
   background: url("cms.gif");
+}
+.lms-ui-indicator:hover {
+  text-decoration: none;
+}
+.lms-ui-indicator-counter {
+  font-size: 120%;
 }

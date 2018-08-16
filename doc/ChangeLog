@@ -72,6 +72,12 @@ version ?.??.?? (????-??-??):
   - ehnancement: helpdesk ticket unread status introduced [chilan]
   - improvement: mark current ticket message with brown color border [chilan]
   - improvement: show user info column in customer message box [chilan]
+  - improvement: performance optimalisation for loading long record lists [chilan]
+  - improvement: helpdesk ticket priorities are mapped to X-Priority header from
+    user mail notifications [chilan]
+  - enhancement: added button in event list row which assigns currently logged user
+    to event [interduo]
+  - enhancement: introduced indicators in top menu [interduo/chilan]
   - improvement: new priority increased and remake of priority colors [interduo]
 
 version 1.11.23 (2018-03-21):

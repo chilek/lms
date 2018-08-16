@@ -160,7 +160,10 @@ if ($id && !isset($_POST['ticket'])) {
 	}
 
 	if (isset($_GET['unread'])) {
-		$LMS->MarkTicketAsUnread($id);
+		if (intval($_GET['unread']))
+			$LMS->MarkTicketAsUnread($id);
+		else
+			$LMS->MarkTicketAsRead($id);
 		$SESSION->redirect('?' . $SESSION->get('backto'));
 	}
 }
@@ -371,12 +374,18 @@ if(isset($_POST['ticket']))
 
 	$ticket['subject'] = $ticketedit['subject'];
 	$ticket['queueid'] = $ticketedit['queueid'];
+	$ticket['service'] = $ticketedit['service'];
+	$ticket['type'] = $ticketedit['type'];
 	$ticket['state'] = $ticketedit['state'];
 	$ticket['owner'] = $ticketedit['owner'];
+	$ticket['verifier'] = $ticketedit['verifier'];
+	$ticket['cause'] = $ticketedit['cause'];
+	$ticket['source'] = $ticketedit['source'];
 	$ticket['address_id'] = $ticketedit['address_id'];
 	$ticket['nodeid'] = $ticketedit['nodeid'];
 	$ticket['netnodeid'] = $ticketedit['netnodeid'];
 	$ticket['netdevid'] = $ticketedit['netdevid'];
+	$ticket['priority'] = $ticketedit['priority'];
 }
 else
 	$ticketedit['categories'] = $ticket['categories'];

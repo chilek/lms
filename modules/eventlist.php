@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -85,11 +85,30 @@ if (!empty($_POST)) {
 			$year = $_GET['year'];
 	}
 
-	$SESSION->restore('elu', $u);
-	$SESSION->restore('ela', $a);
-	$SESSION->restore('elt', $type);
-	$SESSION->restore('elp', $privacy);
-	$SESSION->restore('elc', $closed);
+	if (isset($_GET['a']))
+		$a = $_GET['a'];
+	else
+		$SESSION->restore('ela', $a);
+
+	if (isset($_GET['u']))
+		$u = $_GET['u'] == 'all' ? null : $_GET['u'];
+	else
+		$SESSION->restore('elu', $u);
+
+	if (isset($_GET['type']))
+		$type = $_GET['type'] == 'all' ? null : $_GET['type'];
+	else
+		$SESSION->restore('elt', $type);
+
+	if (isset($_GET['privacy']))
+		$privacy = $_GET['privacy'] == 'all' ? null : $_GET['privacy'];
+	else
+		$SESSION->restore('elp', $privacy);
+
+	if (isset($_GET['closed']))
+		$closed = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
+	else
+		$SESSION->restore('elc', $closed);
 }
 
 $SESSION->save('ela', $a);
@@ -109,10 +128,13 @@ if(!isset($year))
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = $LMS->GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $privacy, $closed);
+$eventlist = $LMS->GetEventList(array('year' => $year, 'month' => $month, 'day' => $day,
+	'forward' => ConfigHelper::getConfig('phpui.timetable_days_forward'), 'customerid' => $u, 'userid' => $a,
+	'type' => $type, 'privacy' => $privacy, 'closed' => $closed));
 
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
-	$overdue_events = $LMS->GetEventList($year, $month, $day, '-1', $u, $a, $type, $privacy, 0);
+	$overdue_events = $LMS->GetEventList(array('year' => $year, 'month' => $month, 'day' => $day,
+		'forward' => '-1', 'customerid' => $u, 'userid' => $a, 'type' => $type, 'privacy' => $privacy, 'closed' => 0));
 
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);

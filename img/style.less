@@ -8,7 +8,6 @@
 @alert: #FF9B9B;
 @blend: #888888;
 @fonts: Arial, Helvetica, Verdana;
-@fonts: Arial, Helvetica, Verdana;
 @icon-size: 16px;
 @link: #800000;
 @linkhover: #336600;
@@ -613,6 +612,10 @@ li.lms-ui-suggestion-item {
         cursor: pointer;
         text-decoration: underline;
     }
+}
+
+.lms-ui-ticket-list {
+	border-bottom: 1px dotted gray;
 }
 
 button.lms-ui-button {
@@ -1533,4 +1536,12 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 .lms-ui-icon-userpanel {
     .lms-ui-icon(@icon-size);
     background: url("cms.gif");
+}
+
+.lms-ui-indicator:hover {
+	text-decoration: none;
+}
+
+.lms-ui-indicator-counter {
+	font-size: 120%;
 }

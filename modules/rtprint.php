@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -190,7 +190,7 @@ switch($type)
 					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' > 0)
 					GROUP BY customerid) AS emails ' : '')
 			.'FROM rttickets
-			JOIN rtrights r ON r.queueid = rttickets.queueid AND r.rights & 1 > 0
+			JOIN rtrights r ON r.queueid = rttickets.queueid AND r.rights & ' . RT_RIGHT_READ . ' > 0
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customeraddressview c ON (customerid = c.id)
 			WHERE 1 = 1 '

@@ -1681,6 +1681,11 @@ class LMS
 		return $manager->MarkTicketAsUnread($ticketid);
 	}
 
+	public function GetIndicatorStats() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetIndicatorStats();
+	}
+
 	/*
 	 *  LMS-UI configuration
 	 */
@@ -2040,6 +2045,11 @@ class LMS
 
 			foreach (explode(",", $recipients) as $recipient)
 				$this->mail_object->addAddress($recipient);
+
+			if (isset($headers['X-Priority']) && intval($headers['X-Priority'])) {
+				$this->mail_object->Priority = intval($headers['X-Priority']);
+				unset($headers['X-Priority']);
+			}
 
 			foreach ($headers as $name => $value) {
 				if (strpos(strtolower($name), 'x') === 0) {
@@ -2452,10 +2462,10 @@ class LMS
         return $manager->EventSearch($search, $order, $simple);
     }
 
-    public function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed = '')
+    public function GetEventList(array $params)
     {
         $manager = $this->getEventManager();
-        return $manager->GetEventList($year, $month, $day, $forward, $customerid, $userid, $type, $privacy, $closed);
+        return $manager->GetEventList($params);
     }
 
     public function GetCustomerIdByTicketId($id)
@@ -2468,6 +2478,16 @@ class LMS
 		$manager = $this->getEventManager();
 		return $manager->EventOverlaps($params);
 	}
+
+    public function AssignUserToEvent($id, $userid) {
+        $manager = $this->getEventManager();
+        return $manager->AssignUserToEvent($id, $userid);
+    }
+
+    public function UnassignUserFromEevent($id, $userid) {
+        $manager = $this->getEventManager();
+        return $manager->UnassignUserFromEevent($id, $userid);
+    }
 
 	public function GetEventsByTicketId($id)
     {

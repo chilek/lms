@@ -26,20 +26,23 @@
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 
-if(isset($_GET['action']) && $_GET['action'] == 'open')
-{
-	$DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?',array($_GET['id']));
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
-elseif(isset($_GET['action']) && $_GET['action'] == 'close' && isset($_GET['ticketid']) )
-{
-	$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE ticketid = ?',array(Auth::GetCurrentUser(), $_GET['ticketid']));
-	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
-elseif(isset($_GET['action']) && $_GET['action'] == 'close')
-{
-	$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE id = ?',array(Auth::GetCurrentUser(), $_GET['id']));
-	$SESSION->redirect('?'.$SESSION->get('backto'));
+if (isset($_GET['action'])) {
+	if ($_GET['action'] == 'open') {
+		$DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?',array($_GET['id']));
+		$SESSION->redirect('?'.$SESSION->get('backto'));
+	} elseif ($_GET['action'] == 'close' && isset($_GET['ticketid'])) {
+		$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE ticketid = ?',array(Auth::GetCurrentUser(), $_GET['ticketid']));
+		$SESSION->redirect('?'.$SESSION->get('backto'));
+	} elseif ($_GET['action'] == 'close') {
+		$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE id = ?',array(Auth::GetCurrentUser(), $_GET['id']));
+		$SESSION->redirect('?'.$SESSION->get('backto'));
+	} elseif ($_GET['action'] == 'assign') {
+    		$LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
+    		$SESSION->redirect('?' . $SESSION->get('backto'));
+	} elseif ($_GET['action'] == 'unassign') {
+		$LMS->UnassignUserFromEevent($_GET['id'], Auth::GetCurrentUser());
+		$SESSION->redirect('?' . $SESSION->get('backto'));
+	}
 }
 
 $event = $LMS->GetEvent($_GET['id']);

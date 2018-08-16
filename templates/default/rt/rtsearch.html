@@ -92,6 +92,32 @@
 			{/foreach}
 			</SELECT>
 		</TD>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/service-type.png" alt="">
+			{trans("Service:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[service]" {tip text="Select ticket service" }>
+				<OPTION value="" {if $search.state==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+				{foreach $_SERVICETYPES as $key => $ts}
+				<OPTION value="{$key}" {if is_array($queuedata.service) && in_array($key, $queuedata.service)} SELECTED{/if}>{$ts}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/ticket-type.png" alt="">
+			{trans("Ticket type:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[type]" {tip text="Select ticket type" }>
+				<OPTION value="" {if $search.type==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+				{foreach $_RT_TYPES as $key => $tt}
+				<OPTION value="{$key}" {if is_array($queuedata.type) && in_array($key, $queuedata.type)} SELECTED{/if}>{$tt.label}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
