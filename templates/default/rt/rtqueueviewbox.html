@@ -26,7 +26,7 @@
 		{/foreach}
 		<br>
 		{if $queue[ticket].customerid}
-			<A href="?m=customerinfo&id={$queue[ticket].customerid}" style="color: {$_RT_STATES[$queue[ticket].state].color};">{$queue[ticket].requestor|escape|truncate:"60":"..."}</A>
+			<A href="?m=customerinfo&id={$queue[ticket].customerid}">{$queue[ticket].requestor|escape|truncate:"60":"..."}</A>
 		{else}
 			{if $queue[ticket].requestor_userid}
 			<A href="?m=userinfo&id={$queue[ticket].requestor_userid}">{$queue[ticket].requestor_username}</A>
@@ -34,7 +34,7 @@
 				{$queue[ticket].requestor|escape}
 				{if $queue[ticket].requestor_phone}<BR>{$queue[ticket].requestor_phone}{/if}
 				{if $queue[ticket].requestor_mail}<BR>
-				<A href="mailto:{$queue[ticket].requestor_mail}" style="color: {$_RT_STATES[$queue[ticket].state].color};"> &lt;{$queue[ticket].requestor_mail}&gt;</A>
+				<A href="mailto:{$queue[ticket].requestor_mail}""> &lt;{$queue[ticket].requestor_mail}&gt;</A>
 				{/if}
 			{/if}
 		{/if}
