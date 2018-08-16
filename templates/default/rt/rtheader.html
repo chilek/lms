@@ -5,7 +5,6 @@
         <br>
         <img src="img/calendar.gif" alt=""> 
     </TD>
-    <TD>{trans("Ticket state:")}</TD>
     <TD>
         <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=ticketid{if $queuedata.direction == "asc" && $queuedata.order == "ticketid"},desc{/if}">{trans("ID:")}</A> {if $queuedata.order == "ticketid"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
         /
