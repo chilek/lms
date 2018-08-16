@@ -210,7 +210,7 @@ $RT_SOURCES = array(
 );
 
 //Helpdesk ticket priority
-define('RT_PRIORITY_ALAP', -3);
+define('RT_PRIORITY_IDLE', -3);
 define('RT_PRIORITY_VERYLOW', -2);
 define('RT_PRIORITY_LOW', -1);
 define('RT_PRIORITY_NORMAL', 0);
@@ -219,6 +219,7 @@ define('RT_PRIORITY_URGENT', 2);
 define('RT_PRIORITY_CRITICAL', 3);
 
 $RT_PRIORITIES = array(
+	RT_PRIORITY_IDLE => trans('idle'),
 	RT_PRIORITY_VERYLOW => trans('very low'),
 	RT_PRIORITY_LOW => trans('low'),
 	RT_PRIORITY_NORMAL => trans('normal'),
@@ -228,6 +229,7 @@ $RT_PRIORITIES = array(
 );
 
 $RT_PRIORITY_STYLES = array(
+	RT_PRIORITY_IDLE => 'background-color: transparent; color: gainsboro;',
 	RT_PRIORITY_VERYLOW => 'background-color: transparent; color: silver;',
 	RT_PRIORITY_LOW => 'background-color: transparent; color: grey;',
 	RT_PRIORITY_NORMAL => 'background-color: transparent; color: black;',
@@ -237,9 +239,11 @@ $RT_PRIORITY_STYLES = array(
 );
 
 $RT_MAIL_PRIORITIES = array(
-	RT_PRIORITY_VERYLOW => 5,
-	RT_PRIORITY_LOW => 4,
-	RT_PRIORITY_NORMAL => 3,
+	RT_PRIORITY_IDLE => 7,
+	RT_PRIORITY_VERYLOW => 6,
+	RT_PRIORITY_LOW => 5,
+	RT_PRIORITY_NORMAL => 4,
+	RT_PRIORITY_INCREASED => 3,
 	RT_PRIORITY_URGENT => 2,
 	RT_PRIORITY_CRITICAL => 1,
 );
