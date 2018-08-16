@@ -29,7 +29,7 @@ $taction = ($_GET['taction']);
 $queue = $DB->GetOne('SELECT queueid FROM rttickets WHERE id = ?', array($ticket));
 $right = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue);
 
-if ($right & RT_RIGHT_DELETE) {
+if ($right & RT_RIGHT_DELETE != RT_RIGHT_DELETE) {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
 	die;
