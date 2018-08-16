@@ -50,14 +50,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
+	// virtual ticket states:
+	// -1 = unresolved
+	// -2 or empty = all
 	public function GetQueueContents(array $params) {
 		extract($params);
-		foreach (array('state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
+		foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
 			'serviceids', 'typeids', 'unread') as $var)
 			if (!isset($$var))
 				$$var = null;
 		if (!isset($order) || !$order)
 			$order = 'createtime,desc';
+		if (!isset($rights))
+			$rights = 0;
+		else
+			$rights = intval($rights);
 		if (!isset($count))
 			$count = false;
 
@@ -104,7 +111,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 		}
 
-		if (empty($state)) {
+		if (empty($state) || $state == -2) {
 			$statefilter = '';
 		} elseif (is_array($state)) {
 			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
@@ -165,6 +172,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		}
 
 		switch ($owner) {
+			case null:
 			case '-1':
 				$ownerfilter = '';
 				break;
@@ -205,9 +213,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				case 1:
 					$unreadfilter = ' AND (lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime)';
 					break;
+                default:
+                    $unreadfilter = '';
 			}
 		} else
-			$unread = -1;
+			$unreadfilter = '';
 
 		$userid = Auth::GetCurrentUser();
 
@@ -257,6 +267,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					GROUP BY m4.ticketid
 				) m3 ON m3.ticketid = t.id
 				WHERE 1=1 '
+				. ($rights ? ' AND t.queueid IN (
+						SELECT q.id FROM rtqueues q
+						JOIN rtrights r ON r.queueid = q.id
+						WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' =  ' . $rights . '
+					) AND tc.categoryid IN (
+						SELECT categoryid
+						FROM rtcategoryusers WHERE userid = ' . $userid
+					. ')' : '')
 				. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
 				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 				. $unreadfilter
@@ -325,6 +343,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
 			WHERE 1=1 '
+			. ($rights ? ' AND t.queueid IN (
+					SELECT q.id FROM rtqueues q
+					JOIN rtrights r ON r.queueid = q.id
+					WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' = ' . $rights . '
+				) AND tc.categoryid IN (
+					SELECT categoryid
+					FROM rtcategoryusers
+					WHERE userid = ' . $userid
+				. ')' : '')
 			. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
 			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 			. $unreadfilter
@@ -381,6 +408,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$result['service'] = $serviceids;
 		$result['type'] = $typeids;
 		$result['unread'] = $unread;
+		$result['rights'] = $rights;
 
 		return $result;
 	}
@@ -503,7 +531,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE queueid = ? ORDER BY createtime DESC', array($id));
         $stats['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
 			WHERE queueid = ? AND deleted = 1', array($id));
-		$stats['unread'] = $this->db->GetOne('SELECT COUNT(t.id) FROM rttickets t
+        $stats['critical'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
+			WHERE queueid = ? AND priority = '.RT_PRIORITY_CRITICAL.' AND state != '.RT_RESOLVED, array($id));
+        $stats['unread'] = $this->db->GetOne('SELECT COUNT(t.id) FROM rttickets t
 			LEFT JOIN (
 				SELECT ticketid, MAX(createtime) AS maxcreatetime
 				FROM rtmessages
@@ -618,15 +648,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    FROM rtcategories c
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid
+				    LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 				    LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
 				    LEFT JOIN (
 				    	SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
 				    	GROUP BY ticketid
 				    ) m ON m.ticketid = t.id
-				    WHERE c.id IN (' . implode(',', $catids) . ')
+				    WHERE c.id IN (' . implode(',', $catids) . ') AND r.rights > 0
 				    GROUP BY c.id, c.name
 				    ORDER BY c.name',
-			array($userid));
+			array($userid, $userid));
     }
 
     public function GetQueueByTicketId($id)
@@ -1161,7 +1192,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if ($recipients = $this->db->GetCol('SELECT DISTINCT email
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
-				AND (rtrights.rights & 8) > 0 AND deleted = 0'
+				AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0'
 				. (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
 				. ' AND (ntype & ?) > 0',
 			array_values($args))) {
@@ -1170,7 +1201,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$oldrecipients = $this->db->GetCol('SELECT DISTINCT email
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) > 0 AND deleted = 0
+						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0
 						AND (ntype & ?) > 0',
 					array($params['oldqueue'], MSG_MAIL));
 				if (!empty($oldrecipients))
@@ -1188,7 +1219,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if (!empty($sms_service) && ($recipients = $this->db->GetCol('SELECT DISTINCT phone
 			FROM users, rtrights
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
-					AND (rtrights.rights & 8) > 0 AND deleted = 0'
+					AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0'
 					. (!isset($args['user']) || $notify_author ? '' : ' AND users.id <> ?')
 					. ' AND (ntype & ?) > 0',
 				array_values($args)))) {
@@ -1197,7 +1228,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$oldrecipients = $this->db->GetCol('SELECT DISTINCT phone
 					FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & 8) > 0 AND deleted = 0
+						AND (rtrights.rights & ' . RT_RIGHT_NOTICE . ') > 0 AND deleted = 0
 						AND (ntype & ?) > 0',
 					array($params['oldqueue'], MSG_SMS));
 				if (!empty($oldrecipients))
@@ -1223,5 +1254,31 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	public function MarkTicketAsUnread($ticketid) {
 		return $this->db->Execute('DELETE FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
 			array($ticketid, Auth::GetCurrentUser()));
+	}
+
+	public function GetIndicatorStats() {
+		$result = array(
+			'events' => 0,
+			'critical' => 0,
+			'urgent' => 0,
+			'unread' => 0,
+		);
+
+		if (ConfigHelper::CheckPrivilege('timetable_management')) {
+			$event_manager = new LMSEventManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$result['events'] = $event_manager->GetEventList(array('userid' => Auth::GetCurrentUser(),
+				'forward' => 1, 'closed' => 0, 'count' => true));
+		}
+
+		if (ConfigHelper::checkPrivilege('helpdesk_operation') || ConfigHelper::checkPrivilege('helpdesk_adninistration')) {
+			$result['critical'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_CRITICAL,
+				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+			$result['urgent'] = $this->GetQueueContents(array('count' => true, 'priority' => RT_PRIORITY_URGENT,
+				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
+			$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
+				'rights' => RT_RIGHT_INDICATOR));
+		}
+
+		return $result;
 	}
 }

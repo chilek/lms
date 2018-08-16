@@ -173,6 +173,21 @@ $RT_STATES = array(
 	)
 );
 
+// Helpdesk rights
+define('RT_RIGHT_READ', 1);
+define('RT_RIGHT_WRITE', 2);
+define('RT_RIGHT_DELETE', 4);
+define('RT_RIGHT_NOTICE', 8);
+define('RT_RIGHT_INDICATOR', 16);
+
+$RT_RIGHTS = array(
+	RT_RIGHT_READ => trans("Read"),
+	RT_RIGHT_WRITE => trans("Write (+R)"),
+	RT_RIGHT_DELETE => trans("Delete (+R)"),
+	RT_RIGHT_NOTICE => trans("Notice (+R)"),
+	RT_RIGHT_INDICATOR => trans("Indicator (+R)"),
+);
+
 //Helpdesk ticket source
 define('RT_SOURCE_UNKNOWN', 0);
 define('RT_SOURCE_PHONE', 1);
@@ -220,6 +235,14 @@ $RT_PRIORITY_STYLES = array(
 	RT_PRIORITY_CRITICAL => 'background-color: red; color: white;',
 );
 
+$RT_MAIL_PRIORITIES = array(
+	RT_PRIORITY_VERYLOW => 5,
+	RT_PRIORITY_LOW => 4,
+	RT_PRIORITY_NORMAL => 3,
+	RT_PRIORITY_URGENT => 2,
+	RT_PRIORITY_CRITICAL => 1,
+);
+
 // Helpdesk cause type
 define('RT_CAUSE_OTHER', 0);
 define('RT_CAUSE_CUSTOMER', 1);
@@ -250,6 +273,66 @@ define('RTMESSAGE_VERIFIER_CHANGE', 8192);
 define('RTMESSAGE_DEADLINE_CHANGE', 16384);
 define('RTMESSAGE_SERVICE_CHANGE', 32768);
 define('RTMESSAGE_TYPE_CHANGE', 65536);
+
+//Request Tracker Ticket Types
+define('RT_TYPE_OFFER', 1);
+define('RT_TYPE_DOCS', 2);
+define('RT_TYPE_FAULT', 3);
+define('RT_TYPE_INST', 4);
+define('RT_TYPE_MOD', 5);
+define('RT_TYPE_START', 6);
+define('RT_TYPE_STOP', 7);
+define('RT_TYPE_REMOVE', 8);
+define('RT_TYPE_OTHER', 9);
+
+
+$RT_TYPES = array(
+	RT_TYPE_OFFER => array(
+		'label' => trans('Offer'),
+		'class' => 'lms-ui-rt-ticket-type-offer',
+		'name' => 'RT_TYPE_OFFER'
+	),
+	RT_TYPE_DOCS => array(
+		'label' => trans('Documents'),
+		'class' => 'lms-ui-rt-ticket-type-docs',
+		'name' => 'RT_TYPE_DOCS'
+	),
+	RT_TYPE_FAULT => array(
+		'label' => trans('Fault'),
+		'class' => 'lms-ui-rt-ticket-type-fault',
+		'name' => 'RT_TYPE_FAULT'
+	),
+	RT_TYPE_INST => array(
+		'label' => trans('Instalation'),
+		'class' => 'lms-ui-rt-ticket-type-inst',
+		'name' => 'RT_TYPE_INST'
+	),
+	RT_TYPE_MOD => array(
+		'label' => trans('Modification'),
+		'class' => 'lms-ui-rt-ticket-type-mod',
+		'name' => 'RT_TYPE_MOD'
+	),
+	RT_TYPE_START => array(
+		'label' => trans('Start service'),
+		'class' => 'lms-ui-rt-ticket-type-start',
+		'name' => 'RT_TYPE_START'
+	),
+	RT_TYPE_STOP => array(
+		'label' => trans('Hold service'),
+		'class' => 'lms-ui-rt-ticket-type-stop',
+		'name' => 'RT_TYPE_STOP'
+	),
+	RT_TYPE_REMOVE => array(
+		'label' => trans('Deinstalation'),
+		'class' => 'lms-ui-rt-ticket-type-remove',
+		'name' => 'RT_TYPE_REMOVE'
+	),
+	RT_TYPE_OTHER => array(
+		'label' => trans('Other'),
+		'class' => 'lms-ui-rt-ticket-type-other',
+		'name' => 'RT_TYPE_OTHER'
+	),
+);
 
 // Messages status and type
 define('MSG_NEW', 1);
@@ -772,66 +855,6 @@ $EXISTINGASSIGNMENTS = array(
 	EXISTINGASSIGNMENT_DELETE => trans('<!existingassignment>delete'),
 );
 
-//Request Tracker Ticket Types
-define('RT_TYPE_OFFER', 1);
-define('RT_TYPE_DOCS', 2);
-define('RT_TYPE_FAULT', 3);
-define('RT_TYPE_INST', 4);
-define('RT_TYPE_MOD', 5);
-define('RT_TYPE_START', 6);
-define('RT_TYPE_STOP', 7);
-define('RT_TYPE_REMOVE', 8);
-define('RT_TYPE_OTHER', 9);
-
-
-$RT_TYPES = array(
-    RT_TYPE_OFFER => array(
-        'label' => trans('Offer'),
-        'class' => 'lms-ui-rt-ticket-type-offer',
-        'name' => 'RT_TYPE_OFFER'
-    ),
-    RT_TYPE_DOCS => array(
-        'label' => trans('Documents'),
-        'class' => 'lms-ui-rt-ticket-type-docs',
-        'name' => 'RT_TYPE_DOCS'
-        ),
-    RT_TYPE_FAULT => array(
-        'label' => trans('Fault'),
-        'class' => 'lms-ui-rt-ticket-type-fault',
-        'name' => 'RT_TYPE_FAULT'
-        ),
-    RT_TYPE_INST => array(
-        'label' => trans('Instalation'),
-        'class' => 'lms-ui-rt-ticket-type-inst',
-        'name' => 'RT_TYPE_INST'
-        ),
-    RT_TYPE_MOD => array(
-        'label' => trans('Modification'),
-        'class' => 'lms-ui-rt-ticket-type-mod',
-        'name' => 'RT_TYPE_MOD'
-        ),
-    RT_TYPE_START => array(
-        'label' => trans('Start service'),
-        'class' => 'lms-ui-rt-ticket-type-start',
-        'name' => 'RT_TYPE_START'
-        ),
-    RT_TYPE_STOP => array(
-        'label' => trans('Hold service'),
-        'class' => 'lms-ui-rt-ticket-type-stop',
-        'name' => 'RT_TYPE_STOP'
-        ),
-    RT_TYPE_REMOVE => array(
-        'label' => trans('Deinstalation'),
-        'class' => 'lms-ui-rt-ticket-type-remove',
-        'name' => 'RT_TYPE_REMOVE'
-        ),
-    RT_TYPE_OTHER => array(
-	'label' => trans('Other'),
-        'class' => 'lms-ui-rt-ticket-type-other',
-	'name' => 'RT_TYPE_OTHER'
-	),
-);
-
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -841,10 +864,12 @@ if(isset($SMARTY))
 	$SMARTY->assign('_PERIODS', $PERIODS);
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
+	$SMARTY->assign('_RT_RIGHTS', $RT_RIGHTS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
 	$SMARTY->assign('_RT_SOURCES', $RT_SOURCES);
 	$SMARTY->assign('_RT_PRIORITIES', $RT_PRIORITIES);
 	$SMARTY->assign('_RT_PRIORITY_STYLES', $RT_PRIORITY_STYLES);
+	$SMARTY->assign('_RT_TYPES', $RT_TYPES);
 	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
 	$SMARTY->assign('_SERVICETYPES', $SERVICETYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);
@@ -865,7 +890,6 @@ if(isset($SMARTY))
 	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
 	$SMARTY->assign('_CATEGORY_DEFAULT_STYLE', $CATEGORY_DEFAULT_STYLE);
 	$SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
-	$SMARTY->assign('_RT_TYPES', $RT_TYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

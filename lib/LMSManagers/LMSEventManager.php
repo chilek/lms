@@ -116,7 +116,19 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 		return $event;
 	}
 
-    function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type=0, $privacy=0, $closed='') {
+    function GetEventList(array $params) {
+		extract($params);
+		foreach (array('year', 'month', 'day') as $var)
+			if (!isset($$var))
+				$$var = null;
+		foreach (array('forward', 'customerid', 'userid', 'type', 'privacy') as $var)
+			if (!isset($$var))
+				$$var = 0;
+		if (!isset($closed))
+			$closed = '';
+		if (!isset($count))
+			$count = false;
+
         $t = time();
 
         if(!isset($year))
@@ -144,44 +156,72 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
             $startdate = 0;
             $enddate = strtotime("midnight", $t);
         } else {
+        	$overduefilter = '';
             $startdate = mktime(0,0,0, $month, $day, $year);
             $enddate = mktime(0,0,0, $month, $day+$forward, $year);
         }
 
         if ($closed != '')
             $closedfilter = ' AND closed = '.intval($closed);
-
-        if(!isset($userid) && empty($userid))
-            $userfilter = '';
         else
-        {
-            if(is_array($userid))
-            {
-                $userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN ('.implode(',', $userid).'))';
-                if(in_array('-1', $userid))
-                    $userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
-            }
-        }
+        	$closedfilter = '';
 
-        $list = $this->db->GetAll(
-            'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
-            . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-		userid, vusers.name AS username, ' . $this->db->Concat('c.city',"', '",'c.address').' AS customerlocation,
-		events.address_id, va.location, nodeid, vn.location AS nodelocation, ticketid
-		FROM events
-		LEFT JOIN vaddresses va ON va.id = events.address_id
-		LEFT JOIN vnodes as vn ON (nodeid = vn.id)
-		LEFT JOIN customerview c ON (customerid = c.id)
-		LEFT JOIN vusers ON (userid = vusers.id)
-		WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
-            . $privacy_condition
-            .($customerid ? ' AND customerid = '.intval($customerid) : '')
-            . $userfilter
-            . $overduefilter
-            . (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
-            . $closedfilter
-            .' ORDER BY date, begintime',
-            array($startdate, $enddate, $enddate, $startdate, Auth::GetCurrentUser()));
+		if (!isset($userid) || empty($userid))
+			$userfilter = '';
+		else {
+			if (is_array($userid)) {
+				if (in_array('-1', $userid))
+					$userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
+				else
+					$userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN ('.implode(',', $userid).'))';
+			} else {
+				$userid = intval($userid);
+				if ($userid == -1)
+					$userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
+				else
+					$userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid = ' . $userid . ')';
+
+			}
+		}
+
+		if ($count)
+			return $this->db->GetOne(
+				'SELECT COUNT(events.id)
+				FROM events
+				LEFT JOIN vaddresses va ON va.id = events.address_id
+				LEFT JOIN vnodes as vn ON (nodeid = vn.id)
+				LEFT JOIN customerview c ON (customerid = c.id)
+				LEFT JOIN vusers ON (userid = vusers.id)
+				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+				. $privacy_condition
+				. ($customerid ? ' AND customerid = '.intval($customerid) : '')
+				. $userfilter
+				. $overduefilter
+				. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+				. $closedfilter,
+				array($startdate, $enddate, $enddate, $startdate));
+
+		$list = $this->db->GetAll(
+			'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
+				. $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
+				userid, vusers.name AS username, ' . $this->db->Concat('c.city',"', '",'c.address').' AS customerlocation,
+				events.address_id, va.location, nodeid, vn.location AS nodelocation, ticketid
+			FROM events
+			LEFT JOIN vaddresses va ON va.id = events.address_id
+			LEFT JOIN vnodes as vn ON (nodeid = vn.id)
+			LEFT JOIN customerview c ON (customerid = c.id)
+			LEFT JOIN vusers ON (userid = vusers.id)
+			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
+			. $privacy_condition
+			.($customerid ? ' AND customerid = '.intval($customerid) : '')
+			. $userfilter
+			. $overduefilter
+			. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+			. $closedfilter
+			.' ORDER BY date, begintime'
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''),
+			array($startdate, $enddate, $enddate, $startdate));
         $list2 = array();
         if ($list)
             foreach ($list as $idx => $row) {
@@ -342,4 +382,15 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				AND (enddate > ? OR (enddate = ? AND endtime > ?))',
 			array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime));
 	}
+
+    public function AssignUserToEvent($id, $userid) {
+        if ($this->db->Execute('INSERT into eventassignments (eventid, userid) VALUES (?, ?)', array($id,$userid)))
+            $this->db->Execute('INSERT into eventassignments (eventid, userid) VALUES (?, ?)', array($id,$userid));
+
+    }
+
+    public function UnassignUserFromEevent($id, $userid) {
+        if ($this->db->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?', array($id,$userid)))
+            $this->db->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?', array($id,$userid));
+    }
 }

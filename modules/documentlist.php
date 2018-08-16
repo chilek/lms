@@ -127,6 +127,8 @@ $total = intval($LMS->GetDocumentList(array(
 
 $limit = intval(ConfigHelper::getConfig('phpui.documentlist_pagelimit', 100));
 $page = intval(!isset($_GET['page']) ? ceil($total / $limit) : $_GET['page']);
+if (empty($page))
+	$page = 1;
 $offset = ($page - 1) * $limit;
 
 if (!isset($s))

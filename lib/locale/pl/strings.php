@@ -885,6 +885,7 @@ $_LANG['Incorrect WINS server IP address!'] = 'Niepoprawny adres IP serwera WINS
 $_LANG['Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.'] = 'Niepoprawny kod pocztowy! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['in debt'] = 'zadłużeni';
 $_LANG['in debt (expired)'] = 'zadłużeni (przeterminowane)';
+$_LANG['Indicator (+R)'] = 'Wskaźniki (+O)';
 $_LANG['Nodes List for Customers In Debt'] = 'Lista komputerów zadłużonych klientów';
 $_LANG['Indebted Customers List $a$b'] = 'Lista klientów zadłużonych $a$b';
 $_LANG['indebted owner'] = 'zadłużony właściciel';
@@ -3956,5 +3957,16 @@ $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 
 $_LANG['Unread:'] = 'Nieprzeczytane:';
 $_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytany';
+$_LANG['Mark as read'] = 'Oznacz jako przeczytany';
+
+$_LANG['<!event>Assign'] = 'Przypisz';
+$_LANG['<!event>Unassign'] = 'Cofnij przypisanie';
+
+$_LANG['Today\'s events assigned to you'] = 'Dzisiejsze zdarzenia przypisane do Ciebie';
+$_LANG['Critical tickets'] = 'Zgłoszenia krytyczne';
+$_LANG['Urgent tickets'] = 'Zgłoszenia pilne';
+$_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
+
+$_LANG['Indicator panel:'] = 'Panel wskaźników:';
 
 ?>

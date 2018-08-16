@@ -2660,7 +2660,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				$sqlord = " ORDER BY documents.name $direction, documents.cdate";
 				break;
 			case 'user':
-				$sqlord = " ORDER BY vusers.lastname $direction, documents.cdate";
+				$sqlord = " ORDER BY vusers.rname $direction, documents.cdate";
 				break;
 			case 'cdate':
 			default:
@@ -2732,14 +2732,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if ($list = $this->db->GetAll(
 			'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid,
 			documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
-			MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user
+			MIN(description) AS title, COUNT(*) AS posnumber, vusers.rname AS user
 			FROM documents
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
 			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
 			WHERE regid = ?'
 			.$where
-			.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, numberplans.template, vusers.name, extnumber, closed '
+			.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, numberplans.template, vusers.rname, extnumber, closed '
 			.$having
 			.($sqlord != '' ? $sqlord : '')
 			. (isset($limit) ? ' LIMIT ' . $limit : '')

@@ -69,53 +69,44 @@
 								<TD class="bold">{trans("Privileges:")}</TD>
 								<TD style="width: 98%;">
 									<TABLE width="50%" class="lmsbox">
+										<COLGROUP>
+											<COL style="width: {100-count($_RT_RIGHTS)}%">
+											{foreach $_RT_RIGHTS as $label}
+											<COL style="width: 1%;">
+											{/foreach}
+										</COLGROUP>
 										<THEAD>
 											<TR>
-												<TD style="width: 46%;" class="bold nobr">{trans("User")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Read")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Write (+R)")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Delete (+R)")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Notice (+R)")}</TD>
+												<TD class="bold nobr">{trans("User")}</TD>
+												{foreach $_RT_RIGHTS as $label}
+												<TD class="text-center bold nobr">{$label}</TD>
+												{/foreach}
 											</TR>
 										</THEAD>
 										<TBODY>
 											{cycle values="light,lucid" print=false}
 											{foreach from=$queue.rights item=right}
 											<TR class="highlight {cycle} lms-ui-row-all-check">
-												<TD style="width: 46%;">
+												<TD>
 													<A href="?m=userinfo&id={$right.id}" class="nobr">{$right.name}</A>
 													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][1]" value="1" {if $right.rights > 0}CHECKED{/if}>
+												{foreach $_RT_RIGHTS as $rightvalue => $label}
+												<TD class="text-center">
+													<INPUT type="checkbox" name="queue[users][{$right.id}][{$rightvalue}]" value="{$rightvalue}"{if ($right.rights & $rightvalue) == $rightvalue} checked{/if}>
 												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][2]" value="2" {if ($right.rights & 2) == 2}CHECKED{/if}>
-												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][4]" value="4" {if ($right.rights & 4) == 4}CHECKED{/if}>
-												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][8]" value="8" {if ($right.rights & 8) == 8}CHECKED{/if}>
-												</TD>
+												{/foreach}
 											</TR>
 											{/foreach}
 											<TR class="highlight {cycle}">
-												<TD style="width: 96%;" class="nobr text-right">
+												<TD class="nobr text-right">
 													{trans("Check All")}
 												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT TYPE="checkbox" NAME="allbox[1]" data-value="1">
+												{foreach $_RT_RIGHTS as $rightvalue => $label}
+												<TD class="text-center">
+													<INPUT TYPE="checkbox" NAME="allbox[{$rightvalue}]" data-value="{$rightvalue}">
 												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT TYPE="checkbox" NAME="allbox[2]" data-value="2">
-												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT TYPE="checkbox" NAME="allbox[4]" data-value="4">
-												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT TYPE="checkbox" NAME="allbox[8]" data-value="8">
-												</TD>
+												{/foreach}
 											</TR>
 										</TBODY>
 									</TABLE>
@@ -236,7 +227,7 @@
 $(function() {
 	$('form[name="queue"] [name="queue[name]"]').focus();
 
-	for (var i = 0; i < 4; i++) {
+	for (var i = 0; i < {count($_RT_RIGHTS)}; i++) {
 		$('input:checkbox[name="allbox[' + Math.pow(2, i) + ']"]').click(function() {
 			$('input:checkbox[name*="queue[users]"][value="' + $(this).attr('data-value') + '"]').prop('checked', this.checked);
 		});

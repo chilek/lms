@@ -79,13 +79,10 @@ if (isset($_POST['to'])) {
 else
 	$to = 0;
 
-if ($from && $to)
-	if($from > $to) {
-		$error['datefrom'] = trans('Incorrect date range!');
-		$error['dateto'] = trans('Incorrect date range!');
-	}
-else
-{
+if ($from && $to && $from > $to) {
+	$error['datefrom'] = trans('Incorrect date range!');
+	$error['dateto'] = trans('Incorrect date range!');
+} else {
 	$SESSION->save('rlf', $from);
 	$SESSION->save('rlt', $to);
 }
@@ -153,6 +150,8 @@ $listdata['endbalance'] = $listdata['startbalance'] + $listdata['totalincome'] -
 
 $pagelimit = ConfigHelper::getConfig('phpui.receiptlist_pagelimit');
 $page = (!isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : $_GET['page']);
+if (empty($page))
+	$page = 1;
 $start = ($page - 1) * $pagelimit;
 
 $logentry = $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ?
