@@ -78,7 +78,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added button in event list row which assigns currently logged user
     to event [interduo]
   - enhancement: introduced indicators in top menu [interduo/chilan]
-  - improvement: new priority increased,alap and remake of priority colors [interduo]
+  - improvement: new priority idle,higher and remake of priority colors [interduo]
 
 version 1.11.23 (2018-03-21):
 
