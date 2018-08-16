@@ -787,6 +787,9 @@ li.lms-ui-suggestion-item a {
   cursor: pointer;
   text-decoration: underline;
 }
+.lms-ui-ticket-list {
+  border-bottom: 1px dotted gray;
+}
 button.lms-ui-button {
   padding: 0em 1em;
   border: 1px solid #615847;
@@ -810,29 +813,6 @@ button.lms-ui-button:focus,
 button.lms-ui-button:active {
   background-color: #CEBD9B;
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
-}
-
-.lms-ui-ticket-list {
-	border-bottom: 1px dotted gray;
-}
-
-.lms-ui-rt-deleted.light:not(:hover) {
-  background-color: #ffb1b1;
-}
-.lms-ui-rt-deleted.lucid:not(:hover) {
-  background-color: #fccdcd;
-}
-.lms-ui-rt-partly-deleted.light {
-  background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #ffb1b1 10px, #ffb1b1 20px);
-}
-.lms-ui-rt-partly-deleted.lucid {
-  background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #fccdcd 10px, #fccdcd 20px);
-}
-.lms-ui-rtmessage-deleted.light {
-  background-color: #ffb1b1;
-}
-.lms-ui-rtmessage-deleted.lucid {
-  background-color: #fccdcd;
 }
 .lms-ui-rtmessage-current td:first-child {
   border-left: 2px solid brown;
@@ -959,6 +939,27 @@ table.lmsbox {
 	}
 }
 */
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.ui-selected).lms-ui-rt-deleted:nth-child(even) {
+  background-color: #ffb1b1;
+}
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.ui-selected).lms-ui-rt-deleted:nth-child(odd) {
+  background-color: #fccdcd;
+}
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.ui-selected).lms-ui-rt-deleted.highlight:hover {
+  background-color: #CCFFCC;
+}
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.ui-selected).lms-ui-rt-partly-deleted:nth-child(even) {
+  background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #ffb1b1 10px, #ffb1b1 20px);
+}
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.ui-selected).lms-ui-rt-partly-deleted:nth-child(odd) {
+  background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #fccdcd 10px, #fccdcd 20px);
+}
+.lms-ui-rtmessage-deleted.light {
+  background-color: #ffb1b1;
+}
+.lms-ui-rtmessage-deleted.lucid {
+  background-color: #fccdcd;
+}
 table.lms-ui-datatable > tbody tr:nth-child(even):not(.ui-selected) {
   background-color: #DFD5BD;
 }

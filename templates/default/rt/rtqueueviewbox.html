@@ -1,109 +1,108 @@
 {block name=rtbox}
-{cycle values="light,lucid" print=false}
-{section name=ticket loop=$queue}
-<TR class="highlight {cycle} lms-ui-rt{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}-deleted{elseif $queue[ticket].delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if} lms-ui-ticket-list" onClick="return self.location.href = '?m=rtticketview&id={$queue[ticket].id}';">
+{foreach $queue as $ticket}
+<TR class="highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if} lms-ui-ticket-list" onClick="return self.location.href = '?m=rtticketview&id={$ticket.id}';">
 	<TD class="text-center">
-		{if $queue[ticket].priority == $smarty.const.RT_PRIORITY_CRITICAL && $queue[ticket].state != $smarty.const.RT_RESOLVED}
-			<IMG src=img/ring-red.png alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">{if $queue[ticket].unread}<br><a href="?m=rtticketview&id={$queue[ticket].id}{if $queue[ticket].firstunread}#rtmessage-{$queue[ticket].firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
+		{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}
+			<IMG src=img/ring-red.png alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">{if $ticket.unread}<br><a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
 		{else}
-			<IMG src="{$_RT_STATES[$queue[ticket].state].img}" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">{if $queue[ticket].unread}<br><a href="?m=rtticketview&id={$queue[ticket].id}{if $queue[ticket].firstunread}#rtmessage-{$queue[ticket].firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
+			<IMG src="{$_RT_STATES[$ticket.state].img}" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">{if $ticket.unread}<br><a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
 		{/if}
 	</TD>
-	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$queue[ticket].state].color};">{$_RT_STATES[$queue[ticket].state].label}</TD>
+	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</TD>
 	<TD class="nobr">
-		<span class="bold" style="{$_RT_PRIORITY_STYLES[$queue[ticket].priority]}">{$queue[ticket].id|string_format:"%06d"}</span>
+		<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$ticket.id|string_format:"%06d"}</span>
 		<br>
-		{$queue[ticket].createtime|date_format:"%Y/%m/%d %H:%M:%S"}
-		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
+		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+		{if $ticket.state == $smarty.const.RT_NEW || $ticket.state == $smarty.const.RT_DEAD}
 		{/if}
 	</TD>
 	<TD class="nobr valign-top">
-		<span>{$_SERVICETYPES[$queue[ticket].service]}</span>
-		<span>{$_RT_TYPES[$queue[ticket].type].label}</span>
-		<span class="bold">{$queue[ticket].subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
-		{foreach $queue[ticket].categories as $ticketcategory}
+		<span>{$_SERVICETYPES[$ticket.service]}</span>
+		<span>{$_RT_TYPES[$ticket.type].label}</span>
+		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
+		{foreach $ticket.categories as $ticketcategory}
 		<span {if $ticketcategory.style != ''} style="{$ticketcategory.style}"{else} style="{$_CATEGORY_DEFAULT_STYLE}"{/if}>{$ticketcategory.name}</span>
 		{/foreach}
 		<br>
-		{if $queue[ticket].customerid}
-			<A href="?m=customerinfo&id={$queue[ticket].customerid}">{$queue[ticket].requestor|escape|truncate:"60":"..."}</A>
+		{if $ticket.customerid}
+			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.requestor|escape|truncate:"60":"..."}</A>
 		{else}
-			{if $queue[ticket].requestor_userid}
-			<A href="?m=userinfo&id={$queue[ticket].requestor_userid}">{$queue[ticket].requestor_username}</A>
+			{if $ticket.requestor_userid}
+			<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
 			{else}
-				{$queue[ticket].requestor|escape}
-				{if $queue[ticket].requestor_phone}<BR>{$queue[ticket].requestor_phone}{/if}
-				{if $queue[ticket].requestor_mail}<BR>
-				<A href="mailto:{$queue[ticket].requestor_mail}""> &lt;{$queue[ticket].requestor_mail}&gt;</A>
+				{$ticket.requestor|escape}
+				{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
+				{if $ticket.requestor_mail}<BR>
+				<A href="mailto:{$ticket.requestor_mail}""> &lt;{$ticket.requestor_mail}&gt;</A>
 				{/if}
 			{/if}
 		{/if}
-		{if $queue[ticket].netnodeid && $queue[ticket].customerid}<br>{/if}
-		{if $queue[ticket].netnodeid}{trans("Network node:")} <A href="?m=netnodeinfo&id={$queue[ticket].netnodeid}">{$queue[ticket].netnode_name}({$queue[ticket].netnodeid})</A>{/if}
-		{if $queue[ticket].netdevid} {if $queue[ticket].netnodeid}<BR>{/if}{trans("Network device:")} <A href="?m=netdevinfo&id={$queue[ticket].netdevid}">{$queue[ticket].netdev_name}({$queue[ticket].netdevid})</A>{/if}
-		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
+		{if $ticket.netnodeid && $ticket.customerid}<br>{/if}
+		{if $ticket.netnodeid}{trans("Network node:")} <A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name}({$ticket.netnodeid})</A>{/if}
+		{if $ticket.netdevid} {if $ticket.netnodeid}<BR>{/if}{trans("Network device:")} <A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}({$ticket.netdevid})</A>{/if}
+		{if $ticket.state == $smarty.const.RT_NEW || $ticket.state == $smarty.const.RT_DEAD}
 		{/if}
 	</TD>
 	<TD class="nobr valign-top">
-		{if is_array($queuedata.id) && count($queuedata.id) != 1}{$queue[ticket].name}{/if}
-		{if $queue[ticket].customerid}
-			{if $queue[ticket].address_id}
-				{if $queue[ticket].vacity}{$queue[ticket].vacity}, {/if}{$queue[ticket].street} {$queue[ticket].house}{if $queue[ticket].flat}/{$queue[ticket].flat}{/if}
+		{if is_array($queuedata.id) && count($queuedata.id) != 1}{$ticket.name}{/if}
+		{if $ticket.customerid}
+			{if $ticket.address_id}
+				{if $ticket.vacity}{$ticket.vacity}, {/if}{$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if}
 			{else}
-				{if $queue[ticket].city}{$queue[ticket].city}, {/if}{$queue[ticket].address}
+				{if $ticket.city}{$ticket.city}, {/if}{$ticket.address}
 			{/if}
 		{/if}
-		{if $queue[ticket].netnode_location && !$queue[ticket].customerid}{$queue[ticket].netnode_location}{elseif $queue[ticket].netnode_location}<br>{trans("Network node location:")}{$queue[ticket].netnode_location}{/if}
-		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
+		{if $ticket.netnode_location && !$ticket.customerid}{$ticket.netnode_location}{elseif $ticket.netnode_location}<br>{trans("Network node location:")}{$ticket.netnode_location}{/if}
+		{if $ticket.state == $smarty.const.RT_NEW || $ticket.state == $smarty.const.RT_DEAD}
 		</span>
 		{/if}
 	</TD>
 	<TD class="nobr text-center">
-		{$queue[ticket].isexpired}
-		{if $queue[ticket].deadline}
-			{if $queue[ticket].deadline_diff < 0}
+		{$ticket.isexpired}
+		{if $ticket.deadline}
+			{if $ticket.deadline_diff < 0}
 				<span style="background-color: red; color: white;">{trans("<!rt>Expired")}</span><br>
 			{/if}
-			{$queue[ticket].deadline_days} {trans("days")}
-			{$queue[ticket].deadline_hours} {trans("<!rt>hours")}
+			{$ticket.deadline_days} {trans("days")}
+			{$ticket.deadline_hours} {trans("<!rt>hours")}
 				
 		{else}-
 		{/if}<br>
 	</TD>
 	<TD class="nobr">
-		{if $queue[ticket].ownername}{$queue[ticket].ownername|truncate:25:"...":true}{else}-{/if}<br>
-		{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
+		{if $ticket.ownername}{$ticket.ownername|truncate:25:"...":true}{else}-{/if}<br>
+		{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 	</TD>
 	<TD class="text-center nobr">
-		{if $queue[ticket].state == $smarty.const.RT_SCHEDULED && $queue[ticket].eventcountopened=="0"}<A href="?m=eventadd&ticketid={$queue[ticket].id}"><IMG src=img/event-add.png></A>{/if}
-		{if $queue[ticket].eventcountopened}<A href="?m=eventsearch&ticketid={$queue[ticket].id}">{$queue[ticket].eventcountopened} </A>{else}- {/if}/
-		{if $queue[ticket].eventcountclosed}<A href="?m=eventsearch&ticketid={$queue[ticket].id}"> {$queue[ticket].eventcountclosed}</A>{else} -{/if}
+		{if $ticket.state == $smarty.const.RT_SCHEDULED && $ticket.eventcountopened=="0"}<A href="?m=eventadd&ticketid={$ticket.id}"><IMG src=img/event-add.png></A>{/if}
+		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}">{$ticket.eventcountopened} </A>{else}- {/if}/
+		{if $ticket.eventcountclosed}<A href="?m=eventsearch&ticketid={$ticket.id}"> {$ticket.eventcountclosed}</A>{else} -{/if}
 	</TD>
 	<TD class="nobr text-right">
-		{if !$queue[ticket].unread}
-		<a href="?m=rtticketedit&id={$queue[ticket].id}&unread=1"><img src="img/ring-blue.png" alt="" title="{trans("Mark as unread")}"></a>
+		{if !$ticket.unread}
+		<a href="?m=rtticketedit&id={$ticket.id}&unread=1"><img src="img/ring-blue.png" alt="" title="{trans("Mark as unread")}"></a>
 		{else}
-		<a href="?m=rtticketedit&id={$queue[ticket].id}&unread=0"><img src="img/ring-grey.png" alt="" title="{trans("Mark as read")}"></a>
+		<a href="?m=rtticketedit&id={$ticket.id}&unread=0"><img src="img/ring-grey.png" alt="" title="{trans("Mark as read")}"></a>
 		{/if}
-		{if !$queue[ticket].ownerid}<A href="?m=rtqueueview&ticketid={$queue[ticket].id}&assign"><img src="img/users.gif" alt="" title="{trans("Assign to me")}"></A>{/if}
-		<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><img src="img/print.gif" alt="" title="{trans("Print")}"></A>
-		{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-		<A href="?m=rtrestore&id={$queue[ticket].id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}"></A>
-		<A href="?m=rtremove&id={$queue[ticket].id}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"></A>
+		{if !$ticket.ownerid}<A href="?m=rtqueueview&ticketid={$ticket.id}&assign"><img src="img/users.gif" alt="" title="{trans("Assign to me")}"></A>{/if}
+		<A href="?m=rtticketprint&id={$ticket.id}" target="_BLANK"><img src="img/print.gif" alt="" title="{trans("Print")}"></A>
+		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+		<A href="?m=rtrestore&id={$ticket.id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}"></A>
+		<A href="?m=rtremove&id={$ticket.id}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"></A>
 		{else}
-		<A href="?m=rtticketdel&id={$queue[ticket].id}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete")}"></A>
+		<A href="?m=rtticketdel&id={$ticket.id}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete")}"></A>
 		{/if}
-		<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="" title="{trans("Edit")}"> </A>
-		<A href="?m=rtnoteadd&ticketid={$queue[ticket].id}"><IMG src="img/note.gif" alt="" title="{trans("New Note")}"> </A>
-		<A href="?m=rtmessageadd&ticketid={$queue[ticket].id}"><IMG src="img/forward.gif" alt="" title="{trans("New Message")}"> </A>
-		<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="" title="{trans("Info")}"> </A>
+		<A href="?m=rtticketedit&id={$ticket.id}"><IMG src="img/edit.gif" alt="" title="{trans("Edit")}"> </A>
+		<A href="?m=rtnoteadd&ticketid={$ticket.id}"><IMG src="img/note.gif" alt="" title="{trans("New Note")}"> </A>
+		<A href="?m=rtmessageadd&ticketid={$ticket.id}"><IMG src="img/forward.gif" alt="" title="{trans("New Message")}"> </A>
+		<A href="?m=rtticketview&id={$ticket.id}"><IMG src="img/info.gif" alt="" title="{trans("Info")}"> </A>
 	</TD>
 </TR>
-{sectionelse}
+{foreachelse}
 <TR>
 	<TD COLSPAN="8" class="empty-table">
 		<p>{trans("This queue is empty.")}</p>
 	</TD>
 </TR>
-{/section}
+{/foreach}
 {/block}
