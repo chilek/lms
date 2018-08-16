@@ -1,7 +1,7 @@
 {block name=rtbox}
 {cycle values="light,lucid" print=false}
 {section name=ticket loop=$queue}
-<TR class="highlight {cycle} lms-ui-rt{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}-deleted{elseif $queue[ticket].delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}{if $queue[ticket].state == 2} blend{/if} lms-ui-ticket-list" style="color: {$_RT_STATES[$queue[ticket].state].color};" onClick="return self.location.href = '?m=rtticketview&id={$queue[ticket].id}';">
+<TR class="highlight {cycle} lms-ui-rt{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}-deleted{elseif $queue[ticket].delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if} lms-ui-ticket-list" onClick="return self.location.href = '?m=rtticketview&id={$queue[ticket].id}';">
 	<TD class="text-center">
 		{if $queue[ticket].priority == $smarty.const.RT_PRIORITY_CRITICAL && $queue[ticket].state != $smarty.const.RT_RESOLVED}
 			<IMG src=img/ring-red.png alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">{if $queue[ticket].unread}<br><a href="?m=rtticketview&id={$queue[ticket].id}{if $queue[ticket].firstunread}#rtmessage-{$queue[ticket].firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
@@ -9,6 +9,7 @@
 			<IMG src="{$_RT_STATES[$queue[ticket].state].img}" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">{if $queue[ticket].unread}<br><a href="?m=rtticketview&id={$queue[ticket].id}{if $queue[ticket].firstunread}#rtmessage-{$queue[ticket].firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
 		{/if}
 	</TD>
+	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$queue[ticket].state].color};">{$_RT_STATES[$queue[ticket].state].label}</TD>
 	<TD class="nobr">
 		<span class="bold" style="{$_RT_PRIORITY_STYLES[$queue[ticket].priority]}">{$queue[ticket].id|string_format:"%06d"}</span>
 		<br>
