@@ -198,22 +198,25 @@ $RT_SOURCES = array(
 define('RT_PRIORITY_VERYLOW', -2);
 define('RT_PRIORITY_LOW', -1);
 define('RT_PRIORITY_NORMAL', 0);
-define('RT_PRIORITY_URGENT', 1);
-define('RT_PRIORITY_CRITICAL', 2);
+define('RT_PRIORITY_INCREASED', 1);
+define('RT_PRIORITY_URGENT', 2);
+define('RT_PRIORITY_CRITICAL', 3);
 
 $RT_PRIORITIES = array(
 	RT_PRIORITY_VERYLOW => trans('very low'),
 	RT_PRIORITY_LOW => trans('low'),
 	RT_PRIORITY_NORMAL => trans('normal'),
+	RT_PRIORITY_INCREASED => trans('increased'),
 	RT_PRIORITY_URGENT => trans('urgent'),
 	RT_PRIORITY_CRITICAL => trans('critical'),
 );
 
 $RT_PRIORITY_STYLES = array(
-	RT_PRIORITY_VERYLOW => 'background-color: blue; color: white;',
-	RT_PRIORITY_LOW => 'background-color: lightgreen; color: black;',
+	RT_PRIORITY_VERYLOW => 'background-color: silver; color: white;',
+	RT_PRIORITY_LOW => 'background-color: dodgerblue; color: white;',
 	RT_PRIORITY_NORMAL => 'background-color: transparent; color: black;',
-	RT_PRIORITY_URGENT => 'background-color: orange; color: white;',
+	RT_PRIORITY_INCREASED => 'background-color: yellow; color: black;',
+	RT_PRIORITY_URGENT => 'background-color: orange; color: black;',
 	RT_PRIORITY_CRITICAL => 'background-color: red; color: white;',
 );
 

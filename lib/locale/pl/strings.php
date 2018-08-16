@@ -1288,6 +1288,7 @@ $_LANG['Print form of cash transfer'] = 'Drukuj formularz przelewu/wpłaty';
 $_LANG['Priority:'] = 'Priorytet:';
 $_LANG['normal'] = 'normalny';
 $_LANG['very low'] = 'bardzo niski';
+$_LANG['increased'] = 'podwyższony';
 $_LANG['urgent'] = 'pilny';
 $_LANG['critical'] = 'krytyczny';
 $_LANG['Priority must be integer!'] = 'Priorytet musi być typu całkowitego!';
