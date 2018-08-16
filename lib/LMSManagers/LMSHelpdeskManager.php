@@ -50,9 +50,49 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-	// virtual ticket states:
-	// -1 = unresolved
-	// -2 or empty = all
+	/**
+	 * @param array $params associative array of parameters describe below:
+	 * 		ids - queue identifiers (default: null = any), array() or single integer value
+	 *		state - ticket states (default: null = any), -1 = unresolved, -2 = any,
+	 *			array() of integer values or single integer value
+	 * 		priority - ticket priorities (default: null = any),
+	 * 			array() of integer values or single integer value
+	 * 		owner - ticket owner (default: null = any), -1 = any, 0 = without owner, -2 = with any owner,
+	 *			single integer value = specified owner
+	 * 		catids - ticket categories (default: null = any),
+	 *			array() of integer values or single integer value
+	 *		removed - ticket removal flag (default: null = any),
+	 *			-1 = without removal flag,
+	 *			1 = with removal flag set,
+	 *		netdevids - ticket network devices (default: null = any),
+	 * 			array() of integer values or single integer value,
+	 * 		netnodeids - ticket network nodes (default: null = any),
+	 * 			array() of integer values or single integer value,
+	 *		deadline - ticket deadline (default: null = any),
+	 * 			1 - with deadline set,
+	 * 			-1 - without deadline set,
+	 * 			-2 - with expired deadline,
+	 * 		serviceids - ticket services (default: null = any),
+	 * 			array() of integer values or single integer value,
+	 * 		typeids - ticket types (default: null = any),
+	 * 			array() of integer values or single integer value,
+	 * 		unread - ticket unread flag (default: null or < 0 = any),
+	 * 			0 - read tickets,
+	 * 			1 - unread tickets,
+	 * 		count - count records only or return selected record interval
+	 * 			true - count only,
+	 * 			false - get records,
+	 * 		offset - first returned record (null = 0),
+	 * 		limit - returned record count (null = unlimited),
+	 * 		order - returned records order (default: createtime,desc)
+	 * 			can contain field_name,order pairs,
+	 * 			supported field names:
+	 * 			ticketid, subject, requestor, owner, lastmodified, creator, queue, priority, deadline, service,
+	 * 				type, createtime,
+	 * 			supported orders:
+	 * 			asc = ascending, desc = descending
+	 * @return mixed
+	 */
 	public function GetQueueContents(array $params) {
 		extract($params);
 		foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
