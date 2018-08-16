@@ -30,7 +30,7 @@ $queuedata = array(
 	'type' => null,
 );
 
-if (isset($_GET['id'])) {
+if (isset($_GET['id']) && $_GET['id'] != 'all') {
 	if (is_array($_GET['id']))
 		$queuedata['id'] = array_filter($_GET['id'], 'intval');
 	elseif (intval($_GET['id']))
@@ -110,6 +110,10 @@ if (!empty($queuedata['catid'])) {
 	if (count($categories) != $all_cat)
 		$queuedata['catid'] = $categories;
 }
+
+if (!isset($_GET['id']))
+	$SESSION->restore('rtqueue', $queuedata['id']);
+$SESSION->save('rtqueue', $queuedata['id']);
 
 if(!isset($_GET['o']))
 	$SESSION->restore('rto', $o);
