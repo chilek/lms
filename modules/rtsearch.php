@@ -56,6 +56,12 @@ function RTSearch($search, $order='createtime,desc')
 		case 'priority':
 			$sqlord = ' ORDER BY priority';
 			break;
+                case 'service':
+                        $sqlord = ' ORDER BY t.service';
+                        break;
+                case 'type':
+                        $sqlord = ' ORDER BY t.type';
+                        break;
 		default:
 			$sqlord = ' ORDER BY t.createtime';
 		break;
@@ -122,10 +128,16 @@ function RTSearch($search, $order='createtime,desc')
 	if(!empty($search['expired']))
 		$where[] = 't.deadline < ?NOW?';
 
+        if(!empty($search['service']))
+                $where[] = 't.service = '.intval($search['service']);
+
+        if(!empty($search['type']))
+                $where[] = 't.type = '.intval($search['type']);
+
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
 
-	if($result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid,
+	if($result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, t.service, t.type,
 			vusers.name AS ownername, rtqueues.name as name, CASE WHEN customerid = 0 THEN t.requestor ELSE '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
 			END AS requestor, t.requestor AS req, t.createtime,
