@@ -23,8 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("UPDATE rttickets SET priority = 3 WHERE priority = 2;",
-$this->Execute("UPDATE rttickets SET priority = 2 WHERE priority = 1;",
+$this->Execute("UPDATE rttickets SET priority = 3 WHERE priority = 2");
+$this->Execute("UPDATE rttickets SET priority = 2 WHERE priority = 1");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018081600', 'dbversion'));
 
