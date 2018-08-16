@@ -7,6 +7,7 @@
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
+        <COL style="width: 1%;">
         <COL style="width: 50%;">
         <COL style="width: 45%;">
         <COL style="width: 1%;">
@@ -17,7 +18,7 @@
     <THEAD>
         {include file="rt/rtfilter.html"}
         <TR>
-            <TD class="pagination" COLSPAN="7">
+            <TD class="pagination" COLSPAN="8">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}
@@ -33,7 +34,7 @@
     </TBODY>
     <TFOOT>
         <TR>
-            <TD class="pagination" COLSPAN="7">
+            <TD class="pagination" COLSPAN="8">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}
