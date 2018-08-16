@@ -1398,6 +1398,7 @@ $_LANG['Select customers group'] = 'Wybierz grupę klientów';
 $_LANG['Select customer state'] = 'Wybierz stan klienta';
 $_LANG['Select customers which has to concern new payment or covenant operation or leave it not selected if you want to add network income/expense operation.'] = 'Wybierz klientów, których ma dotyczyć nowa operacja wpłaty lub obciążenia albo pozostaw listę nie zaznaczoną jeżeli chcesz dodać operację przychodu/rozchodu sieci.';
 $_LANG['Select Date'] = 'Wybierz datę';
+$_LANG['Date could not be set in past!'] = 'Ustawiona data nie może być z przeszłości';
 $_LANG['Select default deadline in days'] = 'Wybierz domyślny termin płatności w dniach';
 $_LANG['- select device -'] = '- wybierz urządzenie -';
 $_LANG['Select device from list for replacement'] = 'Wybierz z listy urządzenie do wymiany';

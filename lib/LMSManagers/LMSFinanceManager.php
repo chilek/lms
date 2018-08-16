@@ -795,20 +795,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			default: // DISPOSABLE
 				$period = DISPOSABLE;
 
-				if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
-					list($y, $m, $d) = explode('/', $a['at']);
-					if (checkdate($m, $d, $y)) {
-						$at = mktime(0, 0, 0, $m, $d, $y);
-
-						if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
-							$a['atwarning'] = TRUE;
-							$error['at'] = trans('Incorrect date!');
-						}
-					} else
-						$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-				} else
-					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-				break;
+                $at = date_to_timestamp($a['at']);
+                if(empty($at)) {
+                    $error['at'] = trans('Incorrect date!');
+                } elseif ($at < mktime(0, 0, 0)) {
+                    $error['at'] = trans('Date could not be set in past!');
+                }
+                break;
 		}
 
 		if (isset($a['datefrom'])) {
