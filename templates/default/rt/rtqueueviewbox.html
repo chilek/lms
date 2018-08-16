@@ -13,24 +13,13 @@
 	<TD class="nobr">
 		<span class="bold" style="{$_RT_PRIORITY_STYLES[$queue[ticket].priority]}">{$queue[ticket].id|string_format:"%06d"}</span>
 		<br>
-		{if $queue[ticket].state == $smarty.const.RT_NEW}
-		<span class="red">
-		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
-		<span class="brown">
-		{/if}
 		{$queue[ticket].createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
-		</span>
 		{/if}
 	</TD>
 	<TD class="nobr valign-top">
 		<span>{$_SERVICETYPES[$queue[ticket].service]}</span>
 		<span>{$_RT_TYPES[$queue[ticket].type].label}</span>
-		{if $queue[ticket].state == $smarty.const.RT_NEW}
-		<span class="red">
-		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
-		<span class="brown">
-		{/if}
 		<span class="bold">{$queue[ticket].subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
 		{foreach $queue[ticket].categories as $ticketcategory}
 		<span {if $ticketcategory.style != ''} style="{$ticketcategory.style}"{else} style="{$_CATEGORY_DEFAULT_STYLE}"{/if}>{$ticketcategory.name}</span>
@@ -53,15 +42,9 @@
 		{if $queue[ticket].netnodeid}{trans("Network node:")} <A href="?m=netnodeinfo&id={$queue[ticket].netnodeid}">{$queue[ticket].netnode_name}({$queue[ticket].netnodeid})</A>{/if}
 		{if $queue[ticket].netdevid} {if $queue[ticket].netnodeid}<BR>{/if}{trans("Network device:")} <A href="?m=netdevinfo&id={$queue[ticket].netdevid}">{$queue[ticket].netdev_name}({$queue[ticket].netdevid})</A>{/if}
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
-		</span>
 		{/if}
 	</TD>
 	<TD class="nobr valign-top">
-		{if $queue[ticket].state == $smarty.const.RT_NEW}
-		<span class="red">
-		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
-		<span class="brown">
-		{/if}
 		{if is_array($queuedata.id) && count($queuedata.id) != 1}{$queue[ticket].name}{/if}
 		{if $queue[ticket].customerid}
 			{if $queue[ticket].address_id}
@@ -76,11 +59,6 @@
 		{/if}
 	</TD>
 	<TD class="nobr text-center">
-		{if $queue[ticket].state == $smarty.const.RT_NEW}
-		<span class="red">
-		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
-		<span class="brown">
-		{/if}
 		{$queue[ticket].isexpired}
 		{if $queue[ticket].deadline}
 			{if $queue[ticket].deadline_diff < 0}
@@ -91,21 +69,10 @@
 				
 		{else}-
 		{/if}<br>
-		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
-		</span>
-		{/if}
 	</TD>
 	<TD class="nobr">
-		{if $queue[ticket].state == $smarty.const.RT_NEW}
-		<span class="red">
-		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
-		<span class="brown">
-		{/if}
 		{if $queue[ticket].ownername}{$queue[ticket].ownername|truncate:25:"...":true}{else}-{/if}<br>
 		{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
-		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
-		</span>
-		{/if}
 	</TD>
 	<TD class="text-center nobr">
 		{if $queue[ticket].state == $smarty.const.RT_SCHEDULED && $queue[ticket].eventcountopened=="0"}<A href="?m=eventadd&ticketid={$queue[ticket].id}"><IMG src=img/event-add.png></A>{/if}
