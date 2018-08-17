@@ -270,7 +270,22 @@ $(function() {
 	].forEach(function(popup) {
 		$('.' + popup.class).tooltip({
 			items: '.' + popup.class,
-			track: true,
+			track: false,
+			position: { my: "left top", at: "left bottom", collision: "flipfit" },
+			open: function(e, ui) {
+				if (typeof(e.originalEvent) === 'undefined') {
+					return false;
+				}
+				var id = $(ui.tooltip).attr('id');
+				$('div.ui-tooltip').not('#' + id).remove();
+			},
+			close: function(e, ui) {
+				$(ui.tooltip).mouseenter(function() {
+					$(this).stop(true);
+				}).mouseleave(function() {
+					$(this).remove();
+				});
+			},
 			tooltipClass: popup.class,
 			content: function(callback) {
 				var elem = $(this);
@@ -279,8 +294,8 @@ $(function() {
 					async: true,
 					success: function(data) {
 						callback(data);
-						elem.tooltip('disable');
-						elem.tooltip('enable');
+						// elem.tooltip('disable');
+						// elem.tooltip('enable');
 					}
 				});
 			}
