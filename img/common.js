@@ -110,8 +110,8 @@ function ipchoosewin(hostparams) {
 	var netid = (typeof hostparams.netid === 'undefined' ? '' : hostparams.netid);
 	var privnetid = (typeof hostparams.privnetid === 'undefined' ? '' : hostparams.privnetid);
 	var device = (typeof hostparams.device === 'undefined' ? '' : hostparams.device);
-	var url = '?m=chooseip' +  (netid ? '&netid=' + netid : '') + (ip ? '&ip=' + ip : '')
-		+ (privnetid ? '&privnetid=' + privnetid : '') + (device ? '&device=' + device : '');
+	var url = '?m=chooseip' +  (netid ? '&netid=' + netid : '') + (ip ? '&ip=' + ip : '') +
+		(privnetid ? '&privnetid=' + privnetid : '') + (device ? '&device=' + device : '');
 	return openSelectWindow2(url, 'chooseip', 350, 380, 'true', ipelem, netelem);
 }
 
