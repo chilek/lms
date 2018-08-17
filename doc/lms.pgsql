@@ -1067,6 +1067,8 @@ CREATE TABLE networks (
 	hostid integer NULL
 		REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	authtype smallint 	DEFAULT 0 NOT NULL,
+	pubnetid integer DEFAULT NULL
+		CONSTRAINT networks_pubnetid_fkey REFERENCES networks (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	CONSTRAINT networks_address_key UNIQUE (address, hostid)
@@ -3417,6 +3419,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018081600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018081700');
 
 COMMIT;
