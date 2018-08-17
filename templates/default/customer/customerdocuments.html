@@ -60,7 +60,7 @@
 	<TBODY class="lms-ui-multi-check">
 	<TR id="docpanel" style="display: none;">
 		<TD colspan="2">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
 				<THEAD>
 				<TR>
 					<TD style="width: 1%;" class="bold nobr">{trans("Number:")}</TD>
@@ -73,9 +73,8 @@
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle values="light,lucid" print=false name=doc}
-				{foreach from=$documents item=doc}
-				<TR class="highlight {cycle name=doc}{if $doc.closed} blend{/if}"  >
+				{foreach $documents as $doc}
+				<TR class="highlight{if $doc.closed} blend{/if}"  >
 					<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 						{number number=$doc.number template=$doc.template time=$doc.cdate}
 					</TD>

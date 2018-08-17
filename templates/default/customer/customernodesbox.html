@@ -50,7 +50,7 @@ function setgroup(act)
 	<TR id="nodespanel-{$layout.module}" style="display:none;">
 		<TD colspan="2">
 			<FORM method="post" action="" name="custnodeslist">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
 				<COLGROUP>
 					<COL style="width: {math equation="x-y" x=95 y=$ewx}%;">
 					<COL style="width: 1%;">
@@ -78,9 +78,8 @@ function setgroup(act)
 					</TR>
 				</THEAD>
 				<TBODY>
-					{cycle values="light,lucid" print=false name=nodes}
 					{section name=customernodes loop=$customernodes}
-					<TR class="highlight {cycle name=nodes}{if ! $customernodes[customernodes].access} blend{/if}"  >
+					<TR class="highlight{if ! $customernodes[customernodes].access} blend{/if}">
 						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$customernodes[customernodes].id}';">
 							{if $customernodes[customernodes].lastonline}
 								{if ($smarty.now-$customernodes[customernodes].lastonline) > $lastonline_limit}
@@ -147,7 +146,7 @@ function setgroup(act)
 						</TD>
 					</TR>
 					{/section}
-					<TR>
+					<TR class="dark">
 						<TD colspan="{math equation="x+y" x=4 y=$ewx}" class="ftop">
 							<IMG src="img/access.gif" alt="">
 							<A href="javascript:setstatus(1)"> {trans("Connect")}</A>/<A href="javascript:setstatus(0)">{trans("Disconnect")}</A>

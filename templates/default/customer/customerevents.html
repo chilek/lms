@@ -22,7 +22,7 @@
 	<TBODY>
 	<TR id="eventspanel"  style="display: none;">
 		<TD colspan="2">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
 				<THEAD>
 				<TR>
 					<TD style="width: 1%;" class="nobr">
@@ -44,9 +44,8 @@
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle values="light,lucid" print=false name=events}
-				{section name=eventlist loop=$eventlist max=$limit }
-				<TR class="highlight {cycle name=events}{if $eventlist[eventlist].closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+				{section name=eventlist loop=$eventlist max=$limit}
+				<TR class="highlight{if $eventlist[eventlist].closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
 					<TD style="width: 1%;" class="nobr">
 						{$eventlist[eventlist].date|date_format:"%Y/%m/%d"}
 					</TD>
