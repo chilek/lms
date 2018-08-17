@@ -80,6 +80,10 @@ version ?.??.?? (????-??-??):
   - enhancement: introduced indicators in top menu [interduo/chilan]
   - improvement: new priority idle,higher and remake of priority colors [interduo]
   - enhancement: added network<->public network bindings [chilan]
+  - improvement: phpui.show_assigned_networks_only configuration variable controls if only
+    assigned public network are presented in network selection list in choose ip popup [chilan]
+  - improvement: phpui.autodetect_network_types configuration variable controls what
+    network types (public or private) are displayed in main/public ip address selection popup [chilan]
 
 version 1.11.23 (2018-03-21):
 
