@@ -68,6 +68,22 @@
 			{customerlist form="netadd" customers=$customers selected=$netadd.ownerid selectname="netadd[customerid]" inputname="netadd[ownerid]" selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
 		</td>
 	</tr>
+	<TR>
+		<TD class="bold nobr">
+				<IMG SRC="img/network.gif" ALT="">
+				{trans("Public network:")}
+		</TD>
+		<TD colspan="3">
+			<select size="1" name="netadd[pubnetid]" {tip text="Assign public network (optional)"}>
+				<option value="0">{trans("- select public network -")}</option>
+				{foreach $networks as $net}
+				{if $net.id neq $network.id}
+				<option value="{$net.id}" {if $netadd.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
+				{/if}
+				{/foreach}
+			</select>
+		</TD>
+	</TR>
 	<tr>
 		<TD class="bold nobr"><img src="img/host.gif" alt="">{trans("Host:")}</td>
 		<td colspan="3">

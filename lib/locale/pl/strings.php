@@ -3972,4 +3972,8 @@ $_LANG['Unread tickets'] = 'Nieprzeczytane zgłoszenia';
 
 $_LANG['Indicator panel:'] = 'Panel wskaźników:';
 
+$_LANG['Public network:'] = 'Sieć publiczna:';
+$_LANG['Assign public network (optional)'] = 'Przypisz sieć publiczną (opcjonalnie)';
+$_LANG['- select public network -'] = '- wybierz sieć publiczną -';
+
 ?>

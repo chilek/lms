@@ -78,4 +78,6 @@ interface LMSNetworkManagerInterface
     public function ScanNodes();
 
 	public function GetNetworkPageForIp($netid, $ip);
+
+	public function GetPublicNetworkID($netid);
 }

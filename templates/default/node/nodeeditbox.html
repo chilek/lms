@@ -102,7 +102,9 @@
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
 												ipelem: document.editnode.nodeeditipaddrpub,
 												netelem: null,
-												netid: {if $nodeinfo.netpubid}{$nodeinfo.netpubid}{else}0{/if}
+												ip: document.editnode.nodeeditipaddrpub.value,
+												netid: {if $nodeinfo.netpubid}{$nodeinfo.netpubid}{else}0{/if},
+												privnetid: document.editnode.nodeeditnetid.value
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 									</td>
 								</tr>

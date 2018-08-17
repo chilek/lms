@@ -144,6 +144,28 @@
 		</td>
 	</tr>
 	{/if}
+	<TR>
+		<TD class="bold nobr">
+			<img src="img/network.gif" alt="">
+			{trans("Public network:")}
+		</TD>
+		<TD colspan="3">
+			{if $unlockedit}
+			<select size="1" name="networkdata[pubnetid]" {tip text="Assign public network (optional)"}>
+				<option value="0">{trans("- select public network -")}</option>
+				{foreach $networks as $net}
+				{if $net.id neq $network.id}
+				<option value="{$net.id}" {if $network.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
+				{/if}
+				{/foreach}
+			</select>
+			{elseif $network.pubnetid}
+			{$network.pubnet.name} ({$network.pubnet.address}/{$network.pubnet.prefix})
+			{else}
+			{trans("- none -")}
+			{/if}
+		</TD>
+	</TR>
 	{if $network.hostid || $unlockedit}
 	<tr> 
 		<TD class="bold nobr">

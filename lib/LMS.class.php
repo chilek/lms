@@ -1182,9 +1182,14 @@ class LMS
         return $manager->GetNetworkPageForIp($netid, $ip);
     }
 
-    /*
-     *  IP Networks
-     */
+	public function GetPublicNetworkID($netid) {
+		$manager = $this->getNetworkManager();
+		return $manager->GetPublicNetworkID($netid);
+	}
+
+	/*
+	 *  IP Networks
+	 */
 
     public function NetworkExists($id)
     {

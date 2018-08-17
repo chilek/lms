@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,12 +35,27 @@ if(!$p || $p == 'main')
 else
 	$js = '';
 
+$privnetid = isset($_GET['privnetid']) ? $_GET['privnetid'] : null;
+
 if (isset($_POST['netid']) && $_POST['netid'])
 	$netid = $_POST['netid'];
 elseif (isset($_GET['netid']) && $_GET['netid'])
 	$netid = $_GET['netid'];
+elseif ($privnetid)
+	$netid = $LMS->GetPublicNetworkID($privnetid);
 elseif ($SESSION->is_set('netid'))
 	$SESSION->restore('netid', $netid);
+
+/*
+// hide private networks for public address selection
+// and hide public networks for private address selection
+foreach ($networks as $idx => $row)
+	if ($privnetid && preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.64\.|100\.68\.)/', $row['address']))
+		unset($networks[$idx]);
+	else if (!$privnetid && !preg_match('/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.64\.|100\.68\.)/', $row['address']))
+		unset($networks[$idx]);
+*/
+
 if (empty($netid))
 	$netid = $networks[0]['id'];
 
@@ -105,6 +120,7 @@ $SMARTY->assign('js', $js);
 $SMARTY->assign('networks', $networks);
 $SMARTY->assign('network', $network);
 $SMARTY->assign('netid', $netid);
+$SMARTY->assign('privnetid', $privnetid);
 $SMARTY->assign('device', isset($_GET['device']) ? $_GET['device'] : NULL);
 $SMARTY->assign('ip', $ip);
 $SMARTY->display('choose/chooseip.html');
