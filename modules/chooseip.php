@@ -46,7 +46,13 @@ elseif ($privnetid)
 elseif ($SESSION->is_set('netid'))
 	$SESSION->restore('netid', $netid);
 
-/*
+// leave only network which is assigned to main (private) network (optionally)
+if ($privnetid && ConfigHelper::checkConfig('phpui.show_assigned_networks_only'))
+	foreach ($networks as $idx => $row)
+		if ($row['id'] != $netid)
+			unset($networks[$idx]);
+
+	/*
 // hide private networks for public address selection
 // and hide public networks for private address selection
 foreach ($networks as $idx => $row)
@@ -56,8 +62,10 @@ foreach ($networks as $idx => $row)
 		unset($networks[$idx]);
 */
 
-if (empty($netid))
-	$netid = $networks[0]['id'];
+if (empty($netid)) {
+	$network = reset($networks);
+	$netid = $network['id'];
+}
 
 if (isset($_POST['page']))
 	$page = $_POST['page'];
