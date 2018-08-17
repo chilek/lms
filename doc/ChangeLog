@@ -79,6 +79,7 @@ version ?.??.?? (????-??-??):
     to event [interduo]
   - enhancement: introduced indicators in top menu [interduo/chilan]
   - improvement: new priority idle,higher and remake of priority colors [interduo]
+  - enhancement: added network<->public network bindings [chilan]
 
 version 1.11.23 (2018-03-21):
 
