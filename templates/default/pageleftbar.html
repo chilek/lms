@@ -45,7 +45,7 @@
 				{if $menuitem.submenu}
 				{foreach from=$menuitem.submenu item=submenuitem}
 				<div{if $submenuitem.tip} {tip class="tip" text="\$a" a=$submenuitem.tip bold="1"}{else} class="tip"{/if}>
-					<div class="box2"><a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
+					<div class="box2"><a href="{$submenuitem.link|replace:"&":"&amp;"}"><li>{$submenuitem.name}</li></a></div>
 				</div>
 				{/foreach}
 				{/if}
