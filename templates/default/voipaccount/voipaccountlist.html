@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
-<table class="lmsbox">
+<table class="lmsbox lms-ui-background-cycle">
     <colgroup>
         {block name="voipaccountlist-list-columns"}
         <col style="width: 96%;">
@@ -79,10 +79,9 @@
         {/block}
     </thead>
     <tbody>
-        {cycle values="light,lucid" print=false}
         {section name=voipaccountlist loop=$voipaccountlist start=$start max=$pagelimit}
         {block name="voipaccountlist-list-row"}
-        <tr class="highlight {cycle}">
+        <tr class="highlight">
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" nowrap>
                 <img src="img/voip.gif" alt="">
                 <strong>{$voipaccountlist[voipaccountlist].login}</strong>

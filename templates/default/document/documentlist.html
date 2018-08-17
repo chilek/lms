@@ -70,7 +70,7 @@
 <FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&amp;action=confirm">
 <INPUT type="hidden" name="m" value="documentlist">
 <INPUT type="hidden" name="page" value="1">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -186,11 +186,9 @@
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
-	{cycle values="light,lucid" print=false}
-	{section loop=$documentlist name=documentlist}
-	{assign var=doc value=$documentlist[documentlist]}
+	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
-	<TR class="highlight {cycle}{if $doc.closed} blend{/if}"  >
+	<TR class="highlight{if $doc.closed} blend{/if}">
 		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
 			{if $doc.number}<BR>
@@ -252,13 +250,13 @@
 			</div>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD colspan="5" class="empty-table">
 			<p>{trans("No such documents matching search criteria or list is empty.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	{if $pagination->getTotal() != 0}

@@ -7,7 +7,7 @@
 <FORM method="get" action="?m=netnodelist" name="choosefilter">
 <INPUT type="hidden" NAME="m" VALUE="netnodelist">
 <INPUT type="hidden" NAME="page" VALUE="1">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 30%;">
 		<COL style="width: 20%;">
@@ -88,21 +88,15 @@
 		<TD class="pagination text-center" colspan="5">
 			{include file="scroller.html" loop=$nlist}
 		</TD>
-                <TD class="pagination text-right bold">
-                        {trans("Total:")} {$listdata.total|default:"0"}
-                </TD>
+		<TD class="pagination text-right bold">
+				{trans("Total:")} {$listdata.total|default:"0"}
+		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{$prev_item=null}
 	{foreach $nlist as $item}
-	{if $item@iteration < $start || $item@iteration >= $start+$pagelimit}
-	{continue}
-	{/if}
-	{if $prev_item && $prev_item.ownerid && $prev_item.ownerid == $item.ownerid}{cycle print=false}{/if}
-	<TR class="highlight {cycle}">
+	<TR class="highlight">
 		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="valign-top">
 			<IMG src="img/netnode.png" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
 			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$item.type]} / {$_NETELEMENTSTATUSES[$item.status]}
@@ -128,7 +122,6 @@
 			<a href="?m=netnodeinfo&id={$item.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
-	{$prev_item=$item}
 	{foreachelse}
 	<TR>
 		<TD colspan="6" class="empty-table">

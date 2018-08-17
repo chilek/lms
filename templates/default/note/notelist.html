@@ -38,7 +38,7 @@ window.open('?m=note&amp;id={$note}');
 </SCRIPT>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -108,11 +108,9 @@ window.open('?m=note&amp;id={$note}');
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
-	{cycle values="light,lucid" print=false}
-	{section name=notelist loop=$notelist}
-	{assign var=note value=$notelist[notelist]}
+	{foreach $notelist as $note}
 	{assign var=noteid value=$note.id}
-	<TR class="highlight {cycle}{if $note.closed} blend{elseif $note.cancelled} cancel{/if}">
+	<TR class="highlight{if $note.closed} blend{elseif $note.cancelled} cancel{/if}">
 		<TD>
 			{$note.id|string_format:"%06d"}
 		</TD>
@@ -154,13 +152,13 @@ window.open('?m=note&amp;id={$note}');
 			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if} class="lms-ui-multi-check">
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD COLSPAN="7" class="empty-table">
 			<p>{trans("No such debit notes in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	{if $pagination->getTotal() != 0}

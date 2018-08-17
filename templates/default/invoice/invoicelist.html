@@ -53,7 +53,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%" span="5">
         <COL style="width: 94%">
@@ -120,9 +120,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
-	{cycle values="light,lucid" print=false}
-	{section name=invoicelist loop=$invoicelist}
-	{assign var=invoice value=$invoicelist[invoicelist]}
+	{foreach $invoicelist as $invoice}
 	{assign var=invoiceid value=$invoice.id}
 	<TR class="highlight {cycle}{if $invoice.closed} blend {elseif $invoice.cancelled} cancel{/if}">
 		<TD>
@@ -211,13 +209,13 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="lms-ui-multi-check"{if $marks.$invoiceid} checked{/if}>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD class="empty-table" COLSPAN="7">
 			<P>{trans("No such invoices in database.")}</P>
 		</TD>
 	</TR>	
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	{if $pagination->getTotal() != 0}

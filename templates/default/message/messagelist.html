@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -78,10 +78,8 @@
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	<form method="post" name="messages">
-	{cycle values="light,lucid" print=false}
-	{section name=messagelist loop=$messagelist}
-	{assign var=message value=$messagelist[messagelist]}
-	<TR class="highlight {cycle}{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}">
+	{foreach $messagelist as $message}
+	<TR class="highlight{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}">
 		<TD class="nobr" onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
@@ -108,13 +106,13 @@
 			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="lms-ui-multi-check"{if $marks.messageid} checked{/if}>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD colspan="5" class="empty-table">
 			<p>{trans("No such messages in database.")}</p>
 		</TD>
 	</TR>	
-	{/section}
+	{/foreach}
 	</form>
     </TBODY>
     <TFOOT>

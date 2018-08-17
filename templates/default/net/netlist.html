@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<table class="lmsbox">
+<table class="lmsbox lms-ui-background-cycle">
 	<THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD style="width: 96%;" class="nobr">
@@ -50,42 +50,41 @@
 	</TR>
 	</TFOOT>
 	<TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=netlist loop=$netlist}
-	<TR class="highlight {cycle}{if $netlist[netlist].disabled == 1} blend{/if}"  >
-		<TD style="width: 96%;" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
-			<A name="{$netlist[netlist].id}" class="nobr">
-			<IMG src="img/network.gif" alt=""> <span class="bold">{$netlist[netlist].name|truncate:40:"...":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $netlist[netlist].hostname}{$netlist[netlist].hostname}{else}{trans("none")}{/if} / {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if} {if $netlist[netlist].vlanid}/ {$netlist[netlist].vlanid}{/if}
+	{foreach $netlist as $net}
+	<TR class="highlight{if $net.disabled == 1} blend{/if}">
+		<TD style="width: 96%;" onClick="return self.location.href='?m=netinfo&amp;id={$net.id}';">
+			<A name="{$net.id}" class="nobr">
+			<IMG src="img/network.gif" alt=""> <span class="bold">{$net.name|truncate:40:"...":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $net.hostname}{$net.hostname}{else}{trans("none")}{/if} / {$net.address} / {$net.prefix} {if $net.interface}({$net.interface}){/if} {if $net.vlanid}/ {$net.vlanid}{/if}
 			</A>
 		</TD>
-		<TD style="width: 1%;" class="valign-top text-right nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
-			<img src="img/empty.gif" width="1" height="16" alt="">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" width="1" height="16" alt="">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}
+		<TD style="width: 1%;" class="valign-top text-right nobr" onClick="return self.location.href='?m=netinfo&amp;id={$net.id}';">
+			<img src="img/empty.gif" width="1" height="16" alt="">({$net.id|string_format:"%04d"})<BR><img src="img/empty.gif" width="1" height="16" alt="">{$net.size}/{$net.assigned|string_format:"%01d"}/{$net.online|string_format:"%01d"}
 		</TD>
-		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
-			{if $netlist[netlist].dns != ""}<IMG src="img/dns.gif" alt=""> {$netlist[netlist].dns}{if $netlist[netlist].dns2 != ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>
-			{if $netlist[netlist].domain != ""}<IMG src="img/domain.gif" alt=""> {$netlist[netlist].domain}{/if}&nbsp;
+		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$net.id}';">
+			{if $net.dns != ""}<IMG src="img/dns.gif" alt=""> {$net.dns}{if $net.dns2 != ""}, {$net.dns2}{/if}{/if}<BR>
+			{if $net.domain != ""}<IMG src="img/domain.gif" alt=""> {$net.domain}{/if}&nbsp;
 		</TD>
-		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
-			{if $netlist[netlist].gateway != ""}<IMG src="img/gateway.gif" alt=""> {$netlist[netlist].gateway}{/if}<BR>
-			{if $netlist[netlist].wins != ""}<IMG src="img/wins.gif" alt=""> {$netlist[netlist].wins}{/if}&nbsp;
+		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$net.id}';">
+			{if $net.gateway != ""}<IMG src="img/gateway.gif" alt=""> {$net.gateway}{/if}<BR>
+			{if $net.wins != ""}<IMG src="img/wins.gif" alt=""> {$net.wins}{/if}&nbsp;
 		</TD>
-		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
-			{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" alt=""> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" alt=""> {$netlist[netlist].dhcpend}{/if}
+		<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=netinfo&amp;id={$net.id}';">
+			{if $net.dhcpstart}<IMG src="img/dhcpstart.gif" alt=""> {$net.dhcpstart}<BR><IMG src="img/dhcpend.gif" alt=""> {$net.dhcpend}{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=netedit&amp;networkset&amp;id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
-			<a href="?m=netdel&amp;id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t a=$netlist[netlist].name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Remove")}" title="{trans("Remove")}"></A>
-			<A href="?m=netedit&amp;id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A href="?m=netinfo&amp;id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			<A href="?m=netedit&amp;networkset&amp;id={$net.id}">{if $net.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
+			<a href="?m=netdel&amp;id={$net.id}" onClick="return confirmLink(this,'{t a=$net.name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Remove")}" title="{trans("Remove")}"></A>
+			<A href="?m=netedit&amp;id={$net.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=netinfo&amp;id={$net.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD colspan="6" class="empty-table">
 			<p>{trans("No IP networks found in database.")} <A HREF="?m=netadd">{trans("Click to add.")}</A></p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
 	</TBODY>
 </table>
 {/block}

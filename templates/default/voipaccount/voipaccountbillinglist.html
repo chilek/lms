@@ -23,7 +23,7 @@
 	}
 </style>
 
-<table class="lmsbox billing-table">
+<table class="lmsbox billing-table lms-ui-background-cycle">
     <colgroup>
         <col style="width: 1%;">
         <col style="width: 1%;">
@@ -164,9 +164,8 @@
 		{/if}
     </thead>
     <tbody>
-        {cycle values="light,lucid" print=false}
         {section name=i loop=$billings start=(($page-1)*$pagelimit) max=$pagelimit}
-			<tr class="highlight {cycle}">
+			<tr class="highlight">
 
 				<td nowrap>
 					{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}

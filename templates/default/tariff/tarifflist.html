@@ -8,7 +8,7 @@
 }
 </style>
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD WIDTH="93%" NOWRAP>
@@ -102,9 +102,8 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
 	{foreach $tarifflist as $tariff}
-	<TR class="highlight {cycle}{if $tariff.disabled == 1 && !$listdata.state} blend{/if}"  >
+	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}">
 		<TD WIDTH="93%">
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a>
 			{if $tariff.datefrom || $tariff.dateto}

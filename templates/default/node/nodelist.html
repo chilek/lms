@@ -10,7 +10,7 @@
 <INPUT type="hidden" NAME="m" VALUE="nodelist">
 <INPUT type="hidden" NAME="page" id="page" VALUE="1">
 </p>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 96%;">
 		<COL style="width: 1%;">
@@ -140,14 +140,13 @@
 	</TFOOT>
 	<TBODY>
 	{block name="nodelist-list-body"}
-	{cycle values="light,lucid" print=false}
-	{section name=nodelist loop=$nodelist}
-	<TR class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
-		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
+	{foreach $nodelist as $node}
+	<TR class="highlight {if ! $node.access} blend{/if}"  >
+		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
 			<span class="bold">
-			<A name="{$nodelist[nodelist].id}">
-			{if $nodelist[nodelist].lastonline}
-			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $lastonline_limit}
+			<A name="{$node.id}">
+			{if $node.lastonline}
+			    {if ($smarty.now-$node.lastonline) > $lastonline_limit}
 				<img src="img/node_off.gif" alt="">
 			    {else}
 				<img src="img/node_on.gif" alt="">
@@ -155,39 +154,39 @@
 			{else}
 			    <img src="img/node_unk.gif" alt="">
 			{/if}
-			{if $nodelist[nodelist].info}
-			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
+			{if $node.info}
+			    <IMG src="img/info1.gif" alt="" {tip text=$node.info}>
 			{/if}
-			{$nodelist[nodelist].name}</A></span><BR>
-			<span class="nobr{if ! $nodelist[nodelist].access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
+			{$node.name}</A></span><BR>
+			<span class="nobr{if ! $node.access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
 		</TD>
-		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
-		{$nodelist[nodelist].location}{if $nodelist[nodelist].borough_name}<br><span class="blend">({$nodelist[nodelist].state_name} / {$nodelist[nodelist].district_name} / {$_BOROUGHTYPES[$nodelist[nodelist].borough_type]} {$nodelist[nodelist].borough_name})</span>{/if}
+		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+		{$node.location}{if $node.borough_name}<br><span class="blend">({$node.state_name} / {$node.district_name} / {$_BOROUGHTYPES[$node.borough_type]} {$node.borough_name})</span>{/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
-			({$nodelist[nodelist].id|string_format:"%04d"})<BR>
-			<SPAN class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</span>
+		<TD class="text-right" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+			({$node.id|string_format:"%04d"})<BR>
+			<SPAN class="blend">({$node.ownerid|string_format:"%04d"})</span>
 		</TD>
-		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
-			<img src="img/ip.gif" alt=""> {$nodelist[nodelist].netname} / {$nodelist[nodelist].ip} {if $nodelist[nodelist].ip_pub != "0.0.0.0"}({$nodelist[nodelist].ip_pub}){/if}<BR>
-			<img src="img/mac.gif" alt="">&nbsp;{$nodelist[nodelist].mac|replace:",":"</SPAN><BR><SPAN class=\"nobr\"><img src=\"img/mac.gif\" alt=\"\"> "}
+		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+			<img src="img/ip.gif" alt=""> {$node.netname} / {$node.ip} {if $node.ip_pub != "0.0.0.0"}({$node.ip_pub}){/if}<BR>
+			<img src="img/mac.gif" alt="">&nbsp;{$node.mac|replace:",":"</SPAN><BR><SPAN class=\"nobr\"><img src=\"img/mac.gif\" alt=\"\"> "}
 		</TD>
 		<TD class="nobr">
-			<a href="?m=nodeset&amp;id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" alt="{if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if}" title="{if ! $nodelist[nodelist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></A>
-			<a href="?m=nodewarn&amp;id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" alt="{if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}" title="{if ! $nodelist[nodelist].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></A>
-			<a onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to remove node \'$a\' from database?{/t}')" href="?m=nodedel&amp;id={$nodelist[nodelist].id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<a href="?m=nodeedit&amp;id={$nodelist[nodelist].id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<a href="?m=nodeinfo&amp;id={$nodelist[nodelist].id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			<a href="?m=nodeset&amp;id={$node.id}"><img src="img/{if ! $node.access}no{/if}access.gif" alt="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}" title="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></A>
+			<a href="?m=nodewarn&amp;id={$node.id}"><img src="img/warning{if ! $node.warning}off{else}on{/if}.gif" alt="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}" title="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></A>
+			<a onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')" href="?m=nodedel&amp;id={$node.id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a href="?m=nodeedit&amp;id={$node.id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<a href="?m=nodeinfo&amp;id={$node.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
-	{if $nodelist[nodelist.index_next].ownerid == $nodelist[nodelist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
-	{sectionelse}
+	{if $nodelist[nodelist.index_next].ownerid == $node.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
+	{foreachelse}
 	<TR>
 		<TD colspan="5" class="empty-table">
 			<p>{trans("No such nodes in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
 	{/block}
 	</TBODY>
 </TABLE>

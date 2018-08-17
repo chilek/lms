@@ -9,7 +9,7 @@
 <INPUT type="hidden" NAME="m" VALUE="customerlist">
 <INPUT type="hidden" NAME="page" id="page" VALUE="1">
 </p>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
                 {block name="customerlist-list-columns"}
 		<COL style="width: 97%;">
@@ -175,69 +175,68 @@
 	</TFOOT>
 	<TBODY>
 
-	{cycle values="light,lucid" print=false}
-	{section name=customerlist loop=$customerlist}
+	{foreach $customerlist as $customer}
         {block name="customerlist-list-row"}
-	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
-		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
-			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}">&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
-			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
+	<TR class="highlight {if $customer.account && !$customer.nodeac} blend{/if}"  >
+		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customer.id}';">
+			<IMG src="img/{$_CSTATUSES[$customer.status].img}" alt="">{if $customer.info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customer.info}>{/if}<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A><BR>
+			<IMG src="img/home.gif" alt="">&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>
 		<TD class="text-right nobr">
-			({if $customerlist[customerlist].extid}{$customerlist[customerlist].extid} / {/if}{$customerlist[customerlist].id|string_format:"%04d"})
+			({if $customer.extid}{$customer.extid} / {/if}{$customer.id|string_format:"%04d"})
 			<BR>
-			{if $customerlist[customerlist].account}
-			<IMG src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" class="lms-ui-tooltip-nodelist" data-resourceid="{$customerlist[customerlist].id}">
+			{if $customer.account}
+			<IMG src="img/node{if !$customer.online}_off{/if}.gif" alt="" class="lms-ui-tooltip-nodelist" data-resourceid="{$customer.id}">
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			<span class="{if $customerlist[customerlist].balance < 0}alert{/if}"> <IMG src="img/empty.gif" width="1" height="16" alt=""> {$customerlist[customerlist].balance|money_format}</span>
+			<span class="{if $customer.balance < 0}alert{/if}"> <IMG src="img/empty.gif" width="1" height="16" alt=""> {$customer.balance|money_format}</span>
 			<BR>
-			<span class="blend"><IMG src="img/empty.gif" width="1" height="16" alt="">{$customerlist[customerlist].tariffvalue|money_format}</span>
+			<span class="blend"><IMG src="img/empty.gif" width="1" height="16" alt="">{$customer.tariffvalue|money_format}</span>
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-				{if $customerlist[customerlist].balance < 0}
-					<A href="?m=customerbalanceok&amp;id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
+				{if $customer.balance < 0}
+					<A href="?m=customerbalanceok&amp;id={$customer.id}" OnClick="return confirmLink(this, '{t a=$customer.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
 				{/if}
 			{/if}
-			{if $customerlist[customerlist].account}
-				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customerlist[customerlist].nodeac == 1}
-						<A href="?m=nodeset&amp;ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
+			{if $customer.account}
+				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
+					{if $customer.nodeac == 1}
+						<A href="?m=nodeset&amp;ownerid={$customer.id}"><IMG src="img/access.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
 					{else}
-						{if $customerlist[customerlist].nodeac == 2}
-							<A href="?m=nodeset&amp;ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
-						{else}<A href="?m=nodeset&amp;ownerid={$customerlist[customerlist].id}&amp;access=1"><IMG src="img/noaccess.gif" alt="{trans("Connect All")}" title="{trans("Connect All")}"></A>
+						{if $customer.nodeac == 2}
+							<A href="?m=nodeset&amp;ownerid={$customer.id}"><IMG src="img/mixaccess.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
+						{else}<A href="?m=nodeset&amp;ownerid={$customer.id}&amp;access=1"><IMG src="img/noaccess.gif" alt="{trans("Connect All")}" title="{trans("Connect All")}"></A>
 						{/if}
 					{/if}
 				{/if}
 			{/if}
-			{if $customerlist[customerlist].warncount}
-				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
-					{if $customerlist[customerlist].nodewarn == 1}
-						<A href="?m=nodewarn&amp;ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG src="img/warningon.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
+			{if $customer.warncount}
+				{if $customer.status == $smarty.const.CSTATUS_CONNECTED}
+					{if $customer.nodewarn == 1}
+						<A href="?m=nodewarn&amp;ownerid={$customer.id}" {if $customer.message}{tip text=$customer.message}{/if}><IMG src="img/warningon.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
 					{else}
-						{if $customerlist[customerlist].nodewarn == 2}
-							<A href="?m=nodewarn&amp;ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG src="img/warningmix.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
-						{else}<A href="?m=nodewarn&amp;ownerid={$customerlist[customerlist].id}&amp;warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG src="img/warningoff.gif" alt="{trans("Enable notices for all")}" title="{trans("Enable notices for all")}"></A>
+						{if $customer.nodewarn == 2}
+							<A href="?m=nodewarn&amp;ownerid={$customer.id}" {if $customer.message}{tip text=$customer.message}{/if}><IMG src="img/warningmix.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
+						{else}<A href="?m=nodewarn&amp;ownerid={$customer.id}&amp;warning=1" {if $customer.message}{tip text=$customer.message}{/if}><IMG src="img/warningoff.gif" alt="{trans("Enable notices for all")}" title="{trans("Enable notices for all")}"></A>
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 			{if $listdata.state == 50}
-			<A href="?m=customeredit&amp;id={$customerlist[customerlist].id}&amp;action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
+			<A href="?m=customeredit&amp;id={$customer.id}&amp;action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
 			{else}
-			<A href="?m=customerdel&amp;id={$customerlist[customerlist].id}" OnCLick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=customeredit&amp;id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=customerdel&amp;id={$customer.id}" OnCLick="return confirmLink(this, '{t a=$customer.customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=customeredit&amp;id={$customer.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			{/if}
-			<A href="?m=customerinfo&amp;id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			<A href="?m=customerinfo&amp;id={$customer.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
         {/block}
-	{sectionelse}
+	{foreachelse}
         {block name="customerlist-list-empty-row"}
 	<TR>
 		<TD colspan="{$number_of_table_columns}" class="empty-table">
@@ -245,7 +244,7 @@
 		</TD>
 	</TR>
         {/block}
-	{/section}
+	{/foreach}
 	</TBODY>
 </TABLE>
 </FORM>

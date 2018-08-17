@@ -81,7 +81,7 @@
 </SCRIPT>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
@@ -165,67 +165,66 @@
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
-	{cycle values="light,lucid" print=false}
-	{section name=balancelist loop=$balancelist}
-	<TR class="highlight {cycle}"{if $balancelist[balancelist].docid} data-published="{$balancelist[balancelist].published}"{/if}>
+	{foreach $balancelist as $balance}
+	<TR class="highlight"{if $balance.docid} data-published="{$balance.published}"{/if}>
 		<TD class="nobr">
-                        {$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
+                        {$balance.time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="nobr">
-			{if $balancelist[balancelist].userid}{$balancelist[balancelist].user|truncate:16:"...":true}{else}-{/if}
+			{if $balance.userid}{$balance.user|truncate:16:"...":true}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balancelist[balancelist].covenant}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
+			{if $balance.covenant}{($balance.value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-                        {if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
+                        {if !$balance.covenant && $balance.value > 0}{$balance.value|money_format}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
+			{if !$balance.covenant && $balance.value < 0}{($balance.value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD class="text-center">
 			&raquo;
 		</TD>
 		<TD class="text-right nobr">
-                        {if $balancelist[balancelist].covenant}-{else}{$balancelist[balancelist].after|money_format}{/if}
+                        {if $balance.covenant}-{else}{$balance.after|money_format}{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balancelist[balancelist].customerid}<A HREF="?m=customerinfo&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</A>{else} - {/if}
+			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|truncate:20:"...":true}</A>{else} - {/if}
 		</TD>
 		<TD>
-			{$balancelist[balancelist].comment}
+			{$balance.comment}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balancelist[balancelist].docid}
-				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
-				{if !$balancelist[balancelist].published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+			{if $balance.docid}
+				{if $balance.doctype==$smarty.const.DOC_INVOICE}
+				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+				<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
 				{/if}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/print.gif" ALT="{trans("Invoice")}"></A>
-				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_CNOTE}
-				{if !$balancelist[balancelist].published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+				<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/print.gif" ALT="{trans("Invoice")}"></A>
+				{elseif $balance.doctype==$smarty.const.DOC_CNOTE}
+				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+				<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
 				{/if}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printn.gif" alt="{trans("Credit note")}"></A>
-				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_RECEIPT}
-				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printr.gif" alt="{trans("Cash receipt")}"></A>
-				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_DNOTE}
-				{if !$balancelist[balancelist].published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A HREF="?m=note&id={$balancelist[balancelist].docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+				<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printn.gif" alt="{trans("Credit note")}"></A>
+				{elseif $balance.doctype==$smarty.const.DOC_RECEIPT}
+				<A HREF="?m=receipt&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printr.gif" alt="{trans("Cash receipt")}"></A>
+				{elseif $balance.doctype==$smarty.const.DOC_DNOTE}
+				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+				<A HREF="?m=note&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
 				{/if}
-				<A HREF="?m=note&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printd.gif" alt="{trans("Debit note")}"></A>
+				<A HREF="?m=note&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printd.gif" alt="{trans("Debit note")}"></A>
 				{/if}
 			{/if}
-			<INPUT TYPE="checkbox" class="lms-ui-multi-check" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
+			<INPUT TYPE="checkbox" class="lms-ui-multi-check" NAME="marks[{$balance.id}]" VALUE="{$balance.id}">
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD COLSPAN="10" class="empty-table">
 			<p>{trans("No such transactions found in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	<TR>

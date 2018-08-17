@@ -53,7 +53,7 @@
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
@@ -109,11 +109,9 @@
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
-	{cycle values="light,lucid" print=false}
-	{section name=receiptlist loop=$receiptlist}
-	{assign var=receipt value=$receiptlist[receiptlist]}
+	{foreach $receiptlist as $receipt}
 	{assign var=receiptid value=$receipt.id}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight">
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<span class="alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
@@ -149,13 +147,13 @@
 			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}" class="lms-ui-multi-check"{if $marks.$receiptid} checked{/if}>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD COLSPAN="7" class="empty-table">
 			<p>{trans("No such receipts in database.")}</p>
 		</TD>
 	</TR>	
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	{if $pagination->getTotal() != 0}
