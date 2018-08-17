@@ -5,7 +5,7 @@
 		{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}
 			<IMG src=img/ring-red.png alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">{if $ticket.unread}<br><a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
 		{else}
-			<IMG src="{$_RT_STATES[$ticket.state].img}" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">{if $ticket.unread}<br><a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
+			<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
 		{/if}
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</TD>
@@ -13,8 +13,6 @@
 		<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$ticket.id|string_format:"%06d"}</span>
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
-		{if $ticket.state == $smarty.const.RT_NEW || $ticket.state == $smarty.const.RT_DEAD}
-		{/if}
 	</TD>
 	<TD class="nobr valign-top">
 		<span>{$_SERVICETYPES[$ticket.service]}</span>
@@ -40,8 +38,6 @@
 		{if $ticket.netnodeid && $ticket.customerid}<br>{/if}
 		{if $ticket.netnodeid}{trans("Network node:")} <A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name}({$ticket.netnodeid})</A>{/if}
 		{if $ticket.netdevid} {if $ticket.netnodeid}<BR>{/if}{trans("Network device:")} <A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}({$ticket.netdevid})</A>{/if}
-		{if $ticket.state == $smarty.const.RT_NEW || $ticket.state == $smarty.const.RT_DEAD}
-		{/if}
 	</TD>
 	<TD class="nobr valign-top">
 		{if is_array($queuedata.id) && count($queuedata.id) != 1}{$ticket.name}{/if}
@@ -53,9 +49,6 @@
 			{/if}
 		{/if}
 		{if $ticket.netnode_location && !$ticket.customerid}{$ticket.netnode_location}{elseif $ticket.netnode_location}<br>{trans("Network node location:")}{$ticket.netnode_location}{/if}
-		{if $ticket.state == $smarty.const.RT_NEW || $ticket.state == $smarty.const.RT_DEAD}
-		</span>
-		{/if}
 	</TD>
 	<TD class="nobr text-center">
 		{$ticket.isexpired}
