@@ -975,7 +975,7 @@ table.lms-ui-datatable > tbody tr:nth-child(odd):not(.ui-selected) {
 table.lms-ui-datatable > tbody tr.highlight:hover {
   background-color: #CCFFCC;
 }
-table.lms-ui-datatable > tbody tr {
+table.lms-ui-datatable > tbody tr td {
   border-bottom: 1px dotted gray;
 }
 tr.space_row > td {
