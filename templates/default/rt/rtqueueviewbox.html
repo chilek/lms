@@ -1,12 +1,9 @@
 {block name=rtbox}
 {foreach $queue as $ticket}
 <TR class="highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if} lms-ui-ticket-list" onClick="return self.location.href = '?m=rtticketview&id={$ticket.id}';">
-	<TD class="text-center">
-		{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}
-			<IMG src=img/ring-red.png alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">{if $ticket.unread}<br><a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
-		{else}
-			<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
-		{/if}
+	<TD class="text-center class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
+		{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><IMG src=img/ring-red.png alt=""></a>{/if}
+		{if $ticket.unread}<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}"><img src="img/ring-blue.png" alt=""></a>{/if}
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</TD>
 	<TD class="nobr">
