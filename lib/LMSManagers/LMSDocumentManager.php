@@ -67,6 +67,36 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
+	/**
+	 * @param array $params associative array of parameters describe below:
+	 * 		type - document type (default: null = any), single integer value
+	 *		customer - document customer (default: null = any): single integer value
+	 * 		numberplan - document numbering plan (default: null = any): single integer value
+	 * 		usertype - document user type (default: creator): supported values:
+	 * 			creator, authorising,
+	 * 		userid - document user (default: null = any): single integer value
+	 *		periodtype - document selection period type (default: creationdate)
+	 * 			supported values: creationdate, confirmationdate, fromdate, todate
+	 * 		from - document selection period start (default: 0 = any value): single integer value
+	 * 			int unix timestamp format,
+	 * 		to - document selection period end (default: 0 = any value): singe integer value
+	 * 			in unix timestamp format,
+	 * 		status - document status (default: -1 = any): single integer value:
+	 * 			0 - closed document,
+	 * 			1 - open document,
+	 * 		count - count records only or return selected record interval
+	 * 			true - count only,
+	 * 			false - get records,
+	 * 		offset - first returned record (null = 0),
+	 * 		limit - returned record count (null = unlimited),
+	 * 		order - returned records order (default: cdate,asc)
+	 * 			can contain field_name,order pairs,
+	 * 			supported field names:
+	 * 			type, title, customer, user, cuser, sdate
+	 * 			supported orders:
+	 * 			asc = ascending, desc = descending
+	 * @return mixed
+	 */
 	public function GetDocumentList(array $params) {
 		$order = isset($params['order']) ? $params['order'] : 'cdate,asc';
 		$type = isset($params['type']) ? $params['type'] : NULL;
