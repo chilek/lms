@@ -51,7 +51,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     }
 
 	/**
-	 * @param array $params associative array of parameters describe below:
+	 * @param array $params associative array of parameters described below:
 	 * 		ids - queue identifiers (default: null = any), array() or single integer value
 	 *		state - ticket states (default: null = any), -1 = unresolved, -2 = any,
 	 *			array() of integer values or single integer value

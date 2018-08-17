@@ -68,7 +68,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     }
 
 	/**
-	 * @param array $params associative array of parameters describe below:
+	 * @param array $params associative array of parameters described below:
 	 * 		type - document type (default: null = any), single integer value
 	 *		customer - document customer (default: null = any): single integer value
 	 * 		numberplan - document numbering plan (default: null = any): single integer value

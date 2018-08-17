@@ -116,7 +116,32 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 		return $event;
 	}
 
-    function GetEventList(array $params) {
+	/**
+	 * @param array $params associative array of parameters described below:
+	 * 		year - start date year (default: null = today's year): single integer value,
+	 * 		month - start date month (default: null = today's month): single interget value,
+	 * 		day - start date day (default: null = today's day): single integer value,
+	 * 		forward - for how many days get events (default: 0 = undefined): single integer value,
+	 * 			-1 = open overdued events till midnight,
+	 * 		customerid - customer id assigned to events (default: 0 = any): single integer value,
+	 * 		userid - user id assigned to events (default: 0 or null = any):
+	 * 			array() of integer values or single integer value,
+	 * 			-1 = events not assigned to any user,
+	 * 		type - event type (default: 0 = any):
+	 * 			array() of integer values or single integer value,
+	 * 		privacy - event privacy flag (default: 0 = public events or private ones assigned to current user):
+	 * 			single integer value,
+	 * 			1 = public events,
+	 * 			2 = private events assigned to current user,
+	 * 		closed - event close flag (default: '' = any value): single integer value or empty string,
+	 * 		count - count records only or return selected record interval
+	 * 			true - count only,
+	 * 			false - get records,
+	 * 		offset - first returned record (null = 0),
+	 * 		limit - returned record count (null = unlimited),
+	 * @return mixed
+	 */
+	function GetEventList(array $params) {
 		extract($params);
 		foreach (array('year', 'month', 'day') as $var)
 			if (!isset($$var))
@@ -363,6 +388,17 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         return $this->db->GetOne('SELECT customerid FROM rttickets WHERE id=?', array($id));
     }
 
+	/**
+	 * @param array $params associative array of parameters described below:
+	 * 		users - event user assignments: array() of integer values,
+	 * 			empty array() means empty overlapping user set,
+	 * 		begindate - event start date in unix timestamp format,
+	 * 		enddate - event end date in unix timestamp format,
+	 * 		begintime - event start time in HHMM format,
+	 * 		endtime - event end time in HHMM format,
+	 * @return mixed - users assigned to events taking $params into account;
+	 * 		users parameter means user set to test
+	 */
 	public function EventOverlaps(array $params) {
 		$users = array();
 
