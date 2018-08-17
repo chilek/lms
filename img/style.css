@@ -786,9 +786,6 @@ li.lms-ui-suggestion-item a {
   cursor: pointer;
   text-decoration: underline;
 }
-.lms-ui-ticket-list {
-  border-bottom: 1px dotted gray;
-}
 button.lms-ui-button {
   padding: 0em 1em;
   border: 1px solid #615847;
@@ -910,6 +907,10 @@ table.lmsbox.lms-ui-background-cycle > tbody tr.dark,
 table.lmsbox-inner.lms-ui-background-cycle > tbody tr.dark {
   background-color: #CEBD9B;
 }
+table.lmsbox.lms-ui-background-cycle > tbody tr,
+table.lmsbox-inner.lms-ui-background-cycle > tbody tr {
+  border-bottom: 1px dotted gray;
+}
 table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(even):not(.ui-selected) {
   background-color: #DFD5BD;
 }
@@ -918,6 +919,9 @@ table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(odd):not(.ui-selected)
 }
 table.lmsbox.lms-ui-background-cycle > tbody tr.highlight:hover {
   background-color: #CCFFCC;
+}
+table.lmsbox.lms-ui-background-cycle > tbody tr {
+  border-bottom: 1px dotted gray;
 }
 table.lmsbox-inner.dataTable > thead {
   background-color: #CEBD9B;
@@ -938,6 +942,9 @@ table.lmsbox {
 	}
 }
 */
+table.lmsbox.lms-ui-background-cycle > tbody tr {
+  border-bottom: 1px dotted gray;
+}
 table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:nth-child(even) {
   background-color: #ffb1b1;
 }

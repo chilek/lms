@@ -613,10 +613,6 @@ li.lms-ui-suggestion-item {
     }
 }
 
-.lms-ui-ticket-list {
-	border-bottom: 1px dotted gray;
-}
-
 button.lms-ui-button {
 	padding: 0em 1em;
 	border: 1px solid @darkbrown;
@@ -749,6 +745,9 @@ table.lmsbox {
 			tr.dark {
 				background-color: @dark;
 			}
+			tr {
+				border-bottom: 1px dotted gray;
+			}
 		}
 	}
 	&.lms-ui-background-cycle>tbody {
@@ -760,6 +759,9 @@ table.lmsbox {
 		}
 		tr.highlight:hover {
 			background-color: @highlight;
+		}
+		tr {
+			border-bottom: 1px dotted gray;
 		}
 	}
 }
@@ -787,6 +789,7 @@ table.lmsbox {
 */
 
 table.lmsbox.lms-ui-background-cycle>tbody tr {
+	border-bottom: 1px dotted gray;
 	&.lms-ui-rt-deleted {
 		&:nth-child(even) {
 			background-color: @red-light;
