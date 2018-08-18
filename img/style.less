@@ -731,10 +731,10 @@ table.lmsbox {
 			background-color: @light;
 		}
 		&.lms-ui-background-cycle>tbody {
-			tr:visible:nth-child(even) {
+			tr:nth-child(even) {
 				background-color: @light;
 			}
-			tr:visible:nth-child(odd) {
+			tr:nth-child(odd) {
 				background-color: @lucid;
 			}
 			tr.highlight:hover {
@@ -751,10 +751,10 @@ table.lmsbox {
 		}
 	}
 	&.lms-ui-background-cycle>tbody {
-		tr:visible:nth-child(even):not(.ui-selected) {
+		tr:nth-child(even):not(.ui-selected) {
 			background-color: @light;
 		}
-		tr:visible:nth-child(odd):not(.ui-selected) {
+		tr:nth-child(odd):not(.ui-selected) {
 			background-color: @lucid;
 		}
 		tr.highlight:hover {
