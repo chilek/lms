@@ -77,10 +77,9 @@
 				</THEAD>
 				<TBODY class="lms-ui-multi-check">
 				<form method="post" name="customerassignments" action="?m=customerassignmentdel">
-				{*cycle name=assign values="light,lucid" print=false*}
 				{foreach $assignments as $a}
 				{block name="customerassignments-list-row"}
-				<TR class="highlight {*cycle name=assign*}
+				<TR class="highlight
 					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}
 					{if !$a.commited} lms-ui-assignment-not-commited{/if}"
 					data-tariff-type="{$a.tarifftype}"
@@ -163,7 +162,7 @@
 				{/foreach}
 				</form>
 				{block name="customerassignments-list-footer"}
-				<TR>
+				<TR class="dark">
 					<TD class="ftop text-right bold">{trans("Total:")}</TD>
 					<TD class="ftop text-right nobr" id="total-value"></TD>
 					<TD class="ftop text-left nobr" id="total-disc-value"></TD>
