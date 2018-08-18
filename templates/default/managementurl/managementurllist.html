@@ -1,17 +1,21 @@
-<TABLE class="lmsbox-inner">
+<TABLE class="lmsbox-inner lms-ui-background-cycle">
+<COLGROUP>
+	<COL style="width: 48%;">
+	<COL style="width: 48%;">
+	<COL style="width: 2%;">
+</COLGROUP>
 <THEAD>
-<TR>
-	<TD style="width: 48%;" class="nobr" COLSPAN="2">{trans("URL:")}</TD>
-	<TD style="width: 48%;">{trans("Comment:")}</TD>
-	<TD style="width: 2%;">&nbsp;</TD>
+<TR class="lms-ui-header-panel">
+	<TD class="nobr" COLSPAN="2">{trans("URL:")}</TD>
+	<TD>{trans("Comment:")}</TD>
+	<TD>&nbsp;</TD>
 </TR>
 </THEAD>
 <TBODY>
-{cycle name=managementurls values="light,lucid" print=false}
 {foreach from=$mgmurls item=mgmurl}
 {$urlid = $mgmurl.id}
 {if $formdata.urlid && $formdata.urlid == $urlid}{$edit = true}{else}{$edit = false}{/if}
-<TR class="highlight {cycle name=managementurls}"  >
+<TR class="highlight">
 	<TD class="nobr" COLSPAN="2">
 		<span id="url_{$urlid}"{if $edit} style="display: none;"{/if}>
 		<a href="{$mgmurl.url}"{if preg_match("/^(https?|ftp):/", $mgmurl.url)} target="_blank"{/if}>{$mgmurl.url}</a>
@@ -53,8 +57,8 @@
 	</TD>
 <TR>
 {/if}
-<TR>
-	<TD class="dark ftop text-right nobr" COLSPAN="4">
+<TR class="lms-ui-button-panel">
+	<TD class="text-right nobr" COLSPAN="4">
 		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
 		&nbsp;<A id="managementurladdlink" HREF="javascript:showAddManagementUrl();;" {tip text="Add new management URL"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 		{else}

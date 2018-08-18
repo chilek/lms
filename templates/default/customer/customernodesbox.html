@@ -64,7 +64,7 @@ function setgroup(act)
 					<COL style="width: 1%;">
 				</COLGROUP>
 				<THEAD>
-					<TR>
+					<TR class="lms-ui-header-panel">
 						<TD class="bold">{trans("Name:")}</TD>
 						<TD class="text-right">{trans("ID:")}</TD>
 						{if $ewx}
@@ -146,8 +146,8 @@ function setgroup(act)
 						</TD>
 					</TR>
 					{/section}
-					<TR class="dark">
-						<TD colspan="{math equation="x+y" x=4 y=$ewx}" class="ftop">
+					<TR class="lms-ui-button-panel">
+						<TD colspan="{math equation="x+y" x=4 y=$ewx}">
 							<IMG src="img/access.gif" alt="">
 							<A href="javascript:setstatus(1)"> {trans("Connect")}</A>/<A href="javascript:setstatus(0)">{trans("Disconnect")}</A>
 							<IMG src="img/warningon.gif" alt="">
@@ -162,7 +162,7 @@ function setgroup(act)
 							</SELECT>
 							{/if}
 						</TD>
-						<TD class="ftop text-right nobr" colspan="3">
+						<TD class="text-right nobr" colspan="3">
 							<label for="allbox">{trans("Check All")}</label><INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('custnodeslist', this)" value="1" checked>
 						</TD>
 					</TR>

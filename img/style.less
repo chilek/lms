@@ -718,6 +718,20 @@ table.lmsbox {
 	&>tfoot>tr {
 		border-top: 1px solid black;
 	}
+	&,
+	&-inner {
+		tr.lms-ui-button-panel {
+			background-color: @dark;
+			&>td {
+				border-top: 1px solid black;
+			}
+		}
+		tr.lms-ui-header-panel {
+			&>td {
+				border-bottom: 1px solid black;
+			}
+		}
+	}
 }
 
 table.lmsbox>thead {
@@ -731,10 +745,10 @@ table.lmsbox {
 			background-color: @light;
 		}
 		&.lms-ui-background-cycle>tbody {
-			tr:nth-child(even) {
+			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even) {
 				background-color: @light;
 			}
-			tr:nth-child(odd) {
+			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd) {
 				background-color: @lucid;
 			}
 			tr.highlight:hover {
@@ -742,19 +756,16 @@ table.lmsbox {
 			}
 			tr.ui-selected {
 			}
-			tr.dark {
-				background-color: @dark;
-			}
 			tr {
 				border-bottom: 1px dotted gray;
 			}
 		}
 	}
 	&.lms-ui-background-cycle>tbody {
-		tr:nth-child(even):not(.ui-selected) {
+		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even):not(.ui-selected) {
 			background-color: @light;
 		}
-		tr:nth-child(odd):not(.ui-selected) {
+		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
 			background-color: @lucid;
 		}
 		tr.highlight:hover {

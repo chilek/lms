@@ -884,6 +884,18 @@ table.lmsbox > thead > tr,
 table.lmsbox > tfoot > tr {
   border-top: 1px solid black;
 }
+table.lmsbox tr.lms-ui-button-panel,
+table.lmsbox-inner tr.lms-ui-button-panel {
+  background-color: #CEBD9B;
+}
+table.lmsbox tr.lms-ui-button-panel > td,
+table.lmsbox-inner tr.lms-ui-button-panel > td {
+  border-top: 1px solid black;
+}
+table.lmsbox tr.lms-ui-header-panel > td,
+table.lmsbox-inner tr.lms-ui-header-panel > td {
+  border-bottom: 1px solid black;
+}
 table.lmsbox > thead {
   text-align: left;
 }
@@ -891,30 +903,26 @@ table.lmsbox > tfoot,
 table.lmsbox-inner > tfoot {
   background-color: #DFD5BD;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(even),
-table.lmsbox-inner.lms-ui-background-cycle > tbody tr:nth-child(even) {
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even),
+table.lmsbox-inner.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even) {
   background-color: #DFD5BD;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(odd),
-table.lmsbox-inner.lms-ui-background-cycle > tbody tr:nth-child(odd) {
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd),
+table.lmsbox-inner.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd) {
   background-color: #EBE4D6;
 }
 table.lmsbox.lms-ui-background-cycle > tbody tr.highlight:hover,
 table.lmsbox-inner.lms-ui-background-cycle > tbody tr.highlight:hover {
   background-color: #CCFFCC;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr.dark,
-table.lmsbox-inner.lms-ui-background-cycle > tbody tr.dark {
-  background-color: #CEBD9B;
-}
 table.lmsbox.lms-ui-background-cycle > tbody tr,
 table.lmsbox-inner.lms-ui-background-cycle > tbody tr {
   border-bottom: 1px dotted gray;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(even):not(.ui-selected) {
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even):not(.ui-selected) {
   background-color: #DFD5BD;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(odd):not(.ui-selected) {
+table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
   background-color: #EBE4D6;
 }
 table.lmsbox.lms-ui-background-cycle > tbody tr.highlight:hover {

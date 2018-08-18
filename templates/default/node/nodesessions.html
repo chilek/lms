@@ -19,21 +19,31 @@
 	<TBODY>
 	<TR id="nodesessionpanel" style="display:none;">
 		<TD class="fall" colspan="2">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD class="fleftu bold nobr" style="width: 11%;">{trans("IP Address:")}</TD>
-					<TD class="fbt nobr" style="width: 11%;">{trans("MAC:")}</TD>
-					<TD class="fbt nobr" style="width: 11%;">{trans("Type:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Started:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Finished:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Time Duration:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Terminate Cause:")}</TD>
-					<TD class="fbt nobr" style="width: 11%;">{trans("Downloaded:")}</TD>
-					<TD class="frightu nobr" style="width: 12%;">{trans("Uploaded:")}</TD>
+			<TABLE class="lmsbox-inner lms-ui-background-cycle" cellpadding="5" cellspacing="0" WIDTH="100%">
+				<COLGROUP>
+					<COL style="width: 11%;">
+					<COL style="width: 11%;">
+					<COL style="width: 11%;">
+					<COL style="width: 11%;">
+					<COL style="width: 11%;">
+					<COL style="width: 11%;">
+					<COL style="width: 11%;">
+					<COL style="width: 11%;">
+					<COL style="width: 12%;">
+				</COLGROUP>
+				<TR class="lms-ui-header-panel">
+					<TD class="bold nobr">{trans("IP Address:")}</TD>
+					<TD class="nobr">{trans("MAC:")}</TD>
+					<TD class="nobr">{trans("Type:")}</TD>
+					<TD class="bold nobr">{trans("Started:")}</TD>
+					<TD class="bold nobr">{trans("Finished:")}</TD>
+					<TD class="bold nobr">{trans("Time Duration:")}</TD>
+					<TD class="bold nobr">{trans("Terminate Cause:")}</TD>
+					<TD class="nobr">{trans("Downloaded:")}</TD>
+					<TD class="nobr">{trans("Uploaded:")}</TD>
 				</TR>
 				{section loop=$nodesessions name=session}
-				{cycle name=sessionclass values="light,lucid" print=false}
-				<TR class="{cycle name=sessionclass}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="highlight">
 					<TD class="bold nobr">{$nodesessions[session].ipaddr}</TD>
 					<TD class="nobr">{$nodesessions[session].mac}</TD>
 					<TD class="nobr">

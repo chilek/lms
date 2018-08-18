@@ -26,7 +26,7 @@
 					<COL style="width: 1%;">
 				</COLGROUP>
 				<THEAD>
-				<TR>
+				<TR class="lms-ui-header-panel">
 					<TD class="bold nobr">{trans("Name:")}</TD>
 					<TD class="nobr" colspan="2">{trans("Description:")}</TD>
 					<TD class="nobr">{trans("ID:")}</TD>
@@ -54,7 +54,7 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<TR class="ftop">
+				<TR class="lms-ui-button-panel">
 					<TD class="bold nobr valign-top">
 						{if !empty($othercustomergroups)}
 						<A id="add-groups" {tip text="Add customer to groups"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>

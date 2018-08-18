@@ -1,28 +1,33 @@
-<TABLE class="lmsbox-inner">
+<TABLE class="lmsbox-inner lms-ui-background-cycle">
+<COLGROUP>
+	<COL style="width: 1%;">
+	<COL style="width: 1%;">
+	<COL style="width: 1%;">
+	<COL style="width: 97%;">
+</COLGROUP>
 <THEAD>
-<TR>
-	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">{trans("Days:")}</TD>
-	<TD style="width: 1%; white-space: nowrap;">{trans("From:")}</TD>
-	<TD style="width: 1%; white-space: nowrap;">{trans("To:")}</TD>
-	<TD style="width: 97%;">&nbsp;</TD>
+<TR class="lms-ui-header-panel">
+	<TD class="nobr" COLSPAN="2">{trans("Days:")}</TD>
+	<TD class="nobr">{trans("From:")}</TD>
+	<TD class="nobr">{trans("To:")}</TD>
+	<TD>&nbsp;</TD>
 </TR>
 </THEAD>
 <TBODY>
-{cycle name=locks values="light,lucid" print=false}
 {foreach from=$nodelocks item=nodelock}
-<TR class="highlight {cycle name=locks}"  >
-	<TD style="width: 1%; white-space: nowrap;" COLSPAN="2">
+<TR class="highlight">
+	<TD class="nobr" COLSPAN="2">
 		{foreach from=$nodelock.days item=day key=daynr}
 			{$_DAYS[$daynr]}&nbsp;
 		{/foreach}
 	</TD>
-	<TD style="width: 1%; white-space: nowrap;">
+	<TD class="nobr">
 		{$nodelock.fhour|string_format:"%02d"}:{$nodelock.fminute|string_format:"%02d"}
 	</TD>
-	<TD style="width: 1%; white-space: nowrap;">
+	<TD class="nobr">
 		{$nodelock.thour|string_format:"%02d"}:{$nodelock.tminute|string_format:"%02d"}
 	</TD>
-	<TD style="width: 97%; text-align: right; white-space: nowrap;">
+	<TD class="text-right nobr">
 		<A HREF="javascript:delNodeLock({$nodelock.id});"><IMG SRC="img/delete.gif" ALT="{trans("Delete")}" {tip text="Remove lock"}></A>
 	</TD>
 </TR>
@@ -33,14 +38,14 @@
 	</TD>
 </TR>
 {/foreach}
-<TR class="ftop">
-	<TD COLSPAN="2" CLASS="ftop" style="white-space: nowrap;">
+<TR class="lms-ui-button-panel">
+	<TD COLSPAN="2" class="nobr">
 		{foreach from=$_DAYS item=dayname key=daynr}
 		<input type="checkbox" name="days[{$daynr}]" id="lockdays_{$daynr}" value="1">
 		<label for="lockdays_{$daynr}">{$dayname}</label>
 		{/foreach}
 	</TD>
-	<TD style="white-space: nowrap;">
+	<TD class="nobr">
 		<select name="fhour">
 		{for $i = 0 to 23}
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
@@ -51,7 +56,7 @@
 		{/for}
 		</select>
 	</TD>
-	<TD style="white-space: nowrap;">
+	<TD class="nobr">
 		<select name="thour">
 		{for $i = 0 to 23}
 			<option value="{$i}">{$i|string_format:"%02d"}</option>
@@ -62,7 +67,7 @@
 		{/for}
 		</select>
 	</TD>
-	<TD style="text-align: right; white-space: nowrap;" CLASS="ftop" ROWSPAN="2">
+	<TD class="text-right nobr" ROWSPAN="2">
 		<A id="nodelockaddlink" HREF="javascript:addNodeLock();" {tip text="Add new lock"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 	</TD>
 </TR>

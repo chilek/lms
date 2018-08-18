@@ -58,7 +58,7 @@
 				</COLGROUP>
 				<THEAD>
 				{block name="customerassignments-list-header"}
-				<TR>
+				<TR class="lms-ui-header-panel">
 					<TD class="bold nobr">{trans("Liability:")}</TD>
 					<TD class="text-right nobr">
 						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Value:")}{/if}
@@ -162,14 +162,14 @@
 				{/foreach}
 				</form>
 				{block name="customerassignments-list-footer"}
-				<TR class="dark">
-					<TD class="ftop text-right bold">{trans("Total:")}</TD>
-					<TD class="ftop text-right nobr" id="total-value"></TD>
-					<TD class="ftop text-left nobr" id="total-disc-value"></TD>
-					<TD class="ftop">&nbsp;</TD>
-					<TD class="ftop text-right nobr" id="total-downceil"></TD>
-					<TD class="ftop text-right nobr" id="total-upceil"></TD>
-					<TD class="ftop text-right nobr" colspan="3">
+				<TR class="lms-ui-button-panel">
+					<TD class="text-right bold">{trans("Total:")}</TD>
+					<TD class="text-right nobr" id="total-value"></TD>
+					<TD class="text-left nobr" id="total-disc-value"></TD>
+					<TD>&nbsp;</TD>
+					<TD class="text-right nobr" id="total-downceil"></TD>
+					<TD class="text-right nobr" id="total-upceil"></TD>
+					<TD class="text-right nobr" colspan="3">
 						<A id="delete-assignments">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
 							{trans("Check All")}

@@ -18,29 +18,29 @@
 	<TBODY>
 	<TR id="voipaccountspanel" style="display: none;">
 		<TD colspan="2">
-			<TABLE class="lmsbox-inner">
-                                {block name="customervoipaccountsbox-list-columns"}
-                                <COLGROUP>
-                                        <COL style="width: 96%;">
-                                        <COL style="width: 1%;" span="5">
-                                        {assign var='number_of_table_columns' value='6'}
-                                </COLGROUP>
-                                {/block}
+			<TABLE class="lmsbox-inner lms-background-cycle">
+				{block name="customervoipaccountsbox-list-columns"}
+				<COLGROUP>
+						<COL style="width: 96%;">
+						<COL style="width: 1%;" span="5">
+						{assign var='number_of_table_columns' value='6'}
+				</COLGROUP>
+				{/block}
 				<THEAD>
-                                {block name="customervoipaccountsbox-list-header"}
-				<TR>
+				{block name="customervoipaccountsbox-list-header"}
+				<TR class="lms-ui-header-panel">
 					<TD class="bold nobr">{trans("Login:")}</TD>
 					<TD class="nobr">{trans("ID:")}</TD>
 					<TD class="nobr" colspan="2">{trans("Password:")}</TD>
 					<TD class="nobr">{trans("Phone number:")}</TD>
 					<TD>&nbsp;</TD>
 				</TR>
-                                {/block}
+				{/block}
 				</THEAD>
 				<TBODY>
 				{cycle name=voips values="light,lucid" print=false}
 				{foreach $customervoipaccounts as $voipaccount}
-                                {block name="customervoipaccountsbox-list-row"}
+				{block name="customervoipaccountsbox-list-row"}
 				<TR class="highlight {cycle name=voips}"  >
 					<TD class="bold nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
 						{$voipaccount.login}
@@ -62,15 +62,15 @@
 						<A href="?m=voipaccountinfo&amp;id={$voipaccount.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 					</TD>
 				</TR>
-                                {/block}
+				{/block}
 				{foreachelse}
-                                {block name="customervoipaccountsbox-list-empty-row"}
+				{block name="customervoipaccountsbox-list-empty-row"}
 				<TR>
 					<TD class="empty-table" colspan="{$number_of_table_columns}">
 						<p>{trans("That customer does not own any voip account.")}</p>
 					</TD>
 				</TR>
-                                {/block}
+				{/block}
 				{/foreach}
 				</TBODY>
 			</TABLE>
