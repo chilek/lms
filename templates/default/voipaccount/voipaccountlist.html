@@ -71,9 +71,10 @@
         {block name="voipaccountlist-list-header-pagination"}
         {if $listdata.total != 0}
         <tr>
-            <th class="pagination" colspan="{$number_of_table_columns}">
+            <th class="lms-ui-pagination" colspan="{$number_of_table_columns-1}">
                 {include file="scroller.html" loop=$voipaccountlist}
             </th>
+            <th></th>
         </tr>
         {/if}
         {/block}
@@ -136,7 +137,7 @@
     <tfoot>
         <tr>
             {if $listdata.total != 0}
-            <td class="pagination" colspan="{$number_of_table_columns-1}" style="border-top: 1px solid black;">
+            <td class="lms-ui-pagination" colspan="{$number_of_table_columns-1}" style="border-top: 1px solid black;">
                 {include file="scroller.html" loop=$voipaccountlist adlink="&search=1"}
             </td>
             {/if}

@@ -85,10 +85,10 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination text-center" colspan="5">
+		<TD class="lms-ui-pagination" colspan="5">
 			{include file="scroller.html" loop=$nlist}
 		</TD>
-		<TD class="pagination text-right bold">
+		<TD class="lms-ui-pagination text-right bold">
 				{trans("Total:")} {$listdata.total|default:"0"}
 		</TD>
 	</TR>
@@ -130,12 +130,12 @@
 	{/foreach}
 	</TBODY>
 	<TR>
-		<TD class="pagination text-center" colspan="5">
+		<TD class="lms-ui-pagination" colspan="5">
 			{if $listdata.total != 0}
 			{include file="scroller.html" loop=$nlist}
 			{/if}
 		</TD>
-		<TD class="pagination text-right bold">
+		<TD class="lms-ui-pagination text-right bold">
 			{trans("Total:")} {$listdata.total|default:"0"}
 		</TD>
 	</TR>

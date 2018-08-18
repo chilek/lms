@@ -44,7 +44,7 @@
         </tr>
         {if $listdata.total != 0}
         <tr>
-            <td class="pagination" colspan="5">
+            <td class="lms-ui-pagination" colspan="5">
                 {include file="scroller.html" loop=$voipaccountlist adlink="&search=1"}
             </td>
         </tr>
@@ -90,7 +90,7 @@
         {/section}
         <tr>
             {if $listdata.total != 0}
-                <td class="pagination" colspan="4" style="border-top: 1px solid black;">
+                <td class="lms-ui-pagination" colspan="4" style="border-top: 1px solid black;">
                 {include file="scroller.html" loop=$voipaccountlist adlink="&search=1"}
                 </td>
             {/if}

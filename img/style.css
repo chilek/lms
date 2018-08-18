@@ -1001,8 +1001,9 @@ tr.space_row > td {
   white-space: nowrap;
   background-color: #CEBD9B;
 }
-.pagination {
+.lms-ui-pagination {
   background-color: #CEBD9B;
+  text-align: center;
 }
 td.empty-table {
   background-color: #EBE4D6;

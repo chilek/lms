@@ -16,7 +16,7 @@
     <THEAD>
 	{include file="rt/rtheader.html"}
 	{if $queuedata.total != 0}
-	<TR class="pagination">
+	<TR class="lms-ui-pagination">
 		<TD class="text-center" colspan="7">
 			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
 		</TD>
@@ -30,7 +30,7 @@
 	{include file="rt/rtqueueviewbox.html"}
     </TBODY>
 	<TFOOT>
-	<TR class="pagination">
+	<TR class="lms-ui-pagination">
                 <TD class="text-center" colspan="7">
                         {include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
                 </TD>

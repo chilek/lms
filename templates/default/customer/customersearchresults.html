@@ -56,7 +56,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR class="ftop">
-		<TD class="pagination" COLSPAN="4">
+		<TD class="lms-ui-pagination" COLSPAN="4">
 			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
 			<INPUT type="hidden" id="warnon" name="setwarnings[warnon]" value="0">
 			<INPUT type="hidden" id="warnoff" name="setwarnings[warnoff]" value="0">
@@ -134,7 +134,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR class="ftop">
-		<TD class="pagination" COLSPAN="4">
+		<TD class="lms-ui-pagination" COLSPAN="4">
 			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
 		</TD>
 	</TR>

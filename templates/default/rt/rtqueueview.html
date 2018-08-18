@@ -18,12 +18,12 @@
     <THEAD>
         {include file="rt/rtfilter.html"}
         <TR>
-            <TD class="pagination text-center" COLSPAN="8">
+            <TD class="lms-ui-pagination" COLSPAN="8">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}
             </TD>
-            <TD class="pagination text-right nobr">
+            <TD class="lms-ui-pagination text-right nobr">
                 <A HREF="?m=rtticketadd{if isset($queuedata.id) && (!is_array($queuedata.id) || count($queuedata.id) == 1)}&id={$queuedata.id[0]}{/if}"><IMG src="img/save.gif" ALT=""> {trans("Create")}</A>
             </TD>
         </TR>
@@ -34,12 +34,12 @@
     </TBODY>
     <TFOOT>
         <TR>
-            <TD class="pagination text-center" COLSPAN="8">
+            <TD class="lms-ui-pagination" COLSPAN="8">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}
             </TD>
-            <TD class="pagination text-right nobr">
+            <TD class="lms-ui-pagination text-right nobr">
                 <A HREF="?m=rtticketadd{if isset($queuedata.id) && (!is_array($queuedata.id) || count($queuedata.id) == 1)}&id={$queuedata.id[0]}{/if}"><IMG src="img/save.gif" ALT=""> {trans("Create")}</A>
             </TD>
         </TR>
