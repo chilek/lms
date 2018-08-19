@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$_LANG['<!rt>Unset'] = '<!rt>Nieokreślony';
-$_LANG['<!rt>Undetermined'] = '<!rt>Nieokreślona';
+$_LANG['<!rt>Unset'] = 'Nieokreślony';
+$_LANG['<!rt>Undetermined'] = 'Nieokreślona';
 $_LANG['Service type:'] = 'Usługa:';
 $_LANG['Ticket type:'] = 'Rodzaj zgłoszenia:';
 $_LANG['Television'] = 'Telewizja';
@@ -48,9 +48,10 @@ $_LANG['Network node location:'] = 'Lokalizacja węzła sieciowego:';
 $_LANG['Ticket have open assigned events!'] = 'Zgłoszenie posiada otwarte zdarzenia!';
 $_LANG['Comment:'] = 'Komentarz:';
 $_LANG['Enter invoice comment'] = 'Wprowadz komenarz do faktury';
-$_LANG['<!rt>Expired'] = '<!rt>Przeterminowany';
-$_LANG['<!rt>Without deadline'] = '<!rt>Bez terminu ostatecznego';
-$_LANG['<!rt>With deadline'] = '<!rt>Z terminem ostatecznym';
+$_LANG['<!rt>Expired'] = 'Przeterminowany';
+$_LANG['<!rt>Expired tickets'] = 'Przeterminowane zgłoszenia';
+$_LANG['<!rt>Without deadline'] = 'Bez terminu ostatecznego';
+$_LANG['<!rt>With deadline'] = 'Z terminem ostatecznym';
 $_LANG['Ticket deadline could not be set in past'] = 'Termin ostateczny nie może być datą minioną';
 $_LANG['Ticket owner could not be the same as verifier'] = 'Właściciel zgłoszenia nie może być weryfikatorem';
 $_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłoszenia nie może być właścicielem';
