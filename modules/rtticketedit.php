@@ -188,6 +188,8 @@ if(isset($_POST['ticket']))
 	};
 	if (!empty($dtime)) {
 		if ($dtime != $ticket['deadline']) {
+            if ($ticket['verifierid'] != Auth::GetCurrentUser())
+                $error['deadline'] = trans("Ticket deadline can be changed only by verifier if it is set");
 			if ($dtime < time())
 				$error['deadline'] = trans("Ticket deadline could not be set in past");
 		}

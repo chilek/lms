@@ -35,6 +35,7 @@ $_LANG['<!rt>Other'] = 'Inna';
 $_LANG['Other'] = 'Inny';
 $_LANG['Offer'] = 'Oferta';
 $_LANG['Fault'] = 'Usterka';
+$_LANG['Ticket deadline can be changed only by verifier if it is set'] = 'Termin ostateczny może zmienić jedynie weryfikator jeśli jest on ustawiony';
 $_LANG['Instalation'] = 'Instalacja';
 $_LANG['Deinstalation'] = 'Demontaż';
 $_LANG['Modification'] = 'Modyfikacja';
