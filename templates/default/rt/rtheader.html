@@ -14,6 +14,9 @@
         <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=createtime{if $queuedata.direction == "asc" && $queuedata.order == "createtime"},desc{/if}"> {trans("Create time:")}</a>{if $queuedata.order == "createtime"}<img src="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>
     <TD class="nobr bold">
+        <img src="img/service-type.png"> {trans("Service type:")}<br>
+        <img src="img/ticket-type.png"> {trans("Ticket type:")}</TD>
+    <TD class="nobr bold">
         <img src="img/ticket.gif"> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=subject{if $queuedata.direction == "asc" && $queuedata.order == "subject"},desc{/if}">{trans("Subject:")}</a> {if $queuedata.order == "subject"}<img src="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}{$queuedata[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}<br>
         <img src="img/customer.gif"> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=requestor{if $queuedata.direction == "asc" && $queuedata.order == "requestor"},desc{/if}">{trans("Submitter:")}</a> {if $queuedata.order == "requestor"}<img src="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>

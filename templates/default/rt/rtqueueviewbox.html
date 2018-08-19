@@ -15,9 +15,11 @@
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 	</TD>
-	<TD class="nobr valign-top">
+	<TD>
 		<span>{$_SERVICETYPES[$ticket.service]}</span>
-		<span>{$_RT_TYPES[$ticket.type].label}</span>
+		<span><br>{$_RT_TYPES[$ticket.type].label}</span>
+	</TD>
+	<TD class="nobr valign-middle">
 		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
 		{foreach $ticket.categories as $ticketcategory}
 		<span {if $ticketcategory.style != ''} style="{$ticketcategory.style}"{else} style="{$_CATEGORY_DEFAULT_STYLE}"{/if}>{$ticketcategory.name}</span>
@@ -95,7 +97,7 @@
 </TR>
 {foreachelse}
 <TR>
-	<TD COLSPAN="10" class="empty-table">
+	<TD COLSPAN="11" class="empty-table">
 		<p>{trans("This queue is empty.")}</p>
 	</TD>
 </TR>
