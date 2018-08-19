@@ -54,14 +54,13 @@
 		{if $ticket.netnode_location && !$ticket.customerid}{$ticket.netnode_location}{elseif $ticket.netnode_location}<br>{trans("Network node location:")}{$ticket.netnode_location}{/if}
 	</TD>
 	<TD class="nobr text-center">
-		{$ticket.isexpired}
 		{if $ticket.deadline}
 			{if $ticket.deadline_diff < 0}
-				<span style="background-color: red; color: white;">{trans("<!rt>Expired")}</span><br>
+				<span style="background-color: red; color: white; font-weight:bold; padding: 2px 7px 3px 7px;"{tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
+			{else}
+				{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}
 			{/if}
-			{$ticket.deadline_days} {trans("days")}
-			{$ticket.deadline_hours} {trans("<!rt>hours")}
-				
+
 		{else}-
 		{/if}<br>
 	</TD>
