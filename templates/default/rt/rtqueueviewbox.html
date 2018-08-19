@@ -11,6 +11,7 @@
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</TD>
 	<TD class="nobr">
 		<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$ticket.id|string_format:"%06d"}</span>
+		<span>{if is_array($queuedata.id) && count($queuedata.id) != 1}{$ticket.name}{/if}</span>
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 	</TD>
@@ -21,13 +22,15 @@
 		{foreach $ticket.categories as $ticketcategory}
 		<span {if $ticketcategory.style != ''} style="{$ticketcategory.style}"{else} style="{$_CATEGORY_DEFAULT_STYLE}"{/if}>{$ticketcategory.name}</span>
 		{/foreach}
-		<br>
 		{if $ticket.customerid}
+			<br>
 			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.requestor|escape|truncate:"60":"..."}</A>
 		{else}
 			{if $ticket.requestor_userid}
+			<br>
 			<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
 			{else}
+				<br>
 				{$ticket.requestor|escape}
 				{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
 				{if $ticket.requestor_mail}<BR>
@@ -35,12 +38,12 @@
 				{/if}
 			{/if}
 		{/if}
-		{if $ticket.netnodeid && $ticket.customerid}<br>{/if}
-		{if $ticket.netnodeid}{trans("Network node:")} <A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name}({$ticket.netnodeid})</A>{/if}
-		{if $ticket.netdevid} {if $ticket.netnodeid}<BR>{/if}{trans("Network device:")} <A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}({$ticket.netdevid})</A>{/if}
 	</TD>
-	<TD class="nobr valign-top">
-		{if is_array($queuedata.id) && count($queuedata.id) != 1}{$ticket.name}{/if}
+	<TD class="nobr valign-middle">
+		{if $ticket.netnodeid}<A href="?m=netnodeinfo&id={$ticket.netnodeid}"><img src="img/netnode.png" alt=""> {$ticket.netnode_name}({$ticket.netnodeid})</A>{/if}
+		{if $ticket.netdevid} {if $ticket.netnodeid}<br>{/if}<A href="?m=netdevinfo&id={$ticket.netdevid}"><img src="img/netdev.png"> {$ticket.netdev_name}({$ticket.netdevid})</A>{/if}
+	</TD>
+	<TD class="nobr valign-middle">
 		{if $ticket.customerid}
 			{if $ticket.address_id}
 				{if $ticket.vacity}{$ticket.vacity}, {/if}{$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if}
@@ -93,7 +96,7 @@
 </TR>
 {foreachelse}
 <TR>
-	<TD COLSPAN="8" class="empty-table">
+	<TD COLSPAN="10" class="empty-table">
 		<p>{trans("This queue is empty.")}</p>
 	</TD>
 </TR>

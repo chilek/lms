@@ -1,15 +1,15 @@
 {block name="rtheader"}
 <TR {tip text="Click on column name to change sorting order"}>
-    <TD class="nobr bold">
-        <IMG src="img/ticket.gif" alt="">
+    <TD class="bold">
+        <img src="img/ticket.gif" alt="">
         <br>
-        <img src="img/calendar.gif" alt=""> 
+        <img src="img/calendar.gif" alt="">
     </TD>
-    <TD>{trans("Ticket's state:")}</TD>
-    <TD>
-        <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=ticketid{if $queuedata.direction == "asc" && $queuedata.order == "ticketid"},desc{/if}">{trans("ID:")}</A> {if $queuedata.order == "ticketid"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-        /
-        <IMG src="img/report.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=priority{if $queuedata.direction == "asc" && $queuedata.order == "priority"},desc{/if}">{trans("Priority:")}</A> {if $queuedata.order == "priority"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+    <TD class="bold">{trans("Ticket's state:")}</TD>
+    <TD class="bold nobr">
+        <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=ticketid{if $queuedata.direction == "asc" && $queuedata.order == "ticketid"},desc{/if}">{trans("ID:")}</a> {if $queuedata.order == "ticketid"}<img src="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        / <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=priority{if $queuedata.direction == "asc" && $queuedata.order == "priority"},desc{/if}">{trans("Priority:")}</a> {if $queuedata.order == "priority"}<img src="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        {if count($queuedata.id)!=1}<a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=queue{if $queuedata.direction == "asc" && $queuedata.order == "queue"},desc{/if}">/ {trans("Queue:")}</a>{if $queuedata.order == "queue"}<img src="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}{/if}
         <br>
         <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=createtime{if $queuedata.direction == "asc" && $queuedata.order == "createtime"},desc{/if}"> {trans("Create time:")}</A>{if $queuedata.order == "createtime"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>
@@ -18,18 +18,21 @@
         <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=requestor{if $queuedata.direction == "asc" && $queuedata.order == "requestor"},desc{/if}">{trans("Submitter:")}</A> {if $queuedata.order == "requestor"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>
     <TD class="nobr bold">
-        {if count($queuedata.id)!=1}<a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=queue{if $queuedata.direction == "asc" && $queuedata.order == "queue"},desc{/if}">{trans("Queue:")}</A>{if $queuedata.order == "queue"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}{/if}
-        <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=location{if $queuedata.direction == "asc" && $queuedata.order == "location"},desc{/if}">{trans("Location:")}</A>{if $queuedata.order == "location"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <img src="img/netnode.png" alt=""> {trans("Net node:")}<br>
+        <img src="img/netdev.png" alt=""> {trans("Net device:")}
+    </TD>
+    <TD class="nobr bold">
+        <img src="img/home.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=location{if $queuedata.direction == "asc" && $queuedata.order == "location"},desc{/if}">{trans("Location:")}</A>{if $queuedata.order == "location"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>
     <TD class="nobr bold text-center">
-        <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=deadline{if $queuedata.direction == "asc" && $queuedata.order == "deadline"},desc{/if}">{trans("<!rt>Deadline:")}</A>{if $queuedata.order == "deadline"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <img src="img/calendar.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=deadline{if $queuedata.direction == "asc" && $queuedata.order == "deadline"},desc{/if}">{trans("<!rt>Deadline:")}</A>{if $queuedata.order == "deadline"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>
     <TD class="nobr bold">
-        <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=owner{if $queuedata.direction == "asc" && $queuedata.order == "owner"},desc{/if}">{trans("Owner:")}</A>{if $queuedata.order == "owner"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br>
-        <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=lastmodified{if $queuedata.direction == "asc" && $queuedata.order == "lastmodified"},desc{/if}">{trans("Modified:")}</A> {if $queuedata.order == "lastmodified"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <img src="img/users.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=owner{if $queuedata.direction == "asc" && $queuedata.order == "owner"},desc{/if}">{trans("Owner:")}</A>{if $queuedata.order == "owner"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br>
+        <img src="img/calendar.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if $queuedata.state == -1}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=lastmodified{if $queuedata.direction == "asc" && $queuedata.order == "lastmodified"},desc{/if}">{trans("Modified:")}</A> {if $queuedata.order == "lastmodified"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>
     <TD class="nobr bold">
-        {trans("Events:")}
+        <img src="img/calendar.gif" alt=""> {trans("Events:")}
     </TD>
     <TD></TD>
 </TR>
