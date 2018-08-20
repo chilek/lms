@@ -123,8 +123,8 @@
 		</TD>
 		<TD>
 		{foreach $categories as $category}
-                <label for="cat{$category.id}" class="nobr">
-	                <INPUT type="checkbox" name="ticket[categories][{$category.id}]" id="cat{$category.id}" value="1" {if $category.checked > 0}checked{/if}>
+                <label class="nobr">
+	                <INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if}>
 			{$category.name}
 		</label>
 		{/foreach}
