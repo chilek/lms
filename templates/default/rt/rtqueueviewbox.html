@@ -48,9 +48,9 @@
 	<TD class="nobr valign-middle">
 		{if $ticket.customerid}
 			{if $ticket.address_id}
-				{if $ticket.vacity}{$ticket.vacity}, {/if}{$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if}
+				{if $ticket.vacity}{$ticket.vacity},<br> {/if}{$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if}
 			{else}
-				{if $ticket.city}{$ticket.city}, {/if}{$ticket.address}
+				{if $ticket.city}{$ticket.city},<br> {/if}{$ticket.address}
 			{/if}
 		{/if}
 		{if $ticket.netnode_location && !$ticket.customerid}{$ticket.netnode_location}{elseif $ticket.netnode_location}<br>{trans("Network node location:")}{$ticket.netnode_location}{/if}
