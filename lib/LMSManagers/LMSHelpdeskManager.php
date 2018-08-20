@@ -1035,13 +1035,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['subject'] = $ticket['subject'];
 
         if($ticket['netnodeid'] != $props['netnodeid'] && isset($props['netnodeid'])) {
-            $notes[] = trans('Ticket\'s netnode assignments has been changed from $a to $b.', $ticket['netnodeid'], $props['netnodeid']);
+            $notes[] = trans('Ticket\'s network node assignments has been changed from $a to $b.', $ticket['netnodeid'], $props['netnodeid']);
             $type = $type | RTMESSAGE_NETNODE_CHANGE;
         }else
             $props['netnodeid'] = $ticket['netnodeid'];
 
 		if($ticket['netdevid'] != $props['netdevid'] && isset($props['netdevid'])) {
-            $notes[] = trans('Ticket\'s netdev assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']);
+            $notes[] = trans('Ticket\'s network device assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']);
             $type = $type | RTMESSAGE_NETDEV_CHANGE;
         }else
             $props['netdevid'] = $ticket['netdevid'];
@@ -1302,6 +1302,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			'critical' => 0,
 			'urgent' => 0,
 			'unread' => 0,
+            'expired' => 0
 		);
 
 		if (ConfigHelper::CheckPrivilege('timetable_management')) {
@@ -1317,6 +1318,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
 			$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
 				'rights' => RT_RIGHT_INDICATOR));
+            $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
+                'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
 		}
 
 		return $result;

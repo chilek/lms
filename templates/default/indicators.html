@@ -1,10 +1,4 @@
 {block name=indicatorcontents}
-{if ConfigHelper::CheckPrivilege('timetable_management')}
-<a href="?m=indicators&action=events" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
-    <span class="lms-ui-indicator-counter">0</span>
-    <img src="img/calendar.gif">
-</a>
-{/if}
 {if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
 <a href="?m=indicators&action=critical" class="lms-ui-indicator" title="{trans("Critical tickets")}" id="indicator-critical" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
@@ -16,7 +10,17 @@
 </a>
 <a href="?m=indicators&action=unread" class="lms-ui-indicator" title="{trans("Unread tickets")}" id="indicator-unread" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
-    <img src="img/ring-blue.png">
+    <img src="img/ticket-unread.png">
+</a>
+<a href="?m=indicators&action=expired" class="lms-ui-indicator" title="{trans("<!rt>Expired tickets")}" id="indicator-expired" style="display:none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <img src="img/deadline.png">
+</a>
+{/if}
+{if ConfigHelper::CheckPrivilege('timetable_management')}
+<a href="?m=indicators&action=events" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
+<span class="lms-ui-indicator-counter">0</span>
+<img src="img/calendar.gif">
 </a>
 {/if}
 <script>

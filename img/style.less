@@ -490,6 +490,10 @@ li.lms-ui-suggestion-item {
 			.lms-ui-suggestion-icon;
 			background-image: url(netdev.gif);
 	}
+	&.lms-ui-suggestion-wireless::before {
+		.lms-ui-suggestion-icon;
+		background-image: url(wireless.gif);
+	}
 	&.lms-ui-suggestion-netnode::before {
 			.lms-ui-suggestion-icon;
 			background-image: url(netnode.png);
@@ -1495,6 +1499,10 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 .lms-ui-icon-netdevice {
     .lms-ui-icon(@icon-size);
     background: url("netdev.gif");
+}
+.lms-ui-icon-wireless {
+	.lms-ui-icon(@icon-size);
+	background: url("wireless.gif");
 }
 .lms-ui-icon-network {
     .lms-ui-icon(@icon-size);

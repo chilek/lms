@@ -273,7 +273,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                                 $row['date'] -= 3600;
                             $newdst = date('I', $row['date']);
                         }
-                        $row['date'] = date_to_timestamp($row['date']);
+                        list ($year, $month, $day) = explode('/', date('Y/n/j', $row['date']));
+                        $row['date'] = mktime(0, 0, 0, $month, $day, $year);
                         $row['enddate'] = $row['date'] + 86400;
                         if ($days > 1 || $endtime)
                             $list2[] = $row;

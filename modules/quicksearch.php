@@ -560,6 +560,46 @@ switch ($mode) {
 			$target = '?m=rtsearch&s=1';
 		}
 	break;
+    case 'wireless':
+        if (isset($_GET['ajax'])) // support for AutoSuggest
+        {
+            $candidates = $DB->GetAll("SELECT id, name, netdev FROM netradiosectors
+                                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
+				LOWER(name) ?LIKE? LOWER($sql_search)
+                                ORDER by name
+                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+
+            $result = array();
+            if ($candidates) {
+                foreach ($candidates as $idx => $row) {
+                    $name = truncate_str($row['name'], 50);
+                    $name_class = 'lms-ui-suggestion-wireless';
+
+                    $description = '';
+                    $description_class = '';
+                    $action = '?m=netdevinfo&id=' . $row['netdev'];
+
+                    if (preg_match("~^$search\$~i", $row['id']))
+                        $description = trans('Id:') . ' ' . $row['id'];
+
+                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                }
+            }
+            header('Content-type: application/json');
+            if (!empty($result))
+                echo json_encode(array_values($result));
+            $SESSION->close();
+            $DB->Destroy();
+            exit;
+        }
+
+        if (is_numeric($search)) {
+            if ($netdevid = $DB->GetOne('SELECT netdev FROM netradiosectors WHERE id = ' . $search)) {
+                $target = '?m=netdevinfo&id=' . $netdevid;
+                break;
+            }
+        }
+    break;
 
 	case 'account':
 		$ac = explode('@', $search);
