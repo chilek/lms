@@ -1041,7 +1041,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['netnodeid'] = $ticket['netnodeid'];
 
 		if($ticket['netdevid'] != $props['netdevid'] && isset($props['netdevid'])) {
-            $notes[] = trans('Ticket\'s network devivce assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']);
+            $notes[] = trans('Ticket\'s network device assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']);
             $type = $type | RTMESSAGE_NETDEV_CHANGE;
         }else
             $props['netdevid'] = $ticket['netdevid'];
