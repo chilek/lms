@@ -116,10 +116,15 @@ function setgroup(act)
 						</TD>
 						{/if}
 						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$customernodes[customernodes].id}';" class="text-right nobr">
-							{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub != "0.0.0.0"} ({$customernodes[customernodes].ip_pub}){/if}
+							{$customernodes[customernodes].ip}
+							<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$customernodes[customernodes].ip}">{trans("Copy")}</button>
+							{if $customernodes[customernodes].ip_pub != "0.0.0.0"}<br>{$customernodes[customernodes].ip_pub}
+							<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$customernodes[customernodes].ip_pub}">{trans("Copy")}</button>
+							{/if}
 						</TD>
 						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$customernodes[customernodes].id}';">
 							{$customernodes[customernodes].mac|replace:",":"<BR>"}
+							<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$customernodes[customernodes].mac}">{trans("Copy")}</button>
 						</TD>
 						<TD class="text-right nobr">
 							{if $customernodes[customernodes].gcount}
