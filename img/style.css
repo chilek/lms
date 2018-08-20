@@ -657,6 +657,13 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
   background-image: url(netdev.gif);
 }
+.lms-ui-suggestion-name.lms-ui-suggestion-wireless::before {
+  content: "";
+  padding-right: 17px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(wireless.gif);
+}
 .lms-ui-suggestion-name.lms-ui-suggestion-netnode::before {
   content: "";
   padding-right: 17px;
@@ -1637,6 +1644,15 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   width: 16px;
   height: 16px;
   background: url("netdev.gif");
+}
+.lms-ui-icon-wireless {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("wireless.gif");
 }
 .lms-ui-icon-network {
   vertical-align: middle;
