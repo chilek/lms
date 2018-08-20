@@ -27,6 +27,7 @@
 $_LANG['<!rt>Unset'] = '<!rt>Nieokreślony';
 $_LANG['<!rt>Undetermined'] = '<!rt>Nieokreślona';
 $_LANG['Service type:'] = 'Usługa:';
+$_LANG['Enter wireless SSID and press Enter'] = 'Wpisz SSID i naciśnij Enter';
 $_LANG['Ticket type:'] = 'Rodzaj zgłoszenia:';
 $_LANG['Television'] = 'Telewizja';
 $_LANG['Video surveillance'] = 'Monitoring wizyjny';

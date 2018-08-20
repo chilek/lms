@@ -86,6 +86,7 @@ version ?.??.?? (????-??-??):
     network types (public or private) are displayed in main/public ip address selection popup [chilan]
   - improvement: tooltip short info can be preserved open after moving mouse to them
     to it allows to copy text from them [chilan]
+  - enhancement: new quicksearch for SSID wireless networks [interduo]
 
 version 1.11.23 (2018-03-21):
 
