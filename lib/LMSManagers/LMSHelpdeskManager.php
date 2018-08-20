@@ -1302,6 +1302,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			'critical' => 0,
 			'urgent' => 0,
 			'unread' => 0,
+            'expired' => 0
 		);
 
 		if (ConfigHelper::CheckPrivilege('timetable_management')) {
@@ -1317,6 +1318,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				'state' => -1, 'rights' => RT_RIGHT_INDICATOR));
 			$result['unread'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'unread' => 1,
 				'rights' => RT_RIGHT_INDICATOR));
+            $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
+                'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
 		}
 
 		return $result;
