@@ -17,7 +17,7 @@
 	{include file="rt/rtheader.html"}
 	{if $queuedata.total != 0}
 	<TR class="lms-ui-pagination">
-		<TD class="text-center" colspan="8">
+		<TD class="text-center" colspan="10">
 			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
 		</TD>
 		<TD>
@@ -31,7 +31,7 @@
     </TBODY>
 	<TFOOT>
 	<TR class="lms-ui-pagination">
-                <TD class="text-center" colspan="8">
+                <TD class="text-center" colspan="10">
                         {include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
                 </TD>
                 <TD>
