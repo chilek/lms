@@ -8,8 +8,10 @@
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
+        <COL style="width: 1%;">
         <COL style="width: 50%;">
         <COL style="width: 45%;">
+        <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
@@ -18,7 +20,7 @@
     <THEAD>
         {include file="rt/rtfilter.html"}
         <TR>
-            <TD class="lms-ui-pagination" COLSPAN="8">
+            <TD class="lms-ui-pagination" COLSPAN="10">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}
@@ -34,7 +36,7 @@
     </TBODY>
     <TFOOT>
         <TR>
-            <TD class="lms-ui-pagination" COLSPAN="8">
+            <TD class="lms-ui-pagination" COLSPAN="10">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}
