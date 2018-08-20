@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['<!rtfilter>Service type:'] = 'Rodzaj:';
 $_LANG['<!rt>Unset'] = '<!rt>Nieokreślony';
 $_LANG['<!rt>Undetermined'] = '<!rt>Nieokreślona';
 $_LANG['Service type:'] = 'Usługa:';
