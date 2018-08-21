@@ -1,7 +1,5 @@
 {block name="eventlistbox_overdue"}
-{cycle values="light,lucid" print=false}
-
-<TABLE class="lmsbox" {if !empty($overdue_events)}style="border: 2px red solid"}{/if}>
+<TABLE class="lmsbox lms-ui-background-cycle"{if !empty($overdue_events)} style="border: 2px red solid"}{/if}>
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%; min-width:90px;">

@@ -1,7 +1,6 @@
 {block name="eventlistbox"}
-{cycle values="light,lucid" print=false}
 {section name=daylist loop=$daylist}
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%; min-width:90px;">
@@ -32,11 +31,8 @@
         </TR>
     </THEAD>
     <TBODY>
-        {if $counter%2 && $counter!=0}{cycle print=false}{/if}
-        {assign var=counter value=0}
         {foreach $eventlist as $event}
         {if $event.date == $daylist[daylist]}
-            {math equation="x+1" x=$counter assign=counter}
             {include file="event/eventlistboxrow.html"}
         {/if}
         {/foreach}

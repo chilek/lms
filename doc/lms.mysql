@@ -334,7 +334,7 @@ CREATE TABLE divisions (
 	id 		int(11) 	NOT NULL auto_increment,
 	shortname       varchar(255) 	NOT NULL DEFAULT '',
 	name        	text    	NOT NULL DEFAULT '',
-	ten		varchar(16)	NOT NULL DEFAULT '',
+	ten		varchar(50)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	rbe			varchar(255)	NOT NULL DEFAULT '',
 	rbename		varchar(255)	NOT NULL DEFAULT '',
@@ -366,8 +366,8 @@ CREATE TABLE customers (
   name varchar(128) 	NOT NULL DEFAULT '',
   status smallint 	NOT NULL DEFAULT '0',
   type smallint		NOT NULL DEFAULT '0',
-  ten varchar(16) 	NOT NULL DEFAULT '',
-  ssn varchar(11) 	NOT NULL DEFAULT '',
+  ten varchar(50) 	NOT NULL DEFAULT '',
+  ssn varchar(50) 	NOT NULL DEFAULT '',
   regon varchar(255) 	NOT NULL DEFAULT '',
   rbe varchar(255)	NOT NULL DEFAULT '',
   rbename varchar(255)	NOT NULL DEFAULT '',
@@ -474,8 +474,8 @@ CREATE TABLE documents (
 	zip varchar(10) NULL DEFAULT NULL,
 	city varchar(32) NULL DEFAULT NULL,
 	countryid int(11) DEFAULT NULL,
-	ten varchar(16) NOT NULL DEFAULT '',
-	ssn varchar(11) NOT NULL DEFAULT '',
+	ten varchar(50) NOT NULL DEFAULT '',
+	ssn varchar(50) NOT NULL DEFAULT '',
 	paytime smallint NOT NULL DEFAULT '0',
 	paytype smallint DEFAULT NULL,
 	closed tinyint(1) NOT NULL DEFAULT '0',
@@ -3412,4 +3412,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018081700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018082100');
