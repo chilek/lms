@@ -334,8 +334,8 @@ function change_customer() {
 			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
 			customer_addresses.refresh();
 		}
+		xajax_select_location($('[name="ticket[custid]"]').val(), $('[name="ticket[address_id]"]').val());
 	});
-	xajax_select_location($('[name="ticket[custid]"]').val(), $('[name="ticket[address_id]"]').val());
 }
 
 function update_nodes(data) {
