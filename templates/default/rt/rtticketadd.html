@@ -254,7 +254,7 @@
 				<option value="">{trans("- none -")}</option>
 				{if !empty($nodes)}
 				{foreach $nodes as $node}
-				<option value="{$node.id}"{if $node.id == $ticket.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
+				<option value="{$node.id}"{if $node.id == $ticket.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
 				{/foreach}
 				{/if}
 			</select>
@@ -330,6 +330,10 @@ $(function() {
 function change_customer() {
 	getCustomerAddresses( $('[name="ticket[custid]"]').val(), function(addresses) {
 		customer_addresses.setAddressList( addresses );
+		if (Object.keys(addresses).length == 1) {
+			$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+			customer_addresses.refresh();
+		}
 	});
 	xajax_select_location($('[name="ticket[custid]"]').val(), $('[name="ticket[address_id]"]').val());
 }
@@ -337,7 +341,7 @@ function change_customer() {
 function update_nodes(data) {
 	var options = '<option value="">{trans("- none -")}</option>';
 	$.each(data, function(k, v) {
-		options += '<option value="' + v.id + '">' + v.name + ': ' + v.location + '</option>';
+		options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
 	});
 	$('[name="ticket[nodeid]"]').html(options);
 	if (data.length) {
@@ -356,8 +360,14 @@ var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
 getCustomerAddresses( {intval($customerid)}, function(addresses) {
 	customer_addresses.setAddressList( addresses );
 
-	{if $ticket.address_id && $customerid}
+	{if $customerid}
+	{if $ticket.address_id}
 	$( '#customer_addresses' ).val( {$ticket.address_id} );
+	{else}
+	if (Object.keys(addresses).length == 1) {
+		$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+	}
+	{/if}
 	{/if}
 
 	customer_addresses.init();
