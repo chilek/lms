@@ -15,12 +15,11 @@
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
-        <COL style="width: 1%;">
     </COLGROUP>
     <THEAD>
         {include file="rt/rtfilter.html"}
         <TR>
-            <TD class="lms-ui-pagination" COLSPAN="10">
+            <TD class="lms-ui-pagination" COLSPAN="9">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}
@@ -36,7 +35,7 @@
     </TBODY>
     <TFOOT>
         <TR>
-            <TD class="lms-ui-pagination" COLSPAN="10">
+            <TD class="lms-ui-pagination" COLSPAN="9">
                 {if $pagination->getTotal() != 0}
                 {include file="pagination.html"}
                 {/if}

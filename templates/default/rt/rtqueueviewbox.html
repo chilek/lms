@@ -42,23 +42,26 @@
 		{/if}
 	</TD>
 	<TD class="nobr valign-middle">
-		{if $ticket.netnodeid}<A href="?m=netnodeinfo&id={$ticket.netnodeid}"><img src="img/netnode.png" alt=""> {$ticket.netnode_name}({$ticket.netnodeid})</A>{/if}
-		{if $ticket.netdevid} {if $ticket.netnodeid}<br>{/if}<A href="?m=netdevinfo&id={$ticket.netdevid}"><img src="img/netdev.png"> {$ticket.netdev_name}({$ticket.netdevid})</A>{/if}
-	</TD>
-	<TD class="nobr valign-middle">
+		{if $ticket.netnode_location}
+			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><img src="img/netnode.png" alt=""> {$ticket.netnode_name}</a>
+		{/if}
+		{if $ticket.netdevid}
+			<a href="?m=netdevinfo&id={$ticket.netdevid}"><img src="img/netdev.png" alt=""> {$ticket.netdev_name}</a>
+		{/if}
+		{if $ticket.netdevid || $ticket_netnode_location}<br>{/if}
 		{if $ticket.customerid}
 			{if $ticket.address_id}
-				{if $ticket.vacity}{$ticket.vacity},<br> {/if}{$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if}
+				{$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if},<br>
+				{if $ticket.vacity}{$ticket.vacity}{/if}
 			{else}
-				{if $ticket.city}{$ticket.city},<br> {/if}{$ticket.address}
+				{if $ticket.city}{$ticket.city},<br>{/if}{$ticket.address}
 			{/if}
 		{/if}
-		{if $ticket.netnode_location && !$ticket.customerid}{$ticket.netnode_location}{elseif $ticket.netnode_location}<br>{trans("Network node location:")}{$ticket.netnode_location}{/if}
 	</TD>
 	<TD class="nobr text-center">
 		{if $ticket.deadline}
 			{if $ticket.deadline_diff < 0}
-				<span style="background-color: red; color: white; font-weight:bold; padding: 2px 7px 3px 7px;"{tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
+				<span class="lms-ui-important-box" {tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
 			{else}
 				{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}
 			{/if}
