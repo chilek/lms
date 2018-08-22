@@ -89,6 +89,8 @@ version ?.??.?? (????-??-??):
   - enhancement: new quicksearch for SSID wireless networks [interduo]
   - improvement: phpui.helpdesk_check_owner_verifier_conflict variable introduces
     ('true' by default) [chilan]
+  - improvement: phpui.helpdesk_allow_all_users_modify_deadline variable controls if any
+    user can change ticket deadline ('false' by default) [chilan]
 
 version 1.11.23 (2018-03-21):
 
