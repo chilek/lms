@@ -79,7 +79,8 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 		foreach ($list as $idx => $row) {
 			$row['userlist'] = $DB->GetAll('SELECT userid AS id, vusers.name
 				FROM eventassignments, vusers
-				WHERE userid = vusers.id AND eventid = ?', array($row['id']));
+				WHERE userid = vusers.id AND eventid = ? ',
+				array($row['id']));
 
 			$endtime = $row['endtime'];
 			if ($row['enddate'] && $row['enddate'] - $row['date']) {
