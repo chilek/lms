@@ -28,6 +28,15 @@ if ($edate = $SESSION->get('edate'))
 	list ($year, $month, $day) = explode('/', $SESSION->get('edate'));
 
 if (!empty($_POST)) {
+    if (!isset($type))
+        $type = null;
+
+    if (!isset($privacy))
+        $privacy = null;
+
+    if (!isset($closed))
+        $closed = null;
+
 	if(isset($_POST['a']))
         $a = $_POST['a'];
 	else
@@ -167,7 +176,6 @@ $SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) A
 $SMARTY->assign('eventlist',$eventlist);
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
 	$SMARTY->assign('overdue_events',$overdue_events);
-
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('days',$days);
 $SMARTY->assign('day',$day);

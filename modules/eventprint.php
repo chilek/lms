@@ -47,12 +47,13 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 	        'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, closed, events.type, c.id AS customerid,'
 		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name'). ' AS customername, '
 	        .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
-		events.address_id, va.location, nodeid, nodes.location AS nodelocation, cc.customerphone,
+		events.address_id, va.location, rt.nodeid, nodes.location AS nodelocation, cc.customerphone, rt.netnodeid AS netnodeid, rt.netdevid AS netdevid,
 		ticketid
 		 FROM events
 		 LEFT JOIN vaddresses va ON va.id = events.address_id
 		 LEFT JOIN customerview c ON (customerid = c.id)
-		 LEFT JOIN vnodes nodes ON (nodeid = nodes.id)
+		 LEFT JOIN vnodes nodes ON (events.nodeid = nodes.id)
+		 LEFT JOIN rttickets as rt ON (rt.id = events.ticketid)
 		LEFT JOIN (
 			SELECT ' . $DB->GroupConcat('contact', ', ') . ' AS customerphone, customerid
 			FROM customercontacts
@@ -76,8 +77,12 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 		foreach ($list as $idx => $row) {
 			$row['userlist'] = $DB->GetAll('SELECT userid AS id, vusers.name
 				FROM eventassignments, vusers
-				WHERE userid = vusers.id AND eventid = ? ',
-				array($row['id']));
+				WHERE userid = vusers.id AND eventid = ?', array($row['id']));
+            if(!empty($row['netnodeid'])) {
+            $row['netnode_name'] = $DB->GetOne('SELECT name FROM netnodes WHERE id = ?', array($row['netnodeid']));
+            $row['netnode_location'] = $DB->GetOne('SELECT address FROM vaddresses WHERE id = (SELECT address_id FROM netnodes WHERE id = ?)', array($row['netnodeid']));
+			}
+
 			$endtime = $row['endtime'];
 			if ($row['enddate'] && $row['enddate'] - $row['date']) {
 				$days = round(($row['enddate'] - $row['date']) / 86400);

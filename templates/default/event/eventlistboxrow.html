@@ -30,15 +30,20 @@
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><IMG src="img/note.gif" alt=""> {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2">
-        {if $event.customername}
-        <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
-        {if !empty($event.address_id)}
-        {$event.location}
-        {elseif !empty($event.nodeid)}
-        <a href="?m=nodeinfo&id={$event.nodeid}">{$event.nodelocation}</a>
+        {if $event.netnodeid}
+            <img src="img/netnode.png"> <a href="?m=netnodeinfo&id={$event.netnodeid}">{$event.netnode_name}</a>
+            {if !empty($event.netnode_location)}<br>{$event.netnode_location}{/if}
         {else}
-        {$event.customerlocation}
-        {/if}
+            {if $event.customername}
+            <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+            {if !empty($event.address_id)}
+                {$event.location}
+            {elseif !empty($event.nodeid)}
+                <a href="?m=nodeinfo&id={$event.nodeid}">{$event.nodelocation}</a>
+            {else}
+                {$event.customerlocation}
+            {/if}
+            {/if}
         {/if}
     </TD>
     <TD class="text-right nobr">
