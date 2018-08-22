@@ -176,6 +176,7 @@ $SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) A
 $SMARTY->assign('eventlist',$eventlist);
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
 	$SMARTY->assign('overdue_events',$overdue_events);
+
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('days',$days);
 $SMARTY->assign('day',$day);
