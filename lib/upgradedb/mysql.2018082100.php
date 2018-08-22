@@ -28,11 +28,11 @@ $this->Execute("DROP VIEW contractorview");
 $this->Execute("DROP VIEW customeraddressview");
 $this->Execute("DROP VIEW vdivisions");
 
-$this->Execute("ALTER TABLE customers MODIFY COLUMN ten varchar(50)");
-$this->Execute("ALTER TABLE customers MODIFY COLUMN ssn varchar(50)");
-$this->Execute("ALTER TABLE divisions ALTER COLUMN ten TYPE varchar(50)");
-$this->Execute("ALTER TABLE documents ALTER COLUMN ten TYPE varchar(50)");
-$this->Execute("ALTER TABLE documents ALTER COLUMN ssn TYPE varchar(50)");
+$this->Execute("ALTER TABLE customers MODIFY COLUMN ten TYPE varchar(50)");
+$this->Execute("ALTER TABLE customers MODIFY COLUMN ssn TYPE varchar(50)");
+$this->Execute("ALTER TABLE divisions MODIFY COLUMN ten TYPE varchar(50)");
+$this->Execute("ALTER TABLE documents MODIFY COLUMN ten TYPE varchar(50)");
+$this->Execute("ALTER TABLE documents MODIFY COLUMN ssn TYPE varchar(50)");
 
 $this->Execute("
 	CREATE VIEW customerview AS
