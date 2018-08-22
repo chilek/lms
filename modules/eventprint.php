@@ -81,7 +81,6 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 				FROM eventassignments, vusers
 				WHERE userid = vusers.id AND eventid = ? ',
 				array($row['id']));
-
 			$endtime = $row['endtime'];
 			if ($row['enddate'] && $row['enddate'] - $row['date']) {
 				$days = round(($row['enddate'] - $row['date']) / 86400);
