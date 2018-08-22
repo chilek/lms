@@ -197,7 +197,7 @@ CREATE TABLE divisions (
 	id 		integer 	NOT NULL DEFAULT nextval('divisions_id_seq'::text),
 	shortname 	varchar(255) 	NOT NULL DEFAULT '',
 	name 		text 		NOT NULL DEFAULT '',
-	ten		varchar(16)	NOT NULL DEFAULT '',
+	ten		varchar(50)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	rbe			varchar(255)	NOT NULL DEFAULT '',
 	rbename		varchar(255)	NOT NULL DEFAULT '',
@@ -231,8 +231,8 @@ CREATE TABLE customers (
 	name varchar(128)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
-	ten varchar(16) 	DEFAULT '' NOT NULL,
-	ssn varchar(11) 	DEFAULT '' NOT NULL,
+	ten varchar(50) 	DEFAULT '' NOT NULL,
+	ssn varchar(50) 	DEFAULT '' NOT NULL,
 	regon varchar(255) 	DEFAULT '' NOT NULL,
 	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
 	rbename varchar(255)	DEFAULT '' NOT NULL,
@@ -350,8 +350,8 @@ CREATE TABLE documents (
 	city varchar(32)	NULL DEFAULT NULL,
 	countryid integer	DEFAULT NULL
 		CONSTRAINT documents_countryid_fkey REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	ten varchar(16)		DEFAULT '' NOT NULL,
-	ssn varchar(11)		DEFAULT '' NOT NULL,
+	ten varchar(50)		DEFAULT '' NOT NULL,
+	ssn varchar(50)		DEFAULT '' NOT NULL,
 	paytime smallint	DEFAULT 0 NOT NULL,
 	paytype smallint	DEFAULT NULL,
 	closed smallint		DEFAULT 0 NOT NULL,
@@ -3419,6 +3419,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018081700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018082100');
 
 COMMIT;

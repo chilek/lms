@@ -1,5 +1,5 @@
 {block name="eventlistboxrow"}
-<TR class="highlight {cycle}{if $event.closed} blend{/if}"  >
+<TR class="highlight {if $event.closed} blend{/if}">
     <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold">
         {$_EVENTTYPES[$event.type]}<BR>
         {if $event.ticketid}
