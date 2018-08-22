@@ -1,12 +1,13 @@
 {block name="rtfilter"}
 
 <TR>
-    <TD colspan="11">
+    <TD colspan="10">
         <FORM method="GET" action="?m=rtqueueview" name="filter">
             <INPUT type="submit" class="hiddenbtn">
             <INPUT type="HIDDEN" name="m" value="rtqueueview">
             <INPUT type="HIDDEN" name="page" value="1">
             <span class="bold">{trans("Filter:")}</span>
+            <label class="nobr">
             {trans("Queue:")}
             <input type="hidden" name="id" value="all">
             <SELECT size="1" name="id[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
@@ -14,18 +15,24 @@
                     <OPTION value="{$q.id}"{if is_array($queuedata.id) && in_array($q.id, $queuedata.id)} SELECTED{/if}>{$q.name}</OPTION>
                 {/foreach}
             </SELECT>
-            {trans("<!rtfilter>Service type:")}
+            </label>
+            <label class="nobr">
+            {trans("Service type:")}
             <SELECT size="1" name="ts[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                 {foreach $_SERVICETYPES as $key => $ts}
                     <OPTION value="{$key}"{if is_array($queuedata.service) && in_array($key, $queuedata.service)} SELECTED{/if}>{$ts}</OPTION>
                 {/foreach}
             </SELECT>
+            </label>
+            <label class="nobr">
             {trans("Ticket type:")}
                 <SELECT size="1" name="tt[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
                 {foreach $_RT_TYPES as $key => $tt}
                     <OPTION value="{$key}"{if is_array($queuedata.type) && in_array($key, $queuedata.type)} SELECTED{/if}>{$tt.label}</OPTION>
                 {/foreach}
                 </SELECT>
+            </label>
+            <label class="nobr">
             {trans("Category:")}
             <input type="hidden" name="catid" value="all">
             <SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
@@ -33,6 +40,8 @@
                     <OPTION value="{$c.id}"{if is_array($queuedata.catid) && in_array($c.id, $queuedata.catid)} SELECTED{/if}>{$c.name}</OPTION>
                 {/foreach}
             </SELECT>
+            </label>
+            <label class="nobr">
             {trans("Status:")}
             <input type="hidden" name="s" value="-1">
             <SELECT size="1" name="s[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
@@ -40,7 +49,8 @@
                     <OPTION value="{$idx}" {if is_array($queuedata.state) && in_array($idx, $queuedata.state)} SELECTED{/if}>{$s.label}</OPTION>
                 {/foreach}
             </SELECT>
-            <br>
+            </label>
+            <label class="nobr">
             {trans("Priority:")}
             <input type="hidden" name="priority" value="all">
             <SELECT size="1" name="priority[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
@@ -48,6 +58,8 @@
                     <OPTION value="{$idx}" {if is_array($queuedata.priority) && in_array($idx, $queuedata.priority)} SELECTED{/if}>{$priority}</OPTION>
                 {/foreach}
             </SELECT>
+            </label>
+            <label class="nobr">
             {trans("Owner:")}
             <SELECT size="1" name="owner" OnChange="document.filter.submit();">
                 <OPTION value="-1"{if $queuedata.owner == -1} selected{/if}>- {trans("No filter")} -</OPTION>
@@ -57,22 +69,27 @@
                 <OPTION value="{$user.id}"{if $user.id == $queuedata.owner} SELECTED{/if}>{$user.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
             </SELECT>
+            </label>
             {if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+            <label class="nobr">
             {trans("Removed:")}
             <SELECT size="1" name="r" OnChange="document.filter.submit();">
                 <OPTION value=""{if $queuedata.removed == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
                 <OPTION value="-1"{if $queuedata.removed == "-1"} SELECTED{/if}>{trans("No")}</OPTION>
                 <OPTION value="1"{if $queuedata.removed == "1"} SELECTED{/if}>{trans("Yes")}</OPTION>
             </SELECT>
+            </label>
             {/if}
+            <label class="nobr">
             {trans("<!rt>Deadline:")}
             <SELECT size="1" name="d" OnChange="document.filter.submit();">
-                <OPTION value=""{if $queuedata.deadline == ""} SELECTED{/if}>{trans("All")}</OPTION>
+                <OPTION value=""{if $queuedata.deadline == ""} SELECTED{/if}>{trans("all")}</OPTION>
                 <OPTION value="1"{if $queuedata.deadline == "1"} SELECTED{/if}>{trans("<!rt>With deadline")}</OPTION>
                 <OPTION value="-1"{if $queuedata.deadline == "-1"} SELECTED{/if}>{trans("<!rt>Without deadline")}</OPTION>
                 <OPTION value="-2"{if $queuedata.deadline == "-2"} SELECTED{/if}>{trans("<!rt>Expired")}</OPTION>
             </SELECT>
-            <label>
+            </label>
+            <label class="nobr">
                 {trans("Unread:")}
                 <SELECT size="1" name="unread" onChange="document.filter.submit()">
                     <option value="-1"{if $queuedata.unread == -1} selected{/if}>{trans("- all -")}</option>
@@ -80,8 +97,7 @@
                     <option value="1"{if $queuedata.unread == 1} selected{/if}>{trans("yes")}</option>
                 </SELECT>
             </label>
-            <br>
-            <label>
+            <label class="nobr">
                 {trans("Indicator panel:")}
                 <SELECT size="1" name="rights" OnChange="document.filter.submit();">
                     <option value="0"{if $queuedata.rights == 0} selected{/if}>{trans("- all -")}</option>
