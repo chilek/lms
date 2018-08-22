@@ -80,10 +80,6 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 			$row['userlist'] = $DB->GetAll('SELECT userid AS id, vusers.name
 				FROM eventassignments, vusers
 				WHERE userid = vusers.id AND eventid = ?', array($row['id']));
-            if(!empty($row['netnodeid'])) {
-            $row['netnode_name'] = $DB->GetOne('SELECT name FROM netnodes WHERE id = ?', array($row['netnodeid']));
-            $row['netnode_location'] = $DB->GetOne('SELECT address FROM vaddresses WHERE id = (SELECT address_id FROM netnodes WHERE id = ?)', array($row['netnodeid']));
-			}
 
 			$endtime = $row['endtime'];
 			if ($row['enddate'] && $row['enddate'] - $row['date']) {
