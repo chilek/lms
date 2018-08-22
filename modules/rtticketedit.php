@@ -179,9 +179,10 @@ if(isset($_POST['ticket']))
 	$ticketedit['ticketid'] = $ticket['ticketid'];
 	$dtime = datetime_to_timestamp($ticketedit['deadline']);
 
-        if(!empty($ticketedit['verifierid']))
+	if(!empty($ticketedit['verifierid']))
 	{
-		if ($ticketedit['verifierid'] == $ticketedit['owner']) {
+		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
+			&& $ticketedit['verifierid'] == $ticketedit['owner']) {
 			$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
 			$error['owner'] = trans("Ticket verifier could not be the same as owner");
 		};

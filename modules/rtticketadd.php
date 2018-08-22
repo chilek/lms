@@ -43,7 +43,8 @@ if(isset($_POST['ticket']))
 	$ticket = $_POST['ticket'];
 	$queue = $ticket['queue'];
 
-	if(!empty($ticket['verifierid']) && ($ticket['verifierid'] == $ticket['owner'])) {
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
+		&& !empty($ticket['verifierid']) && ($ticket['verifierid'] == $ticket['owner'])) {
 		$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
 		$error['owner'] = trans("Ticket verifier could not be the same as owner");
 	};
