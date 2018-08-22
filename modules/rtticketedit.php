@@ -189,8 +189,9 @@ if(isset($_POST['ticket']))
 	};
 	if (!empty($dtime)) {
 		if ($dtime != $ticket['deadline']) {
-            if ($ticket['verifierid'] != Auth::GetCurrentUser())
-                $error['deadline'] = trans("If verifier is set then he's the only person who can change deadline");
+			if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+				&& $ticket['verifierid'] != Auth::GetCurrentUser())
+				$error['deadline'] = trans("If verifier is set then he's the only person who can change deadline");
 			if ($dtime < time())
 				$error['deadline'] = trans("Ticket deadline could not be set in past");
 		}
