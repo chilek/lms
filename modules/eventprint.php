@@ -46,15 +46,17 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, closed, events.type, c.id AS customerid,'
 		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name'). ' AS customername, '
-	        .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
-		events.address_id, va.location, rt.nodeid, nodes.location AS nodelocation, cc.customerphone, rt.netnodeid AS netnodeid, rt.netdevid AS netdevid,
-		ticketid
+	    .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation, 
+		events.address_id, va.location, events.nodeid, nodes.location AS nodelocation, cc.customerphone, nn.id AS netnode_id,
+		nn.name AS netnode_name, vd.address AS netnode_location, ticketid
 		 FROM events
 		 LEFT JOIN vaddresses va ON va.id = events.address_id
 		 LEFT JOIN customerview c ON (customerid = c.id)
 		 LEFT JOIN vnodes nodes ON (events.nodeid = nodes.id)
-		 LEFT JOIN rttickets as rt ON (rt.id = events.ticketid)
-		LEFT JOIN (
+		 LEFT JOIN rttickets as rtt ON (rtt.id = events.ticketid)
+		 LEFT JOIN netnodes as nn ON (nn.id = rtt.netnodeid)
+		 LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
+		 LEFT JOIN (
 			SELECT ' . $DB->GroupConcat('contact', ', ') . ' AS customerphone, customerid
 			FROM customercontacts
 			WHERE type & ? > 0 AND type & ? = 0
