@@ -25,7 +25,7 @@
  */
 
 $_LANG['<!rtheader>Ticket type:'] = 'Rodzaj:';
-$_LANG['<!rtheader>Deadline:'] = 'Rodzaj:';
+$_LANG['<!rtheader>Deadline:'] = 'Termin:';
 $_LANG['<!rt>Unset'] = 'Nieokreślony';
 $_LANG['<!rt>Undetermined'] = 'Nieokreślona';
 $_LANG['Service type:'] = 'Usługa:';
