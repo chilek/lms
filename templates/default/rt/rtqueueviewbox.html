@@ -49,13 +49,11 @@
 			<a href="?m=netdevinfo&id={$ticket.netdevid}"><img src="img/netdev.png" alt=""> {$ticket.netdev_name}</a>
 		{/if}
 		{if $ticket.netdevid || $ticket_netnode_location}<br>{/if}
-		{if $ticket.customerid}
-			{if $ticket.address_id}
-				{$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if},<br>
-				{if $ticket.vacity}{$ticket.vacity}{/if}
-			{else}
-				{if $ticket.city}{$ticket.city},<br>{/if}{$ticket.address}
-			{/if}
+		{if $ticket.address_id}
+			{$ticket.vacity} {$ticket.street} {$ticket.house}
+			{if $ticket.flat}/{$ticket.flat}{/if}
+		{else}
+			{$ticket.address}<br>{$ticket.city}
 		{/if}
 	</TD>
 	<TD class="nobr text-center">
