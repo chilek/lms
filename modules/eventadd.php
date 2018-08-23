@@ -260,7 +260,12 @@ if (isset($event['helpdesk'])) {
 		if (isset($event['customernotify']))
 			$ticket['customernotify'] = 1;
 	} else {
-		$ticket = array();
+		if (isset($eventticketid)) {
+			$ticket = $LMS->GetTicketContents($eventticketid);
+			$event['address_id'] = $ticket['address_id'];
+			$event['nodeid'] = $ticket['nodeid'];
+		} else
+			$ticket = array();
 
 		if (!empty($queuelist)) {
 			$firstqueue = reset($queuelist);
