@@ -21,7 +21,7 @@
         {/foreach}
     </TD>
     <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
-        <IMG src="img/calendar.gif" alt=""> <a href="?m=eventinfo&id={$event.id}"><span class="bold" style="color:black">{$event.title}</span></a>
+        <IMG src="img/calendar.gif" alt=""> <a href="?m=eventinfo&id={$event.id}"><span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
         {if $event.description != ''}<br><IMG src="img/info1.gif" alt=""> {$event.description}{/if}<br>
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><IMG src="img/note.gif" alt=""> {$event.note}</span>{/if}
     </TD>
