@@ -227,15 +227,18 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				array($startdate, $enddate, $enddate, $startdate));
 
 		$list = $this->db->GetAll(
-			'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
-				. $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
+			'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, events.customerid as customerid, closed, events.type, '
+				. $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername, nn.id AS netnode_id, nn.name AS netnode_name, vd.address AS netnode_location,
 				userid, vusers.name AS username, ' . $this->db->Concat('c.city',"', '",'c.address').' AS customerlocation,
-				events.address_id, va.location, nodeid, vn.location AS nodelocation, ticketid
+				events.address_id, va.location, events.nodeid as nodeid, vn.location AS nodelocation, ticketid
 			FROM events
 			LEFT JOIN vaddresses va ON va.id = events.address_id
 			LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 			LEFT JOIN customerview c ON (customerid = c.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
+			LEFT JOIN rttickets as rtt ON (rtt.id = events.ticketid)
+			LEFT JOIN netnodes as nn ON (nn.id = rtt.netnodeid)
+			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
 			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
 			. $privacy_condition
 			.($customerid ? ' AND customerid = '.intval($customerid) : '')

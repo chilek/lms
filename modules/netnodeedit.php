@@ -52,7 +52,7 @@ if ($api) {
 if (isset($netnodedata)) {
 	$netnodedata['id'] = $id;
 	if ($netnodedata['name'] == '')
-		$error['name'] = trans('Net node name is required!');
+		$error['name'] = trans('Network node name is required!');
 
 	if ($api) {
 		if (isset($netnodedata['division'])) {

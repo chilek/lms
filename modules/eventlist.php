@@ -28,6 +28,15 @@ if ($edate = $SESSION->get('edate'))
 	list ($year, $month, $day) = explode('/', $SESSION->get('edate'));
 
 if (!empty($_POST)) {
+    if (!isset($type))
+        $type = null;
+
+    if (!isset($privacy))
+        $privacy = null;
+
+    if (!isset($closed))
+        $closed = null;
+
 	if(isset($_POST['a']))
         $a = $_POST['a'];
 	else

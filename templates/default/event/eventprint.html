@@ -56,7 +56,7 @@
 		<TD class="text-center">
 			{$_EVENTTYPES[$event.type]}
 		</TD>
-                                <TD class="text-center">{if $event.ticketid>0}#{$event.ticketid}{/if}</TD>
+		<TD class="text-center">{if $event.ticketid>0}#{$event.ticketid}{/if}</TD>
 		<TD class="text-left">
 			<B>{$event.title}</B><BR>
 			{$event.description}<BR>
@@ -68,6 +68,10 @@
 			{/foreach}
 		</TD>
 		<TD class="valign-top text-center nobr">
+		{if $event.netnode_id}
+			{trans("Network node:")}<br>
+			{$event.netnode_name}<br>{$event.netnode_location}
+		{else}
 			{$event.customername|truncate:"40":"...":true}{if !empty($event.customerid)} ({$event.customerid}){/if}<BR>
 			{if !empty($event.address_id)}
 				{$event.location}
@@ -77,6 +81,7 @@
 				{$event.customerlocation}
 			{/if}
 			<br>{$event.customerphone}
+		{/if}
 		</TD>
 	</TR>
 	{/foreach}
