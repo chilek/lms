@@ -69,7 +69,7 @@
 		</TD>
 		<TD class="valign-top text-center nobr">
 		{if $event.netnode_id}
-			{trans("Net node:")}<br>
+			{trans("Network node:")}<br>
 			{$event.netnode_name}<br>{$event.netnode_location}
 		{else}
 			{$event.customername|truncate:"40":"...":true}{if !empty($event.customerid)} ({$event.customerid}){/if}<BR>
