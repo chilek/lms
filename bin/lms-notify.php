@@ -1234,10 +1234,11 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
 	}
 }
 
-if (in_array('www', $channels))
-	foreach ($notifications as $type => $notification) {
+if (in_array('www', $channels) && !empty($types))
+	foreach ($types as $type) {
 		if ($type == 'messages')
 			continue;
+		$notification = $notifications[$type];
 		if (!$debug) {
 			if (!($fh = fopen($notification['file'], 'w')))
 				continue;
