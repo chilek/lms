@@ -3257,7 +3257,6 @@ $_LANG['Nodes list'] = 'Lista węzłów';
 $_LANG['Network device nodes list'] = 'Lista węzłów sieciowych';
 $_LANG['Network Device Nodes'] = 'Węzły sieciowe';
 $_LANG['Network Device Node:'] = 'Węzeł sieciowy';
-$_LANG['Network node:'] = 'Węzeł sieciowy:';
 $_LANG['New node'] = 'Nowy węzeł';
 $_LANG['Add new network device node'] = 'Dodaj nowy węzeł sieciowy';
 $_LANG['There are no device nodes in your database.'] = 'Brak węzłów sieciowych w bazie.';
