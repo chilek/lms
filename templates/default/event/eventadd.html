@@ -144,12 +144,8 @@ $(function() {
 			{trans("Location:")}
 		</TD>
 		<TD class="nobr">
-			{if empty($event.ticketid)}
 			<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}>
 			</select>
-			{else}
-				{trans("Request not assigned to any customer location.")}
-			{/if}
 		</TD>
 	</TR>
 	<TR id="node-row"{if empty($nodes)} style="display: none;"{/if}>
@@ -160,16 +156,12 @@ $(function() {
 			{trans("Node:")}
 		</TD>
 		<TD class="nobr">
-			{if empty($event.ticketid)}
 			<select name="event[nodeid]" {tip text="Select node"}>
 				<option value="">{trans("- none -")}</option>
 				{foreach $nodes as $node}
-				<option value="{$node.id}"{if $node.id == $event.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
+				<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
 				{/foreach}
 			</select>
-			{else}
-				{trans("Request not assigned to any customer location.")}
-			{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -337,7 +329,6 @@ function update_user_selection(users) {
 	{/if}
 }
 
-{if empty($event.ticketid)}
 function change_customer() {
 	getCustomerAddresses( $('[name="event[custid]"]').val(), function(addresses) {
 		customer_addresses.setAddressList( addresses );
@@ -348,7 +339,7 @@ function change_customer() {
 function update_nodes(data) {
 	var options = '<option value="">{trans("- none -")}</option>';
 	$.each(data, function(k, v) {
-		options += '<option value="' + v.id + '">' + v.name + ': ' + v.location + '</option>';
+		options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
 	});
 	$('[name="event[nodeid]"]').html(options);
 	if (data.length) {
@@ -367,13 +358,18 @@ var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
 getCustomerAddresses( {intval($event.customerid)}, function(addresses) {
 	customer_addresses.setAddressList(addresses);
 
-	{if $event.address_id && intval($event.customerid)}
+	{if intval($event.customerid)}
+	{if $event.address_id}
 	$( '#customer_addresses' ).val( {$event.address_id} );
+	{else}
+	if (Object.keys(addresses).length == 1) {
+		$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+	}
+	{/if}
 	{/if}
 
 	customer_addresses.init();
 });
-{/if}
 //-->
 </SCRIPT>
 {/block}
