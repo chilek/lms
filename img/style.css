@@ -860,6 +860,9 @@ button.lms-ui-fileupload-button:active {
   background-color: #CEBD9B;
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
 }
+div.lms-ui-fileupload-button-container {
+  padding-bottom: 3px;
+}
 .lms-ui-rtmessage-current td:first-child {
   border-left: 2px solid brown;
 }
