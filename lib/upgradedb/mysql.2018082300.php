@@ -50,7 +50,7 @@ $this->Execute("
 		md5sum varchar(32) NOT NULL,
 		PRIMARY KEY (id),
 		INDEX md5sum (md5sum),
-		UNIQUE KEY files_containerid_key (contrainerid, md5sum),
+		UNIQUE KEY files_containerid_key (containerid, md5sum),
 		FOREIGN KEY (containerid) REFERENCES filecontainers (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB
 ");
