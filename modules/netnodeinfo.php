@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -43,7 +43,7 @@ $SMARTY->assign('netdevlist', $nlist);
 
 $queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
 	'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => null, 'netnodeids' => $id));
-$queue_count = $queue['total'];
+$total = $queue['total'];
 unset($queue['total']);
 unset($queue['state']);
 unset($queue['order']);
@@ -52,16 +52,19 @@ unset($queue['owner']);
 unset($queue['removed']);
 unset($queue['priority']);
 unset($queue['deadline']);
+unset($queue['service']);
+unset($queue['type']);
+unset($queue['unread']);
+unset($queue['rights']);
 
 $SMARTY->assign('queue', $queue);
-$SMARTY->assign('queue_count', $queue_count);
-$SMARTY->assign('queue_netnodeid', $id);
 
 $start = 0;
-$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue_count);
+$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('pagelimit', $pagelimit);
 
+$SMARTY->assign('netnodeinfo_sortable_order', $SESSION->get_persistent_setting('netnodeinfo-sortable-order'));
 $SMARTY->display('netnode/netnodeinfo.html');
 
 ?>
