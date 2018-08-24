@@ -201,40 +201,9 @@ if (isset($_POST['document'])) {
 		$error['files'] = trans('You must to specify file for upload or select document template!');
 
 	if (!$error) {
-		foreach ($files as &$file) {
-			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
-			$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
-
-			// If we have a file with specified md5sum, we assume
-			// it's here because of some error. We can replace it with
-			// the new document file
-			// why? document attachment can be shared between different documents.
-			// we should rather use the other message digest in such case!
-			$filename = empty($file['tmpname']) ? $file['name'] : $file['tmpname'];
-			if (($LMS->DocumentAttachmentExists($file['md5sum'])
-					|| $LMS->FiieExists($file['md5sum']))
-				&& (filesize($file['newfile']) != filesize($filename)
-					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $filename))) {
-				$error['files'] = trans('Specified file exists in database!');
-				break;
-			}
-		}
-		unset($file);
-		if (!$error) {
-			foreach ($files as $file) {
-				@mkdir($file['path'], 0700);
-				if (empty($file['tmpname'])) {
-					if (!@copy($file['name'], $file['newfile'])) {
-						$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
-						break;
-					}
-				} elseif (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
-					$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
-					break;
-				}
-			}
+		$error = $LMS->AddDocumentAttachments($files);
+		if (empty($error))
 			rrmdir($tmppath);
-		}
 	}
 
 	if (!$error) {
