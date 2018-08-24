@@ -751,6 +751,7 @@ switch ($edit) {
 		if (ConfigHelper::checkConfig('phpui.ewx_support'))
 			$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 
+		$SMARTY->assign('netdevedit_sortable_order', $SESSION->get_persistent_setting('netdevedit-sortable-order'));
 		$SMARTY->display('netdev/netdevedit.html');
 		break;
 	case 'ip':
