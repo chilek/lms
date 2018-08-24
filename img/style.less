@@ -768,7 +768,7 @@ table.lmsbox {
 			}
 			tr.ui-selected {
 			}
-			tr {
+			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
 				border-bottom: 1px dotted gray;
 			}
 		}
@@ -783,7 +783,7 @@ table.lmsbox {
 		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
 			background-color: @lucid;
 		}
-		tr {
+		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
 			border-bottom: 1px dotted gray;
 		}
 	}

@@ -1,4 +1,5 @@
 {block name=rtbox}
+{if $queue_count}
 {foreach $queue as $ticket}
 <TR class="highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}" onClick="return self.location.href = '?m=rtticketview&id={$ticket.id}';">
 	<TD class="text-center">
@@ -96,11 +97,12 @@
 		<A href="?m=rtticketview&id={$ticket.id}"><img src="img/info.gif" alt="" title="{trans("Info")}"> </A>
 	</TD>
 </TR>
-{foreachelse}
+{/foreach}
+{else}
 <TR>
 	<TD COLSPAN="11" class="empty-table">
 		<p>{trans("This queue is empty.")}</p>
 	</TD>
 </TR>
-{/foreach}
+{/if}
 {/block}

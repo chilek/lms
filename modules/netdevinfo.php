@@ -133,6 +133,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 		$SMARTY->assign('netdevauthtype', $netdevauthtype);
 		$SMARTY->display('netdev/netdevipinfo.html');
 	} else {
+		$SMARTY->assign('netdevinfo_sortable_order', $SESSION->get_persistent_setting('netdevinfo-sortable-order'));
 		$SMARTY->display('netdev/netdevinfo.html');
 	}
 }

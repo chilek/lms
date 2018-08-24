@@ -4,6 +4,7 @@
 <!--// $Id$ //-->
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
+<div id="netdevinfo-sortable" class="lms-ui-sortable-persistent">
 {block name=netdevinfobox}
 	{include file="netdev/netdevinfobox.html"}
 {/block}
@@ -28,4 +29,8 @@
 {block name=netdevtickets}
         {include file="netdev/netdevtickets.html"}
 {/block}
+</div>
+<script type="text/javascript">
+	restoreSortable('netdevinfo-sortable', '{$netdevinfo_sortable_order}');
+</script>
 {/block}
