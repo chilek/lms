@@ -43,6 +43,10 @@ if(isset($_POST['ticket']))
 	$ticket = $_POST['ticket'];
 	$queue = $ticket['queue'];
 
+	$result = handle_file_uploads('files', $error);
+	extract($result);
+	$SMARTY->assign('fileupload', $fileupload);
+
 	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
 		&& !empty($ticket['verifierid']) && ($ticket['verifierid'] == $ticket['owner'])) {
 		$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
@@ -92,10 +96,6 @@ if(isset($_POST['ticket']))
 			}
 		}
 	}
-
-	$result = handle_file_uploads('files', $error);
-	extract($result);
-	$SMARTY->assign('fileupload', $fileupload);
 
 	if (!$error) {
 		if (!$ticket['customerid']) {
