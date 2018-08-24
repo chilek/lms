@@ -1,5 +1,5 @@
 <style>
-    tr.lms-ui-button-panel > td:not(#fileupload-button) {
+    tr.lms-ui-button-panel > td {
         padding-top: 10px;
     }
 </style>
@@ -90,7 +90,7 @@
                             <td class="valign-top nobr">
                                 <input type="text" name="upload[description]" size="50" value="{$upload.description}">
                             </td>
-                            <TD class="bold nobr valign-top" id="fileupload-button" colspan="2">
+                            <TD class="bold nobr valign-top" colspan="2">
                                 {fileupload id="files" fileupload=$fileupload}
                             </td>
                             <td class="bold nobr valign-top text-right">
