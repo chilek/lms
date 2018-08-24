@@ -211,7 +211,8 @@ if (isset($_POST['document'])) {
 			// why? document attachment can be shared between different documents.
 			// we should rather use the other message digest in such case!
 			$filename = empty($file['tmpname']) ? $file['name'] : $file['tmpname'];
-			if ($LMS->DocumentAttachmentExists($file['md5sum'])
+			if (($LMS->DocumentAttachmentExists($file['md5sum'])
+					|| $LMS->FiieExists($file['md5sum']))
 				&& (filesize($file['newfile']) != filesize($filename)
 					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $filename))) {
 				$error['files'] = trans('Specified file exists in database!');
