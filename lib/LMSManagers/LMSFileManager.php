@@ -34,10 +34,16 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface {
 			FROM filecontainers c
 			LEFT JOIN vusers u ON u.id = c.creatorid
 			WHERE c.' . $type . ' = ?', array($id));
-		foreach ($result as &$container)
+		if (empty($result))
+			return null;
+
+		foreach ($result as &$container) {
+			$container['description'] = wordwrap($container['description'], 120, '<br>', true);
 			$container['files'] = $this->db->GetAll('SELECT * FROM files
 				WHERE containerid = ?', array($container['id']));
+		}
 		unset($container);
+
 		return $result;
 	}
 
