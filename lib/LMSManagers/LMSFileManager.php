@@ -131,8 +131,8 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface {
 
 			if (($document_manager->DocumentAttachmentExists($md5sum)
 					|| $this->FileExists($md5sum))
-				&& (filesize($name) != filesize($filename)
-					|| hash_file('sha256', $name) != hash_file('sha256', $filename))) {
+				&& (filesize($name) != filesize($file['name'])
+					|| hash_file('sha256', $name) != hash_file('sha256', $file['name']))) {
 				die(trans('Specified file exists in database!'));
 				break;
 			}
