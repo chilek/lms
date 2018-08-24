@@ -3982,4 +3982,11 @@ $_LANG['Public network:'] = 'Sieć publiczna:';
 $_LANG['Assign public network (optional)'] = 'Przypisz sieć publiczną (opcjonalnie)';
 $_LANG['- select public network -'] = '- wybierz sieć publiczną -';
 
+$_LANG['Creator:'] = 'Twórca:';
+$_LANG['Download file container as zip archive'] = 'Pobierz kontener plikowy jako archiwum zip';
+$_LANG['Delete file container'] = 'Usuń kontener plikowy';
+$_LANG['Show file list'] = 'Pokaż listę plików';
+$_LANG['Are you sure you want to delete this file container?'] = 'Jesteś pewien, że chcesz usunąć ten kontener plikowy?';
+$_LANG['Attachments ($a):'] = 'Załączniki ($a):';
+
 ?>

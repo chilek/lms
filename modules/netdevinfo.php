@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,6 +34,11 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'netdevxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled by netdevxajax.inc.php
+
+	$attachmenttype = 'netdevid';
+	$attachmentresourceid = $id;
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
+
 	$netdevinfo = $LMS->GetNetDev($id);
 	$netdevconnected = $LMS->GetNetDevConnectedNames($id);
 	$netcomplist = $LMS->GetNetdevLinkedNodes($id);

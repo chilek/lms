@@ -10,6 +10,9 @@
 {block name=netdevipbox}
 	{include file="netdev/netdevipbox.html"}
 {/block}
+{block name=netdevattachments}
+	{include file="attachments.html" attachmenttype="netdevid" attachmentresourceid=$netdevinfo.id}
+{/block}
 {block name=netdevmanagementurl}
 	{include file="managementurl/managementurls.html"}
 {/block}

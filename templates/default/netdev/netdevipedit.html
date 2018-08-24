@@ -16,6 +16,9 @@
 {block name=netdevnodesessionbox}
 	{include file="node/nodesessions.html"}
 {/block}
+{block name=netdevattachments}
+	{include file="attachments.html" attachmenttype="netdevid" attachmentresourceid=$netdevinfo.id}
+{/block}
 {block name=netdevmanagementurl}
 	{include file="managementurl/managementurls.html"}
 {/block}

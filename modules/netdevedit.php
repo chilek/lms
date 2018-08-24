@@ -678,6 +678,10 @@ if (isset($netdevdata)) {
 		die;
 	}
 } else {
+	$attachmenttype = 'netdevid';
+	$attachmentresourceid = $id;
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
+
 	$netdevdata = $LMS->GetNetDev($id);
 
 	if ($netdevdata['purchasetime'])
