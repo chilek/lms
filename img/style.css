@@ -970,7 +970,6 @@ table.lmsbox-inner.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):
 }
 table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel),
 table.lmsbox-inner.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
-
   border-bottom: 1px dotted gray;
 }
 table.lmsbox.lms-ui-background-cycle > tbody tr.highlight:hover {
@@ -982,7 +981,6 @@ table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.l
 table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
   background-color: #EBE4D6;
 }
-
 table.lmsbox.lms-ui-background-cycle > tbody tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
   border-bottom: 1px dotted gray;
 }
