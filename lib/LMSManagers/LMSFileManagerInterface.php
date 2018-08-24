@@ -35,5 +35,7 @@ interface LMSFileManagerInterface {
 
 	public function DeleteFileContainer($id);
 
+	public function DeleteFileContainers($type, $resourceid);
+
 	public function FileExists($md5sum);
 }

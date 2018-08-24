@@ -3592,6 +3592,11 @@ class LMS
 		return $manager->DeleteFileContainer($id);
 	}
 
+	public function DeleteFileContainers($type, $resourceid) {
+		$manager = $this->getFileManager();
+		return $manager->DeleteFileContainers($type, $resourceid);
+	}
+
 	public function FileExists($md5sum) {
 		$manager = $this->getFileManager();
 		return $manager->FileExists($md5sum);

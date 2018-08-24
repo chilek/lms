@@ -727,6 +727,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function DeleteNetDev($id)
     {
+		$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$file_manager->DeleteFileContainers('netdevid', $id);
+
         $this->db->BeginTrans();
         if ($this->syslog) {
             $netlinks = $this->db->GetAll('SELECT id, src, dst FROM netlinks WHERE src = ? OR dst = ?', array($id, $id));

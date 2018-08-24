@@ -146,18 +146,39 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface {
 		}
 	}
 
-	public function DeleteFileContainer($id) {
+	protected function DeleteFileByMD5SUM($md5sum) {
 		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		if (!$document_manager->DocumentAttachmentExists($md5sum)
+			&& $this->FileExists($md5sum) <= 1)
+			@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2)
+				. DIRECTORY_SEPARATOR  . $md5sum);
 
-		$files = $this->db->GetAll('SELECT id, md5sum FROM files WHERE containerid = ?', array($id));
-		if (!empty($files))
-			foreach ($files as $file)
-				if (!$document_manager->DocumentAttachmentExists($file['md5sum'])
-					&& $this->FileExists($file['md5sum']) <= 1)
-					@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'],0,2)
-						. DIRECTORY_SEPARATOR  . $file['md5sum']);
+	}
+
+	public function DeleteFileContainer($id) {
+		$md5sums = $this->db->GetCol('SELECT DISTINCT md5sum FROM files WHERE containerid = ?', array($id));
+		if (!empty($md5sums))
+			foreach ($md5sums as $md5sum)
+				$this->DeleteFileByMD5SUM($md5sum);
 
 		return $this->db->Execute('DELETE FROM filecontainers WHERE id = ?', array($id));
+	}
+
+	public function DeleteFileContainers($type, $resourceid) {
+		if (!preg_match('/^[a-z0-9_]+$/', $type)
+			|| !preg_match('/^[0-9]+$/', $resourceid))
+			return null;
+
+		$md5sums = $this->db->GetCol('SELECT DISTINCT md5sum
+			FROM files f
+			JOIN filecontainers c ON c.id = f.containerid
+			WHERE c.' . $type . ' = ?', array($resourceid));
+		if (!empty($md5sums))
+			foreach ($md5sums as $md5sum)
+				$this->DeleteFileByMD5SUM($md5sum);
+
+		return $this->db->Execute('DELETE FROM filecontainers
+			WHERE ' . $type . ' = ?', array($resourceid));
 	}
 
 	public function FileExists($md5sum) {

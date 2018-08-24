@@ -189,6 +189,9 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($addr_id));
 		}
 
+		$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$file_manager->DeleteFileContainers('netnodeid', $id);
+
 		return $this->db->Execute("DELETE FROM netnodes WHERE id=?", array($id));
 	}
 
