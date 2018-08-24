@@ -603,7 +603,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($address_id));
 	}
 
-	public function AddDocumentAttachments(array $files) {
+	public function AddDocumentFileAttachments(array $files) {
 		$error = array();
 		$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
 

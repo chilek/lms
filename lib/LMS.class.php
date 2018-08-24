@@ -2535,9 +2535,9 @@ class LMS
 		return $manager->DeleteDocumentAddresses($docid);
 	}
 
-	public function AddDocumentAttachments(array $files) {
+	public function AddDocumentFileAttachments(array $files) {
 		$manager = $this->getDocumentManager();
-		return $manager->AddDocumentAttachments($files);
+		return $manager->AddDocumentFileAttachments($files);
 	}
 
 	public function DocumentAttachmentExists($md5sum) {
