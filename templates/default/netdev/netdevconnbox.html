@@ -1,78 +1,85 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD style="width: 100%;" class="hand nobr" onClick="showOrHide('devicedevices');">
+<TABLE class="lmsbox lms-ui-sortable" id="netdevconnbox">
+    <COLGROUP>
+		<COL style="width: 100%;">
+	</COLGROUP>
+	<THEAD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicedevices">
+		<TD class="bold nobr">
 			<IMG SRC="img/mac.gif" alt="">
-			<span class="bold">{t a=$netdevlist|@count}Connected devices ($a):{/t}</span>
+			{t a=$netdevlist|@count}Connected devices ($a):{/t}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR id="devicedevices" style="display:none;">
 		<TD style="width: 100%;">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
+				<COLGROUP>
+					<COL style="width: 96%;">
+					<COL style="width: 1;">
+					<COL style="width: 1;">
+					<COL style="width: 1;">
+					<COL style="width: 1;">
+				</COLGROUP>
         <THEAD>
-	<TR>
-		<TD style="width: 96%;">
+	<TR class="lms-ui-header-panel">
+		<TD>
 			<IMG src="img/netdev.gif" ALT=""> <span class="bold">{trans("Name")} / {trans("Producer")}:</span><BR>
 			<IMG src="img/home.gif" ALT=""> {trans("Location:")}
 		</TD>
-		<TD style="width: 1%;" class="nobr">
+		<TD class="nobr">
 			{trans("Link technology:")}<BR>
 			{trans("Link speed:")}
 		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
+		<TD class="text-right nobr">
 			{trans("Port")}:<BR>
 			{trans("ID:")}
 		</TD>
-		<TD style="width: 1%;" class="nobr">
+		<TD class="nobr">
 			<IMG src="img/netdev_takenports.gif" ALT=""> {trans("Dest. port")}:<BR>
 			<IMG src="img/port.gif" ALT=""> {trans("Ports (used):")}
 		</TD>
-		<TD style="width: 1%;">
-			&nbsp;
-		</TD>
+		<TD>&bsp;</TD>
 	</TR>
         </THEAD>
         <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=netdevlist loop=$netdevlist start=$start}
-	<TR class="highlight {cycle}">
-		<TD class="valign-top nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><span class="bold">{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</span></A><BR>
-			<IMG src="img/home.gif" ALT=""> {$netdevlist[netdevlist].location}{if $netdevlist[netdevlist].borough_name} ({$netdevlist[netdevlist].state_name} / {$netdevlist[netdevlist].district_name} / {$_BOROUGHTYPES[$netdevlist[netdevlist].borough_type]} {$netdevlist[netdevlist].borough_name}){/if}
+	{foreach $netdevlist as $netdev}
+	<TR class="highlight">
+		<TD class="valign-top nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdev.id}';">
+			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdev.id}"><span class="bold">{$netdev.name} {if $netdev.producer}/ {$netdev.producer}{/if}</span></A><BR>
+			<IMG src="img/home.gif" ALT=""> {$netdev.location}{if $netdev.borough_name} ({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name}){/if}
 		</TD>
-		<TD class="valign-top nobr" id="dev_{$netdevlist[netdevlist].id}">
-			{if $netdevlist[netdevlist].linktechnology}{$_LINKTECHNOLOGIES[$netdevlist[netdevlist].linktype][$netdevlist[netdevlist].linktechnology]}{/if}{if $netdevlist[netdevlist].linktype == 1 && ($netdevlist[netdevlist].srcradiosector || $netdevlist[netdevlist].dstradiosector)} ({if $netdevlist[netdevlist].srcradiosector}{$netdevlist[netdevlist].srcradiosector}{else}-{/if}/{if $netdevlist[netdevlist].dstradiosector}{$netdevlist[netdevlist].dstradiosector}{else}-{/if}){/if}<BR>
-			{if $netdevlist[netdevlist].linkspeed}{$_LINKSPEEDS[$netdevlist[netdevlist].linkspeed]}{/if}
+		<TD class="valign-top nobr" id="dev_{$netdev.id}">
+			{if $netdev.linktechnology}{$_LINKTECHNOLOGIES[$netdev.linktype][$netdev.linktechnology]}{/if}{if $netdev.linktype == 1 && ($netdev.srcradiosector || $netdev.dstradiosector)} ({if $netdev.srcradiosector}{$netdev.srcradiosector}{else}-{/if}/{if $netdev.dstradiosector}{$netdev.dstradiosector}{else}-{/if}){/if}<BR>
+			{if $netdev.linkspeed}{$_LINKSPEEDS[$netdev.linkspeed]}{/if}
 		</TD>
-		<TD class="text-right nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
-			<IMG src="img/empty.gif" height="16">[{if $netdevlist[netdevlist].srcport}{$netdevlist[netdevlist].srcport}{/if}]<BR>
-			({$netdevlist[netdevlist].id|string_format:"%04d"})
+		<TD class="text-right nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdev.id}';">
+			<IMG src="img/empty.gif" height="16">[{if $netdev.srcport}{$netdev.srcport}{/if}]<BR>
+			({$netdev.id|string_format:"%04d"})
 		</TD>
 		<TD class="nobr">
-			<span id="devlinkproperties_{$netdevlist[netdevlist].id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netdevlist[netdevlist].id}', true);">
-				<IMG SRC="img/{if $netdevlist[netdevlist].linktype == 1}wireless.gif{elseif $netdevlist[netdevlist].linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{trans("Change connection properties")}" {tip trigger="devlinkproperties_$netdevlist[netdevlist].id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdevlist[netdevlist].linktype]}<br>{if $netdevlist[netdevlist].linktype == 1}{if $netdevlist[netdevlist].srcradiosector}{trans("Radio sector:")} {$netdevlist[netdevlist].srcradiosector}<br>{/if}{if $netdevlist[netdevlist].dstradiosector}{trans("Destination radio sector:")} {$netdevlist[netdevlist].dstradiosector}<br>{/if}{/if}{if $netdevlist[netdevlist].linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevlist[netdevlist].linktype][$netdevlist[netdevlist].linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevlist[netdevlist].linkspeed]}</span>"}>
+			<span id="devlinkproperties_{$netdev.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netdev.id}', true);">
+				<IMG SRC="img/{if $netdev.linktype == 1}wireless.gif{elseif $netdev.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{trans("Change connection properties")}" {tip trigger="devlinkproperties_$netdev.id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdev.linktype]}<br>{if $netdev.linktype == 1}{if $netdev.srcradiosector}{trans("Radio sector:")} {$netdev.srcradiosector}<br>{/if}{if $netdev.dstradiosector}{trans("Destination radio sector:")} {$netdev.dstradiosector}<br>{/if}{/if}{if $netdev.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdev.linktype][$netdev.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdev.linkspeed]}</span>"}>
 			</span>
-			<span onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
-			[{if $netdevlist[netdevlist].dstport}{$netdevlist[netdevlist].dstport}{/if}]
-			<BR><IMG SRC="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
+			<span onClick="return self.location.href='?m=netdevinfo&id={$netdev.id}';">
+			[{if $netdev.dstport}{$netdev.dstport}{/if}]
+			<BR><IMG SRC="img/port.gif" ALT=""> {$netdev.ports} ({$netdev.takenports})
 			</span>
 		</TD>
 		<TD class="text-right">
-			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdev.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD colspan="6" class="empty-table">
 			<P>{trans("No such connected devices.")}</P>
 		</TD>
 	</TR>
-	{/section}
-	<TR>
-		<TD class="ftop dark text-center nobr" COLSPAN="6">
+	{/foreach}
+	<TR class="lms-ui-button-panel">
+		<TD class="text-center nobr" COLSPAN="6">
 			{if $netdevinfo.ports == $netdevinfo.takenports}
 			<span class="bold">{trans("All ports in that device are in use.")}</span>
 			{elseif !$restnetdevlist}
@@ -84,8 +91,12 @@
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
 			<TABLE style="width: 100%;">
+				<COLGROUP>
+					<COL style="width: 99%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
 				<TR>
-					<TD style="width: 99%; white-space: nowrap;">
+					<TD class="dark nobr">
 						<span class="bold">{trans("Connect")}:</span>
 						{trans("Device:")}<SELECT NAME="netdev" id="srcnetdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev()">
 						{section name=restnetdevlist loop=$restnetdevlist}
@@ -125,7 +136,7 @@
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD style="width: 1%; white-space: nowrap;">
+					<TD class="dark nobr">
 						<A HREF="javascript:document.connect.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt="">
 					</TD>
 				</TR>
@@ -239,7 +250,8 @@ function radio_sectors_received_for_dstnetdev(radiosectors) {
 xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', {$restnetdevlist[0].id});
 {/if}
 
-if (getCookie('devicedevices') == '1')
-	xjx.$('devicedevices').style.display = '';
+if (getCookie('devicedevices') == '1') {
+	$('#devicedevices').show();
+}
 //-->
 </SCRIPT>

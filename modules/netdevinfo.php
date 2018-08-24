@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,6 +34,11 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'netdevxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled by netdevxajax.inc.php
+
+	$attachmenttype = 'netdevid';
+	$attachmentresourceid = $id;
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
+
 	$netdevinfo = $LMS->GetNetDev($id);
 	$netdevconnected = $LMS->GetNetDevConnectedNames($id);
 	$netcomplist = $LMS->GetNetdevLinkedNodes($id);
@@ -73,7 +78,6 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	}
 	$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
 		'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => $id));
-	$queue_count = $queue['total'];
 	unset($queue['total']);
 	unset($queue['state']);
 	unset($queue['order']);
@@ -82,6 +86,10 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	unset($queue['removed']);
 	unset($queue['priority']);
 	unset($queue['deadline']);
+	unset($queue['service']);
+	unset($queue['type']);
+	unset($queue['unread']);
+	unset($queue['rights']);
 
 	$start = 0;
 	$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
@@ -128,6 +136,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 		$SMARTY->assign('netdevauthtype', $netdevauthtype);
 		$SMARTY->display('netdev/netdevipinfo.html');
 	} else {
+		$SMARTY->assign('netdevinfo_sortable_order', $SESSION->get_persistent_setting('netdevinfo-sortable-order'));
 		$SMARTY->display('netdev/netdevinfo.html');
 	}
 }

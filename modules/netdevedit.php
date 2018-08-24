@@ -678,6 +678,10 @@ if (isset($netdevdata)) {
 		die;
 	}
 } else {
+	$attachmenttype = 'netdevid';
+	$attachmentresourceid = $id;
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
+
 	$netdevdata = $LMS->GetNetDev($id);
 
 	if ($netdevdata['purchasetime'])
@@ -747,6 +751,7 @@ switch ($edit) {
 		if (ConfigHelper::checkConfig('phpui.ewx_support'))
 			$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 
+		$SMARTY->assign('netdevedit_sortable_order', $SESSION->get_persistent_setting('netdevedit-sortable-order'));
 		$SMARTY->display('netdev/netdevedit.html');
 		break;
 	case 'ip':

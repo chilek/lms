@@ -60,6 +60,7 @@ class LMS
     protected $user_group_manager;
     protected $division_manager;
     protected $project_manager;
+	protected $file_manager;
 
 	const db_dump_multi_record_limit = 500;
 
@@ -260,7 +261,8 @@ class LMS
 				'cashrights', 'cashreglog', 'ewx_pt_config', 'dbinfo', 'customercontacts',
 				'excludedgroups', 'messages', 'messageitems', 'nastypes', 'managementurls',
 				'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata',
-				'templates', 'usergroups', 'userassignments', 'passwdhistory', 'up_rights',
+				'templates', 'usergroups', 'userassignments', 'passwdhistory',
+				'filecontainers', 'files', 'up_rights',
 				'up_rights_assignments', 'up_customers', 'up_help', 'up_info_changes'
 			);
 
@@ -2533,6 +2535,11 @@ class LMS
 		return $manager->DeleteDocumentAddresses($docid);
 	}
 
+	public function AddDocumentFileAttachments(array $files) {
+		$manager = $this->getDocumentManager();
+		return $manager->AddDocumentFileAttachments($files);
+	}
+
 	public function DocumentAttachmentExists($md5sum) {
 		$manager = $this->getDocumentManager();
 		return $manager->DocumentAttachmentExists($md5sum);
@@ -3551,6 +3558,43 @@ class LMS
 	public function UpdateProject($id, $project) {
 		$manager = $this->getProjectManager();
 		return $manager->UpdateProject($id, $project);
+	}
+
+	// files
+	protected function getFileManager() {
+		if (!isset($this->file_manager))
+			$this->file_manager = new LMSFileManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->file_manager;
+	}
+
+	public function GetFileContainers($type, $id) {
+		$manager = $this->getFileManager();
+		return $manager->GetFileContainers($type, $id);
+	}
+
+	public function GetFile($id) {
+		$manager = $this->getFileManager();
+		return $manager->GetFile($id);
+	}
+
+	public function GetZippedFileContainer($id) {
+		$manager = $this->getFileManager();
+		return $manager->GetZippedFileContainer($id);
+	}
+
+	public function AddFileContainer(array $params) {
+		$manager = $this->getFileManager();
+		return $manager->AddFileContainer($params);
+	}
+
+	public function DeleteFileContainer($id) {
+		$manager = $this->getFileManager();
+		return $manager->DeleteFileContainer($id);
+	}
+
+	public function FileExists($md5sum) {
+		$manager = $this->getFileManager();
+		return $manager->FileExists($md5sum);
 	}
 
 	public function GetFinancialDocument($doc, $SMARTY) {

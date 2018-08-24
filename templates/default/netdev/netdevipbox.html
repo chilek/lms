@@ -1,54 +1,66 @@
 <!--// $Id$ //-->
+<div class="lms-ui-sortable" id="netdevipbox">
 <TABLE class="lmsbox">
-    <THEAD>
-        <TR>
-	        <TD width="99%" class="hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
-			<IMG SRC="img/ip.gif" ALT="">
-			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
-		</TD>
-	        <TD width="1%" class="text-right nobr">
-			<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A>
-		</TD>	
-	</TR>
+    <COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1;">
+	</COLGROUP>
+	<THEAD>
+        <TR class="hand lmsbox-titlebar" data-lmsbox-content="deviceips">
+	        <TD class="bold nobr">
+				<IMG SRC="img/ip.gif" ALT="">
+				{t a=$netdevips|@count}IP addresses ($a):{/t}
+			</TD>
+	        <TD class="text-right nobr">
+				<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A>
+			</TD>
+		</TR>
     </THEAD>
     <TBODY>
 	<TR id="deviceips" style="display:none;">
 	        <TD WIDTH="100%" colspan="2">
-		        <TABLE class="lmsbox-inner">
+		        <TABLE class="lmsbox-inner lms-ui-background-cycle">
+					<COLGROUP>
+						<COL style="width: 95%;">
+						<COL style="width: 1%;">
+						<COL style="width: 1%;">
+						<COL style="width: 1%;">
+						<COL style="width: 1;">
+						<COL style="width: 1%;">
+					</COLGROUP>
                             <THEAD>
-	<TR>
-	        <TD WIDTH="95%"><B>{trans("Name:")}</B></TD>
-		<TD WIDTH="1%" align="right">{trans("ID:")}</TD>
-		<TD WIDTH="1%" align="right">{trans("Address:")}</TD>
-		<TD WIDTH="1%" align="right">{trans("MAC:")}</TD>
-		<TD WIDTH="1%" align="right">{trans("Network")}</TD>
-		<TD WIDTH="1%">&nbsp;</TD>
+	<TR class="lms-ui-header-panel">
+		<TD class="bold">{trans("Name:")}</TD>
+		<TD class="text-right">{trans("ID:")}</TD>
+		<TD class="text-right">{trans("Address:")}</TD>
+		<TD class="text-right">{trans("MAC:")}</TD>
+		<TD class="text-right">{trans("Network")}</TD>
+		<TD>&nbsp;</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{if $netdevips}
-	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
-	<TR class="highlight {cycle}{if ! $netdevips[list].access} blend{/if}"  >
-		<TD WIDTH="95%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" class="nobr">
+	<TR class="highlight{if !$netdevips[list].access} blend{/if}">
+		<TD onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" class="nobr">
 			<B>{$netdevips[list].name}</B>
 			{if $netdevips[list].location}<BR>
 			    {$netdevips[list].info|truncate:50:"...":true}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+		<TD onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
+		<TD class="text-right nobr" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<BR>
 		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+		<TD onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			{$netdevips[list].mac|replace:",":"<BR>"}
 		</TD>
-		<TD class="bold" WIDTH="1%" align="right" NOWRAP>
+		<TD class="bold text-right nobr">
 			<a href="?m=netinfo&id={$netdevips[list].netid}">{$netdevips[list].netname|truncate:"20":"...":true}</a>
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
 			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevips[list].id}" onClick="return confirmLink(this, '{t a=$netdevips[list].name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
 			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
@@ -63,8 +75,8 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR>
-		<TD WIDTH="100%" COLSPAN="6">
+	<TR class="lms-ui-button-panel">
+		<TD COLSPAN="6">
 			<IMG SRC="img/access.gif">
 			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
 		</TD>
@@ -75,11 +87,11 @@
 	</TR>
     </TBODY>
 </TABLE>
+</div>
 <SCRIPT type="text/javascript">
 <!--
-if (getCookie('deviceips') == '1')
-{
-	document.getElementById('deviceips').style.display = '';
+if (getCookie('deviceips') == '1') {
+	$('#deviceips').show();
 }
 //-->
 </SCRIPT>

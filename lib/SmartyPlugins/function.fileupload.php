@@ -51,8 +51,8 @@ function smarty_function_fileupload($params, $template) {
 				<div style="padding: 10px;">' . trans("Uploading files to server ...") . '</div>
 				<div class="fileupload-progressbar"><div class="fileupload-progress-label"></div></div>
 			</div>
-			<div class="fileupload-btn" style="padding: 3px;">
-				<button type="button" class="dark' . (isset($error_tip_params) ? ' alert' : '') . '" id="' . $id . '_button" '
+			<div class="lms-ui-fileupload-button-container">
+				<button type="button" class="lms-ui-fileupload-button' . (isset($error_tip_params) ? ' alert' : '') . '" id="' . $id . '_button" '
 					. (isset($error_tip_params) ? smarty_function_tip($error_tip_params, $template) : '') . '>' . trans("Select files") . '</button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;">
 			</div>

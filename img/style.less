@@ -625,15 +625,12 @@ li.lms-ui-suggestion-item {
   padding: 2px 7px 3px 7px;
 }
 
-button.lms-ui-button {
+.lms-ui-button() {
 	padding: 0em 1em;
 	border: 1px solid @darkbrown;
 	background-color: @light;
 	color: black;
 	text-decoration: none;
-}
-
-button.lms-ui-button {
 	&:hover,
 	&:focus,
 	&:active {
@@ -651,6 +648,18 @@ button.lms-ui-button {
 		background-color: @dark;
 		box-shadow: inset 1px 1px 4px 0px rgba(0,0,0,0.4);
 	}
+}
+
+button.lms-ui-button {
+	.lms-ui-button();
+}
+
+button.lms-ui-fileupload-button {
+	.lms-ui-button();
+}
+
+div.lms-ui-fileupload-button-container {
+	padding-bottom: 3px;
 }
 
 @rtmessage-current: 2px solid brown;
@@ -768,7 +777,7 @@ table.lmsbox {
 			}
 			tr.ui-selected {
 			}
-			tr {
+			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
 				border-bottom: 1px dotted gray;
 			}
 		}
@@ -783,7 +792,8 @@ table.lmsbox {
 		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
 			background-color: @lucid;
 		}
-		tr {
+
+		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
 			border-bottom: 1px dotted gray;
 		}
 	}

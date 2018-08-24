@@ -603,6 +603,48 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($address_id));
 	}
 
+	public function AddDocumentFileAttachments(array $files) {
+		$error = array();
+		$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		foreach ($files as &$file) {
+			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
+			$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
+
+			// If we have a file with specified md5sum, we assume
+			// it's here because of some error. We can replace it with
+			// the new document file
+			// why? document attachment can be shared between different documents.
+			// we should rather use the other message digest in such case!
+			$filename = empty($file['tmpname']) ? $file['name'] : $file['tmpname'];
+			if (($this->DocumentAttachmentExists($file['md5sum'])
+					|| $file_manager->FileExists($file['md5sum']))
+				&& (filesize($file['newfile']) != filesize($filename)
+					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $filename))) {
+				$error['files'] = trans('Specified file exists in database!');
+				break;
+			}
+		}
+		unset($file);
+
+		if (empty($error)) {
+			foreach ($files as $file) {
+				@mkdir($file['path'], 0700);
+				if (empty($file['tmpname'])) {
+					if (!@copy($file['name'], $file['newfile'])) {
+						$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
+						break;
+					}
+				} elseif (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
+					$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
+					break;
+				}
+			}
+		}
+
+		return $error;
+	}
+
 	public function DocumentAttachmentExists($md5sum) {
 		return $this->db->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?',
 			array($md5sum));

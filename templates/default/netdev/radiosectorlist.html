@@ -1,6 +1,6 @@
-<TABLE class="lmsbox-inner">
+<TABLE class="lmsbox-inner lms-ui-background-cycle">
 <THEAD>
-<TR>
+<TR class="lms-ui-header-panel">
 	<TD style="width: 10%;" class="bold nobr"><img src="img/wireless.gif" alt=""> {trans("Name:")}</TD>
 	<TD style="width: 15%;">{trans("Azimuth:")}<br>{trans("Width:")}</TD>
 	<TD style="width: 10%;">{trans("Altitude:")}<br>{trans("Range:")}</TD>
@@ -12,11 +12,10 @@
 </TR>
 </THEAD>
 <TBODY>
-{cycle name=radiosectors values="light,lucid" print=false}
 {foreach from=$radiosectors item=radiosector}
 {$rsid = $radiosector.id}
 {if $formdata.rsid && $formdata.rsid == $rsid}{$edit = true}{else}{$edit = false}{/if}
-<TR class="highlight {cycle name=radiosectors}">
+<TR class="highlight">
 	<TD class="bold nobr">
 		<img src="img/wireless.gif" alt=""> <span id="name_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.name}</span>
 		<input type="text" size="20" name="name_edit_{$rsid}" id="name_edit_{$rsid}" value="{if $edit}{$formdata.name}{else}{$radiosector.name}{/if}" {tip text="Enter name" trigger="name_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
@@ -77,9 +76,9 @@
 </TR>
 {/foreach}
 
-{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
+{if ConfigHelper::checkPrivilege('privileges.network_management')}
 <form action="#" method="POST" id="radiosectoradd">
-<TR cellpadding="5" id="add_radio_sector" style="{if ! $formdata}display: none;{/if}">
+<TR cellpadding="5" id="add_radio_sector" style="{if ! $formdata}display: none;{/if}" class="lms-ui-button-panel">
 	<TD class="bold nobr">
 		<img src="img/wireless.gif" alt="">
 		<input type="text" size="20" name="name" id="name" value="{$formdata.name}" {tip text="Enter name" trigger="name"}>
@@ -115,14 +114,10 @@
 	</TD>
 </TR>
 </form>
-{else}
-<TR>
-<TD class="dark ftop nobr" colspan="8">&nbsp;</TD>
-</TR>
 {/if}
 
-<TR cellpadding="5">
-	<TD class="dark ftop text-right nobr" colspan="8">
+<TR cellpadding="5" class="lms-ui-button-panel">
+	<TD class="text-right nobr" colspan="8">
 	{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
 		&nbsp;<A id="radiosectoraddlink" HREF="javascript:showAddRadioSector();" {tip text="Add new radio sector"} style="{if $formdata}display: none;{/if}">{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 	{else}

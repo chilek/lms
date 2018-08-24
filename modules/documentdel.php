@@ -41,7 +41,8 @@ if ($_GET['is_sure'] == '1') {
 					$filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum.'.pdf';
 					if(file_exists($filename_pdf))
 						@unlink($filename_pdf);
-					@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum);
+					if (!$LMS->FileExists($md5sum))
+						@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum);
 				}
 
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($id));

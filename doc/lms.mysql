@@ -31,6 +31,8 @@ DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
 DROP TABLE IF EXISTS up_rights_assignments;
 DROP TABLE IF EXISTS up_rights;
+DROP TABLE IF EXISTS files;
+DROP TABLE IF EXISTS filecontainers;
 DROP TABLE IF EXISTS passwdhistory;
 DROP TABLE IF EXISTS userassignments;
 DROP TABLE IF EXISTS usergroups;
@@ -2498,6 +2500,42 @@ CREATE TABLE passwdhistory (
 
 # --------------------------------------------------------
 #
+# Structure of table filecontainers
+#
+CREATE TABLE filecontainers (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	creationdate int(11) NOT NULL DEFAULT 0,
+	creatorid int(11) DEFAULT NULL,
+	description text NOT NULL,
+	netdevid int(11) DEFAULT NULL,
+	netnodeid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT filecontainers_creatorid_fkey
+		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT filecontainers_netdevid_fkey
+		FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT filecontainers_netnodeid_fkey
+		FOREIGN KEY (netnodeid) REFERENCES netnodes (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table files
+#
+CREATE TABLE files (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	containerid int(11) NOT NULL,
+	filename varchar(255) NOT NULL,
+	contenttype varchar(255) NOT NULL,
+	md5sum varchar(32) NOT NULL,
+	PRIMARY KEY (id),
+	INDEX md5sum (md5sum),
+	UNIQUE KEY files_containerid_key (containerid, md5sum),
+	FOREIGN KEY (containerid) REFERENCES filecontainers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table up_rights (Userpanel)
 #
 CREATE TABLE up_rights (
@@ -3412,4 +3450,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018082100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018082300');

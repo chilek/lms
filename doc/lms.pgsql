@@ -2459,6 +2459,43 @@ CREATE TABLE passwdhistory (
 CREATE INDEX passwdhistory_userid_idx ON passwdhistory (userid);
 
 /* ---------------------------------------------------
+ Structure of table filecontainers
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS filecontainers_id_seq;
+CREATE SEQUENCE filecontainers_id_seq;
+DROP TABLE IF EXISTS filecontainers CASCADE;
+CREATE TABLE filecontainers (
+	id integer DEFAULT nextval('filecontainers_id_seq'::text) NOT NULL,
+	creationdate integer NOT NULL DEFAULT 0,
+	creatorid integer DEFAULT NULL
+		CONSTRAINT filecontainers_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	description text NOT NULL,
+	netdevid integer DEFAULT NULL
+		CONSTRAINT filecontainers_netdevid_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	netnodeid integer DEFAULT NULL
+		CONSTRAINT filecontainers_netnodeid_fkey REFERENCES netnodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table files
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS filec_id_seq;
+CREATE SEQUENCE files_id_seq;
+DROP TABLE IF EXISTS files CASCADE;
+CREATE TABLE files (
+	id integer DEFAULT nextval('files_id_seq'::text) NOT NULL,
+	containerid integer NOT NULL
+		CONSTRAINT files_containerid_fkey REFERENCES filecontainers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	filename varchar(255) NOT NULL,
+	contenttype varchar(255) NOT NULL,
+	md5sum varchar(32) NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT files_containerid_key UNIQUE (containerid, md5sum)
+);
+CREATE INDEX files_md5sum_idx ON files (md5sum);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -3419,6 +3456,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018082100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018082300');
 
 COMMIT;

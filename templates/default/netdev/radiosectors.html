@@ -1,15 +1,15 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-sortable" id="netradiosectors">
     <THEAD>
-	<TR class="hand" onclick="showOrHideRadioSectorPanel();">
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="radiosectorpanel">
 		<TD class="bold">
 			<IMG src="img/wireless.gif" alt="">
-			<A name="radiosectors">{trans("Radio sectors:")}</A>
+			{trans("Radio sectors:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
-	<TR id="radiosectorspanel" style="display: none;">
+	<TR id="radiosectorpanel" style="display: none;">
 		<TD style="width: 100%;">
 			<FORM id="radiosectoradd" name="radiosectoradd">
 			<DIV id="radiosectortable">
@@ -21,15 +21,15 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-if (getCookie('radiosectorspanel') == '1') {
-	xjx.$('radiosectorspanel').style.display = '';
+if (getCookie('radiosectorpanel') == '1') {
+	$('#radiosectorpanel').show();
 	xajax_getRadioSectors();
 }
 
 function showOrHideRadioSectorPanel() {
-	showOrHide('radiosectorspanel');
-	if (xjx.$('radiosectorspanel').style.display == '')
+	if ($('#radiosectorpanel').is(':visible')) {
 		xajax_getRadioSectors();
+	}
 }
 
 function addRadioSector() {
@@ -91,5 +91,12 @@ function updateRadioSector(id) {
 	params['rsid'] = id;
 	xajax_updateRadioSector(id, params);
 }
+
+$(function() {
+	$('tr[data-lmsbox-content="radiosectorpanel"]').click(function() {
+		showOrHideRadioSectorPanel();
+	});
+});
+
 //-->
 </SCRIPT>
