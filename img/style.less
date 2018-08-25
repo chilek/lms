@@ -1606,6 +1606,11 @@ a.lms-ui-combobox-toggle {
 	background: url('dropdown.gif') !important;
 }
 
-.lms-ui-autocomplete .ui-menu-item .ui-menu-item-wrapper {
-	padding: 1px 1em 1px 0.4em;
+.lms-ui-autocomplete .ui-menu-item {
+	.ui-menu-item-wrapper {
+		padding: 1px 1em 1px 0.4em;
+	}
+	&.matched {
+		background-color: @dark !important;
+	}
 }

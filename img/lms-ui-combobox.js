@@ -49,7 +49,18 @@ $.widget( "custom.combobox", {
 				},
 				delay: 0,
 				minLength: 0,
-				source: $.proxy( this, "_source" )
+				source: $.proxy( this, "_source" ),
+				open: function(evvent, ui) {
+					var acData = $(this).data('ui-autocomplete');
+					var keyword = acData.term.replace(' ', '|');
+					acData.menu.element.find('li').each(function () {
+						var me = $(this);
+						var text = me.text().replace(' ', '|');
+						if (keyword == text) {
+							me.addClass('matched');
+						}
+					});
+				}
 			})
 			.tooltip({
 				show: { delay: 500 },
@@ -120,7 +131,6 @@ $.widget( "custom.combobox", {
 
 	_removeIfInvalid: function( event, ui ) {
 
-		console.log('_removeIfInvalid');
 		// Selected an item, nothing to do
 		if ( ui.item ) {
 			return;
