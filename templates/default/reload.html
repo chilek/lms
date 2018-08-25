@@ -68,13 +68,15 @@
 				</TR>
 				{/foreach}
 				<TR class="dark ftop">
-					<TD colspan="2" class="nobr">
+					<TD colspan="5" class="nobr text-right">
 						<label>
-							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
 							{trans("Check All")}
+							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
 						</label>
 					</TD>
-					<TD colspan="3" class="buttons">
+				</TR>
+				<TR>
+					<TD colspan="5" class="buttons">
 						<A href="javascript:document.reload.submit();">{trans("Submit")} <IMG src="img/save.gif" ALT=""></A>
 					</TD>
 				</TR>
