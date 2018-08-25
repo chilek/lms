@@ -138,17 +138,17 @@
 					{trans("Connection type:")}
 					<SELECT SIZE="1" NAME="ftype">
 						<OPTION VALUE="">{trans("- all -")}</OPTION>
-						<OPTION VALUE="{CALL_INCOMING}" {if $listdata.ftype == CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
-						<OPTION VALUE="{CALL_OUTGOING}" {if $listdata.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
+						<OPTION VALUE="{CALL_INCOMING}" {if $listdata.ftype == $smarty.const.CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
+						<OPTION VALUE="{CALL_OUTGOING}" {if $listdata.ftype == $smarty.const.CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
 					</SELECT>
 
 					{trans("Status:")}
 					<SELECT SIZE="1" NAME="fstatus">
 						<OPTION VALUE="">{trans("- all -")}</OPTION>
-						<OPTION VALUE="{CALL_ANSWERED}" {if $listdata.fstatus == CALL_ANSWERED} SELECTED{/if}>{trans("answered")}</OPTION>
-						<OPTION VALUE="{CALL_NO_ANSWER}" {if $listdata.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
-						<OPTION VALUE="{CALL_BUSY}" {if $listdata.fstatus == CALL_BUSY} SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
-						<OPTION VALUE="{CALL_SERVER_FAILED}" {if $listdata.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
+						<OPTION VALUE="{CALL_ANSWERED}" {if $listdata.fstatus == $smarty.const.CALL_ANSWERED} SELECTED{/if}>{trans("answered")}</OPTION>
+						<OPTION VALUE="{CALL_NO_ANSWER}" {if $listdata.fstatus == $smarty.const.CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
+						<OPTION VALUE="{CALL_BUSY}" {if $listdata.fstatus == $smarty.const.CALL_BUSY} SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
+						<OPTION VALUE="{CALL_SERVER_FAILED}" {if $listdata.fstatus == $smarty.const.CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
 					</SELECT>
 
 					<A HREF="#" onclick="document.forms['choosefilter'].submit();">&raquo;&raquo;&raquo;</A>
@@ -226,21 +226,21 @@
 				</td>
 
 				<td>
-					{if $billings[i].type == CALL_OUTGOING}
+					{if $billings[i].type == $smarty.const.CALL_OUTGOING}
 						{trans("outgoing")}
-					{elseif $billings[i].type == CALL_INCOMING}
+					{elseif $billings[i].type == $smarty.const.CALL_INCOMING}
 						{trans("incoming")}
 					{/if}
 				</td>
 
 				<td nowrap>
-					{if $billings[i].status == CALL_BUSY}
+					{if $billings[i].status == $smarty.const.CALL_BUSY}
 						{trans("busy<!voip>")}
-					{elseif $billings[i].status == CALL_ANSWERED}
+					{elseif $billings[i].status == $smarty.const.CALL_ANSWERED}
 						{trans("answered")}
-					{elseif $billings[i].status == CALL_NO_ANSWER}
+					{elseif $billings[i].status == $smarty.const.CALL_NO_ANSWER}
 						{trans("no answer")}
-					{elseif $billings[i].status == CALL_SERVER_FAILED}
+					{elseif $billings[i].status == $smarty.const.CALL_SERVER_FAILED}
 						{trans("server error")}
 					{/if}
 				</td>
