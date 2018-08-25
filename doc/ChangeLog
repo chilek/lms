@@ -92,6 +92,8 @@ version ?.??.?? (????-??-??):
   - improvement: phpui.helpdesk_allow_all_users_modify_deadline variable controls if any
     user can change ticket deadline ('false' by default) [chilan]
   - enhancement: file attachment support introduced for network devices and network nodes [chilan]
+  - improvement: added lms-ui-combobox css class support which transforms select
+    element to combobox [chilan]
 
 version 1.11.23 (2018-03-21):
 
