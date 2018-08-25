@@ -36,8 +36,9 @@ $.widget( "custom.combobox", {
 	_createAutocomplete: function() {
 		var selected = this.element.children( ":selected" ),
 			value = selected.val() ? selected.text() : "";
+		var input;
 
-		this.input = $( "<input>" )
+		input = this.input = $( "<input>" )
 			.appendTo( this.wrapper )
 			.val( value )
 			.attr( "title", this.element.attr('title') )
@@ -59,6 +60,7 @@ $.widget( "custom.combobox", {
 						if (keyword == text) {
 							me.addClass('matched');
 						}
+						input.tooltip("close");
 					});
 				}
 			})
