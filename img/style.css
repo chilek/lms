@@ -1841,3 +1841,24 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 .lms-ui-indicator-counter {
   font-size: 120%;
 }
+.lms-ui-combobox-input {
+  text-align: left;
+  padding: 1px 0 1px;
+  background-color: #EBE4D6 !important;
+}
+a.lms-ui-combobox-toggle {
+  border: 0 !important;
+}
+.lms-ui-icon-combobox-toggle {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  margin-left: -10px !important;
+  background: url('dropdown.gif') !important;
+}
+.lms-ui-autocomplete .ui-menu-item .ui-menu-item-wrapper {
+  padding: 1px 1em 1px 0.4em;
+}

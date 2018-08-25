@@ -3990,4 +3990,7 @@ $_LANG['Are you sure you want to delete this file container?'] = 'Jesteś pewien
 $_LANG['Attachments ($a):'] = 'Załączniki ($a):';
 $_LANG['There are no file containers in database.'] = 'Brak kontenerów plików w bazie danych.';
 
+$_LANG['Show all items'] = 'Pokaż wszystkie elementy';
+$_LANG['\\\'$a\\\' doesn\\\'t match any item!'] = '\\\'$a\\\' nie pasuje do żadnego elementu!';
+
 ?>
