@@ -805,6 +805,7 @@ button.lms-ui-button {
   padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
+  font-size: 14px;
   color: black;
   text-decoration: none;
 }
@@ -835,6 +836,7 @@ button.lms-ui-fileupload-button {
   padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
+  font-size: 14px;
   color: black;
   text-decoration: none;
 }
