@@ -231,7 +231,8 @@ if(isset($_POST['event']))
 			$backto = $SESSION->get('backto');
 			if (isset($backto) && preg_match('/m=rtticketview/', $backto))
 				$SESSION->redirect('?' . $backto);
-			$SESSION->redirect('?m=eventlist');
+			else
+				$SESSION->redirect('?m=eventlist');
 		}
 
 		unset($event['title']);
