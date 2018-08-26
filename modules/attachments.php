@@ -33,7 +33,10 @@ switch ($attachmenttype) {
 	case 'netdevid':
 	case 'netnodeid':
 		if (!ConfigHelper::checkPrivilege('network_management'))
-			access_denied();
+			if (isset($_GET['type']))
+				access_denied();
+			else
+				return;
 		break;
 }
 
