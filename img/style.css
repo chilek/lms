@@ -1859,6 +1859,11 @@ a.lms-ui-combobox-toggle {
   margin-left: -10px !important;
   background: url('dropdown.gif') !important;
 }
+.lms-ui-autocomplete {
+  max-height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 .lms-ui-autocomplete .ui-menu-item .ui-menu-item-wrapper {
   padding: 1px 1em 1px 0.4em;
 }
