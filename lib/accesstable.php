@@ -89,7 +89,8 @@ $access_table = array(
 	),
 	'network_management' => array(
 		'label' => trans('networks and devices management'),
-		'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel)|ewxnodelist|ewxdevlist|chooselocation|ping|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage)$',
+		'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel)|ewxnodelist|ewxdevlist|chooselocation|ping'
+			. '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments)$',
 	),
 	'timetable_management' => array(
 		'label' => trans('timetable management'),
