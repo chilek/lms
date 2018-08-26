@@ -1870,3 +1870,6 @@ a.lms-ui-combobox-toggle {
 .lms-ui-autocomplete .ui-menu-item.matched {
   background-color: #CEBD9B !important;
 }
+.lms-ui-autocomplete-matched-term {
+  font-weight: bold;
+}

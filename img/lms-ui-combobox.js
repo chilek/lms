@@ -22,6 +22,15 @@
  *  $Id$
  */
 
+$.ui.autocomplete.prototype._renderItem = function( ul, item) {
+	var term = this.term;
+	var t = item.label.replace(term, '<span class="lms-ui-autocomplete-matched-term">' + term + '</span>');
+	return $( "<li></li>" )
+		.data( "item.autocomplete", item )
+		.append( "<a>" + t + "</a>" )
+		.appendTo( ul );
+};
+
 $.widget( "custom.combobox", {
 	_create: function() {
 		this.wrapper = $( "<span>" )
@@ -52,6 +61,7 @@ $.widget( "custom.combobox", {
 				minLength: 0,
 				source: $.proxy( this, "_source" ),
 				open: function(evvent, ui) {
+/*
 					var acData = $(this).data('ui-autocomplete');
 					var keyword = acData.term.replace(' ', '|');
 					acData.menu.element.find('li').each(function () {
@@ -62,6 +72,8 @@ $.widget( "custom.combobox", {
 						}
 						input.tooltip("close");
 					});
+*/
+					input.tooltip("close");
 				}
 			})
 			.tooltip({
