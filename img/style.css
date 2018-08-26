@@ -1845,6 +1845,7 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   text-align: left;
   padding: 1px 0 1px;
   background-color: #EBE4D6 !important;
+  color: black;
 }
 a.lms-ui-combobox-toggle {
   border: 0 !important;
