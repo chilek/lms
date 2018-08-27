@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
         <COLGROUP>
 				<COL style="width: 1%;">
                 <COL style="width: 25%;">
@@ -48,9 +48,8 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	<TR class="highlight {cycle} lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
+	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
 			<img src="img/ring-red.png" alt="">
@@ -105,7 +104,7 @@
 	{/foreach}
         </TBODY>
         <TFOOT>
-	<TR>
+	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" class="text-right bold">
 			<IMG src="img/info2.gif" ALT="">
 			{trans("Total:")}
