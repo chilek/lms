@@ -334,6 +334,7 @@ select {
   border: 1px solid #a9a9a9;
   background-size: 16px;
   padding-right: 16px;
+  padding-left: 3px;
 }
 BUTTON {
   font-size: 8pt;
