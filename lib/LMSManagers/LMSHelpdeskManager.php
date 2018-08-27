@@ -1060,13 +1060,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         	$props['deadline'] = $ticket['deadline'];
 
         if($ticket['service'] != $props['service'] && isset($props['service'])) {
-            $notes[] = trans('Ticket service has been set to $a.', $props['service']);
+            $notes[] = trans('Ticket service has been set to $a.', $SERVICETYPES[$props['service']]);
             $type = $type | RTMESSAGE_SERVICE_CHANGE;
         } else
             $props['service'] = $ticket['service'];
 
         if($ticket['type'] != $props['type'] && isset($props['type'])) {
-            $notes[] = trans('Ticket type has been set to $a.', $props['type']);
+            $notes[] = trans('Ticket type has been set to $a.', $RT_TYPES[$props['type']]['label']);
             $type = $type | RTMESSAGE_TYPE_CHANGE;
         } else
             $props['type'] = $ticket['type'];
