@@ -13,6 +13,7 @@
 @linkhover: #336600;
 @red-light: #ffb1b1;
 @red-lucid: #fccdcd;
+@select-border: 1px solid #a9a9a9;
 
 .lms-ui-no-user-select {
 	-webkit-user-select: none;
@@ -236,7 +237,7 @@ select {
 	background-image: url(1.png);
 	background-repeat: no-repeat;
 	background-position: right top;
-	border: 1px solid #a9a9a9;
+	border: @select-border;
 	background-size: 16px;
 	padding-right: 16px;
 	padding-left: 3px;
@@ -1321,7 +1322,7 @@ table.dataTable {
 	padding-left: 4px;
 	padding-right: 4px;
 
-	border: 1px solid #a9a9a9 !important;
+	border: @select-border !important;
 	background-color: @lucid !important;
 	box-shadow: none !important;
 	border-radius: 0 !important;
@@ -1622,7 +1623,7 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 
 .lms-ui-combobox-wrapper {
 	background-color: @lucid !important;
-	border: 1px solid #a9a9a9;
+	border: @select-border;
 	height: 16px;
 	display: inline-block;
 }
