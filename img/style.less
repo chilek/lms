@@ -216,8 +216,6 @@ TEXTAREA {
 SELECT {
 	font-size: 8pt;
 	font-family: @fonts;
-	border-style: solid;
-	border-width: 1pt;
 	background-color: @lucid;
 	vertical-align: middle;
 	&.alert,
@@ -229,6 +227,18 @@ SELECT {
 		background-color: @alert;
 		vertical-align: middle;
 	}
+}
+
+select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	background-image: url(1.png);
+	background-repeat: no-repeat;
+	background-position: right top;
+	border: 1px solid #a9a9a9;
+	background-size: 16px;
+	padding-right: 16px;
 }
 
 BUTTON		{ font-size:  8pt; font-family: @fonts; font-weight: bold; padding: 5px; }

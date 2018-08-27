@@ -312,8 +312,6 @@ TEXTAREA:invalid {
 SELECT {
   font-size: 8pt;
   font-family: Arial, Helvetica, Verdana;
-  border-style: solid;
-  border-width: 1pt;
   background-color: #EBE4D6;
   vertical-align: middle;
 }
@@ -325,6 +323,17 @@ SELECT:invalid {
   border-width: 1pt;
   background-color: #FF9B9B;
   vertical-align: middle;
+}
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url(1.png);
+  background-repeat: no-repeat;
+  background-position: right top;
+  border: 1px solid #a9a9a9;
+  background-size: 16px;
+  padding-right: 16px;
 }
 BUTTON {
   font-size: 8pt;
