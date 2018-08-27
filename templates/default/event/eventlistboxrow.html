@@ -1,18 +1,15 @@
 {block name="eventlistboxrow"}
 <TR class="highlight {if $event.closed} blend{/if}">
-    <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold">
-        {$_EVENTTYPES[$event.type]}<BR>
-        {if $event.ticketid}
-            <A href="?m=rtticketview&id={$event.ticketid}">{$event.ticketid|string_format:"%06d"}</A>
-        {/if}
+    <TD style="min-width: 90px; {if !$event.closed}{if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}{/if}" class="text-center bold">
+	{$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a>{/if}
     </TD>
     <TD class="text-left nobr bold" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
                 {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
                 {if $event.begintime != $event.endtime}
                 - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
-                {/if}<br>
+                {/if}
                 {if $overdue == 1}
-                    {$event.date|date_format:"%x"}
+                    <br>{$event.date|date_format:"%x"}
                 {/if}
                 <br>
         {$imadded=0}
@@ -24,9 +21,8 @@
         {/foreach}
     </TD>
     <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
-        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$event.title}</span>
-        &nbsp;<a href="?m=eventinfo&id={$event.id}">&raquo;&raquo;&raquo;</a><BR>
-        {if $event.description != ''}<IMG src="img/info1.gif" alt=""> {$event.description}{/if}<br>
+        <IMG src="img/calendar.gif" alt=""> <a href="?m=eventinfo&id={$event.id}"><span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
+        {if $event.description != ''}<br><IMG src="img/info1.gif" alt=""> {$event.description}{/if}<br>
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><IMG src="img/note.gif" alt=""> {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2">
