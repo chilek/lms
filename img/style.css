@@ -262,6 +262,7 @@ INPUT[type="radio"] {
 INPUT {
   font-size: 8pt;
   font-family: Arial, Helvetica, Verdana;
+  vertical-align: middle;
 }
 INPUT.alert,
 INPUT:invalid {
