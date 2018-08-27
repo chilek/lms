@@ -183,11 +183,11 @@
                 {trans("Status:")}
             </td>
             <td class="nobr">
-				{if $cdr.status == CALL_BUSY}
+				{if $cdr.status == $smarty.const.CALL_BUSY}
 					{trans("busy<!voip>")}
-				{else if $cdr.status == CALL_ANSWERED}
+				{else if $cdr.status == $smarty.const.CALL_ANSWERED}
 					{trans("answered")}
-				{else if $cdr.status == CALL_NO_ANSWER}
+				{else if $cdr.status == $smarty.const.CALL_NO_ANSWER}
 					{trans("no answer")}
 				{/if}
             </td>
