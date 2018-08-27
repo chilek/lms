@@ -1857,7 +1857,8 @@ a.lms-ui-combobox-toggle {
   background-size: 16px;
   width: 16px;
   height: 16px;
-  margin-left: -10px !important;
+  margin-top: -9px !important;
+  margin-left: -11px !important;
   background: url('dropdown.gif') !important;
 }
 .lms-ui-autocomplete {
