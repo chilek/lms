@@ -1843,7 +1843,7 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 }
 .lms-ui-combobox-input {
   text-align: left;
-  padding: 1px 0 1px;
+  padding: 1px 2px 1px 2px;
   background-color: #EBE4D6 !important;
   color: black;
 }
