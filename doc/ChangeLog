@@ -94,6 +94,8 @@ version ?.??.?? (????-??-??):
   - enhancement: file attachment support introduced for network devices and network nodes [chilan]
   - improvement: added lms-ui-combobox css class support which transforms select
     element to combobox [chilan]
+  - improvement: visual unification of lms-ui-select-address, lms-ui-multiselect and
+    lms-ui-combobox [chilan]
 
 version 1.11.23 (2018-03-21):
 
