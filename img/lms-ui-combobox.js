@@ -52,13 +52,14 @@ $.widget( "custom.combobox", {
 			.val( value )
 			.attr( "title", this.element.attr('title') )
 			.attr( "size", this.element.attr("size") )
-			.addClass( "lms-ui-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
+			.addClass( "lms-ui-combobox-input ui-widget ui-widget-content ui-state-default" )
 			.autocomplete({
 				classes: {
 					"ui-autocomplete" : "lms-ui-autocomplete"
 				},
 				delay: 0,
 				minLength: 0,
+				position: { my: "left top", at: "left bottom", of: ".lms-ui-combobox-wrapper", collision: "none" },
 				source: $.proxy( this, "_source" ),
 				open: function(evvent, ui) {
 /*

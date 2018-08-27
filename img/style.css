@@ -1841,11 +1841,21 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 .lms-ui-indicator-counter {
   font-size: 120%;
 }
+.lms-ui-combobox-wrapper {
+  background-color: #EBE4D6 !important;
+  border: 1px solid #a9a9a9;
+  height: 16px;
+  display: inline-block;
+}
 .lms-ui-combobox-input {
   text-align: left;
-  padding: 1px 2px 1px 2px;
+  padding: 1px 2px 0 2px;
   background-color: #EBE4D6 !important;
   color: black;
+  border: 0 !important;
+}
+.lms-ui-combobox-input:focus {
+  outline: none;
 }
 a.lms-ui-combobox-toggle {
   border: 0 !important;
@@ -1857,9 +1867,7 @@ a.lms-ui-combobox-toggle {
   background-size: 16px;
   width: 16px;
   height: 16px;
-  margin-top: -9px !important;
-  margin-left: -11px !important;
-  background: url('dropdown.gif') !important;
+  background-image: url(1.png) !important;
 }
 .lms-ui-autocomplete {
   max-height: 500px;
