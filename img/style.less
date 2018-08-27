@@ -235,15 +235,21 @@ BUTTON.alert { background-color: @alert; }
 
 IMG		{ vertical-align: middle; border: 0; }
 
+div.lms-ui-multiselect-wrapper {
+	vertical-align: middle;
+	display: inline-block;
+	background-color: @lucid;
+	border: solid 1px @blend;
+}
+
 div.lms-ui-multiselect {
+	float: left;
 	overflow: hidden;
 	font-size:  8pt;
 	font-family: @fonts;
 	vertical-align: middle;
 	cursor: default;
-	border: solid 1px @blend;
-	padding: 0px 20px 0px 4px;
-	background: url('dropdown.gif') no-repeat right bottom @lucid;
+	padding: 0px 0px 0px 4px;
 	min-height: 16px;
 	max-width: 200px;
 	white-space: pre-wrap;
@@ -253,6 +259,18 @@ div.lms-ui-multiselect {
 		min-width: 100px;
 	}
 }
+
+span.lms-ui-multiselect-icon {
+	float: right;
+	background-image: url(1.png);
+	background-repeat: no-repeat;
+	width: 16px;
+	height: 14px;
+	background-size: 16px;
+	margin-right: 2px;
+	margin-top: 2px;
+}
+
 div.lms-ui-multiselect-tiny {
 	overflow: hidden;
 	vertical-align: middle;

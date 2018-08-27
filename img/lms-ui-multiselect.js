@@ -20,28 +20,39 @@ function multiselect(options) {
 	var old_class = $(old_element).removeClass('lms-ui-multiselect').attr('class');
 	var new_class = 'lms-ui-multiselect' + (tiny ? '-tiny' : '') + ' ' + old_class;
 	// create new multiselect div
+	var wrapper = $('<div/>' , {
+		class: tiny ? 'lms-ui-multiselect-tiny-wrapper' : 'lms-ui-multiselect-wrapper',
+		id: elemid
+	});
 	var new_element = $('<div/>', {
 		class: new_class,
-		id: elemid,
 		// save title for tooltips
 		title: old_element.attr('title')
-	});
+	}).appendTo(wrapper);
+
 	if (tiny)
 		new_element.html('<img src="' + icon + '">&nbsp' + label);
+	else
+		$('<span/>')
+			.addClass('lms-ui-multiselect-icon')
+			.appendTo(wrapper);
 
 	new_element.data('multiselect-object', this)
 		.attr('style', old_element.attr('style'));
 	// save onchange event handler
 	var onchange = old_element.prop('onchange');
-	if (typeof(onchange) == 'function')
-		new_element.on('change', onchange);
+	if (typeof(onchange) == 'function') {
+		wrapper.on('change', onchange);
+	}
 	// save onitemclick event handler
 	var itemclick = old_element.prop('onitemclick');
-	if (typeof(itemclick) == 'function')
-		new_element.on('itemclick', itemclick);
+	if (typeof(itemclick) == 'function') {
+		wrapper.on('itemclick', itemclick);
+	}
 
 	// replace select with multiselect
-	old_element.replaceWith(new_element);
+	//old_element.replaceWith(new_element);
+	old_element.replaceWith(wrapper);
 
 	// create multiselect list div (hidden)
 	var div = $('<div/>', {
@@ -125,7 +136,7 @@ function multiselect(options) {
 
 			updateCheckAll();
 
-			new_element.triggerHandler('itemclick', {
+			wrapper.triggerHandler('itemclick', {
 				index: $(this).index(),
 				value: box.val(),
 				checked: box.is(':checked')
@@ -169,7 +180,7 @@ function multiselect(options) {
 	}
 
 	// add some mouse/key event handlers
-	new_element.click(function() {
+	wrapper.click(function() {
 		var list = $('#' + this.id + '-layer');
 		if (!list.is(':visible')) {
 			//var pos = $(this).offset();
@@ -188,20 +199,20 @@ function multiselect(options) {
 			}
 
 			list.css({
-					'left': pos.left + 'px',
-					'top': pos.top + 'px'
-				}).show();
-/*
-			list.position({
-				my: 'left top',
-				at: 'right top',
-				of: new_element
-			});
-*/
+				'left': pos.left + 'px',
+				'top': pos.top + 'px'
+			}).show();
+			/*
+						list.position({
+							my: 'left top',
+							at: 'right top',
+							of: new_element
+						});
+			*/
 		} else {
 			list.hide();
 			if (new_selected != old_selected)
-				new_element.triggerHandler('change');
+				wrapper.triggerHandler('change');
 			old_selected = new_selected;
 		}
 	});
@@ -209,9 +220,8 @@ function multiselect(options) {
 	// hide combobox after click out of the window
 	$(document).click(function(e) {
 		var elem = e.target;
-		if (tiny)
-			while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^lms-ui-multiselect/) === null))
-				elem = elem.parentNode;
+		while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^lms-ui-multiselect(-tiny)?-wrapper/) === null))
+			elem = elem.parentNode;
 
 		if (!$(div).is(':visible') || (elem && elem.id == old_element.attr('id')))
 			return 0;
@@ -222,7 +232,7 @@ function multiselect(options) {
 			(parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
 			$(div).hide();
 			if (new_selected != old_selected)
-				new_element.triggerHandler('change');
+				wrapper.triggerHandler('change');
 			old_selected = new_selected;
 		}
 	});
