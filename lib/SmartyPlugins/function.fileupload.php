@@ -80,34 +80,12 @@ function smarty_function_fileupload($params, $template) {
 				var progressbar = elem.find(".fileupload-progressbar");
 				var progresslabel = progressbar.find(".fileupload-progress-label");
 				var xhr;
-				elem.find("button").on("click", function() {
-					$(this).siblings("input[type=file]").val("").click();
-				});
-				elem.find("#' . $id . '-progress-dialog").dialog({
-					modal: true,
-					autoOpen: false,
-					resizable: false,
-					draggable: false,
-					minWidth: 0,
-					minHeight: 0,
-					dialogClass: "fileupload-progress-dialog",
-					buttons: [{
-						text: "' . trans("Cancel") . '",
-						click: function() {
-							xhr.abort();
-							$(this).dialog("close");
-						}
-					}]
-				}).parent().draggable();
-				progressbar.progressbar({
-					value: false
-				});
-				elem.find("input[type=file]").on("change", function() {
-					var action = $(this).closest("form").attr("action");
+
+				function upload_files(form, formdata) {
+					var action = form.attr("action");
 					if (action === undefined)
 						action = document.location;
 					action += "&ajax=1";
-					var formdata = new FormData($(this).closest("form").get(0));
 					$("#' . $id . '-progress-dialog").dialog("open");
 					xhr = $.ajax(action, {
 						type: "POST",
@@ -156,6 +134,57 @@ function smarty_function_fileupload($params, $template) {
 							$("#' . $id . '-progress-dialog").dialog("close");
 						}
 					});
+				}
+
+				elem.find("button").on("click", function() {
+					$(this).siblings("input[type=file]").val("").click();
+				}).on("dragover", function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).addClass("lms-ui-fileupload-dropzone");
+				}).on("dragleave", function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).removeClass("lms-ui-fileupload-dropzone");
+				}).on("drop", function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).removeClass("lms-ui-fileupload-dropzone");
+					var files = e.originalEvent.dataTransfer.files;
+					var form = $(this).closest("form");
+					var formdata = new FormData(form.get(0));
+					formdata.delete("files[]");
+					$(files).each(function(index, file) {
+						var fileReader = new FileReader();
+						fileReader.readAsDataURL(file);
+						formdata.append("' . $id . '[]", file);
+						delete fileReader;
+					});
+					upload_files(form, formdata);
+				});
+				elem.find("#' . $id . '-progress-dialog").dialog({
+					modal: true,
+					autoOpen: false,
+					resizable: false,
+					draggable: false,
+					minWidth: 0,
+					minHeight: 0,
+					dialogClass: "fileupload-progress-dialog",
+					buttons: [{
+						text: "' . trans("Cancel") . '",
+						click: function() {
+							xhr.abort();
+							$(this).dialog("close");
+						}
+					}]
+				}).parent().draggable();
+				progressbar.progressbar({
+					value: false
+				});
+				elem.find("input[type=file]").on("change", function() {
+					var form = $(this).closest("form");
+					var formdata = new FormData(form.get(0));
+					upload_files(form, formdata);
 				});
 				elem.find(".fileupload-file").on("click", function() {
 					$(this).parent().remove();
