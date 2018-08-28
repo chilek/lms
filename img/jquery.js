@@ -302,7 +302,9 @@ $(function() {
 		});
 	});
 
-	$('select.lms-ui-combobox').combobox();
+	$('select.lms-ui-combobox').chosen({
+		no_results_text: lmsMessages.chosenNoResultsMatch
+	});
 
 	var documentviews = $('.documentview');
 

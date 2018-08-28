@@ -1673,3 +1673,48 @@ a.lms-ui-combobox-toggle {
 	font-weight: bold;
 	background-color: @dark;
 }
+
+.chosen-container {
+	text-align: left;
+	min-width: 250px;
+	font-size: 8pt;
+	background-color: @lucid;
+	margin: 0 4px 0 4px;
+	.chosen-results li {
+		padding: 1px 6px;
+		em {
+			background-color: @dark;
+			font-weight: bold;
+			text-decoration: none;
+		}
+	}
+	.chosen-drop {
+		background-color: @lucid;
+	}
+}
+
+.chosen-container-active.chosen-with-drop .chosen-single {
+	background-image: none;
+	div b {
+		background-position-y: -2px;
+	}
+}
+
+.chosen-container-single {
+	.chosen-single {
+		background-image: none;
+		line-height: normal;
+		height: 18px;
+		div {
+			b {
+				background-position-y: -2px;
+			}
+		}
+	}
+	/*
+	.chosen-search input[type=text] {
+		padding: 2px 20px 2px 5px;
+		background: url(chosen-sprite.png) no-repeat 100% -23px;
+	}
+	*/
+}

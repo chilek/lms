@@ -1914,3 +1914,43 @@ a.lms-ui-combobox-toggle {
   font-weight: bold;
   background-color: #CEBD9B;
 }
+.chosen-container {
+  text-align: left;
+  min-width: 250px;
+  font-size: 8pt;
+  background-color: #EBE4D6;
+  margin: 0 4px 0 4px;
+}
+.chosen-container .chosen-results li {
+  padding: 1px 6px;
+}
+.chosen-container .chosen-results li em {
+  background-color: #CEBD9B;
+  font-weight: bold;
+  text-decoration: none;
+}
+.chosen-container .chosen-drop {
+  background-color: #EBE4D6;
+}
+.chosen-container-active.chosen-with-drop .chosen-single {
+  background-image: none;
+}
+.chosen-container-active.chosen-with-drop .chosen-single div b {
+  background-position-y: -2px;
+}
+.chosen-container-single {
+  /*
+	.chosen-search input[type=text] {
+		padding: 2px 20px 2px 5px;
+		background: url(chosen-sprite.png) no-repeat 100% -23px;
+	}
+	*/
+}
+.chosen-container-single .chosen-single {
+  background-image: none;
+  line-height: normal;
+  height: 18px;
+}
+.chosen-container-single .chosen-single div b {
+  background-position-y: -2px;
+}
