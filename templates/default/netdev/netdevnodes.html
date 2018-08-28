@@ -105,7 +105,7 @@
 								<TD class="dark nobr">
 									<span class="bold">{trans("Connect")}:</span>
 									{trans("Node:")}
-									<SELECT NAME="nodeid" style="width: 300px" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
+									<SELECT NAME="nodeid" style="width: 300px" size="30" {tip class="lms-ui-combobox" trigger="linknode" text="Select node, which you want to connect to device"}>
 									{section name=nodelist loop=$nodelist}
 										<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 									{/section}

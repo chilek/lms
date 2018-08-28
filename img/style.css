@@ -1905,6 +1905,7 @@ a.lms-ui-combobox-toggle {
 }
 .lms-ui-autocomplete .ui-menu-item .ui-menu-item-wrapper {
   padding: 1px 1em 1px 0.4em;
+  white-space: nowrap;
 }
 .lms-ui-autocomplete .ui-menu-item .ui-menu-item-wrapper:not(.ui-state-active) {
   color: black;

@@ -60,7 +60,7 @@ $.widget( "custom.combobox", {
 				},
 				delay: 0,
 				minLength: 0,
-				position: { my: "left top", at: "left bottom", of: ".lms-ui-combobox-wrapper", collision: "none" },
+				position: { my: "left top", at: "left bottom", of: this.wrapper, collision: "none" },
 				source: $.proxy( this, "_source" ),
 				open: function(evvent, ui) {
 /*
