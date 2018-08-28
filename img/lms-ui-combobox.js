@@ -52,7 +52,7 @@ $.widget( "custom.combobox", {
 			.appendTo( this.wrapper )
 			.val( value )
 			.attr( "title", this.element.attr('title') )
-			.attr( "size", this.element.attr("size") )
+			.css( "width", this.element.css("width") )
 			.addClass( "lms-ui-combobox-input ui-widget ui-widget-content ui-state-default" )
 			.autocomplete({
 				classes: {
