@@ -304,7 +304,9 @@ $(function() {
 
 	$('select.lms-ui-combobox').chosen({
 		no_results_text: lmsMessages.chosenNoResultsMatch,
-		placeholder_text_single: lmsMessages.chosenSelectOption
+		placeholder_text_single: lmsMessages.chosenSelectOption,
+		search_contains: true,
+		disable_search_threshold: 5
 	});
 
 	var documentviews = $('.documentview');
