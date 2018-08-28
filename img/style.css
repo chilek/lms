@@ -887,7 +887,7 @@ button.lms-ui-fileupload-button:active {
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
 }
 button.lms-ui-fileupload-button.lms-ui-fileupload-dropzone {
-  border: 1px solid blue;
+  box-shadow: 2px 2px 10px -2px blue, -2px -2px 10px -2px blue;
 }
 div.lms-ui-fileupload-button-container {
   padding-bottom: 3px;
