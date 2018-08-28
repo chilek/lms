@@ -24,7 +24,8 @@
 
 $.ui.autocomplete.prototype._renderItem = function( ul, item) {
 	var term = this.term;
-	var t = item.label.replace(term, '<span class="lms-ui-autocomplete-matched-term">' + term + '</span>');
+	var r = new RegExp('(' + term + ')', 'gi');
+	var t = item.label.replace(r, '<span class="lms-ui-autocomplete-matched-term">$1</span>');
 	return $( "<li></li>" )
 		.data( "item.autocomplete", item )
 		.append( "<div>" + t + "</div>" )
