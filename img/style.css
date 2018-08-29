@@ -1874,7 +1874,6 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   text-align: left;
   min-width: 250px;
   font-size: 8pt;
-  background-color: #EBE4D6;
 }
 .chosen-container .chosen-results {
   color: black;
@@ -1911,10 +1910,10 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 }
 .chosen-container-single .chosen-single {
   color: black;
+  background-color: #EBE4D6;
   background-image: none;
   line-height: normal;
   height: 16px;
-  border-radius: unset;
 }
 .chosen-container-single .chosen-single div b {
   background-position-x: 6px;
