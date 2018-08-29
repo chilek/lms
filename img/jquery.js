@@ -928,12 +928,14 @@ $(function() {
 			language_url: lmsSettings.language == 'en' ? null : 'img/tinymce4/langs/' + lmsSettings.language + '.js',
 			skin_url: 'img/tinymce4/skins/lms',
 			theme: "modern",
-			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image",
-			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link ' +
-				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave",
+			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
+				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent ' +
+				'| forecolor backcolor | removeformat',
 			image_advtab: true,
 			height: 250,
-			width: 600,
+			width: 700,
+			resize: 'both',
 			branding: false
 /*
 			theme_advanced_buttons1_add: "|,forecolor,backcolor,|,styleprops",
