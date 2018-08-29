@@ -908,14 +908,17 @@ $(function() {
 
 	var editors = $('textarea.lms-ui-wysiwyg-editor');
 	if (editors.length) {
-		tinyMCE.init({
+		tinymce.init({
+			selector: 'textarea.lms-ui-wysiwyg-editor',
 			setup : function(ed) {
+/*
 				ed.onBeforeSetContent.add(function(ed, o) {
 					if (o.initial) {
 						o.content = o.content.replace(/\r?\n/g, '<br />');
 					}
 				});
-				ed.onInit.add(function(ed) {
+*/
+				ed.on('init', function(ed) {
 					if (elementsToInitiate > 0) {
 						elementsToInitiate--;
 						if (!elementsToInitiate) {
@@ -925,9 +928,17 @@ $(function() {
 				});
 			},
 			mode: "none",
-			language: lmsSettings.language,
-			theme: "advanced",
-			plugins: "advimage,advlink,preview,autoresize,contextmenu,fullscreen,inlinepopups,searchreplace,style,table",
+			language_url: 'img/tinymce4/langs/' + lmsSettings.language + '.js',
+			skin_url: 'img/tinymce4/skins/lms',
+			theme: "modern",
+			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table",
+			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link ' +
+				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+			image_advtab: true,
+			height: 250,
+			width: 600,
+			branding: false
+/*
 			theme_advanced_buttons1_add: "|,forecolor,backcolor,|,styleprops",
 			theme_advanced_buttons2_add: "|,preview,fullscreen",
 			theme_advanced_buttons3_add: "|,search,replace,|,tablecontrols",
@@ -938,7 +949,7 @@ $(function() {
 			theme_advanced_resizing: true,
 			autoresize_max_height: 250,
 			dialog_type: "window",
-			skin: "lms",
+*/
 		});
 
 		editors.each(function() {
@@ -946,24 +957,17 @@ $(function() {
 			var textareaid = $(this).uniqueId().attr('id');
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			wysiwyg = (wysiwyg !== undefined && wysiwyg == '1') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
-			var textarea = parent.html();
 			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;
 			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
-			$(this).replaceWith($('<TABLE/>').addClass('lmsbox-inner').html('<TBODY><TR><TD>' +
-				'<label><input type="checkbox" name="' + inputname + '" value="1"' + (wysiwyg ? ' checked' : '') + '>' +
-				lmsMessages.visualEditor + '</label></TD></TR>' +
-				'<TR><TD>' + textarea + '</TD></TR>' +
-				'</TBODY>'));
+			$('<label><input type="checkbox" name="' + inputname + '" value="1"' + (wysiwyg ? ' checked' : '') + '>' +
+				lmsMessages.visualEditor + '</label><br>'
+			).insertBefore(this);
 			// it is required as textarea changed value is not propagated automatically to editor instance content
-			$('textarea', parent).change(function(e) {
-				var ed = tinyMCE.get(textareaid);
-				if (ed) {
-					//console.log(e.target.value);
-					ed.load();
-				}
+			$(this).change(function(e) {
+				tinymce.get(textareaid).setContent($(this).val());
 			});
 			$('[name="' + inputname + '"]:checkbox', parent).click(function() {
 				toggle_visual_editor(textareaid);

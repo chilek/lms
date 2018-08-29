@@ -47,7 +47,8 @@
         "erusev/parsedown": "^1",
         "tecnickcom/tc-lib-barcode": "^1",
         "zenorocha/clipboardjs": "^2.0",
-        "harvesthq/chosen": "^1.8"
+        "harvesthq/chosen": "^1.8",
+        "tinymce/tinymce": "^4"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

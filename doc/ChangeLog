@@ -97,6 +97,7 @@ version ?.??.?? (????-??-??):
   - improvement: visual unification of lms-ui-select-address, lms-ui-multiselect and
     lms-ui-combobox [chilan]
   - enhancement: allow to upload files using drag&drop technique [chilan]
+  - enhancement: replaced TinyMCE 3.x with 4.x handled by composer [chilan]
 
 version 1.11.23 (2018-03-21):
 
