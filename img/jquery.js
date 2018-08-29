@@ -910,28 +910,25 @@ $(function() {
 	if (editors.length) {
 		tinymce.init({
 			selector: 'textarea.lms-ui-wysiwyg-editor',
-			setup : function(ed) {
-/*
-				ed.onBeforeSetContent.add(function(ed, o) {
-					if (o.initial) {
-						o.content = o.content.replace(/\r?\n/g, '<br />');
+			init_instance_callback: function(ed) {
+				if (elementsToInitiate > 0) {
+					elementsToInitiate--;
+					if (!elementsToInitiate) {
+						show_pagecontent();
 					}
-				});
-*/
-				ed.on('init', function(ed) {
-					if (elementsToInitiate > 0) {
-						elementsToInitiate--;
-						if (!elementsToInitiate) {
-							show_pagecontent();
-						}
+				}
+			},
+			setup: function(ed) {
+				ed.on('init', function(e) {
+					if (!$(ed.getElement()).data('wysiwyg')) {
+						ed.target.hide();
 					}
 				});
 			},
-			mode: "none",
-			language_url: 'img/tinymce4/langs/' + lmsSettings.language + '.js',
+			language_url: lmsSettings.language == 'en' ? null : 'img/tinymce4/langs/' + lmsSettings.language + '.js',
 			skin_url: 'img/tinymce4/skins/lms',
 			theme: "modern",
-			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table",
+			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image",
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link ' +
 				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
 			image_advtab: true,
@@ -957,6 +954,7 @@ $(function() {
 			var textareaid = $(this).uniqueId().attr('id');
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			wysiwyg = (wysiwyg !== undefined && wysiwyg == '1') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
+			$(this).data('wysiwyg', wysiwyg);
 			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;
 			} else {
@@ -972,6 +970,7 @@ $(function() {
 			$('[name="' + inputname + '"]:checkbox', parent).click(function() {
 				toggle_visual_editor(textareaid);
 			});
+			tinymce.get(textareaid).wysiwyg = wysiwyg;
 			if (wysiwyg) {
 				elementsToInitiate++;
 				toggle_visual_editor(textareaid);
