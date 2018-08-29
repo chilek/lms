@@ -1876,6 +1876,13 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   font-size: 8pt;
   background-color: #EBE4D6;
 }
+.chosen-container .chosen-results {
+  color: black;
+}
+.chosen-container .chosen-results li.no-results {
+  color: black;
+  background: #DFD5BD;
+}
 .chosen-container .chosen-results li {
   padding: 1px 6px;
 }
@@ -1902,6 +1909,7 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 	*/
 }
 .chosen-container-single .chosen-single {
+  color: black;
   background-image: none;
   line-height: normal;
   height: 18px;

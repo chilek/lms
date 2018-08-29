@@ -1631,12 +1631,19 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 	font-size: 8pt;
 	background-color: @lucid;
 //	margin: 0 4px 0 4px;
-	.chosen-results li {
-		padding: 1px 6px;
-		em {
-			background-color: @dark;
-			font-weight: bold;
-			text-decoration: none;
+	.chosen-results {
+		color: black;
+		li.no-results {
+			color: black;
+			background: @light;
+		}
+		li {
+			padding: 1px 6px;
+			em {
+				background-color: @dark;
+				font-weight: bold;
+				text-decoration: none;
+			}
 		}
 	}
 	.chosen-drop {
@@ -1653,6 +1660,7 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 
 .chosen-container-single {
 	.chosen-single {
+		color: black;
 		background-image: none;
 		line-height: normal;
 		height: 18px;
