@@ -928,7 +928,7 @@ $(function() {
 			language_url: lmsSettings.language == 'en' ? null : 'img/tinymce4/langs/' + lmsSettings.language + '.js',
 			skin_url: 'img/tinymce4/skins/lms',
 			theme: "modern",
-			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave",
+			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
 				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent ' +
 				'| forecolor backcolor | removeformat',
@@ -936,7 +936,8 @@ $(function() {
 			height: 250,
 			width: 700,
 			resize: 'both',
-			branding: false
+			branding: false,
+			paste_data_images: true
 /*
 			theme_advanced_buttons1_add: "|,forecolor,backcolor,|,styleprops",
 			theme_advanced_buttons2_add: "|,preview,fullscreen",
