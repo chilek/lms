@@ -921,7 +921,7 @@ $(function() {
 			setup: function(ed) {
 				ed.on('init', function(e) {
 					if (!$(ed.getElement()).data('wysiwyg')) {
-						ed.target.hide();
+						ed.hide();
 					}
 				});
 			},
