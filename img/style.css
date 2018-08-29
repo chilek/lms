@@ -1898,6 +1898,7 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   background-image: none;
 }
 .chosen-container-active.chosen-with-drop .chosen-single div b {
+  background-position-x: -12px;
   background-position-y: -2px;
 }
 .chosen-container-single {
@@ -1913,7 +1914,9 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   background-image: none;
   line-height: normal;
   height: 16px;
+  border-radius: unset;
 }
 .chosen-container-single .chosen-single div b {
+  background-position-x: 6px;
   background-position-y: -2px;
 }
