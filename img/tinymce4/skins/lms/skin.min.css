@@ -87,3 +87,15 @@ div.mce-menu .mce-menu-item-sep,
 span.mce-text {
 	background-color: transparent !important;
 }
+
+.mce-window-head {
+	background-color: #CEBD9B;
+}
+
+.mce-window-body {
+	background-color: #DFD5BD;
+}
+
+.mce-panel .mce-foot {
+	background-color: #CEBD9B;
+}
