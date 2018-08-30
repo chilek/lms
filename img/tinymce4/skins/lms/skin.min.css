@@ -17,7 +17,7 @@ div.mce-edit-area {
 }
 
 .mce-arrow.mce-arrow-center.mce-arrow.mce-arrow-right {
-	margin-left: -8px
+	margin-left: -8px;
 }
 
 .mce-progress .mce-text {
@@ -43,7 +43,7 @@ div.mce-edit-area {
 
 .mce-colorbox i {
 	width: 8px;
-	height: 8px
+	height: 8px;
 }
 
 .mce-path {
@@ -54,8 +54,9 @@ div.mce-edit-area {
 	padding: 2px 12px 2px 12px;
 }
 
-.mce-menu-item:focus {
-	background-color: #AE9D7B
+.mce-menu-item:focus,
+.mce-menu-item:hover {
+	background-color: #AE9D7B !important;
 }
 
 div.mce-menu .mce-menu-item-sep,
@@ -71,10 +72,6 @@ div.mce-menu .mce-menu-item-sep,
 	font-size: 8px
 }
 
-.mce-menu-item:hover {
-	background-color: #AE9D7B !important;
-}
-
 .mce-menu-item.mce-selected,
 .mce-menu-item:focus {
 	background-color: #AE9D7B;
@@ -87,4 +84,8 @@ div.mce-menu .mce-menu-item-sep,
 
 .mce-menu-item-normal.mce-active {
 	background-color: #CEBD9B;
+}
+
+span.mce-text {
+	background-color: transparent !important;
 }
