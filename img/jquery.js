@@ -931,7 +931,7 @@ $(function() {
 			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
 				'| alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent ' +
-				'| forecolor backcolor | removeformat',
+				'| removeformat',
 			image_advtab: true,
 			height: 250,
 			width: 700,
