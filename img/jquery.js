@@ -925,6 +925,26 @@ $(function() {
 		});
 	}
 
+	function show_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor == null) {
+			init_visual_editor(id);
+			return;
+		}
+		if (editor.isHidden())
+			editor.show();
+	}
+
+	function hide_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor == null) {
+			init_visual_editor(id);
+			return;
+		}
+		if (!editor.isHidden())
+			editor.hide();
+	}
+
 	function toggle_visual_editor(id) {
 		var editor = tinymce.get(id);
 		if (editor == null) {
@@ -944,14 +964,15 @@ $(function() {
 			var parent = $(this).parent();
 			var textareaid = $(this).uniqueId().attr('id');
 			var wysiwyg = $(this).attr('data-wysiwyg');
-			wysiwyg = (wysiwyg !== undefined && wysiwyg == '1') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
+			var inputname;
+			wysiwyg = (wysiwyg !== undefined && wysiwyg == 'true') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
 			$(this).data('wysiwyg', wysiwyg);
 			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;
 			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
-			$('<label><input type="checkbox" name="' + inputname + '" value="1"' + (wysiwyg ? ' checked' : '') + '>' +
+			$('<label><input type="checkbox" name="' + inputname + '" value="true"' + (wysiwyg ? ' checked' : '') + '>' +
 				lmsMessages.visualEditor + '</label><br>'
 			).insertBefore(this);
 			// it is required as textarea changed value is not propagated automatically to editor instance content
@@ -968,10 +989,19 @@ $(function() {
 				elementsToInitiate++;
 				toggle_visual_editor(textareaid);
 			}
+			$(this).on('lms:visual_editor_change_required', function(e, data) {
+				if (data.ifShow) {
+					show_visual_editor($(this).attr('id'));
+					$('[name="' + inputname + '"]').prop('checked', true);
+				} else {
+					hide_visual_editor($(this).attr('id'));
+					$('[name="' + inputname + '"]').prop('checked', false);
+				}
+			});
 		});
 
 		editors.filter('[data-wysiwyg="true"]').each(function() {
-			init_visual_editor($(this).id());
+			init_visual_editor($(this).attr('id'));
 		});
 	}
 

@@ -34,7 +34,7 @@
 			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%">
-			<TEXTAREA rows="5" cols="50" name="config[value]"{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT} class="lms-ui-wysiwyg-editor"{/if} {tip text="Enter option value" trigger="value"}{if isset($config.wysiwyg.value)} data-wysiwyg="{$config.wysiwyg.value}"{/if}>{$config.value}</TEXTAREA>
+			<TEXTAREA rows="5" cols="50" name="config[value]" {tip class="lms-ui-wysiwyg-editor" text="Enter option value" trigger="value"} data-wysiwyg="{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT || isset($config.wysiwyg.value)}true{else}false{/if}">{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -90,6 +90,12 @@
 <!--
 	$(function() {
 		$('form[name="config"] [name="config[var]"]').focus();
+
+		$('[name="config[type]"]').change(function(e) {
+			$('[name="config[value]"]').trigger('lms:visual_editor_change_required', {
+				ifShow: $(this).val() == '{$smarty.const.CONFIG_TYPE_RICHTEXT}'
+			});
+		});
 	});
 //-->
 </SCRIPT>
