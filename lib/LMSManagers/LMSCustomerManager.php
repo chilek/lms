@@ -277,6 +277,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $result;
     }
 
+	public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC') {
+		return $this->db->GetAll('SELECT comment, value, time FROM cash
+				WHERE customerid = ?
+				ORDER BY time ' . $order . '
+				LIMIT ?', array($customerid, $limit));
+    }
 
     /**
      * Returns customer statistics

@@ -294,19 +294,22 @@ function parse_customer_data($data, $row) {
 		$data = preg_replace("/\%abonament/", $saldo, $data);
 	}
 
-	if (preg_match("/\%last_10_in_a_table/", $data)) {
-		$last10 = $DB->GetAll("SELECT comment, value, time FROM cash WHERE
-			customerid = ? ORDER BY time DESC LIMIT 10", array($row['id']));
-		// ok, now we are going to rise up system's load
-		$l10 = "-----------+-----------+----------------------------------------------------\n";
-		foreach ($last10 as $row_s) {
-			$op_time = strftime( "%Y/%m/%d", $row_s['time']);
-			$op_amount = sprintf("%9.2f", $row_s['value']);
-			$for_what = sprintf("%-52s", $row_s['comment']);
-			$l10 = $l10 . "$op_time | $op_amount | $for_what\n";
+	if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $data, $m)) {
+		$lastN = $LMS->GetCustomerShortBalanceList($row['id'], $m['number']);
+		if (empty($lastN))
+		    $lN = '';
+		else {
+			// ok, now we are going to rise up system's load
+			$lN = "-----------+-----------+----------------------------------------------------\n";
+			foreach ($lastN as $row_s) {
+				$op_time = strftime("%Y/%m/%d", $row_s['time']);
+				$op_amount = sprintf("%9.2f", $row_s['value']);
+				$for_what = sprintf("%-52s", $row_s['comment']);
+				$lN = $lN . "$op_time | $op_amount | $for_what\n";
+			}
+			$lN = $lN . "-----------+-----------+----------------------------------------------------\n";
 		}
-		$l10 = $l10."-----------+-----------+----------------------------------------------------\n";
-		$data = preg_replace("/\%last_10_in_a_table/", $l10, $data);
+		$data = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $data);
 	}
 
 	// invoices, debit notes

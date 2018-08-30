@@ -562,6 +562,11 @@ class LMS
         return $manager->getCustomerBalanceList($id, $totime, $direction);
     }
 
+	public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC') {
+		$manager = $this->getCustomerManager();
+		return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
+	}
+
     public function CustomerStats()
     {
         $manager = $this->getCustomerManager();
@@ -1513,7 +1518,7 @@ class LMS
     public function GetQueueIdByName($queue)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueIdByName($id);
+        return $manager->GetQueueIdByName($queue);
     }
 
     public function GetQueueVerifier($id)
@@ -3501,7 +3506,7 @@ class LMS
 
 	public function DeleteDivision($id) {
 		$manager = $this->getDivisionManager();
-		return $manager->DeleteDivision($divisionid);
+		return $manager->DeleteDivision($id);
 
 	}
 
@@ -3651,6 +3656,7 @@ class LMS
 		return array(
 			'filename' => $filename . '.' . $fext,
 			'data' => $document->WriteToString(),
+			'document' => $data,
 		);
 	}
 
@@ -3709,6 +3715,41 @@ class LMS
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
 			$filename = $document['filename'];
 			$doc['name'] = '"' . $doc['name'] . '"';
+
+			$body = preg_replace('/%bankaccount/',
+				format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])), $body);
+			$deadline = $doc['cdate'] + $document['document']['paytime'] * 86400;
+			$body = preg_replace('/%deadline-y/', strftime("%Y", $deadline), $body);
+			$body = preg_replace('/%deadline-m/', strftime("%m", $deadline), $body);
+			$body = preg_replace('/%deadline-d/', strftime("%d", $deadline), $body);
+			$body = preg_replace('/%deadline_month_name/', strftime("%B", $deadline), $body);
+			$body = preg_replace('/%pin/', $document['document']['customerpin'], $body);
+			$body = preg_replace('/%cid/', $doc['customerid'], $body);
+			// invoices, debit notes
+			$body = preg_replace('/%value/', $document['document']['total'], $body);
+			$body = preg_replace('/%cdate-y/', strftime("%Y", $document['document']['cdate']), $body);
+			$body = preg_replace('/%cdate-m/', strftime("%m", $document['document']['cdate']), $body);
+			$body = preg_replace('/%cdate-d/', strftime("%d", $document['document']['cdate']), $body);
+			list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+			$body = preg_replace('/%lastday/', strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $body);
+
+			if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
+				$lastN = $this->GetCustomerShortBalanceList($doc['customerid'], $m['number']);
+				if (empty($lastN))
+					$lN = '';
+				else {
+					// ok, now we are going to rise up system's load
+					$lN = "-----------+-----------+----------------------------------------------------\n";
+					foreach ($lastN as $row_s) {
+						$op_time = strftime("%Y/%m/%d", $row_s['time']);
+						$op_amount = sprintf("%9.2f", $row_s['value']);
+						$for_what = sprintf("%-52s", $row_s['comment']);
+						$lN = $lN . "$op_time | $op_amount | $for_what\n";
+					}
+					$lN = $lN . "-----------+-----------+----------------------------------------------------\n";
+				}
+				$body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
+			}
 
 			$mailto = array();
 			$mailto_qp_encoded = array();
