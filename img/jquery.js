@@ -898,32 +898,16 @@ $(function() {
 		}
 	});
 
-	function toggle_visual_editor(id) {
-		if (tinyMCE.get(id)) {
-			tinyMCE.execCommand('mceToggleEditor', false, id);
-		} else {
-			tinyMCE.execCommand('mceAddControl', true, id);
-		}
-	}
-
-	var editors = $('textarea.lms-ui-wysiwyg-editor');
-	if (editors.length) {
+	function init_visual_editor(id) {
 		tinymce.init({
-			selector: 'textarea.lms-ui-wysiwyg-editor',
-			init_instance_callback: function(ed) {
+			selector: '#' + id,
+			init_instance_callback: function (ed) {
 				if (elementsToInitiate > 0) {
 					elementsToInitiate--;
 					if (!elementsToInitiate) {
 						show_pagecontent();
 					}
 				}
-			},
-			setup: function(ed) {
-				ed.on('init', function(e) {
-					if (!$(ed.getElement()).data('wysiwyg')) {
-						ed.hide();
-					}
-				});
 			},
 			language_url: lmsSettings.language == 'en' ? null : 'img/tinymce4/langs/' + lmsSettings.language + '.js',
 			skin_url: 'img/tinymce4/skins/lms',
@@ -938,20 +922,24 @@ $(function() {
 			resize: 'both',
 			branding: false,
 			paste_data_images: true
-/*
-			theme_advanced_buttons1_add: "|,forecolor,backcolor,|,styleprops",
-			theme_advanced_buttons2_add: "|,preview,fullscreen",
-			theme_advanced_buttons3_add: "|,search,replace,|,tablecontrols",
-			//theme_advanced_toolbar_location: "external",
-			theme_advanced_toolbar_align: "left",
-			//theme_advanced_statusbar_location: "bottom",
-			theme_advanced_statusbar_location: "none",
-			theme_advanced_resizing: true,
-			autoresize_max_height: 250,
-			dialog_type: "window",
-*/
 		});
+	}
 
+	function toggle_visual_editor(id) {
+		var editor = tinymce.get(id);
+		if (editor == null) {
+			init_visual_editor(id);
+			return;
+		}
+		if (editor.isHidden()) {
+			editor.show();
+		} else {
+			editor.hide();
+		}
+	}
+
+	var editors = $('textarea.lms-ui-wysiwyg-editor');
+	if (editors.length) {
 		editors.each(function() {
 			var parent = $(this).parent();
 			var textareaid = $(this).uniqueId().attr('id');
@@ -973,11 +961,14 @@ $(function() {
 			$('[name="' + inputname + '"]:checkbox', parent).click(function() {
 				toggle_visual_editor(textareaid);
 			});
-			tinymce.get(textareaid).wysiwyg = wysiwyg;
 			if (wysiwyg) {
 				elementsToInitiate++;
 				toggle_visual_editor(textareaid);
 			}
+		});
+
+		editors.filter('[data-wysiwyg="true"]').each(function() {
+			init_visual_editor($(this).id());
 		});
 	}
 
