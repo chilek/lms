@@ -956,7 +956,10 @@ $(function() {
 			).insertBefore(this);
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {
-				tinymce.get(textareaid).setContent($(this).val());
+				var editor = tinymce.get(textareaid);
+				if (editor) {
+					editor.setContent($(this).val());
+				}
 			});
 			$('[name="' + inputname + '"]:checkbox', parent).click(function() {
 				toggle_visual_editor(textareaid);
