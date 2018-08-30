@@ -902,6 +902,10 @@ $(function() {
 		tinymce.init({
 			selector: '#' + id,
 			init_instance_callback: function (ed) {
+				var textarea = $(ed.settings.selector);
+				if (textarea.hasClass('alert')) {
+					textarea.siblings('.mce-tinymce').addClass('alert');
+				}
 				if (elementsToInitiate > 0) {
 					elementsToInitiate--;
 					if (!elementsToInitiate) {

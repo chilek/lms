@@ -99,3 +99,7 @@ span.mce-text {
 .mce-panel .mce-foot {
 	background-color: #CEBD9B;
 }
+
+div.mce-tinymce.alert {
+	box-shadow: 1px 1px 5px 1px red, -1px -1px 3px 1px red;
+}
