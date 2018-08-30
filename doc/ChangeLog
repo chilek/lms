@@ -98,6 +98,8 @@ version ?.??.?? (????-??-??):
     lms-ui-combobox [chilan]
   - enhancement: allow to upload files using drag&drop technique [chilan]
   - enhancement: replaced TinyMCE 3.x with 4.x handled by composer [chilan]
+  - enhancement: almost the same special symbols are supported for sendinvoices.mail_body as
+    for lms-notify.php mail_body setting [chilan]
 
 version 1.11.23 (2018-03-21):
 
