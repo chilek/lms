@@ -8,6 +8,10 @@
 	font-size:8px;
 }
 
+.mce-widget .mce-btn {
+	background-color: #DFD5BD;
+}
+
 div.mce-edit-area {
 	border: 1px solid #CEBD9B !important;
 }
@@ -65,4 +69,22 @@ div.mce-menu .mce-menu-item-sep,
 
 .mce-i-insert {
 	font-size: 8px
+}
+
+.mce-menu-item:hover {
+	background-color: #AE9D7B !important;
+}
+
+.mce-menu-item.mce-selected,
+.mce-menu-item:focus {
+	background-color: #AE9D7B;
+}
+
+.mce-menu-item .mce-ico,
+.mce-menu-item .mce-text {
+	color: black;
+}
+
+.mce-menu-item-normal.mce-active {
+	background-color: #CEBD9B;
 }
