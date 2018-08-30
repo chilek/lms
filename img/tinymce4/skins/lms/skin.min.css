@@ -101,5 +101,5 @@ span.mce-text {
 }
 
 div.mce-tinymce.alert {
-	box-shadow: 1px 1px 5px 1px red, -1px -1px 3px 1px red;
+	box-shadow: 1px 1px 3px 1px red, -1px -1px 3px 1px red;
 }
