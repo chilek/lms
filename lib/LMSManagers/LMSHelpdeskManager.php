@@ -270,31 +270,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					GROUP BY ticketid
 				) m ON m.ticketid = t.id
 				LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
-				LEFT JOIN vusers ON (owner = vusers.id)
-				LEFT JOIN customeraddressview c ON (t.customerid = c.id)
-				LEFT JOIN vusers u ON (t.creatorid = u.id)
-				LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
-				LEFT JOIN netnodes nn ON nn.id = t.netnodeid
-				LEFT JOIN netdevices nd ON nd.id = t.netdevid
-				LEFT JOIN vaddresses as va ON (t.address_id = va.id)
-				LEFT JOIN vaddresses as vb ON (nn.address_id = vb.id)
-				LEFT JOIN (
-					SELECT SUM(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
-						SUM(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,
-						ticketid FROM events
-					WHERE ticketid IS NOT NULL
-					GROUP BY ticketid
-				) ev ON ev.ticketid = t.id
-				LEFT JOIN (
-					SELECT COUNT(id) AS delcount, ticketid FROM rtmessages
-					WHERE deleted = 1 AND deltime <> 0
-					GROUP BY ticketid
-				) dm ON dm.ticketid = t.id
-				LEFT JOIN (
-					SELECT ' . $this->db->GroupConcat('categoryid') . ' AS categories, ticketid
-					FROM rtticketcategories
-					GROUP BY ticketid
-				) tc2 ON tc2.ticketid = t.id
 				LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
 				LEFT JOIN (
 					SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
