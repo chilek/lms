@@ -3993,4 +3993,6 @@ $_LANG['There are no file containers in database.'] = 'Brak kontenerów plików 
 $_LANG['No results match'] = 'Brak dopasowań';
 $_LANG['Select an Option'] = 'Wybierz opcję';
 
+$_LANG['resolve ticket'] = 'rozwiąż zgłoszenie';
+
 ?>

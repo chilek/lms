@@ -110,23 +110,18 @@
 	{/if}
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/resolved.gif" alt="">
-			<label for="resolve">{trans("Resolve ticket:")}</label>
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
 			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" name="message[state]" {tip text="Select status" trigger="state"}>
+			<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
 				{foreach $_RT_STATES as $stateidx => $state}
 				<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 				{/foreach}
 			</SELECT>
+            <label>
+                <INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
+                {trans("resolve ticket")}
+            </label>
 		</TD>
 	</TR>
 	<TR>
@@ -255,7 +250,7 @@ $(function() {
 	}
 
 	$('#resolve').change(function() {
-		var stateelem = $('[name="message[state]"]');
+		var stateelem = $('#state');
 		if ($(this).prop('checked')) {
 			$(this).data('prev-state', stateelem.val());
 			stateelem.val({$smarty.const.RT_RESOLVED});
@@ -267,7 +262,7 @@ $(function() {
 		}
 	});
 
-	$('[name="message[state]"]').change(function() {
+	$('#state').change(function() {
 		$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
 	});
 });
