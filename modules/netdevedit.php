@@ -626,6 +626,16 @@ if (isset($netdevdata)) {
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
+	$hook_data = $LMS->executeHook(
+		'netdevedit_validation_before_submit',
+		array(
+			'netdevdata' => $netdevdata,
+			'error' => $error
+		)
+	);
+	$netdevdata = $hook_data['netdevdata'];
+	$error = $hook_data['error'];
+
 	if (!$error) {
 		if (!$api) {
 			if ($netdevdata['guaranteeperiod'] == -1)
@@ -670,6 +680,7 @@ if (isset($netdevdata)) {
 		$hook_data = $LMS->executeHook('netdevedit_after_update',
 			array(
 				'smarty' => $SMARTY,
+				'netdevdata' => $netdevdata,
 			));
 		$SESSION->redirect('?m=netdevinfo&id=' . $id);
 	} elseif ($api) {
