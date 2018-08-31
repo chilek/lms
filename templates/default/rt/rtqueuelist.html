@@ -86,7 +86,7 @@
 		<TD class="nobr">
 			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
 			{if $queue.unread}
-			<a href="?m=rtqueueedit&id={$queue.id}&unread=0"><img src="img/ticket-read.png" alt="" title="{trans("Mark as read")}"></a>
+			<a href="?m=rtqueueedit&id={$queue.id}&unread=0"><img src="img/ticket-read.png" alt="" title="{t a=$queue.unread}Mark as read ($a unread){/t}"></a>
 			{/if}
 			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 			<A HREF="?m=rtrestore&amp;id={$queue.id}&amp;qaction=restore" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to restore queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"></A>
