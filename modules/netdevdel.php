@@ -51,15 +51,26 @@ if ($LMS->CountNetDevLinks($id) > 0) {
 			header('Location: ?m=netdevlist');
 			$body = '<P>' . trans('Device has been deleted.') . '</P>';
 		}
-		$result = $LMS->DeleteNetDev($id);
-		$LMS->CleanupProjects();
-		if ($api) {
-			if ($result) {
-				header('Content-Type: application/json');
-				echo json_encode(array('id' => $id));
+
+		$hook_data = $LMS->executeHook(
+			'netdevedel_validation_before_submit',
+			array(
+				'id' => $id,
+				'body' => $body,
+			)
+		);
+		if (!isset($hook_data['abort']) || empty($hook_data['abort'])) {
+			$result = $LMS->DeleteNetDev($id);
+			$LMS->CleanupProjects();
+			if ($api) {
+				if ($result) {
+					header('Content-Type: application/json');
+					echo json_encode(array('id' => $id));
+				}
+				die;
 			}
-			die;
-		}
+		} else
+			$body = $hook_data['body'];
 	}
 
 if ($api) {
