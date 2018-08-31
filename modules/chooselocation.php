@@ -99,7 +99,7 @@ if (isset($_GET['ajax']) && isset($_GET['what'])) {
 		JOIN location_boroughs b ON (c.boroughid = b.id)
 		JOIN location_districts d ON (b.districtid = d.id)
 		JOIN location_states s ON (d.stateid = s.id)
-		WHERE c.name ?LIKE? ' . $DB->Escape("%$search%") . '
+		WHERE c.name ?LIKE? ' . $DB->Escape("$search%") . '
 		ORDER BY c.name, b.type LIMIT 10');
 
 	$result = array();
