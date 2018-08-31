@@ -255,8 +255,15 @@ $(function() {
 	}
 
 	$('#resolve').change(function() {
+		var stateelem = $('[name="message[state]"]');
 		if ($(this).prop('checked')) {
-			$('[name="message[state]"]').val({$smarty.const.RT_RESOLVED});
+			$(this).data('prev-state', stateelem.val());
+			stateelem.val({$smarty.const.RT_RESOLVED});
+		} else {
+			var prev_state = $(this).data('prev-state');
+			if (prev_state) {
+				stateelem.val(prev_state);
+			}
 		}
 	});
 
