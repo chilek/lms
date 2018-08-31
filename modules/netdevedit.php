@@ -323,6 +323,8 @@ switch ($action) {
 
 	case 'editip':
 		$nodeipdata = $LMS->GetNode($_GET['ip']);
+		$nodeipdata['ipaddr'] = $nodeipdata['ip'];
+		$nodeipdata['ipaddr_pub'] = $nodeipdata['ip_pub'];
 		$subtitle = trans('IP address edit');
 		$macs = array();
 		foreach ($nodeipdata['macs'] as $key => $value)
