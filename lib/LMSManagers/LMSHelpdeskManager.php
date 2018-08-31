@@ -470,11 +470,27 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 	public function GetQueueList($stats = true) {
 		$del = 0;
+		$userid = Auth::GetCurrentUser();
+
 		if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
-				FROM rtqueues q'
-				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
-				WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array(Auth::GetCurrentUser(), $del))) {
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid,
+				v.unread AS unread
+			FROM rtqueues q
+			LEFT JOIN (
+				SELECT SUM(CASE WHEN t.state <> ? AND (lv.vdate IS NULL OR lv.vdate < m.maxcreatetime) THEN 1 ELSE 0 END) AS unread,
+					t.queueid AS queueid
+				FROM rttickets t
+				LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id
+				LEFT JOIN (
+					SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
+					GROUP BY ticketid
+				) m ON m.ticketid = t.id
+				WHERE lv.userid = ?
+				GROUP BY t.queueid
+			) v ON v.queueid = q.id
+			' . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
+			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name',
+			array(RT_RESOLVED, $userid, $userid, $del))) {
 			if ($stats)
 				foreach ($result as $idx => $row)
 					foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
