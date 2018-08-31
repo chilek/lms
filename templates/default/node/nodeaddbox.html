@@ -82,11 +82,13 @@
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD style="width: 99%;">
+			<input type="hidden" name="netpubid" value="{if $nodedata.netpubid}{$nodeinfo.netpubid}{else}0{/if}">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr_pub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
 			<a href="javascript:void(0);" onClick="return ipchoosewin({
 					ipelem: document.nodeadd.nodedataipaddr_pub,
-					netelem: null,
+					netelem: document.nodeadd.netpubid,
 					ip: document.nodeadd.nodedataipaddr_pub.value,
+					netid: document.nodeadd.netpubid.value,
 					privnetid: document.nodeadd.nodedatanetid.value
 				});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>

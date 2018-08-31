@@ -98,12 +98,13 @@
 										{trans("Pub. IP address:")}
 									</td>
 									<td>
+										<input type="hidden" name="netpubid" value="{if $nodeinfo.netpubid}{$nodeinfo.netpubid}{else}0{/if}">
 										<input type="text" name="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}value="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
 												ipelem: document.editnode.nodeeditipaddrpub,
-												netelem: null,
+												netelem: document.editnode.netpubid,
 												ip: document.editnode.nodeeditipaddrpub.value,
-												netid: {if $nodeinfo.netpubid}{$nodeinfo.netpubid}{else}0{/if},
+												netid: document.editnode.netpubid.value,
 												privnetid: document.editnode.nodeeditnetid.value
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 									</td>
