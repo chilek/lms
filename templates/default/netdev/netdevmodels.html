@@ -33,8 +33,10 @@
 		</tr>
 		<tr class="dark">
 			<td width="100%" class="fall text-right" colspan="2">
+				{block name="netdevproducer-buttons"}
 				<a href="javascript:void(0);" onclick="xajax_save_producer(xajax.getFormValues('produceredit'));">{trans("Save")} <img src="img/add.gif" alt=""></a>
 				<a href="javascript:void(0);" onclick="xajax_cancel_producer();">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+				{/block}
 			</td>
 		</tr>
 	</table>
@@ -118,8 +120,10 @@
 		</tr>
 		<tr class="dark">
 			<td width="100%" class="fall text-right" colspan="2">
+				{block name="netdevmodel-buttons"}
 				<a href="javascript:void(0);" onclick="xajax_save_model(xajax.getFormValues('modeledit'));">{trans("Save")} <img src="img/add.gif" alt=""></a>
 				<a href="javascript:void(0);" onclick="xajax_cancel_model();">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+				{/block}
 			</td>
 		</tr>
 	</table>
