@@ -1301,8 +1301,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE userid = ? AND ticketid IN (SELECT id FROM rttickets WHERE queueid = ?)',
 			array($userid, $queueid));
 		$this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate)
-			(SELECT id, ?, ?NOW? FROM rttickets WHERE queueid = ?)',
-			array($userid, $queueid));
+			(SELECT id, ?, ?NOW? FROM rttickets WHERE queueid = ? AND state <> ?)',
+			array($userid, $queueid, RT_RESOLVED));
 	}
 
 	public function MarkTicketAsRead($ticketid) {
@@ -1311,7 +1311,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if (!$this->db->GetOne('SELECT t.id FROM rttickets t
 			JOIN rtqueues q ON q.id = t.queueid
 			JOIN rtrights r ON r.queueid = q.id
-			WHERE t.id = ? AND r.userid = ?', array($ticketid, $userid)))
+			WHERE t.id = ? AND t.state <> ? AND r.userid = ?',
+			array($ticketid, RT_RESOLVED, $userid)))
 			return;
 
 		if ($this->db->GetOne('SELECT 1 FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
@@ -1329,7 +1330,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if (!$this->db->GetOne('SELECT t.id FROM rttickets t
 			JOIN rtqueues q ON q.id = t.queueid
 			JOIN rtrights r ON r.queueid = q.id
-			WHERE t.id = ? AND r.userid = ?', array($ticketid, $userid)))
+			WHERE t.id = ? AND t.state <> ? AND r.userid = ?', array($ticketid, RT_RESOLVED, $userid)))
 			return;
 
 		return $this->db->Execute('DELETE FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
