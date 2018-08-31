@@ -36,7 +36,7 @@
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="nodedatanetid" {tip text="Choose network" trigger="netid"}>
+			<SELECT SIZE="1" name="nodedata[netid]" {tip text="Choose network" trigger="netid"}>
 				<OPTION VALUE="0">{trans("- automatic selection -")}</OPTION>
 				{foreach $networks as $net}
 				<OPTION VALUE="{$net.id}" {if $net.id == $nodedata.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
@@ -53,12 +53,12 @@
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
 		<TD style="width: 99%;">
-			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" required {tip text="Enter IP address" trigger="ipaddr"}>
+			<INPUT TYPE="TEXT" NAME="nodedata[ipaddr]" VALUE="{$nodedata.ipaddr}" required {tip text="Enter IP address" trigger="ipaddr"}>
 			<a href="javascript:void(0);" onClick="return ipchoosewin({
-					ipelem: document.nodeadd.nodedataipaddr,
-					netelem: document.nodeadd.nodedatanetid,
-					ip: document.nodeadd.nodedataipaddr.value,
-					netid: document.nodeadd.nodedatanetid.value
+					ipelem: document.nodeadd['nodedata[ipaddr]'],
+					ip: document.nodeadd['nodedata[ipaddr]'].value,
+					netelem: document.nodeadd['nodedata[netid]'],
+					netid: document.nodeadd['nodedata[netid]'].value
 				});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 			<br>
 			<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
@@ -82,14 +82,14 @@
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD style="width: 99%;">
-			<input type="hidden" name="netpubid" value="{if $nodedata.netpubid}{$nodeinfo.netpubid}{else}0{/if}">
-			<INPUT TYPE="TEXT" NAME="nodedataipaddr_pub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
+			<input type="hidden" name="nodedata[pubnetid]" value="{if $nodedata.pubnetid}{$nodeinfo.pubnetid}{else}0{/if}">
+			<INPUT TYPE="TEXT" NAME="nodedata[ipaddr_pub]" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
 			<a href="javascript:void(0);" onClick="return ipchoosewin({
-					ipelem: document.nodeadd.nodedataipaddr_pub,
-					netelem: document.nodeadd.netpubid,
-					ip: document.nodeadd.nodedataipaddr_pub.value,
-					netid: document.nodeadd.netpubid.value,
-					privnetid: document.nodeadd.nodedatanetid.value
+					ipelem: document.nodeadd['nodedata[ipaddr_pub]'],
+					ip: document.nodeadd['nodedata[ipaddr_pub]'].value,
+					netelem: document.nodeadd['nodedata[pubnetid]'],
+					netid: document.nodeadd['nodedata[pubnetid]'].value,
+					privnetid: document.nodeadd['nodedata[netid]'].value
 				});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>

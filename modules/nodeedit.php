@@ -76,10 +76,6 @@ $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
 
-	$nodeedit['netid']      = $_POST['nodeeditnetid'];
-	$nodeedit['ipaddr']     = $_POST['nodeeditipaddr'];
-	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
-
 	foreach ($nodeedit['macs'] as $key => $value)
 		$nodeedit['macs'][$key] = str_replace('-', ':', $value);
 
@@ -263,10 +259,11 @@ if (isset($_POST['nodeedit'])) {
 
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['macs'] = $nodeedit['macs'];
-	$nodeinfo['ip'] = $nodeedit['ipaddr'];
+	$nodeinfo['ipaddr'] = $nodeedit['ipaddr'];
 	$nodeinfo['netid'] = $nodeedit['netid'];
 	$nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'];
-	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
+	$nodeinfo['ipaddr_pub'] = $nodeedit['ipaddr_pub'];
+	$nodeinfo['pubnetid'] = $nodeedit['pubnetid'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];
 	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
@@ -283,6 +280,9 @@ if (isset($_POST['nodeedit'])) {
 	if ($nodeedit['ipaddr_pub'] == '0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
 } else {
+	$nodeinfo['ipaddr'] = $nodeinfo['ip'];
+	$nodeinfo['ipaddr_pub'] = $nodeinfo['ip_pub'];
+
 	if (empty($nodeinfo['netdev'])) {
 		$nodeinfo['linktype'] = intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE));
 		$nodeinfo['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));

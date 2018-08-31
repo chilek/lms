@@ -324,7 +324,6 @@ switch ($action) {
 	case 'editip':
 		$nodeipdata = $LMS->GetNode($_GET['ip']);
 		$subtitle = trans('IP address edit');
-		$nodeipdata['ipaddr'] = $nodeipdata['ip'];
 		$macs = array();
 		foreach ($nodeipdata['macs'] as $key => $value)
 			$macs[] = $nodeipdata['macs'][$key]['mac'];
@@ -556,7 +555,6 @@ switch ($action) {
 			$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 		}
 
-		$nodeipdata['ip_pub'] = $nodeipdata['ipaddr_pub'];
 		$SMARTY->assign('nodeipdata', $nodeipdata);
 		$edit = 'ip';
 		break;

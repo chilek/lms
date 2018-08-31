@@ -47,7 +47,7 @@
 										{trans("Network:")}
 									</td>
 									<td>
-										<select size="1" name="nodeeditnetid" {tip text="Choose network" trigger="netid"}>
+										<select size="1" name="nodeedit[netid]" {tip text="Choose network" trigger="netid"}>
 											<option value="0">{trans("- automatic selection -")}</option>
 											{foreach $networks as $net}
 												<option value="{$net.id}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
@@ -65,12 +65,12 @@
 										{trans("IP address:")}
 									</td>
 									<td>
-										<input type="text" name="nodeeditipaddr" value="{$nodeinfo.ip}" required {tip text="Enter IP address" trigger="ipaddr"}>
+										<input type="text" name="nodeedit[ipaddr]" value="{$nodeinfo.ipaddr}" required {tip text="Enter IP address" trigger="ipaddr"}>
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
-												ipelem: document.editnode.nodeeditipaddr,
-												netelem: document.editnode.nodeeditnetid,
-												ip: document.editnode.nodeeditipaddr.value,
-												netid: document.editnode.nodeeditnetid.value
+												ipelem: document.editnode['nodeedit[ipaddr]'],
+												ip: document.editnode['nodeedit[ipaddr]'].value,
+												netelem: document.editnode['nodeedit[netid]'],
+												netid: document.editnode['nodeedit[netid]'].value
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 										<br>
 										<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
@@ -98,14 +98,14 @@
 										{trans("Pub. IP address:")}
 									</td>
 									<td>
-										<input type="hidden" name="netpubid" value="{if $nodeinfo.netpubid}{$nodeinfo.netpubid}{else}0{/if}">
-										<input type="text" name="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}value="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
+										<input type="hidden" name="nodeedit[pubnetid]" value="{if $nodeinfo.pubnetid}{$nodeinfo.pubnetid}{else}0{/if}">
+										<input type="text" name="nodeedit[ipaddr_pub]" {if $nodeinfo.ipaddr_pub != "0.0.0.0"}value="{$nodeinfo.ipaddr_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
-												ipelem: document.editnode.nodeeditipaddrpub,
-												netelem: document.editnode.netpubid,
-												ip: document.editnode.nodeeditipaddrpub.value,
-												netid: document.editnode.netpubid.value,
-												privnetid: document.editnode.nodeeditnetid.value
+												ipelem: document.editnode['nodeedit[ipaddr_pub]'],
+												ip: document.editnode['nodeedit[ipaddr_pub]'].value,
+												netelem: document.editnode['nodeedit[pubnetid]'],
+												netid: document.editnode['nodeedit[pubnetid]'].value,
+												privnetid: document.editnode['nodeedit[netid]'].value
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 									</td>
 								</tr>

@@ -62,10 +62,6 @@ if (isset($_POST['nodedata']))
 {
 	$nodedata = $_POST['nodedata'];
 
-	$nodedata['netid']      = $_POST['nodedatanetid'];
-	$nodedata['ipaddr']     = $_POST['nodedataipaddr'];
-	$nodedata['ipaddr_pub'] = $_POST['nodedataipaddr_pub'];
-
 	foreach($nodedata['macs'] as $key => $value)
 		$nodedata['macs'][$key] = str_replace('-',':',$value);
 

@@ -73,8 +73,8 @@
 										<input type="text" name="ipadd[ipaddr]" value="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}>
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
 												ipelem: document.editipaddr['ipadd[ipaddr]'],
-												netelem: document.editipaddr['ipadd[netid]'],
 												ip: document.editipaddr['ipadd[ipaddr]'].value,
+												netelem: document.editipaddr['ipadd[netid]'],
 												netid: document.editipaddr['ipadd[netid]'].value,
 												device: {$netdevinfo.id}
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
@@ -104,11 +104,14 @@
 										{trans("Pub. IP address:")}
 									</td>
 									<td>
-										<input type="text" name="ipadd[ipaddr_pub]" value="{if $nodeipdata.ip_pub!="0.0.0.0"}{$nodeipdata.ip_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}>
+										<input type="hidden" name="ipadd[pubnetid]" value="{$nodeipdata.pubnetid}">
+										<input type="text" name="ipadd[ipaddr_pub]" value="{if $nodeipdata.ipaddr_pub!="0.0.0.0"}{$nodeipdata.ipaddr_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}>
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
 												ipelem: document.editipaddr['ipadd[ipaddr_pub]'],
-												netelem: null,
-												netid: {$nodeipdata.netid},
+												ip: document.editipaddr['ipadd[ipaddr_pub]'].value,
+												netelem: document.editipaddr['ipadd[pubnetid]'],
+												netid: document.editipaddr['ipadd[pubnetid]'].value,
+												privnetid: document.editipaddr['ipadd[netid]'].value,
 												device: {$netdevinfo.id}
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 									</td>
