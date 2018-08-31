@@ -110,15 +110,6 @@
 	{/if}
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/resolved.gif" alt="">
-			<label for="resolve">{trans("Resolve ticket:")}</label>
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
 			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
 		</TD>
 		<TD>
