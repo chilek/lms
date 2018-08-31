@@ -83,8 +83,7 @@
 		<TD class="text-center nobr">
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
-		<TD class="nobr">
-			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
+		<TD class="text-right nobr">
 			{if $queue.unread}
 			<a href="?m=rtqueueedit&id={$queue.id}&unread=0"><img src="img/ticket-read.png" alt="" title="{t a=$queue.unread}Mark as read ($a unread){/t}"></a>
 			{/if}
@@ -94,6 +93,7 @@
 			{else}
 			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=delete" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			{/if}
+			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
 			<A HREF="?m=rtqueueedit&amp;id={$queue.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=rtqueueinfo&amp;id={$queue.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
