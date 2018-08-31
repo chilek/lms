@@ -257,9 +257,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
             if ($result['ip_pub'] != '0.0.0.0') {
                 $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
-                $result['netpubid'] = $network_manager->GetNetIDByIP($result['ip_pub']);
-                $result['netpubname'] = $this->db->GetOne('SELECT name FROM networks
-					WHERE id = ?', array($result['netpubid']));
+                $result['pubnetid'] = $network_manager->GetNetIDByIP($result['ip_pub']);
+                $result['pubnetname'] = $this->db->GetOne('SELECT name FROM networks
+					WHERE id = ?', array($result['pubnetid']));
             }
 
             return $result;
