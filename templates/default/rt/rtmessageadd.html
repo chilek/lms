@@ -253,6 +253,16 @@ $(function() {
 	} else {
 		$('#customernotify-row').show();
 	}
+
+	$('#resolve').change(function() {
+		if ($(this).prop('checked')) {
+			$('[name="message[state]"]').val({$smarty.const.RT_RESOLVED});
+		}
+	});
+
+	$('[name="message[state]"]').change(function() {
+		$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
+	});
 });
 //-->
 </SCRIPT>
