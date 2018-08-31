@@ -61,6 +61,13 @@ if ($LMS->CountNetDevLinks($id) > 0) {
 		);
 		if (!isset($hook_data['abort']) || empty($hook_data['abort'])) {
 			$result = $LMS->DeleteNetDev($id);
+
+			$hook_data = $LMS->executeHook('netdevdel_after_submit',
+				array(
+					'id' => $id,
+				)
+			);
+
 			$LMS->CleanupProjects();
 			if ($api) {
 				if ($result) {
