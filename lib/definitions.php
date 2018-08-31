@@ -470,6 +470,14 @@ $DOCTYPES = array(
     DOC_OTHER       =>  trans('other')
 );
 
+//read user-defined doc types
+$custom_doctypes = ConfigHelper::getConfig('phpui.custom_doctypes');
+if (!is_null($custom_doctypes))
+    if (is_readable($custom_doctypes) && ($custom_doctypes[0] == DIRECTORY_SEPARATOR))
+        @include_once($custom_doctypes);
+    else if (is_readable(LIB_DIR . DIRECTORY_SEPARATOR . $custom_doctypes))
+        @include_once(LIB_DIR . DIRECTORY_SEPARATOR . $custom_doctypes);
+
 // Guarantee periods
 $GUARANTEEPERIODS = array(
     -1 => trans('lifetime'),
