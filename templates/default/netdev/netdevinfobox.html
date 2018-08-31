@@ -1,12 +1,16 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR{if $devicepanel} class="hand" onClick="showOrHide('devicepanel');"{/if}>
-		<TD WIDTH="1%">
+<TABLE class="lmsbox{if $devicepanel} lms-ui-sortable{/if}" id="netdevinfobox">
+    <COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
+	<THEAD>
+	<TR{if $devicepanel} class="hand lmsbox-titlebar" data-lmsbox-content="devicepanel"{/if}>
+		<TD>
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%">
-			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
+		<TD class="bold">
+			{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})
 		</TD>
 	</TR>
     </THEAD>
@@ -342,9 +346,8 @@
 {if $devicepanel}
 <SCRIPT type="text/javascript">
 <!--
-if (getCookie('devicepanel') == '1')
-{
-	document.getElementById('devicepanel').style.display = '';
+if (getCookie('devicepanel') == '1') {
+	$('#devicepanel').show();
 }
 //-->
 </SCRIPT>

@@ -767,9 +767,11 @@ switch ($edit) {
 		break;
 	case 'ip':
 		$SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
+		$SMARTY->assign('netdevvipedit_sortable_order', $SESSION->get_persistent_setting('netdevipedit-sortable-order'));
 		$SMARTY->display('netdev/netdevipedit.html');
 		break;
 	case 'addip':
+		$SMARTY->assign('netdevvipadd_sortable_order', $SESSION->get_persistent_setting('netdevipadd-sortable-order'));
 		$SMARTY->display('netdev/netdevipadd.html');
 		break;
 	default:
