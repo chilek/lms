@@ -1683,6 +1683,11 @@ class LMS
 		return $manager->NotifyUsers($params);
 	}
 
+	public function CleanupTicketLastView() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->CleanupTicketLastView();
+	}
+
 	public function MarkQueueAsRead($queueid) {
 		$manager = $this->getHelpdeskManager();
 		return $manager->MarkQueueAsRead($queueid);

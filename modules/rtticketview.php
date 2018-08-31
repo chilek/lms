@@ -43,6 +43,8 @@ if(!$rights || !$catrights)
 	die;
 }
 
+$LMS->CleanupTicketLastView();
+
 $ticket = $LMS->GetTicketContents($id);
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 if (empty($categories))

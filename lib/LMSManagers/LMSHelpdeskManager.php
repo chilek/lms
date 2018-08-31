@@ -248,10 +248,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if (isset($unread) && $unread >= 0) {
 			switch ($unread) {
 				case 0:
-					$unreadfilter = ' AND lv.vdate >= m2.maxcreatetime';
+					$unreadfilter = ' AND (lv.vdate >= m2.maxcreatetime OR t.state = ' . RT_RESOLVED . ')';
 					break;
 				case 1:
-					$unreadfilter = ' AND (lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime)';
+					$unreadfilter = ' AND (r.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime))';
 					break;
                 default:
                     $unreadfilter = '';
@@ -337,8 +337,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
 				eventcountopened, eventcountclosed, delcount, tc2.categories, t.netnodeid, nn.name AS netnode_name, t.netdevid, nd.name AS netdev_name, vb.location as netnode_location, t.service, t.type,
-				(CASE WHEN lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime THEN 1 ELSE 0 END) AS unread,
-				m3.firstunread
+				(CASE WHEN t.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < m2.maxcreatetime) THEN 1 ELSE 0 END) AS unread,
+				(CASE WHEN t.state <> ' . RT_RESOLVED . ' THEN m3.firstunread ELSE 0 END) as firstunread
 			FROM rttickets t
 			LEFT JOIN (
 				SELECT MAX(createtime) AS lastmodified, ticketid
@@ -581,8 +581,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			) lm ON lm.ticketid = t.id
 			LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
 			WHERE t.queueid = ?
-				AND (lv.ticketid IS NULL OR lv.vdate < lm.maxcreatetime)',
-			array(Auth::GetCurrentUser(), $id));
+				AND (t.state <> ? AND (lv.ticketid IS NULL OR lv.vdate < lm.maxcreatetime))',
+			array(Auth::GetCurrentUser(), $id, RT_RESOLVED));
 
         return $stats;
     }
@@ -684,7 +684,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved,
-				    COUNT(CASE WHEN lv.ticketid IS NULL OR lv.vdate < maxcreatetime THEN 1 END) AS unread
+				    COUNT(CASE WHEN t.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < maxcreatetime) THEN 1 ELSE 0 END) AS unread
 				    FROM rtcategories c
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid
@@ -1278,6 +1278,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			foreach ($recipients as $phone)
 				$LMS->SendSMS($phone, $params['sms_body']);
 		}
+	}
+
+	public function CleanupTicketLastView() {
+		if (rand(0, 100) <= 1)
+			$this->db->Execute('DELETE FROM rtticketlastview
+				WHERE ticketid IN (
+					SELECT t.id FROM rttickets t
+					WHERE state = ?
+				)', array(RT_RESOLVED));
 	}
 
 	public function MarkQueueAsRead($queueid) {
