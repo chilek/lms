@@ -54,6 +54,19 @@ if ($allevents)
 	$params['closed'] = '';
 $eventlist            = $LMS->EventSearch($params, 'date,desc', true);
 $customernodes        = $LMS->GetCustomerNodes($customerid);
+
+// prepare node assignments array which allows to easily map nodes to assignments
+$nodeassignments = array();
+foreach ($assignments as $assignment)
+	if (!empty($assignment['nodes']))
+		foreach ($assignment['nodes'] as $node) {
+			if (!isset($nodeassignments[$node['id']]))
+				$nodeassignments[$node['id']] = array();
+			$nodeassignments[$node['id']] = array(
+				'assignment' => $assignment,
+			);
+		}
+
 $customernetworks     = $LMS->GetCustomerNetworks($customerid, 10);
 $customerstats = array(
 		'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
@@ -127,6 +140,7 @@ $SMARTY->assignByRef('customernetworks', $customernetworks);
 $SMARTY->assignByRef('customerdevices', $customerdevices);
 $SMARTY->assignByRef('customerstats', $customerstats);
 $SMARTY->assignByRef('assignments', $assignments);
+$SMARTY->assignByRef('nodeassignments', $nodeassignments);
 $SMARTY->assignByRef('customergroups', $customergroups);
 $SMARTY->assignByRef('othercustomergroups', $othercustomergroups);
 $SMARTY->assignByRef('balancelist', $balancelist);
