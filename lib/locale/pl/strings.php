@@ -3965,8 +3965,8 @@ $_LANG['<!assignment>Expired'] = 'Przeterminowane';
 $_LANG['<!assignment>Commited'] = 'Zatwierdzone';
 
 $_LANG['Unread:'] = 'Nieprzeczytane:';
-$_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytany';
-$_LANG['Mark as read'] = 'Oznacz jako przeczytany';
+$_LANG['Mark as unread'] = 'Oznacz jako nieprzeczytane';
+$_LANG['Mark as read'] = 'Oznacz jako przeczytane';
 
 $_LANG['<!event>Assign'] = 'Przypisz';
 $_LANG['<!event>Unassign'] = 'Cofnij przypisanie';

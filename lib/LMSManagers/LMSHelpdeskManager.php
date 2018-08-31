@@ -1280,8 +1280,31 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		}
 	}
 
+	public function MarkQueueAsRead($queueid) {
+		$userid = Auth::GetCurrentUser();
+
+		if (!$this->db->GetOne('SELECT q.id FROM rtqueues q
+			JOIN rtrights r ON r.queueid = q.id
+			WHERE r.userid = ?', array($userid)))
+			return;
+
+		$this->db->Execute('DELETE FROM rtticketlastview
+			WHERE userid = ? AND ticketid IN (SELECT id FROM rttickets WHERE queueid = ?)',
+			array($userid, $queueid));
+		$this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate)
+			(SELECT id, ?, ?NOW? FROM rttickets WHERE queueid = ?)',
+			array($userid, $queueid));
+	}
+
 	public function MarkTicketAsRead($ticketid) {
 		$userid = Auth::GetCurrentUser();
+
+		if (!$this->db->GetOne('SELECT t.id FROM rttickets t
+			JOIN rtqueues q ON q.id = t.queueid
+			JOIN rtrights r ON r.queueid = q.id
+			WHERE t.id = ? AND r.userid = ?', array($ticketid, $userid)))
+			return;
+
 		if ($this->db->GetOne('SELECT 1 FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
 			array($ticketid, $userid)))
 			return $this->db->Execute('UPDATE rtticketlastview SET vdate = ?NOW? WHERE ticketid = ? AND userid = ?',
@@ -1292,8 +1315,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	}
 
 	public function MarkTicketAsUnread($ticketid) {
+		$userid = Auth::GetCurrentUser();
+
+		if (!$this->db->GetOne('SELECT t.id FROM rttickets t
+			JOIN rtqueues q ON q.id = t.queueid
+			JOIN rtrights r ON r.queueid = q.id
+			WHERE t.id = ? AND r.userid = ?', array($ticketid, $userid)))
+			return;
+
 		return $this->db->Execute('DELETE FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
-			array($ticketid, Auth::GetCurrentUser()));
+			array($ticketid, $userid));
 	}
 
 	public function GetIndicatorStats() {
