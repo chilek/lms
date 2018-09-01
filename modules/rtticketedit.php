@@ -164,7 +164,7 @@ if ($id && !isset($_POST['ticket'])) {
 			$LMS->MarkTicketAsUnread($id);
 		else
 			$LMS->MarkTicketAsRead($id);
-		$SESSION->redirect('?' . $SESSION->get('backto'));
+		$SESSION->redirect('?m=rtqueueview');
 	}
 }
 
