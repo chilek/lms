@@ -1275,6 +1275,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE r.userid = ?', array($userid)))
 			return;
 
+		$this->db->BeginTrans();
 		$this->db->LockTables('rtticketlastview');
 
 		$this->db->Execute('DELETE FROM rtticketlastview
@@ -1285,6 +1286,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			array($userid, $queueid, RT_RESOLVED));
 
 		$this->db->UnLockTables();
+		$this->db->CommitTrans();
 	}
 
 	public function MarkTicketAsRead($ticketid) {
@@ -1297,6 +1299,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			array($ticketid, RT_RESOLVED, $userid)))
 			return;
 
+		$this->db->BeginTrans();
 		$this->db->LockTables('rtticketlastview');
 
 		if ($this->db->GetOne('SELECT 1 FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
@@ -1308,6 +1311,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				array($ticketid, $userid));
 
 		$this->db->UnLockTables();
+		$this->db->CommitTrans();
 
 		return $result;
 	}
