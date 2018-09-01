@@ -25,6 +25,7 @@ $this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE aliasassignments ALTER COLUMN id DROP DEFAULT;
+	SELECT setval('aliasassignments_id_seq', (SELECT MAX(id) FROM aliasassignments));
 	ALTER TABLE aliasassignments ALTER COLUMN id SET DEFAULT nextval('aliasassignments_id_seq'::text)
 ");
 
