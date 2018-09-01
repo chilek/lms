@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$LMS->CleanupTicketLastView();
+
 $queuedata = array(
 	'id' => null,
 	'service' => null,
