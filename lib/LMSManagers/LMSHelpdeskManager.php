@@ -1275,12 +1275,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE r.userid = ?', array($userid)))
 			return;
 
+		$this->db->LockTables('rtticketlastview');
+
 		$this->db->Execute('DELETE FROM rtticketlastview
 			WHERE userid = ? AND ticketid IN (SELECT id FROM rttickets WHERE queueid = ?)',
 			array($userid, $queueid));
 		$this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate)
 			(SELECT id, ?, ?NOW? FROM rttickets WHERE queueid = ? AND state <> ?)',
 			array($userid, $queueid, RT_RESOLVED));
+
+		$this->db->UnLockTables();
 	}
 
 	public function MarkTicketAsRead($ticketid) {
@@ -1293,13 +1297,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			array($ticketid, RT_RESOLVED, $userid)))
 			return;
 
+		$this->db->LockTables('rtticketlastview');
+
 		if ($this->db->GetOne('SELECT 1 FROM rtticketlastview WHERE ticketid = ? AND userid = ?',
 			array($ticketid, $userid)))
-			return $this->db->Execute('UPDATE rtticketlastview SET vdate = ?NOW? WHERE ticketid = ? AND userid = ?',
+			$result = $this->db->Execute('UPDATE rtticketlastview SET vdate = ?NOW? WHERE ticketid = ? AND userid = ?',
 				array($ticketid, $userid));
 		else
-			return $this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate) VALUES (?, ?, ?NOW?)',
+			$result = $this->db->Execute('INSERT INTO rtticketlastview (ticketid, userid, vdate) VALUES (?, ?, ?NOW?)',
 				array($ticketid, $userid));
+
+		$this->db->UnLockTables();
+
+		return $result;
 	}
 
 	public function MarkTicketAsUnread($ticketid) {
