@@ -2012,7 +2012,7 @@ DROP SEQUENCE IF EXISTS aliasassignments_id_seq;
 CREATE SEQUENCE aliasassignments_id_seq;
 DROP TABLE IF EXISTS aliasassignments CASCADE;
 CREATE TABLE aliasassignments (
-	id              integer         DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
+	id              integer         DEFAULT nextval('aliasassignments_id_seq'::text) NOT NULL,
 	aliasid         integer         NOT NULL
 		CONSTRAINT aliasassignments_aliasid_fkey REFERENCES aliases (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	accountid       integer         NOT NULL
@@ -3456,6 +3456,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018082300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018090100');
 
 COMMIT;
