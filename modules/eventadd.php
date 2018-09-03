@@ -246,7 +246,7 @@ if(isset($_POST['event']))
 
 if (isset($event['helpdesk'])) {
 	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
-	$queuelist = $LMS->GetQueueListByUser(Auth::GetCurrentUser(),false);
+	$queuelist = $LMS->GetQueueList(Auth::GetCurrentUser(),false);
 
 	if (isset($_POST['event'])) {
 		$ticket['queue'] = $event['rtqueue'];
