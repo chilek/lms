@@ -26,7 +26,9 @@
 			{include file="pageleftbar.html"}
             {/block}
             {block name=pagecontent}
+                {if ! ConfigHelper::checkConfig('phpui.dont_use_spinner')}
 			{include file="spinner.html"}
+                {/if}
             <div id="pagecontent" style="display: none;">
 			<script type="text/javascript">
 				<!--//
