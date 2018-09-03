@@ -49,7 +49,7 @@
     </THEAD>
     <TBODY>
 	{foreach from=$queues item=queue}
-	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
+	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
 			<img src="img/ring-red.png" alt="">
@@ -83,7 +83,7 @@
 		<TD class="text-center nobr">
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="lms-ui-buttons text-right nobr">
 			{if $queue.unread}
 			<a href="?m=rtqueueedit&id={$queue.id}&unread=0"><img src="img/ticket-read.png" alt="" title="{t a=$queue.unread}Mark as read ($a unread){/t}"></a>
 			{/if}
