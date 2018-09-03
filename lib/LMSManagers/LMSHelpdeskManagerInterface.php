@@ -37,9 +37,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL);
 
-    public function GetQueueList($stats = true);
-
-	public function GetQueueListByUser($userid, $stats = true);
+	public function GetQueueList($userid, $stats = true);
 
     public function GetQueueNames();
 

@@ -315,7 +315,7 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-$SMARTY->assign('queuelist', $LMS->GetQueueListByUser(Auth::GetCurrentUser(), false));
+$SMARTY->assign('queuelist', $LMS->GetQueueList(Auth::GetCurrentUser(), false));
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);

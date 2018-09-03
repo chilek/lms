@@ -270,13 +270,13 @@ if(isset($_POST['ticket']))
 	}
 	$SMARTY->assign('error', $error);
 
-	$queuelist = $LMS->GetQueueListByUser(Auth::GetCurrentUser(),false);
+	$queuelist = $LMS->GetQueueList(Auth::GetCurrentUser(),false);
 
 	foreach ($categories as &$category)
 		$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
 	unset($category);
 } else {
-	$queuelist = $LMS->GetQueueListByUser(Auth::GetCurrentUser(),false);
+	$queuelist = $LMS->GetQueueList(Auth::GetCurrentUser(),false);
 	if (!$queue && !empty($queuelist)) {
 		$firstqueue = reset($queuelist);
 		$queue = $firstqueue['id'];
