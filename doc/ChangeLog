@@ -103,6 +103,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to filter message recipients to customers connected to selected network
     device or subtree of selected network device (phpui.root_netdevice_id configuration variable
     should contain root network device id as it is used to calculate subtree) [chilan]
+  - improvement: allow to add ip addresses to network devices without mac [chilan]
 
 version 1.11.23 (2018-03-21):
 

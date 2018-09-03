@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 <div class="lms-ui-sortable" id="netdevipbox">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
 		<COL style="width: 99%;">
 		<COL style="width: 1;">
@@ -39,42 +39,44 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{if $netdevips}
-	{section name=list loop=$netdevips}
-	<TR class="highlight{if !$netdevips[list].access} blend{/if}">
-		<TD onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" class="nobr">
-			<B>{$netdevips[list].name}</B>
-			{if $netdevips[list].location}<BR>
-			    {$netdevips[list].info|truncate:50:"...":true}
+	{foreach $netdevips as $netdevip}
+	<TR class="highlight{if !$netdevip.access} blend{/if}" data-target-url="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}">
+		<TD class="nobr">
+			<B>{$netdevip.name}</B>
+			{if $netdevip.location}<BR>
+			    {$netdevip.info|truncate:50:"...":true}
 			{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
-			({$netdevips[list].id|string_format:"%04d"})
+		<TD>
+			({$netdevip.id|string_format:"%04d"})
 		</TD>
-		<TD class="text-right nobr" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
-			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<BR>
+		<TD class="text-right nobr">
+			{$netdevip.ip}{if $netdevip.ip_pub!="0.0.0.0"} ({$netdevip.ip_pub}){/if}<BR>
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
-			{$netdevips[list].mac|replace:",":"<BR>"}
+		<TD>
+			{if empty($netdevip.mac)}
+				{trans("<!mac>- none -")}
+			{else}
+				{$netdevip.mac|replace:",":"<BR>"}
+			{/if}
 		</TD>
-		<TD class="bold text-right nobr">
-			<a href="?m=netinfo&id={$netdevips[list].netid}">{$netdevips[list].netname|truncate:"20":"...":true}</a>
+		<TD class="lms-ui-buttons bold text-right nobr">
+			<a href="?m=netinfo&id={$netdevip.netid}">{$netdevip.netname|truncate:"20":"...":true}</a>
 		</TD>
-		<TD class="nobr">
-			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
-			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevips[list].id}" onClick="return confirmLink(this, '{t a=$netdevips[list].name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
-			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
-			<A HREF="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
+		<TD class="lms-ui-buttons nobr">
+			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevip.id}"><IMG src="img/{if ! $netdevip.access}no{/if}access.gif" ALT="" {if ! $netdevip.access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
+			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevip.id}" onClick="return confirmLink(this, '{t a=$netdevip.name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
+			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevip.id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
+			<A HREF="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
 		</TD>
 	</TR>
-	{/section}
-	{else}
+	{foreachelse}
         <TR>
     		<TD colspan="6" class="empty-table">
 			<p>{trans("No IP addresses on device.")}</p>
 		</TD>
 	</TR>
-	{/if}
+	{/foreach}
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="6">
 			<IMG SRC="img/access.gif">

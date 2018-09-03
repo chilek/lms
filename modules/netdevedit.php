@@ -378,7 +378,7 @@ switch ($action) {
 
 		$nodeipdata = trim_rec($nodeipdata);
 
-		if ($nodeipdata['ipaddr'] == '' && empty($nodeipdata['macs']) && $nodeipdata['name'] == '' && $nodeipdata['passwd'] == '') {
+		if ($nodeipdata['ipaddr'] == '' && $nodeipdata['name'] == '' && $nodeipdata['passwd'] == '') {
 			$SESSION->redirect('?m=netdevedit&action=addip&id=' . $_GET['id']);
 		}
 
@@ -426,10 +426,7 @@ switch ($action) {
 			}
 			elseif ($value != '')
 				$error['mac' . $key] = trans('Incorrect MAC address!');
-		if (empty($macs))
-			$error['mac0'] = trans('MAC address is required!');
-		else
-			$nodeipdata['macs'] = $macs;
+		$nodeipdata['macs'] = $macs;
 
 		if (strlen($nodeipdata['passwd']) > 32)
 			$error['passwd'] = trans('Password is too long (max.32 characters)!');
@@ -473,7 +470,7 @@ switch ($action) {
 				$nodeipdata[$key] = trim($value);
 			}
 
-		if ($nodeipdata['ipaddr'] == '' && empty($nodeipdata['macs']) && $nodeipdata['name'] == '' && $nodeipdata['passwd'] == '')
+		if ($nodeipdata['ipaddr'] == '' && $nodeipdata['name'] == '' && $nodeipdata['passwd'] == '')
 			$SESSION->redirect('?m=netdevedit&action=editip&id=' . $_GET['id'] . '&ip=' . $_GET['ip']);
 
 		if ($nodeipdata['name'] == '')
@@ -527,10 +524,7 @@ switch ($action) {
 			}
 			elseif ($value != '')
 				$error['mac' . $key] = trans('Incorrect MAC address!');
-		if (empty($macs))
-			$error['mac0'] = trans('MAC address is required!');
-		else
-			$nodeipdata['macs'] = $macs;
+		$nodeipdata['macs'] = $macs;
 
 		if (strlen($nodeipdata['passwd']) > 32)
 			$error['passwd'] = trans('Password is too long (max.32 characters)!');

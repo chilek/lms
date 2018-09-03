@@ -70,20 +70,18 @@
 								</tr>
 								{/if}
 
-								{assign var="counter" value=0}
-								{foreach from=$nodeipdata.macs item=item}
+								{foreach $nodeipdata.macs as $item}
 								<tr>
 									<td>
-										<a href="javascript:changeMacFormat('mac{$counter}');"><img src="img/mac.gif" alt=""></a>
+										<a href="javascript:changeMacFormat('mac{$item@index}');" title="{trans("Change the format of presentation of the MAC address.")}"><img src="img/mac.gif" alt=""></a>
 									</td>
 									<td>
 										{trans("MAC address:")}
 									</td>
 									<td>
-										<span id="mac{$counter}">{$item.mac}</span> {if $item.producer}({$item.producer}){/if}<BR>
+										<span id="mac{$item@index}">{if empty($item.mac)}{trans("<!mac>- none -")}{else}{$item.mac}{/if}</span> {if $item.producer}({$item.producer}){/if}<BR>
 									</td>
 								</tr>
-								{math equation="x+1" x=$counter assign="counter"}
 								{/foreach}
 
 								{if $nodeipdata.passwd}

@@ -91,19 +91,20 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 }
         }
         $this->db->Execute('DELETE FROM macs WHERE nodeid=?', array($nodedata['id']));
-        foreach ($nodedata['macs'] as $mac) {
-            $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $nodedata['id']));
-            if ($this->syslog) {
-                $macid = $this->db->GetLastInsertID('macs');
-                $args = array(
-                    SYSLOG::RES_MAC => $macid,
-                    SYSLOG::RES_NODE => $nodedata['id'],
-                    SYSLOG::RES_CUST => $nodedata['ownerid'],
-                    'mac' => strtoupper($mac)
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
-            }
-        }
+		if (!empty($nodedata['macs']))
+			foreach ($nodedata['macs'] as $mac) {
+				$this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $nodedata['id']));
+				if ($this->syslog) {
+					$macid = $this->db->GetLastInsertID('macs');
+					$args = array(
+						SYSLOG::RES_MAC => $macid,
+						SYSLOG::RES_NODE => $nodedata['id'],
+						SYSLOG::RES_CUST => $nodedata['ownerid'],
+						'mac' => strtoupper($mac)
+					);
+					$this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
+				}
+			}
 
         if ($deleteassignments) {
             if ($this->syslog) {
@@ -687,20 +688,22 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_ADD, $args);
             }
 
-            foreach ($nodedata['macs'] as $mac)
-                $this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $id));
-            if ($this->syslog) {
-                $macs = $this->db->GetAll('SELECT id, mac FROM macs WHERE nodeid = ?', array($id));
-                foreach ($macs as $mac) {
-                    $args = array(
-                        SYSLOG::RES_MAC => $mac['id'],
-                        SYSLOG::RES_NODE => $id,
-                        SYSLOG::RES_CUST => $nodedata['ownerid'],
-                        'mac' => $mac['mac']
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
-                }
-            }
+            if (!empty($nodedata['macs'])) {
+				foreach ($nodedata['macs'] as $mac)
+					$this->db->Execute('INSERT INTO macs (mac, nodeid) VALUES(?, ?)', array(strtoupper($mac), $id));
+				if ($this->syslog) {
+					$macs = $this->db->GetAll('SELECT id, mac FROM macs WHERE nodeid = ?', array($id));
+					foreach ($macs as $mac) {
+						$args = array(
+							SYSLOG::RES_MAC => $mac['id'],
+							SYSLOG::RES_NODE => $id,
+							SYSLOG::RES_CUST => $nodedata['ownerid'],
+							'mac' => $mac['mac']
+						);
+						$this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_ADD, $args);
+					}
+				}
+			}
 
             return $id;
         }

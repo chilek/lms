@@ -3999,4 +3999,6 @@ $_LANG['resolve ticket'] = 'rozwiąż zgłoszenie';
 $_LANG['Network device:'] = 'Urządzenie sieciowe';
 $_LANG['whole subtree'] = 'całe poddrzewo';
 
+$_LANG['<!mac>- none -'] = '- brak -';
+
 ?>
