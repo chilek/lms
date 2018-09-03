@@ -257,7 +257,7 @@ unset($queue['rights']);
 
 $SESSION->save('rtp', $page);
 
-$queues = $LMS->GetQueueList(Auth::GetCurrentUser(), false);
+$queues = $LMS->GetQueueList(false);
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {

@@ -443,7 +443,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return ($rights ? $rights : 0);
     }
 
-	public function GetQueueList($userid, $stats = true) {
+	public function GetQueueList($stats = true) {
+		$userid = Auth::GetCurrentUser();
 		if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q
