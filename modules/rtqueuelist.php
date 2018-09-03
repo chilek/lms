@@ -26,7 +26,8 @@
 
 $layout['pagetitle'] = trans('Queues List');
 
-$queues = $LMS->GetQueueList();
+$userid = Auth::GetCurrentUser();
+$queues = $LMS->GetQueueListByUser($userid,$stats=true);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
