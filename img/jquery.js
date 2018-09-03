@@ -224,6 +224,14 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
+	$('tr[data-target-url] td:not(.lms-ui-buttons)').click(function() {
+		var url = $(this).attr('data-target-url');
+		if (!url) {
+			url = $(this).parent().attr('data-target-url');
+		}
+		location.href = url;
+	});
+
 	$('.lms-ui-clipboard-button').attr('title', lmsMessages.clickCopiesToClipboard);
 	new ClipboardJS('.lms-ui-clipboard-button');
 
