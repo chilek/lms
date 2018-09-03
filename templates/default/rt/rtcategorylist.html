@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLSPAN>
 		<COL style="width: 30%;">
 		<COL style="width: 30%;">
@@ -43,10 +43,9 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{foreach from=$categories item=category}
-	<TR class="highlight {cycle}"  >
-		<TD onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';" COLSPAN="2">
+	{foreach $categories as $category}
+	<TR class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}">
+		<TD COLSPAN="2">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$category.name}</B><BR>
 			{if $category.description}
@@ -60,21 +59,21 @@
 				<span style="{$_CATEGORY_DEFAULT_STYLE}">&nbsp;{$category.name}&nbsp;</span>
 			{/if}
 		</TD>
-		<TD>
-			{foreach from=$category.owners item=owner key=key}
+		<TD class="lms-ui-buttons">
+			{foreach $category.owners as $key => $owner}
 				<A HREF="?m=userinfo&amp;id={$owner.id}">{$owner.name}</A>{if $key+1<count($category.owners)}, {/if}
 			{/foreach}
 		</TD>
-		<TD class="text-center" onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';">
+		<TD class="text-center">
 			{$category.new|default:0}
 		</TD>
-		<TD class="text-center" onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';">
+		<TD class="text-center">
 			{$category.open|default:0}
 		</TD>
-		<TD class="text-center nobr" onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';">
+		<TD class="text-center nobr">
 			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
-		<TD class="nobr">
+		<TD class="lms-ui-buttons text-right nobr">
 			<A HREF="?m=rtqueueview&amp;catid={$category.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
 			<A HREF="?m=rtcategorydel&amp;id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=rtcategoryedit&amp;id={$category.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
@@ -83,7 +82,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="7" class="empty-table">
+		<TD colspan="8" class="empty-table">
 			<p>{trans("There are no categories.")}</p>
 		</TD>
 	</TR>
