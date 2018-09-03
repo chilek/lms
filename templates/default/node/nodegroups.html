@@ -34,11 +34,11 @@
 				</THEAD>
 				<TBODY class="lms-ui-multi-check">
 				{foreach $nodegroups as $nodegroup}
-				<TR class="highlight">
-					<TD class="bold nobr"><A HREF="?m=nodegroupinfo&amp;id={$nodegroup.id}">{$nodegroup.name}</A></TD>
+				<TR class="highlight" data-target-url="?m=nodegroupinfo&id={$nodegroup.id}">
+					<TD class="bold nobr">{$nodegroup.name}</TD>
 					<TD class="nobr" COLSPAN="2">{$nodegroup.description}</TD>
 					<TD class="nobr">({$nodegroup.id|string_format:"%04d"})</TD>
-					<TD class="text-right nobr">
+					<TD class="lms-ui-buttons text-right nobr">
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')" HREF="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"><IMG SRC="img/delete.gif" ALT="{trans("Delete")}" {tip text="Remove assignment"}></A>
 						<input type="checkbox" name="markednodegroupid[{$nodegroup.id}]" value="{$nodegroup.id}" class="lms-ui-multi-check">
 					</TD>

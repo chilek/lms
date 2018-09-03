@@ -42,27 +42,27 @@
     <TBODY>
 	{foreach $userslist as $user}
 	{if $user.id}
-	<TR class="highlight {cycle} {if !$user.access}blend{/if}"  >
-		<TD class="nobr" onClick="return self.location.href='?m=userinfo&amp;id={$user.id}';">
+	<TR class="highlight {cycle} {if !$user.access}blend{/if}" data-target-url="?m=userinfo&id={$user.id}">
+		<TD class="nobr">
 			<IMG src="img/users.gif" alt=""> {$user.login}
 		</TD>
-		<TD class="nobr" onClick="return self.location.href='?m=userinfo&amp;id={$user.id}';">
+		<TD class="nobr">
 			<IMG src="img/info2.gif" alt=""> {$user.name}
 		</TD>
-		<TD class="nobr" onClick="return self.location.href='?m=userinfo&amp;id={$user.id}';">
+		<TD class="nobr">
 			<IMG src="img/phone.gif" alt=""> {if $user.phone}{$user.phone}{else} - {/if}
 		</TD>
-		<td class="nobr" onclick="return self.location.href='?m=userinfo&amp;id={$user.id}';">
+		<td class="nobr">
 			<img src="img/calendar.gif" alt=""> {$user.accessfrom}
 		</td>
-		<td class="nobr" onclick="return self.location.href='?m=userinfo&amp;id={$user.id}';">
+		<td class="nobr">
 			<img src="img/calendar.gif" alt=""> {$user.accessto}
 		</td>
-		<TD class="nobr" onClick="return self.location.href='?m=userinfo&amp;id={$user.id}';">
+		<TD class="nobr">
 			<IMG src="img/time.gif" alt=""> {$user.lastlogin}
 			{$user.lastloginip} {if $user.lastloginip != $user.lastloginhost}({$user.lastloginhost}){/if}
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="lms-ui-buttons text-right nobr">
 			{if $layout.logid ne $user.id}
 			    {if !$user.access}
 				<a href="?m=useraccess&amp;id={$user.id}&amp;access=1"><img src="img/noaccess.gif" alt="{trans('Connect')}" title="{trans('Connect')}"></a>

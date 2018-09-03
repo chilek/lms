@@ -113,7 +113,7 @@
     </THEAD>
     <TBODY>
 	{foreach $tarifflist as $tariff}
-	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}">
+	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}" data-target-url="?m=tariffinfo&id={$tariff.id}">
 		<TD>
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a>
 			{if $tariff.datefrom || $tariff.dateto}
@@ -134,36 +134,36 @@
 			{/foreach}
 			{/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';">
+		<TD class="text-right">
 			({$tariff.id|string_format:"%04d"})
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';" class="nobr">
+		<TD class="text-right nobr">
 			{if $tariff.downrate}{$tariff.downrate}{else}-{/if}
 			{if $tariff.downrate_n}({$tariff.downrate_n}){/if}<BR>
 			{if $tariff.uprate}{$tariff.uprate}{else}-{/if}
 			{if $tariff.uprate_n}({$tariff.uprate_n}){/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';" class="nobr">
+		<TD class="text-right nobr">
 			{if $tariff.downceil}{$tariff.downceil}{else}-{/if}
 			{if $tariff.downceil_n}({$tariff.downceil_n}){/if}<BR>
 			{if $tariff.upceil}{$tariff.upceil}{else}-{/if}
 			{if $tariff.upceil_n}({$tariff.upceil_n}){/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';" class="nobr">
+		<TD class="text-right nobr">
 			<B>{$tariff.value|money_format}</B><BR>
 			{$tariff.tax}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';" NOWRAP>
+		<TD class="text-right nobr">
 			<span title="<span class=&quot;bold&quot;</span>{trans("Customer count")}">{$tariff.customerscount|default:0}</span>
 			(<span title="<span class=&quot;bold&quot;</span>{trans("Assignment count")}">{$tariff.count|default:0}</span>,
 			<span title="<span class=&quot;bold&quot;>{trans("Active assignment count")}</span>">{$tariff.activecount|default:0}</span>)
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';">
+		<TD class="text-right">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			{$tariff.income|money_format}
 			{/if}
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="lms-ui-buttons text-right nobr">
 				<a href="?m=tariffedit&amp;set&amp;id={$tariff.id}">
 					{if $tariff.disabled == 0}
 						<img src="img/access.gif" alt="{t}Disable{/t}" title="{t}Disable{/t}" />

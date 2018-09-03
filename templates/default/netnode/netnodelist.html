@@ -32,9 +32,9 @@
 		<TD class="text-center">
 			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-                <TD class="text-center">
-                        <A href="?m=netnodelist&o=lastinspectiontime{if $listdata.direction == "asc" && $listdata.order == "lastinspectiontime"},desc{/if}">{trans("Last inspection:")}</A> {if $listdata.order == "lastinspectiontime"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-                </TD>
+		<TD class="text-center">
+			<A href="?m=netnodelist&o=lastinspectiontime{if $listdata.direction == "asc" && $listdata.order == "lastinspectiontime"},desc{/if}">{trans("Last inspection:")}</A> {if $listdata.order == "lastinspectiontime"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
 		<TD class="nobr">
 		</TD>
 	</TR>
@@ -96,8 +96,8 @@
     </THEAD>
     <TBODY>
 	{foreach $nlist as $item}
-	<TR class="highlight">
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="valign-top">
+	<TR class="highlight" data-target-url="?m=netnodeinfo&id={$item.id}">
+		<TD class="valign-top">
 			<IMG src="img/netnode.png" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
 			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$item.type]} / {$_NETELEMENTSTATUSES[$item.status]}
 		</TD>
@@ -112,11 +112,11 @@
 		<TD class="text-center">
 			{if ($item.invprojectid==1)} Brak {else}{$item.project}{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="nobr text-center">
+		<TD class="nobr text-center">
 			({$item.id|string_format:"%04d"})
 		</TD>
 		<TD class="text-center">{$item.lastinspectiontime|date_format:"%x"}</TD>
-		<TD class="text-right nobr">
+		<TD class="lms-ui-buttons text-right nobr">
 			<a href="?m=netnodedel&id={$item.id}" onClick="return confirmLink(this, '{t a=$item.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=netnodeedit&id={$item.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<a href="?m=netnodeinfo&id={$item.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
