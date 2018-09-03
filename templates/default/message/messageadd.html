@@ -181,13 +181,11 @@
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 91%;">
+					<COL style="width: 93%;">
 				</COLGROUP>
 				<TR>
-					<TD class="nobr" rowspan="2">{trans("Status:")}</TD>
-					<TD rowspan="2">
+					<TD class="nobr" rowspan="3">{trans("Status:")}</TD>
+					<TD rowspan="3">
 						<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
 							<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
 							{foreach $_CSTATUSES as $statusidx => $status}
@@ -232,11 +230,10 @@
 							{/foreach}
 						</SELECT>
 					</TD>
-					<td colspan="2"></td>
 				</TR>
 				<TR>
-					<TD style="width: 1%;" class="nobr">{trans("Nodes Group:<!short>")}</TD>
-					<TD style="width: 1%;">
+					<TD class="nobr">{trans("Nodes Group:<!short>")}</TD>
+					<TD>
 						<SELECT size="1" name="message[nodegroup]" {tip trigger="nodegroup" text="Select nodes group"}>
 							<OPTION value="" {if !$listdata.nodegroup} selected{/if}>{trans("- all groups -")}</OPTION>
 							{foreach from=$nodegroups item=nodegroup}
@@ -244,8 +241,8 @@
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Link type:")}</TD>
-					<TD style="width: 1%;">
+					<TD class="nobr">{trans("Link type:")}</TD>
+					<TD>
 						<SELECT size="1" name="message[linktype]" {tip trigger="linktype" text="Select link type"}>
 							<OPTION value="">{trans("- all -")}</OPTION>
 							<OPTION value="0">{trans("wire")}</OPTION>
@@ -253,16 +250,18 @@
 							<OPTION value="2">{trans("fiber")}</OPTION>
 						</SELECT>
 					</TD>
-					<TD style="width: 1%;" class="nobr"><label for="consent">{trans("Consent required:")}</label></TD>
-					<TD style="width: 1%;">
+					<TD class="nobr"><label for="consent">{trans("Consent required:")}</label></TD>
+					<TD>
 						<INPUT type="checkbox" id="consent" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
 					</TD>
-					<TD style="width: 1%;" class="nobr">
+				</TR>
+				<TR>
+					<TD class="nobr">
 						<label for="netdev">
 							{trans("Network device:")}
 						</label>
 					</TD>
-					<TD style="width: 91%;" class="nobr">
+					<TD colspan="7" class="nobr">
 						<SELECT name="message[netdev]" id="netdev" class="lms-ui-combobox" {tip trigger="netdev" text="Select network device"}>
 							<option value="">{trans("- none -")}</option>
 							{foreach $netdevices as $netdev}

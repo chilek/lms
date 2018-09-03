@@ -3996,6 +3996,7 @@ $_LANG['Select an Option'] = 'Wybierz opcję';
 
 $_LANG['resolve ticket'] = 'rozwiąż zgłoszenie';
 
+$_LANG['Network device:'] = 'Urządzenie sieciowe';
 $_LANG['whole subtree'] = 'całe poddrzewo';
 
 ?>
