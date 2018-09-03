@@ -452,7 +452,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			FROM rtqueues q
 			' . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
 			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name',
-			array(RT_RESOLVED, $userid, $userid, $del))) {
+			array($userid, $del))) {
 			if ($stats)
 				foreach ($result as $idx => $row)
 					foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
