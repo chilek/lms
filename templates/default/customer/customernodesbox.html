@@ -92,8 +92,7 @@ function setgroup(act)
 							{/if}
 							<span class="bold">{$node.name}</span>
 							{if isset($nodeassignments[$node.id])}
-								({foreach $nodeassignments[$node.id] as $assignment}{$assignment.name}{if !$assignment@last},{/if}{/foreach})
-							{/if}
+								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}">{$assignment.name}</a>{if !$assignment@last},{/if}{/foreach}){/if}
 							{if $node.location}<BR>
 							<span class="nobr">{$node.location|truncate:60:"...":true}</span>
 							{/if}
