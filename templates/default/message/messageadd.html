@@ -250,9 +250,11 @@
 							<OPTION value="2">{trans("fiber")}</OPTION>
 						</SELECT>
 					</TD>
-					<TD class="nobr"><label for="consent">{trans("Consent required:")}</label></TD>
-					<TD>
-						<INPUT type="checkbox" id="consent" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
+					<TD class="nobr" colspan="2">
+						<label>
+							<INPUT type="checkbox" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
+							{trans("consent required")}
+						</label>
 					</TD>
 				</TR>
 				<TR>
