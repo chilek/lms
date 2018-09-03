@@ -177,8 +177,8 @@
 
 	{foreach $customerlist as $customer}
         {block name="customerlist-list-row"}
-	<TR class="highlight {if $customer.account && !$customer.nodeac} blend{/if}"  >
-		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customer.id}';">
+	<TR class="highlight {if $customer.account && !$customer.nodeac} blend{/if}" data-target-url="?m=customerinfo&id={$customer.id}">
+		<TD>
 			<IMG src="img/{$_CSTATUSES[$customer.status].img}" alt="">{if $customer.info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customer.info}>{/if}<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
 		</TD>
@@ -196,7 +196,7 @@
 			<span class="blend"><IMG src="img/empty.gif" width="1" height="16" alt="">{$customer.tariffvalue|money_format}</span>
 			{/if}
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="lms-ui-buttons text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 				{if $customer.balance < 0}
 					<A href="?m=customerbalanceok&amp;id={$customer.id}" OnClick="return confirmLink(this, '{t a=$customer.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>

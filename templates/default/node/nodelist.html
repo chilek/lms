@@ -141,8 +141,8 @@
 	<TBODY>
 	{block name="nodelist-list-body"}
 	{foreach $nodelist as $node}
-	<TR class="highlight {if ! $node.access} blend{/if}"  >
-		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+	<TR class="highlight {if ! $node.access} blend{/if}" data-target-url="?m=nodeinfo&id={$node.id}">
+		<TD class="nobr">
 			<span class="bold">
 			<A name="{$node.id}">
 			{if $node.lastonline}
@@ -160,18 +160,18 @@
 			{$node.name}</A></span><BR>
 			<span class="nobr{if ! $node.access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
 		</TD>
-		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+		<TD class="nobr">
 		{$node.location}{if $node.borough_name}<br><span class="blend">({$node.state_name} / {$node.district_name} / {$_BOROUGHTYPES[$node.borough_type]} {$node.borough_name})</span>{/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+		<TD class="text-right">
 			({$node.id|string_format:"%04d"})<BR>
 			<SPAN class="blend">({$node.ownerid|string_format:"%04d"})</span>
 		</TD>
-		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+		<TD class="nobr">
 			<img src="img/ip.gif" alt=""> {$node.netname} / {$node.ip} {if $node.ip_pub != "0.0.0.0"}({$node.ip_pub}){/if}<BR>
 			<img src="img/mac.gif" alt="">&nbsp;{$node.mac|replace:",":"</SPAN><BR><SPAN class=\"nobr\"><img src=\"img/mac.gif\" alt=\"\"> "}
 		</TD>
-		<TD class="nobr">
+		<TD class="lms-ui-buttons nobr">
 			<a href="?m=nodeset&amp;id={$node.id}"><img src="img/{if ! $node.access}no{/if}access.gif" alt="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}" title="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></A>
 			<a href="?m=nodewarn&amp;id={$node.id}"><img src="img/warning{if ! $node.warning}off{else}on{/if}.gif" alt="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}" title="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></A>
 			<a onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')" href="?m=nodedel&amp;id={$node.id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
