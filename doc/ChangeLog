@@ -100,6 +100,9 @@ version ?.??.?? (????-??-??):
   - enhancement: replaced TinyMCE 3.x with 4.x handled by composer [chilan]
   - enhancement: almost the same special symbols are supported for sendinvoices.mail_body as
     for lms-notify.php mail_body setting [chilan]
+  - enhancement: allow to filter message recipients to customers connected to selected network
+    device or subtree of selected network device (phpui.root_netdevice_id configuration variable
+    should contain root network device id as it is used to calculate subtree) [chilan]
 
 version 1.11.23 (2018-03-21):
 

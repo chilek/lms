@@ -62,6 +62,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$linktype = intval($filter['linktype']);
 	$tarifftype = intval($filter['tarifftype']);
 	$consent = isset($filter['consent']);
+	$netdevices = isset($filter['netdevices']) ? $filter['netdevices'] : null;
 
 	if($group == 50)
 	{
@@ -133,6 +134,12 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	else
 		$expired_debt_table = '';
 
+	if (!empty($netdevices))
+		$netdevtable = ' JOIN (
+				SELECT DISTINCT n.ownerid FROM nodes n
+				WHERE n.ownerid IS NOT NULL AND netdev IN (' . implode(',', $netdevices) . ')
+			) nd ON nd.ownerid = c.id ';
+
 	$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
 	$recipients = $LMS->DB->GetAll('SELECT c.id, pin, '
@@ -169,6 +176,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0) 
 			GROUP BY a.customerid
 		) t ON (t.customerid = c.id) '
+		. (isset($netdevtable) ? $netdevtable : '')
 		. (isset($mailtable) ? $mailtable : '')
 		. (isset($smstable) ? $smstable : '')
 		. ($tarifftype ? $tarifftable : '')
@@ -252,10 +260,82 @@ function BodyVars(&$body, $data)
 	$body = $hook_data['body'];
 }
 
+function FindNetDeviceUplink($netdevid) {
+	static $uplink = null;
+	static $visited = array();
+	$DB = LMSDB::getInstance();
+	$root_netdevid = ConfigHelper::getConfig('phpui.root_netdevice_id');
+
+	$visited[$netdevid] = true;
+
+	if ($root_netdevid == $netdevid)
+		return $uplink;
+
+	$netdevices = $DB->GetAll('SELECT id AS netlinkid, (CASE WHEN src = ? THEN dst ELSE src END) AS netdevid
+		FROM netlinks
+		WHERE src = ? OR dst = ?', array($netdevid, $netdevid, $netdevid));
+
+	if (empty($netdevices))
+		return null;
+
+	foreach ($netdevices as $netdevice) {
+		if (isset($visited[$netdevice['netdevid']]))
+			continue;
+
+		if ($netdevice['netdevid'] == $root_netdevid)
+			return $netdevice['netlinkid'];
+		else
+			$uplink = FindNetDeviceUplink($netdevice['netdevid']);
+			if (!empty($uplink))
+				return $netdevice['netlinkid'];
+	}
+
+	return $uplink;
+}
+
+function GetNetDevicesInSubtree($netdevid) {
+	static $uplink = null;
+	static $netdevices = array();
+	static $visited = array();
+
+	if (is_null($uplink)) {
+		$uplink = FindNetDeviceUplink($netdevid);
+		if (empty($uplink))
+			$uplink = 0;
+	}
+
+	$netdevices[] = $netdevid;
+	$visited[$netdevid] = true;
+
+	$DB = LMSDB::getInstance();
+
+	$netdevs = $DB->GetAll('SELECT id AS netlinkid, (CASE WHEN src = ? THEN dst ELSE src END) AS netdevid
+		FROM netlinks
+		WHERE id <> ? AND (src = ? OR dst = ?)', array($netdevid, $uplink, $netdevid, $netdevid));
+
+	if (empty($netdevs))
+		return array();
+
+	foreach ($netdevs as $netdev) {
+		if (isset($visited[$netdev['netdevid']]))
+			continue;
+		$netdevices = array_unique(array_merge($netdevices, GetNetDevicesInSubtree($netdev['netdevid'])));
+	}
+
+	return $netdevices;
+}
+
 $layout['pagetitle'] = trans('Message Add');
 
 if (isset($_POST['message']) && !isset($_GET['sent'])) {
 	$message = $_POST['message'];
+
+	$message['netdevices'] = array();
+	if (!empty($message['netdev']))
+		if (isset($message['wholesubtree'])) {
+			$message['netdevices'] = GetNetDevicesInSubtree($message['netdev']);
+		} else
+			$message['netdevices'][] = $message['netdev'];
 
 	if (!in_array($message['type'], array(MSG_MAIL, MSG_SMS, MSG_ANYSMS, MSG_WWW, MSG_USERPANEL)))
 		$message['type'] = MSG_USERPANEL_URGENT;
@@ -634,6 +714,7 @@ $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
 $SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM vusers WHERE phone <> \'\' ORDER BY name'));
+$SMARTY->assign('netdevices', $LMS->GetNetDevList());
 $SMARTY->display('message/messageadd.html');
 
 ?>

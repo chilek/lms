@@ -173,9 +173,21 @@
 		</TD>
 		<TD style="width: 98%;">
 			<TABLE width="100%">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 91%;">
+				</COLGROUP>
 				<TR>
-					<TD style="width: 1%;" class="nobr" rowspan="2">{trans("Status:")}</TD>
-					<TD style="width: 1%;" rowspan="2">
+					<TD class="nobr" rowspan="2">{trans("Status:")}</TD>
+					<TD rowspan="2">
 						<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
 							<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
 							{foreach $_CSTATUSES as $statusidx => $status}
@@ -194,16 +206,16 @@
 							<option value="59"{if $message.group == "59"} selected{/if}>{trans("opened documents")}</option>
 						</SELECT>
 					</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Group:")}</TD>
-					<TD style="width: 1%;" class="multiselect">
+					<TD class="nobr">{trans("Group:")}</TD>
+					<TD class="multiselect">
 						<SELECT name="message[customergroup][]" multiple class="lms-ui-multiselect" {tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
 							{foreach $customergroups as $customergroup}
 							<option value="{$customergroup.id}"{if isset($message.customergroup) && in_array($customergroup.id, $message.customergroup)} selected{/if}>{$customergroup.name|truncate:"30":"...":true}</option>
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Network:")}</TD>
-					<TD style="width: 1%;">
+					<TD class="nobr">{trans("Network:")}</TD>
+					<TD>
 						<SELECT name="message[network]" {tip trigger="network" text="Select IP network"}>
 							<option value="0">{trans("- all networks -")}</option>
 							{section name="networks" loop=$networks}
@@ -211,8 +223,8 @@
 							{/section}
 						</SELECT>
 					</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Tariff type:")}</TD>
-					<TD style="width: 93%;">
+					<TD class="nobr">{trans("Tariff type:")}</TD>
+					<TD>
 						<SELECT name="message[tarifftype]" {tip trigger="network" text="Select tariff type"}>
 							<option value="0">{trans("- all -")}</option>
 							{foreach $_SERVICETYPES as $key => $type}
@@ -220,6 +232,7 @@
 							{/foreach}
 						</SELECT>
 					</TD>
+					<td colspan="2"></td>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("Nodes Group:<!short>")}</TD>
@@ -241,8 +254,25 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr"><label for="consent">{trans("Consent required:")}</label></TD>
-					<TD style="width: 93%;">
+					<TD style="width: 1%;">
 						<INPUT type="checkbox" id="consent" name="message[consent]" value="1" {tip text="Check if customer consent to messages delivery via e-mail or sms is required" trigger="consent"}{if $message.consent} checked{/if}>
+					</TD>
+					<TD style="width: 1%;" class="nobr">
+						<label for="netdev">
+							{trans("Network device:")}
+						</label>
+					</TD>
+					<TD style="width: 91%;" class="nobr">
+						<SELECT name="message[netdev]" id="netdev" class="lms-ui-combobox" {tip trigger="netdev" text="Select network device"}>
+							<option value="">{trans("- none -")}</option>
+							{foreach $netdevices as $netdev}
+							<option value="{$netdev.id}"{if $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
+							{/foreach}
+						</SELECT>
+						<label>
+							<input type="checkbox" name="message[wholesubtree]" value="1"{if isset($message.wholesubtree)} checked{/if}>
+							{trans("whole subtree")}
+						</label>
 					</TD>
 				</TR>
 			</TABLE>
@@ -397,7 +427,7 @@
 			{trans("Message body:")}
 		</TD>
 		<TD style="width: 98%;">
-			<TEXTAREA name="message[mailbody]" class="lms-ui-wysiwyg-editor" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="mailbody"}{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</TEXTAREA>
+			<TEXTAREA name="message[mailbody]" cols="80" rows="20" {tip class="lms-ui-wysiwyg-editor" text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="mailbody"}{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
