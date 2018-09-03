@@ -274,7 +274,7 @@ function FindNetDeviceUplink($netdevid) {
 		$root_netdevid = ConfigHelper::getConfig('phpui.root_netdevice_id');
 
 	if (is_null($netdev_links)) {
-		$netlinks = $DB->GetAll('SELECT id, src, dst, FROM netlinks');
+		$netlinks = $DB->GetAll('SELECT id, src, dst FROM netlinks');
 		if (!empty($netlinks))
 			foreach ($netlinks as $netlink) {
 				if (!isset($netdev_links[$netlink['src']]))
@@ -328,7 +328,7 @@ function GetNetDevicesInSubtree($netdevid) {
 		$DB = LMSDB::getInstance();
 
 	if (is_null($netdev_links)) {
-		$netlinks = $DB->GetAll('SELECT id, src, dst, FROM netlinks');
+		$netlinks = $DB->GetAll('SELECT id, src, dst FROM netlinks');
 		if (!empty($netlinks))
 			foreach ($netlinks as $netlink) {
 				if (!isset($netdev_links[$netlink['src']]))
@@ -342,16 +342,16 @@ function GetNetDevicesInSubtree($netdevid) {
 			$netdev_links = array();
 	}
 
-	$netdevices[$netdevid] = $netdevid;
+	$netdevices[] = $netdevid;
 	$visited[$netdevid] = true;
 
-	if (!isset($nnetdev_links[$netdevid]))
+	if (!isset($netdev_links[$netdevid]))
 		return array();
 
 	foreach ($netdev_links[$netdevid] as $netdev) {
 		if ($netdev == $uplink_netdev || isset($visited[$netdev]))
 			continue;
-		$netdevices = array_merge($netdevices, GetNetDevicesInSubtree($netdev));
+		GetNetDevicesInSubtree($netdev);
 	}
 
 	return $netdevices;
