@@ -80,10 +80,10 @@
 								<!--
 									$(function() {
 										$('#selectfirstfreeaddress').click(function() {
-											var netid = $('[name="nodeeditnetid"]').val();
+											var netid = $('[name="nodeedit[netid]"]').val();
 											if (netid == 0)
 												return;
-											xajax_getFirstFreeAddress(netid, $('[name="nodeeditipaddr"]').uniqueId().attr('id'));
+											xajax_getFirstFreeAddress(netid, $('[name="nodeedit[ipaddr]"]').uniqueId().attr('id'));
 										});
 									});
 								//-->
@@ -490,8 +490,8 @@
 		var wholenetwork = document.forms['editnode'].elements['nodeedit[wholenetwork]'];
 		var display = wholenetwork.checked ? 'none' : 'table-row';
 
-		document.getElementsByName("nodeeditipaddr")[0].parentNode.parentNode.style.display = display;
-		var ipaddr_pub = document.getElementsByName("nodeeditipaddrpub");
+		$('[name="nodeedit[ipaddr]"]').get(0).parentNode.parentNode.style.display = display;
+		var ipaddr_pub = $('[name="nodeedit[ipaddr_pub]"]');
 		if (ipaddr_pub.length)
 			ipaddr_pub[0].parentNode.parentNode.style.display = display;
 	}
