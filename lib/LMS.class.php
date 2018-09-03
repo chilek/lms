@@ -1492,12 +1492,6 @@ class LMS
         return $manager->GetUserRightsRT($user, $queue, $ticket);
     }
 
-    public function GetQueueList($stats = true)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueList($stats);
-    }
-
 	public function GetQueueListByUser($userid, $stats = true) {
 		$manager = $this->getHelpdeskManager();
 		return $manager->GetQueueListByUser($userid, $stats);
