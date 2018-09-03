@@ -593,6 +593,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 
 			foreach ($netdevlist as &$netdev) {
+				$netdev['customlinks'] = array();
 				if (!$netdev['location'] && $netdev['ownerid']) {
 					$netdev['location'] = $customer_manager->getAddressForCustomerStuff($netdev['ownerid']);
 				}

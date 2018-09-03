@@ -138,6 +138,15 @@ $netnodes = $LMS->GetNetNodeList(array(), 'name,ASC');
 unset($netnodes['total'], $netnodes['order'], $netnodes['direction']);
 $SMARTY->assign('netnodes', $netnodes);
 
+$hook_data = $LMS->executeHook(
+	'netdevlist_before_display',
+	array(
+		'netdevlist' => $netdevlist,
+		'smarty' => $SMARTY,
+	)
+);
+$netdevlist = $hook_data['netdevlist'];
+
 $SMARTY->assign('netdevlist',$netdevlist);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('listdata',$listdata);

@@ -378,6 +378,12 @@ function GetModelList($pid = NULL) {
 			ORDER BY m.name ASC',
 			array($pid));
 
+	if (!empty($list)) {
+		foreach ($list as &$model)
+			$model['customlinks'] = array();
+		unset($model);
+	}
+
 	return $list;
 }
 
@@ -390,6 +396,15 @@ $pagelimit = ConfigHelper::getConfig('phpui.netdevmodel_pagelimit', $listdata['t
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('ndlpage',$page);
+
+$hook_data = $LMS->executeHook(
+	'netdevmodels_before_display',
+	array(
+		'modellist' => $modellist,
+		'smarty' => $SMARTY,
+	)
+);
+$modellist = $hook_data['modellist'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign('listdata',$listdata);

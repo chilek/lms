@@ -130,6 +130,10 @@
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdev.serialnumber}
 		</TD>
 		<TD class="text-right nobr">
+			{foreach $netdev.customlinks as $link}
+			<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
+			{if isset($link.extra)}{$link.extra}{/if}
+			{/foreach}
 			<a href="?m=netdevdel&amp;id={$netdev.id}" onClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=netdevedit&amp;id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<a href="?m=netdevadd&amp;id={$netdev.id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
