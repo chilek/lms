@@ -261,65 +261,97 @@ function BodyVars(&$body, $data)
 }
 
 function FindNetDeviceUplink($netdevid) {
-	static $uplink = null;
+	static $uplink_netdev = null;
 	static $visited = array();
-	$DB = LMSDB::getInstance();
-	$root_netdevid = ConfigHelper::getConfig('phpui.root_netdevice_id');
+	static $root_netdevid = null;
+	static $netdev_links = null;
+	static $DB = null;
+
+	if (is_null($DB))
+		$DB = LMSDB::getInstance();
+
+	if (empty($root_netdevid))
+		$root_netdevid = ConfigHelper::getConfig('phpui.root_netdevice_id');
+
+	if (is_null($netdev_links)) {
+		$netlinks = $DB->GetAll('SELECT id, src, dst, FROM netlinks');
+		if (!empty($netlinks))
+			foreach ($netlinks as $netlink) {
+				if (!isset($netdev_links[$netlink['src']]))
+					$netdev_links[$netlink['src']] = array();
+				$netdev_links[$netlink['src']][] = $netlink['dst'];
+				if (!isset($netdev_links[$netlink['dst']]))
+					$netdev_links[$netlink['dst']] = array();
+				$netdev_links[$netlink['dst']][] = $netlink['src'];
+			}
+		else
+			$netdev_links = array();
+	}
 
 	$visited[$netdevid] = true;
 
 	if ($root_netdevid == $netdevid)
-		return $uplink;
+		return $uplink_netdev;
 
-	$netdevices = $DB->GetAll('SELECT id AS netlinkid, (CASE WHEN src = ? THEN dst ELSE src END) AS netdevid
-		FROM netlinks
-		WHERE src = ? OR dst = ?', array($netdevid, $netdevid, $netdevid));
-
-	if (empty($netdevices))
+	if (!isset($netdev_links[$netdevid]))
 		return null;
 
-	foreach ($netdevices as $netdevice) {
-		if (isset($visited[$netdevice['netdevid']]))
+	foreach ($netdev_links[$netdevid] as $netdev) {
+		if (isset($visited[$netdev]))
 			continue;
 
-		if ($netdevice['netdevid'] == $root_netdevid)
-			return $netdevice['netlinkid'];
+		if ($netdev == $root_netdevid)
+			return $netdev;
 		else
-			$uplink = FindNetDeviceUplink($netdevice['netdevid']);
-			if (!empty($uplink))
-				return $netdevice['netlinkid'];
+			$uplink_netdev = FindNetDeviceUplink($netdev);
+			if (!empty($uplink_netdev))
+				return $netdev;
 	}
 
-	return $uplink;
+	return $uplink_netdev;
 }
 
 function GetNetDevicesInSubtree($netdevid) {
-	static $uplink = null;
+	static $uplink_netdev = null;
 	static $netdevices = array();
 	static $visited = array();
+	static $netdev_links = null;
+	static $DB = null;
 
-	if (is_null($uplink)) {
-		$uplink = FindNetDeviceUplink($netdevid);
-		if (empty($uplink))
-			$uplink = 0;
+	if (is_null($uplink_netdev)) {
+		$uplink_netdev = FindNetDeviceUplink($netdevid);
+		if (empty($uplink_netdev))
+			$uplink_netdev = 0;
 	}
 
-	$netdevices[] = $netdevid;
+	if (is_null($DB))
+		$DB = LMSDB::getInstance();
+
+	if (is_null($netdev_links)) {
+		$netlinks = $DB->GetAll('SELECT id, src, dst, FROM netlinks');
+		if (!empty($netlinks))
+			foreach ($netlinks as $netlink) {
+				if (!isset($netdev_links[$netlink['src']]))
+					$netdev_links[$netlink['src']] = array();
+				$netdev_links[$netlink['src']][] = $netlink['dst'];
+				if (!isset($netdev_links[$netlink['dst']]))
+					$netdev_links[$netlink['dst']] = array();
+				$netdev_links[$netlink['dst']][] = $netlink['src'];
+			}
+		else
+			$netdev_links = array();
+	}
+
+	$netdevices[$netdevid] = $netdevid;
 	$visited[$netdevid] = true;
 
-	$DB = LMSDB::getInstance();
-
-	$netdevs = $DB->GetAll('SELECT id AS netlinkid, (CASE WHEN src = ? THEN dst ELSE src END) AS netdevid
-		FROM netlinks
-		WHERE id <> ? AND (src = ? OR dst = ?)', array($netdevid, $uplink, $netdevid, $netdevid));
-
-	if (empty($netdevs))
+	if (!isset($nnetdev_links[$netdevid]))
 		return array();
 
-	foreach ($netdevs as $netdev) {
-		if (isset($visited[$netdev['netdevid']]))
+	foreach ($netdev_links[$netdevid] as $netdev) {
+		if ($netdev == $uplink_netdev || isset($visited[$netdev]))
 			continue;
-		$netdevices = array_unique(array_merge($netdevices, GetNetDevicesInSubtree($netdev['netdevid'])));
+		$netdevices = array_merge($netdevices, GetNetDevicesInSubtree($netdev));
 	}
 
 	return $netdevices;
