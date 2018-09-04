@@ -76,6 +76,8 @@ function smarty_function_location_box( $params = array(), $template )
         unset( $prefix );
     }
 
+    echo '<div class="location-box">';
+
     echo '<fieldset class="lmsui-address-box" id="' . $LOCATION_ID . '">';
 
     if ( isset($params['address_id']) && $params['address_id'] != null ) {
@@ -225,6 +227,8 @@ function smarty_function_location_box( $params = array(), $template )
     echo '</table>';
 
     echo '</fieldset>';
+
+	echo '</div>';
 }
 
 ?>
