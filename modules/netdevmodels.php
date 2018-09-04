@@ -400,6 +400,7 @@ $SESSION->save('ndlpage',$page);
 $hook_data = $LMS->executeHook(
 	'netdevmodels_before_display',
 	array(
+		'producerlist' => $producerlist,
 		'modellist' => $modellist,
 		'smarty' => $SMARTY,
 	)
