@@ -871,3 +871,20 @@ function pna_get_zip_code(search, on_success) {
 		}
 	});
 }
+
+function autoiframe_correct_size() {
+	$('#autoiframe', window.parent.document).on('load', function() {
+		var width = 0;
+		var scrollBarWidth = 0;
+		$('frame', this.contentDocument).each(function(key, elem) {
+			if (elem.contentDocument.body.scrollWidth > width) {
+				width = elem.contentDocument.body.scrollWidth;
+			}
+			if ($(elem).is('[scrolling="always"]')) {
+				scrollBarWidth = elem.clientWidth - elem.contentDocument.body.clientWidth;
+			}
+		});
+		width += scrollBarWidth;
+		$(this).css('width', width).parent().css('width', '');
+	});
+}

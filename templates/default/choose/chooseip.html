@@ -13,6 +13,9 @@
 </script>{/if}
 </head>
 {if ! $part}
+<script>
+	autoiframe_correct_size();
+</script>
 <frameset name="all" frameborder="0" framespacing="0" ROWS="65,*,27">
 	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}">
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main&netid={$netid}{if $ip}&ip={$ip}{/if}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}">
