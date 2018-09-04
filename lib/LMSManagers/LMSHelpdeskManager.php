@@ -387,7 +387,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rtcategories c
 				JOIN rtcategoryusers cu ON cu.categoryid = c.id
 				WHERE cu.userid = ?', 'categoryid', array($userid));
-			foreach ($result as $idx => $ticket) {
+			foreach ($result as &$ticket) {
 				if (ConfigHelper::checkConfig('rt.show_ticket_categories')) {
 					$categories = explode(',', $ticket['categories']);
 					if (!empty($categories))
@@ -407,9 +407,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$ticket['deadline_days'] = abs($days);
 					$ticket['deadline_hours'] = abs($hours);
 				}
-	
-				$result[$idx] = $ticket;
 			}
+			unset($ticket);
 		}
 
 		$result['total'] = empty($result) ? 0 : count($result);
