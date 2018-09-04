@@ -68,33 +68,36 @@
 
 {/block}
 <script>
-    $('select.lms-ui-quicksearch-property-selection').each(function(key) {
+	var qs_data = {
+		"qs-properties": {}
+	};
+	{foreach $qs_properties as $mode => $properties}
+	qs_data["qs-properties"]["{$mode}"] = "{implode(',', array_keys($properties))}";
+	{/foreach}
+
+    $('select.lms-ui-quicksearch-property-selection').each(function(k) {
         var icon = $(this).prev().attr('src');
         var id = $(this).attr('id');
         var mode = $(this).attr('data-mode');
         $(this).prev().remove();
-		multiselect({
+		new multiselect({
 			id: id,
 			defaultValue: null,
 			icon: icon,
 			type: 'tiny'
 		});
-		$('#' + id).change(function(e) {
+		$('#' + id).change(function() {
 			var properties = [];
-			$('#' + id + '-layer input:checked').each(function() {
+			var id = $(this).attr('id');
+
+			$('#' + id + '-layer input:checked').each(function () {
 				properties.push($(this).val());
-            });
-            var data = {
-                "qs-properties": {}
-            };
-            {foreach $qs_properties as $mode => $properties}
-            data["qs-properties"]["{$mode}"] = "{implode(',', array_keys($properties))}";
-            {/foreach}
-            data["qs-properties"][mode] = properties.join(',');
+			});
+			qs_data["qs-properties"][mode] = properties.join(',');
             $.ajax({
 				method: "POST",
 				url: '?m=persistentsetting',
-				data: data
+				data: qs_data
 			});
 		});
 	});
