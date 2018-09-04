@@ -194,10 +194,10 @@ else
     $tt = $_GET['tt'];
 $SESSION->save('tt', $tt);
 
-if (isset($_GET['unread']))
-	$unread = $_GET['unread'];
-else
+if (!isset($_GET['unread']))
 	$SESSION->restore('rtunread', $unread);
+else
+	$unread = $_GET['unread'];
 $SESSION->save('rtunread', $unread);
 
 if (isset($_GET['rights']))
