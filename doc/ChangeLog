@@ -104,6 +104,7 @@ version ?.??.?? (????-??-??):
     device or subtree of selected network device (phpui.root_netdevice_id configuration variable
     should contain root network device id as it is used to calculate subtree) [chilan]
   - improvement: allow to add ip addresses to network devices without mac [chilan]
+  - enhancement: allow to select properties which we use as key to quick search resorces [chilan]
 
 version 1.11.23 (2018-03-21):
 

@@ -18,6 +18,7 @@ function multiselect(options) {
 		return 0;
 
 	var old_class = $(old_element).removeClass('lms-ui-multiselect').attr('class');
+	var selection_group = $(old_element).hasClass('lms-ui-multiselect-selection-group');
 	var new_class = 'lms-ui-multiselect' + (tiny ? '-tiny' : '') + ' ' + old_class;
 	// create new multiselect div
 	var wrapper = $('<div/>' , {
@@ -165,8 +166,10 @@ function multiselect(options) {
 
 	new_selected = this.generateSelectedString();
 	old_selected = new_selected;
-	if (!tiny) {
-		new_element.html(old_selected);
+	if (!tiny || selection_group) {
+		if (!tiny) {
+			new_element.html(old_selected);
+		}
 
 		var checkall_div = $('<div/>').appendTo(div);
 		$('<label><input type="checkbox" name="checkall" value="1">' + lmsMessages.checkAll + '</label>').appendTo(checkall_div);

@@ -1926,3 +1926,7 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 .chosen-container-single .chosen-drop {
   border-radius: unset;
 }
+#quicksearch {
+  display: flex;
+  align-items: flex-start;
+}

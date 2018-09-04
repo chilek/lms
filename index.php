@@ -224,8 +224,17 @@ $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $doc
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {
-	if (!$api)
+	if (!$api) {
 		$SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
+
+		$qs_properties = $SESSION->get_persistent_setting('qs-properties');
+		if (empty($qs_properties))
+			$qs_properties = array();
+		else
+			foreach ($qs_properties as $mode => $properties)
+				$qs_properties[$mode] = array_flip(explode(',', $properties));
+		$SMARTY->assign('qs_properties', $qs_properties);
+	}
 
 	// Load plugin files and register hook callbacks
 	$plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);

@@ -72,6 +72,11 @@ if (!empty($_POST['qs'])) {
 }
 $sql_search = $DB->Escape("%$search%");
 
+if (isset($qs_properties[$mode]))
+	$properties = $qs_properties[$mode];
+else
+	$properties = array();
+
 switch ($mode) {
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
@@ -84,13 +89,13 @@ switch ($mode) {
 				LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type IN (?, ?)
 				LEFT JOIN vaddresses va ON va.id = ca.address_id
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
-				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'c.id = '.intval($search).' OR ' : '')."
-					LOWER(".$DB->Concat('lastname',"' '",'c.name').") ?LIKE? LOWER($sql_search)
-					OR LOWER(full_address) ?LIKE? LOWER($sql_search)
-					OR LOWER(post_name) ?LIKE? LOWER($sql_search)
-					OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)
-					OR LOWER(va.address) ?LIKE? LOWER($sql_search)
-					OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)
+				WHERE " . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'c.id = ' . $search : '1=1') : '1=1')
+					. (empty($properties) || isset($properties['name']) ? " OR LOWER(" . $DB->Concat('lastname', "' '", 'c.name') . ") ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['address']) ? " OR LOWER(full_address) ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['post_name']) ? " OR LOWER(post_name) ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['post_address']) ? " OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['location_address']) ? " OR LOWER(va.address) ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['email']) ? " OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)" : '') . "
 				ORDER by deleted, customername, cc.contact, full_address
 				LIMIT ?", array(DEFAULT_LOCATION_ADDRESS, LOCATION_ADDRESS, CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
@@ -291,11 +296,13 @@ switch ($mode) {
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
 
-            $sql_where = '('.(preg_match('/^[0-9]+$/',$search) ? "n.id = $search OR " : '')."
-				LOWER(n.name) ?LIKE? LOWER($sql_search)
-				OR INET_NTOA(ipaddr) ?LIKE? $sql_search
-				OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search
-				OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true)."))
+            $sql_where = '('
+				. (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? "n.id = " . $search : '1=1') : '1=1')
+				. (empty($properties) || isset($properties['name']) ? " OR LOWER(n.name) ?LIKE? LOWER($sql_search)" : '')
+				. (empty($properties) || isset($properties['ip']) ? " OR INET_NTOA(ipaddr) ?LIKE? $sql_search" : '')
+				. (empty($properties) || isset($properties['public_ip']) ? " OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search" : '')
+				. (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '') . "
+				)
 			    AND NOT EXISTS (
                     SELECT 1 FROM customerassignments a
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
