@@ -9,7 +9,7 @@
     <option value="post_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_name)} selected{/if}>{trans("<!qs>post name")}</option>
     <option value="post_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_address)} selected{/if}>{trans("<!qs>post address")}</option>
     <option value="location_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
-    <option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("email")}</option>
+    <option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("<!qs>email")}</option>
 </select>
 &nbsp;
 <input type="text" name="qs[customer]" data-mode="customer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter" class="blend lms-ui-quick-search"}>
