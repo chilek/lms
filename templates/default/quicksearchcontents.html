@@ -37,7 +37,12 @@
 <input type="text" name="qs[netnode]" data-mode="netnode" value="" size="15" {tip text="Enter netnode ID or name and press Enter" class="blend lms-ui-quick-search"}>
 
 &nbsp;
-<img src="img/netdev.gif" alt="" {tip text="Enter netdevice ID or name and press Enter"}>
+<img src="img/netdev.gif" alt="" {tip text="Enter device ID, name or serial number and press Enter"}>
+<select id="qs-netdev-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" data-mode="netdevice" multiple>
+    <option value="id"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.id)} selected{/if}>{trans("<!qs>device id")}</option>
+    <option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
+    <option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
+</select>
 &nbsp;
 <input type="text" name="qs[netdevice]" data-mode="netdevice" value="" size="15" {tip text="Enter device ID, name or serial number and press Enter" class="blend lms-ui-quick-search"}>
 
@@ -48,6 +53,12 @@
 
 &nbsp;
 <img src="img/ticket.gif" alt="" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
+<select id="qs-ticket-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" data-mode="ticket" multiple>
+    <option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
+    <option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
+    <option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
+    <option value="customername"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.customername)} selected{/if}>{trans("<!qs>customer name")}</option>
+</select>
 &nbsp;
 <input type="text" name="qs[ticket]" data-mode="ticket" value="" size="15" {tip text="Enter request tracker ID, subject or requestor name and press Enter" class="blend lms-ui-quick-search"}>
 

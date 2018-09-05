@@ -429,44 +429,43 @@ switch ($mode) {
 			break;
 
 	case 'netdevice':
-                if(isset($_GET['ajax'])) // support for AutoSuggest
-                {
-                        $candidates = $DB->GetAll("SELECT id, name, serialnumber FROM netdevices
-                                WHERE 
-					".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
-						LOWER(name) ?LIKE? LOWER($sql_search)
-						OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)
-                                ORDER by name
-                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+		if (isset($_GET['ajax'])) { // support for AutoSuggest
+			$candidates = $DB->GetAll("SELECT id, name, serialnumber FROM netdevices
+				WHERE "
+				. (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/', $search) ? 'id = ' . $search : '1=0') : '1=0')
+				. (empty($properties) || isset($properties['name']) ? " OR LOWER(name) ?LIKE? LOWER($sql_search)" : '')
+				. (empty($properties) || isset($properties['serial']) ? " OR LOWER(serialnumber) ?LIKE? LOWER($sql_search)" : '')
+				. "	ORDER by name
+				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
-                        $result = array();
-                        if ($candidates) {
-                                foreach ($candidates as $idx => $row) {
-                                        $name = truncate_str($row['name'], 50);
-                                        $name_class = 'lms-ui-suggestion-netdevice';
+				$result = array();
+				if ($candidates) {
+					foreach ($candidates as $idx => $row) {
+						$name = truncate_str($row['name'], 50);
+						$name_class = 'lms-ui-suggestion-netdevice';
 
-                                        $description = '';
-                                        $description_class = '';
-                                        $action = '?m=netdevinfo&id=' . $row['id'];
+						$description = '';
+						$description_class = '';
+						$action = '?m=netdevinfo&id=' . $row['id'];
 
-                                        if (preg_match("~^$search\$~i", $row['id'])) {
-                                                $description = trans('Id:') . ' ' . $row['id'];
-										} else if (preg_match("~$search~i", $row['name'])) {
-											$description = trans('Name') . ': ' . $row['name'];
-										} else if (preg_match("~$search~i", $row['serialnumber'])) {
-											$description = trans('Serial number:') . ' ' . $row['serialnumber'];
-										}
+						if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) {
+								$description = trans('Id:') . ' ' . $row['id'];
+						} else if ((empty($properties) || isset($properties['name'])) && preg_match("~$search~i", $row['name'])) {
+							$description = trans('Name') . ': ' . $row['name'];
+						} else if ((empty($properties) || isset($properties['serial'])) && preg_match("~$search~i", $row['serialnumber'])) {
+							$description = trans('Serial number:') . ' ' . $row['serialnumber'];
+						}
 
-                                        $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
-                                }
-                        }
-                        header('Content-type: application/json');
-                        if (!empty($result))
-                                echo json_encode(array_values($result));
-                        $SESSION->close();
-                        $DB->Destroy();
-                        exit;
-                }
+						$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+					}
+				}
+				header('Content-type: application/json');
+				if (!empty($result))
+						echo json_encode(array_values($result));
+				$SESSION->close();
+				$DB->Destroy();
+				exit;
+		}
 
 		if (is_numeric($search)) {
 			if ($netdevid = $DB->GetOne('SELECT id FROM netdevices WHERE id = ' . $search)) {
@@ -489,11 +488,11 @@ switch ($mode) {
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customerview c on (t.customerid = c.id)
 				WHERE ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
-					." AND (".(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '')."
-					LOWER(t.subject) ?LIKE? LOWER($sql_search)
-					OR LOWER(t.requestor) ?LIKE? LOWER($sql_search)
-					OR LOWER(c.name) ?LIKE? LOWER($sql_search)
-					OR LOWER(c.lastname) ?LIKE? LOWER($sql_search))
+					." AND (" . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/',$search) ? 't.id = ' . $search : '1=0') : '1=0')
+					. (empty($properties) || isset($properties['subject']) ? " OR LOWER(t.subject) ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['requestor']) ? " OR LOWER(t.requestor) ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['customername']) ? " OR LOWER(c.name) ?LIKE? LOWER($sql_search)
+						OR LOWER(c.lastname) ?LIKE? LOWER($sql_search)" : '') . ")
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
 					LIMIT ?",
 					array(
@@ -533,16 +532,16 @@ switch ($mode) {
 					$description_class = '';
 					$action = '?m=rtticketview&id=' . $row['id'];
 
-					if (preg_match("~^$search\$~i",$row['id'])) 	{
+					if ((empty($properties) || isset($properties['id'])) && preg_match("~^$search\$~i", $row['id'])) 	{
 						$description = trans('Id') . ': ' . $row['id'];
-					} else if (preg_match("~$search~i",$row['subject'])) {
+					} else if ((empty($properties) || isset($properties['subject'])) && preg_match("~$search~i", $row['subject'])) {
 						$description = trans('Subject:') . ' ' . $row['subject'];
-					} else if (preg_match("~$search~i",$row['requestor'])) {
+					} else if ((empty($properties) || isset($properties['requestor'])) && preg_match("~$search~i", $row['requestor'])) {
 						$description = trans('First/last name') . ': '
 							. preg_replace('/ <.*/','', $row['requestor']);
-					} else if (preg_match("~^$search~i",$row['name'])) {
+					} else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['name'])) {
 						$description = trans('First/last name') . ': ' . $row['name'];
-					} else if (preg_match("~^$search~i",$row['lastname'])) {
+					} else if ((empty($properties) || isset($properties['customername'])) && preg_match("~^$search~i", $row['lastname'])) {
 						$description = trans('First/last name') . ': ' . $row['lastname'];
 					}
 

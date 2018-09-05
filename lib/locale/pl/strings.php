@@ -4015,4 +4015,12 @@ $_LANG['<!qs>ip address'] = 'adres ip';
 $_LANG['<!qs>public ip address'] = 'adres publiczny ip';
 $_LANG['<!qs>mac address'] = 'adres mac';
 
+$_LANG['<!qs>device id'] = 'identyfikator urządzenia';
+$_LANG['<!qs>device name'] = 'nazwa urządzenia';
+$_LANG['<!qs>device serial number'] = 'numer seryjny urządzenia';
+
+$_LANG['<!qs>ticket id'] = 'identyfikator zgłoszenia';
+$_LANG['<!qs>ticket subject'] = 'temat zgłoszenia';
+$_LANG['<!qs>ticket requestor'] = 'zgłaszający';
+
 ?>
