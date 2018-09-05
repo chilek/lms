@@ -4,6 +4,7 @@
 **/img/tinymce*/**
 **/img/xajax_js/**
 **/img/sprintf.min.js
+**/img/mousetrap/**
 **/img/OpenLayers/**
 plugins/**
 **/*.min.js
