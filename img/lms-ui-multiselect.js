@@ -210,7 +210,7 @@ function multiselect(options) {
 
 			list.show().position({
 				my: 'left top',
-				at: 'right top',
+				at: tiny ? 'left bottom' : 'right top',
 				of: wrapper
 			});
 		} else {
