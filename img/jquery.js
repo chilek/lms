@@ -584,7 +584,7 @@ $(function() {
 				content += '</select></form>';
 				toggle.html(content);
 				var multiselectId = toggle.find('select.column-toggle').uniqueId().attr('id');
-				multiselect({
+				new multiselect({
 					id: multiselectId,
 					defaultValue: null,
 					icon: 'img/settings.gif',
