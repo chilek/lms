@@ -84,6 +84,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	 * 			false - get records,
 	 * 		offset - first returned record (null = 0),
 	 * 		limit - returned record count (null = unlimited),
+     *      verifierids - ticket verifier (default: null = any/none)
 	 * 		order - returned records order (default: createtime,desc)
 	 * 			can contain field_name,order pairs,
 	 * 			supported field names:
@@ -96,7 +97,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	public function GetQueueContents(array $params) {
 		extract($params);
 		foreach (array('ids', 'state', 'priority', 'owner', 'catids', 'removed', 'netdevids', 'netnodeids', 'deadline',
-			'serviceids', 'typeids', 'unread') as $var)
+			'serviceids', 'typeids', 'unread', 'verifierids') as $var)
 			if (!isset($$var))
 				$$var = null;
 		if (!isset($order) || !$order)
@@ -194,6 +195,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $typeidsfilter = ' AND t.type IN (' . implode(',', $typeids) . ')';
         } else
             $typeidsfilter = ' AND t.type = '.$typeids;
+
+        if (empty($verifierids)) {
+            $verifieridsfilter = '';
+        } elseif (is_array($verifierids)) {
+            $verifieridsfilter = ' AND t.service IN (' . implode(',', $verifierids) . ')';
+        } else
+            $verifieridsfilter = ' AND t.service = '.$verifierids;
 
 		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$removedfilter = ' AND t.deleted = 0';
@@ -301,6 +309,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				. $netnodeidsfilter
 				. $deadlinefilter
 				. $serviceidsfilter
+                . $verifieridsfilter
 				. $typeidsfilter, array($userid, $userid));
 		}
 
@@ -322,6 +331,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 			LEFT JOIN vusers ON (owner = vusers.id)
+			LEFT JOIN vusers AS vi ON (verifierid = vi.id)
 			LEFT JOIN customeraddressview c ON (t.customerid = c.id)
 			LEFT JOIN vusers u ON (t.creatorid = u.id)
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
@@ -378,9 +388,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $netnodeidsfilter
 			. $deadlinefilter
 			. $serviceidsfilter
-			. $typeidsfilter
-			. ($sqlord != '' ? $sqlord . ' ' . $direction : '')
-			. (isset($limit) ? ' LIMIT ' . $limit : '')
+            . $verifieridsfilter
+            . $typeidsfilter
+            . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+            . (isset($limit) ? ' LIMIT ' . $limit : '')
 			. (isset($offset) ? ' OFFSET ' . $offset : ''),
 			array($userid, $userid))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
