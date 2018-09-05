@@ -693,6 +693,13 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
   background-image: url(wireless.gif);
 }
+.lms-ui-suggestion-name.lms-ui-suggestion-networks::before {
+  content: "";
+  padding-right: 17px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(network.gif);
+}
 .lms-ui-suggestion-name.lms-ui-suggestion-netnode::before {
   content: "";
   padding-right: 17px;

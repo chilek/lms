@@ -606,7 +606,46 @@ switch ($mode) {
             }
         }
     break;
+    case 'networks':
+        if (isset($_GET['ajax'])) // support for AutoSuggest
+        {
+            $candidates = $DB->GetAll("SELECT id, name, address FROM networks
+                                WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
+				LOWER(name) ?LIKE? LOWER($sql_search)
+                                ORDER by name
+                                LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
+            $result = array();
+            if ($candidates) {
+                foreach ($candidates as $idx => $row) {
+                    $name = truncate_str($row['name'], 50);
+                    $name_class = 'lms-ui-suggestion-networks';
+
+                    $description = '';
+                    $description_class = '';
+                    $action = '?m=netinfo&id=' . $row['network'];
+
+                    if (preg_match("~^$search\$~i", $row['id']))
+                        $description = trans('Id:') . ' ' . $row['id'];
+
+                    $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+                }
+            }
+            header('Content-type: application/json');
+            if (!empty($result))
+                echo json_encode(array_values($result));
+            $SESSION->close();
+            $DB->Destroy();
+            exit;
+        }
+
+        if (is_numeric($search)) {
+            if ($networkid = $DB->GetOne('SELECT id FROM networks WHERE id = ' . $search)) {
+                $target = '?m=netinfo&id=' . $networkid;
+                break;
+            }
+        }
+    break;
 	case 'account':
 		$ac = explode('@', $search);
 
