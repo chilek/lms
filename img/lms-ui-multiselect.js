@@ -184,37 +184,15 @@ function multiselect(options) {
 
 	// add some mouse/key event handlers
 	wrapper.click(function() {
-		var fix_position_timer = null;
-
 		var list = $('#' + this.id + '-layer');
 		if (!list.is(':visible')) {
-/*
-			//var pos = $(this).offset();
-			var pos = get_object_pos(this);
-			pos.left = pos.x;
-			pos.top = pos.y;
-
-			if (pos.left + $(this).outerWidth() + list.width() >= $(window).width()) {
-				pos.left -= list.width();
-			} else {
-				pos.left += $(this).outerWidth();
-			}
-
-			if (pos.top + $(this).outerHeight() + list.height() >= $(window).height()) {
-				pos.top -= list.height() - $(this).outerHeight();
-			}
-
-			list.css({
-				'left': pos.left + 'px',
-				'top': pos.top + 'px'
-			}).show();
-*/
-
-			list.show().position({
-				my: 'left top',
-				at: tiny ? 'left bottom' : 'right top',
-				of: wrapper
-			});
+			setTimeout(function() {
+				list.show().position({
+					my: 'left top',
+					at: tiny ? 'left bottom' : 'right top',
+					of: wrapper
+				});
+			}, 1);
 		} else {
 			list.hide();
 			if (new_selected != old_selected)
@@ -222,9 +200,7 @@ function multiselect(options) {
 			old_selected = new_selected;
 		}
 
-		if (fix_position_timer)
-			clearTimeout(fix_position_timer);
-		fix_position_timer = setTimeout(function() {
+		setTimeout(function() {
 			if (list.is(':visible')) {
 				list.position({
 					my: 'left top',
@@ -232,7 +208,6 @@ function multiselect(options) {
 					of: wrapper
 				});
 			}
-			fix_position_timer = null;
 		}, 1);
 	});
 
