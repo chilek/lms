@@ -38,7 +38,7 @@ if (isset($_POST['searchnodedev']) && $_POST['searchnodedev']) {
 											c.name as customername, c.lastname, c.street, c.building, c. apartment
 										FROM
 											nodes n
-										LEFT JOIN customers c ON n.ownerid = c.id
+										LEFT JOIN customerview c ON n.ownerid = c.id
 										WHERE
 											(n.name ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' OR
 											inet_ntoa(n.ipaddr) ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' OR
