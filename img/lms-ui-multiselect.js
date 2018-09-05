@@ -81,7 +81,8 @@ function multiselect(options) {
 		var selected_string = selected.join(separator);
 		if (!tiny) {
 			new_element.html(selected_string);
-			if ($('#' + wrapper.attr('id') + '-layer').is(':visible')) {
+			var list = $('#' + wrapper.attr('id') + '-layer');
+			if (list.is(':visible')) {
 				setTimeout(function() {
 					list.position({
 						my: 'left top',
