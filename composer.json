@@ -25,6 +25,17 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "ccampbell/mousetrap",
+                "version": "1.6.2",
+                "dist": {
+                    "url": "https://github.com/ccampbell/mousetrap/archive/1.6.2.zip",
+                    "type": "zip"
+                }
+            }
         }
     ],
     "require": {
@@ -48,7 +59,8 @@
         "tecnickcom/tc-lib-barcode": "^1",
         "zenorocha/clipboardjs": "^2.0",
         "harvesthq/chosen": "^1.8",
-        "tinymce/tinymce": "^4"
+        "tinymce/tinymce": "^4",
+        "ccampbell/mousetrap": "^1"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
