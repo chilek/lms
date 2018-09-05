@@ -7,6 +7,7 @@ function multiselect(options) {
 	var shorten_to_def = typeof options.shortenToDefaultValue === 'undefined' ||
 		options.shortenToDefaultValue == 'true' ? true : false;
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
+	var bottom = typeof options.bottom !== 'undefined' && options.bottom;
 	var icon = typeof options.icon !== 'undefined' ? options.icon : 'img/settings.gif';
 	var label = typeof options.label !== 'undefined' ? options.label : '';
 	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
@@ -77,7 +78,21 @@ function multiselect(options) {
 		} else {
 			selected.push(def);
 		}
-		return selected.join(separator);
+		var selected_string = selected.join(separator);
+		if (!tiny) {
+			new_element.html(selected_string);
+			setTimeout(function() {
+				var list = $('#' + wrapper.attr('id') + '-layer');
+				if (list.is(':visible')) {
+					list.position({
+						my: 'left top',
+						at: bottom ? 'left bottom' : 'right top',
+						of: wrapper
+					});
+				}
+			}, 1);
+		}
+		return selected_string;
 	}
 
 	function updateCheckAll() {
@@ -132,8 +147,6 @@ function multiselect(options) {
 			}
 
 			new_selected = multiselect.generateSelectedString();
-			if (!tiny)
-				new_element.html(new_selected);
 
 			updateCheckAll();
 
@@ -160,17 +173,11 @@ function multiselect(options) {
 			$(this).prop('checked', checked);
 		});
 		new_selected = multiselect.generateSelectedString();
-		if (!tiny)
-			new_element.html(new_selected);
 	}
 
 	new_selected = this.generateSelectedString();
 	old_selected = new_selected;
 	if (!tiny || selection_group) {
-		if (!tiny) {
-			new_element.html(old_selected);
-		}
-
 		var checkall_div = $('<div/>').appendTo(div);
 		$('<label><input type="checkbox" name="checkall" value="1">' + lmsMessages.checkAll + '</label>').appendTo(checkall_div);
 
@@ -189,7 +196,7 @@ function multiselect(options) {
 			setTimeout(function() {
 				list.show().position({
 					my: 'left top',
-					at: tiny ? 'left bottom' : 'right top',
+					at: tiny || bottom ? 'left bottom' : 'right top',
 					of: wrapper
 				});
 			}, 1);
@@ -199,16 +206,6 @@ function multiselect(options) {
 				wrapper.triggerHandler('change');
 			old_selected = new_selected;
 		}
-
-		setTimeout(function() {
-			if (list.is(':visible')) {
-				list.position({
-					my: 'left top',
-					at: tiny ? 'left bottom' : 'right top',
-					of: wrapper
-				});
-			}
-		}, 1);
 	});
 
 	// hide combobox after click out of the window
@@ -271,8 +268,6 @@ function multiselect(options) {
 			}
 		});
 		new_selected = this.generateSelectedString();
-		if (!tiny)
-			new_element.html(new_selected);
 	}
 
 	this.filterSelection = function(idArray) {
@@ -289,8 +284,6 @@ function multiselect(options) {
 			}
 		});
 		new_selected = this.generateSelectedString();
-		if (!tiny)
-			new_element.html(new_selected);
 	}
 
 	var lis = $('li', div);
@@ -317,8 +310,5 @@ function multiselect(options) {
 			}
 		});
 		new_selected = this.generateSelectedString();
-		if (!tiny) {
-			new_element.html(new_selected);
-		}
 	}
 }

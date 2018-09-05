@@ -18,7 +18,8 @@
 		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if},
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
 		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
-        zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}'
+        zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
+        multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom')}true{else}false{/if}
 	};
 	var lmsMessages = {
 		persistentSettingSaveError: '{trans("AJAX: Error during persistent setting save on server:")}',
