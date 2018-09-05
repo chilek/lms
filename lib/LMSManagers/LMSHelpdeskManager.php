@@ -84,7 +84,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	 * 			false - get records,
 	 * 		offset - first returned record (null = 0),
 	 * 		limit - returned record count (null = unlimited),
-     *      verifierids - ticket verifier (default: null = any/none)
+	 *		verifierids - ticket verifier (default: null = any/none)
 	 * 		order - returned records order (default: createtime,desc)
 	 * 			can contain field_name,order pairs,
 	 * 			supported field names:
