@@ -105,6 +105,7 @@ version ?.??.?? (????-??-??):
     should contain root network device id as it is used to calculate subtree) [chilan]
   - improvement: allow to add ip addresses to network devices without mac [chilan]
   - enhancement: allow to select properties which we use as key to quick search resorces [chilan]
+  - engancement: global CTRL+n keyboard shortcuts for quick search inputs [chilan]
 
 version 1.11.23 (2018-03-21):
 
