@@ -292,6 +292,11 @@ define('RT_TYPE_OTHER', 9);
 
 
 $RT_TYPES = array(
+	RT_TYPE_OTHER => array(
+		'label' => trans('Other'),
+		'class' => 'lms-ui-rt-ticket-type-other',
+		'name' => 'RT_TYPE_OTHER'
+	),
 	RT_TYPE_OFFER => array(
 		'label' => trans('Offer'),
 		'class' => 'lms-ui-rt-ticket-type-offer',
@@ -331,11 +336,6 @@ $RT_TYPES = array(
 		'label' => trans('Deinstalation'),
 		'class' => 'lms-ui-rt-ticket-type-remove',
 		'name' => 'RT_TYPE_REMOVE'
-	),
-	RT_TYPE_OTHER => array(
-		'label' => trans('Other'),
-		'class' => 'lms-ui-rt-ticket-type-other',
-		'name' => 'RT_TYPE_OTHER'
 	),
 );
 
@@ -513,12 +513,12 @@ $NUM_PERIODS = array(
 );
 
 // Service Types
+define('SERVICE_OTHER', -1);
 define('SERVICE_INTERNET', 1);
 define('SERVICE_HOSTING', 2);
 define('SERVICE_SERVICE', 3);
 define('SERVICE_PHONE', 4);
 define('SERVICE_TV', 5);
-define('SERVICE_OTHER', -1);
 
 // VoIP call types
 define('CALL_INCOMING', 1);
@@ -544,12 +544,12 @@ define('CALL_FLAG_ADMIN_RECORDING', 1);
 define('CALL_FLAG_CUSTOMER_RECORDING', 2);
 
 $SERVICETYPES = array(
+    SERVICE_OTHER => ConfigHelper::getConfig('tarifftypes.other', trans('other')),
     SERVICE_INTERNET => ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
     SERVICE_HOSTING => ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
     SERVICE_SERVICE	=> ConfigHelper::getConfig('tarifftypes.service', trans('service')),
     SERVICE_PHONE => ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
     SERVICE_TV => ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
-    SERVICE_OTHER => ConfigHelper::getConfig('tarifftypes.other', trans('other')),
 );
 
 $PAYTYPES = array(

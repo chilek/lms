@@ -772,8 +772,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			isset($ticket['netdevid']) && !empty($ticket['netdevid']) ? $ticket['netdevid'] : null,
 			isset($ticket['verifierid']) && !empty($ticket['verifierid']) ? $ticket['verifierid'] : null,
 			isset($ticket['deadline']) && !empty($ticket['deadline']) ? $ticket['deadline'] : null,
-			isset($ticket['service']) && !empty($ticket['service']) ? $ticket['service'] : null,
-			isset($ticket['type']) && !empty($ticket['type']) ? $ticket['type'] : null,
+			isset($ticket['service']) && !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
+			isset($ticket['type']) && !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
 		));
 
 		$id = $this->db->GetLastInsertID('rttickets');
