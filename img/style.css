@@ -395,7 +395,7 @@ div.lms-ui-multiselect-tiny {
 }
 div.lms-ui-multiselectlayer {
   position: absolute;
-  z-index: 100;
+  z-index: 20000;
   overflow: hidden;
   width: 350px;
   -webkit-user-select: none;
