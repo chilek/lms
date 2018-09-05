@@ -81,16 +81,15 @@ function multiselect(options) {
 		var selected_string = selected.join(separator);
 		if (!tiny) {
 			new_element.html(selected_string);
-			setTimeout(function() {
-				var list = $('#' + wrapper.attr('id') + '-layer');
-				if (list.is(':visible')) {
+			if ($('#' + wrapper.attr('id') + '-layer').is(':visible')) {
+				setTimeout(function() {
 					list.position({
 						my: 'left top',
 						at: bottom ? 'left bottom' : 'right top',
 						of: wrapper
 					});
-				}
-			}, 1);
+				}, 1);
+			}
 		}
 		return selected_string;
 	}
