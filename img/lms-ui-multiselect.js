@@ -184,6 +184,8 @@ function multiselect(options) {
 
 	// add some mouse/key event handlers
 	wrapper.click(function() {
+		var fix_position_timer = null;
+
 		var list = $('#' + this.id + '-layer');
 		if (!list.is(':visible')) {
 /*
@@ -219,6 +221,19 @@ function multiselect(options) {
 				wrapper.triggerHandler('change');
 			old_selected = new_selected;
 		}
+
+		if (fix_position_timer)
+			clearTimeout(fix_position_timer);
+		fix_position_timer = setTimeout(function() {
+			if (list.is(':visible')) {
+				list.position({
+					my: 'left top',
+					at: tiny ? 'left bottom' : 'right top',
+					of: wrapper
+				});
+			}
+			fix_position_timer = null;
+		}, 1);
 	});
 
 	// hide combobox after click out of the window
