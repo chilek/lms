@@ -186,6 +186,7 @@ function multiselect(options) {
 	wrapper.click(function() {
 		var list = $('#' + this.id + '-layer');
 		if (!list.is(':visible')) {
+/*
 			//var pos = $(this).offset();
 			var pos = get_object_pos(this);
 			pos.left = pos.x;
@@ -205,13 +206,13 @@ function multiselect(options) {
 				'left': pos.left + 'px',
 				'top': pos.top + 'px'
 			}).show();
-			/*
-						list.position({
-							my: 'left top',
-							at: 'right top',
-							of: new_element
-						});
-			*/
+*/
+
+			list.show().position({
+				my: 'left top',
+				at: 'right top',
+				of: wrapper
+			});
 		} else {
 			list.hide();
 			if (new_selected != old_selected)
