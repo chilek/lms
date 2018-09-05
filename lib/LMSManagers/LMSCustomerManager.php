@@ -235,7 +235,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
             UNION
             (SELECT ic.itemid AS id, d.cdate AS time, 0 AS type,
-            		-ic.value, NULL AS tax, d.customerid,
+            		(-ic.value * ic.count) AS value, NULL AS tax, d.customerid,
             		ic.description AS comment, d.id AS docid, vusers.name AS username,
             		d.type AS doctype, d.closed AS closed,
             		d.published, NULL AS importid,
