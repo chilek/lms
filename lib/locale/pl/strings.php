@@ -4042,4 +4042,6 @@ $_LANG['Click here to select which node properties should be used during search'
 $_LANG['Click here to select which network device properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości urządzenia sieciowego powinny być używane podczas wyszukiwania';
 $_LANG['Click here to select which ticket properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości zgłoszenia powinny być używane podczas wyszukiwania';
 
+$_LANG['Clear filter'] = 'Wyczyść filtr';
+
 ?>
