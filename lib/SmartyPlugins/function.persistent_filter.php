@@ -50,7 +50,8 @@ function smarty_function_persistent_filter($params, $template) {
 				<option value="-1">' . trans("<!filter>- new -") . '</option>
 				' . $filters . '
 			</select>
-			<input type="text" size="20" class="lms-ui-filter-name" pattern="^.{5,}$">
+			<input type="text" size="20" class="lms-ui-filter-name" pattern=".{5,}" required title="'
+				. trans("Enter filter name (at least 5 characters)") . '">
 			<button class="lms-ui-button lms-ui-filter-delete-button" >
 				' . trans("<!filter>Delete") . '
 			</button>

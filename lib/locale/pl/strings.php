@@ -4050,5 +4050,6 @@ $_LANG['<!filter>Update'] = 'Aktualizuj';
 $_LANG['<!filter>Delete'] = 'Usuń';
 $_LANG['<!filter>- none -'] = '- żaden - ';
 $_LANG['<!filter>- new -'] = '- nowy -';
+$_LANG['Enter filter name (at least 5 characters)'] = 'Podaj nazwę filtru (co najmniej 5 znaków)';
 
 ?>

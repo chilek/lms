@@ -26,8 +26,6 @@
 
 $LMS->CleanupTicketLastView();
 
-$filter = $SESSION->getFilter();
-
 // queue id's
 if (isset($_GET['id']) && $_GET['id'] != 'all') {
 	if (is_array($_GET['id']))

@@ -86,6 +86,9 @@ $(function() {
 	$('.lms-ui-filter-apply-button').click(function () {
 		var form = $(this).closest('form.lms-ui-persistent-filter');
 		var name = $(this).siblings('.lms-ui-filter-selection').val();
+		if (!name.length || name == -1) {
+			return false;
+		}
 		form.find('[name="name"]').val(name);
 		form.attr('action', form.attr('action').replace('&api=1', ''));
 		form.submit();
