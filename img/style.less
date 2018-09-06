@@ -669,7 +669,6 @@ li.lms-ui-suggestion-item {
 	color: black;
 	text-decoration: none;
 	&:hover,
-	&:focus,
 	&:active {
 		text-decoration: none;
 		border: 1px solid @darkbrown;
@@ -680,10 +679,12 @@ li.lms-ui-suggestion-item {
 		background-color: @light;
 		box-shadow: inset 1px 1px 3px 0px rgba(0,0,0,0.6);
 	}
-	&:focus,
 	&:active {
 		background-color: @dark;
 		box-shadow: inset 1px 1px 4px 0px rgba(0,0,0,0.4);
+	}
+	&:focus {
+		//box-shadow: 2px 2px 10px -2px @superdark, -2px -2px 10px -2px @superdark;
 	}
 }
 

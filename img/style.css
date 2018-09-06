@@ -852,7 +852,6 @@ button.lms-ui-button:hover {
   text-decoration: underline;
 }
 button.lms-ui-button:hover,
-button.lms-ui-button:focus,
 button.lms-ui-button:active {
   text-decoration: none;
   border: 1px solid #615847;
@@ -863,7 +862,6 @@ button.lms-ui-button:hover {
   background-color: #DFD5BD;
   box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
 }
-button.lms-ui-button:focus,
 button.lms-ui-button:active {
   background-color: #CEBD9B;
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
@@ -883,7 +881,6 @@ button.lms-ui-fileupload-button:hover {
   text-decoration: underline;
 }
 button.lms-ui-fileupload-button:hover,
-button.lms-ui-fileupload-button:focus,
 button.lms-ui-fileupload-button:active {
   text-decoration: none;
   border: 1px solid #615847;
@@ -894,7 +891,6 @@ button.lms-ui-fileupload-button:hover {
   background-color: #DFD5BD;
   box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
 }
-button.lms-ui-fileupload-button:focus,
 button.lms-ui-fileupload-button:active {
   background-color: #CEBD9B;
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
