@@ -289,7 +289,15 @@ class Session {
 		if (!isset($this->_persistent_settings['filters'][$module]))
 			return array();
 
-		return $this->_persistent_settings['filters'][$module];
+		$result = array();
+
+		foreach ($this->_persistent_settings['filters'][$module] as $filter_name => $filter)
+			$result[] = array(
+				'text' => $filter_name,
+				'value' => $filter_name,
+			);
+
+		return $result;
 	}
 
 	public function removePersistentFilter($name, $module = null) {

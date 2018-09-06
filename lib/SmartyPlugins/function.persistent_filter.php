@@ -30,9 +30,9 @@ function smarty_function_persistent_filter($params, $template) {
 	$persistent_filter = $template->getTemplateVars('persistent_filter');
 
 	$filters = '';
-	foreach ($persistent_filters as $filter_name => $filter)
-		$filters .= '<option value="' . $filter_name . '"' . ($filter_name == $persistent_filter ? ' selected' : '')
-			. '>' . $filter_name . '</option >';
+	foreach ($persistent_filters as $filter)
+		$filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
+			. '>' . $filter['text'] . '</option >';
 
 	return '<form method="post" class="lms-ui-persistent-filter" action="?m=' . $layout['module'] . '&persistent-filter=1&api=1">
 		<input type="hidden" name="action" value="apply">
@@ -45,13 +45,10 @@ function smarty_function_persistent_filter($params, $template) {
 			<button class="lms-ui-button lms-ui-filter-modify-button" >
 			' . trans("<!filter>Update") . '
 			</button>
-			<select class="lms-ui-filter-selection">
-				<option value="">' . trans("<!filter>- none -") . '</option>
-				<option value="-1">' . trans("<!filter>- new -") . '</option>
+			<select class="lms-ui-filter-selection lms-ui-combobox">
+				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '
 			</select>
-			<input type="text" size="20" class="lms-ui-filter-name" pattern=".{5,}" required title="'
-				. trans("Enter filter name (at least 5 characters)") . '">
 			<button class="lms-ui-button lms-ui-filter-delete-button" >
 				' . trans("<!filter>Delete") . '
 			</button>

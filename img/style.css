@@ -1959,7 +1959,7 @@ div.lms-ui-persistent-filter {
   margin-bottom: 10px;
 }
 div.lms-ui-persistent-filter > * {
-  margin-left: 5px;
+  margin: 2px;
 }
 div.lms-ui-persistent-filter .lms-ui-filter-name {
   display: none;
@@ -1978,4 +1978,27 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-modify-button {
 }
 div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   background-image: url(delete.gif);
+}
+.scombobox-dropdown-background {
+  background-color: transparent;
+  border: unset;
+}
+.scombobox-display {
+  border-radius: unset;
+}
+.scombobox-list {
+  border-color: black;
+  background-color: #EBE4D6;
+  border-radius: unset;
+}
+.scombobox-list p:hover {
+  background-color: #AE9D7B;
+  color: white;
+}
+.scombobox-list p.scombobox-hovered {
+  background-color: #CEBD9B;
+}
+.scombobox-list p.scombobox-hovered:hover {
+  background-color: #AE9D7B;
+  color: white;
 }

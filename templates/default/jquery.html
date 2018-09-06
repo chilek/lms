@@ -2,6 +2,7 @@
 <link href="img/jquery-datetimepicker/build/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
 <link href="img/jquery-datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <link href="img/jquery-chosen/chosen.min.css" rel="stylesheet" type="text/css">
+<link href="img/jquery-simple-combobox/css/jquery.scombobox.min.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="img/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="img/jqueryui/jquery-ui.min.js"></script>
 <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$language}.js"></script>
@@ -47,7 +48,8 @@
         checkAll: '{trans("check all<!items>")}',
 	    clickCopiesToClipboard: '{trans("Click copies to clipboard")}',
         chosenNoResultsMatch: '{trans("No results match")}',
-        chosenSelectOption: '{trans("Select an Option")}'
+        chosenSelectOption: '{trans("Select an Option")}',
+        filterNone: '{trans("<!filter>- none -")}'
 	}
 
 	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
@@ -76,6 +78,7 @@
 //-->
 </script>
 <script type="text/javascript" src="img/lms-ui-persistent-filter.js"></script>
+<script type="text/javascript" src="img/jquery-simple-combobox/js/jquery.scombobox.min.js"></script>
 <script type="text/javascript" src="img/jquery.js"></script>
 <script type="text/javascript" src="img/lms-ui-dialog.js"></script>
 <script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>

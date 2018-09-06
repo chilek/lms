@@ -331,14 +331,14 @@ if ($AUTH->islogged) {
 							$persistent_filters = $SESSION->getAllPersistentFilters();
 							$SESSION->close();
 							header('Content-type: application/json');
-							die(json_encode(array_keys($persistent_filters)));
+							die(json_encode($persistent_filters));
 							break;
 						case 'delete':
 							$SESSION->removePersistentFilter($_POST['name']);
 							$persistent_filters = $SESSION->getAllPersistentFilters();
 							$SESSION->close();
 							header('Content-type: application/json');
-							die(json_encode(array_keys($persistent_filters)));
+							die(json_encode($persistent_filters));
 							break;
 					}
 			}
