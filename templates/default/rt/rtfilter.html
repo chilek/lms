@@ -70,6 +70,14 @@
                 {/foreach}
             </SELECT>
             </label>
+            <label class="nobr">
+                {trans("Verifier:")}
+                <SELECT size="1" name="vids[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}" >
+                {foreach $users as $user}
+                    <OPTION value="{$user.id}"{if is_array($queuedata.verifier) && in_array($user.id, $queuedata.verifier)} SELECTED{/if}>{$user.name|truncate:40:"...":true}</OPTION>
+                {/foreach}
+                </SELECT>
+            </label>
             {if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
             <label class="nobr">
             {trans("Removed:")}

@@ -52,6 +52,15 @@ if (isset($_GET['ts'])) {
         $SESSION->redirect('?m=rtqueuelist');
 }
 
+if (isset($_GET['vids'])) {
+    if (is_array($_GET['vids']))
+        $queuedata['verifier'] = array_filter($_GET['vids'], 'intval');
+	elseif (intval($_GET['vids']))
+        $queuedata['verifier'] = array(intval($_GET['vids']));
+    if (!isset($queuedata['verifier']) || empty($queuedata['verifier']))
+        $SESSION->redirect('?m=rtqueuelist');
+}
+
 if (isset($_GET['tt'])) {
     if (is_array($_GET['tt']))
         $queuedata['type'] = array_filter($_GET['tt'], 'intval');
@@ -130,6 +139,12 @@ else
 $SESSION->save('rtowner', $owner);
 if (is_null($owner))
 	$owner = -1;
+
+if(!isset($_GET['vids']))
+    $SESSION->restore('rtv', $verifier);
+else
+    $verifier = $_GET['vids'];
+$SESSION->save('rtv', $verifier);
 
 if (!isset($_GET['catid']))
 	$SESSION->restore('rtc', $queuedata['catid']);
@@ -211,7 +226,7 @@ $layout['pagetitle'] = trans('Tickets List');
 $total = intval($LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
 	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
-	'rights' => $rights, 'count' => true)));
+	'rights' => $rights, 'count' => true, 'verifierids' => $queuedata['verifier'])));
 
 $limit = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total));
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
@@ -220,7 +235,7 @@ $offset = ($page - 1) * $limit;
 $queue = $LMS->GetQueueContents(array('ids' => $queuedata['id'], 'order' => $o, 'state' => $s, 'priority' => $priority,
 	'owner' => $owner, 'catids' => $queuedata['catid'], 'removed' => $r, 'netdevids' => null, 'netnodeids' => null,
 	'deadline' => $deadline, 'serviceids' => $queuedata['service'], 'typeids' => $queuedata['type'], 'unread' => $unread,
-	'rights' => $rights, 'count' => false, 'offset' => $offset, 'limit' => $limit));
+	'rights' => $rights, 'count' => false, 'offset' => $offset, 'limit' => $limit, 'verifierids' => $queuedata['verifier']));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -241,6 +256,7 @@ $queuedata['service'] = $queue['service'];
 $queuedata['type'] = $queue['type'];
 $queuedata['unread'] = $queue['unread'];
 $queuedata['rights'] = $queue['rights'];
+$queuedata['verifier'] = $queue['verifier'];
 
 unset($queue['total']);
 unset($queue['state']);
@@ -254,6 +270,7 @@ unset($queue['service']);
 unset($queue['type']);
 unset($queue['unread']);
 unset($queue['rights']);
+unset($queue['verifier']);
 
 $SESSION->save('rtp', $page);
 
