@@ -823,6 +823,7 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-button {
   color: #800000;
+  border-radius: 3px;
 }
 .lms-ui-button:hover {
   color: #336600;
@@ -838,6 +839,7 @@ li.lms-ui-suggestion-item a {
 }
 button.lms-ui-button {
   color: #800000;
+  border-radius: 3px;
   padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
@@ -868,6 +870,7 @@ button.lms-ui-button:active {
 }
 button.lms-ui-fileupload-button {
   color: #800000;
+  border-radius: 3px;
   padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
@@ -1045,13 +1048,13 @@ table.lmsbox {
 table.lmsbox.lms-ui-background-cycle > tbody tr {
   border-bottom: 1px dotted gray;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:nth-child(even) {
+table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even) {
   background-color: #ffb1b1;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:nth-child(odd) {
+table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd) {
   background-color: #fccdcd;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted.highlight:hover {
+table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel).highlight:hover {
   background-color: #CCFFCC;
 }
 table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-partly-deleted:nth-child(even) {
@@ -1946,4 +1949,59 @@ table.dataTable thead tr:last-child th {
 }
 .chosen-container-single .chosen-drop {
   border-radius: unset;
+}
+div.lms-ui-persistent-filter {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  vertical-align: middle;
+  padding: 5px;
+  background-color: #CEBD9B;
+  border: 1px solid #AE9D7B;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+div.lms-ui-persistent-filter > * {
+  margin: 2px;
+}
+div.lms-ui-persistent-filter .lms-ui-filter-name {
+  display: none;
+}
+div.lms-ui-persistent-filter .lms-ui-button {
+  height: 25px;
+  padding-left: 20px;
+  background-repeat: no-repeat;
+  background-position: 3px 4px;
+}
+div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-apply-button {
+  background-image: url(reload.gif);
+}
+div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-modify-button {
+  background-image: url(add.gif);
+}
+div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
+  background-image: url(delete.gif);
+}
+.scombobox-dropdown-background {
+  background-color: transparent;
+  border: unset;
+}
+.scombobox-display {
+  border-radius: unset;
+}
+.scombobox-list {
+  border-color: black;
+  background-color: #EBE4D6;
+  border-radius: unset;
+}
+.scombobox-list p:hover {
+  background-color: #AE9D7B;
+  color: white;
+}
+.scombobox-list p.scombobox-hovered {
+  background-color: #CEBD9B;
+}
+.scombobox-list p.scombobox-hovered:hover {
+  background-color: #AE9D7B;
+  color: white;
 }

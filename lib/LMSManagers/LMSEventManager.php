@@ -215,11 +215,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				FROM events
 				LEFT JOIN vaddresses va ON va.id = events.address_id
 				LEFT JOIN vnodes as vn ON (nodeid = vn.id)
-				LEFT JOIN customerview c ON (customerid = c.id)
+				LEFT JOIN customerview c ON (events.customerid = c.id)
 				LEFT JOIN vusers ON (userid = vusers.id)
 				WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
 				. $privacy_condition
-				. ($customerid ? ' AND customerid = '.intval($customerid) : '')
+				. ($customerid ? ' AND events.customerid = '.intval($customerid) : '')
 				. $userfilter
 				. $overduefilter
 				. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
@@ -234,14 +234,14 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			FROM events
 			LEFT JOIN vaddresses va ON va.id = events.address_id
 			LEFT JOIN vnodes as vn ON (nodeid = vn.id)
-			LEFT JOIN customerview c ON (customerid = c.id)
+			LEFT JOIN customerview c ON (events.customerid = c.id)
 			LEFT JOIN vusers ON (userid = vusers.id)
 			LEFT JOIN rttickets as rtt ON (rtt.id = events.ticketid)
 			LEFT JOIN netnodes as nn ON (nn.id = rtt.netnodeid)
 			LEFT JOIN vaddresses as vd ON (vd.id = nn.address_id)
 			WHERE ((date >= ? AND date < ?) OR (enddate != 0 AND date < ? AND enddate >= ?)) AND '
 			. $privacy_condition
-			.($customerid ? ' AND customerid = '.intval($customerid) : '')
+			.($customerid ? ' AND events.customerid = '.intval($customerid) : '')
 			. $userfilter
 			. $overduefilter
 			. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')

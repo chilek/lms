@@ -296,6 +296,53 @@ if ($AUTH->islogged) {
 
 		if ($global_allow || $allow) {
 			$layout['module'] = $module;
+
+			$SESSION->save('module', $module);
+
+			if (!$api) {
+				// remove current filter
+				if (isset($_GET['removefilter'])) {
+					$SESSION->removeFilter($layout['module']);
+					$backto = $SESSION->get('backto');
+					$backto = preg_replace('/&.+$/', '', $backto);
+					$SESSION->redirect('?' . $backto);
+				}
+
+				// get all persistent filters
+				$SMARTY->assign('persistent_filters', $SESSION->getAllPersistentFilters());
+
+				// persister filter apply
+				if (isset($_GET['persistent-filter']) && isset($_POST['name']) && $_POST['action'] == 'apply') {
+					$filter = $SESSION->getPersistentFilter($_POST['name']);
+					$filter['persistent_filter'] = $_POST['name'];
+					$SESSION->saveFilter($filter);
+				} else
+					$filter = $SESSION->getFilter();
+
+				// restore selected persistent filter info
+				if (isset($filter['persistent_filter']))
+					$SMARTY->assign('persistent_filter', $filter['persistent_filter']);
+			} else {
+				// persistent filter ajax management
+				if (isset($_GET['persistent-filter']) && isset($_POST['name']))
+					switch ($_POST['action']) {
+						case 'modify':
+							$SESSION->savePersistentFilter($_POST['name'], $SESSION->getFilter());
+							$persistent_filters = $SESSION->getAllPersistentFilters();
+							$SESSION->close();
+							header('Content-type: application/json');
+							die(json_encode($persistent_filters));
+							break;
+						case 'delete':
+							$SESSION->removePersistentFilter($_POST['name']);
+							$persistent_filters = $SESSION->getAllPersistentFilters();
+							$SESSION->close();
+							header('Content-type: application/json');
+							die(json_encode($persistent_filters));
+							break;
+					}
+			}
+
 			$LMS->InitUI();
 			$LMS->executeHook($module.'_on_load');
 

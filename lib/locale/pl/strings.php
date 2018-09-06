@@ -4042,4 +4042,13 @@ $_LANG['Click here to select which node properties should be used during search'
 $_LANG['Click here to select which network device properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości urządzenia sieciowego powinny być używane podczas wyszukiwania';
 $_LANG['Click here to select which ticket properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości zgłoszenia powinny być używane podczas wyszukiwania';
 
+$_LANG['Clear filter'] = 'Wyczyść filtr';
+
+$_LANG['Persistent filter:'] = 'Filtr trwały:';
+$_LANG['<!filter>Apply'] = 'Zastosuj';
+$_LANG['<!filter>Update'] = 'Aktualizuj';
+$_LANG['<!filter>Delete'] = 'Usuń';
+$_LANG['<!filter>- none -'] = '- żaden - ';
+$_LANG['<!filter>- new -'] = '- nowy -';
+
 ?>

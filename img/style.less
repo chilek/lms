@@ -646,6 +646,7 @@ li.lms-ui-suggestion-item {
 
 .lms-ui-button {
     color: @link;
+	border-radius: 3px;
     &:hover {
         color: @linkhover;
         cursor: pointer;
@@ -862,7 +863,7 @@ table.lmsbox {
 
 table.lmsbox.lms-ui-background-cycle>tbody tr {
 	border-bottom: 1px dotted gray;
-	&.lms-ui-rt-deleted {
+	&.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
 		&:nth-child(even) {
 			background-color: @red-light;
 		}
@@ -1701,5 +1702,66 @@ table.dataTable {
 	*/
 	.chosen-drop {
 		border-radius: unset;
+	}
+}
+
+div.lms-ui-persistent-filter {
+	display: inline-flex;
+	justify-content: flex-start;
+	align-items: center;
+	vertical-align: middle;
+	padding: 5px;
+	background-color: @dark;
+	border: 1px solid @superdark;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	& > * {
+		margin: 2px;
+	}
+	.lms-ui-filter-name {
+		display: none;
+	}
+	.lms-ui-button {
+		height: 25px;
+		padding-left: 20px;
+		background-repeat: no-repeat;
+		background-position: 3px 4px;
+		&.lms-ui-filter-apply-button {
+			background-image: url(reload.gif);
+
+		}
+		&.lms-ui-filter-modify-button {
+			background-image: url(add.gif);
+
+		}
+		&.lms-ui-filter-delete-button {
+			background-image: url(delete.gif);
+		}
+	}
+}
+
+.scombobox-dropdown-background {
+	background-color: transparent;
+	border: unset;
+}
+
+.scombobox-display {
+	border-radius: unset;
+}
+
+.scombobox-list {
+	border-color: black;
+	background-color: @lucid;
+	border-radius: unset;
+	p:hover {
+		background-color: @superdark;
+		color: white;
+	}
+	p.scombobox-hovered {
+		background-color: @dark;
+		&:hover {
+			background-color: @superdark;
+			color: white;
+		}
 	}
 }

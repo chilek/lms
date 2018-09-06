@@ -98,7 +98,7 @@
 				<TR>
 					<TD class="dark nobr">
 						<span class="bold">{trans("Connect")}:</span>
-						{trans("Device:")}<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-combobox" trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev()">
+						{trans("Device:")}<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select" trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev()">
 						{section name=restnetdevlist loop=$restnetdevlist}
 							{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
 							{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}

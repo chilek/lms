@@ -311,11 +311,20 @@ $(function() {
 		});
 	});
 
-	$('select.lms-ui-combobox').chosen({
+	$('select.lms-ui-advanced-select').chosen({
 		no_results_text: lmsMessages.chosenNoResultsMatch,
 		placeholder_text_single: lmsMessages.chosenSelectOption,
 		search_contains: true,
 		disable_search_threshold: 5
+	});
+
+	$.fn.scombobox.defaults = $.extend(true, $.fn.scombobox.defaults, {
+		animation: {
+			duration: 10
+		}
+	});
+	$('.lms-ui-combobox').scombobox({
+		invalidAsValue: true
 	});
 
 	var documentviews = $('.documentview');

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -221,6 +221,98 @@ class Session {
 			$this->_saveSession();
 		else
 			$this->_updated = true;
+	}
+
+	public function saveFilter($filter, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		$this->_content['filters'][$module] = $filter;
+
+		if ($this->autoupdate)
+			$this->_saveSession();
+		else
+			$this->_updated = true;
+	}
+
+	public function getFilter($module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (!isset($this->_content['filters'][$module]))
+			return array();
+
+		return $this->_content['filters'][$module];
+	}
+
+	public function removeFilter($module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (isset($this->_content['filters'][$module])) {
+			unset($this->_content['filters'][$module]);
+			if ($this->autoupdate)
+				$this->_saveSession();
+			else
+				$this->_updated = true;
+			return true;
+		} else
+			return false;
+	}
+
+	public function savePersistentFilter($name, $filter, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		$this->_persistent_settings['filters'][$module][$name] = $filter;
+
+		if ($this->autoupdate)
+			$this->_saveSession();
+		else
+			$this->_updated = true;
+	}
+
+	public function getPersistentFilter($name, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (!isset($this->_persistent_settings['filters'][$module][$name]))
+			return array();
+
+		return $this->_persistent_settings['filters'][$module][$name];
+	}
+
+	public function getAllPersistentFilters($module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (!isset($this->_persistent_settings['filters'][$module]))
+			return array();
+
+		$result = array();
+
+		foreach ($this->_persistent_settings['filters'][$module] as $filter_name => $filter)
+			$result[] = array(
+				'text' => $filter_name,
+				'value' => $filter_name,
+			);
+
+		return $result;
+	}
+
+	public function removePersistentFilter($name, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (isset($this->_persistent_settings['filters'][$module][$name])) {
+			unset($this->_persistent_settings['filters'][$module][$name]);
+			if ($this->autoupdate)
+				$this->_saveSession();
+			else
+				$this->_updated = TRUE;
+			return true;
+		} else
+			return false;
 	}
 
 	public function _garbageCollector()
