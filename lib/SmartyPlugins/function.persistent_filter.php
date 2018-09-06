@@ -27,10 +27,12 @@
 function smarty_function_persistent_filter($params, $template) {
 	$layout = $template->getTemplateVars('layout');
 	$persistent_filters = $template->getTemplateVars('persistent_filters');
+	$persistent_filter = $template->getTemplateVars('persistent_filter');
 
 	$filters = '';
 	foreach ($persistent_filters as $filter_name => $filter)
-		$filters .= '<option value="' . $filter_name . '">' . $filter_name . '</option >';
+		$filters .= '<option value="' . $filter_name . '"' . ($filter_name == $persistent_filter ? ' selected' : '')
+			. '>' . $filter_name . '</option >';
 
 	return '<form method="post" class="lms-ui-persistent-filter" action="?m=' . $layout['module'] . '&persistent-filter=1&api=1">
 		<input type="hidden" name="action" value="apply">

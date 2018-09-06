@@ -314,8 +314,14 @@ if ($AUTH->islogged) {
 				// persister filter apply
 				if (isset($_GET['persistent-filter']) && isset($_POST['name']) && $_POST['action'] == 'apply') {
 					$filter = $SESSION->getPersistentFilter($_POST['name']);
+					$filter['persistent_filter'] = $_POST['name'];
 					$SESSION->saveFilter($filter);
-				}
+				} else
+					$filter = $SESSION->getFilter();
+
+				// restore selected persistent filter info
+				if (isset($filter['persistent_filter']))
+					$SMARTY->assign('persistent_filter', $filter['persistent_filter']);
 			} else {
 				// persistent filter ajax management
 				if (isset($_GET['persistent-filter']) && isset($_POST['name']))
