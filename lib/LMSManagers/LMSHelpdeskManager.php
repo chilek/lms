@@ -453,12 +453,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return ($rights ? $rights : 0);
     }
 
-	public function GetQueueList($stats = true) {
+	public function GetQueueList($stats = true, $only_accessible = true) {
 		$userid = Auth::GetCurrentUser();
 		if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q
-				' . (!ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id
+				' . ($only_accessible || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id
 				WHERE r.rights <> 0 AND r.userid = ?' : '')
 			. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND q.deleted = 0' : '') . '
 				ORDER BY name', array($userid))) {

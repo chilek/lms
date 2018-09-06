@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Queues List');
 
-$queues = $LMS->GetQueueList($stats=true);
+$queues = $LMS->GetQueueList($stats = true, $only_accessible = false);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
