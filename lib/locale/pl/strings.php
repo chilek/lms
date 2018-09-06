@@ -4024,4 +4024,16 @@ $_LANG['<!qs>ticket id'] = 'identyfikator zgłoszenia';
 $_LANG['<!qs>ticket subject'] = 'temat zgłoszenia';
 $_LANG['<!qs>ticket requestor'] = 'zgłaszający';
 
+$_LANG['<!qs>customer'] = 'klient';
+$_LANG['<!qs>phone'] = 'telefon';
+$_LANG['<!qs>node'] = 'komputer';
+$_LANG['<!qs>network'] = 'sieć';
+$_LANG['<!qs>network node'] = 'węzeł sieciowy';
+$_LANG['<!qs>network device'] = 'urządzenie sieciowe';
+$_LANG['<!qs>wireless'] = 'sieć bezprzewodowa';
+$_LANG['<!qs>ticket'] = 'zgłoszenie';
+$_LANG['<!qs>account'] = 'konto hostingowe';
+$_LANG['<!qs>document'] = 'dokument';
+$_LANG['<!qs>customer external id'] = 'zewnętrzny identyfikator klienta';
+
 ?>
