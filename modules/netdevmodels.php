@@ -29,7 +29,7 @@ $listdata = $modellist = array();
 $producerlist = $DB->GetAll('SELECT id, name FROM netdeviceproducers ORDER BY name ASC');
 
 
-if (!isset($_GET['p_id'])) 
+if (!isset($_GET['p_id']))
 	$SESSION->restore('ndpid', $pid);
 else
 	$pid = intval($_GET['p_id']);
@@ -401,11 +401,13 @@ $hook_data = $LMS->executeHook(
 	'netdevmodels_before_display',
 	array(
 		'producerlist' => $producerlist,
+		'producerinfo' => $producerinfo,
 		'modellist' => $modellist,
 		'smarty' => $SMARTY,
 	)
 );
 $producerlist = $hook_data['producerlist'];
+$producerinfo = $hook_data['producerinfo'];
 $modellist = $hook_data['modellist'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
