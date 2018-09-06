@@ -234,6 +234,14 @@ if ($AUTH->islogged) {
 			foreach ($qs_properties as $mode => $properties)
 				$qs_properties[$mode] = array_flip(explode(',', $properties));
 		$SMARTY->assign('qs_properties', $qs_properties);
+
+		$qs_fields = $SESSION->get_persistent_setting('qs-fields');
+		if (empty($qs_fields))
+			$qs_fields = array();
+		else {
+			$qs_fields = array_flip(explode(',', $qs_fields));
+		}
+		$SMARTY->assign('qs_fields', $qs_fields);
 	}
 
 	// Load plugin files and register hook callbacks

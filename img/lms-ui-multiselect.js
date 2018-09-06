@@ -33,7 +33,7 @@ function multiselect(options) {
 	}).appendTo(wrapper);
 
 	if (tiny)
-		new_element.html('<img src="' + icon + '">&nbsp' + label);
+		new_element.html('<img src="' + icon + '">' + (label ? '&nbsp' + label : ''));
 	else
 		$('<span/>')
 			.addClass('lms-ui-multiselect-icon')

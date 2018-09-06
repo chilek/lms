@@ -606,7 +606,7 @@ switch ($mode) {
             }
         }
     break;
-    case 'networks':
+    case 'network':
         if (isset($_GET['ajax'])) // support for AutoSuggest
         {
             $candidates = $DB->GetAll("SELECT id, name, address FROM networks
@@ -619,7 +619,7 @@ switch ($mode) {
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
                     $name = truncate_str($row['name'], 50);
-                    $name_class = 'lms-ui-suggestion-networks';
+                    $name_class = 'lms-ui-suggestion-network';
 
                     $description = '';
                     $description_class = '';

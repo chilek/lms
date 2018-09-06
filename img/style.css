@@ -693,7 +693,7 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
   background-image: url(wireless.gif);
 }
-.lms-ui-suggestion-name.lms-ui-suggestion-networks::before {
+.lms-ui-suggestion-name.lms-ui-suggestion-network::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
@@ -1670,20 +1670,34 @@ table.dataTable thead tr:last-child th {
     opacity: 1;
   }
 }
-img.lms-ui-quick-search {
+#quicksearch {
+  display: flex;
+  align-items: flex-start;
+}
+.lms-ui-quick-search-field {
+  display: flex;
+  align-items: flex-start;
+  margin-left: 4px;
+}
+.lms-ui-quick-search-field img {
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
-input.lms-ui-quick-search {
+.lms-ui-quick-search-field input {
+  margin-left: 4px;
   width: 20px;
   display: inline-block;
 }
-input.lms-ui-quick-search.lms-ui-quick-search-active {
+.lms-ui-quick-search-field input.lms-ui-quick-search-active {
   width: 100px;
-  display: inline-block;
+}
+.lms-ui-quick-search-selector {
+  margin-left: 5px;
+  margin-top: 5px;
+  cursor: pointer;
 }
 .lms-ui-icon-administration {
   vertical-align: middle;
@@ -1932,8 +1946,4 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 }
 .chosen-container-single .chosen-drop {
   border-radius: unset;
-}
-#quicksearch {
-  display: flex;
-  align-items: flex-start;
 }
