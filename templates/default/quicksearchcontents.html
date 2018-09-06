@@ -162,7 +162,7 @@
 		});
 	});
 
-    $('.lms-ui-quick-search-field[data-keyboard-shortcut]').each(function() {
+    $('.lms-ui-quick-search-field[data-keyboard-shortcut]:visible').each(function() {
 		var shortcut = $(this).attr('data-keyboard-shortcut');
     	var input = $(this).find('input');
     	Mousetrap.bindGlobal(shortcut, function (e) {
