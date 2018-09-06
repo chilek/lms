@@ -24,7 +24,7 @@
             </TD>
             <TD colspan="2" class="text-right nobr">
                 <div class="no-print">
-                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}{foreach $listdata.userid as $userid}&a[]={$userid}{/foreach}{foreach $listdata.type as $type}&t[]={$type}{/foreach}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
+                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
                     <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}"><IMG src="img/save.gif" alt=""> {trans("Add Event")}</A>&nbsp;
                 </div>
             </TD>

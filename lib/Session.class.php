@@ -240,7 +240,7 @@ class Session {
 			$module = $this->_content['lastmodule'];
 
 		if (!isset($this->_content['filters'][$module]))
-			return null;
+			return array();
 
 		return $this->_content['filters'][$module];
 	}

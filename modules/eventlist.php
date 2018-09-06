@@ -24,150 +24,105 @@
  *  $Id$
  */
 
-if ($edate = $SESSION->get('edate'))
-	list ($year, $month, $day) = explode('/', $SESSION->get('edate'));
+$filter = $SESSION->restoreFilter();
+
+if (isset($filter['edate']) && !empty($filter['edate']))
+	list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
 
 if (!empty($_POST)) {
-    if (!isset($type))
-        $type = null;
+	$filter['month'] = isset($_POST['month']) ? $_POST['month'] : date('m');
+	$filter['year'] = isset($_POST['year']) ? $_POST['year'] : date('Y');
+	$filter['day'] = isset($_POST['day']) ? $_POST['day'] : date('j');
 
-    if (!isset($privacy))
-        $privacy = null;
-
-    if (!isset($closed))
-        $closed = null;
-
-	if(isset($_POST['a']))
-        $a = $_POST['a'];
-	else
-		$a = NULL;
-
-    if (isset($_POST['u']))
-		$u = $_POST['u'];
-	else
-		$u = NULL;
-
-    if (isset($_POST['month']))
-        $month = $_POST['month'];
-    else
-		$month = date("m");
-
-    if (isset($_POST['year']))
-        $year = $_POST['year'];
-    else
-        $year = date("Y");
-
-	if (isset($_POST['day']))
-		$day = $_POST['day'];
-	elseif ($edate) {
-		if (empty($month))
-			if($month != $_POST['month'])
-				$day = 1;
-		if (empty($year))
-			if($year != $_POST['year'])
-				$day = 1;
+	if ($filter['edate']) {
+		if (empty($filter['month']))
+			if ($filter['month'] != $_POST['month'])
+				$filter['day'] = 1;
+		if (empty($filter['year']))
+			if ($filter['year'] != $_POST['year'])
+				$filter['day'] = 1;
 	} else
 		$day = date('j',time());
 
-	if (isset($_POST['type']))
-	    $type = $_POST['type'];
-
-	if (isset($_POST['privacy']))
-		$privacy = intval($_POST['privacy']);
-
-	if (isset($_POST['closed']))
-		$closed = $_POST['closed'];
+	$filter['userid'] = isset($_POST['a']) ? $_POST['a'] : NULL;
+	$filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
+	$filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
+	$filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
+	$filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
 } else {
 	if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
 		if (isset($_GET['day']))
-			$day = $_GET['day'];
-		elseif ($edate) {
-			if ($month != $_GET['month'] || $year != $_GET['year'])
-				$day = 1;
+			$filter['day'] = $_GET['day'];
+		elseif ($filter['edate']) {
+			if ($filter['month'] != $_GET['month'] || $filter['year'] != $_GET['year'])
+				$filter['day'] = 1;
 		} else
-			$day = 1;
+			$filter['day'] = 1;
 
 		if (isset($_GET['month']))
-			$month = $_GET['month'];
+			$filter['month'] = $_GET['month'];
 
 		if (isset($_GET['year']))
-			$year = $_GET['year'];
+			$filter['year'] = $_GET['year'];
 	}
 
 	if (isset($_GET['a']))
-		$a = $_GET['a'];
-	else
-		$SESSION->restore('ela', $a);
+		$filter['userid'] = $_GET['a'];
 
 	if (isset($_GET['u']))
-		$u = $_GET['u'] == 'all' ? null : $_GET['u'];
-	else
-		$SESSION->restore('elu', $u);
+		$filter['customerid'] = $_GET['u'] == 'all' ? null : $_GET['u'];
 
 	if (isset($_GET['type']))
-		$type = $_GET['type'] == 'all' ? null : $_GET['type'];
-	else
-		$SESSION->restore('elt', $type);
+		$filter['type'] = $_GET['type'] == 'all' ? null : $_GET['type'];
 
 	if (isset($_GET['privacy']))
-		$privacy = $_GET['privacy'] == 'all' ? null : $_GET['privacy'];
-	else
-		$SESSION->restore('elp', $privacy);
+		$filter['privacy'] = $_GET['privacy'] == 'all' ? null : $_GET['privacy'];
 
 	if (isset($_GET['closed']))
-		$closed = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
-	else
-		$SESSION->restore('elc', $closed);
+		$filter['closed'] = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
 }
 
-$SESSION->save('ela', $a);
-$SESSION->save('elt', $type);
-$SESSION->save('elu', $u);
-$SESSION->save('elp', $privacy);
-$SESSION->save('elc', $closed);
+if (isset($filter['year']) && isset($filter['month']) && isset($filter['day']))
+	$filter['edate'] = sprintf('%04d/%02d/%02d', $filter['year'], $filter['month'], $filter['day']);
 
-if(!isset($day))
-    $day = date('j');
+$SESSION->saveFilter($filter);
 
-if(!isset($month))
-    $month = date('n');
+if (!isset($filter['day']))
+	$filter['day'] = date('j');
 
-if(!isset($year))
-    $year = date('Y');
+if (!isset($filter['month']))
+	$filter['month'] = date('n');
+
+if (!isset($filter['year']))
+	$filter['year'] = date('Y');
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = $LMS->GetEventList(array('year' => $year, 'month' => $month, 'day' => $day,
-	'forward' => ConfigHelper::getConfig('phpui.timetable_days_forward'), 'customerid' => $u, 'userid' => $a,
-	'type' => $type, 'privacy' => $privacy, 'closed' => $closed));
+$filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
+$eventlist = $LMS->GetEventList($filter);
 
-if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
-	$overdue_events = $LMS->GetEventList(array('year' => $year, 'month' => $month, 'day' => $day,
-		'forward' => '-1', 'customerid' => $u, 'userid' => $a, 'type' => $type, 'privacy' => $privacy, 'closed' => 0));
-
-$SESSION->restore('elu', $listdata['customerid']);
-$SESSION->restore('ela', $listdata['userid']);
-$SESSION->restore('elt', $listdata['type']);
-$SESSION->restore('elp', $listdata['privacy']);
-$SESSION->restore('elc', $listdata['closed']);
+if (ConfigHelper::checkConfig('phpui.timetable_overdue_events')) {
+	$filter['forward'] = -1;
+	$filter['closed'] = 0;
+	$overdue_events = $LMS->GetEventList($filter);
+}
 
 // create calendars
 for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
-	$dt = mktime(0, 0, 0, $month, $day+$i, $year);
+	$dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
 	$daylist[$i] = $dt;
 }
 
-$date = mktime(0, 0, 0, $month, $day, $year);
+$date = mktime(0, 0, 0, $filter['month'], $filter['day'], $filter['year']);
 $daysnum = date('t', $date);
 for ($i = 1; $i < $daysnum + 1; $i++) {
-	$date = mktime(0, 0, 0, $month, $i, $year);
-	$days['day'][] = date('j',$date);
-	$days['dow'][] = date('w',$date);
-	$days['sel'][] = ($i == $day);
+	$date = mktime(0, 0, 0, $filter['month'], $i, $filter['year']);
+	$days['day'][] = date('j', $date);
+	$days['dow'][] = date('w', $date);
+	$days['sel'][] = ($i == $filter['day']);
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$SESSION->save('edate', sprintf('%04d/%02d/%02d', $year, $month, $day));
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 $SMARTY->assign('today', $today);
@@ -177,12 +132,9 @@ $SMARTY->assign('eventlist',$eventlist);
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
 	$SMARTY->assign('overdue_events',$overdue_events);
 
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('filter', $filter);
 $SMARTY->assign('days',$days);
-$SMARTY->assign('day',$day);
 $SMARTY->assign('daylist',$daylist);
-$SMARTY->assign('month',$month);
-$SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('userlist',$LMS->GetUserNames());
