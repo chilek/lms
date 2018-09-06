@@ -11,19 +11,18 @@
                 {if $overdue == 1}
                     <br>{$event.date|date_format:"%x"}
                 {/if}
-                <br>
         {$imadded=0}
         {foreach $event.userlist as $user}
-        {if $layout.logid == $user.id}
-        {$imadded=1}
-        {/if}
-        <a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a><br>
+		{if $layout.logid == $user.id}
+			{$imadded=1}
+		{/if}
+		<br><a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
         {/foreach}
     </TD>
     <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
         <IMG src="img/calendar.gif" alt=""> <a href="?m=eventinfo&id={$event.id}"><span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
-        {if $event.description != ''}<br><IMG src="img/info1.gif" alt=""> {$event.description}{/if}<br>
-        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><IMG src="img/note.gif" alt=""> {$event.note}</span>{/if}
+        {if $event.description != ''}<br><IMG src="img/info1.gif" alt=""> {$event.description}{/if}
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><IMG src="img/note.gif" alt=""> {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2">
         {if $event.netnode_name}
