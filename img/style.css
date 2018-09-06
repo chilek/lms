@@ -1947,3 +1947,30 @@ table.dataTable thead tr:last-child th {
 .chosen-container-single .chosen-drop {
   border-radius: unset;
 }
+div.lms-ui-persistent-filter {
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+div.lms-ui-persistent-filter > * {
+  margin-left: 5px;
+}
+div.lms-ui-persistent-filter .lms-ui-filter-name {
+  display: none;
+}
+div.lms-ui-persistent-filter .lms-ui-button {
+  height: 25px;
+  padding-left: 20px;
+  background-repeat: no-repeat;
+  background-position: 3px 4px;
+}
+div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-apply-button {
+  background-image: url(reload.gif);
+}
+div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-modify-button {
+  background-image: url(add.gif);
+}
+div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
+  background-image: url(delete.gif);
+}

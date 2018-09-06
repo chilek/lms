@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$filter = $SESSION->restoreFilter();
+$filter = $SESSION->getFilter();
 
 if (isset($filter['edate']) && !empty($filter['edate']))
 	list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);

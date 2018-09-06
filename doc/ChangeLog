@@ -111,6 +111,7 @@ version ?.??.?? (????-??-??):
   - improvement: new quicksearch for networks [interduo]
   - enhancement: allow to show/hide quick search fields on top [chilan]
   - enhancement: allow to clear filter in helpdesk queue and event list view [chilan]
+  - enhancement: introduced persistent filter support [chilan]
 
 version 1.11.23 (2018-03-21):
 
