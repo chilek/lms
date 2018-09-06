@@ -15,7 +15,7 @@
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$ticket.id|string_format:"%06d"}
 		</span>
-		<span>{if is_array($queuedata.id) || count($queuedata.id) != 1}{$ticket.name}{/if}</span>
+		<span>{if is_array($filter.ids) || count($filter.ids) != 1}{$ticket.name}{/if}</span>
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 	</TD>

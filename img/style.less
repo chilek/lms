@@ -862,7 +862,7 @@ table.lmsbox {
 
 table.lmsbox.lms-ui-background-cycle>tbody tr {
 	border-bottom: 1px dotted gray;
-	&.lms-ui-rt-deleted {
+	&.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
 		&:nth-child(even) {
 			background-color: @red-light;
 		}

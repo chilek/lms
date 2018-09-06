@@ -1045,13 +1045,13 @@ table.lmsbox {
 table.lmsbox.lms-ui-background-cycle > tbody tr {
   border-bottom: 1px dotted gray;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:nth-child(even) {
+table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even) {
   background-color: #ffb1b1;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:nth-child(odd) {
+table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd) {
   background-color: #fccdcd;
 }
-table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted.highlight:hover {
+table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-deleted:not(.lms-ui-button-panel):not(.lms-ui-header-panel).highlight:hover {
   background-color: #CCFFCC;
 }
 table.lmsbox.lms-ui-background-cycle > tbody tr.lms-ui-rt-partly-deleted:nth-child(even) {

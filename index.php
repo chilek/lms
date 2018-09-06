@@ -242,6 +242,13 @@ if ($AUTH->islogged) {
 			$qs_fields = array_flip(explode(',', $qs_fields));
 		}
 		$SMARTY->assign('qs_fields', $qs_fields);
+
+		if (isset($_GET['removefilter'])) {
+			$SESSION->removeFilter($layout['module']);
+			$backto = $SESSION->get('backto');
+			$backto = preg_replace('/&.+$/', '', $backto);
+			$SESSION->redirect('?' . $backto);
+		}
 	}
 
 	// Load plugin files and register hook callbacks

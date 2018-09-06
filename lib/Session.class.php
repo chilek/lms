@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -221,6 +221,43 @@ class Session {
 			$this->_saveSession();
 		else
 			$this->_updated = true;
+	}
+
+	public function saveFilter($filter, $module = null) {
+		if (empty($module))
+			$module = $this->_content['lastmodule'];
+
+		$this->_content['filters'][$module] = $filter;
+
+		if ($this->autoupdate)
+			$this->_saveSession();
+		else
+			$this->_updated = TRUE;
+	}
+
+	public function restoreFilter($module = null) {
+		if (empty($module))
+			$module = $this->_content['lastmodule'];
+
+		if (!isset($this->_content['filters'][$module]))
+			return null;
+
+		return $this->_content['filters'][$module];
+	}
+
+	public function removeFilter($module = null) {
+		if (empty($module))
+			$module = $this->_content['lastmodule'];
+
+		if (isset($this->_content['filters'][$module])) {
+			unset($this->_content['filters'][$module]);
+			if( $this->autoupdate)
+				$this->_saveSession();
+			else
+				$this->_updated = TRUE;
+			return true;
+		} else
+			return false;
 	}
 
 	public function _garbageCollector()

@@ -405,6 +405,7 @@ $hook_data = $LMS->executeHook(
 		'smarty' => $SMARTY,
 	)
 );
+$producerlist = $hook_data['producerlist'];
 $modellist = $hook_data['modellist'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
