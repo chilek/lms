@@ -13,13 +13,12 @@
 	</TD>
 	<TD class="nobr">
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
-			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$ticket.id|string_format:"%06d"}
-		</span>
+			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
 		<span>{if is_array($filter.ids) || count($filter.ids) != 1}{$ticket.name}{/if}</span>
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 	</TD>
-	<TD>
+	<TD class="text-center">
 		<span>{$_SERVICETYPES[$ticket.service]}</span>
 		<span><br>{$_RT_TYPES[$ticket.type].label}</span>
 	</TD>
