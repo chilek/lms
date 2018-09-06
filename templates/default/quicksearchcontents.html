@@ -89,6 +89,25 @@
 </select>
 
 <script>
+    function bindKeyboardShortcuts() {
+		$('.lms-ui-quick-search-field[data-keyboard-shortcut]').each(function () {
+			var mode = $(this).attr('data-mode');
+			var shortcut = $(this).attr('data-keyboard-shortcut');
+			var input = $(this).find('input');
+
+			Mousetrap.unbind(shortcut);
+
+			if (Object.keys(qs_fields).length && !qs_fields.hasOwnProperty(mode)) {
+				return;
+			}
+
+			Mousetrap.bindGlobal(shortcut, function (e) {
+				e.preventDefault();
+				input.click();
+			});
+		});
+	}
+
 	var qs_data = {
 		"qs-properties": {}
 	};
@@ -118,15 +137,18 @@
             type: 'tiny'
         });
     	$('#qs-selector').change(function() {
-			var qs_fields = [];
+			qs_fields = {};
             $('#qs-selector-layer input:checked').each(function () {
-				qs_fields.push($(this).val());
+				qs_fields[$(this).val()] = true;
 			});
 			$('.lms-ui-quick-search-field').hide();
-			$.each(qs_fields, function(index, value) {
-				$('.lms-ui-quick-search-field[data-mode="' + value + '"]').show();
+			$.each(qs_fields, function(key, value) {
+				$('.lms-ui-quick-search-field[data-mode="' + key + '"]').show();
 			});
-            qs_data["qs-fields"] = qs_fields.join(',');
+
+			bindKeyboardShortcuts();
+
+            qs_data["qs-fields"] = Object.keys(qs_fields).join(',');
 			$.ajax({
 				method: "POST",
 				url: '?m=persistentsetting',
@@ -162,12 +184,5 @@
 		});
 	});
 
-    $('.lms-ui-quick-search-field[data-keyboard-shortcut]:visible').each(function() {
-		var shortcut = $(this).attr('data-keyboard-shortcut');
-    	var input = $(this).find('input');
-    	Mousetrap.bindGlobal(shortcut, function (e) {
-			e.preventDefault();
-            input.click();
-		});
-	});
+    bindKeyboardShortcuts();
 </script>
