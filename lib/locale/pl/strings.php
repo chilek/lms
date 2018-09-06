@@ -4036,4 +4036,10 @@ $_LANG['<!qs>account'] = 'konto hostingowe';
 $_LANG['<!qs>document'] = 'dokument';
 $_LANG['<!qs>customer external id'] = 'zewnętrzny identyfikator klienta';
 
+$_LANG['Click here to select which quick search fields should be visible'] = 'Kliknij tutaj, aby wybrać, które pola szybkiego wyszukiwania powinny być widoczne';
+$_LANG['Click here to select which customer properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości klienta powinny być używane podczas wyszukiwania';
+$_LANG['Click here to select which node properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości komputera powinny być używane podczas wyszukiwania';
+$_LANG['Click here to select which network device properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości urządzenia sieciowego powinny być używane podczas wyszukiwania';
+$_LANG['Click here to select which ticket properties should be used during search'] = 'Kliknij tutaj, aby wybrać, które właściwości zgłoszenia powinny być używane podczas wyszukiwania';
+
 ?>

@@ -2,7 +2,7 @@
 
 <div id="qs-customer" class="lms-ui-quick-search-field" data-mode="customer" data-label="{trans("<!qs>customer")}" data-keyboard-shortcut="ctrl+1">
     <img src="img/customer.gif" alt="" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
-    <select id="qs-customer-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple>
+    <select id="qs-customer-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which customer properties should be used during search")}">
         <option value="id"{if !isset($qs_properties.customer) || isset($qs_properties.customer.id)} selected{/if}>{trans("<!qs>customer id")}</option>
         <option value="name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.name)} selected{/if}>{trans("<!qs>customer name")}</option>
         <option value="address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.address)} selected{/if}>{trans("<!qs>address")}</option>
@@ -21,7 +21,7 @@
 
 <div id="qs-node" class="lms-ui-quick-search-field" data-mode="node" data-label="{trans("<!qs>node")}" data-keyboard-shortcut="ctrl+3">
     <img src="img/node.gif" alt="" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
-    <select id="qs-node-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple>
+    <select id="qs-node-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which node properties should be used during search")}">
         <option value="id"{if !isset($qs_properties.node) || isset($qs_properties.node.id)} selected{/if}>{trans("<!qs>node id")}</option>
         <option value="name"{if !isset($qs_properties.node) || isset($qs_properties.node.name)} selected{/if}>{trans("<!qs>node name")}</option>
         <option value="ip"{if !isset($qs_properties.node) || isset($qs_properties.node.ip)} selected{/if}>{trans("<!qs>ip address")}</option>
@@ -43,7 +43,7 @@
 
 <div id="qs-netdev" class="lms-ui-quick-search-field" data-mode="netdevice" data-label="{trans("<!qs>network device")}" data-keyboard-shortcut="ctrl+6">
     <img src="img/netdev.gif" alt="" {tip text="Enter device ID, name or serial number and press Enter"}>
-    <select id="qs-netdev-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple>
+    <select id="qs-netdev-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which network device properties should be used during search")}">
         <option value="id"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.id)} selected{/if}>{trans("<!qs>device id")}</option>
         <option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
         <option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
@@ -58,7 +58,7 @@
 
 <div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="ctrl+8">
     <img src="img/ticket.gif" alt="" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
-    <select id="qs-ticket-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple>
+    <select id="qs-ticket-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which ticket properties should be used during search")}">
         <option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
         <option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
         <option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
@@ -84,7 +84,7 @@
 
 {/block}
 
-<select id="qs-selector" name="qs-selector[]" class="lms-ui-quick-search-selector lms-ui-multiselect-selection-group" multiple>
+<select id="qs-selector" name="qs-selector[]" class="lms-ui-quick-search-selector lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which quick search fields should be visible")}">
 
 </select>
 
