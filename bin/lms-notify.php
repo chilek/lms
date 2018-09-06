@@ -300,14 +300,15 @@ function parse_customer_data($data, $row) {
 		    $lN = '';
 		else {
 			// ok, now we are going to rise up system's load
-			$lN = "-----------+-----------+----------------------------------------------------\n";
+			$lN = "-----------+-----------+-----------+----------------------------------------------------\n";
 			foreach ($lastN as $row_s) {
 				$op_time = strftime("%Y/%m/%d", $row_s['time']);
 				$op_amount = sprintf("%9.2f", $row_s['value']);
+				$op_after = sprintf("%9.2f", $row_s['after']);
 				$for_what = sprintf("%-52s", $row_s['comment']);
-				$lN = $lN . "$op_time | $op_amount | $for_what\n";
+				$lN = $lN . "$op_time | $op_amount | $op_after | $for_what\n";
 			}
-			$lN = $lN . "-----------+-----------+----------------------------------------------------\n";
+			$lN = $lN . "-----------+-----------+-----------+----------------------------------------------------\n";
 		}
 		$data = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $data);
 	}
