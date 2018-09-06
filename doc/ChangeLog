@@ -108,6 +108,7 @@ version ?.??.?? (????-??-??):
   - enhancement: global CTRL+n keyboard shortcuts for quick search inputs [chilan]
   - improvement: phpui.multiselect_popup_on_bottom (false by default) controls position of popup
     window for multiselects [chilan]
+  - improvement: new quicksearch for networks [interduo]
 
 version 1.11.23 (2018-03-21):
 

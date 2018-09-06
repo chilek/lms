@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Enter network ID, name or IP address and press Enter'] = 'Wprowadź ID sieci, nazwę lub adres IP i naciśnij Enter';
 $_LANG['<!rtheader>Ticket type:'] = 'Rodzaj:';
 $_LANG['<!rtheader>Deadline:'] = 'Termin:';
 $_LANG['<!rt>Unset'] = 'Nieokreślony';
