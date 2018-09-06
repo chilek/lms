@@ -37,7 +37,10 @@ if ($api) {
 	$SESSION->save('ndlo', $o);
 
 	if (!isset($_GET['s']))
-		$SESSION->restore('ndfs', $s);
+		if ($SESSION->is_set('ndfs'))
+			$SESSION->restore('ndfs', $s);
+		else
+			$s = -1;
 	else
 		$s = $_GET['s'];
 	$SESSION->save('ndfs', $s);
