@@ -1948,9 +1948,14 @@ table.dataTable thead tr:last-child th {
   border-radius: unset;
 }
 div.lms-ui-persistent-filter {
-  display: flex;
+  display: inline-flex;
+  justify-content: flex-start;
   align-items: center;
   vertical-align: middle;
+  padding: 5px;
+  background-color: #CEBD9B;
+  border: 1px solid #AE9D7B;
+  border-radius: 3px;
   margin-bottom: 10px;
 }
 div.lms-ui-persistent-filter > * {

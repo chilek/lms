@@ -1705,9 +1705,14 @@ table.dataTable {
 }
 
 div.lms-ui-persistent-filter {
-	display: flex;
+	display: inline-flex;
+	justify-content: flex-start;
 	align-items: center;
 	vertical-align: middle;
+	padding: 5px;
+	background-color: @dark;
+	border: 1px solid @superdark;
+	border-radius: 3px;
 	margin-bottom: 10px;
 	& > * {
 		margin-left: 5px;
