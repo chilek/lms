@@ -823,6 +823,7 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-button {
   color: #800000;
+  border-radius: 3px;
 }
 .lms-ui-button:hover {
   color: #336600;
@@ -838,6 +839,7 @@ li.lms-ui-suggestion-item a {
 }
 button.lms-ui-button {
   color: #800000;
+  border-radius: 3px;
   padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
@@ -868,6 +870,7 @@ button.lms-ui-button:active {
 }
 button.lms-ui-fileupload-button {
   color: #800000;
+  border-radius: 3px;
   padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
