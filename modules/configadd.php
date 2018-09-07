@@ -47,11 +47,11 @@ if (count($config)) {
 	elseif($LMS->GetConfigOptionId($config['var'], $config['section']))
 		$error['var'] = trans('Option exists!');
 
-	$section = empty($config['section']) ? $config['newsection'] : $config['section'];
+	$section = $config['section'];
 	if (empty($section))
-		$error['newsection'] = trans('Section name can\'t be empty!');
+		$error['section'] = trans('Section name can\'t be empty!');
 	elseif (!preg_match('/^[a-z0-9_-]+$/', $section))
-		$error[empty($config['section']) ? 'newsection' : 'section'] = trans('Section name contains forbidden characters!');
+		$error['section'] = trans('Section name contains forbidden characters!');
 
 	$option = $config['section'] . '.' . $config['var'];
 	if(!ConfigHelper::checkPrivilege('superuser') || $config['type'] == CONFIG_TYPE_AUTO)

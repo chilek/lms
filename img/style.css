@@ -2000,6 +2000,9 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   background-color: #EBE4D6;
   border-radius: unset;
 }
+.scombobox-list p {
+  padding: 1px;
+}
 .scombobox-list p:hover {
   background-color: #AE9D7B;
   color: white;

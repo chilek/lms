@@ -2,15 +2,14 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
-<!--
-	function change_section(section) {
-		document.getElementById('newsection').style.display =
-			section == '' ? '' : 'none';
-	}
-//-->
-</SCRIPT>
 <H1>{$layout.pagetitle}</H1>
+<style>
+	.lmsbox thead td:last-child {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+	}
+</style>
 <FORM method="POST" action="?m=configadd" name="config">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -25,13 +24,11 @@
 		<TD width="98%">
 			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{trans("Section:")}</B>
-			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"} onchange="javascript:change_section(this.options[this.selectedIndex].value);">
+			<SELECT size="1" name="config[section]" {tip class="lms-ui-combobox" text="Select section" trigger="section"}>
 				{foreach $sections as $section}
 				<OPTION value="{$section}"{if $config.section == $section} selected{/if}>{$section}</OPTION>
 				{/foreach}
-				<OPTION value=""{if $config.section == ""} selected{/if}>{trans("- new section -")}</OPTION>
 			</SELECT>&nbsp;
-			<INPUT type="text" name="config[newsection]" id="newsection" value="{$config.newsection}"{if $config.section != ""} style="display: none;"{/if} {tip text="Enter section name" trigger="newsection"}>
 		</TD>
 	</TR>
     </THEAD>
@@ -88,7 +85,7 @@
 	{/if}
 	<TR>
 		<TD align="right" colspan="3">
-			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A id="submit-button" href="#" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="config[reuse]" value="ON" id="reuse"{if $config.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this option is saved")}</label>
 		</TD>
@@ -105,6 +102,13 @@
 			$('[name="config[value]"]').trigger('lms:visual_editor_change_required', {
 				ifShow: $(this).val() == '{$smarty.const.CONFIG_TYPE_RICHTEXT}'
 			});
+		});
+
+		$('#submit-button').click(function(e) {
+			var combobox = $('[name="config[section]"]').closest('.scombobox')
+			var section = combobox.scombobox('val');
+			$('<input type="hidden" name="config[section]" value="' + section + '">').insertAfter(combobox);
+			$('form[name="config"]').submit();
 		});
 	});
 //-->
