@@ -30,6 +30,7 @@ $(function() {
 		if (selection == -1 || selection.length < 5) {
 			return false;
 		}
+		$('html,body').css('cursor', 'wait');
 		$.ajax(form.attr('action'), {
 			method: "POST",
 			data: {
@@ -45,6 +46,9 @@ $(function() {
 				})
 				selectelem.scombobox('fill', data);
 				selectelem.scombobox('val', selection);
+			},
+			complete: function(data) {
+				$('html,body').css('cursor', 'auto');
 			}
 		});
 		return false;
@@ -57,6 +61,7 @@ $(function() {
 		if (selection == -1 || selection.length < 5) {
 			return false;
 		}
+		$('html,body').css('cursor', 'wait');
 		$.ajax(form.attr('action'), {
 			method: "POST",
 			data: {
@@ -71,6 +76,9 @@ $(function() {
 					value: -1
 				})
 				selectelem.scombobox('fill', data);
+			},
+			complete: function() {
+				$('html,body').css('cursor', 'auto');
 			}
 		});
 		return false;
