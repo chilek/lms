@@ -90,8 +90,10 @@ $(function() {
 			var selectelem = form.find('.scombobox')
 			var selection = selectelem.scombobox('val');
 			if (selection == -1 || selection.length < 5) {
+				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
 				return false;
 			}
+			$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').removeClass('lms-ui-button-disabled');
 			var newname = true;
 			selectelem.find('select option').each(function() {
 				if ($(this).val() == selection) {

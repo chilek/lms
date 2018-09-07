@@ -675,25 +675,32 @@ li.lms-ui-suggestion-item {
 	&.lms-ui-button-icon {
 		padding-left: 25px;
 	}
+	&.lms-ui-button-disabled {
+		color: grey;
+	}
 	&:hover,
 	&:active {
 		text-decoration: none;
-		border: 1px solid @darkbrown;
-		color: black;
 		outline: none;
 	}
-	&:hover {
-		background-color: @light;
-		box-shadow: inset 1px 1px 3px 0px rgba(0,0,0,0.6);
-	}
-	&:active {
-		background-color: @dark;
-		box-shadow: inset 1px 1px 4px 0px rgba(0,0,0,0.4);
-	}
-	&:focus {
-		outline: none;
-		border: 1px solid black;
-		box-shadow: 0px 0px 1px 1px black;
+	&:not(.lms-ui-button-disabled) {
+		&:hover,
+		&:active {
+			border: 1px solid @darkbrown;
+		}
+		&:hover {
+			background-color: @light;
+			box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
+		}
+		&:active {
+			background-color: @dark;
+			box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
+		}
+		&:focus {
+			outline: none;
+			border: 1px solid black;
+			box-shadow: 0px 0px 1px 1px black;
+		}
 	}
 }
 

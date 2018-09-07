@@ -858,22 +858,27 @@ button.lms-ui-button:hover {
 button.lms-ui-button.lms-ui-button-icon {
   padding-left: 25px;
 }
+button.lms-ui-button.lms-ui-button-disabled {
+  color: grey;
+}
 button.lms-ui-button:hover,
 button.lms-ui-button:active {
   text-decoration: none;
-  border: 1px solid #615847;
-  color: black;
   outline: none;
 }
-button.lms-ui-button:hover {
+button.lms-ui-button:not(.lms-ui-button-disabled):hover,
+button.lms-ui-button:not(.lms-ui-button-disabled):active {
+  border: 1px solid #615847;
+}
+button.lms-ui-button:not(.lms-ui-button-disabled):hover {
   background-color: #DFD5BD;
   box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
 }
-button.lms-ui-button:active {
+button.lms-ui-button:not(.lms-ui-button-disabled):active {
   background-color: #CEBD9B;
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
 }
-button.lms-ui-button:focus {
+button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   outline: none;
   border: 1px solid black;
   box-shadow: 0px 0px 1px 1px black;
@@ -899,22 +904,27 @@ button.lms-ui-fileupload-button:hover {
 button.lms-ui-fileupload-button.lms-ui-button-icon {
   padding-left: 25px;
 }
+button.lms-ui-fileupload-button.lms-ui-button-disabled {
+  color: grey;
+}
 button.lms-ui-fileupload-button:hover,
 button.lms-ui-fileupload-button:active {
   text-decoration: none;
-  border: 1px solid #615847;
-  color: black;
   outline: none;
 }
-button.lms-ui-fileupload-button:hover {
+button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):hover,
+button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):active {
+  border: 1px solid #615847;
+}
+button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):hover {
   background-color: #DFD5BD;
   box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
 }
-button.lms-ui-fileupload-button:active {
+button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):active {
   background-color: #CEBD9B;
   box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
 }
-button.lms-ui-fileupload-button:focus {
+button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):focus {
   outline: none;
   border: 1px solid black;
   box-shadow: 0px 0px 1px 1px black;
