@@ -24,22 +24,21 @@
 
 $(function() {
 	$('.lms-ui-filter-modify-button').click(function () {
-		var form = $(this).closest('form.lms-ui-persistent-filter');
-		var selectelem = form.find('.scombobox')
+		var div = $(this).closest('div.lms-ui-persistent-filter');
+		var selectelem = div.find('.scombobox')
 		var selection = selectelem.scombobox('val');
 		if (selection == -1 || selection.length < 5) {
 			return false;
 		}
+
+		var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
+		var url = '?m=' + module + '&persistent-filter=' + selection + '&action=update&api=1';
+
 		$('html,body').css('cursor', 'wait');
 		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
-		$.ajax(form.attr('action'), {
+
+		$.ajax(url, {
 			method: "POST",
-			data: {
-				'persistent-filter': 1,
-				api: 1,
-				action: 'modify',
-				name: selection
-			},
 			success: function (data) {
 				data.unshift({
 					text: lmsMessages.filterNone,
@@ -57,22 +56,21 @@ $(function() {
 	});
 
 	$('.lms-ui-filter-delete-button').click(function () {
-		var form = $(this).closest('form.lms-ui-persistent-filter');
-		var selectelem = form.find('.scombobox')
+		var div = $(this).closest('div.lms-ui-persistent-filter');
+		var selectelem = div.find('.scombobox')
 		var selection = selectelem.scombobox('val');
 		if (selection == -1 || selection.length < 5) {
 			return false;
 		}
+
+		var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
+		var url = '?m=' + module + '&persistent-filter=' + selection + '&action=delete&api=1';
+
 		$('html,body').css('cursor', 'wait');
 		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
-		$.ajax(form.attr('action'), {
+
+		$.ajax(url, {
 			method: "POST",
-			data: {
-				'persistent-filter': 1,
-				api: 1,
-				action: 'delete',
-				name: selection
-			},
 			success: function (data) {
 				data.unshift({
 					text: lmsMessages.filterNone,
@@ -90,8 +88,8 @@ $(function() {
 
 	if ($('.lms-ui-persistent-filter .scombobox').length) {
 		$('.lms-ui-persistent-filter .scombobox').scombobox('change', function () {
-			var form = $(this).closest('form.lms-ui-persistent-filter');
-			var selectelem = form.find('.scombobox')
+			var div = $(this).closest('div.lms-ui-persistent-filter');
+			var selectelem = div.find('.scombobox')
 			var selection = selectelem.scombobox('val');
 			if (selection != -1 && selection.length < 5) {
 				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
@@ -105,9 +103,9 @@ $(function() {
 				}
 			});
 			if (!newname) {
-				form.find('[name="name"]').val(selection);
-				form.attr('action', form.attr('action').replace('&api=1', ''));
-				form.submit();
+				var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
+				var url = '?m=' + module + '&persistent-filter=' + selection;
+				location.href = url;
 			}
 		}, 'lms-ui');
 	}

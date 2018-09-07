@@ -13,7 +13,6 @@
         <FORM method="POST" action="?m=eventlist" name="filter">
             <INPUT type="submit" class="hiddenbtn">
             <INPUT type="HIDDEN" name="m" value="eventlist">
-            {clear_filter}
             <span class="bold">{trans("Filter:")} </span>
             {trans("Type:")}
             <SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
@@ -58,6 +57,7 @@
                 <OPTION value="0"{if $filter.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
                 <OPTION value="1"{if $filter.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
             </SELECT>
+            {persistent_filter}
         </FORM>
     </TD>
 </TR>

@@ -4107,10 +4107,9 @@ $_LANG['Click here to select which ticket properties should be used during searc
 
 $_LANG['Clear filter'] = 'Wyczyść filtr';
 
-$_LANG['Persistent filter:'] = 'Filtr trwały:';
+$_LANG['<!filter>- none -'] = '- brak -';
 $_LANG['<!filter>Update'] = 'Aktualizuj';
 $_LANG['<!filter>Delete'] = 'Usuń';
-$_LANG['<!filter>- none -'] = '- żaden - ';
-$_LANG['<!filter>- new -'] = '- nowy -';
+$_LANG['<!filter>Select filter'] = 'Wybierz filtr';
 
 ?>

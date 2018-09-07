@@ -6,7 +6,6 @@
             <INPUT type="submit" class="hiddenbtn">
             <INPUT type="HIDDEN" name="m" value="rtqueueview">
             <INPUT type="HIDDEN" name="page" value="1">
-            {clear_filter}
             <span class="bold">{trans("Filter:")}</span>
             <label class="nobr">
             {trans("Queue:")}
@@ -116,6 +115,7 @@
                     <option value="{$smarty.const.RT_RIGHT_INDICATOR}" {if $filter.rights == $smarty.const.RT_RIGHT_INDICATOR} selected{/if}>{trans("yes")}</option>
                 </SELECT>
             </label>
+            {persistent_filter}
         </FORM>
     </TD>
 </TR>

@@ -34,22 +34,21 @@ function smarty_function_persistent_filter($params, $template) {
 		$filters .= '<option value="' . $filter['value'] . '"' . ($filter['value'] == $persistent_filter ? ' selected' : '')
 			. '>' . $filter['text'] . '</option >';
 
-	return '<form method="post" class="lms-ui-persistent-filter" action="?m=' . $layout['module'] . '&persistent-filter=1&api=1">
-		<input type="hidden" name="action" value="apply">
-		<input type="hidden" name="name" value="">
+	return '
 		<div class="lms-ui-persistent-filter">
-			' . trans("Persistent filter:") . '
+			<input class="lms-ui-filter-action" type="hidden" value="apply">
+			<input class="lms-ui-filter-name" type="hidden" value="">
 			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-modify-button'
-				. (empty($persistent_filter) ? ' lms-ui-button-disabled' : '') . '">
-				' . trans("<!filter>Update") . '
+				. (empty($persistent_filter) ? ' lms-ui-button-disabled' : '') . '" title="'
+				. trans("<!filter>Update") . '">
 			</button>
-			<select class="lms-ui-filter-selection lms-ui-combobox">
+			<select class="lms-ui-filter-selection lms-ui-combobox" title="' . trans("<!filter>Select filter") . '">
 				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '
 			</select>
 			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-delete-button'
-				. (empty($persistent_filter) == -1 ? ' lms-ui-button-disabled' : '') . '">
-				' . trans("<!filter>Delete") . '
+				. (empty($persistent_filter) == -1 ? ' lms-ui-button-disabled' : '') . '" title="'
+				. trans("<!filter>Delete") . '">
 			</button>
     	</div>
 	</form>';

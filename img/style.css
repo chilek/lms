@@ -1984,21 +1984,22 @@ table.dataTable thead tr:last-child th {
   border-radius: unset;
 }
 div.lms-ui-persistent-filter {
-  display: inline-flex;
-  justify-content: flex-start;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
-  vertical-align: middle;
-  padding: 5px;
-  background-color: #CEBD9B;
-  border: 1px solid #AE9D7B;
-  border-radius: 3px;
-  margin-bottom: 10px;
+  float: right;
 }
 div.lms-ui-persistent-filter > * {
   margin: 2px;
 }
 div.lms-ui-persistent-filter .lms-ui-filter-name {
   display: none;
+}
+div.lms-ui-persistent-filter .lms-ui-button {
+  padding-left: 0;
+  width: 22px;
+  height: 22px;
+  background-position: 2px 2px;
 }
 div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-modify-button {
   background-image: url(add.gif);
