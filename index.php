@@ -300,14 +300,6 @@ if ($AUTH->islogged) {
 			$SESSION->save('module', $module);
 
 			if (!$api) {
-				// remove current filter
-				if (isset($_GET['removefilter'])) {
-					$SESSION->removeFilter($layout['module']);
-					$backto = $SESSION->get('backto');
-					$backto = preg_replace('/&.+$/', '', $backto);
-					$SESSION->redirect('?' . $backto);
-				}
-
 				// get all persistent filters
 				$SMARTY->assign('persistent_filters', $SESSION->getAllPersistentFilters());
 
