@@ -326,6 +326,20 @@ $(function() {
 	$('.lms-ui-combobox').scombobox({
 		invalidAsValue: true
 	});
+	// dynamicaly insert hidden input element with name as original select element
+	// the purpose is simple: we want to submit custom value to server
+	if ($('.scombobox').length) {
+		$('.scombobox').scombobox('change', function (e) {
+			var scomboboxelem = $(this).closest('.scombobox');
+			var name = scomboboxelem.find('select').attr('name');
+			var hiddenelem = scomboboxelem.find('input[type="hidden"][name="' + name + '"]');
+			if (hiddenelem.length) {
+				hiddenelem.val($(this).val());
+			} else {
+				$('<input type="hidden" name="' + name + '" value="' + $(this).val() + '">').insertAfter(this);
+			}
+		}, 'lms-ui');
+	}
 
 	var documentviews = $('.documentview');
 

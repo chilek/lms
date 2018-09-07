@@ -85,7 +85,7 @@
 	{/if}
 	<TR>
 		<TD align="right" colspan="3">
-			<A id="submit-button" href="#" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A id="submit-button" href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="config[reuse]" value="ON" id="reuse"{if $config.reuse} checked{/if}><label for="reuse">{trans("Display this form again, when this option is saved")}</label>
 		</TD>
@@ -102,13 +102,6 @@
 			$('[name="config[value]"]').trigger('lms:visual_editor_change_required', {
 				ifShow: $(this).val() == '{$smarty.const.CONFIG_TYPE_RICHTEXT}'
 			});
-		});
-
-		$('#submit-button').click(function(e) {
-			var combobox = $('[name="config[section]"]').closest('.scombobox')
-			var section = combobox.scombobox('val');
-			$('<input type="hidden" name="config[section]" value="' + section + '">').insertAfter(combobox);
-			$('form[name="config"]').submit();
 		});
 	});
 //-->
