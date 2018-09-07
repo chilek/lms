@@ -295,7 +295,7 @@ function save_model($forms) {
 					$form['name'],
 					($form['alternative_name'] ? $form['alternative_name'] : NULL),
 				));
-			$form['id'] = $DB->GetLastInsertID('netdevicemodesl');
+			$form['id'] = $DB->GetLastInsertID('netdevicemodels');
 
 			$obj->script("xajax_cancel_model();");
 			$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
