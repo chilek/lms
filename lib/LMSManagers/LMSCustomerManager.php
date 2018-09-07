@@ -539,6 +539,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				break;
         }
 
+        if (!isset($as))
+        	if (isset($assignments))
+        		$as = $assignments;
+        	else
+        		$as = null;
+
         switch($as){
             case 7: case 14: case 30:
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
