@@ -93,7 +93,7 @@ $(function() {
 			var form = $(this).closest('form.lms-ui-persistent-filter');
 			var selectelem = form.find('.scombobox')
 			var selection = selectelem.scombobox('val');
-			if (selection == -1 || selection.length < 5) {
+			if (selection != -1 && selection.length < 5) {
 				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
 				return false;
 			}
