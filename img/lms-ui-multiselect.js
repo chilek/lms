@@ -11,6 +11,9 @@ function multiselect(options) {
 	var icon = typeof options.icon !== 'undefined' ? options.icon : 'img/settings.gif';
 	var label = typeof options.label !== 'undefined' ? options.label : '';
 	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
+	var maxVisible = typeof options.maxVisible !== 'undefined' ? parseInt(options.maxVisible) : 0;
+	var substMessage = typeof options.substMessage !== 'undefined' ? options.substMessage
+		: '- $a options selected -';
 
 	var old_element = $('#' + elemid);
 	var form = old_element.closest('form');
@@ -80,7 +83,13 @@ function multiselect(options) {
 		}
 		var selected_string = selected.join(separator);
 		if (!tiny) {
-			new_element.html(selected_string);
+			if (maxVisible && selected.length > maxVisible) {
+				new_element.html(substMessage.replace('$a', selected.length));
+				new_element.attr('title', selected_string);
+			} else {
+				new_element.html(selected_string);
+				new_element.attr('title', '');
+			}
 			var list = $('#' + wrapper.attr('id') + '-layer');
 			if (list.is(':visible')) {
 				setTimeout(function() {

@@ -4112,4 +4112,6 @@ $_LANG['<!filter>Update'] = 'Aktualizuj';
 $_LANG['<!filter>Delete'] = 'Usuń';
 $_LANG['<!filter>Select filter'] = 'Wybierz filtr';
 
+$_LANG['- $a options selected -'] = '- wybrano $a opcji -';
+
 ?>

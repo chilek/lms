@@ -95,7 +95,9 @@ function init_multiselects(selector) {
 				shortenToDefaultValue: $(this).attr('data-shorten-to-default-value'),
 				type: $(this).attr('data-type'),
 				bottom: lmsSettings.multiSelectPopupOnBottom,
-				separator: $(this).attr('data-separator')
+				separator: $(this).attr('data-separator'),
+				maxVisible: lmsSettings.multiSelectMaxVisible,
+				substMessage: lmsMessages.multiSelectSubstMessage
 			});
 		});
 	}

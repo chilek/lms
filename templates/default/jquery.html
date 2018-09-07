@@ -21,7 +21,8 @@
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
 		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
         zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
-        multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom')}true{else}false{/if}
+        multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom')}true{else}false{/if},
+		multiSelectMaxVisible: '{ConfigHelper::getConfig('phpui.multiselect_max_visible', 0)}'
 	};
 	var lmsMessages = {
 		persistentSettingSaveError: '{trans("AJAX: Error during persistent setting save on server:")}',
@@ -50,7 +51,8 @@
 	    clickCopiesToClipboard: '{trans("Click copies to clipboard")}',
         chosenNoResultsMatch: '{trans("No results match")}',
         chosenSelectOption: '{trans("Select an Option")}',
-        filterNone: '{trans("<!filter>- none -")}'
+        filterNone: '{trans("<!filter>- none -")}',
+		multiSelectSubstMessage: '{trans("- \$a options selected -")}'
 	}
 
 	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
