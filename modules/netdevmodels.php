@@ -221,10 +221,21 @@ function add_model() {
 }
 
 function edit_model($id) {
-	global $DB;
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
+
 	$obj = new xajaxResponse();
 
 	$model = $DB->GetRow('SELECT * FROM netdevicemodels WHERE id = ?', array($id));
+
+	$hook_data = $LMS->executeHook('netdevmodel_edit_before_display',
+		array(
+			'netdevmodeldata' => $model,
+			'xajaxResponse' => $obj,
+		)
+	);
+	$model = $hook_data['netdevmodeldata'];
 
 	$obj->script("xajax.$('div_modeledit').style.display='';");
 	$obj->script("removeClass(xajax.$('id_model_name'),'alert');");
@@ -301,7 +312,7 @@ function save_model($forms) {
 			$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
 		}
 
-		$hook_data = $LMS->executeHook('netdevproducer_after_update',
+		$hook_data = $LMS->executeHook('netdevmodel_after_update',
 			array(
 				'netdevmodeldata' => $form,
 			)
