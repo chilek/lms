@@ -39,17 +39,17 @@ function smarty_function_persistent_filter($params, $template) {
 		<input type="hidden" name="name" value="">
 		<div class="lms-ui-persistent-filter">
 			' . trans("Persistent filter:") . '
-			<button class="lms-ui-button lms-ui-filter-apply-button" >
+			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-apply-button" >
 			' . trans("<!filter>Apply") . '
 			</button>
-			<button class="lms-ui-button lms-ui-filter-modify-button" >
+			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-modify-button" >
 			' . trans("<!filter>Update") . '
 			</button>
 			<select class="lms-ui-filter-selection lms-ui-combobox">
 				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '
 			</select>
-			<button class="lms-ui-button lms-ui-filter-delete-button" >
+			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-delete-button" >
 				' . trans("<!filter>Delete") . '
 			</button>
     	</div>

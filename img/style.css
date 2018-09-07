@@ -840,16 +840,23 @@ li.lms-ui-suggestion-item a {
 button.lms-ui-button {
   color: #800000;
   border-radius: 3px;
-  padding: 0em 1em;
   border: 1px solid #615847;
-  background-color: #DFD5BD;
   color: black;
   text-decoration: none;
+  padding-top: 4px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+  background-color: #DFD5BD;
+  background-repeat: no-repeat;
+  background-position: 3px 4px;
 }
 button.lms-ui-button:hover {
   color: #336600;
   cursor: pointer;
   text-decoration: underline;
+}
+button.lms-ui-button.lms-ui-button-icon {
+  padding-left: 25px;
 }
 button.lms-ui-button:hover,
 button.lms-ui-button:active {
@@ -874,16 +881,23 @@ button.lms-ui-button:focus {
 button.lms-ui-fileupload-button {
   color: #800000;
   border-radius: 3px;
-  padding: 0em 1em;
   border: 1px solid #615847;
-  background-color: #DFD5BD;
   color: black;
   text-decoration: none;
+  padding-top: 4px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+  background-color: #DFD5BD;
+  background-repeat: no-repeat;
+  background-position: 3px 4px;
 }
 button.lms-ui-fileupload-button:hover {
   color: #336600;
   cursor: pointer;
   text-decoration: underline;
+}
+button.lms-ui-fileupload-button.lms-ui-button-icon {
+  padding-left: 25px;
 }
 button.lms-ui-fileupload-button:hover,
 button.lms-ui-fileupload-button:active {
@@ -1972,12 +1986,6 @@ div.lms-ui-persistent-filter > * {
 }
 div.lms-ui-persistent-filter .lms-ui-filter-name {
   display: none;
-}
-div.lms-ui-persistent-filter .lms-ui-button {
-  height: 25px;
-  padding-left: 20px;
-  background-repeat: no-repeat;
-  background-position: 3px 4px;
 }
 div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-apply-button {
   background-image: url(reload.gif);
