@@ -332,12 +332,7 @@ $(function() {
 		$('.scombobox').scombobox('change', function (e) {
 			var scomboboxelem = $(this).closest('.scombobox');
 			var name = scomboboxelem.find('select').attr('name');
-			var hiddenelem = scomboboxelem.find('input[type="hidden"][name="' + name + '"]');
-			if (hiddenelem.length) {
-				hiddenelem.val($(this).val());
-			} else {
-				$('<input type="hidden" name="' + name + '" value="' + $(this).val() + '">').insertAfter(this);
-			}
+			$(this).attr('name', name);
 		}, 'lms-ui');
 	}
 
