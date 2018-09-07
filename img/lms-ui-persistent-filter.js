@@ -76,8 +76,8 @@ $(function() {
 		return false;
 	});
 
-	if ($('.scombobox').length) {
-		$('.scombobox').scombobox('change', function () {
+	if ($('.lms-ui-persistent-filter .scombobox').length) {
+		$('.lms-ui-persistent-filter .scombobox').scombobox('change', function () {
 			var form = $(this).closest('form.lms-ui-persistent-filter');
 			var selectelem = form.find('.scombobox')
 			var selection = selectelem.scombobox('val');
