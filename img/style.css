@@ -860,6 +860,7 @@ button.lms-ui-button.lms-ui-button-icon {
 }
 button.lms-ui-button.lms-ui-button-disabled {
   color: grey;
+  cursor: no-drop;
 }
 button.lms-ui-button:hover,
 button.lms-ui-button:active {
@@ -906,6 +907,7 @@ button.lms-ui-fileupload-button.lms-ui-button-icon {
 }
 button.lms-ui-fileupload-button.lms-ui-button-disabled {
   color: grey;
+  cursor: no-drop;
 }
 button.lms-ui-fileupload-button:hover,
 button.lms-ui-fileupload-button:active {

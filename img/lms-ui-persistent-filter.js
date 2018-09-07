@@ -31,6 +31,7 @@ $(function() {
 			return false;
 		}
 		$('html,body').css('cursor', 'wait');
+		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
 		$.ajax(form.attr('action'), {
 			method: "POST",
 			data: {
@@ -49,6 +50,7 @@ $(function() {
 			},
 			complete: function(data) {
 				$('html,body').css('cursor', 'auto');
+				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').removeClass('lms-ui-button-disabled');
 			}
 		});
 		return false;
@@ -62,6 +64,7 @@ $(function() {
 			return false;
 		}
 		$('html,body').css('cursor', 'wait');
+		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
 		$.ajax(form.attr('action'), {
 			method: "POST",
 			data: {
@@ -79,6 +82,7 @@ $(function() {
 			},
 			complete: function() {
 				$('html,body').css('cursor', 'auto');
+				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').removeClass('lms-ui-button-disabled');
 			}
 		});
 		return false;
