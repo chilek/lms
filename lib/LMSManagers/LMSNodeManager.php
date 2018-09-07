@@ -268,78 +268,122 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             return FALSE;
     }
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
-    {
-        if ($order == '')
-            $order = 'name,asc';
+	/**
+	 * @param array $params associative array of parameters described below:
+	 * 		status - node statuses (default: null = any), single integer value; allowed values:
+	 * 			1 = connected,
+	 * 			2 = disconnected,
+	 * 			3 = online,
+	 * 			4 = without tariff,
+	 * 			5 = without TERYT,
+	 * 			6 = not connected to any network device,
+	 * 			7 = with warning,
+	 * 			8 = without gps coords,
+	 *		network - network id (default: null = any), single integer value
+	 *		customergroup - customer group id (default: null = any), single integer value
+	 *		nodegroup - node group id (default: null = any), single integer value
+	 * 		search - additional attributes (default: null = none), associative array with some well-known
+	 * 			properties:
+	 * 				ipaddr - ip address or public ip address (default: null = any), text value,
+	 * 				state - state id (default: null = any), single integer value,
+	 * 				district - district id (default: null = any), single integer value,
+	 * 				borough - borough id (default: null = any), single integer value,
+	 * 				netdev - network device (default: null = any), mixed value:
+	 * 					ip address or device name,
+	 * 				project - project id (default: null = any), special values are supported:
+	 * 					-2 = without project,
+	 * 					-1 = project id is ignored,
+	 *		sqlskey - sql field operator (default: 'AND') - text value; used on some fields (not all);
+	 * 			allowed values:
+	 * 			'AND', 'OR'
+	 * 		count - count records only or return selected record interval
+	 * 			true - count only,
+	 * 			false - get records,
+	 * 		offset - first returned record (null = 0),
+	 * 		limit - returned record count (null = unlimited),
+	 * 		order - returned records order (default: name,asc)
+	 * 			can contain field_name,order pairs,
+	 * 			supported field names:
+	 * 			name, id, mac, ip, ip_pub, ownerid, owner, location
+	 * 			supported orders:
+	 * 			asc = ascending, desc = descending
+	 * @return mixed
+	 */
+// $order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
+	public function GetNodeList(array $params) {
+		extract($params);
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+		if (!isset($order) || empty($order))
+			$order = 'name,asc';
 
-        ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
+		list($order, $direction) = sscanf($order, '%[^,],%s');
 
-        switch ($order) {
-            case 'name':
-                $sqlord = ' ORDER BY n.name';
-                break;
-            case 'id':
-                $sqlord = ' ORDER BY n.id';
-                break;
-            case 'mac':
-                $sqlord = ' ORDER BY n.mac';
-                break;
-            case 'ip':
-                $sqlord = ' ORDER BY n.ipaddr';
-                break;
-            case 'ip_pub':
-                $sqlord = ' ORDER BY n.ipaddr_pub';
-                break;
-            case 'ownerid':
-                $sqlord = ' ORDER BY n.ownerid';
-                break;
-            case 'owner':
-                $sqlord = ' ORDER BY owner';
-                break;
-            case 'location':
-                $sqlord = ' ORDER BY location';
-                break;
-        }
+		($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
 
-        if (count($search))
-            foreach ($search as $idx => $value) {
-                if ($value != '') {
-                    switch ($idx) {
-                        case 'ipaddr':
-                            $searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%')
-                                    . ' OR inet_ntoa(n.ipaddr_pub) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%') . ')';
-                            break;
-                        case 'state':
-                            if ($value != '0')
-                                $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
-								JOIN location_boroughs lb ON lb.id = lc.boroughid 
-								JOIN location_districts ld ON ld.id = lb.districtid 
-								JOIN location_states ls ON ls.id = ld.stateid WHERE ls.id = ' . $this->db->Escape($value) . ')';
-                            break;
-                        case 'district':
-                            if ($value != '0')
-                                $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
-								JOIN location_boroughs lb ON lb.id = lc.boroughid 
-								JOIN location_districts ld ON ld.id = lb.districtid WHERE ld.id = ' . $this->db->Escape($value) . ')';
-                            break;
-                        case 'borough':
-                            if ($value != '0')
-                                $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc WHERE lc.boroughid = '
-                                        . $this->db->Escape($value) . ')';
-                            break;
+		switch ($order) {
+			case 'name':
+				$sqlord = ' ORDER BY n.name';
+				break;
+			case 'id':
+				$sqlord = ' ORDER BY n.id';
+				break;
+			case 'mac':
+				$sqlord = ' ORDER BY n.mac';
+				break;
+			case 'ip':
+				$sqlord = ' ORDER BY n.ipaddr';
+				break;
+			case 'ip_pub':
+				$sqlord = ' ORDER BY n.ipaddr_pub';
+				break;
+			case 'ownerid':
+				$sqlord = ' ORDER BY n.ownerid';
+				break;
+			case 'owner':
+				$sqlord = ' ORDER BY owner';
+				break;
+			case 'location':
+				$sqlord = ' ORDER BY location';
+				break;
+		}
+
+		$searchargs = array();
+		if (isset($search) && !empty($search))
+			foreach ($search as $key => $value)
+				if ($value != '')
+					switch ($key) {
+						case 'ipaddr':
+							$searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%')
+								. ' OR inet_ntoa(n.ipaddr_pub) ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%') . ')';
+							break;
+						case 'state':
+							if (!empty($value))
+								$searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
+									JOIN location_boroughs lb ON lb.id = lc.boroughid 
+									JOIN location_districts ld ON ld.id = lb.districtid 
+									JOIN location_states ls ON ls.id = ld.stateid WHERE ls.id = ' . $this->db->Escape($value) . ')';
+							break;
+						case 'district':
+							if (!empty($value))
+								$searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc 
+									JOIN location_boroughs lb ON lb.id = lc.boroughid 
+									JOIN location_districts ld ON ld.id = lb.districtid WHERE ld.id = ' . $this->db->Escape($value) . ')';
+							break;
+						case 'borough':
+							if (!empty($value))
+								$searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc WHERE lc.boroughid = '
+									. $this->db->Escape($value) . ')';
+							break;
 						case 'project':
-							$projectid = intval($value);
-							if ($projectid)
-								switch ($projectid) {
+							$project = intval($value);
+							if ($project)
+								switch ($project) {
 									case -2:
 										$searchargs[] = 'n.invprojectid IS NULL';
 									case -1:
 										break;
 									default:
-										$searchargs[] = 'n.invprojectid = ' . $projectid;
+										$searchargs[] = 'n.invprojectid = ' . $project;
 										break;
 								}
 							break;
@@ -358,23 +402,21 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 							}
 							break;
 						default:
-                            $searchargs[] = 'n.' . $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
-                    }
-                }
-            }
+							$searchargs[] = 'n.' . $key . ' ?LIKE? ' . $this->db->Escape("%$value%");
+					}
 
-        if (isset($searchargs))
-            $searchargs = ' AND (' . implode(' ' . $sqlskey . ' ', $searchargs) . ')';
+		if (!empty($searchargs))
+			$searchargs = ' AND (' . implode(' ' . $sqlskey . ' ', $searchargs) . ')';
 
-        $totalon = 0;
-        $totaloff = 0;
+		$totalon = 0;
+		$totaloff = 0;
 
-        if ($network) {
-            $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $net = $network_manager->GetNetworkParams($network);
-        }
+		if ($network) {
+			$network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$net = $network_manager->GetNetworkParams($network);
+		}
 
-        $sql = '';
+		$sql = '';
 
 		if ($count) {
 			$sql .= 'SELECT COUNT(n.id) ';
@@ -427,7 +469,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				. ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
-				. (isset($searchargs) ? $searchargs : '')
+				. (!empty($searchargs) ? $searchargs : '')
 				. ($sqlord != '' && !$count ? $sqlord . ' ' . $direction : '')
 				. ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
 				. ($offset !== null && !$count ? ' OFFSET ' . $offset : '');

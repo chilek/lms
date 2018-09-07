@@ -79,12 +79,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	 * 		unread - ticket unread flag (default: null or < 0 = any),
 	 * 			0 - read tickets,
 	 * 			1 - unread tickets,
+	 *		verifierids - ticket verifier (default: null = any/none)
 	 * 		count - count records only or return selected record interval
 	 * 			true - count only,
 	 * 			false - get records,
 	 * 		offset - first returned record (null = 0),
 	 * 		limit - returned record count (null = unlimited),
-	 *		verifierids - ticket verifier (default: null = any/none)
 	 * 		order - returned records order (default: createtime,desc)
 	 * 			can contain field_name,order pairs,
 	 * 			supported field names:

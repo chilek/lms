@@ -57,7 +57,7 @@ interface LMSNodeManagerInterface
 
     public function GetNode($id);
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL);
+    public function GetNodeList(array $params);
 
     public function NodeSet($id, $access = -1);
 

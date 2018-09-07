@@ -801,10 +801,10 @@ class LMS
         return $manager->GetNode($id);
     }
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
+    public function GetNodeList(array $params)
     {
         $manager = $this->getNodeManager();
-        return $manager->GetNodeList($order, $search, $sqlskey, $network, $status, $customergroup, $nodegroup, $limit, $offset, $count);
+        return $manager->GetNodeList($params);
     }
 
     public function NodeSet($id, $access = -1)

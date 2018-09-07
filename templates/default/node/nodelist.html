@@ -3,6 +3,9 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+
+{persistent_filter}
+
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
 <FORM method="get" action="?m={$layout.module}" name="choosefilter">
 <p style="display: none;">
@@ -22,19 +25,19 @@
 	{block name="nodelist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col">
-			<SPAN class="nobr"><img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("Name:")}</A>{if $listdata.order == "name"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
-			<SPAN class="nobr lighter"><img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "owner"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+			<SPAN class="nobr"><img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $filter.direction == "asc" && $filter.order == "name"},desc{/if}">{trans("Name:")}</A>{if $filter.order == "name"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
+			<SPAN class="nobr lighter"><img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $filter.direction == "asc" && $filter.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "owner"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
 		</td>
 		<td scope="col">
-		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A>{if $listdata.order == "location"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $filter.direction == "asc" && $filter.order == "location"},desc{/if}">{trans("Location:")}</A>{if $filter.order == "location"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
 		</td>
 		<td scope="col" class="text-right lighter nobr">
-			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("Node ID:")}</A>{if $listdata.order == "id"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=ownerid{if $listdata.direction == "asc" && $listdata.order == "ownerid"},desc{/if}">{trans("Customer ID:")}</A>{if $listdata.order == "ownerid"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=id{if $filter.direction == "asc" && $filter.order == "id"},desc{/if}">{trans("Node ID:")}</A>{if $filter.order == "id"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=ownerid{if $filter.direction == "asc" && $filter.order == "ownerid"},desc{/if}">{trans("Customer ID:")}</A>{if $filter.order == "ownerid"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="lighter nobr">
-			<img src="img/ip.gif" alt=""> {trans("Network:")} / <A href="?m=nodelist&amp;o=ip{if $listdata.direction == "asc" && $listdata.order == "ip"},desc{/if}">{trans("IP address:")}</A>{if $listdata.order == "ip"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodelist&amp;o=ip_pub{if $listdata.direction == "asc" && $listdata.order == "ip_pub"},desc{/if}">({trans("Pub. IP address:")})</A> {if $listdata.order == "ip_pub"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/mac.gif" alt=""> <A href="?m=nodelist&amp;o=mac{if $listdata.direction == "asc" && $listdata.order == "mac"},desc{/if}">{trans("MAC address:")}</A>{if $listdata.order == "mac"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<img src="img/ip.gif" alt=""> {trans("Network:")} / <A href="?m=nodelist&amp;o=ip{if $filter.direction == "asc" && $filter.order == "ip"},desc{/if}">{trans("IP address:")}</A>{if $filter.order == "ip"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodelist&amp;o=ip_pub{if $filter.direction == "asc" && $filter.order == "ip_pub"},desc{/if}">({trans("Pub. IP address:")})</A> {if $filter.order == "ip_pub"}<IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/mac.gif" alt=""> <A href="?m=nodelist&amp;o=mac{if $filter.direction == "asc" && $filter.order == "mac"},desc{/if}">{trans("MAC address:")}</A>{if $filter.order == "mac"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
 			{t a=$pagination->getTotal()}Total: $a{/t}
@@ -42,26 +45,27 @@
 	</TR>
 	<TR>
 		<TD colspan="5">
+				{clear_filter}
 				<SPAN class="bold">{trans("Filter:")}</SPAN>&nbsp;
 				<SPAN class="nobr">{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
-					<OPTION VALUE="0"{if $listdata.state == 0} SELECTED{/if}>{trans("- all -")}</OPTION>
-					<OPTION VALUE="1"{if $listdata.state == 1} SELECTED{/if}>{trans("connected<!plural:item>")}</OPTION>
-					<OPTION VALUE="2"{if $listdata.state == 2} SELECTED{/if}>{trans("disconnected<!plural:item>")}</OPTION>
-					<OPTION VALUE="3"{if $listdata.state == 3} SELECTED{/if}>{trans("online")}</OPTION>
-					<OPTION VALUE="4"{if $listdata.state == 4} SELECTED{/if}>{trans("without tariff")}</OPTION>
-					<OPTION VALUE="5"{if $listdata.state == 5} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
-					<OPTION VALUE="6"{if $listdata.state == 6} SELECTED{/if}>{trans("Net Device not specified")}</OPTION>
-					<OPTION VALUE="7"{if $listdata.state == 7} SELECTED{/if}>{trans("with warning")}</OPTION>
-					<OPTION value="8"{if $listdata.state == 8} selected{/if}>{trans("without gps coords")}</OPTION>
+					<OPTION VALUE="0"{if $filter.status == 0} SELECTED{/if}>{trans("- all -")}</OPTION>
+					<OPTION VALUE="1"{if $filter.status == 1} SELECTED{/if}>{trans("connected<!plural:item>")}</OPTION>
+					<OPTION VALUE="2"{if $filter.status == 2} SELECTED{/if}>{trans("disconnected<!plural:item>")}</OPTION>
+					<OPTION VALUE="3"{if $filter.status == 3} SELECTED{/if}>{trans("online")}</OPTION>
+					<OPTION VALUE="4"{if $filter.status == 4} SELECTED{/if}>{trans("without tariff")}</OPTION>
+					<OPTION VALUE="5"{if $filter.status == 5} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
+					<OPTION VALUE="6"{if $filter.status == 6} SELECTED{/if}>{trans("Net Device not specified")}</OPTION>
+					<OPTION VALUE="7"{if $filter.status == 7} SELECTED{/if}>{trans("with warning")}</OPTION>
+					<OPTION value="8"{if $filter.status == 8} selected{/if}>{trans("without gps coords")}</OPTION>
 				</SELECT></SPAN>
 
 				{if count($networks) > 1}
 					<SPAN class="nobr">{trans("Network:")}</SPAN>
 					<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
-						<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
+						<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
 						{section name=networks loop=$networks}
-						<OPTION value="{$networks[networks].id}" {if $listdata.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+						<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 						{/section}
 					</SELECT>
 				{else}
@@ -71,9 +75,9 @@
 				{if count($nodegroups) > 0}
 					<SPAN class="nobr">{trans("Group:")}</SPAN>
 					<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
-						<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+						<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 						{foreach from=$nodegroups item=nodegroup}
-						<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
+						<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 						{/foreach}
 					</SELECT>
 				{else}
@@ -83,22 +87,22 @@
 				{if count($customergroups) > 0}
 					<SPAN class="nobr">{trans("Customers Group:")}</SPAN>
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
-						<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+						<OPTION value="" {if !$filter.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 						{section name=customergroups loop=$customergroups}
-						<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+						<OPTION value="{$customergroups[customergroups].id}" {if $filter.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 						{/section}
 					</SELECT>
 				{else}
 					<input type="hidden" name="g" value="">
 				{/if}
 
-				{if count($NNprojects) > 0}
+				{if !empty($NNprojects)}
 					<SPAN class="nobr">{trans("Project:")}</SPAN>
 					<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
-						<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
-						<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
+						<OPTION VALUE="-1"{if $filter.search.project == -1} selected{/if}>- {trans("all")} -</OPTION>
+						<OPTION VALUE="-2"{if $filter.search.project == -2} selected{/if}>- {trans("without project")} -</OPTION>
 						{foreach $NNprojects as $project}
-						<OPTION VALUE="{$project.id}"{if $listdata.invprojectid == $project.id} selected{/if}>{$project.name}</OPTION>
+						<OPTION VALUE="{$project.id}"{if $filter.search.project == $project.id} selected{/if}>{$project.name}</OPTION>
 						{/foreach}
 					</SELECT>
 				{else}
@@ -131,9 +135,9 @@
 			{trans("Disconnected:")}
 		</TD>
 		<TD colspan="2" class="text-right bold">
-			{if $listdata.total}{$listdata.total}{else}0{/if}<BR>
-			{if $listdata.totalon}{$listdata.totalon}{else}0{/if}<BR>
-			{if $listdata.totaloff}{$listdata.totaloff}{else}0{/if}
+			{if $filter.total}{$filter.total}{else}0{/if}<BR>
+			{if $filter.totalon}{$filter.totalon}{else}0{/if}<BR>
+			{if $filter.totaloff}{$filter.totaloff}{else}0{/if}
 		</TD>
 	</TR>
 	{/block}
@@ -179,7 +183,7 @@
 			<a href="?m=nodeinfo&amp;id={$node.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
-	{if $nodelist[nodelist.index_next].ownerid == $node.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
+	{if $nodelist[nodelist.index_next].ownerid == $node.ownerid && $filter.order == "owner"}{cycle print=false}{/if}
 	{foreachelse}
 	<TR>
 		<TD colspan="5" class="empty-table">

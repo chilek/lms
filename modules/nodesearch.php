@@ -211,7 +211,7 @@ if (isset($_GET['search'])) {
 
 	$layout['pagetitle'] = trans('Nodes Search Results');
 
-	$nodelist = $LMS->GetNodeList($o, $nodesearch, $k);
+	$nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'sqlskey' => $k));
 
 	$listdata['total'] = $nodelist['total'];
 	$listdata['order'] = $nodelist['order'];
