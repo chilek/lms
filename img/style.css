@@ -848,7 +848,7 @@ button.lms-ui-button {
   padding-bottom: 4px;
   background-color: #DFD5BD;
   background-repeat: no-repeat;
-  background-position: 3px 4px;
+  background-position: 3px 3px;
 }
 button.lms-ui-button:hover {
   color: #336600;
@@ -895,7 +895,7 @@ button.lms-ui-fileupload-button {
   padding-bottom: 4px;
   background-color: #DFD5BD;
   background-repeat: no-repeat;
-  background-position: 3px 4px;
+  background-position: 3px 3px;
 }
 button.lms-ui-fileupload-button:hover {
   color: #336600;
