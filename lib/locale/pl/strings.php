@@ -24,6 +24,31 @@
  *  $Id$
  */
 
+$_LANG['<!retention>Retention log search:'] = 'Przeszukiwanie dzienników retencyjnych:';
+$_LANG['<!retention>Retention log search'] = 'Przeszukiwanie dzienników retencyjnych';
+$_LANG['<!retention>Retention log search results:'] = 'Wynik przeszukiwania dzienników retencyjnych:';
+$_LANG['<!retention>Retention log search results'] = 'Wynik przeszukiwania dzienników retencyjnych';
+$_LANG['<!retention>Enter external source address'] = 'Podaj zewnętrzny adres źródłowy';
+$_LANG['<!retention>External source address:'] = 'Zewnętrzny adres źródłowy:';
+$_LANG['<!retention>External source port:'] = 'Zewnętrzny port źródłowy:';
+$_LANG['<!retention>Enter external source port'] = 'Podaj zewnętrzny port źródłowy';
+$_LANG['<!retention>Enter external source port in numeric format'] = 'Podaj zewnętrzny port źródłowy w formacie numerycznym';
+$_LANG['<!retention>Enter date in \'yyyy/mm/dd hh:mm:ss\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd hh:mm:ss\' lub kliknij żeby wybrać ją z kalendarza';
+$_LANG['<!retention>Retention logs'] = 'Dzienniki retencyjne';
+$_LANG['<!retention>Date'] = 'Data';
+$_LANG['<!retention>Event'] = 'Zdarzenie';
+$_LANG['<!retention>Protocol'] = 'Protokół';
+$_LANG['<!retention>Source address'] = 'Adres źródłowy';
+$_LANG['<!retention>Source port'] = 'Port źródłowy';
+$_LANG['<!retention>Destination address'] = 'Adres docelowy';
+$_LANG['<!retention>Destination port'] = 'Port docelowy';
+$_LANG['<!retention>NAT source address'] = 'Adres źródłowy NAT';
+$_LANG['<!retention>NAT source port'] = 'Port źródłowy NAT';
+$_LANG['<!retention>NAT destination address'] = 'Adres docelowy NAT';
+$_LANG['<!retention>NAT destination port'] = 'Port docelowy NAT';
+$_LANG['<!retention>No retention log results found.'] = 'Nie znaleziono wyników wyszukiwania dzienników retencyjnych.';
+$_LANG['<!retention>No.'] = 'Lp.';
+
 $_LANG['Enter network ID, name or IP address and press Enter'] = 'Wprowadź ID sieci, nazwę lub adres IP i naciśnij Enter';
 $_LANG['<!rtheader>Ticket type:'] = 'Rodzaj:';
 $_LANG['<!rtheader>Deadline:'] = 'Termin:';
@@ -825,6 +850,7 @@ $_LANG['Helpdesk (RT) administration'] = 'administracja Helpdeskiem (RT)';
 $_LANG['Helpdesk (RT) operation'] = 'obsługa Helpdesku (RT)';
 $_LANG['Helpdesk (RT) advanced operation'] = 'zaawansowana obsługa Helpdesku (RT)';
 $_LANG['hide accounted<!plural>'] = 'ukryj rozliczone';
+$_LANG['with receipt<!plural>'] = 'z paragonem';
 $_LANG['High'] = 'Wysoki';
 $_LANG['Homedir:'] = 'Katalog domowy:';
 $_LANG['Host:'] = 'Host:';
@@ -962,6 +988,7 @@ $_LANG['This is a seller data. A new line replacement is "\n" sign, e.g. SuperNe
 $_LANG['It scans for free ports in selected device!'] = 'Brak wolnych portów w wybranym urządzeniu!';
 $_LANG['It scans for ports in destination device!'] = 'Brak wolnych portów w urządzeniu docelowym!';
 $_LANG['It scans for ports in source device!'] = 'Brak wolnych portów w urządzeniu źródłowym!';
+$_LANG['JPK format:'] = 'Format JPK:';
 $_LANG['Last:'] = 'Ostatni:';
 $_LANG['last $a transactions'] = 'ostatnie $a transakcji';
 $_LANG['Last 30 Days'] = 'Ostatnie 30 dni';
@@ -1343,6 +1370,8 @@ $_LANG['Readdressing Network $a'] = 'Przeadresowanie sieci $a';
 $_LANG['read only (excluding helpdesk)'] = 'tylko do odczytu (bez Helpdesku)';
 $_LANG['Reassign to network:'] = 'Przenieś do sieci:';
 $_LANG['Receipt'] = 'Pokwitowanie';
+$_LANG['receipt/cash'] = 'paragon/gotówka';
+$_LANG['receipt/transfer'] = 'paragon/przelew';
 $_LANG['Receipt have no items!'] = 'Pokwitowanie nie ma żadnej pozycji!';
 $_LANG['Receipt have no items. Use form below for items addition.'] = 'Brak pozycji na pokwitowaniu. Użyj formularza poniżej aby dodać pozycje.';
 $_LANG['Receipt number:'] = 'Numer potwierdzenia:';
@@ -1441,6 +1470,7 @@ $_LANG['Select nodes'] = 'Wybierz komputery';
 $_LANG['Select nodes group'] = 'Wybierz grupę komputerów';
 $_LANG['Select node status'] = 'Wybierz status komputera';
 $_LANG['Select node, which you want to connect to device'] = 'Wybierz komputer który chcesz podłączyć do urządzenia';
+$_LANG['Select node location'] = 'Wybierz lokalizację komputera';
 $_LANG['Select owner or \'SYSTEM ACCOUNT\' if you don\'t want to assign it to any customer'] = 'Wybierz właściciela lub "KONTO SYSTEMOWE" jeżeli nie chcesz go przypisywać do żadnego klienta';
 $_LANG['Select queue'] = 'Wybierz kolejkę';
 $_LANG['Select recipients group'] = 'Wybierz grupę adresatów';
@@ -1666,7 +1696,9 @@ $_LANG['When enabled, system will sent notification to all users with rights for
 $_LANG['Why you should register? If you register, we will know who\'s using LMS. Also, you will be listed (your company name and url) on LMS website. It\'s free. We don\'t gather any e-mails, snails or other info. We just keep your company name, url, unique installation id and your LMS version (but only for statistical purposes - we can\'t track your version by your name or installation id). In future, we plan to make available something like \'Registered LMS site\'. Summary: we will be happy if you fill form below and send it to us.'] = 'Dlaczego powinieneś się zarejestrować? Jeśli to zrobisz będziemy wiedzieć kto używa LMS-a. Twoje dane (nazwa firmy i URL) znajdą się na stronie LMS-a. Rejestracja jest darmowa. Nie wysyłamy żadnych reklam, e-maili, ani żadnych innych informacji. Przechowujemy tylko nazwę, url, unikalny identyfikator instalacji i wersję LMS-a (wyłącznie do celów statystycznych - nie można rozpoznać wersji na podstawie nazwy lub identyfikatora instalacji). W przyszłości planujemy uruchomienie czegoś w stylu \'Strona Zarejestrowanych Użytkowników LMS-a\'. Podsumowanie: Będziemy wdzięczni, jeśli wypełnisz poniższy formularz i prześlesz do nas.';
 $_LANG['WINS server:'] = 'Serwer WINS:';
 $_LANG['wireless'] = 'bezprzewodowe';
+$_LANG['With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
 $_LANG['with invoice'] = 'z fakturą';
+$_LANG['Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
 $_LANG['without nodes'] = 'bez komputerów';
 $_LANG['with warning'] = 'z ostrzeżeniem';
 $_LANG['With warning'] = 'Z ostrzeżeniem';
@@ -1994,6 +2026,8 @@ $_LANG['extended format'] = 'format rozszerzony';
 $_LANG['Page $a from $b'] = 'Strona $a z $b';
 $_LANG['Page total:'] = 'Razem na stronie:';
 $_LANG['Total from start of period:'] = 'Razem od początku okresu:';
+$_LANG['Total from start of period (with receipt):'] = 'Razem od początku okresu (z paragonem):';
+$_LANG['Total from start of period (without receipt):'] = 'Razem od początku okresu (bez paragonu):';
 $_LANG['Transfered from previous page:'] = 'Przeniesienie z poprzedniej strony:';
 $_LANG['Hide expired'] = 'Ukryj przeterminowane';
 $_LANG['Interested customers can\'t have computers!'] = 'Zainteresowani klienci nie mogą posiadać komputerów!';
@@ -2891,6 +2925,10 @@ $_LANG['House number is too long (max. 8 characters)!'] = 'Numer domu jest za d�
 $_LANG['links hiding'] = 'ukrywanie użytecznych linków';
 $_LANG['system information hiding'] = 'ukrywanie informacji systemowych';
 
+$_LANG['Autobonus'] = 'Automatyczna promocja';
+$_LANG['Bonus'] = 'Promocja';
+$_LANG['TRANSFER'] = 'PRZELEW';
+
 $_LANG['Enter category name'] = 'Podaj nazwę kategorii';
 $_LANG['Owners:'] = 'Właściciele:';
 $_LANG['Are you sure, you want to remove category \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz usunąć kategorię \\\'$a\\\'?';
@@ -2942,6 +2980,8 @@ $_LANG['icmp'] = 'icmp';
 $_LANG['Start'] = 'Uruchom';
 $_LANG['Stop'] = 'Zatrzymaj';
 
+$_LANG['SMS from $a'] = 'SMS od $a';
+
 $_LANG['Backup MX support:'] = 'Obsługa zapasowego MX:';
 
 $_LANG['Mon'] = 'pn.';
@@ -2987,6 +3027,8 @@ $_LANG['Connect to device'] = 'Podłączenie do urządzenia';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność nie została jeszcze zakończona!';
 $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
 
+$_LANG['Your balance on date of invoice issue:'] = 'Saldo w dniu wystawienia faktury:';
+$_LANG['Balance includes current invoice'] = 'Saldo uwzględnia również bieżącą fakturę.';
 $_LANG['Your balance before invoice issue:'] = 'Saldo przed wystawieniem faktury:';
 
 $_LANG['Remove management URL'] = 'Usuń adres URL do zarządzania';
@@ -3054,6 +3096,10 @@ $_LANG['Time Duration:'] = 'Czas trwania:';
 $_LANG['Downloaded:'] = 'Pobrano:';
 $_LANG['Uploaded:'] = 'Wysłano:';
 $_LANG['That are no sessions for this node.'] = 'Brak sesji dla tego komputera.';
+$_LANG['change of contract'] = 'zmiana umowy';
+
+$_LANG['(underpayment)'] = '(niedopłata)';
+$_LANG['(excess payment)'] = '(nadpłata)';
 
 $_LANG['Transaction Log:'] = 'Dziennik transakcji:';
 $_LANG['Operations:'] = 'Czynności:';
@@ -3141,6 +3187,9 @@ $_LANG['log out<!syslog>'] = 'wylogowanie';
 
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
+$_LANG['Invoice send'] = 'Wysyłka faktury';
+$_LANG['Send invoice'] = 'Wyślij fakturę';
+$_LANG['Are you sure, you want to send invoice to customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \\\'$a\\\'?';
 
 $_LANG['Address type:'] = 'Typ adresu:';
 $_LANG['settlement<!addresstype>'] = 'rozliczeniowy';
@@ -3222,6 +3271,13 @@ $_LANG['Optional'] = 'Opcjonalna';
 $_LANG['Selection list'] = 'Lista wyboru';
 $_LANG['Check if tariff should be optional'] = 'Zaznacz, jeśli taryfa powinna być opcjonalna';
 $_LANG['Choose selection list'] = 'Wybierz listę wyboru';
+
+$_LANG['<!neuter>enabled'] = 'włączone';
+$_LANG['<!neuter>disabled'] = 'wyłączone';
+$_LANG['Monitoring:'] = 'Monitorowanie:';
+$_LANG['alarm since:'] = 'alarm od:';
+$_LANG['Choose if device has to be monitored'] = 'Wybierz czy urządzenie ma być monitorowane';
+
 $_LANG['All rights'] = 'Pełne prawa';
 
 $_LANG['Specified IP address doesn\'t belong to selected network!'] = 'Podany adres IP nie należy do wybranej sieci!';
@@ -3419,6 +3475,8 @@ $_LANG['Potential range'] = 'Potencjalne zasięgi';
 $_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
 $_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';
 $_LANG['Replace'] = 'Wymień';
+
+$_LANG['Network equipment is owned by customer:'] = 'Osprzęt sieciowy jest własnością klienta:';
 
 $_LANG['Plugin Name:'] = 'Nazwa wtyczki:';
 $_LANG['Plugin List'] = 'Lista wtyczek';
@@ -3726,6 +3784,11 @@ $_LANG['Check if IM uid should be disabled'] = 'Oznacz, jeśli identyfikator uż
 $_LANG['IM uid is required!'] = 'Identyfikator użytkownika jest wymagany!';
 
 $_LANG['Facebook'] = 'Facebook';
+
+$_LANG['Next Reload:'] = 'Następne przeładowanie:';
+
+$_LANG['Evio status'] = 'Status Evio';
+$_LANG['Checks vitalilty of all Evio services'] = 'Sprawdza żywotność wszystkich usług Evio';
 
 $_LANG['New Pro Forma Invoice'] = 'Nowa faktura pro forma';
 $_LANG['pro forma invoice'] = 'faktura pro forma';
@@ -4045,6 +4108,7 @@ $_LANG['Click here to select which ticket properties should be used during searc
 $_LANG['Clear filter'] = 'Wyczyść filtr';
 
 $_LANG['Persistent filter:'] = 'Filtr trwały:';
+$_LANG['<!filter>Apply'] = 'Zastosuj';
 $_LANG['<!filter>Update'] = 'Aktualizuj';
 $_LANG['<!filter>Delete'] = 'Usuń';
 $_LANG['<!filter>- none -'] = '- żaden - ';

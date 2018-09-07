@@ -76,17 +76,16 @@ $(function() {
 		return false;
 	});
 
-	if ($('.scombobox').length) {
-		$('.scombobox').scombobox('change', function () {
-			var form = $(this).closest('form.lms-ui-persistent-filter');
-			var selectelem = form.find('.scombobox')
-			var selection = selectelem.scombobox('val');
-			if (selection == -1 || selection.length < 5) {
-				return false;
-			}
-			form.find('[name="name"]').val(selection);
-			form.attr('action', form.attr('action').replace('&api=1', ''));
-			form.submit();
-		}, 'lms-ui');
-	}
+	$('.lms-ui-filter-apply-button').click(function () {
+		var form = $(this).closest('form.lms-ui-persistent-filter');
+		var selectelem = form.find('.scombobox')
+		var selection = selectelem.scombobox('val');
+		if (selection == -1 || selection.length < 5) {
+			return false;
+		}
+		form.find('[name="name"]').val(selection);
+		form.attr('action', form.attr('action').replace('&api=1', ''));
+		form.submit();
+		return false;
+	});
 });

@@ -1987,6 +1987,9 @@ div.lms-ui-persistent-filter > * {
 div.lms-ui-persistent-filter .lms-ui-filter-name {
   display: none;
 }
+div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-apply-button {
+  background-image: url(reload.gif);
+}
 div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-modify-button {
   background-image: url(add.gif);
 }

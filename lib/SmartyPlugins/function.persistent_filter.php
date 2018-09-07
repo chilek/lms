@@ -39,6 +39,9 @@ function smarty_function_persistent_filter($params, $template) {
 		<input type="hidden" name="name" value="">
 		<div class="lms-ui-persistent-filter">
 			' . trans("Persistent filter:") . '
+			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-apply-button" >
+			' . trans("<!filter>Apply") . '
+			</button>
 			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-modify-button" >
 			' . trans("<!filter>Update") . '
 			</button>
