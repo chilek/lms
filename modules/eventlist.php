@@ -130,7 +130,6 @@ $SMARTY->assign('eventlist',$eventlist);
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
 	$SMARTY->assign('overdue_events',$overdue_events);
 
-$SMARTY->assign('filter', $filter);
 $SMARTY->assign('days',$days);
 $SMARTY->assign('daylist',$daylist);
 $SMARTY->assign('date',$date);

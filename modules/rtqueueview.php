@@ -217,7 +217,6 @@ if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {
 	$SESSION->redirect(str_replace('&assign','',"$_SERVER[REQUEST_URI]"));
 }
 
-$SMARTY->assign('filter', $filter);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('categories', $categories);

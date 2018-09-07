@@ -318,6 +318,7 @@ if ($AUTH->islogged) {
 					$SESSION->saveFilter($filter);
 				} else
 					$filter = $SESSION->getFilter();
+				$SMARTY->assignByRef('filter', $filter);
 
 				// restore selected persistent filter info
 				if (isset($filter['persistent_filter']))
