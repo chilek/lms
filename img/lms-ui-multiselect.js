@@ -220,7 +220,8 @@ function multiselect(options) {
 					at: tiny || bottom ? 'left bottom' : 'right top',
 					of: wrapper
 				});
-				ul.find('input').first().focus();
+				ul.find('input').first().focus().closest('li').addClass('active');
+
 			}, 1);
 		} else {
 			list.hide();
