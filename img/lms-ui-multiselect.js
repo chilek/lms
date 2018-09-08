@@ -231,13 +231,25 @@ function multiselect(options) {
 	});
 
 	ul.on('keydown', function(e) {
-		if (e.key == 'Escape') {
-			e.preventDefault();
-			$(this).parent().hide();
-			wrapper.focus();
-			if (new_selected != old_selected)
-				wrapper.triggerHandler('change');
-			old_selected = new_selected;
+		switch (e.key) {
+			case 'Escape':
+				e.preventDefault();
+				$(this).parent().hide();
+				wrapper.focus();
+				if (new_selected != old_selected)
+					wrapper.triggerHandler('change');
+				old_selected = new_selected;
+				break;
+			case 'ArrowDown':
+				$(this).find('li').removeClass('active');
+				$(this).find(':checkbox:focus').closest('li').next().addClass('active').find(':checkbox').focus();
+				e.preventDefault();
+				break;
+			case 'ArrowUp':
+				$(this).find('li').removeClass('active');
+				$(this).find(':checkbox:focus').closest('li').prev().addClass('active').find(':checkbox').focus();
+				e.preventDefault();
+				break;
 		}
 	});
 
