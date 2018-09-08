@@ -117,6 +117,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to change invoice content order during invoice new and edit
     using drag & drop [chilan]
   - improvement: allow to edit invoice positions in convenient way [chilan]
+  - enhancement: allow to move event to another day using drag & drop [chilan]
 
 version 1.11.23 (2018-03-21):
 
