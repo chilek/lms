@@ -201,7 +201,6 @@ function multiselect(options) {
 
 	// add some mouse/key event handlers
 	wrapper.on('click keydown', function(e) {
-		console.log(e.key);
 		if (e.type == 'keydown') {
 			switch (e.key) {
 				case 'Enter':
@@ -221,9 +220,20 @@ function multiselect(options) {
 					at: tiny || bottom ? 'left bottom' : 'right top',
 					of: wrapper
 				});
+				ul.find('input').first().focus();
 			}, 1);
 		} else {
 			list.hide();
+			if (new_selected != old_selected)
+				wrapper.triggerHandler('change');
+			old_selected = new_selected;
+		}
+	});
+
+	ul.on('keydown', function(e) {
+		if (e.key == 'Escape') {
+			e.preventDefault();
+			$(this).parent().hide();
 			if (new_selected != old_selected)
 				wrapper.triggerHandler('change');
 			old_selected = new_selected;
