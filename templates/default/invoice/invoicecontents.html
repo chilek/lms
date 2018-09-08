@@ -317,21 +317,6 @@
 		document.contents.submit();
 	}
 
-	function setProduct(name, prodid, count, jm, discount, discount_type, valuenetto, taxid, valuebrutto) {
-		var form = document.contents;
-
-		form.name.value = name;
-		form.prodid.value = prodid;
-		form.count.value = count;
-		form.jm.value = jm;
-		form.discount.value = discount;
-		form.discount_type.selectedIndex = discount_type;
-		form.valuenetto.value = valuenetto;
-		form.taxid.value = taxid;
-		form.valuebrutto.value = valuebrutto;
-	}
-
-
 	$(function() {
 		$('table.invoice-contents').sortable({
 			axis: 'y',
