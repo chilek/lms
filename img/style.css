@@ -2040,3 +2040,6 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   background-color: #AE9D7B;
   color: white;
 }
+.lmsbox-titlebar.ui-sortable-handle img {
+  cursor: grab;
+}
