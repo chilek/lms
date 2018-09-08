@@ -4114,4 +4114,7 @@ $_LANG['<!filter>Select filter'] = 'Wybierz filtr';
 
 $_LANG['- $a options selected -'] = '- wybrano $a opcji -';
 
+$_LANG['Cancel changes'] = 'Anuluj zmiany';
+$_LANG['Save this item'] = 'Zapisz zmiany';
+
 ?>

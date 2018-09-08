@@ -107,10 +107,20 @@ switch($action)
 	break;
 
 	case 'additem':
+	case 'savepos':
 
 		unset($error);
 
+		$itemdata = r_trim($_POST);
 		$contents = changeContents($contents, $itemdata['invoice-contents']);
+
+		if ($action == 'savepos') {
+			if (!isset($_GET['posuid']) || !isset($contents[$_GET['posuid']]))
+				die;
+			$posuid = $_GET['posuid'];
+			$itemdata = $itemdata['invoice-contents'][$posuid];
+		}
+
 		unset($itemdata['invoice-contents']);
 
 		$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
@@ -154,7 +164,11 @@ switch($action)
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
 			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
 			$itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
-			$contents[] = $itemdata;
+
+			if ($action == 'savepos')
+				$contents[$posuid] = $itemdata;
+			else
+				$contents[] = $itemdata;
 		}
 	break;
 

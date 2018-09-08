@@ -29,8 +29,7 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
-{
+if (isset($_GET['id']) && ($action == 'edit' || $action == 'init' || $action == 'convert')) {
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
@@ -137,14 +136,22 @@ function changeContents($contents, $newcontents) {
 switch($action)
 {
 	case 'additem':
+	case 'savepos':
 		if ($invoice['closed'])
 			break;
 
-		$itemdata = r_trim($_POST);
-
 		unset($error);
 
+		$itemdata = r_trim($_POST);
 		$contents = changeContents($contents, $itemdata['invoice-contents']);
+
+		if ($action == 'savepos') {
+			if (!isset($_GET['posuid']) || !isset($contents[$_GET['posuid']]))
+				die;
+			$posuid = $_GET['posuid'];
+			$itemdata = $itemdata['invoice-contents'][$posuid];
+		}
+
 		unset($itemdata['invoice-contents']);
 
 		$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
@@ -188,7 +195,10 @@ switch($action)
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
 			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
-			$contents[] = $itemdata;
+			if ($action == 'savepos')
+				$contents[$posuid] = $itemdata;
+			else
+				$contents[] = $itemdata;
 		}
 	break;
 
