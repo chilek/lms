@@ -339,6 +339,11 @@
 			handle: '.invoice-contents-sortable-handler',
 			opacity: 0.9,
 			placeholder: 'light',
+            helper: function(e, ui) {
+				var elem = ui.clone();
+				elem.find('td:not(.invoice-contents-sortable-handler)').remove();
+				return elem;
+			},
 			update: function (e, ui) {
 				ui.item.parent().find('.invoice-contents-position-counter').each(function (index, elem) {
 					$(elem).html((index + 1) + '.');
