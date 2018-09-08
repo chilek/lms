@@ -287,6 +287,7 @@
 	function editItem(posuid) {
 		var itemelem = $('#invoice-contents-position-' + posuid);
 		itemelem.find('.invoice-contents-field-edit').toggle();
+		itemelem.find('.invoice-contents-field-edit:visible').first().focus();
 		itemelem.find('.invoice-contents-field-value').toggle();
 		itemelem = $('.invoice-contents-position:not(#invoice-contents-position-' + posuid + ')');
 		itemelem.find('.invoice-contents-field-edit').hide();
@@ -346,7 +347,10 @@
 		});
 
 		$('tr.invoice-contents-position td:not(:last-child)').click(function (e) {
-			editItem($(this).closest('tr.invoice-contents-position').find('.invoice-contents-posuid').val());
+			var poselem = $(this).closest('tr.invoice-contents-position');
+			if (poselem.find('.invoice-contents-field-value:visible').length) {
+				editItem(poselem.find('.invoice-contents-posuid').val());
+			}
 		});
 	});
 
