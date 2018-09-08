@@ -24,6 +24,15 @@
  *  $Id$
  */
 
+// ajax request handling
+if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
+	if (!isset($_GET['id']) || !isset($_GET['delta']))
+		die;
+	$LMS->MoveEvent($_GET['id'], $_GET['delta']);
+	header('Content-Type: application/json');
+	die('[]');
+}
+
 if (isset($filter['edate']) && !empty($filter['edate']))
 	list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
 

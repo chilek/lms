@@ -40,7 +40,7 @@ if (isset($_GET['action'])) {
     		$LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
     		$SESSION->redirect('?' . $SESSION->get('backto'));
 	} elseif ($_GET['action'] == 'unassign') {
-		$LMS->UnassignUserFromEevent($_GET['id'], Auth::GetCurrentUser());
+		$LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
 		$SESSION->redirect('?' . $SESSION->get('backto'));
 	}
 }

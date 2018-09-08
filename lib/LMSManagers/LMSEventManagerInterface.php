@@ -48,5 +48,7 @@ interface LMSEventManagerInterface
 
     public function AssignUserToEvent($id, $userid);
 
-    public function UnassignUserFromEevent($id, $userid);
+    public function UnassignUserFromEvent($id, $userid);
+
+	public function MoveEvent($id, $delta);
 }

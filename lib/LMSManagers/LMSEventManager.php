@@ -428,8 +428,12 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     }
 
-    public function UnassignUserFromEevent($id, $userid) {
+    public function UnassignUserFromEvent($id, $userid) {
         if ($this->db->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?', array($id,$userid)))
             $this->db->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?', array($id,$userid));
     }
+
+	public function MoveEvent($id, $delta) {
+		return $this->db->Execute('UPDATE events SET date = date + ? WHERE id = ?', array($delta, $id));
+	}
 }

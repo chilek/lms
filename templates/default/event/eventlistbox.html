@@ -1,6 +1,11 @@
 {block name="eventlistbox"}
-{section name=daylist loop=$daylist}
-<TABLE class="lmsbox lms-ui-background-cycle">
+<style>
+    .event-single-sortable-handler {
+        cursor: grab;
+    }
+</style>
+{foreach $daylist as $day}
+<TABLE id="event-day-{$day}" class="lmsbox lms-ui-background-cycle event-day" data-event-day="{$day}">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%; min-width:90px;">
@@ -10,33 +15,64 @@
         <COL style="width: 1%;" class="no-print">
     </COLGROUP>
     <THEAD>
-        <TR{if $daylist[daylist] == $today} class="superdark"{/if}>
+        <TR{if $day == $today} class="superdark"{/if}>
             <TD class="bold nobr">
                 <IMG src="img/calendar.gif" alt="">
-                {$daylist[daylist]|date_format:"%A"}
+                {$day|date_format:"%A"}
             </TD>
             <TD colspan="3">
-                <span class="bold">({$daylist[daylist]|date_format:"%x"})</span>
-                {if $getHolidays[$daylist[daylist]]}
-                <span class="red">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
+                <span class="bold">({$day|date_format:"%x"})</span>
+                {if $getHolidays[$day]}
+                <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>
                 {/if}
-                <a href="?m=eventsearch&datefrom={$daylist[daylist]|date_format:"%Y/%m/%d"}&dateto={$daylist[daylist]|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
+                <a href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
             </TD>
             <TD colspan="2" class="text-right nobr">
                 <div class="no-print">
-                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
-                    <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}"><IMG src="img/save.gif" alt=""> {trans("Add Event")}</A>&nbsp;
+                    <A href="?m=eventprint&day={$day}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
+                    <A href="?m=eventadd&amp;day={$day|date_format:"%d"}&amp;month={$day|date_format:"%m"}&amp;year={$day|date_format:"%Y"}"><IMG src="img/save.gif" alt=""> {trans("Add Event")}</A>&nbsp;
                 </div>
             </TD>
         </TR>
     </THEAD>
     <TBODY>
         {foreach $eventlist as $event}
-        {if $event.date == $daylist[daylist]}
+        {if $event.date == $day}
             {include file="event/eventlistboxrow.html"}
         {/if}
         {/foreach}
     </TBODY>
 </TABLE>
-{/section}
+{/foreach}
+<script>
+
+    $('.event-day').sortable({
+        axis: 'y',
+        items: '.event-single',
+        handle: '.event-single-sortable-handler',
+        opacity: 0.9,
+        placeholder: 'light',
+        connectWith: '.event-day',
+		update: function (e, ui) {
+			if (ui.sender == null) {
+				return;
+            }
+        	var eventid = ui.item.attr('data-event-id');
+			var delta = ui.item.closest('.event-day').attr('data-event-day') - ui.sender.attr('data-event-day');
+			$('html,body').css('cursor', 'wait');
+			$.ajax('?m={$layout.module}', {
+                method: "GET",
+                data: {
+                	action: 'eventmove',
+                	id: eventid,
+                    delta: delta
+                },
+                complete: function() {
+                	$('html,body').css('cursor', 'auto');
+                }
+            });
+		}
+    });
+
+</script>
 {/block}

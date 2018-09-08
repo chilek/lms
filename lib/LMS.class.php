@@ -2500,10 +2500,15 @@ class LMS
         return $manager->AssignUserToEvent($id, $userid);
     }
 
-    public function UnassignUserFromEevent($id, $userid) {
+    public function UnassignUserFromEvent($id, $userid) {
         $manager = $this->getEventManager();
-        return $manager->UnassignUserFromEevent($id, $userid);
+        return $manager->UnassignUserFromEvent($id, $userid);
     }
+
+	public function MoveEvent($id, $delta) {
+		$manager = $this->getEventManager();
+		return $manager->MoveEvent($id, $delta);
+	}
 
 	public function GetEventsByTicketId($id)
     {
