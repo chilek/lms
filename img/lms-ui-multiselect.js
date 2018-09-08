@@ -27,7 +27,8 @@ function multiselect(options) {
 	// create new multiselect div
 	var wrapper = $('<div/>' , {
 		class: tiny ? 'lms-ui-multiselect-tiny-wrapper' : 'lms-ui-multiselect-wrapper',
-		id: elemid
+		id: elemid,
+		tabindex: 0
 	});
 	var new_element = $('<div/>', {
 		class: new_class,
@@ -199,9 +200,21 @@ function multiselect(options) {
 	}
 
 	// add some mouse/key event handlers
-	wrapper.click(function() {
+	wrapper.on('click keydown', function(e) {
+		console.log(e.key);
+		if (e.type == 'keydown') {
+			switch (e.key) {
+				case 'Enter':
+				case ' ':
+				case 'Escape':
+					break;
+				default:
+					return;
+			}
+			e.preventDefault();
+		}
 		var list = $('#' + this.id + '-layer');
-		if (!list.is(':visible')) {
+		if (!list.is(':visible') && (e.type != 'keydown' || e.key != 'Escape')) {
 			setTimeout(function() {
 				list.show().position({
 					my: 'left top',
