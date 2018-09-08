@@ -234,6 +234,7 @@ function multiselect(options) {
 		if (e.key == 'Escape') {
 			e.preventDefault();
 			$(this).parent().hide();
+			wrapper.focus();
 			if (new_selected != old_selected)
 				wrapper.triggerHandler('change');
 			old_selected = new_selected;
