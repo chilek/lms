@@ -420,6 +420,7 @@ div.lms-ui-multiselectlayer ul li {
 }
 div.lms-ui-multiselectlayer ul li input {
   border: none;
+  margin: 2px;
 }
 div.lms-ui-multiselectlayer ul li.selected {
   background-color: #CEBD9B;
