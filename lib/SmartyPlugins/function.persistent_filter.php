@@ -36,7 +36,6 @@ function smarty_function_persistent_filter($params, $template) {
 
 	return '
 		<div class="lms-ui-persistent-filter">
-			<input class="lms-ui-filter-action" type="hidden" value="apply">
 			<select class="lms-ui-filter-selection lms-ui-combobox" title="' . trans("<!filter>Select filter") . '">
 				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '
