@@ -253,7 +253,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 {/if}
 {if $customer}
 <FORM method="post" action="?m=invoicenew&action=additem" name="additem" id="additem">
-<table class="lmsbox">
+<table class="lmsbox lms-ui-background-cycle">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 92%;">
@@ -300,9 +300,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	</THEAD>
 	<TBODY>
-	{cycle values="light,lucid" print=false}
-	{foreach from=$contents item=item}
-	<TR class="highlight {cycle}">
+	{foreach $contents as $item}
+	<TR class="highlight">
 		<TD class="bold">
 			{counter}.
 		</TD>
