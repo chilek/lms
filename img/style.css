@@ -363,7 +363,6 @@ div.lms-ui-multiselect {
   vertical-align: middle;
   cursor: default;
   padding: 0px 0px 0px 4px;
-  min-height: 16px;
   max-width: 200px;
   white-space: pre-wrap;
   min-width: 200px;
@@ -377,10 +376,9 @@ span.lms-ui-multiselect-icon {
   background-image: url(1.png);
   background-repeat: no-repeat;
   width: 16px;
-  height: 14px;
+  height: 12px;
   background-size: 16px;
   margin-right: 2px;
-  margin-top: 2px;
 }
 div.lms-ui-multiselect-tiny {
   overflow: hidden;
