@@ -114,7 +114,8 @@ version ?.??.?? (????-??-??):
   - enhancement: introduced persistent filter support [chilan]
   - enhancement: lms-ui-advanced-select on 'chosen' backend and lms-ui-combobox on
     'simple-combobox' backend [chilan]
-  - enhancement: allow to change invoice content order during invoice edit using drag & drop [chilan]
+  - enhancement: allow to change invoice content order during invoice new and edit
+    using drag & drop [chilan]
 
 version 1.11.23 (2018-03-21):
 
