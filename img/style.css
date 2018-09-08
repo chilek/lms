@@ -2020,6 +2020,7 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
 }
 .scombobox-display {
   border-radius: unset;
+  padding: 0px 19px 0px 4px;
 }
 .scombobox-list {
   border-color: black;
