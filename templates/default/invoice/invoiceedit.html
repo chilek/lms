@@ -210,100 +210,110 @@
 </TABLE>
 {/if}
 <BR>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 92%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
-			<B>{trans("No.")}</B>
+		<TD class="bold">
+			{trans("No.")}
 		</TD>
-		<TD WIDTH="92%">
+		<TD>
 			{trans("Name of product, commodity or service:")}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			{trans("Product ID:")}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
+		<TD class="text-right">
 			{trans("Amount:")}<BR>
 			{trans("Unit:")}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{trans("Discount:")}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{trans("Net Price:")}<BR>
 			{trans("Net Value:")}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
+		<TD class="text-right">
 			{trans("Tax:")}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{trans("Gross Price:")}<BR>
 			{trans("Gross Value:")}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{foreach from=$contents item=item}
-	<TR class="highlight {cycle}"  {if !$invoice.closed} onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.3f"}', '{$item.jm}', {if $item.pdiscount != 0}'{$item.pdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{else}{if $item.vdiscount != 0}'{$item.vdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_AMOUNT - 1}{else}'', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{/if}{/if}, '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label == $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');"{/if}>
-		<TD WIDTH="1%">
-			<B>{counter}.</B>
+	{foreach $contents as $item}
+	<TR class="highlight}"{if !$invoice.closed} onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.3f"}', '{$item.jm}', {if $item.pdiscount != 0}'{$item.pdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{else}{if $item.vdiscount != 0}'{$item.vdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_AMOUNT - 1}{else}'', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{/if}{/if}, '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label == $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');"{/if}>
+		<TD class="bold">
+			{counter}.
 		</TD>
-		<TD WIDTH="92%">
+		<TD>
 			{$item.name}
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			{$item.prodid}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{$item.count|string_format:"%.3f"}<BR>
 			{$item.jm}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f %%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{$item.valuenetto|money_format}<BR>
 			{$item.s_valuenetto|money_format}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{$item.tax}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{$item.valuebrutto|money_format}<BR>
 			{$item.s_valuebrutto|money_format}
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-            {if !$invoice.closed}
+		<TD class="nobr">
+			{if !$invoice.closed}
 			<A HREF="?m=invoiceedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		    {/if}
+			{/if}
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="9" ALIGN="CENTER">
-			<B>{trans("Invoice have no items. Use form below for items addition.")}</B>
+		<TD COLSPAN="9" class="empty-table">
+			<p>{trans("Invoice have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
 	{if $contents}
 	<TR>
-		<TD COLSPAN="5" WIDTH="96%" ALIGN="RIGHT">
-			<B>{trans("Total:")}</B>
+		<TD COLSPAN="5" class="bold text-right">
+			{trans("Total:")}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>{sum array=$contents column=s_valuenetto string_format="%01.2f"}</B>
+		<TD class="bold text-right nobr">
+			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			&nbsp;
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>{sum array=$contents column=s_valuebrutto string_format="%01.2f"}</B>
+		<TD class="bold text-right nobr">
+			{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
@@ -315,10 +325,10 @@
 	<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
 	{if !$invoice.closed}
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{counter}.</B>
+		<TD class="bold nobr">
+			{counter}.
 		</TD>
-		<TD WIDTH="92%" NOWRAP>
+		<TD class="nobr">
 			<INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
 			<SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
 				<OPTION value="0">-</OPTION>
@@ -327,14 +337,14 @@
 				{/foreach}
 			</SELECT>
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD class="text-right">
 			<INPUT TYPE="text" NAME="prodid" SIZE="6">
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD class="text-right">
 			<INPUT TYPE="text" NAME="count" SIZE="3" VALUE="1">
 			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD class="text-right">
 			<INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage or amount"}>
 			<SELECT name="discount_type">
 				{foreach from=$_DISCOUNTTYPES item=item key=key}
@@ -342,17 +352,17 @@
 				{/foreach}
 			</SELECT>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD class="text-right nobr">
 			<INPUT TYPE="text" NAME="valuenetto" SIZE="6" {tip text="Enter unitary value without discount"}>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD class="text-right nobr">
 			<SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
 			{foreach item=tax from=$taxeslist}
 				<OPTION value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</OPTION>
 			{/foreach}
 			</SELECT>
 		</TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD class="text-right nobr">
 			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}>
 		</TD>
 		<TD>
@@ -361,7 +371,7 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD COLSPAN="9" ALIGN="RIGHT">
+		<TD COLSPAN="9" class="text-right">
 			<INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{trans("original")}</A>
 	        <INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{trans("copy")}</A>
 			<INPUT type="checkbox" name="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('duplicate');">{trans("duplicate")}</A>&nbsp;
