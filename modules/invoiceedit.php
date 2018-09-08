@@ -48,10 +48,8 @@ if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
 	$SESSION->remove('invoice');
 	$SESSION->remove('invoicecustomer');
 
-	$i = 0;
 	$invoicecontents = array();
 	foreach ($invoice['content'] as $item) {
-		$i++;
 		$invoicecontents[] = array(
 			'tariffid' => $item['tariffid'],
 			'name' => $item['description'],
@@ -67,7 +65,6 @@ if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
 			's_valuebrutto' => str_replace(',' ,'.', $item['total']),
 			'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
 			'taxid' => $item['taxid'],
-			'posuid' => $i,
 		);
 	}
 
@@ -126,6 +123,17 @@ else
 if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 	$action = 'setcustomer';
 
+function changeContents($contents, $newcontents) {
+	$result = array();
+
+	foreach ($newcontents as $posuid => &$newposition)
+		if (isset($contents[$posuid]))
+			$result[] = $contents[$posuid];
+	unset($newposition);
+
+	return $result;
+}
+
 switch($action)
 {
 	case 'additem':
@@ -135,6 +143,9 @@ switch($action)
 		$itemdata = r_trim($_POST);
 
 		unset($error);
+
+		$contents = changeContents($contents, $itemdata['invoice-contents']);
+		unset($itemdata['invoice-contents']);
 
 		$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
 		$itemdata['pdiscount'] = 0;
@@ -177,7 +188,6 @@ switch($action)
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
 			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
-			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}
 	break;
@@ -186,10 +196,10 @@ switch($action)
 		if ($invoice['closed'])
 			break;
 
-		if (count($contents))
-			foreach($contents as $idx => $row)
-				if ($row['posuid'] == $_GET['posuid']) 
-					unset($contents[$idx]);
+		if (isset($contents[$_GET['posuid']]))
+			unset($contents[$_GET['posuid']]);
+
+		$contents = changeContents($contents, $_POST['invoice-contents']);
 	break;
 
 	case 'setcustomer':
@@ -316,6 +326,8 @@ switch($action)
 	case 'save':
 		if (empty($contents) || empty($invoice['customerid']) || !$LMS->CustomerExists($invoice['customerid']))
 			break;
+
+		$contents = changeContents($contents, $_POST['invoice-contents']);
 
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = $invoice['doctype'];

@@ -8,7 +8,7 @@
 <!--
 	function setItem(index)
 	{
-		var e = document.additem;
+		var e = document.contents;
 		{foreach from=$tariffs item=tariff}
 		if (index == {$tariff.id})
 		{
@@ -42,26 +42,41 @@
 
 	function setType(type)
 	{
-		document.additem.elements[type].checked = !document.additem.elements[type].checked;
+		document.contents.elements[type].checked = !document.contents.elements[type].checked;
 	}
 
-	function printinvoice()
+	function addItem() {
+		document.contents.action += '&action=additem';
+		document.contents.submit();
+	}
+
+	function delItem(posuid) {
+		document.contents.action += '&action=deletepos&posuid=' + posuid;
+		document.contents.submit();
+	}
+
+	function saveInvoice() {
+		document.contents.action = '?m=invoiceedit&action=save';
+		document.contents.submit();
+	}
+
+	function printInvoice()
 	{
 		var add = "";
-		if(document.additem.original.checked)
+		if(document.contents.original.checked)
 		        add += "&original=1";
-		if(document.additem.copy.checked)
+		if(document.contents.copy.checked)
 			add += "&copy=1";
-		if(document.additem.duplicate.checked)
+		if(document.contents.duplicate.checked)
 			add += "&duplicate=1";
 
-		document.additem.action = "?m=invoiceedit&action=save&print=1" + add;
-		document.additem.submit();
+		document.contents.action = "?m=invoiceedit&action=save&print=1" + add;
+		document.contents.submit();
 	}
 
 	function setProduct(name, prodid, count, jm, discount, discount_type, valuenetto, taxid, valuebrutto)
 	{
-	    var form = document.additem;
+	    var form = document.contents;
 
 		form.name.value = name;
 		form.prodid.value = prodid;
@@ -210,7 +225,10 @@
 </TABLE>
 {/if}
 <BR>
-<TABLE class="lmsbox lms-ui-background-cycle">
+<FORM METHOD="POST" ACTION="?m=invoiceedit" NAME="contents">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
+<TABLE class="lmsbox lms-ui-background-cycle invoice-contents">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 92%;">
@@ -257,12 +275,12 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{foreach $contents as $item}
-	<TR class="highlight"{if !$invoice.closed} onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.3f"}', '{$item.jm}', {if $item.pdiscount != 0}'{$item.pdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{else}{if $item.vdiscount != 0}'{$item.vdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_AMOUNT - 1}{else}'', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{/if}{/if}, '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label == $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');"{/if}>
-		<TD class="bold">
+	{foreach $contents as $posuid => $item}
+	<TR class="highlight invoice-contents-position"{if !$invoice.closed} onclick="setProduct('{$item.name}', '{$item.prodid}', '{$item.count|string_format:"%.3f"}', '{$item.jm}', {if $item.pdiscount != 0}'{$item.pdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{else}{if $item.vdiscount != 0}'{$item.vdiscount|string_format:"%.2f"}', {$smarty.const.DISCOUNT_AMOUNT - 1}{else}'', {$smarty.const.DISCOUNT_PERCENTAGE - 1}{/if}{/if}, '{$item.valuenetto|string_format:"%.2f"}', {foreach item=tax from=$taxeslist}{if $tax.label == $item.tax}{$tax.id}{/if}{/foreach}, '{$item.valuebrutto|string_format:"%.2f"}');"{/if}>
+		<TD class="bold invoice-contents-position-counter invoice-contents-sortable-handler">
 			{counter}.
 		</TD>
-		<TD>
+		<TD class="invoice-contents-sortable-handler">
 			{$item.name}
 		</TD>
 		<TD class="nobr">
@@ -287,8 +305,9 @@
 			{$item.s_valuebrutto|money_format}
 		</TD>
 		<TD class="nobr">
+			<input type="hidden" name="invoice-contents[{$posuid}][posuid]" value="{$posuid}">
 			{if !$invoice.closed}
-			<A HREF="?m=invoiceedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+			<A HREF="javascript:delItem({$posuid});"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 			{/if}
 		</TD>
 	</TR>
@@ -320,9 +339,6 @@
 	{/if}
     </TBODY>
     <TFOOT>
-	<FORM METHOD="POST" ACTION="?m=invoiceedit&action=additem" NAME="additem">
-	<INPUT type="submit" class="hiddenbtn">
-	<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
 	{if !$invoice.closed}
 	<TR>
 		<TD class="bold nobr">
@@ -330,7 +346,7 @@
 		</TD>
 		<TD class="nobr">
 			<INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
-			<SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
+			<SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
 				<OPTION value="0">-</OPTION>
 				{foreach from=$tariffs item=tariff}
 				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
@@ -366,11 +382,11 @@
 			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6" {tip text="Enter unitary value without discount"}>
 		</TD>
 		<TD>
-			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
+			<A HREF="javascript:addItem();"><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
 	{/if}
-	<TR>
+	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="9" class="text-right">
 			<INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{trans("original")}</A>
 	        <INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{trans("copy")}</A>
@@ -383,14 +399,14 @@
 			<A HREF="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 			{else}
-			<A HREF="?m=invoiceedit&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<A HREF="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 			{/if}
 		</TD>
 	</TR>
-	</FORM>
     </TFOOT>
 </TABLE>
+</FORM>
 
 <SCRIPT type="text/javascript">
 <!--
@@ -437,8 +453,21 @@
     });
 {/if}
 
-    $(function() {
-        $('form[name="setcustomer"] [name="invoice[number]"]').focus();
+	$(function() {
+		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
+
+		$('table.invoice-contents').sortable({
+			axis: 'y',
+			items: 'tr.invoice-contents-position',
+			handle: '.invoice-contents-sortable-handler',
+			opacity: 0.9,
+			placeholder: 'light',
+			update: function(e, ui) {
+				ui.item.parent().find('.invoice-contents-position-counter').each(function(index, elem) {
+					$(elem).html((index + 1) + '.');
+				});
+			}
+		});
     });
 //-->
 </SCRIPT>
