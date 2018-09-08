@@ -10,6 +10,8 @@
 </TR>
 <TR>
     <TD colspan="5" class="nobr no-print">
+        <div class="lms-ui-filter-container">
+        <div class="lms-ui-filter-definition">
         <FORM method="POST" action="?m=eventlist" name="filter">
             <INPUT type="submit" class="hiddenbtn">
             <INPUT type="HIDDEN" name="m" value="eventlist">
@@ -57,8 +59,10 @@
                 <OPTION value="0"{if $filter.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
                 <OPTION value="1"{if $filter.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
             </SELECT>
-            {persistent_filter}
         </FORM>
+        </div>
+        {persistent_filter}
+        </div>
     </TD>
 </TR>
 {/block}

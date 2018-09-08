@@ -1983,11 +1983,19 @@ table.dataTable thead tr:last-child th {
 .chosen-container-single .chosen-drop {
   border-radius: unset;
 }
+div.lms-ui-filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+div.lms-ui-filter-container div.lms-ui-filter-definition {
+  display: flex;
+  width: 80%;
+}
 div.lms-ui-persistent-filter {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  float: right;
 }
 div.lms-ui-persistent-filter > * {
   margin: 2px;

@@ -46,6 +46,8 @@
         {block name="customerlist-list-filters"}
 	<TR>
 		<TD colspan="{$number_of_table_columns}" class="nobr">
+			<div class="lms-ui-filter-container">
+			<div class="lms-ui-filter-definition">
 			<span class="bold">{trans("Filter:")}</span> {trans("Customers:")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
@@ -117,18 +119,21 @@
 				<input type="hidden" name="ng" value="">
 			{/if}
 
-                        {trans("Assigments:")}
-                        <select size="1" name="assigments" onchange="document.choosefilter.submit();" {if $filter.assignments}class="active"{/if}>
-                            <option value="0" {if $filter.assignments eq '0'} selected {/if}>{trans('- all -')}</option>
-                            <option value="7" {if $filter.assignments eq '7'} selected {/if}>{trans('expire in $a days', 7)}</option>
-                            <option value="14" {if $filter.assignments eq '14'} selected {/if}>{trans('expire in $a days', 14)}</option>
-                            <option value="30" {if $filter.assignments eq '30'} selected {/if}>{trans('expire in $a days', 30)}</option>
-                            <option value="-1" {if $filter.assignments eq '-1'} selected {/if}>{trans('without end date')}</option>
-                            <option value="-2" {if $filter.assignments eq '-2'} selected {/if}>{trans('active')}</option>
-                            <option value="-3" {if $filter.assignments eq '-3'} selected {/if}>{trans('active, with invoice')}</option>
-                            <option value="-4" {if $filter.assignments eq '-4'} selected {/if}>{trans('suspended')}</option>
-                        </select>
+			{trans("Assigments:")}
+			<select size="1" name="assigments" onchange="document.choosefilter.submit();" {if $filter.assignments}class="active"{/if}>
+				<option value="0" {if $filter.assignments eq '0'} selected {/if}>{trans('- all -')}</option>
+				<option value="7" {if $filter.assignments eq '7'} selected {/if}>{trans('expire in $a days', 7)}</option>
+				<option value="14" {if $filter.assignments eq '14'} selected {/if}>{trans('expire in $a days', 14)}</option>
+				<option value="30" {if $filter.assignments eq '30'} selected {/if}>{trans('expire in $a days', 30)}</option>
+				<option value="-1" {if $filter.assignments eq '-1'} selected {/if}>{trans('without end date')}</option>
+				<option value="-2" {if $filter.assignments eq '-2'} selected {/if}>{trans('active')}</option>
+				<option value="-3" {if $filter.assignments eq '-3'} selected {/if}>{trans('active, with invoice')}</option>
+				<option value="-4" {if $filter.assignments eq '-4'} selected {/if}>{trans('suspended')}</option>
+			</select>
+
+			</div>
 			{persistent_filter}
+			</div>
 		</TD>
 	</TR>
         {/block}

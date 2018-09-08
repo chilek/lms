@@ -2,6 +2,8 @@
 
 <TR>
     <TD colspan="10">
+        <div class="lms-ui-filter-container">
+        <div class="lms-ui-filter-definition">
         <FORM method="GET" action="?m=rtqueueview" name="filter">
             <INPUT type="submit" class="hiddenbtn">
             <INPUT type="HIDDEN" name="m" value="rtqueueview">
@@ -115,8 +117,10 @@
                     <option value="{$smarty.const.RT_RIGHT_INDICATOR}" {if $filter.rights == $smarty.const.RT_RIGHT_INDICATOR} selected{/if}>{trans("yes")}</option>
                 </SELECT>
             </label>
-            {persistent_filter}
         </FORM>
+        </div>
+        {persistent_filter}
+        </div>
     </TD>
 </TR>
 {/block}

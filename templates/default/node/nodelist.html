@@ -43,6 +43,9 @@
 	</TR>
 	<TR>
 		<TD colspan="5">
+			<div class="lms-ui-filter-container">
+			<div class="lms-ui-filter-definition">
+
 				<SPAN class="bold">{trans("Filter:")}</SPAN>&nbsp;
 				<SPAN class="nobr">{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
@@ -105,7 +108,9 @@
 				{else}
 					<input type="hidden" name="p" value="-1">
 				{/if}
+			</div>
 			{persistent_filter}
+			</div>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}
