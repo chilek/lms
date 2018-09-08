@@ -60,7 +60,7 @@
         	var eventid = ui.item.attr('data-event-id');
 			var delta = ui.item.closest('.event-day').attr('data-event-day') - ui.sender.attr('data-event-day');
 			$('html,body').css('cursor', 'wait');
-			$.ajax('?m={$layout.module}', {
+			$.ajax('?m={$layout.module}&api=1', {
                 method: "GET",
                 data: {
                 	action: 'eventmove',
