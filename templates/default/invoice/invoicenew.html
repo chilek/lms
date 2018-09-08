@@ -3,6 +3,11 @@
 {block name=module_content}
 {$xajax}
 <!--// $Id$ //-->
+<style>
+	.invoice-contents-sortable-handler {
+		cursor: grab;
+	}
+</style>
 <H1>{$layout.pagetitle}</H1>
 {if $newinvoice}
 <SCRIPT type="text/javascript">
@@ -15,7 +20,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 <!--
 	function setItem(index)
 	{
-		var e = document.additem;
+		var e = document.contents;
 		{foreach from=$tariffs item=tariff}
 		if (index == {$tariff.id})
 		{
@@ -47,21 +52,31 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		document.setcustomer.submit();
 	}
 
-	function printinvoice()
-	{
-		var add = "";
-		if (document.additem.original.checked)
-			add += "&original=1";
-		if (document.additem.copy.checked)
-			add += "&copy=1";
-
-		document.additem.action="?m=invoicenew&action=save&print=1" + add;
-		document.additem.submit();
+	function addItem() {
+		document.contents.action += '&action=additem';
+		document.contents.submit();
 	}
 
-	function saveinvoice() {
-		document.additem.action = "?m=invoicenew&action=save";
-		document.additem.submit();
+	function delItem(posuid) {
+		document.contents.action += '&action=deletepos&posuid=' + posuid;
+		document.contents.submit();
+	}
+
+	function printInvoice()
+	{
+		var add = "";
+		if (document.contents.original.checked)
+			add += "&original=1";
+		if (document.contents.copy.checked)
+			add += "&copy=1";
+
+		document.contents.action="?m=invoicenew&action=save&print=1" + add;
+		document.contents.submit();
+	}
+
+	function saveInvoice() {
+		document.contents.action = "?m=invoicenew&action=save";
+		document.contents.submit();
 	}
 
 	function GetNumberPlans() {
@@ -245,15 +260,15 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 					<INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				</TD>
 				<TD class="text-right nobr" colspan="7">
-					<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
+					<A href="javascript:document.contentslist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
 				</TD>
 			</TR>
 		</TABLE>
 	</FORM>
 {/if}
 {if $customer}
-<FORM method="post" action="?m=invoicenew&action=additem" name="additem" id="additem">
-<table class="lmsbox lms-ui-background-cycle">
+<FORM method="post" action="?m=invoicenew&action=additem" name="contents">
+<table class="lmsbox lms-ui-background-cycle invoice-contents">
 	<colgroup>
 		<col style="width: 1%;">
 		<col style="width: 92%;">
@@ -300,12 +315,12 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	</THEAD>
 	<TBODY>
-	{foreach $contents as $item}
-	<TR class="highlight">
-		<TD class="bold">
+	{foreach $contents as $posuid => $item}
+	<TR class="highlight invoice-contents-position">
+		<TD class="bold invoice-contents-position-counter invoice-contents-sortable-handler">
 			{counter}.
 		</TD>
-		<TD>
+		<TD class="invoice-contents-sortable-handler">
 			{$item.name}
 		</TD>
 		<TD class="nobr">
@@ -330,7 +345,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{$item.s_valuebrutto|money_format}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=invoicenew&amp;action=deletepos&posuid={$item.posuid}"><IMG src="img/delete.gif" {tip text="Remove this item from list"}></A>
+			<input type="hidden" name="invoice-contents[{$posuid}][posuid]" value="{$posuid}">
+			<A href="javascript:delItem({$posuid})"><IMG src="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -370,12 +386,12 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		<TD class="nobr">
 			{block name="invoicenew-tariff-selection"}
 			<INPUT type="text" name="name" size="40" style="width:300px" id="name" placeholder="{trans("Enter description or select tariff from the list")}"><BR>
-			<SELECT size="1" name="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
+			<SELECT size="1" name="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
 				<OPTION value="0">-</OPTION>
 				{foreach from=$tariffs item=tariff}
 				<OPTION value="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
 				{/foreach}
-			</SELECT>{*&nbsp;<A href="javascript:setItem(document.additem.ttariffid.value)">{trans("Select")}</A>*}
+			</SELECT>{*&nbsp;<A href="javascript:setItem(document.contents.ttariffid.value)">{trans("Select")}</A>*}
 			{/block}
 		</TD>
 		<TD>
@@ -407,10 +423,10 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			<INPUT type="text" name="valuebrutto" size="6" {tip text="Enter unitary value without discount"}>
 		</TD>
 		<TD>
-			<A href="javascript:document.additem.submit(); "><IMG src="img/save.gif" alt="" {tip text="Add item"}></A>
+			<A href="javascript:addItem()"><IMG src="img/save.gif" alt="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
-	<TR>
+	<TR class="lms-ui-button-panel">
 		<TD colspan="9" class="text-right nobr">
 			<TABLE width="100%">
 				<TR>
@@ -431,8 +447,8 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 						<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 						<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 						{else}
-						<A href="javascript:saveinvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-						<A href="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+						<A href="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+						<A href="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 						{/if}
 					</TD>
 				</TR>
@@ -468,6 +484,19 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
             {/if}
             customer_addresses.init();
         });
+
+		$('table.invoice-contents').sortable({
+			axis: 'y',
+			items: 'tr.invoice-contents-position',
+			handle: '.invoice-contents-sortable-handler',
+			opacity: 0.9,
+			placeholder: 'light',
+			update: function(e, ui) {
+				ui.item.parent().find('.invoice-contents-position-counter').each(function(index, elem) {
+					$(elem).html((index + 1) + '.');
+				});
+			}
+		});
 	});
 //-->
 </SCRIPT>

@@ -55,6 +55,17 @@ $itemdata = r_trim($_POST);
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
+function changeContents($contents, $newcontents) {
+	$result = array();
+
+	foreach ($newcontents as $posuid => &$newposition)
+		if (isset($contents[$posuid]))
+			$result[] = $contents[$posuid];
+	unset($newposition);
+
+	return $result;
+}
+
 switch($action)
 {
 	case 'init':
@@ -99,6 +110,9 @@ switch($action)
 
 		unset($error);
 
+		$contents = changeContents($contents, $itemdata['invoice-contents']);
+		unset($itemdata['invoice-contents']);
+
 		$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
 		$itemdata['pdiscount'] = 0;
 		$itemdata['vdiscount'] = 0;
@@ -140,7 +154,6 @@ switch($action)
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
 			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
 			$itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
-			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}
 	break;
@@ -168,7 +181,6 @@ switch($action)
 				$itemdata['s_valuenetto'] = round($itemdata['s_valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) / 100 + 1), 2);
 				$itemdata['prodid'] = $_POST['l_prodid'][$id];
 				$itemdata['jm'] = $_POST['l_jm'][$id];
-				$itemdata['posuid'] = (string) (getmicrotime()+$id);
 				$itemdata['tariffid'] = 0;
 				$contents[] = $itemdata;
 			}
@@ -176,10 +188,10 @@ switch($action)
 	break;
 
 	case 'deletepos':
-		if(count($contents))
-			foreach($contents as $idx => $row)
-				if($row['posuid'] == $_GET['posuid']) 
-					unset($contents[$idx]);
+		if (isset($contents[$_GET['posuid']]))
+			unset($contents[$_GET['posuid']]);
+
+		$contents = changeContents($contents, $_POST['invoice-contents']);
 	break;
 
 	case 'setcustomer':
@@ -307,6 +319,8 @@ switch($action)
 			break;
 
 		unset($error);
+
+		$contents = changeContents($contents, $_POST['invoice-contents']);
 
 		if ($invoice['deadline']) {
 			$deadline = intval($invoice['deadline']);
