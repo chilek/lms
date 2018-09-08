@@ -169,6 +169,7 @@
                 {counter}.
             </TD>
             <TD class="nobr">
+                {block name="`$layout.module`-tariff-selection"}
                 <INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
                 <SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
                     <OPTION value="0">-</OPTION>
@@ -176,6 +177,7 @@
                     <OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
                     {/foreach}
                 </SELECT>
+                {/block}
             </TD>
             <TD class="text-right">
                 <INPUT TYPE="text" NAME="prodid" SIZE="6">
