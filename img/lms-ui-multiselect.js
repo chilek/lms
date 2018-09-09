@@ -188,7 +188,6 @@ function multiselect(options) {
 
 	all_items = ul.find('li');
 	all_enabled_items = all_items.filter(':not(.disabled)');
-	all_checkboxes = all_items.find(':checkbox');
 	all_enabled_checkboxes = all_enabled_items.find(':checkbox');
 
 	function checkAllElements() {
