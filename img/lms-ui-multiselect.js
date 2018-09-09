@@ -149,7 +149,6 @@ function multiselect(options) {
 			if (!$(e.target).is('input')) {
 				box.prop('checked', !box.prop('checked'));
 			}
-			console.log(exclusive);
 			if (exclusive == '') {
 				ul.find('li').not(this).removeClass('selected').find(':checkbox').prop('checked', false);
 			} else {
