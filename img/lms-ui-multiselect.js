@@ -281,7 +281,6 @@ function multiselect(options) {
 					li = ul.find('li:not(.disabled)').last();
 					li.addClass('active').find('input').focus();
 				}
-				console.log(li);
 				li.get(0).scrollIntoView(false);
 				e.preventDefault();
 				break;
