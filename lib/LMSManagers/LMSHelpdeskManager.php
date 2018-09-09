@@ -220,7 +220,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		}
 
 		switch ($owner) {
-			case null:
 			case '-1':
 				$ownerfilter = '';
 				break;
