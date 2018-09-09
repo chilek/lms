@@ -98,7 +98,9 @@ if (!isset($_GET['init'])) {
 	if (isset($_GET['s']))
 		$filter['status'] = $_GET['s'];
 } else {
-	$filter = array();
+	$filter = array(
+		'status' => -1,
+	);
 	$SMARTY->clearAssign('persistent_filter');
 	$SESSION->saveFilter($filter);
 }
