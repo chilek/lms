@@ -62,7 +62,15 @@ if (!isset($_GET['init'])) {
 		$filter['usertype'] = 'creator';
 
 	if (isset($_GET['u']))
-		$filter['userid'] = $_GET['u'];
+		if (is_array($_GET['u'])) {
+			$filter['userid'] = array_filter($_GET['u'], 'intval');
+			if (count($filter['userid']) == 1) {
+				$first = reset($filter['userid']);
+				if ($first == 0)
+					$filter['userid'] = 0;
+			}
+		} else
+			$filter['userid'] = intval($_GET['u']);
 
 	if (isset($_GET['periodtype']))
 		$filter['periodtype'] = $_GET['periodtype'];

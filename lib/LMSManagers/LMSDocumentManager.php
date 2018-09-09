@@ -75,7 +75,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 	 * 		numberplan - document numbering plan (default: null = any): single integer value
 	 * 		usertype - document user type (default: creator): supported values:
 	 * 			creator, authorising,
-	 * 		userid - document user (default: null = any): single integer value
+	 * 		userid - document user (default: 0 = any): array() or single integer value
 	 *		periodtype - document selection period type (default: creationdate)
 	 * 			supported values: creationdate, confirmationdate, fromdate, todate
 	 * 		from - document selection period start (default: 0 = any value): single integer value
@@ -199,7 +199,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				WHERE e.customerid IS NULL '
 					.($customer ? 'AND d.customerid = '.intval($customer) : '')
 					.($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
-					. ($userid ? ' AND ' . $userfield . ' = ' . intval($userid) : '')
+					. ($userid ? ' AND ' . $userfield . (is_array($userid) ? ' IN (' . implode(',', $userid) . ')' : ' = ' . intval($userid)) : '')
 					. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
 					.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
 					.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
@@ -235,7 +235,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			WHERE e.customerid IS NULL '
 			.($customer ? 'AND d.customerid = '.intval($customer) : '')
 			.($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
-			. ($userid ? ' AND ' . $userfield . ' = ' . intval($userid) : '')
+			. ($userid ? ' AND ' . $userfield . (is_array($userid) ? ' IN (' . implode(',', $userid) . ')' : ' = ' . intval($userid)) : '')
 			. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
 			.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
 			.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')

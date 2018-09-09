@@ -114,18 +114,20 @@
 					{trans("User:")}
 					{if empty($users)}
 					<input type="hidden" name="usertype" value="">
-					<input type="hidden" name="u" value="">
+					<input type="hidden" name="u[]" value="0">
 					{else}
 					<SELECT name="usertype" onChange="javascript:applyFilter();">
 						<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
 						<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
 					</SELECT>
-					<SELECT name="u" onChange="javascript:applyFilter();">
-						<option value=""{if empty($filter.userid)} selected{/if}>{trans("- all -")}</option>
+
+					<input type="hidden" name="u[]" value="0">
+					<SELECT name="u[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
 						{foreach $users as $user}
-						<option value="{$user.id}"{if $user.id == $filter.userid} selected{/if}>{$user.name}</option>
+						<option value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} selected{/if}>{$user.name}</option>
 						{/foreach}
 					</SELECT>
+
 					{/if}
 					{trans("Period:")}
 					<SELECT name="periodtype" onChange="javascript:applyFilter();">
