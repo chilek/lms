@@ -106,7 +106,7 @@ function multiselect(options) {
 	}
 
 	function updateCheckAll() {
-		var allcheckboxes = ul.find('li:not(.exclusive) :checkbox:not(:disabled)');
+		var allcheckboxes = ul.find('li:not(.exclusive,.disabled) :checkbox');
 		ul.parent().find('.checkall').prop('checked', allcheckboxes.filter(':checked').length == allcheckboxes.length);
 	}
 
@@ -137,7 +137,7 @@ function multiselect(options) {
 		}
 
 		if ($(this).is(':disabled')) {
-			li.addClass('blend');
+			li.addClass('blend disabled');
 			box.prop('disabled', true);
 			return;
 		}
@@ -179,7 +179,7 @@ function multiselect(options) {
 		// TODO: keyboard events
 	});
 
-	var allcheckboxes = ul.find('li:not(.exclusive) :checkbox:not(:disabled)');
+	var allcheckboxes = ul.find('li:not(.exclusive,.disabled) :checkbox');
 
 	function checkAllElements() {
 		var checked = ul.parent().find('.checkall').prop('checked');
@@ -256,24 +256,33 @@ function multiselect(options) {
 				break;
 			case 'ArrowDown':
 				li = $('input:focus', this).closest('li');
-				var next = li.next();
+				do {
+					li = li.next();
+				} while (li.length && li.is('.disabled'));
 				$('li', this).removeClass('active');
-				if (next.length) {
-					next.addClass('active').find('input').focus();
+				if (li.length) {
+					li.addClass('active').find('input').focus();
 				} else {
-					li.siblings(':first-child').addClass('active').find('input').focus();
+					li = ul.find('li:not(.disabled)').first();
+					li.addClass('active').find('input').focus();
 				}
+				li.get(0).scrollIntoView(false);
 				e.preventDefault();
 				break;
 			case 'ArrowUp':
 				li = $('input:focus', this).closest('li');
-				var prev = li.prev();
+				do {
+					li = li.prev();
+				} while (li.length && li.is('.disabled'));
 				$('li', this).removeClass('active');
-				if (prev.length) {
-					prev.addClass('active').find('input').focus();
+				if (li.length) {
+					li.addClass('active').find('input').focus();
 				} else {
-					li.siblings(':last-child').addClass('active').find('input').focus();
+					li = ul.find('li:not(.disabled)').last();
+					li.addClass('active').find('input').focus();
 				}
+				console.log(li);
+				li.get(0).scrollIntoView(false);
 				e.preventDefault();
 				break;
 		}
