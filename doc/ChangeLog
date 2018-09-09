@@ -123,6 +123,8 @@ version ?.??.?? (????-??-??):
   - enhancement: keyboard support for multi select ui controls [chilan]
   - enhancement: document list type filter is multi-select field [chilan]
   - enhancement: allow to filter document list by service type [chilan]
+  - enhancement: new filter engine applied to queuelist; allow to filter deleted queues
+    on queue list [chilan]
 
 version 1.11.23 (2018-03-21):
 
