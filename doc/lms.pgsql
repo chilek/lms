@@ -1200,6 +1200,7 @@ DROP TABLE IF EXISTS netradiosectors CASCADE;
 CREATE TABLE netradiosectors (
 	id integer DEFAULT nextval('netradiosectors_id_seq'::text) NOT NULL,
 	name varchar(64) NOT NULL,
+	type smallint DEFAULT 0 NOT NULL,
 	azimuth numeric(9,2) DEFAULT 0 NOT NULL,
 	width numeric(9,2) DEFAULT 0 NOT NULL,
 	altitude smallint DEFAULT 0 NOT NULL,
@@ -3456,6 +3457,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018090500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018090800');
 
 COMMIT;

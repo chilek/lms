@@ -265,14 +265,15 @@ function addRadioSector($params) {
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'technology' => intval($params['technology']),
+            		'type' => intval($params['type']),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
 			SYSLOG::RES_NETDEV => $netdevid,
 		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology,
+		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology, type,
 			frequency, frequency2, bandwidth, netdev)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_RADIOSECTOR] = $DB->GetLastInsertID('netradiosectors');
@@ -337,13 +338,14 @@ function updateRadioSector($rsid, $params) {
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'technology' => intval($params['technology']),
+            		'type' => intval($params['type']),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
 			SYSLOG::RES_RADIOSECTOR => $rsid,
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
-			rsrange = ?, license = ?, technology = ?,
+			rsrange = ?, license = ?, technology = ?, type = ?,
 			frequency = ?, frequency2 = ?, bandwidth = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_NETDEV] = $netdevid;

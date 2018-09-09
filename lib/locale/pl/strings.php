@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Access network interface'] = 'Sieciowy interfejs dostępowy';
+$_LANG['Infrastructure network interface'] = 'Sieciowy interfejs infrastrukturalny';
 $_LANG['<!retention>Retention log search:'] = 'Przeszukiwanie dzienników retencyjnych:';
 $_LANG['<!retention>Retention log search'] = 'Przeszukiwanie dzienników retencyjnych';
 $_LANG['<!retention>Retention log search results:'] = 'Wynik przeszukiwania dzienników retencyjnych:';
