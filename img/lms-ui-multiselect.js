@@ -195,10 +195,12 @@ function multiselect(options) {
 		new_selected = multiselect.generateSelectedString();
 	}
 
+	var checkall_div = null;
+
 	new_selected = this.generateSelectedString();
 	old_selected = new_selected;
 	if (!tiny || selection_group) {
-		var checkall_div = $('<div/>').appendTo(div);
+		checkall_div = $('<div/>').appendTo(div);
 		$('<label><input type="checkbox" class="checkall" value="1">' + lmsMessages.checkAll + '</label>').appendTo(checkall_div);
 
 		updateCheckAll();
@@ -279,6 +281,13 @@ function multiselect(options) {
 				} else {
 					li = ul.find('li:not(.disabled)').last();
 					li.addClass('active').find('input').focus();
+				}
+				e.preventDefault();
+				break;
+			case 'a':
+			case 'A':
+				if (e.ctrlKey && checkall_div) {
+					checkall_div.click();
 				}
 				e.preventDefault();
 				break;
