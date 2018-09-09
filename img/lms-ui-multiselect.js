@@ -112,7 +112,7 @@ function multiselect(options) {
 
 	$('option', old_element).each(function(i) {
 		var exclusive = $(this).attr('data-exclusive');
-		var li = $('<li/>').addClass(exclusive ? 'exclusive' : '').appendTo(ul);
+		var li = $('<li/>').addClass(exclusive !== undefined ? 'exclusive' : '').appendTo(ul);
 
 		// add elements
 		var box = $('<input/>', {
