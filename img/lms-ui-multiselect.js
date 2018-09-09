@@ -397,13 +397,6 @@ function multiselect(options) {
 	}
 
 	this.refreshSelection = function() {
-		var selected = [];
-		all_checkboxes.each(function() {
-			var text = $(this).siblings('span').html();
-			if ($(this).prop('checked')) {
-				selected.push(text);
-			}
-		});
 		new_selected = this.generateSelectedString();
 	}
 }
