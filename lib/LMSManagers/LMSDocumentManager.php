@@ -69,7 +69,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
 	/**
 	 * @param array $params associative array of parameters described below:
-	 * 		type - document type (default: null = any), single integer value
+	 * 		type - document type (default: 0 = any), array() or single integer value
 	 *		customer - document customer (default: null = any): single integer value
 	 * 		numberplan - document numbering plan (default: null = any): single integer value
 	 * 		usertype - document user type (default: creator): supported values:
@@ -191,7 +191,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				) e ON (e.customerid = d.customerid)
 				WHERE e.customerid IS NULL '
 					.($customer ? 'AND d.customerid = '.intval($customer) : '')
-					.($type ? ' AND d.type = '.intval($type) : '')
+					.($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
 					. ($userid ? ' AND ' . $userfield . ' = ' . intval($userid) : '')
 					. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
 					.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
@@ -221,7 +221,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			) e ON (e.customerid = d.customerid)
 			WHERE e.customerid IS NULL '
 			.($customer ? 'AND d.customerid = '.intval($customer) : '')
-			.($type ? ' AND d.type = '.intval($type) : '')
+			.($type ? (is_array($type) ? ' AND d.type IN (' . implode(',', $type) . ')' : ' AND d.type = '.intval($type)) : '')
 			. ($userid ? ' AND ' . $userfield . ' = ' . intval($userid) : '')
 			. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
 			.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,146 +24,81 @@
  *  $Id$
  */
 
-if (empty($_GET['init']))
-{
-    if(!isset($_GET['o']))
-	    $SESSION->restore('doclo', $o);
-    else
-	    $o = $_GET['o'];
-    $SESSION->save('doclo', $o);
+if (empty($_GET['init'])) {
+	if (isset($_GET['o']))
+		$filter['order'] = $_GET['o'];
 
-    if(!isset($_GET['t']))
-	    $SESSION->restore('doclt', $t);
-    else
-	    $t = $_GET['t'];
-    $SESSION->save('doclt', $t);
+	if (isset($_GET['t']))
+		if (is_array($_GET['t'])) {
+			$filter['type'] = array_filter($_GET['t'], 'intval');
+			if (count($filter['type']) == 1) {
+				$first = reset($filter['type']);
+				if ($first == 0)
+					$filter['type'] = 0;
+			}
+		} else
+			$filter['type'] = intval($_GET['t']);
 
-    if(!isset($_GET['c']))
-	    $SESSION->restore('doclc', $c);
-    else
-	    $c = $_GET['c'];
-    $SESSION->save('doclc', $c);
+	if (isset($_GET['c']))
+		$filter['customer'] = $_GET['c'];
 
-	if(!isset($_GET['p']))
-		$SESSION->restore('doclp', $p);
-	else
-		$p = $_GET['p'];
-	$SESSION->save('doclp', $p);
+	if (isset($_GET['p']))
+		$filter['numberplan'] = $_GET['p'];
 
-	if (!isset($_GET['usertype']))
-		$SESSION->restore('doclut', $usertype);
-	else
-		$usertype = $_GET['usertype'];
-	if (empty($usertype))
-		$usertype = 'creator';
-	$SESSION->save('doclut', $usertype);
+	if (isset($_GET['usertype']))
+		$filter['usertype'] = $_GET['usertype'];
+	if (!isset($filter['usertype']) || empty($filter['usertype']))
+		$filter['usertype'] = 'creator';
 
-	if (!isset($_GET['u']))
-		$SESSION->restore('doclu', $u);
-	else
-		$u = $_GET['u'];
-	$SESSION->save('doclu', $u);
+	if (isset($_GET['u']))
+		$filter['userid'] = $_GET['u'];
 
-	if (!isset($_GET['periodtype']))
-		$SESSION->restore('doclpt', $periodtype);
-	else
-		$periodtype = $_GET['periodtype'];
-	if (empty($periodtype))
-		$periodtype = 'creationdate';
-	$SESSION->save('doclpt', $periodtype);
+	if (isset($_GET['periodtype']))
+		$filter['periodtype'] = $_GET['periodtype'];
+	if (!isset($filter['periodtype']) || empty($filter['periodtype']))
+		$filter['periodtype'] = 'creationdate';
 
-    if(isset($_GET['from']))
-    {
-        if($_GET['from'] != '')
-        {
-            list($year, $month, $day) = explode('/', $_GET['from']);
-            $from = mktime(0,0,0, $month, $day, $year);
-        }
-        else
-		    $from = 0;
-    }
-    elseif($SESSION->is_set('doclfrom'))
-	    $SESSION->restore('doclfrom', $from);
-    else
-        $from = 0;
-    $SESSION->save('doclfrom', $from);
+	if (isset($_GET['from'])) {
+		if($_GET['from'] != '') {
+			list ($year, $month, $day) = explode('/', $_GET['from']);
+			$filter['from'] = mktime(0,0,0, $month, $day, $year);
+		} else
+			$filter['from'] = 0;
+	} elseif (!isset($filter['from']))
+		$filter['from'] = 0;
 
-    if(isset($_GET['to']))
-    {
-        if($_GET['to'] != '')
-        {
-            list($year, $month, $day) = explode('/', $_GET['to']);
-            $to = mktime(23,59,59, $month, $day, $year);
-        }
-        else
-		    $to = 0;
-    }
-    elseif($SESSION->is_set('doclto'))
-	    $SESSION->restore('doclto', $to);
-    else
-        $to = 0;
-    $SESSION->save('doclto', $to);
+	if (isset($_GET['to'])) {
+		if ($_GET['to'] != '') {
+			list ($year, $month, $day) = explode('/', $_GET['to']);
+			$filter['to'] = mktime(23,59,59, $month, $day, $year);
+		} else
+			$filter['to'] = 0;
+	} elseif (!isset($filter['to']))
+		$filter['to'] = 0;
 
-	if(!isset($_GET['s']))
-		$SESSION->restore('docls', $s);
-	else
-		$s = $_GET['s'];
-	$SESSION->save('docls', $s);
+	if (isset($_GET['s']))
+		$filter['status'] = $_GET['s'];
 }
 
-$total = intval($LMS->GetDocumentList(array(
-	'order' => $o,
-	'type' => $t,
-	'customer' => $c,
-	'numberplan' => $p,
-	'usertype' => $usertype,
-	'userid' => $u,
-	'periodtype' => $periodtype,
-	'from' => $from,
-	'to' => $to,
-	'status' => $s,
-	'count' => true,
-)));
+$filter['count'] = true;
+$filter['total'] = intval($LMS->GetDocumentList($filter));
 
-$limit = intval(ConfigHelper::getConfig('phpui.documentlist_pagelimit', 100));
-$page = intval(!isset($_GET['page']) ? ceil($total / $limit) : $_GET['page']);
-if (empty($page))
-	$page = 1;
-$offset = ($page - 1) * $limit;
+$filter['limit'] = intval(ConfigHelper::getConfig('phpui.documentlist_pagelimit', 100));
+$filter['page'] = intval(isset($_GET['page']) ? $_GET['page'] : ceil($filter['total'] / $filter['limit']));
+if (empty($filter['page']))
+	$filter['page'] = 1;
+$filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
 
-if (!isset($s))
-	$s = -1;
+$SESSION->saveFilter($filter);
 
-$documentlist = $LMS->GetDocumentList(array(
-	'order' => $o,
-	'type' => $t,
-	'customer' => $c,
-	'numberplan' => $p,
-	'usertype' => $usertype,
-	'userid' => $u,
-	'periodtype' => $periodtype,
-	'from' => $from,
-	'to' => $to,
-	'status' => $s,
-	'count' => false,
-	'offset' => $offset,
-	'limit' => $limit,
-));
+$filter['count'] = false;
+$documentlist = $LMS->GetDocumentList($filter);
 
-$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+$pagination = LMSPaginationFactory::getPagination($filter['page'], $filter['total'], $filter['limit'],
+	ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
-$listdata['total'] = $total;
-$listdata['order'] = $documentlist['order'];
-$listdata['direction'] = $documentlist['direction'];
-$listdata['type'] = $t;
-$listdata['customer'] = $c;
-$listdata['numberplan'] = $p;
-$listdata['usertype'] = $usertype;
-$listdata['userid'] = $u;
-$listdata['periodtype'] = $periodtype;
-$listdata['from'] = $from;
-$listdata['to'] = $to;
-$listdata['status'] = $s;
+$filter['order'] = $documentlist['order'];
+$filter['direction'] = $documentlist['direction'];
 
 unset($documentlist['total']);
 unset($documentlist['order']);
@@ -173,14 +108,12 @@ $layout['pagetitle'] = trans('Documents List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if($docid = $SESSION->get('documentprint'))
-{
+if ($docid = $SESSION->get('documentprint')) {
 	$SMARTY->assign('docid', $docid);
 	$SESSION->remove('documentprint');
 }
 
-if($listdata['total'])
-{
+if ($filter['total']) {
 	$SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
 			FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array(Auth::GetCurrentUser())));
 }
@@ -194,7 +127,7 @@ $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
 )));
 $SMARTY->assign('documentlist', $documentlist);
 $SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('filter', $filter);
 $SMARTY->display('document/documentlist.html');
 
 ?>

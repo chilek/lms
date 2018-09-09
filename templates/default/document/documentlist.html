@@ -44,12 +44,7 @@
 
 	function filter() {
 		// uncheck checkboxes, we don't need them in GET
-		for (var i=0; i<document.page.elements.length; i++)
-		{
-			var e = document.page.elements[i];
-			if (e.type == 'checkbox')
-				e.checked = "";
-		}
+		$('tbody input[type="checkbox"]').prop('checked', false);
 		document.page.action="";
 		document.page.target="";
 		document.page.method="get";
@@ -81,100 +76,88 @@
     <THEAD>
 	<TR>
 		<TD class="nobr">
-			<A href="?m=documentlist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Creation date<!document>")}</A>{if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-			/ <A href="?m=documentlist&o=sdate{if $listdata.direction == "asc" && $listdata.order == "sdate"},desc{/if}">{trans("Confirmation date<!document>")}:</A>{if $listdata.order == "sdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=documentlist&o=cdate{if $filter.direction == "asc" && $filter.order == "cdate"},desc{/if}">{trans("Creation date<!document>")}</A>{if $filter.order == "cdate"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			/ <A href="?m=documentlist&o=sdate{if $filter.direction == "asc" && $filter.order == "sdate"},desc{/if}">{trans("Confirmation date<!document>")}:</A>{if $filter.order == "sdate"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<BR><B>{trans("Number:")}</B>
 		</TD>
 		<TD class="nobr">
-			<A href="?m=documentlist&o=user{if $listdata.direction == "asc" && $listdata.order == "user"},desc{/if}">{trans("Created by<!document>")}</A>{if $listdata.order == "user"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-			/ <A href="?m=documentlist&o=cuser{if $listdata.direction == "asc" && $listdata.order == "cuser"},desc{/if}">{trans("Confirmed by<!document>")}:</A>{if $listdata.order == "cuser"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-			<BR><A href="?m=documentlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=documentlist&o=user{if $filter.direction == "asc" && $filter.order == "user"},desc{/if}">{trans("Created by<!document>")}</A>{if $filter.order == "user"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			/ <A href="?m=documentlist&o=cuser{if $filter.direction == "asc" && $filter.order == "cuser"},desc{/if}">{trans("Confirmed by<!document>")}:</A>{if $filter.order == "cuser"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<BR><A href="?m=documentlist&o=type{if $filter.direction == "asc" && $filter.order == "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $filter.order == "type"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=documentlist&amp;o=title{if $listdata.direction == "asc" && $listdata.order == "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order == "title"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=documentlist&amp;o=title{if $filter.direction == "asc" && $filter.order == "title"},desc{/if}">{trans("Title:")}</A>{if $filter.order == "title"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<BR>{trans("Period:")}
 			<BR>{trans("Reference document:")}
 		</TD>
-		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $filter.direction == "asc" && $filter.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "customer"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD class="text-right nobr">
-			<A href="?m=documentadd&amp;cid={$listdata.customer}&amp;typeOD={$listdata.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
+			<A href="?m=documentadd&amp;cid={$filter.customer}&amp;typeOD={$filter.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 	<TR>
 		<TD colspan="5">
-			<table>
-				<tr>
-					<td>
-						<table>
-							<tr>
-								<td>
-									<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
-										{customerlist form="page" customers=$customers selected=$listdata.customer selectname="customer" inputname="c" firstoption="- all customers -"}
-									&nbsp;{trans("Type:")}
-									<SELECT size="1" name="t" ONCHANGE="filter()">
-										<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
-										{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-										<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
-										{/if}{/foreach}
-									</SELECT>&nbsp;
-									{trans("User:")}&nbsp;
-									{if empty($users)}
-									<input type="hidden" name="usertype" value="">
-									<input type="hidden" name="u" value="">
-									{else}
-									<SELECT name="usertype" onchange="filter()">
-										<option value="creator"{if empty($listdata.usertype) || $listdata.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
-										<option value="authorising"{if $listdata.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
-									</SELECT>&nbsp;
-									<SELECT name="u" onchange="filter()">
-										<option value=""{if empty($listdata.userid)} selected{/if}>{trans("- all -")}</option>
-										{foreach $users as $user}
-										<option value="{$user.id}"{if $user.id == $listdata.userid} selected{/if}>{$user.name}</option>
-										{/foreach}
-									</SELECT>
-									{/if}
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="bold">{trans("Period:")}</span>&nbsp;
-									<SELECT name="periodtype" ONCHANGE="filter()">
-										<OPTION value="creationdate"{if empty($listdata.periodtype) || $listdata.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
-										<OPTION value="confirmationdate"{if $listdata.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
-										<OPTION value="fromdate"{if $listdata.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
-										<OPTION value="todate"{if $listdata.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
-									</SELECT>
-									{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-									{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+			<div class="lms-ui-filter-container">
+				<div class="lms-ui-filter-definition">
+					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
+					{customerlist form="page" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
+					{trans("Type:")}
+					<input type="hidden" name="t[]" value="0">
+					<SELECT size="1" name="t[]" ONCHANGE="filter()" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+						{foreach $_DOCTYPES as $key => $item}{if $key < 0}
+						<OPTION VALUE="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</OPTION>
+						{/if}{/foreach}
+					</SELECT>&nbsp;
+					{trans("User:")}&nbsp;
+					{if empty($users)}
+					<input type="hidden" name="usertype" value="">
+					<input type="hidden" name="u" value="">
+					{else}
+					<SELECT name="usertype" onchange="filter()">
+						<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
+						<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
+					</SELECT>&nbsp;
+					<SELECT name="u" onchange="filter()">
+						<option value=""{if empty($filter.userid)} selected{/if}>{trans("- all -")}</option>
+						{foreach $users as $user}
+						<option value="{$user.id}"{if $user.id == $filter.userid} selected{/if}>{$user.name}</option>
+						{/foreach}
+					</SELECT>
+					{/if}
+					{trans("Period:")}&nbsp;
+					<SELECT name="periodtype" ONCHANGE="filter()">
+						<OPTION value="creationdate"{if empty($filter.periodtype) || $filter.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
+						<OPTION value="confirmationdate"{if $filter.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
+						<OPTION value="fromdate"{if $filter.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
+						<OPTION value="todate"{if $filter.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
+					</SELECT>
+					{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+					{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 
-									{if count($numberplans) > 0}
-									{trans("Number plan:")}
-									<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
-										<OPTION value="0">- {trans("all")} -</OPTION>
-										{foreach $numberplans as $plan}
-										{$period = $plan.period}
-										<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$listdata.customer} ({$_NUM_PERIODS.$period})</OPTION>
-										{/foreach}
-									</SELECT>&nbsp;
-									{else}
-									<input type="hidden" name="p" value="0">
-									{/if}
+					{if count($numberplans) > 0}
+					{trans("Number plan:")}
+					<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
+						<OPTION value="0">- {trans("all")} -</OPTION>
+						{foreach $numberplans as $plan}
+						{$period = $plan.period}
+						<OPTION value="{$plan.id}"{if $filter.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$filter.customer} ({$_NUM_PERIODS.$period})</OPTION>
+						{/foreach}
+					</SELECT>&nbsp;
+					{else}
+					<input type="hidden" name="p" value="0">
+					{/if}
 
-									{trans("Status:")}
-									<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
-										<OPTION value="-1">- {trans("all")} - </OPTION>
-										<OPTION value="0"{if $listdata.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
-										<OPTION value="1"{if $listdata.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
-									</SELECT>&nbsp;
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
-					</td>
-				</tr>
-			</table>
+					{trans("Status:")}
+					<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
+						<OPTION value="-1">- {trans("all")} - </OPTION>
+						<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
+						<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
+					</SELECT>&nbsp;
+
+					<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
+				</div>
+				{persistent_filter}
+			</div>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}
