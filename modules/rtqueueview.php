@@ -124,7 +124,8 @@ if (isset($_GET['owner'])) {
 		$filter['owner'] = array(intval($_GET['owner']));
 	else
 		$filter['owner'] = intval($_GET['owner']);
-}
+} elseif (!isset($filter['owner']))
+	$filter['owner'] = -1;
 
 // removed or not?
 if (isset($_GET['r']))
