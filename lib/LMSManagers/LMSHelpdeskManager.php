@@ -230,7 +230,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$ownerfilter = ' AND t.owner IS NOT NULL';
 				break;
 			default:
-				$ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
+				if (is_array($owner))
+					$ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
 				break;
 		}
 
