@@ -10,8 +10,7 @@
 //-->
 </SCRIPT>
 {/if}
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function delete_docs()
 	{
 		if (!confirm('{trans("Are you sure, you want to delete selected documents?")}'))
@@ -42,15 +41,6 @@
 		document.page.submit();
 	}
 
-	function filter() {
-		// uncheck checkboxes, we don't need them in GET
-		$('tbody input[type="checkbox"]').prop('checked', false);
-		document.filter.action = "";
-		document.filter.target = "";
-		document.filter.method = "GET";
-		document.filter.submit();
-	}
-
 	function toggle_all_attachments(docid) {
 		var elem = $('#allattachments-' + docid);
 		var toggle = $('#allattachments-toggle-' + docid);
@@ -60,7 +50,10 @@
 		else
 			toggle.html('<img src="img/asc_order.gif">');
 	}
-//-->
+
+	function applyFilter() {
+		document.choosefilter.submit();
+	}
 </SCRIPT>
 <TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
@@ -96,73 +89,82 @@
 		<TD colspan="5">
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
-                    <FORM METHOD="POST" NAME="filter" ACTION="?m=documentlist">
+                    <FORM method="GET" name="choosefilter">
+					<input type="hidden" name="m" value="documentlist">
+
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
 					{customerlist form="page" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
 
 					{trans("Type:")}
 					<input type="hidden" name="t[]" value="0">
-					<SELECT size="1" name="t[]" ONCHANGE="filter()" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+					<SELECT size="1" name="t[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
 						{foreach $_DOCTYPES as $key => $item}{if $key < 0}
 						<OPTION VALUE="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</OPTION>
 						{/if}{/foreach}
-					</SELECT>&nbsp;
+					</SELECT>
 
 					{trans("Service:")}
 					<input type="hidden" name="service[]" value="0">
-					<SELECT size="1" name="service[]" ONCHANGE="filter()" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+					<SELECT size="1" name="service[]" onChange="javascript:applyFilter();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
 						{foreach $_SERVICETYPES as $key => $item}
 						<OPTION VALUE="{$key}"{if is_array($filter.service) && in_array($key, $filter.service)} selected{/if}>{$item}</OPTION>
 						{/foreach}
-					</SELECT>&nbsp;
+					</SELECT>
 
-					{trans("User:")}&nbsp;
+					{trans("User:")}
 					{if empty($users)}
 					<input type="hidden" name="usertype" value="">
 					<input type="hidden" name="u" value="">
 					{else}
-					<SELECT name="usertype" onchange="filter()">
+					<SELECT name="usertype" onChange="javascript:applyFilter();">
 						<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
 						<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
-					</SELECT>&nbsp;
-					<SELECT name="u" onchange="filter()">
+					</SELECT>
+					<SELECT name="u" onChange="javascript:applyFilter();">
 						<option value=""{if empty($filter.userid)} selected{/if}>{trans("- all -")}</option>
 						{foreach $users as $user}
 						<option value="{$user.id}"{if $user.id == $filter.userid} selected{/if}>{$user.name}</option>
 						{/foreach}
 					</SELECT>
 					{/if}
-					{trans("Period:")}&nbsp;
-					<SELECT name="periodtype" ONCHANGE="filter()">
+					{trans("Period:")}
+					<SELECT name="periodtype" onChange="javascript:applyFilter();">
 						<OPTION value="creationdate"{if empty($filter.periodtype) || $filter.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
 						<OPTION value="confirmationdate"{if $filter.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
 						<OPTION value="fromdate"{if $filter.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
 						<OPTION value="todate"{if $filter.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
 					</SELECT>
-					{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-					{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+
+					<span class="nobr">
+                        {trans("from")}
+                        <INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                    </span>
+                    <span class="nobr">
+					    {trans("to")}
+                        <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                    </span>
 
 					{if count($numberplans) > 0}
 					{trans("Number plan:")}
-					<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
+					<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
 						<OPTION value="0">- {trans("all")} -</OPTION>
 						{foreach $numberplans as $plan}
 						{$period = $plan.period}
 						<OPTION value="{$plan.id}"{if $filter.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$filter.customer} ({$_NUM_PERIODS.$period})</OPTION>
 						{/foreach}
-					</SELECT>&nbsp;
+					</SELECT>
 					{else}
 					<input type="hidden" name="p" value="0">
 					{/if}
 
 					{trans("Status:")}
-					<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
+					<SELECT name="s" onChange="javascript:applyFilter();" {tip text="Select document status"}>
 						<OPTION value="-1">- {trans("all")} - </OPTION>
 						<OPTION value="0"{if $filter.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 						<OPTION value="1"{if $filter.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
-					</SELECT>&nbsp;
+					</SELECT>
 
-					<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
+					<A href="javascript:applyFilter();">&raquo;&raquo;&raquo;</A>
                     </form>
 				</div>
 				{persistent_filter}

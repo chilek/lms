@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (empty($_GET['init'])) {
+if (!isset($_GET['init'])) {
 	if (isset($_GET['o']))
 		$filter['order'] = $_GET['o'];
 
