@@ -244,6 +244,7 @@ function multiselect(options) {
 	});
 
 	ul.on('keydown', function(e) {
+		var li;
 		switch (e.key) {
 			case 'Escape':
 				e.preventDefault();
@@ -254,7 +255,7 @@ function multiselect(options) {
 				old_selected = new_selected;
 				break;
 			case 'ArrowDown':
-				var li = $('input:focus', this).closest('li');
+				li = $('input:focus', this).closest('li');
 				var next = li.next();
 				$('li', this).removeClass('active');
 				if (next.length) {
@@ -265,7 +266,7 @@ function multiselect(options) {
 				e.preventDefault();
 				break;
 			case 'ArrowUp':
-				var li = $('input:focus', this).closest('li');
+				li = $('input:focus', this).closest('li');
 				var prev = li.prev();
 				$('li', this).removeClass('active');
 				if (prev.length) {
