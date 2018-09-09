@@ -4,17 +4,18 @@
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox lms-ui-background-cycle">
-        <COLGROUP>
-				<COL style="width: 1%;">
-                <COL style="width: 25%;">
-                <COL style="width: 70%;">
-                <COL style="width: 1%;">
-                <COL style="width: 1%;">
-                <COL style="width: 1%;">
-                <COL style="width: 1%;">
-				<COL style="width: 1%;">
-                <COL style="width: 1%;">
-        </COLGROUP>
+	<COLGROUP>
+			<COL style="width: 1%;">
+			<COL style="width: 25%;">
+			<COL style="width: 70%;">
+			<COL style="width: 1%;">
+			<COL style="width: 1%;">
+			<COL style="width: 1%;">
+			<COL style="width: 1%;">
+			<COL style="width: 1%;">
+			<COL style="width: 1%;">
+			<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
 		<TD class="bold nobr">
@@ -37,6 +38,9 @@
 			{trans("Opened:")}
 		</TD>
 		<TD class="text-right">
+			{trans("Unresolved:")}
+		</TD>
+		<TD class="text-right">
 			{trans("Unread:")}
 		</TD>
 		<TD class="text-right">
@@ -48,7 +52,7 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{foreach from=$queues item=queue}
+	{foreach $queues as $queue}
 	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
@@ -78,6 +82,9 @@
 			{$queue.open|default:0}
 		</TD>
 		<TD class="text-center nobr">
+			{$queue.unresolved|default:0}
+		</TD>
+		<TD class="text-center nobr">
 			{$queue.unread|default:0}
 		</TD>
 		<TD class="text-center nobr">
@@ -100,7 +107,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="9" class="empty-table">
+		<TD colspan="10" class="empty-table">
 			<p>{trans("There are no queues.")} {trans('Click $a to create.', '<a href="?m=rtqueueadd">'|cat: trans('here')|cat: '</a>')} </p>
 		</TD>
 	</TR>
@@ -117,6 +124,9 @@
 		</TD>
 		<TD class="text-center bold">
 			{sum array=$queues column=open}
+		</TD>
+		<TD class="text-center bold">
+			{sum array=$queues column=unresolved}
 		</TD>
 		<TD class="text-center bold">
 			{sum array=$queues column=unread}

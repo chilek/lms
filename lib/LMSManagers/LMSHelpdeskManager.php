@@ -538,22 +538,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             foreach (array('new', 'open', 'resolved', 'dead') as $idx => $value)
                 $stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
         }
-        $stats['lastticket'] = $this->db->GetOne('SELECT createtime FROM rttickets
-			WHERE queueid = ? ORDER BY createtime DESC', array($id));
-        $stats['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
-			WHERE queueid = ? AND deleted = 1', array($id));
-        $stats['critical'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
-			WHERE queueid = ? AND priority = '.RT_PRIORITY_CRITICAL.' AND state != '.RT_RESOLVED, array($id));
-        $stats['unread'] = $this->db->GetOne('SELECT COUNT(t.id) FROM rttickets t
+        $result = $this->db->GetRow('SELECT MAX(createtime) AS lastticket,
+        	SUM(CASE WHEN deleted = 1 THEN 1 ELSE 0 END) AS delcount,
+        	SUM(CASE WHEN state <> ? THEN 1 ELSE 0 END) AS unresolved,
+        	SUM(CASE WHEN priority = ? AND state <> ? THEN 1 ELSE 0 END) AS critical,
+        	SUM(CASE WHEN state <> ? AND (lv.ticketid IS NULL OR lv.vdate < lm.maxcreatetime) THEN 1 ELSE 0 END) AS unread
+        	FROM rttickets t
 			LEFT JOIN (
 				SELECT ticketid, MAX(createtime) AS maxcreatetime
 				FROM rtmessages
 				GROUP BY ticketid
 			) lm ON lm.ticketid = t.id
 			LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
-			WHERE t.queueid = ?
-				AND (t.state <> ? AND (lv.ticketid IS NULL OR lv.vdate < lm.maxcreatetime))',
-			array(Auth::GetCurrentUser(), $id, RT_RESOLVED));
+        	WHERE queueid = ?', array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
+				Auth::GetCurrentUser(), $id));
+        $stats = array_merge($stats, $result);
 
         return $stats;
     }
