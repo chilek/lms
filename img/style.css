@@ -428,7 +428,7 @@ div.lms-ui-multiselectlayer ul li.selected {
 div.lms-ui-multiselectlayer ul li.active {
   background-color: #AE9D7B;
 }
-div.lms-ui-multiselectlayer ul li.selfish {
+div.lms-ui-multiselectlayer ul li.exclusive {
   font-weight: bold;
 }
 div.lms-ui-multiselectlayer ul span {

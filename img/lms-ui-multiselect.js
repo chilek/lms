@@ -106,13 +106,13 @@ function multiselect(options) {
 	}
 
 	function updateCheckAll() {
-		var allcheckboxes = ul.find('li:not(.selfish) :checkbox:not(:disabled)');
+		var allcheckboxes = ul.find('li:not(.exclusive) :checkbox:not(:disabled)');
 		ul.parent().find('.checkall').prop('checked', allcheckboxes.filter(':checked').length == allcheckboxes.length);
 	}
 
 	$('option', old_element).each(function(i) {
-		var selfish = $(this).attr('data-selfish');
-		var li = $('<li/>').addClass(selfish ? 'selfish' : '').appendTo(ul);
+		var exclusive = $(this).attr('data-exclusive');
+		var li = $('<li/>').addClass(exclusive ? 'exclusive' : '').appendTo(ul);
 
 		// add elements
 		var box = $('<input/>', {
@@ -149,12 +149,12 @@ function multiselect(options) {
 			if (!$(e.target).is('input')) {
 				box.prop('checked', !box.prop('checked'));
 			}
-			if (selfish) {
+			if (exclusive) {
 				ul.find('li').not(this).removeClass('selected').find(':checkbox').prop('checked', false);
 			} else {
-				ul.find('li.selfish').removeClass('selected').find(':checkbox').prop('checked', false);
+				ul.find('li.exclusive').removeClass('selected').find(':checkbox').prop('checked', false);
 			}
-			if (e.shiftKey && !ul.find('[data-prev-checked]:checkbox').closest('li.selfish').length) {
+			if (e.shiftKey && !ul.find('[data-prev-checked]:checkbox').closest('li.exclusive').length) {
 				checkElements(box);
 			} else {
 				ul.find('[data-prev-checked]:checkbox').removeAttr('data-prev-checked');
@@ -179,7 +179,7 @@ function multiselect(options) {
 		// TODO: keyboard events
 	});
 
-	var allcheckboxes = ul.find('li:not(.selfish) :checkbox:not(:disabled)');
+	var allcheckboxes = ul.find('li:not(.exclusive) :checkbox:not(:disabled)');
 
 	function checkAllElements() {
 		var checked = ul.parent().find('.checkall').prop('checked');
