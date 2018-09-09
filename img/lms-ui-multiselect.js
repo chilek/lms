@@ -112,7 +112,7 @@ function multiselect(options) {
 
 	$('option', old_element).each(function(i) {
 		var exclusive = $(this).attr('data-exclusive');
-		var li = $('<li/>').addClass(exclusive !== undefined ? 'exclusive' : '').appendTo(ul);
+		var li = $('<li/>').addClass(exclusive == '' ? 'exclusive' : '').appendTo(ul);
 
 		// add elements
 		var box = $('<input/>', {
@@ -149,7 +149,8 @@ function multiselect(options) {
 			if (!$(e.target).is('input')) {
 				box.prop('checked', !box.prop('checked'));
 			}
-			if (exclusive) {
+			console.log(exclusive);
+			if (exclusive == '') {
 				ul.find('li').not(this).removeClass('selected').find(':checkbox').prop('checked', false);
 			} else {
 				ul.find('li.exclusive').removeClass('selected').find(':checkbox').prop('checked', false);
