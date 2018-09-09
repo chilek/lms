@@ -69,6 +69,11 @@ function multiselect(options) {
 
 	var new_selected;
 	var old_selected;
+	var all_items;
+	var all_enabled_items;
+	var all_checkboxes;
+	var all_enabled_checkboxes;
+	var checkall_div = null;
 
 	this.generateSelectedString = function() {
 		var selected = [];
@@ -106,19 +111,21 @@ function multiselect(options) {
 	}
 
 	function updateCheckAll() {
-		var allcheckboxes = ul.find('li:not(.exclusive,.disabled) :checkbox');
-		ul.parent().find('.checkall').prop('checked', allcheckboxes.filter(':checked').length == allcheckboxes.length);
+		var checkboxes = all_enabled_items.filter(':not(.exclusive)').find(':checkbox');
+		ul.parent().find('.checkall').prop('checked', checkboxes.filter(':checked').length == checkboxes.length);
 	}
 
 	$('option', old_element).each(function(i) {
 		var exclusive = $(this).attr('data-exclusive');
-		var li = $('<li/>').addClass(exclusive == '' ? 'exclusive' : '').appendTo(ul);
+		var class_name = (exclusive == '' ? 'exclusive' : '');
+		var li = $('<li/>').addClass(class_name).appendTo(ul);
 
 		// add elements
 		var box = $('<input/>', {
 			type: 'checkbox',
 			name: old_element.attr('name'),
-			value: $(this).val()
+			value: $(this).val(),
+			class: class_name
 		}).appendTo(li);
 
 		var text = $(this).attr('data-html-content');
@@ -149,16 +156,16 @@ function multiselect(options) {
 			if (!$(e.target).is('input')) {
 				box.prop('checked', !box.prop('checked'));
 			}
-			if (exclusive == '') {
-				ul.find('li').not(this).removeClass('selected').find(':checkbox').prop('checked', false);
+			if ($(this).is('.exclusive')) {
+				all_items.not(this).removeClass('selected').find(':checkbox').prop('checked', false);
 			} else {
-				ul.find('li.exclusive').removeClass('selected').find(':checkbox').prop('checked', false);
+				all_items.filter('.exclusive').removeClass('selected').find(':checkbox').prop('checked', false);
 			}
-			if (e.shiftKey && !ul.find('[data-prev-checked]:checkbox').closest('li.exclusive').length) {
-				checkElements(box);
+			if (e.shiftKey && !all_enabled_items.filter('.exclusive[data-prev-checked]').length) {
+				checkElements(this);
 			} else {
-				ul.find('[data-prev-checked]:checkbox').removeAttr('data-prev-checked');
-				box.attr('data-prev-checked', box.prop('checked'));
+				all_enabled_items.filter('[data-prev-checked]').removeAttr('data-prev-checked');
+				$(this).attr('data-prev-checked', $(this).is('.selected'));
 			}
 
 			new_selected = multiselect.generateSelectedString();
@@ -179,11 +186,15 @@ function multiselect(options) {
 		// TODO: keyboard events
 	});
 
-	var allcheckboxes = ul.find('li:not(.exclusive,.disabled) :checkbox');
+	all_items = ul.find('li');
+	all_enabled_items = all_items.filter(':not(.disabled)');
+	all_checkboxes = all_items.find(':checkbox');
+	all_enabled_checkboxes = all_enabled_items.find(':checkbox');
 
 	function checkAllElements() {
 		var checked = ul.parent().find('.checkall').prop('checked');
-		allcheckboxes.each(function() {
+		all_enabled_checkboxes.filter('.exclusive').prop('checked', false);
+		all_enabled_checkboxes.filter(':not(.exclusive)').each(function() {
 			var li = $(this).closest('li');
 			if (checked) {
 				li.addClass('selected');
@@ -194,8 +205,6 @@ function multiselect(options) {
 		});
 		new_selected = multiselect.generateSelectedString();
 	}
-
-	var checkall_div = null;
 
 	new_selected = this.generateSelectedString();
 	old_selected = new_selected;
@@ -234,8 +243,8 @@ function multiselect(options) {
 					at: tiny || bottom ? 'left bottom' : 'right top',
 					of: wrapper
 				});
-				ul.find('li').removeClass('active');
-				ul.find('input').first().focus().closest('li').addClass('active');
+				all_items.removeClass('active');
+				all_enabled_items.first().addClass('active').find('input').focus();
 			}, 1);
 		} else {
 			list.hide();
@@ -314,26 +323,30 @@ function multiselect(options) {
 		}
 	});
 
-	function checkElements(checkbox) {
-		var allcheckboxes = ul.find(':checkbox');
-		var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]')),
-			j = allcheckboxes.index(checkbox);
+	function checkElements(item) {
+		var prev_checked_item = all_items.filter('[data-prev-checked]');
+		var i = all_items.index(all_items.filter('[data-prev-checked]')),
+			j = all_items.index(item);
 		if (i > -1) {
-			var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
+			var checked = prev_checked_item.attr('data-prev-checked') == 'true' ? true : false;
+
 			var start = Math.min(i, j);
 			var stop = Math.max(i, j);
 			for (i = start; i <= stop; i++) {
-				var li = $(allcheckboxes[i]).closest('li');
+				var item = $(all_items[i]);
+				if (item.is('.disabled')) {
+					continue;
+				}
 				var optionValue = '';
-				if (/<span>(.*?)<\/span>/i.exec(li.get(0).innerHTML) !== null)
+				if (/<span>(.*?)<\/span>/i.exec(item.get(0).innerHTML) !== null)
 					optionValue = RegExp.$1;
 
 				if (checked) {
-					li.addClass('selected');
+					item.addClass('selected');
 				} else {
-					li.removeClass('selected');
+					item.removeClass('selected');
 				}
-				$(allcheckboxes[i]).prop('checked', checked);
+				item.find(':checkbox').prop('checked', checked);
 			}
 		}
 
@@ -370,24 +383,22 @@ function multiselect(options) {
 		new_selected = this.generateSelectedString();
 	}
 
-	var lis = $('li', div);
-
 	this.getOptions = function() {
-		return lis;
+		return all_items;
 	}
 
 	this.showOption = function(index) {
-		$(lis.get(index)).show();
+		$(all_items.get(index)).show();
 	}
 
 	this.hideOption = function(index) {
-		$(lis.get(index)).removeClass('selected').hide()
+		$(all_items.get(index)).removeClass('selected').hide()
 			.find('input:checkbox').prop('checked', false);
 	}
 
 	this.refreshSelection = function() {
 		var selected = [];
-		$('input:checkbox', div).each(function() {
+		all_checkboxes.each(function() {
 			var text = $(this).siblings('span').html();
 			if ($(this).prop('checked')) {
 				selected.push(text);
