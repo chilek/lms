@@ -439,6 +439,17 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
 	}
 
 	/**
+	 * Regular expression match for selected field.
+	 *
+	 * @param string $field
+	 * @param string $regexp
+	 * @return regexp match string
+	 */
+	public function _driver_regexp($field, $regexp) {
+		return $field . ' REGEXP \'' . $regexp . '\'';
+	}
+
+	/**
 	* Check if database resource exists (table, view)
 	*
 	* @param string $name

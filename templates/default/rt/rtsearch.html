@@ -30,6 +30,19 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
+			<IMG src="img/mail.gif" alt="">
+			{trans("Body:")}
+		</TD>
+		<TD>
+			<INPUT type="search" size="50" name="search[body]" value="{$search.body}" {tip text="Enter body fragment"}>
+			<label>
+				<input type="checkbox" name="search[bodyregexp]" value="1">
+				{trans("treat as regular expression")}
+			</label>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
 			<IMG src="img/customer.gif" alt="">
 			{trans("Requestor:")}
 		</TD>

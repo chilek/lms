@@ -67,6 +67,8 @@ function RTSearch($search, $order='createtime,desc')
 		break;
 	}
 
+	$join = array();
+
 	$op = !empty($search['operator']) && $search['operator'] == 'OR' ? $op = ' OR ' : $op = ' AND ';
 
 	if(!empty($search['owner']))
@@ -75,6 +77,15 @@ function RTSearch($search, $order='createtime,desc')
 		$where[] = 't.customerid = '.intval($search['custid']);
 	if(!empty($search['subject']))
 		$where[] = 't.subject ?LIKE? '.$DB->Escape('%'.$search['subject'].'%');
+	if (!empty($search['body'])) {
+		$join[] = ($op == ' OR ' ? 'LEFT ' : '') . 'JOIN (SELECT ticketid,
+			MIN(id) AS messageid FROM rtmessages WHERE type <= ' . RTMESSAGE_NOTE
+			. ' AND ' . (isset($search['bodyregexp']) ? $DB->RegExp('body', $search['body'])
+				: 'body ?LIKE? ' . $DB->Escape('%' . $search['body'] . '%')) . '
+			GROUP BY ticketid) m3 ON m3.ticketid = t.id';
+	} else {
+		$join[] = 'JOIN (SELECT DISTINCT ticketid, 0 AS messageid FROM rtmessages) m3 ON m3.ticketid = t.id';
+	}
 	if(!empty($search['state']))
 	{
 		if($search['state'] == '-1')
@@ -137,12 +148,8 @@ function RTSearch($search, $order='createtime,desc')
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
 
-	if($result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, t.service, t.type,
-			vusers.name AS ownername, rtqueues.name as name, CASE WHEN customerid = 0 THEN t.requestor ELSE '
-			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
-			END AS requestor, t.requestor AS req, t.createtime,
-			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
-			t.priority, t.verifierid, t.deadline
+	if ($search['count'])
+		return $DB->GetOne('SELECT COUNT(DISTINCT t.id)
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
@@ -150,22 +157,41 @@ function RTSearch($search, $order='createtime,desc')
 			LEFT JOIN vusers ON (t.owner = vusers.id)
 			LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
 			LEFT JOIN customers ON (t.customerid = customers.id)'
-			.(isset($where) ? $where : '')
-			.($sqlord !='' ? $sqlord.' '.$direction:'')))
-	{
-		foreach($result as $idx => $ticket)
-		{
-			$ticket['delcount'] = $DB->GetOne('SELECT COUNT(id) FROM rtmessages m WHERE m.ticketid = ? AND m.deleted = 1', array($ticket['id']));
-			if(!$ticket['custid'])
-				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
-			else
-				list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
+			.(isset($where) ? $where : ''));
 
-			$result[$idx] = $ticket;
+	$result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, t.service, t.type,
+		vusers.name AS ownername, rtqueues.name as name, CASE WHEN t.customerid IS NULL THEN t.requestor ELSE '
+		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
+		END AS requestor, t.requestor AS req, t.createtime,
+		(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
+		t.priority, t.verifierid, t.deadline, m3.messageid, COUNT(m2.id) AS delcount
+		FROM rttickets t
+		LEFT JOIN rtmessages m2 ON m2.ticketid = t.id AND m2.deleted = 1
+		' . implode(' ', $join) . '
+		LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
+		LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
+		LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
+		LEFT JOIN vusers ON (t.owner = vusers.id)
+		LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
+		LEFT JOIN customers ON (t.customerid = customers.id)'
+		.(isset($where) ? $where : '')
+		. ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type, vusers.name, rtqueues.name,
+			t.requestor, customers.lastname, customers.name, t.createtime, m.lastmodified, t.deleted, t.deltime, t.priority,
+			t.verifierid, t.deadline, m3.messageid '
+		. ($sqlord !='' ? $sqlord . ' ' . $direction : '')
+		. (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
+		. (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''));
+
+	if ($result) {
+		foreach ($result as &$ticket) {
+			if (!$ticket['custid'])
+				list ($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
+			else
+				list ($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
 		}
+		unset($ticket);
 	}
 
-	$result['total'] = count($result);
 	$result['order'] = $order;
 	$result['direction'] = $direction;
 
@@ -176,18 +202,20 @@ $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 $layout['pagetitle'] = trans('Ticket Search');
 
-if(isset($_POST['search']))
+if (isset($_POST['search']))
 	$search = $_POST['search'];
-elseif(isset($_GET['s']))
-        $SESSION->restore('rtsearch', $search);
+elseif (isset($_GET['page']))
+	$SESSION->restore('rtsearch', $search);
 
-if(isset($_GET['id']))
+if (isset($_GET['id']))
 	$search['custid'] = $_GET['id'];
 
 if (isset($_GET['state']))
 	$search = array(
 		'state' => $_GET['state'],
 		'subject' => '',
+		'body' => '',
+		'bodyregexp' => false,
 		'custid' => '0',
 		'name' => '',
 		'email' => '',
@@ -197,7 +225,7 @@ if (isset($_GET['state']))
 		'catids' => NULL
 	);
 
-if(!isset($_GET['o']))
+if (!isset($_GET['o']))
 	$SESSION->restore('rto', $o);
 else
 	$o = $_GET['o'];
@@ -207,7 +235,7 @@ $SESSION->save('rto', $o);
 if ($SESSION->is_set('rtp') && !isset($_GET['page']) && !isset($search))
 	$SESSION->restore('rtp', $_GET['page']);
 
-if(isset($search) || isset($_GET['s']))
+if(isset($search) || isset($_GET['page']))
 {
 	if(!isset($search['queue']) || $search['queue'] == 0)
 	{
@@ -235,32 +263,33 @@ if(isset($search) || isset($_GET['s']))
 		foreach($search['categories'] as $catid => $val)
 			$search['catids'][] = $catid;
 
-	if(!$error)
-	{
+	if (!$error) {
+		$search['count'] = true;
+		$search['total'] = intval(RTSearch($search, $o));
+
+		$search['page'] = intval((! isset($_GET['page']) ? 1 : $_GET['page']));
+		$search['limit'] = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $search['total']));
+		$search['offset'] = ($search['page'] - 1) * $search['limit'];
+
+		$search['count'] = false;
 		$queue = RTSearch($search, $o);
 
-		$queuedata['total'] = $queue['total'];
-		$queuedata['order'] = $queue['order'];
-		$queuedata['direction'] = $queue['direction'];
-		$queuedata['queue'] = isset($search['queue']) ? $search['queue'] : 0;
+		$pagination = LMSPaginationFactory::getPagination($search['page'], $search['total'], $search['limit'],
+			ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
-		unset($queue['total']);
+		$search['order'] = $queue['order'];
+		$search['direction'] = $queue['direction'];
+		$search['queue'] = isset($search['queue']) ? $search['queue'] : 0;
+
 		unset($queue['order']);
 		unset($queue['direction']);
-
-		$page = (! isset($_GET['page']) ? 1 : $_GET['page']);
-		$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);
-		$start = ($page - 1) * $pagelimit;
 
 		$SESSION->save('rtp', $page);
 		$SESSION->save('rtsearch', $search);
 
+		$SMARTY->assign('pagination', $pagination);
 		$SMARTY->assign('queue', $queue);
-		$SMARTY->assign('queuedata', $queuedata);
-		$SMARTY->assign('pagelimit',$pagelimit);
-		$SMARTY->assign('page',$page);
-		$SMARTY->assign('start',$start);
-		$SMARTY->assign('search', $search);
+		$SMARTY->assign('filter', $search);
 		$SMARTY->display('rt/rtsearchresults.html');
 		$SESSION->close();
 		die;
@@ -305,12 +334,12 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$netnodelist = $LMS->GetNetNodeList(array(),name);
+$netnodelist = $LMS->GetNetNodeList(array(),'name');
 unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
-$netdevlist = $LMS->GetNetDevList(name,array());
+$netdevlist = $LMS->GetNetDevList('name', array());
 unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);

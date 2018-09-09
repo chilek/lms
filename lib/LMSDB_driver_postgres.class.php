@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -440,6 +440,17 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 	*/
 	public function _driver_day($date) {
 		return 'DATE_PART(\'day\', ' . $date . '::timestamp)';
+	}
+
+	/**
+	 * Regular expression match for selected field.
+	 *
+	 * @param string $field
+	 * @param string $regexp
+	 * @return regexp match string
+	 */
+	public function _driver_regexp($field, $regexp) {
+		return $field . ' ~ \'' . $regexp . '\'';
 	}
 
 	/**

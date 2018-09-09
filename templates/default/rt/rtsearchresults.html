@@ -7,36 +7,41 @@
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
 		<COL style="width: 50%;">
 		<COL style="width: 45%;">
+		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 	</COLGROUP>
     <THEAD>
 	{include file="rt/rtheader.html"}
-	{if $queuedata.total != 0}
-	<TR class="lms-ui-pagination">
-		<TD class="text-center" colspan="9">
-			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
+	<TR>
+		<TD class="lms-ui-pagination" colspan="9">
+			{if $pagination->getTotal() != 0}
+			{include file="pagination.html"}
+			{/if}
 		</TD>
-		<TD>
+		<TD class="text-right">
 			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
-	{/if}
     </THEAD>
     <TBODY>
 	{include file="rt/rtqueueviewbox.html"}
     </TBODY>
 	<TFOOT>
-	<TR class="lms-ui-pagination">
-                <TD class="text-center" colspan="9">
-                        {include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
-                </TD>
-                <TD>
-                        <A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
-                </TD>
+	<TR>
+		<TD class="lms-ui-pagination" colspan="9">
+			{if $pagination->getTotal() != 0}
+			{include file="pagination.html"}
+			{/if}
+		</TD>
+		<TD class="text-right">
+			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+		</TD>
 	</TR>
 	</TFOOT>
 </TABLE>

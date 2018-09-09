@@ -514,6 +514,17 @@ abstract class LMSDB_common implements LMSDBInterface
 	}
 
 	/**
+	 * Regular expression match for selected field.
+	 *
+	 * @param string $field
+	 * @param string $regexp
+	 * @return regexp match string
+	 */
+	public function RegExp($field, $regexp) {
+		return $this->_driver_regexp($field, $regexp);
+	}
+
+	/**
 	* Check if database resource exists (table, view)
 	*
 	* @param string $name
