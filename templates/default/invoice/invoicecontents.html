@@ -71,7 +71,7 @@
         </THEAD>
         <TBODY>
         {foreach $contents as $posuid => $item}
-        <TR id="invoice-contents-position-{$posuid}" class="highlight invoice-contents-position">
+        <TR id="invoice-contents-position-{$posuid}" class="highlight invoice-contents-position" data-posuid="{$posuid}">
             <TD class="bold invoice-contents-position-counter invoice-contents-sortable-handler">
                 {counter}.
             </TD>
@@ -284,10 +284,14 @@
 		document.contents.submit();
 	}
 
-	function editItem(posuid) {
+	function editItem(posuid, elem) {
 		var itemelem = $('#invoice-contents-position-' + posuid);
 		itemelem.find('.invoice-contents-field-edit').toggle();
-		itemelem.find('.invoice-contents-field-edit:visible').first().focus();
+		if (elem) {
+		    elem.focus();
+		} else {
+			itemelem.find('.invoice-contents-field-edit:visible').first().focus();
+		}
 		itemelem.find('.invoice-contents-field-value').toggle();
 		itemelem = $('.invoice-contents-position:not(#invoice-contents-position-' + posuid + ')');
 		itemelem.find('.invoice-contents-field-edit').hide();
@@ -336,11 +340,25 @@
 			}
 		});
 
-		$('tr.invoice-contents-position td:not(:last-child)').click(function (e) {
-			var poselem = $(this).closest('tr.invoice-contents-position');
-			if (poselem.find('.invoice-contents-field-value:visible').length) {
-				editItem(poselem.find('.invoice-contents-posuid').val());
+		$('.invoice-contents-position td:not(:last-child)').click(function (e) {
+			var pos = $(this).closest('.invoice-contents-position');
+			if (pos.find('.invoice-contents-field-value:visible').length) {
+				editItem(pos.attr('data-posuid'), $(this).find('.invoice-contents-field-edit:first-child'));
 			}
+		});
+
+		$('.invoice-contents-field-edit').keydown(function(e) {
+			var posuid = $(this).closest('.invoice-contents-position').attr('data-posuid');
+			switch (e.key) {
+                case 'Escape':
+                    editItem(posuid);
+                    e.preventDefault();
+                    break;
+                case 'Enter':
+                	saveItem(posuid);
+                    e.preventDefault();
+                    break;
+            }
 		});
 	});
 
