@@ -45,10 +45,10 @@
 	function filter() {
 		// uncheck checkboxes, we don't need them in GET
 		$('tbody input[type="checkbox"]').prop('checked', false);
-		document.page.action="";
-		document.page.target="";
-		document.page.method="get";
-		document.page.submit();
+		document.filter.action = "";
+		document.filter.target = "";
+		document.filter.method = "GET";
+		document.filter.submit();
 	}
 
 	function toggle_all_attachments(docid) {
@@ -62,9 +62,6 @@
 	}
 //-->
 </SCRIPT>
-<FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&amp;action=confirm">
-<INPUT type="hidden" name="m" value="documentlist">
-<INPUT type="hidden" name="page" value="1">
 <TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -99,6 +96,8 @@
 		<TD colspan="5">
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
+					<FORM METHOD="POST" NAME="filter" ACTION="?m=documentlist">
+
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
 					{customerlist form="page" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
 
@@ -165,6 +164,7 @@
 					</SELECT>&nbsp;
 
 					<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
+					</form>
 				</div>
 				{persistent_filter}
 			</div>
@@ -179,6 +179,8 @@
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
+	<FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&action=confirm">
+	<INPUT type="hidden" name="page" value="1">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
 	<TR class="highlight{if $doc.closed} blend{/if}">
@@ -250,6 +252,7 @@
 		</TD>
 	</TR>
 	{/foreach}
+	</FORM>
     </TBODY>
     <TFOOT>
 	{if $pagination->getTotal() != 0}
@@ -273,7 +276,7 @@
 					<TD class="text-right nobr">
 						<label>
 							{trans("Check All")}
-							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
+							<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
 						</label>
 					</TD>
 				</TR>
@@ -283,7 +286,6 @@
 	</TR>
     </TFOOT>
 </TABLE>
-</FORM>
 <script>
 	$('.documentsend').click(function() {
 		if (!confirm('{trans("Are you sure, you want to send document to customer?")}')) {
