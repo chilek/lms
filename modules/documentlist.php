@@ -89,8 +89,11 @@ if (!isset($_GET['init'])) {
 
 	if (isset($_GET['s']))
 		$filter['status'] = $_GET['s'];
-} else
+} else {
 	$filter = array();
+	$SMARTY->clearAssign('persistent_filter');
+	$SESSION->saveFilter($filter);
+}
 
 $filter['count'] = true;
 $filter['total'] = intval($LMS->GetDocumentList($filter));
