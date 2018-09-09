@@ -1492,9 +1492,9 @@ class LMS
         return $manager->GetUserRightsRT($user, $queue, $ticket);
     }
 
-	public function GetQueueList($stats = true, $only_accessible = true) {
+	public function GetQueueList($params) {
 		$manager = $this->getHelpdeskManager();
-		return $manager->GetQueueList($stats, $only_accessible);
+		return $manager->GetQueueList($params);
 	}
 
     public function GetQueueNames()

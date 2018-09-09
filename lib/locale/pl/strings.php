@@ -4117,4 +4117,6 @@ $_LANG['- $a options selected -'] = '- wybrano $a opcji -';
 $_LANG['Cancel changes'] = 'Anuluj zmiany';
 $_LANG['Save this item'] = 'Zapisz zmiany';
 
+$_LANG['Show deleted'] = 'Pokaż skasowane';
+
 ?>

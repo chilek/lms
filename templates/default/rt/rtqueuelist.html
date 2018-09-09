@@ -50,6 +50,24 @@
 			&nbsp;
 		</TD>
 	</TR>
+	<TR>
+		<TD colspan="10">
+			<div class="lms-ui-filter-container">
+				<div class="lms-ui-filter-definition">
+					<FORM method="POST" action="?m=rtqueuelist" name="filter">
+						<input type="hidden" name="m" value="rtqueuelist">
+						<span class="bold">{trans("Filter:")}</span>
+						<label class="nobr">
+							{trans("Show deleted")}
+							<input type="hidden" name="deleted" value="0">
+							<input type="checkbox" name="deleted" value="1" onChange="document.filter.submit();"{if $filter.deleted == 1} checked{/if}>
+						</label>
+					</FORM>
+				</div>
+				{persistent_filter}
+			</div>
+		</TD>
+	</TR>
     </THEAD>
     <TBODY>
 	{foreach $queues as $queue}

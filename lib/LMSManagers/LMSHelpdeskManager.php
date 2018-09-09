@@ -453,19 +453,35 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return ($rights ? $rights : 0);
     }
 
-	public function GetQueueList($stats = true, $only_accessible = true) {
+	/**
+	 * @param array $params associative array of parameters described below:
+	 *		stats - if true queue stats should be obtained (default: true),
+	 * 		only_accessible - if true only queus with access permissions are listed (default: true),
+	 * 		deleted - if true deleted queues will be obtained (default: true)
+	 */
+	public function GetQueueList(array $params) {
+		extract($params);
+
+		if (!isset($stats))
+			$stats = true;
+		if (!isset($only_accessible))
+			$only_accessible = true;
+		if (!isset($deleted))
+			$deleted = true;
+
 		$userid = Auth::GetCurrentUser();
 		if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q
-				' . ($only_accessible || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id
-				WHERE r.rights <> 0 AND r.userid = ?' : '')
-			. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND q.deleted = 0' : '') . '
-				ORDER BY name', array($userid))) {
-			if ($stats)
-				foreach ($result as $idx => $row)
-					foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
-						$result[$idx][$sidx] = $row2;
+				' . ($only_accessible || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id' : '')
+				. ' WHERE ' . (!$deleted ? 'q.deleted = 0' : (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '1=1' : 'q.deleted = 0'))
+				. ($only_accessible || !ConfigHelper::checkPrivilege('full_access') ? ' AND r.rights <> 0 AND r.userid = ' . $userid : '')
+				. ' ORDER BY name')) {
+			if ($stats) {
+				foreach ($result as &$row)
+					$row = array_merge($row, $this->GetQueueStats($row['id']));
+				unset($row);
+			}
 		}
 		return $result;
 	}

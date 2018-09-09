@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2017 LMS Developers
+ *  Copyright (C); 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -37,7 +37,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL);
 
-	public function GetQueueList($stats = true, $only_accessible = true);
+	public function GetQueueList(array $params);
 
     public function GetQueueNames();
 

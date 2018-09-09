@@ -24,13 +24,24 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Queues List');
+if (isset($_POST['deleted']))
+	$filter['deleted'] = $_POST['deleted'];
+elseif (!isset($filter['deleted']))
+	$filter['deleted'] = true;
 
-$queues = $LMS->GetQueueList($stats = true, $only_accessible = false);
+$SESSION->saveFilter($filter);
+
+$filter['stats'] = true;
+$filter['only_accessible'] = false;
+$queues = $LMS->GetQueueList($filter);
+
+$layout['pagetitle'] = trans('Queues List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SMARTY->assign('filter', $filter);
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueuelist.html');
+
 ?>
