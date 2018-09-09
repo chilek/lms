@@ -23,11 +23,16 @@
                 {/foreach}
             </SELECT>
             {trans("User:")}
+            <label>
+                {trans("AND")}
+                <input type="hidden" name="userand" value="0">
+                <input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}>
+            </label>
             <SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
-                    {foreach $userlist as $user}
-                    <OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.name|truncate:40:"...":true}</OPTION>
+                <OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if} data-selfish="1"><span class="brown">- {trans("Not assigned")} -</span></OPTION>
+                {foreach $userlist as $user}
+                <OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
-                <OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if}><span class="brown">- {trans("Not assigned")} -</span></OPTION>
             </SELECT>
             {trans("Privacy:")}
             <SELECT name="privacy" onchange="document.filter.submit();">

@@ -119,6 +119,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to edit invoice positions in convenient way [chilan]
   - enhancement: allow to move event to another day using drag & drop [chilan]
   - enhancement: allow to select multiple owners in rtqueueview [chilan]
+  - improvement: user logical operator for user selection in event list [chilan]
 
 version 1.11.23 (2018-03-21):
 

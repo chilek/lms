@@ -124,6 +124,8 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 	 * 		forward - for how many days get events (default: 0 = undefined): single integer value,
 	 * 			-1 = open overdued events till midnight,
 	 * 		customerid - customer id assigned to events (default: 0 = any): single integer value,
+	 *		userand - if all users should be assigned simultaneously (default: 0 = OR): single integer value:
+	 * 			1 = AND,
 	 * 		userid - user id assigned to events (default: 0 or null = any):
 	 * 			array() of integer values or single integer value,
 	 * 			-1 = events not assigned to any user,
@@ -197,8 +199,13 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			if (is_array($userid)) {
 				if (in_array('-1', $userid))
 					$userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
-				else
-					$userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN ('.implode(',', $userid).'))';
+				else {
+					if ($userand)
+						$userfilter = ' AND EXISTS (SELECT COUNT(userid), eventid FROM eventassignments WHERE eventid = events.id AND userid IN ('
+							. implode(',', $userid) . ') GROUP BY eventid HAVING(COUNT(eventid) = ' . count($userid) . '))';
+					else
+						$userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN (' . implode(',', $userid) . '))';
+				}
 			} else {
 				$userid = intval($userid);
 				if ($userid == -1)

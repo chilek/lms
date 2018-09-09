@@ -51,6 +51,7 @@ if (!empty($_POST)) {
 	} else
 		$day = date('j',time());
 
+	$filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
 	$filter['userid'] = isset($_POST['a']) ? $_POST['a'] : NULL;
 	$filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
 	$filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
@@ -72,6 +73,8 @@ if (!empty($_POST)) {
 		if (isset($_GET['year']))
 			$filter['year'] = $_GET['year'];
 	}
+
+	$filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
 
 	if (isset($_GET['a']))
 		$filter['userid'] = $_GET['a'];
