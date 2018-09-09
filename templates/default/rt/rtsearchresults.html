@@ -24,7 +24,7 @@
 			{include file="pagination.html"}
 			{/if}
 		</TD>
-		<TD class="text-right">
+		<TD class="text-right nobr">
 			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
@@ -39,7 +39,7 @@
 			{include file="pagination.html"}
 			{/if}
 		</TD>
-		<TD class="text-right dark">
+		<TD class="text-right dark nobr">
 			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>

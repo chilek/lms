@@ -151,6 +151,7 @@ function RTSearch($search, $order='createtime,desc')
 	if ($search['count'])
 		return $DB->GetOne('SELECT COUNT(DISTINCT t.id)
 			FROM rttickets t
+			' . implode(' ', $join) . '
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
