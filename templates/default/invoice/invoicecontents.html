@@ -130,7 +130,7 @@
                 {if !$invoice.closed}
                 <A HREF="javascript:editItem({$posuid});" class="invoice-contents-field-value"><IMG SRC="img/edit.gif" {tip text="Edit this item"}></A>
                 <A HREF="javascript:saveItem({$posuid});" class="invoice-contents-field-edit" style="display: none;"><IMG SRC="img/save.gif" {tip text="Save this item"}></A>
-                <A HREF="javascript:editItem({$posuid});" class="invoice-contents-field-edit" style="display: none;"><IMG SRC="img/cancel.gif" {tip text="Cancel changes"}></A>
+                <A HREF="javascript:cancelEditItem({$posuid});" class="invoice-contents-field-edit" style="display: none;"><IMG SRC="img/cancel.gif" {tip text="Cancel changes"}></A>
                 <A HREF="javascript:delItem({$posuid});"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
                 {/if}
             </TD>
@@ -285,18 +285,30 @@
 	}
 
 	function editItem(posuid, elem) {
-		var itemelem = $('#invoice-contents-position-' + posuid);
-		itemelem.find('.invoice-contents-field-edit').toggle();
+		var item = $('#invoice-contents-position-' + posuid);
+		item.find('.invoice-contents-field-edit').each(function() {
+			if (!$(this).is(':visible')) {
+				$(this).attr('data-old-value', $(this).val());
+			}
+		}).toggle();
 		if (elem) {
 		    elem.focus();
 		} else {
-			itemelem.find('.invoice-contents-field-edit:visible').first().focus();
+			item.find('.invoice-contents-field-edit:visible').first().focus();
 		}
-		itemelem.find('.invoice-contents-field-value').toggle();
-		itemelem = $('.invoice-contents-position:not(#invoice-contents-position-' + posuid + ')');
-		itemelem.find('.invoice-contents-field-edit').hide();
-		itemelem.find('.invoice-contents-field-value').show();
+		item.find('.invoice-contents-field-value').toggle();
+		item = $('.invoice-contents-position:not(#invoice-contents-position-' + posuid + ')');
+		item.find('.invoice-contents-field-edit').hide();
+		item.find('.invoice-contents-field-value').show();
 	}
+
+	function cancelEditItem(posuid) {
+		var item = $('#invoice-contents-position-' + posuid);
+		item.find('.invoice-contents-field-edit').each(function() {
+			$(this).val($(this).attr('data-old-value'));
+		});
+		editItem(posuid);
+    }
 
 	function saveItem(posuid) {
 		document.contents.action += '&action=savepos&posuid=' + posuid;
@@ -351,7 +363,7 @@
 			var posuid = $(this).closest('.invoice-contents-position').attr('data-posuid');
 			switch (e.key) {
                 case 'Escape':
-                    editItem(posuid);
+                    cancelEditItem(posuid);
                     e.preventDefault();
                     break;
                 case 'Enter':
