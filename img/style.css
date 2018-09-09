@@ -429,6 +429,9 @@ div.lms-ui-multiselectlayer ul li:hover,
 div.lms-ui-multiselectlayer ul li.active {
   background-color: #DFD5BD;
 }
+div.lms-ui-multiselectlayer ul li.selfish {
+  font-weight: bold;
+}
 div.lms-ui-multiselectlayer ul span {
   padding-left: 3px;
 }

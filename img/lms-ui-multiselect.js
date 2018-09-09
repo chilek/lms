@@ -106,12 +106,13 @@ function multiselect(options) {
 	}
 
 	function updateCheckAll() {
-		var allcheckboxes = ul.find(':checkbox:not(:disabled)');
+		var allcheckboxes = ul.find('li:not(.selfish) :checkbox:not(:disabled)');
 		ul.parent().find('input[name="checkall"]').prop('checked', allcheckboxes.filter(':checked').length == allcheckboxes.length);
 	}
 
 	$('option', old_element).each(function(i) {
-		var li = $('<li/>').appendTo(ul);
+		var selfish = $(this).attr('data-selfish');
+		var li = $('<li/>').addClass(selfish ? 'selfish' : '').appendTo(ul);
 
 		// add elements
 		var box = $('<input/>', {
@@ -145,11 +146,15 @@ function multiselect(options) {
 		li.click(function(e) {
 			$(this).toggleClass('selected');
 
-			var box = $(':checkbox', this);
 			if (!$(e.target).is('input')) {
 				box.prop('checked', !box.prop('checked'));
 			}
-			if (e.shiftKey) {
+			if (selfish) {
+				ul.find('li').not(this).removeClass('selected').find(':checkbox').prop('checked', false);
+			} else {
+				ul.find('li.selfish').removeClass('selected').find(':checkbox').prop('checked', false);
+			}
+			if (e.shiftKey && !ul.find('[data-prev-checked]:checkbox').closest('li.selfish').length) {
 				checkElements(box);
 			} else {
 				ul.find('[data-prev-checked]:checkbox').removeAttr('data-prev-checked');
@@ -171,7 +176,7 @@ function multiselect(options) {
 	});
 
 	function checkAllElements() {
-		var allcheckboxes = ul.find(':checkbox:not(:disabled)');
+		var allcheckboxes = ul.find('li:not(.selfish) :checkbox:not(:disabled)');
 		var checked = ul.parent().find('input[name="checkall"]').prop('checked');
 		allcheckboxes.each(function() {
 			var li = $(this).closest('li');
@@ -220,6 +225,7 @@ function multiselect(options) {
 					at: tiny || bottom ? 'left bottom' : 'right top',
 					of: wrapper
 				});
+				ul.find('li').removeClass('active');
 				ul.find('input').first().focus().closest('li').addClass('active');
 
 			}, 1);

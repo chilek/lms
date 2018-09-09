@@ -114,10 +114,17 @@ if (isset($_GET['tt'])) {
 }
 
 // owner
-if (isset($_GET['owner']))
-	$filter['owner'] = $_GET['owner'];
-if (!isset($filter['owner']))
-	$filter['owner'] = -1;
+if (isset($_GET['owner'])) {
+	if (is_array($_GET['owner'])) {
+		if (count($_GET['owner']) == 1 && reset($_GET['owner']) <= 0)
+			$filter['owner'] = intval(reset($_GET['owner']));
+		else
+			$filter['owner'] = array_filter($_GET['owner'], 'intval');
+	} elseif (intval($_GET['owner']) > 0)
+		$filter['owner'] = array(intval($_GET['owner']));
+	else
+		$filter['owner'] = intval($_GET['owner']);
+}
 
 // removed or not?
 if (isset($_GET['r']))
