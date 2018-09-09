@@ -34,9 +34,9 @@
 			{trans("Body:")}
 		</TD>
 		<TD>
-			<INPUT type="search" size="50" name="search[body]" value="{$search.body}" {tip text="Enter body fragment"}>
+			<INPUT type="search" size="50" name="search[body][pattern]" value="{$search.body.pattern}" {tip text="Enter body fragment"}>
 			<label>
-				<input type="checkbox" name="search[bodyregexp]" value="1">
+				<input type="checkbox" name="search[body][regexp]" value="1"{if isset($search.body.regexp)} checked{/if}>
 				{trans("treat as regular expression")}
 			</label>
 		</TD>

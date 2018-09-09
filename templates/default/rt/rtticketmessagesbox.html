@@ -1,5 +1,11 @@
 <!-- $Id$ -->
 <br>
+<style>
+	.matched-text {
+		font-size: 150%;
+		font-weight: bold;
+	}
+</style>
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
@@ -105,7 +111,7 @@
 				<TBODY>
 				<TR>
 					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0} class="lucid lms-ui-rtmessage-deleted fbt" {else} class="fbt superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
-						{$message.body|escape|replace:"\n":"<BR>"}
+						{$message.body|escape|replace:"\n":"<BR>"|replace:"[matched-text]":"<span class=\"matched-text\">"|replace:"[/matched-text]":"</span>"}
 					</TD>
 				</TR>
 				</TBODY>

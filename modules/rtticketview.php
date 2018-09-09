@@ -107,7 +107,22 @@ $layout['pagetitle'] = trans('Ticket Review: $a',sprintf("%06d", $ticket['ticket
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+
+if (isset($_GET['highlight'])) {
+	$highlight = $_GET['highlight'];
+	foreach ($ticket['messages'] as &$message) {
+		if (isset($_GET['highlightregexp']))
+			$message['body'] = preg_replace('/(' . $highlight . ')/',
+				'[matched-text]$1[/matched-text]', $message['body']);
+		else
+			$message['body'] = str_replace($highlight,
+				'[matched-text]' . $highlight . '[/matched-text]', $message['body']);
+	}
+	unset($message);
+}
+
 $SMARTY->assign('ticket', $ticket);
+
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);
 $SMARTY->display('rt/rtticketview.html');
