@@ -97,6 +97,8 @@ if (!isset($_GET['init'])) {
 
 	if (isset($_GET['s']))
 		$filter['status'] = $_GET['s'];
+	elseif (!isset($filter['status']))
+		$filter['status'] = -1;
 } else {
 	$filter = array(
 		'status' => -1,
