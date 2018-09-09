@@ -89,7 +89,8 @@ if (!isset($_GET['init'])) {
 
 	if (isset($_GET['s']))
 		$filter['status'] = $_GET['s'];
-}
+} else
+	$filter = array();
 
 $filter['count'] = true;
 $filter['total'] = intval($LMS->GetDocumentList($filter));
