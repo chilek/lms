@@ -285,11 +285,13 @@ define('NETWORK_INTERFACE_TYPE_NNI', 1);
 $NETWORK_INTERFACE_TYPES = array(
 	NETWORK_INTERFACE_TYPE_UNI => array(
 		'label' => trans('Access network interface'),
-		'name' => 'INTERFACE_TYPE_UNI'
+		'name' => 'NETWORK_INTERFACE_TYPE_UNI',
+		'alias' => 'uni',
 	),
 	NETWORK_INTERFACE_TYPE_NNI => array(
 		'label' => trans('Infrastructure network interface'),
-		'name' => 'INTERFACE_TYPE_NNI'
+		'name' => 'NETWORK_INTERFACE_TYPE_NNI',
+		'alias' => 'nni',
 	),
 );
 
