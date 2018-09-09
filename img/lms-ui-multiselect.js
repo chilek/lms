@@ -107,7 +107,7 @@ function multiselect(options) {
 
 	function updateCheckAll() {
 		var allcheckboxes = ul.find('li:not(.selfish) :checkbox:not(:disabled)');
-		ul.parent().find('input[name="checkall"]').prop('checked', allcheckboxes.filter(':checked').length == allcheckboxes.length);
+		ul.parent().find('.checkall').prop('checked', allcheckboxes.filter(':checked').length == allcheckboxes.length);
 	}
 
 	$('option', old_element).each(function(i) {
@@ -171,13 +171,18 @@ function multiselect(options) {
 				checked: box.is(':checked')
 			});
 			e.stopPropagation();
+		}).mouseenter(function() {
+			$(this).addClass('active').find('input').focus().end().siblings('li').not(this).removeClass('active');
+		}).mouseleave(function() {
+			$(this).removeClass('active');
 		});
 		// TODO: keyboard events
 	});
 
+	var allcheckboxes = ul.find('li:not(.selfish) :checkbox:not(:disabled)');
+
 	function checkAllElements() {
-		var allcheckboxes = ul.find('li:not(.selfish) :checkbox:not(:disabled)');
-		var checked = ul.parent().find('input[name="checkall"]').prop('checked');
+		var checked = ul.parent().find('.checkall').prop('checked');
 		allcheckboxes.each(function() {
 			var li = $(this).closest('li');
 			if (checked) {
@@ -194,11 +199,13 @@ function multiselect(options) {
 	old_selected = new_selected;
 	if (!tiny || selection_group) {
 		var checkall_div = $('<div/>').appendTo(div);
-		$('<label><input type="checkbox" name="checkall" value="1">' + lmsMessages.checkAll + '</label>').appendTo(checkall_div);
+		$('<label><input type="checkbox" class="checkall" value="1">' + lmsMessages.checkAll + '</label>').appendTo(checkall_div);
 
 		updateCheckAll();
 
-		$('label,input', checkall_div).click(function(e) {
+		$(checkall_div).click(function(e) {
+			var checkbox = $('.checkall', this);
+			checkbox.prop('checked', !checkbox.prop('checked'))
 			checkAllElements();
 			e.stopPropagation();
 		});
@@ -227,7 +234,6 @@ function multiselect(options) {
 				});
 				ul.find('li').removeClass('active');
 				ul.find('input').first().focus().closest('li').addClass('active');
-
 			}, 1);
 		} else {
 			list.hide();
@@ -248,13 +254,25 @@ function multiselect(options) {
 				old_selected = new_selected;
 				break;
 			case 'ArrowDown':
-				$(this).find('li').removeClass('active');
-				$(this).find(':checkbox:focus').closest('li').next().addClass('active').find(':checkbox').focus();
+				var li = $('input:focus', this).closest('li');
+				var next = li.next();
+				$('li', this).removeClass('active');
+				if (next.length) {
+					next.addClass('active').find('input').focus();
+				} else {
+					li.siblings(':first-child').addClass('active').find('input').focus();
+				}
 				e.preventDefault();
 				break;
 			case 'ArrowUp':
-				$(this).find('li').removeClass('active');
-				$(this).find(':checkbox:focus').closest('li').prev().addClass('active').find(':checkbox').focus();
+				var li = $('input:focus', this).closest('li');
+				var prev = li.prev();
+				$('li', this).removeClass('active');
+				if (prev.length) {
+					prev.addClass('active').find('input').focus();
+				} else {
+					li.siblings(':last-child').addClass('active').find('input').focus();
+				}
 				e.preventDefault();
 				break;
 		}
@@ -279,8 +297,6 @@ function multiselect(options) {
 			old_selected = new_selected;
 		}
 	});
-
-	// TODO: keyboard events
 
 	function checkElements(checkbox) {
 		var allcheckboxes = ul.find(':checkbox');
