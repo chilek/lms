@@ -1994,6 +1994,10 @@ div.lms-ui-filter-container div.lms-ui-filter-definition {
   display: flex;
   width: 80%;
 }
+div.lms-ui-filter-container div.lms-ui-filter-definition > *,
+div.lms-ui-filter-container div.lms-ui-filter-definition > form > * {
+  margin: 1px;
+}
 div.lms-ui-persistent-filter {
   display: flex;
   justify-content: flex-end;

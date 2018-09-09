@@ -96,8 +96,7 @@
 		<TD colspan="5">
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
-					<FORM METHOD="POST" NAME="filter" ACTION="?m=documentlist">
-
+                    <FORM METHOD="POST" NAME="filter" ACTION="?m=documentlist">
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
 					{customerlist form="page" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
 
@@ -164,7 +163,7 @@
 					</SELECT>&nbsp;
 
 					<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
-					</form>
+                    </form>
 				</div>
 				{persistent_filter}
 			</div>
