@@ -217,7 +217,7 @@ unset($queue['unread']);
 unset($queue['rights']);
 unset($queue['verifier']);
 
-$queues = $LMS->GetQueueList(false);
+$queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {

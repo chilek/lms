@@ -478,8 +478,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				. ($only_accessible || !ConfigHelper::checkPrivilege('full_access') ? ' AND r.rights <> 0 AND r.userid = ' . $userid : '')
 				. ' ORDER BY name')) {
 			if ($stats) {
-				foreach ($result as &$row)
-					$row = array_merge($row, $this->GetQueueStats($row['id']));
+				foreach ($result as &$row) {
+					$stats = $this->GetQueueStats($row['id']);
+					if ($stats)
+						$row = array_merge($row, $stats);
+				}
 				unset($row);
 			}
 		}
