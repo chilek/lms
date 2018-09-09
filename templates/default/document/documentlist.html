@@ -101,6 +101,7 @@
 				<div class="lms-ui-filter-definition">
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
 					{customerlist form="page" customers=$customers selected=$filter.customer selectname="customer" inputname="c" firstoption="- all customers -"}
+
 					{trans("Type:")}
 					<input type="hidden" name="t[]" value="0">
 					<SELECT size="1" name="t[]" ONCHANGE="filter()" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
@@ -108,6 +109,15 @@
 						<OPTION VALUE="{$key}"{if is_array($filter.type) && in_array($key, $filter.type)} selected{/if}>{$item}</OPTION>
 						{/if}{/foreach}
 					</SELECT>&nbsp;
+
+					{trans("Service:")}
+					<input type="hidden" name="service[]" value="0">
+					<SELECT size="1" name="service[]" ONCHANGE="filter()" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
+						{foreach $_SERVICETYPES as $key => $item}
+						<OPTION VALUE="{$key}"{if is_array($filter.service) && in_array($key, $filter.service)} selected{/if}>{$item}</OPTION>
+						{/foreach}
+					</SELECT>&nbsp;
+
 					{trans("User:")}&nbsp;
 					{if empty($users)}
 					<input type="hidden" name="usertype" value="">

@@ -122,6 +122,7 @@ version ?.??.?? (????-??-??):
   - improvement: user logical operator for user selection in event list [chilan]
   - enhancement: keyboard support for multi select ui controls [chilan]
   - enhancement: document list type filter is multi-select field [chilan]
+  - enhancement: allow to filter document list by service type [chilan]
 
 version 1.11.23 (2018-03-21):
 

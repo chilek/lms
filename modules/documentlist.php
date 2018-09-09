@@ -39,6 +39,17 @@ if (empty($_GET['init'])) {
 		} else
 			$filter['type'] = intval($_GET['t']);
 
+	if (isset($_GET['service']))
+		if (is_array($_GET['service'])) {
+			$filter['service'] = array_filter($_GET['service'], 'intval');
+			if (count($filter['service']) == 1) {
+				$first = reset($filter['service']);
+				if ($first == 0)
+					$filter['service'] = 0;
+			}
+		} else
+			$filter['service'] = intval($_GET['service']);
+
 	if (isset($_GET['c']))
 		$filter['customer'] = $_GET['c'];
 

@@ -70,6 +70,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 	/**
 	 * @param array $params associative array of parameters described below:
 	 * 		type - document type (default: 0 = any), array() or single integer value
+	 * 		service - service type (default: 0 = any), array() or single integer value
 	 *		customer - document customer (default: null = any): single integer value
 	 * 		numberplan - document numbering plan (default: null = any): single integer value
 	 * 		usertype - document user type (default: creator): supported values:
@@ -100,6 +101,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 	public function GetDocumentList(array $params) {
 		$order = isset($params['order']) ? $params['order'] : 'cdate,asc';
 		$type = isset($params['type']) ? $params['type'] : NULL;
+		$service = isset($params['service']) ? $params['service'] : NULL;
 		$customer = isset($params['customer']) ? $params['customer'] : NULL;
 		$numberplan = isset($params['numberplan']) ? $params['numberplan'] : NULL;
 		$usertype = isset($params['usertype']) ? $params['usertype'] : 'creator';
@@ -172,7 +174,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		}
 
 		if ($count) {
-			return $this->db->GetOne('SELECT COUNT(docid)
+			return $this->db->GetOne('SELECT COUNT(documentcontents.docid)
 				FROM documentcontents
 				JOIN documents d ON (d.id = documentcontents.docid)
 				JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
@@ -184,6 +186,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					JOIN customercontacts cc ON cc.customerid = c.id
 					WHERE cc.type & ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED) . ' = ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS) . '
 				) i ON i.customerid = d.customerid
+				' . ($service ? 'JOIN (
+					SELECT DISTINCT a.docid FROM assignments a
+						JOIN tariffs t ON t.id = a.tariffid
+						WHERE t.type IN (' . implode(',', $service) . ')
+					) s ON s.docid = d.id' : '') . '
 				LEFT JOIN (
 					SELECT DISTINCT a.customerid FROM customerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -200,9 +207,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				array(Auth::GetCurrentUser()));
 		}
 
-		$list = $this->db->GetAll('SELECT docid, d.number, d.type, title, d.cdate, u.name AS username, u.lastname, fromdate, todate, description, 
-				numberplans.template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername, u2.lastname AS clastname,
-				d.reference, i.senddocuments
+		$list = $this->db->GetAll('SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
+				u.name AS username, u.lastname, fromdate, todate, description, 
+				numberplans.template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
+				u2.lastname AS clastname, d.reference, i.senddocuments
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
 			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
@@ -214,6 +222,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				JOIN customercontacts cc ON cc.customerid = c.id
 				WHERE cc.type & ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED) . ' = ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS) . '
 			) i ON i.customerid = d.customerid
+			' . ($service ? 'JOIN (
+				SELECT DISTINCT a.docid FROM assignments a
+					JOIN tariffs t ON t.id = a.tariffid
+					WHERE t.type IN (' . implode(',', $service) . ')
+				) s ON s.docid = d.id' : '') . '
 			LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM customerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
