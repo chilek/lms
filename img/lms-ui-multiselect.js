@@ -266,7 +266,6 @@ function multiselect(options) {
 					li = ul.find('li:not(.disabled)').first();
 					li.addClass('active').find('input').focus();
 				}
-				li.get(0).scrollIntoView(false);
 				e.preventDefault();
 				break;
 			case 'ArrowUp':
@@ -281,7 +280,6 @@ function multiselect(options) {
 					li = ul.find('li:not(.disabled)').last();
 					li.addClass('active').find('input').focus();
 				}
-				li.get(0).scrollIntoView(false);
 				e.preventDefault();
 				break;
 		}
