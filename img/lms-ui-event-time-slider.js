@@ -37,6 +37,9 @@ function eventTimeSlider(options) {
 		return null;
 	}
 
+	var start = $(options['start-selector']),
+		end = $(options['end-selector']);
+
 	function selectToSlider(value) {
 		return Math.floor((value / 100) * 60) + (value % 100);
 	}
@@ -45,25 +48,41 @@ function eventTimeSlider(options) {
 		return Math.floor(value / 60) * 100 + (value % 60);
 	}
 
-	$(options['slider-selector']).slider({
+	function toggleSliderDrag(handleIndex) {
+		if (handleIndex & 1) {
+			start.toggleClass('lms-ui-slider-drag');
+		}
+		if (handleIndex & 2) {
+			end.toggleClass('lms-ui-slider-drag');
+		}
+	}
+
+	$(options['slider-selector']).dragslider({
 		range: true,
 		min: 0,
 		max: options['max'],
 		step: options['step'],
+		rangeDrag: true,
 		values: [
-			selectToSlider($(options['start-selector']).val()),
-			selectToSlider($(options['end-selector']).val())
+			selectToSlider(start.val()),
+			selectToSlider(end.val())
 		],
 		slide: function (e, ui) {
-			$(options['start-selector']).val(sliderToSelect(ui.values[0]));
-			$(options['end-selector']).val(sliderToSelect(ui.values[1]));
+			start.val(sliderToSelect(ui.values[0]));
+			end.val(sliderToSelect(ui.values[1]));
+		},
+		start: function (e, ui) {
+			toggleSliderDrag(ui.handleIndex);
+		},
+		stop: function (e, ui) {
+			toggleSliderDrag(ui.handleIndex);
 		}
 	});
 
 	$(options['start-selector'] + ',' + options['end-selector']).change(function (e) {
 		$(options['slider-selector']).slider('values', [
-			selectToSlider($(options['start-selector']).val()),
-			selectToSlider($(options['end-selector']).val())
+			selectToSlider(start-selector.val()),
+			selectToSlider(end-selector.val())
 		]);
 	});
 
