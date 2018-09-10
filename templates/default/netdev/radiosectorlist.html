@@ -109,7 +109,7 @@
 			{/foreach}
 		</SELECT>
 		<br>
-		<SELECT NAME="type" id="type" {tip trigger="type" text="Select interface network type"}>
+		<SELECT NAME="type" id="type" {tip trigger="type" text="Select network interface type"}>
 			{foreach $_NETWORK_INTERFACE_TYPES as $typeidx => $type}
 				<OPTION value="{$typeidx}"{if $formdata.type == $typeidx} selected{/if}>{$type.label}</OPTION>
 			{/foreach}
