@@ -50,10 +50,10 @@ function eventTimeSlider(options) {
 
 	function toggleSliderDrag(handleIndex) {
 		if (handleIndex & 1) {
-			start.toggleClass('lms-ui-dragslider');
+			start.toggleClass('lms-ui-dragslider-slave');
 		}
 		if (handleIndex & 2) {
-			end.toggleClass('lms-ui-dragslider');
+			end.toggleClass('lms-ui-dragslider-slave');
 		}
 	}
 
