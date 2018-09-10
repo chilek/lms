@@ -77,11 +77,11 @@ function RTSearch($search, $order='createtime,desc')
 		$where[] = 't.customerid = '.intval($search['custid']);
 	if(!empty($search['subject']))
 		$where[] = 't.subject ?LIKE? '.$DB->Escape('%'.$search['subject'].'%');
-	if (!empty($search['body'])) {
+	if (isset($search['body']) && !empty($search['body']['pattern'])) {
 		$join[] = ($op == ' OR ' ? 'LEFT ' : '') . 'JOIN (SELECT ticketid,
 			MIN(id) AS messageid FROM rtmessages WHERE type <= ' . RTMESSAGE_NOTE
-			. ' AND ' . (isset($search['bodyregexp']) ? $DB->RegExp('body', $search['body'])
-				: 'body ?LIKE? ' . $DB->Escape('%' . $search['body'] . '%')) . '
+			. ' AND ' . (isset($search['body']['regexp']) ? $DB->RegExp('body', $search['body']['pattern'])
+				: 'body ?LIKE? ' . $DB->Escape('%' . $search['body']['pattern'] . '%')) . '
 			GROUP BY ticketid) m3 ON m3.ticketid = t.id';
 	} else {
 		$join[] = 'JOIN (SELECT DISTINCT ticketid, 0 AS messageid FROM rtmessages) m3 ON m3.ticketid = t.id';
@@ -215,8 +215,10 @@ if (isset($_GET['state']))
 	$search = array(
 		'state' => $_GET['state'],
 		'subject' => '',
-		'body' => '',
-		'bodyregexp' => false,
+		'body' => array(
+			'message' => '',
+			'regexp' => false,
+		),
 		'custid' => '0',
 		'name' => '',
 		'email' => '',

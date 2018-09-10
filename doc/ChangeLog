@@ -127,6 +127,8 @@ version ?.??.?? (????-??-??):
     on queue list [chilan]
   - enhancement: allow to search tickets by body fragment [chilan]
   - improvement: ability to mark radiosector as access/infrastructure (uni/nni network interface type) [interduo]
+  - improvement: promotion schema assignments: added support for current period settlement
+    assignment [chilan]
 
 version 1.11.23 (2018-03-21):
 

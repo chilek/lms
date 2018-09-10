@@ -315,10 +315,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $month     = date('n', $datefrom);
                     $year      = date('Y', $datefrom);
 
-                    // assume $data['at'] == 1, set last day of the specified month
-                    $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
-                    $cday   = 0;
-
                     // Find tariff with specified name+value+period...
                     $tariffid = null;
                     if ($tariff['period'] !== null) {
@@ -393,6 +389,90 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
                         }
                     }
+
+					// current period settlement support
+					if (isset($data['settlement']) && $data['settlement'] == 2 && $idx == 1 && $period == MONTHLY) {
+						$val = $value;
+						if ($tariff['period'] && $period != DISPOSABLE
+							&& $tariff['period'] != $period) {
+							if ($tariff['period'] == YEARLY)
+								$val = $val / 12.0;
+							elseif ($tariff['period'] == HALFYEARLY)
+								$val = $val / 6.0;
+							elseif ($tariff['period'] == QUARTERLY)
+								$val = $val / 3.0;
+
+							if ($period == YEARLY)
+								$val = $val * 12.0;
+							elseif ($period == HALFYEARLY)
+								$val = $val * 6.0;
+							elseif ($period == QUARTERLY)
+								$val = $val * 3.0;
+							elseif ($period == WEEKLY)
+								$val = $val / 4.0;
+							elseif ($period == DAILY)
+								$val = $val / 30.0;
+						}
+						$discounted_val = $val;
+
+						list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
+						$nextat = mktime(0, 0, 0, $month + 1, $data['at'], $year);
+						$diffdays = sprintf("%d", ($nextat - $data['datefrom'] - 86400) / 86400);
+						if ($diffdays > 0) {
+							list ($y, $m, $d) = explode('/', date('Y/m/d', $nextat));
+							$month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+							$v = 0;
+							while ($diffdays) {
+								if ($d - $diffdays <= 0) {
+									$v += ($d - 1) * $discounted_val / $month_days;
+									$diffdays -= ($d - 1);
+								} else {
+									$v += $diffdays * $discounted_val / $month_days;
+									$diffdays = 0;
+								}
+								$date = mktime(0, 0, 0, $m, 0, $y);
+								$month_days = strftime("%d", $date);
+								$d = $month_days + 1;
+								$m = strftime("%m", $date);
+								$y = strftime("%Y", $date);
+							}
+							$partial_dateto = $nextat - 1;
+							$partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
+							$partial_at = $dom + 1;
+
+							$args = array(
+								SYSLOG::RES_TARIFF  => $tariffid,
+								SYSLOG::RES_CUST    => $data['customerid'],
+								'period'            => $period,
+								'at'                => $partial_at,
+								'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+								'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+								'settlement'        => 0,
+								SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+								'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+								'datefrom'          => $datefrom,
+								'dateto'            => $partial_dateto,
+								'pdiscount'         => 0,
+								'vdiscount'         => $partial_vdiscount,
+								'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+								SYSLOG::RES_LIAB    => null,
+								'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+								'docid'				=> empty($data['docid']) ? null : $data['docid'],
+								'commited'			=> $commited,
+							);
+
+							$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+							$this->insertNodeAssignments($data);
+							$this->insertPhoneAssignments($data);
+
+							$datefrom = $partial_dateto + 1;
+						}
+					}
+
+                    // assume $data['at'] == 1, set last day of the specified month
+                    $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
+                    $cday   = 0;
                 }
 
                 // Create assignment
@@ -403,7 +483,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'at'                => $at,
                     'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
                     'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
-                    'settlement'        => !empty($data['settlement']) ? 1 : 0,
+                    'settlement'        => isset($data['settlement']) && $data['settlement'] == 1 && $idx == 1 ? 1 : 0,
                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                     'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
                     'datefrom'          => $idx ? $datefrom : 0,
@@ -445,7 +525,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                        ? $data['at'] : $this->CalcAt($data['period'], $datefrom)),
                         'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
                         'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
-                        'settlement'        => !empty($data['settlement']) ? 1 : 0,
+                        'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                         'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
                         'datefrom'          => $datefrom,
