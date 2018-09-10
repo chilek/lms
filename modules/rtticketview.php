@@ -114,9 +114,15 @@ if (isset($_GET['highlight'])) {
 		if (isset($highlight['regexp']))
 			$message['body'] = preg_replace('/(' . $highlight['pattern'] . ')/i',
 			'[matched-text]$1[/matched-text]', $message['body']);
-		else
-			$message['body'] = str_ireplace($highlight['pattern'],
-				'[matched-text]' . $highlight['pattern'] . '[/matched-text]', $message['body']);
+		else {
+			$offset = 0;
+			while (($pos = mb_stripos($message['body'], $highlight['pattern'], $offset)) !== false) {
+				$message['body'] = mb_substr($message['body'], 0, $pos)
+					. '[matched-text]' . mb_substr($message['body'], $pos, mb_strlen($highlight['pattern']))
+					. '[/matched-text]' . mb_substr($message['body'], $pos + mb_strlen($highlight['pattern']));
+				$offset = $pos + strlen('[matched-text]') + 1;
+			}
+		}
 	unset($message);
 }
 
