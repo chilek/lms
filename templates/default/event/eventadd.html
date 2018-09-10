@@ -74,15 +74,15 @@ $(function() {
 					<td>
 						{trans("Begin:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[date]" value="{$event.date}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 						<SELECT name="event[begintime]" id="event-start" size="1" {tip text="Select time of" trigger="begintime"} OnChange="javascript:SetEndtime();">
-							{section name=time loop=$hours}
-							<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
-							{/section}
+							{foreach $hours as $time}
+							<OPTION value="{$time}" {if $time == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$time format="%02d"}:{math equation="x % 100" x=$time format="%02d"}</OPTION>
+							{/foreach}
 						</SELECT>
 						{trans("End:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[enddate]" value="{$event.enddate}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
 						<SELECT name="event[endtime]" id="event-end" size="1" {tip text="Select time of" trigger="endtime"} OnChange="javascript:CheckEndtime();">
-							{section name=time loop=$hours}
-							<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
-							{/section}
+							{foreach $hours as $time}
+							<OPTION value="{$time}" {if $time == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$time format="%02d"}:{math equation="x % 100" x=$time format="%02d"}</OPTION>
+							{/foreach}
 						</SELECT>
 					</td>
 					<td>
@@ -310,36 +310,36 @@ $(function() {
 <script type="text/javascript" src="img/lms-ui-event-time-slider.js"></script>
 <SCRIPT>
 
-$(function() {
-	$('form[name="event"] [name="event[title]"]').focus();
+	$(function() {
+		$('form[name="event"] [name="event[title]"]').focus();
 
-	new eventTimeSlider({
-		'start-selector': '#event-start',
-		'end-selector': '#event-end',
-		'slider-selector': '.lms-ui-event-time-slider',
-		'max': 1410,
-		'step': 30
-	});
+		new eventTimeSlider({
+			'start-selector': '#event-start',
+			'end-selector': '#event-end',
+			'slider-selector': '.lms-ui-event-time-slider',
+			'max': 1410,
+			'step': {ConfigHelper::getConfig('phpui.event_time_step', 30)}
+		});
 
-	$('[name="event[rtqueue]"]').change(function() {
-		var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
+		$('[name="event[rtqueue]"]').change(function() {
+			var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
+			if (newticket_notify === undefined) {
+				$('#customernotify-row').hide();
+				$('#customernotify').attr('checked', false);
+			} else {
+				$('#customernotify-row').show();
+				$('#customernotify').attr('checked', true);
+			}
+			xajax_GetCategories($(this).val());
+		});
+
+		var newticket_notify = $('[name="event[rtqueue]"]').find(':selected').attr('data-newticket-notify');
 		if (newticket_notify === undefined) {
 			$('#customernotify-row').hide();
-			$('#customernotify').attr('checked', false);
 		} else {
 			$('#customernotify-row').show();
-			$('#customernotify').attr('checked', true);
 		}
-		xajax_GetCategories($(this).val());
 	});
-
-	var newticket_notify = $('[name="event[rtqueue]"]').find(':selected').attr('data-newticket-notify');
-	if (newticket_notify === undefined) {
-		$('#customernotify-row').hide();
-	} else {
-		$('#customernotify-row').show();
-	}
-});
 
 function update_user_selection(users) {
 	var userms = $('.lms-ui-multiselect').data('multiselect-object');
