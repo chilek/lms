@@ -5,7 +5,7 @@
     }
 </style>
 {foreach $daylist as $day}
-<TABLE id="event-day-{$day}" class="lmsbox lms-ui-background-cycle event-day" data-event-day="{$day}">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%; min-width:90px;">
@@ -35,7 +35,7 @@
             </TD>
         </TR>
     </THEAD>
-    <TBODY>
+    <TBODY class="event-day" data-event-day="{$day}">
         {foreach $eventlist as $event}
         {if $event.date == $day}
             {include file="event/eventlistboxrow.html"}
@@ -46,13 +46,13 @@
 {/foreach}
 <script>
 
-    $('.event-day tbody').sortable({
+    $('.event-day').sortable({
         axis: 'y',
         items: '.event-single',
         handle: '.event-single-sortable-handler',
         opacity: 0.9,
         placeholder: 'light',
-        connectWith: '.event-day tbody',
+        connectWith: '.event-day',
 		update: function (e, ui) {
 			if (ui.sender == null) {
 				return;
