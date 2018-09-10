@@ -29,15 +29,20 @@
 <input type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
-    <THEAD>
+    <COLGROUP>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</COLGROUP>
+	<THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Title:")}</B>
+		<TD class="bold">
+			{trans("Title:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title" bold=1}>
 		</TD>
 	</TR>
@@ -45,57 +50,66 @@
     <TBODY>
         {block name="event_edit_tbody"}
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/time.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Time:")}</B>
+		<TD class="bold">
+			{trans("Time:")}
 		</TD>
-		<TD width="98%">
-			{trans("Begin:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[date]" value="{$event.date}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-			<SELECT name="event[begintime]" size="1" {tip text="Select time of" trigger="begintime"} OnChange="javascript:SetEndtime();">
-				{section name=time loop=$hours}
-				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
-				{/section}
-			</SELECT>
-			{trans("End:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[enddate]" value="{$event.enddate}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
-			<SELECT name="event[endtime]" size="1" {tip text="Select time of" trigger="endtime"} OnChange="javascript:CheckEndtime();">
-				{section name=time loop=$hours}
-				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
-				{/section}
-			</SELECT>
+		<TD>
+			<table>
+				<tr>
+					<td>
+						{trans("Begin:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[date]" value="{$event.date}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
+						<SELECT name="event[begintime]" id="event-start" size="1" {tip text="Select time of" trigger="begintime"} OnChange="javascript:SetEndtime();">
+							{section name=time loop=$hours}
+							<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+							{/section}
+						</SELECT>
+						{trans("End:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[enddate]" value="{$event.enddate}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
+						<SELECT name="event[endtime]" id="event-end" size="1" {tip text="Select time of" trigger="endtime"} OnChange="javascript:CheckEndtime();">
+							{section name=time loop=$hours}
+							<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+							{/section}
+						</SELECT>
+					</td>
+					<td>
+						<div class="lms-ui-event-time-slider"></div>
+					</td>
+				</tr>
+			</table>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}</B>
+		<TD class="bold">
+			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if $event.wysiwyg.description} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/access.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Status:")}</B>
+		<TD class="bold">
+			{trans("Status:")}
 		</TD>
-		<TD width="98%" nowrap>
+		<TD class="nobr">
 			<INPUT type="checkbox" name="event[private]" id="event_private" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> <label for="event_private">{trans("private")}</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/desc.gif" alt="">
 		</TD>
-		<TD width="1%">
+		<TD>
 			<B>{trans("Type:")}</B>
 		</TD>
-		<TD width="98%" nowrap>
+		<TD class="nobr">
 			<SELECT name="event[type]" size="1">
 				{foreach from=$_EVENTTYPES key=key item=type}
 					<OPTION value="{$key}" {if $key == $event.type}SELECTED{/if}>{$type}</OPTION>
@@ -103,17 +117,17 @@
 			</SELECT>
 		</TD>
 	</TR>
-        <TR>
-                <TD width="1%">
-                        <IMG src="img/customer.gif" alt="">
-                </TD>
-                <TD width="1%">
-                        <B>{trans("Customer:")}</B>
-                </TD>
-                <TD width="98%" nowrap>
+	<TR>
+		<TD>
+			<IMG src="img/customer.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Customer:")}
+		</TD>
+		<TD class="nobr">
 			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
-                </TD>
-        </TR>
+		</TD>
+	</TR>
 	<TR>
 	<TR>
 		<TD>
@@ -144,36 +158,36 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/note.gif" alt="">
 		</TD>
-		<TD width="1%">
+		<TD bold="bold">
 			<B>{trans("Note:")}</B>
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-            <TD>
-                <IMG src="img/ticket.gif" alt="">
-            </TD>
-            <TD class="bold">
-                {trans("Assign this event to Helpdesk request")}
-            </TD>
-            <TD>
-                <input type="checkbox" name="event[helpdesk]"{if isset($event.helpdesk)}value="1" checked{/if}>
-                <input type="text" name="event[ticketid]" value="{$event.ticketid}">
-            </TD>
-        </TR>
+		<TD>
+			<IMG src="img/ticket.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Assign this event to Helpdesk request")}
+		</TD>
+		<TD>
+			<input type="checkbox" name="event[helpdesk]"{if isset($event.helpdesk)}value="1" checked{/if}>
+			<input type="text" name="event[ticketid]" value="{$event.ticketid}">
+		</TD>
+	</TR>
 	<TR>
-		<TD width="1%" class="valign-top">
+		<TD class="valign-top">
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%" class="valign-top">
+		<TD class="valign-top">
 			<B>{trans("Users:")}</B>
 		</TD>
-		<TD style="width: 98%;" class="multiselect nobr">
+		<TD class="multiselect nobr">
 			<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 				{foreach $userlist as $user}
 				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</option>
@@ -194,70 +208,79 @@
 	</TR>
 	{/block}
 	<TR>
-		<TD align="right" colspan="3">
+		<TD class="buttons" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-                        {if ConfigHelper::checkPrivilege('timetable_management')}
-                            {if !$event.closed}
-                            <A href="?m=eventedit&id={$event.id}&action=close"><IMG src="img/dead.gif" alt=""> {trans("Close")}</A>
-                            {else}
-                            <A href="?m=eventedit&id={$event.id}&action=open"><IMG src="img/open.gif" alt=""> {trans("Open")}</A>
-                            {/if}
-                        {/if}
+			{if ConfigHelper::checkPrivilege('timetable_management')}
+				{if !$event.closed}
+				<A href="?m=eventedit&id={$event.id}&action=close"><IMG src="img/dead.gif" alt=""> {trans("Close")}</A>
+				{else}
+				<A href="?m=eventedit&id={$event.id}&action=open"><IMG src="img/open.gif" alt=""> {trans("Open")}</A>
+				{/if}
+			{/if}
 			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt="">{trans("Cancel")}</A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 </P>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="event"] [name="event[title]"]').focus();
-});
+<script type="text/javascript" src="img/lms-ui-event-time-slider.js"></script>
+<SCRIPT>
 
-function update_user_selection(users) {
-	var userms = $('.lms-ui-multiselect').data('multiselect-object');
-	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
-	userms.updateSelection(users);
-	{else}
-	userms.filterSelection(users);
-	{/if}
-}
+	$(function() {
+		$('form[name="event"] [name="event[title]"]').focus();
 
-function change_customer() {
-	getCustomerAddresses( $('[name="event[custid]"]').val(), function(addresses) {
+		new eventTimeSlider({
+			'start-selector': '#event-start',
+			'end-selector': '#event-end',
+			'slider-selector': '.lms-ui-event-time-slider',
+			'max': 1410,
+			'step:' 30,
+		});
+	});
+
+	function update_user_selection(users) {
+		var userms = $('.lms-ui-multiselect').data('multiselect-object');
+		{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
+		userms.updateSelection(users);
+		{else}
+		userms.filterSelection(users);
+		{/if}
+	}
+
+	function change_customer() {
+		getCustomerAddresses( $('[name="event[custid]"]').val(), function(addresses) {
+			customer_addresses.setAddressList( addresses );
+		});
+		xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
+	}
+
+	function update_nodes(data) {
+		var options = '<option value="">{trans("- none -")}</option>';
+		$.each(data, function(k, v) {
+			options += '<option value="' + v.id + '">' + v.name + ': ' + v.location + '</option>';
+		});
+		$('[name="event[nodeid]"]').html(options);
+		if (data.length) {
+			$('#node-row').show();
+		} else {
+			$('#node-row').hide();
+		}
+	}
+
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
+		change: function(event, ui) {
+			xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
+		}
+	});
+
+	getCustomerAddresses( {intval($event.customerid)}, function(addresses) {
 		customer_addresses.setAddressList( addresses );
+		{if $event.address_id && intval($event.customerid)}
+		$( '#customer_addresses' ).val( {$event.address_id} );
+		{/if}
+
+		customer_addresses.init();
 	});
-	xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
-}
 
-function update_nodes(data) {
-	var options = '<option value="">{trans("- none -")}</option>';
-	$.each(data, function(k, v) {
-		options += '<option value="' + v.id + '">' + v.name + ': ' + v.location + '</option>';
-	});
-	$('[name="event[nodeid]"]').html(options);
-	if (data.length) {
-		$('#node-row').show();
-	} else {
-		$('#node-row').hide();
-	}
-}
-
-var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
-	change: function(event, ui) {
-		xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
-	}
-});
-
-getCustomerAddresses( {intval($event.customerid)}, function(addresses) {
-	customer_addresses.setAddressList( addresses );
-	{if $event.address_id && intval($event.customerid)}
-	$( '#customer_addresses' ).val( {$event.address_id} );
-	{/if}
-
-	customer_addresses.init();
-});
-//-->
 </SCRIPT>
 {/block}

@@ -1395,6 +1395,18 @@ html .ui-button.ui-state-disabled:active {
 .ui-selected {
   background-color: #CCFFCC;
 }
+.ui-slider.ui-widget-content {
+  background-color: #EBE4D6;
+}
+.ui-slider-range {
+  background-color: #CEBD9B;
+}
+.ui-slider-handle.ui-state-default {
+  background-color: #AE9D7B;
+}
+.ui-slider-horizontal {
+  height: 0.6em;
+}
 .fileupload-progress-label {
   position: absolute;
   left: 48%;
@@ -2074,4 +2086,8 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
 .lms-ui-matched-text {
   background-color: #AE9D7B;
   font-weight: bold;
+}
+.lms-ui-event-time-slider {
+  width: 300px;
+  margin-left: 10px;
 }

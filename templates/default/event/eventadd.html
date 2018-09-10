@@ -42,73 +42,86 @@ $(function() {
 <INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
-    <THEAD>
+    <COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
+	<THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Title:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title"}>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/time.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Time:")}
 		</TD>
-		<TD width="98%">
-{*			<INPUT type="hidden" name="event[date]" value="{$event.date}">*}
-			{trans("Begin:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[date]" value="{$event.date}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-			<SELECT name="event[begintime]" size="1" {tip text="Select time of" trigger="begintime"} OnChange="javascript:SetEndtime();">
-				{section name=time loop=$hours}
-				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
-				{/section}
-			</SELECT>
-			{trans("End:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[enddate]" value="{$event.enddate}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
-			<SELECT name="event[endtime]" size="1" {tip text="Select time of" trigger="endtime"} OnChange="javascript:CheckEndtime();">
-				{section name=time loop=$hours}
-				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
-				{/section}
-			</SELECT>
+		<TD>
+			<table>
+				<tr>
+					<td>
+						{trans("Begin:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[date]" value="{$event.date}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
+						<SELECT name="event[begintime]" id="event-start" size="1" {tip text="Select time of" trigger="begintime"} OnChange="javascript:SetEndtime();">
+							{section name=time loop=$hours}
+							<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+							{/section}
+						</SELECT>
+						{trans("End:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[enddate]" value="{$event.enddate}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
+						<SELECT name="event[endtime]" id="event-end" size="1" {tip text="Select time of" trigger="endtime"} OnChange="javascript:CheckEndtime();">
+							{section name=time loop=$hours}
+							<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+							{/section}
+						</SELECT>
+					</td>
+					<td>
+						<div class="lms-ui-event-time-slider"></div>
+					</td>
+				</tr>
+			</table>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/access.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Status:")}
 		</TD>
-		<TD width="98%" class="nobr">
+		<TD class="nobr">
 			<INPUT type="checkbox" name="event[status]" id="event_status" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/desc.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Type:")}
 		</TD>
-		<TD width="98%" class="nobr">
+		<TD class="nobr">
 			<SELECT name="event[type]" size="1">
 				{foreach from=$_EVENTTYPES key=key item=type}
 					<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
@@ -165,14 +178,14 @@ $(function() {
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Users:")}
 		</TD>
 
-		<TD style="width: 98%;" class="multiselect nobr">
+		<TD class="multiselect nobr">
 			<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 				{foreach $userlist as $user}
 				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</OPTION>
@@ -191,27 +204,26 @@ $(function() {
 			{/foreach}
 		</TD>
 	</TR>
-                {if empty($event.ticketid)}
+	{if empty($event.ticketid)}
 	<TR>
-                <TD>
-                    <IMG src="img/ticket.gif" alt="">
-                </TD>
-                <TD class="bold">
-					<label for="helpdesk-on">{trans("Add new request to Helpdesk")}</label>
-                </TD>
-                <TD>
-                    <input type="checkbox" name="event[helpdesk]" {if !empty($event['helpdesk'])} checked{/if} id="helpdesk-on">
-                </TD>
-                </TR>
-                {/if}
-		<TR>
-			<TD colspan="2"></TD>
-			<TD class="text-right">
-				<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-				<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
-                        <INPUT type="checkbox" name="event[reuse]" id="reuse" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
-			</TD>
-		</TR>
+		<TD>
+			<IMG src="img/ticket.gif" alt="">
+		</TD>
+		<TD class="bold">
+			<label for="helpdesk-on">{trans("Add new request to Helpdesk")}</label>
+		</TD>
+		<TD>
+			<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" {if !empty($event['helpdesk'])} checked{/if} id="helpdesk-on">
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD class="buttons" colspan="3">
+			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
+			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
+			<INPUT type="checkbox" name="event[reuse]" id="reuse" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
+		</TD>
+	</TR>
 </TBODY>
 </TABLE>
 
@@ -295,10 +307,19 @@ $(function() {
     </TBODY>
 </TABLE>
 </form>
+<script type="text/javascript" src="img/lms-ui-event-time-slider.js"></script>
 <SCRIPT type="text/javascript">
 <!--
 $(function() {
 	$('form[name="event"] [name="event[title]"]').focus();
+
+	new eventTimeSlider({
+		'start-selector': '#event-start',
+		'end-selector': '#event-end',
+		'slider-selector': '.lms-ui-event-time-slider',
+		'max': 1410,
+		'step': 30
+	});
 
 	$('[name="event[rtqueue]"]').change(function() {
 		var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
