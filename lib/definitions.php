@@ -279,6 +279,22 @@ define('RTMESSAGE_DEADLINE_CHANGE', 16384);
 define('RTMESSAGE_SERVICE_CHANGE', 32768);
 define('RTMESSAGE_TYPE_CHANGE', 65536);
 
+define('NETWORK_INTERFACE_TYPE_UNI', 0);
+define('NETWORK_INTERFACE_TYPE_NNI', 1);
+
+$NETWORK_INTERFACE_TYPES = array(
+	NETWORK_INTERFACE_TYPE_UNI => array(
+		'label' => trans('Access network interface'),
+		'name' => 'NETWORK_INTERFACE_TYPE_UNI',
+		'alias' => 'uni',
+	),
+	NETWORK_INTERFACE_TYPE_NNI => array(
+		'label' => trans('Infrastructure network interface'),
+		'name' => 'NETWORK_INTERFACE_TYPE_NNI',
+		'alias' => 'nni',
+	),
+);
+
 //Request Tracker Ticket Types
 define('RT_TYPE_OFFER', 1);
 define('RT_TYPE_DOCS', 2);
@@ -862,6 +878,7 @@ $EXISTINGASSIGNMENTS = array(
 
 if(isset($SMARTY))
 {
+	$SMARTY->assign('_NETWORK_INTERFACE_TYPES',$NETWORK_INTERFACE_TYPES);
 	$SMARTY->assign('_CTYPES',$CTYPES);
 	$SMARTY->assign('_CSTATUSES', $CSTATUSES);
 	$SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);

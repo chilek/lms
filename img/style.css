@@ -695,6 +695,26 @@ li.lms-ui-suggestion-item a {
   background-repeat: no-repeat;
   background-image: url(wireless.gif);
 }
+.lms-ui-suggestion-name.lms-ui-suggestion-wireless-uni {
+  color: teal;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-wireless-uni::before {
+  content: "";
+  padding-right: 17px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(wireless.gif);
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-wireless-nni {
+  color: brown;
+}
+.lms-ui-suggestion-name.lms-ui-suggestion-wireless-nni::before {
+  content: "";
+  padding-right: 17px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(wireless.gif);
+}
 .lms-ui-suggestion-name.lms-ui-suggestion-network::before {
   content: "";
   padding-right: 17px;

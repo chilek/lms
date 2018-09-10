@@ -5,7 +5,7 @@
 	<TD style="width: 15%;">{trans("Azimuth:")}<br>{trans("Width:")}</TD>
 	<TD style="width: 10%;">{trans("Altitude:")}<br>{trans("Range:")}</TD>
 	<TD style="width: 15%;">{trans("License number:")}</TD>
-	<TD style="width: 10%;">{trans("Link technology:")}</TD>
+	<TD style="width: 10%;">{trans("Link technology:")}<br>{trans("Network interface type")}</TD>
 	<TD style="width: 19%;">{trans("Frequency:")}<br>{trans("Bandwidth:")}</TD>
 	<TD style="width: 10%;" class="nobr text-center">{trans("Nodes:")}<br>{trans("Devices:")}</TD>
 	<TD style="width: 1%;">&nbsp;</TD>
@@ -43,6 +43,13 @@
 			{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
 			<OPTION value="{$technologyidx}"{if $edit}{if $formdata.technology == $technologyidx} selected{/if}{else}{if $radiosector.technology == $technologyidx} selected{/if}{/if}>{$technology}</OPTION>
 			{/foreach}
+		</SELECT>
+		<br>
+		<span id="type_{$rsid}"{if $edit} style="display: none;"{/if}>{$_NETWORK_INTERFACE_TYPES[$radiosector.type].label}</span>
+		<SELECT NAME="type_edit_{$rsid}" id="type_edit_{$rsid}" {tip trigger="type_edit_{$rsid}" text="Select network interface type"}{if !$edit} style="display: none;"{/if}>
+		{foreach $_NETWORK_INTERFACE_TYPES as $typeidx => $type}
+			<OPTION value="{$typeidx}"{if $edit}{if $formdata.type == $typeidx} selected{/if}{else}{if $radiosector.type == $typeidx} selected{/if}{/if}>{$type.label}</OPTION>
+		{/foreach}
 		</SELECT>
 	</TD>
 	<TD class="nobr">
@@ -101,10 +108,15 @@
 			<OPTION value="{$technologyidx}"{if $formdata.technology == $technologyidx} selected{/if}>{$technology}</OPTION>
 			{/foreach}
 		</SELECT>
+		<br>
+		<SELECT NAME="type" id="type" {tip trigger="type" text="Select network interface type"}>
+			{foreach $_NETWORK_INTERFACE_TYPES as $typeidx => $type}
+				<OPTION value="{$typeidx}"{if $formdata.type == $typeidx} selected{/if}>{$type.label}</OPTION>
+			{/foreach}
+		</SELECT>
 	</TD>
 	<TD class="nobr">
-		<input type="text" size="6" name="frequency" id="frequency" value="{$formdata.frequency}" {tip text="Enter frequency in GHz" trigger="frequency"}>
-    		/
+		<input type="text" size="6" name="frequency" id="frequency" value="{$formdata.frequency}" {tip text="Enter frequency in GHz" trigger="frequency"}>/
 		<input type="text" size="6" name="frequency2" id="frequency2" value="{$formdata.frequency2}" {tip text="Enter frequency in GHz" trigger="frequency2"}><br>
 		<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}>
 	</TD>

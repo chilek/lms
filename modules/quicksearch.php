@@ -569,7 +569,7 @@ switch ($mode) {
     case 'wireless':
         if (isset($_GET['ajax'])) // support for AutoSuggest
         {
-            $candidates = $DB->GetAll("SELECT id, name, netdev FROM netradiosectors
+            $candidates = $DB->GetAll("SELECT id, name, type, netdev FROM netradiosectors
                                 WHERE " . (preg_match('/^[0-9]+$/', $search) ? 'id = ' . intval($search) . ' OR ' : '') . "
 				LOWER(name) ?LIKE? LOWER($sql_search)
                                 ORDER by name
@@ -579,7 +579,8 @@ switch ($mode) {
             if ($candidates) {
                 foreach ($candidates as $idx => $row) {
                     $name = truncate_str($row['name'], 50);
-                    $name_class = 'lms-ui-suggestion-wireless';
+                    $name_classes[] = 'lms-ui-suggestion-wireless-' . $NETWORK_INTERFACE_TYPES[$row['type']]['alias'];
+                    $name_class = implode(' ', $name_classes);
 
                     $description = '';
                     $description_class = '';

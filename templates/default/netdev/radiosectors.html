@@ -44,7 +44,7 @@ function delRadioSector(id) {
 }
 
 function toggleEditRadioSector(id) {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
 	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
 
 	for (i = 0; i < elems.length; i++) {
@@ -81,7 +81,7 @@ function hideAddRadioSector() {
 }
 
 function updateRadioSector(id) {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
 	var params = {};
 
 	xjx.$('radiosectortable').disabled = true;
