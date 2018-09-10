@@ -111,12 +111,12 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if (isset($_GET['highlight'])) {
 	$highlight = $_GET['highlight'];
 	foreach ($ticket['messages'] as &$message) {
-		if (isset($_GET['highlightregexp']))
-			$message['body'] = preg_replace('/(' . $highlight . ')/',
+		if (isset($_GET['highlight']['regexp']))
+			$message['body'] = preg_replace('/(' . $highlight['pattern'] . ')/i',
 				'[matched-text]$1[/matched-text]', $message['body']);
 		else
-			$message['body'] = str_replace($highlight,
-				'[matched-text]' . $highlight . '[/matched-text]', $message['body']);
+			$message['body'] = str_replace($highlight['pattern'],
+				'[matched-text]' . $highlight['pattern'] . '[/matched-text]', $message['body']);
 	}
 	unset($message);
 }
