@@ -131,6 +131,7 @@ version ?.??.?? (????-??-??):
     assignment [chilan]
   - enhancement: phpui.event_time_step configuration variable controls minial time interval for events
     (default: 30) [chilan]
+  - improvement: replaced old style date and time selector by datetimepickers and slider [chilan]
 
 version 1.11.23 (2018-03-21):
 

@@ -634,6 +634,7 @@ $_LANG['Enter customer last name or company name'] = 'Wprowadź nazwisko lub naz
 $_LANG['Enter customer Tax Exempt Number (optional)'] = 'Podaj NIP klienta (opcjonalnie)';
 $_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means current date) or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD (puste pole oznacza dzisiejszą lub kliknij żeby wybrać datę z kalendarza';
+$_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD GG:MM (puste pole oznacza dzisiejszą lub kliknij żeby wybrać datę z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd hh:mm\' format (empty field means current date) or click to choose date from calendar'] = 'Podaj datę w formacie rrrr/mm/dd gg:mm (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means 1970/01/01) or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza 1970/01/01) lub kliknij żeby wybrać ją z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' lub kliknij żeby wybrać ją z kalendarza';
@@ -885,6 +886,7 @@ $_LANG['Incorrect customers group!'] = 'Niepoprawna grupa klientów!';
 $_LANG['Incorrect date format!'] = 'Niepoprawny format daty!';
 $_LANG['Incorrect date format! Enter date in DD/MM format!'] = 'Niepoprawny format daty (DD/MM)';
 $_LANG['Incorrect date format! Enter date in YYYY/MM/DD format!'] = 'Niepoprawny format daty! Wprowadź datę w formacie RRRR/MM/DD!';
+$_LANG['Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!'] = 'Niepoprawny format daty! Wprowadź datę w formacie RRRR/MM/DD GG:MM!';
 $_LANG['Incorrect date format! Enter format for day (%a, %A, %d, %e, %j, %u, %w), month (%b, %B, %h, %m) and year (%C, %g, %G, %y, %Y)'] = 'Niepoprawny format daty! Wprowadź format dla dnia (%a, %A, %d, %e, %j, %u, %w), miesiąca (%b, %B, %h, %m) i roku (%C, %g, %G, %y, %Y)';
 $_LANG['Incorrect date range!'] = 'Niepoprawny zakres daty!';
 $_LANG['Incorrect day of month (1-28)!'] = 'Błędnie podany dzień miesiąca (1-28)!';
@@ -3686,6 +3688,7 @@ $_LANG['Are you sure, you want to send invoices to customers?'] = 'Jesteś pewie
 $_LANG['Are you sure, you want to send invoices to customer?'] = 'Jesteś pewien, że chcesz wysłać faktury do klienta?';
 
 $_LANG['yyyy/mm/dd'] = 'rrrr/mm/dd';
+$_LANG['yyyy/mm/dd hh:mm'] = 'rrrr/mm/dd gg:mm';
 
 $_LANG['price-list'] = 'cennik';
 $_LANG['promotion'] = 'promocja';

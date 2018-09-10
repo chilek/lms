@@ -2113,9 +2113,9 @@ CREATE TABLE events (
     description text NOT NULL DEFAULT '',
     note text NOT NULL DEFAULT '',
     date int(11) NOT NULL DEFAULT '0',
-    begintime smallint(4) NOT NULL DEFAULT '0',
+    begintime int(11) NOT NULL DEFAULT '0',
     enddate int(11) NOT NULL DEFAULT '0',
-    endtime smallint(4) NOT NULL DEFAULT '0',
+    endtime int(11) NOT NULL DEFAULT '0',
     userid int(11) DEFAULT NULL,
     customerid int(11) DEFAULT NULL,
     private tinyint(1) NOT NULL DEFAULT '0',
@@ -3451,4 +3451,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018090800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091000');

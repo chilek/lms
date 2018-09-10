@@ -55,40 +55,40 @@ if(isset($_POST['event']))
 	elseif(strlen($event['title']) > 255)
 		$error['title'] = trans('Event title is too long!');
 
-	if ($event['date'] == '')
-		$error['date'] = trans('You have to specify event day!');
+	if ($event['begin'] == '')
+		$error['begin'] = trans('You have to specify event day!');
 	else {
-		list ($year, $month, $day) = explode('/',$event['date']);
-		if (checkdate($month, $day, $year))
-			$date = mktime(0, 0, 0, $month, $day, $year);
+		$date = datetime_to_timestamp($event['begin'], $midnight = true);
+		if (empty($date))
+			$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
 		else
-			$error['date'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			$begintime = datetime_to_timestamp($event['begin']) - $date;
 	}
 
-	$enddate = 0;
-	if ($event['enddate'] != '') {
-		list ($year, $month, $day) = explode('/', $event['enddate']);
-		if (checkdate($month, $day, $year))
-			$enddate = mktime(0, 0, 0, $month, $day, $year);
+	$end = 0;
+	if ($event['end'] != '') {
+		$enddate = datetime_to_timestamp($event['end'], $midnight = true);
+		if (empty($enddate))
+			$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
 		else
-			$error['enddate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			$endtime = datetime_to_timestamp($event['end']) - $enddate;
 	}
 
 	if ($enddate && $date > $enddate)
-		$error['enddate'] = trans('End time must not precede start time!');
+		$error['end'] = trans('End time must not precede start time!');
 
 	if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
 		&& !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
-			'begindate' => $date,
-			'begintime' => $event['begintime'],
+			'date' => $date,
+			'begintime' => $begintime,
 			'enddate' => $enddate,
-			'endtime' => $event['endtime'],
+			'endtime' => $endtime,
 			'users' => $event['userlist'],
 		)))) {
 		$users = array_map(function($userid) use ($userlist) {
 				return $userlist[$userid]['rname'];
 			}, $users);
-		$error['date'] = $error['enddate'] = $error['begintime'] = $error['endtime'] =
+		$error['begin'] = $error['end'] =
 			trans('Event is assigned to users which already have assigned an event in the same time: $a!',
 				implode(', ', $users));
 		$event['overlapwarned'] = 1;
@@ -223,7 +223,9 @@ if(isset($_POST['event']))
 		}
 
 		$event['date'] = $date;
+		$event['begintime'] = $begintime;
 		$event['enddate'] = $enddate;
+		$event['endtime'] = $endtime;
 
 		$LMS->EventAdd($event);
 
@@ -297,11 +299,8 @@ if (isset($event['customerid']) && !empty($event['customerid'])) {
 		isset($event['address_id']) && intval($event['address_id']) > 0 ? $event['address_id'] : null));
 }
 
-if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
-{
-	$event['date'] = sprintf('%04d/%02d/%02d', $_GET['year'], $_GET['month'], $_GET['day']);
-}
-
+if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
+	$event['begin'] = date('Y/m/d H:i', mktime(0, 0, 0, $_GET['month'], $_GET['day'], $_GET['year']));
 
 $layout['pagetitle'] = trans('New Event');
 
@@ -325,12 +324,6 @@ $SMARTY->assign('tqname',$tqname);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
-$SMARTY->assign('hours',
-		array(0,30,100,130,200,230,300,330,400,430,500,530,
-		600,630,700,730,800,830,900,930,1000,1030,1100,1130,
-		1200,1230,1300,1330,1400,1430,1500,1530,1600,1630,1700,1730,
-		1800,1830,1900,1930,2000,2030,2100,2130,2200,2230,2300,2330
-		));
 $SMARTY->display('event/eventadd.html');
 
 ?>

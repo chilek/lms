@@ -404,7 +404,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 	 * 		users - event user assignments: array() of integer values,
 	 * 			empty array() means empty overlapping user set,
 	 * 		begindate - event start date in unix timestamp format,
-	 * 		enddate - event end date in unix timestamp format,
+	 *		enddate - event end date in unix timestamp format,
 	 * 		begintime - event start time in HHMM format,
 	 * 		endtime - event end time in HHMM format,
 	 * @return mixed - users assigned to events taking $params into account;
@@ -422,10 +422,10 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 		$users = array_map('intval', $users);
 
 		return $this->db->GetCol('SELECT DISTINCT a.userid FROM events e
-			JOIN eventassignments a ON a.eventid = e.id
-			WHERE a.userid IN (' . implode(',', $users) . ')
-				AND (date < ? OR (date = ? AND begintime < ?))
-				AND (enddate > ? OR (enddate = ? AND endtime > ?))',
+                        JOIN eventassignments a ON a.eventid = e.id
+                        WHERE a.userid IN (' . implode(',', $users) . ')
+                                AND (date < ? OR (date = ? AND begintime < ?))
+                                AND (enddate > ? OR (enddate = ? AND endtime > ?))',
 			array($enddate, $enddate, $endtime, $begindate, $begindate, $begintime));
 	}
 
@@ -442,5 +442,6 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
 	public function MoveEvent($id, $delta) {
 		return $this->db->Execute('UPDATE events SET date = date + ? WHERE id = ?', array($delta, $id));
+		return $this->db->Execute('UPDATE events SET enddate = enddate + ? WHERE id = ? AND enddate > 0', array($delta, $id));
 	}
 }

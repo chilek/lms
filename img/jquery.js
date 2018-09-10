@@ -218,11 +218,20 @@ $(function() {
 		}
 	};
 	$('div.calendar-time input,input.calendar-time').each(function() {
-		$(this).datetimepicker(Object.assign(datetimepickeroptions,
-			$(this).hasClass('calendar-time-seconds') ? {
-				format: "Y/m/d H:i:s"
-			} : datetimepickeroptions))
-		.attr("autocomplete", autocomplete);
+		var options = datetimepickeroptions;
+		if ($(this).hasClass('calendar-time-seconds')) {
+			options.format = "Y/m/d H:i:s";
+		}
+		if ($(this).attr('data-format')) {
+			options.format = $(this).attr('data-format');
+		}
+		if ($(this).attr('data-time-step')) {
+			options.step = parseInt($(this).attr('data-time-step'));
+		} else {
+			options.step = lmsSettings.eventTimeStep
+		}
+		$(this).datetimepicker(options)
+			.attr("autocomplete", autocomplete);
 	});
 
 	init_multiselects('select.lms-ui-multiselect');

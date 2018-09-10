@@ -47,11 +47,10 @@ if (isset($_GET['action'])) {
 
 $event = $LMS->GetEvent($_GET['id']);
 
-$event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
 if (empty($event['enddate']))
-	$event['enddate'] = '';
-else
-	$event['enddate'] = sprintf('%04d/%02d/%02d', date('Y',$event['enddate']),date('n',$event['enddate']),date('j',$event['enddate']));
+	$event['enddate'] = $event['date'];
+$event['begin'] = date('Y/m/d H:i', $event['date'] + $event['begintime']);
+$event['end'] = date('Y/m/d H:i', $event['enddate'] + $event['endtime']);
 
 $userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
 	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC', 'id');
@@ -71,40 +70,40 @@ if(isset($_POST['event']))
 	elseif(strlen($event['title']) > 255)
 		$error['title'] = trans('Event title is too long!');
 
-	if ($event['date'] == '')
+	if ($event['begin'] == '')
 		$error['date'] = trans('You have to specify event day!');
 	else {
-		list ($year,$month, $day) = explode('/',$event['date']);
-		if (checkdate($month, $day, $year))
-			$date = mktime(0, 0, 0, $month, $day, $year);
+		$date = datetime_to_timestamp($event['begin'], $midnight = true);
+		if (empty($date))
+			$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
 		else
-			$error['date'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			$begintime = datetime_to_timestamp($event['begin']) - $date;
 	}
 
 	$enddate = 0;
-	if ($event['enddate'] != '') {
-		list ($year,$month, $day) = explode('/', $event['enddate']);
-		if (checkdate($month, $day, $year))
-			$enddate = mktime(0, 0, 0, $month, $day, $year);
+	if ($event['end'] != '') {
+		$enddate = datetime_to_timestamp($event['end'], $midnight = true);
+		if (empty($enddate))
+			$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
 		else
-			$error['enddate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			$endtime = datetime_to_timestamp($event['end']) - $enddate;
 	}
 
 	if ($enddate && $date > $enddate)
-		$error['enddate'] = trans('End time must not precede start time!');
+		$error['end'] = trans('End time must not precede start time!');
 
 	if (ConfigHelper::checkConfig('phpui.event_overlap_warning')
 		&& !$error && empty($event['overlapwarned']) && ($users = $LMS->EventOverlaps(array(
-			'begindate' => $date,
-			'begintime' => $event['begintime'],
+			'date' => $data,
+			'begintime' => $begintime,
 			'enddate' => $enddate,
-			'endtime' => $event['endtime'],
+			'endtime' => $endtime,
 			'users' => $event['userlist'],
 		)))) {
 		$users = array_map(function($userid) use ($userlist) {
 			return $userlist[$userid]['rname'];
 		}, $users);
-		$error['date'] = $error['enddate'] = $error['begintime'] = $error['endtime'] =
+		$error['begin'] = $error['endd'] =
 			trans('Event is assigned to users which already have assigned an event in the same time: $a!',
 				implode(', ', $users));
 		$event['overlapwarned'] = 1;
@@ -120,7 +119,9 @@ if(isset($_POST['event']))
 		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
 		$event['date'] = $date;
+		$event['begintime'] = $begintime;
 		$event['enddate'] = $enddate;
+		$event['endtime'] = $endtime;
 		$event['helpdesk'] = isset($event['helpdesk']) && !empty($event['ticketid']) ? $event['ticketid'] : null;
 		$LMS->EventUpdate($event);
 
@@ -149,11 +150,6 @@ $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
-$SMARTY->assign('hours',
-		array(0,30,100,130,200,230,300,330,400,430,500,530,
-		600,630,700,730,800,830,900,930,1000,1030,1100,1130,
-		1200,1230,1300,1330,1400,1430,1500,1530,1600,1630,1700,1730,
-		1800,1830,1900,1930,2000,2030,2100,2130,2200,2230,2300,2330));
 $SMARTY->display('event/eventedit.html');
 
 ?>

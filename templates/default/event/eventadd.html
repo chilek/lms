@@ -72,18 +72,8 @@ $(function() {
 			<table>
 				<tr>
 					<td>
-						{trans("Begin:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[date]" value="{$event.date}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
-						<SELECT name="event[begintime]" id="event-start" size="1" {tip text="Select time of" trigger="begintime"} OnChange="javascript:SetEndtime();">
-							{foreach $hours as $time}
-							<OPTION value="{$time}" {if $time == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$time format="%02d"}:{math equation="x % 100" x=$time format="%02d"}</OPTION>
-							{/foreach}
-						</SELECT>
-						{trans("End:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[enddate]" value="{$event.enddate}" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
-						<SELECT name="event[endtime]" id="event-end" size="1" {tip text="Select time of" trigger="endtime"} OnChange="javascript:CheckEndtime();">
-							{foreach $hours as $time}
-							<OPTION value="{$time}" {if $time == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$time format="%02d"}:{math equation="x % 100" x=$time format="%02d"}</OPTION>
-							{/foreach}
-						</SELECT>
+						{trans("Begin:")} <INPUT type="text" id="event-start" placeholder="{trans("yyyy/mm/dd hh:mm")}" name="event[begin]" value="{$event.begin}" size="20" {tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar" trigger="date"}>
+						{trans("End:")} <INPUT type="text" id="event-end" placeholder="{trans("yyyy/mm/dd hh:mm")}" name="event[end]" value="{$event.end}" size="20" {tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
 					</td>
 					<td>
 						<div class="lms-ui-event-time-slider"></div>
@@ -318,7 +308,7 @@ $(function() {
 			'end-selector': '#event-end',
 			'slider-selector': '.lms-ui-event-time-slider',
 			'max': 1410,
-			'step': {ConfigHelper::getConfig('phpui.event_time_step', 30)}
+			'step': lmsSettings.eventTimeStep
 		});
 
 		$('[name="event[rtqueue]"]').change(function() {

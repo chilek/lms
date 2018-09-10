@@ -4,9 +4,9 @@
     	{$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a>{/if}
     </TD>
     <TD class="text-left nobr bold" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
-                {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+                {($day + $event.begintime)|date_format:"%H:%M"}
                 {if $event.begintime != $event.endtime}
-                - {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+                - {($day + $event.endtime)|date_format:"%H:%M"}
                 {/if}
                 {if $overdue == 1}
                     <br>{$event.date|date_format:"%x"}

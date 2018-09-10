@@ -2053,9 +2053,9 @@ CREATE TABLE events (
 	description 	text 		DEFAULT '' NOT NULL,
 	note 		text 		DEFAULT '' NOT NULL,
 	date 		integer 	DEFAULT 0 NOT NULL,
-	begintime 	smallint 	DEFAULT 0 NOT NULL,
+	begintime 	integer 	DEFAULT 0 NOT NULL,
 	enddate 	integer 	DEFAULT 0 NOT NULL,
-	endtime 	smallint 	DEFAULT 0 NOT NULL,
+	endtime 	integer 	DEFAULT 0 NOT NULL,
 	userid 		integer 	DEFAULT NULL
 		CONSTRAINT events_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	customerid 	integer 	DEFAULT NULL
@@ -3457,6 +3457,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018090800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091000');
 
 COMMIT;

@@ -37,23 +37,65 @@ function eventTimeSlider(options) {
 		return null;
 	}
 
-	var start = $(options['start-selector']),
-		end = $(options['end-selector']);
+	var start_input = $(options['start-selector']);
+	var end_input = $(options['end-selector']);
 
-	function selectToSlider(value) {
-		return Math.floor((value / 100) * 60) + (value % 100);
+	function setDateTimePickerStartRestrictions() {
+		var startdt = start_input.datetimepicker('getValue');
+		var enddt = end_input.datetimepicker('getValue');
+		if (enddt === null) {
+			return;
+		}
+		if (startdt > enddt) {
+			start_input.datetimepicker('setOptions', {
+				value: new Date(enddt)
+			});
+		}
+		start_input.datetimepicker('setOptions', {
+			maxDate: new Date(enddt)
+		});
 	}
 
-	function sliderToSelect(value) {
-		return Math.floor(value / 60) * 100 + (value % 60);
+	function setDateTimePickerEndRestrictions() {
+		var startdt = start_input.datetimepicker('getValue');
+		var enddt = end_input.datetimepicker('getValue');
+		if (startdt === null) {
+			return;
+		}
+		if (enddt < startdt) {
+			end_input.datetimepicker('setOptions', {
+				value: new Date(startdt)
+			});
+		}
+		end_input.datetimepicker('setOptions', {
+			minDate: new Date(startdt)
+		});
+	}
+
+	function inputToSlider(input) {
+		var time = input.datetimepicker('getValue');
+		if (time) {
+			return time.getHours() * 60 + time.getMinutes();
+		} else {
+			return 0;
+		}
+	}
+
+	function sliderToInput(value, input) {
+		var time = input.datetimepicker('getValue');
+		time.setHours(Math.floor(value / 60))
+		time.setMinutes(value % 60);
+		input.datetimepicker({
+			value: time
+		});
 	}
 
 	function toggleSliderDrag(handleIndex) {
 		if (handleIndex & 1) {
-			start.toggleClass('lms-ui-dragslider-slave');
+			start_input.toggleClass('lms-ui-dragslider-slave');
 		}
 		if (handleIndex & 2) {
-			end.toggleClass('lms-ui-dragslider-slave');
+			end_input.toggleClass('lms-ui-dragslider-slave');
 		}
 	}
 
@@ -64,12 +106,23 @@ function eventTimeSlider(options) {
 		step: options.step,
 		rangeDrag: true,
 		values: [
-			selectToSlider(start.val()),
-			selectToSlider(end.val())
+			inputToSlider(start_input),
+			inputToSlider(end_input)
 		],
 		slide: function (e, ui) {
-			start.val(sliderToSelect(ui.values[0]));
-			end.val(sliderToSelect(ui.values[1]));
+			sliderToInput(ui.values[0], start_input);
+			sliderToInput(ui.values[1], end_input);
+			switch (ui.handleIndex) {
+				case 0:
+					setDateTimePickerEndRestrictions();
+					break;
+				case 1:
+					setDateTimePickerStartRestrictions();
+					break;
+				default:
+					setDateTimePickerStartRestrictions();
+					setDateTimePickerEndRestrictions();
+			}
 		},
 		start: function (e, ui) {
 			toggleSliderDrag(ui.handleIndex);
@@ -79,11 +132,24 @@ function eventTimeSlider(options) {
 		}
 	});
 
+	start_input.datetimepicker('setOptions', {
+		onChangeDateTime: function() {
+			setDateTimePickerEndRestrictions();
+		}
+	});
+	end_input.datetimepicker('setOptions', {
+		onChangeDateTime: function() {
+			setDateTimePickerStartRestrictions();
+		}
+	});
+
 	$(options['start-selector'] + ',' + options['end-selector']).change(function (e) {
-		$(options['slider-selector']).slider('values', [
-			selectToSlider(start-selector.val()),
-			selectToSlider(end-selector.val())
+		$(options['slider-selector']).dragslider('values', [
+			inputToSlider(start_input),
+			inputToSlider(end_input)
 		]);
 	});
 
+	setDateTimePickerStartRestrictions();
+	setDateTimePickerEndRestrictions();
 }
