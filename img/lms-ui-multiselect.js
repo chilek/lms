@@ -326,26 +326,27 @@ function multiselect(options) {
 		var prev_checked_item = all_items.filter('[data-prev-checked]');
 		var i = all_items.index(all_items.filter('[data-prev-checked]')),
 			j = all_items.index(item);
+		var one_item;
 		if (i > -1) {
 			var checked = prev_checked_item.attr('data-prev-checked') == 'true' ? true : false;
 
 			var start = Math.min(i, j);
 			var stop = Math.max(i, j);
 			for (i = start; i <= stop; i++) {
-				var item = $(all_items[i]);
-				if (item.is('.disabled')) {
+				one_item = $(all_items[i]);
+				if (one_item.is('.disabled')) {
 					continue;
 				}
 				var optionValue = '';
-				if (/<span>(.*?)<\/span>/i.exec(item.get(0).innerHTML) !== null)
+				if (/<span>(.*?)<\/span>/i.exec(one_item.get(0).innerHTML) !== null)
 					optionValue = RegExp.$1;
 
 				if (checked) {
-					item.addClass('selected');
+					one_item.addClass('selected');
 				} else {
-					item.removeClass('selected');
+					one_item.removeClass('selected');
 				}
-				item.find(':checkbox').prop('checked', checked);
+				one_item.find(':checkbox').prop('checked', checked);
 			}
 		}
 
