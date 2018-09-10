@@ -132,13 +132,22 @@ function eventTimeSlider(options) {
 		}
 	});
 
+	function RoundTime(item, type) {
+		item.setOptions({
+			value: new Date(Math.round(item.getValue().getTime() / 1000 / lmsSettings.eventTimeStep / 60) *
+				lmsSettings.eventTimeStep * 60 * 1000)
+		});
+	}
+
 	start_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
+			RoundTime(this);
 			setDateTimePickerEndRestrictions();
 		}
 	});
 	end_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
+			RoundTime(this);
 			setDateTimePickerStartRestrictions();
 		}
 	});
