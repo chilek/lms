@@ -525,7 +525,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                        ? $data['at'] : $this->CalcAt($data['period'], $datefrom)),
                         'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
                         'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
-                        'settlement'        => !empty($data['settlement']) ? 1 : 0,
+                        'settlement'        => 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                         'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
                         'datefrom'          => $datefrom,
