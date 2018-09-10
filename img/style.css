@@ -955,7 +955,7 @@ button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):focus {
   box-shadow: 0px 0px 1px 1px black;
 }
 button.lms-ui-fileupload-button.lms-ui-fileupload-dropzone {
-  box-shadow: 2px 2px 10px -2px blue, -2px -2px 10px -2px blue;
+  box-shadow: 0px 0px 10px 1px blue;
 }
 div.lms-ui-fileupload-button-container {
   padding-bottom: 3px;
@@ -2086,6 +2086,9 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
 .lms-ui-matched-text {
   background-color: #AE9D7B;
   font-weight: bold;
+}
+.lms-ui-dragslider-slave {
+  box-shadow: 0px 0px 10px 1px blue;
 }
 .lms-ui-event-time-slider {
   width: 300px;
