@@ -60,8 +60,8 @@ function eventTimeSlider(options) {
 	$(options['slider-selector']).dragslider({
 		range: true,
 		min: 0,
-		max: options['max'],
-		step: options['step'],
+		max: options.max,
+		step: options.step,
 		rangeDrag: true,
 		values: [
 			selectToSlider(start.val()),
