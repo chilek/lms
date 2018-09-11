@@ -87,6 +87,9 @@ if(isset($_POST['event']))
 			$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
 		else
 			$endtime = datetime_to_timestamp($event['end']) - $enddate;
+	} else {
+		$enddate = $date;
+		$endtime = $begintime;
 	}
 
 	if ($enddate && $date > $enddate)
