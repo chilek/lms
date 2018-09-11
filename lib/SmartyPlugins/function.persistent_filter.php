@@ -44,8 +44,7 @@ function smarty_function_persistent_filter($params, $template) {
 				. ($persistent_filter == -1 || empty($persistent_filter) ? ' lms-ui-button-disabled' : '') . '" title="'
 				. trans("<!filter>Update") . '">
 			</button>
-			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-delete-button'
-				. ($persistent_filter == -1 || empty($persistent_filter) ? ' lms-ui-button-disabled' : '') . '" title="'
+			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-delete-button" title="'
 				. trans("<!filter>Delete") . '">
 			</button>
     	</div>

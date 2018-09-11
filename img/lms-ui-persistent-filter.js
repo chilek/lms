@@ -59,12 +59,15 @@ $(function() {
 		var div = $(this).closest('div.lms-ui-persistent-filter');
 		var selectelem = div.find('.scombobox')
 		var selection = selectelem.scombobox('val');
+		var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
+		var url;
+
 		if (selection == -1 || selection.length < 5) {
-			return false;
+			url = '?m=' + module + '&persistent-filter=' + selection;
+			location.href = url;
 		}
 
-		var module = location.href.replace(/^.+?m=([a-zA-Z0-9_-]+)(?:&.+|$)/, '$1');
-		var url = '?m=' + module + '&persistent-filter=' + selection + '&action=delete&api=1';
+		url = '?m=' + module + '&persistent-filter=' + selection + '&action=delete&api=1'
 
 		$('html,body').css('cursor', 'wait');
 		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
