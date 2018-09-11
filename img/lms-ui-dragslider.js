@@ -31,12 +31,27 @@ $.widget("ui.dragslider", $.ui.slider, {
 		this._rangeCapture = false;
 	},
 
+	_mouseInit: function() {
+		this.ctrlPressed = false;
+		var that = this;
+		$.ui.slider.prototype._mouseInit.apply(this,arguments);
+		$(document).on('keydown', function(e) {
+			if (e.which == 17) {
+				that.ctrlPressed = true;
+			}
+		}).on('keyup', function(e) {
+			if (e.which == 17) {
+				that.ctrlPressed = false;
+			}
+		});
+	},
+
 	_mouseCapture: function( event ) {
 		var o = this.options;
 
 		if ( o.disabled ) return false;
 
-		if(event.target == this.range.get(0) && o.rangeDrag == true && o.range == true) {
+		if((this.ctrlPressed || event.target == this.range.get(0)) && o.rangeDrag == true && o.range == true) {
 			this._rangeCapture = true;
 			this._rangeStart = null;
 		}
