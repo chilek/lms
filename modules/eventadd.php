@@ -266,6 +266,7 @@ if(isset($_POST['event']))
 } else {
 	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 	$event['overlapwarned'] = 0;
+	$event['wholedays'] = false;
 }
 
 if (isset($event['helpdesk'])) {
