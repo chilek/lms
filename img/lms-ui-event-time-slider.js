@@ -273,8 +273,8 @@ function eventTimeSlider(options) {
 			if (startdt !== null) {
 				values[0] = startdt.getHours() * 60 + startdt.getMinutes();
 			}
-			if (startdt !== null) {
-				values[1] = startdt.getHours() * 60 + startdt.getMinutes();
+			if (enddt !== null) {
+				values[1] = enddt.getHours() * 60 + enddt.getMinutes();
 			}
 			$(_slider).dragslider('values', values);
 		}
