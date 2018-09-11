@@ -165,7 +165,7 @@ function eventTimeSlider(options) {
 		}
 	});
 
-	_slider.find('.ui-slider-handle:last-child').focus();
+	$(_slider).find('.ui-slider-handle:last-child').focus();
 
 	function RoundTime(item, type) {
 		item.setOptions({
