@@ -2100,6 +2100,6 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   justify-content: space-between;
   flex-direction: column;
 }
-.lms-ui-event-time-container div {
+.lms-ui-event-time-container > div {
   margin: 5px;
 }

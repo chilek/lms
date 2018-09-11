@@ -57,17 +57,7 @@
 			{trans("Time:")}
 		</TD>
 		<TD>
-			<table>
-				<tr>
-					<td>
-						{trans("Begin:")} <INPUT type="text" id="event-start" placeholder="{trans("yyyy/mm/dd hh:mm")}" name="event[begin]" value="{$event.begin}" size="20" {tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar" trigger="date"}>
-						{trans("End:")} <INPUT type="text" id="event-end" placeholder="{trans("yyyy/mm/dd hh:mm")}" name="event[end]" value="{$event.end}" size="20" {tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
-					</td>
-					<td>
-                        <div class="lms-ui-event-time-slider"></div>
-					</td>
-				</tr>
-			</table>
+			{event_time_selection field_prefix="event" begin=$event.begin end=$event.end}
 		</TD>
 	</TR>
 	<TR>
@@ -218,14 +208,6 @@
 
 	$(function() {
 		$('form[name="event"] [name="event[title]"]').focus();
-
-		new eventTimeSlider({
-			'start-selector': '#event-start',
-			'end-selector': '#event-end',
-			'slider-selector': '.lms-ui-event-time-slider',
-			'max': 1410,
-			'step': lmsSettings.eventTimeStep
-		});
 	});
 
 	function update_user_selection(users) {
