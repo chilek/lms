@@ -25,85 +25,21 @@
     <TBODY>
     <TR id="eventpanel-{$layout.module}" style="display: none;">
         <TD colspan="2">
-            <table class="lmsbox-inner">
+            <table class="lmsbox lms-ui-background-cycle">
                 <COLGROUP>
                     <COL style="width: 1%;">
-                    <COL style="width: 91%;">
+                    <COL style="width: 1%; min-width:90px;">
+                    <COL style="width: 95%;">
                     <COL style="width: 1%;">
                     <COL style="width: 1%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;">
+                    <COL style="width: 1%;" class="no-print">
                 </COLGROUP>
+                <THEAD class="">
+                    {include file="event/eventlistheader.html"}
+                </THEAD>
                 <TBODY>
-                    {counter start=0 skip=1 print=false assign=msgidx}
                     {foreach from=$assignedevents item=event}
-                    <TR class="fall {if $event.closed==1}blend{/if}">
-                        <TD class="text-center"><IMG src="img/schedule.png" alt=""></TD>
-                        <TD class="bold">
-                            {trans("Subject:")} {$event.title}
-                        </TD>
-                        <TD class="bold nobr text-right">{trans("Assigned to:")}</TD>
-                        <TD class="nobr text-right">
-                            {foreach $event.ul $u}
-                            <A href="?m=userinfo&id={$u.ul}">{$u.name}</A><BR>
-                            {foreachelse}
-                            -
-                            {/foreach}
-                        </TD>
-                        {if $event.closed}
-                        <TD class="nobr text-right blend bold">
-                            {trans("Created by:")}<BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
-                        </TD>
-                        <TD class="nobr text-right bold">
-                            {trans("Closed by")}:<BR><A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
-                        </TD>
-                        {else}
-                        <TD class="nobr text-right" colspan="2">
-                            <B>{trans("Created by:")}</B><BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
-                        </TD>
-                        {/if}
-                        <TD class="nobr text-center">
-                            <B>{trans("From:")}</B>{$event.date|date_format:"%x (%A)"}
-                            {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}<BR>
-                            <B>{trans("To:")}</B>
-                            {if $event.enddate}
-                            {$event.enddate|date_format:"%x (%A)"}
-                            {else}
-                            {$event.date|date_format:"%x (%A)"}
-                            {/if}
-                            {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
-                        </TD>
-                        <TD class="nobr" colspan="4">
-                            <a href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}' title="{trans("Open timetable")}">
-                               <img src="img/schedule.png" alt=""></a>
-                            <a href="?m=eventdel&id={$event.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
-                                <IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-                            <A href="?m=eventedit&id={$event.id}">
-                                <IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-                            <A href="?m=eventinfo&id={$event.id}&action=open">
-                                <IMG src="img/info.gif" alt="{trans("Details")}" title="{trans("Details")}"></A>
-                            {if $event.closed}
-                            <A href="?m=eventedit&id={$event.id}&action=open">
-                                <IMG src="img/resolved.gif" alt="{trans("Open")}" title="{trans("Open")}"></A>
-                            {else}
-                            <A href="?m=eventedit&id={$event.id}&action=close">
-                                <IMG src="img/open.gif" alt="{trans("Close")}" title="{trans("Close")}"></A>
-                            {/if}
-                        </TD>
-                    </TR>
-                    <TR class="{if $event.closed=="1"}blend{/if}">
-                        <TD class="superlight text-center bold" {if isset($_EVENTSTYLES[$event.type])}style="{$_EVENTSTYLES[$event.type]}"{/if}>
-                        {$_EVENTTYPES[$event.type]}<BR>#{$event.id}
-                        </TD>
-                        <TD colspan="10" class="superlight" onClick="return self.location.href = '?m=eventinfo&id={$event.id}'">
-                            <img src="img/info1.gif" alt=""><B> {$event.description}</B>
-                            {if $event.note}<br><img src="img/note.gif" alt=""> {$event.note}{/if}
-                        </TD>
-                    </TR>
+                        {include file="event/eventlistboxrow.html" overdue=1}
                     {/foreach}
                 </TBODY>
             </table>
