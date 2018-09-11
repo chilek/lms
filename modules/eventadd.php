@@ -58,23 +58,42 @@ if(isset($_POST['event']))
 	if ($event['begin'] == '')
 		$error['begin'] = trans('You have to specify event day!');
 	else {
-		$date = datetime_to_timestamp($event['begin'], $midnight = true);
-		if (empty($date))
-			$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
-		else
-			$begintime = datetime_to_timestamp($event['begin']) - $date;
+		if (isset($event['wholedays'])) {
+			$date = date_to_timestamp($event['begin']);
+			if (empty($date))
+				$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			else
+				$begintime = 0;
+		} else {
+			$date = datetime_to_timestamp($event['begin'], $midnight = true);
+			if (empty($date))
+				$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
+			else
+				$begintime = datetime_to_timestamp($event['begin']) - $date;
+		}
 	}
 
 	$end = 0;
 	if ($event['end'] != '') {
-		$enddate = datetime_to_timestamp($event['end'], $midnight = true);
-		if (empty($enddate))
-			$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
-		else
-			$endtime = datetime_to_timestamp($event['end']) - $enddate;
+		if (isset($event['wholedays'])) {
+			$enddate = date_to_timestamp($event['end']);
+			if (empty($date))
+				$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			else
+				$endtime = 86400;
+		} else {
+			$enddate = datetime_to_timestamp($event['end'], $midnight = true);
+			if (empty($enddate))
+				$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
+			else
+				$endtime = datetime_to_timestamp($event['end']) - $enddate;
+		}
 	} else {
 		$enddate = $date;
-		$endtime = $begintime;
+		if (isset($event['wholedays']))
+			$endtime = 86400;
+		else
+			$endtime = $begintime;
 	}
 
 	if ($enddate && $date > $enddate)

@@ -105,6 +105,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			LEFT JOIN vusers ON (vusers.id = userid)
 			WHERE e.id = ?', array($id));
 
+		$event['wholedays'] = $event['endtime'] == 86400;
 		$event['helpdesk'] = !empty($event['ticketid']);
 		$event['userlist'] = $this->db->GetCol('SELECT userid AS id
 			FROM vusers, eventassignments

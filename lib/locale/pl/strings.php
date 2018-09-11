@@ -4126,4 +4126,8 @@ $_LANG['Show deleted'] = 'Pokaż skasowane';
 $_LANG['Enter body fragment'] = 'Wprowadź fragment treści';
 $_LANG['treat as regular expression'] = 'traktuj jako wyrażenie regularne';
 
+$_LANG['whole days'] = 'całe dni';
+$_LANG['whole day'] = 'cały dzień';
+$_LANG['$a days'] = '$a dni';
+
 ?>

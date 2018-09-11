@@ -50,7 +50,7 @@ $event = $LMS->GetEvent($_GET['id']);
 if (empty($event['enddate']))
 	$event['enddate'] = $event['date'];
 $event['begin'] = date('Y/m/d H:i', $event['date'] + $event['begintime']);
-$event['end'] = date('Y/m/d H:i', $event['enddate'] + $event['endtime']);
+$event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
 
 $userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
 	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC', 'id');
@@ -71,25 +71,44 @@ if(isset($_POST['event']))
 		$error['title'] = trans('Event title is too long!');
 
 	if ($event['begin'] == '')
-		$error['date'] = trans('You have to specify event day!');
+		$error['begin'] = trans('You have to specify event day!');
 	else {
-		$date = datetime_to_timestamp($event['begin'], $midnight = true);
-		if (empty($date))
-			$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
-		else
-			$begintime = datetime_to_timestamp($event['begin']) - $date;
+		if (isset($event['wholedays'])) {
+			$date = date_to_timestamp($event['begin']);
+			if (empty($date))
+				$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			else
+				$begintime = 0;
+		} else {
+			$date = datetime_to_timestamp($event['begin'], $midnight = true);
+			if (empty($date))
+				$error['begin'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
+			else
+				$begintime = datetime_to_timestamp($event['begin']) - $date;
+		}
 	}
 
-	$enddate = 0;
+	$end = 0;
 	if ($event['end'] != '') {
-		$enddate = datetime_to_timestamp($event['end'], $midnight = true);
-		if (empty($enddate))
-			$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
-		else
-			$endtime = datetime_to_timestamp($event['end']) - $enddate;
+		if (isset($event['wholedays'])) {
+			$enddate = date_to_timestamp($event['end']);
+			if (empty($date))
+				$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			else
+				$endtime = 86400;
+		} else {
+			$enddate = datetime_to_timestamp($event['end'], $midnight = true);
+			if (empty($enddate))
+				$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD HH:MM format!');
+			else
+				$endtime = datetime_to_timestamp($event['end']) - $enddate;
+		}
 	} else {
 		$enddate = $date;
-		$endtime = $begintime;
+		if (isset($event['wholedays']))
+			$endtime = 86400;
+		else
+			$endtime = $begintime;
 	}
 
 	if ($enddate && $date > $enddate)

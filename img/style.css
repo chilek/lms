@@ -2099,10 +2099,24 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
 }
 .lms-ui-event-time-container {
   display: inline-flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.lms-ui-event-time-container .lms-ui-event-time-left-panel {
+  display: inline-flex;
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
 }
-.lms-ui-event-time-container > div {
+.lms-ui-event-time-container .lms-ui-event-time-left-panel > div {
+  margin: 5px;
+}
+.lms-ui-event-time-container .lms-ui-event-time-right-panel {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.lms-ui-event-time-container .lms-ui-event-time-right-panel > * {
   margin: 5px;
 }

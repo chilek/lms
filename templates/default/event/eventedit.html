@@ -57,7 +57,7 @@
 			{trans("Time:")}
 		</TD>
 		<TD>
-			{event_time_selection field_prefix="event" begin=$event.begin end=$event.end}
+			{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=isset($event.wholedays)}
 		</TD>
 	</TR>
 	<TR>

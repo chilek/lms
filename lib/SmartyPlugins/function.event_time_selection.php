@@ -28,6 +28,7 @@ function smarty_function_event_time_selection($params, $template) {
 	$field_prefix = isset($params['field_prefix']) ? $params['field_prefix'] : 'event';
 	$begin = isset($params['begin']) ? $params['begin'] : '';
 	$end = isset($params['end']) ? $params['end'] : '';
+	$whole_days = isset($params['wholedays']) && $params['wholedays'];
 
 	if ( !function_exists('smarty_function_tip') ) {
 		foreach ( $template->getPluginsDir() as $v ) {
@@ -39,26 +40,35 @@ function smarty_function_event_time_selection($params, $template) {
 
 	return '
 		<div class="lms-ui-event-time-container">
-			<div>
-				' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
-					. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="20" ' .
-					smarty_function_tip(array(
-						'class' => 'calendar-time',
-						'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-						'trigger' => 'date',
-					), $template)
-					. '>
-				' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
-					. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="20" ' .
-					smarty_function_tip(array(
-						'class' => 'calendar-time',
-						'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-						'trigger' => 'enddate',
-					), $template)
-					. '>
+			<div class="lms-ui-event-time-left-panel">
+				<div>
+					' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
+						. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="20" ' .
+						smarty_function_tip(array(
+							'class' => 'calendar-time',
+							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+							'trigger' => 'date',
+						), $template)
+						. '>
+					' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
+						. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="20" ' .
+						smarty_function_tip(array(
+							'class' => 'calendar-time',
+							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+							'trigger' => 'enddate',
+						), $template)
+						. '>
+				</div>
+				<div>
+					<div class="lms-ui-event-time-slider"></div>
+				</div>
 			</div>
-			<div>
-				<div class="lms-ui-event-time-slider"></div>
+			<div class="lms-ui-event-time-right-panel">
+				<label>
+					<input type="checkbox" class="lms-ui-event-whole-days" name="' . $field_prefix . '[wholedays]" value="1"
+						' . ($whole_days ? 'checked' : '') . '>
+					' . trans("whole days") . '
+				</label>
 			</div>
 		</div>
 		<script>

@@ -1848,10 +1848,24 @@ div.lms-ui-persistent-filter {
 
 .lms-ui-event-time-container {
 	display: inline-flex;
-	align-items: center;
-	justify-content: space-between;
-	flex-direction: column;
-	& > div {
-		margin: 5px;
+	justify-content: flex-start;
+	align-items: flex-start;
+	& .lms-ui-event-time-left-panel {
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-direction: column;
+		& > div {
+			margin: 5px;
+		}
+	}
+	& .lms-ui-event-time-right-panel {
+		display: inline-flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+		& > * {
+			margin: 5px;
+		}
 	}
 }

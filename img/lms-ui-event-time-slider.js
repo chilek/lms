@@ -40,6 +40,7 @@ function eventTimeSlider(options) {
 	var start_input = $(options['start-selector']);
 	var end_input = $(options['end-selector']);
 	var _slider = null;
+	var whole_days = false;
 
 	function updateRange(values) {
 		var startdt = new Date(start_input.datetimepicker('getValue'));
@@ -67,8 +68,8 @@ function eventTimeSlider(options) {
 		range = values[1] - values[0];
 
 		$(_slider).find('.ui-slider-range')
-			.text((days > 1 ? days + ' x ' : '') +
-				sprintf("%02d:%02d", Math.floor(range / 60), (range % 60)));
+			.text((whole_days ? lmsMessages.eventWholeDays.replace('$a', days) :
+				(days > 1 ? days + ' x ' : '') + sprintf("%02d:%02d", Math.floor(range / 60), (range % 60))));
 	}
 
 	function setDateTimePickerStartRestrictions() {
@@ -174,10 +175,16 @@ function eventTimeSlider(options) {
 	start_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
 			RoundTime(this);
-			$(options['slider-selector']).dragslider('values', [
-				inputToSlider(start_input),
-				inputToSlider(end_input)
-			]);
+			var options = [];
+			if (whole_days) {
+				options = [ 0, 1440 ];
+			} else {
+				options = [
+					inputToSlider(start_input),
+					inputToSlider(end_input)
+				];
+			}
+			$(_slider).dragslider('values', options);
 			setDateTimePickerEndRestrictions();
 			updateRange();
 		},
@@ -185,10 +192,16 @@ function eventTimeSlider(options) {
 	end_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
 			RoundTime(this);
-			$(options['slider-selector']).dragslider('values', [
-				inputToSlider(start_input),
-				inputToSlider(end_input)
-			]);
+			var options = [];
+			if (whole_days) {
+				options = [ 0, 1440 ];
+			} else {
+				options = [
+					inputToSlider(start_input),
+					inputToSlider(end_input)
+				];
+			}
+			$(_slider).dragslider('values', options);
 			setDateTimePickerStartRestrictions();
 			updateRange();
 		},
@@ -197,4 +210,72 @@ function eventTimeSlider(options) {
 	setDateTimePickerStartRestrictions();
 	setDateTimePickerEndRestrictions();
 	updateRange();
+
+	function dateToString(dt) {
+		return sprintf("%04d/%02d/%02d",
+			dt.getFullYear(),
+			dt.getMonth() + 1,
+			dt.getDate()
+		);
+	}
+
+	function dateTimeToString(dt) {
+		return sprintf("%04d/%02d/%02d %02d:%02d",
+			dt.getFullYear(),
+			dt.getMonth() + 1,
+			dt.getDate(),
+			dt.getHours(),
+			dt.getMinutes()
+		);
+	}
+	$('.lms-ui-event-whole-days').change(function () {
+		var startdt = start_input.datetimepicker('getValue');
+		var enddt = end_input.datetimepicker('getValue');
+
+		if ($(this).prop('checked')) {
+			$(_slider).dragslider('disable');
+			start_input.datetimepicker('setOptions', {
+				timepicker: false,
+				format: 'Y/m/d'
+			});
+			if (startdt !== null) {
+				start_input.val(dateToString(startdt));
+			}
+			end_input.datetimepicker('setOptions', {
+				timepicker: false,
+				format: 'Y/m/d'
+			});
+			if (enddt !== null) {
+				end_input.val(dateToString(enddt));
+			}
+			whole_days = true;
+			$(_slider).dragslider('values', [ 0, 1440 ]);
+		} else {
+			$(_slider).dragslider('enable');
+			start_input.datetimepicker('setOptions', {
+				timepicker: true,
+				format: 'Y/m/d H:i'
+			});
+			if (startdt !== null) {
+				start_input.val(dateTimeToString(startdt));
+			}
+			end_input.datetimepicker('setOptions', {
+				timepicker: true,
+				format: 'Y/m/d H:i'
+			});
+			if (enddt !== null) {
+				end_input.val(dateTimeToString(enddt));
+			}
+			whole_days = false;
+			var values = [ 0, 1440 ];
+			if (startdt !== null) {
+				values[0] = startdt.getHours() * 60 + startdt.getMinutes();
+			}
+			if (startdt !== null) {
+				values[1] = startdt.getHours() * 60 + startdt.getMinutes();
+			}
+			$(_slider).dragslider('values', values);
+		}
+		updateRange();
+	}).change();
 }
