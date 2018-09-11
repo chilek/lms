@@ -1400,12 +1400,15 @@ html .ui-button.ui-state-disabled:active {
 }
 .ui-slider-range {
   background-color: #CEBD9B;
+  text-align: center;
+  overflow: hidden;
 }
 .ui-slider-handle.ui-state-default {
   background-color: #AE9D7B;
+  margin-top: 2px;
 }
 .ui-slider-horizontal {
-  height: 0.6em;
+  height: 1em;
 }
 .fileupload-progress-label {
   position: absolute;

@@ -39,6 +39,37 @@ function eventTimeSlider(options) {
 
 	var start_input = $(options['start-selector']);
 	var end_input = $(options['end-selector']);
+	var _slider = null;
+
+	function updateRange(values) {
+		var startdt = new Date(start_input.datetimepicker('getValue'));
+		var enddt = new Date(end_input.datetimepicker('getValue'));
+		if (startdt == null || enddt == null) {
+			return;
+		}
+
+		var days = 1;
+		if (startdt.getFullYear() != enddt.getFullYear() ||
+			startdt.getMonth() != enddt.getMonth() ||
+			startdt.getDay() != enddt.getDay()) {
+			startdt.setHours(0);
+			startdt.setMinutes(0);
+			startdt.setSeconds(0);
+			enddt.setHours(0);
+			enddt.setMinutes(0);
+			enddt.setSeconds(0);
+			days = Math.round((enddt - startdt) / 1000 / 86400) + 1;
+		}
+		var range;
+		if (values === undefined) {
+			values = $(_slider).dragslider('values');
+		}
+		range = values[1] - values[0];
+
+		$(_slider).find('.ui-slider-range')
+			.text((days > 1 ? days + ' x ' : '') +
+				sprintf("%02d:%02d", Math.floor(range / 60), (range % 60)));
+	}
 
 	function setDateTimePickerStartRestrictions() {
 		var startdt = start_input.datetimepicker('getValue');
@@ -51,11 +82,6 @@ function eventTimeSlider(options) {
 				value: new Date(enddt)
 			});
 		}
-/*
-		start_input.datetimepicker('setOptions', {
-			maxDate: new Date(enddt)
-		});
-*/
 	}
 
 	function setDateTimePickerEndRestrictions() {
@@ -107,6 +133,9 @@ function eventTimeSlider(options) {
 		max: options.max,
 		step: options.step,
 		rangeDrag: true,
+		create: function() {
+			_slider = this;
+		},
 		values: [
 			inputToSlider(start_input),
 			inputToSlider(end_input)
@@ -125,6 +154,7 @@ function eventTimeSlider(options) {
 					setDateTimePickerStartRestrictions();
 					setDateTimePickerEndRestrictions();
 			}
+			updateRange(ui.values);
 		},
 		start: function (e, ui) {
 			toggleSliderDrag(ui.handleIndex);
@@ -144,23 +174,27 @@ function eventTimeSlider(options) {
 	start_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
 			RoundTime(this);
+			$(options['slider-selector']).dragslider('values', [
+				inputToSlider(start_input),
+				inputToSlider(end_input)
+			]);
 			setDateTimePickerEndRestrictions();
-		}
+			updateRange();
+		},
 	});
 	end_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
 			RoundTime(this);
+			$(options['slider-selector']).dragslider('values', [
+				inputToSlider(start_input),
+				inputToSlider(end_input)
+			]);
 			setDateTimePickerStartRestrictions();
-		}
-	});
-
-	$(options['start-selector'] + ',' + options['end-selector']).change(function (e) {
-		$(options['slider-selector']).dragslider('values', [
-			inputToSlider(start_input),
-			inputToSlider(end_input)
-		]);
+			updateRange();
+		},
 	});
 
 	setDateTimePickerStartRestrictions();
 	setDateTimePickerEndRestrictions();
+	updateRange();
 }
