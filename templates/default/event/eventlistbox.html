@@ -5,7 +5,7 @@
     }
 </style>
 {foreach $daylist as $day}
-<TABLE class="lmsbox lms-ui-background-cycle">
+<TABLE class="lmsbox lms-ui-background-cycle event-day-table">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%; min-width:90px;">
@@ -53,19 +53,25 @@
         opacity: 0.9,
         placeholder: 'light',
         connectWith: '.event-day',
-/*
-        helper: function (e,  item) {
-        	var eventid = $(item).attr('data-event-id');
-        	$('table.lmsbox').find('.event-single[data-event-id="' + eventid + '"]')
-                .not(item).hide();
-        	return item.clone();
+        helper: function (e,  ui) {
+        	$('table.lmsbox').find('.event-single[data-event-id="' + $(ui).attr('data-event-id') + '"]')
+                .not(ui).hide();
+        	return ui;
         },
-*/
-		update: function (e,  ui) {
+		update: function (e, ui) {
 			if (ui.sender == null) {
 				return;
             }
         	var eventid = ui.item.attr('data-event-id');
+			var items = $('.event-single[data-event-id="' + eventid + '"]').not(ui.item);
+			var day = ui.item.closest('.event-day-table').next('.event-day-table');
+			items.each(function() {
+				if (day.length) {
+					day.find('.event-day').append(this);
+					day = day.next('.event-day-table');
+					$(this).show();
+				}
+            });
 			var delta = ui.item.closest('.event-day').attr('data-event-day') - ui.sender.attr('data-event-day');
 			$('html,body').css('cursor', 'wait');
 			$.ajax('?m={$layout.module}&api=1', {
