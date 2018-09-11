@@ -2094,3 +2094,12 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   width: 300px;
   margin-left: 10px;
 }
+.lms-ui-event-time-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.lms-ui-event-time-container div {
+  margin: 5px;
+}

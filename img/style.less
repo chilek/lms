@@ -14,6 +14,7 @@
 @red-light: #ffb1b1;
 @red-lucid: #fccdcd;
 @select-border: 1px solid #a9a9a9;
+@slave: 0px 0px 10px 1px blue;
 
 .lms-ui-no-user-select {
 	-webkit-user-select: none;
@@ -730,8 +731,7 @@ button.lms-ui-fileupload-button {
 	.lms-ui-button();
 	background-image: url(attach.gif);
 	&.lms-ui-fileupload-dropzone {
-		//border: 1px solid blue;
-		box-shadow: 2px 2px 10px -2px blue, -2px -2px 10px -2px blue;
+		box-shadow: @slave;
 	}
 }
 
@@ -1834,7 +1834,21 @@ div.lms-ui-persistent-filter {
 	font-weight: bold;
 }
 
+.lms-ui-dragslider-slave {
+	box-shadow: @slave;
+}
+
 .lms-ui-event-time-slider {
 	width: 300px;
 	margin-left: 10px;
+}
+
+.lms-ui-event-time-container {
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-direction: column;
+	& div {
+		margin: 5px;
+	}
 }
