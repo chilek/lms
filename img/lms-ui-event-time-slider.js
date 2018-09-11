@@ -51,9 +51,11 @@ function eventTimeSlider(options) {
 				value: new Date(enddt)
 			});
 		}
+/*
 		start_input.datetimepicker('setOptions', {
 			maxDate: new Date(enddt)
 		});
+*/
 	}
 
 	function setDateTimePickerEndRestrictions() {
