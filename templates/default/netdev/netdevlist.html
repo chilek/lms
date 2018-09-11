@@ -120,7 +120,8 @@
 			{/if}
 		</TD>
 		<TD class="nobr valign-top">
-			{if $netdev.netnode}<a href="?m=netnodeinfo&amp;id={$netdev.netnodeid}">{$netdev.netnode}</a>{/if}
+			{if $netdev.netnode}<IMG src="img/netnode.png" alt=""><a href="?m=netnodeinfo&amp;id={$netdev.netnodeid}"> {$netdev.netnode}</a>{/if}
+			{if $netdev.customerid}<IMG src="img/customer.png" alt=""><a href="?m=customerinfo&amp;id={$netdev.customerid}"> {$netdev.customerid}</a>{/if}
 		</TD>
 		<TD class="text-right valign-top">
 			({$netdev.id|string_format:"%04d"})
