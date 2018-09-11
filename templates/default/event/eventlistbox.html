@@ -53,7 +53,15 @@
         opacity: 0.9,
         placeholder: 'light',
         connectWith: '.event-day',
-		update: function (e, ui) {
+/*
+        helper: function (e,  item) {
+        	var eventid = $(item).attr('data-event-id');
+        	$('table.lmsbox').find('.event-single[data-event-id="' + eventid + '"]')
+                .not(item).hide();
+        	return item.clone();
+        },
+*/
+		update: function (e,  ui) {
 			if (ui.sender == null) {
 				return;
             }

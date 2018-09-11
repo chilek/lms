@@ -441,7 +441,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     }
 
 	public function MoveEvent($id, $delta) {
-		return $this->db->Execute('UPDATE events SET date = date + ? WHERE id = ?', array($delta, $id));
-		return $this->db->Execute('UPDATE events SET enddate = enddate + ? WHERE id = ? AND enddate > 0', array($delta, $id));
+		$res = $this->db->Execute('UPDATE events SET date = date + ? WHERE id = ?', array($delta, $id));
+		return $res && $this->db->Execute('UPDATE events SET enddate = enddate + ? WHERE id = ? AND enddate > 0', array($delta, $id));
 	}
 }
