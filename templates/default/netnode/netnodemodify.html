@@ -3,13 +3,20 @@
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
-<script type="text/javascript" src="img/netnodehelper.js"></script>
 {include file="google-maps.html"}
 <H1>{$layout.pagetitle}</H1>
 
 <style>
-	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+	.lms-ui-box-row-label {
 		width: 12em;
+	}
+	.lms-ui-box-row-field.ownership {
+		flex-direction: column;
+
+	}
+	.lms-ui-box-row-field.ownership > :not(:first-child) {
+		margin-left: 0 !important;
+		margin-top: 0.3em;
 	}
 </style>
 
@@ -84,7 +91,7 @@
 					{trans("Project:")}
 				</div>
 				<div class="lms-ui-box-row-field">
-					<SELECT NAME="netnode[invprojectid]" ID="NNproject" VALUE="{$netnode.invprojectid}" {tip text="Select project for this node"} onchange="setNNProject();">
+					<SELECT NAME="netnode[invprojectid]" id="project" VALUE="{$netnode.invprojectid}" {tip text="Select project for this node"}>
 						<OPTION value="-2"{if ($netnode.invprojectid == '-2')} selected{/if}>- {trans("none")} -</OPTION>
 						<OPTION value="-1"{if ($netnode.invprojectid == '-1')} selected{/if}>{trans("New project")}</OPTION>
 						<!--
@@ -94,7 +101,7 @@
 						<OPTION VALUE="{$project.id}"{if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
 						{/foreach}
 					</SELECT>
-					<INPUT TYPE="TEXT" NAME="netnode[projectname]" VALUE="{$netnode.projectname}" {tip text="Enter new project name" trigger="projectname"} ID="NNprojectname">
+					<INPUT TYPE="TEXT" NAME="netnode[projectname]" id="projectname" VALUE="{$netnode.projectname}" {tip text="Enter new project name" trigger="projectname"}>
 				</div>
 			</div>
 
@@ -105,13 +112,13 @@
 				<div class="lms-ui-box-row-label">
 					{trans("Ownership:")}
 				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT NAME="netnode[ownership]" ID="NNownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"} onchange="setNNOwner();">
+				<div class="lms-ui-box-row-field ownership">
+					<SELECT NAME="netnode[ownership]" id="ownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"}>
 						{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
 						<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
 						{/foreach}
 					</SELECT>
-					<INPUT TYPE="TEXT" NAME="netnode[coowner]" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner identifier"} ID="NNcoowner" />
+					<INPUT TYPE="TEXT" NAME="netnode[coowner]" id="ownername" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
 				</div>
 			</div>
 
@@ -255,10 +262,23 @@
 <script>
 
 	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
-	document.forms['netnode'].elements['netnode[name]'].focus();
+	$('[name="netnode[name]"]').focus();
 
-	setNNProject();
-	setNNOwner();
+	$('#project').change(function() {
+		if ($(this).val() == '-1') {
+			$('#projectname').show();
+		} else {
+			$('#projectname').hide();
+		}
+	}).change();
+
+	$('#ownership').change(function() {
+		if ([ '1', '2' ].indexOf($(this).val()) != -1) {
+			$('#ownername').show();
+		} else {
+			$('#ownername').hide();
+		}
+	}).change();
 
 	/*
 	 * \brief Update address location update. Require google API key.
@@ -273,7 +293,14 @@
 		var house  = box.find( "input[data-address='house']"  ).val();
 		var flat   = box.find( "input[data-address='flat']"   ).val();
 
-		var location = location_str( city, street, house, flat, zip, state );
+		var location = location_str({
+			city: city,
+			street: street,
+			house: house,
+			flat: flat,
+			zip: zip,
+			state: state
+		});
 
 		if ( location.length > 0 ) {
 			setAddressLocation( location, "#latitude", "#longitude" );

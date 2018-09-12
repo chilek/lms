@@ -1933,6 +1933,16 @@ div.lms-ui-wysiwyg-editor {
 					align-self: flex-start;
 					font-weight: bold;
 				}
+				& .lms-ui-box-row-field {
+					display: flex;
+					flex-direction: row;
+					justify-content: flex-start;
+					align-items: center;
+					align-self: flex-start;
+					& > :not(:first-child) {
+						margin-left: 0.2em;
+					}
+				}
 			}
 		}
 	}
