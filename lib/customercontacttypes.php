@@ -25,11 +25,11 @@
  */
 
 function format_customer_phone($contact) {
-	$phone_format = ConfigHelper::getConfig('phpui.call_phone_format', '');
-	if (!empty($phone_format))
-		$formatted_phone = str_replace('%phone', $contact['contact'], $phone_format);
+	$call_phone_url = ConfigHelper::getConfig('phpui.call_phone_url', '');
+	if (!empty($call_phone_url))
+		$call_phone_url = str_replace('%phone', $contact['contact'], $call_phone_url);
 	return '<a class="phone_number" href="tel:' . $contact['contact'] . '">' . $contact['contact'] . '</a>&nbsp;'
-		. (isset($formatted_phone) ? '<a href="' . $formatted_phone . '"><img src="img/phone-call.png"></a>' : '');
+		. (isset($call_phone_url) ? '<a href="' . $call_phone_url . '"><img src="img/phone-call.png"></a>' : '');
 }
 
 function format_customer_email($contact) {
