@@ -710,7 +710,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 	private function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false) {
 		if (!empty($files) && ($dir = ConfigHelper::getConfig('rt.mail_dir'))) {
-			@umask(0007);
+			@umask(intval(ConfigHelper::getConfig('rt.mail_file_umask', '0007'), 8));
 			$dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
 			$dir = $dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
 			@mkdir($dir, $dir_permission);
