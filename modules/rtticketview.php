@@ -110,17 +110,18 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (isset($_GET['highlight'])) {
 	$highlight = $_GET['highlight'];
-	foreach ($ticket['messages'] as &$message)
-		if (isset($highlight['regexp']))
+	if (isset($highlight['regexp']))
+		foreach ($ticket['messages'] as &$message)
 			$message['body'] = preg_replace('/(' . $highlight['pattern'] . ')/i',
 			'[matched-text]$1[/matched-text]', $message['body']);
-		else {
+	else
+		foreach ($ticket['messages'] as &$message) {
 			$offset = 0;
 			while (($pos = mb_stripos($message['body'], $highlight['pattern'], $offset)) !== false) {
 				$message['body'] = mb_substr($message['body'], 0, $pos)
 					. '[matched-text]' . mb_substr($message['body'], $pos, mb_strlen($highlight['pattern']))
 					. '[/matched-text]' . mb_substr($message['body'], $pos + mb_strlen($highlight['pattern']));
-				$offset = $pos + strlen('[matched-text]') + 1;
+				$offset = $pos + strlen('[matched-text][/matched-text]') + mb_strlen($highlight['pattern']) + 1;
 			}
 		}
 	unset($message);
