@@ -1909,11 +1909,16 @@ div.lms-ui-wysiwyg-editor {
 		align-items: flex-start;
 		flex-wrap: wrap;
 		& .lms-ui-box-panel {
+			&:first-child {
+				margin: 0.25em;
+			}
+			&:nth-child(n + 2) {
+				margin-left: 10em;
+			}
 			display: inline-flex;
 			flex-direction: column;
 			justify-content: flex-start;
 			align-items: flex-start;
-			margin: 0.25em;
 			& .lms-ui-box-row {
 				display: flex;
 				justify-content: flex-start;
@@ -1927,14 +1932,6 @@ div.lms-ui-wysiwyg-editor {
 				& .lms-ui-box-row-label {
 					align-self: flex-start;
 					font-weight: bold;
-				}
-				& .lms-ui-box-row-field {
-					/*
-					display: flex;
-					justify-content: flex-start;
-					align-items: flex-start;
-					flex-wrap: wrap;
-					*/
 				}
 			}
 		}

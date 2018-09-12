@@ -128,6 +128,6 @@ $SMARTY->assign('netnode'  , $netnodedata);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 
-$SMARTY->display('netnode/netnodeadd.html');
+$SMARTY->display('netnode/netnodemodify.html');
 
 ?>

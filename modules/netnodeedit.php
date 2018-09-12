@@ -150,6 +150,6 @@ $SMARTY->assign('objectid' , $netnodedata['id']);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 
-$SMARTY->display('netnode/netnodeedit.html');
+$SMARTY->display('netnode/netnodemodify.html');
 
 ?>

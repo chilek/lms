@@ -2163,7 +2163,12 @@ div.lms-ui-wysiwyg-editor {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel:first-child {
   margin: 0.25em;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel:nth-child(n + 2) {
+  margin-left: 10em;
 }
 .lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row {
   display: flex;
@@ -2179,14 +2184,6 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
   align-self: flex-start;
   font-weight: bold;
-}
-.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-field {
-  /*
-					display: flex;
-					justify-content: flex-start;
-					align-items: flex-start;
-					flex-wrap: wrap;
-					*/
 }
 .lms-ui-box-container .lms-ui-box-buttons {
   align-self: flex-end;
