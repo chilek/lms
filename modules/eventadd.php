@@ -347,6 +347,6 @@ $SMARTY->assign('tqname',$tqname);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
-$SMARTY->display('event/eventadd.html');
+$SMARTY->display('event/eventmodify.html');
 
 ?>

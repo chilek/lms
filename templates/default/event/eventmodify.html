@@ -11,26 +11,14 @@
 		});
 	});
 
-	function SetEndtime()
-	{
-		box = document.forms['event'].elements['event[begintime]'];
-		document.forms['event'].elements['event[endtime]'].value = box.options[box.selectedIndex].value;
-	}
-
-	function CheckEndtime()
-	{
-		start = document.forms['event'].elements['event[begintime]'];
-		end = document.forms['event'].elements['event[endtime]'];
-		if (Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
-		{
-			alert('{trans("End time must not precede start time!")}');
-			end.value = start.options[start.selectedIndex].value;
-		}
-	}
-
 </SCRIPT>
 
-{if empty($event.ticketid)}<H1>{$layout.pagetitle}</H1>{else}<H1>{trans("Add new event to request:")} #{$event.ticketid} {/if}</H1>
+{if empty($event.ticketid)}
+	<H1>{$layout.pagetitle}</H1>
+{else}
+	<H1>{trans("Add new event to request:")} #{$event.ticketid}</H1>
+{/if}
+
 <style>
 	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
 		width: 12em;
@@ -38,7 +26,8 @@
 </style>
 
 <P class="text-center" >
-<FORM method="POST" action="?m=eventadd" name="event" id="event">
+<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
+<INPUT type="hidden" name="event[id]" value="{$event.id}">
 <INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
 <INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
 <INPUT type="submit" class="hiddenbtn">
@@ -51,7 +40,7 @@
 	</div>
 	<div class="lms-ui-box-contents">
 		<div class="lms-ui-box-panel">
-			{block name="eventadd_left_panel"}
+			{block name="eventmodify_left_panel"}
 
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
@@ -80,7 +69,7 @@
 			{/block}
 		</div>
 		<div class="lms-ui-box-panel">
-			{block name="eventedit_right_panel"}
+			{block name="eventmodify_right_panel"}
 
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
@@ -118,10 +107,10 @@
 					{trans("Customer:")}
 				</div>
 				<div class="lms-ui-box-row-field">
-					{if empty($event.ticketid) && empty($event.customerid)}
+					{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
 						{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
 					{else}
-						{if $event.customerid != 0}
+						{if !empty($event.customerid)}
 							{$event.customername} ({$event.customerid})
 							<input type="hidden" name="event[custid]" value="{$event.customerid}">
 						{else}
@@ -161,6 +150,33 @@
 				</div>
 			</div>
 
+			{if $layout.module = 'eventedit'}
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/note.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Note:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/ticket.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Assign this event to Helpdesk request")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<input type="checkbox" name="event[helpdesk]"{if isset($event.helpdesk)}value="1" checked{/if}>
+					<input type="text" name="event[ticketid]" value="{$event.ticketid}">
+				</div>
+			</div>
+			{/if}
+
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
 					<IMG src="img/users.gif" alt="">
@@ -189,7 +205,7 @@
 				</div>
 			</div>
 
-			{if empty($event.ticketid)}
+			{if $layout.module == 'eventadd' && empty($event.ticketid)}
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
 					<IMG src="img/ticket.gif" alt="">
@@ -209,11 +225,13 @@
 	<div class="lms-ui-box-buttons">
 		<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
 		<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
+		{if $layout.module == 'eventadd'}
 		<INPUT type="checkbox" name="event[reuse]" id="reuse" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
+		{/if}
 	</div>
 </div>
 
-<div class="lms-ui-box-container" id="row"{if empty($event['helpdesk'])} style="display:none;"}{/if}>
+<div class="lms-ui-box-container" id="row"{if $layout.module == 'eventedit' || empty($event['helpdesk'])} style="display:none;"}{/if}>
 	<div class="lms-ui-box-header">
 		<IMG SRC="img/ticket.gif" ALT="">
 		{trans("Add new request to Helpdesk")}

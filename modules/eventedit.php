@@ -45,12 +45,14 @@ if (isset($_GET['action'])) {
 	}
 }
 
-$event = $LMS->GetEvent($_GET['id']);
+if (isset($_GET['id'])) {
+	$event = $LMS->GetEvent($_GET['id']);
 
-if (empty($event['enddate']))
-	$event['enddate'] = $event['date'];
-$event['begin'] = date('Y/m/d H:i', $event['date'] + $event['begintime']);
-$event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
+	if (empty($event['enddate']))
+		$event['enddate'] = $event['date'];
+	$event['begin'] = date('Y/m/d H:i', $event['date'] + $event['begintime']);
+	$event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
+}
 
 $userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
 	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC', 'id');
@@ -62,8 +64,6 @@ if(isset($_POST['event']))
 	if (!isset($event['usergroup']))
 		$event['usergroup'] = 0;
 	$SESSION->save('eventgid', $event['usergroup']);
-
-	$event['id'] = $_GET['id'];
 
 	if($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
@@ -172,6 +172,6 @@ $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
-$SMARTY->display('event/eventedit.html');
+$SMARTY->display('event/eventmodify.html');
 
 ?>
