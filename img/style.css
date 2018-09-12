@@ -1402,6 +1402,7 @@ html .ui-button.ui-state-disabled:active {
   background-color: #CEBD9B;
   text-align: center;
   overflow: hidden;
+  cursor: default;
 }
 .ui-slider-handle.ui-state-default {
   background-color: #AE9D7B;
@@ -2119,4 +2120,68 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
 }
 .lms-ui-event-time-container .lms-ui-event-time-right-panel > * {
   margin: 5px;
+}
+.lms-ui-box-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border: 1px solid black;
+  background-color: #DFD5BD;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+}
+.lms-ui-box-container .lms-ui-box-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  align-self: stretch;
+  padding: 0.25em;
+  background-color: #CEBD9B;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+}
+.lms-ui-box-container .lms-ui-box-header > * {
+  margin: 0.25em;
+}
+.lms-ui-box-container .lms-ui-box-contents {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 0.25em;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row > * {
+  margin: 0.25em;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-icon {
+  align-self: flex-start;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+  align-self: flex-start;
+  font-weight: bold;
+}
+.lms-ui-box-container .lms-ui-box-buttons {
+  align-self: flex-end;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 0.75em;
+}
+.lms-ui-box-container .lms-ui-box-buttons > * {
+  margin: 0.25em;
 }
