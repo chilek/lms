@@ -3,7 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
-<script type="text/javascript" src="img/netnodehelper.js"></script>
 <script src="img/location_box.js"></script>
 {include file="google-maps.html"}
 <H1>{$layout.pagetitle}</H1>
@@ -226,7 +225,7 @@
 							<tr>
 								<td><img src="img/money.gif" alt=""> {trans("Investment project:")}</td>
 								<td>
-									<select name="netdev[invprojectid]" id="NNproject" {tip text="Select project for this node"} onchange="setNNProject();">
+									<select name="netdev[invprojectid]" id="project" {tip text="Select project for this node"}>
 										<option value="-2"{if ($netdev.invprojectid == '-2')} selected{/if}>- {trans("none")} -</option>
 										<option value="-1"{if ($netdev.invprojectid == '-1')} selected{/if}>{trans("New project")}</option>
 										<option value="1"{if ($netdev.invprojectid == '1')} selected{/if}>{trans("From root device")}</option>
@@ -234,7 +233,7 @@
 										<option value="{$project.id}"{if ($netdev.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
 										{/foreach}
 									</select>
-									<input type="text" name="netdev[projectname]" value="{$netdev.projectname}" {tip text="Enter new project name" trigger="projectname" } id="NNprojectname">
+									<input type="text" name="netdev[projectname]" value="{$netdev.projectname}" {tip text="Enter new project name" trigger="projectname" } id="projectname">
 								</td>
 							</tr>
 							<tr>
@@ -267,10 +266,18 @@
 
 </form>
 
-<script type="text/javascript">
-<!--
-    document.forms['netdevadd'].elements['netdev[name]'].focus();
-    setNNProject();
+<script>
+
+	$('#project').change(function() {
+		if ($(this).val() == '-1') {
+			$('#projectname').show();
+		} else {
+			$('#projectname').hide();
+		}
+	}).change();
+
+
+	$('[name="netdev[name]"]'].focus();
 
     /*
      * \brief Update address location coordinates. Require google API key.
@@ -353,6 +360,6 @@
         customer_addresses.init();
         customer_addresses.refresh();
     });
-//-->
+
 </script>
 {/block}

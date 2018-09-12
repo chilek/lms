@@ -1,5 +1,4 @@
 <!-- $Id$ -->
-<script type="text/javascript" src="img/netnodehelper.js"></script>
 <script src="img/location_box.js"></script>
 {include file="google-maps.html"}
 <TABLE class="lmsbox">
@@ -303,7 +302,7 @@
 			{trans("Investment project:")}
 		</TD>
 		<TD WIDTH="98%">
-			<SELECT NAME="netdev[invprojectid]" ID="NNproject" {tip text="Select project for this node"} onchange="setNNProject();">
+			<SELECT NAME="netdev[invprojectid]" id="project" {tip text="Select project for this node"}>
 				<OPTION value="-2"{if ($netdevinfo.invprojectid == '-2')} selected{/if}>- {trans("none")} -</OPTION>
 				<OPTION value="-1"{if ($netdevinfo.invprojectid == '-1')} selected{/if}>{trans("New project")}</OPTION>
 				<OPTION value="1"{if ($netdevinfo.invprojectid == '1')} selected{/if}>{trans("From root device")}</OPTION>
@@ -311,7 +310,7 @@
 				<OPTION VALUE="{$project.id}"{if ($netdevinfo.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
 				{/foreach}
 			</SELECT>
-			<INPUT TYPE="TEXT" NAME="netdev[projectname]" VALUE="{$netdevinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname">
+			<INPUT TYPE="TEXT" NAME="netdev[projectname]" VALUE="{$netdevinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } id="projectname">
 		</TD>
 	</TR>
 	<TR>
@@ -346,9 +345,15 @@
         </TBODY>
 </TABLE>
 
-<script type="text/javascript">
-<!--
-    setNNProject();
+<script>
+
+	$('#project').change(function() {
+		if ($(this).val() == '-1') {
+			$('#projectname').show();
+		} else {
+			$('#projectname').hide();
+		}
+	}).change();
 
     /*
      * \brief Update address location coordinates. Require google API key.
@@ -420,5 +425,5 @@
         {/if}
         customer_addresses.init();
     });
-//-->
+
 </script>
