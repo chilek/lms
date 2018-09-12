@@ -1912,8 +1912,8 @@ div.lms-ui-wysiwyg-editor {
 			&:first-child {
 				margin: 0.25em;
 			}
-			&:nth-child(n + 2) {
-				margin-left: 10em;
+			&:not(:last-child) {
+				margin-right: 10em;
 			}
 			display: inline-flex;
 			flex-direction: column;
@@ -1941,6 +1941,9 @@ div.lms-ui-wysiwyg-editor {
 					align-self: flex-start;
 					& > :not(:first-child) {
 						margin-left: 0.2em;
+					}
+					& input {
+						padding-left: 0.2em;
 					}
 				}
 			}
