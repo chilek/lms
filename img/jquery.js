@@ -104,18 +104,16 @@ function init_multiselects(selector) {
 }
 
 function init_datepickers(selector) {
-	var autocomplete = "off";
-	var elems = $(selector);
-	elems.datepicker({
+	var options = {
 		showButtonPanel: true,
-		dateFormat: "yy/mm/dd",
-		changeYear: true,
-		beforeShow: function(input, inst) {
+			dateFormat: "yy/mm/dd",
+			changeYear: true,
+			beforeShow: function (input, inst) {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('disable');
 				$(this).data('tooltip', input);
 			}
-			setTimeout(function() {
+			setTimeout(function () {
 				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary ' +
 					'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
 				var target = $(input);
@@ -129,7 +127,7 @@ function init_datepickers(selector) {
 
 				function click() {
 					target.datepicker("setDate", '');
-					setTimeout(function() {
+					setTimeout(function () {
 						var buttonPane = widget.find(".ui-datepicker-buttonpane");
 						if (buttonPane.find('.lms-ui-datepicker-clear').length) {
 							return;
@@ -143,9 +141,9 @@ function init_datepickers(selector) {
 				btn.click(click);
 			}, 1);
 		},
-		onChangeMonthYear: function(year, month, instance) {
+		onChangeMonthYear: function (year, month, instance) {
 			var input = this;
-			setTimeout(function() {
+			setTimeout(function () {
 				var target = $(input);
 				var widget = target.datepicker("widget");
 				var buttonPane = widget.find(".ui-datepicker-buttonpane");
@@ -159,7 +157,7 @@ function init_datepickers(selector) {
 
 				function click() {
 					target.datepicker("setDate", '');
-					setTimeout(function() {
+					setTimeout(function () {
 						var buttonPane = widget.find(".ui-datepicker-buttonpane");
 						if (buttonPane.find('.lms-ui-datepicker-clear').length) {
 							return;
@@ -173,12 +171,43 @@ function init_datepickers(selector) {
 				btn.click(click);
 			}, 1);
 		},
-		onClose: function(dateText, inst) {
+		onClose: function (dateText, inst) {
 			if ($(this).data('tooltip') !== undefined) {
 				$(this).tooltip('enable');
 			}
 		}
-	}).attr("autocomplete", autocomplete);
+	}
+	$(selector).each(function() {
+		var unix = $(this).hasClass('unix');
+		var value = $(this).val();
+		var dt = null;
+		if (unix) {
+			if (parseInt(value)) {
+				dt = new Date();
+				dt.setTime($(this).val() * 1000);
+			}
+			var name = $(this).attr('name');
+			var tselem = $('<input type="hidden">').uniqueId();
+			tselem.insertBefore($(this).removeAttr('name'));
+			if ($(this).val() == '0') {
+				$(this).val('');
+			}
+			tselem.attr('name', name);
+			options.altField = tselem;
+			options.altFormat = $.datepicker.TIMESTAMP;
+			$(this).change(function() {
+				if ($(this).val() == '') {
+					tselem.val('0');
+				}
+			});
+		}
+		$(this).datepicker(options).attr("autocomplete", 'off');
+		if (unix && dt) {
+			$(this).datepicker('setDate', dt);
+		}
+		options.altField = '';
+		options.altFormat = '';
+	});
 }
 
 $(function() {

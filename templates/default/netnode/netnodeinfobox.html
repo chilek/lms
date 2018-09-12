@@ -133,12 +133,14 @@
         <TR>
                 <TD WIDTH="1%"><IMG SRC="img/users.gif" ALT=""></TD>
                 <TD width="1%" class="bold">{trans('Created:')}</TD>
-                <TD width="98%">{$nodeinfo.createtime|date_format:"%x (%A)"}</TD>
+                <TD width="98%">{$nodeinfo.createtime|date_format:"%Y/%m/%d (%A)"}</TD>
         </TR>
         <TR>
                 <TD WIDTH="1%"><IMG SRC="img/calendar.gif" ALT=""></TD>
                 <TD width="1%" class="bold">{trans('Last inspection:')}</TD>
-                <TD width="98%">{$nodeinfo.lastinspectiontime|date_format:"%x (%A)"}</TD>
+                <TD width="98%">
+					{if $nodeinfo.lastinspectiontime}{$nodeinfo.lastinspectiontime|date_format:"%Y/%m/%d (%A)"}{else}-{/if}
+				</TD>
         </TR>
         <TR>
                 <TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>

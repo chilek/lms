@@ -11,7 +11,7 @@
 		width: 12em;
 	}
 	.lms-ui-box-row-field.ownership {
-		flex-direction: column;
+		flex-direction: column !important;
 
 	}
 	.lms-ui-box-row-field.ownership > :not(:first-child) {
@@ -235,7 +235,7 @@
 					{trans('Last inspection:')}
 				</div>
 				<div class="lms-ui-box-row-field">
-					<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime|date_format:'%Y/%m/%d'}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+					<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
 				</div>
 			</div>
 
