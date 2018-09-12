@@ -1359,6 +1359,9 @@ html .ui-button.ui-state-disabled:active {
   border-top: 1px solid black;
   margin-top: 0;
 }
+.ui-datepicker-trigger {
+  margin-left: 0.3em;
+}
 .ui-tooltip.voipaccountinfo,
 .ui-tooltip.invoiceinfo,
 .ui-tooltip.docnumber,
