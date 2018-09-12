@@ -4130,4 +4130,6 @@ $_LANG['whole days'] = 'całe dni';
 $_LANG['whole day'] = 'cały dzień';
 $_LANG['$a days'] = '$a dni';
 
+$_LANG['Click here to open calendar'] = 'Kliknij tutaj, aby otworzyć kalendarz';
+
 ?>

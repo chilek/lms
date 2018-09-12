@@ -106,9 +106,13 @@ function init_multiselects(selector) {
 function init_datepickers(selector) {
 	var options = {
 		showButtonPanel: true,
-			dateFormat: "yy/mm/dd",
-			changeYear: true,
-			beforeShow: function (input, inst) {
+		showOn: 'button',
+		buttonImageOnly: true,
+		buttonImage: 'img/calendar.gif',
+		buttonText: lmsMessages.datePickerTooltip,
+		dateFormat: "yy/mm/dd",
+		changeYear: true,
+		beforeShow: function (input, inst) {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('disable');
 				$(this).data('tooltip', input);
