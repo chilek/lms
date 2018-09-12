@@ -596,7 +596,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	protected function invoice_date() {
 		$this->backend->SetFont('arial', '', 8);
 		$this->backend->writeHTMLCell(0, 0, '', 10, trans('Settlement date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
-		$this->backend->writeHTMLCell(0, 0, '', '', trans('Sale date:') . ' <b>' . date("d.m.Y", $this->data['sdate']) . '</b>', 0, 1, 0, true, 'R');
+		if (!ConfigHelper::checkConfig('invoices.hide_sale_date'))
+			$this->backend->writeHTMLCell(0, 0, '', '', trans('Sale date:') . ' <b>' . date("d.m.Y", $this->data['sdate']) . '</b>', 0, 1, 0, true, 'R');
 	}
 
 	protected function invoice_title() {
@@ -761,7 +762,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		}
 
 		$this->backend->SetFont('arial', '', 8);
-		$this->backend->writeHTMLCell(0, 5, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value']), 0, 1, 0, true, 'L');
+		if (!ConfigHelper::checkConfig('invoices.hide_in_words'))
+			$this->backend->writeHTMLCell(0, 5, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value']), 0, 1, 0, true, 'L');
 	}
 
 	protected function invoice_balance() {
@@ -780,7 +782,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			if ($this->use_alert_color)
 					$this->backend->SetTextColorArray();
 		}
-		$this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
+		if (!ConfigHelper::checkConfig('invoices.hide_payment_type'))
+			$this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
 	}
 
 	protected function invoice_expositor() {

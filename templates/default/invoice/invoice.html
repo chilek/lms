@@ -26,15 +26,15 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">
 			{trans("Draw-up date:")}<BR>
-			{trans("Sale date:")}<BR>
+			{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}{trans("Sale date:")}<BR>{/if}
 			{trans("Deadline:")}<BR>
-			{trans("Payment type:")}
+			{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}{trans("Payment type:")}{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
 			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $invoice.division_cplace != ""}, {$invoice.division_cplace}{/if}<BR>
-			{$invoice.sdate|date_format:"%Y/%m/%d"}<BR>
+			{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}$invoice.sdate|date_format:"%Y/%m/%d"}<BR>{/if}
 			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
-			{$invoice.paytypename}
+			{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}{$invoice.paytypename}{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -363,6 +363,7 @@
 			{/if}
 		</TD>
 	</TR>
+	{if !ConfigHelper::checkConfig('invoices.hide_in_words')}
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
 			{trans("In words:")}
@@ -373,6 +374,7 @@
 			{/if}
 		</TD>
 	</TR>
+	{/if}
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
 			&nbsp;

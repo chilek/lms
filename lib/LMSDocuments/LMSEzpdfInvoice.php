@@ -143,8 +143,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$font_size = 12;
 		$this->backend->text_align_right($x, $y, $font_size, trans('Settlement date:').' ');
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['cdate']));
-		$this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
-		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['sdate']));
+		if (!ConfigHelper::checkConfig('invoices.hide_sale_date')) {
+			$this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
+			$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['sdate']));
+		}
 		$this->backend->text_align_right($x, $y, $font_size,
 			($this->use_alert_color ? '<c:color:255,0,0>' : '')
 			. trans('Deadline:').' '
@@ -153,8 +155,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			($this->use_alert_color ? '<c:color:255,0,0>' : '')
 			. date("Y/m/d", $this->data['pdate'])
 			. ($this->use_alert_color ? '</c:color>' : ''));
-		$this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
-		$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['paytypename']);
+		if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
+			$this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
+			$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['paytypename']);
+		}
 		return $y;
 	}
 
@@ -877,7 +881,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				($this->use_alert_color ? '<c:color:255,0,0>' : '')
 				. trans('To pay:') . ' ' . moneyf($this->data['value'])
 				. ($this->use_alert_color ? '</c:color>' : ''));
-		$y = $y - $this->backend->text_align_left($x,$y,10, trans('In words:') . ' ' . moneyf_in_words($this->data['value']));
+		if (!ConfigHelper::checkConfig('invoices.hide_in_words'))
+			$y = $y - $this->backend->text_align_left($x,$y,10, trans('In words:') . ' ' . moneyf_in_words($this->data['value']));
 		return $y;
 	}
 
