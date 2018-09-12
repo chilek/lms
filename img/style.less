@@ -1839,13 +1839,20 @@ div.lms-ui-persistent-filter {
 	font-weight: bold;
 }
 
+.lms-ui-wysiwyg-editor {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
 .lms-ui-dragslider-slave {
 	box-shadow: @slave;
 }
 
 .lms-ui-event-time-slider {
 	width: 300px;
-	margin-left: 10px;
+	margin-left: 0.9em;
 }
 
 .lms-ui-event-time-container {
@@ -1858,7 +1865,7 @@ div.lms-ui-persistent-filter {
 		justify-content: space-between;
 		flex-direction: column;
 		& > div {
-			margin: 5px;
+			margin: 0.35em;
 		}
 	}
 	& .lms-ui-event-time-right-panel {
@@ -1867,7 +1874,7 @@ div.lms-ui-persistent-filter {
 		justify-content: flex-start;
 		align-items: flex-start;
 		& > * {
-			margin: 5px;
+			margin: 0.35em;
 		}
 	}
 }
@@ -1920,6 +1927,14 @@ div.lms-ui-persistent-filter {
 				& .lms-ui-box-row-label {
 					align-self: flex-start;
 					font-weight: bold;
+				}
+				& .lms-ui-box-row-field {
+					/*
+					display: flex;
+					justify-content: flex-start;
+					align-items: flex-start;
+					flex-wrap: wrap;
+					*/
 				}
 			}
 		}

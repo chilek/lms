@@ -1014,9 +1014,10 @@ $(function() {
 			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
-			$('<label><input type="checkbox" name="' + inputname + '" value="true"' + (wysiwyg ? ' checked' : '') + '>' +
-				lmsMessages.visualEditor + '</label><br>'
-			).insertBefore(this);
+			parent.append($('<div class="lms-ui-wysiwyg-editor"><label><input type="checkbox" name="' + inputname +
+				'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + lmsMessages.visualEditor +
+				'</label></div')).find('div.lms-ui-wysiwyg-editor').append(this);
+
 			// it is required as textarea changed value is not propagated automatically to editor instance content
 			$(this).change(function(e) {
 				var editor = tinymce.get(textareaid);

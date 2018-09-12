@@ -2091,12 +2091,18 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   background-color: #AE9D7B;
   font-weight: bold;
 }
+.lms-ui-wysiwyg-editor {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
 .lms-ui-dragslider-slave {
   box-shadow: 0px 0px 10px 1px blue;
 }
 .lms-ui-event-time-slider {
   width: 300px;
-  margin-left: 10px;
+  margin-left: 0.9em;
 }
 .lms-ui-event-time-container {
   display: inline-flex;
@@ -2110,7 +2116,7 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   flex-direction: column;
 }
 .lms-ui-event-time-container .lms-ui-event-time-left-panel > div {
-  margin: 5px;
+  margin: 0.35em;
 }
 .lms-ui-event-time-container .lms-ui-event-time-right-panel {
   display: inline-flex;
@@ -2119,7 +2125,7 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   align-items: flex-start;
 }
 .lms-ui-event-time-container .lms-ui-event-time-right-panel > * {
-  margin: 5px;
+  margin: 0.35em;
 }
 .lms-ui-box-container {
   display: flex;
@@ -2173,6 +2179,14 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
 .lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
   align-self: flex-start;
   font-weight: bold;
+}
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-field {
+  /*
+					display: flex;
+					justify-content: flex-start;
+					align-items: flex-start;
+					flex-wrap: wrap;
+					*/
 }
 .lms-ui-box-container .lms-ui-box-buttons {
   align-self: flex-end;
