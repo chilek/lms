@@ -540,11 +540,12 @@ if ($notify) {
 			$ticketbody_variable = 'newmessagebody';
 		}
 		if (!empty($queuedata[$ticketsubject_variable]) && !empty($queuedata[$ticketbody_variable]) && !empty($emails)) {
+			$ticketid = sprintf("%06d", $ticket_id);
 			$custmail_subject = $queuedata[$ticketsubject_variable];
-			$custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
+			$custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
 			$custmail_subject = str_replace('%title', $mh_subject, $custmail_subject);
 			$custmail_body = $queuedata[$ticketbody_variable];
-			$custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
+			$custmail_body = str_replace('%tid', $ticketid, $custmail_body);
 			$custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
 			$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
 			$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);

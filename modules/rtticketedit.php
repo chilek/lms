@@ -76,11 +76,12 @@ if ($id && !isset($_POST['ticket'])) {
 			if (!empty($queue['resolveticketsubject']) && !empty($queue['resolveticketbody'])) {
 				if (!empty($ticket['customerid'])) {
 					if (!empty($emails)) {
+						$ticketid = sprintf("%06d", $id);
 						$custmail_subject = $queue['resolveticketsubject'];
-						$custmail_subject = str_replace('%tid', $id, $custmail_subject);
+						$custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
 						$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
 						$custmail_body = $queue['resolveticketbody'];
-						$custmail_body = str_replace('%tid', $id, $custmail_body);
+						$custmail_body = str_replace('%tid', $ticketid, $custmail_body);
 						$custmail_body = str_replace('%cid', $info['id'], $custmail_body);
 						$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
 						$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
