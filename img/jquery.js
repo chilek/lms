@@ -190,13 +190,11 @@ function init_datepickers(selector) {
 				dt = new Date();
 				dt.setTime($(this).val() * 1000);
 			}
-			var name = $(this).attr('name');
-			var tselem = $('<input type="hidden">').uniqueId();
+			var tselem = $(this).clone(true).removeData().attr('type', 'hidden');
 			tselem.insertBefore($(this).removeAttr('name'));
 			if ($(this).val() == '0') {
 				$(this).val('');
 			}
-			tselem.attr('name', name);
 			options.altField = tselem;
 			options.altFormat = $.datepicker.TIMESTAMP;
 			$(this).change(function() {
@@ -206,8 +204,11 @@ function init_datepickers(selector) {
 			});
 		}
 		$(this).datepicker(options).attr("autocomplete", 'off');
-		if (unix && dt) {
-			$(this).datepicker('setDate', dt);
+		if (unix) {
+			$(this).off('change').removeAttr('onchange');
+			if (dt) {
+				$(this).datepicker('setDate', dt);
+			}
 		}
 		options.altField = '';
 		options.altFormat = '';

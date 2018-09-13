@@ -23,8 +23,6 @@
  */
 
 $.datepicker._updateAlternate = function(inst) {
-	console.log('_updateAlternate');
-
 	var altFormat, date, dateStr,
 		altField = this._get(inst, "altField");
 
@@ -32,6 +30,6 @@ $.datepicker._updateAlternate = function(inst) {
 		altFormat = this._get(inst, "altFormat") || this._get(inst, "dateFormat");
 		date = this._getDate(inst);
 		dateStr = this.formatDate(altFormat, date, this._getFormatConfig(inst));
-		$(altField).val(dateStr / 1000);
+		$(altField).val(dateStr / 1000).change();
 	}
 }
