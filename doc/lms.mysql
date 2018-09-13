@@ -1312,6 +1312,7 @@ CREATE TABLE netradiosectors (
 	frequency2 decimal(9,5) DEFAULT NULL,
 	bandwidth decimal(9,5) DEFAULT NULL,
 	netdev int(11) NOT NULL,
+	secret varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX netdev (netdev),
 	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -3454,4 +3455,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091301');

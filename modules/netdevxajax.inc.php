@@ -190,6 +190,9 @@ function validateRadioSector($params, $update = false) {
 	if (strlen($params['license']) > 63)
 		$error['license'] = trans('Radio sector license number is too long!');
 
+    if (strlen($params['secret']) > 63)
+        $error['secret'] = trans('Encryption key is too long!');
+
 	if (strlen($params['frequency']) && !preg_match('/^[0-9]{1,3}(\.[0-9]{1,5})?$/', $params['frequency']))
 		$error['frequency'] = trans('Radio sector frequency has invalid format!');
 
@@ -265,15 +268,16 @@ function addRadioSector($params) {
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'technology' => intval($params['technology']),
-            		'type' => intval($params['type']),
+			'type' => intval($params['type']),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
 			SYSLOG::RES_NETDEV => $netdevid,
+			'secret' => intval($params['secret']),
 		);
 		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology, type,
-			frequency, frequency2, bandwidth, netdev)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			frequency, frequency2, bandwidth, netdev, secret)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_RADIOSECTOR] = $DB->GetLastInsertID('netradiosectors');
@@ -338,14 +342,15 @@ function updateRadioSector($rsid, $params) {
 			'rsrange' => $params['rsrange'],
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'technology' => intval($params['technology']),
-            		'type' => intval($params['type']),
+			'type' => intval($params['type']),
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
 			SYSLOG::RES_RADIOSECTOR => $rsid,
+			'secret' => $params['secret'],
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
-			rsrange = ?, license = ?, technology = ?, type = ?,
+			rsrange = ?, license = ?, technology = ?, type = ?, secret = ?,
 			frequency = ?, frequency2 = ?, bandwidth = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_NETDEV] = $netdevid;
