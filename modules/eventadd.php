@@ -119,7 +119,7 @@ if(isset($_POST['event']))
 	if (!isset($event['customerid']))
 		$event['customerid'] = $event['custid'];
 
-	$event['status'] = isset($event['status']) ? 1 : 0;
+	$event['private'] = isset($event['private']) ? 1 : 0;
 
 	if (!$error) {
 		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];

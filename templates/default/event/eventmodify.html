@@ -83,7 +83,10 @@
 					{trans("Status:")}
 				</div>
 				<div class="lms-ui-box-row-field">
-					<INPUT type="checkbox" name="event[status]" id="event_status" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
+					<label>
+						<INPUT type="checkbox" name="event[private]" {tip text="Select event's status"}{if $event.status}CHECKED{/if}>
+						{trans("private")}
+					</label>
 				</div>
 			</div>
 
