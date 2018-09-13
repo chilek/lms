@@ -276,11 +276,12 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 			}
 
 			if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
+				$ticketid = sprintf("%06d", $ticket_id);
 				$custmail_subject = $queuedata['newticketsubject'];
-				$custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
+				$custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
 				$custmail_subject = str_replace('%title', $mh_subject, $custmail_subject);
 				$custmail_body = $queuedata['newticketbody'];
-				$custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
+				$custmail_body = str_replace('%tid', $ticketid, $custmail_body);
 				$custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
 				$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
 				$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
