@@ -195,8 +195,7 @@ function init_datepickers(selector) {
 			if ($(this).val() == '0') {
 				$(this).val('');
 			}
-			options.altField = tselem;
-			options.altFormat = $.datepicker.TIMESTAMP;
+			$.extend(options, { altField: tselem, altFormat: $.datepicker.TIMESTAMP });
 			$(this).change(function() {
 				if ($(this).val() == '') {
 					tselem.val('0');
