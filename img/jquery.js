@@ -372,7 +372,7 @@ $(function() {
 
 	function LMSComboBox() {
 		this.formElement = null;
-		this.form = null
+		this.form = null;
 
 		// dynamicaly insert hidden input element with name as original select element
 		// the purpose is simple: we want to submit custom value to server
@@ -403,7 +403,7 @@ $(function() {
 				that.updateFormElement();
 			}, 'lms-ui');
 		}
-	};
+	}
 
 	$('.lms-ui-combobox').each(function() {
 		new LMSComboBox().init(this);
