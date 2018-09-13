@@ -76,6 +76,9 @@ if (isset($_POST['nodedata']))
 			$SESSION->redirect('?m=nodelist');
 		}
 
+	if ($nodedata['wholenetwork'] && empty($nodedata['netid']))
+		$error['netid'] = trans('Please choose network');
+
 	if ($nodedata['name']=='')
 		$error['name'] = trans('Node name is required!');
 	else if (strlen($nodedata['name']) > 32)
