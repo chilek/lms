@@ -99,7 +99,7 @@
 								<TD style="width: 99%;" class="nobr">
 									{foreach $categories as $category}
 									<label>
-										<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}checked{/if}>
+										<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
 										{$category.name}
 									</label>
 									<BR>
