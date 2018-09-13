@@ -58,8 +58,11 @@
             {else}
             <A href="?m=eventedit&amp;id={$event.id}&amp;action=close"><IMG src="img/open.gif" alt="{trans("Close")}" title="&nbsp;{trans("Close")}&nbsp;"></A>
             {/if}
+            <a href="?m=eventadd&id={$event.id}">
+                <IMG src="img/clone.gif" alt="{trans("Clone")}" title="&nbsp;{trans("Clone")}&nbsp;">
+            </a>
             <A href="?m=eventdel&amp;id={$event.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
-                <IMG src="img/delete.gif" alt="{trans("Delete")}"title="&nbsp;{trans("Delete")}&nbsp;">
+                <IMG src="img/delete.gif" alt="{trans("Delete")}" title="&nbsp;{trans("Delete")}&nbsp;">
             </A>
             <A href="?m=eventedit&amp;id={$event.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}"title="&nbsp;{trans("Edit")}&nbsp;"></A>
             {/if}
