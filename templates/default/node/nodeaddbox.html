@@ -8,7 +8,6 @@
     }
 </style>
 
-<script type="text/javascript" src="img/netnodehelper.js"></script>
 {include file="google-maps.html"}
 
 <FORM NAME="nodeadd" ID="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
@@ -162,7 +161,7 @@
 			<IMG SRC="img/money.gif" ALT="{trans("Investment project:")}">
 		</TD>
 		<TD WIDTH="98%">
-			<SELECT NAME="nodedata[invprojectid]" ID="NNproject" VALUE="{$nodedata.invprojectid}" {tip text="Select project"} onchange="setNNProject();">
+			<SELECT NAME="nodedata[invprojectid]" ID="project" VALUE="{$nodedata.invprojectid}" {tip text="Select project"}>
 				<OPTION value="-2" {if ($nodedata.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
 				<OPTION value="-1" {if ($nodedata.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
 				<OPTION value="1" {if ($nodedata.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
@@ -170,7 +169,7 @@
 				<OPTION VALUE="{$NNprojects[project].id}" {if ($nodedata.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
 				{/section}
 			</SELECT>
-			<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname"  />
+			<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname}" {tip text="Enter new project name" trigger="projectname" } id="projectname">
 			 
 		</TD>
 	</TR>
@@ -307,10 +306,18 @@
     </TBODY>
 </TABLE></FORM>
 
-<script type="text/javascript">
-<!--
+<script>
+
 	$(function() {
 		$('form[name="nodeadd"] [name="nodedata[name]"]').focus();
+
+		$('#project').change(function() {
+			if ($(this).val() == -1) {
+				$('#projectname').show();
+			} else {
+				$('#projectname').hide();
+			}
+		});
 	});
 
 	function GenPasswd() {
@@ -403,8 +410,6 @@
 		xjx.$('radiosector').style.display = (linktype == 1 ? '' : 'none');
 	}
 
-	setNNProject();
-
     /*
      * \brief Update address location update. Require google API key.
      */
@@ -434,5 +439,5 @@
         {/if}
         customer_addresses.init();
     });
-//-->
+
 </script>
