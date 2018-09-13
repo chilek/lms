@@ -249,6 +249,29 @@ $menu = array(
 			),
 		),
 
+		'netnodes' => array(
+			'name' => trans('Network nodes'),
+			'css' => 'lms-ui-icon-netnode',
+			'link' =>'?m=netnodelist',
+			'tip' => trans('Network Node Management'),
+			'accesskey' =>'n',
+			'prio' => 14,
+			'submenu' => array(
+				array(
+					'name' => trans('Nodes list'),
+					'link' => '?m=netnodelist',
+					'tip' => trans('Network nodes list'),
+					'prio' => 10,
+				),
+				array(
+					'name' => trans('New node'),
+					'link' => '?m=netnodeadd',
+					'tip' => trans('Add new network node'),
+					'prio' => 20,
+				),
+			),
+		),
+
 		'netdevices' => array(
 			'name' => trans('Net Devices'),
 			'css' => 'lms-ui-icon-netdevice',
@@ -274,18 +297,6 @@ $menu = array(
 					'link' => '?m=netdevsearch',
 					'tip' => trans('Allows you to search device'),
 					'prio' => 30,
-				),
-				array(
-					'name' => trans('Nodes list'),
-					'link' => '?m=netnodelist',
-					'tip' => trans('Network device nodes list'),
-					'prio' => 40,
-				),
-				array(
-					'name' => trans('New node'),
-					'link' => '?m=netnodeadd',
-					'tip' => trans('Add new network device node'),
-					'prio' => 50,
 				),
 				array(
 					'name' => trans('Producers and models'),

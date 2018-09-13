@@ -3358,6 +3358,7 @@ $_LANG['Are you sure, you want to remove net device  \\\'$a\\\' from node?'] = '
 $_LANG['Investment project:'] = 'Projekt inwestycyjny:';
 $_LANG['From root device'] = 'Z jednostki nadrzędnej';
 $_LANG['Network node:'] = 'Węzeł sieciowy:';
+$_LANG['Network nodes'] = 'Węzeły sieciowe';
 $_LANG['Select project'] = 'Wybierz projekt';
 $_LANG['Enter node latitude (optional)'] = 'Podaj szerokość geograficzną dla węzła sieciowego (opcjonalne)';
 $_LANG['Enter node longitude (optional)'] = 'Podaj długość geograficzną dla węzła sieciowego (opcjonalne)';

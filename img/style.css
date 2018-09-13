@@ -1821,6 +1821,15 @@ table.dataTable thead tr:last-child th {
   height: 16px;
   background: url("netdev.gif");
 }
+.lms-ui-icon-netnode {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("netnode.png");
+}
 .lms-ui-icon-wireless {
   vertical-align: middle;
   display: inline-block;
