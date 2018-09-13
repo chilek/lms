@@ -123,6 +123,10 @@ if (isset($netnodedata)) {
 	$netnodedata['miar'] = 0;
 	$netnodedata['invprojectid'] = '-2'; // no investment project selected
 	$netnodedata['ownership'] = 0;
+	if (isset($_GET['customerid'])) {
+		$netnodedata['ownerid'] = $_GET['customerid'];
+		$netnodedata['ownership'] = 2;
+	}
 }
 
 $layout['pagetitle'] = trans('New Net Device Node');

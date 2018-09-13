@@ -541,7 +541,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 					$where[] = "d.$key = ''";
 				break;
 			case 'ownerid':
-				$where[] = 'ownerid = ' . $value;
+				$where[] = 'd.ownerid = ' . $value;
 				break;
 		}
 

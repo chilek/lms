@@ -1429,6 +1429,11 @@ class LMS
 		return $manager->GetNetNodes();
 	}
 
+	public function GetCustomerNetNodes($id) {
+		$manager = $this->getNetNodeManager();
+		return $manager->GetCustomerNetNodes($id);
+	}
+
 	public function GetNetNodeList($search, $order)
     {
         $manager = $this->getNetNodeManager();

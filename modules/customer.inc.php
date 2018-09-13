@@ -54,6 +54,7 @@ if ($allevents)
 	$params['closed'] = '';
 $eventlist            = $LMS->EventSearch($params, 'date,desc', true);
 $customernodes        = $LMS->GetCustomerNodes($customerid);
+$customernetnodes = $LMS->GetCustomerNetNodes($customerid);
 
 // prepare node assignments array which allows to easily map nodes to assignments
 $nodeassignments = array();
@@ -138,6 +139,7 @@ $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHER
 $SMARTY->assignByRef('customernodes', $customernodes);
 $SMARTY->assignByRef('customernetworks', $customernetworks);
 $SMARTY->assignByRef('customerdevices', $customerdevices);
+$SMARTY->assignByRef('customernetnodes', $customernetnodes);
 $SMARTY->assignByRef('customerstats', $customerstats);
 $SMARTY->assignByRef('assignments', $assignments);
 $SMARTY->assignByRef('nodeassignments', $nodeassignments);

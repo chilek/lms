@@ -1011,7 +1011,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $netdevs;
     }
 
-    /**
+	/**
      * Returns customer networks
      *
      * @param int $id Customer id

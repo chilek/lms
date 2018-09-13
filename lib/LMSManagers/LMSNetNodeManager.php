@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,47 +25,6 @@
  */
 
 class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface {
-
-	public function GetNetNode($id) {
-		$result = $this->db->GetRow("SELECT n.*, p.name AS projectname,
-				addr.location, addr.name as location_name, addr.id as address_id,
-				addr.state as location_state_name, addr.state_id as location_state,
-				lb.name AS location_borough_name, lb.id AS location_borough, lb.type AS location_borough_type,
-				ld.name AS location_district_name, ld.id AS location_district,
-				addr.zip as location_zip, addr.country_id as location_country,
-				addr.city as location_city_name, addr.street as location_street_name,
-				addr.postoffice AS location_postoffice,
-				addr.city_id as location_city, addr.street_id as location_street,
-				addr.house as location_house, addr.flat as location_flat,
-				d.shortname AS division
-			FROM netnodes n
-				LEFT JOIN vaddresses addr ON n.address_id = addr.id
-				LEFT JOIN invprojects p ON n.invprojectid = p.id
-				LEFT JOIN divisions d ON d.id = n.divisionid
-				LEFT JOIN location_cities lc ON lc.id = addr.city_id
-				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls ON ls.id = ld.stateid
-			WHERE n.id=?", array($id));
-
-		// if location is empty and owner is set then heirdom address from owner
-		if ( !$result['location'] && $result['ownerid'] ) {
-			global $LMS;
-
-			$result['location'] = $LMS->getAddressForCustomerStuff( $result['ownerid'] );
-		}
-
-		if ($result['ownerid']) {
-			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-			$result['owner'] = $customer_manager->getCustomerName( $result['ownerid'] );
-		}
-
-		return $result;
-	}
-
-	public function GetNetNodes() {
-		return $this->db->GetAll("SELECT * FROM netnodes ORDER BY name");
-	}
 
 	public function GetNetNodeList($search, $order) {
 		list ($order, $dir) = sscanf($order, '%[^,],%s');
@@ -148,7 +107,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			foreach ($nlist as &$netnode) {
 				$netnode['terc'] = empty($netnode['location_state_ident']) ? null
 					: $netnode['location_state_ident'] . $netnode['location_district_ident']
-						. $netnode['location_borough_ident'] . $netnode['location_borough_type'];
+					. $netnode['location_borough_ident'] . $netnode['location_borough_type'];
 				$netnode['simc'] = empty($netnode['location_city_ident']) ? null : $netnode['location_city_ident'];
 				$netnode['ulic'] = empty($netnode['location_street_ident']) ? null : $netnode['location_street_ident'];
 			}
@@ -184,8 +143,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
 			'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
 			'address_id'       => ($netnodedata['address_id'] >= 0 ? $netnodedata['address_id'] : null),
-			'ownerid'          => !empty($netnodedata['ownerid']) || empty($netnodedata['ownership'])  ? $netnodedata['ownerid']    : null
-			);
+			'ownerid'          => !empty($netnodedata['ownerid']) && !empty($netnodedata['ownership']) ? $netnodedata['ownerid'] : null
+		);
 
 		$this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
 			. ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
@@ -293,5 +252,66 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		}
 
 		return $res;
+	}
+
+	public function GetNetNode($id) {
+		$result = $this->db->GetRow("SELECT n.*, p.name AS projectname,
+				addr.location, addr.name as location_name, addr.id as address_id,
+				addr.state as location_state_name, addr.state_id as location_state,
+				lb.name AS location_borough_name, lb.id AS location_borough, lb.type AS location_borough_type,
+				ld.name AS location_district_name, ld.id AS location_district,
+				addr.zip as location_zip, addr.country_id as location_country,
+				addr.city as location_city_name, addr.street as location_street_name,
+				addr.postoffice AS location_postoffice,
+				addr.city_id as location_city, addr.street_id as location_street,
+				addr.house as location_house, addr.flat as location_flat,
+				d.shortname AS division
+			FROM netnodes n
+				LEFT JOIN vaddresses addr ON n.address_id = addr.id
+				LEFT JOIN invprojects p ON n.invprojectid = p.id
+				LEFT JOIN divisions d ON d.id = n.divisionid
+				LEFT JOIN location_cities lc ON lc.id = addr.city_id
+				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+				LEFT JOIN location_districts ld ON ld.id = lb.districtid
+				LEFT JOIN location_states ls ON ls.id = ld.stateid
+			WHERE n.id=?", array($id));
+
+		// if location is empty and owner is set then heirdom address from owner
+		if ( !$result['location'] && $result['ownerid'] ) {
+			global $LMS;
+
+			$result['location'] = $LMS->getAddressForCustomerStuff( $result['ownerid'] );
+		}
+
+		if ($result['ownerid']) {
+			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$result['owner'] = $customer_manager->getCustomerName( $result['ownerid'] );
+		}
+
+		return $result;
+	}
+
+	public function GetNetNodes() {
+		return $this->db->GetAll("SELECT * FROM netnodes ORDER BY name");
+	}
+
+	/**
+	 * Returns customer network nodes.
+	 *
+	 * @param  int   $customer_id Customer id
+	 * @return array network nodes
+	 */
+	public function GetCustomerNetNodes($id) {
+		return $this->db->GetAllByKey('SELECT
+				nd.id, nd.name, nd.type, lc.name as location_city, lc.id as location_city_id, ls.name as location_street,
+				ls.id as location_street_id, va.location_house, va.location_flat,
+				nd.longitude, nd.latitude, nd.invprojectid,
+				nd.status, nd.ownerid, va.id as address_id, va.location
+			FROM netnodes nd
+			LEFT JOIN vaddresses va ON nd.address_id = va.id
+			LEFT JOIN location_cities lc ON va.city_id = lc.id
+			LEFT JOIN location_streets ls ON va.street_id = ls.id
+			WHERE nd.ownerid = ?
+			ORDER BY nd.name asc', 'id', array($id));
 	}
 }

@@ -4133,4 +4133,8 @@ $_LANG['$a days'] = '$a dni';
 $_LANG['Click here to open calendar'] = 'Kliknij tutaj, aby otworzyć kalendarz';
 $_LANG['Owner identifier:'] = 'Identyfikator właściciela:';
 
+$_LANG['Network Nodes ($a):'] = 'Węzły sieciowe ($a):';
+$_LANG['That customer hasn\'t got any assigned network nodes.'] = 'Ten klient nie posiada przypisanych żadnych węzłów sieciowych';
+$_LANG['New network node'] = 'Nowy węzeł sieciowy';
+
 ?>
