@@ -68,4 +68,8 @@ interface LMSNetDevManagerInterface
     public function GetNetDevIDByNode($id);
     
     public function NetDevExists($id);
+
+	public function GetProducers();
+
+	public function GetModels($producerid = null);
 }

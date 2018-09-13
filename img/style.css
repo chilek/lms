@@ -2060,6 +2060,9 @@ div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-modify-button {
 div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
   background-image: url(delete.gif);
 }
+.scombobox {
+  margin: 0;
+}
 .scombobox-dropdown-background {
   background-color: transparent;
   border: unset;

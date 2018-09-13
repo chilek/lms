@@ -1418,7 +1418,17 @@ class LMS
         return $manager->NetDevUnLink($dev1, $dev2);
     }
 
-    public function GetNetNode($id)
+	public function GetProducers() {
+		$manager = $this->getNetDevManager();
+		return $manager->GetProducers();
+	}
+
+	public function GetModels($producerid = null) {
+		$manager = $this->getNetDevManager();
+		return $manager->GetModels($producerid);
+	}
+
+	public function GetNetNode($id)
     {
         $manager = $this->getNetNodeManager();
         return $manager->GetNetNode($id);

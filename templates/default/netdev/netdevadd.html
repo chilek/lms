@@ -59,16 +59,18 @@
 							<tr>
 								<td><img src="img/producer.gif" alt=""> {trans("Manufacturer:")}</td>
 								<td>
-									<input type="text" id="producer" name="netdev[producer]" value="{$netdev.producer}" {tip text="Enter producer name (optional)"}>
+									<select name="netdev[producer]" id="producer" data-value="{$netdev.producer}" {tip class="lms-ui-combobox" text="Enter producer name (optional)"}>
+										{foreach $producers as $producer}
+										<option value="{$producer.id}"{if $producer.id == $netdev.producer} seleccted{/if}>{$producer.name}</option>
+										{/foreach}
+									</select>
 								</td>
 							</tr>
 							<tr>
 								<td><img src="img/netdev_model.gif" alt=""> {trans("Model:")}</td>
 								<td>
-									<input type="text" id="model" name="netdev[model]" value="{$netdev.model}" {tip text="Enter device model (optional)"}>
-				                    <a href="#" id="modelselect" {tip text="Click to select model"}>&raquo;&raquo;&raquo;</a>
-									<br>
-			                        <input type="hidden" id="netdevmodelid" name="netdev[netdevicemodelid]" value="{$netdev.netdevicemodelid}">
+									<select name="netdev[model]" id="model" data-value="{$netdev.model}" {tip class="lms-ui-combobox" text="Enter device model (optional)"}>
+									</select>
 								</td>
 							</tr>
 							<tr>
@@ -268,16 +270,61 @@
 
 <script>
 
-	$('#project').change(function() {
-		if ($(this).val() == '-1') {
-			$('#projectname').show();
+	var models = JSON.parse('{$models}');
+
+	function updateModels(producerid) {
+		var modelelem = $('#model');
+		var modelid = modelelem.scombobox('val');
+		var modelonlist = false;
+		var values = [];
+
+		if (producerid.match(/^[0-9]+$/)) {
+			$.each(models['p' + producerid], function (key, item) {
+				if (item.id == modelid) {
+					modelonlist = true;
+				}
+				values.push({
+					value: item.id,
+					text: item.name
+				});
+			});
 		} else {
-			$('#projectname').hide();
+			if (producerid == '') {
+				$('#producer').scombobox('val', '');
+			}
+			if (modelid == '') {
+				$('#model').scombobox('val', '');
+			} else if (!modelid.match(/^[0-9]+$/)) {
+				modelonlist = true;
+			}
 		}
-	}).change();
+		modelelem.scombobox('fill', values);
+		if (producerid.match(/^[0-9]+$/)) {
+			modelelem.scombobox('val', models['p' + producerid][Object.keys(models['p' + producerid])[0]].id);
+			modelelem.change();
+		}
+		if (modelonlist) {
+			modelelem.scombobox('val', modelid);
+		}
+	}
 
+	$(function() {
+		$('[name="netdev[name]"]').focus();
 
-	$('[name="netdev[name]"]').focus();
+		$('#project').change(function () {
+			if ($(this).val() == '-1') {
+				$('#projectname').show();
+			} else {
+				$('#projectname').hide();
+			}
+		}).change();
+
+		updateModels('{$netdev.producer}');
+
+		$('#producer').scombobox('change', function() {
+			updateModels($(this).closest('.scombobox').scombobox('val'));
+		});
+	});
 
     /*
      * \brief Update address location coordinates. Require google API key.

@@ -280,32 +280,33 @@ $(function() {
 	$('.lms-ui-clipboard-button').attr('title', lmsMessages.clickCopiesToClipboard);
 	new ClipboardJS('.lms-ui-clipboard-button');
 
-	$('[title]').each(function() {
-		$(this).one('mouseenter', function() {
-			tooltipClass = '';
-			if ($(this).hasClass('alert')) {
-				tooltipClass += ' alert';
-				if ($(this).hasClass('bold')) {
-					tooltipClass += ' bold';
-				}
-			} else if ($(this).hasClass('bold')) {
-				tooltipClass += 'bold';
+	$(document).on('mouseenter', '[title]', function() {
+		if ($(this).is('[data-tooltip]')) {
+			return;
+		}
+		tooltipClass = '';
+		if ($(this).hasClass('alert')) {
+			tooltipClass += ' alert';
+			if ($(this).hasClass('bold')) {
+				tooltipClass += ' bold';
 			}
+		} else if ($(this).hasClass('bold')) {
+			tooltipClass += 'bold';
+		}
 
-			var title = $(this).attr('title');
-			$(this).attr('data-tooltip', title).removeAttr('title');
-			$(this).tooltip({
-				items: '[data-tooltip]',
-				content: title,
-				show: { delay: 500 },
-				track: true,
-				classes: {
-					'ui-tooltip': tooltipClass
-				},
-				create: function() {
-					$(this).tooltip('open');
-				}
-			});
+		var title = $(this).attr('title');
+		$(this).attr('data-tooltip', title).removeAttr('title');
+		$(this).tooltip({
+			items: '[data-tooltip]',
+			content: title,
+			show: { delay: 500 },
+			track: true,
+			classes: {
+				'ui-tooltip': tooltipClass
+			},
+			create: function() {
+				$(this).tooltip('open');
+			}
 		});
 	});
 
@@ -365,20 +366,48 @@ $(function() {
 	$.fn.scombobox.defaults = $.extend(true, $.fn.scombobox.defaults, {
 		animation: {
 			duration: 10
-		}
-	});
-	$('.lms-ui-combobox').scombobox({
+		},
 		invalidAsValue: true
 	});
-	// dynamicaly insert hidden input element with name as original select element
-	// the purpose is simple: we want to submit custom value to server
-	if ($('.scombobox').length) {
-		$('.scombobox').scombobox('change', function (e) {
-			var scomboboxelem = $(this).closest('.scombobox');
-			var name = scomboboxelem.find('select').attr('name');
-			$(this).attr('name', name);
-		}, 'lms-ui');
-	}
+
+	function LMSComboBox() {
+		this.formElement = null;
+		this.form = null
+
+		// dynamicaly insert hidden input element with name as original select element
+		// the purpose is simple: we want to submit custom value to server
+		this.updateFormElement = function() {
+			var name = this.element.attr('name');
+			var value = this.scombobox.scombobox('val');
+			if (!this.formElement) {
+				this.formElement = this.form.prepend($('<input type="hidden" name="' + name +
+					'" value="' + value + '">'));
+			} else {
+				this.formElement.find('[name="' + name + '"]').val(value);
+			}
+		},
+
+		this.init = function(element) {
+			var that = this;
+			this.element = $(element);
+			this.form = $(element.form);
+			this.element.scombobox();
+			this.scombobox = this.element.closest('.scombobox');
+			var value = this.element.attr('data-value');
+			if (value) {
+				this.scombobox.scombobox('val', value);
+			}
+			this.updateFormElement();
+
+			this.scombobox.scombobox('change', function() {
+				that.updateFormElement();
+			}, 'lms-ui');
+		}
+	};
+
+	$('.lms-ui-combobox').each(function() {
+		new LMSComboBox().init(this);
+	});
 
 	var documentviews = $('.documentview');
 

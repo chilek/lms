@@ -689,6 +689,12 @@ if (isset($netdevdata)) {
 
 	$netdevdata = $LMS->GetNetDev($id);
 
+	if (preg_match('/^[0-9]+$/', $netdevdata['producerid'])
+		&& preg_match('/^[0-9]+$/', $netdevdata['modelid'])) {
+		$netdevdata['producer'] = $netdevdata['producerid'];
+		$netdevdata['model'] = $netdevdata['modelid'];
+	}
+
 	if ($netdevdata['purchasetime'])
 		$netdevdata['purchasedate'] = date('Y/m/d', $netdevdata['purchasetime']);
 
@@ -721,6 +727,8 @@ if ($subtitle)
 
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('NNnodes', $LMS->GetNetNodes());
+$SMARTY->assign('producers', $LMS->GetProducers());
+$SMARTY->assign('models', json_encode($LMS->GetModels()));
 
 $SMARTY->assign('error'                , $error);
 $SMARTY->assign('netdevinfo'           , $netdevdata);

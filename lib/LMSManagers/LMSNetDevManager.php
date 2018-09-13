@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -221,9 +221,17 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			$args['name'] = $data['name'];
 		if (array_key_exists('description', $data))
 			$args['description'] = empty($data['description']) ? '' : $data['description'];
+
 		if (array_key_exists('producer', $data))
 			$args['producer'] = empty($data['producer']) ? '' : $data['producer'];
 		if (array_key_exists('model', $data))
+			$args['model'] = empty($data['model']) ? '' : $data['model'];
+		if (preg_match('/^[0-9]+$/', $args['producer'])
+			&& preg_match('/^[0-9]+$/', $args['model'])) {
+			$args['netdevicemodelid'] = $args['model'];
+		} else
+			$args['netdevicemodelid'] = null;
+
 			$args['model'] = empty($data['model']) ? '' : $data['model'];
 		if (array_key_exists('serialnumber', $data))
 			$args['serialnumber'] = empty($data['serialnumber']) ? '' : $data['serialnumber'];
@@ -262,6 +270,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
 		if (empty($args))
 			return null;
+
+		if (!empty($args['netdevicemodelid']))
+			$args = array_merge($args, $this->db->GetRow('SELECT p.name AS producer, m.name AS model
+				FROM netdevicemodels m
+				JOIN netdeviceproducers p on m.netdeviceproducerid = p.id
+				WHERE m.id = ?', array($args['netdevicemodelid'])));
 
         $res = $this->db->Execute('UPDATE netdevices SET ' . implode(' = ?, ', array_keys($args)) . ' = ?
         	WHERE id = ?', array_merge(array_values($args), array($data['id'])));
@@ -326,6 +340,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function NetDevAdd($data)
     {
+
         $args = array(
             'name'             => $data['name'],
             'description'      => empty($data['description']) ? '' : $data['description'],
@@ -346,12 +361,21 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'invprojectid'     => $data['invprojectid'],
             'netnodeid'        => $data['netnodeid'],
             'status'           => empty($data['status']) ? 0 : $data['status'],
-            'netdevicemodelid' => !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null,
+            'netdevicemodelid' => null,
             'address_id'       => ($data['address_id'] >= 0 ? $data['address_id'] : null),
             'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null
         );
 
-        if ($this->db->Execute('INSERT INTO netdevices (name,
+		if (preg_match('/^[0-9]+$/', $args['producer'])
+			&& preg_match('/^[0-9]+$/', $args['model'])) {
+			$args['netdevicemodelid'] = $args['model'];
+			$args = array_merge($args, $this->db->GetRow('SELECT p.name AS producer, m.name AS model
+				FROM netdevicemodels m
+				JOIN netdeviceproducers p on m.netdeviceproducerid = p.id
+				WHERE m.id = ?', array($args['netdevicemodelid'])));
+		}
+
+		if ($this->db->Execute('INSERT INTO netdevices (name,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid,
@@ -649,9 +673,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			ORDER BY name', array($id, $id, $id, $id));
     }
 
-    public function GetNetDev($id)
-    {
-        $result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel, d.ownerid,
+	public function GetNetDev($id) {
+		$result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel, d.ownerid,
+				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
 				lt.name AS street_type, lc.name AS city_name,
 				lb.name AS borough_name, lb.type AS borough_type,
@@ -664,6 +688,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.postoffice AS location_postoffice,
 				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM netdevices d
+				LEFT JOIN netdevicemodels ndm      ON ndm.id = d.netdevicemodelid
 				LEFT JOIN vaddresses addr          ON addr.id = d.address_id
 				LEFT JOIN nastypes t               ON (t.id = d.nastype)
 				LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
@@ -798,4 +823,29 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $result;
     }
 
+	public function GetProducers() {
+		return $this->db->GetAllByKey('SELECT id, name FROM netdeviceproducers ORDER BY name ASC', 'id');
+	}
+
+	public function GetModels($producerid = null) {
+		if (!empty($producerid))
+			return $this->db->GetAll('SELECT id, name FROM netdevicemodels ORDER BY name ASC',
+				array($producerid));
+
+		$models = $this->db->GetAll('SELECT m.id, p.id AS producerid, m.name
+			FROM netdevicemodels m
+			JOIN netdeviceproducers p ON p.id = m.netdeviceproducerid
+			ORDER BY p.id, m.name');
+		if (empty($models))
+			return array();
+
+		$result = array();
+		foreach ($models as $model) {
+			if (!isset($result['p' . $model['producerid']]))
+				$result['p' . $model['producerid']] = array();
+			$result['p' . $model['producerid']]['m' . $model['id']] = $model;
+		}
+
+		return $result;
+	}
 }
