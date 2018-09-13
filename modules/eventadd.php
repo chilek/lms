@@ -266,10 +266,17 @@ if(isset($_POST['event']))
 } else {
 	if (isset($_GET['id']) && intval($_GET['id'])) {
 		$event = $LMS->GetEvent($_GET['id']);
+
+		if (empty($event['enddate']))
+			$event['enddate'] = $event['date'];
+		$event['begin'] = date('Y/m/d H:i', $event['date'] + $event['begintime']);
+		$event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
+
 		$event['ticketid'] = 0;
 	} else {
 		$event['overlapwarned'] = 0;
 		$event['wholedays'] = false;
+		$event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
 	}
 	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 }
@@ -316,8 +323,6 @@ if (isset($event['helpdesk'])) {
 	$SMARTY->assign('categories', $categories);
 	$SMARTY->assign('ticket', $ticket);
 }
-
-$event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
 
 if (isset($_GET['customerid']))
 	$event['customerid'] = intval($_GET['customerid']);
