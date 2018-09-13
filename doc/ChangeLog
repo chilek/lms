@@ -137,6 +137,7 @@ version ?.??.?? (????-??-??):
     empty by default what it means no icon at all) [chilan]
   - enhancement: allow to set customer owner for network nodes [chilan]
   - improvement: allow to clone existing event quickly [chilan]
+  - improvement: allow to store encryption key for network interface in netradiosectors [interduo]
 
 version 1.11.23 (2018-03-21):
 

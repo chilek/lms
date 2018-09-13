@@ -8,6 +8,7 @@
 	<TD style="width: 10%;">{trans("Link technology:")}<br>{trans("Network interface type")}</TD>
 	<TD style="width: 19%;">{trans("Frequency:")}<br>{trans("Bandwidth:")}</TD>
 	<TD style="width: 10%;" class="nobr text-center">{trans("Nodes:")}<br>{trans("Devices:")}</TD>
+	<TD style="width: 1%;" class="text-center">{trans("Encryption key:")}</TD>
 	<TD style="width: 1%;">&nbsp;</TD>
 </TR>
 </THEAD>
@@ -66,6 +67,10 @@
 		{$radiosector.computers}<br>
 		{$radiosector.devices}
 	</TD>
+	<TD class="nobr text-center">
+		<span id="secret_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.secret}{if ConfigHelper::checkConfig('phpui.protect_passwords')}<button class="lms-ui-clipboard-button lms-ui-button" data-tooltip="Kliknięcie kopiuje do schowka" data-clipboard-text="{$radiosector.secret}">{trans("Copy")}</button>{else}{$radiosector.secret}{/if}{/if}</span>
+		<input type="text" size="6" name="secret_edit_{$rsid}" id="secret_edit_{$rsid}" value="{if $edit}{$formdata.secret}{else}{$radiosector.secret}{/if}" {tip text="Enter encryption key" trigger="secret_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
+	</TD>
 	<TD class="text-right nobr">
 		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
 		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="{trans("Edit")}" {tip text="Edit radio sector"}></A>
@@ -77,7 +82,7 @@
 </TR>
 {foreachelse}
 <TR id="no_radio_sectors" style="{if $formdata}display: none;{/if}">
-	<TD class="empty-table" colspan="8">
+	<TD class="empty-table" colspan="9">
 		<p>{trans("No radio sectors.")}</p>
 	</TD>
 </TR>
@@ -120,6 +125,10 @@
 		<input type="text" size="6" name="frequency2" id="frequency2" value="{$formdata.frequency2}" {tip text="Enter frequency in GHz" trigger="frequency2"}><br>
 		<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}>
 	</TD>
+	<TD></TD>
+	<TD class="nobr">
+		<input type="text" size="14" name="secret" id="secret" value="{$formdata.secret}" {tip text="Enter encryption key" trigger="secret"}>
+	</TD>
 	<TD class="text-right nobr" colspan="2">
 		<A HREF="javascript:addRadioSector();" id="save_new_radiosector_button"><IMG SRC="img/save.gif" ALT="{trans("Save")}" {tip text="Save"}></A>
 		<A HREF="javascript:hideAddRadioSector();" id="cancel_new_radiosector_button"><IMG SRC="img/cancel.gif" ALT="{trans("Cancel")}" {tip text="Cancel"}></A>
@@ -129,7 +138,7 @@
 {/if}
 
 <TR cellpadding="5" class="lms-ui-button-panel">
-	<TD class="text-right nobr" colspan="8">
+	<TD class="text-right nobr" colspan="10">
 	{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
 		&nbsp;<A id="radiosectoraddlink" HREF="javascript:showAddRadioSector();" {tip text="Add new radio sector"} style="{if $formdata}display: none;{/if}">{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
 	{else}

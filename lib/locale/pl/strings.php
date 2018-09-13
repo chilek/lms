@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
+$_LANG['Encryption key:'] = 'Klucz szyfrowania:';
 $_LANG['Access network interface'] = 'Sieciowy interfejs dostępowy';
 $_LANG['Infrastructure network interface'] = 'Sieciowy interfejs infrastrukturalny';
 $_LANG['<!retention>Retention log search:'] = 'Przeszukiwanie dzienników retencyjnych:';

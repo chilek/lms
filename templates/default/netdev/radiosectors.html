@@ -44,7 +44,7 @@ function delRadioSector(id) {
 }
 
 function toggleEditRadioSector(id) {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth', 'secret'];
 	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
 
 	for (i = 0; i < elems.length; i++) {
@@ -57,7 +57,7 @@ function toggleEditRadioSector(id) {
 }
 
 function showAddRadioSector() {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'frequency', 'frequency2', 'bandwidth'];
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'frequency', 'frequency2', 'bandwidth', 'secret'];
 	for (i = 0; i < elems.length; i++) {
 		xjx.$(elems[i]).value = '';
 		xjx.$(elems[i]).onmouseover = '';
@@ -81,8 +81,8 @@ function hideAddRadioSector() {
 }
 
 function updateRadioSector(id) {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
 	var params = {};
+    var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth', 'secret'];
 
 	xjx.$('radiosectortable').disabled = true;
 	for (i = 0; i < elems.length; i++) {
