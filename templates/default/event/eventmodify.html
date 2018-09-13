@@ -23,6 +23,10 @@
 	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
 		width: 12em;
 	}
+	.lms-ui-box-row-field.multiselect {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+	}
 </style>
 
 <P class="text-center" >
@@ -150,33 +154,6 @@
 				</div>
 			</div>
 
-			{if $layout.module = 'eventedit'}
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/note.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Note:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/ticket.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Assign this event to Helpdesk request")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<input type="checkbox" name="event[helpdesk]"{if isset($event.helpdesk)}value="1" checked{/if}>
-					<input type="text" name="event[ticketid]" value="{$event.ticketid}">
-				</div>
-			</div>
-			{/if}
-
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
 					<IMG src="img/users.gif" alt="">
@@ -205,16 +182,47 @@
 				</div>
 			</div>
 
+			{if $layout.module == 'eventedit'}
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/note.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Note:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/ticket.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					<label for="helpdesk-on">
+						{trans("Assign this event to Helpdesk request")}
+					</label>
+				</div>
+				<div class="lms-ui-box-row-field">
+					<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if isset($event.helpdesk)} checked{/if}>
+					<input type="text" name="event[ticketid]" value="{$event.ticketid}">
+				</div>
+			</div>
+			{/if}
+
 			{if $layout.module == 'eventadd' && empty($event.ticketid)}
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
 					<IMG src="img/ticket.gif" alt="">
 				</div>
 				<div class="lms-ui-box-row-label">
-					<label for="helpdesk-on">{trans("Add new request to Helpdesk")}</label>
+					<label for="helpdesk-on">
+						{trans("Add new request to Helpdesk")}
+					</label>
 				</div>
 				<div class="lms-ui-box-row-field">
-					<input type="checkbox" id="helpdesk-on" name="event[helpdesk]"{if !empty($event['helpdesk'])} checked{/if} id="helpdesk-on">
+					<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if !empty($event['helpdesk'])} checked{/if}>
 				</div>
 			</div>
 			{/if}

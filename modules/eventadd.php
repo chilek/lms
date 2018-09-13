@@ -264,13 +264,14 @@ if(isset($_POST['event']))
 		unset($event['categories']);
 	}
 } else {
-	if (isset($_GET['id']) && intval($_GET['id']))
+	if (isset($_GET['id']) && intval($_GET['id'])) {
 		$event = $LMS->GetEvent($_GET['id']);
-	else {
-		$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
+		$event['ticketid'] = 0;
+	} else {
 		$event['overlapwarned'] = 0;
 		$event['wholedays'] = false;
 	}
+	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 }
 
 if (isset($event['helpdesk'])) {
