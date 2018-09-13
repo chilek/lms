@@ -275,13 +275,14 @@ if(isset($_POST['message']))
 				$queuedata = $LMS->GetQueueByTicketId($message['ticketid']);
 				if (isset($message['customernotify']) && !empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody'])
 					&& !empty($emails)) {
+					$ticketid = sprintf("%06d", $id);
 					$title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
 						ORDER BY id LIMIT 1', array($message['ticketid']));
 					$custmail_subject = $queuedata['newmessagesubject'];
-					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
+					$custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
 					$custmail_subject = str_replace('%title', $title, $custmail_subject);
 					$custmail_body = $queuedata['newmessagebody'];
-					$custmail_body = str_replace('%tid', $id, $custmail_body);
+					$custmail_body = str_replace('%tid', $ticketid, $custmail_body);
 					$custmail_body = str_replace('%cid', $ticketdata['customerid'], $custmail_body);
 					$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
 					$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
