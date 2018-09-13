@@ -337,13 +337,15 @@
             		</TABLE>
         	</TD>
 	</TR>
-	</FORM>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
+			{block name="netdevedit-buttons"}
 			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+			{/block}
 		</TD>
 	</TR>
+	</FORM>
         </TBODY>
 </TABLE>
 
