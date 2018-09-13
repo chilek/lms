@@ -315,46 +315,35 @@
 	}).change();
 
 	$('#ownership').change(function() {
-		var selectors = [ '#ownername', '#customer' ];
+		var show_selectors = [];
+		var hide_selectors = [];
 		var customerid = $('#ownerid_input').val();
 		if ([ '1', '2' ].indexOf($(this).val()) != -1) {
+			show_selectors = [ '#ownername', '#customer' ];
 			if (customerid == 'undefined' || customerid == 0) {
-				selectors.push('#location_box');
-				$('#location_select').hide();
+				show_selectors.push('#location_box');
+				hide_selectors.push('#location_select');
+			} else {
+				hide_selectors.push('#location_box');
+				show_selectors.push('#location_select');
 			}
-			$(selectors.join(',')).show();
 		} else {
-			if (customerid == 'undefined' || customerid == 0) {
-				selectors.push('#location_select');
-				$('#location_box').show();
-			}
-			$(selectors.join(',')).hide();
+			hide_selectors = [ '#ownername', '#customer', '#location_select' ];
+			show_selectors = [ '#location_box' ];
 		}
+		$(show_selectors.join(',')).show();
+		$(hide_selectors.join(',')).hide();
 	}).change();
-
-	function updateLocationBoxesDisplay( customer_id ) {
-		if ( customer_id == 'undefined' || customer_id == 0 ) {
-			$( '#location_select' ).hide();
-			$( '#location_box'    ).show();
-		} else {
-			$( '#location_select' ).show();
-			$( '#location_box'    ).hide();
-		}
-	}
 
 	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
 
 	function customerChanged() {
-		var id = $('#ownerid_input').val();
+		$('#ownership').change();
 
-		updateLocationBoxesDisplay( id );
-
-		getCustomerAddresses(id, function(addresses) {
+		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
 			customer_addresses.setAddressList( addresses );
 		});
 	};
-
-	updateLocationBoxesDisplay( {intval($netnode.ownerid)} );
 
 	getCustomerAddresses( {intval($netnode.ownerid)}, function(addresses) {
 		customer_addresses.setAddressList( addresses );
