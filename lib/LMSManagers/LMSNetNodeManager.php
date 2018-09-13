@@ -27,7 +27,7 @@
 class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface {
 
 	public function GetNetNode($id) {
-		return $this->db->GetRow("SELECT n.*, p.name AS projectname,
+		$result = $this->db->GetRow("SELECT n.*, p.name AS projectname,
 				addr.location, addr.name as location_name, addr.id as address_id,
 				addr.state as location_state_name, addr.state_id as location_state,
 				lb.name AS location_borough_name, lb.id AS location_borough, lb.type AS location_borough_type,
@@ -47,6 +47,20 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE n.id=?", array($id));
+
+		// if location is empty and owner is set then heirdom address from owner
+		if ( !$result['location'] && $result['ownerid'] ) {
+			global $LMS;
+
+			$result['location'] = $LMS->getAddressForCustomerStuff( $result['ownerid'] );
+		}
+
+		if ($result['ownerid']) {
+			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$result['owner'] = $customer_manager->getCustomerName( $result['ownerid'] );
+		}
+
+		return $result;
 	}
 
 	public function GetNetNodes() {
@@ -165,17 +179,32 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'miar'            => $netnodedata['miar'],
 			'createtime'      => time(),
 			'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
-			'address_id'      => ($address_id >= 0 ? $address_id : null),
 			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 			'info'		  => $netnodedata['info'],
 			'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
 			'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
+			'address_id'       => ($netnodedata['address_id'] >= 0 ? $netnodedata['address_id'] : null),
+			'ownerid'          => !empty($netnodedata['ownerid'])  ? $netnodedata['ownerid']    : null
 			);
 
 		$this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
 			. ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
 
-		return $netnodeid = $this->db->GetLastInsertID('netnodes');
+		$id = $this->db->GetLastInsertID('netnodes');
+
+		if ( empty($data['ownerid']) ) {
+			global $LMS;
+
+			$address_id = $LMS->InsertAddress($netnodedata);
+
+			if ( $address_id >= 0 ) {
+				$this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?', array($address_id, $id));
+			}
+		} else if ($netnodedata['address_id'] && $netnodedata['address_id'] >= 0) {
+			$this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?', array($netnodedata['address_id'], $id));
+		}
+
+		return $id;
 	}
 
 	public function NetNodeExists($id) {
@@ -196,8 +225,6 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 	}
 
 	public function NetNodeUpdate($netnodedata) {
-		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-
 		$args = array();
 		if (array_key_exists('name', $netnodedata))
 			$args['name'] = $netnodedata['name'];
@@ -227,22 +254,44 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			$args['admcontact'] = empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'];
 		if (array_key_exists('lastinspectiontime', $netnodedata))
 			$args['lastinspectiontime'] = $netnodedata['lastinspectiontime'];
-
-		// if address_id is set then update
-		if (isset($netnodedata['address_id']))
-			$location_manager->UpdateAddress( $netnodedata );
-		else {
-		// else insert new address
-			$addr_id = $location_manager->InsertAddress( $netnodedata );
-
-			if ($addr_id >= 0)
-				$args['address_id'] = $addr_id;
-		}
+		if (array_key_exists('ownerid', $netnodedata))
+			$args['ownerid'] = empty($netnodedata['ownerid']) ? null : $netnodedata['ownerid'];
 
 		if (empty($args))
 			return null;
 
-		return $this->db->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
+		$res = $this->db->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
 			array_merge(array_values($args), array($netnodedata['id'])));
+
+		if ($data['address_id'] && $data['address_id'] < 0)
+			$data['address_id'] = null;
+
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		if ( $data['ownerid'] ) {
+			if ( $data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) )
+				$location_manager->DeleteAddress( $data['address_id'] );
+
+			$this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?',
+				array(
+					($data['customer_address_id'] >= 0 ? $data['customer_address_id'] : null),
+					$data['id']
+				)
+			);
+		} else {
+			if ( !$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) ) {
+				$address_id = $location_manager->InsertAddress($data);
+
+				$this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?',
+					array(
+						($address_id >= 0 ? $address_id : null),
+						$data['id']
+					)
+				);
+			} else
+				$location_manager->UpdateAddress($data);
+		}
+
+		return $res;
 	}
 }

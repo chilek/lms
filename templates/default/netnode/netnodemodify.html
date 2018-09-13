@@ -14,10 +14,12 @@
 		flex-direction: column !important;
 
 	}
+/*
 	.lms-ui-box-row-field.ownership > :not(:first-child) {
 		margin-left: 0 !important;
 		margin-top: 0.3em;
 	}
+*/
 </style>
 
 <FORM NAME="netnode" METHOD="POST" ACTION="?m={$layout.module}">
@@ -112,17 +114,57 @@
 				<div class="lms-ui-box-row-label">
 					{trans("Ownership:")}
 				</div>
-				<div class="lms-ui-box-row-field ownership">
+				<div class="lms-ui-box-row-field">
 					<SELECT NAME="netnode[ownership]" id="ownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"}>
 						{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
 						<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
 						{/foreach}
 					</SELECT>
-					<INPUT TYPE="TEXT" NAME="netnode[coowner]" id="ownername" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
 				</div>
 			</div>
 
-			<div class="lms-ui-box-row">
+			<div class="lms-ui-box-row" id="ownername">
+				<div class="lms-ui-box-row-icon">
+					<IMG SRC="img/division.gif" ALT="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Owner identifier:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row" id="customer">
+				<div class="lms-ui-box-row-icon">
+					<IMG SRC="img/customer.gif" ALT="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Owner:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					{if isset($nodenode.id)}
+					{customerlist form="netnode" customers=$customers selected=$customer.id selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+					{else}
+					{customerlist form="netnode" customers=$customers selected=$netnode.ownerid selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+					{/if}
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row" id="location_select">
+				<div class="lms-ui-box-row-icon">
+					<img src="img/home.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Location:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<select id="customer_addresses" name="netdev[address_id]" {tip trigger="address_id"}></select>
+				</div>
+			</div>
+
+
+			<div class="lms-ui-box-row" id="location_box">
 				<div class="lms-ui-box-row-icon">
 					<IMG SRC="img/home.gif" ALT="">
 				</div>
@@ -273,12 +315,55 @@
 	}).change();
 
 	$('#ownership').change(function() {
+		var selectors = [ '#ownername', '#customer' ];
+		var customerid = $('#ownerid_input').val();
 		if ([ '1', '2' ].indexOf($(this).val()) != -1) {
-			$('#ownername').show();
+			if (customerid == 'undefined' || customerid == 0) {
+				selectors.push('#location_box');
+				$('#location_select').hide();
+			}
+			$(selectors.join(',')).show();
 		} else {
-			$('#ownername').hide();
+			if (customerid == 'undefined' || customerid == 0) {
+				selectors.push('#location_select');
+				$('#location_box').show();
+			}
+			$(selectors.join(',')).hide();
 		}
 	}).change();
+
+	function updateLocationBoxesDisplay( customer_id ) {
+		if ( customer_id == 'undefined' || customer_id == 0 ) {
+			$( '#location_select' ).hide();
+			$( '#location_box'    ).show();
+		} else {
+			$( '#location_select' ).show();
+			$( '#location_box'    ).hide();
+		}
+	}
+
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
+	function customerChanged() {
+		var id = $('#ownerid_input').val();
+
+		updateLocationBoxesDisplay( id );
+
+		getCustomerAddresses(id, function(addresses) {
+			customer_addresses.setAddressList( addresses );
+		});
+	};
+
+	updateLocationBoxesDisplay( {intval($netnode.ownerid)} );
+
+	getCustomerAddresses( {intval($netnode.ownerid)}, function(addresses) {
+		customer_addresses.setAddressList( addresses );
+		{if $netdev.address_id && $netdev.ownerid}
+		$( '#customer_addresses' ).val( {$netdev.address_id} );
+		{/if}
+			customer_addresses.init();
+			customer_addresses.refresh();
+		});
 
 	/*
 	 * \brief Update address location update. Require google API key.

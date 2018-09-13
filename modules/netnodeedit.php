@@ -105,6 +105,9 @@ if (isset($netnodedata)) {
 	if (intval($netnodedata['lastinspectiontime']) > time())
 		$error['lastinspectiontime'] = trans('Date from the future not allowed!');
 
+	if (!empty($netnodedata['ownerid']) && !$LMS->CustomerExists($netnodedata['ownerid']))
+		$error['ownerid'] = trans('Customer doesn\'t exist!');
+
 	if (!$error) {
 		if (intval($netnodedata['invprojectid']) == -1)
 			$netnodedata['invprojectid'] = $LMS->AddProject($netnodedata);
@@ -128,15 +131,17 @@ if (isset($netnodedata)) {
 } else {
 	$netnodedata = $LMS->GetNetNode($id);
 
-	if ($netnodedata['location_city'] || $netnodedata['location_street']) {
-		$netnodedata['teryt'] = true;
-	}
+	if (($netnodedata['location_city'] || $netnodedata['location_street']) && !$netnodedata['ownerid'] )
+		$netdevdata['teryt'] = true;
 }
 
 $layout['pagetitle'] = trans('Net Device Node Edit: $a', $netnodedata['name']);
 
 if ($subtitle)
 	$layout['pagetitle'] .= ' - ' . $subtitle;
+
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('error'    , $error);
 $SMARTY->assign('netnode'  , $netnodedata);

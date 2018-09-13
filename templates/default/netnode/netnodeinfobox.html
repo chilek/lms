@@ -107,6 +107,19 @@
 			{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= 1)} ({$nodeinfo.coowner}) {/if}
 		</TD>
 	</TR>
+	{if $nodeinfo.ownerid != null}
+	<tr>
+		<td>
+			<img src="img/customer.gif" alt="">
+		</td>
+		<td class="bold">
+			{trans("Owner:")}
+		</td>
+		<td>
+			<a href="?m=customerinfo&id={$nodeinfo.ownerid}">{$nodeinfo.owner}</a>
+		</td>
+	</tr>
+	{/if}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">

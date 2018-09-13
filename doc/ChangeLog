@@ -135,6 +135,7 @@ version ?.??.?? (????-??-??):
   - enhancement: introduced whole day events support [chilan]
   - improvement: allow to configure phone call icon placed near phone number (phpui.call_phone_url
     empty by default what it means no icon at all) [chilan]
+  - enhancement: allow to set customer owner for network nodes [chilan]
 
 version 1.11.23 (2018-03-21):
 

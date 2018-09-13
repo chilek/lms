@@ -26,14 +26,18 @@
 
 $id = intval($_GET['id']);
 
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
+
 $result = $LMS->GetNetNode($id);
 
 if (!$result)
 	$SESSION->redirect('?m=netnodelist');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
+if ($nodeinfo['ownerid']) {
+	$nodeinfo['owner'] = $LMS->getCustomerName( $nodeinfo['ownerid'] );
+}
 
 $SMARTY->assign('nodeinfo', $result);
 $SMARTY->assign('objectid', $result['id']);

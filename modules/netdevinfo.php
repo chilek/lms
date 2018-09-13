@@ -44,10 +44,6 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	$netcomplist = $LMS->GetNetdevLinkedNodes($id);
 	$netdevlist = $LMS->GetNotConnectedDevices($id);
 
-	if ($netdevinfo['ownerid']) {
-		$netdevinfo['owner'] = $LMS->getCustomerName( $netdevinfo['ownerid'] );
-	}
-
 	if ($netdevinfo['ports'] > $netdevinfo['takenports'])
 		$nodelist = $LMS->GetUnlinkedNodes();
 	$netdevips = $LMS->GetNetDevIPs($id);

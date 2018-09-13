@@ -690,7 +690,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         elseif ($result['guaranteeperiod'] == NULL)
             $result['guaranteeperiod'] = -1;
 
-        return $result;
+		if ($result['ownerid']) {
+			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$result['owner'] = $customer_manager->getCustomerName( $result['ownerid'] );
+		}
+
+		return $result;
     }
 
     public function NetDevDelLinks($id)
