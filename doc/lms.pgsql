@@ -1118,7 +1118,7 @@ CREATE TABLE netnodes (
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	info text DEFAULT NULL,
 	ownerid integer DEFAULT NULL
-		CONSTRAINT netnodes_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
+		CONSTRAINT netnodes_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY(id)
 );
 
@@ -1214,6 +1214,7 @@ CREATE TABLE netradiosectors (
 	bandwidth numeric(9,5) DEFAULT NULL,
 	netdev integer NOT NULL
 		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	secret varchar(64) DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name, netdev)
 );
@@ -3459,6 +3460,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091301');
 
 COMMIT;
