@@ -716,6 +716,14 @@ if ($netdevdata['producer']) {
 	$layout['pagetitle'] = trans('Device Edit: $a', $netdevdata['name']);
 }
 
+$hook_data = $LMS->executeHook('netdevedit_before_display',
+	array(
+		'netdevdata' => $netdevdata,
+		'smarty' => $SMARTY,
+	)
+);
+$netdevdata = $hook_data['netdevdata'];
+
 if ($subtitle)
 	$layout['pagetitle'] .= ' - ' . $subtitle;
 
