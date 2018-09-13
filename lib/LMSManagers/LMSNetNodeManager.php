@@ -222,33 +222,34 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		$res = $this->db->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
 			array_merge(array_values($args), array($netnodedata['id'])));
 
-		if ($data['address_id'] && $data['address_id'] < 0)
-			$data['address_id'] = null;
+		if ($netnodedata['address_id'] && $netnodedata['address_id'] < 0)
+			$netnodedata['address_id'] = null;
 
 		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
-		if ( $data['ownerid'] ) {
-			if ( $data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) )
-				$location_manager->DeleteAddress( $data['address_id'] );
+		if ( $netnodedata['ownerid'] ) {
+			if ( $netnodedata['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($netnodedata['address_id'])) )
+				$location_manager->DeleteAddress( $netnodedata['address_id'] );
 
 			$this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?',
 				array(
-					($data['customer_address_id'] >= 0 ? $data['customer_address_id'] : null),
-					$data['id']
+					($netnodedata['customer_address_id'] >= 0 ? $netnodedata['customer_address_id'] : null),
+					$netnodedata['id']
 				)
 			);
 		} else {
-			if ( !$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) ) {
-				$address_id = $location_manager->InsertAddress($data);
+			if ( !$netnodedata['address_id'] || $netnodedata['address_id']
+				&& $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($netnodedata['address_id'])) ) {
+				$address_id = $location_manager->InsertAddress($netnodedata);
 
 				$this->db->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?',
 					array(
 						($address_id >= 0 ? $address_id : null),
-						$data['id']
+						$netnodedata['id']
 					)
 				);
 			} else
-				$location_manager->UpdateAddress($data);
+				$location_manager->UpdateAddress($netnodedata);
 		}
 
 		return $res;
