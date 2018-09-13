@@ -184,7 +184,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
 			'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
 			'address_id'       => ($netnodedata['address_id'] >= 0 ? $netnodedata['address_id'] : null),
-			'ownerid'          => !empty($netnodedata['ownerid'])  ? $netnodedata['ownerid']    : null
+			'ownerid'          => !empty($netnodedata['ownerid']) || empty($netnodedata['ownership'])  ? $netnodedata['ownerid']    : null
 			);
 
 		$this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
@@ -255,7 +255,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		if (array_key_exists('lastinspectiontime', $netnodedata))
 			$args['lastinspectiontime'] = $netnodedata['lastinspectiontime'];
 		if (array_key_exists('ownerid', $netnodedata))
-			$args['ownerid'] = empty($netnodedata['ownerid']) ? null : $netnodedata['ownerid'];
+			$args['ownerid'] = empty($netnodedata['ownerid']) || empty($netnodedata['ownership']) ? null : $netnodedata['ownerid'];
 
 		if (empty($args))
 			return null;
