@@ -11,3 +11,4 @@ plugins/**
 **/overlib.js
 templates/default/**/*.js
 components/**
+img/lms-ui-combobox.js
