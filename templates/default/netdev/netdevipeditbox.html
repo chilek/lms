@@ -1,6 +1,6 @@
 <!-- $Id$ -->
 
-<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdevinfo.id}&ip={$nodeipdata.id}">
+<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdev.id}&ip={$nodeipdata.id}">
 
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
@@ -76,7 +76,7 @@
 												ip: document.editipaddr['ipadd[ipaddr]'].value,
 												netelem: document.editipaddr['ipadd[netid]'],
 												netid: document.editipaddr['ipadd[netid]'].value,
-												device: {$netdevinfo.id}
+												device: {$netdev.id}
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 										<br>
 										<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
@@ -112,7 +112,7 @@
 												netelem: document.editipaddr['ipadd[pubnetid]'],
 												netid: document.editipaddr['ipadd[pubnetid]'].value,
 												privnetid: document.editipaddr['ipadd[netid]'].value,
-												device: {$netdevinfo.id}
+												device: {$netdev.id}
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 									</td>
 								</tr>
@@ -250,7 +250,7 @@
 		<tr>
 			<td colspan="3" class="text-right">
 				<a href="javascript:document.editipaddr.submit();" ACCESSKEY="S">{trans("Submit")} <img src="img/save.gif" alt=""></a>
-				<a href="?m=netdevinfo&id={$netdevinfo.id}{if isset($nodeipdata.id)}&ip={$nodeipdata.id}{/if}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+				<a href="?m=netdevinfo&id={$netdev.id}{if isset($nodeipdata.id)}&ip={$nodeipdata.id}{/if}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
 			</td>
 		</tr>
     </tbody>

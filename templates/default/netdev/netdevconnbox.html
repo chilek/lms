@@ -59,7 +59,7 @@
 			({$netdev.id|string_format:"%04d"})
 		</TD>
 		<TD class="nobr">
-			<span id="devlinkproperties_{$netdev.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$netdev.id}', true);">
+			<span id="devlinkproperties_{$netdev.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdev.id}', true);">
 				<IMG SRC="img/{if $netdev.linktype == 1}wireless.gif{elseif $netdev.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{trans("Change connection properties")}" {tip trigger="devlinkproperties_$netdev.id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdev.linktype]}<br>{if $netdev.linktype == 1}{if $netdev.srcradiosector}{trans("Radio sector:")} {$netdev.srcradiosector}<br>{/if}{if $netdev.dstradiosector}{trans("Destination radio sector:")} {$netdev.dstradiosector}<br>{/if}{/if}{if $netdev.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdev.linktype][$netdev.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdev.linkspeed]}</span>"}>
 			</span>
 			<span onClick="return self.location.href='?m=netdevinfo&id={$netdev.id}';">
@@ -68,7 +68,7 @@
 			</span>
 		</TD>
 		<TD class="text-right">
-			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdev.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdev.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -80,7 +80,7 @@
 	{/foreach}
 	<TR class="lms-ui-button-panel">
 		<TD class="text-center nobr" COLSPAN="6">
-			{if $netdevinfo.ports == $netdevinfo.takenports}
+			{if $netdev.ports == $netdev.takenports}
 			<span class="bold">{trans("All ports in that device are in use.")}</span>
 			{elseif !$restnetdevlist}
 			<span class="bold">{trans("No such devices for connection.")}</span>
@@ -88,7 +88,7 @@
 			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
 			<TABLE style="width: 100%;">
 				<COLGROUP>
@@ -106,7 +106,7 @@
 							<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}"{if $connect.id == $restnetdevlist[restnetdevlist].id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
 						{/section}
 						</SELECT>
-						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdevinfo.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>&nbsp;
+						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdev.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>&nbsp;
 						<label for="srcport">{trans("Port")}:</label><INPUT name="srcport" id="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
 						<SELECT NAME="srcradiosector" id="connboxsrcradiosector" {tip trigger="connboxsrcradiosector" text="Select radio sector"}{if $devlinktype != 1} style="display: none;"{/if}>
 							<OPTION value="0">- {trans("none")} -</OPTION>
@@ -114,7 +114,7 @@
 						<label for="dstport">{trans("Dest. port")}:</label><INPUT name="dstport" id="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
 						<SELECT NAME="dstradiosector" id="connboxdstradiosector" {tip trigger="connboxdstradiosector" text="Select radio sector"}{if $devlinktype != 1} style="display: none;"{/if}>
 							<OPTION value="0">- {trans("none")} -</OPTION>
-							{foreach $netdevinfo.radiosectors as $radiosector}
+							{foreach $netdev.radiosectors as $radiosector}
 							<OPTION value="{$radiosector.id}"{if $radiosector.id == $netlinkdstradiosector} selected{/if}>{$radiosector.name}</OPTION>
 							{/foreach}
 						</SELECT>
@@ -198,13 +198,13 @@ function change_devlinktechnology(linktechnology) {
 		xjx.$('connboxsrcradiosector').disabled = true;
 		xjx.$('connboxdstradiosector').disabled = true;
 		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev, linktechnology);
-		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdevinfo.id}, linktechnology);
+		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id}, linktechnology);
 	}
 }
 
 function get_radio_sectors_for_self_netdev() {
 	xjx.$('connboxdstradiosector').disabled = true;
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdevinfo.id});
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id});
 }
 
 function get_radio_sectors_for_netdev() {

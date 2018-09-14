@@ -1,7 +1,7 @@
 <!-- $Id$ -->
-<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formaddip&id={$netdevinfo.id}">
+<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formaddip&id={$netdev.id}">
 <INPUT type="submit" class="hiddenbtn">
-<INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$netdevinfo.id}">
+<INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$netdev.id}">
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
@@ -53,7 +53,7 @@
 					ip: document.editipaddr['ipadd[ipaddr]'].value,
 					netelem: document.editipaddr['ipadd[netid]'],
 					netid: document.editipaddr['ipadd[netid]'].value,
-					device: {$netdevinfo.id}
+					device: {$netdev.id}
 				});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 			<br>
 			<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
@@ -88,7 +88,7 @@
 					netelem: document.editipaddr['ipadd[pubnetid]'],
 					netid: document.editipaddr['ipadd[pubnetid]'].value,
 					privnetid: document.editipaddr['ipadd[netid]'].value,
-					device: {$netdevinfo.id}
+					device: {$netdev.id}
 				});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -203,7 +203,7 @@
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="?m=netdevinfo&id={$netdev.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>

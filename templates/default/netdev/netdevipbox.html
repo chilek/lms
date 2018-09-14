@@ -12,7 +12,7 @@
 				{t a=$netdevips|@count}IP addresses ($a):{/t}
 			</TD>
 	        <TD class="text-right nobr">
-				<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A>
+				<A HREF="?m=netdevedit&action=addip&id={$netdev.id}">{trans("New address")} &raquo;</A>
 			</TD>
 		</TR>
     </THEAD>
@@ -40,7 +40,7 @@
     </THEAD>
     <TBODY>
 	{foreach $netdevips as $netdevip}
-	<TR class="highlight{if !$netdevip.access} blend{/if}" data-target-url="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}">
+	<TR class="highlight{if !$netdevip.access} blend{/if}" data-target-url="?m=netdevinfo&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}">
 		<TD class="nobr">
 			<B>{$netdevip.name}</B>
 			{if $netdevip.location}<BR>
@@ -64,10 +64,10 @@
 			<a href="?m=netinfo&id={$netdevip.netid}">{$netdevip.netname|truncate:"20":"...":true}</a>
 		</TD>
 		<TD class="lms-ui-buttons nobr">
-			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevip.id}"><IMG src="img/{if ! $netdevip.access}no{/if}access.gif" ALT="" {if ! $netdevip.access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
-			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevip.id}" onClick="return confirmLink(this, '{t a=$netdevip.name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
-			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevip.id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
-			<A HREF="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
+			<A href="?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevip.id}"><IMG src="img/{if ! $netdevip.access}no{/if}access.gif" ALT="" {if ! $netdevip.access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
+			<A HREF="?m=netdevedit&action=ipdel&id={$netdev.id}&ip={$netdevip.id}" onClick="return confirmLink(this, '{t a=$netdevip.name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
+			<A HREF="?m=netdevedit&action=editip&id={$netdev.id}&ip={$netdevip.id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
+			<A HREF="?m=netdevinfo&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -80,7 +80,7 @@
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="6">
 			<IMG SRC="img/access.gif">
-			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
+			<A HREF="?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
 		</TD>
 	</TR>
     </TBODY>

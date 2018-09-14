@@ -65,7 +65,7 @@
 						<span class="blend">({$node.ownerid|string_format:"%04d"})</span>
 					</TD>
 					<TD class="nobr">
-						<span id="nodelinkproperties_{$node.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdevinfo.id}', '{$node.id}', false);" >
+						<span id="nodelinkproperties_{$node.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$node.id}', false);" >
 							<IMG src="{if $node.linktype == 1}img/wireless.gif{elseif $node.linktype == 2}img/netdev_takenports.gif{else}img/netdev_takenports.gif{/if}" alt="{trans("Change connection properties ")}" {tip trigger="nodelinkproperties_$node.id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$node.linktype]}<br>{if $node.linktype == 1 && $node.radiosector}{trans("Radio sector:")} {$node.radiosector}<br>{/if}{if $node.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$node.linktype][$node.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$node.linkspeed]}</span>"}>
 						</span>
 						<span onclick="return self.location.href='?m=nodeinfo&id={$node.id}';">
@@ -74,7 +74,7 @@
 						</span>
 					</TD>
 					<TD class="text-right">
-						<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$node.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
+						<A HREF="?m=netdevedit&action=disconnectnode&id={$netdev.id}&nodeid={$node.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
 					</TD>
 				</TR>
 				{foreachelse}
@@ -86,7 +86,7 @@
 				{/foreach}
 				<TR class="lms-ui-button-panel">
 					<TD class="text-center nobr" COLSPAN="5">
-						{if $netdevinfo.ports == $netdevinfo.takenports}
+						{if $netdev.ports == $netdev.takenports}
 						<span class="bold">{trans("All ports in that device are in use.")}</span>
 						{elseif $nodelist == NULL}
 						<span class="bold">{trans("No such nodes to connection.")}</span>
@@ -94,7 +94,7 @@
 						<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
 						<INPUT type="submit" class="hiddenbtn">
 						<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-						<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+						<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
 						<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
 						<TABLE style="width: 100%;">
 							<COLGROUP>
@@ -115,7 +115,7 @@
 									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 									<SELECT NAME="radiosector" id="devnodesradiosector" {tip trigger="devnodesradiosector" text="Select radio sector"}{if $nodelinktype != 1} style="display: none;"{/if}>
 										<OPTION value="0">- {trans("none")} -</OPTION>
-										{foreach $netdevinfo.radiosectors as $radiosector}
+										{foreach $netdev.radiosectors as $radiosector}
 										<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodelinkradiosector} selected{/if}>{$radiosector.name}</OPTION>
 										{/foreach}
 									</SELECT>
@@ -177,7 +177,7 @@ function change_nodelinktype(linktype) {
 			break;
 	}
 	xjx.$('devnodesradiosector').style.display = (linktype == 1 ? '' : 'none');
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdevinfo.id});
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdev.id});
 }
 
 function change_nodelinktechnology() {
@@ -186,7 +186,7 @@ function change_nodelinktechnology() {
 	if (linktype != 1)
 		return;
 	xjx.$('devnodesradiosector').disabled = true;
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdevinfo.id}, linktechnology);
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdev.id}, linktechnology);
 }
 
 function radio_sectors_received_for_node(radiosectors) {

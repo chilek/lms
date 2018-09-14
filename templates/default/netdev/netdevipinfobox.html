@@ -191,7 +191,7 @@
 										{if $disable_active_links}
 											<img src="img/{if !$nodeipdata.access}no{/if}access.gif" alt="">
 										{else}
-											<a href="?m=netdevedit&id={$netdevinfo.id}&action=ipset&ip={$nodeipdata.id}"><img src="img/{if !$nodeipdata.access}no{/if}access.gif" alt=""></a>
+											<a href="?m=netdevedit&id={$netdev.id}&action=ipset&ip={$nodeipdata.id}"><img src="img/{if !$nodeipdata.access}no{/if}access.gif" alt=""></a>
 										{/if}
 									</td>
 									<td>
@@ -234,8 +234,8 @@
 		</tr>
 		<tr>
 			<td width="100%" colspan="3" class="text-right">
-				<a href="?m=netdevedit&id={$netdevinfo.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
-				<a href="?m=netdevedit&id={$netdevinfo.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+				<a href="?m=netdevedit&id={$netdev.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
+				<a href="?m=netdevedit&id={$netdev.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			</td>
 		</tr>
     </tbody>
@@ -245,7 +245,7 @@
 <!--
     {if !$disable_active_links}
     $( function() {
-        var link = '?m=netdevedit&id={$netdevinfo.id}';
+        var link = '?m=netdevedit&id={$netdev.id}';
         var nodeid = {$nodeipdata.id};
 
         $( '.authtype' ).click( function() {

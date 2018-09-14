@@ -39,37 +39,37 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	$attachmentresourceid = $id;
 	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
 
-	$netdevinfo = $LMS->GetNetDev($id);
+	$netdev = $LMS->GetNetDev($id);
 	$netdevconnected = $LMS->GetNetDevConnectedNames($id);
 	$netcomplist = $LMS->GetNetdevLinkedNodes($id);
 	$netdevlist = $LMS->GetNotConnectedDevices($id);
 
-	if ($netdevinfo['ports'] > $netdevinfo['takenports'])
+	if ($netdev['ports'] > $netdev['takenports'])
 		$nodelist = $LMS->GetUnlinkedNodes();
 	$netdevips = $LMS->GetNetDevIPs($id);
 
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-	$layout['pagetitle'] = trans('Device Info: $a $b $c', $netdevinfo['name'], $netdevinfo['producer'], $netdevinfo['model']);
+	$layout['pagetitle'] = trans('Device Info: $a $b $c', $netdev['name'], $netdev['producer'], $netdev['model']);
 
-	$netdevinfo['id'] = $id;
+	$netdev['id'] = $id;
 
-	if ($netdevinfo['netnodeid'])
-		$netdevinfo['netnode'] = $LMS->GetNetNode($netdevinfo['netnodeid']);
+	if ($netdev['netnodeid'])
+		$netdev['netnode'] = $LMS->GetNetNode($netdev['netnodeid']);
 
-	$netdevinfo['projectname'] = trans('none');
-	if ($netdevinfo['invprojectid']) {
-		$prj = $LMS->GetProject($netdevinfo['invprojectid']);
+	$netdev['projectname'] = trans('none');
+	if ($netdev['invprojectid']) {
+		$prj = $LMS->GetProject($netdev['invprojectid']);
 		if ($prj) {
 			if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id'])==1) {
 				/* inherited */
-				if ($netdevinfo['netnodeid']) {
+				if ($netdev['netnodeid']) {
 					$prj = $LMS->GetProject($netnode['invprojectid']);
 					if ($prj)
-						$netdevinfo['projectname'] = trans('$a (from network node $b)', $prj['name'], $netdevinfo['netnode']['name']);
+						$netdev['projectname'] = trans('$a (from network node $b)', $prj['name'], $netdev['netnode']['name']);
 				}
 			} else
-				$netdevinfo['projectname'] = $prj['name'];
+				$netdev['projectname'] = $prj['name'];
 		}
 	}
 	$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
@@ -90,13 +90,13 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	$start = 0;
 	$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queue['total']);
 
-	$SMARTY->assign('netdevinfo', $netdevinfo);
+	$SMARTY->assign('netdev', $netdev);
 	$SMARTY->assign('start', $start);
 	$SMARTY->assign('pagelimit', $pagelimit);
 	$SMARTY->assign('queue', $queue);
 	$SMARTY->assign('queue_count', $queue_count);
 	$SMARTY->assign('queue_netdevid', $id);
-	$SMARTY->assign('objectid', $netdevinfo['id']);
+	$SMARTY->assign('objectid', $netdev['id']);
 	$SMARTY->assign('restnetdevlist', $netdevlist);
 	$SMARTY->assign('netdevips', $netdevips);
 	$SMARTY->assign('nodelist', $nodelist);
