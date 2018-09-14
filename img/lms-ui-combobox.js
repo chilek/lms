@@ -34,7 +34,7 @@
  * @param {Object} document (HTMLDocument)
  * @returns {undefined}
  */
-(function($, document) {
+(function ($, document) {
 	'use strict';
 	var pname = 'scombobox'; // plugin name, don't forget to change css prefixes if necessary
 	var cp = '.' + pname;
@@ -62,13 +62,14 @@
 			slow: 600
 		})[d] || d;
 	}
+
 	var pInt = parseInt;
 	var methods = {
 		/**
 		 * Initializes the combobox.
 		 * @returns {Object} jQuery object
 		 */
-		init: function() {
+		init: function () {
 			var $div = this.find(cp + clist),
 				$select = this.find('select'),
 				$dropdownBack = this.find(cp + cddback),
@@ -143,7 +144,7 @@
 				$div.insertAfter(this.find(cp + cdisplay));
 
 			}
-			$div.css({ 'max-width': opts.listMaxWidth, 'max-height': opts.maxHeight });
+			$div.css({'max-width': opts.listMaxWidth, 'max-height': opts.maxHeight});
 			if (opts.wrap == true) {
 				$div.css('white-space', 'normal');
 			}
@@ -161,7 +162,7 @@
 		 * @param {Number} appendMode flag defining if to append (1) or prepend (2) data to existing items
 		 * @returns {Object} jQuery object
 		 */
-		fill: function(data, appendMode) {
+		fill: function (data, appendMode) {
 			var $options = this.find('select').children('option, optgroup');
 			// don't ever rely on div content, always use select options instead
 			var $div = this.find('.' + pname + clist),
@@ -178,7 +179,7 @@
 				if ($options.length == 0) {
 					// TODO restore, using $p.data(pname).key if provided instead
 				} else { // here are options:
-					$options.each(function() {
+					$options.each(function () {
 						var $t = $(this);
 						var $p = $('<p />');
 						$p.attr('title', $t.attr('title'));
@@ -195,7 +196,7 @@
 							$t.after($innerOptions); // unwrap it
 							$t.remove(); // remove optgroup tag itself
 							$div.append(label ? $p.addClass(pname + cpheader).text(label) : $p.addClass(pname + csep));
-							$innerOptions.each(function() {
+							$innerOptions.each(function () {
 								$div.append($('<p />').attr('title', this.title).append($('<span class="' + pname + cmainspan + '" />').text($(this).text())).data('value', this.value));
 							});
 							return;
@@ -237,7 +238,7 @@
 				if (mode != 'checkboxes') {
 					this[pname]('val', $options.filter('option:selected:last').val());
 				} else {
-					var selectedValues = $options.filter(':selected').map(function() {
+					var selectedValues = $options.filter(':selected').map(function () {
 						return $(this).val();
 					}).get();
 					this[pname]('val', selectedValues);
@@ -249,7 +250,7 @@
 		 * Removes all items from combobox (html-based removal)
 		 * @returns {Object} jQuery object
 		 */
-		clear: function() { // TODO check why to or not to remove data itself
+		clear: function () { // TODO check why to or not to remove data itself
 			this.children('select').empty();
 			this.children(cp + clist).empty().width('');
 			this.children(cp + cdisplay).removeClass(pname + cinvalid);
@@ -262,7 +263,7 @@
 		 * @param {string} data
 		 * @returns {Object} jQuery object
 		 */
-		data: function(data) { // this method is required because after setting new options
+		data: function (data) { // this method is required because after setting new options
 			// via options method the data will be merged which probably will be wrong
 			if (arguments.length == 0) {
 				return this.data(pname).data;
@@ -276,7 +277,7 @@
 		 * @param {Boolean} b flag
 		 * @returns {Object|Boolean} jQuery object or boolean desabled status.
 		 */
-		disabled: function(b) {
+		disabled: function (b) {
 			var mode = this.data(pname).mode;
 			if (arguments.length == 0) {
 				if (mode == 'checkboxes') {
@@ -301,7 +302,7 @@
 		 * @param index
 		 * @returns {Number|Object}
 		 */
-		tabindex: function(index) {
+		tabindex: function (index) {
 			var $display = this.find(cp + cdisplay);
 			if (arguments.length == 0) {
 				return $display.attr('tabindex');
@@ -317,7 +318,7 @@
 		 * @param {Object} options
 		 * @returns {Object} jQuery object or options object
 		 */
-		options: function(options) {
+		options: function (options) {
 			if (arguments.length == 0) {
 				return this.data(pname);
 			}
@@ -332,7 +333,7 @@
 		 * checked in checkboxes mode.
 		 * If combobox is disabled then empty string is returned.
 		 */ // TODO add the second parameter: flag if trigger changing the value (now it is triggering by default)
-		val: function(v) {
+		val: function (v) {
 			var opts = this.data(pname),
 				mode = opts.mode;
 			if (arguments.length == 0) { // get the value
@@ -351,11 +352,11 @@
 			}
 			return this;
 		},
-		open: function() {
+		open: function () {
 			slide.call(this.children(cp + clist), 'down');
 			return this;
 		},
-		close: function() {
+		close: function () {
 			slide.call(this.children(cp + clist), 'up');
 			return this;
 		},
@@ -364,34 +365,34 @@
 		 * Call $('#combo').combobox('keyup', null, 'namespace');
 		 * to trigger an event of specific namespace.
 		 */
-		change: function(callback, namespace) {
+		change: function (callback, namespace) {
 			return bindOrTrig.call(this, 'change', this.children(cp + cvalue), callback, namespace);
 		},
-		focus: function(callback, namespace) {
+		focus: function (callback, namespace) {
 			return bindOrTrig.call(this, 'focus', this.children(cp + cdisplay), callback, namespace);
 		},
-		blur: function(callback, namespace) {
+		blur: function (callback, namespace) {
 			return bindOrTrig.call(this, 'blur', this.children(cp + cdisplay), callback, namespace);
 		},
-		keyup: function(callback, namespace) {
+		keyup: function (callback, namespace) {
 			return bindOrTrig.call(this, 'keyup', this.children(cp + cdisplay), callback, namespace);
 		},
-		keydown: function(callback, namespace) {
+		keydown: function (callback, namespace) {
 			return bindOrTrig.call(this, 'keydown', this.children(cp + cdisplay), callback, namespace);
 		},
-		keypress: function(callback, namespace) {
+		keypress: function (callback, namespace) {
 			return bindOrTrig.call(this, 'keypress', this.children(cp + cdisplay), callback, namespace);
 		},
-		click: function(callback, namespace) {
+		click: function (callback, namespace) {
 			return bindOrTrig.call(this, 'click', this.children(cp + cdisplay), callback, namespace);
 		},
-		mousedown: function(callback, namespace) {
+		mousedown: function (callback, namespace) {
 			return bindOrTrig.call(this, 'mousedown', this.children(cp + cdisplay), callback, namespace);
 		},
-		clickDropdown: function(callback, namespace) {
+		clickDropdown: function (callback, namespace) {
 			return bindOrTrig.call(this, 'click', this.children(cp + cddarr), callback, namespace);
 		},
-		toSelect: function() {
+		toSelect: function () {
 			var $select = this.children('select').insertAfter(this);
 			if (this.data(pname).reassignId) {
 				$select.attr('id', this.attr('id'));
@@ -399,7 +400,7 @@
 			this.remove();
 			return $select;
 		},
-		displayDropdown: function(b) {
+		displayDropdown: function (b) {
 			if (arguments.length) {
 				if (!!b) {
 					this.children(cp + cddarr + ', ' + cp + cddback).show();
@@ -415,7 +416,7 @@
 			}
 			return this;
 		},
-		placeholder: function(text) {
+		placeholder: function (text) {
 			var $input = this.children(cp + cdisplay);
 			if (!arguments.length) {
 				return $input.attr('placeholder');
@@ -453,7 +454,7 @@
 		var $paragraphs = $(this).find(cp + clist + ' p'),
 			$vInput = $(this).children(cp + cvalue),
 			arrV = [];
-		$paragraphs.each(function() {
+		$paragraphs.each(function () {
 			var $p = $(this);
 			var $check = $p.find(':checkbox');
 			if ($check.prop('checked')) {
@@ -495,7 +496,7 @@
 		//find the option whose 'value' is (=) to the given value in the select element
 		var $selected = $select
 			.find('option')
-			.filter(function() {
+			.filter(function () {
 				return this.value == value;
 			});
 
@@ -540,7 +541,7 @@
 			O = $T.data(pname);
 
 		var typingTimer = null;
-		this.on('keyup', cp + cdisplay + ', ' + cp + cdiv, function(e) { // filter
+		this.on('keyup', cp + cdisplay + ', ' + cp + cdiv, function (e) { // filter
 			// Ignore keys that can't alter input field value on their own
 			if ([38, //Up arrow
 				40, //Down arrow
@@ -561,7 +562,7 @@
 				return;
 			}
 
-			var doneTyping = function(e) {
+			var doneTyping = function (e) {
 				// Some extra cases
 				if (!e.ctrlKey && !e.shiftKey && e.which == 45) return; //Insert without modifier
 				if (e.ctrlKey && e.which == 65) return; //Ctrl+A; imperfect because sometimes we release the A *after* the Ctrl
@@ -584,20 +585,20 @@
 				var $div = $t.closest(cp).children(cp + clist);
 				slide.call($div, 'down', true);
 				var $options = $t.closest(cp).find('select option');
-				$(cp + ' ' + cp + clist).each(function() {
+				$(cp + ' ' + cp + clist).each(function () {
 					if ($div[0] != this) {
 						slide.call($(this), 'up');
 					}
 				});
 				if (!search) {
-					$div.children('p').show().each(function() {
+					$div.children('p').show().each(function () {
 						$(cp + '-marker', this).contents().unwrap(); // remove selection
 					});
 					return;
 				}
 				var hideSelector = O.hideSeparatorsOnSearch ? 'p' : 'p:not(' + cp + csep + ', ' + cp + cpheader + ')';
 				$div.children(hideSelector).hide();
-				$options.each(function() {
+				$options.each(function () {
 					var text = $(this).text().trim();
 					if (O.filterIgnoreCase) {
 						text = text.toLowerCase();
@@ -611,7 +612,7 @@
 						var re = new RegExp("(" + search.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1") + ")", fullMatch ? regexFlags + 'g' : regexFlags);
 						var $ps = $div.children('p:eq(' + $options.index(this) + '):not(' + cp + csep + ', ' + cp + cpheader + ')').show();
 						if (highlight) {
-							$ps.each(function() {
+							$ps.each(function () {
 								$(cp + '-marker', this).contents().unwrap(); // remove previous selection
 								var mainSpan = $(cp + cmainspan, this)[0];
 								mainSpan.innerHTML = mainSpan.innerHTML.replace(re, '<span class="' + pname + '-marker">$1</span>');
@@ -627,12 +628,12 @@
 				doneTyping.call(t, e);
 			} else {
 				clearTimeout(typingTimer);
-				typingTimer = setTimeout(function() {
+				typingTimer = setTimeout(function () {
 					doneTyping.call(t, e);
 				}, delay);
 			}
 		});
-		this.on('keydown', cp + cdisplay, function(e) {
+		this.on('keydown', cp + cdisplay, function (e) {
 			if ([38, 40, 13, 27, 9].indexOf(e.which) >= 0) {
 				if (e.which != 9) {
 					e.preventDefault();
@@ -749,7 +750,7 @@
 				}
 			}
 		});
-		this.on('change', 'select', function(e, checkboxesMode) { // someone triggered combobox select change
+		this.on('change', 'select', function (e, checkboxesMode) { // someone triggered combobox select change
 			var $combo = $(this).closest(cp);
 			var dtext = $('option:selected', this).text();
 			$combo.children(cp + cdisplay).val(dtext).data('value', dtext);
@@ -766,13 +767,13 @@
 			$valueInput.change();
 			slide.call($combo.children(cp + clist), 'up'); // can be triggered at the page load
 		});
-		this.on(pname + '-chupdate', cp + clist + ' p :checkbox', function(e, forRefresh) {
+		this.on(pname + '-chupdate', cp + clist + ' p :checkbox', function (e, forRefresh) {
 			if (forRefresh) {
 				e.stopPropagation();
 				checkboxesModePClick.call($(this).parent(), e, true);
 			}
 		});
-		this.on('click', cp + clist + ' p', function(e) { // value selected by clicking
+		this.on('click', cp + clist + ' p', function (e) { // value selected by clicking
 			clearTimeout(blurTimer);
 			e.stopPropagation();
 			if ($(this).is(cp + csep + ', ' + cp + cpheader)) {
@@ -797,7 +798,7 @@
 			slide.call($t.parent(), 'up');
 			$t.addClass(pname + chovered).siblings().removeClass(pname + chovered);
 		});
-		this.on('blur', cp + cdisplay, function(e) {
+		this.on('blur', cp + cdisplay, function (e) {
 			// Need to do some stuff only when user moves off the scombobox.
 
 			// Try to do nothing in this handler if losing focus to another part of this
@@ -821,7 +822,7 @@
 			//
 			// Note that the timer's function's bind() method is used to supply it with the correct 'this'
 			blurTimer = setTimeout(
-				function() {
+				function () {
 					var $t = $(this),
 						O = $T.data(pname);
 					if (this === document.activeElement) {
@@ -853,7 +854,7 @@
 				$(O.altInvalidField).val('');
 			} else {
 				var value;
-				$t.siblings('select').find('option').each(function() {
+				$t.siblings('select').find('option').each(function () {
 					if (O.filterIgnoreCase) {
 						if (vOriginal.toLowerCase() == $(this).text().trim().toLowerCase()) {
 							value = this.value;
@@ -877,7 +878,7 @@
 				$valueInput.change().data('changed', true);
 			}
 		});
-		this.on('focus', cp + cdisplay, function() {
+		this.on('focus', cp + cdisplay, function () {
 
 			// Check for indicator that focus shouldn't cause expansion
 			if ($(this).data('silentfocus')) {
@@ -902,22 +903,22 @@
 			}
 			$(this).data('expandfocus', false);
 		});
-		this.on('click', cp + cdisplay + '-div', function() {
+		this.on('click', cp + cdisplay + '-div', function () {
 			if ($T.data(pname).disabled) {
 				return;
 			}
 			slide.call($(this).siblings(cp + clist), 'down');
 		});
-		this.on('click', cp + cdisplay, function(e) {
+		this.on('click', cp + cdisplay, function (e) {
 			var t = $(this).closest(cp)[0];
-			$(cp).each(function() { // close all other comboboxes
+			$(cp).each(function () { // close all other comboboxes
 				if (this != t) {
 					$(this)[pname]('close');
 				}
 			});
 			e.stopPropagation();
 		});
-		this.on('click', cp + cddarr, function(e) {
+		this.on('click', cp + cddarr, function (e) {
 			clearTimeout(blurTimer);
 			var $t = $(this),
 				$combo = $t.closest(cp);
@@ -929,7 +930,7 @@
 				$combo.children(cp + cdisplay).data('expandfocus', true).focus();
 			}
 		});
-		this.on('click', cp + cdiremove, function(e) {
+		this.on('click', cp + cdiremove, function (e) {
 			clearTimeout(blurTimer);
 			e.stopPropagation();
 			var $t = $(this);
@@ -941,7 +942,7 @@
 		});
 		// scroll listener is for ajax loading
 		if (O.autoLoad != $.noop) {
-			$(cp + clist, this).scroll(function() {
+			$(cp + clist, this).scroll(function () {
 				var $t = $(this),
 					$select = $T.children('select');
 				var currentScrollTop = $t.scrollTop();
@@ -966,7 +967,7 @@
 		}
 
 
-		$(document).bind('click.' + pname, { thisIs: this }, function(e) {
+		$(document).bind('click.' + pname, {thisIs: this}, function (e) {
 			slide.call($(e.data.thisIs).children(cp + clist), 'up');
 		});
 
@@ -1057,7 +1058,7 @@
 		var value, v = $display.val().trim();
 		v = (O.filterIgnoreCase) ? v.toLowerCase() : v;
 		// check if such value exists in options
-		$select.find('option').each(function() {
+		$select.find('option').each(function () {
 			var candidate = $(this).text().trim();
 			candidate = (O.filterIgnoreCase) ? candidate.toLowerCase() : candidate;
 			if (candidate == v) {
@@ -1108,7 +1109,7 @@
 			O = $combobox.data(pname);
 		if (dir == 'up') {
 			O.beforeClose.call($combobox);
-			options.complete = function() {
+			options.complete = function () {
 				if (O.mode != 'checkboxes') {
 					checkForInvalid.call($combobox);
 				}
@@ -1118,7 +1119,9 @@
 			$combobox.children(cp + cddarr).removeClass(pname + cddarr + '-up');
 		} else {
 			O.beforeOpen.call($combobox);
-			options.complete = function() { O.afterOpen.call($combobox) };
+			options.complete = function () {
+				O.afterOpen.call($combobox)
+			};
 			this.slideDown(options);
 			$combobox.children(cp + cddarr).addClass(pname + cddarr + '-up');
 
@@ -1133,7 +1136,7 @@
 			$combobox.children(cp + clist).children('p').show();
 		}
 		var $display = $combobox.children(cp + cdisplay); // code for fillOnArrowPress feature
-		$display.each(function() {
+		$display.each(function () {
 			var $t = $(this);
 			if ($t.data('fillonarrow') && !backspace) { // fix backspace bug
 				$t.data('fillonarrow', false).val($t.data('value'));
@@ -1146,7 +1149,7 @@
 					search = search.toLowerCase();
 				}
 				var $selopts = $combobox.find('select option');
-				$selopts.each(function() {
+				$selopts.each(function () {
 					var text = $(this).text().trim();
 					if (O.filterIgnoreCase) {
 						text = text.toLowerCase();
@@ -1186,10 +1189,10 @@
 			}
 		}
 		var $dispDivHolder = $combo.find(cp + cdholder).prepend('<span />');
-		$combo.find(cp + cdholder).fadeOut(duration / 5, function() {
+		$combo.find(cp + cdholder).fadeOut(duration / 5, function () {
 			$dispDivHolder.empty().show();
 			// get all selected properties
-			$ps.each(function(i) {
+			$ps.each(function (i) {
 				var $t = $(this);
 				if ($t.find(':checkbox').prop('checked')) {
 					$dispDivHolder.append(
@@ -1254,8 +1257,9 @@
 		}
 		var keys = Object.keys(o);
 		for (var k = 0; k < keys.length; k++) {
-			var key = keys[k].replace(/-([a-z])/g, function(g) {
-				return g[1].toUpperCase() });
+			var key = keys[k].replace(/-([a-z])/g, function (g) {
+				return g[1].toUpperCase()
+			});
 			if (keys[k] != key) { // hyphened property
 				o[key] = o[keys[k]];
 				delete o[keys[k]];
@@ -1272,7 +1276,7 @@
 	 * @param {Object|String} actOrOpts action (string) or options (object)
 	 * @returns {Object|void} jQuery object on success. Throws error on undefined method.
 	 */
-	$.fn[pname] = function(actOrOpts) {
+	$.fn[pname] = function (actOrOpts) {
 		if (typeof actOrOpts == 'string') {
 			if (!this.length) { // method called on empty collection
 				$.error('Calling ' + pname + '.' + actOrOpts + '() method on empty collection');
@@ -1293,7 +1297,7 @@
 		if (method) {
 			return method.apply(this, Array.prototype.slice.call(arguments, 1));
 		}
-		return this.each(function() {
+		return this.each(function () {
 			var $t = $(this);
 			if ($t.parent().hasClass(pname)) {
 				return; // already initialized
@@ -1426,7 +1430,7 @@
 		 * @param item {Object} item from data array
 		 * @param options {Object} plugin instance properties
 		 */
-		pFillFunc: function(item, options) {
+		pFillFunc: function (item, options) {
 			return $('<p />').html(options.pMarkup
 				.replace('${text}', item.text)
 				.replace('${additional}', item.additional ? item.additional : '')
@@ -1520,7 +1524,7 @@
 	 * Usage: $().scombobox.extendDefaults(yourDefaults);
 	 * @param options {Object} your custom defaults.
 	 */
-	$.fn[pname].extendDefaults = function(options) {
+	$.fn[pname].extendDefaults = function (options) {
 		$.extend(true, $.fn[pname].defaults, options);
 	};
 })(jQuery, document);
