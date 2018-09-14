@@ -384,7 +384,7 @@
 		}
 		modelelem.scombobox('fill', values);
 		if (producerid.match(/^[0-9]+$/)) {
-			modelelem.scombobox('val', models['p' + producerid][Object.keys(models['p' + producerid])[0]].id);
+			modelelem.scombobox('val', '');
 			modelelem.trigger('change');
 		}
 		if (modelonlist) {
