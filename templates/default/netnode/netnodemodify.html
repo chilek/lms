@@ -87,17 +87,14 @@
 					{trans("Project:")}
 				</div>
 				<div class="lms-ui-box-row-field">
-					<SELECT NAME="netnode[invprojectid]" id="project" VALUE="{$netnode.invprojectid}" {tip text="Select project for this node"}>
-						<OPTION value="-2"{if ($netnode.invprojectid == '-2')} selected{/if}>- {trans("none")} -</OPTION>
-						<OPTION value="-1"{if ($netnode.invprojectid == '-1')} selected{/if}>{trans("New project")}</OPTION>
-						<!--
-						<OPTION value="1"{if ($netnode.invprojectid == '1')} selected{/if}>{trans("Inherited from root device")}</OPTION>
-						-->
+					<input type="hidden" name="netnode[project]" id="project-value">
+					<input type="hidden" name="netnode[projectid]" id="projectid-value">
+					<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
+						<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
 						{foreach $NNprojects as $project}
-						<OPTION VALUE="{$project.id}"{if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
+							<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
 						{/foreach}
-					</SELECT>
-					<INPUT TYPE="TEXT" NAME="netnode[projectname]" id="projectname" VALUE="{$netnode.projectname}" {tip text="Enter new project name" trigger="projectname"}>
+					</select>
 				</div>
 			</div>
 
@@ -299,14 +296,6 @@
 
 	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
 	$('[name="netnode[name]"]').focus();
-
-	$('#project').change(function() {
-		if ($(this).val() == '-1') {
-			$('#projectname').show();
-		} else {
-			$('#projectname').hide();
-		}
-	}).change();
 
 	$('#ownership').change(function() {
 		var show_selectors = [];

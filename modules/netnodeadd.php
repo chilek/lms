@@ -54,13 +54,12 @@ if (isset($netnodedata)) {
 	} elseif ($netnodedata['divisionid'] == '-1')
 		$error['divisionid'] = trans('Division is required!');
 
-	if ($api && isset($netnodedata['project'])) {
+	if (!strlen($netnodedata['projectid']) && !empty($netnodedata['project'])) {
 		$project = $LMS->GetProjectByName($netnodedata['project']);
 		if (empty($project)) {
-			$netnodedata['projectname'] = $netnodedata['project'];
-			$netnodedata['invprojectid'] = -1;
+			$netnodedata['projectid'] = -1;
 		} else
-			$netnodedata['invprojectid'] = $project['id'];
+			$netnodedata['projectid'] = $project['id'];
 	}
 
 	if ($netnodedata['invprojectid'] == '-1') { // new investment project
@@ -95,8 +94,10 @@ if (isset($netnodedata)) {
 		$error['lastinspectiontime'] = trans('Date from the future not allowed!');
 
 	if (!$error) {
-		if (intval($netnodedata['invprojectid']) == -1)
-			$netnodedata['invprojectid'] = $LMS->AddProject($netnodedata);
+		if ($netnodedata['projectid'] == -1)
+			$netnodedata['projectid'] = $LMS->AddProject($netnodedata);
+		elseif (empty($netnodedata['projectid']))
+			$netnodedata['projectid'] = null;
 
 		$netnodeid = $LMS->NetNodeAdd($netnodedata);
 

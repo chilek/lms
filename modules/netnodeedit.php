@@ -65,20 +65,12 @@ if (isset($netnodedata)) {
 			$error['divisionid'] = trans('Division is required!');
 	}
 
-	if ($api && isset($netnodedata['project'])) {
+	if (!strlen($netnodedata['projectid']) && !empty($netnodedata['project'])) {
 		$project = $LMS->GetProjectByName($netnodedata['project']);
 		if (empty($project)) {
-			$netnodedata['projectname'] = $netnodedata['project'];
-			$netnodedata['invprojectid'] = -1;
+			$netnodedata['projectid'] = -1;
 		} else
-			$netnodedata['invprojectid'] = $project['id'];
-	}
-
-	if ($netnodedata['invprojectid'] == '-1') { // new project
-		if (!strlen(trim($netnodedata['projectname'])))
-			$error['projectname'] = trans('Project name is required');
-		if ($LMS->ProjectByNameExists($netnodedata['projectname']))
-			$error['projectname'] = trans('Project with that name already exists');
+			$netnodedata['projectid'] = $project['id'];
 	}
 
 	if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
@@ -109,8 +101,10 @@ if (isset($netnodedata)) {
 		$error['ownerid'] = trans('Customer doesn\'t exist!');
 
 	if (!$error) {
-		if (intval($netnodedata['invprojectid']) == -1)
-			$netnodedata['invprojectid'] = $LMS->AddProject($netnodedata);
+		if ($netnodedata['projectid'] == -1)
+			$netnodedata['projectid'] = $LMS->AddProject($netnodedata);
+		elseif (empty($netnodedata['projectid']))
+			$netnodedata['projectid'] = null;
 
 		$result = $LMS->NetNodeUpdate($netnodedata);
 		$LMS->CleanupProjects();

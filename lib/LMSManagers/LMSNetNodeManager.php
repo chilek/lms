@@ -138,7 +138,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'miar'            => $netnodedata['miar'],
 			'createtime'      => time(),
 			'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
-			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
+			'invprojectid'    => intval($netnodedata['projectid']) ? $netnodedata['projectid'] : null,
 			'info'		  => $netnodedata['info'],
 			'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
 			'lastinspectiontime' => empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'],
@@ -205,8 +205,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			$args['miar'] = $netnodedata['miar'];
 		if (array_key_exists('divisionid', $netnodedata))
 			$args['divisionid'] = $netnodedata['divisionid'];
-		if (array_key_exists('invprojectid', $netnodedata))
-			$args['invprojectid'] = intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null;
+		if (array_key_exists('projectid', $netnodedata))
+			$args['invprojectid'] = intval($netnodedata['projectid']) ? $netnodedata['projectid'] : null;
 		if (array_key_exists('info', $netnodedata))
 			$args['info'] = $netnodedata['info'];
 		if (array_key_exists('admcontact', $netnodedata))
