@@ -590,18 +590,12 @@ if (isset($netdev)) {
 	if (!$api) {
 		$netdev['clients'] = (empty($netdev['clients'])) ? 0 : intval($netdev['clients']);
 
-		if ($netdev['purchasedate'] != '') {
-			$netdev['purchasetime'] = date_to_timestamp($netdev['purchasedate']);
-			if (empty($netdev['purchasetime']))
-				$error['purchasedate'] = trans('Invalid date format!');
-			else
-				if (time() < $netdev['purchasetime'])
-					$error['purchasedate'] = trans('Date from the future not allowed!');
-		} else
-			$netdev['purchasetime'] = 0;
+		$netdev['purchasetime'] = intval($netdev['purchasetime']);
+		if ($netdev['purchasetime'] && time() < $netdev['purchasetime'])
+			$error['purchasetime'] = trans('Date from the future not allowed!');
 
-		if ($netdev['guaranteeperiod'] != 0 && $netdev['purchasedate'] == '')
-			$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
+		if ($netdev['guaranteeperiod'] != 0 && !$netdev['purchasetime'])
+			$error['purchasetime'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
 	if ($api && isset($netdev['project'])) {

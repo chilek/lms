@@ -47,23 +47,15 @@ if (isset($netdev)) {
 	elseif (strlen($netdev['name']) > 60)
 		$error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
 
-	if ($netdev['purchasedate'] != '')
-	{
-		$netdev['purchasetime'] = date_to_timestamp($netdev['purchasedate']);
-		if(empty($netdev['purchasetime']))
-			$error['purchasedate'] = trans('Invalid date format!');
-		else
-			if (time() < $netdev['purchasetime'])
-				$error['purchasedate'] = trans('Date from the future not allowed!');
-	}
-	else
-		$netdev['purchasetime'] = 0;
+	$netdev['purchasetime'] = intval($netdev['purchasetime']);
+	if ($netdev['purchasetime'] && time() < $netdev['purchasetime'])
+		$error['purchasetime'] = trans('Date from the future not allowed!');
 
     if (!empty($netdev['ownerid']) && !$LMS->customerExists($netdev['ownerid']))
         $error['ownerid'] = trans('Customer doesn\'t exist!');
 
-	if ($netdev['guaranteeperiod'] != 0 && $netdev['purchasedate'] == NULL) {
-		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
+	if ($netdev['guaranteeperiod'] != 0 && !$netdev['purchasetime']) {
+		$error['purchasetime'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
 	if ($api && isset($netdev['project'])) {
@@ -184,7 +176,7 @@ if (isset($netdev)) {
 } elseif (isset($_GET['id'])) {
 	$netdev = $LMS->GetNetDev($_GET['id']);
 	if ($netdev['purchasetime'])
-		$netdev['purchasedate'] = date('Y/m/d', $netdev['purchasetime']);
+		$netdev['purchasetime'] = date('Y/m/d', $netdev['purchasetime']);
 	$netdev['name'] = trans('$a (clone)', $netdev['name']);
 	$netdev['teryt'] = !empty($netdev['location_city']) && !empty($netdev['location_street']);
 	$SMARTY->assign('netdev', $netdev);
