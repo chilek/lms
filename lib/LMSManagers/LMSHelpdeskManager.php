@@ -785,8 +785,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 	public function TicketAdd($ticket, $files = NULL) {
 		$this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
-			requestor_userid, subject, state, owner, createtime, cause, creatorid, source, priority, address_id, nodeid, netnodeid, netdevid, verifierid, deadline, service, type)
-				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
+			requestor_userid, subject, state, owner, createtime, cause, creatorid, source, priority, address_id, nodeid, netnodeid, netdevid, verifierid, deadline, service, type, invprojectid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
 			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			$ticket['requestor'],
 			$ticket['requestor_mail'],
@@ -807,6 +807,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			isset($ticket['deadline']) && !empty($ticket['deadline']) ? $ticket['deadline'] : null,
 			isset($ticket['service']) && !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
 			isset($ticket['type']) && !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
+			isset($ticket['invprojectid']) && !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
 		));
 
 		$id = $this->db->GetLastInsertID('rttickets');
@@ -865,7 +866,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
 				t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
-				t.source, t.priority, '
+				t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, '
 				. $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
 				t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
@@ -881,6 +882,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				LEFT JOIN vnodes n ON n.id = t.nodeid
 				LEFT JOIN netnodes nn ON nn.id = t.netnodeid
 				LEFT JOIN netdevices nd ON nd.id = t.netdevid
+				LEFT JOIN invprojects i ON i.id = t.invprojectid
 				LEFT JOIN vusers e ON (t.verifierid = e.id)
 				LEFT JOIN (
 					SELECT SUM(CASE WHEN closed !=1 THEN 1 ELSE 0 END) AS openeventcount,
@@ -967,7 +969,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES;
 
 		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, t.state, subject, customerid, requestor, source, priority,
-				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid,
+				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid
 				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.deadline, t.service, t.type
 			FROM rttickets t
 			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
@@ -1032,6 +1034,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_NETNODE_CHANGE;
         }else
             $props['netnodeid'] = $ticket['netnodeid'];
+
+        if($ticket['invprojectid'] != $props['invprojectid'] && isset($props['invprojectid'])) {
+            $notes[] = trans('Ticket\'s investment project assignments has been changed from $a to $b.', $ticket['invprojectid'], $props['invprojectid']);
+            $type = $type | RTMESSAGE_INVPROJECT_CHANGE;
+        }else
+            $props['invprojectid'] = $ticket['invprojectid'];
 
 		if($ticket['netdevid'] != $props['netdevid'] && isset($props['netdevid'])) {
             $notes[] = trans('Ticket\'s network device assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']);
@@ -1129,29 +1137,29 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$resolvetime = time();
 				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?,
-						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?, type = ? WHERE id = ?', array(
+						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ? WHERE id = ?', array(
 						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'],
 						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $ticketid));
+						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'], $ticketid));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
 				} else {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?,
-						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?, type = ? WHERE id = ?', array(
+						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ? WHERE id = ?', array(
 						$props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $props['subject'],
 						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $ticketid));
+						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'], $ticketid));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
 				}
 			} else {
 				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?,
-					customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?, type = ? WHERE id = ?', array(
+					customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?, verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ? WHERE id = ?', array(
 					$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'],
 					$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-					$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $ticketid));
+					$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'], $ticketid));
 				if (!empty($note))
 					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 						VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
@@ -1178,6 +1186,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$text = (isset($params['deadline']) && !empty($params['deadline'])) ? str_replace('%deadline', $params['deadline'], $text) : str_replace('%deadline', '-', $text);
 		$text = str_replace('%service', $params['service'], $text);
 		$text = str_replace('%type', $params['type'], $text);
+        $text = str_replace('%invproject', $params['invprojectid'], $text);
 		$url = (isset($params['url']) && !empty($params['url']) ? $params['url']
 			: 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
 				. $_SERVER['HTTP_HOST']

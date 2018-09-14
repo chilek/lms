@@ -23,6 +23,17 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $ticket.invprojectid}
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/money.gif" alt="">
+			{trans("Investment project:")}
+		</TD>
+		<TD>
+			{$ticket.invproject_name} ({$ticket.invprojectid})
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/time.gif" alt="">

@@ -3533,6 +3533,7 @@ $_LANG['technical'] = 'informacje techniczne';
 
 $_LANG['- use customer location -'] = '- użyj lokalizacji klienta -';
 $_LANG['Ticket\'s state has been changed from $a to $b.'] = 'Status zgłoszenia został zmieniony z $a na $b.';
+$_LANG['Ticket\'s investment project has been changed from $a to $b.'] = 'Projekt inwestycyjny zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Ticket\'s cause has been changed from $a to $b.'] = 'Przyczyna zgłoszenia została zmieniona z $a na $b.';
 $_LANG['Ticket\'s subject has been changed from $a to $b.'] = 'Temat zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Ticket has been moved from customer $a ($b) to customer $c ($d).'] = 'Zgłoszenie zostało przeniesione od klienta $a ($b) do klienta $c ($d).';

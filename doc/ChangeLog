@@ -138,6 +138,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to set customer owner for network nodes [chilan]
   - improvement: allow to clone existing event quickly [chilan]
   - improvement: allow to store encryption key for network interface in netradiosectors [interduo]
+  - improvement: now we can assign tickets to invprojects [interduo]
 
 version 1.11.23 (2018-03-21):
 

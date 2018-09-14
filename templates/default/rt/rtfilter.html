@@ -117,6 +117,15 @@
                     <option value="{$smarty.const.RT_RIGHT_INDICATOR}" {if $filter.rights == $smarty.const.RT_RIGHT_INDICATOR} selected{/if}>{trans("yes")}</option>
                 </SELECT>
             </label>
+            <label class="nobr">
+                {trans("Investment project:")}
+                <input type="hidden" name="invprojectlist" value="all">
+                <SELECT size="1" name="invp" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}" >
+                {foreach $invprojectlist as $invproject}
+                    <OPTION value="{$invproject.id}"{if is_array($filter.invprojectids) && in_array($invproject.id, $filter.invprojectids)} SELECTED{/if}>{$invproject.name|truncate:40:"...":true}</OPTION>
+                {/foreach}
+                </SELECT>
+            </label>
         </FORM>
         </div>
         {persistent_filter}

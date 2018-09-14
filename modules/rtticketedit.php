@@ -281,6 +281,7 @@ if(isset($_POST['ticket']))
 			'deadline' => empty($ticketedit['deadline']) ? null : $ticketedit['deadline'],
             'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
             'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
+            'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
@@ -427,6 +428,11 @@ unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
+$invprojectlist = $LMS->GetProjects('name', $search);
+unset($invprojectlist['total']);
+unset($invprojectlist['order']);
+unset($invprojectlist['direction']);
+
 if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid']))
 	$search = array('netnode' => $ticket['netnodeid']);
 else
@@ -441,6 +447,7 @@ $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
+$SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtticketedit.html');
