@@ -3133,6 +3133,8 @@ URL: %url
 ('userpanel', 'pin_changes', 'true', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
+INSERT INTO invprojects (name, type) VALUES ('inherited', 1)
+
 INSERT INTO netdeviceproducers (id, name) VALUES
 (1, 'Mikrotik'),
 (2, 'Ubiquiti');
