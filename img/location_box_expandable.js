@@ -35,7 +35,9 @@ $(function() {
      * \brief Show/hide single address box.
      */
     $('body').on('click', '.address-full', function() {
-        $( '#' + $(this).attr( 'data-target' ) ).slideToggle(200);
+    	$('.address-full').not(this).next().hide().attr('data-state', 'closed');
+
+        $( '#' + $(this).attr( 'data-target' ) ).toggle();
 
         if ( $(this).attr('data-state') == 'closed' ) {
             $(this).attr('data-state', 'opened');
