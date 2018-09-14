@@ -598,20 +598,12 @@ if (isset($netdev)) {
 			$error['purchasetime'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
-	if ($api && isset($netdev['project'])) {
+	if (!strlen($netdev['projectid']) && !empty($netdev['project'])) {
 		$project = $LMS->GetProjectByName($netdev['project']);
 		if (empty($project)) {
-			$netdev['projectname'] = $netdev['project'];
-			$netdev['invprojectid'] = -1;
+			$netdev['projectid'] = -1;
 		} else
-			$netdev['invprojectid'] = $project['id'];
-	}
-
-	if ($netdev['invprojectid'] == '-1') { // new investment project
-		if (!strlen(trim($netdev['projectname'])))
-			$error['projectname'] = trans('Project name is required');
-		if ($LMS->ProjectByNameExists($netdev['projectname']))
-			$error['projectname'] = trans('Project with that name already exists');
+			$netdev['projectid'] = $project['id'];
 	}
 
 	$hook_data = $LMS->executeHook(
@@ -639,18 +631,13 @@ if (isset($netdev)) {
 				$netdev['nastype'] = 0;
 		}
 
-		$ipi = $netdev['invprojectid'];
-		if ($ipi == '-1')
-			$ipi = $LMS->AddProject($netdev);
-
-		if ($netdev['invprojectid'] == '-1' || intval($ipi)>0) {
-			$netdev['invprojectid'] = intval($ipi);
-		} else {
-			$netdev['invprojectid'] = NULL;
-		}
+		if ($netdev['projectid'] == -1)
+			$netdev['projectid'] = $LMS->AddProject($netdev);
+		elseif (empty($netdev['projectid']))
+			$netdev['projectid'] = null;
 
 		// no net node selected
-		if ($netdev['netnodeid'] == "-1") {
+		if ($netdev['netnodeid'] == '-1') {
 			$netdev['netnodeid'] = null;
 		}
 

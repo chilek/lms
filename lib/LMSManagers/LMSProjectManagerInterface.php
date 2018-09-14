@@ -44,4 +44,6 @@ interface LMSProjectManagerInterface {
 	public function DeleteProject($id);
 
 	public function UpdateProject($id, $project);
+
+	public function GetProjectType($id);
 }

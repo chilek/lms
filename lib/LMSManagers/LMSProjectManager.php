@@ -75,7 +75,7 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 	public function AddProject($project) {
 		$this->db->Execute("INSERT INTO invprojects (name, divisionid, type) VALUES (?, ?, ?)",
 			array(
-				$project['projectname'],
+				$project['project'],
 				isset($project['divisionid']) && !empty($project['divisionid']) ? $project['divisionid'] : null,
 				INV_PROJECT_REGULAR
 			)
@@ -92,6 +92,10 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 		$project['id'] = $id;
 		return $this->db->Execute('UPDATE invprojects SET name=?, divisionid=?, type=?
             WHERE id = ?', array_values($project));
+	}
 
+	public function GetProjectType($id) {
+		return $this->db->GetOne('SELECT type FROM invprojects WHERE id = ?',
+			array($id));
 	}
 }

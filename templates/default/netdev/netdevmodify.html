@@ -310,15 +310,15 @@
 						{trans("Investment project:")}
 					</div>
 					<div class="lms-ui-box-row-field">
-						<select name="netdev[invprojectid]" id="project" {tip text="Select project for this node"}>
-							<option value="-2" {if ($netdev.invprojectid== '-2')} selected{/if}>- {trans("none")} -</option>
-							<option value="-1" {if ($netdev.invprojectid== '-1')} selected{/if}>{trans("New project")}</option>
-							<option value="1" {if ($netdev.invprojectid== '1')} selected{/if}>{trans("From root device")}</option>
+						<input type="hidden" name="netdev[project]" id="project-value">
+						<input type="hidden" name="netdev[projectid]" id="projectid-value">
+						<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
+							<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
+							<option value="1" {if $netdev.invprojectid == 1} selected{/if}>{trans("From root device")}</option>
 							{foreach $NNprojects as $project}
 								<option value="{$project.id}" {if ($netdev.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
 							{/foreach}
-						</select> <input type="text" name="netdev[projectname]" value="{$netdev.projectname}"
-								{tip text="Enter new project name" trigger="projectname"} id="projectname">
+						</select>
 					</div>
 				</div>
 
@@ -394,14 +394,6 @@
 
 	$(function () {
 		$('[name="netdev[name]"]').focus();
-
-		$('#project').change(function () {
-			if ($(this).val() == '-1') {
-				$('#projectname').show();
-			} else {
-				$('#projectname').hide();
-			}
-		}).change();
 
 		updateModels('{$netdev.producer}');
 

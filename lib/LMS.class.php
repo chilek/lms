@@ -3589,7 +3589,12 @@ class LMS
 		return $manager->UpdateProject($id, $project);
 	}
 
-	// files
+	public function GetProjectType($id) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjectType($id);
+	}
+
+		// files
 	protected function getFileManager() {
 		if (!isset($this->file_manager))
 			$this->file_manager = new LMSFileManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
