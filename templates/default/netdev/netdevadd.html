@@ -59,7 +59,9 @@
 							<tr>
 								<td><img src="img/producer.gif" alt=""> {trans("Manufacturer:")}</td>
 								<td>
-									<select name="netdev[producer]" id="producer" data-value="{$netdev.producer}" {tip class="lms-ui-combobox" text="Enter producer name (optional)"}>
+									<input type="hidden" id="producer-value" name="netdev[producer]">
+									<input type="hidden" id="producerid-value" name="netdev[producerid]">
+									<select id="producer" data-value="{$netdev.producer}" data-alt-field="#producerid-value" data-alt-invalid-field="#producer-value" {tip class="lms-ui-combobox" text="Enter producer name (optional)"}>
 										{foreach $producers as $producer}
 										<option value="{$producer.id}"{if $producer.id == $netdev.producer} seleccted{/if}>{$producer.name}</option>
 										{/foreach}
@@ -69,7 +71,9 @@
 							<tr>
 								<td><img src="img/netdev_model.gif" alt=""> {trans("Model:")}</td>
 								<td>
-									<select name="netdev[model]" id="model" data-value="{$netdev.model}" {tip class="lms-ui-combobox" text="Enter device model (optional)"}>
+									<input type="hidden" id="model-value" name="netdev[model]">
+									<input type="hidden" id="modelid-value" name="netdev[modelid]">
+									<select id="model" data-value="{$netdev.model}" data-alt-field="#modelid-value" data-alt-invalid-field="#model-value" {tip class="lms-ui-combobox" text="Enter device model (optional)"}>
 									</select>
 								</td>
 							</tr>
@@ -301,7 +305,7 @@
 		modelelem.scombobox('fill', values);
 		if (producerid.match(/^[0-9]+$/)) {
 			modelelem.scombobox('val', models['p' + producerid][Object.keys(models['p' + producerid])[0]].id);
-			modelelem.change();
+			modelelem.trigger('change');
 		}
 		if (modelonlist) {
 			modelelem.scombobox('val', modelid);

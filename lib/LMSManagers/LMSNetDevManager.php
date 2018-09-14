@@ -226,9 +226,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			$args['producer'] = empty($data['producer']) ? '' : $data['producer'];
 		if (array_key_exists('model', $data))
 			$args['model'] = empty($data['model']) ? '' : $data['model'];
-		if (preg_match('/^[0-9]+$/', $args['producer'])
-			&& preg_match('/^[0-9]+$/', $args['model'])) {
-			$args['netdevicemodelid'] = $args['model'];
+
+		if (preg_match('/^[0-9]+$/', $data['producerid'])
+			&& preg_match('/^[0-9]+$/', $data['modelid'])) {
+			$args['netdevicemodelid'] = $data['modelid'];
 		} else
 			$args['netdevicemodelid'] = null;
 
@@ -366,9 +367,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null
         );
 
-		if (preg_match('/^[0-9]+$/', $args['producer'])
-			&& preg_match('/^[0-9]+$/', $args['model'])) {
-			$args['netdevicemodelid'] = $args['model'];
+		if (preg_match('/^[0-9]+$/', $data['producerid'])
+			&& preg_match('/^[0-9]+$/', $data['modelid'])) {
+			$args['netdevicemodelid'] = $data['modelid'];
 			$args = array_merge($args, $this->db->GetRow('SELECT p.name AS producer, m.name AS model
 				FROM netdevicemodels m
 				JOIN netdeviceproducers p on m.netdeviceproducerid = p.id

@@ -47,7 +47,9 @@
 			<B>{trans("Producer:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<select name="netdev[producer]" id="producer" data-value="{$netdevinfo.producer}" {tip class="lms-ui-combobox" text="Enter producer name (optional)"}>
+			<input type="hidden" id="producer-value" name="netdev[producer]">
+			<input type="hidden" id="producerid-value" name="netdev[producerid]">
+			<select id="producer" data-value="{$netdevinfo.producer}" data-alt-field="#producerid-value" data-alt-invalid-field="#producer-value" {tip class="lms-ui-combobox" text="Enter producer name (optional)"}>
 				{foreach $producers as $producer}
 				<option value="{$producer.id}"{if $producer.id == $netdevinfo.producer} seleccted{/if}>{$producer.name}</option>
 				{/foreach}
@@ -62,7 +64,9 @@
 			<B>{trans("Model:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<select name="netdev[model]" id="model" data-value="{$netdevinfo.model}" {tip class="lms-ui-combobox" text="Enter device model (optional)"}>
+			<input type="hidden" id="model-value" name="netdev[model]">
+			<input type="hidden" id="modelid-value" name="netdev[modelid]">
+			<select id="model" data-value="{$netdevinfo.model}" data-alt-field="#modelid-value" data-alt-invalid-field="#model-value" {tip class="lms-ui-combobox" text="Enter device model (optional)"}>
 			</select>
 		</TD>
 	</TR>

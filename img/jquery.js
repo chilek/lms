@@ -363,13 +363,14 @@ $(function() {
 		disable_search_threshold: 5
 	});
 
-	$.fn.scombobox.defaults = $.extend(true, $.fn.scombobox.defaults, {
-		animation: {
-			duration: 10
+	$('.lms-ui-combobox').each(function() {
+		$(this).scombobox($.extend({},
+			$(this).attr('data-alt-field') ? { altField: $(this).attr('data-alt-field') } : {},
+			$(this).attr('data-alt-invalid-field') ? { altInvalidField: $(this).attr('data-alt-invalid-field') } : {}
+		));
+		if ($(this).attr('data-value')) {
+			$(this).parent('.scombobox').scombobox('val', $(this).attr('data-value'));
 		}
-	});
-	$('.lms-ui-combobox').scombobox({
-		invalidAsValue: true
 	});
 	// dynamicaly insert hidden input element with name as original select element
 	// the purpose is simple: we want to submit custom value to server
