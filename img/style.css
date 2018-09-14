@@ -2198,8 +2198,8 @@ div.lms-ui-wysiwyg-editor {
   align-items: center;
   align-self: flex-start;
 }
-.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-field > :not(:first-child) {
-  margin-left: 0.2em;
+.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-field > * {
+  margin-right: 0.3em;
 }
 .lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-field input {
   padding-left: 0.2em;
