@@ -1414,6 +1414,12 @@ html .ui-button.ui-state-disabled:active {
 .ui-slider-horizontal {
   height: 1em;
 }
+.lms-ui-selectmenu-button .ui-selectmenu-text {
+  padding-top: 0;
+}
+.lms-ui-selectmenu-button .ui-selectmenu-icon {
+  height: 15px;
+}
 .fileupload-progress-label {
   position: absolute;
   left: 48%;

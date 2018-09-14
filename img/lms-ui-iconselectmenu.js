@@ -23,7 +23,7 @@
  */
 
 $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
-    _renderItem: function( ul, item ) {
+	_renderItem: function( ul, item ) {
         var li = $( "<li>" ),
         wrapper = $( "<div>", { text: item.label } );
 
@@ -57,7 +57,7 @@ function LmsUiIconSelectMenu( id, options ) {
 
 LmsUiIconSelectMenu.prototype.init = function() {
     $( this.select_id )
-        .iconselectmenu(this.options)
+        .iconselectmenu($.extend(this.options, { classes: { 'ui-selectmenu-button': 'lms-ui-selectmenu-button' }}))
         .iconselectmenu( 'menuWidget' );
 
     // rewrite jQuery UI styles
