@@ -1,11 +1,11 @@
-<!--// $Id$ //-->
-{block name="footer"}
-{if $layout.dberrors}
-	{include file="dberrors.html"}
-{/if}
-{/block}
-<p class="text-center blend">{trans("Page generation time:")} {gentime} {trans("sec.")} {memory}</p>
-</div>
+		<!--// $Id$ //-->
+		{block name="footer"}
+		{if $layout.dberrors}
+			{include file="dberrors.html"}
+		{/if}
+		{/block}
+		<p class="text-center blend">{trans("Page generation time:")} {gentime} {trans("sec.")} {memory}</p>
+	</div>
 </div>
 </body>
 </html>

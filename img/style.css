@@ -13,46 +13,148 @@ BODY {
   background-color: #EBE4D6;
   margin: 0;
   padding: 0;
-  vertical-align: middle;
   min-height: 100%;
+  width: 100%;
 }
 TABLE {
   border-collapse: collapse;
   border-color: #000000;
 }
-#pagecontainer {
+#lms-ui-container {
+  width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
-#pageleftbar {
-  position: absolute;
-  left: 0px;
-  width: 160px;
+#lms-ui-left-panel {
+  align-self: flex-start;
   background-color: #CEBD9B;
   overflow: hidden;
   border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  min-width: 12em;
+  padding-bottom: 2em;
+  flex: 0 0 auto;
 }
-#pageleftbar.pageleftbar-hidden {
-  width: 7px;
-  height: 7px;
+#lms-ui-contents {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 0.4em;
+  margin-bottom: 0.85em;
+  padding: 0.43em;
+  flex: 1 1 auto;
 }
-#pagecontent {
-  margin-left: 174px;
-  _width: 100%;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  padding: 5px 0px;
-}
-#pagecontent.pagecontent-wide {
-  margin-left: 17px;
+#lms-ui-contents > p {
+  align-self: center;
 }
 #lms-ui-main-menu-toggle {
-  background-image: url(left.gif);
-  background-repeat: no-repeat;
-  width: 7px;
-  height: 7px;
+  position: absolute;
+  left: 0.15em;
+  top: 0.15em;
+  background-size: cover;
+  width: 0.8em;
+  height: 0.8em;
+  cursor: pointer;
 }
-.pageleftbar-hidden #lms-ui-main-menu-toggle {
+#lms-ui-main-menu-toggle.visible {
+  background-image: url(left.gif);
+}
+#lms-ui-main-menu-toggle:not(.visible) {
   background-image: url(right.gif);
+}
+#lms-ui-main-menu {
+  height: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+#lms-ui-copyrights {
+  margin: 0;
+  font-weight: bold;
+  align-self: stretch;
+  text-align: center;
+}
+#lms-ui-top-panel {
+  align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+  padding-bottom: 0.3em;
+}
+.lms-ui-indicator:hover {
+  text-decoration: none;
+}
+.lms-ui-indicator-counter {
+  font-size: 120%;
+}
+#lms-ui-toolbar {
+  align-self: stretch;
+  border-bottom: 1px solid black;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}
+#lms-ui-module-view {
+  width: 100%;
+}
+#lms-ui-quick-search {
+  display: flex;
+  align-items: flex-start;
+}
+.lms-ui-quick-search-field {
+  display: flex;
+  align-items: flex-start;
+  margin-left: 0.3em;
+}
+.lms-ui-quick-search-field img {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.lms-ui-quick-search-field input {
+  margin-left: 0.3em;
+  width: 1.7em;
+  display: inline-block;
+}
+.lms-ui-quick-search-field input.lms-ui-quick-search-active {
+  width: 8.4em;
+}
+.lms-ui-quick-search-selector {
+  margin-left: 0.45em;
+  margin-top: 0.45em;
+  cursor: pointer;
+}
+#lms-ui-welcome-boxes {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+#lms-ui-welcome-main-panels {
+  width: 100%;
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.lms-ui-welcome-main-panel {
+  padding: 0.17em;
+  width: 100%;
+}
+#lms-ui-welcome-extra-panel {
+  align-self: stretch;
+}
+#lms-ui-welcome-bottom-panel {
+  align-self: stretch;
 }
 .bottomline {
   border-bottom-style: solid;
@@ -1753,35 +1855,6 @@ table.dataTable thead tr:last-child th {
     opacity: 1;
   }
 }
-#quicksearch {
-  display: flex;
-  align-items: flex-start;
-}
-.lms-ui-quick-search-field {
-  display: flex;
-  align-items: flex-start;
-  margin-left: 4px;
-}
-.lms-ui-quick-search-field img {
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.lms-ui-quick-search-field input {
-  margin-left: 4px;
-  width: 20px;
-  display: inline-block;
-}
-.lms-ui-quick-search-field input.lms-ui-quick-search-active {
-  width: 100px;
-}
-.lms-ui-quick-search-selector {
-  margin-left: 5px;
-  margin-top: 5px;
-  cursor: pointer;
-}
 .lms-ui-icon-administration {
   vertical-align: middle;
   display: inline-block;
@@ -1970,12 +2043,6 @@ table.dataTable thead tr:last-child th {
   width: 16px;
   height: 16px;
   background: url("cms.gif");
-}
-.lms-ui-indicator:hover {
-  text-decoration: none;
-}
-.lms-ui-indicator-counter {
-  font-size: 120%;
 }
 .chosen-container {
   text-align: left;
