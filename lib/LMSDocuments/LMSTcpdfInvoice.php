@@ -892,6 +892,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		    $this->invoice_balance();
 		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
 			$this->invoice_qr2pay_code();
+		$this->invoice_comment();
 		$this->invoice_footnote();
 		
 		$docnumber = docnumber(array(
