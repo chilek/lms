@@ -204,7 +204,7 @@ function init_datepickers(selector) {
 		}
 		$(this).datepicker(options).attr("autocomplete", 'off');
 		if (unix) {
-			$(this).off('change').removeAttr('onchange');
+			//$(this).off('change').removeAttr('onchange');
 			if (dt) {
 				$(this).datepicker('setDate', dt);
 			}
