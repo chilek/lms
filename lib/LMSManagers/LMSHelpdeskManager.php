@@ -1074,6 +1074,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_CUSTOMER_CHANGE;
         }else
             $props['customerid'] = $ticket['customerid'];
+        if (empty($props['customerid']))
+            $props['customerid'] = null;
 
 		if (isset($props['categories'])) {
 			$ticket['categories'] = empty($ticket['categories']) ? array() : explode(',', $ticket['categories']);
