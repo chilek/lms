@@ -20,32 +20,27 @@
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" src="img/overlib.js"></script>
 {if $layout.popup}
-{block name=module_content}{/block}
+	{block name=module_content}{/block}
 {else}
-<div id="lms-ui-container">
 	{block name=pageleftbar}
-		{include file="left-panel.html"}
+		{include file="menu-panel.html"}
 	{/block}
 	{block name=pagecontent}
 	<div id="lms-ui-spinner"></div>
+	<script>
+
+		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+
+		if (mainMenuVisible) {
+			$('#lms-ui-main-menu-toggle').addClass('visible');
+		}
+
+	</script>
 	<div id="lms-ui-contents" style="display: none;">
-		<script>
-
-			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
-
-			if (mainMenuVisible) {
-				$('#lms-ui-main-menu-toggle').addClass('visible');
-			}
-
-		</script>
-		{include file="top-panel.html"}
-		{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
-			<div id="lms-ui-toolbar" class="no-print">
-				{include file="toolbar.html"}
-			</div>
-		{/if}
+		{include file="quicksearch-indicators-panel.html"}
+		{include file="toolbar-panel.html"}
 		<div id="lms-ui-module-view">
-		{block name=module_content}{/block}
-		{/block}
+			{block name=module_content}{/block}
+			{/block}
 		</div>
 {/if}

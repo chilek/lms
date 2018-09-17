@@ -20,11 +20,9 @@
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" src="img/overlib.js"></script>
 {if !$layout.popup}
-<div id="lms-ui-container">
 	{block name=pageleftbar}
-		{include file="left-panel.html"}
+		{include file="menu-panel.html"}
 	{/block}
-	<div id="lms-ui-contents" style="display: none;">
 	<script>
 
 		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
@@ -34,10 +32,7 @@
 		}
 
 	</script>
-	{include file="top-panel.html"}
-	{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
-		<div class="no-print">
-			{include file="toolbar.html"}
-		</div>
-	{/if}
+	<div id="lms-ui-contents" style="display: none;">
+		{include file="quicksearch-indicators-panel.html"}
+		{include file="toolbar-panel.html"}
 {/if}

@@ -15,19 +15,15 @@ BODY {
   padding: 0;
   min-height: 100%;
   width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 TABLE {
   border-collapse: collapse;
   border-color: #000000;
 }
-#lms-ui-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-#lms-ui-left-panel {
+#lms-ui-menu-panel {
   align-self: flex-start;
   background-color: #CEBD9B;
   overflow: hidden;
@@ -39,24 +35,8 @@ TABLE {
   height: 100%;
   min-width: 12em;
   padding-bottom: 2em;
-  flex: 0 0 auto;
 }
-#lms-ui-contents {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-left: 0.4em;
-  margin-bottom: 0.85em;
-  padding: 0.43em;
-  flex: 1 1 auto;
-}
-#lms-ui-contents > p {
-  align-self: center;
-}
-#lms-ui-main-menu-toggle {
+#lms-ui-menu-panel-toggle {
   position: absolute;
   left: 0.15em;
   top: 0.15em;
@@ -65,10 +45,10 @@ TABLE {
   height: 0.8em;
   cursor: pointer;
 }
-#lms-ui-main-menu-toggle.visible {
+#lms-ui-menu-panel-toggle.visible {
   background-image: url(left.gif);
 }
-#lms-ui-main-menu-toggle:not(.visible) {
+#lms-ui-menu-panel-toggle:not(.visible) {
   background-image: url(right.gif);
 }
 #lms-ui-main-menu {
@@ -82,12 +62,30 @@ TABLE {
   align-self: stretch;
   text-align: center;
 }
-#lms-ui-top-panel {
-  align-self: stretch;
+#lms-ui-contents {
+  width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 0.4em;
+  margin-bottom: 0.85em;
+  padding: 0.43em;
+}
+#lms-ui-contents > p {
+  align-self: center;
+}
+.lms-ui-tool-panel {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   border-bottom: 1px solid black;
   padding-bottom: 0.3em;
+  width: 100%;
+}
+.lms-ui-tool-panel:nth-child(n+2) {
+  padding-top: 0.3em;
 }
 .lms-ui-indicator:hover {
   text-decoration: none;
@@ -96,17 +94,25 @@ TABLE {
   font-size: 120%;
 }
 #lms-ui-toolbar {
-  align-self: stretch;
-  border-bottom: 1px solid black;
-  padding-top: 0.3em;
-  padding-bottom: 0.3em;
+  display: flex;
+  justify-content: space-between;
+}
+.lms-ui-toolbar-normal-shortcuts {
+  display: flex;
+  justify-content: flex-start;
+}
+.lms-ui-toolbar-shortcuts.lms-ui-toolbar-shortcut-separator {
+  padding-right: 1.2em;
 }
 #lms-ui-module-view {
   width: 100%;
 }
+#lms-ui-quicksearch-indicators-panel {
+  justify-content: space-between;
+}
 #lms-ui-quick-search {
   display: flex;
-  align-items: flex-start;
+  justify-content: flex-start;
 }
 .lms-ui-quick-search-field {
   display: flex;
@@ -325,8 +331,8 @@ P.txt {
 P.separated {
   font-size: 8pt;
   font-family: Arial, Helvetica, Verdana;
-  margin-top: 5;
-  margin-bottom: 5;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 H1 {
   font-size: 14pt;

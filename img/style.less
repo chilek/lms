@@ -34,20 +34,14 @@ BODY {
 	padding: 0;
 	min-height: 100%;
 	width: 100%;
-//	display: flex;
-}
-
-TABLE		{ border-collapse: collapse; border-color: #000000 }
-
-#lms-ui-container  {
-	width: 100%;
-	height: 100%;
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-start;
 }
 
-#lms-ui-left-panel {
+TABLE		{ border-collapse: collapse; border-color: #000000 }
+
+#lms-ui-menu-panel {
 	align-self: flex-start;
 	background-color: @dark;
 	overflow: hidden;
@@ -59,24 +53,9 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	height: 100%;
 	min-width: 12em;
 	padding-bottom: 2em;
-
-
-#lms-ui-contents {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: flex-start;
-	margin-left: 0.4em;
-	margin-bottom: 0.85em;
-	padding: 0.43em;
-	& > p {
-		align-self: center;
-	}
 }
 
-#lms-ui-main-menu-toggle {
+#lms-ui-menu-panel-toggle {
 	position: absolute;
 	left: 0.15em;
 	top: 0.15em;
@@ -105,12 +84,32 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	text-align: center;
 }
 
-#lms-ui-top-panel {
-	align-self: stretch;
+#lms-ui-contents {
+	width: 100%;
+	height: 100%;
 	display: flex;
-	justify-content: space-between;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	margin-left: 0.4em;
+	margin-bottom: 0.85em;
+	padding: 0.43em;
+	& > p {
+		align-self: center;
+	}
+}
+
+.lms-ui-tool-panel {
+	//align-self: stretch;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
 	border-bottom: 1px solid black;
 	padding-bottom: 0.3em;
+	width: 100%;
+	&:nth-child(n+2) {
+		padding-top: 0.3em;
+	}
 }
 
 .lms-ui-indicator:hover {
@@ -122,19 +121,32 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 }
 
 #lms-ui-toolbar {
-	align-self: stretch;
-	border-bottom: 1px solid black;
-	padding-top: 0.3em;
-	padding-bottom: 0.3em;
+	display: flex;
+	justify-content: space-between;
+}
+
+.lms-ui-toolbar-normal-shortcuts {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.lms-ui-toolbar-shortcuts {
+	&.lms-ui-toolbar-shortcut-separator {
+		padding-right: 1.2em;
+	}
 }
 
 #lms-ui-module-view {
 	width: 100%;
 }
 
+#lms-ui-quicksearch-indicators-panel {
+	justify-content: space-between;
+}
+
 #lms-ui-quick-search {
 	display: flex;
-	align-items: flex-start;
+	justify-content: flex-start;
 }
 
 .lms-ui-quick-search-field {
@@ -267,8 +279,8 @@ P {
 	&.separated {
 		font-size: 8pt;
 		font-family: @fonts;
-		margin-top: 5;
-		margin-bottom: 5;
+		margin-top: 5px;
+		margin-bottom: 5px;
 	}
 }
 
