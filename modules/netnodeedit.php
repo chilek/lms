@@ -126,7 +126,7 @@ if (isset($netnodedata)) {
 	$netnodedata = $LMS->GetNetNode($id);
 
 	if (($netnodedata['location_city'] || $netnodedata['location_street']) && !$netnodedata['ownerid'] )
-		$netdevdata['teryt'] = true;
+		$netnodedata['teryt'] = true;
 }
 
 $layout['pagetitle'] = trans('Net Device Node Edit: $a', $netnodedata['name']);
