@@ -123,7 +123,17 @@ elseif(isset($_POST['note']))
 				$mailfname = '"'.$mailfname.'"';
 			}
 
-			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+			$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
+			if(!empty($helpdesk_sender_email)) {
+				$mailfrom = $helpdesk_sender_email;
+
+				if($mailfrom == 'queue')
+					$mailfrom = $queue['email'];
+				elseif($mailfrom == 'user')
+					$mailfrom = $user['email'];
+			} else {
+				$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+			}
 
 			$ticketdata = $LMS->GetTicketContents($note['ticketid']);
 

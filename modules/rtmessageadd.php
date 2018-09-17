@@ -102,8 +102,18 @@ if(isset($_POST['message']))
 				&& $message['destination'] != $queue['email'])
 			{
 				$recipients = $message['destination'];
-				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
+				$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
+				if(!empty($helpdesk_sender_email)) {
+					$mailfrom = $helpdesk_sender_email;
 
+					if($mailfrom == 'queue')
+						$mailfrom = $queue['email'];
+					elseif($mailfrom == 'user')
+						$mailfrom = $user['email'];
+				} else {
+					$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+				}
+				$message['mailfrom'] = $mailfrom;
 				$headers['Date'] = date('r');
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 				$headers['To'] = '<'.$message['destination'].'>';
@@ -147,10 +157,21 @@ if(isset($_POST['message']))
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
 
-			if($message['userid'] && $addmsg)
-				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $user['email'];
-			if($message['userid'] && !$addmsg)
-				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
+			$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
+			if(!empty($helpdesk_sender_email)) {
+				$mailfrom = $helpdesk_sender_email;
+
+				if($mailfrom == 'queue')
+					$mailfrom = $queue['email'];
+				elseif($mailfrom == 'user')
+					$mailfrom = $user['email'];
+			} else {
+				if($message['userid'] && $addmsg)
+					$mailfrom = $queue['email'] ? $queue['email'] : $user['email'];
+				if($message['userid'] && !$addmsg)
+					$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+			}
+			$message['mailfrom'] = $mailfrom;
 
 			if($message['customerid']) {
 				$message['mailfrom'] = $LMS->GetCustomerEmail($message['customerid']);
@@ -243,7 +264,17 @@ if(isset($_POST['message']))
 				$mailfname = '"'.$mailfname.'"';
 			}
 
-			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+			$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
+			if(!empty($helpdesk_sender_email)) {
+				$mailfrom = $helpdesk_sender_email;
+
+				if($mailfrom == 'queue')
+					$mailfrom = $queue['email'];
+				elseif($mailfrom == 'user')
+					$mailfrom = $user['email'];
+			} else {
+				$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+			}
 
 			$ticketdata = $LMS->GetTicketContents($message['ticketid']);
 
