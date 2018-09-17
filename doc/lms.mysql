@@ -1769,7 +1769,9 @@ CREATE TABLE rttickets (
   CONSTRAINT rttickets_netdevid_fkey
 	FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT rttickets_verifierid_fkey
-        FOREIGN KEY (verifierid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+        FOREIGN KEY (verifierid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT rttickets_invprojectid_fkey
+        FOREIGN KEY (invprojectid) REFERENCES invproject (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
