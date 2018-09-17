@@ -58,20 +58,17 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 		$netdev['netnode'] = $LMS->GetNetNode($netdev['netnodeid']);
 
 	$netdev['projectname'] = trans('none');
-	if ($netdev['invprojectid']) {
-		$prj = $LMS->GetProject($netdev['invprojectid']);
-		if ($prj) {
-			if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id'])==1) {
-				/* inherited */
-				if ($netdev['netnodeid']) {
-					$prj = $LMS->GetProject($netnode['invprojectid']);
-					if ($prj)
-						$netdev['projectname'] = trans('$a (from network node $b)', $prj['name'], $netdev['netnode']['name']);
-				}
-			} else
+	if ($netdev['invprojectid'])
+		if ($LMS->GetProjectType($netdev['invprojectid']) == INV_PROJECT_SYSTEM) {
+			/* inherited */
+			if ($netdev['netnodeid'])
+				$netdev['projectname'] = trans('$a (from network node $b)', $netdev['netnode']['name'], $netdev['netnode']['name']);
+		} else {
+			$prj = $LMS->GetProject($netdev['invprojectid']);
+			if ($prj)
 				$netdev['projectname'] = $prj['name'];
 		}
-	}
+
 	$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
 		'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => $id));
 	unset($queue['total']);

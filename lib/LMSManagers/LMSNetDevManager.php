@@ -258,8 +258,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			$args['longitude'] = !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null;
 		if (array_key_exists('latitude', $data))
 			$args['latitude'] = !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null;
-		if (array_key_exists('invprojectid', $data))
-			$args['invprojectid'] = $data['invprojectid'];
+		if (array_key_exists('projectid', $data))
+			$args['invprojectid'] = $data['projectid'];
 		if (array_key_exists('netnodeid', $data))
 			$args['netnodeid'] = $data['netnodeid'];
 		if (array_key_exists('status', $data))
@@ -359,7 +359,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'channelid'        => !empty($data['channelid']) ? $data['channelid'] : NULL,
             'longitude'        => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
             'latitude'         => !empty($data['latitude'])  ? str_replace(',', '.', $data['latitude'])  : NULL,
-            'invprojectid'     => $data['invprojectid'],
+            'invprojectid'     => $data['projectid'],
             'netnodeid'        => $data['netnodeid'],
             'status'           => empty($data['status']) ? 0 : $data['status'],
             'netdevicemodelid' => null,
@@ -675,7 +675,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     }
 
 	public function GetNetDev($id) {
-		$result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel, d.ownerid,
+		$result = $this->db->GetRow('SELECT d.*, d.invprojectid AS projectid, t.name AS nastypename, c.name AS channel, d.ownerid,
 				producer, ndm.netdeviceproducerid AS producerid, model, d.netdevicemodelid AS modelid,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
 				lt.name AS street_type, lc.name AS city_name,

@@ -29,6 +29,9 @@ function smarty_function_customerlist($params, $template) {
 
 	$customername = !isset($params['customername']) || $params['customername'];
 
+	if (isset($params['selected']) && !preg_match('/^[0-9]+$/', $params['selected']))
+		$params['selected'] = '';
+
 	if (!empty($params['customers'])) {
 
 		$result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
@@ -78,6 +81,9 @@ function smarty_function_customerlist($params, $template) {
 	if ( !empty($params['input_id']) ) {
 		$result .= 'id="' . $params['input_id'] . '" ';
 	}
+
+	if (isset($params['required']) && $params['required'])
+		$result .= 'required ';
 
 	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
 

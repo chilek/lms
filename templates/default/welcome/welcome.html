@@ -1,46 +1,44 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-<!--// $Id$ //-->
-<h1>{$layout.pagetitle}</h1>
-<div>
-    <div id="welcome-left-panel" class="lf wh">
-        <div style="margin: 0 2px;">
-            {block name="welcome-left-panel"}
-                {include file="welcome/welcome_sysinfo_about_lms.html"}
-                {include file="welcome/welcome_sysinfo_customers.html"}
-                {include file="welcome/welcome_sysinfo_rtstats.html"}
-            {/block}
-        </div>
-    </div>
-    <div id="welcome-right-panel" class="rf wh">
-        <div style="margin: 0 2px;">
-            {block name="welcome-right-panel"}
-                {include file="welcome/welcome_sysinfo_about_system.html"}
-                {include file="welcome/welcome_summaries.html"}
-                {include file="welcome/welcome_links.html"}
-                {include file="welcome/welcome_registration.html"}
-            {/block}
-        </div>
-    </div>
-    <div id="welcome-extra-panel" class="cf">
-        {block name="extra-panel"}
-        {/block}
-    </div>
-    <div id="welcome-bottom-panel" class="wf">
-        {block name="fortune-panel"}
-        {if $layout.fortune}
-        <div id="fortune" class="cf fall superlight" style="padding: 10px;">
-            <img src="img/totd.gif" alt="Fortune" class="lf" style="margin-right: 10px;">
-            <p class="txt">{$layout.fortune|replace:"\n":"<br>"}</p>
-        </div>
+	<!--// $Id$ //-->
+	<h1>{$layout.pagetitle}</h1>
+	<div id="lms-ui-welcome-boxes">
+		<div id="lms-ui-welcome-main-panels">
+			<div class="lms-ui-welcome-main-panel">
+				{block name="welcome-left-panel"}
+					{include file="welcome/welcome_sysinfo_about_lms.html"}
+					{include file="welcome/welcome_sysinfo_customers.html"}
+					{include file="welcome/welcome_sysinfo_rtstats.html"}
+				{/block}
+			</div>
+			<div class="lms-ui-welcome-main-panel">
+				{block name="welcome-right-panel"}
+					{include file="welcome/welcome_sysinfo_about_system.html"}
+					{include file="welcome/welcome_summaries.html"}
+					{include file="welcome/welcome_links.html"}
+					{include file="welcome/welcome_registration.html"}
+				{/block}
+			</div>
+		</div>
+		<div id="lms-ui-welcome-extra-panel">
+			{block name="extra-panel"}
+			{/block}
+		</div>
+		<div id="lms-ui-welcome-bottom-panel">
+			{block name="fortune-panel"}
+				{if $layout.fortune}
+					<div id="fortune" class="cf fall superlight" style="padding: 10px;">
+						<img src="img/totd.gif" alt="Fortune" class="lf" style="margin-right: 10px;">
+						<p class="txt">{$layout.fortune|replace:"\n":"<br>"}</p>
+					</div>
+				{/if}
+			{/block}
+		</div>
+	</div>
+	{if $newer_version}
+		<script>
+			alert('{t a=$newer_version b="http://lms.org.pl/download"}There is newer version of LMS ($a) available for download from $b.{/t}');
+		</script>
 	{/if}
-        {/block}
-    </div>
-</div>
-{if $newer_version}
-<script type="text/javascript">
-alert('{t a=$newer_version b="http://lms.org.pl/download"}There is newer version of LMS ($a) available for download from $b.{/t}');
-</script>
-{/if}
 {/block}

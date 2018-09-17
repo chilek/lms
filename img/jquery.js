@@ -54,8 +54,8 @@ jQuery.cachedScript = function(url, options) {
 }
 
 function show_pagecontent() {
-	$('div#lms-ui-spinner').hide();
-	$('div#pagecontent').show();
+	$('#lms-ui-spinner').hide();
+	$('#lms-ui-contents').show();
 	if (location.hash.length && $(location.hash).length) {
 		$(location.hash)[0].scrollIntoView();
 	} else if (history.state) {
@@ -204,7 +204,7 @@ function init_datepickers(selector) {
 		}
 		$(this).datepicker(options).attr("autocomplete", 'off');
 		if (unix) {
-			$(this).off('change').removeAttr('onchange');
+			//$(this).off('change').removeAttr('onchange');
 			if (dt) {
 				$(this).datepicker('setDate', dt);
 			}

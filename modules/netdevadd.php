@@ -47,40 +47,23 @@ if (isset($netdev)) {
 	elseif (strlen($netdev['name']) > 60)
 		$error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
 
-	if ($netdev['purchasedate'] != '')
-	{
-		$netdev['purchasetime'] = date_to_timestamp($netdev['purchasedate']);
-		if(empty($netdev['purchasetime']))
-			$error['purchasedate'] = trans('Invalid date format!');
-		else
-			if (time() < $netdev['purchasetime'])
-				$error['purchasedate'] = trans('Date from the future not allowed!');
-	}
-	else
-		$netdev['purchasetime'] = 0;
+	$netdev['purchasetime'] = intval($netdev['purchasetime']);
+	if ($netdev['purchasetime'] && time() < $netdev['purchasetime'])
+		$error['purchasetime'] = trans('Date from the future not allowed!');
 
     if (!empty($netdev['ownerid']) && !$LMS->customerExists($netdev['ownerid']))
         $error['ownerid'] = trans('Customer doesn\'t exist!');
 
-	if ($netdev['guaranteeperiod'] != 0 && $netdev['purchasedate'] == NULL) {
-		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
+	if ($netdev['guaranteeperiod'] != 0 && !$netdev['purchasetime']) {
+		$error['purchasetime'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
-	if ($api && isset($netdev['project'])) {
+	if (!strlen($netdev['projectid']) && !empty($netdev['project'])) {
 		$project = $LMS->GetProjectByName($netdev['project']);
-		if (empty($project)) {
-			$netdev['projectname'] = $netdev['project'];
-			$netdev['invprojectid'] = -1;
-		} else
-			$netdev['invprojectid'] = $project['id'];
-	}
-
-	// new project
-	if ($netdev['invprojectid'] == '-1') {
-		if (!strlen(trim($netdev['projectname'])))
-			$error['projectname'] = trans('Project name is required');
-		if ($LMS->ProjectByNameExists($netdev['projectname']))
-			$error['projectname'] = trans('Project with that name already exists');
+		if (empty($project))
+			$netdev['projectid'] = -1;
+		else
+			$netdev['projectid'] = $project['id'];
 	}
 
 	if (isset($netdev['terc']) && isset($netdev['simc']) && isset($netdev['ulic'])) {
@@ -130,14 +113,10 @@ if (isset($netdev)) {
             $netdev['location_country_id']  = null;
         }
 
-		$ipi = $netdev['invprojectid'];
-		if ($ipi == '-1')
-			$ipi = $LMS->AddProject($netdev);
-
-		if ($netdev['invprojectid'] == '-1' || intval($ipi)>0)
-			$netdev['invprojectid'] = intval($ipi);
-		else
-			$netdev['invprojectid'] = NULL;
+		if ($netdev['projectid'] == -1)
+			$netdev['projectid'] = $LMS->AddProject($netdev);
+		elseif (empty($netdev['projectid']))
+			$netdev['projectid'] = null;
 
 		if ($netdev['netnodeid']=="-1") {
 			$netdev['netnodeid'] = NULL;
@@ -183,8 +162,6 @@ if (isset($netdev)) {
 	$SMARTY->assign('netdev', $netdev);
 } elseif (isset($_GET['id'])) {
 	$netdev = $LMS->GetNetDev($_GET['id']);
-	if ($netdev['purchasetime'])
-		$netdev['purchasedate'] = date('Y/m/d', $netdev['purchasetime']);
 	$netdev['name'] = trans('$a (clone)', $netdev['name']);
 	$netdev['teryt'] = !empty($netdev['location_city']) && !empty($netdev['location_street']);
 	$SMARTY->assign('netdev', $netdev);
