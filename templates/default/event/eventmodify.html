@@ -204,7 +204,7 @@
 				</div>
 				<div class="lms-ui-box-row-label">
 					<label for="helpdesk-on">
-						{trans("Assign this event to Helpdesk request")}
+						{trans("Create ticket")}
 					</label>
 				</div>
 				<div class="lms-ui-box-row-field">
@@ -221,7 +221,7 @@
 				</div>
 				<div class="lms-ui-box-row-label">
 					<label for="helpdesk-on">
-						{trans("Add new request to Helpdesk")}
+						{trans("Create ticket")}
 					</label>
 				</div>
 				<div class="lms-ui-box-row-field">
@@ -234,10 +234,10 @@
 		</div>
 	</div>
 	<div class="lms-ui-box-buttons">
-		<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-		<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
+		<button class="lms-ui-button"><A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A></button>
+		<button class="lms-ui-button"><A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A></button>
 		{if $layout.module == 'eventadd'}
-		<INPUT type="checkbox" name="event[reuse]" id="reuse" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
+		<INPUT type="checkbox" name="event[reuse]" id="reuse" {if $event.reuse}checked{/if}> <label for="reuse" {tip text="Display this form again, when this event is saved"}>{trans("Reuse")}</label>
 		{/if}
 	</div>
 </div>
@@ -245,7 +245,7 @@
 <div class="lms-ui-box-container" id="row"{if $layout.module == 'eventedit' || empty($event['helpdesk'])} style="display:none;"}{/if}>
 	<div class="lms-ui-box-header">
 		<IMG SRC="img/ticket.gif" ALT="">
-		{trans("Add new request to Helpdesk")}
+		{trans("Create ticket")}
 	</div>
 	<div class="lms-ui-box-contents">
 		<div class="lms-ui-box-panel">
