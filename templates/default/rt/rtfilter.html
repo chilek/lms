@@ -117,6 +117,16 @@
                     <option value="{$smarty.const.RT_RIGHT_INDICATOR}" {if $filter.rights == $smarty.const.RT_RIGHT_INDICATOR} selected{/if}>{trans("yes")}</option>
                 </SELECT>
             </label>
+            <label class="nobr">
+                {trans("Network node:")}
+                <select name="nn" size="1" data-default-value="{trans("No filter")}" {tip class="lms-ui-multiselect" text="Select network node (optional)"} onchange="document.filter.submit();">
+                    <option value="all" data-exclusive{if $filter.netnodeids == null} selected{/if}>{trans("No filter")}</option>
+                    <option value="-1" data-exclusive{if $filter.netnodeids == -1} selected{/if}>{trans("Not assigned")}</option>
+                    {foreach $netnodelist as $idx => $netnode}
+                    <option value="{$idx}" {if is_array($filter.$netnodeids) && in_array($idx, $filter.netnodeids)} selected{/if}>{$netnode.name} ({$netnode.id})</OPTION>
+                    {/foreach}
+                </select>
+            </label>
         </FORM>
         </div>
         {persistent_filter}

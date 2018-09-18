@@ -199,9 +199,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($verifierids)) {
             $verifieridsfilter = '';
         } elseif (is_array($verifierids)) {
-            $verifieridsfilter = ' AND t.service IN (' . implode(',', $verifierids) . ')';
+            $verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ')';
         } else
-            $verifieridsfilter = ' AND t.service = '.$verifierids;
+            $verifieridsfilter = ' AND t.verifierid = '.$verifierids;
 
 		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$removedfilter = ' AND t.deleted = 0';
@@ -232,6 +232,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			default:
 				if (is_array($owner))
 					$ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
+				else
+				    $ownerfilter = '';
 				break;
 		}
 
