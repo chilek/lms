@@ -1927,10 +1927,12 @@ class LMS
 			}
 
 			$headers['X-Mailer'] = 'LMS-' . $this->_version;
-			if (!empty($_SERVER['REMOTE_ADDR']))
-				$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-			if (isset($_SERVER['HTTP_USER_AGENT']))
-				$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+			if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
+				if (!empty($_SERVER['REMOTE_ADDR']))
+					$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+				if (isset($_SERVER['HTTP_USER_AGENT']))
+					$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+			}
 			$headers['Mime-Version'] = '1.0';
 			$headers['Subject'] = qp_encode($headers['Subject']);
 			$headers['Precedence'] = 'bulk';
@@ -2019,10 +2021,12 @@ class LMS
 			);
 
 			$this->mail_object->XMailer = 'LMS-' . $this->_version;
-			if (!empty($_SERVER['REMOTE_ADDR']))
-				$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
-			if (isset($_SERVER['HTTP_USER_AGENT']))
-				$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
+			if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
+				if (!empty($_SERVER['REMOTE_ADDR']))
+					$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
+				if (isset($_SERVER['HTTP_USER_AGENT']))
+					$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
+			}
 
 			foreach (array('References', 'In-Reply-To', 'Message-ID') as $header_name)
 				if (isset($headers[$header_name]))
