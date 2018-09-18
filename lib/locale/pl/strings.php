@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Reuse'] = 'Ponownie';
 $_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
 $_LANG['Encryption key:'] = 'Klucz szyfrowania:';
 $_LANG['Access network interface'] = 'Sieciowy interfejs dostępowy';
@@ -3858,7 +3859,7 @@ $_LANG['SMS from $a'] = 'SMS od $a';
 $_LANG['Source:'] = 'Źródło:';
 $_LANG['Select ticket source'] = 'Wybierz źródło zgłoszenia';
 
-$_LANG['Add new request to Helpdesk'] = 'Dodaj nowe zgłoszenie do Helpdesk';
+$_LANG['Create ticket'] = 'Utwórz zgłoszenie';
 $_LANG['Request Number'] = 'Nr zgłoszenia';
 $_LANG['Timetable assigned events:'] = 'Przypisane zdarzenia w terminarzu:';
 $_LANG['Add new'] = 'Dodaj nowe';

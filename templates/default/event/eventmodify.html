@@ -1,427 +1,410 @@
 {extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-<!--// $Id$ //-->
-{$xajax}
-<SCRIPT>
+	<!--// $Id$ //-->
+	{$xajax}
+	<SCRIPT>
 
-	$(function() {
-		$('#helpdesk-on').change(function () {
-			$('#row').toggle();
+		$(function () {
+			$('#helpdesk-on').change(function () {
+				$('#row').toggle();
+			});
 		});
-	});
 
-</SCRIPT>
+	</SCRIPT>
+	{if empty($event.ticketid)}
+		<H1>{$layout.pagetitle}</H1>
+	{else}
+		<H1>{trans("Add new event to request:")} #{$event.ticketid}</H1>
+	{/if}
+	<style>
+		.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+			width: 12em;
+		}
 
-{if empty($event.ticketid)}
-	<H1>{$layout.pagetitle}</H1>
-{else}
-	<H1>{trans("Add new event to request:")} #{$event.ticketid}</H1>
-{/if}
+		.lms-ui-box-row-field.multiselect {
+			flex-direction: column !important;
+			align-items: flex-start !important;
+		}
+	</style>
+	<P class="text-center">
+	<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
+		<INPUT type="hidden" name="event[id]" value="{$event.id}">
+		<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
+		<INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
+		<INPUT type="submit" class="hiddenbtn">
 
-<style>
-	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
-		width: 12em;
-	}
-	.lms-ui-box-row-field.multiselect {
-		flex-direction: column !important;
-		align-items: flex-start !important;
-	}
-</style>
-
-<P class="text-center" >
-<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
-<INPUT type="hidden" name="event[id]" value="{$event.id}">
-<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
-<INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
-<INPUT type="submit" class="hiddenbtn">
-
-<div class="lms-ui-box-container">
-	<div class="lms-ui-box-header">
-		<IMG src="img/calendar.gif" alt="">
-		{trans("Title:")}
-		<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title"}>
-	</div>
-	<div class="lms-ui-box-contents">
-		<div class="lms-ui-box-panel">
-			{block name="eventmodify_left_panel"}
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/time.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Time:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays}
-				</div>
+		<div class="lms-ui-box-container">
+			<div class="lms-ui-box-header">
+				<IMG src="img/calendar.gif" alt="">
+				{trans("Title:")}
+				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title"}>
 			</div>
+			<div class="lms-ui-box-contents">
+				<div class="lms-ui-box-panel">
+					{block name="eventmodify_left_panel"}
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/time.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Time:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays}
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/info.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Description:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
+							</div>
+						</div>
+					{/block}
+				</div>
+				<div class="lms-ui-box-panel">
+					{block name="eventmodify_right_panel"}
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/access.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Status:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								<label>
+									<INPUT type="checkbox" name="event[private]" {tip text="Select event's status"}{if $event.private}CHECKED{/if}>
+									{trans("private")}
+								</label>
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/desc.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Type:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								<SELECT name="event[type]" size="1">
+									{foreach from=$_EVENTTYPES key=key item=type}
+										<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
+									{/foreach}
+								</SELECT>
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/customer.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Customer:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
+									{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
+								{else}
+									{if !empty($event.customerid)}
+										{$event.customername} ({$event.customerid})
+										<input type="hidden" name="event[custid]" value="{$event.customerid}">
+									{else}
+										{trans("Request not assigned to any customer.")}
+									{/if}
+								{/if}
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/home.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Location:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}> </select>
+							</div>
+						</div>
+						<div class="lms-ui-box-row" id="node-row"{if empty($nodes)} style="display: none;"{/if}>
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/node.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Node:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								<select name="event[nodeid]" {tip text="Select node"}>
+									<option value="">{trans("- none -")}</option>
+									{foreach $nodes as $node}
+										<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
+									{/foreach}
+								</select>
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/users.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Users:")}
+							</div>
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/info.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Description:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
-				</div>
-			</div>
-
-			{/block}
-		</div>
-		<div class="lms-ui-box-panel">
-			{block name="eventmodify_right_panel"}
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/access.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Status:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<label>
-						<INPUT type="checkbox" name="event[private]" {tip text="Select event's status"}{if $event.private}CHECKED{/if}>
-						{trans("private")}
-					</label>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/desc.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Type:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT name="event[type]" size="1">
-						{foreach from=$_EVENTTYPES key=key item=type}
-							<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/customer.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Customer:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
-						{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
-					{else}
-						{if !empty($event.customerid)}
-							{$event.customername} ({$event.customerid})
-							<input type="hidden" name="event[custid]" value="{$event.customerid}">
-						{else}
-							{trans("Request not assigned to any customer.")}
+							<div class="lms-ui-box-row-field multiselect">
+								<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+									{foreach $userlist as $user}
+										<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</OPTION>
+									{/foreach}
+								</SELECT> <br> <label>
+									<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
+									{trans("All users")}<br> </label>
+								{foreach $usergroups as $group}
+									<label>
+										<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" value="{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
+										{$group.name}<br> </label>
+								{/foreach}
+							</div>
+						</div>
+						{if $layout.module == 'eventedit'}
+							<div class="lms-ui-box-row">
+								<div class="lms-ui-box-row-icon">
+									<IMG src="img/note.gif" alt="">
+								</div>
+								<div class="lms-ui-box-row-label">
+									{trans("Note:")}
+								</div>
+								<div class="lms-ui-box-row-field">
+									<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
+								</div>
+							</div>
+							<div class="lms-ui-box-row">
+								<div class="lms-ui-box-row-icon">
+									<IMG src="img/ticket.gif" alt="">
+								</div>
+								<div class="lms-ui-box-row-label">
+									<label for="helpdesk-on">
+										{trans("Create ticket")}
+									</label>
+								</div>
+								<div class="lms-ui-box-row-field">
+									<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if isset($event.helpdesk)} checked{/if}>
+									<input type="text" name="event[ticketid]" value="{$event.ticketid}">
+								</div>
+							</div>
 						{/if}
-					{/if}
+
+						{if $layout.module == 'eventadd' && empty($event.ticketid)}
+							<div class="lms-ui-box-row">
+								<div class="lms-ui-box-row-icon">
+									<IMG src="img/ticket.gif" alt="">
+								</div>
+								<div class="lms-ui-box-row-label">
+									<label for="helpdesk-on">
+										{trans("Create ticket")}
+									</label>
+								</div>
+								<div class="lms-ui-box-row-field">
+									<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if !empty($event['helpdesk'])} checked{/if}>
+								</div>
+							</div>
+						{/if}
+
+					{/block}
 				</div>
 			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/home.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Location:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}>
-					</select>
-				</div>
+			<div class="lms-ui-box-buttons">
+				{if $layout.module == 'eventadd'}
+				<label {tip text="Display this form again, when this event is saved"}>
+					<INPUT type="checkbox" name="event[reuse]"{if $event.reuse} checked{/if}>
+					{trans("Reuse")}
+				</label>
+				{/if}
+				<button class="lms-ui-button" onclick="javascript:document.event.submit();" accesskey="s">
+					<IMG src="img/save.gif" alt=""> {trans("Submit")}</button>
+				<button class="lms-ui-button" onclick="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
+				</button>
 			</div>
-
-			<div class="lms-ui-box-row" id="node-row"{if empty($nodes)} style="display: none;"{/if}>
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/node.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Node:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<select name="event[nodeid]" {tip text="Select node"}>
-						<option value="">{trans("- none -")}</option>
-						{foreach $nodes as $node}
-						<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
-						{/foreach}
-					</select>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/users.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Users:")}
-				</div>
-
-				<div class="lms-ui-box-row-field multiselect">
-					<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
-						{foreach $userlist as $user}
-						<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</OPTION>
-						{/foreach}
-					</SELECT>
-					<br>
-					<label>
-						<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
-						{trans("All users")}<br>
-					</label>
-					{foreach $usergroups as $group}
-						<label>
-							<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" value="{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
-							{$group.name}<br>
-						</label>
-					{/foreach}
-				</div>
-			</div>
-
-			{if $layout.module == 'eventedit'}
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/note.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Note:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/ticket.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					<label for="helpdesk-on">
-						{trans("Assign this event to Helpdesk request")}
-					</label>
-				</div>
-				<div class="lms-ui-box-row-field">
-					<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if isset($event.helpdesk)} checked{/if}>
-					<input type="text" name="event[ticketid]" value="{$event.ticketid}">
-				</div>
-			</div>
-			{/if}
-
-			{if $layout.module == 'eventadd' && empty($event.ticketid)}
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/ticket.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					<label for="helpdesk-on">
-						{trans("Add new request to Helpdesk")}
-					</label>
-				</div>
-				<div class="lms-ui-box-row-field">
-					<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if !empty($event['helpdesk'])} checked{/if}>
-				</div>
-			</div>
-			{/if}
-
-			{/block}
 		</div>
-	</div>
-	<div class="lms-ui-box-buttons">
-		<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-		<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
-		{if $layout.module == 'eventadd'}
-		<INPUT type="checkbox" name="event[reuse]" id="reuse" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
-		{/if}
-	</div>
-</div>
 
-<div class="lms-ui-box-container" id="row"{if $layout.module == 'eventedit' || empty($event['helpdesk'])} style="display:none;"}{/if}>
-	<div class="lms-ui-box-header">
-		<IMG SRC="img/ticket.gif" ALT="">
-		{trans("Add new request to Helpdesk")}
-	</div>
-	<div class="lms-ui-box-contents">
-		<div class="lms-ui-box-panel">
+		<div class="lms-ui-box-container" id="row"{if $layout.module == 'eventedit' || empty($event['helpdesk'])} style="display:none;"}{/if}>
+			<div class="lms-ui-box-header">
+				<IMG SRC="img/ticket.gif" ALT="">
+				{trans("Create ticket")}
+			</div>
+			<div class="lms-ui-box-contents">
+				<div class="lms-ui-box-panel">
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/queue.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Queue:")}
-				</div>
-				<div class="lms-ui-box-row-field">
+					<div class="lms-ui-box-row">
+						<div class="lms-ui-box-row-icon">
+							<IMG src="img/queue.gif" alt="">
+						</div>
+						<div class="lms-ui-box-row-label">
+							{trans("Queue:")}
+						</div>
+						<div class="lms-ui-box-row-field">
+							{if empty($event.ticketid)}
+								<SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
+									{foreach from=$queuelist item=item}
+										<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $event.rtqueue} selected{/if}>{$item.name}</OPTION>
+									{/foreach}
+								</SELECT>
+							{else}
+								{$tqname}
+							{/if}
+						</div>
+					</div>
+
 					{if empty($event.ticketid)}
-					<SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
-					{foreach from=$queuelist item=item}
-						<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $event.rtqueue} selected{/if}>{$item.name}</OPTION>
-					{/foreach}
-					</SELECT>
-					{else}
-						{$tqname}
+						<div class="lms-ui-box-row" {tip trigger="categories"}>
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/queue.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Categories:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								{if isset($error['categories'])}{$error['categories']}<BR>{/if}
+								{foreach from=$categories item=category}
+									<INPUT type="checkbox" name="event[categories][{$category.id}]" id="cat{$category.id}" value="1"{if !empty($category.checked)} checked{/if}>
+									<label for="cat{$category.id}">{$category.name}</label>
+									<BR>
+								{/foreach}
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/name.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								{trans("Submitter:")}
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon"></div>
+							<div class="lms-ui-box-row-label">
+								{trans("Name/Surname:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								<INPUT type="text" name="event[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon"></div>
+							<div class="lms-ui-box-row-label">
+								{trans("Firstname")}:
+							</div>
+							<div class="lms-ui-box-row-field">
+								<INPUT type="text" name="event[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}>
+							</div>
+						</div>
+						<div class="lms-ui-box-row">
+							<div class="lms-ui-box-row-icon"></div>
+							<div class="lms-ui-box-row-label">
+								{trans("E-mail:")}
+							</div>
+							<div class="lms-ui-box-row-field">
+								<INPUT type="text" name="event[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}>
+							</div>
+						</div>
+						<div class="lms-ui-box-row" id="customernotify-row">
+							<div class="lms-ui-box-row-icon">
+								<IMG src="img/mail.gif" alt="">
+							</div>
+							<div class="lms-ui-box-row-label">
+								<label for="customernotify">
+									{trans("Notify customer:")}
+								</label>
+							</div>
+							<div class="lms-ui-box-row-field">
+								<input type="checkbox" id="customernotify" name="event[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
+							</div>
+						</div>
 					{/if}
+
 				</div>
 			</div>
-
-			{if empty($event.ticketid)}
-			<div class="lms-ui-box-row" {tip trigger="categories"}>
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/queue.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Categories:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{if isset($error['categories'])}{$error['categories']}<BR>{/if}
-					{foreach from=$categories item=category}
-						<INPUT type="checkbox" name="event[categories][{$category.id}]" id="cat{$category.id}" value="1"{if !empty($category.checked)} checked{/if}>
-						<label for="cat{$category.id}">{$category.name}</label><BR>
-					{/foreach}
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/name.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Submitter:")}
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon"></div>
-				<div class="lms-ui-box-row-label">
-					{trans("Name/Surname:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT type="text" name="event[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon"></div>
-				<div class="lms-ui-box-row-label">
-					{trans("Firstname")}:
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT type="text" name="event[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon"></div>
-				<div class="lms-ui-box-row-label">
-					{trans("E-mail:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT type="text" name="event[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row" id="customernotify-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/mail.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					<label for="customernotify">
-						{trans("Notify customer:")}
-					</label>
-				</div>
-				<div class="lms-ui-box-row-field">
-					<input type="checkbox" id="customernotify" name="event[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
-				</div>
-			</div>
-			{/if}
-
 		</div>
-	</div>
-</div>
 
-</form>
-<script type="text/javascript" src="img/lms-ui-event-time-slider.js"></script>
-<SCRIPT>
+	</form>
+	<script type="text/javascript" src="img/lms-ui-event-time-slider.js"></script>
+	<SCRIPT>
 
-	$(function() {
-		$('form[name="event"] [name="event[title]"]').focus();
+		$(function () {
+			$('form[name="event"] [name="event[title]"]').focus();
 
-		$('[name="event[rtqueue]"]').change(function() {
-			var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
+			$('[name="event[rtqueue]"]').change(function () {
+				var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
+				if (newticket_notify === undefined) {
+					$('#customernotify-row').hide();
+					$('#customernotify').attr('checked', false);
+				} else {
+					$('#customernotify-row').show();
+					$('#customernotify').attr('checked', true);
+				}
+				xajax_GetCategories($(this).val());
+			});
+
+			var newticket_notify = $('[name="event[rtqueue]"]').find(':selected').attr('data-newticket-notify');
 			if (newticket_notify === undefined) {
 				$('#customernotify-row').hide();
-				$('#customernotify').attr('checked', false);
 			} else {
 				$('#customernotify-row').show();
-				$('#customernotify').attr('checked', true);
 			}
-			xajax_GetCategories($(this).val());
 		});
 
-		var newticket_notify = $('[name="event[rtqueue]"]').find(':selected').attr('data-newticket-notify');
-		if (newticket_notify === undefined) {
-			$('#customernotify-row').hide();
-		} else {
-			$('#customernotify-row').show();
+		function update_user_selection(users) {
+			var userms = $('.lms-ui-multiselect').data('multiselect-object');
+			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
+			userms.updateSelection(users);
+			{else}
+			userms.filterSelection(users);
+			{/if}
 		}
-	});
 
-function update_user_selection(users) {
-	var userms = $('.lms-ui-multiselect').data('multiselect-object');
-	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
-	userms.updateSelection(users);
-	{else}
-	userms.filterSelection(users);
-	{/if}
-}
+		function change_customer() {
+			getCustomerAddresses($('[name="event[custid]"]').val(), function (addresses) {
+				customer_addresses.setAddressList(addresses);
+			});
+			xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
+		}
 
-function change_customer() {
-	getCustomerAddresses( $('[name="event[custid]"]').val(), function(addresses) {
-		customer_addresses.setAddressList( addresses );
-	});
-	xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
-}
+		function update_nodes(data) {
+			var options = '<option value="">{trans("- none -")}</option>';
+			$.each(data, function (k, v) {
+				options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
+			});
+			$('[name="event[nodeid]"]').html(options);
+			if (data.length) {
+				$('#node-row').show();
+			} else {
+				$('#node-row').hide();
+			}
+		}
 
-function update_nodes(data) {
-	var options = '<option value="">{trans("- none -")}</option>';
-	$.each(data, function(k, v) {
-		options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
-	});
-	$('[name="event[nodeid]"]').html(options);
-	if (data.length) {
-		$('#node-row').show();
-	} else {
-		$('#node-row').hide();
-	}
-}
+		var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
+			change: function (event, ui) {
+				xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
+			}
+		});
 
-var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
-	change: function(event, ui) {
-		xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
-	}
-});
+		getCustomerAddresses( {intval($event.customerid)}, function (addresses) {
+			customer_addresses.setAddressList(addresses);
 
-getCustomerAddresses( {intval($event.customerid)}, function(addresses) {
-	customer_addresses.setAddressList(addresses);
+			{if intval($event.customerid)}
+			{if $event.address_id}
+			$('#customer_addresses').val( {$event.address_id} );
+			{else}
+			if (Object.keys(addresses).length == 1) {
+				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+			}
+			{/if}
+			{/if}
 
-	{if intval($event.customerid)}
-	{if $event.address_id}
-	$( '#customer_addresses' ).val( {$event.address_id} );
-	{else}
-	if (Object.keys(addresses).length == 1) {
-		$('#customer_addresses').val($('#customer_addresses option:last-child').val());
-	}
-	{/if}
-	{/if}
+			customer_addresses.init();
+		});
 
-	customer_addresses.init();
-});
-
-</SCRIPT>
+	</SCRIPT>
 {/block}

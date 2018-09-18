@@ -43,7 +43,7 @@ function smarty_function_event_time_selection($params, $template) {
 			<div class="lms-ui-event-time-left-panel">
 				<div>
 					' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
-						. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="20" ' .
+						. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
 						smarty_function_tip(array(
 							'class' => 'calendar-time',
 							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
@@ -51,7 +51,7 @@ function smarty_function_event_time_selection($params, $template) {
 						), $template)
 						. '>
 					' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
-						. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="20" ' .
+						. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
 						smarty_function_tip(array(
 							'class' => 'calendar-time',
 							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',

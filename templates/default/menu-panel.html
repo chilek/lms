@@ -1,5 +1,5 @@
-<div id="lms-ui-main-menu-toggle"></div>
-<div id="lms-ui-left-panel" role="navigation" class="no-print">
+<div id="lms-ui-menu-panel-toggle"></div>
+<div id="lms-ui-menu-panel" class="no-print">
 	<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}">
 	<div id="lms-ui-main-menu">
 		<script>
@@ -7,15 +7,15 @@
 			var mainMenuVisible = getCookie('main-menu-visible');
 			mainMenuVisible = mainMenuVisible === null || mainMenuVisible == 'true';
 			if (!mainMenuVisible) {
-				$('#lms-ui-left-panel').hide();
+				$('#lms-ui-menu-panel').hide();
 			}
 
-			$('#lms-ui-main-menu-toggle').click(function () {
-				var mainMenuVisible = $('#lms-ui-left-panel').toggle().is(':visible');
+			$('#lms-ui-menu-panel-toggle').click(function () {
+				var mainMenuVisible = $('#lms-ui-menu-panel').toggle().is(':visible');
 				if (mainMenuVisible) {
-					$('#lms-ui-main-menu-toggle').addClass('visible');
+					$('#lms-ui-menu-panel-toggle').addClass('visible');
 				} else {
-					$('#lms-ui-main-menu-toggle').removeClass('visible');
+					$('#lms-ui-menu-panel-toggle').removeClass('visible');
 				}
 				setCookie('main-menu-visible', mainMenuVisible);
 			});
@@ -41,7 +41,8 @@
 								<div{if $submenuitem.tip} {tip class="tip" text="\$a" a=$submenuitem.tip bold="1"}{else} class="tip"{/if}>
 									<div class="box2"><a href="{$submenuitem.link|replace:"&":"&amp;"}">
 											<li>{$submenuitem.name}</li>
-										</a></div>
+										</a>
+									</div>
 								</div>
 							{/foreach}
 						{/if}
@@ -62,29 +63,28 @@
 		</table>
 		<script>
 
-			var mainMenu = new ClickShowHideMenu({
-				id: 'main-menu',
-				maxOpened: {intval(ConfigHelper::getConfig('phpui.max_opened_menus', 3))}
-			});
-			mainMenu.init();
+		var mainMenu = new ClickShowHideMenu({
+			id: 'main-menu',
+			maxOpened: {intval(ConfigHelper::getConfig('phpui.max_opened_menus', 3))}
+		});
+		mainMenu.init();
 
-			$('#main-menu').sortable({
-				items: "tr",
-				handle: "i,img",
-				axis: "y",
-				opacity: 0.9,
-				update: function (event, ui) {
-					data = {};
-					data['main-menu-order'] = $(this).sortable("toArray").join(';');
-					savePersistentSettings(data);
-				}
-			});
+		$('#main-menu').sortable({
+			items: "tr",
+			handle: "i,img",
+			axis: "y",
+			opacity: 0.9,
+			update: function (event, ui) {
+				data = {};
+				data['main-menu-order'] = $(this).sortable("toArray").join(';');
+				savePersistentSettings(data);
+			}
+		});
 
-			restoreSortable('main-menu', '{$main_menu_sortable_order}');
+		restoreSortable('main-menu', '{$main_menu_sortable_order}');
 
 		</script>
 	</div>
-
 	<p id="lms-ui-copyrights">
 		&copy; 2001-{$smarty.now|date_format:'%Y'}<br><A href="?m=copyrights">LMS Developers</A>
 	</p>

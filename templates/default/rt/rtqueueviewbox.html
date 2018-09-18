@@ -16,7 +16,7 @@
 	<TD class="nobr">
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
-		<span>{if is_array($filter.ids) || count($filter.ids) != 1}{$ticket.name}{/if}</span>
+		<span>{if is_array($filter.ids) && count($filter.ids) != 1}{$ticket.name}{/if}</span>
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 	</TD>
@@ -47,7 +47,7 @@
 		{/if}
 	</TD>
 	<TD class="nobr valign-middle">
-		{if $ticket.netnode_location}
+		{if $ticket.netnodeid}
 			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><img src="img/netnode.png" alt=""> {$ticket.netnode_name}</a>
 		{/if}
 		{if $ticket.netdevid}

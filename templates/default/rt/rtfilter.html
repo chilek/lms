@@ -118,6 +118,16 @@
                 </SELECT>
             </label>
             <label class="nobr">
+                {trans("Network node:")}
+                <select name="nn" size="1" data-default-value="{trans("No filter")}" {tip class="lms-ui-multiselect" text="Select network node (optional)"} onchange="document.filter.submit();">
+                    <option value="all" data-exclusive{if $filter.netnodeids == null} selected{/if}>{trans("No filter")}</option>
+                    <option value="-1" data-exclusive{if $filter.netnodeids == -1} selected{/if}>{trans("Not assigned")}</option>
+                    {foreach $netnodelist as $idx => $netnode}
+                    <option value="{$idx}" {if is_array($filter.$netnodeids) && in_array($idx, $filter.netnodeids)} selected{/if}>{$netnode.name} ({$netnode.id})</OPTION>
+                    {/foreach}
+                </select>
+            </label>
+            <label class="nobr">
                 {trans("Investment project:")}
                 <input type="hidden" name="invprojectlist" value="all">
                 <SELECT size="1" name="invp" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}" >
@@ -125,7 +135,7 @@
                     <OPTION value="{$invproject.id}"{if is_array($filter.invprojectids) && in_array($invproject.id, $filter.invprojectids)} SELECTED{/if}>{$invproject.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
                 </SELECT>
-            </label>
+             </label>
         </FORM>
         </div>
         {persistent_filter}

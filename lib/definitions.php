@@ -306,6 +306,7 @@ define('RT_TYPE_START', 6);
 define('RT_TYPE_STOP', 7);
 define('RT_TYPE_REMOVE', 8);
 define('RT_TYPE_OTHER', 9);
+define('RT_TYPE_CONF', 10);
 
 
 $RT_TYPES = array(
@@ -338,6 +339,11 @@ $RT_TYPES = array(
 		'label' => trans('Modification'),
 		'class' => 'lms-ui-rt-ticket-type-mod',
 		'name' => 'RT_TYPE_MOD'
+	),
+	RT_TYPE_CONF => array(
+		'label' => trans('Configuration'),
+		'class' => 'lms-ui-rt-ticket-type-conf',
+		'name' => 'RT_TYPE_CONF'
 	),
 	RT_TYPE_START => array(
 		'label' => trans('Start service'),

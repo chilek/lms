@@ -176,6 +176,16 @@ if (isset($_GET['priority'])) {
 		$filter['priority'] = explode(',', $filter['priority']);
 }
 
+// netnodeid's
+if (isset($_GET['nn'])) {
+    if (is_array($_GET['nn']))
+        $filter['netnodeids'] = array_filter($_GET['nn'], 'intval');
+	elseif (intval($_GET['nn']))
+        $filter['netnodeids'] = array(intval($_GET['nn']));
+	elseif ($_GET['nn'] == 'all')
+        $filter['netnodeids'] = null;
+}
+
 if (isset($_GET['unread']))
 	$filter['unread'] = $_GET['unread'];
 elseif (!isset($filter['unread']))
@@ -194,7 +204,6 @@ $SESSION->saveFilter($filter);
 $layout['pagetitle'] = trans('Tickets List');
 
 $filter['netdevids'] = null;
-$filter['netnodeids'] = null;
 $filter['count'] = true;
 
 $filter['total'] = intval($LMS->GetQueueContents($filter));
@@ -230,10 +239,16 @@ unset($queue['invproject']);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+
 $invprojectlist = $LMS->GetProjects('name', $search);
 unset($invprojectlist['total']);
 unset($invprojectlist['order']);
 unset($invprojectlist['direction']);
+
+$netnodelist = $LMS->GetNetNodeList(array(), 'name');
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
 
 if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {
 	$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
@@ -245,6 +260,7 @@ $SMARTY->assign('queues', $queues);
 $SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
+$SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('users', $LMS->GetUserNames());
 
 $SMARTY->display('rt/rtqueueview.html');

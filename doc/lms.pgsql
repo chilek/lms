@@ -3133,6 +3133,7 @@ URL: %url
 ('userpanel', 'google_recaptcha_secret', '', '', 0),
 ('userpanel', 'allow_reopen_tickets_newer_than', '0', '', 0),
 ('userpanel', 'pin_changes', 'true', '', 0),
+('userpanel', 'show_last_years', '5', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3464,6 +3465,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091800');
 
 COMMIT;
