@@ -13,9 +13,16 @@
 		<td width="1%" align="right"></td>
 		{/if}
 	</tr>
+	{$ldate = ConfigHelper::getConfig('userpanel.limit_balance_list_to_last_years', 5)}
+	{if $ldate}
+		{$ldate = ($smarty.now - $ldate * 366 * 86400)}
+	{else}
+		{$ldate = 0}
+	{/if}
 	{section name=balancelist loop=$balancelist.list step=-1}
 	{$item=$balancelist.list[balancelist]}
-	<tr class="dark">
+	{if $item.time >= $ldate}
+		<tr class="dark">
 		<td width="1%" class="nobr">{$item.date}</td>
 		<td width="1%" align="right" class="nobr">{if $item.value > 0 && $item.type != 4}+{/if}{if $item.type == 4}-{/if}{$item.value|money_format}</td>
 		<td width="1%" align="center">&raquo;</td>
@@ -35,6 +42,7 @@
 		</td>
 		{/if}
 	</tr>
+	{/if}
 	{sectionelse}
 	<tr>
 		<td align="center" width="100%" colspan="6">

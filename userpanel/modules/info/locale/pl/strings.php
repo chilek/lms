@@ -130,4 +130,6 @@ $_LANG['PIN should have at least $a, maximum $b characters and contain only \'$c
 $_LANG['PIN changes:'] = 'Zmiany kodu PIN:';
 $_LANG['Allow customer to change PIN'] = 'Pozwól klientowi na zmianę kodu PIN';
 
+$_LANG['Show transactions from last selected years:'] = 'Pokaż transakcje z ostatnich wybranych lat:'
+
 ?>
