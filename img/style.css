@@ -55,6 +55,7 @@ TABLE {
   height: 100%;
   margin-top: 1em;
   margin-bottom: 1em;
+  margin-left: 0.3em;
 }
 #lms-ui-copyrights {
   margin: 0;
