@@ -167,12 +167,12 @@ if (isset($_GET['priority'])) {
 }
 
 // netnodeid's
-if (isset($_GET['nn'])) {
-    if (is_array($_GET['nn']))
-        $filter['netnodeids'] = array_filter($_GET['nn'], 'intval');
-	elseif (intval($_GET['nn']))
-        $filter['netnodeids'] = array(intval($_GET['nn']));
-	elseif ($_GET['nn'] == 'all')
+if (isset($_GET['nnids'])) {
+    if (is_array($_GET['nnids']))
+        $filter['netnodeids'] = array_filter($_GET['nnids'], 'intval');
+	elseif (intval($_GET['nnids']))
+        $filter['netnodeids'] = array(intval($_GET['nnids']));
+	elseif ($_GET['nnids'] == 'all')
         $filter['netnodeids'] = null;
 }
 
@@ -225,6 +225,7 @@ unset($queue['type']);
 unset($queue['unread']);
 unset($queue['rights']);
 unset($queue['verifier']);
+unset($queue['netnode']);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
