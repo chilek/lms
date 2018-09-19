@@ -228,9 +228,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			case '0':
 				$ownerfilter = ' AND t.owner IS NULL';
 				break;
-			case '-2':
-				$ownerfilter = ' AND t.owner IS NOT NULL';
-				break;
 			default:
 				if (is_array($owner))
 					$ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
@@ -1356,7 +1353,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			'critical' => 0,
 			'urgent' => 0,
 			'unread' => 0,
-            'expired' => 0
+            'expired' => 0,
+            'expired2' => 0,
 		);
 
 		if (ConfigHelper::CheckPrivilege('timetable_management')) {
@@ -1374,6 +1372,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				'rights' => RT_RIGHT_INDICATOR));
             $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
                 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+            $result['expired2'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
+                'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
 		}
 
 		return $result;

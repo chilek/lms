@@ -12,9 +12,13 @@
     <span class="lms-ui-indicator-counter">0</span>
     <img src="img/ticket-unread.png">
 </a>
-<a href="?m=indicators&action=expired" class="lms-ui-indicator" title="{trans("<!rt>Expired tickets")}" id="indicator-expired" style="display:none;">
+<a href="?m=indicators&action=expired" class="lms-ui-indicator" title="{trans("<!rt>Owned expired tickets")}" id="indicator-expired" style="display:none;">
     <span class="lms-ui-indicator-counter">0</span>
     <img src="img/deadline.png">
+</a>
+<a href="?m=indicators&action=expired2" class="lms-ui-indicator" title="{trans("<!rt>Verifier expired tickets")}" id="indicator-expired2" style="display:none;">
+<span class="lms-ui-indicator-counter">0</span>
+<img src="img/verifier.png">
 </a>
 {/if}
 {if ConfigHelper::CheckPrivilege('timetable_management')}
