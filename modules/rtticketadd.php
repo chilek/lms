@@ -104,8 +104,6 @@ if(isset($_POST['ticket']))
 				$ticket['requestor_userid'] = $userinfo['id'];
 		}
 
-		$ticket['mailfrom'] = $ticket['mail'] ? $ticket['mail'] : '';
-
 		$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
 		$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');
 		$ticket['requestor'] = trim($requestor);
@@ -171,12 +169,7 @@ if(isset($_POST['ticket']))
 			else
 				$mailfname = '';
 
-			if ($user['email'])
-				$mailfrom = $user['email'];
-			elseif ($qemail = $LMS->GetQueueEmail($queue))
-				$mailfrom = $qemail;
-			else
-				$mailfrom =  $ticket['mailfrom'];
+			$mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
 
 			$ticketdata = $LMS->GetTicketContents($id);
 

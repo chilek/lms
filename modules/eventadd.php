@@ -154,12 +154,7 @@ if(isset($_POST['event']))
 				else
 					$mailfname = '';
 
-				if ($user['email'])
-					$mailfrom = $user['email'];
-				elseif ($qemail = $LMS->GetQueueEmail($ticket['queue']))
-					$mailfrom = $qemail;
-				else
-					$mailfrom =  $ticket['mailfrom'];
+				$mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
 
 				$ticketdata = $LMS->GetTicketContents($event['ticketid']);
 

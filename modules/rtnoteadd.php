@@ -123,9 +123,9 @@ elseif(isset($_POST['note']))
 				$mailfname = '"'.$mailfname.'"';
 			}
 
-			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-
 			$ticketdata = $LMS->GetTicketContents($note['ticketid']);
+
+			$mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticketdata['requestor_mail']);
 
 			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Reply-To'] = $headers['From'];
