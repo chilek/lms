@@ -1717,6 +1717,11 @@ class LMS
 		return $manager->GetIndicatorStats();
 	}
 
+	public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
+	}
+
 	/*
 	 *  LMS-UI configuration
 	 */

@@ -177,22 +177,7 @@ function module_main() {
 					$mailfname = '"'.$mailfname.'"';
 				}
 
-				$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
-				if(!empty($helpdesk_sender_email)) {
-					$mailfrom = $helpdesk_sender_email;
-
-					if($mailfrom == 'queue')
-						$mailfrom = $LMS->GetQueueEmail($ticket['queue']);
-					elseif($mailfrom == 'user')
-						$mailfrom = $user['email'];
-				} else {
-					if ($user['email'])
-						$mailfrom = $user['email'];
-					elseif ($qemail = $LMS->GetQueueEmail($ticket['queue']))
-						$mailfrom = $qemail;
-					else
-						$mailfrom =  $ticket['mailfrom'];
-				}
+				$mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
 
 				$ticketdata = $LMS->GetTicketContents($id);
 
@@ -352,22 +337,7 @@ function module_main() {
 			$ticket['email'] = $LMS->GetCustomerEmail($SESSION->id);
 			$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 
-			$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
-			if(!empty($helpdesk_sender_email)) {
-				$mailfrom = $helpdesk_sender_email;
-
-				if($mailfrom == 'queue')
-					$mailfrom = $ticket['queue']['email'];
-				elseif($mailfrom == 'user')
-					$mailfrom = $user['email'];
-			} else {
-				if ($user['email'])
-					$mailfrom = $user['email'];
-				elseif (!empty($ticket['queue']['email']))
-					$mailfrom = $ticket['queue']['email'];
-				else
-					$mailfrom = $ticket['mailfrom'];
-			}
+			$mailfrom = $LMS->DetermineSenderEmail($user['email'], $ticket['queue']['email'], $ticket['mailfrom']);
 
 			$ticketdata = $LMS->GetTicketContents($ticket['id']);
 

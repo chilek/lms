@@ -141,7 +141,7 @@ version ?.??.?? (????-??-??):
   - improvement: mail.hide_sensitive_headers configuration variable controls if sensitive
     headers should be removed from posts via application [mikenowak]
   - enhancement: added support for phpui.helpdesk_sender_email configuration variable which
-    controls who is the sender of notification explicitly [mikenowak]
+    stores explicit suggested order of attributes in sender mail determination [mikenowak/chilan]
 
 version 1.11.23 (2018-03-21):
 

@@ -44,12 +44,12 @@ if(isset($_POST['message']))
 	if($message['destination']!='' && $message['sender']=='customer')
 		$error['destination'] = trans('Customer cannot send message!');
 
-    if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {
-    	$ticketcontent = $LMS->GetTicketContents($message['ticketid']);
-	$oec = $ticketcontent['openeventcount'];
-        if ($message['state'] == RT_RESOLVED && !empty($oec))
-            $error['state'] = trans('Ticket have open assigned events!');
-    }
+	$ticket = $LMS->GetTicketContents($message['ticketid']);
+	if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {
+		$oec = $ticket['openeventcount'];
+		if ($message['state'] == RT_RESOLVED && !empty($oec))
+			$error['state'] = trans('Ticket have open assigned events!');
+	}
 
 	$result = handle_file_uploads('files', $error);
 	extract($result);
@@ -71,8 +71,8 @@ if(isset($_POST['message']))
 		} else {
 			$message['userid'] = null;
 			if (!$message['customerid']) {
-				$req = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
-				$message['mailfrom'] = preg_replace('/^.* <(.+@.+)>/','\1', $req);
+				$message['mailfrom'] = $DB->GetOne('SELECT requestor_mail FROM rttickets WHERE id = ?',
+					array($message['ticketid']));
 				if(!check_email($message['mailfrom']))
 					$message['mailfrom'] = '';
 			}
@@ -102,17 +102,9 @@ if(isset($_POST['message']))
 				&& $message['destination'] != $queue['email'])
 			{
 				$recipients = $message['destination'];
-				$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
-				if(!empty($helpdesk_sender_email)) {
-					$mailfrom = $helpdesk_sender_email;
 
-					if($mailfrom == 'queue')
-						$mailfrom = $queue['email'];
-					elseif($mailfrom == 'user')
-						$mailfrom = $user['email'];
-				} else {
-					$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-				}
+				$mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
+
 				$message['mailfrom'] = $mailfrom;
 				$headers['Date'] = date('r');
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
@@ -151,27 +143,19 @@ if(isset($_POST['message']))
 		}
 		else //sending to backend
 		{
-			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
+			$addmsg = ($message['destination'] != '');
 
 			if($message['destination']=='')
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
 
-			$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
-			if(!empty($helpdesk_sender_email)) {
-				$mailfrom = $helpdesk_sender_email;
-
-				if($mailfrom == 'queue')
-					$mailfrom = $queue['email'];
-				elseif($mailfrom == 'user')
-					$mailfrom = $user['email'];
-			} else {
-				if($message['userid'] && $addmsg)
-					$mailfrom = $queue['email'] ? $queue['email'] : $user['email'];
-				if($message['userid'] && !$addmsg)
-					$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-			}
-			$message['mailfrom'] = $mailfrom;
+			if ($message['userid'])
+				if ($addmsg)
+					$message['mailfrom'] = $LMS->DetermineSenderEmail($user['email'], $queue['email'],
+						$ticket['requestor_mail'], $forced_order = 'queue,user,ticket');
+				else
+					$message['mailfrom'] = $LMS->DetermineSenderEmail($user['email'], $queue['email'],
+						$ticket['requestor_mail']);
 
 			if($message['customerid']) {
 				$message['mailfrom'] = $LMS->GetCustomerEmail($message['customerid']);
@@ -264,17 +248,7 @@ if(isset($_POST['message']))
 				$mailfname = '"'.$mailfname.'"';
 			}
 
-			$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
-			if(!empty($helpdesk_sender_email)) {
-				$mailfrom = $helpdesk_sender_email;
-
-				if($mailfrom == 'queue')
-					$mailfrom = $queue['email'];
-				elseif($mailfrom == 'user')
-					$mailfrom = $user['email'];
-			} else {
-				$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-			}
+			$mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
 
 			$ticketdata = $LMS->GetTicketContents($message['ticketid']);
 

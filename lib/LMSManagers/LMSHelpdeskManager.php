@@ -1376,4 +1376,35 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		return $result;
 	}
+
+	public function DetermineSenderEmail($user_email, $queue_email, $ticket_email, $forced_order = null) {
+		$helpdesk_sender_email = empty($forced_order)
+			? ConfigHelper::getConfig('phpui.helpdesk_sender_email', 'user,queue,ticket')
+			: $forced_order;
+		$attributes = explode($helpdesk_sender_email);
+		$attribute = reset($attributes);
+		$mailfrom = '';
+		while ($attribute !== false) {
+			$attribute = trim($attribute);
+			if ($attribute == 'user') {
+				if ($user_email) {
+					$mailfrom = $user_email;
+					break;
+				}
+			} elseif ($attribute == 'queue') {
+				if ($queue_email) {
+					$mailfrom = $queue_email;
+					break;
+				}
+			} elseif ($attribute == 'ticket') {
+				$mailfrom = $ticket_email;
+				break;
+			} else {
+				$mailfrom = $attribute;
+				break;
+			}
+			$attribute = next($attributes);
+		}
+		return $mailfrom;
+	}
 }

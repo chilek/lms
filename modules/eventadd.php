@@ -154,22 +154,7 @@ if(isset($_POST['event']))
 				else
 					$mailfname = '';
 
-				$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
-				if(!empty($helpdesk_sender_email)) {
-					$mailfrom = $helpdesk_sender_email;
-
-					if($mailfrom == 'queue')
-						$mailfrom = $LMS->GetQueueEmail($ticket['queue']);
-					elseif($mailfrom == 'user')
-						$mailfrom = $user['email'];
-				} else {
-					if ($user['email'])
-						$mailfrom = $user['email'];
-					elseif ($qemail = $LMS->GetQueueEmail($ticket['queue']))
-						$mailfrom = $qemail;
-					else
-						$mailfrom =  $ticket['mailfrom'];
-				}
+				$mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
 
 				$ticketdata = $LMS->GetTicketContents($event['ticketid']);
 
