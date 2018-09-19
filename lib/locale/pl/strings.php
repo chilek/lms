@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Not assigned'] = 'Nieprzypisany';
 $_LANG['Reuse'] = 'Ponownie';
 $_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
 $_LANG['Encryption key:'] = 'Klucz szyfrowania:';
