@@ -381,7 +381,11 @@ else
 				$message['destination'] = implode(',', $message['destination']);
 		}
 
-		$message['subject'] = 'Re: '.$reply['subject'];
+		if (preg_match('#^Re: #i', $reply['subject']) === 1) {
+			$message['subject'] = $reply['subject'];
+		} else {
+			$message['subject'] = 'Re: '. $reply['subject'];	
+		}
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = implode(' ', $reply['references']);
 
