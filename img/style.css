@@ -55,6 +55,7 @@ TABLE {
   height: 100%;
   margin-top: 1em;
   margin-bottom: 1em;
+  align-self: stretch;
 }
 #lms-ui-copyrights {
   margin: 0;
@@ -549,9 +550,8 @@ div.lms-ui-multiselectlayer div {
   background-color: #DFD5BD;
 }
 .click-menu {
-  font-size: 11px;
-  width: 150px;
-  padding: 0px 0px;
+  font-size: 105%;
+  padding: 0 0;
   margin-top: 0;
   margin-bottom: 0;
   -webkit-user-select: none;
@@ -563,7 +563,7 @@ div.lms-ui-multiselectlayer div {
   background-color: #CEBD9B;
   color: #000000;
   font-weight: bold;
-  padding: 5px 5px;
+  padding: 0.45em 0.45em;
   cursor: default;
   position: relative;
   white-space: nowrap;
@@ -572,7 +572,7 @@ div.lms-ui-multiselectlayer div {
   background-color: #CCFFCC;
   color: #800000;
   font-weight: bold;
-  padding: 5px 5px;
+  padding: 0.45em 0.45em;
   cursor: default;
   position: relative;
   white-space: nowrap;
@@ -581,7 +581,7 @@ div.lms-ui-multiselectlayer div {
   background-color: #DACAB2;
   color: #800000;
   font-weight: bold;
-  padding: 5px 5px;
+  padding: 0.45em 0.45em;
   cursor: default;
   position: relative;
   white-space: nowrap;
@@ -590,15 +590,15 @@ div.lms-ui-multiselectlayer div {
   background-color: #CCFFCC;
   color: #800000;
   font-weight: bold;
-  padding: 5px 5px;
+  padding: 0.45em 0.45em;
   cursor: default;
   position: relative;
   white-space: nowrap;
 }
 .click-menu .section {
   background-color: #EBE4D6;
-  line-height: 15px;
-  padding: 0px 0px 0px 0px;
+  line-height: 1.25em;
+  padding: 0 0 0 0;
   display: none;
 }
 .click-menu .section a {
@@ -622,14 +622,14 @@ div.lms-ui-multiselectlayer div {
 .click-menu .box2 a,
 .click-menu .box2-hover a {
   display: block;
-  padding-left: 21px;
+  padding-left: 1.85em;
   font-weight: normal;
-  font-size: 10px;
-  padding-top: 1px;
-  padding-bottom: 1px;
+  font-size: 0.83em;
+  padding-top: 0.08em;
+  padding-bottom: 0.08em;
 }
-.tip {
-  width: 162px;
+.click-menu li {
+  list-style-type: none;
 }
 .dark {
   background-color: #CEBD9B;

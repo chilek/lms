@@ -75,6 +75,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	height: 100%;
 	margin-top: 1em;
 	margin-bottom: 1em;
+	align-self: stretch;
 }
 
 #lms-ui-copyrights {
@@ -482,9 +483,8 @@ div.lms-ui-multiselectlayer {
 }
 
 .click-menu {
-	font-size: 11px;
-	width: 150px;
-	padding: 0px 0px;
+	font-size: 105%;
+	padding: 0 0;
 	margin-top: 0;
 	margin-bottom: 0;
 	.lms-ui-no-user-select;
@@ -492,7 +492,7 @@ div.lms-ui-multiselectlayer {
 		background-color: @dark;
 		color: #000000;
 		font-weight: bold;
-		padding: 5px 5px;
+		padding: 0.45em 0.45em;
 		cursor: default;
 		position: relative;
 		white-space: nowrap;
@@ -501,7 +501,7 @@ div.lms-ui-multiselectlayer {
 		background-color: @highlight;
 		color: @link;
 		font-weight: bold;
-		padding: 5px 5px;
+		padding: 0.45em 0.45em;
 		cursor: default;
 		position: relative;
 		white-space: nowrap;
@@ -510,7 +510,7 @@ div.lms-ui-multiselectlayer {
 		background-color: #DACAB2;
 		color: @link;
 		font-weight: bold;
-		padding: 5px 5px;
+		padding: 0.45em 0.45em;
 		cursor: default;
 		position: relative;
 		white-space: nowrap;
@@ -519,15 +519,15 @@ div.lms-ui-multiselectlayer {
 		background-color: @highlight;
 		color: @link;
 		font-weight: bold;
-		padding: 5px 5px;
+		padding: 0.45em 0.45em;
 		cursor: default;
 		position: relative;
 		white-space: nowrap;
 	}
 	.section {
 		background-color: @lucid;
-		line-height: 15px;
-		padding: 0px 0px 0px 0px;
+		line-height: 1.25em;
+		padding: 0 0 0 0;
 		display: none;
 		a {
 			color: @link;
@@ -550,14 +550,17 @@ div.lms-ui-multiselectlayer {
 	.box2 a,
 	.box2-hover a {
 		display: block;
-		padding-left: 21px;
+		padding-left: 1.85em;
 		font-weight: normal;
-		font-size: 10px;
-		padding-top: 1px;
-		padding-bottom: 1px;
+		font-size: 0.83em;
+		padding-top: 0.08em;
+		padding-bottom: 0.08em;
+	}
+	li {
+		list-style-type: none;
 	}
 }
-.tip		{ width: 162px; }
+//.tip		{ width: 162px; }
 
 .dark		{ background-color: @dark; }
 .superdark	{ background-color: @superdark; }

@@ -69,7 +69,8 @@ if ($id && !isset($_POST['ticket'])) {
 			$mailfname = '"' . $mailfname . '"';
 		}
 
-		$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
+		$mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
+
 		$from = $mailfname . ' <' . $mailfrom . '>';
 
 		if ($state == RT_RESOLVED) {
@@ -203,7 +204,7 @@ if(isset($_POST['ticket']))
 
 	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queueid']) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
-	
+
 	if($ticketedit['subject'] == '')
 		$error['subject'] = trans('Ticket must have its title!');
 
@@ -306,9 +307,9 @@ if(isset($_POST['ticket']))
 				$mailfname = '"' . $mailfname . '"';
 			}
 
-			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
-
 			$ticketdata = $LMS->GetTicketContents($ticket['ticketid']);
+
+			$mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticketdata['requestor_mail']);
 
 			$headers['From'] = $mailfname . ' <' . $mailfrom . '>';
 			$headers['Reply-To'] = $headers['From'];

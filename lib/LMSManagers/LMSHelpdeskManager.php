@@ -177,9 +177,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		if (empty($netnodeids)) {
                         $netnodeidsfilter = '';
-		} elseif (is_array($netnodeids)) {
-                        $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
-		} else
+		} elseif (is_array($netnodeids) && in_array(-1, $netnodeids)) {
+            $netnodeidsfilter = ' AND t.netnodeid IS NULL ';
+        } elseif (is_array($netnodeids)) {
+            $netnodeidsfilter = ' AND t.netnodeid IN (' . implode(',', $netnodeids) . ')';
+        } else
 			$netnodeidsfilter = ' AND t.netnodeid = '.$netnodeids;
 
         if (empty($serviceids)) {
@@ -225,9 +227,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				break;
 			case '0':
 				$ownerfilter = ' AND t.owner IS NULL';
-				break;
-			case '-2':
-				$ownerfilter = ' AND t.owner IS NOT NULL';
 				break;
 			default:
 				if (is_array($owner))
@@ -1363,7 +1362,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			'critical' => 0,
 			'urgent' => 0,
 			'unread' => 0,
-            'expired' => 0
+            'expired' => 0,
+            'expired2' => 0,
 		);
 
 		if (ConfigHelper::CheckPrivilege('timetable_management')) {
@@ -1381,8 +1381,41 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				'rights' => RT_RIGHT_INDICATOR));
             $result['expired'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
                 'owner' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
+            $result['expired2'] = $this->GetQueueContents(array('count' => true, 'state' => -1, 'deadline' => -2,
+                'verifierids' => Auth::GetCurrentUser(), 'rights' => RT_RIGHT_INDICATOR));
 		}
 
 		return $result;
+	}
+
+	public function DetermineSenderEmail($user_email, $queue_email, $ticket_email, $forced_order = null) {
+		$helpdesk_sender_email = empty($forced_order)
+			? ConfigHelper::getConfig('phpui.helpdesk_sender_email', 'user,queue,ticket')
+			: $forced_order;
+		$attributes = explode($helpdesk_sender_email);
+		$attribute = reset($attributes);
+		$mailfrom = '';
+		while ($attribute !== false) {
+			$attribute = trim($attribute);
+			if ($attribute == 'user') {
+				if ($user_email) {
+					$mailfrom = $user_email;
+					break;
+				}
+			} elseif ($attribute == 'queue') {
+				if ($queue_email) {
+					$mailfrom = $queue_email;
+					break;
+				}
+			} elseif ($attribute == 'ticket') {
+				$mailfrom = $ticket_email;
+				break;
+			} else {
+				$mailfrom = $attribute;
+				break;
+			}
+			$attribute = next($attributes);
+		}
+		return $mailfrom;
 	}
 }

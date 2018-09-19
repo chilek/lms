@@ -112,4 +112,6 @@ interface LMSHelpdeskManagerInterface
 	public function MarkTicketAsUnread($ticketid);
 
 	public function GetIndicatorStats();
+
+	public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null);
 }

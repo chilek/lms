@@ -68,7 +68,6 @@
             {trans("Owner:")}
             <SELECT size="1" name="owner[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
                 <OPTION value="0" data-exclusive{if !is_array($filter.owner) && $filter.owner == 0} selected{/if}>- {trans("no owner")} -</OPTION>
-                <OPTION value="-2" data-exclusive{if !is_array($filter.owner) && $filter.owner == -2} selected{/if}>- {trans("with owner")} -</OPTION>
                 {foreach $users as $user}
                 <OPTION value="{$user.id}"{if is_array($filter.owner) && in_array($user.id, $filter.owner)}} SELECTED{/if}>{$user.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
@@ -119,11 +118,12 @@
             </label>
             <label class="nobr">
                 {trans("Network node:")}
-                <select name="nn" size="1" data-default-value="{trans("No filter")}" {tip class="lms-ui-multiselect" text="Select network node (optional)"} onchange="document.filter.submit();">
-                    <option value="all" data-exclusive{if $filter.netnodeids == null} selected{/if}>{trans("No filter")}</option>
-                    <option value="-1" data-exclusive{if $filter.netnodeids == -1} selected{/if}>{trans("Unassigned")}</option>
+                <input type="hidden" name="nnids" value="all">
+                <select name="nnids[]" size="1" multiple data-default-value="{trans("No filter")}" class="lms-ui-multiselect" {tip text="Select network node (optional)"} onchange="document.filter.submit();">
+                    <option value="all" data-exclusive{if is_array($filter.netnodeids) && in_array(null, $filter.netnodeids)} selected{/if}>{trans("No filter")}</option>
+                    <option value="-1" data-exclusive{if is_array($filter.netnodeids) && in_array(-1, $filter.netnodeids)} selected{/if}>{trans("Not assigned")}</option>
                     {foreach $netnodelist as $idx => $netnode}
-                    <option value="{$idx}" {if is_array($filter.$netnodeids) && in_array($idx, $filter.netnodeids)} selected{/if}>{$netnode.name} ({$netnode.id})</OPTION>
+                    <option value="{$netnode.id}" {if is_array($filter.netnodeids) && in_array($netnode.id, $filter.netnodeids)} selected{/if}>{$netnode.name}</OPTION>
                     {/foreach}
                 </select>
             </label>

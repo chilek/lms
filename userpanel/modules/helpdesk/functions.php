@@ -177,12 +177,7 @@ function module_main() {
 					$mailfname = '"'.$mailfname.'"';
 				}
 
-				if ($user['email'])
-					$mailfrom = $user['email'];
-				elseif ($qemail = $LMS->GetQueueEmail($ticket['queue']))
-					$mailfrom = $qemail;
-				else
-					$mailfrom =  $ticket['mailfrom'];
+				$mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['mailfrom']);
 
 				$ticketdata = $LMS->GetTicketContents($id);
 
@@ -342,12 +337,7 @@ function module_main() {
 			$ticket['email'] = $LMS->GetCustomerEmail($SESSION->id);
 			$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 
-			if ($user['email'])
-				$mailfrom = $user['email'];
-			elseif (!empty($ticket['queue']['email']))
-				$mailfrom = $ticket['queue']['email'];
-			else
-				$mailfrom = $ticket['mailfrom'];
+			$mailfrom = $LMS->DetermineSenderEmail($user['email'], $ticket['queue']['email'], $ticket['mailfrom']);
 
 			$ticketdata = $LMS->GetTicketContents($ticket['id']);
 

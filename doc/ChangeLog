@@ -141,6 +141,9 @@ version ?.??.?? (????-??-??):
   - improvement: now we can assign tickets to invprojects [interduo]
   - improvement: mail.hide_sensitive_headers configuration variable controls if sensitive
     headers should be removed from posts via application [mikenowak]
+  - enhancement: added support for phpui.helpdesk_sender_email configuration variable which
+    stores explicit suggested order of attributes in sender mail determination [mikenowak/chilan]
+  - introduced: indicator expired2 - my expired tickets for current logged user assigned as verifier [interduo]
 
 version 1.11.23 (2018-03-21):
 
