@@ -139,6 +139,8 @@ version ?.??.?? (????-??-??):
   - improvement: allow to clone existing event quickly [chilan]
   - improvement: allow to store encryption key for network interface in netradiosectors [interduo]
   - improvement: now we can assign tickets to invprojects [interduo]
+  - improvement: mail.hide_sensitive_headers configuration variable controls if sensitive
+    headers should be removed from posts via application [mikenowak]
 
 version 1.11.23 (2018-03-21):
 
