@@ -226,9 +226,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			case '0':
 				$ownerfilter = ' AND t.owner IS NULL';
 				break;
-			case '-2':
-				$ownerfilter = ' AND t.owner IS NOT NULL';
-				break;
 			default:
 				if (is_array($owner))
 					$ownerfilter = ' AND t.owner IN (' . implode(',', $owner) . ') ';
