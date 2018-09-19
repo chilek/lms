@@ -140,6 +140,8 @@ version ?.??.?? (????-??-??):
   - improvement: allow to store encryption key for network interface in netradiosectors [interduo]
   - improvement: mail.hide_sensitive_headers configuration variable controls if sensitive
     headers should be removed from posts via application [mikenowak]
+  - enhancement: added support for phpui.helpdesk_sender_email configuration variable which
+    controls who is the sender of notification explicitly [mikenowak]
 
 version 1.11.23 (2018-03-21):
 
