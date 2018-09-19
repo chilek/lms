@@ -171,12 +171,21 @@ if(isset($_POST['ticket']))
 			else
 				$mailfname = '';
 
-			if ($user['email'])
-				$mailfrom = $user['email'];
-			elseif ($qemail = $LMS->GetQueueEmail($queue))
-				$mailfrom = $qemail;
-			else
-				$mailfrom =  $ticket['mailfrom'];
+			$helpdesk_sender_email = ConfigHelper::getConfig('phpui.helpdesk_sender_email');
+			if(!empty($helpdesk_sender_email)) {
+				$mailfrom = $helpdesk_sender_email;
+				if($mailfrom == 'queue')
+					$mailfrom = $LMS->GetQueueEmail($queue);
+				elseif($mailfrom == 'user')
+					$mailfrom = $user['email'];
+			} else {
+				if ($user['email'])
+					$mailfrom = $user['email'];
+				elseif ($qemail = $LMS->GetQueueEmail($queue))
+					$mailfrom = $qemail;
+				else
+					$mailfrom =  $ticket['mailfrom'];
+			}
 
 			$ticketdata = $LMS->GetTicketContents($id);
 
