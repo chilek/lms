@@ -149,6 +149,8 @@ if ($id && !isset($_POST['ticket'])) {
 				'body' => $message['body'],
 			);
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+			if(ConfigHelper::checkConfig('rt.helpdesk_notification_prefix_re'))
+				$headers['Subject'] = 'Re: '.$headers['Subject'];
 			$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
 			$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
 			$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
@@ -376,6 +378,8 @@ if(isset($_POST['ticket']))
 				'body' => $message['body'],
 			);
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+			if(ConfigHelper::checkConfig('rt.helpdesk_notification_prefix_re'))
+				$headers['Subject'] = 'Re: '.$headers['Subject'];
 			$params['customerinfo'] =  isset($mail_customerinfo) ? $mail_customerinfo : null;
 			$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
 			$params['customerinfo'] =  isset($sms_customerinfo) ? $sms_customerinfo : null;
