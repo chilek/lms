@@ -222,14 +222,14 @@ function ClickShowHideMenu(params) {
 					a[0] = a[0].trim();
 					a[1] = a[1].trim();
 					if (a[0] == name) {
-						return unescape(a[1]);
+						return decodeURIComponent(a[1]);
 					}
 				}
 			}
 			return "";
 		}
 		this.set = function (name, value) {
-			document.cookie = name + "=" + escape(value);
+			document.cookie = name + "=" + encodeURIComponent(value);
 		}
 		this.del = function (name) {
 			document.cookie = name + "=; expires=Thu, 01-Jan-70 00:00:01 GMT";
