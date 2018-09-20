@@ -60,7 +60,7 @@ function show_pagecontent() {
 		$(location.hash)[0].scrollIntoView();
 	} else if (history.state) {
 		window.setTimeout(function(scrollTop) {
-				$(window).scrollTop(scrollTop);
+				$('#lms-ui-module-view').scrollTop(scrollTop);
 			}, 0, history.state.scrollTop);
 	}
 }
@@ -219,12 +219,12 @@ $(function() {
 	var elementsToInitiate = 0;
 	var scrollTimeout = null;
 
-	$(window).scroll(function(e) {
+	$('#lms-ui-module-view').scroll(function(e) {
 		if (scrollTimeout) {
 			clearTimeout(scrollTimeout);
 		}
 		scrollTimeout = setTimeout(function() {
-				history.replaceState({ scrollTop: $(this).scrollTop()}, window.title );
+				history.replaceState({ scrollTop: $('#lms-ui-module-view').scrollTop()}, window.title );
 			}, 200);
 	});
 
