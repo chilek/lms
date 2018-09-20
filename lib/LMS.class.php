@@ -801,7 +801,7 @@ class LMS
         return $manager->GetNode($id);
     }
 
-    public function GetNodeList(array $params)
+    public function GetNodeList(array $params = array())
     {
         $manager = $this->getNodeManager();
         return $manager->GetNodeList($params);

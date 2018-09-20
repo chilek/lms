@@ -310,7 +310,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 	 * @return mixed
 	 */
 // $order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
-	public function GetNodeList(array $params) {
+	public function GetNodeList(array $params = array()) {
 		extract($params);
 
 		if (!isset($order) || empty($order))
