@@ -44,31 +44,31 @@
 	</TR>
         </THEAD>
         <TBODY>
-	{foreach $netdevlist as $netdev}
+	{foreach $netdevlist as $netdevice}
 	<TR class="highlight">
-		<TD class="valign-top nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdev.id}';">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdev.id}"><span class="bold">{$netdev.name} {if $netdev.producer}/ {$netdev.producer}{/if}</span></A><BR>
-			<IMG src="img/home.gif" ALT=""> {$netdev.location}{if $netdev.borough_name} ({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name}){/if}
+		<TD class="valign-top nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdevice.id}';">
+			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevice.id}"><span class="bold">{$netdevice.name} {if $netdevice.producer}/ {$netdevice.producer}{/if}</span></A><BR>
+			<IMG src="img/home.gif" ALT=""> {$netdevice.location}{if $netdevice.borough_name} ({$netdevice.state_name} / {$netdevice.district_name} / {$_BOROUGHTYPES[$netdevice.borough_type]} {$netdevice.borough_name}){/if}
 		</TD>
-		<TD class="valign-top nobr" id="dev_{$netdev.id}">
-			{if $netdev.linktechnology}{$_LINKTECHNOLOGIES[$netdev.linktype][$netdev.linktechnology]}{/if}{if $netdev.linktype == 1 && ($netdev.srcradiosector || $netdev.dstradiosector)} ({if $netdev.srcradiosector}{$netdev.srcradiosector}{else}-{/if}/{if $netdev.dstradiosector}{$netdev.dstradiosector}{else}-{/if}){/if}<BR>
-			{if $netdev.linkspeed}{$_LINKSPEEDS[$netdev.linkspeed]}{/if}
+		<TD class="valign-top nobr" id="dev_{$netdevice.id}">
+			{if $netdevice.linktechnology}{$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}{/if}{if $netdevice.linktype == 1 && ($netdevice.srcradiosector || $netdevice.dstradiosector)} ({if $netdevice.srcradiosector}{$netdevice.srcradiosector}{else}-{/if}/{if $netdevice.dstradiosector}{$netdevice.dstradiosector}{else}-{/if}){/if}<BR>
+			{if $netdevice.linkspeed}{$_LINKSPEEDS[$netdevice.linkspeed]}{/if}
 		</TD>
-		<TD class="text-right nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdev.id}';">
-			<IMG src="img/empty.gif" height="16">[{if $netdev.srcport}{$netdev.srcport}{/if}]<BR>
-			({$netdev.id|string_format:"%04d"})
+		<TD class="text-right nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdevice.id}';">
+			<IMG src="img/empty.gif" height="16">[{if $netdevice.srcport}{$netdevice.srcport}{/if}]<BR>
+			({$netdevice.id|string_format:"%04d"})
 		</TD>
 		<TD class="nobr">
-			<span id="devlinkproperties_{$netdev.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdev.id}', true);">
-				<IMG SRC="img/{if $netdev.linktype == 1}wireless.gif{elseif $netdev.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{trans("Change connection properties")}" {tip trigger="devlinkproperties_$netdev.id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdev.linktype]}<br>{if $netdev.linktype == 1}{if $netdev.srcradiosector}{trans("Radio sector:")} {$netdev.srcradiosector}<br>{/if}{if $netdev.dstradiosector}{trans("Destination radio sector:")} {$netdev.dstradiosector}<br>{/if}{/if}{if $netdev.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdev.linktype][$netdev.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdev.linkspeed]}</span>"}>
+			<span id="devlinkproperties_{$netdevice.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
+				<IMG SRC="img/{if $netdevice.linktype == 1}wireless.gif{elseif $netdevice.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{trans("Change connection properties")}" {tip trigger="devlinkproperties_$netdevice.id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}<br>{if $netdevice.linktype == 1}{if $netdevice.srcradiosector}{trans("Radio sector:")} {$netdevice.srcradiosector}<br>{/if}{if $netdevice.dstradiosector}{trans("Destination radio sector:")} {$netdevice.dstradiosector}<br>{/if}{/if}{if $netdevice.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}</span>"}>
 			</span>
-			<span onClick="return self.location.href='?m=netdevinfo&id={$netdev.id}';">
-			[{if $netdev.dstport}{$netdev.dstport}{/if}]
-			<BR><IMG SRC="img/port.gif" ALT=""> {$netdev.ports} ({$netdev.takenports})
+			<span onClick="return self.location.href='?m=netdevinfo&id={$netdevice.id}';">
+			[{if $netdevice.dstport}{$netdevice.dstport}{/if}]
+			<BR><IMG SRC="img/port.gif" ALT=""> {$netdevice.ports} ({$netdevice.takenports})
 			</span>
 		</TD>
 		<TD class="text-right">
-			<A HREF="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdev.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdevice.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
