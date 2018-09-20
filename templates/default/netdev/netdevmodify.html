@@ -46,11 +46,11 @@
 					<div class="lms-ui-box-row-field">
 						<input type="hidden" id="producer-value" name="netdev[producer]">
 						<input type="hidden" id="producerid-value" name="netdev[producerid]">
-						<select id="producer" data-value="{$netdev.producer}" data-alt-field="#producerid-value"
+						<select id="producer" data-value="{$netdev.producer}" data-id-value="{$netdev.producerid}" data-alt-field="#producerid-value"
 								data-alt-invalid-field="#producer-value"
 								{tip class="lms-ui-combobox" text="Enter producer name (optional)"}>
 							{foreach $producers as $producer}
-								<option value="{$producer.id}" {if $producer.id== $netdev.producer} selected{/if}>{$producer.name}</option>
+								<option value="{$producer.id}" {if $producer.id == $netdev.producerid} selected{/if}>{$producer.name}</option>
 							{/foreach}
 						</select>
 					</div>
@@ -66,7 +66,7 @@
 					<div class="lms-ui-box-row-field">
 						<input type="hidden" id="model-value" name="netdev[model]">
 						<input type="hidden" id="modelid-value" name="netdev[modelid]">
-						<select id="model" data-value="{$netdev.model}" data-alt-field="#modelid-value"
+						<select id="model" data-value="{$netdev.model}" data-id-value="{$netdev.modelid}" data-alt-field="#modelid-value"
 								data-alt-invalid-field="#model-value"
 								{tip class="lms-ui-combobox" text="Enter device model (optional)" }> </select>
 					</div>
@@ -356,49 +356,39 @@
 
 	var models = JSON.parse('{$models}');
 
-	function updateModels(producerid) {
-		var modelelem = $('#model');
-		var modelid = modelelem.scombobox('val');
-		var modelonlist = false;
+	function initModels(producerid) {
 		var values = [];
-
-		if (producerid.match(/^[0-9]+$/)) {
-			$.each(models['p' + producerid], function (key, item) {
-				if (item.id == modelid) {
-					modelonlist = true;
-				}
-				values.push({
-					value: item.id,
-					text: item.name
-				});
+		$.each(models['p' + producerid], function (key, item) {
+			values.push({
+				value: item.id,
+				text: item.name
 			});
+		});
+		$('#model').scombobox('fill', values);
+	}
+
+	function updateModels() {
+		var producerid = $('#producerid-value').val();
+		if (producerid.length) {
+			initModels(producerid);
+			$('#model').scombobox('val', '');
 		} else {
-			if (producerid == '') {
-				$('#producer').scombobox('val', '');
-			}
-			if (modelid == '') {
-				$('#model').scombobox('val', '');
-			} else if (!modelid.match(/^[0-9]+$/)) {
-				modelonlist = true;
-			}
-		}
-		modelelem.scombobox('fill', values);
-		if (producerid.match(/^[0-9]+$/)) {
-			modelelem.scombobox('val', '');
-			modelelem.trigger('change');
-		}
-		if (modelonlist) {
-			modelelem.scombobox('val', modelid);
+			$('#model').scombobox('fill', []);
 		}
 	}
 
 	$(function () {
 		$('[name="netdev[name]"]').focus();
 
-		updateModels('{$netdev.producer}');
+		{if $netdev.producerid}
+			initModels({$netdev.producerid});
+			$('#model').scombobox('val', '{if $netdev.modelid}{$netdev.modelid}{else}{$netdev.model}{/if}');
+		{else}
+			$('#producer').scombobox('val', '{$netdev.producer}');
+		{/if}
 
 		$('#producer').scombobox('change', function () {
-			updateModels($(this).closest('.scombobox').scombobox('val'));
+			updateModels();
 		});
 
 		$('#submit_button').click(function() {

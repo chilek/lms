@@ -370,6 +370,8 @@ $(function() {
 		));
 		if ($(this).attr('data-value')) {
 			$(this).parent('.scombobox').scombobox('val', $(this).attr('data-value'));
+		} else if ($(this).attr('data-id-value')) {
+			$(this).parent('.scombobox').scombobox('val', $(this).attr('data-id-value'));
 		}
 	});
 	// dynamicaly insert hidden input element with name as original select element
