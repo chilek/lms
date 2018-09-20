@@ -1385,7 +1385,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$helpdesk_sender_email = empty($forced_order)
 			? ConfigHelper::getConfig('phpui.helpdesk_sender_email', 'user,queue,ticket')
 			: $forced_order;
-		$attributes = explode($helpdesk_sender_email);
+		$attributes = explode(',', $helpdesk_sender_email);
 		$attribute = reset($attributes);
 		$mailfrom = '';
 		while ($attribute !== false) {
