@@ -19,6 +19,9 @@ BODY {
   justify-content: flex-start;
   align-items: flex-start;
 }
+body.lms-ui-popup {
+  display: block;
+}
 TABLE {
   border-collapse: collapse;
   border-color: #000000;

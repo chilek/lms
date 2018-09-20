@@ -20,7 +20,7 @@
         </frameset>
     {/if}
     {if $part eq "top"}
-    <body>
+    <body class="lms-ui-popup">
         <form name="search" method="post" action="?m=choosenodedevice&p=main" target="main">
             <input type="submit" class="hiddenbtn">
             <table cellpadding="5" width="100%">
@@ -38,7 +38,7 @@
     </body>
     {/if}
     {if $part eq "main"}
-    <body>
+    <body class="lms-ui-popup">
 		{$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
         <table cellpadding="3" width="100%">
             {if $netdevices}

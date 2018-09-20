@@ -21,7 +21,7 @@
 </frameset>
 {/if}
 {if $part == "top"}
-<body>
+<body class="lms-ui-popup">
 <form name="search" method="post" action="?m=choosecustomer&p=main" target="main">
 <input type="submit" class="hiddenbtn">
 <table cellpadding="5" width="100%">
@@ -43,7 +43,7 @@ document.search.searchcustomer.focus();
 </body>
 {/if}
 {if $part == "main"}
-<body>
+<body class="lms-ui-popup">
 <table cellpadding="3" width="100%">
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist}

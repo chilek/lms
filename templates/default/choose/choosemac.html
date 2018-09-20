@@ -20,7 +20,7 @@
 </frameset>
 {/if}
 {if $part == "main"}
-<body>
+<body class="lms-ui-popup">
 	<table width="100%" cellpadding="1">
 	{section name=maclist loop=$maclist.mac}
 	<TR class="highlight" {if $maclist.nodename[maclist] == ""} onClick="sendvalue(targetfield,'{$maclist.mac[maclist]}');"{/if}>
@@ -59,7 +59,7 @@
 </body>
 {/if}
 {if $part == "top"}
-<body>
+<body class="lms-ui-popup">
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center">
