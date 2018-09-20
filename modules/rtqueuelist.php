@@ -32,7 +32,7 @@ elseif (!isset($filter['deleted']))
 $SESSION->saveFilter($filter);
 
 $filter['stats'] = true;
-$filter['only_accessible'] = true;
+$filter['only_accessible'] = false;
 $queues = $LMS->GetQueueList($filter);
 
 $layout['pagetitle'] = trans('Queues List');
