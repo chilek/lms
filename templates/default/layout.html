@@ -37,19 +37,19 @@
 			}
 
 		</script>
-		<div id="lms-ui-contents" style="display: none;">
+		<section id="lms-ui-contents" style="display: none;">
 			{include file="quicksearch-indicators-panel.html"}
 			{include file="toolbar-panel.html"}
 			<div id="lms-ui-module-view">
 				{block name=module_content}{/block}
+				{block name="footer"}
+					{if $layout.dberrors}
+						{include file="dberrors.html"}
+					{/if}
+				{/block}
+				<p id="lms-ui-generation-time">{trans("Page generation time:")} {gentime} {trans("sec.")} {memory}</p>
 			</div>
-			{block name="footer"}
-				{if $layout.dberrors}
-					{include file="dberrors.html"}
-				{/if}
-			{/block}
-			<p>{trans("Page generation time:")} {gentime} {trans("sec.")} {memory}</p>
-		</div>
+		</section>
 	{/block}
 {/if}
 </body>

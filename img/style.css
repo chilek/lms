@@ -18,6 +18,8 @@ BODY {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+  overflow: hidden;
+  height: 100vh;
 }
 body.lms-ui-popup {
   display: block;
@@ -29,7 +31,8 @@ TABLE {
 #lms-ui-menu-panel {
   align-self: flex-start;
   background-color: #CEBD9B;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   border: 1px solid black;
   display: flex;
   flex-direction: column;
@@ -38,6 +41,7 @@ TABLE {
   height: 100%;
   min-width: 12em;
   padding-bottom: 2em;
+  flex: 0 0 auto;
 }
 #lms-ui-menu-panel-toggle {
   position: absolute;
@@ -55,7 +59,6 @@ TABLE {
   background-image: url(right.gif);
 }
 #lms-ui-main-menu {
-  height: 100%;
   margin-top: 1em;
   margin-bottom: 1em;
   align-self: stretch;
@@ -65,14 +68,18 @@ TABLE {
   font-weight: bold;
   align-self: stretch;
   text-align: center;
+  height: 20em;
+  top: calc(80%);
 }
 #lms-ui-contents {
+  overflow: hidden;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  flex: 1 1 auto;
   margin-left: 0.4em;
   margin-bottom: 0.85em;
   padding: 0.43em;
@@ -81,6 +88,7 @@ TABLE {
   align-self: center;
 }
 .lms-ui-tool-panel {
+  flex: 0 0 auto;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -100,6 +108,7 @@ TABLE {
 #lms-ui-toolbar {
   display: flex;
   justify-content: space-between;
+  flex: 0 0 auto;
 }
 .lms-ui-toolbar-normal-shortcuts {
   display: flex;
@@ -110,6 +119,13 @@ TABLE {
 }
 #lms-ui-module-view {
   width: 100%;
+  flex: 1 1 auto;
+  overflow: auto;
+  margin-top: 0.5em;
+}
+#lms-ui-generation-time {
+  text-align: center;
+  color: #888888;
 }
 #lms-ui-quicksearch-indicators-panel {
   justify-content: space-between;
@@ -1587,6 +1603,7 @@ table.dataTable thead tr:last-child th {
 }
 .dataTables_wrapper {
   margin-bottom: 4px;
+  position: static;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
