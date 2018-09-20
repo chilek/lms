@@ -108,6 +108,8 @@ version ?.??.?? (????-??-??):
   - enhancement: global CTRL+n keyboard shortcuts for quick search inputs [chilan]
   - improvement: phpui.multiselect_popup_on_bottom (false by default) controls position of popup
     window for multiselects [chilan]
+  - improvement: phpui.multiselect_max_visible (unlimited by default) controls maximum items
+    displayed in multiselect [chilan]
   - improvement: new quicksearch for networks [interduo]
   - enhancement: allow to show/hide quick search fields on top [chilan]
   - enhancement: allow to clear filter in helpdesk queue and event list view [chilan]
