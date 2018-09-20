@@ -38,6 +38,12 @@ function smarty_function_event_time_selection($params, $template) {
 		}
 	}
 
+	$legend_code = '<div class="lms-ui-event-time-legend">';
+	for ($i = 0; $i <= 22; $i += 2)
+		$legend_code .= '<div class="lms-ui-event-time-legend-label">' . sprintf('%02d', $i) . ':00 &#8212;</div>
+						<div class="lms-ui-event-time-legend-scale">-</div>';
+	$legend_code .= '</div>';
+
 	return '
 		<div class="lms-ui-event-time-container">
 			<div class="lms-ui-event-time-left-panel">
@@ -58,8 +64,9 @@ function smarty_function_event_time_selection($params, $template) {
 							'trigger' => 'enddate',
 						), $template)
 						. '>
-				</div>
-				<div>
+				</div>'
+				. $legend_code .
+				'<div>
 					<div class="lms-ui-event-time-slider"></div>
 				</div>
 			</div>

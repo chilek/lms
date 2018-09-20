@@ -2202,6 +2202,20 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-event-time-container .lms-ui-event-time-left-panel > div {
   margin: 0.35em;
 }
+.lms-ui-event-time-container .lms-ui-event-time-left-panel .lms-ui-event-time-legend {
+  height: 2em;
+  width: 30em;
+  transform: scale(0.85);
+  display: inline-flex;
+  white-space: nowrap;
+}
+.lms-ui-event-time-container .lms-ui-event-time-left-panel .lms-ui-event-time-legend-label {
+  margin-left: -1.62em;
+  transform: rotate(90deg) translateX(0.3em) translateY(-0.38em);
+}
+.lms-ui-event-time-container .lms-ui-event-time-left-panel .lms-ui-event-time-legend-scale {
+  transform: rotate(90deg) translateX(1.8em) translateY(0.3em);
+}
 .lms-ui-event-time-container .lms-ui-event-time-right-panel {
   display: inline-flex;
   flex-direction: column;
