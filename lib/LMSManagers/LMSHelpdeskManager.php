@@ -474,9 +474,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q
-				' . ($only_accessible || !ConfigHelper::checkPrivilege('full_access') ? ' JOIN rtrights r ON r.queueid = q.id' : '')
+				' . (!ConfigHelper::checkPrivilege('full_access') && $only_accessible ? ' JOIN rtrights r ON r.queueid = q.id' : '')
 				. ' WHERE ' . (!$deleted ? 'q.deleted = 0' : (ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? '1=1' : 'q.deleted = 0'))
-				. ($only_accessible || !ConfigHelper::checkPrivilege('full_access') ? ' AND r.rights <> 0 AND r.userid = ' . $userid : '')
+				. (!ConfigHelper::checkPrivilege('full_access') && $only_accessible ? ' AND r.rights <> 0 AND r.userid = ' . $userid : '')
 				. ' ORDER BY name')) {
 			if ($stats) {
 				foreach ($result as &$row) {
