@@ -368,10 +368,15 @@ $(function() {
 			$(this).attr('data-alt-field') ? { altField: $(this).attr('data-alt-field') } : {},
 			$(this).attr('data-alt-invalid-field') ? { altInvalidField: $(this).attr('data-alt-invalid-field') } : {}
 		));
+		var scombobox = $(this).parent('.scombobox');
+		$('.scombobox-display', scombobox).addClass(
+			$.grep($('select', scombobox).attr('class').split(' '), function(value) {
+				return value != 'lms-ui-combobox';
+			}));
 		if ($(this).attr('data-value')) {
-			$(this).parent('.scombobox').scombobox('val', $(this).attr('data-value'));
+			scombobox.scombobox('val', $(this).attr('data-value'));
 		} else if ($(this).attr('data-id-value')) {
-			$(this).parent('.scombobox').scombobox('val', $(this).attr('data-id-value'));
+			scombobox.scombobox('val', $(this).attr('data-id-value'));
 		}
 	});
 	// dynamicaly insert hidden input element with name as original select element

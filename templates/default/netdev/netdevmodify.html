@@ -48,7 +48,7 @@
 						<input type="hidden" id="producerid-value" name="netdev[producerid]">
 						<select id="producer" data-value="{$netdev.producer}" data-id-value="{$netdev.producerid}" data-alt-field="#producerid-value"
 								data-alt-invalid-field="#producer-value"
-								{tip class="lms-ui-combobox" text="Enter producer name (optional)"}>
+								{tip class="lms-ui-combobox" text="Enter producer name (optional)" trigger="producer"}>
 							{foreach $producers as $producer}
 								<option value="{$producer.id}" {if $producer.id == $netdev.producerid} selected{/if}>{$producer.name}</option>
 							{/foreach}
@@ -68,7 +68,7 @@
 						<input type="hidden" id="modelid-value" name="netdev[modelid]">
 						<select id="model" data-value="{$netdev.model}" data-id-value="{$netdev.modelid}" data-alt-field="#modelid-value"
 								data-alt-invalid-field="#model-value"
-								{tip class="lms-ui-combobox" text="Enter device model (optional)" }> </select>
+								{tip class="lms-ui-combobox" text="Enter device model (optional)" trigger="model"}> </select>
 					</div>
 				</div>
 
