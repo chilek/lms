@@ -264,14 +264,25 @@ $(function() {
 		} else {
 			options.step = lmsSettings.eventTimeStep
 		}
-		$(this).datetimepicker(options)
-			.attr("autocomplete", autocomplete).off('blur');
+		$(this).datetimepicker(options).attr("autocomplete", autocomplete);
+
+		// avoid datetimepicker ui control close after second click on trigger button
+		var xdsoft_datetimepicker = $(this).data('xdsoft_datetimepicker');
+		xdsoft_datetimepicker.on('open.xdsoft', function() {
+			var body = $('body')[0];
+			$([ body, window ]).off('mousedown.xdsoft');
+			$([ body, window ]).on('mousedown.xdsoft', function arguments_callee6(e) {
+				if ($(e.target).is('.ui-datepicker-trigger')) {
+					return;
+				}
+				xdsoft_datetimepicker.trigger('close.xdsoft');
+				$([body, window]).off('mousedown.xdsoft', arguments_callee6);
+			})
+		});
+
 		$('<img src="img/calendar.gif" class="ui-datepicker-trigger" title="' + lmsMessages.datePickerTooltip + '">')
 			.insertAfter(this).click(function() {
-				// unfortunately datetimepicker have strange click-out detection
-				// and buggy toggle method implementation,
-				// so we are not able to show/hide after button img click
-				$(this).prev().datetimepicker('show');
+				$(this).prev().datetimepicker('toggle');
 			});
 	});
 
