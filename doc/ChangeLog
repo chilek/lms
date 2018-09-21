@@ -140,6 +140,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to set customer owner for network nodes [chilan]
   - improvement: allow to clone existing event quickly [chilan]
   - improvement: allow to store encryption key for network interface in netradiosectors [interduo]
+  - improvement: now we can assign tickets to invprojects [interduo]
   - improvement: mail.hide_sensitive_headers configuration variable controls if sensitive
     headers should be removed from posts via application [mikenowak]
   - enhancement: added support for phpui.helpdesk_sender_email configuration variable which

@@ -1744,6 +1744,7 @@ CREATE TABLE rttickets (
   deadline int(11) DEFAULT NULL,
   service int(11) DEFAULT NULL,
   type int(11) DEFAULT NULL,
+  invprojectid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),
@@ -1768,7 +1769,9 @@ CREATE TABLE rttickets (
   CONSTRAINT rttickets_netdevid_fkey
 	FOREIGN KEY (netdevid) REFERENCES netdevices (id) ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT rttickets_verifierid_fkey
-        FOREIGN KEY (verifierid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+        FOREIGN KEY (verifierid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT rttickets_invprojectid_fkey
+        FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

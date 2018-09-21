@@ -1709,6 +1709,8 @@ CREATE TABLE rttickets (
   deadline integer DEFAULT NULL,
   service integer DEFAULT NULL,
   type integer DEFAULT NULL,
+  invprojectid integer DEFAULT NULL
+        CONSTRAINT rttickets_invprojectid_fkey REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
   PRIMARY KEY (id)
 );
 

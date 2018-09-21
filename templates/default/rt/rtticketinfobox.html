@@ -295,7 +295,18 @@
                                                                         <A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}</A>
                                                                 </TD>
                                                         </TR>
-                                                        {/if}
+                            {/if}
+							{if $ticket.invprojectid}
+							<TR>
+								<TD class="bold nobr">
+									<IMG src="img/money.gif" alt="">
+									{trans("Investment project:")}
+								</TD>
+								<TD>
+									{$ticket.invproject_name}</A>
+								</TD>
+							</TR>
+							{/if}
 						</TABLE>
 					</TD>
 				</TR>
