@@ -2,13 +2,14 @@
 <!--// $Id$ //-->
 <html>
 <head>
-	<title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle|striphtml} :{/if}::</title>
+	<title>{block name=title}::: LMS :::{/block}</title>
 	<meta name="GENERATOR" content="LMS {$layout.lmsv}">
 	<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 	<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
 	{include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
 	<link href="{ConfigHelper::getConfig('phpui.style', 'img/style.css')}" rel="stylesheet" type="text/css">
 	<link href="img/map.css" rel="stylesheet" type="text/css">
+	{block name="extra-css-styles"}{/block}
 	<link href="img/lms-net.gif" rel="shortcut icon">
 	<script type="text/javascript" src="img/common.js"></script>
 	<script type="text/javascript" src="img/ClickShowHideMenu.js"></script>
@@ -19,21 +20,27 @@
 <body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" src="img/overlib.js"></script>
-{if !$layout.popup}
+{if $layout.popup}
+	{block name=module_content}{/block}
+{else}
 	{block name=pageleftbar}
 		{include file="menu-panel.html"}
 	{/block}
-	<script>
+	{block name=pagecontent}
+		{include file="spinner.html"}
+		<script>
 
-		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
 
-		if (mainMenuVisible) {
-			$('#lms-ui-main-menu-toggle').addClass('visible');
-		}
+			if (mainMenuVisible) {
+				$('#lms-ui-menu-panel-toggle').addClass('visible');
+			}
 
-	</script>
-	<div id="lms-ui-contents" style="display: none;">
-		{include file="quicksearch-indicators-panel.html"}
-		{include file="toolbar-panel.html"}
-		<div id="lms-ui-module-view">
+		</script>
+		<section id="lms-ui-contents" style="display: none;">
+			{include file="quicksearch-indicators-panel.html"}
+			{include file="toolbar-panel.html"}
+			<div id="lms-ui-module-view">
+				{block name=module_content}{/block}
+				{/block}
 {/if}
