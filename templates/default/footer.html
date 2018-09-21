@@ -1,10 +1,12 @@
+			<footer>
 				{block name="footer"}
 					{if $layout.dberrors}
 						{include file="dberrors.html"}
 					{/if}
 				{/block}
 				<p id="lms-ui-generation-time">{trans("Page generation time:")} {gentime} {trans("sec.")} {memory}</p>
-			</div>
+			</footer>
+		</div>
 	</section>
 </body>
 </html>
