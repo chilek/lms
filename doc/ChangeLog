@@ -147,6 +147,7 @@ version ?.??.?? (????-??-??):
   - enhancement: indicator expired2 - my expired tickets for current logged user assigned as verifier [interduo]
   - enhancement: revolutionary layout changes: main menu and toolbar are always visible [chilan]
   - enhancement: added back to top button always visible on right bottom of contents [chilan]
+  - enhancement: allow to arrange welcome boxes using drag & drop to create own layout [chilan]
 
 version 1.11.23 (2018-03-21):
 

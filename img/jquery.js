@@ -1154,13 +1154,28 @@ $(function() {
 	}
 });
 
-function restoreSortable(sortable, value) {
-	if (typeof value != 'string' || !value.length || value == 'null') {
-		return;
-	}
+function restoreStringSortable(sortable, value) {
 	$.each(value.split(';'), function(key, value) {
 		if (value.length && value.match(/^[a-z0-9\-]+$/i)) {
 			$('#' + value).appendTo('#' + sortable);
 		}
 	});
+}
+
+function restoreSortable(sortable, value) {
+	switch (typeof(value)) {
+		case 'string':
+			if (!value.length || value == 'null') {
+				return;
+			}
+			restoreStringSortable(sortable, value);
+			break;
+		case 'object':
+			$.each(value, function(key, item) {
+				restoreStringSortable(key, item);
+			});
+			break;
+		default:
+			return;
+	}
 }

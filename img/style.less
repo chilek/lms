@@ -15,7 +15,7 @@
 @red-lucid: #fccdcd;
 @select-border: 1px solid #a9a9a9;
 @slave: 0px 0px 10px 1px blue;
-@frame-color: 1px solid black;
+@frame: 1px solid black;
 
 .lms-ui-no-user-select {
 	-webkit-user-select: none;
@@ -178,7 +178,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #lms-ui-dberrors {
 	background-color: @superlight;
-	border: @frame-color;
+	border: @frame;
 	padding: 0.3em;
 	margin-top: 0.5em;
 }
@@ -236,6 +236,18 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 .lms-ui-welcome-main-panel {
 	padding: 0.17em;
 	flex: 1 1 auto;
+	&.empty {
+		flex: 0 0 auto;
+		min-width: 2em;
+		min-height: 30%;
+	}
+}
+
+.lms-ui-welcome-box-placeholder {
+	min-width: 20em;
+	min-height: 20em;
+	margin: 0 1em 1em 0;
+	border: @frame;
 }
 
 #lms-ui-welcome-extra-panel {
@@ -2064,7 +2076,7 @@ div.lms-ui-wysiwyg-editor {
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;
-	border: @frame-color;
+	border: @frame;
 	background-color: @light;
 	margin-top: 0.2em;
 	margin-bottom: 0.2em;
@@ -2076,7 +2088,7 @@ div.lms-ui-wysiwyg-editor {
 		align-self: stretch;
 		padding: 0.25em;
 		background-color: @dark;
-		border-bottom: @frame-color;
+		border-bottom: @frame;
 		font-weight: bold;
 		& > * {
 			margin: 0.25em;

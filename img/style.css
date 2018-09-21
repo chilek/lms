@@ -196,6 +196,17 @@ TABLE {
   padding: 0.17em;
   flex: 1 1 auto;
 }
+.lms-ui-welcome-main-panel.empty {
+  flex: 0 0 auto;
+  min-width: 2em;
+  min-height: 30%;
+}
+.lms-ui-welcome-box-placeholder {
+  min-width: 20em;
+  min-height: 20em;
+  margin: 0 1em 1em 0;
+  border: 1px solid black;
+}
 #lms-ui-welcome-extra-panel {
   align-self: stretch;
 }

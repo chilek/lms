@@ -66,6 +66,7 @@ if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkCon
 
 $layout['plugins'] = $plugin_manager->getAllPluginInfo();
 
+$SMARTY->assign('welcome_sortable_order', json_encode($SESSION->get_persistent_setting('welcome-sortable-order')));
 $SMARTY->display('welcome/welcome.html');
 
 ?>
