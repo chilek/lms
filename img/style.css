@@ -23,6 +23,8 @@ BODY {
 }
 body.lms-ui-popup {
   display: block;
+  height: auto;
+  overflow: auto;
 }
 TABLE {
   border-collapse: collapse;
