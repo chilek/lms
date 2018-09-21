@@ -87,6 +87,11 @@ TABLE {
 #lms-ui-contents > p {
   align-self: center;
 }
+@media print {
+  #lms-ui-contents {
+    height: auto;
+  }
+}
 .lms-ui-tool-panel {
   flex: 0 0 auto;
   display: flex;

@@ -1149,7 +1149,7 @@ $(function() {
 	});
 
 	var matches = navigator.appVersion.match(/(chrome\/[0-9]+)/i);
-	if (typeof(matches) === 'object' && parseInt(matches[0].split('/')[1]) >= 69) {
+	if (matches && typeof(matches) === 'object' && parseInt(matches[0].split('/')[1]) >= 69) {
 		$('[autocomplete="off"]').attr('autocomplete', 'new-password');
 	}
 });
