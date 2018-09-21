@@ -20,7 +20,7 @@
 					{include file="welcome/welcome_registration.html"}
 				{/block}
 			</div>
-			{for $panel=3 to ConfigHelper::getConfig('phpui.welcome_panels', 2)}
+			{for $panel=3 to intval(ConfigHelper::getConfig('phpui.welcome_panels', 2))}
 				<div id="lms-ui-welcome-panel-{$panel}" class="lms-ui-welcome-main-panel">
 				</div>
 			{/for}
