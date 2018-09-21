@@ -248,7 +248,8 @@ $(function() {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('enable');
 			}
-		}
+		},
+		openOnFocus: false
 	};
 	$('div.calendar-time input,input.calendar-time').each(function() {
 		var options = datetimepickeroptions;
@@ -264,7 +265,14 @@ $(function() {
 			options.step = lmsSettings.eventTimeStep
 		}
 		$(this).datetimepicker(options)
-			.attr("autocomplete", autocomplete);
+			.attr("autocomplete", autocomplete).off('blur');
+		$('<img src="img/calendar.gif" class="ui-datepicker-trigger" title="' + lmsMessages.datePickerTooltip + '">')
+			.insertAfter(this).click(function() {
+				// unfortunately datetimepicker have strange click-out detection
+				// and buggy toggle method implementation,
+				// so we are not able to show/hide after button img click
+				$(this).prev().datetimepicker('show');
+			});
 	});
 
 	init_multiselects('select.lms-ui-multiselect');
