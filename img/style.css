@@ -28,6 +28,14 @@ TABLE {
   border-collapse: collapse;
   border-color: #000000;
 }
+#lms-ui-back-to-top {
+  margin: 0.3em;
+  position: fixed;
+  opacity: 0.8;
+  right: 1.8em;
+  bottom: 0.6em;
+  background-image: url(reload.gif);
+}
 #lms-ui-menu-panel {
   align-self: flex-start;
   background-color: #CEBD9B;

@@ -4141,4 +4141,6 @@ $_LANG['Network Nodes ($a):'] = 'Węzły sieciowe ($a):';
 $_LANG['That customer hasn\'t got any assigned network nodes.'] = 'Ten klient nie posiada przypisanych żadnych węzłów sieciowych';
 $_LANG['New network node'] = 'Nowy węzeł sieciowy';
 
+$_LANG['Back to top'] = 'Powrót na górę';
+
 ?>

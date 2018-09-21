@@ -19,6 +19,9 @@
 </head>
 <body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
+<button id="lms-ui-back-to-top" class="lms-ui-button lms-ui-button-icon">
+	{trans("Back to top")}
+</button>
 <script type="text/javascript" src="img/overlib.js"></script>
 {if $layout.popup}
 	{block name=module_content}{/block}
@@ -35,6 +38,10 @@
 			if (mainMenuVisible) {
 				$('#lms-ui-menu-panel-toggle').addClass('visible');
 			}
+
+			$('#lms-ui-back-to-top').click(function() {
+				$('#lms-ui-module-view').animate({ scrollTop: 0 });
+			});
 
 		</script>
 		<section id="lms-ui-contents" style="display: none;">
