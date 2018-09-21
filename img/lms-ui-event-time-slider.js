@@ -90,6 +90,13 @@ function eventTimeSlider(options) {
 			start_input.datetimepicker('setOptions', {
 				value: new Date(enddt)
 			});
+		} else if (startdt.getHours() > enddt.getHours() ||
+			(startdt.getHours() == enddt.getHours() && startdt.getMinutes() > enddt.getMinutes())) {
+			startdt.setHours(enddt.getHours());
+			startdt.setMinutes(enddt.getMinutes());
+			start_input.datetimepicker('setOptions', {
+				value: new Date(startdt)
+			});
 		}
 	}
 
@@ -102,6 +109,13 @@ function eventTimeSlider(options) {
 		if (enddt < startdt) {
 			end_input.datetimepicker('setOptions', {
 				value: new Date(startdt)
+			});
+		} else if (startdt.getHours() > enddt.getHours() ||
+			(startdt.getHours() == enddt.getHours() && startdt.getMinutes() > enddt.getMinutes())) {
+			enddt.setHours(startdt.getHours());
+			enddt.setMinutes(startdt.getMinutes());
+			end_input.datetimepicker('setOptions', {
+				value: new Date(enddt)
 			});
 		}
 		end_input.datetimepicker('setOptions', {
