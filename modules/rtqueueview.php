@@ -137,9 +137,12 @@ if (isset($_GET['d']))
 
 // status/state
 if (isset($_GET['s'])) {
-	if (is_array($_GET['s']))
-		$filter['state'] = $_GET['s'];
-	elseif ($_GET['s'] < 0)
+	if (is_array($_GET['s'])) {
+		if (in_array(-1, $_GET['s']))
+			$filter['state'] = -1;
+		else
+			$filter['state'] = $_GET['s'];
+	} elseif ($_GET['s'] < 0)
 		$filter['state'] = intval($_GET['s']);
 	else
 		$filter['state'] = array(intval($_GET['s']));
