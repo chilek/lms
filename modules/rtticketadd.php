@@ -325,7 +325,7 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-$invprojectlist = $LMS->GetProjects('name', $search);
+$invprojectlist = $LMS->GetProjects('name', array());
 unset($invprojectlist['total']);
 unset($invprojectlist['order']);
 unset($invprojectlist['direction']);

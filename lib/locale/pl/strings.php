@@ -4144,4 +4144,6 @@ $_LANG['New network node'] = 'Nowy węzeł sieciowy';
 
 $_LANG['Back to top'] = 'Powrót na górę';
 
+$_LANG['Select investment project'] = 'Wybierz projekt inwestycyjny';
+
 ?>

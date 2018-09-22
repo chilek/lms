@@ -289,10 +289,12 @@
 	<TR>
 		<TD class="bold nobr"><img src="img/money.gif" alt=""> {trans("Investment project:")}</TD>
 		<TD class="nobr">
-			<SELECT name="ticket[invprojectid]" size="20" {tip class="lms-ui-combobox" text="Select investment projects" trigger="invprojectid"}>
+			<SELECT name="ticket[invprojectid]" {tip text="Select investment projects" trigger="invprojectid"}>
 				<OPTION value="">{trans("- none -")}</OPTION>
-				{foreach $invprojectlist as $idx => $invproject}
-				<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}> {$invproject.name} ({$invproject.id})</OPTION>
+				{foreach $invprojectlist as $idx => $project}
+				<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
+					{$project.name} ({$project.id})
+				</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
