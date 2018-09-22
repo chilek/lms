@@ -47,7 +47,7 @@
             </label>
             <label class="nobr">
             {trans("Status:")}
-            <input type="hidden" name="s" value="-1">
+            <input type="hidden" name="s" value="-2">
             <SELECT size="1" name="s[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
                 <option value="-1" data-exclusive{if !is_array($filter_state) && $filter.state == -1} selected{/if}>{trans("not resolved")}</option>
                 {foreach $_RT_STATES as $idx => $s}
@@ -130,10 +130,10 @@
             </label>
             <label class="nobr">
                 {trans("Investment project:")}
-                <input type="hidden" name="invprojectlist" value="all">
-                <SELECT size="1" name="invp" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}" >
-                {foreach $invprojectlist as $invproject}
-                    <OPTION value="{$invproject.id}"{if is_array($filter.invprojectids) && in_array($invproject.id, $filter.invprojectids)} SELECTED{/if}>{$invproject.name|truncate:40:"...":true}</OPTION>
+                <input type="hidden" name="pids" value="all">
+                <SELECT size="1" name="pids[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("No filter")}">
+                {foreach $projects as $project}
+                    <OPTION value="{$project.id}"{if is_array($filter.projectids) && in_array($project.id, $filter.projectids)} selected{/if}>{$project.name|truncate:40:"...":true}</OPTION>
                 {/foreach}
                 </SELECT>
              </label>

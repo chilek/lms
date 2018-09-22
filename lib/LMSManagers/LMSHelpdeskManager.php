@@ -80,6 +80,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	 * 			0 - read tickets,
 	 * 			1 - unread tickets,
 	 *		verifierids - ticket verifier (default: null = any/none)
+	 * 			array() of integer values,
+	 * 		projectids - ticket investment projects (default: null = any/none)
+	 * 			array() of integer values,
 	 * 		count - count records only or return selected record interval
 	 * 			true - count only,
 	 * 			false - get records,
@@ -198,12 +201,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else
             $typeidsfilter = ' AND t.type = '.$typeids;
 
-        if (empty($verifierids)) {
-            $verifieridsfilter = '';
-        } elseif (is_array($verifierids)) {
-            $verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ')';
-        } else
-            $verifieridsfilter = ' AND t.verifierid = '.$verifierids;
+		if (empty($verifierids)) {
+			$verifieridsfilter = '';
+		} elseif (is_array($verifierids)) {
+			$verifieridsfilter = ' AND t.verifierid IN (' . implode(',', $verifierids) . ')';
+		} else
+			$verifieridsfilter = ' AND t.verifierid = '.$verifierids;
+
+		if (empty($projectids)) {
+			$projectidsfilter = '';
+		} elseif (is_array($projectids)) {
+			$projectidsfilter = ' AND t.invprojectid IN (' . implode(',', $projectids) . ')';
+		} else
+			$projectidsfilter = ' AND t.invprojectid = '.$projectids;
 
 		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$removedfilter = ' AND t.deleted = 0';
@@ -311,6 +321,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				. $deadlinefilter
 				. $serviceidsfilter
                 . $verifieridsfilter
+				. $projectidsfilter
 				. $typeidsfilter, array($userid, $userid));
 		}
 
@@ -390,6 +401,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. $deadlinefilter
 			. $serviceidsfilter
             . $verifieridsfilter
+			. $projectidsfilter
             . $typeidsfilter
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')
