@@ -103,6 +103,16 @@ if (isset($_GET['vids'])) {
 		$filter['verifierids'] = null;
 }
 
+// invproject id's
+if (isset($_GET['pids'])) {
+    if (is_array($_GET['pids']))
+        $filter['invprojectids'] = array_filter($_GET['pids'], 'intval');
+	elseif (intval($_GET['pids']))
+        $filter['invprojectids'] = array(intval($_GET['pids']));
+	elseif ($_GET['pids'] == 'all')
+        $filter['invprojectids'] = null;
+}
+
 // types
 if (isset($_GET['tt'])) {
 	if (is_array($_GET['tt']))
@@ -228,10 +238,17 @@ unset($queue['type']);
 unset($queue['unread']);
 unset($queue['rights']);
 unset($queue['verifier']);
+unset($queue['invproject']);
 unset($queue['netnode']);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+
+$invprojectlist = $LMS->GetProjects('name', $search);
+unset($invprojectlist['total']);
+unset($invprojectlist['order']);
+unset($invprojectlist['direction']);
+
 $netnodelist = $LMS->GetNetNodeList(array(), 'name');
 unset($netnodelist['total']);
 unset($netnodelist['order']);
@@ -244,6 +261,7 @@ if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {
 
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);
+$SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('netnodelist', $netnodelist);

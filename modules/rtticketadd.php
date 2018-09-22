@@ -30,6 +30,7 @@ $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
 $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
 $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
+$ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 if (!$categories) {
@@ -119,6 +120,9 @@ if(isset($_POST['ticket']))
 
 		if (empty($ticket['netdevid']))
 			$ticket['netdevid'] = null;
+
+        if (empty($ticket['invprojectid']))
+            $ticket['invprojectid'] = null;
 
 		if (empty($ticket['requestor_mail']))
 			$ticket['requestor_mail'] = null;
@@ -321,12 +325,18 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
+$invprojectlist = $LMS->GetProjects('name', $search);
+unset($invprojectlist['total']);
+unset($invprojectlist['order']);
+unset($invprojectlist['direction']);
+
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('netdevlist', $netdevlist);
+$SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->display('rt/rtticketadd.html');
