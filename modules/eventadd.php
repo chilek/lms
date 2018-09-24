@@ -28,20 +28,18 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 
 $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 
-if (!empty($_GET['ticketid'])) {
+if (!empty($_GET['ticketid']))
 	$eventticketid = intval($_GET['ticketid']);
-	$tqname = $LMS->GetQueueNameByTicketId($eventticketid);
-}
 
 $userlist = $LMS->GetUserList();
 unset($userlist['total']);
 
+if(isset($_POST['ticket']))
+	$ticket = $_POST['ticket'];
+
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
-
-	if (!empty($event['helpdesk']) && !count($event['categories']))
-		$error['categories'] = trans('You have to select category!');
 
 	if (!isset($event['usergroup']))
 		$event['usergroup'] = 0;
@@ -121,19 +119,27 @@ if(isset($_POST['event']))
 
 	$event['private'] = isset($event['private']) ? 1 : 0;
 
+    if (!empty($event['helpdesk']) && !count($ticket['categories']))
+            $error['categories'] = trans('You have to select category!');
+
+    if ((!$event['customerid']) && $ticket['surname'] == '' && $ticket['phone'] == '' && $ticket['mail'] == '') {
+    	$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+        $ticket['requestor_userid'] = $userinfo['id'];
+
+        $requestor = ($ticket['surname'] ? $ticket['surname'] . ' ' : '');
+        $requestor .= ($ticket['name'] ? $ticket['name'] . ' ' : '');
+        $ticket['requestor'] = trim($requestor);
+    }
+
 	if (!$error) {
 		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
 		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
 		if (isset($event['helpdesk'])) {
-			$ticket['queue'] = $event['rtqueue'];
+
 			$ticket['customerid'] = $event['customerid'];
 			$ticket['body'] = $event['description'];
-			$ticket['requestor'] = $event['name']." ".$event['surname'];
 			$ticket['subject'] = $event['title'];
-			$ticket['mailfrom'] = $event['email'];
-			$ticket['categories'] = $event['categories'];
-			$ticket['owner'] = '0';
 			$ticket['address_id'] = $event['address_id'];
 			$ticket['nodeid'] = $event['nodeid'];
 
@@ -277,14 +283,26 @@ if(isset($_POST['event']))
 }
 
 if (isset($event['helpdesk'])) {
+    $netnodelist = $LMS->GetNetNodeList(array(), 'name');
+    unset($netnodelist['total']);
+    unset($netnodelist['order']);
+    unset($netnodelist['direction']);
+
+    if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid']))
+        $search = array('netnode' => $ticket['netnodeid']);
+    else
+        $search = array();
+    $netdevlist = $LMS->GetNetDevList('name', $search);
+    unset($netdevlist['total']);
+    unset($netdevlist['order']);
+    unset($netdevlist['direction']);
+
+    $invprojectlist = $LMS->GetProjects('name', array());
+
 	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 	$queuelist = $LMS->GetQueueList(array('stats' => false));
 
 	if (isset($_POST['event'])) {
-		$ticket['queue'] = $event['rtqueue'];
-		$ticket['surname'] = $event['surname'];
-		$ticket['name'] = $event['name'];
-		$ticket['email'] = $event['email'];
 
 		foreach ($categories as &$category)
 			$category['checked'] = isset($event['categories'][$category['id']]) || count($categories) == 1;
@@ -343,15 +361,14 @@ if (!isset($event['usergroup']))
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
-if (isset($eventticketid))
-	$event['ticketid'] = $eventticketid;
-
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('tqname',$tqname);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
+$SMARTY->assign('netnodelist', $netnodelist);
+$SMARTY->assign('netdevlist', $netdevlist);
+$SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->display('event/eventmodify.html');
 
 ?>
