@@ -186,7 +186,11 @@
 								</div>
 								<div class="lms-ui-box-row-label">
 									<label for="helpdesk-on">
-										{trans("Create ticket")}
+										{if $layout.module == 'eventedit'}
+											{trans("Assign ticket")}
+										{else}
+											{trans("Create ticket")}
+										{/if}
 									</label>
 								</div>
 								<div class="lms-ui-box-row-field">
