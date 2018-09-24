@@ -147,10 +147,12 @@ TABLE {
 }
 #lms-ui-quicksearch-indicators-panel {
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 #lms-ui-quick-search {
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
 }
 .lms-ui-quick-search-field {
   display: flex;
