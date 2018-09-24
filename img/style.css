@@ -50,7 +50,6 @@ TABLE {
   align-items: center;
   height: 100%;
   min-width: 12em;
-  padding-bottom: 2em;
   flex: 0 0 auto;
 }
 #lms-ui-menu-panel-toggle {
