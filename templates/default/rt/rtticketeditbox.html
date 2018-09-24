@@ -124,7 +124,7 @@
 										{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 											|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 											|| $user.id == $ticket.owner}
-										<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.rname}</OPTION>
+										<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.name}</OPTION>
 										{/if}
 										{/foreach}
 									</SELECT>
