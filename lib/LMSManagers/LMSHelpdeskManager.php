@@ -984,7 +984,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES;
 
 		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, t.state, subject, customerid, requestor, source, priority,
-				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid
+				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid,
 				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.deadline, t.service, t.type
 			FROM rttickets t
 			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
@@ -996,7 +996,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				WHERE userid = ?
 			)
 			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, source, priority, t.address_id, t.nodeid, va.location,
-				t.nodeid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.deadline, t.service, t.type',
+				t.nodeid, t.invprojectid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.deadline, t.service, t.type',
 			array($ticketid, Auth::GetCurrentUser()));
 
         $type = 0;
