@@ -74,12 +74,10 @@ TABLE {
   align-self: stretch;
 }
 #lms-ui-copyrights {
-  margin: 0;
   font-weight: bold;
   align-self: stretch;
   text-align: center;
-  height: 20em;
-  top: calc(80%);
+  margin-bottom: 0.5em;
 }
 #lms-ui-contents {
   overflow: hidden;

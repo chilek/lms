@@ -1,6 +1,8 @@
 <div id="lms-ui-menu-panel-toggle"></div>
 <nav id="lms-ui-menu-panel" class="no-print">
-	<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}">
+	<div id="lms-ui-logo">
+		<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}">
+	</div>
 	<div id="lms-ui-main-menu">
 		<script>
 
@@ -84,7 +86,7 @@
 
 		</script>
 	</div>
-	<p id="lms-ui-copyrights">
+	<div id="lms-ui-copyrights">
 		&copy; 2001-{$smarty.now|date_format:'%Y'}<br><A href="?m=copyrights">LMS Developers</A>
-	</p>
+	</div>
 </nav>
