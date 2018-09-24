@@ -33,8 +33,8 @@ if (!empty($_GET['ticketid'])) {
 	$tqname = $LMS->GetQueueNameByTicketId($eventticketid);
 }
 
-$userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
-	WHERE deleted = 0 AND access = 1 ORDER BY lastname ASC', 'id');
+$userlist = $LMS->GetUserList();
+unset($userlist['total']);
 
 if(isset($_POST['event']))
 {
