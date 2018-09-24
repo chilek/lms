@@ -110,7 +110,7 @@ function smarty_function_customerlist($params, $template) {
 	$result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
 
 	if (empty($params['customers']))
-		$result .= '&nbsp;&nbsp;&nbsp;<span></span>';
+		$result .= '&nbsp;&nbsp;&nbsp;<span class="customername"></span>';
 
 	return $result;
 }
