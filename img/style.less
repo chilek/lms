@@ -188,10 +188,17 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	flex-wrap: wrap;
 }
 
-#lms-ui-quick-search {
+.lms-ui-quick-search {
 	display: flex;
 	justify-content: flex-start;
 	flex-wrap: wrap;
+}
+
+form.lms-ui-quick-search {
+	margin-top: -0.5em;
+	> * {
+		margin-top: 0.5em;
+	}
 }
 
 .lms-ui-quick-search-field {
