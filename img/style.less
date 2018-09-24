@@ -7,6 +7,7 @@
 @highlight: #CCFFCC;
 @alert: #FF9B9B;
 @blend: #888888;
+@font-size: 8pt;
 @fonts: Arial, Helvetica, Verdana;
 @icon-size: 16px;
 @link: #800000;
@@ -27,7 +28,7 @@
 HTML { height: 100%; }
 
 BODY {
-	font-size: 8pt;
+	font-size: @font-size;
 	font-family: @fonts;
 	background-color: @lucid;
 	margin: 0;
@@ -259,7 +260,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 .bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: @dark; }
 
-TD		{ font-size: 8pt; font-family: @fonts; vertical-align: middle; border-color: black; }
+TD		{ font-size: @font-size; font-family: @fonts; vertical-align: middle; border-color: black; }
 td[onclick]	{ cursor: pointer; }
 .fleft           { border-left-width: 1pt; border-left-style: solid; }
 .fright          { border-right-width: 1pt; border-right-style: solid; }
@@ -320,19 +321,19 @@ TR {
 }
 
 P {
-	font-size:  8pt;
+	font-size:  @font-size;
 	font-family: @fonts;
 	&.nor {
-		font-size:  8pt;
+		font-size:  @font-size;
 		font-family: @fonts;
 	}
 	&.txt {
-		font-size: 8pt;
+		font-size: @font-size;
 		font-family: @fonts;
 		text-align: justify;
 	}
 	&.separated {
-		font-size: 8pt;
+		font-size: @font-size;
 		font-family: @fonts;
 		margin-top: 5px;
 		margin-bottom: 5px;
@@ -362,7 +363,7 @@ INPUT[type="radio"] {
 }
 
 INPUT {
-	font-size: 8pt;
+	font-size: @font-size;
 	font-family: @fonts;
 	vertical-align: middle;
 	&.alert,
@@ -396,7 +397,7 @@ INPUT {
 }
 
 TEXTAREA {
-	font-size: 8pt;
+	font-size: @font-size;
 	font-family: @fonts;
 	border-style: solid;
 	border-width: 1pt;
@@ -404,7 +405,7 @@ TEXTAREA {
 	vertical-align: middle;
 	&.alert,
 	&:invalid {
-		font-size: 8pt;
+		font-size: @font-size;
 		font-family: @fonts;
 		border-style: solid;
 		border-width: 1pt;
@@ -414,13 +415,13 @@ TEXTAREA {
 }
 
 SELECT {
-	font-size: 8pt;
+	font-size: @font-size;
 	font-family: @fonts;
 	background-color: @lucid;
 	vertical-align: middle;
 	&.alert,
 	&:invalid {
-		font-size: 8pt;
+		font-size: @font-size;
 		font-family: @fonts;
 		border-style: solid;
 		border-width: 1pt;
@@ -442,7 +443,7 @@ select {
 	padding-left: 3px;
 }
 
-BUTTON		{ font-size:  8pt; font-family: @fonts; font-weight: bold; padding: 5px; }
+BUTTON		{ font-size:  @font-size; font-family: @fonts; font-weight: bold; padding: 5px; }
 BUTTON.alert { background-color: @alert; }
 
 IMG		{ vertical-align: middle; border: 0; }
@@ -457,7 +458,7 @@ div.lms-ui-multiselect-wrapper {
 div.lms-ui-multiselect {
 	float: left;
 	overflow: hidden;
-	font-size:  8pt;
+	font-size:  @font-size;
 	font-family: @fonts;
 	vertical-align: middle;
 	cursor: default;
@@ -606,7 +607,7 @@ div.lms-ui-multiselectlayer {
 		display: block;
 		padding-left: 1.85em;
 		font-weight: normal;
-		font-size: 0.83em;
+		font-size: @font-size;
 		padding-top: 0.08em;
 		padding-bottom: 0.08em;
 	}
@@ -635,7 +636,7 @@ input:invalid {
 .bold		{ font-weight: bold; }
 .crossed	{ text-decoration: line-through; }
 
-.pre		{ font-size:  8pt; font-family: Courier, Courier New; }
+.pre		{ font-size:  @font-size; font-family: Courier, Courier New; }
 
 .suggestion_list {
 	background-color: @lucid;
@@ -1878,7 +1879,7 @@ table.dataTable {
 .chosen-container {
 	text-align: left;
 	min-width: 250px;
-	font-size: 8pt;
+	font-size: @font-size;
 //	background-color: @lucid;
 //	margin: 0 4px 0 4px;
 	.chosen-results {
