@@ -431,9 +431,11 @@ switch($type)
 			.(!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
 			.(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
 			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
-			.(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]=' . implode('&groupid[]=', array_filter($_POST['group'], 'intval')) : '')
+			.(!empty($_POST['group']) && is_array($_POST['group']) ? '&groupid[]='
+				. implode('&groupid[]=', Utils::filterIntegers($_POST['group'])) : '')
 			.(!empty($_POST['customer_type']) ? '&customertype='.intval($_POST['customer_type']) : '')
-			.(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]=' . implode('&numberplanid[]=', array_filter($_POST['numberplan'], 'intval')) : '')
+			.(!empty($_POST['numberplan']) && is_array($_POST['numberplan']) ? '&numberplanid[]='
+				. implode('&numberplanid[]=', Utils::filterIntegers($_POST['numberplan'])) : '')
 			.(!empty($_POST['groupexclude']) ? '&groupexclude=1' : '')
 			.(!empty($_POST['autoissued']) ? '&autoissued=1' : '')
 			.(!empty($_POST['manualissued']) ? '&manualissued=1' : '')

@@ -29,9 +29,9 @@ $LMS->CleanupTicketLastView();
 // queue id's
 if (isset($_GET['id']) && $_GET['id'] != 'all') {
 	if (is_array($_GET['id']))
-		$filter['ids'] = array_filter($_GET['id'], 'intval');
+		$filter['ids'] = Utils::filterIntegers($_GET['id']);
 	elseif (intval($_GET['id']))
-		$filter['ids'] = array(intval($_GET['id']));
+		$filter['ids'] = Utils::filterIntegers(array($_GET['id']));
 	if (!isset($filter['ids']) || empty($filter['ids']))
 		$SESSION->redirect('?m=rtqueuelist');
 	if (isset($filter['ids']))
@@ -57,9 +57,9 @@ if (!empty($filter['ids'])) {
 // category id's
 if (isset($_GET['catid'])) {
 	if (is_array($_GET['catid']))
-		$filter['catids'] = array_filter($_GET['catid'], 'intval');
+		$filter['catids'] = Utils::filterIntegers($_GET['catid']);
 	elseif (intval($_GET['catid']))
-		$filter['catids'] = array(intval($_GET['catid']));
+		$filter['catids'] = Utils::filterIntegers(array($_GET['catid']));
 }
 
 if (!empty($filter['catids'])) {
@@ -86,9 +86,9 @@ if (isset($_GET['o']))
 // service id's
 if (isset($_GET['ts'])) {
 	if (is_array($_GET['ts']))
-		$filter['serviceids'] = array_filter($_GET['ts'], 'intval');
+		$filter['serviceids'] = Utils::filterIntegers($_GET['ts']);
 	elseif (intval($_GET['ts']))
-		$filter['serviceids'] = array(intval($_GET['ts']));
+		$filter['serviceids'] = Utils::filterIntegers(array($_GET['ts']));
 	elseif ($_GET['ts'] == 'all')
 		$filter['serviceids'] = null;
 }
@@ -96,9 +96,9 @@ if (isset($_GET['ts'])) {
 // verifier id's
 if (isset($_GET['vids'])) {
 	if (is_array($_GET['vids']))
-		$filter['verifierids'] = array_filter($_GET['vids'], 'intval');
+		$filter['verifierids'] = Utils::filterIntegers($_GET['vids']);
 	elseif (intval($_GET['vids']))
-		$filter['verifierids'] = array(intval($_GET['vids']));
+		$filter['verifierids'] = Utils::filterIntegers(array($_GET['vids']));
 	elseif ($_GET['vids'] == 'all')
 		$filter['verifierids'] = null;
 }
@@ -106,9 +106,9 @@ if (isset($_GET['vids'])) {
 // project id's
 if (isset($_GET['pids'])) {
     if (is_array($_GET['pids']))
-        $filter['projectids'] = array_filter($_GET['pids'], 'intval');
+        $filter['projectids'] = Utils::filterIntegers($_GET['pids']);
 	elseif (intval($_GET['pids']))
-        $filter['projectids'] = array(intval($_GET['pids']));
+        $filter['projectids'] = Utils::filterIntegers(array($_GET['pids']));
 	elseif ($_GET['pids'] == 'all')
         $filter['projectids'] = null;
 }
@@ -116,9 +116,9 @@ if (isset($_GET['pids'])) {
 // types
 if (isset($_GET['tt'])) {
 	if (is_array($_GET['tt']))
-		$filter['typeids'] = array_filter($_GET['tt'], 'intval');
+		$filter['typeids'] = Utils::filterIntegers($_GET['tt']);
 	elseif (intval($_GET['tt']))
-		$filter['typeids'] = array(intval($_GET['tt']));
+		$filter['typeids'] = Utils::filterIntegers(array($_GET['tt']));
 	elseif ($_GET['tt'] == 'all')
 		$filter['typeids'] = null;
 }
@@ -126,12 +126,11 @@ if (isset($_GET['tt'])) {
 // owner
 if (isset($_GET['owner'])) {
 	if (is_array($_GET['owner'])) {
-		if (count($_GET['owner']) == 1 && reset($_GET['owner']) <= 0)
-			$filter['owner'] = intval(reset($_GET['owner']));
-		else
-			$filter['owner'] = array_filter($_GET['owner'], 'intval');
+		$filter['owner'] = Utils::filterIntegers($_GET['owner']);
+		if (count($filter['owner']) == 1 && reset($filter['owner']) <= 0)
+			$filter['owner'] = intval(reset($filter['owner']));
 	} elseif (intval($_GET['owner']) > 0)
-		$filter['owner'] = array(intval($_GET['owner']));
+		$filter['owner'] = Utils::filterIntegers(array($_GET['owner']));
 	else
 		$filter['owner'] = intval($_GET['owner']);
 } elseif (!isset($filter['owner']))
@@ -168,11 +167,11 @@ if (isset($_GET['s'])) {
 // priority
 if (isset($_GET['priority'])) {
 	if (is_array($_GET['priority']))
-		$filter['priority'] = $_GET['priority'];
+		$filter['priority'] = Utils::filterIntegers($_GET['priority']);
 	elseif ($_GET['priority'] == 'all')
 		$filter['priority'] = null;
 	else
-		$filter['priority'] = array(intval($_GET['priority']));
+		$filter['priority'] = Utils::filterIntegers(array($_GET['priority']));
 } elseif (!isset($filter['priority'])) {
 	$filter['priority'] = ConfigHelper::getConfig('phpui.ticketlist_priority');
 	if (strlen($filter['priority']))
@@ -182,9 +181,9 @@ if (isset($_GET['priority'])) {
 // netnodeid's
 if (isset($_GET['nnids'])) {
     if (is_array($_GET['nnids']))
-        $filter['netnodeids'] = array_filter($_GET['nnids'], 'intval');
+        $filter['netnodeids'] = Utils::filterIntegers($_GET['nnids']);
 	elseif (intval($_GET['nnids']))
-        $filter['netnodeids'] = array(intval($_GET['nnids']));
+        $filter['netnodeids'] = Utils::filterIntegers(array($_GET['nnids']));
 	elseif ($_GET['nnids'] == 'all')
         $filter['netnodeids'] = null;
 }

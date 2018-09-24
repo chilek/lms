@@ -53,10 +53,9 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 
 	$group = intval($filter['group']);
 	$network = intval($filter['network']);
-	if (is_array($filter['customergroup'])) {
-		$customergroup = array_map('intval', $filter['customergroup']);
-		$customergroup = implode(',', $customergroup);
-	} else
+	if (is_array($filter['customergroup']))
+		$customergroup = implode(',', Utils::filterIntegers($filter['customergroup']));
+	else
 		$customergroup = intval($filter['customergroup']);
 	$nodegroup = intval($filter['nodegroup']);
 	$linktype = intval($filter['linktype']);

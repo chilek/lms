@@ -733,7 +733,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . (!empty($customergroup) ? 'LEFT JOIN (SELECT customerassignments.customerid, COUNT(*) AS gcount
             	FROM customerassignments '
             		. (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
-						. (is_array($customergroup) ? implode(',', array_filter($customergroup, 'intval')) : intval($customergroup)) . ')' : '') . '
+						. (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
             		GROUP BY customerassignments.customerid) ca ON ca.customerid = c.id ' : '')
             . 'LEFT JOIN (SELECT SUM(value) AS value, customerid FROM cash'
             . ($time ? ' WHERE time < ' . $time : '') . '

@@ -150,7 +150,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				.(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
 				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid' . (is_array($_GET['numberplanid'])
-						? ' IN (' . implode(',', array_filter($_GET['numberplanid'], 'intval')) . ')'
+						? ' IN (' . implode(',', Utils::filterIntegers($_GET['numberplanid'])) . ')'
 						: ' = ' . intval($_GET['numberplanid']))
 					: '')
 				.(!empty($_GET['autoissued']) ? ' AND d.userid IS NULL' : '')
@@ -159,7 +159,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				' AND ' . (!empty($_GET['groupexclude']) ? 'NOT' : '') . '
 					EXISTS (SELECT 1 FROM customerassignments a
 					WHERE a.customerid = d.customerid AND a.customergroupid' . (is_array($_GET['groupid'])
-						? ' IN (' . implode(',', array_filter($_GET['groupid'], 'intval')) . ')'
+						? ' IN (' . implode(',', Utils::filterIntegers($_GET['groupid'])) . ')'
 						: ' = ' . intval($_GET['groupid'])) . ')'
 					: '')
 				.' AND NOT EXISTS (

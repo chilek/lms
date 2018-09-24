@@ -65,7 +65,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
 	if (isset($_POST['marks']))
 		$docids = $DB->GetCol("SELECT id FROM documents
-			WHERE id IN (" . implode(',', array_map('intval', array_values($_POST['marks']))) . ")");
+			WHERE id IN (" . implode(',', Utils::filterIntegers(array_values($_POST['marks']))) . ")");
 	elseif (isset($_GET['id']) && intval($_GET['id']))
 		$docids = array(intval($_GET['id']));
 

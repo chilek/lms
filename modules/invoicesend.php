@@ -70,12 +70,12 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
 	if (isset($_POST['marks']))
 		if ($_GET['marks'] == 'invoice')
-			$docids = array_map('intval', array_values($_POST['marks']));
+			$docids = Utils::filterIntegers(array_values($_POST['marks']));
 		else
 			$docids = $DB->GetCol("SELECT docid FROM cash c
 				JOIN documents d ON d.id = c.docid
 				WHERE d.type IN (?, ?, ?)
-					AND c.id IN (" . implode(',', array_map('intval', array_values($_POST['marks']))) . ")",
+					AND c.id IN (" . implode(',', Utils::filterIntegers(array_values($_POST['marks']))) . ")",
 				array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
 	elseif (isset($_GET['id']) && intval($_GET['id']))
 		$docids = array(intval($_GET['id']));

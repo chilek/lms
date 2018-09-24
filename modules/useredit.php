@@ -79,7 +79,7 @@ if($userinfo)
 	$userinfo['rights'] = implode(',', $rights);
 
 	if (!empty($userinfo['ntype']))
-		$userinfo['ntype'] = array_sum(array_map('intval', $userinfo['ntype']));
+		$userinfo['ntype'] = array_sum(Utils::filterIntegers($userinfo['ntype']));
 
 	if (!$error) {
 		$userinfo['accessfrom'] = $accessfrom;

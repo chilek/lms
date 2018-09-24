@@ -230,7 +230,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				. ($customerid ? ' AND events.customerid = '.intval($customerid) : '')
 				. $userfilter
 				. $overduefilter
-				. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+				. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
 				. $closedfilter,
 				array($startdate, $enddate, $enddate, $startdate));
 
@@ -252,7 +252,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 			.($customerid ? ' AND events.customerid = '.intval($customerid) : '')
 			. $userfilter
 			. $overduefilter
-			. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+			. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
 			. $closedfilter
 			.' ORDER BY date, begintime'
 			. (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -420,7 +420,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 		extract($params);
 		if (empty($enddate))
 			$enddate = $begindate;
-		$users = array_map('intval', $users);
+		$users = Utils::filterIntegers($users);
 
 		return $this->db->GetCol('SELECT DISTINCT a.userid FROM events e
                         JOIN eventassignments a ON a.eventid = e.id

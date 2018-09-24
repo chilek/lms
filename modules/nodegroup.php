@@ -51,7 +51,7 @@ if ($action == 'delete') {
 			$nodegroupid = $_POST['nodegroupid'];
 		else
 			$nodegroupid = array($_POST['nodegroupid']);
-		$nodegroupid = array_map('intval', $nodegroupid);
+		$nodegroupid = Utils::filterIntegers($nodegroupid);
 		if ($nodegroupids = $DB->GetCol('SELECT id FROM nodegroups WHERE id IN (' . implode(',', $nodegroupid) . ')'))
 			foreach ($nodegroupids as $nodegroupid) {
 				$params = array(

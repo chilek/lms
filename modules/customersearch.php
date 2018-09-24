@@ -78,7 +78,7 @@ else
 	if ($_POST['n'] == 'all')
 		$network = array();
 	else
-		$network = array_filter($_POST['n'], 'intval');
+		$network = Utils::filterIntegers($_POST['n']);
 $SESSION->save('csln', $network);
 
 if(!isset($_POST['g']))

@@ -76,7 +76,7 @@ else
 if(!empty($_POST['group']))
 {
 	if(is_array($_POST['group'])) {
-		$groups = array_map('intval', $_POST['group']);
+		$groups = Utils::filterIntegers($_POST['group']);
 		$groups = implode(',', $groups);
 	}
 	else
@@ -136,7 +136,7 @@ else
 
 if (!empty($_POST['numberplanid'])) {
 	if (is_array($_POST['numberplanid'])) {
-		$numberplans = array_map('intval', $_POST['numberplanid']);
+		$numberplans = Utils::filterIntegers($_POST['numberplanid']);
 		$numberplans = implode(',', $numberplans);
 	} else
 		$numberplans = intval($_POST['numberplanid']);

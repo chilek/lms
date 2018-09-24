@@ -1168,7 +1168,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			$where .= ' AND d.closed = 0';
 
 		if (!empty($group))
-			$group = array_filter($group, 'intval');
+			$group = Utils::filterIntegers($group);
 
 		if ($count) {
 			return $this->db->GetOne('SELECT COUNT(id) FROM (SELECT d.id

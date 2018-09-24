@@ -551,7 +551,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function CommitDocuments(array $ids) {
 		$userid = Auth::GetCurrentUser();
 
-		$ids = array_filter($ids, 'intval');
+		$ids = Utils::filterIntegers($ids);
 		if (empty($ids))
 			return;
 

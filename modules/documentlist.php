@@ -30,7 +30,7 @@ if (!isset($_GET['init'])) {
 
 	if (isset($_GET['t']))
 		if (is_array($_GET['t'])) {
-			$filter['type'] = array_filter($_GET['t'], 'intval');
+			$filter['type'] = Utils::filterIntegers($_GET['t']);
 			if (count($filter['type']) == 1) {
 				$first = reset($filter['type']);
 				if ($first == 0)
@@ -41,7 +41,7 @@ if (!isset($_GET['init'])) {
 
 	if (isset($_GET['service']))
 		if (is_array($_GET['service'])) {
-			$filter['service'] = array_filter($_GET['service'], 'intval');
+			$filter['service'] = Utils::filterIntegers($_GET['service']);
 			if (count($filter['service']) == 1) {
 				$first = reset($filter['service']);
 				if ($first == 0)
@@ -63,7 +63,7 @@ if (!isset($_GET['init'])) {
 
 	if (isset($_GET['u']))
 		if (is_array($_GET['u'])) {
-			$filter['userid'] = array_filter($_GET['u'], 'intval');
+			$filter['userid'] = Utils::filterIntegers($_GET['u']);
 			if (count($filter['userid']) == 1) {
 				$first = reset($filter['userid']);
 				if ($first == 0)

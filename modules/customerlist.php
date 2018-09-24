@@ -55,7 +55,7 @@ if ($api) {
 		$filter['network'] = $_GET['n'];
 
 	if (isset($_GET['g']))
-		$filter['customergroup'] = array_filter($_GET['g'], 'intval');
+		$filter['customergroup'] = Utils::filterIntegers($_GET['g']);
 
 	if (isset($_GET['ng']))
 		$filter['nodegroup'] = $_GET['ng'];

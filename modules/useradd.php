@@ -88,7 +88,7 @@ if(count($useradd))
 	$useradd['rights'] = implode(',', $rights);
 
 	if (!empty($useradd['ntype']))
-		$useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
+		$useradd['ntype'] = array_sum(Utils::filterIntegers($useradd['ntype']));
 
         $hook_data = $LMS->executeHook('useradd_validation_before_submit', array('useradd' => $useradd,
                                                                                  'error' => $error));

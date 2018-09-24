@@ -58,11 +58,11 @@ if (defined('USERPANEL_SETUPMODE')) {
 
 	function module_submit_setup() {
 		$DB = LMSDB::getInstance();
-		if (!empty($_POST['queues']) && array_walk($_POST['queues'], 'intval'))
-			$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'queues\'', array(implode(';', $_POST['queues'])));
-		if (!empty($_POST['sources']) && array_walk($_POST['sources'], 'intval'))
+		if (!empty($_POST['queues']) && ($queues = Utils::filterIntegers($_POST['queues'])))
+			$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'queues\'', array(implode(';', $queues)));
+		if (!empty($_POST['sources']) && ($sources = Utils::filterIntegers($_POST['sources'])))
 			$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'visible_ticket_sources\'',
-				array(implode(';', $_POST['sources'])));
+				array(implode(';', $sources)));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'tickets_from_selected_queues\'',
 			array(intval($_POST['tickets_from_selected_queues'])));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'allow_message_add_to_closed_tickets\'',

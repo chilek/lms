@@ -27,7 +27,7 @@
 if (isset($_GET['id']))
 	$ids = array(intval($_GET['id']));
 elseif (isset($_POST['customerassignments']))
-	$ids = array_map('intval', $_POST['customerassignments']);
+	$ids = Utils::filterIntegers($_POST['customerassignments']);
 
 if (isset($_GET['cid']))
 	$cid = intval($_GET['cid']);

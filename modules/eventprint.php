@@ -66,9 +66,9 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 		 .($customerid ? 'AND customerid = '.intval($customerid) : '')
 		.(!empty($userid) ? ' AND EXISTS (
 			SELECT 1 FROM eventassignments
-			WHERE eventid = events.id AND userid ' . (is_array($userid) ? 'IN (' . implode(',', array_filter($userid, 'intval')) . ')' : '=' . intval($userid)) . '
+			WHERE eventid = events.id AND userid ' . (is_array($userid) ? 'IN (' . implode(',', Utils::filterIntegers($userid)) . ')' : '=' . intval($userid)) . '
 			)' : '')
-		. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
+		. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', Utils::filterIntegers($type)) . ')' : '=' . intval($type)) : '')
 		 . ($closed != '' ? ' AND closed = ' . intval($closed) : '')
 		 .' ORDER BY date, begintime',
 		array(CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE, CONTACT_DISABLED,
