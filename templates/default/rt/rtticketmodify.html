@@ -26,7 +26,7 @@
 			{trans("Service type:")}
 			<SELECT name="ticket[service]">
 				{foreach $_SERVICETYPES as $key => $service}
-					<OPTION value="{$key}">{$service}</OPTION>
+					<OPTION value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</OPTION>
 				{/foreach}
 			</SELECT>
 		</div>
@@ -35,7 +35,7 @@
 			{trans("Ticket type:")}
 			<SELECT name="ticket[type]">
 				{foreach $_RT_TYPES as $key => $type}
-					<OPTION value="{$key}">{$type.label}</OPTION>
+					<OPTION value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</OPTION>
 				{/foreach}
 			</SELECT>
 		</div>

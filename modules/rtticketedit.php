@@ -148,7 +148,7 @@ if ($id && !isset($_POST['ticket'])) {
 			$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 			$LMS->NotifyUsers(array(
-				'queue' => $ticket['queueid'],
+				'queue' => $ticket['queue'],
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
@@ -204,7 +204,7 @@ if(isset($_POST['ticket']))
 	if(!count($ticketedit['categories']))
 		$error['categories'] = trans('You have to select category!');
 
-	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queueid']) & 2) != 2)
+	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queue']) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 
 	if($ticketedit['subject'] == '')
@@ -267,7 +267,7 @@ if(isset($_POST['ticket']))
 */
 		// setting status and the ticket owner
 		$props = array(
-			'queueid' => $ticketedit['queueid'],
+			'queueid' => $ticketedit['queue'],
 			'owner' => empty($ticketedit['owner']) ? null : $ticketedit['owner'],
 			'cause' => $ticketedit['cause'],
 			'state' => $ticketedit['state'],
@@ -292,7 +292,7 @@ if(isset($_POST['ticket']))
 		$newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
 		$ticket_state_change_notify = ConfigHelper::checkConfig('phpui.ticket_state_change_notify');
 		if (($ticket_state_change_notify && $ticket['state'] != $ticketedit['state'])
-			|| ($ticket['queueid'] != $ticketedit['queueid'] && !empty($newticket_notify))) {
+			|| ($ticket['queueid'] != $ticketedit['queue'] && !empty($newticket_notify))) {
 			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
@@ -342,7 +342,7 @@ if(isset($_POST['ticket']))
 				}
 			}
 
-			if ($ticket['queueid'] == $ticketedit['queueid']) {
+			if ($ticket['queueid'] == $ticketedit['queue']) {
 				$ticket = $LMS->GetTicketContents($id);
 				$message = end($ticket['messages']);
 				$message['body'] = str_replace('<br>', "\n", $message['body']);
@@ -366,8 +366,8 @@ if(isset($_POST['ticket']))
 			$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 			$LMS->NotifyUsers(array(
-				'queue' => $ticketedit['queueid'],
-				'oldqueue' => $ticket['queueid'] == $ticketedit['queueid'] ? null : $ticket['queueid'],
+				'queue' => $ticketedit['queue'],
+				'oldqueue' => $ticket['queueid'] == $ticketedit['queue'] ? null : $ticket['queueid'],
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
@@ -382,7 +382,7 @@ if(isset($_POST['ticket']))
 	}
 
 	$ticket['subject'] = $ticketedit['subject'];
-	$ticket['queueid'] = $ticketedit['queueid'];
+	$ticket['queue'] = $ticketedit['queue'];
 	$ticket['service'] = $ticketedit['service'];
 	$ticket['type'] = $ticketedit['type'];
 	$ticket['state'] = $ticketedit['state'];
@@ -416,7 +416,7 @@ $userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules'
 if ((empty($userpanel_enabled_modules) || strpos('helpdesk', $userpanel_enabled_modules) !== false)
 	&& ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
 	$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
-	if (in_array($ticket['queueid'], $selectedqueues))
+	if (in_array($ticket['queue'], $selectedqueues))
 		foreach ($queuelist as $idx => $queue)
 			if (!in_array($queue['id'], $selectedqueues))
 				unset($queuelist[$idx]);
