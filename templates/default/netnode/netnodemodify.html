@@ -287,8 +287,12 @@
 		</div>
 	</div>
 	<div class="lms-ui-box-buttons">
-		<button class="lms-ui-button" onclick="javascript:document.netnode.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></button>
-		<button class="lms-ui-button" onclick="location.href='?m=netnodeinfo&id={$netnode.id}'" type="button">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></button>
+		<button class="lms-ui-button" onclick="javascript:document.netnode.submit();" ACCESSKEY="s">
+			<IMG SRC="img/save.gif" alt=""> {trans("Submit")}
+		</button>
+		<button class="lms-ui-button" onclick="location.href='?m=netnodeinfo&id={$netnode.id}'" type="button">
+			<IMG SRC="img/cancel.gif" alt=""> {trans("Cancel")}
+		</button>
 	</div>
 </div>
 
