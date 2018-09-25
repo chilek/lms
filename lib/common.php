@@ -1273,8 +1273,8 @@ function trim_rec( $data ) {
 function geocode($location) {
 	$api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true);
 	$address = urlencode($location);
-	$link = "http://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&sensor=false"
-		. (empty($api_key) ? '' : 'key=' . $api_key);
+	$link = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&sensor=false"
+		. (empty($api_key) ? '' : '&			key=' . $api_key);
 	if (($res = @file_get_contents($link)) === false)
 		return null;
 	$page = json_decode($res, true);
