@@ -19,14 +19,14 @@ $(function () {
     }
 });
 
-function change_customer() {
-    getCustomerAddresses($('[name="ticket[custid]"]').val(), function (addresses) {
+function change_customer(customer_selector, address_selector) {
+    getCustomerAddresses($(customer_selector).val(), function (addresses) {
         customer_addresses.setAddressList(addresses);
         if (Object.keys(addresses).length == 1) {
             $('#customer_addresses').val($('#customer_addresses option:last-child').val());
             customer_addresses.refresh();
         }
-        xajax_select_location($('[name="ticket[custid]"]').val(), $('[name="ticket[address_id]"]').val());
+        xajax_select_location($(customer_selector).val(), $(address_selector).val());
     });
 }
 
@@ -35,7 +35,7 @@ function update_nodes(data) {
     $.each(data, function (k, v) {
         options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
     });
-    $('[name="ticket[nodeid]"]').html(options);
+    $('#nodes').html(options);
     if (data.length) {
         $('#node-row').show();
     } else {

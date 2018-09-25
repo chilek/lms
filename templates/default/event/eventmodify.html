@@ -139,7 +139,7 @@
 								{trans("Node:")}
 							</div>
 							<div class="lms-ui-box-row-field">
-								<select name="event[nodeid]" {tip text="Select node"}>
+								<select id="nodes" name="event[nodeid]" {tip text="Select node"}>
 									<option value="">{trans("- none -")}</option>
 									{foreach $nodes as $node}
 										<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
@@ -277,26 +277,6 @@
 			{else}
 			userms.filterSelection(users);
 			{/if}
-		}
-
-		function change_customer(customer_selector, address_selector) {
-			getCustomerAddresses($(customer_selector).val(), function (addresses) {
-				customer_addresses.setAddressList(addresses);
-			});
-			xajax_select_location($(customer_selector).val(), $(address_selector).val());
-		}
-
-		function update_nodes(data) {
-			var options = '<option value="">{trans("- none -")}</option>';
-			$.each(data, function (k, v) {
-				options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
-			});
-			$('[name="event[nodeid]"]').html(options);
-			if (data.length) {
-				$('#node-row').show();
-			} else {
-				$('#node-row').hide();
-			}
 		}
 
 		var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {

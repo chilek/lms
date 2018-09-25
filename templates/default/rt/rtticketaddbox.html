@@ -240,7 +240,7 @@
                     {trans("Node:")}
                 </TD>
                 <TD class="nobr">
-                    <select name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
+                    <select id="nodes" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
                         <option value="">{trans("- none -")}</option>
                         {if !empty($nodes)}
                         {foreach $nodes as $node}
