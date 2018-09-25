@@ -1152,6 +1152,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		} else
 			$props['nodeid'] = null;
 
+		if (empty($props['requestor']))
+			$props['requestor'] = '';
+
 		if ($type) {
 			$note = implode('<br>', $notes);
 			if ($props['state'] == RT_RESOLVED) {
