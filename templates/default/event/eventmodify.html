@@ -107,7 +107,9 @@
 							</div>
 							<div class="lms-ui-box-row-field">
 								{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
-									{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
+									{$customer_selector='[name=&quot;event[custid]&quot;]'}
+									{$address_selector='[name=&quot;event[address_id]&quot;]'}
+									{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
 								{else}
 									{if !empty($event.customerid)}
 										{$event.customername} ({$event.customerid})
@@ -236,11 +238,17 @@
 		{include file="rt/rtticketaddbox.html"}
         </div>
 	</form>
+	<script src="img/rtticketadd.js"></script>
+	<script>
+
+		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
+
+	</script>
 	<script type="text/javascript" src="img/lms-ui-event-time-slider.js"></script>
 	<SCRIPT>
 
 		$(function () {
-			$('form[name="event"] [name="event[title]"]').focus();
+			$('[name="event[title]"]').focus();
 
 			$('[name="event[rtqueue]"]').change(function () {
 				var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
@@ -271,11 +279,11 @@
 			{/if}
 		}
 
-		function change_customer() {
-			getCustomerAddresses($('[name="event[custid]"]').val(), function (addresses) {
+		function change_customer(customer_selector, address_selector) {
+			getCustomerAddresses($(customer_selector).val(), function (addresses) {
 				customer_addresses.setAddressList(addresses);
 			});
-			xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
+			xajax_select_location($(customer_selector).val(), $(address_selector).val());
 		}
 
 		function update_nodes(data) {

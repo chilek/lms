@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,17 +24,6 @@
  *  $Id$
  */
 
-function select_location($customerid, $address_id) {
-	global $LMS;
-
-	$JSResponse = new xajaxResponse();
-	$nodes = $LMS->GetNodeLocations($customerid, !empty($address_id) && intval($address_id) > 0 ? $address_id : null);
-	if (empty($nodes))
-		$nodes = array();
-	$JSResponse->call('update_nodes', array_values($nodes));
-	return $JSResponse;
-}
-
 function getUsersForGroup($groupid) {
 	$JSResponse = new xajaxResponse();
 
@@ -51,30 +40,6 @@ function getUsersForGroup($groupid) {
 	return $JSResponse;
 }
 
-function GetCategories($queueid) {
-	global $LMS;
-
-	$DB = LMSDB::getInstance();
-	$result = new xajaxResponse();
-
-	if (empty($queueid))
-		return $result;
-
-	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
-	if (empty($categories))
-		return $result;
-
-	$queuecategories = $LMS->GetQueueCategories($queueid);
-
-	foreach ($categories as $category)
-		$result->assign('cat' . $category['id'], 'checked', isset($queuecategories[$category['id']]));
-
-	return $result;
-}
-
-
-$LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('select_location', 'getUsersForGroup', 'GetCategories'));
-$SMARTY->assign('xajax', $LMS->RunXajax());
+$LMS->RegisterXajaxFunction(array('getUsersForGroup'));
 
 ?>

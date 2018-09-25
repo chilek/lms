@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 function GetCategories($queueid) {
 	global $LMS;
 
-	$DB = LMSDB::getInstance();
 	$result = new xajaxResponse();
 
 	if (empty($queueid))
@@ -100,8 +99,6 @@ function queue_changed($queue) {
     return $JSResponse;
 }
 
-$LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed'));
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

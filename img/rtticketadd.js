@@ -1,5 +1,3 @@
-document.forms['ticket'].elements['ticket[subject]'].focus();
-
 $(function () {
     $('[name="ticket[queue]"]').change(function () {
         var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
@@ -33,7 +31,7 @@ function change_customer() {
 }
 
 function update_nodes(data) {
-    var options = '<option value="">{trans("- none -")}</option>';
+    var options = '<option value="">' + lmsMessages.noSelection + '</option>';
     $.each(data, function (k, v) {
         options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
     });
@@ -51,30 +49,18 @@ var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
     }
 });
 
-getCustomerAddresses({intval($customerid)}, function (addresses) {
-    customer_addresses.setAddressList(addresses);
+function initCustomerSelection(customerid, address_id) {
+	getCustomerAddresses(customerid, function (addresses) {
+		customer_addresses.setAddressList(addresses);
 
-    {
-        if $customerid}
-    {
-        if $ticket.address_id}
-    $('#customer_addresses').val({$ticket.address_id
-} )
-    ;
-    {else
-    }
-    if (Object.keys(addresses).length == 1) {
-        $('#customer_addresses').val($('#customer_addresses option:last-child').val());
-    }
-    {
-        /if}
-        {
-            /if}
+		if (customerid) {
+			if (address_id) {
+		        $('#customer_addresses').val(address_id);
+	        } else if (Object.keys(addresses).length == 1) {
+				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+			}
+		}
 
-            customer_addresses.init();
-        }
-    );
-
-$(function () {
-    //$('[name="ticket[deadline]"]').attr('autocomplete', 'new-password');
-});
+		customer_addresses.init();
+	});
+}

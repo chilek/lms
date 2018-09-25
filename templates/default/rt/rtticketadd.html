@@ -8,7 +8,16 @@
     {include file="rt/rtticketaddbox.html"}
 </FORM>
 
-<script type="text/javascript" src="img/rtticketadd.js"></script>
+<script src="img/rtticketadd.js"></script>
+<script>
+
+	$(function() {
+		$('[name="ticket[subject]"]').focus();
+	});
+
+	initCustomerSelection({$customerid}, {$ticket.address_id});
+
+</script>
 
 {if $customerinfo}{include file="customer/customerinfobox.html" info_link=true}{/if}
 

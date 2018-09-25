@@ -24,7 +24,10 @@
  *  $Id$
  */
 
+$LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 

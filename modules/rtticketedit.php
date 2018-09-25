@@ -24,7 +24,9 @@
  *  $Id$
  */
 
+$LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $id = intval($_GET['id']);
 if (!isset($_GET['unread']))
