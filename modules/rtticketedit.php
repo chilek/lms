@@ -285,7 +285,7 @@ if(isset($_POST['ticket']))
 			'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
 			'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
 			'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
-			'requestor' => $ticketedit['requestor'],
+			'requestor' => empty($ticketedit['requestor']) ? '' : $ticketedit['requestor'],
 			'requestor_mail' => $ticketedit['requestor_mail'],
 			'requestor_phone' => $ticketedit['requestor_phone'],
 		);
