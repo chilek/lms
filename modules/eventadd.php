@@ -125,14 +125,11 @@ if(isset($_POST['event']))
     if (!empty($event['helpdesk']) && !count($ticket['categories']))
             $error['categories'] = trans('You have to select category!');
 
-    if ((!$event['customerid']) && $ticket['surname'] == '' && $ticket['phone'] == '' && $ticket['mail'] == '') {
-    	$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
-        $ticket['requestor_userid'] = $userinfo['id'];
-
-        $requestor = ($ticket['surname'] ? $ticket['surname'] . ' ' : '');
-        $requestor .= ($ticket['name'] ? $ticket['name'] . ' ' : '');
-        $ticket['requestor'] = trim($requestor);
-    }
+	if ($ticket['requestor_userid'] == '0') {
+		if (empty($ticket['requestor_name']) && empty($ticket['requestor_mail']) && empty($ticket['requestor_phone']))
+			$error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
+				trans('At least requestor name, mail or phone should be filled!');
+	}
 
 	if (!$error) {
 		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
@@ -145,6 +142,17 @@ if(isset($_POST['event']))
 			$ticket['subject'] = $event['title'];
 			$ticket['address_id'] = $event['address_id'];
 			$ticket['nodeid'] = $event['nodeid'];
+
+			if (!empty($ticket['requestor_userid'])) {
+				$ticket['requestor'] = '';
+				$ticket['requestor_mail'] = null;
+				$ticket['requestor_phone'] = null;
+			} else {
+				$ticket['requestor_userid'] = null;
+				$ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
+				$ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
+				$ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
+			}
 
 			$event['ticketid'] = $LMS->TicketAdd($ticket);
 

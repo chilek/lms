@@ -128,14 +128,12 @@ if(isset($_POST['ticket']))
         if (empty($ticket['invprojectid']))
             $ticket['invprojectid'] = null;
 
-		if (empty($ticket['requestor_userid']))
-			$ticket['requestor_userid'] = null;
-
 		if (!empty($ticket['requestor_userid'])) {
 			$ticket['requestor'] = '';
 			$ticket['requestor_mail'] = null;
 			$ticket['requestor_phone'] = null;
 		} else {
+			$ticket['requestor_userid'] = null;
 			$ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
 			$ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
 			$ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];

@@ -37,38 +37,38 @@
 	</div>
 	<div class="lms-ui-box-contents">
 		<div class="lms-ui-box-panel">
+			{if $layout.module != 'eventadd'}
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
-					{if $layout.module != 'eventadd'}
 					<IMG src="img/customer.gif" alt="">
-					{/if}
 				</div>
 				<div class="lms-ui-box-row-label">
-					{if $layout.module != 'eventadd'}
+					{trans("Customer:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
+					{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
+					{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+				</div>
+			</div>
+			{/if}
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/users.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
 					{trans("Requestor:")}
-					{/if}
 				</div>
 				<div id="requestor" class="lms-ui-box-row-field">
-					{if $layout.module != 'eventadd'}
 					<div class="lms-ui-box-row">
-						{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
-						{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
-						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
-					</div>
-					{/if}
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-label">
-							{trans("Requestor:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<SELECT name="ticket[requestor_userid]" {tip text="Select requestor from list" trigger="requestor_userid"}>
-								<option value="">{trans("<!person>- none -")}</option>
-								<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
-								{foreach $userlist as $user}
-									<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.name}</option>
-								{/foreach}
-							</SELECT>
-						</div>
+						<SELECT name="ticket[requestor_userid]" {tip text="Select requestor from list" trigger="requestor_userid"}>
+							<option value="">{trans("<!person>- none -")}</option>
+							<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
+							{foreach $userlist as $user}
+								<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.name}</option>
+							{/foreach}
+						</SELECT>
 					</div>
 					<div class="lms-ui-box-row indicated-person">
 						<div class="lms-ui-box-row-label">
