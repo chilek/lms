@@ -11,6 +11,11 @@
 
 <div class="lms-ui-box-container">
 	<div class="lms-ui-box-header-multi-row">
+		{if $layout.module == 'rtticketedit'}
+		<div class="lms-ui-box-header">
+			{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}
+		</div>
+		{/if}
 		<div class="lms-ui-box-header">
 			<IMG src="img/ticket.gif" alt="">
 			{trans("Subject:")}
@@ -91,7 +96,7 @@
 				</div>
 			</div>
 
-			{if $layout.module != 'eventadd'}
+			{if $layout.module == 'rtticketadd'}
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
 					<IMG src="img/mail.gif" alt="">
@@ -103,7 +108,6 @@
 					<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
 				</div>
 			</div>
-			{/if}
 
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
@@ -116,6 +120,7 @@
 					<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
 				</div>
 			</div>
+			{/if}
 
 			<div class="lms-ui-box-row">
 				<div class="lms-ui-box-row-icon">
@@ -215,7 +220,7 @@
 				</div>
 				<div class="lms-ui-box-row-field">
 					<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
-						{foreach from=$queuelist item=item}
+						{foreach $queuelist as $item}
 						<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
 						{/foreach}
 					</SELECT>
@@ -374,7 +379,8 @@
 		<button class="lms-ui-button" onclick="javascript:document.ticket.submit();" accesskey="s">
 			<IMG src="img/save.gif" alt=""> {trans("Submit")}
 		</button>
-		<button class="lms-ui-button" type="button" onclick="location.href='?m={if $queue}rtqueueview&id={$queue}{else}rtqueuelist{/if}'">
+		<button class="lms-ui-button" type="button"
+				onclick="location.href='?m={if $queue}rtqueueview&id={$queue}{elseif $ticket.queueid}rtqueueview&id={$ticket.queueid}{else}rtqueuelist{/if}'">
 			<IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
 		</button>
 	</div>

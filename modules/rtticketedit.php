@@ -446,6 +446,7 @@ unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
 $SMARTY->assign('ticket', $ticket);
+$SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('netnodelist', $netnodelist);

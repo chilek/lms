@@ -2328,6 +2328,7 @@ div.lms-ui-wysiwyg-editor {
   align-self: stretch;
   background-color: #CEBD9B;
   border-bottom: 1px solid black;
+  padding: 0.25em;
 }
 .lms-ui-box-container > .lms-ui-box-header-multi-row .lms-ui-box-header {
   padding: 0;

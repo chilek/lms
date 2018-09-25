@@ -235,10 +235,10 @@
 			</div>
 		</div>
         <div id="row"{if $layout.module == 'eventedit' || empty($event['helpdesk'])} style="display:none;"}{/if}>
-		{include file="rt/rtticketaddbox.html"}
+		{include file="rt/rtticketmodify.html"}
         </div>
 	</form>
-	<script src="img/rtticketadd.js"></script>
+	<script src="img/rtticketmodify.js"></script>
 	<script>
 
 		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
