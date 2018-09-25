@@ -2113,10 +2113,24 @@ div.lms-ui-wysiwyg-editor {
 		align-self: stretch;
 		padding: 0.25em;
 		background-color: @dark;
-		border-bottom: @frame;
 		font-weight: bold;
 		& > * {
 			margin: 0.25em;
+		}
+	}
+	& > .lms-ui-box-header {
+		border-bottom: @frame;
+	}
+	& > .lms-ui-box-header-multi-row {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		align-self: stretch;
+		background-color: @dark;
+		border-bottom: @frame;
+		& .lms-ui-box-header {
+			padding: 0;
 		}
 	}
 	& .lms-ui-box-contents {

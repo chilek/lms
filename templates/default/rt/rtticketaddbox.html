@@ -1,306 +1,382 @@
-<TABLE class="lmsbox">
-    <THEAD>
-    <TR>
-        <TD style="width: 50%;">
-            <TABLE width="50%" cellpadding="3">
-                <TR {if $layout.module == 'eventadd'} style="display:none"{/if}>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/ticket.gif" alt="">
-                        {trans("Subject:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD class="bold nobr">
-                        <IMG src="img/service-type.png" alt=""> {trans("Service type:")}
-                    </TD>
-                    <TD>
-                        <SELECT name="ticket[service]">
-                            {foreach $_SERVICETYPES as $key => $service}
-                            <OPTION value="{$key}">{$service}</OPTION>
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD class="bold nobr">
-                        <IMG src="img/ticket-type.png" alt=""> {trans("Ticket type:")}
-                    </TD>
-                    <TD>
-                        <SELECT name="ticket[type]">
-                            {foreach $_RT_TYPES as $key => $type}
-                            <OPTION value="{$key}">{$type.label}</OPTION>
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
-            </TABLE>
-        </TD>
-        <TD style="width: 50%;">
-        </TD>
-    </TR>
-    </THEAD>
-    <TBODY>
-    <TR>
-        <TD style="width: 50%;">
-            <TABLE width="50%" cellpadding="3">
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr" {if $layout.module == 'eventadd'} style="display:none"{/if}>
-                        <IMG src="img/customer.gif" alt="">
-                        {trans("Requestor:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <TABLE width="100%" cellpadding="1">
-                            <TR {if $layout.module == 'eventadd'} style="display:none"{/if}>
-                                <TD colspan="2" class="nobr">
-                                    {$customer_selector='[name=&quot;ticket[custid]&quot;]'}
-                                    {$address_selector='[name=&quot;ticket[address_id]&quot;]'}
-                                    {customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
-                                </TD>
-                            </TR>
-                            <TR>
-                                <TD style="width: 1%;">{trans("Name/Surname:")}</TD>
-                                <TD style="width: 99%;"><INPUT type="text" name="ticket[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}></TD>
-                            </TR>
-                            <TR>
-                                <TD style="width: 1%;">{trans("Firstname")}:</TD>
-                                <TD style="width: 99%;"><INPUT type="text" name="ticket[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}></TD>
-                            </TR>
-                            <TR>
-                                <TD style="width: 1%;">{trans("E-mail:")}</TD>
-                                <TD style="width: 99%;"><INPUT type="text" name="ticket[requestor_mail]" value="{$ticket.requestor_mail}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
-                            </TR>
-                            <TR>
-                                <TD style="width: 1%;">{trans("Phone:")}</TD>
-                                <TD style="width: 99%;"><INPUT type="text" name="ticket[requestor_phone]" value="{$ticket.requestor_phone}" {tip trigger="phone" text="select customer from list or enter his data if is not a customer"}></TD>
-                            </TR>
-                        </TABLE>
-                    </TD>
-                </TR>
-                <TR {if $layout.module == 'eventadd'} style="display:none"{/if}>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/mail.gif" alt="">
-                        {trans("Content:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/note.gif" alt="">
-                        {trans("Note:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr valign-top">
-                        <IMG src="img/attach.gif" alt="">
-                        {trans("Attachments:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        {fileupload id="files" fileupload=$fileupload}
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/queue.gif" alt="">
-                        {trans("Categories:")}
-                    </TD>
-                    <TD>
-                        {foreach $categories as $category}
-                        <label class="nobr">
-                            <INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
-                            {$category.name}
-                        </label>
-                        {/foreach}
-                    </TD>
-                </TR>
-                <TR>
-                    <TD class="bold nobr">
-                        <IMG src="img/mail.gif" alt="">
-                        <label for="notify">{trans("Notify users:")}</label>
-                    </TD>
-                    <TD>
-                        <INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
-                    </TD>
-                </TR>
+<style>
+	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+		width: 12em;
+	}
 
-            </TABLE>
-        </TD>
-        <TD style="width: 50%;" class="valign-top">
-            <TABLE width="50%" cellpadding="3">
+	#requestor.lms-ui-box-row-field {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+	}
+</style>
 
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/users.gif" alt="">
-                        {trans("Owner:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
-                            <OPTION value="0">- {trans("select user")} -</OPTION>
-                            {foreach $userlist as $user}
-                            {if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-                            || (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-                            || $user.id == $ticket.owner}
-                            <OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.name}</OPTION>
-                            {/if}
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/verifier.png" alt="">
-                        {trans("Verifier:")}
-                    </TD>
-                    <TD style="width: 99%;" id="rtverifiers">
-                        {include file="rt/rtverifiers.html"}
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/calendar.gif" alt="">
-                        {trans("<!rt>Deadline:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/queue.gif" alt="">
-                        {trans("Queue:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
-                            {foreach from=$queuelist item=item}
-                            <OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/desc.gif" alt="">
-                        {trans("Cause:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <SELECT size="1" name="ticket[cause]" {tip text="Select ticket cause" trigger="cause"}>
-                            <OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
-                            <OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
-                            <OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
-                        </SELECT>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/volcano.png" alt="">
-                        {trans("Ticket source:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <SELECT size="1" name="ticket[source]" {tip text="Select ticket source" trigger="source"}>
-                            {foreach $_RT_SOURCES as $sourceidx => $source}
-                            <OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$source}</OPTION>
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD style="width: 1%;" class="bold nobr">
-                        <IMG src="img/report.gif" alt="">
-                        {trans("Priority:")}
-                    </TD>
-                    <TD style="width: 99%;">
-                        <SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
-                            {foreach $_RT_PRIORITIES as $priorityidx => $priority}
-                            <OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
-                <TR {if $layout.module == 'eventadd'} style="display:none"{/if}>
-                    <TD class="bold nobr">
-                        <img src="img/home.gif" alt="">
-                        {trans("Location:")}
-                    </TD>
-                    <TD class="nobr">
-                        <select id="customer_addresses" name="ticket[address_id]"{if $address_id_warning} class="alert"{/if} {tip trigger="address_id"}>
-                        </select>
-                        <input type="hidden" name="address_id_warning" value="{if $address_id_warning}1{else}0{/if}">
-                    </TD>
-                </TR>
-                <TR id="node-row"{if empty($nodes) || $layout.module == 'eventadd'} style="display: none;"{/if}>
-                <TD class="bold nobr">
-                    <img src="img/node.gif" alt="">
-                    {trans("Node:")}
-                </TD>
-                <TD class="nobr">
-                    <select id="nodes" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
-                        <option value="">{trans("- none -")}</option>
-                        {if !empty($nodes)}
-                        {foreach $nodes as $node}
-                        <option value="{$node.id}"{if $node.id == $ticket.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
-                        {/foreach}
-                        {/if}
-                    </select>
-                </TD>
-                </TR>
-                <TR>
-                    <TD class="bold nobr"><img src="img/netnode.png" alt=""> {trans("Network node:")}</TD>
-                    <TD class="nobr">
-                        <SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
-                            <OPTION value="">{trans("- none -")}</OPTION>
-                            {foreach $netnodelist as $idx => $netnode}
-                            <OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Device:")}</TD>
-                    <TD class="nobr" id="rtnetdevs">
-                        {include file="rt/rtnetdevs.html" form="ticket"}
-                    </TD>
-                </TR>
-                <TR id="customernotify-row">
-                    <TD class="bold nobr">
-                        <label for="customernotify">
-                            <IMG src="img/mail.gif" alt="">
-                            {trans("Notify customer:")}
-                        </label>
-                    </TD>
-                    <TD>
-                        <input type="checkbox" id="customernotify" name="ticket[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
-                    </TD>
-                </TR>
-                <TR>
-                    <TD class="bold nobr"><img src="img/money.gif" alt=""> {trans("Investment project:")}</TD>
-                    <TD class="nobr">
-                        <SELECT name="ticket[invprojectid]" {tip text="Select investment projects" trigger="invprojectid"}>
-                            <OPTION value="">{trans("- none -")}</OPTION>
-                            {foreach $invprojectlist as $idx => $project}
-                            <OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
-                            {$project.name} ({$project.id})
-                            </OPTION>
-                            {/foreach}
-                        </SELECT>
-                    </TD>
-                </TR>
+<div class="lms-ui-box-container">
+	<div class="lms-ui-box-header-multi-row">
+		<div class="lms-ui-box-header">
+			<IMG src="img/ticket.gif" alt="">
+			{trans("Subject:")}
+			<INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
+		</div>
+		<div class="lms-ui-box-header">
+			<IMG src="img/service-type.png" alt="">
+			{trans("Service type:")}
+			<SELECT name="ticket[service]">
+				{foreach $_SERVICETYPES as $key => $service}
+					<OPTION value="{$key}">{$service}</OPTION>
+				{/foreach}
+			</SELECT>
+		</div>
+		<div class="lms-ui-box-header">
+			<IMG src="img/ticket-type.png" alt="">
+			{trans("Ticket type:")}
+			<SELECT name="ticket[type]">
+				{foreach $_RT_TYPES as $key => $type}
+					<OPTION value="{$key}">{$type.label}</OPTION>
+				{/foreach}
+			</SELECT>
+		</div>
+	</div>
+	<div class="lms-ui-box-contents">
+		<div class="lms-ui-box-panel">
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					{if $layout.module != 'eventadd'}
+					<IMG src="img/customer.gif" alt="">
+					{/if}
+				</div>
+				<div class="lms-ui-box-row-label">
+					{if $layout.module != 'eventadd'}
+					{trans("Requestor:")}
+					{/if}
+				</div>
+				<div id="requestor" class="lms-ui-box-row-field">
+					{if $layout.module != 'eventadd'}
+					<div class="lms-ui-box-row">
+						{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
+						{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
+						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+					</div>
+					{/if}
+					<div class="lms-ui-box-row">
+						<div class="lms-ui-box-row-label">
+							{trans("Name/Surname:")}
+						</div>
+						<div class="lms-ui-box-row-field">
+							<INPUT type="text" name="ticket[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
+						</div>
+					</div>
+					<div class="lms-ui-box-row">
+						<div class="lms-ui-box-row-label">
+							{trans("Firstname")}:
+						</div>
+						<div class="lms-ui-box-row-field">
+							<INPUT type="text" name="ticket[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}>
+						</div>
+					</div>
+					<div class="lms-ui-box-row">
+						<div class="lms-ui-box-row-label">
+							{trans("E-mail:")}
+						</div>
+						<div class="lms-ui-box-row-field">
+							<INPUT type="text" name="ticket[requestor_mail]" value="{$ticket.requestor_mail}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}>
+						</div>
+					</div>
+					<div class="lms-ui-box-row">
+						<div class="lms-ui-box-row-label">
+							{trans("Phone:")}
+						</div>
+						<div class="lms-ui-box-row-field">
+							<INPUT type="text" name="ticket[requestor_phone]" value="{$ticket.requestor_phone}" {tip trigger="phone" text="select customer from list or enter his data if is not a customer"}>
+						</div>
+					</div>
+				</div>
+			</div>
 
-            </TABLE>
-        </TD>
-    </TR>
-    <TR {if $layout.module == 'eventadd'} style="display:none"{/if}>
-        <TD style="width: 100%;" class="buttons" colspan="2">
-            <button class="lms-ui-button" onclick="javascript:document.ticket.submit();" accesskey="s">
-                <IMG src="img/save.gif" alt=""> {trans("Submit")}</button>
-            <button class="lms-ui-button" onclick="?m={if $queue}rtqueueview&amp;id={$queue}{else}rtqueuelist{/if}"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
-        </TD>
-    </TR>
-    </TBODY>
-</TABLE>
+			{if $layout.module != 'eventadd'}
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/mail.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Content:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
+				</div>
+			</div>
+			{/if}
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/note.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Note:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/attach.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Attachments:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					{fileupload id="files" fileupload=$fileupload}
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/queue.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Categories:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					{foreach $categories as $category}
+						<label class="nobr">
+							<INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
+							{$category.name}
+						</label>
+					{/foreach}
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/mail.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					<label for="notify">{trans("Notify users:")}</label>
+				</div>
+				<div class="lms-ui-box-row-field">
+					<INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
+				</div>
+			</div>
+
+		</div>
+		<div class="lms-ui-box-panel">
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/users.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Owner:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
+						<OPTION value="0">- {trans("select user")} -</OPTION>
+						{foreach $userlist as $user}
+							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+							|| $user.id == $ticket.owner}
+								<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.name}</OPTION>
+							{/if}
+						{/foreach}
+					</SELECT>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/verifier.png" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Verifier:")}
+				</div>
+				<div class="lms-ui-box-row-field" id="rtverifiers">
+					{include file="rt/rtverifiers.html"}
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/calendar.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("<!rt>Deadline:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/queue.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Queue:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+						{foreach from=$queuelist item=item}
+						<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
+						{/foreach}
+					</SELECT>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/desc.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Cause:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<SELECT size="1" name="ticket[cause]" {tip text="Select ticket cause" trigger="cause"}>
+						<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
+						<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
+						<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
+					</SELECT>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/volcano.png" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Ticket source:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<SELECT size="1" name="ticket[source]" {tip text="Select ticket source" trigger="source"}>
+						{foreach $_RT_SOURCES as $sourceidx => $source}
+						<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$source}</OPTION>
+						{/foreach}
+					</SELECT>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/report.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Priority:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
+						{foreach $_RT_PRIORITIES as $priorityidx => $priority}
+						<OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
+						{/foreach}
+					</SELECT>
+				</div>
+			</div>
+
+			{if $layout.module != 'eventadd'}
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<img src="img/home.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Location:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<select id="customer_addresses" name="ticket[address_id]"{if $address_id_warning} class="alert"{/if} {tip trigger="address_id"}>
+					</select>
+					<input type="hidden" name="address_id_warning" value="{if $address_id_warning}1{else}0{/if}">
+				</div>
+			</div>
+			{/if}
+
+			<div class="lms-ui-box-row" id="node-row"{if empty($nodes) || $layout.module == 'eventadd'} style="display: none;"{/if}>
+				<div class="lms-ui-box-row-icon">
+					<img src="img/node.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Node:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<select id="nodes" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
+						<option value="">{trans("- none -")}</option>
+						{if !empty($nodes)}
+							{foreach $nodes as $node}
+								<option value="{$node.id}"{if $node.id == $ticket.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
+							{/foreach}
+						{/if}
+					</select>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<img src="img/netnode.png" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Network node:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
+						<OPTION value="">{trans("- none -")}</OPTION>
+						{foreach $netnodelist as $idx => $netnode}
+						<OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
+						{/foreach}
+					</SELECT>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<img src="img/netdev.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Device:")}
+				</div>
+				<div class="lms-ui-box-row-field" id="rtnetdevs">
+					{include file="rt/rtnetdevs.html" form="ticket"}
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row" id="customernotify-row">
+				<div class="lms-ui-box-row-icon">
+					<IMG src="img/mail.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+ 					<label for="customernotify">
+						{trans("Notify customer:")}
+					</label>
+				</div>
+				<div class="lms-ui-box-row-field">
+					<input type="checkbox" id="customernotify" name="ticket[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
+				</div>
+			</div>
+
+			<div class="lms-ui-box-row">
+				<div class="lms-ui-box-row-icon">
+					<img src="img/money.gif" alt="">
+				</div>
+				<div class="lms-ui-box-row-label">
+					{trans("Investment project:")}
+				</div>
+				<div class="lms-ui-box-row-field">
+					<SELECT name="ticket[invprojectid]" {tip text="Select investment projects" trigger="invprojectid"}>
+						<OPTION value="">{trans("- none -")}</OPTION>
+						{foreach $invprojectlist as $idx => $project}
+						<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
+						{$project.name} ({$project.id})
+						</OPTION>
+						{/foreach}
+					</SELECT>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	{if $layout.module != 'eventadd'}
+	<div class="lms-ui-box-buttons">
+		<button class="lms-ui-button" onclick="javascript:document.ticket.submit();" accesskey="s">
+			<IMG src="img/save.gif" alt=""> {trans("Submit")}
+		</button>
+		<button class="lms-ui-button" type="button" onclick="location.href='?m={if $queue}rtqueueview&id={$queue}{else}rtqueuelist{/if}'">
+			<IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
+		</button>
+	</div>
+	{/if}
+</div>
