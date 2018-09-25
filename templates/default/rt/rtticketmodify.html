@@ -61,6 +61,7 @@
 						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
 					</div>
 					{/if}
+					{if $layout.module != 'rtticketedit'}
 					<div class="lms-ui-box-row">
 						<div class="lms-ui-box-row-label">
 							{trans("Name/Surname:")}
@@ -93,6 +94,7 @@
 							<INPUT type="text" name="ticket[requestor_phone]" value="{$ticket.requestor_phone}" {tip trigger="phone" text="select customer from list or enter his data if is not a customer"}>
 						</div>
 					</div>
+					{/if}
 				</div>
 			</div>
 
