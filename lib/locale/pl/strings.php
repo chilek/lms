@@ -3866,6 +3866,7 @@ $_LANG['Timetable assigned events:'] = 'Przypisane zdarzenia w terminarzu:';
 $_LANG['Add new'] = 'Dodaj nowe';
 $_LANG['Close all'] = 'Zamknij wszystkie';
 $_LANG['Assign this event to Helpdesk request'] = 'Przypisz zdarzenie do zgłoszenia w Helpdesk:';
+$_LANG['Assign ticket'] = 'Przypisz zgłoszenie';
 $_LANG['Request not assigned to any event.'] = 'Zgłoszenie nieprzypisane do żadnego zdarzenia.';
 $_LANG['Helpdesk assignment:'] = 'Przypisanie do Helpdesk:';
 $_LANG['This event is not assigned to any helpdesk request.'] = 'Zdarzenie nie jest przypisane do żadnego zgłoszenia w helpdesk.';
