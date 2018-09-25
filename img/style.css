@@ -1553,6 +1553,7 @@ html .ui-button.ui-state-disabled:active {
 .ui-dialog.documentviewdialog {
   min-width: 200px;
   min-height: 35px;
+  position: absolute;
 }
 .ui-dialog-content.documentviewdialog {
   padding: 0 !important;
