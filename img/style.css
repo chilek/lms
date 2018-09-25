@@ -122,11 +122,22 @@ TABLE {
   justify-content: space-between;
   flex: 0 0 auto;
 }
-.lms-ui-toolbar-normal-shortcuts {
+#lms-ui-toolbar {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: -0.5em;
+}
+#lms-ui-toolbar .lms-ui-toolbar-shortcut {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.5em;
+}
+#lms-ui-toolbar .lms-ui-toolbar-shortcut:last-child {
+  margin-left: auto;
   display: flex;
   justify-content: flex-start;
 }
-.lms-ui-toolbar-shortcuts.lms-ui-toolbar-shortcut-separator {
+#lms-ui-toolbar .lms-ui-toolbar-shortcut-separator {
   padding-right: 1.2em;
 }
 #lms-ui-module-view {
