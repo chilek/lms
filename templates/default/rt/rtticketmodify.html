@@ -11,11 +11,6 @@
 
 <div class="lms-ui-box-container">
 	<div class="lms-ui-box-header-multi-row">
-		{if $layout.module == 'rtticketedit'}
-		<div class="lms-ui-box-header">
-			{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}
-		</div>
-		{/if}
 		<div class="lms-ui-box-header">
 			<IMG src="img/ticket.gif" alt="">
 			{trans("Subject:")}
