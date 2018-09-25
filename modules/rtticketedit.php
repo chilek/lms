@@ -282,9 +282,12 @@ if(isset($_POST['ticket']))
 			'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
 			'verifierid' => empty($ticketedit['verifierid']) ? null : $ticketedit['verifierid'],
 			'deadline' => empty($ticketedit['deadline']) ? null : $ticketedit['deadline'],
-            'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
-            'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
-            'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
+			'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
+			'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
+			'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
+			'requestor' => $ticketedit['requestor'],
+			'requestor_mail' => $ticketedit['requestor_mail'],
+			'requestor_phone' => $ticketedit['requestor_phone'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 

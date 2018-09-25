@@ -78,6 +78,16 @@
 							<INPUT type="text" name="ticket[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}>
 						</div>
 					</div>
+					{else}
+					<div class="lms-ui-box-row">
+						<div class="lms-ui-box-row-label">
+							{trans("Requestor:")}
+						</div>
+						<div class="lms-ui-box-row-field">
+							<INPUT type="text" name="ticket[requestor]" value="{$ticket.requestor}" trigger="requestor"}>
+						</div>
+					</div>
+					{/if}
 					<div class="lms-ui-box-row">
 						<div class="lms-ui-box-row-label">
 							{trans("E-mail:")}
@@ -94,7 +104,6 @@
 							<INPUT type="text" name="ticket[requestor_phone]" value="{$ticket.requestor_phone}" {tip trigger="phone" text="select customer from list or enter his data if is not a customer"}>
 						</div>
 					</div>
-					{/if}
 				</div>
 			</div>
 
