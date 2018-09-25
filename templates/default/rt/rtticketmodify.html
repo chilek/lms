@@ -206,7 +206,11 @@
 					{trans("Verifier:")}
 				</div>
 				<div class="lms-ui-box-row-field" id="rtverifiers">
-					{include file="rt/rtverifiers.html"}
+					{if $layout.module != 'rtticketedit' || (!$ticket.verifierid || $ticket.verifier_username == $layout.logname)}
+						{include file="rt/rtverifiers.html" form="ticket2"}
+					{else}
+						<span {tip text="{trans("Only verifier can change this")}"}>{$ticket.verifier_username}</span>
+					{/if}
 				</div>
 			</div>
 
