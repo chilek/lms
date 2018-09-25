@@ -100,16 +100,18 @@ if(isset($_POST['ticket']))
 		}
 	}
 
+	if ($ticket['requestor_userid'] == '0') {
+		if (empty($ticket['requestor_name']) && empty($ticket['requestor_mail']) && empty($ticket['requestor_phone']))
+			$error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
+				trans('At least requestor name, mail or phone should be filled!');
+	}
+
 	if (!$error) {
 		if (!$ticket['customerid']) {
-			if ($ticket['surname'] == '' && $ticket['phone'] == '' && $ticket['mail'] == '')
+			if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '')
 				$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
 				$ticket['requestor_userid'] = $userinfo['id'];
 		}
-
-		$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
-		$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');
-		$ticket['requestor'] = trim($requestor);
 
 		if ($ticket['address_id'] == -1)
 			$ticket['address_id'] = null;
@@ -126,14 +128,18 @@ if(isset($_POST['ticket']))
         if (empty($ticket['invprojectid']))
             $ticket['invprojectid'] = null;
 
-		if (empty($ticket['requestor_mail']))
-			$ticket['requestor_mail'] = null;
-
-		if (empty($ticket['requestor_phone']))
-			$ticket['requestor_phone'] = null;
-
 		if (empty($ticket['requestor_userid']))
 			$ticket['requestor_userid'] = null;
+
+		if (!empty($ticket['requestor_userid'])) {
+			$ticket['requestor'] = '';
+			$ticket['requestor_mail'] = null;
+			$ticket['requestor_phone'] = null;
+		} else {
+			$ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
+			$ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
+			$ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
+		}
 
 		if (empty($ticket['verifierid']))
 			$ticket['verifierid'] = null;

@@ -4147,4 +4147,9 @@ $_LANG['Back to top'] = 'Powrót na górę';
 
 $_LANG['Select investment project'] = 'Wybierz projekt inwestycyjny';
 
+$_LANG['- indicated person -'] = '- wskazana osoba -';
+$_LANG['Select requestor from list'] = 'Wskaż zgłaszającego z listy';
+$_LANG['<!person>- none -'] = '- brak -';
+$_LANG['At least requestor name, mail or phone should be filled!'] = 'Jedno z pól nazwa, email i telefon powinno zostać wypełnione!';
+
 ?>

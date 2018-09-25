@@ -32,17 +32,16 @@
 		{if $ticket.customerid}
 			<br>
 			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.requestor|escape|truncate:"60":"..."}</A>
-		{else}
-			{if $ticket.requestor_userid}
+		{/if}
+		{if $ticket.requestor_userid}
+		<br>
+		<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
+		{elseif $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
 			<br>
-			<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
-			{else}
-				<br>
-				{$ticket.requestor|escape}
-				{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
-				{if $ticket.requestor_mail}<BR>
-				<A href="mailto:{$ticket.requestor_mail}""> &lt;{$ticket.requestor_mail}&gt;</A>
-				{/if}
+			{$ticket.requestor|escape}
+			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
+			{if $ticket.requestor_mail}<BR>
+			<A href="mailto:{$ticket.requestor_mail}""> &lt;{$ticket.requestor_mail}&gt;</A>
 			{/if}
 		{/if}
 	</TD>

@@ -225,46 +225,14 @@ if(isset($_POST['ticket']))
 
 	$ticketedit['customerid'] = ($ticketedit['custid'] ? $ticketedit['custid'] : 0);
 
+	if ($ticketedit['requestor_userid'] == '0') {
+		if (empty($ticketedit['requestor_name']) && empty($ticketedit['requestor_mail']) && empty($ticketedit['requestor_phone']))
+			$error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
+				trans('At least requestor name, mail or phone should be filled!');
+	}
+
 	if(!$error)
 	{
-/*		if($ticketedit['state'] == RT_RESOLVED)
-		{
-			$DB->Execute('UPDATE rttickets SET subject=?, state=?, customerid=?, cause=?, resolvetime=?NOW? 
-					WHERE id=?', array(
-						$ticketedit['subject'], 
-						$ticketedit['state'], 
-						$ticketedit['customerid'], 
-						$ticketedit['cause'], 
-						$ticketedit['ticketid']
-						));
-		}
-		else
-		{
-			// if ticket was resolved, set resolvetime=0
-			if($DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($ticket['ticketid'])) == 2)
-			{
-				$DB->Execute('UPDATE rttickets SET subject=?, state=?, customerid=?, cause=?, resolvetime=0 
-					WHERE id=?', array(
-						$ticketedit['subject'], 
-						$ticketedit['state'], 
-						$ticketedit['customerid'], 
-						$ticketedit['cause'], 
-						$ticketedit['ticketid']
-						));
-			}
-			else
-			{
-				$DB->Execute('UPDATE rttickets SET subject=?, state=?, customerid=?, cause=? 
-					WHERE id=?', array(
-						$ticketedit['subject'], 
-						$ticketedit['state'], 
-						$ticketedit['customerid'], 
-						$ticketedit['cause'], 
-						$ticketedit['ticketid']
-						));
-			}
-		}
-*/
 		// setting status and the ticket owner
 		$props = array(
 			'queueid' => $ticketedit['queue'],
@@ -285,9 +253,10 @@ if(isset($_POST['ticket']))
 			'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
 			'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
 			'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
-			'requestor' => empty($ticketedit['requestor']) ? '' : $ticketedit['requestor'],
-			'requestor_mail' => $ticketedit['requestor_mail'],
-			'requestor_phone' => $ticketedit['requestor_phone'],
+			'requestor_userid' => empty($ticketedit['requestor_userid']) ? null : $ticketedit['requestor_userid'],
+			'requestor' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_name']) ? '' : $ticketedit['requestor_name'],
+			'requestor_mail' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_mail']) ? null : $ticketedit['requestor_mail'],
+			'requestor_phone' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
@@ -398,8 +367,11 @@ if(isset($_POST['ticket']))
 	$ticket['netnodeid'] = $ticketedit['netnodeid'];
 	$ticket['netdevid'] = $ticketedit['netdevid'];
 	$ticket['priority'] = $ticketedit['priority'];
-}
-else
+	$ticket['requestor_userid'] = $ticketedit['requestor_userid'];
+	$ticket['requestor_name'] = $ticketedit['requestor_name'];
+	$ticket['requestor_mail'] = $ticketedit['requestor_mail'];
+	$ticket['requestor_phone'] = $ticketedit['requestor_phone'];
+} else
 	$ticketedit['categories'] = $ticket['categories'];
 
 foreach ($categories as $category)

@@ -907,6 +907,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND t.deleted = 0' : '')
 				. (' AND t.id = ?'), array($id));
 
+		$ticket['requestor_name'] = $ticket['requestor'];
+		if (empty($ticket['requestor_userid']) && (!empty($ticket['requestor']) || !empty($ticket['requestor_mail']) || !empty($ticket['requestor_phone'])))
+			$ticket['requestor_userid'] = 0;
+
         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id, c.name
 								FROM rtticketcategories tc
 								JOIN rtcategories c ON c.id = tc.categoryid
@@ -1156,11 +1160,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?,
 						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
 						verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-						requestor = ?, requestor_mail = ?, requestor_phone = ? WHERE id = ?', array(
-						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'],
-						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
-						$props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $ticketid));
+						requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ? WHERE id = ?',
+						array(
+							$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'],
+							$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
+							$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
+							$props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'],
+							$ticketid
+						));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
@@ -1168,12 +1175,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?,
 						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
 						verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-						requestor = ?, requestor_mail = ?, requestor_phone = ?
-						WHERE id = ?', array(
-						$props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $props['subject'],
-						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
-						$props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $ticketid));
+						requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?
+						WHERE id = ?',
+						array(
+							$props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $props['subject'],
+							$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
+							$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
+							$props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'],
+							$ticketid
+						));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
@@ -1182,11 +1192,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?,
 					customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
 					verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
-					requestor = ?, requestor_mail = ?, requestor_phone = ? WHERE id = ?', array(
-					$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'],
-					$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-					$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
-					$props['requestor'], $props['requestor_mail'], $props['requestor_phone'], $ticketid));
+					requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ? WHERE id = ?',
+					array(
+						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'],
+						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
+						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
+						$props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'],
+						$ticketid
+					));
 				if (!empty($note))
 					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 						VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));

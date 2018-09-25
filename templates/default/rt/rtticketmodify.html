@@ -56,47 +56,42 @@
 						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
 					</div>
 					{/if}
-					{if $layout.module != 'rtticketedit'}
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-label">
-							{trans("Name/Surname:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
-						</div>
-					</div>
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-label">
-							{trans("Firstname")}:
-						</div>
-						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}>
-						</div>
-					</div>
-					{else}
 					<div class="lms-ui-box-row">
 						<div class="lms-ui-box-row-label">
 							{trans("Requestor:")}
 						</div>
 						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[requestor]" value="{$ticket.requestor}" trigger="requestor"}>
+							<SELECT name="ticket[requestor_userid]" {tip text="Select requestor from list" trigger="requestor_userid"}>
+								<option value="">{trans("<!person>- none -")}</option>
+								<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
+								{foreach $userlist as $user}
+									<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.name}</option>
+								{/foreach}
+							</SELECT>
 						</div>
 					</div>
-					{/if}
-					<div class="lms-ui-box-row">
+					<div class="lms-ui-box-row indicated-person">
+						<div class="lms-ui-box-row-label">
+							{trans("Name:")}
+						</div>
+						<div class="lms-ui-box-row-field">
+							<INPUT type="text" name="ticket[requestor_name]" id="requestor_name" value="{$ticket.requestor_name}" {tip trigger="requestor_name"}>
+						</div>
+					</div>
+					<div class="lms-ui-box-row indicated-person">
 						<div class="lms-ui-box-row-label">
 							{trans("E-mail:")}
 						</div>
 						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[requestor_mail]" value="{$ticket.requestor_mail}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}>
+							<INPUT type="text" name="ticket[requestor_mail]" id="requestor_mail" value="{$ticket.requestor_mail}" {tip trigger="requestor_mail"}>
 						</div>
 					</div>
-					<div class="lms-ui-box-row">
+					<div class="lms-ui-box-row indicated-person">
 						<div class="lms-ui-box-row-label">
 							{trans("Phone:")}
 						</div>
 						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[requestor_phone]" value="{$ticket.requestor_phone}" {tip trigger="phone" text="select customer from list or enter his data if is not a customer"}>
+							<INPUT type="text" name="ticket[requestor_phone]" id="requestor_phone" value="{$ticket.requestor_phone}" {tip trigger="requestor_phone"}>
 						</div>
 					</div>
 				</div>
@@ -396,3 +391,15 @@
 	</div>
 	{/if}
 </div>
+
+<script>
+
+	$('[name="ticket[requestor_userid]').change(function() {
+		if ($(this).val() == '0') {
+			$('.indicated-person').show();
+		} else {
+			$('.indicated-person').hide();
+		}
+	}).change();
+
+</script>

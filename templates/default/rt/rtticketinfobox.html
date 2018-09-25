@@ -76,7 +76,7 @@
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									<IMG src="img/customer.gif" alt="">
-									{trans("Requestor:")}
+									{trans("Customer:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									{if $ticket.customerid}
@@ -95,6 +95,25 @@
 											{if $ticket.requestor_phone}
 											<br>{$ticket.requestor_phone}
 											{/if}
+										{/if}
+									{/if}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/users.gif" alt="">
+									{trans("Requestor:")}
+								</TD>
+								<TD style="width: 99%;" class="nobr">
+									{if $ticket.requestor_userid}
+										<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
+									{else}
+										{$ticket.requestor_name}
+										{if $ticket.requestor_mail}
+											<br><A href="mailto:{$ticket.requestor_mail}">{$ticket.requestor_mail}</A>
+										{/if}
+										{if $ticket.requestor_phone}
+											<br>{$ticket.requestor_phone}
 										{/if}
 									{/if}
 								</TD>
