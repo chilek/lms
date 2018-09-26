@@ -86,7 +86,7 @@ function RTSearch($search, $order='createtime,desc')
 	} else {
 		$join[] = 'JOIN (SELECT DISTINCT ticketid, 0 AS messageid FROM rtmessages) m3 ON m3.ticketid = t.id';
 	}
-	if(!empty($search['state']))
+	if (isset($search['state']) && strlen($search['state']))
 	{
 		if($search['state'] == '-1')
 			$where[] = 'state != '.RT_RESOLVED;
