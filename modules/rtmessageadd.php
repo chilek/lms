@@ -240,13 +240,14 @@ if(isset($_POST['message']))
 			$service = ConfigHelper::getConfig('sms.service');
 
 			// customer notification via sms when we reply to ticket message created from customer sms
-			if (isset($message['smsnotify']) && !empty($service))
+			if (isset($message['smsnotify']) && !empty($service)) {
 				if ($group_reply)
 					$message['phonefrom'] = $LMS->GetTicketPhoneFrom($ticketid);
 				if (!empty($message['phonefrom'])) {
 					$sms_body = preg_replace('/\r?\n/', ' ', $message['body']);
 					$LMS->SendSMS($message['phonefrom'], $sms_body);
 				}
+			}
 
 			// Users notification
 			if (isset($message['notify']) && ($user['email'] || $queue['email'])) {
