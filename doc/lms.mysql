@@ -1743,6 +1743,7 @@ CREATE TABLE rttickets (
   netnodeid int(11) DEFAULT NULL,
   netdevid int(11) DEFAULT NULL,
   verifierid int(11) DEFAULT NULL,
+  verifier_rtime int(11) DEFAULT NULL,
   deadline int(11) DEFAULT NULL,
   service int(11) DEFAULT NULL,
   type int(11) DEFAULT NULL,
@@ -3463,4 +3464,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018091801');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018092601');

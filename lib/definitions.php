@@ -122,6 +122,7 @@ define('RT_DEAD', 3);
 define('RT_SCHEDULED', 4);
 define('RT_WAITING', 5);
 define('RT_EXPIRED', 6);
+define('RT_VERIFIED', 7);
 
 $RT_STATES = array(
 	RT_NEW => array(
@@ -170,7 +171,13 @@ $RT_STATES = array(
 		'color' => '#278981',
 		'img' => 'img/calendar.gif',
 		'name' => 'RT_EXPIRED'
-	)
+	),
+    RT_VERIFIED => array(
+        'label' => trans('Verified'),
+        'color' => 'green',
+        'img' => 'img/verifier.png',
+        'name' => 'RT_VERIFIED'
+    ),
 );
 
 // Helpdesk rights
@@ -279,6 +286,7 @@ define('RTMESSAGE_DEADLINE_CHANGE', 16384);
 define('RTMESSAGE_SERVICE_CHANGE', 32768);
 define('RTMESSAGE_TYPE_CHANGE', 65536);
 define('RTMESSAGE_INVPROJECT_CHANGE', 131072);
+define('RTMESSAGE_VERIFIER_RTIME', 262144);
 
 define('NETWORK_INTERFACE_TYPE_UNI', 0);
 define('NETWORK_INTERFACE_TYPE_NNI', 1);

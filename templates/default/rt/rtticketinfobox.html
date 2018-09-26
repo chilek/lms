@@ -349,13 +349,21 @@
 			<A id="print-anchor" href="?m=rtticketprint&id={$ticket.ticketid}"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
 			<br>
 			{if $ticket.owner != $layout.logid}
-			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;assign"><IMG src="img/users.gif" alt=""> {trans("Assign to me")}</A>
+			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=assign"><IMG src="img/users.gif" alt=""> {trans("Assign to me")}</A>
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
 				<span class="blend"><IMG src="img/resolved.gif" alt=""> {trans("Ticket have open assigned events!")}</A>&nbsp;</span>
 				{else}
-				<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;state=2"><IMG src="img/resolved.gif" alt=""> {trans("Resolve")}</A>&nbsp;
+					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
+					<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=verify"><IMG src="img/verifier.png" alt="">{trans("Transfer ticket to verifier")}</A>
+					{else}
+						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
+						<IMG src="img/verifier.png" alt=""><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}">{trans("Ticket has been transferred to verifier")}</span>
+						{else}
+						<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=resolve"><IMG src="img/resolved.gif" alt="">{trans("Resolve")}</A>
+						{/if}
+					{/if}
 				{/if}
 			{/if}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
