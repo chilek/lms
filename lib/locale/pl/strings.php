@@ -4153,7 +4153,6 @@ $_LANG['<!person>- none -'] = '- brak -';
 $_LANG['At least requestor name, mail or phone should be filled!'] = 'Jedno z pól nazwa, email i telefon powinno zostać wypełnione!';
 
 $_LANG['Group message reply'] = 'Odpowiedz wiadomością grupową';
-$_LANG['No tickets selected!'] = 'Nie wybrano żadnego zgłoszenia!';
 $_LANG['- no changes -'] = '- bez zmian -';
 $_LANG['New Message (group reply)'] = 'Nowa wiadomość (odpowiedź grupowa)';
 

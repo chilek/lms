@@ -332,6 +332,13 @@ A {
 		color: @linkhover;
 		cursor: pointer;
 	}
+	&.disabled {
+		color: @blend;
+		cursor: no-drop;
+		&:hover {
+			text-decoration: none;
+		}
+	}
 }
 TR {
 	&.blend A {

@@ -378,6 +378,13 @@ A:hover {
   color: #336600;
   cursor: pointer;
 }
+A.disabled {
+  color: #888888;
+  cursor: no-drop;
+}
+A.disabled:hover {
+  text-decoration: none;
+}
 TR.blend A {
   color: #888888;
 }

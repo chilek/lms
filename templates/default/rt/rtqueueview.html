@@ -59,17 +59,23 @@
 </TABLE>
 <script>
 
-	$('.group-message-reply').click(function () {
-		if (!$('table.lms-ui-multi-check .lms-ui-multi-check:checkbox').filter(':checked').length) {
-			alert('{trans("No tickets selected!")}');
-			return false;
-		} else {
+	$(function() {
+		$('.lms-ui-multi-check:checkbox,.lms-ui-multi-check-all:checkbox').click(function () {
+			var disabled = $('.lms-ui-multi-check:checked').length < 2;
+			if (disabled) {
+				$('.group-message-reply').addClass('disabled');
+			} else {
+				$('.group-message-reply').removeClass('disabled');
+			}
+		}).first().click();
+
+		$('.group-message-reply').on('click', ':not(.disabled)', function (e) {
 			var ticketid = [];
-			$('[name="ticketid[]"]:checked').each(function() {
+			$('[name="ticketid[]"]:checked').each(function () {
 				ticketid.push($(this).val());
 			});
 			location.href = '?m=rtmessageadd&ticketid[]=' + ticketid.join('&ticketid[]=');
-		}
+		});
 	});
 
 </script>
