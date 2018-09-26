@@ -1558,7 +1558,9 @@ CREATE TABLE nodesessions (
 	tag varchar(32)		DEFAULT '' NOT NULL,
 	terminatecause varchar(32) DEFAULT '' NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	nasipaddr bigint	DEFAULT NULL,
+	nasport text		DEFAULT NULL
 );
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
 CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);

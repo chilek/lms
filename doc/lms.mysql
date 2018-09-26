@@ -1630,6 +1630,8 @@ CREATE TABLE nodesessions (
 	terminatecause varchar(32) NOT NULL DEFAULT '',
 	type smallint		NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
+	nasipaddr int(16) unsigned	DEFAULT NULL,
+	nasport text		DEFAULT NULL,
 	INDEX customerid (customerid),
 	INDEX nodeid (nodeid),
 	INDEX tag (tag),
