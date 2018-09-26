@@ -4154,6 +4154,6 @@ $_LANG['At least requestor name, mail or phone should be filled!'] = 'Jedno z p�
 
 $_LANG['Group message reply'] = 'Odpowiedz wiadomością grupową';
 $_LANG['- no changes -'] = '- bez zmian -';
-$_LANG['New Message (group reply)'] = 'Nowa wiadomość (odpowiedź grupowa)';
+$_LANG['New Message (group reply for $a tickets)'] = 'Nowa wiadomość (odpowiedź grupowa dla $a zgłoszeń)';
 
 ?>
