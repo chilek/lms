@@ -28,12 +28,14 @@ if(isset($_POST['message']))
 {
 	$message = $_POST['message'];
 
-	if (is_array($message['ticketid'])) {
+	$group_reply = is_array($message['ticketid']);
+	if ($group_reply) {
 		$tickets = Utils::filterIntegers($message['ticketid']);
 		if (empty($tickets))
 			die;
 
 		$message['destination'] = '';
+		$message['inreplyto'] = null;
 		$message['sender'] = 'user';
 	} else {
 		if (!intval($message['ticketid']))
@@ -152,6 +154,7 @@ if(isset($_POST['message']))
 					unset($file);
 				}
 				$message['headers'] = $headers;
+				$message['ticketid'] = $ticketid;
 				$msgid = $LMS->TicketMessageAdd($message, $files);
 			} else { //sending to backend
 				$addmsg = ($message['destination'] != '');
@@ -193,6 +196,7 @@ if(isset($_POST['message']))
 					unset($file);
 
 					$message['headers'] = $headers;
+					$message['ticketid'] = $ticketid;
 					$msgid = $LMS->TicketMessageAdd($message, $files);
 				}
 
@@ -212,7 +216,7 @@ if(isset($_POST['message']))
 			if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($ticketid)))
 				$message['owner'] = Auth::GetCurrentUser();
 
-			if (is_array($message['ticketid'])) {
+			if ($group_reply) {
 				$props = array(
 					'owner' => empty($message['owner']) ? null : $message['owner'],
 				);
@@ -237,7 +241,7 @@ if(isset($_POST['message']))
 
 			// customer notification via sms when we reply to ticket message created from customer sms
 			if (isset($message['smsnotify']) && !empty($service))
-				if (is_array($message['ticketid']))
+				if ($group_reply)
 					$message['phonefrom'] = $LMS->GetTicketPhoneFrom($ticketid);
 				if (!empty($message['phonefrom'])) {
 					$sms_body = preg_replace('/\r?\n/', ' ', $message['body']);
