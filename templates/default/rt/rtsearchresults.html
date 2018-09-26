@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox lms-ui-background-cycle">
+<TABLE class="lmsbox lms-ui-background-cycle lms-ui-multi-check">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -25,6 +25,11 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
+			<label>
+				<input type="checkbox" class="lms-ui-multi-check-all">
+				{trans("Check all")}
+			</label>
+			<a href="javascript:void(0)" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
 			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
@@ -40,9 +45,30 @@
 			{/if}
 		</TD>
 		<TD class="text-right dark nobr">
+			<label>
+				<input type="checkbox" class="lms-ui-multi-check-all">
+				{trans("Check all")}
+			</label>
+			<a href="javascript:void(0)" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
 			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 	</TFOOT>
 </TABLE>
+<script>
+
+	$('.group-message-reply').click(function () {
+		if (!$('table.lms-ui-multi-check .lms-ui-multi-check:checkbox').filter(':checked').length) {
+			alert('{trans("No tickets selected!")}');
+			return false;
+		} else {
+			var ticketid = [];
+			$('[name="ticketid[]"]:checked').each(function() {
+				ticketid.push($(this).val());
+			});
+			location.href = '?m=rtmessageadd&ticketid[]=' + ticketid.join('&ticketid[]=');
+		}
+	});
+
+</script>
 {/block}
