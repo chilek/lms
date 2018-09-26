@@ -56,8 +56,8 @@ if (isset($_GET['id'])) {
 	$event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
 }
 
-$userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
-	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC', 'id');
+$userlist = $LMS->GetUserList();
+unset($userlist['total']);
 
 if(isset($_POST['event']))
 {
