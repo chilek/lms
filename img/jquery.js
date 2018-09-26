@@ -491,24 +491,30 @@ $(function() {
 		$('body').css('user-select', e.shiftKey ? 'none' : 'auto');
 	});
 
-	var tbodies = $('tbody.lms-ui-multi-check');
+	var tbodies = $('table.lms-ui-multi-check,tbody.lms-ui-multi-check');
 	$.each(tbodies, function(index, elem) {
 		var tbody = $(elem);
+		if (tbody.is('table')) {
+			tbody = tbody.find('tbody');
+		}
 		var checkboxes = tbody.parent().find(':checkbox');
 		var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 
 		var checkall = checkboxes.filter('.lms-ui-multi-check-all');
 		if (!checkall.length) {
-			checkall = tbody.siblings('tfoot').filter('.lms-ui-multi-check-all');
+			checkall = tbody.siblings('thead,tfoot').filter('.lms-ui-multi-check-all');
 		}
 		if (checkall.length) {
 			checkall.parent().addClass('lms-ui-multi-check-all');
-			checkall.click(function(e) {
-				allcheckboxes.filter(':visible').each(function(index, elem) {
-					this.checked = checkall.checked;
+			$(checkall).click(function() {
+				var checked = $(this).prop('checked');
+				checkall.not(this).each(function() {
+					$(this).prop('checked', checked);
+				});
+				allcheckboxes.filter(':visible').each(function() {
+					this.checked = checked;
 				});
 			});
-			checkall = checkall.get(0);
 		} else {
 			checkall = null;
 		}
@@ -534,11 +540,7 @@ $(function() {
 
 		function updateCheckAll() {
 			if (checkall) {
-				if (allcheckboxes.filter(':visible:checked').length == allcheckboxes.filter(':visible').length) {
-					checkall.checked = true;
-				} else {
-					checkall.checked = false;
-				}
+				checkall.prop('checked', allcheckboxes.filter(':visible:checked').length == allcheckboxes.filter(':visible').length);
 			}
 		}
 

@@ -150,6 +150,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added back to top button always visible on right bottom of contents [chilan]
   - enhancement: allow to arrange welcome boxes using drag & drop to create own layout
     - phpui.welcome_panels configuration variable controls how many welcome panels are created [chilan]
+  - enhancement: allow to generate group reply message to all marked helpdesk tickets [chilan]
 
 version 1.11.23 (2018-03-21):
 

@@ -7,7 +7,13 @@
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
+{if is_array($message.ticketid)}
+	{foreach $message.ticketid as $ticketid}
+	<INPUT type="hidden" name="message[ticketid][]" value ="{$ticketid}">
+	{/foreach}
+{else}
 <INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
+{/if}
 <INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -26,6 +32,7 @@
 	</TR>
     </THEAD>
     <TBODY>
+{if !is_array($message.ticketid)}
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/users.gif" alt="">
@@ -45,6 +52,7 @@
 			<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
 		</TD>
 	</TR>
+{/if}
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/edit.gif" alt="">
@@ -96,7 +104,7 @@
 			<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
 		</TD>
 	</TR>
-	{if $message.phonefrom}
+	{if $message.phonefrom || is_array($message.ticketid)}
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/phone.gif" alt="">
@@ -104,7 +112,7 @@
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
-			<input type="hidden" name="message[phonefrom]" value="{$message.phonefrom}">
+			<input type="hidden" name="message[phonefrom]" value="{if is_array($message.ticketid)}-1{else}{$message.phonefrom}{/if}">
 		</TD>
 	</TR>
 	{/if}
@@ -114,14 +122,17 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
+				{if is_array($message.ticketid)}
+					<option value="-1"{if $message.state == -1} selected{/if}>{trans("- no changes -")}</option>
+				{/if}
 				{foreach $_RT_STATES as $stateidx => $state}
 				<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 				{/foreach}
 			</SELECT>
-            <label>
-                <INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
-                {trans("resolve ticket")}
-            </label>
+			<label>
+				<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
+				{trans("resolve ticket")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
@@ -131,12 +142,16 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
+				{if is_array($message.ticketid)}
+				<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
+				{/if}
 				<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
 				<OPTION value="1" {if $message.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
 				<OPTION value="2" {if $message.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
+{if !is_array($message.ticketid)}
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/volcano.png" alt="">{trans("Ticket source:")}
@@ -220,11 +235,14 @@
 			<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{$message.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
 		</TD>
 	</TR>
+{/if}
     </TBODY>
 </TABLE>
 </FORM></P>
 
+{if !is_array($message.ticketid)}
 {include file="rt/rtticketmessagesbox.html"}
+{/if}
 
 <SCRIPT type="text/javascript">
 <!--

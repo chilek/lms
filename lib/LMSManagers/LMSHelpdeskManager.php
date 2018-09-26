@@ -1458,4 +1458,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		}
 		return $mailfrom;
 	}
+
+	public function GetTicketPhoneFrom($ticketid) {
+		return $this->db->GetOne('SELECT phonefrom FROM rtmessages
+			WHERE ticketid = ? AND phonefrom <> ?
+			LIMIT 1',
+			array($ticketid, ''));
+	}
 }

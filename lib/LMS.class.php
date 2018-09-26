@@ -1722,6 +1722,11 @@ class LMS
 		return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
 	}
 
+	public function GetTicketPhoneFrom($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetTicketPhoneFrom($ticketid);
+	}
+
 	/*
 	 *  LMS-UI configuration
 	 */
