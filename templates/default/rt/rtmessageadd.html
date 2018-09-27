@@ -260,12 +260,14 @@ $(function() {
 		}
 	});
 
+	{if !is_array($message.ticketid)}
 	var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
 	if (newmessage_notify === undefined) {
 		$('#customernotify-row').hide();
 	} else {
 		$('#customernotify-row').show();
 	}
+	{/if}
 
 	$('#resolve').change(function() {
 		var stateelem = $('#state');
