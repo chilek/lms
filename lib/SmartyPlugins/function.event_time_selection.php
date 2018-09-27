@@ -30,14 +30,6 @@ function smarty_function_event_time_selection($params, $template) {
 	$end = isset($params['end']) ? $params['end'] : '';
 	$whole_days = isset($params['wholedays']) && $params['wholedays'];
 
-	if ( !function_exists('smarty_function_tip') ) {
-		foreach ( $template->getPluginsDir() as $v ) {
-			if ( file_exists($v . 'function.tip.php') ) {
-				require_once $v . 'function.tip.php';
-			}
-		}
-	}
-
 	$legend_code = '<div class="lms-ui-event-time-legend">';
 	for ($i = 0; $i <= 22; $i += 2)
 		$legend_code .= '<div class="lms-ui-event-time-legend-label">' . sprintf('%02d', $i) . ':00 &#8212;</div>
@@ -50,7 +42,7 @@ function smarty_function_event_time_selection($params, $template) {
 				<div>
 					' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
 						. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
-						smarty_function_tip(array(
+						Utils::tip(array(
 							'class' => 'calendar-time',
 							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
 							'trigger' => 'date',
@@ -58,7 +50,7 @@ function smarty_function_event_time_selection($params, $template) {
 						. '>
 					' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
 						. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
-						smarty_function_tip(array(
+						Utils::tip(array(
 							'class' => 'calendar-time',
 							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
 							'trigger' => 'enddate',
