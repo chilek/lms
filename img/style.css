@@ -2399,3 +2399,15 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-box-container .lms-ui-box-buttons > * {
   margin: 0.25em;
 }
+td.lms-ui-mac-address-selection {
+  padding: 0;
+}
+table.lms-ui-mac-address-selection .mac td .remove-mac {
+  visibility: hidden;
+  margin-left: -1.5em;
+  margin-top: 0.1em;
+}
+table.lms-ui-mac-address-selection .mac:hover td .remove-mac {
+  visibility: visible;
+  cursor: pointer;
+}
