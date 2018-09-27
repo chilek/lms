@@ -153,7 +153,7 @@ function smarty_function_fileupload($params, $template) {
 					var files = e.originalEvent.dataTransfer.files;
 					var form = $(this).closest("form");
 					var formdata = new FormData(form.get(0));
-					formdata.delete("files[]");
+					formdata.delete("' . $id . '[]");
 					$(files).each(function(index, file) {
 						var fileReader = new FileReader();
 						fileReader.readAsDataURL(file);

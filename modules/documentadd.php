@@ -108,66 +108,68 @@ if (isset($_POST['document'])) {
 
 	$files = array();
 
-	if ($document['reference']) {
-		$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
-			WHERE id = ?', array($document['reference']));
-		$SMARTY->assignByRef('document', $document);
-	}
-
-	if ($document['templ']) {
-		foreach ($documents_dirs as $doc)
-			if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
-				$doc_dir = $doc;
-				$template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
-				break;
-			}
-
-		$result = '';
-		$script_result = '';
-
-		// read template information
-		include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
-
-		// call plugin
-		if (!empty($engine['plugin'])) {
-			if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php'))
-				include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
-					. DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
-			if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-				. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js'))
-				$script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
+	if (!isset($_GET['ajax'])) {
+		if ($document['reference']) {
+			$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
+				WHERE id = ?', array($document['reference']));
+			$SMARTY->assignByRef('document', $document);
 		}
-		// get plugin content
-		$SMARTY->assign('plugin_result', $result);
-		$SMARTY->assign('script_result', $script_result);
-		$SMARTY->assign('attachment_result', GenerateAttachmentHTML($template_dir, $engine,
-			isset($document['attachments']) ? $document['attachments'] : array()));
 
-		// run template engine
-		if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-			. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
-			require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-				. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
-		else
-			require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-				. 'default' . DIRECTORY_SEPARATOR . 'engine.php');
+		if ($document['templ']) {
+			foreach ($documents_dirs as $doc)
+				if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
+					$doc_dir = $doc;
+					$template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+					break;
+				}
 
-		if (!empty($output)) {
-			$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
-			$fh = fopen($file, 'w');
-			fwrite($fh, $output);
-			fclose($fh);
+			$result = '';
+			$script_result = '';
 
-			$files[] = array(
-				'md5sum' => md5_file($file),
-				'type' => $engine['content_type'],
-				'name' => $engine['output'],
-				'tmpname' => $file,
-				'main' => true,
-			);
-		} else if (empty($error))
-			$error['templ'] = trans('Problem during file generation!');
+			// read template information
+			include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
+
+			// call plugin
+			if (!empty($engine['plugin'])) {
+				if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php'))
+					include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+						. DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
+				if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js'))
+					$script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
+			}
+			// get plugin content
+			$SMARTY->assign('plugin_result', $result);
+			$SMARTY->assign('script_result', $script_result);
+			$SMARTY->assign('attachment_result', GenerateAttachmentHTML($template_dir, $engine,
+				isset($document['attachments']) ? $document['attachments'] : array()));
+
+			// run template engine
+			if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+				. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
+				require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
+			else
+				require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. 'default' . DIRECTORY_SEPARATOR . 'engine.php');
+
+			if (!empty($output)) {
+				$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
+				$fh = fopen($file, 'w');
+				fwrite($fh, $output);
+				fclose($fh);
+
+				$files[] = array(
+					'md5sum' => md5_file($file),
+					'type' => $engine['content_type'],
+					'name' => $engine['output'],
+					'tmpname' => $file,
+					'main' => true,
+				);
+			} else if (empty($error))
+				$error['templ'] = trans('Problem during file generation!');
+		}
 	}
 
 	$result = handle_file_uploads('attachments', $error);
