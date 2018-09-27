@@ -25,12 +25,17 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<label>
-				<input type="checkbox" class="lms-ui-multi-check-all">
+			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<a href="#" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
-			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+			<button type="button" class="lms-ui-button lms-ui-button-icon group-message-reply">
+				<img src="img/forward.gif" alt="">
+				{trans("Group message reply")}
+			</button>
+			<button type="button" class="lms-ui-button lms-ui-button-icon" onclick="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">
+				<IMG src="img/save.gif" ALT="">
+				{trans("New Ticket")}
+			</button>
 		</TD>
 	</TR>
     </THEAD>
@@ -49,8 +54,14 @@
 				<input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<a href="#" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
-			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+			<button type="button" class="lms-ui-button group-message-reply">
+				<img src="img/forward.gif" alt="">
+				{trans("Group message reply")}
+			</button>
+			<button type="button" class="lms-ui-button" onclick="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">
+				<IMG src="img/save.gif" ALT="">
+				{trans("New Ticket")}
+			</button>
 		</TD>
 	</TR>
 	</TFOOT>
@@ -61,9 +72,9 @@
 		function disableLink() {
 			var disabled = $('.lms-ui-multi-check:checked').length < 2;
 			if (disabled) {
-				$('.group-message-reply').addClass('disabled');
+				$('.group-message-reply').addClass('lms-ui-button-disabled');
 			} else {
-				$('.group-message-reply').removeClass('disabled');
+				$('.group-message-reply').removeClass('lms-ui-button-disabled');
 			}
 		}
 		disableLink();
@@ -73,7 +84,7 @@
 		});
 
 		$('.group-message-reply').click(function () {
-			if ($(this).is('.disabled')) {
+			if ($(this).is('.lms-ui-button-disabled')) {
 				return false;
 			}
 			var ticketid = [];

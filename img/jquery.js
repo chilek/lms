@@ -214,11 +214,6 @@ function init_datepickers(selector) {
 	});
 }
 
-$(document).on('click', 'a.disabled', function(e) {
-	e.preventDefault();
-	e.stopImmediatePropagation();
-});
-
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;

@@ -25,15 +25,20 @@
                 {include file="pagination.html"}
                 {/if}
             </TD>
-            <TD class="lms-ui-pagination text-right nobr">
-                <label>
-                    <input type="checkbox" class="lms-ui-multi-check-all">
-                    {trans("Check all")}
-                </label>
-                <a href="#" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
-                <A HREF="?m=rtticketadd{if isset($filter.ids) && (!is_array($filter.ids) || count($filter.ids) == 1)}&id={$filter.ids[0]}{/if}"><IMG src="img/save.gif" ALT=""> {trans("Create")}</A>
-            </TD>
-        </TR>
+			<TD class="lms-ui-pagination text-right nobr">
+				<label> <input type="checkbox" class="lms-ui-multi-check-all">
+					{trans("Check all")}
+				</label>
+				<button type="button" class="lms-ui-button group-message-reply">
+					<img src="img/forward.gif" alt="">
+					{trans("Group message reply")}
+				</button>
+				<button type="button" class="lms-ui-button" onclick="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">
+					<IMG src="img/save.gif" ALT="">
+					{trans("New Ticket")}
+				</button>
+			</TD>
+		</TR>
         {include file="rt/rtheader.html"}
     </THEAD>
     <TBODY>
@@ -46,15 +51,20 @@
                 {include file="pagination.html"}
                 {/if}
             </TD>
-            <TD class="lms-ui-pagination text-right nobr">
-                <label>
-                    <input type="checkbox" class="lms-ui-multi-check-all">
-                    {trans("Check all")}
-                </label>
-                <a href="#" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
-                <A HREF="?m=rtticketadd{if isset($filter.ids) && (!is_array($filter.ids) || count($filter.ids) == 1)}&id={$filter.ids[0]}{/if}"><IMG src="img/save.gif" ALT=""> {trans("Create")}</A>
-            </TD>
-        </TR>
+			<TD class="lms-ui-pagination text-right nobr">
+				<label> <input type="checkbox" class="lms-ui-multi-check-all">
+					{trans("Check all")}
+				</label>
+				<button type="button" class="lms-ui-button group-message-reply">
+					<img src="img/forward.gif" alt="">
+					{trans("Group message reply")}
+				</button>
+				<button type="button" class="lms-ui-button" onclick="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">
+					<IMG src="img/save.gif" ALT="">
+					{trans("New Ticket")}
+				</button>
+			</TD>
+		</TR>
     </TFOOT>
 </TABLE>
 <script>
@@ -63,9 +73,9 @@
 		function disableLink() {
 			var disabled = $('.lms-ui-multi-check:checked').length < 2;
 			if (disabled) {
-				$('.group-message-reply').addClass('disabled');
+				$('.group-message-reply').addClass('lms-ui-button-disabled');
 			} else {
-				$('.group-message-reply').removeClass('disabled');
+				$('.group-message-reply').removeClass('lms-ui-button-disabled');
 			}
 		};
 		disableLink();
@@ -75,7 +85,7 @@
 		});
 
 		$('.group-message-reply').click(function () {
-			if ($(this).is('.disabled')) {
+			if ($(this).is('.lms-ui-button-disabled')) {
 				return false;
 			}
 			var ticketid = [];
