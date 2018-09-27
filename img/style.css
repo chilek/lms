@@ -2400,7 +2400,7 @@ div.lms-ui-wysiwyg-editor {
   margin: 0.25em;
 }
 td.lms-ui-mac-address-selection {
-  padding: 0;
+  padding: 0 !important;
 }
 table.lms-ui-mac-address-selection .mac td .remove-mac {
   visibility: hidden;
