@@ -1047,9 +1047,7 @@ button.lms-ui-button {
   border: 1px solid #615847;
   color: black;
   text-decoration: none;
-  padding-top: 4px;
-  padding-right: 4px;
-  padding-bottom: 4px;
+  padding: 0.33em;
   background-color: #DFD5BD;
   background-repeat: no-repeat;
   background-position: 3px 3px;
@@ -1088,15 +1086,19 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   border: 1px solid black;
   box-shadow: 0px 0px 1px 1px black;
 }
+button.lms-ui-button .fas,
+button.lms-ui-button .far,
+button.lms-ui-button .fal,
+button.lms-ui-button .fab {
+  font-size: 1em;
+}
 button.lms-ui-fileupload-button {
   color: #800000;
   border-radius: 3px;
   border: 1px solid #615847;
   color: black;
   text-decoration: none;
-  padding-top: 4px;
-  padding-right: 4px;
-  padding-bottom: 4px;
+  padding: 0.33em;
   background-color: #DFD5BD;
   background-repeat: no-repeat;
   background-position: 3px 3px;
@@ -1135,6 +1137,12 @@ button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):focus {
   outline: none;
   border: 1px solid black;
   box-shadow: 0px 0px 1px 1px black;
+}
+button.lms-ui-fileupload-button .fas,
+button.lms-ui-fileupload-button .far,
+button.lms-ui-fileupload-button .fal,
+button.lms-ui-fileupload-button .fab {
+  font-size: 1em;
 }
 button.lms-ui-fileupload-button.lms-ui-fileupload-dropzone {
   box-shadow: 0px 0px 10px 1px blue;
@@ -2207,16 +2215,8 @@ div.lms-ui-persistent-filter .lms-ui-filter-name {
   display: none;
 }
 div.lms-ui-persistent-filter .lms-ui-button {
-  padding-left: 0;
   width: 22px;
   height: 22px;
-  background-position: 2px 2px;
-}
-div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-modify-button {
-  background-image: url(add.gif);
-}
-div.lms-ui-persistent-filter .lms-ui-button.lms-ui-filter-delete-button {
-  background-image: url(delete.gif);
 }
 .scombobox {
   margin: 0;
@@ -2419,4 +2419,10 @@ table.lms-ui-mac-address-selection .mac:hover td .remove-mac {
 .fal,
 .fab {
   font-size: 1.5em;
+}
+.lms-ui-button .fas,
+.lms-ui-button .far,
+.lms-ui-button .fal,
+.lms-ui-button .fab {
+  font-size: 1em;
 }

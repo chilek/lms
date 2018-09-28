@@ -914,9 +914,7 @@ li.lms-ui-suggestion-item {
 	border: 1px solid @darkbrown;
 	color: black;
 	text-decoration: none;
-	padding-top: 4px;
-	padding-right: 4px;
-	padding-bottom: 4px;
+	padding: 0.33em;
 	background-color: @light;
 	background-repeat: no-repeat;
 	background-position: 3px 3px;
@@ -1997,16 +1995,8 @@ div.lms-ui-persistent-filter {
 		display: none;
 	}
 	.lms-ui-button {
-		padding-left: 0;
 		width: 22px;
 		height: 22px;
-		background-position: 2px 2px;
-		&.lms-ui-filter-modify-button {
-			background-image: url(add.gif);
-		}
-		&.lms-ui-filter-delete-button {
-			background-image: url(delete.gif);
-		}
 	}
 }
 
@@ -2228,4 +2218,13 @@ table.lms-ui-mac-address-selection {
 .fal,
 .fab {
 	font-size: 1.5em;
+}
+
+.lms-ui-button {
+	.fas,
+	.far,
+	.fal,
+	.fab {
+		font-size: 1em;
+	}
 }

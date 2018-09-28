@@ -40,12 +40,12 @@ function smarty_function_persistent_filter($params, $template) {
 				<option value="-1">' . trans("<!filter>- none -") . '</option>
 				' . $filters . '
 			</select>
-			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-modify-button'
+			<button class="lms-ui-button lms-ui-filter-modify-button'
 				. ($persistent_filter == -1 || empty($persistent_filter) ? ' lms-ui-button-disabled' : '') . '" title="'
-				. trans("<!filter>Update") . '">
+				. trans("<!filter>Update") . '"><i class="fas fa-plus"></i>
 			</button>
-			<button class="lms-ui-button lms-ui-button-icon lms-ui-filter-delete-button" title="'
-				. trans("<!filter>Delete") . '">
+			<button class="lms-ui-button lms-ui-filter-delete-button" title="'
+				. trans("<!filter>Delete") . '"><i class="fas fa-trash"></i>
 			</button>
     	</div>
 	</form>';
