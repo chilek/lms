@@ -56,7 +56,6 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	opacity: 0.8;
 	right: 1.8em;
 	bottom: 0.6em;
-	background-image: url(reload.gif);
 }
 
 #lms-ui-menu-panel {
@@ -82,11 +81,14 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	width: 0.8em;
 	height: 0.8em;
 	cursor: pointer;
-	&.visible {
-		background-image: url(left.gif);
-	}
 	&:not(.visible) {
-		background-image: url(right.gif);
+		background-color: @superdark;
+		padding: 0.1em 0.0em 0.3em 0.1em;
+		border: @frame;
+		border-radius: 0 0 0.5em 0em;
+		& ~ #lms-ui-contents #lms-ui-quicksearch-indicators-panel {
+			padding-left: 1.5em;
+		}
 	}
 }
 
@@ -233,7 +235,6 @@ form.lms-ui-quick-search {
 
 .lms-ui-quick-search-selector {
 	margin-left: 0.45em;
-	margin-top: 0.45em;
 	cursor: pointer;
 }
 
@@ -575,6 +576,15 @@ div.lms-ui-multiselectlayer {
 	margin-top: 0;
 	margin-bottom: 0;
 	.lms-ui-no-user-select;
+	i {
+		text-align: center;
+		&.fas,
+		&.fab,
+		&.far,
+		&.fal {
+			width: 1.5em;
+		}
+	}
 	.box1 {
 		background-color: @dark;
 		color: #000000;
@@ -914,9 +924,7 @@ li.lms-ui-suggestion-item {
 	border: 1px solid @darkbrown;
 	color: black;
 	text-decoration: none;
-	padding-top: 4px;
-	padding-right: 4px;
-	padding-bottom: 4px;
+	padding: 0.33em;
 	background-color: @light;
 	background-repeat: no-repeat;
 	background-position: 3px 3px;
@@ -959,7 +967,6 @@ button.lms-ui-button {
 
 button.lms-ui-fileupload-button {
 	.lms-ui-button();
-	background-image: url(attach.gif);
 	&.lms-ui-fileupload-dropzone {
 		box-shadow: @slave;
 	}
@@ -1386,7 +1393,10 @@ html .ui-button.ui-state-disabled:active {
 }
 
 .ui-datepicker-trigger {
-	margin-left: 0.3em;
+	border: none;
+	background: none;
+	margin-left: 0.2em;
+	padding: 0;
 }
 
 .ui-tooltip.voipaccountinfo,
@@ -1994,16 +2004,8 @@ div.lms-ui-persistent-filter {
 		display: none;
 	}
 	.lms-ui-button {
-		padding-left: 0;
 		width: 22px;
 		height: 22px;
-		background-position: 2px 2px;
-		&.lms-ui-filter-modify-button {
-			background-image: url(add.gif);
-		}
-		&.lms-ui-filter-delete-button {
-			background-image: url(delete.gif);
-		}
 	}
 }
 
@@ -2199,5 +2201,39 @@ div.lms-ui-wysiwyg-editor {
 		& > * {
 			margin: 0.25em;
 		}
+	}
+}
+
+td.lms-ui-mac-address-selection {
+	padding: 0 !important;
+}
+
+table.lms-ui-mac-address-selection {
+	.mac {
+		td .remove-mac {
+			visibility: hidden;
+			margin-left: -1.5em;
+			margin-top: 0.1em;
+		}
+		&:hover td .remove-mac {
+			visibility: visible;
+			cursor: pointer;
+		}
+	}
+}
+
+.fas,
+.far,
+.fal,
+.fab {
+	font-size: 1.5em;
+}
+
+.lms-ui-button {
+	.fas,
+	.far,
+	.fal,
+	.fab {
+		font-size: 1em;
 	}
 }

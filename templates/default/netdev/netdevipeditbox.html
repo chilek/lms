@@ -125,16 +125,8 @@
 									<td>
 										{trans("MAC:")}
 									</td>
-									<td>
-										<table width="100%" cellpadding="1" cellspacing="0">
-											{foreach from=$nodeipdata.macs item=item key=key}
-											<tr id="mac{$key}">
-												<td width="100%"><input type="text" name="ipadd[macs][{$key}]" value="{$item}" {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements['ipadd[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</a>
-											</tr>
-											{/foreach}
-										</table>
-										<input type="hidden" id="macscount" value="{$item@total}">
-										<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
+									<td class="lms-ui-mac-address-selection nobr">
+										{mac_address_selection form="ipadd" macs=$nodeipdata.macs}
 									</td>
 								</tr>
 								<tr>
@@ -257,8 +249,8 @@
 </table>
 </form>
 
-<script type="text/javascript">
-<!--
+<script>
+
 	$( '#passGen' ).click( function() {
 		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
 
@@ -269,23 +261,4 @@
 		event.preventDefault();
 	});
 
-	function newmac()
-	{
-		var macscountelem = document.getElementById('macscount');
-		var nr = macscountelem.value;
-		var lastmacelem = document.getElementById('mac' + (nr - 1));
-		var newrow = lastmacelem.parentNode.insertRow(lastmacelem.rowIndex + 1);
-		newrow.id = 'mac' + nr;
-		var newcell = newrow.insertCell(0);
-		newcell.style.width = '100%';
-		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="ipadd[macs][' + nr + ']" VALUE=""'
-			+ ' title="{trans("Enter MAC address")}\')">'
-			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements[\'ipadd[macs][' + nr + ']\']);"'
-			+ ' title="{trans("Click to select MAC from the list")}">&nbsp;&raquo;&raquo;&raquo;</A>';
-		$(newcell).children("[title]").tooltip({
-			position: { my: "left top" }
-		});
-		macscountelem.value = parseInt(nr) + 1;
-	}
-//-->
 </script>

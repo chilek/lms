@@ -25,12 +25,17 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<label>
-				<input type="checkbox" class="lms-ui-multi-check-all">
+			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<a href="javascript:void(0)" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
-			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+			<button type="button" class="lms-ui-button lms-ui-button-icon group-message-reply">
+				<i class="fas fa-reply-all"></i>
+				{trans("Group message reply")}
+			</button>
+			<button type="button" class="lms-ui-button lms-ui-button-icon" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
+				<i class="fas fa-plus-square"></i>
+				{trans("New Ticket")}
+			</button>
 		</TD>
 	</TR>
     </THEAD>
@@ -49,8 +54,14 @@
 				<input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<a href="javascript:void(0)" class="group-message-reply"><img src="img/forward.gif" alt=""> {trans("Group message reply")}</a>
-			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+			<button type="button" class="lms-ui-button group-message-reply">
+				<i class="fas fa-reply-all"></i>
+				{trans("Group message reply")}
+			</button>
+			<button type="button" class="lms-ui-button" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
+				<i class="fas fa-plus-square"></i>
+				{trans("New Ticket")}
+			</button>
 		</TD>
 	</TR>
 	</TFOOT>
@@ -58,16 +69,24 @@
 <script>
 
 	$(function() {
-		$('.lms-ui-multi-check:checkbox,.lms-ui-multi-check-all:checkbox').click(function () {
+		function disableLink() {
 			var disabled = $('.lms-ui-multi-check:checked').length < 2;
 			if (disabled) {
-				$('.group-message-reply').addClass('disabled');
+				$('.group-message-reply').addClass('lms-ui-button-disabled');
 			} else {
-				$('.group-message-reply').removeClass('disabled');
+				$('.group-message-reply').removeClass('lms-ui-button-disabled');
 			}
-		}).first().click();
+		}
+		disableLink();
 
-		$('.group-message-reply').on('click', ':not(.disabled)', function (e) {
+		$('.lms-ui-multi-check:checkbox,.lms-ui-multi-check-all:checkbox').click(function () {
+			disableLink();
+		});
+
+		$('.group-message-reply').click(function () {
+			if ($(this).is('.lms-ui-button-disabled')) {
+				return false;
+			}
 			var ticketid = [];
 			$('[name="ticketid[]"]:checked').each(function () {
 				ticketid.push($(this).val());

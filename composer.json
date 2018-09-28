@@ -47,6 +47,18 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fortawesome/font-awesome",
+                "version": "5.3.1",
+                "source": {
+                    "url": "https://github.com/FortAwesome/Font-Awesome.git",
+                    "type": "git",
+                    "reference": "5.3.1"
+                }
+            }
         }
     ],
     "require": {
@@ -57,7 +69,7 @@
         "tecnickcom/tcpdf": "^6.2",
         "spipu/html2pdf": "^4.5",
         "components/normalize.css": "^3.0",
-        "smarty/smarty": "3.1.31",
+        "smarty/smarty": "3.1.33",
         "rospdf/pdf-php": "^0.12",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
@@ -72,7 +84,8 @@
         "harvesthq/chosen": "^1.8",
         "tinymce/tinymce": "^4",
         "ccampbell/mousetrap": "^1",
-        "ivkremer/jquery-simple-combobox": "^1"
+        "ivkremer/jquery-simple-combobox": "^1",
+		"fortawesome/font-awesome": "^5"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

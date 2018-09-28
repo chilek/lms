@@ -2016,6 +2016,7 @@ $_LANG['Enter National Court Register / Register of Business Entities Number (op
 $_LANG['Enter National Court Register / Register of Business Entities Name (optional)'] = 'Wprowadź nazwę EDG/KRS (opcjonalnie)';
 $_LANG['Incorrect Business Registration Number!'] = 'Niepoprawny numer REGON!';
 $_LANG['Incorrect Identity Card Number!'] = 'Niepoprawny numer Dowodu Osobistego!';
+$_LANG['Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.'] = 'Niepoprawny numer Dowodu Osobistego! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['OK'] = 'OK';
 $_LANG['REGON'] = 'REGON';
 $_LANG['REGON:'] = 'REGON:';
@@ -4157,6 +4158,6 @@ $_LANG['At least requestor name, mail or phone should be filled!'] = 'Jedno z p�
 
 $_LANG['Group message reply'] = 'Odpowiedz wiadomością grupową';
 $_LANG['- no changes -'] = '- bez zmian -';
-$_LANG['New Message (group reply)'] = 'Nowa wiadomość (odpowiedź grupowa)';
+$_LANG['New Message (group reply for $a tickets)'] = 'Nowa wiadomość (odpowiedź grupowa dla $a zgłoszeń)';
 
 ?>

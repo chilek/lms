@@ -100,17 +100,9 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("MAC address:")}</B>
 		</TD>
-		<TD WIDTH="98%" NOWRAP>
-			<TABLE width="100%" cellpadding="1" cellspacing="0">
-				{foreach from=$nodeipdata.macs item=item key=key}
-				<TR ID="mac{$key}">
-					<TD width="100%"><INPUT TYPE="TEXT" NAME="ipadd[macs][{$key}]" VALUE="{$item}" {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements['ipadd[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A></TD>
-				</TR>
-				{/foreach}
-			</TABLE>
-			<INPUT TYPE="HIDDEN" ID="macscount" VALUE="{$item@total}">
-			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
-		</TD>
+		<td WIDTH="98%" class="lms-ui-mac-address-selection nobr">
+			{mac_address_selection form="ipadd" macs=$nodeipdata.macs}
+		</td>
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
@@ -209,8 +201,8 @@
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
+
 	document.forms['editipaddr'].elements['ipadd[name]'].focus();
 
 	function GenPasswd() {
@@ -221,23 +213,4 @@
 			generate_random_string(length, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 	}
 
-	function newmac()
-	{
-		var macscountelem = document.getElementById('macscount');
-		var nr = macscountelem.value;
-		var lastmacelem = document.getElementById('mac' + (nr - 1));
-		var newrow = lastmacelem.parentNode.insertRow(lastmacelem.rowIndex + 1);
-		newrow.id = 'mac' + nr;
-		var newcell = newrow.insertCell(0);
-		newcell.style.width = '100%';
-		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="ipadd[macs][' + nr + ']" VALUE=""'
-			+ ' title="{trans("Enter MAC address")}">'
-			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements[\'ipadd[macs][' + nr + ']\']);"'
-			+ ' title="{trans("Click to select MAC from the list")}">&nbsp;&raquo;&raquo;&raquo;</A>';
-		$(newcell).children("[title]").tooltip({
-			position: { my: "left top" }
-		});
-		macscountelem.value = parseInt(nr) + 1;
-	}
-//-->
 </SCRIPT>

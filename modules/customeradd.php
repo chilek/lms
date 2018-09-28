@@ -151,8 +151,10 @@ if (isset($_POST['customeradd'])) {
 		}
 	}
 
-	if ($customeradd['icn'] != '' && !check_icn($customeradd['icn']))
-		$error['icn'] = trans('Incorrect Identity Card Number!');
+	if ($customeradd['icn'] != '' && !isset($customeradd['icnwarning']) && !check_icn($customeradd['icn'])) {
+		$error['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+		$icnwarning = 1;
+	}
 
 	if ($customeradd['regon'] != '' && !check_regon($customeradd['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');

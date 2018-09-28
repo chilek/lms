@@ -151,6 +151,10 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to arrange welcome boxes using drag & drop to create own layout
     - phpui.welcome_panels configuration variable controls how many welcome panels are created [chilan]
   - enhancement: allow to generate group reply message to all marked helpdesk tickets [chilan]
+  - improvement: modernized mac address selection (separated smarty function called
+    'mac_address_selection') [chilan]
+  - improvement: started to use fontawesome icon library [chilan]
+  - improvement: incorrect customer identify card number generates warning instead of error [chilan]
 
 version 1.11.23 (2018-03-21):
 

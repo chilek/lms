@@ -2,6 +2,17 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+<style>
+
+	.lms-ui-box-container {
+		margin-bottom: 0.5em;
+	}
+
+	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+		width: 8em;
+	}
+
+</style>
 <H1>{$layout.pagetitle}</H1>
 <P><FORM method="POST" name="message" action="?m=rtmessageadd">
 <INPUT type="submit" class="hiddenbtn">
@@ -15,71 +26,79 @@
 <INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
 {/if}
 <INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 99%;">
-	</COLGROUP>
-    <THEAD>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt="">
-			{trans("Subject:")}
-		</TD>
-		<TD>
-			<INPUT type="text" size="75" name="message[subject]" maxlength="255" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
+<div class="lms-ui-box-container">
+	<div class="lms-ui-box-header">
+		<IMG src="img/mail.gif" alt="">
+		{trans("Subject:")}
+		<INPUT type="text" size="75" name="message[subject]" maxlength="255" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}>
+	</div>
+	<div class="lms-ui-box-contents">
+		<div class="lms-ui-box-panel">
+
 {if !is_array($message.ticketid)}
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt="">
-			{trans("Requestor:")}
-		</TD>
-		<TD>
-			<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
-			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/email.gif" alt="">
-			{trans("Recipient's e-mail:")}
-		</TD>
-		<TD>
-			<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
-		</TD>
-	</TR>
+		<div class="lms-ui-box-row">
+			<div class="lms-ui-box-row-icon">
+				<IMG src="img/users.gif" alt="">
+			</div>
+			<div class="lms-ui-box-row-label">
+				{trans("Requestor:")}
+			</div>
+			<div class="lms-ui-box-row-field">
+				<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
+				<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
+			</div>
+		</div>
+
+		<div class="lms-ui-box-row">
+			<div class="lms-ui-box-row-icon">
+				<IMG src="img/email.gif" alt="">
+			</div>
+			<div class="lms-ui-box-row-label">
+				{trans("Recipient's e-mail:")}
+			</div>
+			<div class="lms-ui-box-row-field">
+				<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
+			</div>
+		</div>
 {/if}
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/edit.gif" alt="">
-			{trans("Content:")}
-		</TD>
-		<TD>
-			<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr valign-top">
-			<IMG src="img/attach.gif" alt="">
-			{trans("Attachments:")}
-		</TD>
-		<TD>
-			{fileupload id="files" fileupload=$fileupload}
-		</TD>
-	</TR>
-	<TR>
-		<TD colspan="2" class="buttons">
-			<A href="javascript:document.message.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit/Send")}</A>
-			<A href="?m=rtticketview&id={$message.ticketid}"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<BR>
+
+		<div class="lms-ui-box-row">
+			<div class="lms-ui-box-row-icon">
+				<IMG src="img/edit.gif" alt="">
+			</div>
+			<div class="lms-ui-box-row-label">
+				{trans("Content:")}
+			</div>
+			<div class="lms-ui-box-row-field">
+				<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
+			</div>
+		</div>
+
+		<div class="lms-ui-box-row">
+			<div class="lms-ui-box-row-icon">
+				<IMG src="img/attach.gif" alt="">
+			</div>
+			<div class="lms-ui-box-row-label">
+				{trans("Attachments:")}
+			</div>
+			<div class="lms-ui-box-row-field">
+				{fileupload id="files" fileupload=$fileupload}
+			</div>
+		</div>
+
+		</div>
+	</div>
+
+	<div class="lms-ui-box-buttons">
+		<button onclick="javascript:document.message.submit();" class="lms-ui-button" accesskey="s">
+			<IMG src="img/save.gif" alt=""> {trans("Submit/Send")}
+		</button>
+		<button type="button" onclick="location.href = '?m=rtticketview&id={$message.ticketid}'" class="lms-ui-button">
+			<IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
+		</button>
+	</div>
+</div>
+
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -260,12 +279,14 @@ $(function() {
 		}
 	});
 
+	{if !is_array($message.ticketid)}
 	var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
 	if (newmessage_notify === undefined) {
 		$('#customernotify-row').hide();
 	} else {
 		$('#customernotify-row').show();
 	}
+	{/if}
 
 	$('#resolve').change(function() {
 		var stateelem = $('#state');

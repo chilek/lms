@@ -125,8 +125,10 @@ elseif (!$exists)
 		if ($customerdata['regon'] != '' && !check_regon($customerdata['regon']))
 			$error['regon'] = trans('Incorrect Business Registration Number!');
 
-		if ($customerdata['icn'] != '' && !check_icn($customerdata['icn']))
-			$error['icn'] = trans('Incorrect Identity Card Number!');
+		if ($customerdata['icn'] != '' && !isset($customerdata['icnwarning']) && !check_icn($customerdata['icn'])) {
+			$error['icn'] = trans('Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.');
+			$icnwarning = 1;
+		}
 
 		if ($customerdata['pin'] == '')
 			$error['pin'] = trans('PIN code is required!');
@@ -250,6 +252,7 @@ elseif (!$exists)
 			$customerinfo['tenexistencewarning'] = empty($tenexistencewarning) ? 0 : 1;
 			$customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
 			$customerinfo['ssnexistencewarning'] = empty($ssnexistencewarning) ? 0 : 1;
+			$customerinfo['icnwarning'] = empty($icnwarning) ? 0 : 1;
 
 			$SMARTY->assign('error',$error);
 		}

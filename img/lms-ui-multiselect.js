@@ -8,6 +8,7 @@ function multiselect(options) {
 		options.shortenToDefaultValue == 'true' ? true : false;
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
 	var bottom = typeof options.bottom !== 'undefined' && options.bottom;
+	var button = typeof options.button !== 'undefined' && options.button;
 	var icon = typeof options.icon !== 'undefined' ? options.icon : 'img/settings.gif';
 	var label = typeof options.label !== 'undefined' ? options.label : '';
 	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
@@ -36,12 +37,17 @@ function multiselect(options) {
 		title: old_element.attr('title')
 	}).appendTo(wrapper);
 
-	if (tiny)
-		new_element.html('<img src="' + icon + '">' + (label ? '&nbsp' + label : ''));
-	else
+	if (tiny) {
+		if (button) {
+			new_element.append(button);
+		} else {
+			new_element.html('<img src="' + icon + '">' + (label ? '&nbsp' + label : ''));
+		}
+	} else {
 		$('<span/>')
 			.addClass('lms-ui-multiselect-icon')
 			.appendTo(wrapper);
+	}
 
 	new_element.data('multiselect-object', this)
 		.attr('style', old_element.attr('style'));

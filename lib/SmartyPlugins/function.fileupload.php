@@ -52,15 +52,15 @@ function smarty_function_fileupload($params, $template) {
 				<div class="fileupload-progressbar"><div class="fileupload-progress-label"></div></div>
 			</div>
 			<div class="lms-ui-fileupload-button-container">
-				<button type="button" class="lms-ui-fileupload-button lms-ui-button-icon' . (isset($error_tip_params) ? ' alert' : '') . '" id="' . $id . '_button" '
-					. (isset($error_tip_params) ? smarty_function_tip($error_tip_params, $template) : '') . '>' . trans("Select files") . '</button>
+				<button type="button" class="lms-ui-fileupload-button lms-ui-button' . (isset($error_tip_params) ? ' alert' : '') . '" id="' . $id . '_button" '
+					. (isset($error_tip_params) ? Utils::tip($error_tip_params, $template) : '') . '><i class="fas fa-paperclip"></i> ' . trans("Select files") . '</button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;">
 			</div>
 			<div class="fileupload-files">';
 	if (!empty($fileupload) && isset($fileupload[$id]))
 		foreach ($fileupload[$id] as $fileidx => $file)
 			$result .= '<div>
-					<a href="#" class="fileupload-file"><img src="img/delete.gif">
+					<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>
 						' . $file['name'] . ' (' . $file['sizestr'] . ')
 					</a>
 					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '">
@@ -112,7 +112,7 @@ function smarty_function_fileupload($params, $template) {
 								var count = fileupload_files.find(".fileupload-file").length;
 								$.each(data.files, function(key, file) {
 									var size = get_size_unit(file.size);
-									fileupload_files.append(\'<div><a href="#" class="fileupload-file"><img src="img/delete.gif">&nbsp;\'
+									fileupload_files.append(\'<div><a href="#" class="fileupload-file"><i class="fas fa-trash"></i>&nbsp;\'
 										+ file.name + \' (\' + size.size + \' \' + size.unit + \')</a>\'
 										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][name]" value="\' + file.name + \'">\'
 										+ \'<input type="hidden" class="fileupload-file-size" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][size]" value="\' + file.size + \'">\'
@@ -153,7 +153,7 @@ function smarty_function_fileupload($params, $template) {
 					var files = e.originalEvent.dataTransfer.files;
 					var form = $(this).closest("form");
 					var formdata = new FormData(form.get(0));
-					formdata.delete("files[]");
+					formdata.delete("' . $id . '[]");
 					$(files).each(function(index, file) {
 						var fileReader = new FileReader();
 						fileReader.readAsDataURL(file);

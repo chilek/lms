@@ -107,9 +107,7 @@ function init_datepickers(selector) {
 	var options = {
 		showButtonPanel: true,
 		showOn: 'button',
-		buttonImageOnly: true,
-		buttonImage: 'img/calendar.gif',
-		buttonText: lmsMessages.datePickerTooltip,
+		buttonText: '<i class="fas fa-calendar-alt" title="' + lmsMessages.datePickerTooltip + '"></i>',
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
 		beforeShow: function (input, inst) {
@@ -214,11 +212,6 @@ function init_datepickers(selector) {
 	});
 }
 
-$(document).on('click', 'a.disabled', function(e) {
-	e.preventDefault();
-	e.stopImmediatePropagation();
-});
-
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
@@ -285,7 +278,7 @@ $(function() {
 			})
 		});
 
-		$('<img src="img/calendar.gif" class="ui-datepicker-trigger" title="' + lmsMessages.datePickerTooltip + '">')
+		$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + lmsMessages.datePickerTooltip + '"></i>')
 			.insertAfter(this).click(function() {
 				$(this).prev().datetimepicker('toggle');
 			});
@@ -1128,12 +1121,12 @@ $(function() {
 			'?m=quicksearch&ajax=1&mode=' + $(field).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
 	});
 
-	qs_fields.find('input').on('click', function(e) {
+	qs_fields.find('input').on('click', function() {
 		qs_fields.find('input').removeClass('lms-ui-quick-search-active');
 		$(this).addClass('lms-ui-quick-search-active').focus();
-	}).prev().on('click', function(e) {
+	}).siblings('i').on('click', function() {
 		qs_fields.find('input').removeClass('lms-ui-quick-search-active');
-		$(this).next().addClass('lms-ui-quick-search-active').focus();
+		$(this).siblings('input').addClass('lms-ui-quick-search-active').focus();
 	});
 	if (!location.hash.length) {
 		qs_fields.first().find('input').addClass('lms-ui-quick-search-active').focus();

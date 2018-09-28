@@ -29,7 +29,7 @@ function format_customer_phone($contact) {
 	if (!empty($call_phone_url))
 		$call_phone_url = str_replace('%phone', $contact['contact'], $call_phone_url);
 	return '<a class="phone_number" href="tel:' . $contact['contact'] . '">' . $contact['contact'] . '</a>&nbsp;'
-		. (isset($call_phone_url) ? '<a href="' . $call_phone_url . '"><img src="img/phone-call.png"></a>' : '');
+		. (isset($call_phone_url) ? '<a href="' . $call_phone_url . '"><i class="fas fa-phone"></i></a>' : '');
 }
 
 function format_customer_email($contact) {
