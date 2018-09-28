@@ -62,7 +62,7 @@ TABLE {
 }
 #lms-ui-menu-panel-toggle:not(.visible) {
   background-color: #AE9D7B;
-  padding: 0.1em 0.3em 0.3em 0.1em;
+  padding: 0.1em 0.0em 0.3em 0.1em;
   border: 1px solid black;
   border-radius: 0 0 0.5em 0em;
 }
