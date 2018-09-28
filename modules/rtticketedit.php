@@ -55,7 +55,7 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtqueueview');
                 break;
             case 'unread':
-                $LMS->MarkTicketAsRead($id);
+                $LMS->MarkTicketAsUnread($id);
                 $SESSION->redirect('?m=rtqueueview');
                 break;
             case 'resolve':
