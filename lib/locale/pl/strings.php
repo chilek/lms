@@ -2013,6 +2013,7 @@ $_LANG['Enter National Court Register / Register of Business Entities Number (op
 $_LANG['Enter National Court Register / Register of Business Entities Name (optional)'] = 'Wprowadź nazwę EDG/KRS (opcjonalnie)';
 $_LANG['Incorrect Business Registration Number!'] = 'Niepoprawny numer REGON!';
 $_LANG['Incorrect Identity Card Number!'] = 'Niepoprawny numer Dowodu Osobistego!';
+$_LANG['Incorrect Identity Card Number! If you are sure you want to accept, then click "Submit" again.'] = 'Niepoprawny numer Dowodu Osobistego! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['OK'] = 'OK';
 $_LANG['REGON'] = 'REGON';
 $_LANG['REGON:'] = 'REGON:';

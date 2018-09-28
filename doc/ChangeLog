@@ -154,6 +154,7 @@ version ?.??.?? (????-??-??):
   - improvement: modernized mac address selection (separated smarty function called
     'mac_address_selection') [chilan]
   - improvement: started to use fontawesome icon library [chilan]
+  - improvement: incorrect customer identify card number generates warning instead of error [chilan]
 
 version 1.11.23 (2018-03-21):
 

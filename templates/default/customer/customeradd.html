@@ -258,6 +258,9 @@
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("ICN")}:</TD>
 								<TD style="width: 99%;">
+									{if $customeradd.icnwarning}
+									<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
+									{/if}
 									<INPUT type="text" size="30" value="{$customeradd.icn}" name="customeradd[icn]" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
 								</TD>
 							</TR>

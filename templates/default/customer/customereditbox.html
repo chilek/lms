@@ -224,6 +224,9 @@
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("ICN")}:</TD>
 					<TD style="width: 99%;">
+						{if $customerinfo.icnwarning}
+						<INPUT type="hidden" name="customerdata[icnwarning]" value="1">
+						{/if}
 						<INPUT type="text" value="{$customerinfo.icn}" name="customerdata[icn]" size="30" {tip text="Enter Identity Card Number (optional)" trigger="icn"}>
 					</TD>
 				</TR>
