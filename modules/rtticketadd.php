@@ -34,6 +34,8 @@ $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
 $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 
+$ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
+
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 if (!$categories) {
 	$SMARTY->display('noaccess.html');

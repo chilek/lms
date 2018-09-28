@@ -82,13 +82,13 @@
 	<TD class="lms-ui-buttons nobr text-right">
 		{if $ticket.state != $smarty.const.RT_RESOLVED}
 			{if !$ticket.unread}
-			<a href="?m=rtticketedit&id={$ticket.id}&unread=1"><img src="img/ticket-unread.png" alt="" title="{trans("Mark as unread")}"></a>
+			<a href="?m=rtticketedit&id={$ticket.id}&action=unread"><img src="img/ticket-unread.png" alt="" title="{trans("Mark as unread")}"></a>
 			{else}
-			<a href="?m=rtticketedit&id={$ticket.id}&unread=0"><img src="img/ticket-read.png" alt="" title="{trans("Mark as read")}"></a>
+			<a href="?m=rtticketedit&id={$ticket.id}&action=read"><img src="img/ticket-read.png" alt="" title="{trans("Mark as read")}"></a>
 			{/if}
 		{/if}
 		{if $ticket.state != $smarty.const.RT_RESOLVED}<a href="?m=eventadd&ticketid={$ticket.id}"><img src="img/event-add.png"></a>{/if}
-		{if !$ticket.ownerid}<A href="?m=rtqueueview&ticketid={$ticket.id}&assign"><img src="img/users.gif" alt="" title="{trans("Assign to me")}"></A>{/if}
+		{if !$ticket.ownerid}<A href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"><img src="img/users.gif" alt="" title="{trans("Assign to me")}"></A>{/if}
 		<A href="?m=rtticketprint&id={$ticket.id}" target="_BLANK"><img src="img/print.gif" alt="" title="{trans("Print")}"></A>
 		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 		<A href="?m=rtrestore&id={$ticket.id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}"></A>

@@ -881,7 +881,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
 				t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
-				t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, '
+				t.source, t.priority, i.id AS invprojectid, i.name AS invproject_name, t.verifier_rtime, '
 				. $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
 				t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location,
@@ -988,8 +988,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES, $RT_PRIORITIES, $SERVICETYPES, $RT_TYPES;
 
 		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, t.state, subject, customerid, requestor, source, priority,
-				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid,
-				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.deadline, t.service, t.type
+				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid, 
+				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime, t.deadline, t.service, t.type
 			FROM rttickets t
 			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
 			LEFT JOIN vaddresses va ON va.id = t.address_id
@@ -1000,7 +1000,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				WHERE userid = ?
 			)
 			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, source, priority, t.address_id, t.nodeid, va.location,
-				t.nodeid, t.invprojectid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.deadline, t.service, t.type',
+				t.nodeid, t.invprojectid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime, t.deadline, t.service, t.type',
 			array($ticketid, Auth::GetCurrentUser()));
 
         $type = 0;
@@ -1071,6 +1071,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_VERIFIER_CHANGE;
         } else
             $props['verifierid'] = $ticket['verifierid'];
+
+        if($ticket['verifier_rtime'] != $props['verifier_rtime'] && isset($props['verifier_rtime'])) {
+            $notes[] = trans('Ticket has been transferred to verifier.');
+            $type = $type | RTMESSAGE_VERIFIER_RTIME;
+        } else
+            $props['verifier_rtime'] = $ticket['verifier_rtime'];
 
         if($ticket['deadline'] != datetime_to_timestamp($props['deadline']) && isset($props['deadline'])) {
             $notes[] = trans('Ticket deadline has been set to $a.', $props['deadline']);
@@ -1162,12 +1168,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?,
 						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
-						verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
+						verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
 						requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ? WHERE id = ?',
 						array(
 							$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'],
 							$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-							$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
+							$props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
 							$props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'],
 							$ticketid
 						));
@@ -1177,13 +1183,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				} else {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?,
 						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
-						verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
+						verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
 						requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ?
 						WHERE id = ?',
 						array(
 							$props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $props['subject'],
 							$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-							$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
+							$props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
 							$props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'],
 							$ticketid
 						));
@@ -1194,12 +1200,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			} else {
 				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?,
 					customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ?, netdevid = ?,
-					verifierid = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
+					verifierid = ?, verifier_rtime = ?, deadline = ?, service = ?, type = ?, invprojectid = ?,
 					requestor_userid = ?, requestor = ?, requestor_mail = ?, requestor_phone = ? WHERE id = ?',
 					array(
 						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'],
 						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $props['netdevid'],
-						$props['verifierid'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
+						$props['verifierid'], $props['verifier_rtime'], $props['deadline'], $props['service'], $props['type'], $props['invprojectid'],
 						$props['requestor_userid'], $props['requestor'], $props['requestor_mail'], $props['requestor_phone'],
 						$ticketid
 					));
