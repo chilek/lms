@@ -44,9 +44,11 @@ if ($id && !isset($_POST['ticket'])) {
             case 'verify':
                 ///wyślij maila do weryfikatora
                 $LMS->TicketChange($id, array('state' => RT_VERIFIED, 'verifier_rtime' => time()));
+                $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'assign':
                 $LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
+                $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'resolve':
                 $state = intval($_GET['state']);
