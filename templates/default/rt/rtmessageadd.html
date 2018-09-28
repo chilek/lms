@@ -11,13 +11,17 @@
 		margin-bottom: 0.5em;
 	}
 
-	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+	#message.lms-ui-box-container .lms-ui-box-row-label {
 		width: 8em;
+	}
+
+	#properties.lms-ui-box-container .lms-ui-box-row-label {
+		width: 14em;
 	}
 
 </style>
 <H1>{$layout.pagetitle}</H1>
-<P><FORM method="POST" name="message" action="?m=rtmessageadd">
+<FORM method="POST" name="message" action="?m=rtmessageadd">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
@@ -29,295 +33,217 @@
 <INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
 {/if}
 <INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
-<div class="lms-ui-box-container">
-	<div class="lms-ui-box-header">
-		<IMG src="img/mail.gif" alt="">
-		{trans("Subject:")}
+{box_container id="message"}
+	{box_header icon="img/mail.gif" label="Subject:"}
 		<INPUT type="text" size="75" name="message[subject]" maxlength="255" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}>
-	</div>
-	<div class="lms-ui-box-contents">
-		<div class="lms-ui-box-panel">
+	{/box_header}
+
+	{box_contents}
+		{box_panel}
 
 {if !$group_reply}
-		<div class="lms-ui-box-row">
-			<div class="lms-ui-box-row-icon">
-				<IMG src="img/users.gif" alt="">
-			</div>
-			<div class="lms-ui-box-row-label">
-				{trans("Requestor:")}
-			</div>
-			<div class="lms-ui-box-row-field">
+			{box_row icon="img/users.gif" label="Requestor:"}
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
-			</div>
-		</div>
+			{/box_row}
 
-		<div class="lms-ui-box-row">
-			<div class="lms-ui-box-row-icon">
-				<IMG src="img/email.gif" alt="">
-			</div>
-			<div class="lms-ui-box-row-label">
-				{trans("Recipient's e-mail:")}
-			</div>
-			<div class="lms-ui-box-row-field">
+			{box_row icon="img/email.gif" label="Recipient's e-mail:"}
 				<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
-			</div>
-		</div>
+			{/box_row}
 {/if}
 
-		<div class="lms-ui-box-row">
-			<div class="lms-ui-box-row-icon">
-				<IMG src="img/edit.gif" alt="">
-			</div>
-			<div class="lms-ui-box-row-label">
-				{trans("Content:")}
-			</div>
-			<div class="lms-ui-box-row-field">
+			{box_row icon="img/edit.gif" label="Content:"}
 				<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
-			</div>
-		</div>
+			{/box_row}
 
-		<div class="lms-ui-box-row">
-			<div class="lms-ui-box-row-icon">
-				<IMG src="img/attach.gif" alt="">
-			</div>
-			<div class="lms-ui-box-row-label">
-				{trans("Attachments:")}
-			</div>
-			<div class="lms-ui-box-row-field">
+			{box_row icon="img/attach.gif" label="Attachments:"}
 				{fileupload id="files" fileupload=$fileupload}
-			</div>
-		</div>
+			{/box_row}
 
-		</div>
-	</div>
+		{/box_panel}
+	{/box_contents}
 
-	<div class="lms-ui-box-buttons">
+	{box_buttons}
 		<button onclick="javascript:document.message.submit();" class="lms-ui-button" accesskey="s">
 			<IMG src="img/save.gif" alt=""> {trans("Submit/Send")}
 		</button>
 		<button type="button" onclick="location.href = '?m=rtticketview&id={$message.ticketid}'" class="lms-ui-button">
 			<IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
 		</button>
-	</div>
-</div>
+	{/box_buttons}
+{/box_container}
 
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 99%;">
-	</COLGROUP>
-    <TBODY>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt="">
-			<label for="notify">{trans("Notify users:")}</label>
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
-		</TD>
-	</TR>
-	<TR id="customernotify-row">
-		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt="">
-			<label for="customernotify">{trans("Notify customer:")}</label>
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
-		</TD>
-	</TR>
-	{if $message.phonefrom || $group_reply}
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/phone.gif" alt="">
-			<label for="smsnotify">{trans("Notify customer via SMS:")}</label>
-		</TD>
-		<TD>
-			<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
-			<input type="hidden" name="message[phonefrom]" value="{if $group_reply}-1{else}{$message.phonefrom}{/if}">
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
-				{if $group_reply}
+{box_container id="properties"}
+	{box_contents}
+		{box_panel}
+
+			{box_row icon="img/mail.gif" label="Notify users:" labelid="notify"}
+				<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
+			{/box_row}
+
+			{box_row id="customernotify-row" icon="img/mail.gif" label="Notify customer:" labelid="customernotify"}
+				<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
+			{/box_row}
+
+{if $message.phonefrom || $group_reply}
+			{box_row icon="img/phone.gif" label="Notify customer via SMS:" labelid="smsnotify"}
+				<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
+				<input type="hidden" name="message[phonefrom]" value="{if $group_reply}-1{else}{$message.phonefrom}{/if}">
+			{/box_row}
+{/if}
+
+			{box_row icon="img/dead.gif" label="Status:"}
+				<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
+					{if $group_reply}
 					<option value="-1"{if $message.state == -1} selected{/if}>{trans("- no changes -")}</option>
-				{/if}
-				{foreach $_RT_STATES as $stateidx => $state}
-				<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
-				{/foreach}
-			</SELECT>
-			<label>
-				<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
-				{trans("resolve ticket")}
-			</label>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/desc.gif" alt="">
-			{trans("Cause:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
-				{if $group_reply}
-				<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
-				{/if}
-				<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
-				<OPTION value="1" {if $message.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
-				<OPTION value="2" {if $message.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
+					{/if}
+					{foreach $_RT_STATES as $stateidx => $state}
+					<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
+					{/foreach}
+				</SELECT>
+				<label>
+					<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
+					{trans("resolve ticket")}
+				</label>
+			{/box_row}
+
+			{box_row icon="img/desc.gif" label="Cause:"}
+				<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
+					{if $group_reply}
+					<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
+					{/if}
+					<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
+					<OPTION value="1" {if $message.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
+					<OPTION value="2" {if $message.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
+				</SELECT>
+			{/box_row}
+
 {if !$group_reply}
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/volcano.png" alt="">{trans("Ticket source:")}
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="message[source]" {tip text="Select ticket source" trigger="source"}>
-				{foreach $_RT_SOURCES as $sourceidx => $status}
-				<OPTION value="{$sourceidx}"{if $message.source == $sourceidx} selected{/if}>{$status}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+			{box_row icon="img/volcano.png" label="Ticket source:"}
+				<SELECT size="1" name="message[source]" {tip text="Select ticket source" trigger="source"}>
+					{foreach $_RT_SOURCES as $sourceidx => $status}
+					<OPTION value="{$sourceidx}"{if $message.source == $sourceidx} selected{/if}>{$status}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
 {/if}
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/report.gif" alt="">
-			{trans("Priority:")}
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="message[priority]" {tip text="Set ticket priority" trigger="priority"}>
-				{if $group_reply}
-				<option value="-100"{if $message.priority == -100} selected{/if}>{trans("- no changes -")}</option>
-				{/if}
-				{foreach $_RT_PRIORITIES as $priorityidx => $priority}
-				<OPTION value="{$priorityidx}"{if $message.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+
+			{box_row icon="img/report.gif" label="Priority:"}
+				<SELECT size="1" name="message[priority]" {tip text="Set ticket priority" trigger="priority"}>
+					{if $group_reply}
+					<option value="-100"{if $message.priority == -100} selected{/if}>{trans("- no changes -")}</option>
+					{/if}
+					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
+					<OPTION value="{$priorityidx}"{if $message.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
 {if !$group_reply}
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/queue.gif" alt="">
-			{trans("Queue:")}
-		</TD>
-		<TD>
-			<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"}>
-			{foreach $queuelist as $item}
-			<OPTION value="{$item.id}"{if $item.newmessagesubject && $item.newmessagebody} data-newmessage-notify="1"{/if}{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
-			{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt="">
-			{trans("Owner:")}
-		</TD>
-		<TD>
-			<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
-				<OPTION value="0">- {trans("select user")} -</OPTION>
-				{foreach $userlist as $user}
-				{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-					|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-					|| $user.id == $message.owner}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.owner} selected{/if}>{$user.name}</OPTION>
-				{/if}
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+			{box_row icon="img/queue.gif" label="Queue:"}
+				<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"}>
+					{foreach $queuelist as $item}
+					<OPTION value="{$item.id}"{if $item.newmessagesubject && $item.newmessagebody} data-newmessage-notify="1"{/if}{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/users.gif" label="Owner:"}
+				<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
+					<OPTION value="0">- {trans("select user")} -</OPTION>
+					{foreach $userlist as $user}
+					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+						|| $user.id == $message.owner}
+					<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.owner} selected{/if}>{$user.name}</OPTION>
+					{/if}
+					{/foreach}
+				</SELECT>
+			{/box_row}
 {/if}
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/verifier.png" alt="">
-			{trans("Verifier:")}
-		</TD>
-		<TD>
-			<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
-				<OPTION value="0">- {trans("select user")} -</OPTION>
-				{if $group_reply}
-				<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
-				{/if}
-				{foreach $userlist as $user}
-				{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-					|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-					|| $user.id == $message.verifierid}
-				<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.name}</OPTION>
-				{/if}
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/calendar.gif" alt="">
-			{trans("<!rt>Deadline:")}
-		</TD>
-		<TD>
-			<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
+
+			{box_row icon="img/verifier.png" label="Verifier:"}
+				<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
+					<OPTION value="0">- {trans("select user")} -</OPTION>
+					{if $group_reply}
+					<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
+					{/if}
+					{foreach $userlist as $user}
+					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+						|| $user.id == $message.verifierid}
+					<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.name}</OPTION>
+					{/if}
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/calendar.gif" label="<!rt>Deadline:"}
+				<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
 					SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM></P>
+			{/box_row}
+
+			{box_row icon="img/queue.gif" label="Categories:"}
+				{foreach $categories as $category}
+					<label class="nobr">
+						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
+						{$category.name}
+					</label>
+				{/foreach}
+			{/box_row}
+
+		{/box_panel}
+	{/box_contents}
+{/box_container}
+</FORM>
 
 {if !$group_reply}
 {include file="rt/rtticketmessagesbox.html"}
 {/if}
 
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="message"] [name="message[subject]"]').focus();
+<SCRIPT>
 
-	$('[name="message[queueid]"]').change(function() {
-		var newmessage_notify = $(this).find(':selected').attr('data-newmessage-notify');
+	$(function() {
+		$('form[name="message"] [name="message[subject]"]').focus();
+
+		$('[name="message[queueid]"]').change(function() {
+			var newmessage_notify = $(this).find(':selected').attr('data-newmessage-notify');
+			if (newmessage_notify === undefined) {
+				$('#customernotify-row').hide();
+				$('#customernotify').attr('checked', false);
+			} else {
+				$('#customernotify-row').show();
+				$('#customernotify').attr('checked', true);
+			}
+		});
+
+		{if !$group_reply}
+		var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
 		if (newmessage_notify === undefined) {
 			$('#customernotify-row').hide();
-			$('#customernotify').attr('checked', false);
 		} else {
 			$('#customernotify-row').show();
-			$('#customernotify').attr('checked', true);
 		}
-	});
+		{/if}
 
-	{if !$group_reply}
-	var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
-	if (newmessage_notify === undefined) {
-		$('#customernotify-row').hide();
-	} else {
-		$('#customernotify-row').show();
-	}
-	{/if}
-
-	$('#resolve').change(function() {
-		var stateelem = $('#state');
-		if ($(this).prop('checked')) {
-			$(this).data('prev-state', stateelem.val());
-			stateelem.val({$smarty.const.RT_RESOLVED});
-		} else {
-			var prev_state = $(this).data('prev-state');
-			if (prev_state) {
-				stateelem.val(prev_state);
+		$('#resolve').change(function() {
+			var stateelem = $('#state');
+			if ($(this).prop('checked')) {
+				$(this).data('prev-state', stateelem.val());
+				stateelem.val({$smarty.const.RT_RESOLVED});
+			} else {
+				var prev_state = $(this).data('prev-state');
+				if (prev_state) {
+					stateelem.val(prev_state);
+				}
 			}
-		}
+		});
+
+		$('#state').change(function() {
+			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
+		});
 	});
 
-	$('#state').change(function() {
-		$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
-	});
-});
-//-->
 </SCRIPT>
 
 {/block}

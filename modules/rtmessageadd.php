@@ -24,8 +24,11 @@
  *  $Id$
  */
 
-if(isset($_POST['message']))
-{
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+if (empty($categories))
+	$categories = array();
+
+if (isset($_POST['message'])) {
 	$message = $_POST['message'];
 
 	$group_reply = is_array($message['ticketid']);
@@ -465,6 +468,7 @@ if (!is_array($message['ticketid'])) {
 	$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
 }
 $SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('categories', $categories);
 $SMARTY->assign('message', $message);
 
 $SMARTY->display('rt/rtmessageadd.html');
