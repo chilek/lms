@@ -60,6 +60,15 @@ TABLE {
   height: 0.8em;
   cursor: pointer;
 }
+#lms-ui-menu-panel-toggle:not(.visible) {
+  background-color: #AE9D7B;
+  padding: 0.1em 0.3em 0.3em 0.1em;
+  border: 1px solid black;
+  border-radius: 0 0 0.5em 0em;
+}
+#lms-ui-menu-panel-toggle:not(.visible) ~ #lms-ui-contents #lms-ui-quicksearch-indicators-panel {
+  padding-left: 1.5em;
+}
 #lms-ui-main-menu {
   margin-top: 1em;
   margin-bottom: 1em;
