@@ -19,12 +19,12 @@
     <THEAD>
 	{include file="rt/rtheader.html"}
 	<TR>
-		<TD class="lms-ui-pagination" colspan="9">
+		<TD class="lms-ui-pagination" colspan="6">
 			{if $pagination->getTotal() != 0}
 			{include file="pagination.html"}
 			{/if}
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="text-right nobr" colspan="4">
 			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
@@ -44,12 +44,12 @@
     </TBODY>
 	<TFOOT>
 	<TR>
-		<TD class="lms-ui-pagination" colspan="9">
+		<TD class="lms-ui-pagination" colspan="6">
 			{if $pagination->getTotal() != 0}
 			{include file="pagination.html"}
 			{/if}
 		</TD>
-		<TD class="text-right dark nobr">
+		<TD class="text-right dark nobr" colspan="4">
 			<label>
 				<input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
