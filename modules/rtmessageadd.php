@@ -248,7 +248,7 @@ if (isset($_POST['message'])) {
 
 			if ($message['category_change']) {
 				$props['category_change'] = $message['category_change'];
-				$props['categories'] = isset($messages['categories']) ? array_keys($message['categories']) : array();
+				$props['categories'] = isset($message['categories']) ? array_keys($message['categories']) : array();
 			}
 
 			$LMS->TicketChange($ticketid, $props);
