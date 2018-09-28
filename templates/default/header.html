@@ -39,6 +39,11 @@
 
 			if (mainMenuVisible) {
 				$('#lms-ui-menu-panel-toggle').addClass('visible');
+			} else {
+				$('#lms-ui-menu-panel-toggle i').switchClass('fa-arrow-left', 'fa-arrow-right');
+				$(function() {
+					$('#lms-ui-quicksearch-indicators-panel').css('padding-left', '1em');
+				});
 			}
 
 			$('#lms-ui-back-to-top').click(function() {

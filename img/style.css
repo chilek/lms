@@ -60,12 +60,6 @@ TABLE {
   height: 0.8em;
   cursor: pointer;
 }
-#lms-ui-menu-panel-toggle.visible {
-  background-image: url(left.gif);
-}
-#lms-ui-menu-panel-toggle:not(.visible) {
-  background-image: url(right.gif);
-}
 #lms-ui-main-menu {
   margin-top: 1em;
   margin-bottom: 1em;

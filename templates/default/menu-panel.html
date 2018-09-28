@@ -1,4 +1,4 @@
-<div id="lms-ui-menu-panel-toggle"></div>
+<div id="lms-ui-menu-panel-toggle"><i class="fas fa-arrow-left"></i></div>
 <nav id="lms-ui-menu-panel" class="no-print">
 	<div id="lms-ui-logo">
 		<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}">
@@ -15,9 +15,13 @@
 			$('#lms-ui-menu-panel-toggle').click(function () {
 				var mainMenuVisible = $('#lms-ui-menu-panel').toggle().is(':visible');
 				if (mainMenuVisible) {
-					$('#lms-ui-menu-panel-toggle').addClass('visible');
+					$('#lms-ui-menu-panel-toggle').addClass('visible').find('i')
+						.switchClass('fa-arrow-right', 'fa-arrow-left');
+					$('#lms-ui-quicksearch-indicators-panel').css('padding-left', '');
 				} else {
-					$('#lms-ui-menu-panel-toggle').removeClass('visible');
+					$('#lms-ui-menu-panel-toggle').removeClass('visible').find('i')
+						.switchClass('fa-arrow-left', 'fa-arrow-right');
+					$('#lms-ui-quicksearch-indicators-panel').css('padding-left', '1em');
 				}
 				setCookie('main-menu-visible', mainMenuVisible);
 			});
