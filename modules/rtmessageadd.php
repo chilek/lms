@@ -84,6 +84,10 @@ if(isset($_POST['message']))
 					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
 				);
 
+		foreach ($files as &$file)
+			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+		unset($file);
+
 		foreach ($tickets as $ticketid) {
 			$queue = $LMS->GetQueueByTicketId($ticketid);
 
@@ -147,12 +151,6 @@ if(isset($_POST['message']))
 					$message['replyto'] = '';
 				}
 
-				if (!empty($files)) {
-					$files = $attachments;
-					foreach ($files as &$file)
-						$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-					unset($file);
-				}
 				$message['headers'] = $headers;
 				$message['ticketid'] = $ticketid;
 				$msgid = $LMS->TicketMessageAdd($message, $files);
@@ -190,11 +188,6 @@ if(isset($_POST['message']))
 
 				// message to customer is written to database
 				if ($message['userid'] && $addmsg) {
-					$files = $attachments;
-					foreach ($files as &$file)
-						$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-					unset($file);
-
 					$message['headers'] = $headers;
 					$message['ticketid'] = $ticketid;
 					$msgid = $LMS->TicketMessageAdd($message, $files);
