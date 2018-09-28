@@ -1121,12 +1121,12 @@ $(function() {
 			'?m=quicksearch&ajax=1&mode=' + $(field).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
 	});
 
-	qs_fields.find('input').on('click', function(e) {
+	qs_fields.find('input').on('click', function() {
 		qs_fields.find('input').removeClass('lms-ui-quick-search-active');
 		$(this).addClass('lms-ui-quick-search-active').focus();
-	}).prev().on('click', function(e) {
+	}).siblings('i').on('click', function() {
 		qs_fields.find('input').removeClass('lms-ui-quick-search-active');
-		$(this).next().addClass('lms-ui-quick-search-active').focus();
+		$(this).siblings('input').addClass('lms-ui-quick-search-active').focus();
 	});
 	if (!location.hash.length) {
 		qs_fields.first().find('input').addClass('lms-ui-quick-search-active').focus();

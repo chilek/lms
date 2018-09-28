@@ -635,6 +635,15 @@ div.lms-ui-multiselectlayer div {
   -ms-user-select: none;
   user-select: none;
 }
+.click-menu i {
+  text-align: center;
+}
+.click-menu i.fas,
+.click-menu i.fab,
+.click-menu i.far,
+.click-menu i.fal {
+  width: 1.5em;
+}
 .click-menu .box1 {
   background-color: #CEBD9B;
   color: #000000;
