@@ -168,7 +168,6 @@ if ($id && !isset($_POST['ticket'])) {
 }
 
 $ticket = $LMS->GetTicketContents($id);
-
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
