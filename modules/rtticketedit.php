@@ -52,11 +52,11 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'read':
                 $LMS->MarkTicketAsRead($id);
-                $SESSION->redirect('?m=rtticketview&id=' . $id);
+                $SESSION->redirect('?m=rtqueueview');
                 break;
             case 'unread':
                 $LMS->MarkTicketAsRead($id);
-                $SESSION->redirect('?m=rtticketview&id=' . $id);
+                $SESSION->redirect('?m=rtqueueview');
                 break;
             case 'resolve':
                 $state = intval($_GET['state']);
