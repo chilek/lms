@@ -50,6 +50,14 @@ if ($id && !isset($_POST['ticket'])) {
                 $LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
+            case 'read':
+                $LMS->MarkTicketAsRead($id);
+                $SESSION->redirect('?m=rtticketview&id=' . $id);
+                break;
+            case 'unread':
+                $LMS->MarkTicketAsRead($id);
+                $SESSION->redirect('?m=rtticketview&id=' . $id);
+                break;
             case 'resolve':
                 $state = intval($_GET['state']);
                 $LMS->TicketChange($id, array('state' => $state));
