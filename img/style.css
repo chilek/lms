@@ -1113,7 +1113,6 @@ button.lms-ui-fileupload-button {
   background-color: #DFD5BD;
   background-repeat: no-repeat;
   background-position: 3px 3px;
-  background-image: url(attach.gif);
 }
 button.lms-ui-fileupload-button:hover {
   color: #336600;
