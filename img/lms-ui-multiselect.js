@@ -48,7 +48,6 @@ function multiselect(options) {
 			.addClass('lms-ui-multiselect-icon')
 			.appendTo(wrapper);
 	}
-	console.log(new_element);
 
 	new_element.data('multiselect-object', this)
 		.attr('style', old_element.attr('style'));
