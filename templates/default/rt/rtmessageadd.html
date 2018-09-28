@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 
-{$group_reply=is_array($message.ticketid)}
+{$group_action=is_array($message.ticketid)}
 
 <style>
 
@@ -25,7 +25,7 @@
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
-{if $group_reply}
+{if $group_action}
 	{foreach $message.ticketid as $ticketid}
 	<INPUT type="hidden" name="message[ticketid][]" value="{$ticketid}">
 	{/foreach}
@@ -41,7 +41,7 @@
 	{box_contents}
 		{box_panel}
 
-{if !$group_reply}
+{if !$group_action}
 			{box_row icon="img/users.gif" label="Requestor:"}
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
 				<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
@@ -85,16 +85,16 @@
 				<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
 			{/box_row}
 
-{if $message.phonefrom || $group_reply}
+{if $message.phonefrom || $group_action}
 			{box_row icon="img/phone.gif" label="Notify customer via SMS:" labelid="smsnotify"}
 				<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
-				<input type="hidden" name="message[phonefrom]" value="{if $group_reply}-1{else}{$message.phonefrom}{/if}">
+				<input type="hidden" name="message[phonefrom]" value="{if $group_action}-1{else}{$message.phonefrom}{/if}">
 			{/box_row}
 {/if}
 
 			{box_row icon="img/dead.gif" label="Status:"}
 				<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
-					{if $group_reply}
+					{if $group_action}
 					<option value="-1"{if $message.state == -1} selected{/if}>{trans("- no changes -")}</option>
 					{/if}
 					{foreach $_RT_STATES as $stateidx => $state}
@@ -109,7 +109,7 @@
 
 			{box_row icon="img/desc.gif" label="Cause:"}
 				<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
-					{if $group_reply}
+					{if $group_action}
 					<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
 					{/if}
 					<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
@@ -118,7 +118,7 @@
 				</SELECT>
 			{/box_row}
 
-{if !$group_reply}
+{if !$group_action}
 			{box_row icon="img/volcano.png" label="Ticket source:"}
 				<SELECT size="1" name="message[source]" {tip text="Select ticket source" trigger="source"}>
 					{foreach $_RT_SOURCES as $sourceidx => $status}
@@ -130,7 +130,7 @@
 
 			{box_row icon="img/report.gif" label="Priority:"}
 				<SELECT size="1" name="message[priority]" {tip text="Set ticket priority" trigger="priority"}>
-					{if $group_reply}
+					{if $group_action}
 					<option value="-100"{if $message.priority == -100} selected{/if}>{trans("- no changes -")}</option>
 					{/if}
 					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
@@ -139,7 +139,7 @@
 				</SELECT>
 			{/box_row}
 
-{if !$group_reply}
+{if !$group_action}
 			{box_row icon="img/queue.gif" label="Queue:"}
 				<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"}>
 					{foreach $queuelist as $item}
@@ -165,7 +165,7 @@
 			{box_row icon="img/verifier.png" label="Verifier:"}
 				<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
 					<OPTION value="0">- {trans("select user")} -</OPTION>
-					{if $group_reply}
+					{if $group_action}
 					<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
 					{/if}
 					{foreach $userlist as $user}
@@ -206,7 +206,7 @@
 {/box_container}
 </FORM>
 
-{if !$group_reply}
+{if !$group_action}
 {include file="rt/rtticketmessagesbox.html"}
 {/if}
 
@@ -226,7 +226,7 @@
 			}
 		});
 
-		{if !$group_reply}
+		{if !$group_action}
 		var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
 		if (newmessage_notify === undefined) {
 			$('#customernotify-row').hide();

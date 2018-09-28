@@ -28,9 +28,9 @@
 			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<button type="button" class="lms-ui-button lms-ui-button-icon group-message-reply">
+			<button type="button" class="lms-ui-button lms-ui-button-icon group-action-run">
 				<i class="fas fa-reply-all"></i>
-				{trans("Group message reply")}
+				{trans("Run group action")}
 			</button>
 			<button type="button" class="lms-ui-button lms-ui-button-icon" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
 				<i class="fas fa-plus-square"></i>
@@ -54,9 +54,9 @@
 				<input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<button type="button" class="lms-ui-button group-message-reply">
+			<button type="button" class="lms-ui-button group-action-run">
 				<i class="fas fa-reply-all"></i>
-				{trans("Group message reply")}
+				{trans("Run group action")}
 			</button>
 			<button type="button" class="lms-ui-button" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
 				<i class="fas fa-plus-square"></i>
@@ -72,9 +72,9 @@
 		function disableLink() {
 			var disabled = $('.lms-ui-multi-check:checked').length < 2;
 			if (disabled) {
-				$('.group-message-reply').addClass('lms-ui-button-disabled');
+				$('.group-action-run').addClass('lms-ui-button-disabled');
 			} else {
-				$('.group-message-reply').removeClass('lms-ui-button-disabled');
+				$('.group-action-run').removeClass('lms-ui-button-disabled');
 			}
 		}
 		disableLink();
@@ -83,7 +83,7 @@
 			disableLink();
 		});
 
-		$('.group-message-reply').click(function () {
+		$('.group-action-run').click(function () {
 			if ($(this).is('.lms-ui-button-disabled')) {
 				return false;
 			}

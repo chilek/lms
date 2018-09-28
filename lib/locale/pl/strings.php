@@ -4156,9 +4156,9 @@ $_LANG['Select requestor from list'] = 'Wskaż zgłaszającego z listy';
 $_LANG['<!person>- none -'] = '- brak -';
 $_LANG['At least requestor name, mail or phone should be filled!'] = 'Jedno z pól nazwa, email i telefon powinno zostać wypełnione!';
 
-$_LANG['Group message reply'] = 'Odpowiedz wiadomością grupową';
+$_LANG['Run group action'] = 'Wykonaj czynność grupową';
 $_LANG['- no changes -'] = '- bez zmian -';
-$_LANG['New Message (group reply for $a tickets)'] = 'Nowa wiadomość (odpowiedź grupowa dla $a zgłoszeń)';
+$_LANG['New Message (group action for $a tickets)'] = 'Nowa wiadomość (czynność grupowa dla $a zgłoszeń)';
 
 $_LANG['Category changes:'] = 'Zmiany kategorii:';
 $_LANG['Select category change type'] = 'Wybierz rodzaj zmian kategorii';

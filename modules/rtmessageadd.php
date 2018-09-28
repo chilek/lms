@@ -412,7 +412,7 @@ if (isset($_POST['message'])) {
 		if (ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'))
 			$message['smsnotify'] = true;
 
-		$layout['pagetitle'] = trans('New Message (group reply for $a tickets)', count($ticketid));
+		$layout['pagetitle'] = trans('New Message (group action for $a tickets)', count($ticketid));
 	} else {
 		$LMS->MarkTicketAsRead($ticketid);
 		$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($ticketid));
