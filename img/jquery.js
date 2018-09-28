@@ -107,9 +107,7 @@ function init_datepickers(selector) {
 	var options = {
 		showButtonPanel: true,
 		showOn: 'button',
-		buttonImageOnly: true,
-		buttonImage: 'img/calendar.gif',
-		buttonText: lmsMessages.datePickerTooltip,
+		buttonText: '<i class="fas fa-calendar-alt" title="' + lmsMessages.datePickerTooltip + '"></i>',
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
 		beforeShow: function (input, inst) {
@@ -280,7 +278,7 @@ $(function() {
 			})
 		});
 
-		$('<img src="img/calendar.gif" class="ui-datepicker-trigger" title="' + lmsMessages.datePickerTooltip + '">')
+		$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + lmsMessages.datePickerTooltip + '"></i>')
 			.insertAfter(this).click(function() {
 				$(this).prev().datetimepicker('toggle');
 			});
