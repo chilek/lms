@@ -2,6 +2,9 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+
+{$group_reply=is_array($message.ticketid)}
+
 <style>
 
 	.lms-ui-box-container {
@@ -35,7 +38,7 @@
 	<div class="lms-ui-box-contents">
 		<div class="lms-ui-box-panel">
 
-{if !is_array($message.ticketid)}
+{if !$group_reply}
 		<div class="lms-ui-box-row">
 			<div class="lms-ui-box-row-icon">
 				<IMG src="img/users.gif" alt="">
@@ -123,7 +126,7 @@
 			<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
 		</TD>
 	</TR>
-	{if $message.phonefrom || is_array($message.ticketid)}
+	{if $message.phonefrom || $group_reply}
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/phone.gif" alt="">
@@ -131,7 +134,7 @@
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
-			<input type="hidden" name="message[phonefrom]" value="{if is_array($message.ticketid)}-1{else}{$message.phonefrom}{/if}">
+			<input type="hidden" name="message[phonefrom]" value="{if $group_reply}-1{else}{$message.phonefrom}{/if}">
 		</TD>
 	</TR>
 	{/if}
@@ -141,7 +144,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="message[state]" id="state" {tip text="Select status" trigger="state"}>
-				{if is_array($message.ticketid)}
+				{if $group_reply}
 					<option value="-1"{if $message.state == -1} selected{/if}>{trans("- no changes -")}</option>
 				{/if}
 				{foreach $_RT_STATES as $stateidx => $state}
@@ -161,7 +164,7 @@
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="message[cause]" {tip text="Select ticket cause" trigger="cause"}>
-				{if is_array($message.ticketid)}
+				{if $group_reply}
 				<option value="-1"{if $message.cause == -1} selected{/if}>{trans("- no changes -")}</option>
 				{/if}
 				<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
@@ -170,7 +173,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-{if !is_array($message.ticketid)}
+{if !$group_reply}
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/volcano.png" alt="">{trans("Ticket source:")}
@@ -183,6 +186,7 @@
 			</SELECT>
 		</TD>
 	</TR>
+{/if}
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/report.gif" alt="">
@@ -190,12 +194,16 @@
 		</TD>
 		<TD style="width: 99%;">
 			<SELECT size="1" name="message[priority]" {tip text="Set ticket priority" trigger="priority"}>
+				{if $group_reply}
+				<option value="-100"{if $message.priority == -100} selected{/if}>{trans("- no changes -")}</option>
+				{/if}
 				{foreach $_RT_PRIORITIES as $priorityidx => $priority}
 				<OPTION value="{$priorityidx}"{if $message.priority == $priorityidx} selected{/if}>{$priority}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
+{if !$group_reply}
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/queue.gif" alt="">
@@ -227,7 +235,8 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
+{/if}
+	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/verifier.png" alt="">
 			{trans("Verifier:")}
@@ -235,6 +244,9 @@
 		<TD>
 			<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
 				<OPTION value="0">- {trans("select user")} -</OPTION>
+				{if $group_reply}
+				<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
+				{/if}
 				{foreach $userlist as $user}
 				{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 					|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
@@ -245,21 +257,21 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
+	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/calendar.gif" alt="">
 			{trans("<!rt>Deadline:")}
 		</TD>
 		<TD>
-			<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{$message.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+			<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
+					SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
 		</TD>
 	</TR>
-{/if}
     </TBODY>
 </TABLE>
 </FORM></P>
 
-{if !is_array($message.ticketid)}
+{if !$group_reply}
 {include file="rt/rtticketmessagesbox.html"}
 {/if}
 
@@ -279,7 +291,7 @@ $(function() {
 		}
 	});
 
-	{if !is_array($message.ticketid)}
+	{if !$group_reply}
 	var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
 	if (newmessage_notify === undefined) {
 		$('#customernotify-row').hide();

@@ -68,6 +68,14 @@ if(isset($_POST['message']))
 	if($message['body'] == '')
 		$error['body'] = trans('Message body not specified!');
 
+	if ($message['deadline'] && ($deadline = datetime_to_timestamp($message['deadline']))) {
+		if (ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+			&& $message['verifierid'] != Auth::GetCurrentUser())
+			$error['deadline'] = trans("If verifier is set then he's the only person who can change deadline");
+		if ($deadline < time())
+			$error['deadline'] = trans("Ticket deadline could not be set in past");
+	}
+
 	$result = handle_file_uploads('files', $error);
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
@@ -217,6 +225,12 @@ if(isset($_POST['message']))
 					$props['cause'] = $message['cause'];
 				if ($message['state'] != -1)
 					$props['state'] = $message['state'];
+				if ($message['priority'] != -100)
+					$props['priority'] = $message['priority'];
+				if ($message['verifierid'] != -1)
+					$props['verifierid'] = empty($message['verifierid']) ? null : $message['verifierid'];
+				if ($message['deadline'])
+					$props['deadline'] = $message['deadline'];
 			} else
 				$props = array(
 					'queueid' => $message['queueid'],
@@ -364,6 +378,9 @@ if(isset($_POST['message']))
 			$message['customernotify'] = 1;
 			$message['state'] = -1;
 			$message['cause'] = -1;
+			$message['priority'] = -100;
+			$message['deadline'] = 0;
+			$message['verifierid'] = -1;
 		} else {
 			$ticketid = intval($_GET['ticketid']);
 			if (empty($ticketid))
@@ -434,8 +451,7 @@ if(isset($_POST['message']))
 
 $SMARTY->assign('error', $error);
 
-if (is_array($message['ticketid'])) {
-} else {
+if (!is_array($message['ticketid'])) {
 	$ticket = $LMS->GetTicketContents($message['ticketid']);
 	$SMARTY->assign('ticket', $ticket);
 	if (!isset($_POST['message'])) {
@@ -446,9 +462,9 @@ if (is_array($message['ticketid'])) {
 		if ($message['state'] == RT_NEW)
 			$message['state'] = RT_OPEN;
 	}
-	$SMARTY->assign('userlist', $LMS->GetUserNames());
 	$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
 }
+$SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('message', $message);
 
 $SMARTY->display('rt/rtmessageadd.html');
