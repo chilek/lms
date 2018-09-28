@@ -25,7 +25,7 @@
  */
 
 $_LANG['Verified'] = 'Weryfikowany';
-$_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało wysłane do weryfikatora.';
+$_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało przekazane do weryfikatora.';
 $_LANG['Transfer ticket to verifier'] = 'Przekaż zgłoszenie do weryfikatora';
 $_LANG['Reuse'] = 'Ponownie';
 $_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
