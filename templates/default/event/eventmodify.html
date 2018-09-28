@@ -3,15 +3,6 @@
 {block name=module_content}
 	<!--// $Id$ //-->
 	{$xajax}
-	<SCRIPT>
-
-		$(function () {
-			$('#helpdesk-on').change(function () {
-				$('#row').toggle();
-			});
-		});
-
-	</SCRIPT>
 	{if empty($event.ticketid)}
 		<H1>{$layout.pagetitle}</H1>
 	{else}
@@ -268,6 +259,12 @@
 			} else {
 				$('#customernotify-row').show();
 			}
+
+			{if $layout.module == 'eventadd'}
+			$('#helpdesk-on').change(function () {
+				$('#row').toggle();
+			});
+			{/if}
 		});
 
 		function update_user_selection(users) {
