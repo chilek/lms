@@ -48,7 +48,8 @@ function smarty_function_mac_address_selection($params, $template) {
 	}
 
 	$result .= '</table>
-		<a href="#" id="add-mac"><span class="ui-icon ui-icon-plusthick"></span> ' . trans("Add MAC address") . '</a>
+		<a href="#" id="add-mac" data-field-prefix="' . $form
+			. '"><span class="ui-icon ui-icon-plusthick"></span> ' . trans("Add MAC address") . '</a>
 		<script src="img/lms-ui-mac-address-selection.js"></script>';
 
 	return $result;

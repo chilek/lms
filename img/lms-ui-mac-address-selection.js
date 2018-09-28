@@ -27,7 +27,7 @@ $(function() {
 		var key = $('.mac').length;
 		$('<tr id="mac' + key + '" class="mac">' +
 			'<td style="width: 100%;">' +
-			'<input type="text" name="' + $(this).closest('form').attr('name') + '[macs][' + key + ']" value="" ' +
+			'<input type="text" name="' + $(this).attr('data-field-prefix') + '[macs][' + key + ']" value="" ' +
 			'title="' + lmsMessages.enterMacAddress + '">' +
 			'&nbsp;<span class="ui-icon ui-icon-closethick remove-mac"></span>' +
 			'&nbsp;<a href="#" class="mac-selector" ' +
