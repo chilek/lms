@@ -454,6 +454,13 @@ if (isset($_POST['message'])) {
 
 $SMARTY->assign('error', $error);
 
+$ncategories = array();
+foreach ($categories as $category) {
+	$category['checked'] = isset($message['categories'][$category['id']]);
+	$ncategories[] = $category;
+}
+$categories = $ncategories;
+
 if (!is_array($message['ticketid'])) {
 	$ticket = $LMS->GetTicketContents($message['ticketid']);
 	$SMARTY->assign('ticket', $ticket);

@@ -374,8 +374,8 @@ if(isset($_POST['ticket']))
 } else
 	$ticketedit['categories'] = $ticket['categories'];
 
-foreach ($categories as $category)
-{
+$ncategories = array();
+foreach ($categories as $category) {
 	$category['checked'] = isset($ticketedit['categories'][$category['id']]);
 	$ncategories[] = $category;
 }

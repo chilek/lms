@@ -25,9 +25,9 @@
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
-{if is_array($message.ticketid)}
+{if $group_reply}
 	{foreach $message.ticketid as $ticketid}
-	<INPUT type="hidden" name="message[ticketid][]" value ="{$ticketid}">
+	<INPUT type="hidden" name="message[ticketid][]" value="{$ticketid}">
 	{/foreach}
 {else}
 <INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
@@ -183,10 +183,19 @@
 					SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
 			{/box_row}
 
-			{box_row icon="img/queue.gif" label="Categories:"}
+			{box_row icon="img/queue.gif" label="Category changes:"}
+				<SELECT name="message[category_change]" {tip text="Select category change type" trigger="category_change"}>
+					<option value="0"{if $message.category_change == 0} selected{/if}>{trans("- no changes -")}</option>
+					<option value="1"{if $message.category_change == 1} selected{/if}>{trans("- replace -")}</option>
+					<option value="2"{if $message.category_change == 2} selected{/if}>{trans("- append -")}</option>
+					<option value="3"{if $message.category_change == 3} selected{/if}>{trans("- remove -")}</option>
+				</SELECT>
+			{/box_row}
+
+			{box_row id="categories" icon="img/queue.gif" label="Categories:"}
 				{foreach $categories as $category}
 					<label class="nobr">
-						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
+						<INPUT type="checkbox" name="message[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
 						{$category.name}
 					</label>
 				{/foreach}
@@ -242,6 +251,14 @@
 		$('#state').change(function() {
 			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
 		});
+
+		$('[name="message[category_change]"]').change(function() {
+			if (parseInt($(this).val())) {
+				$('#categories').show();
+			} else {
+				$('#categories').hide();
+			}
+		}).change();
 	});
 
 </SCRIPT>

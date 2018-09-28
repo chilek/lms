@@ -4157,4 +4157,10 @@ $_LANG['Group message reply'] = 'Odpowiedz wiadomością grupową';
 $_LANG['- no changes -'] = '- bez zmian -';
 $_LANG['New Message (group reply for $a tickets)'] = 'Nowa wiadomość (odpowiedź grupowa dla $a zgłoszeń)';
 
+$_LANG['Category changes:'] = 'Zmiany kategorii:';
+$_LANG['Select category change type'] = 'Wybierz rodzaj zmian kategorii';
+$_LANG['- replace -'] = '- zastąp -';
+$_LANG['- append -'] = '- dołącz -';
+$_LANG['- remove -'] = '- usuń -';
+
 ?>
