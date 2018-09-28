@@ -76,7 +76,7 @@ function eventTimeSlider(options) {
 		range = values[1] - values[0];
 
 		$(_slider).find('.ui-slider-range')
-			.text((whole_days ? lmsMessages.eventWholeDays.replace('$a', days) :
+			.text((whole_days ? $t('$a days', days) :
 				(days > 1 ? days + ' x ' : '') + sprintf("%02d:%02d", Math.floor(range / 60), (range % 60))));
 	}
 

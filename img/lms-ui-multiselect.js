@@ -96,7 +96,7 @@ function multiselect(options) {
 		var selected_string = selected.join(separator);
 		if (!tiny) {
 			if (maxVisible && selected.length > maxVisible) {
-				new_element.html(substMessage.replace('$a', selected.length));
+				new_element.html($t(substMessage, selected.length));
 				new_element.attr('title', selected_string);
 			} else {
 				new_element.html(selected_string);
@@ -215,7 +215,7 @@ function multiselect(options) {
 	old_selected = new_selected;
 	if (!tiny || selection_group) {
 		checkall_div = $('<div/>').appendTo(div);
-		$('<label><input type="checkbox" class="checkall" value="1">' + lmsMessages.checkAll + '</label>').appendTo(checkall_div);
+		$('<label><input type="checkbox" class="checkall" value="1">' + $t('check all<!items>') + '</label>').appendTo(checkall_div);
 
 		updateCheckAll();
 

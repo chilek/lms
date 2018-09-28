@@ -30,7 +30,7 @@ function savePersistentSettings(data) {
 		dataType: 'json',
 		error: function(jqXHR, textStatus, errorThrown) {
 			if (errorThrown != 'abort') {
-				alert(lmsMessages.persistentSettingSaveError + ' ' + errorThrown);
+				alert($t('AJAX: Error during persistent setting save on server:') + ' ' + errorThrown);
 			}
 		}
 	});
@@ -97,7 +97,7 @@ function init_multiselects(selector) {
 				bottom: lmsSettings.multiSelectPopupOnBottom,
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,
-				substMessage: lmsMessages.multiSelectSubstMessage
+				substMessage: '- $a options selected -'
 			});
 		});
 	}
@@ -107,7 +107,7 @@ function init_datepickers(selector) {
 	var options = {
 		showButtonPanel: true,
 		showOn: 'button',
-		buttonText: '<i class="fas fa-calendar-alt" title="' + lmsMessages.datePickerTooltip + '"></i>',
+		buttonText: '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>',
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
 		beforeShow: function (input, inst) {
@@ -117,7 +117,7 @@ function init_datepickers(selector) {
 			}
 			setTimeout(function () {
 				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary ' +
-					'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
+					'ui-corner-all lms-ui-datepicker-clear">' + $t('<!datepicker>Clear') + '</button>';
 				var target = $(input);
 				var widget = target.datepicker("widget");
 				var buttonPane = widget.find(".ui-datepicker-buttonpane");
@@ -153,7 +153,7 @@ function init_datepickers(selector) {
 					return;
 				}
 				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary ' +
-					'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
+					'ui-corner-all lms-ui-datepicker-clear">' + $t('<!datepicker>Clear') + '</button>';
 				var btn = $(btnHtml);
 				btn.appendTo(buttonPane);
 
@@ -278,7 +278,7 @@ $(function() {
 			})
 		});
 
-		$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + lmsMessages.datePickerTooltip + '"></i>')
+		$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
 			.insertAfter(this).click(function() {
 				$(this).prev().datetimepicker('toggle');
 			});
@@ -294,7 +294,7 @@ $(function() {
 		location.href = url;
 	});
 
-	$('.lms-ui-clipboard-button').attr('title', lmsMessages.clickCopiesToClipboard);
+	$('.lms-ui-clipboard-button').attr('title', $t('Click copies to clipboard'));
 	new ClipboardJS('.lms-ui-clipboard-button');
 
 	$(document).on('mouseenter', '[title]', function() {
@@ -374,8 +374,8 @@ $(function() {
 	});
 
 	$('select.lms-ui-advanced-select').chosen({
-		no_results_text: lmsMessages.chosenNoResultsMatch,
-		placeholder_text_single: lmsMessages.chosenSelectOption,
+		no_results_text: $t('No results match'),
+		placeholder_text_single: $t('Select an Option'),
 		search_contains: true,
 		disable_search_threshold: 5
 	});
@@ -427,13 +427,13 @@ $(function() {
 			dialog.html('<img src="' + url + '" style="width: 100%;">');
 		} else if ($(this).hasClass('documentview-audio')) {
 			dialog.html('<audio src="' + url + '" style="width: 100%;" controls preload="none">' +
-				lmsMessages.noAudioSupport + '</audio>');
+				$t('Your browser does not support the audio element.') + '</audio>');
 			var audioelem = dialog.find('audio').get(0);
 			audioelem.currentTime = 0;
 			audioelem.play();
 		} else if ($(this).hasClass('documentview-video')) {
 			dialog.html('<video src="' + url + '" style="width: 100%;" controls preload="none">' +
-				lmsMessages.noVideoSupport + '</video>');
+				$t('Your browser does not support the video element.') + '</video>');
 			var videoelem = dialog.find('video').get(0);
 			videoelem.currentTime = 0;
 			videoelem.play();
@@ -601,14 +601,14 @@ $(function() {
 							selectValues.push(value);
 						});
 						if (selectValues.length > 1) {
-							content = '<select><option value="">'  + lmsMessages.selectionAny + '</option>';
+							content = '<select><option value="">'  + $t('- any -') + '</option>';
 							selectValues.sort().forEach(function(value, index) {
 								content += '<option value="' + value + '">' + value + '</option>';
 							});
 							content += '</select>';
 						}
 					} else {
-						content = '<input type="search" placeholder="' + lmsMessages.search + '">';
+						content = '<input type="search" placeholder="' + $t('Search') + '">';
 					}
 				} else {
 					content = '';
@@ -664,7 +664,7 @@ $(function() {
 				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">' +
 					'<select class="column-toggle" class="lms-ui-multiselect" name="' +
 					$(elem).attr('id') + '-column-toggle[]" multiple' +
-					' title="' + lmsMessages.columnVisibility + '">';
+					' title="' + $t('Column visibility') + '">';
 				api.columns().every(function(index) {
 					var text = $(this.header()).text().trim();
 					if (text.indexOf(':') > 0) {
@@ -687,7 +687,7 @@ $(function() {
 			}
 
 			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
-			clearSettings.html('<img src="img/delete.gif" title="' + lmsMessages.clearSettings + '">');
+			clearSettings.html('<img src="img/delete.gif" title="' + $t('Clear settings') + '">');
 			clearSettings.click(function() {
 				if (state) {
 					api.state.clear();
@@ -767,7 +767,7 @@ $(function() {
 			//deferRender: true,
 			processing: true,
 			stateDuration: lmsSettings.settingsTimeout,
-			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, lmsMessages.all ]],
+			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, $t('All') ]],
 			displayStart: init.displayStart,
 			searchCols: init.searchColumns,
 			stateSave: init.stateSave,
@@ -1076,7 +1076,7 @@ $(function() {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
 			parent.append($('<div class="lms-ui-wysiwyg-editor"><label><input type="checkbox" name="' + inputname +
-				'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + lmsMessages.visualEditor +
+				'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
 				'</label></div')).find('div.lms-ui-wysiwyg-editor').append(this);
 
 			// it is required as textarea changed value is not propagated automatically to editor instance content

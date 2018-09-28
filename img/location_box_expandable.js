@@ -201,7 +201,8 @@ $(function() {
 
         row_content += '<tr>';
         row_content += '<td class="valign-top">';
-        row_content += '<img src="' + _lms_ui_address_ico + '" alt="" class="location-box-image" title="' + lmsMessages.locationRecipientAddress + '" id="' + uid + '">';
+        row_content += '<img src="' + _lms_ui_address_ico + '" alt="" class="location-box-image" title="' +
+			$t('location/recipient address') + '" id="' + uid + '">';
         row_content += '</td>';
         row_content += '<td>' + data + '</td></tr>';
 
@@ -214,7 +215,7 @@ $(function() {
      * \brief Remove address box.
      */
     $('body').on('click', '.delete-location-box', function() {
-        if ( confirm(lmsMessages.removeAddressConfirmation) == true ) {
+        if ( confirm($t('Are you sure that you want to remove address?')) == true ) {
             getLocationBox(this).closest('tr').remove();
         }
     });
@@ -248,13 +249,13 @@ $(function() {
             $('.location-box-image', box.closest('tr'))
                 .attr('src', _lms_ui_address_ico)
                 .tooltip().tooltip('destroy')
-                .attr('title', lmsMessages.locationRecipientAddress)
+                .attr('title', $t('location/recipient address'))
                 .tooltip();
             address_type.val(2)
                 .closest('tr')
                 .find('.address-full')
                 .tooltip().tooltip('destroy')
-                .attr('title', lmsMessages.locationRecipientAddress)
+                .attr('title', $t('location/recipient address'))
                 .tooltip();
         }
 
@@ -284,7 +285,7 @@ $(function() {
                        .closest('tr')
                        .find('.address-full')
                        .tooltip().tooltip('destroy')                          // can't destroy or update not initialized tooltip
-                       .attr('title',lmsMessages.locationRecipientAddress) // update title
+                       .attr('title', $t('location/recipient address')) // update title
                        .tooltip();                                            // init tooltip
             }
         });
@@ -293,7 +294,7 @@ $(function() {
         $( $('.location-box-image') ).each(function() {
             $(this).attr('src', _lms_ui_address_ico)                          // change icon source
                    .tooltip().tooltip('destroy')                              // can't destroy or update not initialized tooltip
-                   .attr('title',lmsMessages.locationRecipientAddress)     // update title
+                   .attr('title', $t('location/recipient address'))     // update title
                    .tooltip();                                                // init tooltip
         });
 
@@ -309,14 +310,14 @@ $(function() {
             box.closest('tr')
                .find('.address-full')
                .tooltip().tooltip('destroy')                                  // can't destroy or update not initialized tooltip
-               .attr('title',lmsMessages.defaultLocationAddress)           // update title
+               .attr('title', $t('default location address'))           // update title
                .tooltip();                                                    // init tooltip
 
             box.closest('tr')
                .find('.location-box-image')
                .attr('src', _lms_ui_address_def_ico)                          // change icon source
                .tooltip().tooltip('destroy')                                  // can't destroy or update not initialized tooltip
-               .attr('title',lmsMessages.defaultLocationAddress)           // update icon title
+               .attr('title', $t('default location address'))           // update icon title
                .tooltip();                                                    // init tooltip
 
             box.find("input[data-address='address_type']").val(3);            // update address type

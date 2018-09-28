@@ -3,6 +3,11 @@
 <link href="img/jquery-datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <link href="img/jquery-chosen/chosen.min.css" rel="stylesheet" type="text/css">
 <link href="img/jquery-simple-combobox/css/jquery.scombobox.min.css" rel="stylesheet" type="text/css">
+<script>
+	var $_LANG = {}
+</script>
+<script type="text/javascript" src="img/locale/{$language}.js"></script>
+<script type="text/javascript" src="img/language.js"></script>
 <script type="text/javascript" src="img/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="img/jqueryui/jquery-ui.min.js"></script>
 <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$language}.js"></script>
@@ -28,41 +33,6 @@
 		multiSelectMaxVisible: '{ConfigHelper::getConfig('phpui.multiselect_max_visible', 0)}',
         eventTimeStep: {ConfigHelper::getConfig('phpui.event_time_step', 30)}
 	};
-	var lmsMessages = {
-		persistentSettingSaveError: '{trans("AJAX: Error during persistent setting save on server:")}',
-		noAudioSupport: '{trans("Your browser does not support the audio element.")}',
-		noVideoSupport: '{trans("Your browser does not support the video element.")}',
-		all: '{trans("All")}',
-		search: '{trans("Search")}',
-		columnVisibility: '{trans("Column visibility")}',
-		clearSettings: '{trans("Clear settings")}',
-		visualEditor: '{trans("visual editor")}',
-		selectionAny: '{trans("- any -")}',
-		billingAddress          : '{trans('billing address')}',
-		postalAddress           : '{trans('postal address')}',
-		defaultLocationAddress  : '{trans('default location address')}',
-		locationRecipientAddress: '{trans('location/recipient address')}',
-        removeAddressConfirmation: '{trans('Are you sure that you want to remove address?')}',
-        datePickerClear : '{trans('<!datepicker>Clear')}',
-        nodes: '{trans("Nodes:")}',
-        netdevices: '{trans("Network Devices:")}',
-        voipAccounts: '{trans("Voip Accounts:")}',
-        nodeAssignmentWarning: '{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}',
-        noAssignmentWarning: '{trans("No assignment selected, by at least one is recommended! Are you sure you want to continue despite of this?")}',
-        allLocations: '{trans("- all -")}',
-		noSelection: '{trans("- none -")}',
-	    noAddress: '{trans("none")}',
-        checkAll: '{trans("check all<!items>")}',
-	    clickCopiesToClipboard: '{trans("Click copies to clipboard")}',
-        chosenNoResultsMatch: '{trans("No results match")}',
-        chosenSelectOption: '{trans("Select an Option")}',
-        filterNone: '{trans("<!filter>- none -")}',
-		multiSelectSubstMessage: '{trans("- \$a options selected -")}',
-        eventWholeDays: '{trans("\$a days")}',
-        datePickerTooltip: '{trans("Click here to open calendar")}',
-		enterMacAddress: '{trans("Enter MAC address")}',
-		clickToSelectMac: '{trans("Click to select MAC from the list")}'
-	}
 
 	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
 	$(function() {

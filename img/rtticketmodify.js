@@ -31,7 +31,7 @@ function change_customer(customer_selector, address_selector) {
 }
 
 function update_nodes(data) {
-    var options = '<option value="">' + lmsMessages.noSelection + '</option>';
+    var options = '<option value="">' + $t('- none -') + '</option>';
     $.each(data, function (k, v) {
         options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
     });

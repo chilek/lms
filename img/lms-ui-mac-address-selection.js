@@ -28,10 +28,10 @@ $(function() {
 		$('<tr id="mac' + key + '" class="mac">' +
 			'<td style="width: 100%;">' +
 			'<input type="text" name="' + $(this).attr('data-field-prefix') + '[macs][' + key + ']" value="" ' +
-			'title="' + lmsMessages.enterMacAddress + '">' +
+			'title="' + $t('Enter MAC address') + '">' +
 			'&nbsp;<span class="ui-icon ui-icon-closethick remove-mac"></span>' +
 			'&nbsp;<a href="#" class="mac-selector" ' +
-			'title="' + lmsMessages.clickToSelectMac + '">&raquo;&raquo;&raquo;</a>' +
+			'title="' + $t('Click to select MAC from the list') + '">&raquo;&raquo;&raquo;</a>' +
 			'</td>' +
 			'</tr>').insertAfter($('.mac').last());
 	});

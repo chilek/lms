@@ -41,7 +41,7 @@ $(function() {
 			method: "POST",
 			success: function (data) {
 				data.unshift({
-					text: lmsMessages.filterNone,
+					text: $t('<!filter>- none -'),
 					value: -1
 				})
 				selectelem.scombobox('fill', data);
@@ -76,7 +76,7 @@ $(function() {
 			method: "POST",
 			success: function (data) {
 				data.unshift({
-					text: lmsMessages.filterNone,
+					text: $t('<!filter>- none -'),
 					value: -1
 				})
 				selectelem.scombobox('fill', data);

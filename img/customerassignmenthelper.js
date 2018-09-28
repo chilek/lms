@@ -75,7 +75,7 @@ function CustomerAssignmentHelper(options) {
 			}
 		});
 		if ($.isEmptyObject(tariffs)) {
-			return confirm(lmsMessages.noAssignmentWarning);
+			return confirm($t('No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'));
 		}
 		var cancelled = 0;
 		$.each(tariffs, function (label, tariffid) {
@@ -87,7 +87,7 @@ function CustomerAssignmentHelper(options) {
 				(($('input' + selector).length && $('div#' + $(selector).closest('div').attr('id').replace('-layer', '') + ':visible').length &&
 						!$(selector + ':checked').length) ||
 					($('select' + selector).length && !$(selector).val().length)) &&
-				!confirm(lmsMessages.nodeAssignmentWarning)) {
+				!confirm($t('No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'))) {
 				cancelled = 1;
 			}
 		});
@@ -260,7 +260,7 @@ function CustomerAssignmentHelper(options) {
 
 					if (data.nodes) {
 						html += '<div class="nodes"><img src="img/node.gif"> ' +
-							'<span class="bold">' + lmsMessages.nodes + '</span><br>';
+							'<span class="bold">' + $t('Nodes:') + '</span><br>';
 						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + '][' +
 							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -290,7 +290,7 @@ function CustomerAssignmentHelper(options) {
 
 					if (data.netdevnodes) {
 						html += '<div class="netdevnodes"><img src="img/netdev.gif"> ' +
-							'<span class="bold">' + lmsMessages.netdevices + '</span><br>';
+							'<span class="bold">' + $t('Network Devices:') + '</span><br>';
 						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + '][' +
 							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -320,7 +320,7 @@ function CustomerAssignmentHelper(options) {
 
 					if (data.voipaccounts) {
 						html += '<div class="phones"><img src="img/voip.gif"> ' +
-							'<span class="bold">' + lmsMessages.voipAccounts + '</span><br>';
+							'<span class="bold">' + $t('Voip Accounts:') + '</span><br>';
 						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + '][' +
 							label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -350,7 +350,7 @@ function CustomerAssignmentHelper(options) {
 					td.html(html).appendTo(this);
 				});
 
-				options = '<option value="">' + lmsMessages.allLocations + '</option>';
+				options = '<option value="">' + $t('- all -') + '</option>';
 				if (data.locations) {
 					$.each(data.locations, function(key, value) {
 						options += '<option value="' + value + '"' +
@@ -360,7 +360,7 @@ function CustomerAssignmentHelper(options) {
 				}
 				$('#location-select').html(options);
 
-				options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
+				options = '<option value="-1">' + $t('none') + '</option>';
 				if (data.addresses) {
 					$.each(data.addresses, function(key, value) {
 						options += '<option value="' + value.address_id + '"' +
