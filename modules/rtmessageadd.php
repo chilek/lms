@@ -245,6 +245,12 @@ if (isset($_POST['message'])) {
 					'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
 					'deadline' => $message['deadline'],
 				);
+
+			if ($message['category_change']) {
+				$props['category_change'] = $message['category_change'];
+				$props['categories'] = isset($messages['categories']) ? array_keys($message['categories']) : array();
+			}
+
 			$LMS->TicketChange($ticketid, $props);
 
 			$service = ConfigHelper::getConfig('sms.service');
@@ -374,6 +380,7 @@ if (isset($_POST['message'])) {
 	}
 } else {
 	if ($_GET['ticketid']) {
+		$message['category_change'] = 0;
 		if (is_array($_GET['ticketid'])) {
 			$ticketid = Utils::filterIntegers($_GET['ticketid']);
 			if (empty($ticketid))
