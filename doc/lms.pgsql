@@ -1708,7 +1708,7 @@ CREATE TABLE rttickets (
     CONSTRAINT rttickets_netdevid_fkey REFERENCES netdevices (id) ON UPDATE CASCADE ON DELETE SET NULL,
   verifierid integer DEFAULT NULL
         CONSTRAINT rttickets_verifierid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  verifier_rtime int(11) DEFAULT NULL,
+  verifier_rtime integer DEFAULT NULL,
   deadline integer DEFAULT NULL,
   service integer DEFAULT NULL,
   type integer DEFAULT NULL,
