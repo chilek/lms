@@ -989,6 +989,26 @@ button.lms-ui-cancel-button {
 	}
 }
 
+button.lms-ui-clone-button,
+button.lms-ui-copy-button {
+	.fa-icon;
+	.fas;
+	font-size: 1em;
+	&:before {
+		content: @fa-var-copy;
+	}
+}
+
+button.lms-ui-delete-button,
+button.lms-ui-remove-button {
+	.fa-icon;
+	.fas;
+	font-size: 1em;
+	&:before {
+		content: @fa-var-eraser;
+	}
+}
+
 button.lms-ui-fileupload-button {
 	.lms-ui-button();
 	&.lms-ui-fileupload-dropzone {
