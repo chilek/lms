@@ -4913,7 +4913,8 @@ button.lms-ui-button .fal,
 button.lms-ui-button .fab {
   font-size: 1em;
 }
-button.lms-ui-save-button {
+button.lms-ui-save-button,
+button.lms-ui-submit-button {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -4928,13 +4929,16 @@ button.lms-ui-save-button {
   font-size: 1.5em;
   font-size: 1em;
 }
-button.lms-ui-save-button.fa-pull-left {
+button.lms-ui-save-button.fa-pull-left,
+button.lms-ui-submit-button.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-save-button.fa-pull-right {
+button.lms-ui-save-button.fa-pull-right,
+button.lms-ui-submit-button.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-save-button:before {
+button.lms-ui-save-button:before,
+button.lms-ui-submit-button:before {
   content: "\f0c7";
 }
 button.lms-ui-cancel-button {
