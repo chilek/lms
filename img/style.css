@@ -5081,6 +5081,34 @@ button.lms-ui-fileupload-button:before,
 button.lms-ui-upload-button:before {
   content: "\f0c6";
 }
+button.lms-ui-back-button,
+button.lms-ui-return-button {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5em;
+  font-size: 1em;
+}
+button.lms-ui-back-button.fa-pull-left,
+button.lms-ui-return-button.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-back-button.fa-pull-right,
+button.lms-ui-return-button.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-back-button:before,
+button.lms-ui-return-button:before {
+  content: "\f151";
+}
 button.lms-ui-fileupload-button {
   color: #800000;
   border-radius: 3px;
