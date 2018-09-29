@@ -236,6 +236,12 @@ form.lms-ui-quick-search {
 			width: 8.4em;
 		}
 	}
+	.fas,
+	.fab,
+	.far,
+	.fal {
+		font-size: 1.5em;
+	}
 }
 
 .lms-ui-quick-search-selector {
@@ -587,6 +593,7 @@ div.lms-ui-multiselectlayer {
 		&.fab,
 		&.far,
 		&.fal {
+			font-size: 1.5em;
 			width: 1.5em;
 		}
 	}
@@ -970,12 +977,17 @@ button.lms-ui-button {
 	.lms-ui-button();
 }
 
+.lms-ui-icon {
+	line-height: unset;
+	vertical-align: unset;
+}
+
 button {
 	&.lms-ui-save-button,
 	&.lms-ui-submit-button {
 		.fa-icon;
 		.fas;
-		font-size: 1em;
+		.lms-ui-icon;
 		&:before {
 			content: @fa-var-save;
 		}
@@ -984,7 +996,7 @@ button {
 	&.lms-ui-cancel-button {
 		.fa-icon;
 		.fas;
-		font-size: 1em;
+		.lms-ui-icon;
 		&:before {
 			content: @fa-var-backspace;
 		}
@@ -994,7 +1006,7 @@ button {
 	&.lms-ui-copy-button {
 		.fa-icon;
 		.fas;
-		font-size: 1em;
+		.lms-ui-icon;
 		&:before {
 			content: @fa-var-copy;
 		}
@@ -1004,7 +1016,7 @@ button {
 	&.lms-ui-remove-button {
 		.fa-icon;
 		.fas;
-		font-size: 1em;
+		.lms-ui-icon;
 		&:before {
 			content: @fa-var-eraser;
 		}
@@ -1015,7 +1027,7 @@ button {
 	&.lms-ui-modify-button {
 		.fa-icon;
 		.fas;
-		font-size: 1em;
+		.lms-ui-icon;
 		&:before {
 			content: @fa-var-edit;
 		}
@@ -1025,7 +1037,7 @@ button {
 	&.lms-ui-upload-button {
 		.fa-icon;
 		.fas;
-		font-size: 1em;
+		.lms-ui-icon;
 		&:before {
 			content: @fa-var-paperclip;
 		}
@@ -1035,9 +1047,20 @@ button {
 	&.lms-ui-return-button {
 		.fa-icon;
 		.fas;
-		font-size: 1em;
+		.lms-ui-icon;
 		&:before {
 			content: @fa-var-caret-square-up;
+		}
+	}
+
+	&.lms-ui-add-button,
+	&.lms-ui-new-button,
+	&.lms-ui-append-button {
+		.fa-icon;
+		.fas;
+		.lms-ui-icon;
+		&:before {
+			content: @fa-var-plus-square;
 		}
 	}
 }
@@ -2407,21 +2430,5 @@ table.lms-ui-mac-address-selection {
 			visibility: visible;
 			cursor: pointer;
 		}
-	}
-}
-
-.fas,
-.far,
-.fal,
-.fab {
-	font-size: 1.5em;
-}
-
-.lms-ui-button {
-	.fas,
-	.far,
-	.fal,
-	.fab {
-		font-size: 1em;
 	}
 }

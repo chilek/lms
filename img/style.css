@@ -4004,6 +4004,12 @@ form.lms-ui-quick-search > * {
 .lms-ui-quick-search-field input.lms-ui-quick-search-active {
   width: 8.4em;
 }
+.lms-ui-quick-search-field .fas,
+.lms-ui-quick-search-field .fab,
+.lms-ui-quick-search-field .far,
+.lms-ui-quick-search-field .fal {
+  font-size: 1.5em;
+}
 .lms-ui-quick-search-selector {
   margin-left: 0.45em;
   cursor: pointer;
@@ -4455,6 +4461,7 @@ div.lms-ui-multiselectlayer div {
 .click-menu i.fab,
 .click-menu i.far,
 .click-menu i.fal {
+  font-size: 1.5em;
   width: 1.5em;
 }
 .click-menu .box1 {
@@ -4907,11 +4914,9 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   border: 1px solid black;
   box-shadow: 0px 0px 1px 1px black;
 }
-button.lms-ui-button .fas,
-button.lms-ui-button .far,
-button.lms-ui-button .fal,
-button.lms-ui-button .fab {
-  font-size: 1em;
+.lms-ui-icon {
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-save-button,
 button.lms-ui-submit-button {
@@ -4926,8 +4931,8 @@ button.lms-ui-submit-button {
   line-height: 1;
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
-  font-size: 1.5em;
-  font-size: 1em;
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-save-button.fa-pull-left,
 button.lms-ui-submit-button.fa-pull-left {
@@ -4953,8 +4958,8 @@ button.lms-ui-cancel-button {
   line-height: 1;
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
-  font-size: 1.5em;
-  font-size: 1em;
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-cancel-button.fa-pull-left {
   margin-right: .3em;
@@ -4978,8 +4983,8 @@ button.lms-ui-copy-button {
   line-height: 1;
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
-  font-size: 1.5em;
-  font-size: 1em;
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-clone-button.fa-pull-left,
 button.lms-ui-copy-button.fa-pull-left {
@@ -5006,8 +5011,8 @@ button.lms-ui-remove-button {
   line-height: 1;
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
-  font-size: 1.5em;
-  font-size: 1em;
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-delete-button.fa-pull-left,
 button.lms-ui-remove-button.fa-pull-left {
@@ -5035,8 +5040,8 @@ button.lms-ui-modify-button {
   line-height: 1;
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
-  font-size: 1.5em;
-  font-size: 1em;
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-edit-button.fa-pull-left,
 button.lms-ui-change-button.fa-pull-left,
@@ -5066,8 +5071,8 @@ button.lms-ui-upload-button {
   line-height: 1;
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
-  font-size: 1.5em;
-  font-size: 1em;
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-fileupload-button.fa-pull-left,
 button.lms-ui-upload-button.fa-pull-left {
@@ -5094,8 +5099,8 @@ button.lms-ui-return-button {
   line-height: 1;
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
-  font-size: 1.5em;
-  font-size: 1em;
+  line-height: unset;
+  vertical-align: unset;
 }
 button.lms-ui-back-button.fa-pull-left,
 button.lms-ui-return-button.fa-pull-left {
@@ -5108,6 +5113,38 @@ button.lms-ui-return-button.fa-pull-right {
 button.lms-ui-back-button:before,
 button.lms-ui-return-button:before {
   content: "\f151";
+}
+button.lms-ui-add-button,
+button.lms-ui-new-button,
+button.lms-ui-append-button {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+button.lms-ui-add-button.fa-pull-left,
+button.lms-ui-new-button.fa-pull-left,
+button.lms-ui-append-button.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-add-button.fa-pull-right,
+button.lms-ui-new-button.fa-pull-right,
+button.lms-ui-append-button.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-add-button:before,
+button.lms-ui-new-button:before,
+button.lms-ui-append-button:before {
+  content: "\f0fe";
 }
 button.lms-ui-fileupload-button {
   color: #800000;
@@ -5153,12 +5190,6 @@ button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):focus {
   outline: none;
   border: 1px solid black;
   box-shadow: 0px 0px 1px 1px black;
-}
-button.lms-ui-fileupload-button .fas,
-button.lms-ui-fileupload-button .far,
-button.lms-ui-fileupload-button .fal,
-button.lms-ui-fileupload-button .fab {
-  font-size: 1em;
 }
 button.lms-ui-fileupload-button.lms-ui-fileupload-dropzone {
   box-shadow: 0px 0px 10px 1px blue;
@@ -6429,16 +6460,4 @@ table.lms-ui-mac-address-selection .mac td .remove-mac {
 table.lms-ui-mac-address-selection .mac:hover td .remove-mac {
   visibility: visible;
   cursor: pointer;
-}
-.fas,
-.far,
-.fal,
-.fab {
-  font-size: 1.5em;
-}
-.lms-ui-button .fas,
-.lms-ui-button .far,
-.lms-ui-button .fal,
-.lms-ui-button .fab {
-  font-size: 1em;
 }

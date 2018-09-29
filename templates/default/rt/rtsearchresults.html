@@ -32,8 +32,8 @@
 				<i class="fas fa-reply-all"></i>
 				{trans("Run group action")}
 			</button>
-			<button type="button" class="lms-ui-button lms-ui-button-icon" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
-				<i class="fas fa-plus-square"></i>
+			<button type="button" class="lms-ui-button lms-ui-add-button"
+					onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
 				{trans("New Ticket")}
 			</button>
 		</TD>
@@ -58,8 +58,8 @@
 				<i class="fas fa-reply-all"></i>
 				{trans("Run group action")}
 			</button>
-			<button type="button" class="lms-ui-button" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
-				<i class="fas fa-plus-square"></i>
+			<button type="button" class="lms-ui-button lms-ui-add-button"
+					onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
 				{trans("New Ticket")}
 			</button>
 		</TD>
