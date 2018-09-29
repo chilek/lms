@@ -3,7 +3,7 @@
 
 <style>
 
-	.lms-ui-box-row-label {
+	#netdev.lms-ui-box-container .lms-ui-box-row-label {
 		width: 12em;
 	}
 
@@ -12,344 +12,187 @@
 <form name="netdev" method="post" action="?m={$layout.module}{if $layout.module == 'netdevedit'}&id={$netdev.id}{/if}">
 	<input type="submit" class="hiddenbtn">
 
-	<div class="lms-ui-box-container">
-		<div class="lms-ui-box-header">
-			<img src="img/netdev.gif" alt=""> {trans("Name:")} <input
-					type="text" name="netdev[name]" value="{$netdev.name}" maxlength="32" required {tip trigger="name"
-			text="Enter device name" bold=1}>
-		</div>
-		<div class="lms-ui-box-contents">
-			<div class="lms-ui-box-panel">
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/producer.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Status:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<select name="netdev[status]" {tip text="Select device status" } value="{$netdev.status}">
-							{foreach $_NETELEMENTSTATUSES as $idx => $status}
-								<option value="{$idx}" {if $netdev.status== $idx} selected{/if}>{$status}</option>
-							{/foreach}
-						</select>
-					</div>
-				</div>
+	{box_container id="netdev"}
+		{box_header icon="img/netdev.gif" label="Name:"}
+			<input type="text" name="netdev[name]" value="{$netdev.name}" maxlength="32" required
+					{tip trigger="name" text="Enter device name" bold=1}>
+		{/box_header}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/producer.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Manufacturer:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input type="hidden" id="producer-value" name="netdev[producer]">
-						<input type="hidden" id="producerid-value" name="netdev[producerid]">
-						<select id="producer" data-value="{$netdev.producer}" data-id-value="{$netdev.producerid}" data-alt-field="#producerid-value"
-								data-alt-invalid-field="#producer-value"
-								{tip class="lms-ui-combobox" text="Enter producer name (optional)" trigger="producer"}>
-							{foreach $producers as $producer}
-								<option value="{$producer.id}" {if $producer.id == $netdev.producerid} selected{/if}>{$producer.name}</option>
-							{/foreach}
-						</select>
-					</div>
-				</div>
+		{box_contents}
+			{box_panel}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/netdev_model.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Model:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input type="hidden" id="model-value" name="netdev[model]">
-						<input type="hidden" id="modelid-value" name="netdev[modelid]">
-						<select id="model" data-value="{$netdev.model}" data-id-value="{$netdev.modelid}" data-alt-field="#modelid-value"
-								data-alt-invalid-field="#model-value"
-								{tip class="lms-ui-combobox" text="Enter device model (optional)" trigger="model"}> </select>
-					</div>
-				</div>
+				{box_row icon="img/producer.gif" label="Status:"}
+					<select name="netdev[status]" {tip text="Select device status" } value="{$netdev.status}">
+						{foreach $_NETELEMENTSTATUSES as $idx => $status}
+							<option value="{$idx}" {if $netdev.status== $idx} selected{/if}>{$status}</option>
+						{/foreach}
+					</select>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/serialnumber.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Serial number:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input type="text" name="netdev[serialnumber]" value="{$netdev.serialnumber}"
-								{tip text="Enter device serial number (optional)" }>
-					</div>
-				</div>
+				{box_row icon="img/producer.gif" label="Manufacturer:"}
+					<input type="hidden" id="producer-value" name="netdev[producer]">
+					<input type="hidden" id="producerid-value" name="netdev[producerid]">
+					<select id="producer" data-value="{$netdev.producer}" data-id-value="{$netdev.producerid}" data-alt-field="#producerid-value"
+							data-alt-invalid-field="#producer-value"
+							{tip class="lms-ui-combobox" text="Enter producer name (optional)" trigger="producer"}>
+						{foreach $producers as $producer}
+							<option value="{$producer.id}" {if $producer.id == $netdev.producerid} selected{/if}>{$producer.name}</option>
+						{/foreach}
+					</select>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/port.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Number of ports:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input type="text" name="netdev[ports]" value="{if $netdev.ports}{$netdev.ports}{/if}"
-								{tip trigger="ports" text="Enter number of ports (optional)"}>
-					</div>
-				</div>
+				{box_row icon="img/netdev_model.gif" label="Model:"}
+					<input type="hidden" id="model-value" name="netdev[model]">
+					<input type="hidden" id="modelid-value" name="netdev[modelid]">
+					<select id="model" data-value="{$netdev.model}" data-id-value="{$netdev.modelid}" data-alt-field="#modelid-value"
+							data-alt-invalid-field="#model-value"
+							{tip class="lms-ui-combobox" text="Enter device model (optional)" trigger="model"}> </select>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/customer.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Owner:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						{if isset($customer.id)}
-							{customerlist form="netdev" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
-						{else}
-							{customerlist form="netdev" customers=$customers selected=$netdev.ownerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
-						{/if}
-					</div>
-				</div>
+				{box_row icon="img/serialnumber.gif" label="Serial number:"}
+					<input type="text" name="netdev[serialnumber]" value="{$netdev.serialnumber}"
+							{tip text="Enter device serial number (optional)" }>
+				{/box_row}
 
-				<div class="lms-ui-box-row" id="location_select">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/home.gif" alt=""></div>
-					<div class="lms-ui-box-row-label">
-						{trans("Location:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<select id="customer_addresses" name="netdev[customer_address_id]" {tip trigger="address_id" }></select>
-					</div>
-				</div>
+				{box_row icon="img/port.gif" label="Number of ports:"}
+					<input type="text" name="netdev[ports]" value="{if $netdev.ports}{$netdev.ports}{/if}"
+							{tip trigger="ports" text="Enter number of ports (optional)"}>
+				{/box_row}
 
-				<div class="lms-ui-box-row" id="location_box">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/home.gif" alt=""></div>
-					<div class="lms-ui-box-row-label">
-						{trans("Location:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						{location_box prefix = "netdev" address_id = "{$netdev.address_id}" location_name = "{$netdev.location_name}" location_state_name = "{$netdev.location_state_name}" location_state = "{$netdev.location_state}" location_city_name = "{$netdev.location_city_name}" location_city = "{$netdev.location_city}" location_postoffice = "{$netdev.location_postoffice}" location_street_name = "{$netdev.location_street_name}" location_street = "{$netdev.location_street}" location_house = "{$netdev.location_house}" location_flat = "{$netdev.location_flat}" location_zip = "{$netdev.location_zip}" location_country_id = "{$netdev.location_country_id}" teryt = "{$netdev.teryt}" }
-					</div>
-				</div>
+				{box_row icon="img/customer.gif" label="Owner:"}
+					{if isset($customer.id)}
+						{customerlist form="netdev" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+					{else}
+						{customerlist form="netdev" customers=$customers selected=$netdev.ownerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+					{/if}
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-					</div>
-					<div class="lms-ui-box-row-label">
-					</div>
-					<div class="lms-ui-box-row-field">
-						<img src="img/network.gif" alt="">
-						<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
-					</div>
-				</div>
+				{box_row id="location_select" icon="img/home.gif" label="Location:"}
+					<select id="customer_addresses" name="netdev[customer_address_id]" {tip trigger="address_id" }></select>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/home.gif" alt=""></div>
-					<div class="lms-ui-box-row-label">
-						{trans("GPS longitude:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input id="longitude" type="text" name="netdev[longitude]" value="{$netdev.longitude}"
-								{tip text="Enter device longitude (optional)" trigger="longitude"}>
-						<a href="javascript:void(0);" onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"
-								{tip text="Click to select gps coordinates from map" }>&raquo;&raquo;&raquo;</A>
-					</div>
-				</div>
+				{box_row id="location_box" icon="img/home.gif" label="Location:"}
+					{location_box prefix = "netdev" address_id = "{$netdev.address_id}" location_name = "{$netdev.location_name}" location_state_name = "{$netdev.location_state_name}" location_state = "{$netdev.location_state}" location_city_name = "{$netdev.location_city_name}" location_city = "{$netdev.location_city}" location_postoffice = "{$netdev.location_postoffice}" location_street_name = "{$netdev.location_street_name}" location_street = "{$netdev.location_street}" location_house = "{$netdev.location_house}" location_flat = "{$netdev.location_flat}" location_zip = "{$netdev.location_zip}" location_country_id = "{$netdev.location_country_id}" teryt = "{$netdev.teryt}" }
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/home.gif" alt=""></div>
-					<div class="lms-ui-box-row-label">
-						{trans("GPS latitude:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input id="latitude" type="text" name="netdev[latitude]" value="{$netdev.latitude}" {tip text="Enter device latitude (optional)" trigger="latitude" }>
-						<a href="javascript:void(0);"
-								onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"
-								{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
-					</div>
-				</div>
+				{box_row}
+					<img src="img/network.gif" alt="">
+					<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
+				{/box_row}
 
-				{if ConfigHelper::checkConfig('phpui.radius')}
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-icon">
-							<img src="img/radius.gif" alt="">
-						</div>
-						<div class="lms-ui-box-row-label">
-							{trans("Shortname:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<input type="text" name="netdev[shortname]" value="{$netdev.shortname}" maxlength="32" {tip
-							trigger="shortname" text="Enter shortname (optional)"}>
-						</div>
-					</div>
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-icon">
-							<img src="img/radius.gif" alt="">
-						</div>
-						<div class="lms-ui-box-row-label">
-							{trans("Type:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<select name="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
-								<option value="0"></option>
-								{foreach $nastypes as $key => $item}
-									<option value="{$key}" {if $key== $netdev.nastype} selected{/if}>{$item.name}</option>
-								{/foreach}
-							</select>
-						</div>
-					</div>
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-icon">
-							<img src="img/radius.gif" alt="">
-						</div>
-						<div class="lms-ui-box-row-label">
-							{trans("Max clients:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<input type="text" name="netdev[clients]" value="{if $netdev.clients}{$netdev.clients}{/if}" {tip trigger="clients"
-							text="Enter max clients (optional)"}>
-						</div>
-					</div>
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-icon">
-							<img src="img/radius.gif" alt=""></div>
-						<div class="lms-ui-box-row-label">
-							{trans("Secret:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<input type="text" name="netdev[secret]" value="{$netdev.secret}" maxlength="60" {tip
-							text="Enter secret (optional)" }>
-						</div>
-					</div>
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-icon">
-							<img src="img/radius.gif" alt=""></div>
-						<div class="lms-ui-box-row-label">
-							{trans("Community:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<input type="text" name="netdev[community]" value="{$netdev.community}" maxlength="50" {tip text="Enter community (optional)" }>
-						</div>
-					</div>
-				{/if}
+				{box_row icon="img/home.gif" label="GPS longitude:"}
+					<input id="longitude" type="text" name="netdev[longitude]" value="{$netdev.longitude}"
+							{tip text="Enter device longitude (optional)" trigger="longitude"}>
+					<a href="javascript:void(0);" onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"
+							{tip text="Click to select gps coordinates from map" }>&raquo;&raquo;&raquo;</A>
+				{/box_row}
 
-				{if isset($channels)}
-					<div class="lms-ui-box-row">
-						<div class="lms-ui-box-row-icon">
-							<img src="img/channel.gif" alt=""></div>
-						<div class="lms-ui-box-row-label">
-							{trans("Channel:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<select name="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
-								<option value="">- {trans("none")} -
-								</option>
-								{foreach from=$channels item=item}
-									<option value="{$item.id}" {if
-											$item.id== $netdev.channelid}
-									selected{/if}>{$item.name}</option>
-								{/foreach}
-							</select>
-						</div>
-					</div>
-				{/if}
+				{box_row icon="img/home.gif" label="GPS latitude:"}
+					<input id="latitude" type="text" name="netdev[latitude]" value="{$netdev.latitude}" {tip text="Enter device latitude (optional)" trigger="latitude" }>
+					<a href="javascript:void(0);"
+							onClick="return gpscoordschoosewin(document.netdev.elements['netdev[longitude]'], document.netdev.elements['netdev[latitude]']);"
+							{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+				{/box_row}
 
-			</div>
-			<div class="lms-ui-box-panel">
+{if ConfigHelper::checkConfig('phpui.radius')}
+				{box_row icon="img/radius.gif" label="Shortname:"}
+					<input type="text" name="netdev[shortname]" value="{$netdev.shortname}" maxlength="32"
+							{tip trigger="shortname" text="Enter shortname (optional)"}>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/calendar.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Purchase date:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input type="text" name="netdev[purchasetime]" value="{if $netdev.purchasetime}{$netdev.purchasetime}{/if}" size="10" maxlength="10"
-								placeholder="{trans(" yyyy/mm/dd")}" {tip class="calendar unix" trigger="purchasetime" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
-					</div>
-				</div>
+				{box_row icon="img/radius.gif" label="Type:"}
+					<select name="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
+						<option value="0"></option>
+						{foreach $nastypes as $key => $item}
+							<option value="{$key}" {if $key== $netdev.nastype} selected{/if}>{$item.name}</option>
+						{/foreach}
+					</select>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/guarantee.png" alt=""></div>
-					<div class="lms-ui-box-row-label">
-						{trans("Guarantee period:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<select size="1" name="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
-							{foreach from=$_GUARANTEEPERIODS key=key item=period}
-								<option value="{$key}" {if $netdev.guaranteeperiod== $key} selected{/if}>{$period}</option>
-							{/foreach}
-						</select>
-					</div>
-				</div>
+				{box_row icon="img/radius.gif" label="Max clients:"}
+					<input type="text" name="netdev[clients]" value="{if $netdev.clients}{$netdev.clients}{/if}"
+							{tip trigger="clients" text="Enter max clients (optional)"}>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/desc.gif" alt=""></div>
-					<div class="lms-ui-box-row-label">
-						{trans("Description:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<textarea name="netdev[description]" cols="40" rows="5" {tip text="Enter additional information (optional)" }>{$netdev.description}</textarea>
-					</div>
-				</div>
+				{box_row icon="img/radius.gif" label="Secret:"}
+					<input type="text" name="netdev[secret]" value="{$netdev.secret}" maxlength="60"
+							{tip text="Enter secret (optional)"}>
+				{/box_row}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/money.gif" alt="">
-					</div>
-					<div class="lms-ui-box-row-label">
-						{trans("Investment project:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<input type="hidden" name="netdev[project]" id="project-value">
-						<input type="hidden" name="netdev[projectid]" id="projectid-value">
-						<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
-							<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
-							<option value="1" {if $netdev.invprojectid == 1} selected{/if}>{trans("From root device")}</option>
-							{foreach $NNprojects as $project}
-								<option value="{$project.id}" {if ($netdev.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
-							{/foreach}
-						</select>
-					</div>
-				</div>
+				{box_row icon="img/radius.gif" label="Community:"}
+					<input type="text" name="netdev[community]" value="{$netdev.community}" maxlength="50"
+							{tip text="Enter community (optional)"}>
+				{/box_row}
+{/if}
 
-				<div class="lms-ui-box-row">
-					<div class="lms-ui-box-row-icon">
-						<img src="img/netnode.png" alt=""></div>
-					<div class="lms-ui-box-row-label">
-						{trans("Network node:")}
-					</div>
-					<div class="lms-ui-box-row-field">
-						<select name="netdev[netnodeid]" {tip text="Select node"}>
-							<option value="-1">
-								{trans("None")}
-							</option>
-							{foreach $NNnodes as $node}
-								<option value="{$node.id}"{if ($netdev.netnodeid == $node.id)} selected{/if}>{$node.name}</option>
-							{/foreach}
-						</select>
-					</div>
-				</div>
+{if isset($channels)}
+				{box_row icon="img/channel.gif" label="Channel:"}
+					<select name="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
+						<option value="">- {trans("none")} -
+						</option>
+						{foreach from=$channels item=item}
+							<option value="{$item.id}" {if
+									$item.id== $netdev.channelid}
+							selected{/if}>{$item.name}</option>
+						{/foreach}
+					</select>
+				{/box_row}
+{/if}
 
-			</div>
-		</div>
-		<div class="lms-ui-box-buttons">
+			{/box_panel}
+			{box_panel}
+
+				{box_row icon="img/calendar.gif" label="Purchase date:"}
+					<input type="text" name="netdev[purchasetime]" value="{if $netdev.purchasetime}{$netdev.purchasetime}{/if}" size="10" maxlength="10"
+							placeholder="{trans(" yyyy/mm/dd")}" {tip class="calendar unix" trigger="purchasetime" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
+				{/box_row}
+
+				{box_row icon="img/guarantee.png" label="Guarantee period:"}
+					<select size="1" name="netdev[guaranteeperiod]" {tip text="Select device guarantee period (optional)"}>
+						{foreach from=$_GUARANTEEPERIODS key=key item=period}
+							<option value="{$key}" {if $netdev.guaranteeperiod== $key} selected{/if}>{$period}</option>
+						{/foreach}
+					</select>
+				{/box_row}
+
+				{box_row icon="img/desc.gif" label="Description:"}
+					<textarea name="netdev[description]" cols="40" rows="5" {tip text="Enter additional information (optional)" }>{$netdev.description}</textarea>
+				{/box_row}
+
+				{box_row icon="img/money.gif" label="Investment project:"}
+					<input type="hidden" name="netdev[project]" id="project-value">
+					<input type="hidden" name="netdev[projectid]" id="projectid-value">
+					<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
+						<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
+						<option value="1" {if $netdev.invprojectid == 1} selected{/if}>{trans("From root device")}</option>
+						{foreach $NNprojects as $project}
+							<option value="{$project.id}" {if ($netdev.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+						{/foreach}
+					</select>
+				{/box_row}
+
+				{box_row icon="img/netnode.png" label="Network node:"}
+					<select name="netdev[netnodeid]" {tip text="Select node"}>
+						<option value="-1">
+							{trans("None")}
+						</option>
+						{foreach $NNnodes as $node}
+							<option value="{$node.id}"{if ($netdev.netnodeid == $node.id)} selected{/if}>{$node.name}</option>
+						{/foreach}
+					</select>
+				{/box_row}
+
+			{/box_panel}
+		{/box_contents}
+
+		{box_buttons}
 			{block name="netdevmodify-buttons"}
 				<a href="javascript:void(0);" id="submit_button" accesskey="s">{trans("Submit")}
 					<img src="img/save.gif" alt=""></a>
 				<a href="?m=netdevlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
 			{/block}
-		</div>
-	</div>
+		{/box_buttons}
+	{/box_container}
 </form>
 
 <script>

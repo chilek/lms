@@ -27,8 +27,8 @@
 function smarty_block_box_row($params, $content, $template, $repeat) {
 	if (!$repeat) {
 		$id = isset($params['id']) ? $params['id'] : null;
-		$icon = $params['icon'];
-		$label = $params['label'];
+		$icon = isset($params['icon']) ? $params['icon'] : null;
+		$label = isset($params['label']) ? $params['label'] : null;
 		$labelid = isset($params['labelid']) ? $params['labelid'] : null;
 		$visible = (isset($params['visible']) && $params['visible']) || !isset($params['visible']);
 		$class = isset($params['class']) ? $params['class'] : null;
@@ -40,11 +40,12 @@ function smarty_block_box_row($params, $content, $template, $repeat) {
 			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-row' . ($class ? ' ' . $class : '') . '"'
 					. ($visible ? '' : ' style="display: none;"') . '>
 				<div class="lms-ui-box-row-icon' . ($icon_class ? ' ' . $icon_class : '') . '">
-					' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
-						: '<i class="' . $icon . '"></i>') . '
+					' . ($icon ? (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+						: '<i class="' . $icon . '"></i>') : '') . '
 				</div>
 				<div class="lms-ui-box-row-label' . ($label_class ? ' ' . $label_class : '') . '">
-					' . ($labelid ? '<label for="' . $labelid . '">' : '') . trans($label) . ($labelid ? '</label>' : '') . '
+					' . ($labelid ? '<label for="' . $labelid . '">' : '')
+					. ($label ? trans($label) : '') . ($labelid ? '</label>' : '') . '
 				</div>
 				<div class="lms-ui-box-row-field' . ($field_class ? ' ' . $field_class : '') . '">
 					' . $content . '
