@@ -7,294 +7,181 @@
 <H1>{$layout.pagetitle}</H1>
 
 <style>
-	.lms-ui-box-row-label {
+
+	#netnode.lms-ui-box-container .lms-ui-box-row-label {
 		width: 12em;
 	}
-	.lms-ui-box-row-field.ownership {
+	#netnode.lms-ui-box-container .lms-ui-box-row-field.ownership {
 		flex-direction: column !important;
-
 	}
+
 </style>
 
 <FORM NAME="netnode" METHOD="POST" ACTION="?m={$layout.module}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="id" value="{$netnode.id}">
 
-<div class="lms-ui-box-container">
-	<div class="lms-ui-box-header">
-		<IMG SRC="img/netnode.png" ALT="">
-		{trans("Name:")}
+{box_container id="netnode"}
+	{box_header icon="img/netnode.png" label="Name:"}
 		<INPUT TYPE="TEXT" NAME="netnode[name]" VALUE="{$netnode.name}" MAXLENGTH="32" required {tip trigger="name" text="Enter node name" bold=1}>
-	</div>
-	<div class="lms-ui-box-contents">
-		<div class="lms-ui-box-panel">
+	{/box_header}
 
-			{if $divisions}
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/division.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Division:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT NAME="netnode[divisionid]"   {tip text="Select division"} >
-						{foreach $divisions as $division}
-						<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.shortname}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
-			{/if}
+	{box_contents}
+		{box_panel}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/producer.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Type:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT NAME="netnode[type]"   {tip text="Enter node type"} >
-						{foreach $_NETELEMENTTYPES as $idx => $type}
-						<OPTION VALUE="{$idx}"{if $netnode.type == $idx} selected{/if}>{$type}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
+{if $divisions}
+			{box_row icon="img/division.gif" label="Division:"}
+				<SELECT NAME="netnode[divisionid]"   {tip text="Select division"} >
+					{foreach $divisions as $division}
+					<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.shortname}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+{/if}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/producer.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Status:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT NAME="netnode[status]"  {tip text="Enter node status"} >
+			{box_row icon="img/producer.gif" label="Type:"}
+				<SELECT NAME="netnode[type]"   {tip text="Enter node type"} >
+					{foreach $_NETELEMENTTYPES as $idx => $type}
+					<OPTION VALUE="{$idx}"{if $netnode.type == $idx} selected{/if}>{$type}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/producer.gif" label="Status:"}
+				<SELECT NAME="netnode[status]"  {tip text="Enter node status"} >
 					{foreach $_NETELEMENTSTATUSES as $idx => $status}
 					<OPTION VALUE="{$idx}"{if $netnode.status == $idx} selected{/if}>{$status}</OPTION>
 					{/foreach}
-					</SELECT>
-				</div>
-			</div>
+				</SELECT>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/producer.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Project:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<input type="hidden" name="netnode[project]" id="project-value">
-					<input type="hidden" name="netnode[projectid]" id="projectid-value">
-					<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
-						<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
-						{foreach $NNprojects as $project}
-							<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
-						{/foreach}
-					</select>
-				</div>
-			</div>
+			{box_row icon="img/producer.gif" label="Project:"}
+				<input type="hidden" name="netnode[project]" id="project-value">
+				<input type="hidden" name="netnode[projectid]" id="projectid-value">
+				<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
+					<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
+					{foreach $NNprojects as $project}
+						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+					{/foreach}
+				</select>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/producer.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Ownership:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT NAME="netnode[ownership]" id="ownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"}>
-						{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
-						<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
+			{box_row icon="img/producer.gif" label="Ownership:"}
+				<SELECT NAME="netnode[ownership]" id="ownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"}>
+					{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
+					<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
 
-			<div class="lms-ui-box-row" id="ownername">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/division.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Owner identifier:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
-				</div>
-			</div>
+			{box_row id="ownername" icon="img/division.gif" label="Owner identifier:"}
+				<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
+			{/box_row}
 
-			<div class="lms-ui-box-row" id="customer">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/customer.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Owner:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{if isset($nodenode.id)}
+			{box_row id="customer" icon="img/customer.gif" label="Owner:"}
+				{if isset($nodenode.id)}
 					{customerlist form="netnode" customers=$customers selected=$customer.id selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
-					{else}
+				{else}
 					{customerlist form="netnode" customers=$customers selected=$netnode.ownerid selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
-					{/if}
-				</div>
-			</div>
+				{/if}
+			{/box_row}
 
-			<div class="lms-ui-box-row" id="location_select">
-				<div class="lms-ui-box-row-icon">
-					<img src="img/home.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Location:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<select id="customer_addresses" name="netdev[address_id]" {tip trigger="address_id"}></select>
-				</div>
-			</div>
+			{box_row id="location_select" icon="img/home.gif" label="Location:"}
+				<select id="customer_addresses" name="netdev[address_id]" {tip trigger="address_id"}></select>
+			{/box_row}
 
+			{box_row id="location_box" icon="img/home.gif" label="Location:"}
+				{location_box
+					prefix               = "netnode"
+					address_id           = "{$netnode.address_id}"
+					location_name        = "{$netnode.location_name}"
+					location_state_name  = "{$netnode.location_state_name}"
+					location_state       = "{$netnode.location_state}"
+					location_city_name   = "{$netnode.location_city_name}"
+					location_city        = "{$netnode.location_city}"
+					location_postoffice  = "{$netnode.location_postoffice}"
+					location_street_name = "{$netnode.location_street_name}"
+					location_street      = "{$netnode.location_street}"
+					location_house       = "{$netnode.location_house}"
+					location_flat        = "{$netnode.location_flat}"
+					location_zip         = "{$netnode.location_zip}"
+					location_country_id  = "{$netnode.location_country}"
+					teryt                = "{$netnode.teryt}"
+				}
+			{/box_row}
 
-			<div class="lms-ui-box-row" id="location_box">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/home.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Location:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{location_box
-						prefix               = "netnode"
-						address_id           = "{$netnode.address_id}"
-						location_name        = "{$netnode.location_name}"
-						location_state_name  = "{$netnode.location_state_name}"
-						location_state       = "{$netnode.location_state}"
-						location_city_name   = "{$netnode.location_city_name}"
-						location_city        = "{$netnode.location_city}"
-						location_postoffice  = "{$netnode.location_postoffice}"
-						location_street_name = "{$netnode.location_street_name}"
-						location_street      = "{$netnode.location_street}"
-						location_house       = "{$netnode.location_house}"
-						location_flat        = "{$netnode.location_flat}"
-						location_zip         = "{$netnode.location_zip}"
-						location_country_id  = "{$netnode.location_country}"
-						teryt                = "{$netnode.teryt}"
-					}
-				</div>
-			</div>
-		</div>
-		<div class="lms-ui-box-panel">
+		{/box_panel}
+		{box_panel}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-label">
-				</div>
-				<div class="lms-ui-box-row-icon">
-					<img src="img/network.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-field">
-					<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
-				</div>
-			</div>
+			{box_row}
+				<img src="img/network.gif" alt="">
+				<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/home.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("GPS longitude:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT id="longitude" TYPE="text" NAME="netnode[longitude]" VALUE="{$netnode.longitude}" {tip text="Enter node longitude (optional)" trigger="longitude"}>
-					<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
-				</div>
-			</div>
+			{box_row icon="img/home.gif" label="GPS longitude:"}
+				<INPUT id="longitude" TYPE="text" NAME="netnode[longitude]" VALUE="{$netnode.longitude}"
+						{tip text="Enter node longitude (optional)" trigger="longitude"}>
+				<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"
+						{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/home.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("GPS latitude:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT id="latitude" TYPE="text" NAME="netnode[latitude]" VALUE="{$netnode.latitude}" {tip text="Enter node latitude (optional)" trigger="latitude"}>
-					<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
-				</div>
-			</div>
+			{box_row icon="img/home.gif" label="GPS latitude:"}
+				<INPUT id="latitude" TYPE="text" NAME="netnode[latitude]" VALUE="{$netnode.latitude}"
+						{tip text="Enter node latitude (optional)" trigger="latitude"}>
+				<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"
+						{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/producer.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Sharing surface")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT TYPE="RADIO" NAME="netnode[uip]" VALUE="1" id="uip_yes" {tip text="Możliwość udostępniania innym podmiotom powierzchni w obiekcie, w którym znajduje się węzeł"}{if ($netnode['uip']==1)} checked{/if}><label for="uip_yes">{trans("Yes")}</label>
-					<INPUT TYPE="RADIO" NAME="netnode[uip]" VALUE="0" id="uip_no"{if ($netnode['uip']==0)} checked{/if}><label for="uip_no">{trans("No")}</label>
-				</div>
-			</div>
+			{box_row icon="img/producer.gif" label="Sharing surface"}
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[uip]" VALUE="1"
+						{tip text="Możliwość udostępniania innym podmiotom powierzchni w obiekcie, w którym znajduje się węzeł"}
+						{if ($netnode['uip']==1)} checked{/if}>
+					{trans("Yes")}
+				</label>
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[uip]" VALUE="0"{if ($netnode['uip']==0)} checked{/if}>
+					{trans("No")}
+				</label>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/producer.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Antennas installation")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="1" id="miar_yes" {tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"}{if ($netnode['miar']==1)} checked{/if}><label for="miar_yes">{trans("Yes")}</label>
-					<INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="0" id="miar_no"{if ($netnode['miar']==0)} checked{/if}><label for="miar_no">{trans("No")}</label>
-				</div>
-			</div>
+			{box_row icon="img/producer.gif" label="Antennas installation"}
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[miar]" VALUE="1"
+							{tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"}
+							{if ($netnode['miar']==1)} checked{/if}>
+					{trans("Yes")}
+				</label>
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[miar]" VALUE="0" {if ($netnode['miar']==0)} checked{/if}>
+					{trans("No")}
+				</label>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/note.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Note")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<TEXTAREA id="info" TYPE="TEXT" NAME="netnode[info]" VALUE="{$netnode.info}" {tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info}</TEXTAREA>
-				</div>
-			</div>
+			{box_row icon="img/note.gif" label="Note"}
+				<TEXTAREA id="info" TYPE="TEXT" NAME="netnode[info]" VALUE="{$netnode.info}" {tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info}</TEXTAREA>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/calendar.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans('Last inspection:')}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
-				</div>
-			</div>
+			{box_row icon="img/calendar.gif" label="Last inspection:"}
+				<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG SRC="img/phone.gif" ALT="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans('Administrative contact:')}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT type="text" name="netnode[admcontact]" maxlenght="10" VALUE="{$netnode.admcontact}">
-				</div>
-			</div>
+			{box_row icon="img/phone.gif" label="Administrative contact:"}
+				<INPUT type="text" name="netnode[admcontact]" maxlenght="10" VALUE="{$netnode.admcontact}">
+			{/box_row}
 
-		</div>
-	</div>
-	<div class="lms-ui-box-buttons">
+		{/box_panel}
+	{/box_contents}
+
+	{box_buttons}
 		<button class="lms-ui-button" onclick="javascript:document.netnode.submit();" ACCESSKEY="s">
 			<IMG SRC="img/save.gif" alt=""> {trans("Submit")}
 		</button>
 		<button class="lms-ui-button" onclick="location.href='?m=netnodeinfo&id={$netnode.id}'" type="button">
 			<IMG SRC="img/cancel.gif" alt=""> {trans("Cancel")}
 		</button>
-	</div>
-</div>
+	{/box_buttons}
+{/box_container}
 
 <script>
 
