@@ -5021,6 +5021,62 @@ button.lms-ui-delete-button:before,
 button.lms-ui-remove-button:before {
   content: "\f12d";
 }
+button.lms-ui-edit-button,
+button.lms-ui-change-button {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5em;
+  font-size: 1em;
+}
+button.lms-ui-edit-button.fa-pull-left,
+button.lms-ui-change-button.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-edit-button.fa-pull-right,
+button.lms-ui-change-button.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-edit-button:before,
+button.lms-ui-change-button:before {
+  content: "\f044";
+}
+button.lms-ui-fileupload-button,
+button.lms-ui-upload-button {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5em;
+  font-size: 1em;
+}
+button.lms-ui-fileupload-button.fa-pull-left,
+button.lms-ui-upload-button.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-fileupload-button.fa-pull-right,
+button.lms-ui-upload-button.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-fileupload-button:before,
+button.lms-ui-upload-button:before {
+  content: "\f0c6";
+}
 button.lms-ui-fileupload-button {
   color: #800000;
   border-radius: 3px;
