@@ -18,6 +18,11 @@
 @slave: 0px 0px 10px 1px blue;
 @frame: 1px solid black;
 
+@import "fontawesome/less/fontawesome";
+@import "fontawesome/less/solid";
+@import "fontawesome/less/brands";
+@import "fontawesome/less/regular";
+
 .lms-ui-no-user-select {
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -963,6 +968,24 @@ li.lms-ui-suggestion-item {
 
 button.lms-ui-button {
 	.lms-ui-button();
+}
+
+button.lms-ui-save-button {
+	.fa-icon;
+	.fas;
+	font-size: 1em;
+	&:before {
+		content: @fa-var-save;
+	}
+}
+
+button.lms-ui-cancel-button {
+	.fa-icon;
+	.fas;
+	font-size: 1em;
+	&:before {
+		content: @fa-var-backspace;
+	}
 }
 
 button.lms-ui-fileupload-button {

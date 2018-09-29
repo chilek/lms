@@ -187,9 +187,12 @@
 
 		{box_buttons}
 			{block name="netdevmodify-buttons"}
-				<a href="javascript:void(0);" id="submit_button" accesskey="s">{trans("Submit")}
-					<img src="img/save.gif" alt=""></a>
-				<a href="?m=netdevlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+			<button class="lms-ui-button lms-ui-save-button" id="submit_button" accesskey="s">
+				{trans("Submit")}
+			</button>
+			<button class="lms-ui-button lms-ui-cancel-button" type="button" onclick="location.href = '?m=netdevlist';">
+				{trans("Cancel")}
+			</button>
 			{/block}
 		{/box_buttons}
 	{/box_container}

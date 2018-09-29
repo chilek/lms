@@ -174,11 +174,11 @@
 	{/box_contents}
 
 	{box_buttons}
-		<button class="lms-ui-button" onclick="javascript:document.netnode.submit();" ACCESSKEY="s">
-			<IMG SRC="img/save.gif" alt=""> {trans("Submit")}
+		<button class="lms-ui-button lms-ui-save-button" onclick="javascript:document.netnode.submit();" ACCESSKEY="s">
+			{trans("Submit")}
 		</button>
-		<button class="lms-ui-button" onclick="location.href='?m=netnodeinfo&id={$netnode.id}'" type="button">
-			<IMG SRC="img/cancel.gif" alt=""> {trans("Cancel")}
+		<button class="lms-ui-button lms-ui-cancel-button" onclick="location.href='?m=netnodeinfo&id={$netnode.id}'" type="button">
+			{trans("Cancel")}
 		</button>
 	{/box_buttons}
 {/box_container}

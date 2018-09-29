@@ -64,11 +64,12 @@
 	{/box_contents}
 
 	{box_buttons}
-		<button onclick="javascript:document.message.submit();" class="lms-ui-button" accesskey="s">
-			<IMG src="img/save.gif" alt=""> {trans("Submit/Send")}
+		<button onclick="javascript:document.message.submit();" class="lms-ui-button lms-ui-save-button" accesskey="s">
+			{trans("Submit/Send")}
 		</button>
-		<button type="button" onclick="location.href = '?m=rtticketview&id={$message.ticketid}'" class="lms-ui-button">
-			<IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
+		<button type="button" onclick="location.href = '?m=rtticketview&id={$message.ticketid}'"
+				class="lms-ui-button lms-ui-cancel-button">
+			{trans("Cancel")}
 		</button>
 	{/box_buttons}
 {/box_container}
