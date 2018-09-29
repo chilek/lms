@@ -12,3 +12,4 @@ plugins/**
 templates/default/**/*.js
 components/**
 **/img/lms-ui-combobox.js
+**/img/locale/*.js
