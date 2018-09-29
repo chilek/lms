@@ -264,6 +264,10 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
 					break;
 			}
 			$mail_body = iconv($charset, 'UTF-8', $mail_body);
+			if ($partdata['content-type'] == 'text/html') {
+				$html2text = new \Html2Text\Html2Text($mail_body, array());
+				$mail_body = $html2text->getText();
+			}
 		} elseif (preg_match('#multipart/alternative#', $partdata['content-type']) && $mail_body == '') {
 			while (!empty($parts) && strpos($parts[0], $partid . '.') === 0) {
 				$subpartid = array_shift($parts);

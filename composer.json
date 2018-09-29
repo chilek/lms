@@ -85,7 +85,8 @@
         "tinymce/tinymce": "^4",
         "ccampbell/mousetrap": "^1",
         "ivkremer/jquery-simple-combobox": "^1",
-		"fortawesome/font-awesome": "^5"
+		"fortawesome/font-awesome": "^5",
+        "html2text/html2text": "^4"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
