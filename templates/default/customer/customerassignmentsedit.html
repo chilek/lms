@@ -26,12 +26,15 @@
 						<td>
 							<input type="hidden" value="" name="assignment[tarifftype]" id="tarifftype">
 							<select id="tariff-select" size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"}>
+								{block name="customerassignmentsedit-special-tariffs"}
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
 
 								{if !empty($promotions)}
 									<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>- {trans("per promotion schema")} -</option>
 								{/if}
+
+								{/block}
 
 								{foreach $tariffs as $tariff}
 									<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" data-tariffaccess="{$tariff.authtype}" data-tarifftags="{$tariff.tags}" {if $tariff.id==$assignment.tariffid} selected{/if} data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>

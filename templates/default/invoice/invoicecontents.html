@@ -163,6 +163,7 @@
         {/if}
         </TBODY>
         <TFOOT>
+        {block name="`$layout.module`-additem"}
         {if !$invoice.closed}
         <TR>
             <TD class="bold nobr">
@@ -212,6 +213,7 @@
             </TD>
         </TR>
         {/if}
+        {/block}
         <TR class="lms-ui-button-panel">
             <TD COLSPAN="9" class="text-right">
                 <TABLE width="100%">
