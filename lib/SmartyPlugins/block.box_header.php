@@ -27,16 +27,22 @@
 function smarty_block_box_header($params, $content, $template, $repeat) {
 	if (!$repeat) {
 		$id = isset($params['id']) ? $params['id'] : null;
-		$icon = $params['icon'];
-		$label = $params['label'];
+		$multi_row = isset($params['multi_row']) && $params['multi_row'];
+		$icon = isset($params['icon']) ? $params['icon'] : null;
+		$label = isset($params['label']) ? $params['label'] : null;
 
-		return '
-			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
-				' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
-					: '<i class="' . $icon . '"></i>')
-				. trans($label)
-				. $content . '
-			</div>';
+		if ($multi_row)
+			return '<div class="lms-ui-box-header-multi-row">'
+					. $content . '
+				</div>';
+		else
+			return '
+				<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-box-header">
+					' . (strpos($icon, '/') !== false ? '<IMG src="' . $icon . '" alt="">'
+						: '<i class="' . $icon . '"></i>')
+					. trans($label)
+					. $content . '
+				</div>';
 	}
 }
 

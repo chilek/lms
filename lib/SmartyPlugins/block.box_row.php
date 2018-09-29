@@ -34,6 +34,7 @@ function smarty_block_box_row($params, $content, $template, $repeat) {
 		$class = isset($params['class']) ? $params['class'] : null;
 		$icon_class = isset($params['icon_class']) ? $params['icon_class'] : null;
 		$label_class = isset($params['label_class']) ? $params['label_class'] : null;
+		$field_id = isset($params['field_id']) ? $params['field_id'] : null;
 		$field_class = isset($params['field_class']) ? $params['field_class'] : null;
 
 		return '
@@ -47,7 +48,8 @@ function smarty_block_box_row($params, $content, $template, $repeat) {
 					' . ($labelid ? '<label for="' . $labelid . '">' : '')
 					. ($label ? trans($label) : '') . ($labelid ? '</label>' : '') . '
 				</div>
-				<div class="lms-ui-box-row-field' . ($field_class ? ' ' . $field_class : '') . '">
+				<div' . ($field_id ? ' id="' . $field_id . '"' : '')
+					. ' class="lms-ui-box-row-field' . ($field_class ? ' ' . $field_class : '') . '">
 					' . $content . '
 				</div>
 			</div>';

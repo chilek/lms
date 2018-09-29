@@ -1,5 +1,6 @@
 <style>
-	.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+
+	#ticket.lms-ui-box-container .lms-ui-box-row-label {
 		width: 12em;
 	}
 
@@ -7,380 +8,217 @@
 		flex-direction: column !important;
 		align-items: flex-start !important;
 	}
+
 </style>
 
-<div class="lms-ui-box-container">
-	<div class="lms-ui-box-header-multi-row">
-		<div class="lms-ui-box-header">
-			<IMG src="img/ticket.gif" alt="">
-			{trans("Subject:")}
+{box_container id="ticket"}
+	{box_header multi_row=true}
+		{box_header icon="img/ticket.gif" label="Subject:"}
 			<INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
-		</div>
-		<div class="lms-ui-box-header">
-			<IMG src="img/service-type.png" alt="">
-			{trans("Service type:")}
+		{/box_header}
+		{box_header icon="img/service-type.png" label="Service type:"}
 			<SELECT name="ticket[service]">
 				{foreach $_SERVICETYPES as $key => $service}
 					<OPTION value="{$key}"{if $key == $ticket.service} selected{/if}>{$service}</OPTION>
 				{/foreach}
 			</SELECT>
-		</div>
-		<div class="lms-ui-box-header">
-			<IMG src="img/ticket-type.png" alt="">
-			{trans("Ticket type:")}
+		{/box_header}
+		{box_header icon="img/ticket-type.png" label="Ticket type:"}
 			<SELECT name="ticket[type]">
 				{foreach $_RT_TYPES as $key => $type}
 					<OPTION value="{$key}"{if $key == $ticket.type} selected{/if}>{$type.label}</OPTION>
 				{/foreach}
 			</SELECT>
-		</div>
-	</div>
-	<div class="lms-ui-box-contents">
-		<div class="lms-ui-box-panel">
+		{/box_header}
+	{/box_header}
+
+	{box_contents}
+		{box_panel}
+
 			{if $layout.module != 'eventadd'}
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/customer.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Customer:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
-					{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
-					{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
-				</div>
-			</div>
+			{box_row icon="img/customer.gif" label="Customer:"}
+				{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
+				{$address_selector='[name=&quot;ticket[address_id]&quot;]'}
+				{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+			{/box_row}
 			{/if}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/users.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Requestor:")}
-				</div>
-				<div id="requestor" class="lms-ui-box-row-field">
-					<div class="lms-ui-box-row">
-						<SELECT name="ticket[requestor_userid]" {tip text="Select requestor from list" trigger="requestor_userid"}>
-							<option value="">{trans("<!person>- none -")}</option>
-							<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
-							{foreach $userlist as $user}
-								<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.name}</option>
-							{/foreach}
-						</SELECT>
-					</div>
-					<div class="lms-ui-box-row indicated-person">
-						<div class="lms-ui-box-row-label">
-							{trans("Name:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[requestor_name]" id="requestor_name" value="{$ticket.requestor_name}" {tip trigger="requestor_name"}>
-						</div>
-					</div>
-					<div class="lms-ui-box-row indicated-person">
-						<div class="lms-ui-box-row-label">
-							{trans("E-mail:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[requestor_mail]" id="requestor_mail" value="{$ticket.requestor_mail}" {tip trigger="requestor_mail"}>
-						</div>
-					</div>
-					<div class="lms-ui-box-row indicated-person">
-						<div class="lms-ui-box-row-label">
-							{trans("Phone:")}
-						</div>
-						<div class="lms-ui-box-row-field">
-							<INPUT type="text" name="ticket[requestor_phone]" id="requestor_phone" value="{$ticket.requestor_phone}" {tip trigger="requestor_phone"}>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			{if $layout.module == 'rtticketadd'}
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/mail.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Content:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/note.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Note:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/attach.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Attachments:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{fileupload id="files" fileupload=$fileupload}
-				</div>
-			</div>
-			{/if}
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/queue.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Categories:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					{foreach $categories as $category}
-						<label class="nobr">
-							<INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
-							{$category.name}
-						</label>
-					{/foreach}
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/mail.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					<label for="notify">{trans("Notify users:")}</label>
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
-				</div>
-			</div>
-
-		</div>
-		<div class="lms-ui-box-panel">
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/users.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Owner:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
-						<OPTION value="0">- {trans("select user")} -</OPTION>
+			{box_row icon="img/users.gif" label="Requestor:" field_id="requestor"}
+				<div class="lms-ui-box-row">
+					<SELECT name="ticket[requestor_userid]" {tip text="Select requestor from list" trigger="requestor_userid"}>
+						<option value="">{trans("<!person>- none -")}</option>
+						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
-							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-							|| $user.id == $ticket.owner}
-								<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.name}</OPTION>
-							{/if}
+							<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.name}</option>
 						{/foreach}
 					</SELECT>
 				</div>
-			</div>
+				<div class="lms-ui-box-row indicated-person">
+					<div class="lms-ui-box-row-label">
+						{trans("Name:")}
+					</div>
+					<div class="lms-ui-box-row-field">
+						<INPUT type="text" name="ticket[requestor_name]" id="requestor_name" value="{$ticket.requestor_name}" {tip trigger="requestor_name"}>
+					</div>
+				</div>
+				<div class="lms-ui-box-row indicated-person">
+					<div class="lms-ui-box-row-label">
+						{trans("E-mail:")}
+					</div>
+					<div class="lms-ui-box-row-field">
+						<INPUT type="text" name="ticket[requestor_mail]" id="requestor_mail" value="{$ticket.requestor_mail}" {tip trigger="requestor_mail"}>
+					</div>
+				</div>
+				<div class="lms-ui-box-row indicated-person">
+					<div class="lms-ui-box-row-label">
+						{trans("Phone:")}
+					</div>
+					<div class="lms-ui-box-row-field">
+						<INPUT type="text" name="ticket[requestor_phone]" id="requestor_phone" value="{$ticket.requestor_phone}" {tip trigger="requestor_phone"}>
+					</div>
+				</div>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/verifier.png" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Verifier:")}
-				</div>
-				<div class="lms-ui-box-row-field" id="rtverifiers">
-					{if $layout.module != 'rtticketedit' || (!$ticket.verifierid || $ticket.verifier_username == $layout.logname)}
-						{include file="rt/rtverifiers.html" form="ticket2"}
-					{else}
-						<span {tip text="{trans("Only verifier can change this")}"}>{$ticket.verifier_username}</span>
-					{/if}
-				</div>
-			</div>
+{if $layout.module == 'rtticketadd'}
+			{box_row icon="img/mail.gif" label="Content:"}
+				<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/calendar.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("<!rt>Deadline:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
-				</div>
-			</div>
+			{box_row icon="img/note.gif" label="Note:"}
+				<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/queue.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Queue:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
-						{foreach $queuelist as $item}
-						<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
+			{box_row icon="img/attach.gif" label="Attachments:"}
+				{fileupload id="files" fileupload=$fileupload}
+			{/box_row}
+{/if}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/desc.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Cause:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT size="1" name="ticket[cause]" {tip text="Select ticket cause" trigger="cause"}>
-						<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
-						<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
-						<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
-					</SELECT>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/volcano.png" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Ticket source:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT size="1" name="ticket[source]" {tip text="Select ticket source" trigger="source"}>
-						{foreach $_RT_SOURCES as $sourceidx => $source}
-						<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$source}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/report.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Priority:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
-						{foreach $_RT_PRIORITIES as $priorityidx => $priority}
-						<OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
-
-			{if $layout.module != 'eventadd'}
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<img src="img/home.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Location:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<select id="customer_addresses" name="ticket[address_id]"{if $address_id_warning} class="alert"{/if} {tip trigger="address_id"}>
-					</select>
-					<input type="hidden" name="address_id_warning" value="{if $address_id_warning}1{else}0{/if}">
-				</div>
-			</div>
-			{/if}
-
-			<div class="lms-ui-box-row" id="node-row"{if empty($nodes) || $layout.module == 'eventadd'} style="display: none;"{/if}>
-				<div class="lms-ui-box-row-icon">
-					<img src="img/node.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Node:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<select id="nodes" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
-						<option value="">{trans("- none -")}</option>
-						{if !empty($nodes)}
-							{foreach $nodes as $node}
-								<option value="{$node.id}"{if $node.id == $ticket.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
-							{/foreach}
-						{/if}
-					</select>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<img src="img/netnode.png" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Network node:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
-						<OPTION value="">{trans("- none -")}</OPTION>
-						{foreach $netnodelist as $idx => $netnode}
-						<OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
-						{/foreach}
-					</SELECT>
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<img src="img/netdev.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Device:")}
-				</div>
-				<div class="lms-ui-box-row-field" id="rtnetdevs">
-					{include file="rt/rtnetdevs.html" form="ticket"}
-				</div>
-			</div>
-
-			<div class="lms-ui-box-row" id="customernotify-row">
-				<div class="lms-ui-box-row-icon">
-					<IMG src="img/mail.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
- 					<label for="customernotify">
-						{trans("Notify customer:")}
+			{box_row icon="img/queue.gif" label="Categories:"}
+				{foreach $categories as $category}
+					<label class="nobr">
+						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
+						{$category.name}
 					</label>
-				</div>
-				<div class="lms-ui-box-row-field">
-					<input type="checkbox" id="customernotify" name="ticket[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
-				</div>
-			</div>
+				{/foreach}
+			{/box_row}
 
-			<div class="lms-ui-box-row">
-				<div class="lms-ui-box-row-icon">
-					<img src="img/money.gif" alt="">
-				</div>
-				<div class="lms-ui-box-row-label">
-					{trans("Investment project:")}
-				</div>
-				<div class="lms-ui-box-row-field">
-					<SELECT name="ticket[invprojectid]" {tip text="Select investment projects" trigger="invprojectid"}>
-						<OPTION value="">{trans("- none -")}</OPTION>
-						{foreach $invprojectlist as $idx => $project}
-						<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
-						{$project.name} ({$project.id})
-						</OPTION>
+			{box_row icon="img/mail.gif" label="Notify users:" labelid="notify"}
+				<INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
+			{/box_row}
+
+		{/box_panel}
+		{box_panel}
+
+			{box_row icon="img/users.gif" label="Owner:"}
+				<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
+					<OPTION value="0">- {trans("select user")} -</OPTION>
+					{foreach $userlist as $user}
+						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+						|| $user.id == $ticket.owner}
+							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $ticket.owner} selected{/if}>{$user.name}</OPTION>
+						{/if}
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
+				{if $layout.module != 'rtticketedit' || (!$ticket.verifierid || $ticket.verifier_username == $layout.logname)}
+					{include file="rt/rtverifiers.html" form="ticket2"}
+				{else}
+					<span {tip text="{trans("Only verifier can change this")}"}>{$ticket.verifier_username}</span>
+				{/if}
+			{/box_row}
+
+			{box_row icon="img/calendar.gif" label="<!rt>Deadline:"}
+				<INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+			{/box_row}
+
+			{box_row icon="img/queue.gif" label="Queue:"}
+				<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+					{foreach $queuelist as $item}
+					<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/desc.gif" label="Cause:"}
+				<SELECT size="1" name="ticket[cause]" {tip text="Select ticket cause" trigger="cause"}>
+					<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
+					<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
+					<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/volcano.png" label="Ticket source:"}
+				<SELECT size="1" name="ticket[source]" {tip text="Select ticket source" trigger="source"}>
+					{foreach $_RT_SOURCES as $sourceidx => $source}
+					<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$source}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/report.gif" label="Priority"}
+				<SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
+					{foreach $_RT_PRIORITIES as $priorityidx => $priority}
+					<OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+{if $layout.module != 'eventadd'}
+			{box_row icon="img/home.gif" label="Location:"}
+				<select id="customer_addresses" name="ticket[address_id]"{if $address_id_warning} class="alert"{/if} {tip trigger="address_id"}>
+				</select>
+				<input type="hidden" name="address_id_warning" value="{if $address_id_warning}1{else}0{/if}">
+			{/box_row}
+{/if}
+
+			{$visibility=(!empty($nodes) && $layout.module != 'eventadd')}
+			{box_row id="node-row" icon="img/node.gif" label="Node:" visibility=$visibility}
+				<select id="nodes" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
+					<option value="">{trans("- none -")}</option>
+					{if !empty($nodes)}
+						{foreach $nodes as $node}
+							<option value="{$node.id}"{if $node.id == $ticket.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
 						{/foreach}
-					</SELECT>
-				</div>
-			</div>
+					{/if}
+				</select>
+			{/box_row}
 
-		</div>
-	</div>
+			{box_row icon="img/netnode.png" label="Network node:"}
+				<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
+					<OPTION value="">{trans("- none -")}</OPTION>
+					{foreach $netnodelist as $idx => $netnode}
+					<OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/netdev.gif" label="Device:" field_id="rtnetdevs"}
+				{include file="rt/rtnetdevs.html" form="ticket"}
+			{/box_row}
+
+			{box_row id="customernotify-row" icon="img/mail.gif" label="Notify customer:" labelid="customernotify"}
+				<input type="checkbox" id="customernotify" name="ticket[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
+			{/box_row}
+
+			{box_row icon="img/money.gif" label="Investment project:"}
+				<SELECT name="ticket[invprojectid]" {tip text="Select investment projects" trigger="invprojectid"}>
+					<OPTION value="">{trans("- none -")}</OPTION>
+					{foreach $invprojectlist as $idx => $project}
+					<OPTION value="{$idx}" {if $idx == $ticket.invprojectid} selected{/if}>
+					{$project.name} ({$project.id})
+					</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+		{/box_panel}
+	{/box_contents}
+
 	{if $layout.module != 'eventadd'}
-	<div class="lms-ui-box-buttons">
+	{box_buttons}
 		<button class="lms-ui-button" onclick="javascript:document.ticket.submit();" accesskey="s">
 			<IMG src="img/save.gif" alt=""> {trans("Submit")}
 		</button>
@@ -388,9 +226,9 @@
 				onclick="location.href='?m={if $queue}rtqueueview&id={$queue}{elseif $ticket.queueid}rtqueueview&id={$ticket.queueid}{else}rtqueuelist{/if}'">
 			<IMG src="img/cancel.gif" alt=""> {trans("Cancel")}
 		</button>
-	</div>
+	{/box_buttons}
 	{/if}
-</div>
+{/box_container}
 
 <script>
 
