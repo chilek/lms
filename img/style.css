@@ -5022,7 +5022,8 @@ button.lms-ui-remove-button:before {
   content: "\f12d";
 }
 button.lms-ui-edit-button,
-button.lms-ui-change-button {
+button.lms-ui-change-button,
+button.lms-ui-modify-button {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5038,15 +5039,18 @@ button.lms-ui-change-button {
   font-size: 1em;
 }
 button.lms-ui-edit-button.fa-pull-left,
-button.lms-ui-change-button.fa-pull-left {
+button.lms-ui-change-button.fa-pull-left,
+button.lms-ui-modify-button.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-edit-button.fa-pull-right,
-button.lms-ui-change-button.fa-pull-right {
+button.lms-ui-change-button.fa-pull-right,
+button.lms-ui-modify-button.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-edit-button:before,
-button.lms-ui-change-button:before {
+button.lms-ui-change-button:before,
+button.lms-ui-modify-button:before {
   content: "\f044";
 }
 button.lms-ui-fileupload-button,
