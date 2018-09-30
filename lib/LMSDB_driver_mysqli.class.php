@@ -475,9 +475,15 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
 					array($this->_dbname, $table_name, $column_name)) > 0;
 				break;
 			case LMSDB::RESOURCE_TYPE_CONSTRAINT:
-				return $this->GetOne('SELECT COUNT(*) FROM information_schema.table_constraints
-					WHERE table_schema = ? AND constraint_name = ?',
-					array($this->_dbname, $name)) > 0;
+				if (strpos($name, '.') !== false) {
+					list ($table_name, $constraint_name) = explode('.', $name);
+					return $this->GetOne('SELECT COUNT(*) FROM information_schema.table_constraints
+						WHERE table_schema = ? AND table_name = ? AND constraint_name = ?',
+							array($this->_dbname, $table_name, $constraint_name)) > 0;
+				} else
+					return $this->GetOne('SELECT COUNT(*) FROM information_schema.table_constraints
+						WHERE table_schema = ? AND constraint_name = ?',
+						array($this->_dbname, $name)) > 0;
 				break;
 		}
 	}

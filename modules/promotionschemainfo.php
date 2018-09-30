@@ -84,9 +84,9 @@ if (!empty($schema['tariffs'])) {
 
 $tariffs = $DB->GetAll('SELECT t.name, t.value, t.id, t.upceil, t.downceil
     FROM tariffs t
-    WHERE t.id NOT IN (
+    ' . (ConfigHelper::checkConfig('phpui.promotion_tariff_duplicates') ? '' : ' WHERE t.id NOT IN (
         SELECT tariffid FROM promotionassignments
-        WHERE promotionschemaid = ?)
+        WHERE promotionschemaid = ?)') . '
     ORDER BY t.name, t.value DESC', array($schema['id']));
 
 $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
