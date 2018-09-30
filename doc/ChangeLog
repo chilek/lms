@@ -157,6 +157,9 @@ version ?.??.?? (????-??-??):
   - improvement: incorrect customer identify card number generates warning instead of error [chilan]
   - improvement/bugfix: convert received posts which are loaded into helpdesk from html
     to text using Html2Text [chilan]
+  - improvement: tariffs are not unique per promotion schema - phpui.promotion_tariff_duplicates
+    configuration variable controls if tariff duplicates are allowed per promotion schema
+    or not ('false' by default) [chilan]
 
 version 1.11.23 (2018-03-21):
 
