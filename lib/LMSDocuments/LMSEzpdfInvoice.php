@@ -984,12 +984,19 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		}
 
 		$return = $this->new_invoice_data(30, $top, 530, 7, 2);
-		$return[1] += 5;
-		$this->invoice_expositor(30, $return[1] - 20);
+		$top = $return[1] + 5 - 20;
+		$this->backend->check_page_length($top);
+		$this->invoice_expositor(30, $top);
+
 		$top = $return[2] - 20;
+		$this->backend->check_page_length($top);
 		$top = $this->invoice_to_pay(30, $top);
+
 		$top = $top - 20;
+		$this->backend->check_page_length($top);
 		$top = $this->invoice_comment(30, $top);
+
+		$this->backend->check_page_length($top);
 		$this->invoice_footnote(30, $top, 530, 10);
 		$page = $this->backend->ezStopPageNumbers(1, 1, $page);
 	}
@@ -1018,9 +1025,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$top = $this->invoice_comment(470, $top);
 		$this->invoice_footnote(470, $top, 90, 8);
 		$return = $this->new_invoice_data(30, $top, 430, 6, 1);
+		$top = $return[1] + 5;
+		$this->invoice_expositor(30, $top);
 		$top = $return[2] - 10;
-		$return[1] += 5;
-		$this->invoice_expositor(30, $return[1]);
 		$this->invoice_to_pay(30, $top);
 		$this->backend->check_page_length($top, 200);
 		if ($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
