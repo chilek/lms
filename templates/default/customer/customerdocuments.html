@@ -6,9 +6,8 @@
 {tab_container id="customerdocuments"}
 
 	{tab_header content_id="docpanel"}
-		{tab_header_cell}
-			<i class="fas fa-file-alt"></i>
-			<span class="bold">{trans("Customer's Documents:")}</span> ({t a=$limit}last $a documents{/t})
+		{tab_header_cell icon="fas fa-file-alt"}
+			<strong>{trans("Customer's Documents:")}</strong> ({t a=$limit}last $a documents{/t})
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
@@ -32,35 +31,37 @@
 				{if $documents}
 				<THEAD>
 					<TR>
-						<TD class="bold nobr">{trans("Number:")}</TD>
-						<TD class="nobr">{trans("Creation date<!document>")} / {trans("Confirmation date<!document>")}:</TD>
-						<TD class="nobr">{trans("Created by<!document>")} / {trans("Confirmed by<!document>")}:</TD>
-						<TD class="bold nobr">{trans("Type:")}</TD>
-						<TD class="nobr">{trans("Title:")}</TD>
-						<TD class="nobr">{trans("Period:")}</TD>
-						<TD class="nobr"></TD>
+						<TD><strong>{trans("Number:")}</strong></TD>
+						<TD>{trans("Creation date<!document>")} / {trans("Confirmation date<!document>")}:</TD>
+						<TD>{trans("Created by<!document>")} / {trans("Confirmed by<!document>")}:</TD>
+						<TD><strong>{trans("Type:")}</strong></TD>
+						<TD>{trans("Title:")}</TD>
+						<TD>{trans("Period:")}</TD>
+						<TD></TD>
 					</TR>
 				</THEAD>
 				{/if}
 				<TBODY>
 					{foreach $documents as $doc}
-					<TR class="{if $doc.closed} blend{/if}"  >
-						<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
-							{number number=$doc.number template=$doc.template time=$doc.cdate}
+					<TR class="{if $doc.closed} blend{/if}">
+						<TD onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
+							<strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong>
 						</TD>
-						<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+						<TD onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
 							{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
 						</TD>
-						<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+						<TD onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
 							{$doc.username}{if $doc.cusername} / {$doc.cusername}{/if}
 						</TD>
-						<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</TD>
-						<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
-						<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+						<TD onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+							<strong>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</strong>
+						</TD>
+						<TD onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
+						<TD onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
 							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
 							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 						</TD>
-						<TD class="text-right nobr">
+						<TD>
 							{if $customerinfo.senddocuments}
 								<a class="documentsend lms-ui-mail-button" href="?m=documentsend&id={$doc.docid}"><i title="{trans("Document send")}"></i></a>
 							{/if}

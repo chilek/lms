@@ -6765,6 +6765,9 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-tab-container table.lms-ui-tab-table td:not(:first-child) {
   padding-left: 0.5em;
 }
+.lms-ui-tab-container table.lms-ui-tab-table td:last-child {
+  text-align: right;
+}
 .lms-ui-tab-container table.lms-ui-tab-table td.lms-ui-tab-table-empty {
   text-align: center;
   font-weight: bold;
