@@ -55,8 +55,7 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtqueueview');
                 break;
             case 'resolve':
-                $state = intval($_GET['state']);
-                $LMS->TicketChange($id, array('state' => $state));
+                $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 
                 $queue = $LMS->GetQueueByTicketId($id);
                 $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
