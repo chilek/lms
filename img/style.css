@@ -6735,6 +6735,42 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-tab-container .lms-ui-tab-contents .lms-ui-tab-button-panel .lms-ui-tab-buttons > :nth-child(n+2) {
   margin-left: 0.2em;
 }
+.lms-ui-tab-container table.lms-ui-tab-table {
+  table-layout: fixed;
+  width: 100%;
+}
+.lms-ui-tab-container table.lms-ui-tab-table > thead > tr {
+  border-bottom: 1px solid black;
+}
+.lms-ui-tab-container table.lms-ui-tab-table > tbody > tr:not(:last-child) {
+  border-bottom: 1px dotted grey;
+}
+.lms-ui-tab-container table.lms-ui-tab-table > tbody > tr:last-child {
+  border-bottom: none;
+}
+.lms-ui-tab-container table.lms-ui-tab-table > tbody > tr:nth-child(even) {
+  background-color: #DFD5BD;
+}
+.lms-ui-tab-container table.lms-ui-tab-table > tbody > tr:nth-child(odd) {
+  background-color: #EBE4D6;
+}
+.lms-ui-tab-container table.lms-ui-tab-table > tbody > tr:hover {
+  background-color: #CCFFCC;
+}
+.lms-ui-tab-container table.lms-ui-tab-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lms-ui-tab-container table.lms-ui-tab-table td:not(:first-child) {
+  padding-left: 0.5em;
+}
+.lms-ui-tab-container table.lms-ui-tab-table td.lms-ui-tab-table-empty {
+  text-align: center;
+  font-weight: bold;
+  padding-top: 3em;
+  padding-bottom: 3em;
+}
 td.lms-ui-mac-address-selection {
   padding: 0 !important;
 }

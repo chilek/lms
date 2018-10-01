@@ -2557,6 +2557,45 @@ div.lms-ui-wysiwyg-editor {
 			}
 		}
 	}
+
+	table.lms-ui-tab-table {
+		table-layout: fixed;
+		width: 100%;
+		& > thead > tr {
+			border-bottom: @frame;
+		}
+		& > tbody > tr {
+			&:not(:last-child) {
+				border-bottom: 1px dotted grey;
+			}
+			&:last-child {
+				border-bottom: none;
+			}
+			&:nth-child(even) {
+				background-color: @light;
+			}
+			&:nth-child(odd) {
+				background-color: @lucid;
+			}
+			&:hover {
+				background-color: @highlight;
+			}
+		}
+		td {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			&:not(:first-child) {
+				padding-left: 0.5em;
+			}
+			&.lms-ui-tab-table-empty {
+				text-align: center;
+				font-weight: bold;
+				padding-top: 3em;
+				padding-bottom: 3em;
+			}
+		}
+	}
 }
 
 
