@@ -397,6 +397,8 @@ if (isset($_POST['message'])) {
 				die;
 			$queue = $LMS->GetQueueByTicketId($ticketid);
 			$message = $LMS->GetTicketContents($ticketid);
+			if ($message['state'] == RT_NEW)
+				$message['state'] = RT_OPEN;
 			if ($queue['newmessagesubject'] && $queue['newmessagebody'])
 				$message['customernotify'] = 1;
 		}
