@@ -3204,6 +3204,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 				$sid = $assign['schema_id'];
 
+				if (!isset($promotions[$pid]['schemas'][$sid]))
+					continue;
+
 				$promotion_schema_item = array(
 					'tariffid' => $assign['tariffid'],
 					'tariff'   => $assign['tariff_name'],
