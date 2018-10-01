@@ -469,6 +469,7 @@ $divisions = array();
 $result = $LMS->ExecuteHook('payments_before_assignment_loop',
 	array(
 		'assignments' => $assigns,
+		'date' => sprintf('%04d/%02d/%02d', $year, $month, $dom),
 	));
 if ($result['assignments'])
 	$assigns = $result['assignments'];
