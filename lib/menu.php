@@ -310,7 +310,7 @@ $menu = array(
 
 		'networks' => array(
 			'name' => trans('IP Networks'),
-			'css' => 'fas fa-map-marker-check',
+			'css' => 'fas fa-globe',
 			'link' =>'?m=netlist',
 			'tip' => trans('IP Address Pools Management'),
 			'accesskey' =>'t',
