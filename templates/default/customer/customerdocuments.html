@@ -97,7 +97,7 @@
 								{if $docattach@first && $docattach.main}{continue}{/if}
 								{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 									url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
-									text="{$docattach.filename} <img src=\"img/{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{else}view{/if}.gif\">"}
+									text="{$docattach.filename} <i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
 								<br>
 								{/foreach}
 							</div>
