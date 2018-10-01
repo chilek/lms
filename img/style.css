@@ -22,10 +22,10 @@
   vertical-align: -0.0667em;
 }
 .fa-xs {
-  font-size: .75em;
+  font-size: 0.75em;
 }
 .fa-sm {
-  font-size: .875em;
+  font-size: 0.875em;
 }
 .fa-1x {
   font-size: 1em;
@@ -77,9 +77,9 @@
   line-height: inherit;
 }
 .fa-border {
-  border-radius: .1em;
+  border-radius: 0.1em;
   border: solid 0.08em #eee;
-  padding: .2em .25em .15em;
+  padding: 0.2em 0.25em 0.15em;
 }
 .fa-pull-left {
   float: left;
@@ -92,14 +92,14 @@
 .far.fa-pull-left,
 .fal.fa-pull-left,
 .fab.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .fa.fa-pull-right,
 .fas.fa-pull-right,
 .far.fa-pull-right,
 .fal.fa-pull-right,
 .fab.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .fa-spin {
   animation: fa-spin 2s infinite linear;
@@ -3873,7 +3873,7 @@ TABLE {
 }
 #lms-ui-menu-panel-toggle:not(.visible) {
   background-color: #AE9D7B;
-  padding: 0.1em 0.0em 0.3em 0.1em;
+  padding: 0.1em 0em 0.3em 0.1em;
   border: 1px solid black;
   border-radius: 0 0 0.5em 0em;
 }
@@ -4918,6 +4918,62 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
+i.fa-user,
+i.fa-male {
+  color: darkorange;
+}
+i.fa-phone {
+  color: darkred;
+}
+i.fa-desktop {
+  color: navy;
+}
+i.fa-map-marked {
+  color: darkslategray;
+}
+i.fa-layer-group {
+  color: deeppink;
+}
+i.fa-hdd {
+  color: brown;
+}
+i.fa-hospital-symbol,
+i.fa-calendar-alt {
+  color: dodgerblue;
+}
+i.fa-screwdriver,
+i.fa-sync,
+i.fa-power-off,
+i.fa-wrench {
+  color: red;
+}
+i.fa-money-bill {
+  color: forestgreen;
+}
+i.fa-wifi {
+  color: salmon;
+}
+i.fa-at {
+  color: royalblue;
+}
+i.fa-file-alt {
+  color: orangered;
+}
+i.fa-chart-line {
+  color: lightseagreen;
+}
+i.fa-database {
+  color: darkslategrey;
+}
+i.fa-envelope {
+  color: darkorange;
+}
+i.fa-book {
+  color: indigo;
+}
+i.fa-key {
+  color: seagreen;
+}
 button.lms-ui-save-button > i,
 a.lms-ui-save-button > i,
 button.lms-ui-submit-button > i,
@@ -4940,13 +4996,13 @@ button.lms-ui-save-button > i.fa-pull-left,
 a.lms-ui-save-button > i.fa-pull-left,
 button.lms-ui-submit-button > i.fa-pull-left,
 a.lms-ui-submit-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-save-button > i.fa-pull-right,
 a.lms-ui-save-button > i.fa-pull-right,
 button.lms-ui-submit-button > i.fa-pull-right,
 a.lms-ui-submit-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-save-button > i:before,
 a.lms-ui-save-button > i:before,
@@ -4972,11 +5028,11 @@ a.lms-ui-cancel-button > i {
 }
 button.lms-ui-cancel-button > i.fa-pull-left,
 a.lms-ui-cancel-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-cancel-button > i.fa-pull-right,
 a.lms-ui-cancel-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-cancel-button > i:before,
 a.lms-ui-cancel-button > i:before {
@@ -5004,13 +5060,13 @@ button.lms-ui-clone-button > i.fa-pull-left,
 a.lms-ui-clone-button > i.fa-pull-left,
 button.lms-ui-copy-button > i.fa-pull-left,
 a.lms-ui-copy-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-clone-button > i.fa-pull-right,
 a.lms-ui-clone-button > i.fa-pull-right,
 button.lms-ui-copy-button > i.fa-pull-right,
 a.lms-ui-copy-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-clone-button > i:before,
 a.lms-ui-clone-button > i:before,
@@ -5040,13 +5096,13 @@ button.lms-ui-delete-button > i.fa-pull-left,
 a.lms-ui-delete-button > i.fa-pull-left,
 button.lms-ui-remove-button > i.fa-pull-left,
 a.lms-ui-remove-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-delete-button > i.fa-pull-right,
 a.lms-ui-delete-button > i.fa-pull-right,
 button.lms-ui-remove-button > i.fa-pull-right,
 a.lms-ui-remove-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-delete-button > i:before,
 a.lms-ui-delete-button > i:before,
@@ -5080,7 +5136,7 @@ button.lms-ui-change-button > i.fa-pull-left,
 a.lms-ui-change-button > i.fa-pull-left,
 button.lms-ui-modify-button > i.fa-pull-left,
 a.lms-ui-modify-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-edit-button > i.fa-pull-right,
 a.lms-ui-edit-button > i.fa-pull-right,
@@ -5088,7 +5144,7 @@ button.lms-ui-change-button > i.fa-pull-right,
 a.lms-ui-change-button > i.fa-pull-right,
 button.lms-ui-modify-button > i.fa-pull-right,
 a.lms-ui-modify-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-edit-button > i:before,
 a.lms-ui-edit-button > i:before,
@@ -5120,13 +5176,13 @@ button.lms-ui-fileupload-button > i.fa-pull-left,
 a.lms-ui-fileupload-button > i.fa-pull-left,
 button.lms-ui-upload-button > i.fa-pull-left,
 a.lms-ui-upload-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-fileupload-button > i.fa-pull-right,
 a.lms-ui-fileupload-button > i.fa-pull-right,
 button.lms-ui-upload-button > i.fa-pull-right,
 a.lms-ui-upload-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-fileupload-button > i:before,
 a.lms-ui-fileupload-button > i:before,
@@ -5156,13 +5212,13 @@ button.lms-ui-back-button > i.fa-pull-left,
 a.lms-ui-back-button > i.fa-pull-left,
 button.lms-ui-return-button > i.fa-pull-left,
 a.lms-ui-return-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-back-button > i.fa-pull-right,
 a.lms-ui-back-button > i.fa-pull-right,
 button.lms-ui-return-button > i.fa-pull-right,
 a.lms-ui-return-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-back-button > i:before,
 a.lms-ui-back-button > i:before,
@@ -5196,7 +5252,7 @@ button.lms-ui-new-button > i.fa-pull-left,
 a.lms-ui-new-button > i.fa-pull-left,
 button.lms-ui-append-button > i.fa-pull-left,
 a.lms-ui-append-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-add-button > i.fa-pull-right,
 a.lms-ui-add-button > i.fa-pull-right,
@@ -5204,7 +5260,7 @@ button.lms-ui-new-button > i.fa-pull-right,
 a.lms-ui-new-button > i.fa-pull-right,
 button.lms-ui-append-button > i.fa-pull-right,
 a.lms-ui-append-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-add-button > i:before,
 a.lms-ui-add-button > i:before,
@@ -5232,11 +5288,11 @@ a.lms-ui-print-button > i {
 }
 button.lms-ui-print-button > i.fa-pull-left,
 a.lms-ui-print-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-print-button > i.fa-pull-right,
 a.lms-ui-print-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-print-button > i:before,
 a.lms-ui-print-button > i:before {
@@ -5264,13 +5320,13 @@ button.lms-ui-confirm-button > i.fa-pull-left,
 a.lms-ui-confirm-button > i.fa-pull-left,
 button.lms-ui-apply-button > i.fa-pull-left,
 a.lms-ui-apply-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-confirm-button > i.fa-pull-right,
 a.lms-ui-confirm-button > i.fa-pull-right,
 button.lms-ui-apply-button > i.fa-pull-right,
 a.lms-ui-apply-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-confirm-button > i:before,
 a.lms-ui-confirm-button > i:before,
@@ -5300,13 +5356,13 @@ button.lms-ui-mail-button > i.fa-pull-left,
 a.lms-ui-mail-button > i.fa-pull-left,
 button.lms-ui-send-button > i.fa-pull-left,
 a.lms-ui-send-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-mail-button > i.fa-pull-right,
 a.lms-ui-mail-button > i.fa-pull-right,
 button.lms-ui-send-button > i.fa-pull-right,
 a.lms-ui-send-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-mail-button > i:before,
 a.lms-ui-mail-button > i:before,
@@ -5332,11 +5388,11 @@ a.lms-ui-clipboard-button > i {
 }
 button.lms-ui-clipboard-button > i.fa-pull-left,
 a.lms-ui-clipboard-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-clipboard-button > i.fa-pull-right,
 a.lms-ui-clipboard-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-clipboard-button > i:before,
 a.lms-ui-clipboard-button > i:before {
@@ -5360,11 +5416,11 @@ a.lms-ui-view-button > i {
 }
 button.lms-ui-view-button > i.fa-pull-left,
 a.lms-ui-view-button > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-view-button > i.fa-pull-right,
 a.lms-ui-view-button > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-view-button > i:before,
 a.lms-ui-view-button > i:before {

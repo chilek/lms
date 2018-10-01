@@ -57,7 +57,7 @@
 </div>
 
 <div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="ctrl+8">
-	<i class="fab fa-hire-a-helper" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}></i>
+	<i class="fas fa-hospital-symbol" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}></i>
     <select id="qs-ticket-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which ticket properties should be used during search")}">
         <option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
         <option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>

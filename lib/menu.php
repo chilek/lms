@@ -310,7 +310,7 @@ $menu = array(
 
 		'networks' => array(
 			'name' => trans('IP Networks'),
-			'css' => 'fas fa-map-marked',
+			'css' => 'fas fa-map-marker-check',
 			'link' =>'?m=netlist',
 			'tip' => trans('IP Address Pools Management'),
 			'accesskey' =>'t',
@@ -649,7 +649,7 @@ $menu = array(
 
 		'helpdesk' => array(
 			'name' => trans('Helpdesk'),
-			'css' => 'fab fa-hire-a-helper',
+			'css' => 'fas fa-hospital-symbol',
 			'link' =>'?m=rtqueuelist',
 			'tip' => trans('Requests Tracking'),
 			'accesskey' =>'h',
