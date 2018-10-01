@@ -211,7 +211,9 @@
 		</TD>
 		<TD WIDTH="98%">
 			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-				<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$netdev.secret}">{trans("Copy")}</button>
+				<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$netdev.secret}">
+					<i></i> {trans("Copy")}
+				</button>
 			{else}
 				{$netdev.secret}
 			{/if}

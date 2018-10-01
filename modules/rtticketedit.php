@@ -31,7 +31,7 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 $id = intval($_GET['id']);
 $action = $_GET['action'];
 
-if (!($LMS->CheckTicketContents($id) & RT_RIGHT_WRITE))
+if (!($LMS->CheckTicketAccess($id) & RT_RIGHT_WRITE))
 	access_denied();
 
 if ($id && !isset($_POST['ticket'])) {

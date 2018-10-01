@@ -4918,8 +4918,8 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-save-button,
-button.lms-ui-submit-button {
+button.lms-ui-save-button > i,
+button.lms-ui-submit-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -4934,19 +4934,19 @@ button.lms-ui-submit-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-save-button.fa-pull-left,
-button.lms-ui-submit-button.fa-pull-left {
+button.lms-ui-save-button > i.fa-pull-left,
+button.lms-ui-submit-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-save-button.fa-pull-right,
-button.lms-ui-submit-button.fa-pull-right {
+button.lms-ui-save-button > i.fa-pull-right,
+button.lms-ui-submit-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-save-button:before,
-button.lms-ui-submit-button:before {
+button.lms-ui-save-button > i:before,
+button.lms-ui-submit-button > i:before {
   content: "\f0c7";
 }
-button.lms-ui-cancel-button {
+button.lms-ui-cancel-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -4961,17 +4961,17 @@ button.lms-ui-cancel-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-cancel-button.fa-pull-left {
+button.lms-ui-cancel-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-cancel-button.fa-pull-right {
+button.lms-ui-cancel-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-cancel-button:before {
+button.lms-ui-cancel-button > i:before {
   content: "\f55a";
 }
-button.lms-ui-clone-button,
-button.lms-ui-copy-button {
+button.lms-ui-clone-button > i,
+button.lms-ui-copy-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -4986,20 +4986,20 @@ button.lms-ui-copy-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-clone-button.fa-pull-left,
-button.lms-ui-copy-button.fa-pull-left {
+button.lms-ui-clone-button > i.fa-pull-left,
+button.lms-ui-copy-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-clone-button.fa-pull-right,
-button.lms-ui-copy-button.fa-pull-right {
+button.lms-ui-clone-button > i.fa-pull-right,
+button.lms-ui-copy-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-clone-button:before,
-button.lms-ui-copy-button:before {
+button.lms-ui-clone-button > i:before,
+button.lms-ui-copy-button > i:before {
   content: "\f0c5";
 }
-button.lms-ui-delete-button,
-button.lms-ui-remove-button {
+button.lms-ui-delete-button > i,
+button.lms-ui-remove-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5014,21 +5014,21 @@ button.lms-ui-remove-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-delete-button.fa-pull-left,
-button.lms-ui-remove-button.fa-pull-left {
+button.lms-ui-delete-button > i.fa-pull-left,
+button.lms-ui-remove-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-delete-button.fa-pull-right,
-button.lms-ui-remove-button.fa-pull-right {
+button.lms-ui-delete-button > i.fa-pull-right,
+button.lms-ui-remove-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-delete-button:before,
-button.lms-ui-remove-button:before {
+button.lms-ui-delete-button > i:before,
+button.lms-ui-remove-button > i:before {
   content: "\f12d";
 }
-button.lms-ui-edit-button,
-button.lms-ui-change-button,
-button.lms-ui-modify-button {
+button.lms-ui-edit-button > i,
+button.lms-ui-change-button > i,
+button.lms-ui-modify-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5043,23 +5043,23 @@ button.lms-ui-modify-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-edit-button.fa-pull-left,
-button.lms-ui-change-button.fa-pull-left,
-button.lms-ui-modify-button.fa-pull-left {
+button.lms-ui-edit-button > i.fa-pull-left,
+button.lms-ui-change-button > i.fa-pull-left,
+button.lms-ui-modify-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-edit-button.fa-pull-right,
-button.lms-ui-change-button.fa-pull-right,
-button.lms-ui-modify-button.fa-pull-right {
+button.lms-ui-edit-button > i.fa-pull-right,
+button.lms-ui-change-button > i.fa-pull-right,
+button.lms-ui-modify-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-edit-button:before,
-button.lms-ui-change-button:before,
-button.lms-ui-modify-button:before {
+button.lms-ui-edit-button > i:before,
+button.lms-ui-change-button > i:before,
+button.lms-ui-modify-button > i:before {
   content: "\f044";
 }
-button.lms-ui-fileupload-button,
-button.lms-ui-upload-button {
+button.lms-ui-fileupload-button > i,
+button.lms-ui-upload-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5074,20 +5074,20 @@ button.lms-ui-upload-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-fileupload-button.fa-pull-left,
-button.lms-ui-upload-button.fa-pull-left {
+button.lms-ui-fileupload-button > i.fa-pull-left,
+button.lms-ui-upload-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-fileupload-button.fa-pull-right,
-button.lms-ui-upload-button.fa-pull-right {
+button.lms-ui-fileupload-button > i.fa-pull-right,
+button.lms-ui-upload-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-fileupload-button:before,
-button.lms-ui-upload-button:before {
+button.lms-ui-fileupload-button > i:before,
+button.lms-ui-upload-button > i:before {
   content: "\f0c6";
 }
-button.lms-ui-back-button,
-button.lms-ui-return-button {
+button.lms-ui-back-button > i,
+button.lms-ui-return-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5102,21 +5102,21 @@ button.lms-ui-return-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-back-button.fa-pull-left,
-button.lms-ui-return-button.fa-pull-left {
+button.lms-ui-back-button > i.fa-pull-left,
+button.lms-ui-return-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-back-button.fa-pull-right,
-button.lms-ui-return-button.fa-pull-right {
+button.lms-ui-back-button > i.fa-pull-right,
+button.lms-ui-return-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-back-button:before,
-button.lms-ui-return-button:before {
+button.lms-ui-back-button > i:before,
+button.lms-ui-return-button > i:before {
   content: "\f151";
 }
-button.lms-ui-add-button,
-button.lms-ui-new-button,
-button.lms-ui-append-button {
+button.lms-ui-add-button > i,
+button.lms-ui-new-button > i,
+button.lms-ui-append-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5131,20 +5131,44 @@ button.lms-ui-append-button {
   line-height: unset;
   vertical-align: unset;
 }
-button.lms-ui-add-button.fa-pull-left,
-button.lms-ui-new-button.fa-pull-left,
-button.lms-ui-append-button.fa-pull-left {
+button.lms-ui-add-button > i.fa-pull-left,
+button.lms-ui-new-button > i.fa-pull-left,
+button.lms-ui-append-button > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-add-button.fa-pull-right,
-button.lms-ui-new-button.fa-pull-right,
-button.lms-ui-append-button.fa-pull-right {
+button.lms-ui-add-button > i.fa-pull-right,
+button.lms-ui-new-button > i.fa-pull-right,
+button.lms-ui-append-button > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-add-button:before,
-button.lms-ui-new-button:before,
-button.lms-ui-append-button:before {
+button.lms-ui-add-button > i:before,
+button.lms-ui-new-button > i:before,
+button.lms-ui-append-button > i:before {
   content: "\f0fe";
+}
+button.lms-ui-clipboard-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+button.lms-ui-clipboard-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-clipboard-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-clipboard-button > i:before {
+  content: "\f328";
 }
 button.lms-ui-fileupload-button {
   color: #800000;
