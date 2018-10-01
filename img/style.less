@@ -983,7 +983,7 @@ button.lms-ui-button {
 	vertical-align: unset;
 }
 
-button {
+button,a {
 	&.lms-ui-save-button,
 	&.lms-ui-submit-button {
 		& > i {
@@ -1081,6 +1081,41 @@ button {
 		}
 	}
 
+	&.lms-ui-print-button {
+		& > i {
+			.fa-icon;
+			.fas;
+			.lms-ui-icon;
+			&:before {
+				content: @fa-var-print;
+			}
+		}
+	}
+
+	&.lms-ui-confirm-button,
+	&.lms-ui-apply-button {
+		& > i {
+			.fa-icon;
+			.fas;
+			.lms-ui-icon;
+			&:before {
+				content: @fa-var-check-double;
+			}
+		}
+	}
+
+	&.lms-ui-mail-button,
+	&.lms-ui-send-button {
+		& > i {
+			.fa-icon;
+			.fas;
+			.lms-ui-icon;
+			&:before {
+				content: @fa-var-envelope;
+			}
+		}
+	}
+
 	&.lms-ui-clipboard-button {
 		& > i {
 			.fa-icon;
@@ -1088,6 +1123,23 @@ button {
 			.lms-ui-icon;
 			&:before {
 				content: @fa-var-clipboard;
+			}
+		}
+	}
+
+	&.lms-ui-view-button {
+		& > i {
+			.fa-icon;
+			.fas;
+			.lms-ui-icon;
+			&:before {
+				content: @fa-var-eye;
+			}
+			&.pdf:before {
+				content: @fa-var-file-pdf;
+			}
+			&.xls:before {
+				content: @fa-var-file-excel;
 			}
 		}
 	}
@@ -1187,12 +1239,12 @@ table.lmsbox {
 		tr.lms-ui-button-panel {
 			background-color: @dark;
 			& > td {
-				border-top: 1px solid black;
+				border-top: @frame;
 			}
 		}
 		tr.lms-ui-header-panel {
 			& > td {
-				border-bottom: 1px solid black;
+				border-bottom: @frame;
 			}
 		}
 	}
@@ -1220,7 +1272,7 @@ table.lmsbox {
 			}
 			tr.ui-selected {
 			}
-			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
+			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):not(:last-child) {
 				border-bottom: 1px dotted gray;
 			}
 		}
@@ -1235,7 +1287,7 @@ table.lmsbox {
 		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
 			background-color: @lucid;
 		}
-		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel) {
+		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):not(:last-child) {
 			border-bottom: 1px dotted gray;
 		}
 	}
@@ -2442,6 +2494,71 @@ div.lms-ui-wysiwyg-editor {
 		}
 	}
 }
+
+.lms-ui-tab-container {
+	display: flex;
+	flex-direction: column;
+	justify-items: flex-start;
+	border: @frame;
+	&:not(:last-child) {
+		margin-bottom: 0.3em;
+	}
+
+	.lms-ui-tab-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		background-color: @dark;
+		padding: 0.2em;
+		cursor: pointer;
+
+		.lms-ui-tab-header-cell {
+			> :nth-child(n+2) {
+				margin-left: 0.2em;
+			}
+		}
+
+		.lms-ui-tab-header-cell {
+			> i {
+				width: 1.3em;
+				text-align: center;
+			}
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+		}
+	}
+
+	.lms-ui-tab-contents {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		border-top: @frame;
+
+		.lms-ui-tab-button-panel {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			padding: 0.2em;
+			border-top: @frame;
+			background-color: @dark;
+			> :nth-child(n+2) {
+				margin-left: 0.2em;
+			}
+
+			.lms-ui-tab-buttons {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+
+				> :nth-child(n+2) {
+					margin-left: 0.2em;
+				}
+			}
+		}
+	}
+}
+
 
 td.lms-ui-mac-address-selection {
 	padding: 0 !important;
