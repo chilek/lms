@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 
@@ -41,8 +41,8 @@ if (isset($_POST['message'])) {
 		$message['inreplyto'] = null;
 		$message['sender'] = 'user';
 	} else {
-		if (!intval($message['ticketid']))
-			die;
+		if (!intval($message['ticketid']) || !($LMS->CheckTicketAccess($message['ticketid']) & RT_RIGHT_WRITE))
+			access_denied();
 
 		$tickets = array($message['ticketid']);
 
@@ -380,7 +380,6 @@ if (isset($_POST['message'])) {
 	}
 } else {
 	if ($_GET['ticketid']) {
-		$message['category_change'] = 0;
 		if (is_array($_GET['ticketid'])) {
 			$ticketid = Utils::filterIntegers($_GET['ticketid']);
 			if (empty($ticketid))
@@ -392,6 +391,8 @@ if (isset($_POST['message'])) {
 			$message['deadline'] = 0;
 			$message['verifierid'] = -1;
 		} else {
+			if (!($LMS->CheckTicketAccess($_GET['ticketid']) & RT_RIGHT_WRITE))
+				access_denied();
 			$ticketid = intval($_GET['ticketid']);
 			if (empty($ticketid))
 				die;
@@ -402,6 +403,7 @@ if (isset($_POST['message'])) {
 			if ($queue['newmessagesubject'] && $queue['newmessagebody'])
 				$message['customernotify'] = 1;
 		}
+		$message['category_change'] = 0;
 		if (ConfigHelper::checkConfig('phpui.helpdesk_notify'))
 			$message['notify'] = TRUE;
 	}

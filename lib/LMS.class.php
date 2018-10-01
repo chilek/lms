@@ -1596,10 +1596,10 @@ class LMS
         return $manager->GetCategoryIdByName($category);
     }
 
-    public function GetCategoryListByUser($userid = NULL)
+    public function GetUserCategories($userid = NULL)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetCategoryListByUser($userid);
+        return $manager->GetUserCategories($userid);
     }
 
     public function RTStats()
@@ -1725,6 +1725,11 @@ class LMS
 	public function GetTicketPhoneFrom($ticketid) {
 		$manager = $this->getHelpdeskManager();
 		return $manager->GetTicketPhoneFrom($ticketid);
+	}
+
+	public function CheckTicketAccess($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->CheckTicketAccess($ticketid);
 	}
 
 	/*

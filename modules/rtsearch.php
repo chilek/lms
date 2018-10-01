@@ -199,7 +199,7 @@ function RTSearch($search, $order='createtime,desc')
 	return $result;
 }
 
-$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 
 $layout['pagetitle'] = trans('Ticket Search');
 

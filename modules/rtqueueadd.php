@@ -63,7 +63,7 @@ if(isset($_POST['queue']))
 	elseif (!$queue['resolveticketsubject'] && $queue['resolveticketbody'])
 		$error['resolveticketsubject'] = trans('Resolve ticket subject should not be empty if you set resolve ticket body!');
 
-	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 	if (isset($queue['categories'])) {
 		foreach ($categories as &$category)
 			if (isset($queue['categories'][$category['id']]))
@@ -97,7 +97,7 @@ if(isset($_POST['queue']))
 		$SESSION->redirect('?m=rtqueueinfo&id='.$id);
 	}
 } else
-	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 
 $users = $LMS->GetUserNames();
 

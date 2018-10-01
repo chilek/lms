@@ -223,7 +223,7 @@ switch($type)
 	break;
 
 	default:
-		$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+		$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 
 		$layout['pagetitle'] = trans('Reports');
 

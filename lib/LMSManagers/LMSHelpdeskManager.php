@@ -668,7 +668,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $this->db->GetOne('SELECT id FROM rtcategories WHERE name=?', array($category));
     }
 
-    public function GetCategoryListByUser($userid = NULL)
+    public function GetUserCategories($userid = NULL)
     {
         return $this->db->GetAll('SELECT c.id, name
 		    FROM rtcategories c
@@ -681,7 +681,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function RTStats()
     {
         $userid = Auth::GetCurrentUser();
-    	$categories = $this->GetCategoryListByUser($userid);
+    	$categories = $this->GetUserCategories($userid);
         if (empty($categories))
             return NULL;
         foreach ($categories as $category)
@@ -1483,5 +1483,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE ticketid = ? AND phonefrom <> ?
 			LIMIT 1',
 			array($ticketid, ''));
+	}
+
+	public function CheckTicketAccess($ticketid) {
+		$userid = Auth::GetCurrentUser();
+
+		return $this->db->GetOne('SELECT rights FROM rtrights r
+			JOIN rttickets t ON t.queueid = r.queueid
+			WHERE r.userid = ? AND t.id = ?
+				AND EXISTS (
+					SELECT tc.categoryid FROM rtticketcategories tc
+					JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
+					WHERE tc.ticketid = ?
+				)
+			LIMIT 1',
+			array($userid, $ticketid, $userid, $ticketid));
 	}
 }

@@ -28,12 +28,8 @@ if(isset($_GET['ticketid']))
 {
 	$note['ticketid'] = intval($_GET['ticketid']);
 
-	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $note['ticketid']) & 2) != 2)
-        {
-	        $SMARTY->display('noaccess.html');
-	        $SESSION->close();
-	        die;
-	}
+	if (!($LMS->CheckTicketAccess($note['ticketid']) & RT_RIGHT_WRITE))
+		access_denied();
 
 	$LMS->MarkTicketAsRead($_GET['ticketid']);
 
@@ -49,6 +45,10 @@ if(isset($_GET['ticketid']))
 elseif(isset($_POST['note']))
 {
 	$note = $_POST['note'];
+
+	if (!($LMS->CheckTicketAccess($note['ticketid']) & RT_RIGHT_WRITE))
+		access_denied();
+
 	$ticketdata = $LMS->GetTicketContents($note['ticketid']);
 
         if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) {

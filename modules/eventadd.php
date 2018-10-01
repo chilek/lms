@@ -310,7 +310,7 @@ if (isset($event['helpdesk'])) {
 
     $invprojectlist = $LMS->GetProjects('name', array());
 
-	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 	$queuelist = $LMS->GetQueueList(array('stats' => false));
 
 	if (isset($_POST['event'])) {

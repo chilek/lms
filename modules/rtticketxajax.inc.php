@@ -32,7 +32,7 @@ function GetCategories($queueid) {
 	if (empty($queueid))
 		return $result;
 
-	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 	if (empty($categories))
 		return $result;
 

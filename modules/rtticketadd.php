@@ -36,7 +36,7 @@ $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojec
 
 $ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
 
-$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (!$categories) {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();

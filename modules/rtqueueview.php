@@ -240,7 +240,7 @@ unset($queue['verifier']);
 unset($queue['netnode']);
 
 $queues = $LMS->GetQueueList(array('stats' => false));
-$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 
 $projects = $LMS->GetProjects('name', array());
 unset($projects['total']);

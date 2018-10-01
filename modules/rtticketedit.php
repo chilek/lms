@@ -31,14 +31,10 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 $id = intval($_GET['id']);
 $action = $_GET['action'];
 
-if ($id && !isset($_POST['ticket'])) {
-    if (($LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id) & 2) != 2
-        || !$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), 0, $id)) {
-        $SMARTY->display('noaccess.html');
-        $SESSION->close();
-        die;
-    }
+if (!($LMS->CheckTicketContents($id) & RT_RIGHT_WRITE))
+	access_denied();
 
+if ($id && !isset($_POST['ticket'])) {
     if (isset($action)) {
         switch ($action) {
             case 'verify':
@@ -178,7 +174,7 @@ if ($id && !isset($_POST['ticket'])) {
 }
 
 $ticket = $LMS->GetTicketContents($id);
-$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 

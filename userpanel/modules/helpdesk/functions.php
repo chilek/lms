@@ -29,7 +29,7 @@ if (defined('USERPANEL_SETUPMODE')) {
 		global $SMARTY, $LMS, $AUTH;
 
 		$default_categories = explode(',', ConfigHelper::getConfig('userpanel.default_categories'));
-		$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+		$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 		foreach ($categories as $category) {
 			if (in_array($category['id'], $default_categories))
 				$category['checked'] = true;

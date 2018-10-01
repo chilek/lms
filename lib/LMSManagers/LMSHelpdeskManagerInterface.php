@@ -65,7 +65,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetCategoryIdByName($category);
 
-    public function GetCategoryListByUser($userid = NULL);
+    public function GetUserCategories($userid = NULL);
 
     public function RTStats();
 
@@ -116,4 +116,6 @@ interface LMSHelpdeskManagerInterface
 	public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null);
 
 	public function GetTicketPhoneFrom($ticketid);
+
+	public function CheckTicketAccess($ticketid);
 }

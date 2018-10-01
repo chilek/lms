@@ -25,26 +25,15 @@
  */
 
 if(! $LMS->TicketExists($_GET['id']))
-{
 	$SESSION->redirect('?m=rtqueuelist');
-}
 else
-{
 	$id = $_GET['id'];
-}
 
-$rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id);
-$catrights = $LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), 0, $id);
-
-if(!$rights || !$catrights)
-{
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
-}
+if (!$LMS->CheckTicketAccess($id))
+	access_denied();
 
 $ticket = $LMS->GetTicketContents($id);
-$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 
