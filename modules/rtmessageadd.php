@@ -72,7 +72,7 @@ if (isset($_POST['message'])) {
 		$error['body'] = trans('Message body not specified!');
 
 	if ($message['deadline'] && ($deadline = datetime_to_timestamp($message['deadline']))) {
-		if (ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+		if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
 			&& $message['verifierid'] != Auth::GetCurrentUser())
 			$error['deadline'] = trans("If verifier is set then he's the only person who can change deadline");
 		if ($deadline < time())
