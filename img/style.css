@@ -5531,11 +5531,10 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
   color: black;
-  color: gold;
   text-stroke-width: 1px;
-  text-stroke-color: black;
+  text-stroke-color: gold;
   -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  -webkit-text-stroke-color: gold;
 }
 .lms-ui-nodeon-icon.fa-pull-left {
   margin-right: .3em;
@@ -5561,11 +5560,10 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
   color: black;
-  color: red;
   text-stroke-width: 1px;
-  text-stroke-color: black;
+  text-stroke-color: red;
   -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  -webkit-text-stroke-color: red;
 }
 .lms-ui-nodeunk-icon.fa-pull-left {
   margin-right: .3em;
