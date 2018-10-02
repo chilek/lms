@@ -4941,7 +4941,32 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 }
 .lms-ui-customer-icon:before {
   color: goldenrod;
-  content: "\f183";
+  content: "\f007";
+}
+.lms-ui-userpanel-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-userpanel-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-userpanel-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-userpanel-icon:before {
+  color: orange;
+  content: "\f007";
 }
 .lms-ui-phone-icon {
   font-weight: normal;
@@ -4991,9 +5016,9 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 }
 .lms-ui-node-icon:before {
   color: navy;
-  content: "\f419";
+  content: "\f108";
 }
-.lms-ui-networks-icon {
+.lms-ui-ipnetwork-icon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5008,13 +5033,13 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
-.lms-ui-networks-icon.fa-pull-left {
+.lms-ui-ipnetwork-icon.fa-pull-left {
   margin-right: 0.3em;
 }
-.lms-ui-networks-icon.fa-pull-right {
+.lms-ui-ipnetwork-icon.fa-pull-right {
   margin-left: 0.3em;
 }
-.lms-ui-networks-icon:before {
+.lms-ui-ipnetwork-icon:before {
   color: darkslategray;
   content: "\f0ac";
 }
@@ -5040,8 +5065,8 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   margin-left: 0.3em;
 }
 .lms-ui-netdev-icon:before {
-  color: crimson;
-  content: "\f5fd";
+  color: mediumslateblue;
+  content: "\f0a0";
 }
 .lms-ui-user-icon {
   font-weight: normal;
@@ -5090,8 +5115,8 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   margin-left: 0.3em;
 }
 .lms-ui-netnode-icon:before {
-  color: mediumslateblue;
-  content: "\f0a0";
+  color: brown;
+  content: "\f5fd";
 }
 .lms-ui-helpdesk-icon {
   font-weight: normal;
@@ -5143,7 +5168,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   color: dodgerblue;
   content: "\f073";
 }
-.lms-ui-admin-icon {
+.lms-ui-administration-icon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5158,13 +5183,13 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
-.lms-ui-admin-icon.fa-pull-left {
+.lms-ui-administration-icon.fa-pull-left {
   margin-right: 0.3em;
 }
-.lms-ui-admin-icon.fa-pull-right {
+.lms-ui-administration-icon.fa-pull-right {
   margin-left: 0.3em;
 }
-.lms-ui-admin-icon:before {
+.lms-ui-administration-icon:before {
   color: red;
   content: "\f54a";
 }
@@ -5290,10 +5315,10 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   margin-left: 0.3em;
 }
 .lms-ui-finances-icon:before {
-  color: red;
+  color: green;
   content: "\f0d6";
 }
-.lms-ui-finances-icon {
+.lms-ui-wireless-icon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5308,13 +5333,13 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
-.lms-ui-finances-icon.fa-pull-left {
+.lms-ui-wireless-icon.fa-pull-left {
   margin-right: 0.3em;
 }
-.lms-ui-finances-icon.fa-pull-right {
+.lms-ui-wireless-icon.fa-pull-right {
   margin-left: 0.3em;
 }
-.lms-ui-finances-icon:before {
+.lms-ui-wireless-icon:before {
   color: purple;
   content: "\f1eb";
 }
@@ -5368,7 +5393,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   color: orangered;
   content: "\f15c";
 }
-.lms-ui-statistics-icon {
+.lms-ui-stats-icon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5383,13 +5408,13 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
-.lms-ui-statistics-icon.fa-pull-left {
+.lms-ui-stats-icon.fa-pull-left {
   margin-right: 0.3em;
 }
-.lms-ui-statistics-icon.fa-pull-right {
+.lms-ui-stats-icon.fa-pull-right {
   margin-left: 0.3em;
 }
-.lms-ui-statistics-icon:before {
+.lms-ui-stats-icon:before {
   color: lightseagreen;
   content: "\f201";
 }
