@@ -6796,6 +6796,13 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-column.buttons > *:not(first-child) {
   padding-left: 0.2em;
 }
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-empty-table {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  padding-top: 3em;
+  padding-bottom: 3em;
+}
 td.lms-ui-mac-address-selection {
   padding: 0 !important;
 }

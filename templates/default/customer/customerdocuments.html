@@ -93,8 +93,8 @@
 
 		{tab_table}
 
+			{if $documents}
 			<div class="lms-ui-tab-table-row header">
-
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
@@ -129,6 +129,7 @@
 					&nbsp;
 				</div>
 			</div>
+			{/if}
 
 			{foreach $documents as $doc}
 			<div class="lms-ui-tab-table-row{if $doc.closed} blend{/if}">
@@ -208,6 +209,9 @@
 
 			</div>
 			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer hasn't got any documents.")}
+			</div>
 			{/foreach}
 
 		{/tab_table}
