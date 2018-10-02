@@ -1525,12 +1525,38 @@ table.lms-ui-datatable > tbody {
 	tr:nth-child(odd):not(.ui-selected) {
 		background-color: @lucid;
 	}
+	tr td {
+		border-bottom: 1px dotted grey;
+	}
+	tr.parent {
+		&:nth-child(4n+1) {
+			background-color: @light;
+		}
+		&:nth-child(4n+3) {
+			background-color: @lucid;
+		}
+		td {
+			border-bottom: 0;
+		}
+	}
+	tr.child {
+		&:nth-child(4n+2) {
+			background-color: @light;
+		}
+		&:nth-child(4n+4) {
+			background-color: @lucid;
+		}
+		&:not(:last-child) {
+			border-bottom: 1px dotted grey;
+		}
+	}
 	tr.highlight:hover {
 		background-color: @highlight;
 	}
-	tr td {
-		border-bottom: 1px dotted gray;
-	}
+}
+
+table.dataTable>tbody>tr.child ul.dtr-details>li {
+	border-bottom: 0;
 }
 
 tr.space_row > td {
@@ -1963,7 +1989,8 @@ table.dataTable {
 	}
 	.top {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-around;
+		flex-wrap: wrap;
 	}
 	div.lms-ui-datatable-toolbar {
 		display: flex;

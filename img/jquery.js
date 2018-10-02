@@ -586,7 +586,7 @@ $(function() {
 		var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
 
 		if (columnSearch) {
-			var tr = $('thead tr', elem).clone();
+			var tr = $('thead tr', elem).clone().addClass('search-row');
 			tr.appendTo($('thead', elem)).find('th').each(function(key, th) {
 				var content = '';
 				if ((searchable = $(th).attr('data-searchable')) === undefined ||
@@ -758,6 +758,12 @@ $(function() {
 //			language: {
 //				url: "img/jquery-datatables-i18n/" + lmsSettings.language + ".json"
 //			},
+			responsive: {
+				details: {
+					display: $.fn.dataTable.Responsive.display.childRowImmediate,
+					type: ''
+				}
+			},
 			language: dataTablesLanguage,
 			initComplete: function(settings, json) {
 				$(elem).show();
@@ -793,8 +799,18 @@ $(function() {
 		.on('mouseenter', 'tbody > tr', function() {
 			$(this).siblings('tr').removeClass('highlight');
 			$(this).addClass('highlight');
+		})
+		.on('responsive-resize', function (e, datatable, columns) {
+			var search_fields = $(this).closest('table').find('.search-row th');
+			$.each(columns, function(index, visible) {
+				datatable.column(index).visible(true);
+				if (visible) {
+					search_fields.eq(index).show();
+				} else {
+					search_fields.eq(index).hide();
+				}
+			});
 		});
-
 	}
 
 	dataTables.each(function() {

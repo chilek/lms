@@ -6342,11 +6342,32 @@ table.lms-ui-datatable > tbody tr:nth-child(even):not(.ui-selected) {
 table.lms-ui-datatable > tbody tr:nth-child(odd):not(.ui-selected) {
   background-color: #EBE4D6;
 }
+table.lms-ui-datatable > tbody tr td {
+  border-bottom: 1px dotted grey;
+}
+table.lms-ui-datatable > tbody tr.parent:nth-child(4n+1) {
+  background-color: #DFD5BD;
+}
+table.lms-ui-datatable > tbody tr.parent:nth-child(4n+3) {
+  background-color: #EBE4D6;
+}
+table.lms-ui-datatable > tbody tr.parent td {
+  border-bottom: 0;
+}
+table.lms-ui-datatable > tbody tr.child:nth-child(4n+2) {
+  background-color: #DFD5BD;
+}
+table.lms-ui-datatable > tbody tr.child:nth-child(4n+4) {
+  background-color: #EBE4D6;
+}
+table.lms-ui-datatable > tbody tr.child:not(:last-child) {
+  border-bottom: 1px dotted grey;
+}
 table.lms-ui-datatable > tbody tr.highlight:hover {
   background-color: #CCFFCC;
 }
-table.lms-ui-datatable > tbody tr td {
-  border-bottom: 1px dotted gray;
+table.dataTable > tbody > tr.child ul.dtr-details > li {
+  border-bottom: 0;
 }
 tr.space_row > td {
   padding-top: 20px;
@@ -6708,7 +6729,8 @@ table.dataTable thead tr:last-child th {
 }
 .dataTables_wrapper .top {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 .dataTables_wrapper div.lms-ui-datatable-toolbar {
   display: flex;
