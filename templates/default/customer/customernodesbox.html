@@ -1,182 +1,320 @@
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
-<!--
-function setstatus(access)
-{
-	if(access)
-		document.custnodeslist.action = '?m=nodeset&access=1';
-	else
-		document.custnodeslist.action = '?m=nodeset';
+<SCRIPT>
 
-	document.custnodeslist.submit();
-}
+	function setstatus(access) {
+		if(access)
+			document.custnodeslist.action = '?m=nodeset&access=1';
+		else
+			document.custnodeslist.action = '?m=nodeset';
 
-function setwarning(warning)
-{
-	if(warning)
-		document.custnodeslist.action = '?m=nodewarn&warning=1';
-	else
-		document.custnodeslist.action = '?m=nodewarn';
+		document.custnodeslist.submit();
+	}
 
-	document.custnodeslist.submit();
-}
+	function setwarning(warning) {
+		if(warning)
+			document.custnodeslist.action = '?m=nodewarn&warning=1';
+		else
+			document.custnodeslist.action = '?m=nodewarn';
 
-function setgroup(act)
-{
-	document.custnodeslist.action = '?m=nodegroup&action=' + act + '&groupid=' + document.getElementById('groupselect').value;
-	document.custnodeslist.submit();
-}
-//-->
+		document.custnodeslist.submit();
+	}
+
+	function setgroup(act) {
+		document.custnodeslist.action = '?m=nodegroup&action=' + act + '&groupid=' + document.getElementById('groupselect').value;
+		document.custnodeslist.submit();
+	}
+
 </SCRIPT>
+
+<style>
+	.name {
+		width: 40em;
+	}
+	.id {
+		width: 8em;
+	}
+	.channel {
+		width: 10em;
+	}
+	.address {
+		width: 10em;
+	}
+	.mac {
+		width: 8em;
+	}
+	.groups {
+		width: 10em;
+	}
+	.network {
+		width: 10em;
+	}
+
+	@media all and (max-width: 1500px) {
+		.col-2 {
+			flex-direction: column !important;
+			width: 10em !important;
+		}
+		.col-2 div {
+			flex-grow: 0 !important;
+			width: 100% !important;
+		}
+		.col-3 {
+			flex-direction: column !important;
+			width: 21em !important;
+		}
+		.col-3 div {
+			flex-grow: 0 !important;
+			width: 100% !important;
+		}
+	}
+	@media all and (max-width: 1200px) {
+		.col-4 {
+			flex-direction: column !important;
+			width: 10em !important;
+		}
+		.col-4 div {
+			flex-grow: 0 !important;
+			width: 100% !important;
+		}
+	}
+	@media all and (max-width: 768px) {
+		.col-7 {
+			flex-direction: column !important;
+			width: 17em !important;
+		}
+		.col-7 div {
+			flex-grow: 0 !important;
+			width: 100% !important;
+		}
+		.buttons {
+			flex-direction: column !important;
+			justify-content: flex-start !important;
+			width: 2em !important;
+		}
+		.buttons > * {
+			padding-right: 0.5em;
+			padding-top: 0.2em;
+		}
+	}
+</style>
+
+<FORM method="post" action="" name="custnodeslist" id="custnodeslist-form">
+</FORM>
+
 {$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
 {if ConfigHelper::checkConfig('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
-<TABLE class="lmsbox lms-ui-sortable" id="customernodesbox">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="nodespanel-{$layout.module}">
-		<TD class="bold">
-			<IMG src="img/node.gif" alt="">
-			{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
-		</TD>
-		<TD class="text-right nobr">
-			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && ! $customerinfo.deleted}<A href="?m=nodeadd&amp;ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="nodespanel-{$layout.module}" style="display:none;">
-		<TD colspan="2">
-			<FORM method="post" action="" name="custnodeslist">
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<COLGROUP>
-					<COL style="width: {math equation="x-y" x=95 y=$ewx}%;">
-					<COL style="width: 1%;">
-					{if $ewx}
-					<COL style="width: 1%;">
-					{/if}
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-					<TR class="lms-ui-header-panel">
-						<TD class="bold">{trans("Name:")}</TD>
-						<TD class="text-right">{trans("ID:")}</TD>
+
+{tab_container id="customernodesbox"}
+
+	{tab_header content_id="nodespanel-`$layout.module`"}
+		{tab_header_cell icon="fas fa-desktop"}
+			<strong>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
+			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && ! $customerinfo.deleted}
+				<A href="?m=nodeadd&ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>
+			{/if}
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="nodespanel-`$layout.module`"}
+
+		{tab_table}
+
+			{if $customernodes}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-7">
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-column name">
+							{trans("Name:")}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
 						{if $ewx}
-						<TD class="text-right">{trans("Channel:")}</TD>
+						<div class="lms-ui-tab-table-column channel">
+							{trans("Channel:")}
+						</div>
 						{/if}
-						<TD class="text-right">{trans("Address:")}</TD>
-						<TD class="text-right">{trans("MAC:")}</TD>
-						<TD class="text-right">{trans("Groups:")}</TD>
-						<TD class="text-right">{trans("Network:")}</TD>
-						<TD>&nbsp;</TD>
-					</TR>
-				</THEAD>
-				<TBODY>
-					{foreach $customernodes as $node}
-					<TR class="highlight{if ! $node.access} blend{/if}">
-						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column address">
+								{trans("Address:")}
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{trans("MAC:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column groups">
+								{trans("Groups:")}
+							</div>
+							<div class="lms-ui-tab-table-column network">
+								{trans("Network:")}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $customernodes as $node}
+			<div class="lms-ui-tab-table-row{if !$node.access} blend{/if}" data-target-url="?m=nodeinfo&id={$node.id}">
+				<div class="lms-ui-tab-table-wrapper col-7">
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-column name">
 							{if $node.lastonline}
 								{if ($smarty.now-$node.lastonline) > $lastonline_limit}
-							<img src="img/node_off.gif" alt="" {tip a=$node.lastonlinedate text="Last online: \$a"}>
+									<i class="lms-ui-nodeoff-icon" {tip a=$node.lastonlinedate text="Last online: \$a"}></i>
 								{else}
-							<img src="img/node_on.gif" alt="" {tip a="on-line" text="Last online: \$a"}>
+									<i class="lms-ui-nodeon-icon" {tip a="on-line" text="Last online: \$a"}></i>
 								{/if}
 							{else}
-							<img src="img/node_unk.gif" alt="">
+								<i class="lms-ui-nodeunk-icon"></i>
 							{/if}
 							<span class="bold">{$node.name}</span>
 							{if isset($nodeassignments[$node.id])}
 								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}">{$assignment.name}</a>{if !$assignment@last},{/if}{/foreach}){/if}
 							{if $node.location}<BR>
-							<span class="nobr">{$node.location|truncate:60:"...":true}</span>
+								<span class="nobr">{$node.location|truncate:60:"...":true}</span>
 							{/if}
 							{if $node.info}<BR>
-							<span class="nobr">{$node.info|truncate:60:"...":true}</span>
+								<span class="nobr">{$node.info|truncate:60:"...":true}</span>
 							{/if}
-						</TD>
-						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';" class="text-right">
+						</div>
+						<div class="lms-ui-tab-table-column id">
 							({$node.id|string_format:"%04d"})
-						</TD>
+						</div>
 						{if $ewx}
-						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';" class="text-right nobr">
-							{if $node.channelname}
-							<a href="?m=ewxchinfo&amp;id={$node.channelid}">{$node.channelname|truncate:30:"...":true}</a>
-							{elseif $node.channelid}
-							{if !$node.cid}
-							<a href="?m=ewxchinfo&amp;id=0">[{trans("default")}]</a>
-							{else}
-							[{$node.channelid|string_format:"%04d"}]
-							{/if}
-							{/if}
-							{if $node.downceil}({$node.downceil}/{$node.upceil|default:0} kbit/s){/if}
-						</TD>
+							<div class="lms-ui-tab-table-column channel">
+								{if $node.channelname}
+									<a href="?m=ewxchinfo&amp;id={$node.channelid}">{$node.channelname|truncate:30:"...":true}</a>
+								{elseif $node.channelid}
+									{if !$node.cid}
+										<a href="?m=ewxchinfo&amp;id=0">[{trans("default")}]</a>
+									{else}
+										[{$node.channelid|string_format:"%04d"}]
+									{/if}
+								{/if}
+								{if $node.downceil}({$node.downceil}/{$node.upceil|default:0} kbit/s){/if}
+							</div>
 						{/if}
-						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';" class="text-right nobr">
-							{$node.ip} {if $node.ip_pub != "0.0.0.0"} ({$node.ip_pub}){/if}
-						</TD>
-						<TD onClick="return self.location.href='?m=nodeinfo&amp;id={$node.id}';">
-							{$node.mac|replace:",":"<BR>"}
-						</TD>
-						<TD class="text-right nobr">
-							{if $node.gcount}
-							<img src="img/nodegroup.gif" alt="" class="lms-ui-tooltip-nodegroupinfo" data-resourceid="{$node.id}">
-							{/if}
-						</TD>
-						<TD class="text-right bold nobr">
-							<A href="?m=netinfo&amp;id={$node.netid}">{$node.netname|truncate:"20":"...":true}</A> {if $node.network_pub} (<A href="?m=netinfo&amp;id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"...":true}</A>){/if}
-						</TD>
-						<TD class="nobr">
-							<A href="?m=nodeset&amp;id={$node.id}"><IMG src="img/{if ! $node.access}no{/if}access.gif" alt="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}" title="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></A>
-							<A href="?m=nodewarn&amp;id={$node.id}"><IMG src="img/warning{if ! $node.warning}off{else}on{/if}.gif" alt="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}" title="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></A>
-							<A href="?m=nodedel&amp;id={$node.id}" onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-							<a href="?m=nodeadd&ownerid={$customerinfo.id}&premac[]={$node.mac|replace:",":"&premac[]="}&prename={t a=$node.name}$a_clone{/t}{if $node.address_id}&pre_address_id={$node.address_id}{/if}"><img src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></a>
-							<A href="?m=nodeedit&amp;id={$node.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-							<A href="?m=nodeinfo&amp;id={$node.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>&nbsp;
-							<INPUT type="checkbox" name="marks[{$node.id}]" value="{$node.id}" checked>
-						</TD>
-					</TR>
-					{foreachelse}
-					<TR>
-						<TD class="empty-table" colspan="{math equation="x+y" x=7 y=$ewx}">
-							<P>{if $customerinfo.deleted}<span class="red">{trans("That customer has been deleted.")}</span>{else}{trans("That customer hasn't got any node.")}{/if}</P>
-						</TD>
-					</TR>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column address">
+								{$node.ip} {if $node.ip_pub != "0.0.0.0"} ({$node.ip_pub}){/if}
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{$node.mac|replace:",":"<BR>"}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column groups">
+								{if $node.gcount}
+									<img src="img/nodegroup.gif" alt="" class="lms-ui-tooltip-nodegroupinfo" data-resourceid="{$node.id}">
+								{else}
+									-
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column network">
+								<strong>
+									<A href="?m=netinfo&amp;id={$node.netid}">{$node.netname|truncate:"20":"...":true}</A>
+									{if $node.network_pub}
+										(<A href="?m=netinfo&amp;id={$node.network_pub.id}">{$node.network_pub.name|truncate:"20":"...":true}</A>)
+									{/if}
+								</strong>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					<A href="?m=nodeset&id={$node.id}">
+						<i class="lms-ui-{if $node.access}connected{else}disconnected{/if}-icon"
+								title="{if $node.access}{trans("Disconnect")}{else}{trans("Connect")}{/if}"></i>
+					</A>
+					<A href="?m=nodewarn&id={$node.id}">
+						<i class="lms-ui-{if $node.warning}warnon{else}warnoff{/if}-icon" {if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></i>
+					</A>
+					<A class="lms-ui-delete-button" href="?m=nodedel&id={$node.id}" onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
+						<i title="{trans("Delete")}"></i>
+					</A>
+					<a class="lms-ui-clone-button" href="?m=nodeadd&ownerid={$customerinfo.id}&premac[]={$node.mac|replace:",":"&premac[]="}&prename={t a=$node.name}$a_clone{/t}{if $node.address_id}&pre_address_id={$node.address_id}{/if}">
+						<i title="{trans("Clone")}"></i>
+					</a>
+					<A class="lms-ui-edit-button" href="?m=nodeedit&id={$node.id}">
+						<i title="{trans("Edit")}"></i>
+					</A>
+					<A class="lms-ui-view-button" href="?m=nodeinfo&id={$node.id}">
+						<i title="{trans("Info")}"></i>
+					</A>&nbsp;
+					<INPUT type="checkbox" class="lms-ui-multi-check" name="marks[{$node.id}]" value="{$node.id}" form="custnodeslist-form">
+				</div>
+			</div>
+
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table{if $customerinfo.deleted} red{/if}">
+				{if $customerinfo.deleted}
+					{trans("That customer has been deleted.")}
+				{else}
+					{trans("That customer hasn't got any node.")}
+				{/if}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+
+{if count($documents)}
+		{tab_button_panel}
+			{tab_buttons}
+				<i class="lms-ui-plug-icon"></i>
+				<button type="button" class="lms-ui-button" onclick="javascript:setstatus(1);">
+					{trans("Connect")}
+				</button>
+				<button type="button" class="lms-ui-button" onclick="javascript:setstatus(0);">
+					{trans("Disconnect")}
+				</button>
+				<i class="lms-ui-warning-icon"></i>
+				<button type="button" class="lms-ui-button" onclick="javascript:setwarning(1);">
+					{trans("Enable")}
+				</button>
+				<button type="button" class="lms-ui-button" onclick="javascript:setwarning(0);">
+					{trans("Disable")}
+				</button>
+				{if $allnodegroups}
+				<i class="lms-ui-group-icon"></i>
+				<button type="button" class="lms-ui-button" onclick="javascript:setgroup('setgroup');">
+					{trans("Add")}
+				</button>
+				<button type="button" class="lms-ui-button" onclick="javascript:setgroup('unsetgroup');">
+					{trans("Remove")}
+				</button>
+				<SELECT SIZE="1" id="groupselect">
+					{foreach $allnodegroups as $nodegroup}
+						<OPTION value="{$nodegroup.id}"{if $listdata.nodegroup == $nodegroup.id} selected{/if}>
+							{$nodegroup.name|truncate:30:"...":true}
+						</OPTION>
 					{/foreach}
-					<TR class="lms-ui-button-panel">
-						<TD colspan="{math equation="x+y" x=4 y=$ewx}">
-							<IMG src="img/access.gif" alt="">
-							<A href="javascript:setstatus(1)"> {trans("Connect")}</A>/<A href="javascript:setstatus(0)">{trans("Disconnect")}</A>
-							<IMG src="img/warningon.gif" alt="">
-							<A href="javascript:setwarning(1)"> {trans("Enable")}</A>/<A href="javascript:setwarning(0)">{trans("Disable")}</A>
-							{if $allnodegroups}
-							<IMG src="img/nodegroup.gif" alt="">
-							<A href="javascript:setgroup('setgroup')"> {trans("Add")}</A>/<A href="javascript:setgroup('unsetgroup')">{trans("Remove Group")}</A>:
-							<SELECT SIZE="1" id="groupselect">
-								{foreach from=$allnodegroups item=nodegroup}
-								<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
-								{/foreach}
-							</SELECT>
-							{/if}
-						</TD>
-						<TD class="text-right nobr" colspan="3">
-							<label for="allbox">{trans("Check All")}</label><INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('custnodeslist', this)" value="1" checked>
-						</TD>
-					</TR>
-				</TBODY>
-			</TABLE>
-			</FORM>
-		</TD>
-	</TR>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('nodespanel-{$layout.module}') == '1')
-		document.getElementById('nodespanel-{$layout.module}').style.display = '';
-//-->
-</SCRIPT>
+				</SELECT>
+				{/if}
+			{/tab_buttons}
+			{tab_buttons}
+				<label>
+					{trans("Check All")}
+					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
+				</label>
+			{/tab_buttons}
+		{/tab_button_panel}
+{/if}
+
+	{/tab_contents}
+{/tab_container}

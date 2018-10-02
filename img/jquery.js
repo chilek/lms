@@ -286,7 +286,7 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$('tr[data-target-url] > td:not(.lms-ui-buttons)').click(function() {
+	$('[data-target-url] > :not(.lms-ui-buttons)').click(function() {
 		var url = $(this).attr('data-target-url');
 		if (!url) {
 			url = $(this).parent().attr('data-target-url');

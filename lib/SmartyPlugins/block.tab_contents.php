@@ -31,7 +31,12 @@ function smarty_block_tab_contents($params, $content, $template, $repeat) {
 		return '
 			<div class="lms-ui-tab-contents lms-ui-multi-check" id="' . $id . '" style="display: none;">
 				' . $content . '
-			</div>';
+			</div>
+			<script>
+				   if (getCookie("' . $id . '") == "1") {
+						   $("#' . $id . '").show();
+				   }
+			</script>';
 	}
 }
 
