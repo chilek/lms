@@ -590,7 +590,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
         	WHERE queueid = ?', array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
 				Auth::GetCurrentUser(), $id));
-        $stats = array_merge($stats, $result);
+		if (!empty($result))
+			$stats = array_merge($stats, $result);
 
         return $stats;
     }

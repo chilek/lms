@@ -6794,6 +6794,74 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-tab-container .lms-ui-tab-contents .lms-ui-tab-button-panel .lms-ui-tab-buttons > :nth-child(n+2) {
   margin-left: 0.2em;
 }
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:nth-child(even) {
+  background-color: #EBE4D6;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:nth-child(odd) {
+  background-color: #DFD5BD;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.header {
+  background-color: #DFD5BD;
+  border-bottom: 1px solid black;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:not(.header):not(:last-child) {
+  border-bottom: 1px dotted grey;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:not(.header):hover {
+  background-color: #CCFFCC;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-9,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-8,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-7,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-6,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-5,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-4,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-3,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-2,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.lms-ui-tab-table-column,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-9,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-8,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-7,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-6,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-5,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-4,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-3,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-2,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .lms-ui-tab-table-column {
+  flex-grow: 1;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-column {
+  padding-left: 0.5em;
+  text-overflow: ellipsis;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-column.buttons {
+  text-align: right;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-column.buttons > *:not(first-child) {
+  padding-left: 0.2em;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-empty-table {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  padding-top: 3em;
+  padding-bottom: 3em;
+}
 td.lms-ui-mac-address-selection {
   padding: 0 !important;
 }
