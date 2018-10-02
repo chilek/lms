@@ -4918,7 +4918,6 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
-i.fa-user,
 i.fa-male {
   color: goldenrod;
 }
@@ -4934,8 +4933,11 @@ i.fa-globe {
 i.fa-layer-group {
   color: crimson;
 }
-i.fa-hdd {
+i.fa-user {
   color: orange;
+}
+i.fa-hdd {
+  color: brown;
 }
 i.fa-hospital-symbol,
 i.fa-calendar-alt {
