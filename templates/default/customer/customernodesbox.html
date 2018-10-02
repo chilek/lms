@@ -37,7 +37,7 @@
 {tab_container id="customernodesbox"}
 
 	{tab_header content_id="nodespanel-`$layout.module`"}
-		{tab_header_cell icon="fas fa-desktop"}
+		{tab_header_cell icon="lms-ui-node-icon"}
 			<strong>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -201,7 +201,6 @@
 			{/foreach}
 
 		{/tab_table}
-
 
 {if $customernodes}
 		{tab_button_panel}

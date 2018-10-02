@@ -1,106 +1,120 @@
 <!--// $Id$ //-->
-<div class="lms-ui-sortable" id="customerdevices">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicespanel">
-		<TD class="bold">
-			<IMG src="img/netdev.gif" alt="">
-			{t a=$customerdevices|@count|default:"0"}Network Devices ($a):{/t}
-		</TD>
-		<TD class="text-right nobr">
-			<A href="?m=netdevadd&customerid={$customerinfo.id}">{trans("New device")} &raquo;</A>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="devicespanel" style="display: none;">
-		<TD colspan="2">
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 95%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				<TR class="lms-ui-header-panel">
-					<TD class="bold nobr">{trans("Name:")}</TD>
-					<TD>{trans("Description:")}</TD>
-					<TD class="nobr">{trans("ID:")}</TD>
-					<TD class="nobr">{trans("Serial number:")}</TD>
-					<TD class="nobr">{trans("IP address:")}</TD>
-					<TD class="nobr">{trans("MAC address:")}</TD>
-					<TD></TD>
-				</TR>
-				</THEAD>
-				<TBODY class="lms-ui-multi-check">
-				{foreach $customerdevices as $customerdevice}
-				{$customer_netdev_id = $customerdevice.id}
 
-				<TR class="highlight">
-					<TD class="nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
-						<img src="img/netdev.gif" alt=""">
-						<span class="bold">{$customerdevice.name}</span>
-						{if $customerdevice.location}<BR>
-						{$customerdevice.location|truncate:60:"...":true}
-						{/if}
-					</TD>
-					<TD onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
-						{$customerdevice.description}
-					</TD>
-					<TD onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
-						({$customerdevice.id|string_format:"%04d"})
-					</TD>
-					<td class="nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
-						{if $customerdevice.serialnumber}
-							{$customerdevice.serialnumber}
-						{else}
-							&mdash;
-						{/if}
-					</td>
-					<TD class="nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
-						{foreach $customerdevice.ips as $v}
-							{$v.ip}
-							(<a href="?m=netdevinfo&id={$customer_netdev_id}&ip={$v.id}">{$v.name}</a>)
-							<br>
-						{foreachelse}
-							&mdash;
-						{/foreach}
-					</TD>
-					<TD class="nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
-						{foreach $customerdevice.ips as $v}
-							{$v.mac}<br>
-						{foreachelse}
-							&mdash;
-						{/foreach}
-					</TD>
-					<TD class="nobr">
-						<a href="?m=netdevedit&id={$customerdevice.id}"><img src="img/edit.gif" alt=""></a>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="6">
-						<p>{trans("That customer hasn't got any assigned network devices.")}</p>
-					</TD>
-				</TR>
-				{/foreach}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</div>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('devicespanel') == '1')
-		document.getElementById('devicespanel').style.display = '';
-//-->
-</SCRIPT>
+{css}
+
+{tab_container id="customerdevices"}
+
+	{tab_header content_id="devicespanel"}
+		{tab_header_cell icon="lms-ui-netdev-icon"}
+			<strong>{t a=$customerdevices|@count|default:"0"}Network Devices ($a):{/t}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="?m=netdevadd&customerid={$customerinfo.id}">{trans("New device")} &raquo;</A>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="devicespanel"}
+
+		{tab_table}
+
+			{if $customerdevices}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-6">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							{trans("Name:")}
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{trans("Description:")}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column id">
+								{trans("ID:")}
+							</div>
+							<div class="lms-ui-tab-table-column sn">
+								{trans("Serial number:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column ip">
+								{trans("IP address:")}
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{trans("MAC address:")}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $customerdevices as $customerdevice}
+			{$customer_netdev_id = $customerdevice.id}
+			<div class="lms-ui-tab-table-row" data-target-url="?m=netdevinfo&id={$customerdevice.id}">
+				<div class="lms-ui-tab-table-wrapper col-6">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							<i class="lms-ui-netdev-icon"></i>
+							<strong>{$customerdevice.name}</strong>
+							{if $customerdevice.location}<BR>
+								{$customerdevice.location|truncate:60:"...":true}
+							{/if}
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{$customerdevice.description|default:"-"}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column id">
+								({$customerdevice.id|string_format:"%04d"})
+							</div>
+							<div class="lms-ui-tab-table-column sn">
+								{$customerdevice.serialnumber|default:"-"}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column ip">
+								{foreach $customerdevice.ips as $v}
+									{$v.ip}
+									(<a href="?m=netdevinfo&id={$customer_netdev_id}&ip={$v.id}">{$v.name}</a>)
+									<br>
+								{foreachelse}
+									&mdash;
+								{/foreach}
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{foreach $customerdevice.ips as $v}
+									{$v.mac}<br>
+								{foreachelse}
+									&mdash;
+								{/foreach}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					<a class="lms-ui-edit-button" href="?m=netdevedit&id={$customerdevice.id}">
+						<i title="{trans("Edit")}"></i>
+					</a>
+				</div>
+			</div>
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer hasn't got any assigned network devices.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}

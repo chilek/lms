@@ -5574,6 +5574,39 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 .lms-ui-nodeunk-icon:before {
   content: "\f108";
 }
+.lms-ui-netdev-icon,
+.lms-ui-netdevice-icon,
+.lms-ui-device-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-netdev-icon.fa-pull-left,
+.lms-ui-netdevice-icon.fa-pull-left,
+.lms-ui-device-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-netdev-icon.fa-pull-right,
+.lms-ui-netdevice-icon.fa-pull-right,
+.lms-ui-device-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-netdev-icon:before,
+.lms-ui-netdevice-icon:before,
+.lms-ui-device-icon:before {
+  content: "\f0a0";
+}
 button.lms-ui-save-button > i,
 a.lms-ui-save-button > i,
 button.lms-ui-submit-button > i,
