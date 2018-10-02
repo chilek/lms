@@ -1,0 +1,91 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+[id^="nodespanel-"] .name {
+  width: 40em;
+}
+[id^="nodespanel-"] .id {
+  width: 8em;
+}
+[id^="nodespanel-"] .channel {
+  width: 10em;
+}
+[id^="nodespanel-"] .address {
+  width: 10em;
+}
+[id^="nodespanel-"] .mac {
+  width: 8em;
+}
+[id^="nodespanel-"] .groups {
+  width: 10em;
+}
+[id^="nodespanel-"] .network {
+  width: 10em;
+}
+@media all and (max-width: 1500px) {
+  [id^="nodespanel-"] .col-2 {
+    flex-direction: column !important;
+    width: 10em !important;
+  }
+  [id^="nodespanel-"] .col-2 div {
+    flex-grow: 0 !important;
+    width: 100% !important;
+  }
+  [id^="nodespanel-"] .col-3 {
+    flex-direction: column !important;
+    width: 21em !important;
+  }
+  [id^="nodespanel-"] .col-3 div {
+    flex-grow: 0 !important;
+    width: 100% !important;
+  }
+}
+@media all and (max-width: 1200px) {
+  [id^="nodespanel-"] .col-4 {
+    flex-direction: column !important;
+    width: 10em !important;
+  }
+  [id^="nodespanel-"] .col-4 div {
+    flex-grow: 0 !important;
+    width: 100% !important;
+  }
+}
+@media all and (max-width: 768px) {
+  [id^="nodespanel-"] .col-7 {
+    flex-direction: column !important;
+    width: 17em !important;
+  }
+  [id^="nodespanel-"] .col-7 div {
+    flex-grow: 0 !important;
+    width: 100% !important;
+  }
+  [id^="nodespanel-"] .buttons {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    width: 2em !important;
+  }
+  [id^="nodespanel-"] .buttons > * {
+    padding-right: 0.5em;
+    padding-top: 0.2em;
+  }
+}
