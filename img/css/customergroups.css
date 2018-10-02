@@ -30,6 +30,9 @@
 #groupspanel .id {
   width: 10em;
 }
+#groupspanel .buttons {
+  width: 3em;
+}
 @media all and (max-width: 1200px) {
   #groupspanel .col-2 {
     flex-direction: column !important;
