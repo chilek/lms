@@ -286,7 +286,7 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$('tr[data-target-url] > td:not(.lms-ui-buttons)').click(function() {
+	$('[data-target-url] > :not(.lms-ui-buttons):not(.buttons)').click(function() {
 		var url = $(this).attr('data-target-url');
 		if (!url) {
 			url = $(this).parent().attr('data-target-url');
@@ -544,7 +544,7 @@ $(function() {
 
 		$.each(allcheckboxes, function(index, elem) {
 			var checkbox = $(elem)[0];
-			var row = $(checkbox).closest('tr');
+			var row = $(checkbox).closest('tr,.lms-ui-tab-table-row');
 			row.click(function(e) {
 				if (e.shiftKey) {
 					checkElements(checkbox);

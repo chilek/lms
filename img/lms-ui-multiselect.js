@@ -17,7 +17,7 @@ function multiselect(options) {
 		: '- $a options selected -';
 
 	var old_element = $('#' + elemid);
-	var form = old_element.closest('form');
+	var form = (old_element.attr('form') ? $('#' + old_element.attr('form')) : old_element.closest('form'));
 
 	if (!old_element.length || !form.length)
 		return 0;

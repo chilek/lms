@@ -1,0 +1,64 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+#groupspanel .name {
+  width: 10em;
+}
+#groupspanel .description {
+  width: 40em;
+}
+#groupspanel .id {
+  width: 10em;
+}
+#groupspanel .buttons {
+  width: 3em;
+}
+@media all and (max-width: 1200px) {
+  #groupspanel .col-2 {
+    flex-direction: column !important;
+    width: 30em !important;
+  }
+  #groupspanel .col-2 div {
+    flex-grow: 0 !important;
+    width: 100% !important;
+  }
+}
+@media all and (max-width: 768px) {
+  #groupspanel .col-3 {
+    flex-direction: column !important;
+    width: 20em !important;
+  }
+  #groupspanel .col-3 div {
+    flex-grow: 0 !important;
+    width: 100% !important;
+  }
+  #groupspanel .buttons {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    width: 2em !important;
+  }
+  #groupspanel .buttons > * {
+    padding-right: 0.5em;
+    padding-top: 0.2em;
+  }
+}

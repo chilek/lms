@@ -1,91 +1,113 @@
 <!--// $Id$ //-->
-<div class="lms-ui-sortable" id="customergroups">
-<FORM method="post" name="customergroupassignment" id="customergroupassignment" action="?m=customergroup&action=add&id={$customerinfo.id}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="groupspanel">
-		<TD class="bold">
-			<IMG src="img/group.gif" alt="">
-			{trans("Customer Groups:")}
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="groupspanel" style="display: none;">
-		<TD>
-			<TABLE class="lmsbox-inner">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 96%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				<TR class="lms-ui-header-panel">
-					<TD class="bold nobr">{trans("Name:")}</TD>
-					<TD class="nobr" colspan="2">{trans("Description:")}</TD>
-					<TD class="nobr">{trans("ID:")}</TD>
-					<TD>&nbsp;</TD>
-				</TR>
-				</THEAD>
-				<TBODY class="lms-ui-multi-check">
-				{cycle name=groups values="light,lucid" print=false}
-				{foreach $customergroups as $customergroup}
-				<TR class="highlight {cycle name=groups}">
-					<TD class="bold nobr"><A href="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</A></TD>
-					<TD colspan="2">{$customergroup.description}</TD>
-					<TD class="nobr">({$customergroup.id|string_format:"%04d"})</TD>
-					<TD class="text-right nobr">
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}>
-							<IMG src="img/delete.gif" ALT="{trans("Delete")}">
-						</A>
-						<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]" value="{$customergroup.id}" class="lms-ui-multi-check">
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="5">
-						<p>{trans("That customer is not a member of any group.")}</p>
-					</TD>
-				</TR>
-				{/foreach}
-				<TR class="lms-ui-button-panel">
-					<TD class="bold nobr text-right valign-top">
-						{if !empty($othercustomergroups)}
-						<A id="add-groups" {tip text="Add customer to groups"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>
-						{/if}
-					</TD>
-					<TD colspan="2">
-						{if !empty($othercustomergroups)}
-						<SELECT SIZE="1" NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"} multiple>
-							{foreach $othercustomergroups as $customergroup}
-							<OPTION VALUE="{$customergroup.id}">{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{/if}
-					</TD>
-					<TD colspan="2" class="text-right nobr valign-top">
-						<A id="delete-groups">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
-						<label>
-							{trans("Check All")}
-							<input type="checkbox" class="lms-ui-multi-check-all">
-						</label>
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
 
-<script type="text/javascript">
-<!--
+{css}
+
+<FORM method="post" name="customergroupassignment" id="customergroupassignment" action="?m=customergroup&action=add&id={$customerinfo.id}">
+</FORM>
+
+{tab_container id="customergroups"}
+
+	{tab_header content_id="groupspanel"}
+		{tab_header_cell icon="lms-ui-cg-icon"}
+			<strong>{trans("Customer Groups:")}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="groupspanel"}
+
+		{tab_table}
+			{if $customergroups}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							<strong>{trans("Name:")}</strong>
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{trans("Description:")}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-column id">
+						{trans("ID:")}
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $customergroups as $customergroup}
+			<div class="lms-ui-tab-table-row">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							<strong>
+								<A href="?m=customergroupinfo&id={$customergroup.id}">
+									<i class="lms-ui-cg-icon"></i>
+									{$customergroup.name}
+								</A>
+							</strong>
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{$customergroup.description|default:"-"}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-column id">
+						({$customergroup.id|string_format:"%04d"})
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					<A class="lms-ui-delete-button" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')"
+							href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}">
+						<i title="{trans("Remove customer from group")}"></i>
+					</A>
+					<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]"
+							value="{$customergroup.id}" class="lms-ui-multi-check" form="customergroupassignment">
+				</div>
+			</div>
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer is not a member of any group.")}
+			</div>
+			{/foreach}
+		{/tab_table}
+
+		{tab_button_panel}
+			{tab_buttons}
+				<button type="button" class="lms-ui-button lms-ui-delete-button" id="delete-groups">
+					<i></i> {trans("Delete")}
+				</button>
+{if !empty($othercustomergroups)}
+				<button type="button" class="lms-ui-button lms-ui-add-button" id="add-groups"
+						{tip text="Add customer to groups"}>
+					<i></i> {trans("Add")}
+				</button>
+				<SELECT NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
+						form="customergroupassignment" multiple>
+					{foreach $othercustomergroups as $customergroup}
+					<OPTION VALUE="{$customergroup.id}">{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</OPTION>
+					{/foreach}
+				</SELECT>
+{/if}
+			{/tab_buttons}
+			{tab_buttons}
+				<label>
+					{trans("Check All")}
+					<input type="checkbox" class="lms-ui-multi-check-all">
+				</label>
+			{/tab_buttons}
+		{/tab_button_panel}
+
+	{/tab_contents}
+{/tab_container}
+
+<script>
+
 	$(function() {
 		{if !empty($othercustomergroups)}
 		$('#add-groups').click(function() {
@@ -103,14 +125,5 @@
 			$('form#customergroupassignment').submit();
 		});
 	});
-//-->
-</script>
 
-</FORM>
-</div>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('groupspanel') == '1')
-		document.getElementById('groupspanel').style.display = '';
-//-->
-</SCRIPT>
+</script>

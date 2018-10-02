@@ -31,11 +31,6 @@ function smarty_block_tab_container($params, $content, $template, $repeat) {
 		return '
 			<div' . ($id ? ' id="' . $id . '"' : '') . ' class="lms-ui-tab-container lms-ui-sortable">
 				' . $content . '
-				<script>
-					if (getCookie("docpanel") == "1") {
-						$("#docpanel").show();
-					}
-				</script>
 			</div>';
 	}
 }

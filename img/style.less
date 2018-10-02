@@ -981,6 +981,247 @@ button.lms-ui-button {
 .lms-ui-icon {
 	line-height: unset;
 	vertical-align: unset;
+	color: black;
+}
+
+.lms-ui-save-icon,
+.lms-ui-submit-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-save;
+	}
+}
+
+.lms-ui-cancel-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-backspace;
+	}
+}
+
+.lms-ui-clone-icon,
+.lms-ui-copy-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-copy;
+	}
+}
+
+.lms-ui-delete-icon,
+.lms-ui-remove-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-eraser;
+	}
+}
+
+.lms-ui-edit-icon,
+.lms-ui-change-icon,
+.lms-ui-modify-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-edit;
+	}
+}
+
+.lms-ui-fileupload-icon,
+.lms-ui-upload-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-paperclip;
+	}
+}
+
+.lms-ui-back-icon,
+.lms-ui-return-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-caret-square-up;
+	}
+}
+
+.lms-ui-add-icon,
+.lms-ui-new-icon,
+.lms-ui-append-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-plus-square;
+	}
+}
+
+.lms-ui-print-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-print;
+	}
+}
+
+.lms-ui-confirm-icon,
+.lms-ui-apply-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-check-double;
+	}
+}
+
+.lms-ui-mail-icon,
+.lms-ui-send-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-envelope;
+	}
+}
+
+.lms-ui-clipboard-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-clipboard;
+	}
+}
+
+.lms-ui-view-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-eye;
+	}
+	&.pdf:before {
+		content: @fa-var-file-pdf;
+	}
+	&.xls:before {
+		content: @fa-var-file-excel;
+	}
+}
+
+.lms-ui-nodegroup-icon,
+.lms-ui-ngroup-icon,
+.lms-ui-ng-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-layer-group;
+	}
+}
+
+.lms-ui-customergroup-icon,
+.lms-ui-cgroup-icon,
+.lms-ui-cg-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-users;
+	}
+}
+
+.lms-ui-warning-icon,
+.lms-ui-warn-icon,
+.lms-ui-warnoff-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-exclamation-triangle;
+	}
+}
+
+.lms-ui-warnon-icon {
+	.lms-ui-warning-icon;
+	color: gold;
+	text-stroke-width: 1px;
+	text-stroke-color: black;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: black;
+}
+
+.lms-ui-connect-icon,
+.lms-ui-plug-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-plug;
+	}
+}
+
+.lms-ui-connected-icon {
+	.lms-ui-connect-icon;
+	color: gold;
+	text-stroke-width: 1px;
+	text-stroke-color: black;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: black;
+}
+
+.lms-ui-disconnected-icon {
+	.lms-ui-connect-icon;
+	color: black;
+}
+
+.lms-ui-node-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-desktop;
+	}
+}
+
+.lms-ui-nodeoff-icon {
+	.lms-ui-node-icon;
+}
+
+.lms-ui-nodeon-icon {
+	.lms-ui-node-icon;
+	text-stroke-width: 1px;
+	text-stroke-color: gold;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: gold;
+}
+
+.lms-ui-nodeunk-icon {
+	.lms-ui-node-icon;
+	text-stroke-width: 1px;
+	text-stroke-color: red;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: red;
+}
+
+.lms-ui-netdev-icon,
+.lms-ui-netdevice-icon,
+.lms-ui-device-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-hdd;
+	}
 }
 
 .lms-ui-customer-icon {
@@ -1229,47 +1470,27 @@ button,a {
 	&.lms-ui-save-button,
 	&.lms-ui-submit-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-save;
-			}
+			.lms-ui-save-icon;
 		}
 	}
 
 	&.lms-ui-cancel-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-backspace;
-			}
+			.lms-ui-cancel-icon;
 		}
 	}
 
 	&.lms-ui-clone-button,
 	&.lms-ui-copy-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-copy;
-			}
+			.lms-ui-copy-icon;
 		}
 	}
 
 	&.lms-ui-delete-button,
 	&.lms-ui-remove-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-eraser;
-			}
+			.lms-ui-delete-icon;
 		}
 	}
 
@@ -1277,36 +1498,21 @@ button,a {
 	&.lms-ui-change-button,
 	&.lms-ui-modify-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-edit;
-			}
+			.lms-ui-edit-icon;
 		}
 	}
 
 	&.lms-ui-fileupload-button,
 	&.lms-ui-upload-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-paperclip;
-			}
+			.lms-ui-upload-icon;
 		}
 	}
 
 	&.lms-ui-back-button,
 	&.lms-ui-return-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-caret-square-up;
-			}
+			.lms-ui-back-icon;
 		}
 	}
 
@@ -1314,75 +1520,39 @@ button,a {
 	&.lms-ui-new-button,
 	&.lms-ui-append-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-plus-square;
-			}
+			.lms-ui-add-icon;
 		}
 	}
 
 	&.lms-ui-print-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-print;
-			}
+			.lms-ui-print-icon;
 		}
 	}
 
 	&.lms-ui-confirm-button,
 	&.lms-ui-apply-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-check-double;
-			}
+			.lms-ui-apply-icon;
 		}
 	}
 
 	&.lms-ui-mail-button,
 	&.lms-ui-send-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-envelope;
-			}
+			.lms-ui-mail-icon;
 		}
 	}
 
 	&.lms-ui-clipboard-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-clipboard;
-			}
+			.lms-ui-clipboard-icon;
 		}
 	}
 
 	&.lms-ui-view-button {
 		& > i {
-			.fa-icon;
-			.fas;
-			.lms-ui-icon;
-			&:before {
-				content: @fa-var-eye;
-			}
-			&.pdf:before {
-				content: @fa-var-file-pdf;
-			}
-			&.xls:before {
-				content: @fa-var-file-excel;
-			}
+			.lms-ui-view-icon;
 		}
 	}
 }
@@ -2792,6 +2962,7 @@ div.lms-ui-wysiwyg-editor {
 				display: flex;
 				flex-direction: row;
 				justify-content: flex-start;
+				align-items: center;
 
 				> :nth-child(n+2) {
 					margin-left: 0.2em;
@@ -2847,6 +3018,7 @@ div.lms-ui-wysiwyg-editor {
 			.col-2,
 			.lms-ui-tab-table-column {
 				flex-grow: 1;
+				padding-top: 0.1em;
 			}
 		}
 		.lms-ui-tab-table-column {

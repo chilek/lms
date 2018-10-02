@@ -1,5 +1,4 @@
 <?php
-
 /**
  * LMS version 1.11-git
  *
@@ -24,20 +23,9 @@
  *  $Id$
  */
 
-function smarty_block_tab_contents($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$id = isset($params['id']) ? $params['id'] : null;
-
-		return '
-			<div class="lms-ui-tab-contents lms-ui-multi-check" id="' . $id . '" style="display: none;">
-				' . $content . '
-			</div>
-			<script>
-				   if (getCookie("' . $id . '") == "1") {
-						   $("#' . $id . '").show();
-				   }
-			</script>';
-	}
+function smarty_function_css(array $params, Smarty_Internal_Template $template) {
+	return '<script>$("head").append($(\'<link rel="stylesheet" type="text/css" href="img/css/'
+		. str_replace('.html', '', basename($template->source->name)) . '.css' . '">\'));</script>';
 }
 
 ?>
