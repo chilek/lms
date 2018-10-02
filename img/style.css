@@ -5294,7 +5294,9 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 .lms-ui-view-icon.xls:before {
   content: "\f1c3";
 }
-.lms-ui-group-icon {
+.lms-ui-nodegroup-icon,
+.lms-ui-ngroup-icon,
+.lms-ui-ng-icon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5310,14 +5312,53 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   vertical-align: unset;
   color: black;
 }
-.lms-ui-group-icon.fa-pull-left {
+.lms-ui-nodegroup-icon.fa-pull-left,
+.lms-ui-ngroup-icon.fa-pull-left,
+.lms-ui-ng-icon.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-group-icon.fa-pull-right {
+.lms-ui-nodegroup-icon.fa-pull-right,
+.lms-ui-ngroup-icon.fa-pull-right,
+.lms-ui-ng-icon.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-group-icon:before {
+.lms-ui-nodegroup-icon:before,
+.lms-ui-ngroup-icon:before,
+.lms-ui-ng-icon:before {
   content: "\f5fd";
+}
+.lms-ui-customergroup-icon,
+.lms-ui-cgroup-icon,
+.lms-ui-cg-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-customergroup-icon.fa-pull-left,
+.lms-ui-cgroup-icon.fa-pull-left,
+.lms-ui-cg-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-customergroup-icon.fa-pull-right,
+.lms-ui-cgroup-icon.fa-pull-right,
+.lms-ui-cg-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-customergroup-icon:before,
+.lms-ui-cgroup-icon:before,
+.lms-ui-cg-icon:before {
+  content: "\f0c0";
 }
 .lms-ui-warning-icon,
 .lms-ui-warn-icon,

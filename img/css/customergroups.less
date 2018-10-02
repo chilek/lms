@@ -22,51 +22,21 @@
  *  $Id$
  */
 
-[id^="nodespanel-"] {
+#groupspanel {
 	.name {
+		width: 10em;
+	}
+	.description {
 		width: 40em;
 	}
 	.id {
-		width: 8em;
-	}
-	.channel {
-		width: 10em;
-	}
-	.address {
-		width: 10em;
-	}
-	.mac {
-		width: 8em;
-	}
-	.groups {
-		width: 10em;
-	}
-	.network {
 		width: 10em;
 	}
 
-	@media all and (max-width: 1500px) {
+	@media all and (max-width: 1200px) {
 		.col-2 {
 			flex-direction: column !important;
-			width: 10em !important;
-			div {
-				flex-grow: 0 !important;
-				width: 100% !important;
-			}
-		}
-		.col-3 {
-			flex-direction: column !important;
-			width: 21em !important;
-			div {
-				flex-grow: 0 !important;
-				width: 100% !important;
-			}
-		}
-	}
-	@media all and (max-width: 1200px) {
-		.col-4 {
-			flex-direction: column !important;
-			width: 10em !important;
+			width: 30em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
@@ -74,15 +44,14 @@
 		}
 	}
 	@media all and (max-width: 768px) {
-		.col-7 {
+		.col-3 {
 			flex-direction: column !important;
-			width: 17em !important;
+			width: 20em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
 			}
 		}
-
 		.buttons {
 			flex-direction: column !important;
 			justify-content: flex-start !important;
@@ -94,3 +63,4 @@
 		}
 	}
 }
+

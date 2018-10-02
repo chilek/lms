@@ -108,7 +108,7 @@
 							{else}
 								<i class="lms-ui-nodeunk-icon"></i>
 							{/if}
-							<span class="bold">{$node.name}</span>
+							<strong>{$node.name}</strong>
 							{if isset($nodeassignments[$node.id])}
 								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}">{$assignment.name}</a>{if !$assignment@last},{/if}{/foreach}){/if}
 							{if $node.location}<BR>
