@@ -511,7 +511,7 @@ $menu = array(
 
 		'hosting' => array(
 			'name' => trans('Hosting'),
-			'css' => 'fas fa-at',
+			'css' => 'fas fa-server',
 			'link' =>'?m=accountlist',
 			'tip' => trans('Hosting Services Management'),
 			'accesskey' =>'a',
