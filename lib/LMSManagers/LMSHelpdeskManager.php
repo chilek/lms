@@ -569,29 +569,32 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueStats($id)
     {
-        if ($result = $this->db->GetAll('SELECT state, COUNT(state) AS scount
+    	$stats = null;
+
+    	if ($result = $this->db->GetAll('SELECT state, COUNT(state) AS scount
 			FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC', array($id))) {
-            foreach ($result as $row)
-                $stats[$row['state']] = $row['scount'];
-            foreach (array('new', 'open', 'resolved', 'dead') as $idx => $value)
-                $stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
-        }
-        $result = $this->db->GetRow('SELECT MAX(createtime) AS lastticket,
-        	SUM(CASE WHEN deleted = 1 THEN 1 ELSE 0 END) AS delcount,
-        	SUM(CASE WHEN state <> ? THEN 1 ELSE 0 END) AS unresolved,
-        	SUM(CASE WHEN priority = ? AND state <> ? THEN 1 ELSE 0 END) AS critical,
-        	SUM(CASE WHEN state <> ? AND (lv.ticketid IS NULL OR lv.vdate < lm.maxcreatetime) THEN 1 ELSE 0 END) AS unread
-        	FROM rttickets t
-			LEFT JOIN (
-				SELECT ticketid, MAX(createtime) AS maxcreatetime
-				FROM rtmessages
-				GROUP BY ticketid
-			) lm ON lm.ticketid = t.id
-			LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
-        	WHERE queueid = ?', array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
+			foreach ($result as $row)
+				$stats[$row['state']] = $row['scount'];
+			foreach (array('new', 'open', 'resolved', 'dead') as $idx => $value)
+				$stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
+
+			$result = $this->db->GetRow('SELECT MAX(createtime) AS lastticket,
+				SUM(CASE WHEN deleted = 1 THEN 1 ELSE 0 END) AS delcount,
+				SUM(CASE WHEN state <> ? THEN 1 ELSE 0 END) AS unresolved,
+				SUM(CASE WHEN priority = ? AND state <> ? THEN 1 ELSE 0 END) AS critical,
+				SUM(CASE WHEN state <> ? AND (lv.ticketid IS NULL OR lv.vdate < lm.maxcreatetime) THEN 1 ELSE 0 END) AS unread
+				FROM rttickets t
+				LEFT JOIN (
+					SELECT ticketid, MAX(createtime) AS maxcreatetime
+					FROM rtmessages
+					GROUP BY ticketid
+				) lm ON lm.ticketid = t.id
+				LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
+				WHERE queueid = ?', array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
 				Auth::GetCurrentUser(), $id));
-		if (!empty($result) && !empty($stats))
-			$stats = array_merge($stats, $result);
+			if (!empty($result))
+				$stats = array_merge($stats, $result);
+		}
 
         return $stats;
     }
