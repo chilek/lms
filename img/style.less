@@ -983,76 +983,236 @@ button.lms-ui-button {
 	vertical-align: unset;
 }
 
-i.fa-male {
-	color: goldenrod;
+.lms-ui-customer-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: goldenrod;
+		content: @fa-var-male;
+	}
 }
 
-i.fa-phone {
-	color: darkred;
+.lms-ui-phone-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: darkred;
+		content: @fa-var-phone;
+	}
 }
 
-i.fa-desktop {
-	color: navy;
+.lms-ui-node-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: navy;
+		content: @fa-var-node;
+	}
 }
 
-i.fa-globe {
-	color: darkslategray;
+.lms-ui-networks-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: darkslategray;
+		content: @fa-var-globe;
+	}
 }
 
-i.fa-layer-group {
-	color: crimson;
+.lms-ui-netdev-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: crimson;
+		content: @fa-var-layer-group;
+	}
 }
 
-i.fa-user {
-	color: darkorange;
+.lms-ui-user-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: darkorange;
+		content: @fa-var-user;
+	}
 }
 
-i.fa-hdd {
-	color: mediumslateblue;
+.lms-ui-netnode-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: mediumslateblue;
+		content: @fa-var-hdd;
+	}
 }
 
-i.fa-hospital-symbol, i.fa-calendar-alt {
-	color: dodgerblue;
+.lms-ui-helpdesk-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: dodgerblue;
+		content: @fa-var-hospital-symbol;
+	}
 }
 
-i.fa-screwdriver, i.fa-sync, i.fa-power-off, i.fa-wrench, i.fa-history {
-	color: red;
+.lms-ui-timetable-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: dodgerblue;
+		content: @fa-var-calendar-alt;
+	}
 }
 
-i.fa-money-bill {
-	color: forestgreen;
+.lms-ui-admin-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: red;
+		content: @fa-var-screwdriver;
+	}
 }
 
-i.fa-wifi {
-	color: purple;
+.lms-ui-reload-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: red;
+		content: @fa-var-sync;
+	}
 }
 
-i.fa-server {
-	color: brown;
+.lms-ui-logout-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: red;
+		content: @fa-var-power-off;
+	}
 }
 
-i.fa-file-alt {
-	color: orangered;
+.lms-ui-configuration-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: red;
+		content: @fa-var-wrench;
+	}
 }
 
-i.fa-chart-line {
-	color: lightseagreen;
+.lms-ui-archiveview-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: red;
+		content: @fa-var-history;
+	}
 }
 
-i.fa-database {
-	color: grey;
+.lms-ui-finances-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: red;
+		content: @fa-var-money-bill;
+	}
 }
 
-i.fa-envelope {
-	color: darkorange;
+.lms-ui-finances-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: purple;
+		content: @fa-var-wifi;
+	}
 }
 
-i.fa-book {
-	color: indigo;
+.lms-ui-hosting-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: brown;
+		content: @fa-var-server;
+	}
 }
 
-i.fa-key {
-	color: seagreen;
+.lms-ui-document-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: orangered;
+		content: @fa-var-file-alt;
+	}
+
+}
+
+.lms-ui-statistics-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: lightseagreen;
+		content: @fa-var-chart-line;
+	}
+
+}
+
+.lms-ui-externalid-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: grey;
+		content: @fa-var-database;
+	}
+}
+
+.lms-ui-message-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: darkorange;
+		content: @fa-var-envelope;
+	}
+}
+
+.lms-ui-documentation-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: indigo;
+		content: @fa-var-book;
+	}
+}
+
+.lms-ui-password-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: seagreen;
+		content: @fa-var-key;
+	}
 }
 
 button,a {

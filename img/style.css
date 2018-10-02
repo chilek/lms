@@ -4918,64 +4918,580 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
 }
-i.fa-male {
+.lms-ui-customer-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-customer-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-customer-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-customer-icon:before {
   color: goldenrod;
+  content: "\f183";
 }
-i.fa-phone {
+.lms-ui-phone-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-phone-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-phone-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-phone-icon:before {
   color: darkred;
+  content: "\f095";
 }
-i.fa-desktop {
+.lms-ui-node-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-node-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-node-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-node-icon:before {
   color: navy;
+  content: "\f419";
 }
-i.fa-globe {
+.lms-ui-networks-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-networks-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-networks-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-networks-icon:before {
   color: darkslategray;
+  content: "\f0ac";
 }
-i.fa-layer-group {
+.lms-ui-netdev-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-netdev-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-netdev-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-netdev-icon:before {
   color: crimson;
+  content: "\f5fd";
 }
-i.fa-user {
+.lms-ui-user-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-user-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-user-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-user-icon:before {
   color: darkorange;
+  content: "\f007";
 }
-i.fa-hdd {
+.lms-ui-netnode-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-netnode-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-netnode-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-netnode-icon:before {
   color: mediumslateblue;
+  content: "\f0a0";
 }
-i.fa-hospital-symbol,
-i.fa-calendar-alt {
+.lms-ui-helpdesk-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-helpdesk-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-helpdesk-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-helpdesk-icon:before {
   color: dodgerblue;
+  content: "\f47e";
 }
-i.fa-screwdriver,
-i.fa-sync,
-i.fa-power-off,
-i.fa-wrench,
-i.fa-history {
+.lms-ui-timetable-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-timetable-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-timetable-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-timetable-icon:before {
+  color: dodgerblue;
+  content: "\f073";
+}
+.lms-ui-admin-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-admin-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-admin-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-admin-icon:before {
   color: red;
+  content: "\f54a";
 }
-i.fa-money-bill {
-  color: forestgreen;
+.lms-ui-reload-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
 }
-i.fa-wifi {
+.lms-ui-reload-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-reload-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-reload-icon:before {
+  color: red;
+  content: "\f021";
+}
+.lms-ui-logout-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-logout-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-logout-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-logout-icon:before {
+  color: red;
+  content: "\f011";
+}
+.lms-ui-configuration-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-configuration-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-configuration-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-configuration-icon:before {
+  color: red;
+  content: "\f0ad";
+}
+.lms-ui-archiveview-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-archiveview-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-archiveview-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-archiveview-icon:before {
+  color: red;
+  content: "\f1da";
+}
+.lms-ui-finances-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-finances-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-finances-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-finances-icon:before {
+  color: red;
+  content: "\f0d6";
+}
+.lms-ui-finances-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-finances-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-finances-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-finances-icon:before {
   color: purple;
+  content: "\f1eb";
 }
-i.fa-server {
+.lms-ui-hosting-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-hosting-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-hosting-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-hosting-icon:before {
   color: brown;
+  content: "\f233";
 }
-i.fa-file-alt {
+.lms-ui-document-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-document-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-document-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-document-icon:before {
   color: orangered;
+  content: "\f15c";
 }
-i.fa-chart-line {
+.lms-ui-statistics-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-statistics-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-statistics-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-statistics-icon:before {
   color: lightseagreen;
+  content: "\f201";
 }
-i.fa-database {
+.lms-ui-externalid-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-externalid-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-externalid-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-externalid-icon:before {
   color: grey;
+  content: "\f1c0";
 }
-i.fa-envelope {
+.lms-ui-message-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-message-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-message-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-message-icon:before {
   color: darkorange;
+  content: "\f0e0";
 }
-i.fa-book {
+.lms-ui-documentation-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-documentation-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-documentation-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-documentation-icon:before {
   color: indigo;
+  content: "\f02d";
 }
-i.fa-key {
+.lms-ui-password-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-password-icon.fa-pull-left {
+  margin-right: 0.3em;
+}
+.lms-ui-password-icon.fa-pull-right {
+  margin-left: 0.3em;
+}
+.lms-ui-password-icon:before {
   color: seagreen;
+  content: "\f084";
 }
 button.lms-ui-save-button > i,
 a.lms-ui-save-button > i,
