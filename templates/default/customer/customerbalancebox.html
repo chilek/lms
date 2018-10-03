@@ -175,7 +175,9 @@
 								</A>
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printr.gif" alt="{trans("Cash receipt")}"></A>
+								<A href="?m=receipt&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-docnumber"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("Cash receipt")}"></i>
 								<a href="?m=receiptedit&id={$item.docid}" class="lms-ui-edit-button lms-ui-tooltip-docnumber"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("Cash receipt")}"></i>
