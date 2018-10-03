@@ -4203,13 +4203,16 @@ A.disabled {
 A.disabled:hover {
   text-decoration: none;
 }
-TR.blend A {
+TR.blend A,
+.lms-ui-tab-table-row.blend A {
   color: #888888;
 }
-TR.alertblend A {
+TR.alertblend A,
+.lms-ui-tab-table-row.alertblend A {
   color: #FA8072;
 }
-TR.suspended A {
+TR.suspended A,
+.lms-ui-tab-table-row.suspended A {
   color: #30B6C6;
 }
 P {
