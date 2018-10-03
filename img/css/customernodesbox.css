@@ -42,6 +42,9 @@
 [id^="nodespanel-"] .network {
   width: 10em;
 }
+[id^="nodespanel-"] .buttons {
+  width: 4em;
+}
 @media all and (max-width: 1500px) {
   [id^="nodespanel-"] .col-2 {
     flex-direction: column !important;

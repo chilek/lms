@@ -354,7 +354,7 @@ A {
 		}
 	}
 }
-TR {
+TR,.lms-ui-tab-table-row {
 	&.blend A {
 		color: @blend;
 	}
@@ -992,6 +992,26 @@ button.lms-ui-button {
 	text-align: center;
 }
 
+.lms-ui-hourglass-icon,
+.lms-ui-wait-icon {
+	.fa-icon;
+	.far;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-hourglass;
+	}
+}
+
+.lms-ui-options-icon,
+.lms-ui-option-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-table;
+	}
+}
+
 .lms-ui-assignment-icon,
 .lms-ui-assign-icon {
 	.fa-icon;
@@ -1525,6 +1545,13 @@ button.lms-ui-button {
 }
 
 button,a {
+	&.lms-ui-hourglass-button,
+	&.lms-ui-wait-button {
+		& > i {
+			.lms-ui-hourglass-icon;
+		}
+	}
+
 	&.lms-ui-save-button,
 	&.lms-ui-submit-button {
 		& > i {

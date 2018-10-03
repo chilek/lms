@@ -52,25 +52,23 @@
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-column liability">
+							{trans("Liability:")}
+						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column liability">
-								{trans("Liability:")}
-							</div>
 							<div class="lms-ui-tab-table-column value">
 								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 									{trans("Value:")}
 								{/if}
 							</div>
-						</div>
-						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column discount">
 								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 									{trans("Discount:")}
 								{/if}
 							</div>
-							<div class="lms-ui-tab-table-column accounting">
-								{trans("Accounting:")}
-							</div>
+						</div>
+						<div class="lms-ui-tab-table-column accounting">
+							{trans("Accounting:")}
 						</div>
 					</div>
 
@@ -120,31 +118,31 @@
 				data-upceil="{$a.real_upceil|default:"0"}">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column liability">
-								{if !$a.tariffid && !$a.liabilityid}
-									<strong>{trans("Suspending of all liabilities")}</strong>
+						<div class="lms-ui-tab-table-column liability">
+							{if !$a.tariffid && !$a.liabilityid}
+								<strong>{trans("Suspending of all liabilities")}</strong>
+							{else}
+								{if $a.tariffid}
+									<strong>
+										<A href="?m=tariffinfo&id={$a.tariffid}">
+											{$a.name} {if count($assignments)>1} ({$a.id}){/if}
+										</A>
+										{if $a.attribute} - {$a.attribute}{/if}
+									</strong>
 								{else}
-									{if $a.tariffid}
-										<strong>
-											<A href="?m=tariffinfo&id={$a.tariffid}">
-												{$a.name} {if count($assignments)>1} ({$a.id}){/if}
-											</A>
-											{if $a.attribute} - {$a.attribute}{/if}
-										</strong>
-									{else}
-										{$a.name}
-									{/if}
-
-									{if $a.nodes}
-										({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
-									{/if}
-
-									{if $a.phones}
-										({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
-									{/if}
+									{$a.name}
 								{/if}
-							</div>
+
+								{if $a.nodes}
+									({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
+								{/if}
+
+								{if $a.phones}
+									({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
+								{/if}
+							{/if}
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column value">
 								{if $a.tariffid || $a.liabilityid}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
@@ -152,8 +150,6 @@
 									{/if}
 								{/if}
 							</div>
-						</div>
-						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column discount">
 								{if $a.tariffid || $a.liabilityid}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
@@ -161,11 +157,11 @@
 									{/if}
 								{/if}
 							</div>
-							<div class="lms-ui-tab-table-column accounting">
-								{if $a.tariffid || $a.liabilityid}
-									{$a.payday}
-								{/if}
-							</div>
+						</div>
+						<div class="lms-ui-tab-table-column accounting">
+							{if $a.tariffid || $a.liabilityid}
+								{$a.payday}
+							{/if}
 						</div>
 					</div>
 
@@ -185,7 +181,7 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column options">
 								{if $a.tariffid || $a.liabilityid}
-									<img src="img/options.gif" alt="" class="lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}">
+									<i class="lms-ui-options-icon lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column period">
@@ -229,21 +225,17 @@
 				<div class="lms-ui-tab-table-row footer">
 					<div class="lms-ui-tab-table-wrapper col-8">
 						<div class="lms-ui-tab-table-wrapper col-4">
-							<div class="lms-ui-tab-table-wrapper col-2">
-								<div class="lms-ui-tab-table-column liability">
-									<button type="button" id="delete-assignments" class="lms-ui-button lms-ui-delete-button">
-										<i></i> {trans("Delete")}
-									</button>
-									<strong>{trans("Total:")}</strong>
-								</div>
-								<div class="lms-ui-tab-table-column value" id="total-value">
-								</div>
+							<div class="lms-ui-tab-table-column liability">
+								<strong>{trans("Total:")}</strong>
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column value" id="total-value">
+								</div>
 								<div class="lms-ui-tab-table-column discount" id="total-disc-value">
 								</div>
-								<div class="lms-ui-tab-table-column accounting">
-								</div>
+							</div>
+							<div class="lms-ui-tab-table-column accounting">
+								-
 							</div>
 						</div>
 
@@ -256,24 +248,38 @@
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column options">
+									-
 								</div>
 								<div class="lms-ui-tab-table-column period">
-									<label for="check-all">
-										{trans("Check All")}
-									</label>
+									-
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<div class="lms-ui-tab-table-column buttons">
-							<input type="checkbox" id="check-all" class="lms-ui-multi-check-all">
 					</div>
 				</div>
 			{/block}
 			{/if}
 
 		{/tab_table}
+
+		{if $assignments}
+		{tab_button_panel}
+			{tab_buttons}
+			{/tab_buttons}
+			{tab_buttons}
+				<button type="button" id="delete-assignments" class="lms-ui-button lms-ui-delete-button">
+					<i></i> {trans("Delete")}
+				</button>
+				<label>
+					{trans("Check All")}
+					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
+				</label>
+			{/tab_buttons}
+		{/tab_button_panel}
+		{/if}
 
 	{/tab_contents}
 {/tab_container}
