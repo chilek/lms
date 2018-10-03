@@ -29,7 +29,8 @@ function smarty_block_tab_header($params, $content, $template, $repeat) {
 		$content_id = isset($params['content_id']) ? $params['content_id'] : null;
 
 		return '
-			<div class="lms-ui-tab-header lmsbox-titlebar" data-lmsbox-content="' . $content_id . '">
+			<div ' . ($content_id ? 'class="lms-ui-tab-header lmsbox-titlebar" data-lmsbox-content="'
+					. $content_id . '"' : '') . '>
 				' . $content . '
 			</div>';
 	}

@@ -4928,6 +4928,155 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   width: 1.5em;
   text-align: center;
 }
+.lms-ui-convert-icon,
+.lms-ui-transform-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-convert-icon.fa-pull-left,
+.lms-ui-transform-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-convert-icon.fa-pull-right,
+.lms-ui-transform-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-convert-icon:before,
+.lms-ui-transform-icon:before {
+  content: "\f362";
+}
+.lms-ui-correct-icon,
+.lms-ui-correction-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-correct-icon.fa-pull-left,
+.lms-ui-correction-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-correct-icon.fa-pull-right,
+.lms-ui-correction-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-correct-icon:before,
+.lms-ui-correction-icon:before {
+  content: "\f0ad";
+}
+.lms-ui-cashsource-icon,
+.lms-ui-isource-icon,
+.lms-ui-importsource-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-cashsource-icon.fa-pull-left,
+.lms-ui-isource-icon.fa-pull-left,
+.lms-ui-importsource-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-cashsource-icon.fa-pull-right,
+.lms-ui-isource-icon.fa-pull-right,
+.lms-ui-importsource-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-cashsource-icon:before,
+.lms-ui-isource-icon:before,
+.lms-ui-importsource-icon:before {
+  content: "\f570";
+}
+.lms-ui-debitnote-icon,
+.lms-ui-dnote-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-debitnote-icon.fa-pull-left,
+.lms-ui-dnote-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-debitnote-icon.fa-pull-right,
+.lms-ui-dnote-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-debitnote-icon:before,
+.lms-ui-dnote-icon:before {
+  content: "\f571";
+}
+.lms-ui-money-icon,
+.lms-ui-cash-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-money-icon.fa-pull-left,
+.lms-ui-cash-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-money-icon.fa-pull-right,
+.lms-ui-cash-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-money-icon:before,
+.lms-ui-cash-icon:before {
+  content: "\f0d6";
+}
 .lms-ui-hourglass-icon,
 .lms-ui-wait-icon {
   font-weight: normal;
@@ -5860,10 +6009,249 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 .lms-ui-device-icon:before {
   content: "\f0a0";
 }
+button.lms-ui-convert-button > i,
+a.lms-ui-convert-button > i,
+div.lms-ui-convert-button > i,
+button.lms-ui-transform-button > i,
+a.lms-ui-transform-button > i,
+div.lms-ui-transform-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-convert-button > i.fa-pull-left,
+a.lms-ui-convert-button > i.fa-pull-left,
+div.lms-ui-convert-button > i.fa-pull-left,
+button.lms-ui-transform-button > i.fa-pull-left,
+a.lms-ui-transform-button > i.fa-pull-left,
+div.lms-ui-transform-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-convert-button > i.fa-pull-right,
+a.lms-ui-convert-button > i.fa-pull-right,
+div.lms-ui-convert-button > i.fa-pull-right,
+button.lms-ui-transform-button > i.fa-pull-right,
+a.lms-ui-transform-button > i.fa-pull-right,
+div.lms-ui-transform-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-convert-button > i:before,
+a.lms-ui-convert-button > i:before,
+div.lms-ui-convert-button > i:before,
+button.lms-ui-transform-button > i:before,
+a.lms-ui-transform-button > i:before,
+div.lms-ui-transform-button > i:before {
+  content: "\f362";
+}
+button.lms-ui-correct-button > i,
+a.lms-ui-correct-button > i,
+div.lms-ui-correct-button > i,
+button.lms-ui-correction-button > i,
+a.lms-ui-correction-button > i,
+div.lms-ui-correction-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-correct-button > i.fa-pull-left,
+a.lms-ui-correct-button > i.fa-pull-left,
+div.lms-ui-correct-button > i.fa-pull-left,
+button.lms-ui-correction-button > i.fa-pull-left,
+a.lms-ui-correction-button > i.fa-pull-left,
+div.lms-ui-correction-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-correct-button > i.fa-pull-right,
+a.lms-ui-correct-button > i.fa-pull-right,
+div.lms-ui-correct-button > i.fa-pull-right,
+button.lms-ui-correction-button > i.fa-pull-right,
+a.lms-ui-correction-button > i.fa-pull-right,
+div.lms-ui-correction-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-correct-button > i:before,
+a.lms-ui-correct-button > i:before,
+div.lms-ui-correct-button > i:before,
+button.lms-ui-correction-button > i:before,
+a.lms-ui-correction-button > i:before,
+div.lms-ui-correction-button > i:before {
+  content: "\f0ad";
+}
+button.lms-ui-cashsource-button > i,
+a.lms-ui-cashsource-button > i,
+div.lms-ui-cashsource-button > i,
+button.lms-ui-isource-button > i,
+a.lms-ui-isource-button > i,
+div.lms-ui-isource-button > i,
+button.lms-ui-importsource-button > i,
+a.lms-ui-importsource-button > i,
+div.lms-ui-importsource-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-cashsource-button > i.fa-pull-left,
+a.lms-ui-cashsource-button > i.fa-pull-left,
+div.lms-ui-cashsource-button > i.fa-pull-left,
+button.lms-ui-isource-button > i.fa-pull-left,
+a.lms-ui-isource-button > i.fa-pull-left,
+div.lms-ui-isource-button > i.fa-pull-left,
+button.lms-ui-importsource-button > i.fa-pull-left,
+a.lms-ui-importsource-button > i.fa-pull-left,
+div.lms-ui-importsource-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-cashsource-button > i.fa-pull-right,
+a.lms-ui-cashsource-button > i.fa-pull-right,
+div.lms-ui-cashsource-button > i.fa-pull-right,
+button.lms-ui-isource-button > i.fa-pull-right,
+a.lms-ui-isource-button > i.fa-pull-right,
+div.lms-ui-isource-button > i.fa-pull-right,
+button.lms-ui-importsource-button > i.fa-pull-right,
+a.lms-ui-importsource-button > i.fa-pull-right,
+div.lms-ui-importsource-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-cashsource-button > i:before,
+a.lms-ui-cashsource-button > i:before,
+div.lms-ui-cashsource-button > i:before,
+button.lms-ui-isource-button > i:before,
+a.lms-ui-isource-button > i:before,
+div.lms-ui-isource-button > i:before,
+button.lms-ui-importsource-button > i:before,
+a.lms-ui-importsource-button > i:before,
+div.lms-ui-importsource-button > i:before {
+  content: "\f570";
+}
+button.lms-ui-debitnote-button > i,
+a.lms-ui-debitnote-button > i,
+div.lms-ui-debitnote-button > i,
+button.lms-ui-dnote-button > i,
+a.lms-ui-dnote-button > i,
+div.lms-ui-dnote-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-debitnote-button > i.fa-pull-left,
+a.lms-ui-debitnote-button > i.fa-pull-left,
+div.lms-ui-debitnote-button > i.fa-pull-left,
+button.lms-ui-dnote-button > i.fa-pull-left,
+a.lms-ui-dnote-button > i.fa-pull-left,
+div.lms-ui-dnote-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-debitnote-button > i.fa-pull-right,
+a.lms-ui-debitnote-button > i.fa-pull-right,
+div.lms-ui-debitnote-button > i.fa-pull-right,
+button.lms-ui-dnote-button > i.fa-pull-right,
+a.lms-ui-dnote-button > i.fa-pull-right,
+div.lms-ui-dnote-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-debitnote-button > i:before,
+a.lms-ui-debitnote-button > i:before,
+div.lms-ui-debitnote-button > i:before,
+button.lms-ui-dnote-button > i:before,
+a.lms-ui-dnote-button > i:before,
+div.lms-ui-dnote-button > i:before {
+  content: "\f571";
+}
+button.lms-ui-cash-button > i,
+a.lms-ui-cash-button > i,
+div.lms-ui-cash-button > i,
+button.lms-ui-money-button > i,
+a.lms-ui-money-button > i,
+div.lms-ui-money-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-cash-button > i.fa-pull-left,
+a.lms-ui-cash-button > i.fa-pull-left,
+div.lms-ui-cash-button > i.fa-pull-left,
+button.lms-ui-money-button > i.fa-pull-left,
+a.lms-ui-money-button > i.fa-pull-left,
+div.lms-ui-money-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-cash-button > i.fa-pull-right,
+a.lms-ui-cash-button > i.fa-pull-right,
+div.lms-ui-cash-button > i.fa-pull-right,
+button.lms-ui-money-button > i.fa-pull-right,
+a.lms-ui-money-button > i.fa-pull-right,
+div.lms-ui-money-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-cash-button > i:before,
+a.lms-ui-cash-button > i:before,
+div.lms-ui-cash-button > i:before,
+button.lms-ui-money-button > i:before,
+a.lms-ui-money-button > i:before,
+div.lms-ui-money-button > i:before {
+  content: "\f0d6";
+}
 button.lms-ui-hourglass-button > i,
 a.lms-ui-hourglass-button > i,
+div.lms-ui-hourglass-button > i,
 button.lms-ui-wait-button > i,
-a.lms-ui-wait-button > i {
+a.lms-ui-wait-button > i,
+div.lms-ui-wait-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5881,26 +6269,34 @@ a.lms-ui-wait-button > i {
 }
 button.lms-ui-hourglass-button > i.fa-pull-left,
 a.lms-ui-hourglass-button > i.fa-pull-left,
+div.lms-ui-hourglass-button > i.fa-pull-left,
 button.lms-ui-wait-button > i.fa-pull-left,
-a.lms-ui-wait-button > i.fa-pull-left {
+a.lms-ui-wait-button > i.fa-pull-left,
+div.lms-ui-wait-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-hourglass-button > i.fa-pull-right,
 a.lms-ui-hourglass-button > i.fa-pull-right,
+div.lms-ui-hourglass-button > i.fa-pull-right,
 button.lms-ui-wait-button > i.fa-pull-right,
-a.lms-ui-wait-button > i.fa-pull-right {
+a.lms-ui-wait-button > i.fa-pull-right,
+div.lms-ui-wait-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-hourglass-button > i:before,
 a.lms-ui-hourglass-button > i:before,
+div.lms-ui-hourglass-button > i:before,
 button.lms-ui-wait-button > i:before,
-a.lms-ui-wait-button > i:before {
+a.lms-ui-wait-button > i:before,
+div.lms-ui-wait-button > i:before {
   content: "\f254";
 }
 button.lms-ui-save-button > i,
 a.lms-ui-save-button > i,
+div.lms-ui-save-button > i,
 button.lms-ui-submit-button > i,
-a.lms-ui-submit-button > i {
+a.lms-ui-submit-button > i,
+div.lms-ui-submit-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5918,24 +6314,31 @@ a.lms-ui-submit-button > i {
 }
 button.lms-ui-save-button > i.fa-pull-left,
 a.lms-ui-save-button > i.fa-pull-left,
+div.lms-ui-save-button > i.fa-pull-left,
 button.lms-ui-submit-button > i.fa-pull-left,
-a.lms-ui-submit-button > i.fa-pull-left {
+a.lms-ui-submit-button > i.fa-pull-left,
+div.lms-ui-submit-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-save-button > i.fa-pull-right,
 a.lms-ui-save-button > i.fa-pull-right,
+div.lms-ui-save-button > i.fa-pull-right,
 button.lms-ui-submit-button > i.fa-pull-right,
-a.lms-ui-submit-button > i.fa-pull-right {
+a.lms-ui-submit-button > i.fa-pull-right,
+div.lms-ui-submit-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-save-button > i:before,
 a.lms-ui-save-button > i:before,
+div.lms-ui-save-button > i:before,
 button.lms-ui-submit-button > i:before,
-a.lms-ui-submit-button > i:before {
+a.lms-ui-submit-button > i:before,
+div.lms-ui-submit-button > i:before {
   content: "\f0c7";
 }
 button.lms-ui-cancel-button > i,
-a.lms-ui-cancel-button > i {
+a.lms-ui-cancel-button > i,
+div.lms-ui-cancel-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5952,21 +6355,26 @@ a.lms-ui-cancel-button > i {
   color: black;
 }
 button.lms-ui-cancel-button > i.fa-pull-left,
-a.lms-ui-cancel-button > i.fa-pull-left {
+a.lms-ui-cancel-button > i.fa-pull-left,
+div.lms-ui-cancel-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-cancel-button > i.fa-pull-right,
-a.lms-ui-cancel-button > i.fa-pull-right {
+a.lms-ui-cancel-button > i.fa-pull-right,
+div.lms-ui-cancel-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-cancel-button > i:before,
-a.lms-ui-cancel-button > i:before {
+a.lms-ui-cancel-button > i:before,
+div.lms-ui-cancel-button > i:before {
   content: "\f55a";
 }
 button.lms-ui-clone-button > i,
 a.lms-ui-clone-button > i,
+div.lms-ui-clone-button > i,
 button.lms-ui-copy-button > i,
-a.lms-ui-copy-button > i {
+a.lms-ui-copy-button > i,
+div.lms-ui-copy-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5984,26 +6392,34 @@ a.lms-ui-copy-button > i {
 }
 button.lms-ui-clone-button > i.fa-pull-left,
 a.lms-ui-clone-button > i.fa-pull-left,
+div.lms-ui-clone-button > i.fa-pull-left,
 button.lms-ui-copy-button > i.fa-pull-left,
-a.lms-ui-copy-button > i.fa-pull-left {
+a.lms-ui-copy-button > i.fa-pull-left,
+div.lms-ui-copy-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-clone-button > i.fa-pull-right,
 a.lms-ui-clone-button > i.fa-pull-right,
+div.lms-ui-clone-button > i.fa-pull-right,
 button.lms-ui-copy-button > i.fa-pull-right,
-a.lms-ui-copy-button > i.fa-pull-right {
+a.lms-ui-copy-button > i.fa-pull-right,
+div.lms-ui-copy-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-clone-button > i:before,
 a.lms-ui-clone-button > i:before,
+div.lms-ui-clone-button > i:before,
 button.lms-ui-copy-button > i:before,
-a.lms-ui-copy-button > i:before {
+a.lms-ui-copy-button > i:before,
+div.lms-ui-copy-button > i:before {
   content: "\f0c5";
 }
 button.lms-ui-delete-button > i,
 a.lms-ui-delete-button > i,
+div.lms-ui-delete-button > i,
 button.lms-ui-remove-button > i,
-a.lms-ui-remove-button > i {
+a.lms-ui-remove-button > i,
+div.lms-ui-remove-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6021,28 +6437,37 @@ a.lms-ui-remove-button > i {
 }
 button.lms-ui-delete-button > i.fa-pull-left,
 a.lms-ui-delete-button > i.fa-pull-left,
+div.lms-ui-delete-button > i.fa-pull-left,
 button.lms-ui-remove-button > i.fa-pull-left,
-a.lms-ui-remove-button > i.fa-pull-left {
+a.lms-ui-remove-button > i.fa-pull-left,
+div.lms-ui-remove-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-delete-button > i.fa-pull-right,
 a.lms-ui-delete-button > i.fa-pull-right,
+div.lms-ui-delete-button > i.fa-pull-right,
 button.lms-ui-remove-button > i.fa-pull-right,
-a.lms-ui-remove-button > i.fa-pull-right {
+a.lms-ui-remove-button > i.fa-pull-right,
+div.lms-ui-remove-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-delete-button > i:before,
 a.lms-ui-delete-button > i:before,
+div.lms-ui-delete-button > i:before,
 button.lms-ui-remove-button > i:before,
-a.lms-ui-remove-button > i:before {
+a.lms-ui-remove-button > i:before,
+div.lms-ui-remove-button > i:before {
   content: "\f12d";
 }
 button.lms-ui-edit-button > i,
 a.lms-ui-edit-button > i,
+div.lms-ui-edit-button > i,
 button.lms-ui-change-button > i,
 a.lms-ui-change-button > i,
+div.lms-ui-change-button > i,
 button.lms-ui-modify-button > i,
-a.lms-ui-modify-button > i {
+a.lms-ui-modify-button > i,
+div.lms-ui-modify-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6060,32 +6485,43 @@ a.lms-ui-modify-button > i {
 }
 button.lms-ui-edit-button > i.fa-pull-left,
 a.lms-ui-edit-button > i.fa-pull-left,
+div.lms-ui-edit-button > i.fa-pull-left,
 button.lms-ui-change-button > i.fa-pull-left,
 a.lms-ui-change-button > i.fa-pull-left,
+div.lms-ui-change-button > i.fa-pull-left,
 button.lms-ui-modify-button > i.fa-pull-left,
-a.lms-ui-modify-button > i.fa-pull-left {
+a.lms-ui-modify-button > i.fa-pull-left,
+div.lms-ui-modify-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-edit-button > i.fa-pull-right,
 a.lms-ui-edit-button > i.fa-pull-right,
+div.lms-ui-edit-button > i.fa-pull-right,
 button.lms-ui-change-button > i.fa-pull-right,
 a.lms-ui-change-button > i.fa-pull-right,
+div.lms-ui-change-button > i.fa-pull-right,
 button.lms-ui-modify-button > i.fa-pull-right,
-a.lms-ui-modify-button > i.fa-pull-right {
+a.lms-ui-modify-button > i.fa-pull-right,
+div.lms-ui-modify-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-edit-button > i:before,
 a.lms-ui-edit-button > i:before,
+div.lms-ui-edit-button > i:before,
 button.lms-ui-change-button > i:before,
 a.lms-ui-change-button > i:before,
+div.lms-ui-change-button > i:before,
 button.lms-ui-modify-button > i:before,
-a.lms-ui-modify-button > i:before {
+a.lms-ui-modify-button > i:before,
+div.lms-ui-modify-button > i:before {
   content: "\f044";
 }
 button.lms-ui-fileupload-button > i,
 a.lms-ui-fileupload-button > i,
+div.lms-ui-fileupload-button > i,
 button.lms-ui-upload-button > i,
-a.lms-ui-upload-button > i {
+a.lms-ui-upload-button > i,
+div.lms-ui-upload-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6103,26 +6539,34 @@ a.lms-ui-upload-button > i {
 }
 button.lms-ui-fileupload-button > i.fa-pull-left,
 a.lms-ui-fileupload-button > i.fa-pull-left,
+div.lms-ui-fileupload-button > i.fa-pull-left,
 button.lms-ui-upload-button > i.fa-pull-left,
-a.lms-ui-upload-button > i.fa-pull-left {
+a.lms-ui-upload-button > i.fa-pull-left,
+div.lms-ui-upload-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-fileupload-button > i.fa-pull-right,
 a.lms-ui-fileupload-button > i.fa-pull-right,
+div.lms-ui-fileupload-button > i.fa-pull-right,
 button.lms-ui-upload-button > i.fa-pull-right,
-a.lms-ui-upload-button > i.fa-pull-right {
+a.lms-ui-upload-button > i.fa-pull-right,
+div.lms-ui-upload-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-fileupload-button > i:before,
 a.lms-ui-fileupload-button > i:before,
+div.lms-ui-fileupload-button > i:before,
 button.lms-ui-upload-button > i:before,
-a.lms-ui-upload-button > i:before {
+a.lms-ui-upload-button > i:before,
+div.lms-ui-upload-button > i:before {
   content: "\f0c6";
 }
 button.lms-ui-back-button > i,
 a.lms-ui-back-button > i,
+div.lms-ui-back-button > i,
 button.lms-ui-return-button > i,
-a.lms-ui-return-button > i {
+a.lms-ui-return-button > i,
+div.lms-ui-return-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6140,28 +6584,37 @@ a.lms-ui-return-button > i {
 }
 button.lms-ui-back-button > i.fa-pull-left,
 a.lms-ui-back-button > i.fa-pull-left,
+div.lms-ui-back-button > i.fa-pull-left,
 button.lms-ui-return-button > i.fa-pull-left,
-a.lms-ui-return-button > i.fa-pull-left {
+a.lms-ui-return-button > i.fa-pull-left,
+div.lms-ui-return-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-back-button > i.fa-pull-right,
 a.lms-ui-back-button > i.fa-pull-right,
+div.lms-ui-back-button > i.fa-pull-right,
 button.lms-ui-return-button > i.fa-pull-right,
-a.lms-ui-return-button > i.fa-pull-right {
+a.lms-ui-return-button > i.fa-pull-right,
+div.lms-ui-return-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-back-button > i:before,
 a.lms-ui-back-button > i:before,
+div.lms-ui-back-button > i:before,
 button.lms-ui-return-button > i:before,
-a.lms-ui-return-button > i:before {
+a.lms-ui-return-button > i:before,
+div.lms-ui-return-button > i:before {
   content: "\f151";
 }
 button.lms-ui-add-button > i,
 a.lms-ui-add-button > i,
+div.lms-ui-add-button > i,
 button.lms-ui-new-button > i,
 a.lms-ui-new-button > i,
+div.lms-ui-new-button > i,
 button.lms-ui-append-button > i,
-a.lms-ui-append-button > i {
+a.lms-ui-append-button > i,
+div.lms-ui-append-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6179,30 +6632,40 @@ a.lms-ui-append-button > i {
 }
 button.lms-ui-add-button > i.fa-pull-left,
 a.lms-ui-add-button > i.fa-pull-left,
+div.lms-ui-add-button > i.fa-pull-left,
 button.lms-ui-new-button > i.fa-pull-left,
 a.lms-ui-new-button > i.fa-pull-left,
+div.lms-ui-new-button > i.fa-pull-left,
 button.lms-ui-append-button > i.fa-pull-left,
-a.lms-ui-append-button > i.fa-pull-left {
+a.lms-ui-append-button > i.fa-pull-left,
+div.lms-ui-append-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-add-button > i.fa-pull-right,
 a.lms-ui-add-button > i.fa-pull-right,
+div.lms-ui-add-button > i.fa-pull-right,
 button.lms-ui-new-button > i.fa-pull-right,
 a.lms-ui-new-button > i.fa-pull-right,
+div.lms-ui-new-button > i.fa-pull-right,
 button.lms-ui-append-button > i.fa-pull-right,
-a.lms-ui-append-button > i.fa-pull-right {
+a.lms-ui-append-button > i.fa-pull-right,
+div.lms-ui-append-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-add-button > i:before,
 a.lms-ui-add-button > i:before,
+div.lms-ui-add-button > i:before,
 button.lms-ui-new-button > i:before,
 a.lms-ui-new-button > i:before,
+div.lms-ui-new-button > i:before,
 button.lms-ui-append-button > i:before,
-a.lms-ui-append-button > i:before {
+a.lms-ui-append-button > i:before,
+div.lms-ui-append-button > i:before {
   content: "\f0fe";
 }
 button.lms-ui-print-button > i,
-a.lms-ui-print-button > i {
+a.lms-ui-print-button > i,
+div.lms-ui-print-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6219,21 +6682,26 @@ a.lms-ui-print-button > i {
   color: black;
 }
 button.lms-ui-print-button > i.fa-pull-left,
-a.lms-ui-print-button > i.fa-pull-left {
+a.lms-ui-print-button > i.fa-pull-left,
+div.lms-ui-print-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-print-button > i.fa-pull-right,
-a.lms-ui-print-button > i.fa-pull-right {
+a.lms-ui-print-button > i.fa-pull-right,
+div.lms-ui-print-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-print-button > i:before,
-a.lms-ui-print-button > i:before {
+a.lms-ui-print-button > i:before,
+div.lms-ui-print-button > i:before {
   content: "\f02f";
 }
 button.lms-ui-confirm-button > i,
 a.lms-ui-confirm-button > i,
+div.lms-ui-confirm-button > i,
 button.lms-ui-apply-button > i,
-a.lms-ui-apply-button > i {
+a.lms-ui-apply-button > i,
+div.lms-ui-apply-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6251,26 +6719,34 @@ a.lms-ui-apply-button > i {
 }
 button.lms-ui-confirm-button > i.fa-pull-left,
 a.lms-ui-confirm-button > i.fa-pull-left,
+div.lms-ui-confirm-button > i.fa-pull-left,
 button.lms-ui-apply-button > i.fa-pull-left,
-a.lms-ui-apply-button > i.fa-pull-left {
+a.lms-ui-apply-button > i.fa-pull-left,
+div.lms-ui-apply-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-confirm-button > i.fa-pull-right,
 a.lms-ui-confirm-button > i.fa-pull-right,
+div.lms-ui-confirm-button > i.fa-pull-right,
 button.lms-ui-apply-button > i.fa-pull-right,
-a.lms-ui-apply-button > i.fa-pull-right {
+a.lms-ui-apply-button > i.fa-pull-right,
+div.lms-ui-apply-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-confirm-button > i:before,
 a.lms-ui-confirm-button > i:before,
+div.lms-ui-confirm-button > i:before,
 button.lms-ui-apply-button > i:before,
-a.lms-ui-apply-button > i:before {
+a.lms-ui-apply-button > i:before,
+div.lms-ui-apply-button > i:before {
   content: "\f560";
 }
 button.lms-ui-mail-button > i,
 a.lms-ui-mail-button > i,
+div.lms-ui-mail-button > i,
 button.lms-ui-send-button > i,
-a.lms-ui-send-button > i {
+a.lms-ui-send-button > i,
+div.lms-ui-send-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6288,24 +6764,31 @@ a.lms-ui-send-button > i {
 }
 button.lms-ui-mail-button > i.fa-pull-left,
 a.lms-ui-mail-button > i.fa-pull-left,
+div.lms-ui-mail-button > i.fa-pull-left,
 button.lms-ui-send-button > i.fa-pull-left,
-a.lms-ui-send-button > i.fa-pull-left {
+a.lms-ui-send-button > i.fa-pull-left,
+div.lms-ui-send-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-mail-button > i.fa-pull-right,
 a.lms-ui-mail-button > i.fa-pull-right,
+div.lms-ui-mail-button > i.fa-pull-right,
 button.lms-ui-send-button > i.fa-pull-right,
-a.lms-ui-send-button > i.fa-pull-right {
+a.lms-ui-send-button > i.fa-pull-right,
+div.lms-ui-send-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-mail-button > i:before,
 a.lms-ui-mail-button > i:before,
+div.lms-ui-mail-button > i:before,
 button.lms-ui-send-button > i:before,
-a.lms-ui-send-button > i:before {
+a.lms-ui-send-button > i:before,
+div.lms-ui-send-button > i:before {
   content: "\f0e0";
 }
 button.lms-ui-clipboard-button > i,
-a.lms-ui-clipboard-button > i {
+a.lms-ui-clipboard-button > i,
+div.lms-ui-clipboard-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6322,19 +6805,23 @@ a.lms-ui-clipboard-button > i {
   color: black;
 }
 button.lms-ui-clipboard-button > i.fa-pull-left,
-a.lms-ui-clipboard-button > i.fa-pull-left {
+a.lms-ui-clipboard-button > i.fa-pull-left,
+div.lms-ui-clipboard-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-clipboard-button > i.fa-pull-right,
-a.lms-ui-clipboard-button > i.fa-pull-right {
+a.lms-ui-clipboard-button > i.fa-pull-right,
+div.lms-ui-clipboard-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-clipboard-button > i:before,
-a.lms-ui-clipboard-button > i:before {
+a.lms-ui-clipboard-button > i:before,
+div.lms-ui-clipboard-button > i:before {
   content: "\f328";
 }
 button.lms-ui-view-button > i,
-a.lms-ui-view-button > i {
+a.lms-ui-view-button > i,
+div.lms-ui-view-button > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6351,23 +6838,28 @@ a.lms-ui-view-button > i {
   color: black;
 }
 button.lms-ui-view-button > i.fa-pull-left,
-a.lms-ui-view-button > i.fa-pull-left {
+a.lms-ui-view-button > i.fa-pull-left,
+div.lms-ui-view-button > i.fa-pull-left {
   margin-right: .3em;
 }
 button.lms-ui-view-button > i.fa-pull-right,
-a.lms-ui-view-button > i.fa-pull-right {
+a.lms-ui-view-button > i.fa-pull-right,
+div.lms-ui-view-button > i.fa-pull-right {
   margin-left: .3em;
 }
 button.lms-ui-view-button > i:before,
-a.lms-ui-view-button > i:before {
+a.lms-ui-view-button > i:before,
+div.lms-ui-view-button > i:before {
   content: "\f06e";
 }
 button.lms-ui-view-button > i.pdf:before,
-a.lms-ui-view-button > i.pdf:before {
+a.lms-ui-view-button > i.pdf:before,
+div.lms-ui-view-button > i.pdf:before {
   content: "\f1c1";
 }
 button.lms-ui-view-button > i.xls:before,
-a.lms-ui-view-button > i.xls:before {
+a.lms-ui-view-button > i.xls:before,
+div.lms-ui-view-button > i.xls:before {
   content: "\f1c3";
 }
 button.lms-ui-fileupload-button {
