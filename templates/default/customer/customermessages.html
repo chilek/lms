@@ -1,26 +1,26 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="customermessages">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="messagespanel">
-		<TD class="bold">
-			<IMG src="img/mailsms.gif" alt="">
-			{trans("Customer Messages:")}
-		</TD>
-		<TD class="text-right nobr">
+
+<form method="post" name="customermessages" id="customermessages-form" action="?m=messagedel">
+</form>
+
+{tab_container id="customermessages"}
+
+	{tab_header content_id="messagespanel"}
+		{tab_header_cell icon="lms-ui-send-icon"}
+			<strong>{trans("Customer Messages:")}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
 			<A href="?m=messageadd&customerid={$customerinfo.id}">{trans("New Message")} &raquo;</A>
 			<A href="?m=messagelist&cid={$customerinfo.id}">{trans("All Messages")} &raquo;</A>&nbsp;
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY class="lms-ui-multi-check">
-	<TR id="messagespanel"  style="display: none;" class="dark">
-		<TD colspan="2">
-			<form method="post" name="customermessages" action="?m=messagedel">
-			<TABLE id="customermessages-datatable" class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if} data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="messagespanel"}
+
+		{tab_table}
+			<TABLE id="customermessages-datatable" class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"
+					{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if}
+					data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 95%;">
@@ -61,13 +61,13 @@
 					</TD>
 					<TD class="bold" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{if $item.type == $smarty.const.MSG_MAIL}
-						<img src="img/email.gif" alt="email">
+							<i class="lms-ui-mail-icon lms-ui-fixed-width-icon"></i>
 						{elseif $item.type == $smarty.const.MSG_WWW}
-						<img src="img/network.gif" alt="www">
+							<i class="lms-ui-web-icon lms-ui-fixed-width-icon"></i>
 						{elseif $item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT}
-						<img src="img/cms.gif" alt="userpanel">
+							<i class="lms-ui-userpanel-icon lms-ui-fixed-width-icon"></i>
 						{else}
-						<img src="img/sms.gif" alt="sms">
+							<i class="lms-ui-sms-icon lms-ui-fixed-width-icon"></i>
 						{/if}
 						{$item.subject}
 					</TD>
@@ -84,8 +84,8 @@
 						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
-						<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&id={$item.id}">
-							<IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}">
+						<A class="lms-ui-delete-button" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&id={$item.id}">
+							<i title="{trans("Delete")}"></i>
 						</A>
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}">
 					</TD>
@@ -99,44 +99,36 @@
 				{/foreach}
 				</TBODY>
 			</TABLE>
-			<TABLE class="lmsbox-inner">
-				<COLGROUP>
-					<COL style="width: 100%;">
-				</COLGROUP>
-				<TBODY>
-				<TR class="ftop">
-					<TD class="buttons">
-						<A id="delete-messages">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
+		{/tab_table}
+
+		{tab_button_panel}
+			{tab_buttons}
+				<button type="button" class="lms-ui-button lms-ui-delete-button" id="delete-messages">
+					<i></i> {trans("Delete")}
+				</button>
+			{/tab_buttons}
+			{tab_buttons}
 						<label>
 							{trans("Check All")}
 							<input type="checkbox" class="lms-ui-multi-check-all">
 						</label>
 					</TD>
 				</TR>
-				<script type="text/javascript">
-				<!--
-					$(function() {
-						$('#delete-messages').click(function(e) {
-							if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
-								|| !confirm('{trans("Are you sure, you want to delete all selected messages?")}'))
-								return false;
-							console.log('click');
-							$('form[name=customermessages]').attr('action', function(index, attr) { return attr + '&is_sure=1'; })
-								.submit();
-						});
-					});
-				//-->
-				</script>
-				</TBODY>
-			</TABLE>
-			</form>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('messagespanel') == '1')
-		document.getElementById('messagespanel').style.display = '';
-//-->
-</SCRIPT>
+			{/tab_buttons}
+		{/tab_button_panel}
+
+	{/tab_contents}
+{/tab_container}
+
+<script>
+	$(function() {
+		$('#delete-messages').click(function(e) {
+			if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
+				|| !confirm('{trans("Are you sure, you want to delete all selected messages?")}'))
+				return false;
+			console.log('click');
+			$('form[name=customermessages]').attr('action', function(index, attr) { return attr + '&is_sure=1'; })
+				.submit();
+		});
+	});
+</script>
