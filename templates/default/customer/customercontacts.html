@@ -70,7 +70,7 @@
 									{foreach $properties.ui.flags as $flagtype => $flagproperties}
 									{if $flagproperties@index && !($flagproperties@index % 3)}<br>{/if}
 									<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
-										<INPUT type="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$type}s][{$key}][type][]"{if ($item.type & $flagtype)} checked{/if}>
+										<INPUT type="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$type}s][{$key}][type][]"{if isset($item.type) && ($item.type & $flagtype)} checked{/if}>
 										{$flagproperties.label}
 									</label>
 									{/foreach}
