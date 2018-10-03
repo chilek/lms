@@ -7734,6 +7734,12 @@ table.dataTable thead tr:last-child th {
 .lms-ui-address-select .ui-selectmenu-icon.ui-icon {
   background: url("1.png") !important;
 }
+.lms-ui-menu-item-icon {
+  font-size: 1.2em;
+}
+.lms-ui-quick-search-icon {
+  font-size: 1.5em;
+}
 .ui-menu-item {
   background-color: #ebe4d6 !important;
 }
