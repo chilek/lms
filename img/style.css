@@ -4925,6 +4925,35 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   width: 1.5em;
   text-align: center;
 }
+.lms-ui-options-icon,
+.lms-ui-option-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-options-icon.fa-pull-left,
+.lms-ui-option-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-options-icon.fa-pull-right,
+.lms-ui-option-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-options-icon:before,
+.lms-ui-option-icon:before {
+  content: "\f0ce";
+}
 .lms-ui-assignment-icon,
 .lms-ui-assign-icon {
   font-weight: normal;
