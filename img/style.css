@@ -4876,6 +4876,8 @@ button.lms-ui-button {
   color: black;
   text-decoration: none;
   padding: 0.33em;
+  padding-top: 0.15em;
+  padding-bottom: 0.15em;
   background-color: #DFD5BD;
   background-repeat: no-repeat;
   background-position: 3px 3px;
@@ -6248,6 +6250,8 @@ button.lms-ui-fileupload-button {
   color: black;
   text-decoration: none;
   padding: 0.33em;
+  padding-top: 0.15em;
+  padding-bottom: 0.15em;
   background-color: #DFD5BD;
   background-repeat: no-repeat;
   background-position: 3px 3px;
