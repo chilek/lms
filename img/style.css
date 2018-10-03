@@ -5437,6 +5437,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   line-height: unset;
   vertical-align: unset;
   color: black;
+  color: darkorange;
 }
 .lms-ui-userpanel-icon.fa-pull-left,
 .lms-ui-panel-icon.fa-pull-left {
@@ -5448,7 +5449,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 }
 .lms-ui-userpanel-icon:before,
 .lms-ui-panel-icon:before {
-  content: "\f183";
+  content: "\f0c0";
 }
 .lms-ui-clipboard-icon {
   font-weight: normal;
@@ -5913,7 +5914,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   margin-left: 0.3em;
 }
 .lms-ui-customer-icon:before {
-  color: goldenrod;
+  color: darkorange;
   content: "\f007";
 }
 .lms-ui-userpanel-icon {
@@ -5940,7 +5941,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 }
 .lms-ui-userpanel-icon:before {
   color: orange;
-  content: "\f007";
+  content: "\f0c0";
 }
 .lms-ui-phone-icon {
   font-weight: normal;
@@ -6121,7 +6122,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   margin-left: 0.3em;
 }
 .lms-ui-helpdesk-icon:before {
-  color: dodgerblue;
+  color: darkblue;
   content: "\f47e";
 }
 .lms-ui-timetable-icon {
@@ -6277,7 +6278,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   margin-left: 0.3em;
 }
 .lms-ui-archiveview-icon:before {
-  color: red;
+  color: green;
   content: "\f1da";
 }
 .lms-ui-finances-icon {
