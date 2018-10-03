@@ -118,7 +118,8 @@
 				data-upceil="{$a.real_upceil|default:"0"}">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-column liability">
+						<div class="lms-ui-tab-table-column liability"
+								{if $a.tariffid || $a.liabilityid} OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}';"{/if}>
 							{if !$a.tariffid && !$a.liabilityid}
 								<strong>{trans("Suspending of all liabilities")}</strong>
 							{else}
