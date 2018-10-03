@@ -23,19 +23,18 @@
  */
 
 #customerassignmentpanel {
-	.lms-ui-tab-table .footer {
-		.liability {
-			display: flex;
-			justify-content: space-between;
-		}
-		.period {
-			text-align: right;
-		}
-		.buttons {
-			justify-content: flex-start;
-			align-items: flex-start;
+	.lms-ui-tab-table .footer .liability {
+		text-align: right;
+	}
+	.lms-ui-tab-button-panel {
+		border-top: 0;
+		height: 0.1em;
+		.lms-ui-tab-buttons:nth-child(2) {
+			position: relative;
+			top: -0.8em;
 		}
 	}
+
 	.liability {
 		width: 25em;
 	}
@@ -66,21 +65,19 @@
 
 	@media all and (max-width: 1500px) {
 		.col-4:first-child {
-			.col-2:first-child {
+			.liability {
+				width: 20em;
+			}
+			.col-2 {
 				flex-direction: column !important;
-				width: 21em !important;
+				width: 8em !important;
 				div {
 					flex-grow: 0 !important;
 					width: 100% !important;
 				}
 			}
-			.col-2:nth-child(2) {
-				flex-direction: column !important;
-				width: 10em !important;
-				div {
-					flex-grow: 0 !important;
-					width: 100% !important;
-				}
+			.accounting {
+				width: 8em;
 			}
 		}
 		.col-4:nth-child(2) {
@@ -121,6 +118,10 @@
 		}
 	}
 	@media all and (max-width: 768px) {
+		.lms-ui-tab-table .footer .liability {
+			text-align: left;
+		}
+
 		.col-8 {
 			flex-direction: column !important;
 			width: 17em !important;

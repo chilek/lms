@@ -22,15 +22,15 @@
  *  $Id$
  */
 #customerassignmentpanel .lms-ui-tab-table .footer .liability {
-  display: flex;
-  justify-content: space-between;
-}
-#customerassignmentpanel .lms-ui-tab-table .footer .period {
   text-align: right;
 }
-#customerassignmentpanel .lms-ui-tab-table .footer .buttons {
-  justify-content: flex-start;
-  align-items: flex-start;
+#customerassignmentpanel .lms-ui-tab-button-panel {
+  border-top: 0;
+  height: 0.1em;
+}
+#customerassignmentpanel .lms-ui-tab-button-panel .lms-ui-tab-buttons:nth-child(2) {
+  position: relative;
+  top: -0.8em;
 }
 #customerassignmentpanel .liability {
   width: 25em;
@@ -60,21 +60,19 @@
   width: 4em;
 }
 @media all and (max-width: 1500px) {
-  #customerassignmentpanel .col-4:first-child .col-2:first-child {
-    flex-direction: column !important;
-    width: 21em !important;
+  #customerassignmentpanel .col-4:first-child .liability {
+    width: 20em;
   }
-  #customerassignmentpanel .col-4:first-child .col-2:first-child div {
+  #customerassignmentpanel .col-4:first-child .col-2 {
+    flex-direction: column !important;
+    width: 8em !important;
+  }
+  #customerassignmentpanel .col-4:first-child .col-2 div {
     flex-grow: 0 !important;
     width: 100% !important;
   }
-  #customerassignmentpanel .col-4:first-child .col-2:nth-child(2) {
-    flex-direction: column !important;
-    width: 10em !important;
-  }
-  #customerassignmentpanel .col-4:first-child .col-2:nth-child(2) div {
-    flex-grow: 0 !important;
-    width: 100% !important;
+  #customerassignmentpanel .col-4:first-child .accounting {
+    width: 8em;
   }
   #customerassignmentpanel .col-4:nth-child(2) .col-2:first-child {
     flex-direction: column !important;
@@ -112,6 +110,9 @@
   }
 }
 @media all and (max-width: 768px) {
+  #customerassignmentpanel .lms-ui-tab-table .footer .liability {
+    text-align: left;
+  }
   #customerassignmentpanel .col-8 {
     flex-direction: column !important;
     width: 17em !important;
