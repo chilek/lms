@@ -796,10 +796,12 @@ $(function() {
 				}
 			}
 		})
+/*
 		.on('mouseenter', 'tbody > tr', function() {
 			$(this).siblings('tr').removeClass('highlight');
 			$(this).addClass('highlight');
 		})
+*/
 		.on('responsive-resize', function (e, datatable, columns) {
 			var search_fields = $(this).closest('table').find('.search-row th');
 			$.each(columns, function(index, visible) {
