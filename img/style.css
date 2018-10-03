@@ -7736,10 +7736,11 @@ table.dataTable thead tr:last-child th {
   background: url("1.png") !important;
 }
 .lms-ui-menu-item-icon {
-  font-size: 1.2em;
+  font-size: 1.6em;
+  vertical-align: middle;
 }
 .lms-ui-quick-search-icon {
-  font-size: 1.5em;
+  font-size: 1.4em;
 }
 .ui-menu-item {
   background-color: #ebe4d6 !important;
