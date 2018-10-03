@@ -1,15 +1,17 @@
 <!--// $Id$ //-->
+
+{css}
+
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
-<TABLE class="lmsbox lms-ui-sortable" id="customerassignments">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="customerassignmentpanel">
-		<TD>
-			<IMG src="img/money.gif" alt="">
-			<span class="bold">{trans("Customer Liabilities:")}</span>
+
+<form method="post" name="customerassignments" id="customerassignments-form" action="?m=customerassignmentdel">
+</form>
+
+{tab_container id="customerassignments"}
+
+	{tab_header content_id="customerassignmentpanel"}
+		{tab_header_cell icon="lms-ui-assignment-icon"}
+			<strong>{trans("Customer Liabilities:")}</strong>
 			<label id="assignment_type_filter">
 				{trans("Type:")}
 				<select id="assignment_type">
@@ -30,178 +32,253 @@
 				{trans("<!assignment>Commited")}
 				<input type="checkbox" id="commited" value="1"{if $commited} checked{/if}>
 			</label>
-			<a id="clear_filter" href="#"><img src="img/delete.gif"><a>
-		</TD>
-		<TD class="text-right nobr">
+			<a id="clear_filter" class="lms-ui-delete-icon" href="#"><i></i><a>
+		{/tab_header_cell}
+		{tab_header_cell}
 			{if !$customerinfo.deleted}
-			<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
-			<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete all liabilities?")}')" href="?m=customerassignmentdel&amp;cid={$customerinfo.id}">{trans("Delete all")} &raquo;</A>
+				<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
+				<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete all liabilities?")}')"
+						href="?m=customerassignmentdel&cid={$customerinfo.id}">{trans("Delete all")} &raquo;</A>
 			{/if}
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="customerassignmentpanel" style="display: none;">
-		<TD colspan="2">
-			<TABLE class="lmsbox-inner">
-				<COLGROUP>
-					<COL style="width: 92%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				{block name="customerassignments-list-header"}
-				<TR class="lms-ui-header-panel">
-					<TD class="bold nobr">{trans("Liability:")}</TD>
-					<TD class="text-right nobr">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Value:")}{/if}
-					</TD>
-					<TD class="text-right nobr">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Discount:")}{/if}
-					</TD>
-					<TD class="nobr">{trans("Accounting:")}</TD>
-					<TD class="text-right nobr">{trans("Downceil:")}</TD>
-					<TD class="text-right nobr">{trans("Upceil:")}</TD>
-					<TD class="nobr">{trans("Options:")}</TD>
-					<TD class="nobr">{trans("Period:")}</TD>
-					<TD>&nbsp;</TD>
-				</TR>
-				{/block}
-				</THEAD>
-				<TBODY class="lms-ui-multi-check">
-				<form method="post" name="customerassignments" action="?m=customerassignmentdel">
-				{foreach $assignments as $a}
-				{block name="customerassignments-list-row"}
-				<TR class="highlight
-					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}
-					{if !$a.commited} lms-ui-assignment-not-commited{/if}"
-					data-tariff-type="{$a.tarifftype}"
-					data-expired="{$a.expired}"
-					data-commited="{$a.commited}"
-					data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
-					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="customerassignmentpanel"}
+
+		{tab_table}
+
+			{if $assignments}
+			{block name="customerassignments-list-header"}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-8">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column liability">
+								{trans("Liability:")}
+							</div>
+							<div class="lms-ui-tab-table-column value">
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+									{trans("Value:")}
+								{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column discount">
+								{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+									{trans("Discount:")}
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column accounting">
+								{trans("Accounting:")}
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column downceil">
+								{trans("Downceil:")}
+							</div>
+							<div class="lms-ui-tab-table-column upceil">
+								{trans("Upceil:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column options">
+								{trans("Options:")}
+							</div>
+							<div class="lms-ui-tab-table-column period">
+								{trans("Period:")}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/block}
+			{/if}
+
+			{foreach $assignments as $a}
+			{block name="customerassignments-list-row"}
+			<div class="lms-ui-tab-table-row
+				{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}
+				{if !$a.commited} lms-ui-assignment-not-commited{/if}"
+				data-tariff-type="{$a.tarifftype}"
+				data-expired="{$a.expired}"
+				data-commited="{$a.commited}"
+				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
+				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					data-value="{$a.real_value|default:"0"|replace:",":"."}"
-					{/if}
-					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+				{/if}
+				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					data-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
-					{/if}
-					data-downceil="{$a.real_downceil|default:"0"}"
-					data-upceil="{$a.real_upceil|default:"0"}">
-					{if !$a.tariffid && !$a.liabilityid}
-					<TD colspan="7" class="bold" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
-						{trans("Suspending of all liabilities")}
-					</TD>
-					{else}
-					<TD OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
-						{if $a.tariffid}
-							<A href="?m=tariffinfo&id={$a.tariffid}"><span class="bold">{$a.name} {if count($assignments)>1} ({$a.id}){/if}</span></A><b>{if $a.attribute} - {$a.attribute}{/if}</b>
-						{else}
-							{$a.name}
-						{/if}
+				{/if}
+				data-downceil="{$a.real_downceil|default:"0"}"
+				data-upceil="{$a.real_upceil|default:"0"}">
+				<div class="lms-ui-tab-table-wrapper col-8">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column liability">
+								{if !$a.tariffid && !$a.liabilityid}
+									<strong>{trans("Suspending of all liabilities")}</strong>
+								{else}
+									{if $a.tariffid}
+										<strong>
+											<A href="?m=tariffinfo&id={$a.tariffid}">
+												{$a.name} {if count($assignments)>1} ({$a.id}){/if}
+											</A>
+											{if $a.attribute} - {$a.attribute}{/if}
+										</strong>
+									{else}
+										{$a.name}
+									{/if}
 
-						{if $a.nodes}
-							({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
-						{/if}
+									{if $a.nodes}
+										({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
+									{/if}
 
-						{if $a.phones}
-							({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
-						{/if}
-					</TD>
-					<TD class="text-right nobr">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$a.value|money_format}{/if}
-					</TD>
-					<TD class="nobr">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
-					</TD>
-					<TD class="nobr">{$a.payday}</TD>
-					<TD class="text-right nobr">
-						{if $a.downceil}{$a.downceil} kbit/s{else}-{/if}
-					</TD>
-					<TD class="text-right nobr">
-						{if $a.upceil}{$a.upceil} kbit/s{else}-{/if}
-					</TD>
-					<TD class="text-right nobr">
-						<img src="img/options.gif" alt="" class="lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}">
-					</TD>
-					{/if}
-					<TD class="nobr">
-						{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
-						{if $a.dateto}{trans("to")} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
-					</TD>
-					<TD class="text-right nobr">
-						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
+									{if $a.phones}
+										({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
+									{/if}
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column value">
+								{if $a.tariffid || $a.liabilityid}
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										{$a.value|money_format}
+									{/if}
+								{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column discount">
+								{if $a.tariffid || $a.liabilityid}
+									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+										{if $a.pdiscount != 0}{$a.pdiscount}%{elseif $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}
+									{/if}
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column accounting">
+								{if $a.tariffid || $a.liabilityid}
+									{$a.payday}
+								{/if}
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column downceil">
+								{if $a.tariffid || $a.liabilityid}
+									{if $a.downceil}{$a.downceil} kbit/s{else}-{/if}
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column upceil">
+								{if $a.tariffid || $a.liabilityid}
+									{if $a.upceil}{$a.upceil} kbit/s{else}-{/if}
+								{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column options">
+								{if $a.tariffid || $a.liabilityid}
+									<img src="img/options.gif" alt="" class="lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}">
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column period">
+								{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
+								{if $a.dateto}{trans("to")} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
+								{if !$a.datefrom && !$a.dateto}-{/if}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
 						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
-							{tip text="Enable/disable accounting of selected liability"}>
-							<IMG SRC="img/wait.gif" alt="{if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if}">
+								class="lms-ui-wait-button" {tip text="Enable/disable accounting of selected liability"}>
+							<i title="{if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if}"></i>
 						</A>
-						{/if}
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
+					{/if}
+					<A class="lms-ui-delete-button" onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
 							href="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}>
-							<IMG SRC="img/delete.gif" alt="{trans("Delete")}">
-						</A>
-						<A href="?m=customerassignmentedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="{trans("Edit")}" title="{trans("Edit")}"></A>
-						<input type="checkbox" name="customerassignments[{$a.id}]" value="{$a.id}" class="lms-ui-multi-check">
-					</TD>
-				</TR>
-				{/block}
-				{foreachelse}
-				{block name="customerassignments-list-empty-row"}
-				<TR>
-					<TD class="empty-table" colspan="9">
-						<P>{trans("That customer hasn't got any assigned subscriptions.")}</P>
-					</TD>
-				</TR>
-				{/block}
-				{/foreach}
-				</form>
-				{block name="customerassignments-list-footer"}
-				<TR class="lms-ui-button-panel">
-					<TD class="text-right bold">{trans("Total:")}</TD>
-					<TD class="text-right nobr" id="total-value"></TD>
-					<TD class="text-left nobr" id="total-disc-value"></TD>
-					<TD>&nbsp;</TD>
-					<TD class="text-right nobr" id="total-downceil"></TD>
-					<TD class="text-right nobr" id="total-upceil"></TD>
-					<TD class="text-right nobr" colspan="3">
-						<A id="delete-assignments">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
-						<label>
-							{trans("Check All")}
-							<input type="checkbox" class="lms-ui-multi-check-all">
-						</label>
-						<script type="text/javascript">
-						<!--
-							$(function() {
-								$('#delete-assignments').click(function() {
-									if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
-										|| !confirm('{trans("Are you sure, you want to delete selected liabilities?")}'))
-										return false;
-									$('form[name=customerassignments]').attr('action', function(index, value) {
-										return value + '&is_sure=1';
-									});
-									$('form[name=customerassignments]').submit();
-								});
-							});
-						//-->
-						</script>
-					</TD>
-				</TR>
-				{/block}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('customerassignmentpanel') == '1')
-		document.getElementById('customerassignmentpanel').style.display = '';
+						<i title="{trans("Delete")}"></i>
+					</A>
+					<a class="lms-ui-edit-button" href="?m=customerassignmentedit&id={$a.id}">
+						<i title="{trans("Edit")}"></i>
+					</a>
+					<input type="checkbox" name="customerassignments[{$a.id}]" form="customerassignments-form"
+							value="{$a.id}" class="lms-ui-multi-check">
+				</div>
+			</div>
+			{/block}
+			{foreachelse}
+			{block name="customerassignments-list-empty-row"}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer hasn't got any assigned subscriptions.")}
+			</div>
+			{/block}
+			{/foreach}
+
+			{if $assignments}
+			{block name="customerassignments-list-footer"}
+				<div class="lms-ui-tab-table-row footer">
+					<div class="lms-ui-tab-table-wrapper col-8">
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column liability">
+									<button type="button" id="delete-assignments" class="lms-ui-button lms-ui-delete-button">
+										<i></i> {trans("Delete")}
+									</button>
+									<strong>{trans("Total:")}</strong>
+								</div>
+								<div class="lms-ui-tab-table-column value" id="total-value">
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column discount" id="total-disc-value">
+								</div>
+								<div class="lms-ui-tab-table-column accounting">
+								</div>
+							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column downceil" id="total-downceil">
+								</div>
+								<div class="lms-ui-tab-table-column upceil" id="total-upceil">
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column options">
+								</div>
+								<div class="lms-ui-tab-table-column period">
+									<label for="check-all">
+										{trans("Check All")}
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-column buttons">
+							<input type="checkbox" id="check-all" class="lms-ui-multi-check-all">
+					</div>
+				</div>
+			{/block}
+			{/if}
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}
+
+<SCRIPT>
 
 	var tariff_types = [];
 	{foreach $_SERVICETYPES as $type => $name}
@@ -212,7 +289,7 @@
 
 	var assignment_types = [];
 	var documents = [];
-	$('tr[data-tariff-type]').each(function() {
+	$('.lms-ui-tab-table-row[data-tariff-type]').each(function() {
 		var tariff_type = $(this).attr('data-tariff-type');
 		var document = $(this).attr('data-document');
 		if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1) {
@@ -276,8 +353,8 @@
 		}
 
 		var backgrounds = ['lucid', 'light'];
-		$('tr[data-tariff-type]').hide().removeClass(backgrounds.join(' '));
-		$('tr' + selector).show().each(function(key) {
+		$('.lms-ui-tab-table-row[data-tariff-type]').hide().removeClass(backgrounds.join(' '));
+		$('.lms-ui-tab-table-row' + selector).show().each(function(key) {
 			$(this).addClass(backgrounds[key & 1]);
 		});
 
@@ -285,7 +362,7 @@
 		var total_upceil = 0;
 		var total_value = 0;
 		var total_disc_value = 0;
-		$('tr' + selector).each(function() {
+		$('.lms-ui-tab-table-row' + selector).each(function() {
 			total_downceil += parseInt($(this).attr('data-downceil'));
 			total_upceil += parseInt($(this).attr('data-upceil'));
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
@@ -301,8 +378,8 @@
 		$('#total-disc-value').html('(' + sprintf(money_format, total_disc_value) + ')');
 		{/if}
 
-		if ($('tr[data-tariff-type]').length) {
-			$('tr[data-tariff-type]').closest('tbody').get(0).updateCheckAll();
+		if ($('.lms-ui-tab-table-row[data-tariff-type]').length) {
+			$('.lms-ui-tab-table-row[data-tariff-type]').closest('.lms-ui-tab-contents').get(0).updateCheckAll();
 		}
 
 		setCookie('customerassignment_tariff_type_{$customerinfo.id}', selected_type);
@@ -327,6 +404,16 @@
 			$('#commited').prop('checked', true).trigger('change');
 			return false;
 		});
+
+		$('#delete-assignments').click(function() {
+			if (!$(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length
+				|| !confirm('{trans("Are you sure, you want to delete selected liabilities?")}'))
+				return false;
+			$('form[name=customerassignments]').attr('action', function(index, value) {
+				return value + '&is_sure=1';
+			});
+			$('form[name=customerassignments]').submit();
+		});
 	});
-//-->
+
 </SCRIPT>

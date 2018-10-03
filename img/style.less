@@ -992,6 +992,16 @@ button.lms-ui-button {
 	text-align: center;
 }
 
+.lms-ui-assignment-icon,
+.lms-ui-assign-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-money-check-alt;
+	}
+}
+
 .lms-ui-save-icon,
 .lms-ui-submit-icon {
 	.fa-icon;
@@ -2822,41 +2832,51 @@ div.lms-ui-wysiwyg-editor {
 			&:nth-child(odd) {
 				background-color: @light;
 			}
+			&.lucid {
+				background-color: @lucid;
+			}
+			&.light {
+				background-color: @light;
+			}
 			&.header {
 				background-color: @light;
 				border-bottom: @frame;
 			}
-			&:not(.header):not(:last-child) {
+			&.footer {
+				padding-top: 0.2em;
+				padding-bottom: 0.2em;
+				background-color: @dark;
+				border-top: @frame;
+				> :nth-child(n+2) {
+					margin-left: 0.2em;
+				}
+			}
+			&:not(.header):not(.footer):not(:last-child) {
 				border-bottom: @dotted-line;
 			}
-			&:not(.header):hover {
+			&:not(.header):not(.footer):hover {
 				background-color: @highlight;
 			}
 		}
-		.lms-ui-tab-table-wrapper {
+		.lms-ui-tab-table-row .lms-ui-tab-table-wrapper {
 			display: flex;
 			flex-direction: row;
 			flex-grow: 0;
-			&.col-9,
-			&.col-8,
-			&.col-7,
-			&.col-6,
-			&.col-5,
-			&.col-4,
-			&.col-3,
-			&.col-2,
+			&[class*="col-"],
 			&.lms-ui-tab-table-column,
-			.col-9,
-			.col-8,
-			.col-7,
-			.col-6,
-			.col-5,
-			.col-4,
-			.col-3,
-			.col-2,
+			[class*="col-"],
 			.lms-ui-tab-table-column {
 				flex-grow: 1;
 				padding-top: 0.1em;
+			}
+		}
+		.lms-ui-tab-table-row.footer .lms-ui-tab-table-wrapper {
+			padding-top: 0;
+			&[class*="col-"],
+			&.lms-ui-tab-table-column,
+			[class*="col-"],
+			.lms-ui-tab-table-column {
+				padding-top: 0;
 			}
 		}
 		.lms-ui-tab-table-column {

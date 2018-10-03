@@ -4925,6 +4925,35 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   width: 1.5em;
   text-align: center;
 }
+.lms-ui-assignment-icon,
+.lms-ui-assign-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-assignment-icon.fa-pull-left,
+.lms-ui-assign-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-assignment-icon.fa-pull-right,
+.lms-ui-assign-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-assignment-icon:before,
+.lms-ui-assign-icon:before {
+  content: "\f53d";
+}
 .lms-ui-save-icon,
 .lms-ui-submit-icon {
   font-weight: normal;
@@ -7644,41 +7673,51 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:nth-child(odd) {
   background-color: #DFD5BD;
 }
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.lucid {
+  background-color: #EBE4D6;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.light {
+  background-color: #DFD5BD;
+}
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.header {
   background-color: #DFD5BD;
   border-bottom: 1px solid black;
 }
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:not(.header):not(:last-child) {
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.footer {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  background-color: #CEBD9B;
+  border-top: 1px solid black;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.footer > :nth-child(n+2) {
+  margin-left: 0.2em;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:not(.header):not(.footer):not(:last-child) {
   border-bottom: 1px dotted grey;
 }
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:not(.header):hover {
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:not(.header):not(.footer):hover {
   background-color: #CCFFCC;
 }
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper {
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .lms-ui-tab-table-wrapper {
   display: flex;
   flex-direction: row;
   flex-grow: 0;
 }
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-9,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-8,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-7,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-6,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-5,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-4,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-3,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.col-2,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper.lms-ui-tab-table-column,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-9,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-8,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-7,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-6,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-5,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-4,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-3,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .col-2,
-.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-wrapper .lms-ui-tab-table-column {
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .lms-ui-tab-table-wrapper[class*="col-"],
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .lms-ui-tab-table-wrapper.lms-ui-tab-table-column,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .lms-ui-tab-table-wrapper [class*="col-"],
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .lms-ui-tab-table-wrapper .lms-ui-tab-table-column {
   flex-grow: 1;
   padding-top: 0.1em;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.footer .lms-ui-tab-table-wrapper {
+  padding-top: 0;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.footer .lms-ui-tab-table-wrapper[class*="col-"],
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.footer .lms-ui-tab-table-wrapper.lms-ui-tab-table-column,
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.footer .lms-ui-tab-table-wrapper [class*="col-"],
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row.footer .lms-ui-tab-table-wrapper .lms-ui-tab-table-column {
+  padding-top: 0;
 }
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-column {
   padding-left: 0.5em;
