@@ -1257,6 +1257,24 @@ button.lms-ui-button {
 	}
 }
 
+.lms-ui-open-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-book-open;
+	}
+}
+
+.lms-ui-close-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-book;
+	}
+}
+
 .lms-ui-nodegroup-icon,
 .lms-ui-ngroup-icon,
 .lms-ui-ng-icon {
@@ -1775,6 +1793,18 @@ button,a,div {
 	&.lms-ui-info-button {
 		& > i {
 			.lms-ui-info-icon;
+		}
+	}
+
+	&.lms-ui-open-button {
+		& > i {
+			.lms-ui-open-icon;
+		}
+	}
+
+	&.lms-ui-close-button {
+		& > i {
+			.lms-ui-close-icon;
 		}
 	}
 }

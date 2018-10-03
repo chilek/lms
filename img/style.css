@@ -5681,6 +5681,56 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 .lms-ui-info-icon:before {
   content: "\f129";
 }
+.lms-ui-open-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-open-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-open-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-open-icon:before {
+  content: "\f518";
+}
+.lms-ui-close-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-close-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-close-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-close-icon:before {
+  content: "\f02d";
+}
 .lms-ui-nodegroup-icon,
 .lms-ui-ngroup-icon,
 .lms-ui-ng-icon {
@@ -7804,6 +7854,72 @@ button.lms-ui-info-button > i:before,
 a.lms-ui-info-button > i:before,
 div.lms-ui-info-button > i:before {
   content: "\f129";
+}
+button.lms-ui-open-button > i,
+a.lms-ui-open-button > i,
+div.lms-ui-open-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-open-button > i.fa-pull-left,
+a.lms-ui-open-button > i.fa-pull-left,
+div.lms-ui-open-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-open-button > i.fa-pull-right,
+a.lms-ui-open-button > i.fa-pull-right,
+div.lms-ui-open-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-open-button > i:before,
+a.lms-ui-open-button > i:before,
+div.lms-ui-open-button > i:before {
+  content: "\f518";
+}
+button.lms-ui-close-button > i,
+a.lms-ui-close-button > i,
+div.lms-ui-close-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-close-button > i.fa-pull-left,
+a.lms-ui-close-button > i.fa-pull-left,
+div.lms-ui-close-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-close-button > i.fa-pull-right,
+a.lms-ui-close-button > i.fa-pull-right,
+div.lms-ui-close-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-close-button > i:before,
+a.lms-ui-close-button > i:before,
+div.lms-ui-close-button > i:before {
+  content: "\f02d";
 }
 button.lms-ui-fileupload-button {
   color: #800000;
