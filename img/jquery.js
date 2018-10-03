@@ -773,7 +773,7 @@ $(function() {
 			//deferRender: true,
 			processing: true,
 			stateDuration: lmsSettings.settingsTimeout,
-			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, $t('All') ]],
+			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, $t('all') ]],
 			displayStart: init.displayStart,
 			searchCols: init.searchColumns,
 			stateSave: init.stateSave,

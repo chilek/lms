@@ -23,6 +23,9 @@
  *  $Id$
  */
 
+$_LANG['Verified'] = 'Weryfikowany';
+$_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało przekazane do weryfikatora.';
+$_LANG['Transfer ticket to verifier'] = 'Przekaż zgłoszenie do weryfikatora';
 $_LANG['Reuse'] = 'Ponownie';
 $_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
 $_LANG['Encryption key:'] = 'Klucz szyfrowania:';
@@ -129,12 +132,6 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
-
-$_LANG['Accounting period'] = 'Okres czasu naliczania dla zobowiązań';
-$_LANG['Terminated contract number:'] = 'Numer rozwiązywanej umowy:';
-$_LANG['Terminated contract date:'] = 'Data rozwiązywanej umowy:';
-$_LANG['billing'] = 'billing';
-
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -4158,9 +4155,9 @@ $_LANG['Select requestor from list'] = 'Wskaż zgłaszającego z listy';
 $_LANG['<!person>- none -'] = '- brak -';
 $_LANG['At least requestor name, mail or phone should be filled!'] = 'Jedno z pól nazwa, email i telefon powinno zostać wypełnione!';
 
-$_LANG['Group message reply'] = 'Odpowiedz wiadomością grupową';
+$_LANG['Run group action'] = 'Wykonaj czynność grupową';
 $_LANG['- no changes -'] = '- bez zmian -';
-$_LANG['New Message (group reply for $a tickets)'] = 'Nowa wiadomość (odpowiedź grupowa dla $a zgłoszeń)';
+$_LANG['New Message (group action for $a tickets)'] = 'Nowa wiadomość (czynność grupowa dla $a zgłoszeń)';
 
 $_LANG['Category changes:'] = 'Zmiany kategorii:';
 $_LANG['Select category change type'] = 'Wybierz rodzaj zmian kategorii';
