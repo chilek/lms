@@ -299,9 +299,9 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{if $customerinfo.balance < 0}
-				<A href="?m=customerbalanceok&id={$customerinfo.id}"
+				<A href="?m=customerbalanceok&id={$customerinfo.id}" class="lms-ui-edit-button"
 						OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');">
-					{trans("Clear Account")} <IMG src="img/edit.gif" alt="">
+					<i></i> {trans("Clear Account")}
 				</A>
 				{/if}
 			{/tab_buttons}
