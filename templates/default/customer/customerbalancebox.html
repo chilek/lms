@@ -1,6 +1,331 @@
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
-	<!--
+
+{css}
+
+{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+
+<FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
+</FORM>
+
+{tab_container id="customerbalancebox"}
+
+	{if $limit}
+		{$content_id="customerbalancepanel"}
+	{else}
+		{$content_id=null}
+	{/if}
+	{tab_header content_id=$content_id}
+		{tab_header_cell icon="lms-ui-money-icon"}
+			<strong>{trans("Customer Account:")}</strong>
+			{if $limit}
+				{$n=$x*-1}
+			{/if}
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
+			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()">
+				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
+				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
+			</SELECT>
+			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;">
+			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
+			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
+				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
+				<OPTION value="?m=invoicenew&action=init&proforma=1&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</OPTION>
+				<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
+				<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
+				<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
+			</SELECT>&nbsp;
+			<A href="javascript:show_list()">{trans("Show All:")}</A>
+			<INPUT type="hidden" name="cat" value="customerid">
+			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
+			<SELECT name="showlist" id="showlistselect">
+				{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
+				<OPTION value="invoice">{trans("invoices")}</OPTION>
+				<OPTION value="invoicepro">{trans("pro forma invoices")}</OPTION>
+				<OPTION value="note">{trans("debit notes")}</OPTION>
+			</SELECT>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="customerbalancepanel"}
+
+		{tab_table}
+
+			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
+			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 92%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<THEAD>
+				<TR>
+					<TH>{trans("Date:")}</TH>
+					<TH>{trans("User:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Liability:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Income:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Expense:")}</TH>
+					<TH class="text-center" data-orderable="false" data-searchable="false">&raquo;</TH>
+					<TH class="text-right" data-orderable="false" data-searchable="false">{trans("After:")}</TH>
+					<TH data-orderable="false">{trans("Description:")}</TH>
+					<TH data-orderable="false" data-searchable="false">&nbsp;</TH>
+				</TR>
+				</THEAD>
+				<TBODY>
+				{foreach $balancelist.list as $item}
+				{if count($balancelist.list) >= $datatables_max_records}
+					{if $limit < 0 && $item@iteration <= count($balancelist.list) + $limit}
+					{continue}
+					{elseif $limit > 0 && $item@iteration > $limit}
+					{continue}
+					{/if}
+				{/if}
+				<TR{if $item.docid} data-published="{$item.published}"{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} class="teal"{/if}{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} class="blend"{/if}{/if}>
+					<TD class="nobr">{$item.date}</TD>
+					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
+					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{$item.value|money_format}{else}-{/if}</TD>
+					<TD class="text-right nobr">{if $item.type && $item.value < 0}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD class="text-center">&raquo;</TD>
+					<TD class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
+					<TD>{$item.comment}</TD>
+					<TD class="text-right nobr">
+						{foreach $item.customlinks as $link}
+						<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
+						{if isset($link.extra)}{$link.extra}{/if}
+						{/foreach}
+						{if $item.docid}
+							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
+							<a href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1" class="lms-ui-transform-button" rel="external">
+								<i title="{trans("Convert to invoice")}"></i>
+							</a>
+							{/if}
+							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
+								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
+							<A class="invoicesend lms-ui-mail-button" href="?m=invoicesend&id={$item.docid}">
+								<i title="{trans("Send invoice")}"></i>
+							</A>
+							{/if}
+							{if $item.doctype == $smarty.const.DOC_INVOICE}
+								{if !$item.referenced}
+								<A HREF="?m=invoicenote&id={$item.docid}&action=init" class="lms-ui-correction-button">
+									<i title="{trans("Revise")}"></i>
+								</A>
+								{/if}
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-view-button lms-ui-tooltip-invoiceinfo"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("View")}"></i>
+								</A>
+								{/if}
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("Invoice")}"></i>
+								</A>
+								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+								<A href="?m=invoiceedit&id={$item.docid}&action=edit" rel="external"
+										{if $item.published}OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
+										class="lms-ui-edit-button lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
+									<i title="{trans("Invoice")}"></i>
+								</A>
+								{/if}
+							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-view-button lms-ui-tooltip-invoiceinfo"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("View")}"></i>
+								</A>
+								{/if}
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-invoiceinfo"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("pro forma invoice")}"></i>
+								</A>
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								<A href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1" rel="external"
+										{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
+										class="lms-ui-edit-button lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
+									<i title="{trans("pro forma invoice")}"></i>
+								</A>
+								{/if}
+							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								<A href="?m=invoice&id={$item.docid}&dontpublish=1"
+										class="lms-ui-view-button lms-ui-tooltip-docnumber"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("View")}"></i>
+								</A>
+								{/if}
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-docnumber"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("Credit note")}"></i>
+								</A>
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								<A href="?m=invoicenoteedit&id={$item.docid}&action=edit" rel="external"
+										{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
+										class="lms-ui-edit-button lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
+									<i title="{trans("Invoice")}"></i>
+								</A>
+								{/if}
+							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
+								<A href="?m=receipt&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printr.gif" alt="{trans("Cash receipt")}"></A>
+								<a href="?m=receiptedit&id={$item.docid}" class="lms-ui-edit-button lms-ui-tooltip-docnumber"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("Cash receipt")}"></i>
+								</a>
+							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
+								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								<A href="?m=note&id={$item.docid}&dontpublish=1" class="lms-ui-view-button lms-ui-tooltip-docnumber"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("View")}"></i>
+								</A>
+								{/if}
+								<A href="?m=note&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-docnumber"
+										data-resourceid="{$item.docid}" rel="external">
+									<i title="{trans("Debit note")}"></i>
+								</A>
+							{/if}
+						{/if}
+						<INPUT type="checkbox" form="addbalance-form" NAME="marks{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
+					</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD class="empty-table" colspan="9">
+						<p>{trans("That customer hasn't got any transactions.")}</p>
+					</TD>
+				</TR>
+				{/foreach}
+				</TBODY>
+			</TABLE>
+
+		{/tab_table}
+
+		{tab_button_panel}
+
+			{tab_buttons}
+				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
+				<button type="button" class="lms-ui-button lms-ui-delete-button" onclick="javascript:delpos();">
+					<i></i> {trans("Delete")}
+				</button>
+				{/if}
+				<button type="button" class="lms-ui-button lms-ui-mail-button">
+					<i></i> {trans("Send invoices")}
+				</button>
+				{trans("Print")}:
+				<button type="button" class="lms-ui-button lms-ui-print-button" onclick="javascript:print_doc('invoice')">
+					<i></i> {trans("invoices")}
+				</button>
+				<button type="button" class="lms-ui-button lms-ui-cash-button" onclick="javascript:printr();">
+					<i></i> {trans("cash receipts")}
+				</button>
+				<button type="button" class="lms-ui-button lms-ui-dnote-button" onclick="javascript:print_doc('note');">
+					<i></i> {trans("debit notes")}
+				</button>
+				<label>
+					<INPUT type="checkbox" form="addbalance-form" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}>
+					{trans("original")}
+				</label>
+				<label>
+					<INPUT type="checkbox" form="addbalance-form" name="copy" {if preg_match('/copy/i', $default_printpage)} checked{/if}>
+					{trans("copy")}
+				</label>
+				<label>
+					<INPUT type="checkbox" form="addbalance-form" name="duplicate" {if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
+					{trans("duplicate")}
+				</label>
+			{/tab_buttons}
+
+			{tab_buttons}
+				<label>
+					{trans("Check All")}
+					<INPUT type="checkbox" class="lms-ui-multi-check-all">
+				</label>
+			{/tab_buttons}
+
+		{/tab_button_panel}
+		{tab_button_panel}
+
+			{tab_buttons}
+				<div class="addbalance-form-cell">
+					<INPUT type="hidden" form="addbalance-form" name="addbalance[customerid]" value="{$balancelist.customerid}">
+					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="calendar-time" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
+					{$layout.logname|truncate:16:"...":true}
+					<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
+					<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
+						{foreach item=tax from=$taxeslist}
+						<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
+						{/foreach}
+					</SELECT>
+				</div>
+
+				<div class="addbalance-form-cell">
+					<label>
+						<INPUT type="radio" form="addbalance-form" NAME="addbalance[type]" value="0" {tip text="Select type of operation"}>
+						{trans("liability")}
+					</label>
+					<label>
+						<INPUT type="radio" form="addbalance-form" NAME="addbalance[type]" value="1" {tip text="Select type of operation"} checked>
+						{trans("income/expense")}
+					</label>
+					{if $sourcelist}
+					<div class="isource lms-ui-isource-button">
+						<i></i>
+						<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
+							<OPTION value="0">{trans("- none -")}</OPTION>
+							{foreach $sourcelist as $source}
+							<OPTION value="{$source.id}"{if $source.id == $sourceid} selected{/if}>{$source.name}</OPTION>
+							{/foreach}
+						</SELECT>
+					</div>
+					{/if}
+				</div>
+
+				<div class="addbalance-form-cell">
+					<input type="text" form="addbalance-form" size="30" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}>
+				</div>
+			{/tab_buttons}
+
+		{/tab_button_panel}
+		{tab_button_panel}
+			{tab_buttons}
+				{if $customerinfo.balance < 0}
+				<A href="?m=customerbalanceok&id={$customerinfo.id}"
+						OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');">
+					{trans("Clear Account")} <IMG src="img/edit.gif" alt="">
+				</A>
+				{/if}
+			{/tab_buttons}
+
+			{tab_buttons}
+				{if $instantpayment}
+				<button type="button" class="lms-ui-button lms-ui-cash-button" onclick="javascript:AddBalance(true);">
+					<i></i> {trans("Instant payment")}
+				</button>
+				{/if}
+				<button type="button" class="lms-ui-button lms-ui-save-button" onclick="javascript:AddBalance();">
+					<i></i> {trans("Submit")}
+				</button>
+			{/tab_buttons}
+
+		{/tab_button_panel}
+
+	{/tab_contents}
+{/tab_container}
+
+<SCRIPT>
+
+{if !$limit}
+	$('#customerbalancepanel').show();
+{/if}
+
 	function AddBalance(with_receipt) {
 		if (document.forms['addbalance'].elements['addbalance[value]'].value == '') {
 			alert('{trans("Enter transaction value")}!');
@@ -94,13 +419,13 @@
 	$(function() {
 		$('[name="newtransferformcustomvalue"]').on('change keypress', function() {
 			setTimeout(function() {
-					$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' +
-						$('[name="newtransferform"]').val() + '&value=' + $('[name="newtransferformcustomvalue"]').val());
-				}, 1);
+				$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' +
+					$('[name="newtransferform"]').val() + '&value=' + $('[name="newtransferformcustomvalue"]').val());
+			}, 1);
 		});
 	});
 
-{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
+	{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 	function delpos()
 	{
 		if ($('tr[data-published="1"] :checked').length) {
@@ -121,264 +446,7 @@
 		document.addbalance.target="";
 		document.addbalance.submit();
 	}
-{/if}
-	//-->
-</SCRIPT>
-{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-{$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
-<div class="lms-ui-sortable" id="customerbalancebox">
-<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR{if $limit} class="hand lmsbox-titlebar" data-lmsbox-content="customerbalancepanel"{/if}>
-		<TD{if $limit} class="fleftu"{/if}>
-			<IMG src="img/pay.gif" alt="">
-			<span class="bold">{trans("Customer Account:")}</span>
-			{if $limit}
-			{math equation="x * -1" x=$limit assign=n}
-			{/if}
-		</TD>
-		<TD class="text-right nobr">
-			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
-			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()">
-				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
-				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
-			</SELECT>
-			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;">
-			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
-			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
-				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
-				<OPTION value="?m=invoicenew&action=init&proforma=1&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</OPTION>
-				<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
-				<OPTION value="?m=receiptadd&type=out&action=init&customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
-				<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
-			</SELECT>&nbsp;
-			<A href="javascript:show_list()">{trans("Show All:")}</A>
-			<INPUT type="hidden" name="cat" value="customerid">
-			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
-			<SELECT name="showlist" id="showlistselect">
-				{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
-				<OPTION value="invoice">{trans("invoices")}</OPTION>
-				<OPTION value="invoicepro">{trans("pro forma invoices")}</OPTION>
-				<OPTION value="note">{trans("debit notes")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY class="lms-ui-multi-check">
-	<TR id="customerbalancepanel" class="dark">
-		<TD colspan="2">
-			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
-			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 92%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				<TR>
-					<TH>{trans("Date:")}</TH>
-					<TH>{trans("User:")}</TH>
-					<TH class="text-right" data-searchable="false">{trans("Liability:")}</TH>
-					<TH class="text-right" data-searchable="false">{trans("Income:")}</TH>
-					<TH class="text-right" data-searchable="false">{trans("Expense:")}</TH>
-					<TH class="text-center" data-orderable="false" data-searchable="false">&raquo;</TH>
-					<TH class="text-right" data-orderable="false" data-searchable="false">{trans("After:")}</TH>
-					<TH data-orderable="false">{trans("Description:")}</TH>
-					<TH data-orderable="false" data-searchable="false">&nbsp;</TH>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{foreach $balancelist.list as $item}
-				{if count($balancelist.list) >= $datatables_max_records}
-					{if $limit < 0 && $item@iteration <= count($balancelist.list) + $limit}
-					{continue}
-					{elseif $limit > 0 && $item@iteration > $limit}
-					{continue}
-					{/if}
-				{/if}
-				<TR{if $item.docid} data-published="{$item.published}"{if $item.doctype == $smarty.const.DOC_INVOICE_PRO} class="teal"{/if}{if $item.closed && ($item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_DNOTE)} class="blend"{/if}{/if}>
-					<TD class="nobr">{$item.date}</TD>
-					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
-					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
-					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{$item.value|money_format}{else}-{/if}</TD>
-					<TD class="text-right nobr">{if $item.type && $item.value < 0}{($item.value*-1)|money_format}{else}-{/if}</TD>
-					<TD class="text-center">&raquo;</TD>
-					<TD class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
-					<TD>{$item.comment}</TD>
-					<TD class="text-right nobr">
-						{foreach $item.customlinks as $link}
-						<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
-						{if isset($link.extra)}{$link.extra}{/if}
-						{/foreach}
-						{if $item.docid}
-							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-							<a href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1" rel="external"><IMG src="img/reload.gif" alt="{trans("Convert to invoice")}" title="{trans("Convert to invoice")}"></a>
-							{/if}
-							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
-								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
-							<A class="invoicesend" href="?m=invoicesend&id={$item.docid}"><IMG src="img/mail.gif" alt="{trans("Send invoice")}" title="{trans("Send invoice")}"></A>
-							{/if}
-							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								{if !$item.referenced}
-								<A HREF="?m=invoicenote&id={$item.docid}&action=init"><IMG src="img/eraser.gif" alt="{trans("Revise")}" title="{trans("Revise")}"></A>
-								{/if}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/view.gif" alt="{trans("View")}"></A>
-								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/print.gif" alt="{trans("Invoice")}"></A>
-								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-								<A href="?m=invoiceedit&id={$item.docid}&action=edit" rel="external"{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if} class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}"><IMG SRC="img/edit.gif" ALT="{trans("Invoice")}"></A>
-								{/if}
-							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/view.gif" alt="{trans("View")}"></A>
-								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/print.gif" alt="{trans("pro forma invoice")}"></A>
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1" rel="external"{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if} class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}"><IMG SRC="img/edit.gif" alt="{trans("pro forma invoice")}"></A>
-								{/if}
-							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><img src="img/view.gif" alt="{trans("View")}"></A>
-								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printn.gif" alt="{trans("Credit note")}"></A>
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoicenoteedit&id={$item.docid}&action=edit" rel="external"{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if} class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}"><IMG SRC="img/edit.gif" ALT="{trans("Invoice")}"></A>
-								{/if}
-							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printr.gif" alt="{trans("Cash receipt")}"></A>
-								<a href="?m=receiptedit&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/edit.gif" alt="{trans("Cash receipt")}"></a>
-							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=note&id={$item.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><img src="img/view.gif" alt="{trans("View")}"></A>
-								{/if}
-								<A href="?m=note&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printd.gif" alt="{trans("Debit note")}"></A>
-							{/if}
-						{/if}
-						<INPUT type="checkbox" NAME="marks{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="9">
-						<p>{trans("That customer hasn't got any transactions.")}</p>
-					</TD>
-				</TR>
-				{/foreach}
-				</TBODY>
-			</TABLE>
-			<TABLE class="lmsbox-inner">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 92%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<TBODY>
-				<TR>
-					<TD class="ftop text-left" colspan="9">
-						<TABLE width="100%" cellpadding="0" cellspacing="0">
-							<TR><TD style="width: 99%;" class="nobr">
-							{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-							<A href="javascript:delpos();">{trans("Delete")} <IMG src="img/delete.gif" alt="{trans("Delete")}"></A>&nbsp;
-							{/if}
-							<A href="javascript:send_invoices();" OnClick="return confirm('{t}Are you sure, you want to send invoices to customer?{/t}')">{trans("Send invoices")} <IMG src="img/mail.gif" alt=""></A>&nbsp;
-							{trans("Print")}:
-							<A href="javascript:print_doc('invoice');">{trans("invoices")} <IMG src="img/print.gif" alt=""></A>&nbsp;
-							<A href="javascript:printr();">{trans("cash receipts")} <IMG src="img/printr.gif" alt=""></A>&nbsp;
-							<A href="javascript:print_doc('note');">{trans("debit notes")} <IMG src="img/printd.gif" alt=""></A>&nbsp;
-							<INPUT type="checkbox" name="original" id="inv-original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <label for="inv-original">{trans("original")}</label>
-							<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <label for="inv-copy">{trans("copy")}</label>
-							<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <label for="inv-duplicate">{trans("duplicate")}</label>
-							</TD>
-								<TD style="width: 1%;" class="text-right nobr">
-									<label>
-										{trans("Check All")}
-										<INPUT type="checkbox" class="lms-ui-multi-check-all">
-									</label>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="ftop">
-						<INPUT type="hidden" name="addbalance[customerid]" value="{$balancelist.customerid}">
-						<INPUT type="text" name="addbalance[time]" size="15" maxlength="16" {tip class="calendar-time" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
-					</TD>
-					<TD class="ftop nobr">
-						{$layout.logname|truncate:16:"...":true}
-					</TD>
-					<TD class="ftop nobr">
-						<INPUT type="text" size="8" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
-						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
-							{foreach item=tax from=$taxeslist}
-							<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-					<TD class="ftop nobr">
-						<INPUT type="radio" NAME="addbalance[type]" id="operation0" value="0" {tip text="Select type of operation"}><label for="operation0">{trans("liability")}</label><BR>
-						<INPUT type="radio" NAME="addbalance[type]" id="operation1" value="1" {tip text="Select type of operation"} checked><label for="operation1">{trans("income/expense")}</label>
-						{if $sourcelist}
-						<BR><IMG src="img/isource.gif" alt="">
-						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-							<OPTION value="0">{trans("- none -")}</OPTION> 
-							{foreach from=$sourcelist item=item}
-							<OPTION value="{$item.id}"{if $item.id == $sourceid} SELECTED{/if}>{$item.name}</OPTION>
-							{/foreach}
-						</SELECT>
-						{/if}
-					</TD>
-					<TD class="ftop" colspan="5">
-						<input type="text" size="30" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD colspan="7">
-						{if $customerinfo.balance < 0}
-						<A href="?m=customerbalanceok&amp;id={$customerinfo.id}" OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');">{trans("Clear Account")} <IMG src="img/edit.gif" alt=""></A>
-						{/if}
-					</TD>
-					<TD class="text-right" colspan="2">
-						{if $instantpayment}
-						<a href="javascript:AddBalance(true);">{trans("Instant payment")} <img src="img/printr.gif"></a>
-						{/if}
-						<A href="javascript:AddBalance();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
-</div>
-<SCRIPT type="text/javascript">
-<!--
-{if $limit}
-	if (getCookie('customerbalancepanel') == '0')
-		document.getElementById('customerbalancepanel').style.display = 'none';
-{/if}
+	{/if}
 
 	$('.invoicesend').click(function() {
 		if (!confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}')) {
@@ -388,6 +456,12 @@
 		return false;
 	});
 
+	$('.lms-ui-mail-button').click(function() {
+		if (confirm($t("Are you sure, you want to send invoices to customer?"))) {
+			send_invoices();
+		}
+	});
+
 	new_doc_type_changed($("[name=newdocument]").val());
-//-->
+
 </SCRIPT>

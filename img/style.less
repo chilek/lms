@@ -992,6 +992,57 @@ button.lms-ui-button {
 	text-align: center;
 }
 
+.lms-ui-convert-icon,
+.lms-ui-transform-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-exchange-alt;
+	}
+}
+
+.lms-ui-correct-icon,
+.lms-ui-correction-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-wrench;
+	}
+}
+
+.lms-ui-cashsource-icon,
+.lms-ui-isource-icon,
+.lms-ui-importsource-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-file-invoice;
+	}
+}
+
+.lms-ui-debitnote-icon,
+.lms-ui-dnote-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-file-invoice-dollar;
+	}
+}
+
+.lms-ui-money-icon,
+.lms-ui-cash-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-money-bill;
+	}
+}
+
 .lms-ui-hourglass-icon,
 .lms-ui-wait-icon {
 	.fa-icon;
@@ -1545,7 +1596,43 @@ button.lms-ui-button {
 	}
 }
 
-button,a {
+button,a,div {
+	&.lms-ui-convert-button,
+	&.lms-ui-transform-button {
+		& > i {
+			.lms-ui-convert-icon;
+		}
+	}
+
+	&.lms-ui-correct-button,
+	&.lms-ui-correction-button {
+		& > i {
+			.lms-ui-correction-icon;
+		}
+	}
+
+	&.lms-ui-cashsource-button,
+	&.lms-ui-isource-button,
+	&.lms-ui-importsource-button {
+		& > i {
+			.lms-ui-cashsource-icon;
+		}
+	}
+
+	&.lms-ui-debitnote-button,
+	&.lms-ui-dnote-button {
+		& > i {
+			.lms-ui-debitnote-icon;
+		}
+	}
+
+	&.lms-ui-cash-button,
+	&.lms-ui-money-button {
+		& > i {
+			.lms-ui-cash-icon;
+		}
+	}
+
 	&.lms-ui-hourglass-button,
 	&.lms-ui-wait-button {
 		& > i {

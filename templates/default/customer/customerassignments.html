@@ -32,7 +32,7 @@
 				{trans("<!assignment>Commited")}
 				<input type="checkbox" id="commited" value="1"{if $commited} checked{/if}>
 			</label>
-			<a id="clear_filter" class="lms-ui-delete-icon" href="#"><i></i><a>
+			<a id="clear_filter" class="lms-ui-delete-button" href="#"><i></i><a>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
@@ -118,7 +118,8 @@
 				data-upceil="{$a.real_upceil|default:"0"}">
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-column liability">
+						<div class="lms-ui-tab-table-column liability"
+								{if $a.tariffid || $a.liabilityid} OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}';"{/if}>
 							{if !$a.tariffid && !$a.liabilityid}
 								<strong>{trans("Suspending of all liabilities")}</strong>
 							{else}
