@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -58,15 +58,16 @@ $customernetnodes = $LMS->GetCustomerNetNodes($customerid);
 
 // prepare node assignments array which allows to easily map nodes to assignments
 $nodeassignments = array();
-foreach ($assignments as $assignment)
-	if (!empty($assignment['nodes']))
-		foreach ($assignment['nodes'] as $node) {
-			if (!isset($nodeassignments[$node['id']]))
-				$nodeassignments[$node['id']] = array();
-			$nodeassignments[$node['id']] = array(
-				'assignment' => $assignment,
-			);
-		}
+if (!empty($assignments))
+	foreach ($assignments as $assignment)
+		if (!empty($assignment['nodes']))
+			foreach ($assignment['nodes'] as $node) {
+				if (!isset($nodeassignments[$node['id']]))
+					$nodeassignments[$node['id']] = array();
+				$nodeassignments[$node['id']] = array(
+					'assignment' => $assignment,
+				);
+			}
 
 $customernetworks     = $LMS->GetCustomerNetworks($customerid, 10);
 $customerstats = array(
