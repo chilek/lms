@@ -1614,6 +1614,12 @@ button.lms-ui-button {
 }
 
 button,a,div {
+	&.lms-ui-netnode-button {
+		& > i {
+			.lms-ui-netnode-icon;
+		}
+	}
+
 	&.lms-ui-ipnetwork-button,
 	&.lms-ui-networks-button,
 	&.lms-ui-network-button {
@@ -3265,6 +3271,18 @@ div.lms-ui-wysiwyg-editor {
 			}
 			&:not(.header):not(.footer):hover {
 				background-color: @highlight;
+			}
+
+			@media all and (max-width: 768px) {
+				.buttons {
+					flex-direction: column !important;
+					justify-content: flex-start !important;
+					width: 2em !important;
+					& > * {
+						padding-right: 0.5em;
+						padding-top: 0.2em;
+					}
+				}
 			}
 		}
 		.lms-ui-tab-table-row .lms-ui-tab-table-wrapper {

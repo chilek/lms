@@ -6721,6 +6721,40 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   color: seagreen;
   content: "\f084";
 }
+button.lms-ui-netnode-button > i,
+a.lms-ui-netnode-button > i,
+div.lms-ui-netnode-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-netnode-button > i.fa-pull-left,
+a.lms-ui-netnode-button > i.fa-pull-left,
+div.lms-ui-netnode-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-netnode-button > i.fa-pull-right,
+a.lms-ui-netnode-button > i.fa-pull-right,
+div.lms-ui-netnode-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-netnode-button > i:before,
+a.lms-ui-netnode-button > i:before,
+div.lms-ui-netnode-button > i:before {
+  color: brown;
+  content: "\f5fd";
+}
 button.lms-ui-ipnetwork-button > i,
 a.lms-ui-ipnetwork-button > i,
 div.lms-ui-ipnetwork-button > i,
@@ -9203,6 +9237,17 @@ div.lms-ui-wysiwyg-editor {
 }
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row:not(.header):not(.footer):hover {
   background-color: #CCFFCC;
+}
+@media all and (max-width: 768px) {
+  .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .buttons {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    width: 2em !important;
+  }
+  .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .buttons > * {
+    padding-right: 0.5em;
+    padding-top: 0.2em;
+  }
 }
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-table-row .lms-ui-tab-table-wrapper {
   display: flex;

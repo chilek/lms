@@ -21,64 +21,34 @@
  *
  *  $Id$
  */
-[id^="nodespanel-"] .name {
-  width: 40em;
+#netnodepanel .name {
+  width: 30em;
 }
-[id^="nodespanel-"] .id {
+#netnodepanel .type {
+  width: 30em;
+}
+#netnodepanel .id {
   width: 8em;
-}
-[id^="nodespanel-"] .channel {
-  width: 10em;
-}
-[id^="nodespanel-"] .address {
-  width: 10em;
-}
-[id^="nodespanel-"] .mac {
-  width: 8em;
-}
-[id^="nodespanel-"] .groups {
-  width: 10em;
-}
-[id^="nodespanel-"] .network {
-  width: 10em;
-}
-[id^="nodespanel-"] .buttons {
-  width: 8em;
-}
-@media all and (max-width: 1500px) {
-  [id^="nodespanel-"] .col-2 {
-    flex-direction: column !important;
-    width: 10em !important;
-  }
-  [id^="nodespanel-"] .col-2 div {
-    flex-grow: 0 !important;
-    width: 100% !important;
-  }
-  [id^="nodespanel-"] .col-3 {
-    flex-direction: column !important;
-    width: 21em !important;
-  }
-  [id^="nodespanel-"] .col-3 div {
-    flex-grow: 0 !important;
-    width: 100% !important;
-  }
 }
 @media all and (max-width: 1200px) {
-  [id^="nodespanel-"] .col-4 {
-    flex-direction: column !important;
-    width: 10em !important;
+  #netnodepanel .name {
+    width: 22em;
   }
-  [id^="nodespanel-"] .col-4 div {
+  #netnodepanel .col-2 {
+    flex-direction: column !important;
+    width: 22em !important;
+  }
+  #netnodepanel .col-2 div {
     flex-grow: 0 !important;
     width: 100% !important;
   }
 }
 @media all and (max-width: 768px) {
-  [id^="nodespanel-"] .col-7 {
+  #netnodepanel .col-3 {
     flex-direction: column !important;
     width: 17em !important;
   }
-  [id^="nodespanel-"] .col-7 div {
+  #netnodepanel .col-3 div {
     flex-grow: 0 !important;
     width: 100% !important;
   }

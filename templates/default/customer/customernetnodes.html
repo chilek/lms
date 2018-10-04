@@ -1,90 +1,77 @@
 <!--// $Id$ //-->
-<div class="lms-ui-sortable" id="customernetnodes">
-    <TABLE class="lmsbox">
-        <COLGROUP>
-            <COL style="width: 99%;">
-            <COL style="width: 1%;">
-        </COLGROUP>
-        <THEAD>
-        <TR class="hand lmsbox-titlebar" data-lmsbox-content="netnodepanel">
-            <TD class="bold">
-                <IMG src="img/netnode.png" alt="">
-                {t a=$customernetnodes|@count|default:"0"}Network Nodes ($a):{/t}
-            </TD>
-            <TD class="text-right nobr">
-                <A href="?m=netnodeadd&customerid={$customerinfo.id}">{trans("New network node")} &raquo;</A>
-            </TD>
-        </TR>
-        </THEAD>
-        <TBODY>
-        <TR id="netnodepanel" style="display: none;">
-            <TD colspan="2">
-                <TABLE class="lmsbox-inner lms-ui-background-cycle">
-                    <COLGROUP>
-                        <COL style="width: 1%;">
-                        <COL style="width: 95%;">
-                        <COL style="width: 1%;">
-                        <COL style="width: 1%;">
-                        <COL style="width: 1%;">
-                        <COL style="width: 1%;">
-                    </COLGROUP>
-                    <THEAD>
-                    <TR class="lms-ui-header-panel">
-                        <TD class="bold nobr">{trans("Name:")}</TD>
-                        <TD>{trans("Type:")}</TD>
-                        <TD class="nobr">{trans("ID:")}</TD>
-                        <TD class="nobr"></TD>
-                        <TD class="nobr"></TD>
-                        <TD class="nobr"></TD>
-                        <TD></TD>
-                    </TR>
-                    </THEAD>
-                    <TBODY class="lms-ui-multi-check">
-                    {foreach $customernetnodes as $customernetnode}
-                    {$customer_netnode_id = $customernetnode.id}
 
-                    <TR class="highlight" data-target-url="?m=netnodeinfo&id={$customernetnode.id}">
-                        <TD class="nobr">
-                            <img src="img/netnode.png" alt=""">
-                            <span class="bold">{$customernetnode.name}</span>
-                            {if $customernetnode.location}<BR>
-                            {$customernetnode.location|truncate:60:"...":true}
-                            {/if}
-                        </TD>
-                        <TD>
-                            {$_NETELEMENTTYPES[$customernetnode.type]}
-                        </TD>
-                        <TD>
-                            ({$customernetnode.id|string_format:"%04d"})
-                        </TD>
-                        <td class="nobr">
-                        </td>
-                        <TD class="nobr">
-                        </TD>
-                        <TD class="nobr">
-                        </TD>
-                        <TD class="nobr" class="lms-ui-buttons">
-                            <a href="?m=netnodeedit&id={$customernetnode.id}"><img src="img/edit.gif" alt=""></a>
-                        </TD>
-                    </TR>
-                    {foreachelse}
-                    <TR>
-                        <TD class="empty-table" colspan="6">
-                            <p>{trans("That customer hasn't got any assigned network nodes.")}</p>
-                        </TD>
-                    </TR>
-                    {/foreach}
-                    </TBODY>
-                </TABLE>
-            </TD>
-        </TR>
-        </TBODY>
-    </TABLE>
-</div>
-<SCRIPT>
+{css}
 
-	if (getCookie('netnodepanel') == '1') {
-		$('#netnodepanel').show();
-	}
+{tab_container id="customernetnodes"}
 
-</SCRIPT>
+	{tab_header content_id="netnodepanel"}
+		{tab_header_cell icon="lms-ui-netnode-icon"}
+			<strong>{t a=$customernetnodes|@count|default:"0"}Network Nodes ($a):{/t}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="?m=netnodeadd&customerid={$customerinfo.id}">{trans("New network node")} &raquo;</A>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="netnodepanel"}
+
+		{tab_table}
+
+			{if $customernetnodes}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-column name">
+						{trans("Name:")}
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column type">
+							{trans("Type:")}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+				</div>
+			</div>
+			{/if}
+
+			{foreach $customernetnodes as $customernetnode}
+			{$customer_netnode_id = $customernetnode.id}
+			<div class="lms-ui-tab-table-row" data-target-url="?m=netnodeinfo&id={$customernetnode.id}">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-column name" class="lms-ui-netnode-button">
+						<i></i> <strong>{$customernetnode.name}</strong>
+						{if $customernetnode.location}
+							<BR>{$customernetnode.location|truncate:60:"...":true}
+						{/if}
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column type">
+							{$_NETELEMENTTYPES[$customernetnode.type]}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							({$customernetnode.id|string_format:"%04d"})
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					<a href="?m=netnodeedit&id={$customernetnode.id}" class="lms-ui-edit-button">
+						<i title="{trans("Edit")}"></i>
+					</a>
+				</div>
+			</div>
+
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer hasn't got any assigned network nodes.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}

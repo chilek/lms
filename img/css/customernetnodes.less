@@ -22,24 +22,24 @@
  *  $Id$
  */
 
-#groupspanel {
+#netnodepanel {
 	.name {
-		width: 10em;
+		width: 30em;
 	}
-	.description {
-		width: 40em;
+	.type {
+		width: 30em;
 	}
 	.id {
-		width: 10em;
-	}
-	.buttons {
-		width: 3em;
+		width: 8em;
 	}
 
 	@media all and (max-width: 1200px) {
+		.name {
+			width: 22em;
+		}
 		.col-2 {
 			flex-direction: column !important;
-			width: 30em !important;
+			width: 22em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
@@ -49,7 +49,7 @@
 	@media all and (max-width: 768px) {
 		.col-3 {
 			flex-direction: column !important;
-			width: 20em !important;
+			width: 17em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
@@ -57,4 +57,3 @@
 		}
 	}
 }
-

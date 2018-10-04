@@ -121,13 +121,4 @@
     flex-grow: 0 !important;
     width: 100% !important;
   }
-  #customerassignmentpanel .buttons {
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    width: 2em !important;
-  }
-  #customerassignmentpanel .buttons > * {
-    padding-right: 0.5em;
-    padding-top: 0.2em;
-  }
 }
