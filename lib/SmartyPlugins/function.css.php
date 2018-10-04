@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LMS version 1.11-git
  *
@@ -24,8 +25,10 @@
  */
 
 function smarty_function_css(array $params, Smarty_Internal_Template $template) {
+	$css_file = preg_replace(array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
+		array('', ''), $template->template_resource) . '.css';
 	return '<script>$("head").append($(\'<link rel="stylesheet" type="text/css" href="img/css/'
-		. str_replace('.html', '', basename($template->source->name)) . '.css' . '">\'));</script>';
+		. $css_file . '">\'));</script>';
 }
 
 ?>

@@ -1,110 +1,122 @@
 <!--// $Id$ //-->
-<div class="lms-ui-sortable" id="nodegroups">
+
 <FORM METHOD="POST" NAME="nodegroupassignment" id="nodegroupassignment" ACTION="?m=nodegroup&action=add&id={$nodeinfo.id}">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-    <THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="nodegroupspanel">
-		<TD class="bold">
-			<IMG src="img/nodegroup.gif" alt="">
-			{trans("Node Groups:")}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="nodegroupspanel" style="display:none;">
-		<TD>
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 97%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<THEAD>
-				<TR class="lms-ui-header-panel">
-					<TD class="bold nobr">{trans("Name:")}</TD>
-					<TD class="nobr" COLSPAN="2">{trans("Description:")}</TD>
-					<TD class="nobr">{trans("ID:")}</TD>
-					<TD>&nbsp;</TD>
-				</TR>
-				</THEAD>
-				<TBODY class="lms-ui-multi-check">
-				{foreach $nodegroups as $nodegroup}
-				<TR class="highlight" data-target-url="?m=nodegroupinfo&id={$nodegroup.id}">
-					<TD class="bold nobr">{$nodegroup.name}</TD>
-					<TD class="nobr" COLSPAN="2">{$nodegroup.description}</TD>
-					<TD class="nobr">({$nodegroup.id|string_format:"%04d"})</TD>
-					<TD class="lms-ui-buttons text-right nobr">
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')" HREF="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"><IMG SRC="img/delete.gif" ALT="{trans("Delete")}" {tip text="Remove assignment"}></A>
-						<input type="checkbox" name="markednodegroupid[{$nodegroup.id}]" value="{$nodegroup.id}" class="lms-ui-multi-check">
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD colspan="5" class="empty-table">
-						<p>{trans("That node is not a member of any group.")}</p>
-					</TD>
-				</TR>
-				{/foreach}
-				<TR class="lms-ui-button-panel">
-					<TD class="bold nobr valign-top">
-						{if !empty($othernodegroups)}
-						<A id="add-nodegroups" {tip text="Add node to groups"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>
-						{/if}
-					</TD>
-					<TD COLSPAN="3">
-						{if !empty($othernodegroups)}
-						<SELECT SIZE="1" NAME="nodegroupid[]" class="lms-ui-multiselect" {tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}" data-shorten-to-default-value="false">
-							{foreach $othernodegroups as $item}
-							<OPTION VALUE="{$item.id}">{$item.name} ({$item.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{/if}
-					</TD>
-					<TD colspan="2" class="text-right nobr valign-top">
-						<A id="delete-nodegroups">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
-						<label>
-							{trans("Check All")}
-							<input type="checkbox" class="lms-ui-multi-check-all">
-						</label>
-					</TD>
-					<script type="text/javascript">
-					<!--
-						$(function() {
-							{if !empty($othernodegroups)}
-							$('#add-nodegroups').click(function() {
-								if ($("input[name='nodegroupid[]']").filter(':checked').length)
-									$('form#nodegroupassignment').submit();
-								else
-									return false;
-							});
-							{/if}
-							$('#delete-nodegroups').click(function() {
-								if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
-									|| !confirm('{trans("Are you sure, you want to remove node from selected groups?")}'))
-									return false;
-								$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id={$nodeinfo.id}&is_sure=1')
-									.submit();
-							});
-						});
-					//-->
-					</script>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
 </FORM>
-</div>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('nodegroupspanel') == '1')
-		document.getElementById('nodegroupspanel').style.display = '';
-//-->
-</SCRIPT>
+
+{css}
+
+{tab_container id="nodegroups"}
+
+	{tab_header content_id="nodegroupspanel"}
+		{tab_header_cell icon="lms-ui-nodegroup-icon"}
+			<strong>{trans("Node Groups:")}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="nodegroupspanel"}
+
+		{tab_table}
+
+			{if $nodegroups}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-column name">
+						{trans("Name:")}
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column description">
+							{trans("Description:")}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+				</div>
+			</div>
+			{/if}
+
+			{foreach $nodegroups as $nodegroup}
+			<div class="lms-ui-tab-table-row" data-target-url="?m=nodegroupinfo&id={$nodegroup.id}">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-column name">
+						{$nodegroup.name}
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column description">
+							{$nodegroup.description}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							({$nodegroup.id|string_format:"%04d"})
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					<A class="lms-ui-delete-button" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')"
+							href="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}">
+						<i title="{trans("Remove assignment")}"></i>
+					</A>
+					<input type="checkbox" form="nodegroupassignment" name="markednodegroupid[{$nodegroup.id}]" value="{$nodegroup.id}" class="lms-ui-multi-check">
+				</div>
+			</div>
+
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That node is not a member of any group.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+		{tab_button_panel}
+			{tab_buttons}
+				{if !empty($othernodegroups)}
+				<button type="button" id="add-nodegroups" class="lms-ui-button lms-ui-add-button" {tip text="Add node to groups"}>
+					<i></i> {trans("Add")}
+				</button>
+				<SELECT SIZE="1" NAME="nodegroupid[]" form="nodegroupassignment" class="lms-ui-multiselect"
+						{tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}"
+						data-shorten-to-default-value="false">
+					{foreach $othernodegroups as $item}
+					<OPTION VALUE="{$item.id}">{$item.name} ({$item.id|string_format:"%04d"})</OPTION>
+					{/foreach}
+				</SELECT>
+				{/if}
+			{/tab_buttons}
+			{tab_buttons}
+				<button type="button" id="delete-nodegroups" class="lms-ui-button lms-ui-delete-button">
+					<i></i> {trans("Delete")}
+				</button>
+				<label>
+					{trans("Check All")}
+					<input type="checkbox" class="lms-ui-multi-check-all">
+				</label>
+			{/tab_buttons}
+		{/tab_button_panel}
+
+	{/tab_contents}
+{/tab_container}
+
+<script>
+
+	$(function() {
+		{if !empty($othernodegroups)}
+		$('#add-nodegroups').click(function() {
+			if ($("input[name='nodegroupid[]']").filter(':checked').length) {
+				$('form#nodegroupassignment').submit();
+			}
+		});
+		{/if}
+		$('#delete-nodegroups').click(function() {
+			if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length
+				&& confirm('{trans("Are you sure, you want to remove node from selected groups?")}')) {
+				$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id={$nodeinfo.id}&is_sure=1')
+					.submit();
+			}
+		});
+	});
+
+</script>
