@@ -7935,19 +7935,10 @@ button.lms-ui-button[disabled] {
 button.lms-ui-button[disabled]:before {
   color: #888888;
 }
-button.lms-ui-fileupload-button {
-  color: #800000;
-  border-radius: 3px;
-}
-button.lms-ui-fileupload-button:hover {
-  color: #336600;
-  cursor: pointer;
-  text-decoration: underline;
-}
-button.lms-ui-fileupload-button.lms-ui-fileupload-dropzone {
+button.lms-ui-button-fileupload.lms-ui-fileupload-dropzone {
   box-shadow: 0px 0px 10px 1px blue;
 }
-div.lms-ui-fileupload-button-container {
+div.lms-ui-button-fileupload-container {
   padding-bottom: 3px;
 }
 a[class*="lms-ui-button-"] > i:before {
