@@ -32,4 +32,9 @@ function delNodeLock(id) {
 	xajax_delNodeLock($('#nodelockadd .nodeid').val(), id);
 }
 
+$("#nodelockspanel .lms-ui-button-delete").click(function() {
+	$(this).parent().find('[id*="lockdays_"]').prop('checked', false).end()
+		.find('select').val(0);
+});
+
 xajax_getNodeLocks($('#nodelockadd .nodeid').val());
