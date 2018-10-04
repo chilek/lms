@@ -450,11 +450,9 @@
 	{/if}
 
 	$('.invoicesend').click(function() {
-		if (!confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}')) {
-			return false;
+		if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}')) {
+			window.open($(this).attr('href'));
 		}
-		window.open($(this).attr('href'));
-		return false;
 	});
 
 	$('.lms-ui-mail-button').click(function() {
