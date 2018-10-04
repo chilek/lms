@@ -1455,13 +1455,19 @@ button.lms-ui-button {
 	}
 }
 
-.lms-ui-timetable-icon {
+.lms-ui-calendar-icon {
 	.fa-icon;
 	.fas;
 	.lms-ui-icon;
 	&:before {
-		color: dodgerblue;
 		content: @fa-var-calendar-alt;
+	}
+}
+
+.lms-ui-timetable-icon {
+	.lms-ui-calendar-icon;
+	&:before {
+		color: dodgerblue;
 	}
 }
 
@@ -3198,6 +3204,12 @@ div.lms-ui-wysiwyg-editor {
 			display: flex;
 			flex-direction: row;
 			justify-content: flex-start;
+			&:last-child {
+				justify-content: flex-end;
+			}
+			&:first-child {
+				justify-content: flex-start;
+			}
 			align-items: center;
 			flex-wrap: wrap;
 
@@ -3205,6 +3217,9 @@ div.lms-ui-wysiwyg-editor {
 				&:not(:first-child) {
 					flex-direction: column;
 					align-items: flex-start;
+				}
+				> :nth-child(n+2) {
+					margin-left: 0;
 				}
 			}
 		}

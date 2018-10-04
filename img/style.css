@@ -6307,6 +6307,31 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   color: darkblue;
   content: "\f47e";
 }
+.lms-ui-calendar-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-calendar-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-calendar-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-calendar-icon:before {
+  content: "\f073";
+}
 .lms-ui-timetable-icon {
   font-weight: normal;
   vertical-align: -0.125em;
@@ -6330,8 +6355,10 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   margin-left: .3em;
 }
 .lms-ui-timetable-icon:before {
-  color: dodgerblue;
   content: "\f073";
+}
+.lms-ui-timetable-icon:before {
+  color: dodgerblue;
 }
 .lms-ui-administration-icon {
   font-weight: normal;
@@ -9177,10 +9204,19 @@ div.lms-ui-wysiwyg-editor {
   width: 1.3em;
   text-align: center;
 }
+.lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell:last-child {
+  justify-content: flex-end;
+}
+.lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell:first-child {
+  justify-content: flex-start;
+}
 @media all and (max-width: 768px) {
   .lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell:not(:first-child) {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell > :nth-child(n+2) {
+    margin-left: 0;
   }
 }
 @media all and (max-width: 768px) {
