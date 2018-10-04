@@ -24,11 +24,11 @@
 #customerassignmentpanel .lms-ui-tab-table .footer .liability {
   text-align: right;
 }
-#customerassignmentpanel .lms-ui-tab-button-panel {
+#customerassignmentpanel .lms-ui-button-tab-panel {
   border-top: 0;
   height: 0.1em;
 }
-#customerassignmentpanel .lms-ui-tab-button-panel .lms-ui-tab-buttons:nth-child(2) {
+#customerassignmentpanel .lms-ui-button-tab-panel .lms-ui-button-tabs:nth-child(2) {
   position: relative;
   top: -0.8em;
 }

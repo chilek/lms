@@ -96,20 +96,20 @@
 
 				<div class="lms-ui-tab-table-column buttons">
 					{if $customerinfo.senddocuments}
-						<a class="documentsend lms-ui-mail-button" href="?m=documentsend&id={$doc.docid}"><i title="{trans("Document send")}"></i></a>
+						<a class="documentsend lms-ui-button-mail" href="?m=documentsend&id={$doc.docid}"><i title="{trans("Document send")}"></i></a>
 					{/if}
 					{assign var=type value=$doc.type}
-					<a class="lms-ui-save-button" href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><i title="{trans("Save")}"></i></a>
+					<a class="lms-ui-button-save" href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><i title="{trans("Save")}"></i></a>
 					{if ! $doc.closed && ($docrights.$type.rights & 4)}
-						<a class="lms-ui-confirm-button" href="?m=documentedit&amp;id={$doc.docid}&amp;action=confirm"><i title="{trans("Confirm")}"></i></a>
+						<a class="lms-ui-button-confirm" href="?m=documentedit&amp;id={$doc.docid}&amp;action=confirm"><i title="{trans("Confirm")}"></i></a>
 					{/if}
 					{if ($docrights.$type.rights & 16)}
-						<a class="lms-ui-delete-button" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')" href="?m=documentdel&amp;id={$doc.docid}" {tip text="Remove document"}>
+						<a class="lms-ui-button-delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')" href="?m=documentdel&amp;id={$doc.docid}" {tip text="Remove document"}>
 							<i title="{trans("Delete")}"></i>
 						</a>
 					{/if}
 					{if ($docrights.$type.rights & 8)}
-						<a class="lms-ui-edit-button" href="?m=documentedit&amp;id={$doc.docid}">
+						<a class="lms-ui-button-edit" href="?m=documentedit&amp;id={$doc.docid}">
 							<i title="{trans("Edit")}"></i>
 						</a>
 					{/if}
@@ -148,16 +148,16 @@
 {if count($documents)}
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button lms-ui-mail-button" onclick="return confirm('{trans("Are you sure, you want to send documents to customer?")}')">
+				<button type="button" class="lms-ui-button lms-ui-button-mail" onclick="return confirm('{trans("Are you sure, you want to send documents to customer?")}')">
 					<i></i> {trans("Send documents")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-print-button" onclick="javascript:print_docs();">
+				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_docs();">
 					<i></i> {trans("Print")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-confirm-button" onclick="javascript:mark_docs();">
+				<button type="button" class="lms-ui-button lms-ui-button-confirm" onclick="javascript:mark_docs();">
 					<i></i> {trans("Confirm")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-delete-button" onclick="javascript:delete_docs();">
+				<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delete_docs();">
 					<i></i> {trans("Delete")}
 				</button>
 			{/tab_buttons}

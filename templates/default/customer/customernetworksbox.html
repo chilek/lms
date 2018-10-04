@@ -70,14 +70,14 @@
 							<i class="lms-ui-icon-{if $network.disabled}disconnected{else}connected{/if}"
 									title="{if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></i>
 						</A>
-						<A href="?m=netdel&id={$network.id}" class="lms-ui-delete-button"
+						<A href="?m=netdel&id={$network.id}" class="lms-ui-button-delete"
 								onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')">
 							<i title="{trans("Delete")}"></i>
 						</A>
-						<A href="?m=netedit&id={$network.id}" class="lms-ui-edit-button">
+						<A href="?m=netedit&id={$network.id}" class="lms-ui-button-edit">
 							<i title="{trans("Edit")}"></i>
 						</A>
-						<A href="?m=netinfo&id={$network.id}" class="lms-ui-info-button">
+						<A href="?m=netinfo&id={$network.id}" class="lms-ui-button-info">
 							<i title="{trans("Info")}"></i>
 						</A>&nbsp;
 					</div>

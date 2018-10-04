@@ -226,7 +226,7 @@ $(function() {
 			}, 200);
 	});
 
-	$('.lms-ui-submit-button').one('click', function(e) {
+	$('.lms-ui-button-submit').one('click', function(e) {
 		$(this).unbind('click');
 	});
 
@@ -294,8 +294,8 @@ $(function() {
 		location.href = url;
 	});
 
-	$('.lms-ui-clipboard-button').attr('title', $t('Click copies to clipboard'));
-	new ClipboardJS('.lms-ui-clipboard-button');
+	$('.lms-ui-button-clipboard').attr('title', $t('Click copies to clipboard'));
+	new ClipboardJS('.lms-ui-button-clipboard');
 
 	$(document).on('mouseenter', '[title]', function() {
 		if ($(this).is('[data-tooltip]')) {

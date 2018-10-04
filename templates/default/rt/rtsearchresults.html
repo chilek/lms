@@ -28,11 +28,11 @@
 			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<button type="button" class="lms-ui-button lms-ui-icon-button group-action-run">
+			<button type="button" class="lms-ui-button lms-ui-button-icon group-action-run">
 				<i class="fas fa-reply-all"></i>
 				{trans("Run group action")}
 			</button>
-			<button type="button" class="lms-ui-button lms-ui-add-button"
+			<button type="button" class="lms-ui-button lms-ui-button-add"
 					onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
 				<i></i> {trans("New Ticket")}
 			</button>
@@ -58,7 +58,7 @@
 				<i class="fas fa-reply-all"></i>
 				{trans("Run group action")}
 			</button>
-			<button type="button" class="lms-ui-button lms-ui-add-button"
+			<button type="button" class="lms-ui-button lms-ui-button-add"
 					onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
 				<i></i> {trans("New Ticket")}
 			</button>

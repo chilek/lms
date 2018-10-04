@@ -149,16 +149,16 @@
 					<A href="?m=nodewarn&id={$node.id}">
 						<i class="lms-ui-icon-{if $node.warning}warnon{else}warnoff{/if}" {if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></i>
 					</A>
-					<A class="lms-ui-delete-button" href="?m=nodedel&id={$node.id}" onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
+					<A class="lms-ui-button-delete" href="?m=nodedel&id={$node.id}" onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
 						<i title="{trans("Delete")}"></i>
 					</A>
-					<a class="lms-ui-clone-button" href="?m=nodeadd&ownerid={$customerinfo.id}&premac[]={$node.mac|replace:",":"&premac[]="}&prename={t a=$node.name}$a_clone{/t}{if $node.address_id}&pre_address_id={$node.address_id}{/if}">
+					<a class="lms-ui-button-clone" href="?m=nodeadd&ownerid={$customerinfo.id}&premac[]={$node.mac|replace:",":"&premac[]="}&prename={t a=$node.name}$a_clone{/t}{if $node.address_id}&pre_address_id={$node.address_id}{/if}">
 						<i title="{trans("Clone")}"></i>
 					</a>
-					<A class="lms-ui-edit-button" href="?m=nodeedit&id={$node.id}">
+					<A class="lms-ui-button-edit" href="?m=nodeedit&id={$node.id}">
 						<i title="{trans("Edit")}"></i>
 					</A>
-					<A class="lms-ui-view-button" href="?m=nodeinfo&id={$node.id}">
+					<A class="lms-ui-button-view" href="?m=nodeinfo&id={$node.id}">
 						<i title="{trans("Info")}"></i>
 					</A>&nbsp;
 					<INPUT type="checkbox" class="lms-ui-multi-check" name="marks[{$node.id}]" value="{$node.id}" form="custnodeslist-form">
