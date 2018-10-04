@@ -2088,10 +2088,10 @@ table.lms-ui-datatable > tbody {
 	tr:nth-child(odd):not(.ui-selected) {
 		background-color: @lucid;
 	}
-	tr:not(:last-child) td {
+	tr:not(:last-child):not(.highlight) td {
 		border-bottom: @dotted-line;
 	}
-	tr.parent {
+	tr.parent:not(.highlight) {
 		&:nth-child(4n+1) {
 			background-color: @light;
 		}
@@ -2113,8 +2113,12 @@ table.lms-ui-datatable > tbody {
 			border-bottom: @dotted-line;
 		}
 	}
+	tr.parent.highlight {
+		background-color: @highlight !important;
+	}
 	tr:hover {
 		background-color: @highlight !important;
+		&.child,
 		&.parent + .child {
 			background-color: @highlight !important;
 		}

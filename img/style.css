@@ -8169,16 +8169,16 @@ table.lms-ui-datatable > tbody tr:nth-child(even):not(.ui-selected) {
 table.lms-ui-datatable > tbody tr:nth-child(odd):not(.ui-selected) {
   background-color: #EBE4D6;
 }
-table.lms-ui-datatable > tbody tr:not(:last-child) td {
+table.lms-ui-datatable > tbody tr:not(:last-child):not(.highlight) td {
   border-bottom: 1px dotted grey;
 }
-table.lms-ui-datatable > tbody tr.parent:nth-child(4n+1) {
+table.lms-ui-datatable > tbody tr.parent:not(.highlight):nth-child(4n+1) {
   background-color: #DFD5BD;
 }
-table.lms-ui-datatable > tbody tr.parent:nth-child(4n+3) {
+table.lms-ui-datatable > tbody tr.parent:not(.highlight):nth-child(4n+3) {
   background-color: #EBE4D6;
 }
-table.lms-ui-datatable > tbody tr.parent td {
+table.lms-ui-datatable > tbody tr.parent:not(.highlight) td {
   border-bottom: 0;
 }
 table.lms-ui-datatable > tbody tr.child:nth-child(4n+2) {
@@ -8190,9 +8190,13 @@ table.lms-ui-datatable > tbody tr.child:nth-child(4n+4) {
 table.lms-ui-datatable > tbody tr.child:not(:last-child) {
   border-bottom: 1px dotted grey;
 }
+table.lms-ui-datatable > tbody tr.parent.highlight {
+  background-color: #CCFFCC !important;
+}
 table.lms-ui-datatable > tbody tr:hover {
   background-color: #CCFFCC !important;
 }
+table.lms-ui-datatable > tbody tr:hover.child,
 table.lms-ui-datatable > tbody tr:hover.parent + .child {
   background-color: #CCFFCC !important;
 }

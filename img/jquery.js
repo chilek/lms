@@ -766,6 +766,10 @@ $(function() {
 					}
 				});
 			}
+		}).on('mouseenter', '.child', function() {
+			$(this).prev().addClass('highlight');
+		}).on('mouseleave', '.child', function() {
+			$(this).prev().removeClass('highlight');
 		});
 
 		$(elem).DataTable({
