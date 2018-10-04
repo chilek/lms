@@ -752,6 +752,20 @@ $(function() {
 				}
 				i++;
 			});
+		}).on('responsive-resize.dt', function (e, datatable, columns) {
+			// first fired events contains "-" characters instead of column visibility states
+			// so we should omit this event
+			if (typeof(columns[columns.length - 1]) == 'boolean') {
+				var search_fields = $(this).closest('table').find('.search-row th');
+				$.each(columns, function (index, visible) {
+					datatable.column(index).visible(true);
+					if (visible) {
+						search_fields.eq(index).show();
+					} else {
+						search_fields.eq(index).hide();
+					}
+				});
+			}
 		});
 
 		$(elem).DataTable({
@@ -795,23 +809,6 @@ $(function() {
 					}
 				}
 			}
-		})
-/*
-		.on('mouseenter', 'tbody > tr', function() {
-			$(this).siblings('tr').removeClass('highlight');
-			$(this).addClass('highlight');
-		})
-*/
-		.on('responsive-resize', function (e, datatable, columns) {
-			var search_fields = $(this).closest('table').find('.search-row th');
-			$.each(columns, function(index, visible) {
-				datatable.column(index).visible(true);
-				if (visible) {
-					search_fields.eq(index).show();
-				} else {
-					search_fields.eq(index).hide();
-				}
-			});
 		});
 	}
 
