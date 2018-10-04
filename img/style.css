@@ -5757,6 +5757,9 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-warnoff:before {
   content: "\f071";
 }
+.lms-ui-icon-warnoff {
+  color: black;
+}
 .lms-ui-icon-warnon {
   font-weight: normal;
   vertical-align: -0.125em;
@@ -7807,6 +7810,9 @@ button.lms-ui-fileupload-button.lms-ui-fileupload-dropzone {
 }
 div.lms-ui-fileupload-button-container {
   padding-bottom: 3px;
+}
+a[class*="lms-ui-button-"] > i:before {
+  color: black;
 }
 .lms-ui-rtmessage-current td:first-child {
   border-left: 2px solid brown;
