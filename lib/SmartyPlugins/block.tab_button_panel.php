@@ -27,7 +27,7 @@
 function smarty_block_tab_button_panel($params, $content, $template, $repeat) {
 	if (!$repeat) {
 		return '
-			<div class="lms-ui-button-tab-panel">
+			<div class="lms-ui-tab-button-panel">
 				' . $content . '
 			</div>';
 	}

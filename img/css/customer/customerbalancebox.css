@@ -21,24 +21,24 @@
  *
  *  $Id$
  */
-#customerbalancepanel .lms-ui-button-tab-panel:nth-child(2) .lms-ui-button-mail {
+#customerbalancepanel .lms-ui-tab-button-panel:nth-child(2) .lms-ui-button-mail {
   margin-right: 0.3em;
 }
-#customerbalancepanel .lms-ui-button-tab-panel:nth-child(n+3) {
+#customerbalancepanel .lms-ui-tab-button-panel:nth-child(n+3) {
   border-top: 0;
 }
-#customerbalancepanel .lms-ui-button-tab-panel:nth-child(3) {
+#customerbalancepanel .lms-ui-tab-button-panel:nth-child(3) {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
-#customerbalancepanel .lms-ui-button-tab-panel:nth-child(3) .addbalance-form-cell:nth-child(2) {
+#customerbalancepanel .lms-ui-tab-button-panel:nth-child(3) .addbalance-form-cell:nth-child(2) {
   display: flex;
   flex-direction: column;
 }
-#customerbalancepanel .lms-ui-button-tab-panel:nth-child(3) .addbalance-form-cell:nth-child(2) > *:not(:first-child) {
+#customerbalancepanel .lms-ui-tab-button-panel:nth-child(3) .addbalance-form-cell:nth-child(2) > *:not(:first-child) {
   margin-top: 0.1em;
 }
-#customerbalancepanel .lms-ui-button-tab-panel:nth-child(3) .addbalance-form-cell:not(:first-child) {
+#customerbalancepanel .lms-ui-tab-button-panel:nth-child(3) .addbalance-form-cell:not(:first-child) {
   margin-left: 0.8em;
 }
