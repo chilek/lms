@@ -12,7 +12,7 @@
 {tab_container id="customernodesbox"}
 
 	{tab_header content_id="nodespanel-`$layout.module`"}
-		{tab_header_cell icon="lms-ui-node-icon"}
+		{tab_header_cell icon="lms-ui-icon-node"}
 			<strong>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -76,12 +76,12 @@
 						<div class="lms-ui-tab-table-column name">
 							{if $node.lastonline}
 								{if ($smarty.now-$node.lastonline) > $lastonline_limit}
-									<i class="lms-ui-nodeoff-icon" {tip a=$node.lastonlinedate text="Last online: \$a"}></i>
+									<i class="lms-ui-icon-nodeoff" {tip a=$node.lastonlinedate text="Last online: \$a"}></i>
 								{else}
-									<i class="lms-ui-nodeon-icon" {tip a="on-line" text="Last online: \$a"}></i>
+									<i class="lms-ui-icon-nodeon" {tip a="on-line" text="Last online: \$a"}></i>
 								{/if}
 							{else}
-								<i class="lms-ui-nodeunk-icon"></i>
+								<i class="lms-ui-icon-nodeunk"></i>
 							{/if}
 							<strong>{$node.name}</strong>
 							{if isset($nodeassignments[$node.id])}
@@ -143,11 +143,11 @@
 
 				<div class="lms-ui-tab-table-column buttons">
 					<A href="?m=nodeset&id={$node.id}">
-						<i class="lms-ui-{if $node.access}connected{else}disconnected{/if}-icon"
+						<i class="lms-ui-icon-{if $node.access}connected{else}disconnected{/if}"
 								title="{if $node.access}{trans("Disconnect")}{else}{trans("Connect")}{/if}"></i>
 					</A>
 					<A href="?m=nodewarn&id={$node.id}">
-						<i class="lms-ui-{if $node.warning}warnon{else}warnoff{/if}-icon" {if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></i>
+						<i class="lms-ui-icon-{if $node.warning}warnon{else}warnoff{/if}" {if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></i>
 					</A>
 					<A class="lms-ui-delete-button" href="?m=nodedel&id={$node.id}" onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
 						<i title="{trans("Delete")}"></i>
@@ -180,14 +180,14 @@
 {if $customernodes}
 		{tab_button_panel}
 			{tab_buttons}
-				<i class="lms-ui-plug-icon"></i>
+				<i class="lms-ui-icon-plug"></i>
 				<button type="button" class="lms-ui-button" onclick="javascript:setstatus(1);">
 					{trans("Connect")}
 				</button>
 				<button type="button" class="lms-ui-button" onclick="javascript:setstatus(0);">
 					{trans("Disconnect")}
 				</button>
-				<i class="lms-ui-warning-icon"></i>
+				<i class="lms-ui-icon-warning"></i>
 				<button type="button" class="lms-ui-button" onclick="javascript:setwarning(1);">
 					{trans("Enable")}
 				</button>
@@ -195,7 +195,7 @@
 					{trans("Disable")}
 				</button>
 				{if $allnodegroups}
-				<i class="lms-ui-cg-icon"></i>
+				<i class="lms-ui-icon-cg"></i>
 				<button type="button" class="lms-ui-button" onclick="javascript:setgroup('setgroup');">
 					{trans("Add")}
 				</button>

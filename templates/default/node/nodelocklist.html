@@ -1,75 +1,48 @@
-<TABLE class="lmsbox-inner lms-ui-background-cycle">
-<COLGROUP>
-	<COL style="width: 1%;">
-	<COL style="width: 1%;">
-	<COL style="width: 1%;">
-	<COL style="width: 97%;">
-</COLGROUP>
-<THEAD>
-<TR class="lms-ui-header-panel">
-	<TD class="nobr" COLSPAN="2">{trans("Days:")}</TD>
-	<TD class="nobr">{trans("From:")}</TD>
-	<TD class="nobr">{trans("To:")}</TD>
-	<TD>&nbsp;</TD>
-</TR>
-</THEAD>
-<TBODY>
-{foreach from=$nodelocks item=nodelock}
-<TR class="highlight">
-	<TD class="nobr" COLSPAN="2">
-		{foreach from=$nodelock.days item=day key=daynr}
-			{$_DAYS[$daynr]}&nbsp;
-		{/foreach}
-	</TD>
-	<TD class="nobr">
-		{$nodelock.fhour|string_format:"%02d"}:{$nodelock.fminute|string_format:"%02d"}
-	</TD>
-	<TD class="nobr">
-		{$nodelock.thour|string_format:"%02d"}:{$nodelock.tminute|string_format:"%02d"}
-	</TD>
-	<TD class="text-right nobr">
-		<A HREF="javascript:delNodeLock({$nodelock.id});"><IMG SRC="img/delete.gif" ALT="{trans("Delete")}" {tip text="Remove lock"}></A>
-	</TD>
-</TR>
+{if $nodelocks}
+<div class="lms-ui-tab-table-row header">
+	<div class="lms-ui-tab-table-wrapper col-3">
+		<div class="lms-ui-tab-table-column days">
+			<strong>{trans("Days")}</strong>
+		</div>
+		<div class="lms-ui-tab-table-column from">
+			{trans("From:")}
+		</div>
+		<div class="lms-ui-tab-table-column to">
+			{trans("To:")}
+		</div>
+	</div>
+
+	<div class="lms-ui-tab-table-column buttons">
+		&nbsp;
+	</div>
+</div>
+{/if}
+
+{foreach $nodelocks as $nodelock}
+<div class="lms-ui-tab-table-row">
+	<div class="lms-ui-tab-table-wrapper col-3">
+		<div class="lms-ui-tab-table-column days">
+			{foreach $nodelock.days as $daynr => $day}
+				{$_DAYS[$daynr]}&nbsp;
+			{/foreach}
+		</div>
+		<div class="lms-ui-tab-table-column from">
+			{$nodelock.fhour|string_format:"%02d"}:{$nodelock.fminute|string_format:"%02d"}
+		</div>
+		<div class="lms-ui-tab-table-column to">
+			{$nodelock.thour|string_format:"%02d"}:{$nodelock.tminute|string_format:"%02d"}
+		</div>
+	</div>
+
+	<div class="lms-ui-tab-table-column buttons">
+		<A href="javascript:delNodeLock({$nodelock.id});" class="lms-ui-delete-button">
+			<i title="Remove lock"></i>
+		</A>
+	</div>
+</div>
+
 {foreachelse}
-<TR>
-	<TD colspan="5" class="empty-table">
-		<p>{trans("No locks.")}</p>
-	</TD>
-</TR>
+<div class="lms-ui-tab-empty-table">
+	{trans("No locks.")}
+</div>
 {/foreach}
-<TR class="lms-ui-button-panel">
-	<TD COLSPAN="2" class="nobr">
-		{foreach from=$_DAYS item=dayname key=daynr}
-		<input type="checkbox" name="days[{$daynr}]" id="lockdays_{$daynr}" value="1">
-		<label for="lockdays_{$daynr}">{$dayname}</label>
-		{/foreach}
-	</TD>
-	<TD class="nobr">
-		<select name="fhour">
-		{for $i = 0 to 23}
-			<option value="{$i}">{$i|string_format:"%02d"}</option>
-		{/for}
-		</select>:<select name="fminute">
-		{for $i = 0 to 59}
-			<option value="{$i}">{$i|string_format:"%02d"}</option>
-		{/for}
-		</select>
-	</TD>
-	<TD class="nobr">
-		<select name="thour">
-		{for $i = 0 to 23}
-			<option value="{$i}">{$i|string_format:"%02d"}</option>
-		{/for}
-		</select>:<select name="tminute">
-		{for $i = 0 to 59}
-			<option value="{$i}">{$i|string_format:"%02d"}</option>
-		{/for}
-		</select>
-	</TD>
-	<TD class="text-right nobr" ROWSPAN="2">
-		<A id="nodelockaddlink" HREF="javascript:addNodeLock();" {tip text="Add new lock"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
-	</TD>
-</TR>
-</TBODY>
-</TABLE>

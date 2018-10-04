@@ -28,7 +28,7 @@
 			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<button type="button" class="lms-ui-button lms-ui-button-icon group-action-run">
+			<button type="button" class="lms-ui-button lms-ui-icon-button group-action-run">
 				<i class="fas fa-reply-all"></i>
 				{trans("Run group action")}
 			</button>
@@ -72,9 +72,9 @@
 		function disableLink() {
 			var disabled = $('.lms-ui-multi-check:checked').length < 2;
 			if (disabled) {
-				$('.group-action-run').addClass('lms-ui-button-disabled');
+				$('.group-action-run').prop('disabled', true);
 			} else {
-				$('.group-action-run').removeClass('lms-ui-button-disabled');
+				$('.group-action-run').prop('disabled', false);
 			}
 		}
 		disableLink();
@@ -84,9 +84,6 @@
 		});
 
 		$('.group-action-run').click(function () {
-			if ($(this).is('.lms-ui-button-disabled')) {
-				return false;
-			}
 			var ticketid = [];
 			$('[name="ticketid[]"]:checked').each(function () {
 				ticketid.push($(this).val());

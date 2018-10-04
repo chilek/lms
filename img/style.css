@@ -4197,7 +4197,7 @@ A:hover {
   cursor: pointer;
 }
 A.disabled {
-  color: #888888;
+  color: #888888 !important;
   cursor: no-drop;
 }
 A.disabled:hover {
@@ -4872,64 +4872,16 @@ li.lms-ui-suggestion-item a {
   font-weight: bold;
   padding: 2px 7px 3px 7px;
 }
-button.lms-ui-button {
-  color: #800000;
-  border-radius: 3px;
-  border: 1px solid #615847;
-  color: black;
-  text-decoration: none;
-  padding: 0.33em;
-  padding-top: 0.15em;
-  padding-bottom: 0.15em;
-  background-color: #DFD5BD;
-  background-repeat: no-repeat;
-  background-position: 3px 3px;
-}
-button.lms-ui-button:hover {
-  color: #336600;
-  cursor: pointer;
-  text-decoration: underline;
-}
-button.lms-ui-button.lms-ui-button-icon {
-  padding-left: 25px;
-}
-button.lms-ui-button.lms-ui-button-disabled {
-  color: grey;
-  cursor: no-drop;
-}
-button.lms-ui-button:hover,
-button.lms-ui-button:active {
-  text-decoration: none;
-  outline: none;
-}
-button.lms-ui-button:not(.lms-ui-button-disabled):hover,
-button.lms-ui-button:not(.lms-ui-button-disabled):active {
-  border: 1px solid #615847;
-}
-button.lms-ui-button:not(.lms-ui-button-disabled):hover {
-  background-color: #DFD5BD;
-  box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
-}
-button.lms-ui-button:not(.lms-ui-button-disabled):active {
-  background-color: #CEBD9B;
-  box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
-}
-button.lms-ui-button:not(.lms-ui-button-disabled):focus {
-  outline: none;
-  border: 1px solid black;
-  box-shadow: 0px 0px 1px 1px black;
-}
 .lms-ui-icon {
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-fixed-width-icon {
+.lms-ui-icon-fixed-width {
   width: 1.5em;
   text-align: center;
 }
-.lms-ui-nodesession-icon,
-.lms-ui-session-icon {
+.lms-ui-icon-nodesession,
+.lms-ui-icon-session {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -4943,23 +4895,23 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
   transform: rotate(90deg);
 }
-.lms-ui-nodesession-icon.fa-pull-left,
-.lms-ui-session-icon.fa-pull-left {
+.lms-ui-icon-nodesession.fa-pull-left,
+.lms-ui-icon-session.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodesession-icon.fa-pull-right,
-.lms-ui-session-icon.fa-pull-right {
+.lms-ui-icon-nodesession.fa-pull-right,
+.lms-ui-icon-session.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodesession-icon:before,
-.lms-ui-session-icon:before {
+.lms-ui-icon-nodesession:before,
+.lms-ui-icon-session:before {
   content: "\f362";
 }
-.lms-ui-convert-icon,
-.lms-ui-transform-icon {
+.lms-ui-icon-convert,
+.lms-ui-icon-transform {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -4973,22 +4925,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-convert-icon.fa-pull-left,
-.lms-ui-transform-icon.fa-pull-left {
+.lms-ui-icon-convert.fa-pull-left,
+.lms-ui-icon-transform.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-convert-icon.fa-pull-right,
-.lms-ui-transform-icon.fa-pull-right {
+.lms-ui-icon-convert.fa-pull-right,
+.lms-ui-icon-transform.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-convert-icon:before,
-.lms-ui-transform-icon:before {
+.lms-ui-icon-convert:before,
+.lms-ui-icon-transform:before {
   content: "\f362";
 }
-.lms-ui-correct-icon,
-.lms-ui-correction-icon {
+.lms-ui-icon-correct,
+.lms-ui-icon-correction {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5002,23 +4953,22 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-correct-icon.fa-pull-left,
-.lms-ui-correction-icon.fa-pull-left {
+.lms-ui-icon-correct.fa-pull-left,
+.lms-ui-icon-correction.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-correct-icon.fa-pull-right,
-.lms-ui-correction-icon.fa-pull-right {
+.lms-ui-icon-correct.fa-pull-right,
+.lms-ui-icon-correction.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-correct-icon:before,
-.lms-ui-correction-icon:before {
+.lms-ui-icon-correct:before,
+.lms-ui-icon-correction:before {
   content: "\f0ad";
 }
-.lms-ui-cashsource-icon,
-.lms-ui-isource-icon,
-.lms-ui-importsource-icon {
+.lms-ui-icon-cashsource,
+.lms-ui-icon-isource,
+.lms-ui-icon-importsource {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5032,25 +4982,24 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-cashsource-icon.fa-pull-left,
-.lms-ui-isource-icon.fa-pull-left,
-.lms-ui-importsource-icon.fa-pull-left {
+.lms-ui-icon-cashsource.fa-pull-left,
+.lms-ui-icon-isource.fa-pull-left,
+.lms-ui-icon-importsource.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-cashsource-icon.fa-pull-right,
-.lms-ui-isource-icon.fa-pull-right,
-.lms-ui-importsource-icon.fa-pull-right {
+.lms-ui-icon-cashsource.fa-pull-right,
+.lms-ui-icon-isource.fa-pull-right,
+.lms-ui-icon-importsource.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-cashsource-icon:before,
-.lms-ui-isource-icon:before,
-.lms-ui-importsource-icon:before {
+.lms-ui-icon-cashsource:before,
+.lms-ui-icon-isource:before,
+.lms-ui-icon-importsource:before {
   content: "\f570";
 }
-.lms-ui-debitnote-icon,
-.lms-ui-dnote-icon {
+.lms-ui-icon-debitnote,
+.lms-ui-icon-dnote {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5064,22 +5013,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-debitnote-icon.fa-pull-left,
-.lms-ui-dnote-icon.fa-pull-left {
+.lms-ui-icon-debitnote.fa-pull-left,
+.lms-ui-icon-dnote.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-debitnote-icon.fa-pull-right,
-.lms-ui-dnote-icon.fa-pull-right {
+.lms-ui-icon-debitnote.fa-pull-right,
+.lms-ui-icon-dnote.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-debitnote-icon:before,
-.lms-ui-dnote-icon:before {
+.lms-ui-icon-debitnote:before,
+.lms-ui-icon-dnote:before {
   content: "\f571";
 }
-.lms-ui-money-icon,
-.lms-ui-cash-icon {
+.lms-ui-icon-money,
+.lms-ui-icon-cash {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5093,22 +5041,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-money-icon.fa-pull-left,
-.lms-ui-cash-icon.fa-pull-left {
+.lms-ui-icon-money.fa-pull-left,
+.lms-ui-icon-cash.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-money-icon.fa-pull-right,
-.lms-ui-cash-icon.fa-pull-right {
+.lms-ui-icon-money.fa-pull-right,
+.lms-ui-icon-cash.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-money-icon:before,
-.lms-ui-cash-icon:before {
+.lms-ui-icon-money:before,
+.lms-ui-icon-cash:before {
   content: "\f0d6";
 }
-.lms-ui-hourglass-icon,
-.lms-ui-wait-icon {
+.lms-ui-icon-hourglass,
+.lms-ui-icon-wait {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5122,22 +5069,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 400;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-hourglass-icon.fa-pull-left,
-.lms-ui-wait-icon.fa-pull-left {
+.lms-ui-icon-hourglass.fa-pull-left,
+.lms-ui-icon-wait.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-hourglass-icon.fa-pull-right,
-.lms-ui-wait-icon.fa-pull-right {
+.lms-ui-icon-hourglass.fa-pull-right,
+.lms-ui-icon-wait.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-hourglass-icon:before,
-.lms-ui-wait-icon:before {
+.lms-ui-icon-hourglass:before,
+.lms-ui-icon-wait:before {
   content: "\f254";
 }
-.lms-ui-options-icon,
-.lms-ui-option-icon {
+.lms-ui-icon-options,
+.lms-ui-icon-option {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5151,22 +5097,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-options-icon.fa-pull-left,
-.lms-ui-option-icon.fa-pull-left {
+.lms-ui-icon-options.fa-pull-left,
+.lms-ui-icon-option.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-options-icon.fa-pull-right,
-.lms-ui-option-icon.fa-pull-right {
+.lms-ui-icon-options.fa-pull-right,
+.lms-ui-icon-option.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-options-icon:before,
-.lms-ui-option-icon:before {
+.lms-ui-icon-options:before,
+.lms-ui-icon-option:before {
   content: "\f0ce";
 }
-.lms-ui-assignment-icon,
-.lms-ui-assign-icon {
+.lms-ui-icon-assignment,
+.lms-ui-icon-assign {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5180,22 +5125,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-assignment-icon.fa-pull-left,
-.lms-ui-assign-icon.fa-pull-left {
+.lms-ui-icon-assignment.fa-pull-left,
+.lms-ui-icon-assign.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-assignment-icon.fa-pull-right,
-.lms-ui-assign-icon.fa-pull-right {
+.lms-ui-icon-assignment.fa-pull-right,
+.lms-ui-icon-assign.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-assignment-icon:before,
-.lms-ui-assign-icon:before {
+.lms-ui-icon-assignment:before,
+.lms-ui-icon-assign:before {
   content: "\f53d";
 }
-.lms-ui-save-icon,
-.lms-ui-submit-icon {
+.lms-ui-icon-save,
+.lms-ui-icon-submit {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5209,21 +5153,20 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-save-icon.fa-pull-left,
-.lms-ui-submit-icon.fa-pull-left {
+.lms-ui-icon-save.fa-pull-left,
+.lms-ui-icon-submit.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-save-icon.fa-pull-right,
-.lms-ui-submit-icon.fa-pull-right {
+.lms-ui-icon-save.fa-pull-right,
+.lms-ui-icon-submit.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-save-icon:before,
-.lms-ui-submit-icon:before {
+.lms-ui-icon-save:before,
+.lms-ui-icon-submit:before {
   content: "\f0c7";
 }
-.lms-ui-cancel-icon {
+.lms-ui-icon-cancel {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5237,19 +5180,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-cancel-icon.fa-pull-left {
+.lms-ui-icon-cancel.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-cancel-icon.fa-pull-right {
+.lms-ui-icon-cancel.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-cancel-icon:before {
+.lms-ui-icon-cancel:before {
   content: "\f55a";
 }
-.lms-ui-clone-icon,
-.lms-ui-copy-icon {
+.lms-ui-icon-clone,
+.lms-ui-icon-copy {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5263,22 +5205,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-clone-icon.fa-pull-left,
-.lms-ui-copy-icon.fa-pull-left {
+.lms-ui-icon-clone.fa-pull-left,
+.lms-ui-icon-copy.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-clone-icon.fa-pull-right,
-.lms-ui-copy-icon.fa-pull-right {
+.lms-ui-icon-clone.fa-pull-right,
+.lms-ui-icon-copy.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-clone-icon:before,
-.lms-ui-copy-icon:before {
+.lms-ui-icon-clone:before,
+.lms-ui-icon-copy:before {
   content: "\f0c5";
 }
-.lms-ui-delete-icon,
-.lms-ui-remove-icon {
+.lms-ui-icon-delete,
+.lms-ui-icon-remove {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5292,23 +5233,20 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-delete-icon.fa-pull-left,
-.lms-ui-remove-icon.fa-pull-left {
+.lms-ui-icon-delete.fa-pull-left,
+.lms-ui-icon-remove.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-delete-icon.fa-pull-right,
-.lms-ui-remove-icon.fa-pull-right {
+.lms-ui-icon-delete.fa-pull-right,
+.lms-ui-icon-remove.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-delete-icon:before,
-.lms-ui-remove-icon:before {
+.lms-ui-icon-delete:before,
+.lms-ui-icon-remove:before {
   content: "\f12d";
 }
-.lms-ui-edit-icon,
-.lms-ui-change-icon,
-.lms-ui-modify-icon {
+.lms-ui-icon-trash {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5322,25 +5260,50 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-edit-icon.fa-pull-left,
-.lms-ui-change-icon.fa-pull-left,
-.lms-ui-modify-icon.fa-pull-left {
+.lms-ui-icon-trash.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-edit-icon.fa-pull-right,
-.lms-ui-change-icon.fa-pull-right,
-.lms-ui-modify-icon.fa-pull-right {
+.lms-ui-icon-trash.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-edit-icon:before,
-.lms-ui-change-icon:before,
-.lms-ui-modify-icon:before {
+.lms-ui-icon-trash:before {
+  content: "\f1f8";
+}
+.lms-ui-icon-edit,
+.lms-ui-icon-change,
+.lms-ui-icon-modify {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-edit.fa-pull-left,
+.lms-ui-icon-change.fa-pull-left,
+.lms-ui-icon-modify.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-edit.fa-pull-right,
+.lms-ui-icon-change.fa-pull-right,
+.lms-ui-icon-modify.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-edit:before,
+.lms-ui-icon-change:before,
+.lms-ui-icon-modify:before {
   content: "\f044";
 }
-.lms-ui-fileupload-icon,
-.lms-ui-upload-icon {
+.lms-ui-icon-fileupload,
+.lms-ui-icon-upload {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5354,22 +5317,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-fileupload-icon.fa-pull-left,
-.lms-ui-upload-icon.fa-pull-left {
+.lms-ui-icon-fileupload.fa-pull-left,
+.lms-ui-icon-upload.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-fileupload-icon.fa-pull-right,
-.lms-ui-upload-icon.fa-pull-right {
+.lms-ui-icon-fileupload.fa-pull-right,
+.lms-ui-icon-upload.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-fileupload-icon:before,
-.lms-ui-upload-icon:before {
+.lms-ui-icon-fileupload:before,
+.lms-ui-icon-upload:before {
   content: "\f0c6";
 }
-.lms-ui-back-icon,
-.lms-ui-return-icon {
+.lms-ui-icon-back,
+.lms-ui-icon-return {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5383,23 +5345,22 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-back-icon.fa-pull-left,
-.lms-ui-return-icon.fa-pull-left {
+.lms-ui-icon-back.fa-pull-left,
+.lms-ui-icon-return.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-back-icon.fa-pull-right,
-.lms-ui-return-icon.fa-pull-right {
+.lms-ui-icon-back.fa-pull-right,
+.lms-ui-icon-return.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-back-icon:before,
-.lms-ui-return-icon:before {
+.lms-ui-icon-back:before,
+.lms-ui-icon-return:before {
   content: "\f151";
 }
-.lms-ui-add-icon,
-.lms-ui-new-icon,
-.lms-ui-append-icon {
+.lms-ui-icon-add,
+.lms-ui-icon-new,
+.lms-ui-icon-append {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5413,24 +5374,23 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-add-icon.fa-pull-left,
-.lms-ui-new-icon.fa-pull-left,
-.lms-ui-append-icon.fa-pull-left {
+.lms-ui-icon-add.fa-pull-left,
+.lms-ui-icon-new.fa-pull-left,
+.lms-ui-icon-append.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-add-icon.fa-pull-right,
-.lms-ui-new-icon.fa-pull-right,
-.lms-ui-append-icon.fa-pull-right {
+.lms-ui-icon-add.fa-pull-right,
+.lms-ui-icon-new.fa-pull-right,
+.lms-ui-icon-append.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-add-icon:before,
-.lms-ui-new-icon:before,
-.lms-ui-append-icon:before {
+.lms-ui-icon-add:before,
+.lms-ui-icon-new:before,
+.lms-ui-icon-append:before {
   content: "\f0fe";
 }
-.lms-ui-print-icon {
+.lms-ui-icon-print {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5444,19 +5404,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-print-icon.fa-pull-left {
+.lms-ui-icon-print.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-print-icon.fa-pull-right {
+.lms-ui-icon-print.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-print-icon:before {
+.lms-ui-icon-print:before {
   content: "\f02f";
 }
-.lms-ui-confirm-icon,
-.lms-ui-apply-icon {
+.lms-ui-icon-confirm,
+.lms-ui-icon-apply {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5470,22 +5429,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-confirm-icon.fa-pull-left,
-.lms-ui-apply-icon.fa-pull-left {
+.lms-ui-icon-confirm.fa-pull-left,
+.lms-ui-icon-apply.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-confirm-icon.fa-pull-right,
-.lms-ui-apply-icon.fa-pull-right {
+.lms-ui-icon-confirm.fa-pull-right,
+.lms-ui-icon-apply.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-confirm-icon:before,
-.lms-ui-apply-icon:before {
+.lms-ui-icon-confirm:before,
+.lms-ui-icon-apply:before {
   content: "\f560";
 }
-.lms-ui-mail-icon,
-.lms-ui-send-icon {
+.lms-ui-icon-mail,
+.lms-ui-icon-send {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5499,22 +5457,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-mail-icon.fa-pull-left,
-.lms-ui-send-icon.fa-pull-left {
+.lms-ui-icon-mail.fa-pull-left,
+.lms-ui-icon-send.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-mail-icon.fa-pull-right,
-.lms-ui-send-icon.fa-pull-right {
+.lms-ui-icon-mail.fa-pull-right,
+.lms-ui-icon-send.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-mail-icon:before,
-.lms-ui-send-icon:before {
+.lms-ui-icon-mail:before,
+.lms-ui-icon-send:before {
   content: "\f0e0";
 }
-.lms-ui-phone-icon,
-.lms-ui-call-icon {
+.lms-ui-icon-phone,
+.lms-ui-icon-call {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5528,22 +5485,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-phone-icon.fa-pull-left,
-.lms-ui-call-icon.fa-pull-left {
+.lms-ui-icon-phone.fa-pull-left,
+.lms-ui-icon-call.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-phone-icon.fa-pull-right,
-.lms-ui-call-icon.fa-pull-right {
+.lms-ui-icon-phone.fa-pull-right,
+.lms-ui-icon-call.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-phone-icon:before,
-.lms-ui-call-icon:before {
+.lms-ui-icon-phone:before,
+.lms-ui-icon-call:before {
   content: "\f095";
 }
-.lms-ui-sms-icon,
-.lms-ui-mobile-icon {
+.lms-ui-icon-sms,
+.lms-ui-icon-mobile {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5557,22 +5513,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-sms-icon.fa-pull-left,
-.lms-ui-mobile-icon.fa-pull-left {
+.lms-ui-icon-sms.fa-pull-left,
+.lms-ui-icon-mobile.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-sms-icon.fa-pull-right,
-.lms-ui-mobile-icon.fa-pull-right {
+.lms-ui-icon-sms.fa-pull-right,
+.lms-ui-icon-mobile.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-sms-icon:before,
-.lms-ui-mobile-icon:before {
+.lms-ui-icon-sms:before,
+.lms-ui-icon-mobile:before {
   content: "\f3cd";
 }
-.lms-ui-www-icon,
-.lms-ui-web-icon {
+.lms-ui-icon-www,
+.lms-ui-icon-web {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5586,22 +5541,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-www-icon.fa-pull-left,
-.lms-ui-web-icon.fa-pull-left {
+.lms-ui-icon-www.fa-pull-left,
+.lms-ui-icon-web.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-www-icon.fa-pull-right,
-.lms-ui-web-icon.fa-pull-right {
+.lms-ui-icon-www.fa-pull-right,
+.lms-ui-icon-web.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-www-icon:before,
-.lms-ui-web-icon:before {
+.lms-ui-icon-www:before,
+.lms-ui-icon-web:before {
   content: "\f268";
 }
-.lms-ui-userpanel-icon,
-.lms-ui-panel-icon {
+.lms-ui-icon-userpanel,
+.lms-ui-icon-panel {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5615,22 +5569,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-userpanel-icon.fa-pull-left,
-.lms-ui-panel-icon.fa-pull-left {
+.lms-ui-icon-userpanel.fa-pull-left,
+.lms-ui-icon-panel.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-userpanel-icon.fa-pull-right,
-.lms-ui-panel-icon.fa-pull-right {
+.lms-ui-icon-userpanel.fa-pull-right,
+.lms-ui-icon-panel.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-userpanel-icon:before,
-.lms-ui-panel-icon:before {
+.lms-ui-icon-userpanel:before,
+.lms-ui-icon-panel:before {
   color: darkorange;
   content: "\f0c0";
 }
-.lms-ui-clipboard-icon {
+.lms-ui-icon-clipboard {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5644,18 +5597,17 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-clipboard-icon.fa-pull-left {
+.lms-ui-icon-clipboard.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-clipboard-icon.fa-pull-right {
+.lms-ui-icon-clipboard.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-clipboard-icon:before {
+.lms-ui-icon-clipboard:before {
   content: "\f328";
 }
-.lms-ui-view-icon {
+.lms-ui-icon-view {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5669,24 +5621,23 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-view-icon.fa-pull-left {
+.lms-ui-icon-view.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-view-icon.fa-pull-right {
+.lms-ui-icon-view.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-view-icon:before {
+.lms-ui-icon-view:before {
   content: "\f06e";
 }
-.lms-ui-view-icon.pdf:before {
+.lms-ui-icon-view.pdf:before {
   content: "\f1c1";
 }
-.lms-ui-view-icon.xls:before {
+.lms-ui-icon-view.xls:before {
   content: "\f1c3";
 }
-.lms-ui-info-icon {
+.lms-ui-icon-info {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5700,20 +5651,19 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-info-icon.fa-pull-left {
+.lms-ui-icon-info.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-info-icon.fa-pull-right {
+.lms-ui-icon-info.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-info-icon:before {
+.lms-ui-icon-info:before {
   content: "\f129";
 }
-.lms-ui-nodegroup-icon,
-.lms-ui-ngroup-icon,
-.lms-ui-ng-icon {
+.lms-ui-icon-nodegroup,
+.lms-ui-icon-ngroup,
+.lms-ui-icon-ng {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5727,26 +5677,25 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-nodegroup-icon.fa-pull-left,
-.lms-ui-ngroup-icon.fa-pull-left,
-.lms-ui-ng-icon.fa-pull-left {
+.lms-ui-icon-nodegroup.fa-pull-left,
+.lms-ui-icon-ngroup.fa-pull-left,
+.lms-ui-icon-ng.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodegroup-icon.fa-pull-right,
-.lms-ui-ngroup-icon.fa-pull-right,
-.lms-ui-ng-icon.fa-pull-right {
+.lms-ui-icon-nodegroup.fa-pull-right,
+.lms-ui-icon-ngroup.fa-pull-right,
+.lms-ui-icon-ng.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodegroup-icon:before,
-.lms-ui-ngroup-icon:before,
-.lms-ui-ng-icon:before {
+.lms-ui-icon-nodegroup:before,
+.lms-ui-icon-ngroup:before,
+.lms-ui-icon-ng:before {
   content: "\f5fd";
 }
-.lms-ui-customergroup-icon,
-.lms-ui-cgroup-icon,
-.lms-ui-cg-icon {
+.lms-ui-icon-customergroup,
+.lms-ui-icon-cgroup,
+.lms-ui-icon-cg {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5760,26 +5709,25 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-customergroup-icon.fa-pull-left,
-.lms-ui-cgroup-icon.fa-pull-left,
-.lms-ui-cg-icon.fa-pull-left {
+.lms-ui-icon-customergroup.fa-pull-left,
+.lms-ui-icon-cgroup.fa-pull-left,
+.lms-ui-icon-cg.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-customergroup-icon.fa-pull-right,
-.lms-ui-cgroup-icon.fa-pull-right,
-.lms-ui-cg-icon.fa-pull-right {
+.lms-ui-icon-customergroup.fa-pull-right,
+.lms-ui-icon-cgroup.fa-pull-right,
+.lms-ui-icon-cg.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-customergroup-icon:before,
-.lms-ui-cgroup-icon:before,
-.lms-ui-cg-icon:before {
+.lms-ui-icon-customergroup:before,
+.lms-ui-icon-cgroup:before,
+.lms-ui-icon-cg:before {
   content: "\f0c0";
 }
-.lms-ui-warning-icon,
-.lms-ui-warn-icon,
-.lms-ui-warnoff-icon {
+.lms-ui-icon-warning,
+.lms-ui-icon-warn,
+.lms-ui-icon-warnoff {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5793,24 +5741,23 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-warning-icon.fa-pull-left,
-.lms-ui-warn-icon.fa-pull-left,
-.lms-ui-warnoff-icon.fa-pull-left {
+.lms-ui-icon-warning.fa-pull-left,
+.lms-ui-icon-warn.fa-pull-left,
+.lms-ui-icon-warnoff.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-warning-icon.fa-pull-right,
-.lms-ui-warn-icon.fa-pull-right,
-.lms-ui-warnoff-icon.fa-pull-right {
+.lms-ui-icon-warning.fa-pull-right,
+.lms-ui-icon-warn.fa-pull-right,
+.lms-ui-icon-warnoff.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-warning-icon:before,
-.lms-ui-warn-icon:before,
-.lms-ui-warnoff-icon:before {
+.lms-ui-icon-warning:before,
+.lms-ui-icon-warn:before,
+.lms-ui-icon-warnoff:before {
   content: "\f071";
 }
-.lms-ui-warnon-icon {
+.lms-ui-icon-warnon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5824,24 +5771,23 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
   color: gold;
   text-stroke-width: 1px;
   text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
-.lms-ui-warnon-icon.fa-pull-left {
+.lms-ui-icon-warnon.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-warnon-icon.fa-pull-right {
+.lms-ui-icon-warnon.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-warnon-icon:before {
+.lms-ui-icon-warnon:before {
   content: "\f071";
 }
-.lms-ui-connect-icon,
-.lms-ui-plug-icon {
+.lms-ui-icon-connect,
+.lms-ui-icon-plug {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5855,21 +5801,20 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-connect-icon.fa-pull-left,
-.lms-ui-plug-icon.fa-pull-left {
+.lms-ui-icon-connect.fa-pull-left,
+.lms-ui-icon-plug.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-connect-icon.fa-pull-right,
-.lms-ui-plug-icon.fa-pull-right {
+.lms-ui-icon-connect.fa-pull-right,
+.lms-ui-icon-plug.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-connect-icon:before,
-.lms-ui-plug-icon:before {
+.lms-ui-icon-connect:before,
+.lms-ui-icon-plug:before {
   content: "\f1e6";
 }
-.lms-ui-connected-icon {
+.lms-ui-icon-connected {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5883,23 +5828,22 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
   color: gold;
   text-stroke-width: 1px;
   text-stroke-color: black;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
-.lms-ui-connected-icon.fa-pull-left {
+.lms-ui-icon-connected.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-connected-icon.fa-pull-right {
+.lms-ui-icon-connected.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-connected-icon:before {
+.lms-ui-icon-connected:before {
   content: "\f1e6";
 }
-.lms-ui-disconnected-icon {
+.lms-ui-icon-disconnected {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5915,16 +5859,16 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   vertical-align: unset;
   color: black;
 }
-.lms-ui-disconnected-icon.fa-pull-left {
+.lms-ui-icon-disconnected.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-disconnected-icon.fa-pull-right {
+.lms-ui-icon-disconnected.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-disconnected-icon:before {
+.lms-ui-icon-disconnected:before {
   content: "\f1e6";
 }
-.lms-ui-node-icon {
+.lms-ui-icon-node {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5938,23 +5882,21 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-node-icon.fa-pull-left {
+.lms-ui-icon-node.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-node-icon.fa-pull-right {
+.lms-ui-icon-node.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-node-icon:before {
+.lms-ui-icon-node:before {
   content: "\f108";
 }
-.lms-ui-nodeoff-icon {
+.lms-ui-icon-nodeoff {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -5963,33 +5905,38 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("node.gif");
 }
-.lms-ui-nodeoff-icon.fa-pull-left {
+.lms-ui-icon-nodeoff.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodeoff-icon.fa-pull-right {
+.lms-ui-icon-nodeoff.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodeoff-icon:before {
+.lms-ui-icon-nodeoff:before {
   content: "\f108";
 }
-.lms-ui-nodeoff-icon.fa-pull-left {
+.lms-ui-icon-nodeoff.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodeoff-icon.fa-pull-right {
+.lms-ui-icon-nodeoff.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodeoff-icon:before {
+.lms-ui-icon-nodeoff:before {
   color: navy;
   content: "\f108";
 }
-.lms-ui-nodeon-icon {
+.lms-ui-icon-nodeon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -5998,37 +5945,42 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("node.gif");
   text-stroke-width: 1px;
   text-stroke-color: gold;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: gold;
 }
-.lms-ui-nodeon-icon.fa-pull-left {
+.lms-ui-icon-nodeon.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodeon-icon.fa-pull-right {
+.lms-ui-icon-nodeon.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodeon-icon:before {
+.lms-ui-icon-nodeon:before {
   content: "\f108";
 }
-.lms-ui-nodeon-icon.fa-pull-left {
+.lms-ui-icon-nodeon.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodeon-icon.fa-pull-right {
+.lms-ui-icon-nodeon.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodeon-icon:before {
+.lms-ui-icon-nodeon:before {
   color: navy;
   content: "\f108";
 }
-.lms-ui-nodeunk-icon {
+.lms-ui-icon-nodeunk {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -6037,34 +5989,40 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("node.gif");
   text-stroke-width: 1px;
   text-stroke-color: red;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: red;
 }
-.lms-ui-nodeunk-icon.fa-pull-left {
+.lms-ui-icon-nodeunk.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodeunk-icon.fa-pull-right {
+.lms-ui-icon-nodeunk.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodeunk-icon:before {
+.lms-ui-icon-nodeunk:before {
   content: "\f108";
 }
-.lms-ui-nodeunk-icon.fa-pull-left {
+.lms-ui-icon-nodeunk.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-nodeunk-icon.fa-pull-right {
+.lms-ui-icon-nodeunk.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-nodeunk-icon:before {
+.lms-ui-icon-nodeunk:before {
   color: navy;
   content: "\f108";
 }
-.lms-ui-netdev-icon,
-.lms-ui-netdevice-icon,
-.lms-ui-device-icon {
+.lms-ui-icon-netdev,
+.lms-ui-icon-netdevice,
+.lms-ui-icon-device {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6078,24 +6036,23 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-netdev-icon.fa-pull-left,
-.lms-ui-netdevice-icon.fa-pull-left,
-.lms-ui-device-icon.fa-pull-left {
+.lms-ui-icon-netdev.fa-pull-left,
+.lms-ui-icon-netdevice.fa-pull-left,
+.lms-ui-icon-device.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-netdev-icon.fa-pull-right,
-.lms-ui-netdevice-icon.fa-pull-right,
-.lms-ui-device-icon.fa-pull-right {
+.lms-ui-icon-netdev.fa-pull-right,
+.lms-ui-icon-netdevice.fa-pull-right,
+.lms-ui-icon-device.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-netdev-icon:before,
-.lms-ui-netdevice-icon:before,
-.lms-ui-device-icon:before {
+.lms-ui-icon-netdev:before,
+.lms-ui-icon-netdevice:before,
+.lms-ui-icon-device:before {
   content: "\f0a0";
 }
-.lms-ui-customer-icon {
+.lms-ui-icon-customer {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6109,19 +6066,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-customer-icon.fa-pull-left {
+.lms-ui-icon-customer.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-customer-icon.fa-pull-right {
+.lms-ui-icon-customer.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-customer-icon:before {
+.lms-ui-icon-customer:before {
   color: darkorange;
   content: "\f007";
 }
-.lms-ui-userpanel-icon {
+.lms-ui-icon-userpanel {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6135,19 +6091,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-userpanel-icon.fa-pull-left {
+.lms-ui-icon-userpanel.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-userpanel-icon.fa-pull-right {
+.lms-ui-icon-userpanel.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-userpanel-icon:before {
+.lms-ui-icon-userpanel:before {
   color: orange;
   content: "\f0c0";
 }
-.lms-ui-phone-icon {
+.lms-ui-icon-phone {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6161,19 +6116,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-phone-icon.fa-pull-left {
+.lms-ui-icon-phone.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-phone-icon.fa-pull-right {
+.lms-ui-icon-phone.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-phone-icon:before {
+.lms-ui-icon-phone:before {
   color: darkred;
   content: "\f095";
 }
-.lms-ui-node-icon {
+.lms-ui-icon-node {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6187,21 +6141,20 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-node-icon.fa-pull-left {
+.lms-ui-icon-node.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-node-icon.fa-pull-right {
+.lms-ui-icon-node.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-node-icon:before {
+.lms-ui-icon-node:before {
   color: navy;
   content: "\f108";
 }
-.lms-ui-ipnetwork-icon,
-.lms-ui-networks-icon,
-.lms-ui-network-icon {
+.lms-ui-icon-ipnetwork,
+.lms-ui-icon-networks,
+.lms-ui-icon-network {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6215,25 +6168,24 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-ipnetwork-icon.fa-pull-left,
-.lms-ui-networks-icon.fa-pull-left,
-.lms-ui-network-icon.fa-pull-left {
+.lms-ui-icon-ipnetwork.fa-pull-left,
+.lms-ui-icon-networks.fa-pull-left,
+.lms-ui-icon-network.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-ipnetwork-icon.fa-pull-right,
-.lms-ui-networks-icon.fa-pull-right,
-.lms-ui-network-icon.fa-pull-right {
+.lms-ui-icon-ipnetwork.fa-pull-right,
+.lms-ui-icon-networks.fa-pull-right,
+.lms-ui-icon-network.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-ipnetwork-icon:before,
-.lms-ui-networks-icon:before,
-.lms-ui-network-icon:before {
+.lms-ui-icon-ipnetwork:before,
+.lms-ui-icon-networks:before,
+.lms-ui-icon-network:before {
   color: darkslategray;
   content: "\f0ac";
 }
-.lms-ui-netdev-icon {
+.lms-ui-icon-netdev {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6247,19 +6199,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-netdev-icon.fa-pull-left {
+.lms-ui-icon-netdev.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-netdev-icon.fa-pull-right {
+.lms-ui-icon-netdev.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-netdev-icon:before {
+.lms-ui-icon-netdev:before {
   color: mediumslateblue;
   content: "\f0a0";
 }
-.lms-ui-user-icon {
+.lms-ui-icon-user {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6273,19 +6224,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-user-icon.fa-pull-left {
+.lms-ui-icon-user.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-user-icon.fa-pull-right {
+.lms-ui-icon-user.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-user-icon:before {
+.lms-ui-icon-user:before {
   color: darkorange;
   content: "\f007";
 }
-.lms-ui-netnode-icon {
+.lms-ui-icon-netnode {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6299,19 +6249,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-netnode-icon.fa-pull-left {
+.lms-ui-icon-netnode.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-netnode-icon.fa-pull-right {
+.lms-ui-icon-netnode.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-netnode-icon:before {
+.lms-ui-icon-netnode:before {
   color: brown;
   content: "\f5fd";
 }
-.lms-ui-helpdesk-icon {
+.lms-ui-icon-helpdesk {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6325,19 +6274,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-helpdesk-icon.fa-pull-left {
+.lms-ui-icon-helpdesk.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-helpdesk-icon.fa-pull-right {
+.lms-ui-icon-helpdesk.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-helpdesk-icon:before {
+.lms-ui-icon-helpdesk:before {
   color: darkblue;
   content: "\f47e";
 }
-.lms-ui-calendar-icon {
+.lms-ui-icon-calendar {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6351,18 +6299,17 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-calendar-icon.fa-pull-left {
+.lms-ui-icon-calendar.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-calendar-icon.fa-pull-right {
+.lms-ui-icon-calendar.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-calendar-icon:before {
+.lms-ui-icon-calendar:before {
   content: "\f073";
 }
-.lms-ui-timetable-icon {
+.lms-ui-icon-timetable {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6376,21 +6323,20 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-timetable-icon.fa-pull-left {
+.lms-ui-icon-timetable.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-timetable-icon.fa-pull-right {
+.lms-ui-icon-timetable.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-timetable-icon:before {
+.lms-ui-icon-timetable:before {
   content: "\f073";
 }
-.lms-ui-timetable-icon:before {
+.lms-ui-icon-timetable:before {
   color: dodgerblue;
 }
-.lms-ui-administration-icon {
+.lms-ui-icon-administration {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6404,19 +6350,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-administration-icon.fa-pull-left {
+.lms-ui-icon-administration.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-administration-icon.fa-pull-right {
+.lms-ui-icon-administration.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-administration-icon:before {
+.lms-ui-icon-administration:before {
   color: red;
   content: "\f54a";
 }
-.lms-ui-reload-icon {
+.lms-ui-icon-reload {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6430,19 +6375,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-reload-icon.fa-pull-left {
+.lms-ui-icon-reload.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-reload-icon.fa-pull-right {
+.lms-ui-icon-reload.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-reload-icon:before {
+.lms-ui-icon-reload:before {
   color: red;
   content: "\f021";
 }
-.lms-ui-logout-icon {
+.lms-ui-icon-logout {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6456,19 +6400,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-logout-icon.fa-pull-left {
+.lms-ui-icon-logout.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-logout-icon.fa-pull-right {
+.lms-ui-icon-logout.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-logout-icon:before {
+.lms-ui-icon-logout:before {
   color: red;
   content: "\f011";
 }
-.lms-ui-configuration-icon {
+.lms-ui-icon-configuration {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6482,25 +6425,24 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-configuration-icon.fa-pull-left {
+.lms-ui-icon-configuration.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-configuration-icon.fa-pull-right {
+.lms-ui-icon-configuration.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-configuration-icon:before {
+.lms-ui-icon-configuration:before {
   color: red;
   content: "\f0ad";
 }
-.lms-ui-archiveview-icon,
-.lms-ui-archive-icon,
-.lms-ui-transactions-icon,
-.lms-ui-transaction-icon,
-.lms-ui-logging-icon,
-.lms-ui-log-icon,
-.lms-ui-history-icon {
+.lms-ui-icon-archiveview,
+.lms-ui-icon-archive,
+.lms-ui-icon-transactions,
+.lms-ui-icon-transaction,
+.lms-ui-icon-logging,
+.lms-ui-icon-log,
+.lms-ui-icon-history {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6514,37 +6456,36 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-archiveview-icon.fa-pull-left,
-.lms-ui-archive-icon.fa-pull-left,
-.lms-ui-transactions-icon.fa-pull-left,
-.lms-ui-transaction-icon.fa-pull-left,
-.lms-ui-logging-icon.fa-pull-left,
-.lms-ui-log-icon.fa-pull-left,
-.lms-ui-history-icon.fa-pull-left {
+.lms-ui-icon-archiveview.fa-pull-left,
+.lms-ui-icon-archive.fa-pull-left,
+.lms-ui-icon-transactions.fa-pull-left,
+.lms-ui-icon-transaction.fa-pull-left,
+.lms-ui-icon-logging.fa-pull-left,
+.lms-ui-icon-log.fa-pull-left,
+.lms-ui-icon-history.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-archiveview-icon.fa-pull-right,
-.lms-ui-archive-icon.fa-pull-right,
-.lms-ui-transactions-icon.fa-pull-right,
-.lms-ui-transaction-icon.fa-pull-right,
-.lms-ui-logging-icon.fa-pull-right,
-.lms-ui-log-icon.fa-pull-right,
-.lms-ui-history-icon.fa-pull-right {
+.lms-ui-icon-archiveview.fa-pull-right,
+.lms-ui-icon-archive.fa-pull-right,
+.lms-ui-icon-transactions.fa-pull-right,
+.lms-ui-icon-transaction.fa-pull-right,
+.lms-ui-icon-logging.fa-pull-right,
+.lms-ui-icon-log.fa-pull-right,
+.lms-ui-icon-history.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-archiveview-icon:before,
-.lms-ui-archive-icon:before,
-.lms-ui-transactions-icon:before,
-.lms-ui-transaction-icon:before,
-.lms-ui-logging-icon:before,
-.lms-ui-log-icon:before,
-.lms-ui-history-icon:before {
+.lms-ui-icon-archiveview:before,
+.lms-ui-icon-archive:before,
+.lms-ui-icon-transactions:before,
+.lms-ui-icon-transaction:before,
+.lms-ui-icon-logging:before,
+.lms-ui-icon-log:before,
+.lms-ui-icon-history:before {
   color: green;
   content: "\f1da";
 }
-.lms-ui-finances-icon {
+.lms-ui-icon-finances {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6558,19 +6499,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-finances-icon.fa-pull-left {
+.lms-ui-icon-finances.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-finances-icon.fa-pull-right {
+.lms-ui-icon-finances.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-finances-icon:before {
+.lms-ui-icon-finances:before {
   color: green;
   content: "\f0d6";
 }
-.lms-ui-wireless-icon {
+.lms-ui-icon-wireless {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6584,19 +6524,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-wireless-icon.fa-pull-left {
+.lms-ui-icon-wireless.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-wireless-icon.fa-pull-right {
+.lms-ui-icon-wireless.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-wireless-icon:before {
+.lms-ui-icon-wireless:before {
   color: purple;
   content: "\f1eb";
 }
-.lms-ui-hosting-icon {
+.lms-ui-icon-hosting {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6610,19 +6549,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-hosting-icon.fa-pull-left {
+.lms-ui-icon-hosting.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-hosting-icon.fa-pull-right {
+.lms-ui-icon-hosting.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-hosting-icon:before {
+.lms-ui-icon-hosting:before {
   color: brown;
   content: "\f233";
 }
-.lms-ui-document-icon {
+.lms-ui-icon-document {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6636,19 +6574,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-document-icon.fa-pull-left {
+.lms-ui-icon-document.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-document-icon.fa-pull-right {
+.lms-ui-icon-document.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-document-icon:before {
+.lms-ui-icon-document:before {
   color: orangered;
   content: "\f15c";
 }
-.lms-ui-stats-icon {
+.lms-ui-icon-stats {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6662,19 +6599,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-stats-icon.fa-pull-left {
+.lms-ui-icon-stats.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-stats-icon.fa-pull-right {
+.lms-ui-icon-stats.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-stats-icon:before {
+.lms-ui-icon-stats:before {
   color: lightseagreen;
   content: "\f201";
 }
-.lms-ui-externalid-icon {
+.lms-ui-icon-externalid {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6688,19 +6624,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-externalid-icon.fa-pull-left {
+.lms-ui-icon-externalid.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-externalid-icon.fa-pull-right {
+.lms-ui-icon-externalid.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-externalid-icon:before {
+.lms-ui-icon-externalid:before {
   color: grey;
   content: "\f1c0";
 }
-.lms-ui-message-icon {
+.lms-ui-icon-message {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6714,19 +6649,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-message-icon.fa-pull-left {
+.lms-ui-icon-message.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-message-icon.fa-pull-right {
+.lms-ui-icon-message.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-message-icon:before {
+.lms-ui-icon-message:before {
   color: darkorange;
   content: "\f0e0";
 }
-.lms-ui-documentation-icon {
+.lms-ui-icon-documentation {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6740,19 +6674,18 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-documentation-icon.fa-pull-left {
+.lms-ui-icon-documentation.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-documentation-icon.fa-pull-right {
+.lms-ui-icon-documentation.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-documentation-icon:before {
+.lms-ui-icon-documentation:before {
   color: indigo;
   content: "\f02d";
 }
-.lms-ui-password-icon {
+.lms-ui-icon-password {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6766,21 +6699,20 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-.lms-ui-password-icon.fa-pull-left {
+.lms-ui-icon-password.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-password-icon.fa-pull-right {
+.lms-ui-icon-password.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-password-icon:before {
+.lms-ui-icon-password:before {
   color: seagreen;
   content: "\f084";
 }
-button.lms-ui-netnode-button > i,
-a.lms-ui-netnode-button > i,
-div.lms-ui-netnode-button > i {
+button.lms-ui-button-netnode > i,
+a.lms-ui-button-netnode > i,
+div.lms-ui-button-netnode > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6794,33 +6726,32 @@ div.lms-ui-netnode-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-netnode-button > i.fa-pull-left,
-a.lms-ui-netnode-button > i.fa-pull-left,
-div.lms-ui-netnode-button > i.fa-pull-left {
+button.lms-ui-button-netnode > i.fa-pull-left,
+a.lms-ui-button-netnode > i.fa-pull-left,
+div.lms-ui-button-netnode > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-netnode-button > i.fa-pull-right,
-a.lms-ui-netnode-button > i.fa-pull-right,
-div.lms-ui-netnode-button > i.fa-pull-right {
+button.lms-ui-button-netnode > i.fa-pull-right,
+a.lms-ui-button-netnode > i.fa-pull-right,
+div.lms-ui-button-netnode > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-netnode-button > i:before,
-a.lms-ui-netnode-button > i:before,
-div.lms-ui-netnode-button > i:before {
+button.lms-ui-button-netnode > i:before,
+a.lms-ui-button-netnode > i:before,
+div.lms-ui-button-netnode > i:before {
   color: brown;
   content: "\f5fd";
 }
-button.lms-ui-ipnetwork-button > i,
-a.lms-ui-ipnetwork-button > i,
-div.lms-ui-ipnetwork-button > i,
-button.lms-ui-networks-button > i,
-a.lms-ui-networks-button > i,
-div.lms-ui-networks-button > i,
-button.lms-ui-network-button > i,
-a.lms-ui-network-button > i,
-div.lms-ui-network-button > i {
+button.lms-ui-button-ipnetwork > i,
+a.lms-ui-button-ipnetwork > i,
+div.lms-ui-button-ipnetwork > i,
+button.lms-ui-button-networks > i,
+a.lms-ui-button-networks > i,
+div.lms-ui-button-networks > i,
+button.lms-ui-button-network > i,
+a.lms-ui-button-network > i,
+div.lms-ui-button-network > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6834,63 +6765,62 @@ div.lms-ui-network-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-ipnetwork-button > i.fa-pull-left,
-a.lms-ui-ipnetwork-button > i.fa-pull-left,
-div.lms-ui-ipnetwork-button > i.fa-pull-left,
-button.lms-ui-networks-button > i.fa-pull-left,
-a.lms-ui-networks-button > i.fa-pull-left,
-div.lms-ui-networks-button > i.fa-pull-left,
-button.lms-ui-network-button > i.fa-pull-left,
-a.lms-ui-network-button > i.fa-pull-left,
-div.lms-ui-network-button > i.fa-pull-left {
+button.lms-ui-button-ipnetwork > i.fa-pull-left,
+a.lms-ui-button-ipnetwork > i.fa-pull-left,
+div.lms-ui-button-ipnetwork > i.fa-pull-left,
+button.lms-ui-button-networks > i.fa-pull-left,
+a.lms-ui-button-networks > i.fa-pull-left,
+div.lms-ui-button-networks > i.fa-pull-left,
+button.lms-ui-button-network > i.fa-pull-left,
+a.lms-ui-button-network > i.fa-pull-left,
+div.lms-ui-button-network > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-ipnetwork-button > i.fa-pull-right,
-a.lms-ui-ipnetwork-button > i.fa-pull-right,
-div.lms-ui-ipnetwork-button > i.fa-pull-right,
-button.lms-ui-networks-button > i.fa-pull-right,
-a.lms-ui-networks-button > i.fa-pull-right,
-div.lms-ui-networks-button > i.fa-pull-right,
-button.lms-ui-network-button > i.fa-pull-right,
-a.lms-ui-network-button > i.fa-pull-right,
-div.lms-ui-network-button > i.fa-pull-right {
+button.lms-ui-button-ipnetwork > i.fa-pull-right,
+a.lms-ui-button-ipnetwork > i.fa-pull-right,
+div.lms-ui-button-ipnetwork > i.fa-pull-right,
+button.lms-ui-button-networks > i.fa-pull-right,
+a.lms-ui-button-networks > i.fa-pull-right,
+div.lms-ui-button-networks > i.fa-pull-right,
+button.lms-ui-button-network > i.fa-pull-right,
+a.lms-ui-button-network > i.fa-pull-right,
+div.lms-ui-button-network > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-ipnetwork-button > i:before,
-a.lms-ui-ipnetwork-button > i:before,
-div.lms-ui-ipnetwork-button > i:before,
-button.lms-ui-networks-button > i:before,
-a.lms-ui-networks-button > i:before,
-div.lms-ui-networks-button > i:before,
-button.lms-ui-network-button > i:before,
-a.lms-ui-network-button > i:before,
-div.lms-ui-network-button > i:before {
+button.lms-ui-button-ipnetwork > i:before,
+a.lms-ui-button-ipnetwork > i:before,
+div.lms-ui-button-ipnetwork > i:before,
+button.lms-ui-button-networks > i:before,
+a.lms-ui-button-networks > i:before,
+div.lms-ui-button-networks > i:before,
+button.lms-ui-button-network > i:before,
+a.lms-ui-button-network > i:before,
+div.lms-ui-button-network > i:before {
   color: darkslategray;
   content: "\f0ac";
 }
-button.lms-ui-archiveview-button > i,
-a.lms-ui-archiveview-button > i,
-div.lms-ui-archiveview-button > i,
-button.lms-ui-archive-button > i,
-a.lms-ui-archive-button > i,
-div.lms-ui-archive-button > i,
-button.lms-ui-transactions-button > i,
-a.lms-ui-transactions-button > i,
-div.lms-ui-transactions-button > i,
-button.lms-ui-transaction-button > i,
-a.lms-ui-transaction-button > i,
-div.lms-ui-transaction-button > i,
-button.lms-ui-logging-button > i,
-a.lms-ui-logging-button > i,
-div.lms-ui-logging-button > i,
-button.lms-ui-log-button > i,
-a.lms-ui-log-button > i,
-div.lms-ui-log-button > i,
-button.lms-ui-history-button > i,
-a.lms-ui-history-button > i,
-div.lms-ui-history-button > i {
+button.lms-ui-button-archiveview > i,
+a.lms-ui-button-archiveview > i,
+div.lms-ui-button-archiveview > i,
+button.lms-ui-button-archive > i,
+a.lms-ui-button-archive > i,
+div.lms-ui-button-archive > i,
+button.lms-ui-button-transactions > i,
+a.lms-ui-button-transactions > i,
+div.lms-ui-button-transactions > i,
+button.lms-ui-button-transaction > i,
+a.lms-ui-button-transaction > i,
+div.lms-ui-button-transaction > i,
+button.lms-ui-button-logging > i,
+a.lms-ui-button-logging > i,
+div.lms-ui-button-logging > i,
+button.lms-ui-button-log > i,
+a.lms-ui-button-log > i,
+div.lms-ui-button-log > i,
+button.lms-ui-button-history > i,
+a.lms-ui-button-history > i,
+div.lms-ui-button-history > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6904,84 +6834,83 @@ div.lms-ui-history-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-archiveview-button > i.fa-pull-left,
-a.lms-ui-archiveview-button > i.fa-pull-left,
-div.lms-ui-archiveview-button > i.fa-pull-left,
-button.lms-ui-archive-button > i.fa-pull-left,
-a.lms-ui-archive-button > i.fa-pull-left,
-div.lms-ui-archive-button > i.fa-pull-left,
-button.lms-ui-transactions-button > i.fa-pull-left,
-a.lms-ui-transactions-button > i.fa-pull-left,
-div.lms-ui-transactions-button > i.fa-pull-left,
-button.lms-ui-transaction-button > i.fa-pull-left,
-a.lms-ui-transaction-button > i.fa-pull-left,
-div.lms-ui-transaction-button > i.fa-pull-left,
-button.lms-ui-logging-button > i.fa-pull-left,
-a.lms-ui-logging-button > i.fa-pull-left,
-div.lms-ui-logging-button > i.fa-pull-left,
-button.lms-ui-log-button > i.fa-pull-left,
-a.lms-ui-log-button > i.fa-pull-left,
-div.lms-ui-log-button > i.fa-pull-left,
-button.lms-ui-history-button > i.fa-pull-left,
-a.lms-ui-history-button > i.fa-pull-left,
-div.lms-ui-history-button > i.fa-pull-left {
+button.lms-ui-button-archiveview > i.fa-pull-left,
+a.lms-ui-button-archiveview > i.fa-pull-left,
+div.lms-ui-button-archiveview > i.fa-pull-left,
+button.lms-ui-button-archive > i.fa-pull-left,
+a.lms-ui-button-archive > i.fa-pull-left,
+div.lms-ui-button-archive > i.fa-pull-left,
+button.lms-ui-button-transactions > i.fa-pull-left,
+a.lms-ui-button-transactions > i.fa-pull-left,
+div.lms-ui-button-transactions > i.fa-pull-left,
+button.lms-ui-button-transaction > i.fa-pull-left,
+a.lms-ui-button-transaction > i.fa-pull-left,
+div.lms-ui-button-transaction > i.fa-pull-left,
+button.lms-ui-button-logging > i.fa-pull-left,
+a.lms-ui-button-logging > i.fa-pull-left,
+div.lms-ui-button-logging > i.fa-pull-left,
+button.lms-ui-button-log > i.fa-pull-left,
+a.lms-ui-button-log > i.fa-pull-left,
+div.lms-ui-button-log > i.fa-pull-left,
+button.lms-ui-button-history > i.fa-pull-left,
+a.lms-ui-button-history > i.fa-pull-left,
+div.lms-ui-button-history > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-archiveview-button > i.fa-pull-right,
-a.lms-ui-archiveview-button > i.fa-pull-right,
-div.lms-ui-archiveview-button > i.fa-pull-right,
-button.lms-ui-archive-button > i.fa-pull-right,
-a.lms-ui-archive-button > i.fa-pull-right,
-div.lms-ui-archive-button > i.fa-pull-right,
-button.lms-ui-transactions-button > i.fa-pull-right,
-a.lms-ui-transactions-button > i.fa-pull-right,
-div.lms-ui-transactions-button > i.fa-pull-right,
-button.lms-ui-transaction-button > i.fa-pull-right,
-a.lms-ui-transaction-button > i.fa-pull-right,
-div.lms-ui-transaction-button > i.fa-pull-right,
-button.lms-ui-logging-button > i.fa-pull-right,
-a.lms-ui-logging-button > i.fa-pull-right,
-div.lms-ui-logging-button > i.fa-pull-right,
-button.lms-ui-log-button > i.fa-pull-right,
-a.lms-ui-log-button > i.fa-pull-right,
-div.lms-ui-log-button > i.fa-pull-right,
-button.lms-ui-history-button > i.fa-pull-right,
-a.lms-ui-history-button > i.fa-pull-right,
-div.lms-ui-history-button > i.fa-pull-right {
+button.lms-ui-button-archiveview > i.fa-pull-right,
+a.lms-ui-button-archiveview > i.fa-pull-right,
+div.lms-ui-button-archiveview > i.fa-pull-right,
+button.lms-ui-button-archive > i.fa-pull-right,
+a.lms-ui-button-archive > i.fa-pull-right,
+div.lms-ui-button-archive > i.fa-pull-right,
+button.lms-ui-button-transactions > i.fa-pull-right,
+a.lms-ui-button-transactions > i.fa-pull-right,
+div.lms-ui-button-transactions > i.fa-pull-right,
+button.lms-ui-button-transaction > i.fa-pull-right,
+a.lms-ui-button-transaction > i.fa-pull-right,
+div.lms-ui-button-transaction > i.fa-pull-right,
+button.lms-ui-button-logging > i.fa-pull-right,
+a.lms-ui-button-logging > i.fa-pull-right,
+div.lms-ui-button-logging > i.fa-pull-right,
+button.lms-ui-button-log > i.fa-pull-right,
+a.lms-ui-button-log > i.fa-pull-right,
+div.lms-ui-button-log > i.fa-pull-right,
+button.lms-ui-button-history > i.fa-pull-right,
+a.lms-ui-button-history > i.fa-pull-right,
+div.lms-ui-button-history > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-archiveview-button > i:before,
-a.lms-ui-archiveview-button > i:before,
-div.lms-ui-archiveview-button > i:before,
-button.lms-ui-archive-button > i:before,
-a.lms-ui-archive-button > i:before,
-div.lms-ui-archive-button > i:before,
-button.lms-ui-transactions-button > i:before,
-a.lms-ui-transactions-button > i:before,
-div.lms-ui-transactions-button > i:before,
-button.lms-ui-transaction-button > i:before,
-a.lms-ui-transaction-button > i:before,
-div.lms-ui-transaction-button > i:before,
-button.lms-ui-logging-button > i:before,
-a.lms-ui-logging-button > i:before,
-div.lms-ui-logging-button > i:before,
-button.lms-ui-log-button > i:before,
-a.lms-ui-log-button > i:before,
-div.lms-ui-log-button > i:before,
-button.lms-ui-history-button > i:before,
-a.lms-ui-history-button > i:before,
-div.lms-ui-history-button > i:before {
+button.lms-ui-button-archiveview > i:before,
+a.lms-ui-button-archiveview > i:before,
+div.lms-ui-button-archiveview > i:before,
+button.lms-ui-button-archive > i:before,
+a.lms-ui-button-archive > i:before,
+div.lms-ui-button-archive > i:before,
+button.lms-ui-button-transactions > i:before,
+a.lms-ui-button-transactions > i:before,
+div.lms-ui-button-transactions > i:before,
+button.lms-ui-button-transaction > i:before,
+a.lms-ui-button-transaction > i:before,
+div.lms-ui-button-transaction > i:before,
+button.lms-ui-button-logging > i:before,
+a.lms-ui-button-logging > i:before,
+div.lms-ui-button-logging > i:before,
+button.lms-ui-button-log > i:before,
+a.lms-ui-button-log > i:before,
+div.lms-ui-button-log > i:before,
+button.lms-ui-button-history > i:before,
+a.lms-ui-button-history > i:before,
+div.lms-ui-button-history > i:before {
   color: green;
   content: "\f1da";
 }
-button.lms-ui-convert-button > i,
-a.lms-ui-convert-button > i,
-div.lms-ui-convert-button > i,
-button.lms-ui-transform-button > i,
-a.lms-ui-transform-button > i,
-div.lms-ui-transform-button > i {
+button.lms-ui-button-convert > i,
+a.lms-ui-button-convert > i,
+div.lms-ui-button-convert > i,
+button.lms-ui-button-transform > i,
+a.lms-ui-button-transform > i,
+div.lms-ui-button-transform > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6995,38 +6924,37 @@ div.lms-ui-transform-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-convert-button > i.fa-pull-left,
-a.lms-ui-convert-button > i.fa-pull-left,
-div.lms-ui-convert-button > i.fa-pull-left,
-button.lms-ui-transform-button > i.fa-pull-left,
-a.lms-ui-transform-button > i.fa-pull-left,
-div.lms-ui-transform-button > i.fa-pull-left {
+button.lms-ui-button-convert > i.fa-pull-left,
+a.lms-ui-button-convert > i.fa-pull-left,
+div.lms-ui-button-convert > i.fa-pull-left,
+button.lms-ui-button-transform > i.fa-pull-left,
+a.lms-ui-button-transform > i.fa-pull-left,
+div.lms-ui-button-transform > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-convert-button > i.fa-pull-right,
-a.lms-ui-convert-button > i.fa-pull-right,
-div.lms-ui-convert-button > i.fa-pull-right,
-button.lms-ui-transform-button > i.fa-pull-right,
-a.lms-ui-transform-button > i.fa-pull-right,
-div.lms-ui-transform-button > i.fa-pull-right {
+button.lms-ui-button-convert > i.fa-pull-right,
+a.lms-ui-button-convert > i.fa-pull-right,
+div.lms-ui-button-convert > i.fa-pull-right,
+button.lms-ui-button-transform > i.fa-pull-right,
+a.lms-ui-button-transform > i.fa-pull-right,
+div.lms-ui-button-transform > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-convert-button > i:before,
-a.lms-ui-convert-button > i:before,
-div.lms-ui-convert-button > i:before,
-button.lms-ui-transform-button > i:before,
-a.lms-ui-transform-button > i:before,
-div.lms-ui-transform-button > i:before {
+button.lms-ui-button-convert > i:before,
+a.lms-ui-button-convert > i:before,
+div.lms-ui-button-convert > i:before,
+button.lms-ui-button-transform > i:before,
+a.lms-ui-button-transform > i:before,
+div.lms-ui-button-transform > i:before {
   content: "\f362";
 }
-button.lms-ui-correct-button > i,
-a.lms-ui-correct-button > i,
-div.lms-ui-correct-button > i,
-button.lms-ui-correction-button > i,
-a.lms-ui-correction-button > i,
-div.lms-ui-correction-button > i {
+button.lms-ui-button-correct > i,
+a.lms-ui-button-correct > i,
+div.lms-ui-button-correct > i,
+button.lms-ui-button-correction > i,
+a.lms-ui-button-correction > i,
+div.lms-ui-button-correction > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7040,41 +6968,40 @@ div.lms-ui-correction-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-correct-button > i.fa-pull-left,
-a.lms-ui-correct-button > i.fa-pull-left,
-div.lms-ui-correct-button > i.fa-pull-left,
-button.lms-ui-correction-button > i.fa-pull-left,
-a.lms-ui-correction-button > i.fa-pull-left,
-div.lms-ui-correction-button > i.fa-pull-left {
+button.lms-ui-button-correct > i.fa-pull-left,
+a.lms-ui-button-correct > i.fa-pull-left,
+div.lms-ui-button-correct > i.fa-pull-left,
+button.lms-ui-button-correction > i.fa-pull-left,
+a.lms-ui-button-correction > i.fa-pull-left,
+div.lms-ui-button-correction > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-correct-button > i.fa-pull-right,
-a.lms-ui-correct-button > i.fa-pull-right,
-div.lms-ui-correct-button > i.fa-pull-right,
-button.lms-ui-correction-button > i.fa-pull-right,
-a.lms-ui-correction-button > i.fa-pull-right,
-div.lms-ui-correction-button > i.fa-pull-right {
+button.lms-ui-button-correct > i.fa-pull-right,
+a.lms-ui-button-correct > i.fa-pull-right,
+div.lms-ui-button-correct > i.fa-pull-right,
+button.lms-ui-button-correction > i.fa-pull-right,
+a.lms-ui-button-correction > i.fa-pull-right,
+div.lms-ui-button-correction > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-correct-button > i:before,
-a.lms-ui-correct-button > i:before,
-div.lms-ui-correct-button > i:before,
-button.lms-ui-correction-button > i:before,
-a.lms-ui-correction-button > i:before,
-div.lms-ui-correction-button > i:before {
+button.lms-ui-button-correct > i:before,
+a.lms-ui-button-correct > i:before,
+div.lms-ui-button-correct > i:before,
+button.lms-ui-button-correction > i:before,
+a.lms-ui-button-correction > i:before,
+div.lms-ui-button-correction > i:before {
   content: "\f0ad";
 }
-button.lms-ui-cashsource-button > i,
-a.lms-ui-cashsource-button > i,
-div.lms-ui-cashsource-button > i,
-button.lms-ui-isource-button > i,
-a.lms-ui-isource-button > i,
-div.lms-ui-isource-button > i,
-button.lms-ui-importsource-button > i,
-a.lms-ui-importsource-button > i,
-div.lms-ui-importsource-button > i {
+button.lms-ui-button-cashsource > i,
+a.lms-ui-button-cashsource > i,
+div.lms-ui-button-cashsource > i,
+button.lms-ui-button-isource > i,
+a.lms-ui-button-isource > i,
+div.lms-ui-button-isource > i,
+button.lms-ui-button-importsource > i,
+a.lms-ui-button-importsource > i,
+div.lms-ui-button-importsource > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7088,47 +7015,46 @@ div.lms-ui-importsource-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-cashsource-button > i.fa-pull-left,
-a.lms-ui-cashsource-button > i.fa-pull-left,
-div.lms-ui-cashsource-button > i.fa-pull-left,
-button.lms-ui-isource-button > i.fa-pull-left,
-a.lms-ui-isource-button > i.fa-pull-left,
-div.lms-ui-isource-button > i.fa-pull-left,
-button.lms-ui-importsource-button > i.fa-pull-left,
-a.lms-ui-importsource-button > i.fa-pull-left,
-div.lms-ui-importsource-button > i.fa-pull-left {
+button.lms-ui-button-cashsource > i.fa-pull-left,
+a.lms-ui-button-cashsource > i.fa-pull-left,
+div.lms-ui-button-cashsource > i.fa-pull-left,
+button.lms-ui-button-isource > i.fa-pull-left,
+a.lms-ui-button-isource > i.fa-pull-left,
+div.lms-ui-button-isource > i.fa-pull-left,
+button.lms-ui-button-importsource > i.fa-pull-left,
+a.lms-ui-button-importsource > i.fa-pull-left,
+div.lms-ui-button-importsource > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-cashsource-button > i.fa-pull-right,
-a.lms-ui-cashsource-button > i.fa-pull-right,
-div.lms-ui-cashsource-button > i.fa-pull-right,
-button.lms-ui-isource-button > i.fa-pull-right,
-a.lms-ui-isource-button > i.fa-pull-right,
-div.lms-ui-isource-button > i.fa-pull-right,
-button.lms-ui-importsource-button > i.fa-pull-right,
-a.lms-ui-importsource-button > i.fa-pull-right,
-div.lms-ui-importsource-button > i.fa-pull-right {
+button.lms-ui-button-cashsource > i.fa-pull-right,
+a.lms-ui-button-cashsource > i.fa-pull-right,
+div.lms-ui-button-cashsource > i.fa-pull-right,
+button.lms-ui-button-isource > i.fa-pull-right,
+a.lms-ui-button-isource > i.fa-pull-right,
+div.lms-ui-button-isource > i.fa-pull-right,
+button.lms-ui-button-importsource > i.fa-pull-right,
+a.lms-ui-button-importsource > i.fa-pull-right,
+div.lms-ui-button-importsource > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-cashsource-button > i:before,
-a.lms-ui-cashsource-button > i:before,
-div.lms-ui-cashsource-button > i:before,
-button.lms-ui-isource-button > i:before,
-a.lms-ui-isource-button > i:before,
-div.lms-ui-isource-button > i:before,
-button.lms-ui-importsource-button > i:before,
-a.lms-ui-importsource-button > i:before,
-div.lms-ui-importsource-button > i:before {
+button.lms-ui-button-cashsource > i:before,
+a.lms-ui-button-cashsource > i:before,
+div.lms-ui-button-cashsource > i:before,
+button.lms-ui-button-isource > i:before,
+a.lms-ui-button-isource > i:before,
+div.lms-ui-button-isource > i:before,
+button.lms-ui-button-importsource > i:before,
+a.lms-ui-button-importsource > i:before,
+div.lms-ui-button-importsource > i:before {
   content: "\f570";
 }
-button.lms-ui-debitnote-button > i,
-a.lms-ui-debitnote-button > i,
-div.lms-ui-debitnote-button > i,
-button.lms-ui-dnote-button > i,
-a.lms-ui-dnote-button > i,
-div.lms-ui-dnote-button > i {
+button.lms-ui-button-debitnote > i,
+a.lms-ui-button-debitnote > i,
+div.lms-ui-button-debitnote > i,
+button.lms-ui-button-dnote > i,
+a.lms-ui-button-dnote > i,
+div.lms-ui-button-dnote > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7142,38 +7068,37 @@ div.lms-ui-dnote-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-debitnote-button > i.fa-pull-left,
-a.lms-ui-debitnote-button > i.fa-pull-left,
-div.lms-ui-debitnote-button > i.fa-pull-left,
-button.lms-ui-dnote-button > i.fa-pull-left,
-a.lms-ui-dnote-button > i.fa-pull-left,
-div.lms-ui-dnote-button > i.fa-pull-left {
+button.lms-ui-button-debitnote > i.fa-pull-left,
+a.lms-ui-button-debitnote > i.fa-pull-left,
+div.lms-ui-button-debitnote > i.fa-pull-left,
+button.lms-ui-button-dnote > i.fa-pull-left,
+a.lms-ui-button-dnote > i.fa-pull-left,
+div.lms-ui-button-dnote > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-debitnote-button > i.fa-pull-right,
-a.lms-ui-debitnote-button > i.fa-pull-right,
-div.lms-ui-debitnote-button > i.fa-pull-right,
-button.lms-ui-dnote-button > i.fa-pull-right,
-a.lms-ui-dnote-button > i.fa-pull-right,
-div.lms-ui-dnote-button > i.fa-pull-right {
+button.lms-ui-button-debitnote > i.fa-pull-right,
+a.lms-ui-button-debitnote > i.fa-pull-right,
+div.lms-ui-button-debitnote > i.fa-pull-right,
+button.lms-ui-button-dnote > i.fa-pull-right,
+a.lms-ui-button-dnote > i.fa-pull-right,
+div.lms-ui-button-dnote > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-debitnote-button > i:before,
-a.lms-ui-debitnote-button > i:before,
-div.lms-ui-debitnote-button > i:before,
-button.lms-ui-dnote-button > i:before,
-a.lms-ui-dnote-button > i:before,
-div.lms-ui-dnote-button > i:before {
+button.lms-ui-button-debitnote > i:before,
+a.lms-ui-button-debitnote > i:before,
+div.lms-ui-button-debitnote > i:before,
+button.lms-ui-button-dnote > i:before,
+a.lms-ui-button-dnote > i:before,
+div.lms-ui-button-dnote > i:before {
   content: "\f571";
 }
-button.lms-ui-cash-button > i,
-a.lms-ui-cash-button > i,
-div.lms-ui-cash-button > i,
-button.lms-ui-money-button > i,
-a.lms-ui-money-button > i,
-div.lms-ui-money-button > i {
+button.lms-ui-button-cash > i,
+a.lms-ui-button-cash > i,
+div.lms-ui-button-cash > i,
+button.lms-ui-button-money > i,
+a.lms-ui-button-money > i,
+div.lms-ui-button-money > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7187,38 +7112,37 @@ div.lms-ui-money-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-cash-button > i.fa-pull-left,
-a.lms-ui-cash-button > i.fa-pull-left,
-div.lms-ui-cash-button > i.fa-pull-left,
-button.lms-ui-money-button > i.fa-pull-left,
-a.lms-ui-money-button > i.fa-pull-left,
-div.lms-ui-money-button > i.fa-pull-left {
+button.lms-ui-button-cash > i.fa-pull-left,
+a.lms-ui-button-cash > i.fa-pull-left,
+div.lms-ui-button-cash > i.fa-pull-left,
+button.lms-ui-button-money > i.fa-pull-left,
+a.lms-ui-button-money > i.fa-pull-left,
+div.lms-ui-button-money > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-cash-button > i.fa-pull-right,
-a.lms-ui-cash-button > i.fa-pull-right,
-div.lms-ui-cash-button > i.fa-pull-right,
-button.lms-ui-money-button > i.fa-pull-right,
-a.lms-ui-money-button > i.fa-pull-right,
-div.lms-ui-money-button > i.fa-pull-right {
+button.lms-ui-button-cash > i.fa-pull-right,
+a.lms-ui-button-cash > i.fa-pull-right,
+div.lms-ui-button-cash > i.fa-pull-right,
+button.lms-ui-button-money > i.fa-pull-right,
+a.lms-ui-button-money > i.fa-pull-right,
+div.lms-ui-button-money > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-cash-button > i:before,
-a.lms-ui-cash-button > i:before,
-div.lms-ui-cash-button > i:before,
-button.lms-ui-money-button > i:before,
-a.lms-ui-money-button > i:before,
-div.lms-ui-money-button > i:before {
+button.lms-ui-button-cash > i:before,
+a.lms-ui-button-cash > i:before,
+div.lms-ui-button-cash > i:before,
+button.lms-ui-button-money > i:before,
+a.lms-ui-button-money > i:before,
+div.lms-ui-button-money > i:before {
   content: "\f0d6";
 }
-button.lms-ui-hourglass-button > i,
-a.lms-ui-hourglass-button > i,
-div.lms-ui-hourglass-button > i,
-button.lms-ui-wait-button > i,
-a.lms-ui-wait-button > i,
-div.lms-ui-wait-button > i {
+button.lms-ui-button-hourglass > i,
+a.lms-ui-button-hourglass > i,
+div.lms-ui-button-hourglass > i,
+button.lms-ui-button-wait > i,
+a.lms-ui-button-wait > i,
+div.lms-ui-button-wait > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7232,38 +7156,37 @@ div.lms-ui-wait-button > i {
   font-weight: 400;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-hourglass-button > i.fa-pull-left,
-a.lms-ui-hourglass-button > i.fa-pull-left,
-div.lms-ui-hourglass-button > i.fa-pull-left,
-button.lms-ui-wait-button > i.fa-pull-left,
-a.lms-ui-wait-button > i.fa-pull-left,
-div.lms-ui-wait-button > i.fa-pull-left {
+button.lms-ui-button-hourglass > i.fa-pull-left,
+a.lms-ui-button-hourglass > i.fa-pull-left,
+div.lms-ui-button-hourglass > i.fa-pull-left,
+button.lms-ui-button-wait > i.fa-pull-left,
+a.lms-ui-button-wait > i.fa-pull-left,
+div.lms-ui-button-wait > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-hourglass-button > i.fa-pull-right,
-a.lms-ui-hourglass-button > i.fa-pull-right,
-div.lms-ui-hourglass-button > i.fa-pull-right,
-button.lms-ui-wait-button > i.fa-pull-right,
-a.lms-ui-wait-button > i.fa-pull-right,
-div.lms-ui-wait-button > i.fa-pull-right {
+button.lms-ui-button-hourglass > i.fa-pull-right,
+a.lms-ui-button-hourglass > i.fa-pull-right,
+div.lms-ui-button-hourglass > i.fa-pull-right,
+button.lms-ui-button-wait > i.fa-pull-right,
+a.lms-ui-button-wait > i.fa-pull-right,
+div.lms-ui-button-wait > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-hourglass-button > i:before,
-a.lms-ui-hourglass-button > i:before,
-div.lms-ui-hourglass-button > i:before,
-button.lms-ui-wait-button > i:before,
-a.lms-ui-wait-button > i:before,
-div.lms-ui-wait-button > i:before {
+button.lms-ui-button-hourglass > i:before,
+a.lms-ui-button-hourglass > i:before,
+div.lms-ui-button-hourglass > i:before,
+button.lms-ui-button-wait > i:before,
+a.lms-ui-button-wait > i:before,
+div.lms-ui-button-wait > i:before {
   content: "\f254";
 }
-button.lms-ui-save-button > i,
-a.lms-ui-save-button > i,
-div.lms-ui-save-button > i,
-button.lms-ui-submit-button > i,
-a.lms-ui-submit-button > i,
-div.lms-ui-submit-button > i {
+button.lms-ui-button-save > i,
+a.lms-ui-button-save > i,
+div.lms-ui-button-save > i,
+button.lms-ui-button-submit > i,
+a.lms-ui-button-submit > i,
+div.lms-ui-button-submit > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7277,35 +7200,34 @@ div.lms-ui-submit-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-save-button > i.fa-pull-left,
-a.lms-ui-save-button > i.fa-pull-left,
-div.lms-ui-save-button > i.fa-pull-left,
-button.lms-ui-submit-button > i.fa-pull-left,
-a.lms-ui-submit-button > i.fa-pull-left,
-div.lms-ui-submit-button > i.fa-pull-left {
+button.lms-ui-button-save > i.fa-pull-left,
+a.lms-ui-button-save > i.fa-pull-left,
+div.lms-ui-button-save > i.fa-pull-left,
+button.lms-ui-button-submit > i.fa-pull-left,
+a.lms-ui-button-submit > i.fa-pull-left,
+div.lms-ui-button-submit > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-save-button > i.fa-pull-right,
-a.lms-ui-save-button > i.fa-pull-right,
-div.lms-ui-save-button > i.fa-pull-right,
-button.lms-ui-submit-button > i.fa-pull-right,
-a.lms-ui-submit-button > i.fa-pull-right,
-div.lms-ui-submit-button > i.fa-pull-right {
+button.lms-ui-button-save > i.fa-pull-right,
+a.lms-ui-button-save > i.fa-pull-right,
+div.lms-ui-button-save > i.fa-pull-right,
+button.lms-ui-button-submit > i.fa-pull-right,
+a.lms-ui-button-submit > i.fa-pull-right,
+div.lms-ui-button-submit > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-save-button > i:before,
-a.lms-ui-save-button > i:before,
-div.lms-ui-save-button > i:before,
-button.lms-ui-submit-button > i:before,
-a.lms-ui-submit-button > i:before,
-div.lms-ui-submit-button > i:before {
+button.lms-ui-button-save > i:before,
+a.lms-ui-button-save > i:before,
+div.lms-ui-button-save > i:before,
+button.lms-ui-button-submit > i:before,
+a.lms-ui-button-submit > i:before,
+div.lms-ui-button-submit > i:before {
   content: "\f0c7";
 }
-button.lms-ui-cancel-button > i,
-a.lms-ui-cancel-button > i,
-div.lms-ui-cancel-button > i {
+button.lms-ui-button-cancel > i,
+a.lms-ui-button-cancel > i,
+div.lms-ui-button-cancel > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7319,29 +7241,28 @@ div.lms-ui-cancel-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-cancel-button > i.fa-pull-left,
-a.lms-ui-cancel-button > i.fa-pull-left,
-div.lms-ui-cancel-button > i.fa-pull-left {
+button.lms-ui-button-cancel > i.fa-pull-left,
+a.lms-ui-button-cancel > i.fa-pull-left,
+div.lms-ui-button-cancel > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-cancel-button > i.fa-pull-right,
-a.lms-ui-cancel-button > i.fa-pull-right,
-div.lms-ui-cancel-button > i.fa-pull-right {
+button.lms-ui-button-cancel > i.fa-pull-right,
+a.lms-ui-button-cancel > i.fa-pull-right,
+div.lms-ui-button-cancel > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-cancel-button > i:before,
-a.lms-ui-cancel-button > i:before,
-div.lms-ui-cancel-button > i:before {
+button.lms-ui-button-cancel > i:before,
+a.lms-ui-button-cancel > i:before,
+div.lms-ui-button-cancel > i:before {
   content: "\f55a";
 }
-button.lms-ui-clone-button > i,
-a.lms-ui-clone-button > i,
-div.lms-ui-clone-button > i,
-button.lms-ui-copy-button > i,
-a.lms-ui-copy-button > i,
-div.lms-ui-copy-button > i {
+button.lms-ui-button-clone > i,
+a.lms-ui-button-clone > i,
+div.lms-ui-button-clone > i,
+button.lms-ui-button-copy > i,
+a.lms-ui-button-copy > i,
+div.lms-ui-button-copy > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7355,38 +7276,37 @@ div.lms-ui-copy-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-clone-button > i.fa-pull-left,
-a.lms-ui-clone-button > i.fa-pull-left,
-div.lms-ui-clone-button > i.fa-pull-left,
-button.lms-ui-copy-button > i.fa-pull-left,
-a.lms-ui-copy-button > i.fa-pull-left,
-div.lms-ui-copy-button > i.fa-pull-left {
+button.lms-ui-button-clone > i.fa-pull-left,
+a.lms-ui-button-clone > i.fa-pull-left,
+div.lms-ui-button-clone > i.fa-pull-left,
+button.lms-ui-button-copy > i.fa-pull-left,
+a.lms-ui-button-copy > i.fa-pull-left,
+div.lms-ui-button-copy > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-clone-button > i.fa-pull-right,
-a.lms-ui-clone-button > i.fa-pull-right,
-div.lms-ui-clone-button > i.fa-pull-right,
-button.lms-ui-copy-button > i.fa-pull-right,
-a.lms-ui-copy-button > i.fa-pull-right,
-div.lms-ui-copy-button > i.fa-pull-right {
+button.lms-ui-button-clone > i.fa-pull-right,
+a.lms-ui-button-clone > i.fa-pull-right,
+div.lms-ui-button-clone > i.fa-pull-right,
+button.lms-ui-button-copy > i.fa-pull-right,
+a.lms-ui-button-copy > i.fa-pull-right,
+div.lms-ui-button-copy > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-clone-button > i:before,
-a.lms-ui-clone-button > i:before,
-div.lms-ui-clone-button > i:before,
-button.lms-ui-copy-button > i:before,
-a.lms-ui-copy-button > i:before,
-div.lms-ui-copy-button > i:before {
+button.lms-ui-button-clone > i:before,
+a.lms-ui-button-clone > i:before,
+div.lms-ui-button-clone > i:before,
+button.lms-ui-button-copy > i:before,
+a.lms-ui-button-copy > i:before,
+div.lms-ui-button-copy > i:before {
   content: "\f0c5";
 }
-button.lms-ui-delete-button > i,
-a.lms-ui-delete-button > i,
-div.lms-ui-delete-button > i,
-button.lms-ui-remove-button > i,
-a.lms-ui-remove-button > i,
-div.lms-ui-remove-button > i {
+button.lms-ui-button-delete > i,
+a.lms-ui-button-delete > i,
+div.lms-ui-button-delete > i,
+button.lms-ui-button-remove > i,
+a.lms-ui-button-remove > i,
+div.lms-ui-button-remove > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7400,41 +7320,40 @@ div.lms-ui-remove-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-delete-button > i.fa-pull-left,
-a.lms-ui-delete-button > i.fa-pull-left,
-div.lms-ui-delete-button > i.fa-pull-left,
-button.lms-ui-remove-button > i.fa-pull-left,
-a.lms-ui-remove-button > i.fa-pull-left,
-div.lms-ui-remove-button > i.fa-pull-left {
+button.lms-ui-button-delete > i.fa-pull-left,
+a.lms-ui-button-delete > i.fa-pull-left,
+div.lms-ui-button-delete > i.fa-pull-left,
+button.lms-ui-button-remove > i.fa-pull-left,
+a.lms-ui-button-remove > i.fa-pull-left,
+div.lms-ui-button-remove > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-delete-button > i.fa-pull-right,
-a.lms-ui-delete-button > i.fa-pull-right,
-div.lms-ui-delete-button > i.fa-pull-right,
-button.lms-ui-remove-button > i.fa-pull-right,
-a.lms-ui-remove-button > i.fa-pull-right,
-div.lms-ui-remove-button > i.fa-pull-right {
+button.lms-ui-button-delete > i.fa-pull-right,
+a.lms-ui-button-delete > i.fa-pull-right,
+div.lms-ui-button-delete > i.fa-pull-right,
+button.lms-ui-button-remove > i.fa-pull-right,
+a.lms-ui-button-remove > i.fa-pull-right,
+div.lms-ui-button-remove > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-delete-button > i:before,
-a.lms-ui-delete-button > i:before,
-div.lms-ui-delete-button > i:before,
-button.lms-ui-remove-button > i:before,
-a.lms-ui-remove-button > i:before,
-div.lms-ui-remove-button > i:before {
+button.lms-ui-button-delete > i:before,
+a.lms-ui-button-delete > i:before,
+div.lms-ui-button-delete > i:before,
+button.lms-ui-button-remove > i:before,
+a.lms-ui-button-remove > i:before,
+div.lms-ui-button-remove > i:before {
   content: "\f12d";
 }
-button.lms-ui-edit-button > i,
-a.lms-ui-edit-button > i,
-div.lms-ui-edit-button > i,
-button.lms-ui-change-button > i,
-a.lms-ui-change-button > i,
-div.lms-ui-change-button > i,
-button.lms-ui-modify-button > i,
-a.lms-ui-modify-button > i,
-div.lms-ui-modify-button > i {
+button.lms-ui-button-edit > i,
+a.lms-ui-button-edit > i,
+div.lms-ui-button-edit > i,
+button.lms-ui-button-change > i,
+a.lms-ui-button-change > i,
+div.lms-ui-button-change > i,
+button.lms-ui-button-modify > i,
+a.lms-ui-button-modify > i,
+div.lms-ui-button-modify > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7448,47 +7367,46 @@ div.lms-ui-modify-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-edit-button > i.fa-pull-left,
-a.lms-ui-edit-button > i.fa-pull-left,
-div.lms-ui-edit-button > i.fa-pull-left,
-button.lms-ui-change-button > i.fa-pull-left,
-a.lms-ui-change-button > i.fa-pull-left,
-div.lms-ui-change-button > i.fa-pull-left,
-button.lms-ui-modify-button > i.fa-pull-left,
-a.lms-ui-modify-button > i.fa-pull-left,
-div.lms-ui-modify-button > i.fa-pull-left {
+button.lms-ui-button-edit > i.fa-pull-left,
+a.lms-ui-button-edit > i.fa-pull-left,
+div.lms-ui-button-edit > i.fa-pull-left,
+button.lms-ui-button-change > i.fa-pull-left,
+a.lms-ui-button-change > i.fa-pull-left,
+div.lms-ui-button-change > i.fa-pull-left,
+button.lms-ui-button-modify > i.fa-pull-left,
+a.lms-ui-button-modify > i.fa-pull-left,
+div.lms-ui-button-modify > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-edit-button > i.fa-pull-right,
-a.lms-ui-edit-button > i.fa-pull-right,
-div.lms-ui-edit-button > i.fa-pull-right,
-button.lms-ui-change-button > i.fa-pull-right,
-a.lms-ui-change-button > i.fa-pull-right,
-div.lms-ui-change-button > i.fa-pull-right,
-button.lms-ui-modify-button > i.fa-pull-right,
-a.lms-ui-modify-button > i.fa-pull-right,
-div.lms-ui-modify-button > i.fa-pull-right {
+button.lms-ui-button-edit > i.fa-pull-right,
+a.lms-ui-button-edit > i.fa-pull-right,
+div.lms-ui-button-edit > i.fa-pull-right,
+button.lms-ui-button-change > i.fa-pull-right,
+a.lms-ui-button-change > i.fa-pull-right,
+div.lms-ui-button-change > i.fa-pull-right,
+button.lms-ui-button-modify > i.fa-pull-right,
+a.lms-ui-button-modify > i.fa-pull-right,
+div.lms-ui-button-modify > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-edit-button > i:before,
-a.lms-ui-edit-button > i:before,
-div.lms-ui-edit-button > i:before,
-button.lms-ui-change-button > i:before,
-a.lms-ui-change-button > i:before,
-div.lms-ui-change-button > i:before,
-button.lms-ui-modify-button > i:before,
-a.lms-ui-modify-button > i:before,
-div.lms-ui-modify-button > i:before {
+button.lms-ui-button-edit > i:before,
+a.lms-ui-button-edit > i:before,
+div.lms-ui-button-edit > i:before,
+button.lms-ui-button-change > i:before,
+a.lms-ui-button-change > i:before,
+div.lms-ui-button-change > i:before,
+button.lms-ui-button-modify > i:before,
+a.lms-ui-button-modify > i:before,
+div.lms-ui-button-modify > i:before {
   content: "\f044";
 }
-button.lms-ui-fileupload-button > i,
-a.lms-ui-fileupload-button > i,
-div.lms-ui-fileupload-button > i,
-button.lms-ui-upload-button > i,
-a.lms-ui-upload-button > i,
-div.lms-ui-upload-button > i {
+button.lms-ui-button-fileupload > i,
+a.lms-ui-button-fileupload > i,
+div.lms-ui-button-fileupload > i,
+button.lms-ui-button-upload > i,
+a.lms-ui-button-upload > i,
+div.lms-ui-button-upload > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7502,38 +7420,37 @@ div.lms-ui-upload-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-fileupload-button > i.fa-pull-left,
-a.lms-ui-fileupload-button > i.fa-pull-left,
-div.lms-ui-fileupload-button > i.fa-pull-left,
-button.lms-ui-upload-button > i.fa-pull-left,
-a.lms-ui-upload-button > i.fa-pull-left,
-div.lms-ui-upload-button > i.fa-pull-left {
+button.lms-ui-button-fileupload > i.fa-pull-left,
+a.lms-ui-button-fileupload > i.fa-pull-left,
+div.lms-ui-button-fileupload > i.fa-pull-left,
+button.lms-ui-button-upload > i.fa-pull-left,
+a.lms-ui-button-upload > i.fa-pull-left,
+div.lms-ui-button-upload > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-fileupload-button > i.fa-pull-right,
-a.lms-ui-fileupload-button > i.fa-pull-right,
-div.lms-ui-fileupload-button > i.fa-pull-right,
-button.lms-ui-upload-button > i.fa-pull-right,
-a.lms-ui-upload-button > i.fa-pull-right,
-div.lms-ui-upload-button > i.fa-pull-right {
+button.lms-ui-button-fileupload > i.fa-pull-right,
+a.lms-ui-button-fileupload > i.fa-pull-right,
+div.lms-ui-button-fileupload > i.fa-pull-right,
+button.lms-ui-button-upload > i.fa-pull-right,
+a.lms-ui-button-upload > i.fa-pull-right,
+div.lms-ui-button-upload > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-fileupload-button > i:before,
-a.lms-ui-fileupload-button > i:before,
-div.lms-ui-fileupload-button > i:before,
-button.lms-ui-upload-button > i:before,
-a.lms-ui-upload-button > i:before,
-div.lms-ui-upload-button > i:before {
+button.lms-ui-button-fileupload > i:before,
+a.lms-ui-button-fileupload > i:before,
+div.lms-ui-button-fileupload > i:before,
+button.lms-ui-button-upload > i:before,
+a.lms-ui-button-upload > i:before,
+div.lms-ui-button-upload > i:before {
   content: "\f0c6";
 }
-button.lms-ui-back-button > i,
-a.lms-ui-back-button > i,
-div.lms-ui-back-button > i,
-button.lms-ui-return-button > i,
-a.lms-ui-return-button > i,
-div.lms-ui-return-button > i {
+button.lms-ui-button-back > i,
+a.lms-ui-button-back > i,
+div.lms-ui-button-back > i,
+button.lms-ui-button-return > i,
+a.lms-ui-button-return > i,
+div.lms-ui-button-return > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7547,41 +7464,40 @@ div.lms-ui-return-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-back-button > i.fa-pull-left,
-a.lms-ui-back-button > i.fa-pull-left,
-div.lms-ui-back-button > i.fa-pull-left,
-button.lms-ui-return-button > i.fa-pull-left,
-a.lms-ui-return-button > i.fa-pull-left,
-div.lms-ui-return-button > i.fa-pull-left {
+button.lms-ui-button-back > i.fa-pull-left,
+a.lms-ui-button-back > i.fa-pull-left,
+div.lms-ui-button-back > i.fa-pull-left,
+button.lms-ui-button-return > i.fa-pull-left,
+a.lms-ui-button-return > i.fa-pull-left,
+div.lms-ui-button-return > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-back-button > i.fa-pull-right,
-a.lms-ui-back-button > i.fa-pull-right,
-div.lms-ui-back-button > i.fa-pull-right,
-button.lms-ui-return-button > i.fa-pull-right,
-a.lms-ui-return-button > i.fa-pull-right,
-div.lms-ui-return-button > i.fa-pull-right {
+button.lms-ui-button-back > i.fa-pull-right,
+a.lms-ui-button-back > i.fa-pull-right,
+div.lms-ui-button-back > i.fa-pull-right,
+button.lms-ui-button-return > i.fa-pull-right,
+a.lms-ui-button-return > i.fa-pull-right,
+div.lms-ui-button-return > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-back-button > i:before,
-a.lms-ui-back-button > i:before,
-div.lms-ui-back-button > i:before,
-button.lms-ui-return-button > i:before,
-a.lms-ui-return-button > i:before,
-div.lms-ui-return-button > i:before {
+button.lms-ui-button-back > i:before,
+a.lms-ui-button-back > i:before,
+div.lms-ui-button-back > i:before,
+button.lms-ui-button-return > i:before,
+a.lms-ui-button-return > i:before,
+div.lms-ui-button-return > i:before {
   content: "\f151";
 }
-button.lms-ui-add-button > i,
-a.lms-ui-add-button > i,
-div.lms-ui-add-button > i,
-button.lms-ui-new-button > i,
-a.lms-ui-new-button > i,
-div.lms-ui-new-button > i,
-button.lms-ui-append-button > i,
-a.lms-ui-append-button > i,
-div.lms-ui-append-button > i {
+button.lms-ui-button-add > i,
+a.lms-ui-button-add > i,
+div.lms-ui-button-add > i,
+button.lms-ui-button-new > i,
+a.lms-ui-button-new > i,
+div.lms-ui-button-new > i,
+button.lms-ui-button-append > i,
+a.lms-ui-button-append > i,
+div.lms-ui-button-append > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7595,44 +7511,43 @@ div.lms-ui-append-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-add-button > i.fa-pull-left,
-a.lms-ui-add-button > i.fa-pull-left,
-div.lms-ui-add-button > i.fa-pull-left,
-button.lms-ui-new-button > i.fa-pull-left,
-a.lms-ui-new-button > i.fa-pull-left,
-div.lms-ui-new-button > i.fa-pull-left,
-button.lms-ui-append-button > i.fa-pull-left,
-a.lms-ui-append-button > i.fa-pull-left,
-div.lms-ui-append-button > i.fa-pull-left {
+button.lms-ui-button-add > i.fa-pull-left,
+a.lms-ui-button-add > i.fa-pull-left,
+div.lms-ui-button-add > i.fa-pull-left,
+button.lms-ui-button-new > i.fa-pull-left,
+a.lms-ui-button-new > i.fa-pull-left,
+div.lms-ui-button-new > i.fa-pull-left,
+button.lms-ui-button-append > i.fa-pull-left,
+a.lms-ui-button-append > i.fa-pull-left,
+div.lms-ui-button-append > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-add-button > i.fa-pull-right,
-a.lms-ui-add-button > i.fa-pull-right,
-div.lms-ui-add-button > i.fa-pull-right,
-button.lms-ui-new-button > i.fa-pull-right,
-a.lms-ui-new-button > i.fa-pull-right,
-div.lms-ui-new-button > i.fa-pull-right,
-button.lms-ui-append-button > i.fa-pull-right,
-a.lms-ui-append-button > i.fa-pull-right,
-div.lms-ui-append-button > i.fa-pull-right {
+button.lms-ui-button-add > i.fa-pull-right,
+a.lms-ui-button-add > i.fa-pull-right,
+div.lms-ui-button-add > i.fa-pull-right,
+button.lms-ui-button-new > i.fa-pull-right,
+a.lms-ui-button-new > i.fa-pull-right,
+div.lms-ui-button-new > i.fa-pull-right,
+button.lms-ui-button-append > i.fa-pull-right,
+a.lms-ui-button-append > i.fa-pull-right,
+div.lms-ui-button-append > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-add-button > i:before,
-a.lms-ui-add-button > i:before,
-div.lms-ui-add-button > i:before,
-button.lms-ui-new-button > i:before,
-a.lms-ui-new-button > i:before,
-div.lms-ui-new-button > i:before,
-button.lms-ui-append-button > i:before,
-a.lms-ui-append-button > i:before,
-div.lms-ui-append-button > i:before {
+button.lms-ui-button-add > i:before,
+a.lms-ui-button-add > i:before,
+div.lms-ui-button-add > i:before,
+button.lms-ui-button-new > i:before,
+a.lms-ui-button-new > i:before,
+div.lms-ui-button-new > i:before,
+button.lms-ui-button-append > i:before,
+a.lms-ui-button-append > i:before,
+div.lms-ui-button-append > i:before {
   content: "\f0fe";
 }
-button.lms-ui-print-button > i,
-a.lms-ui-print-button > i,
-div.lms-ui-print-button > i {
+button.lms-ui-button-print > i,
+a.lms-ui-button-print > i,
+div.lms-ui-button-print > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7646,29 +7561,28 @@ div.lms-ui-print-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-print-button > i.fa-pull-left,
-a.lms-ui-print-button > i.fa-pull-left,
-div.lms-ui-print-button > i.fa-pull-left {
+button.lms-ui-button-print > i.fa-pull-left,
+a.lms-ui-button-print > i.fa-pull-left,
+div.lms-ui-button-print > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-print-button > i.fa-pull-right,
-a.lms-ui-print-button > i.fa-pull-right,
-div.lms-ui-print-button > i.fa-pull-right {
+button.lms-ui-button-print > i.fa-pull-right,
+a.lms-ui-button-print > i.fa-pull-right,
+div.lms-ui-button-print > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-print-button > i:before,
-a.lms-ui-print-button > i:before,
-div.lms-ui-print-button > i:before {
+button.lms-ui-button-print > i:before,
+a.lms-ui-button-print > i:before,
+div.lms-ui-button-print > i:before {
   content: "\f02f";
 }
-button.lms-ui-confirm-button > i,
-a.lms-ui-confirm-button > i,
-div.lms-ui-confirm-button > i,
-button.lms-ui-apply-button > i,
-a.lms-ui-apply-button > i,
-div.lms-ui-apply-button > i {
+button.lms-ui-button-confirm > i,
+a.lms-ui-button-confirm > i,
+div.lms-ui-button-confirm > i,
+button.lms-ui-button-apply > i,
+a.lms-ui-button-apply > i,
+div.lms-ui-button-apply > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7682,38 +7596,37 @@ div.lms-ui-apply-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-confirm-button > i.fa-pull-left,
-a.lms-ui-confirm-button > i.fa-pull-left,
-div.lms-ui-confirm-button > i.fa-pull-left,
-button.lms-ui-apply-button > i.fa-pull-left,
-a.lms-ui-apply-button > i.fa-pull-left,
-div.lms-ui-apply-button > i.fa-pull-left {
+button.lms-ui-button-confirm > i.fa-pull-left,
+a.lms-ui-button-confirm > i.fa-pull-left,
+div.lms-ui-button-confirm > i.fa-pull-left,
+button.lms-ui-button-apply > i.fa-pull-left,
+a.lms-ui-button-apply > i.fa-pull-left,
+div.lms-ui-button-apply > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-confirm-button > i.fa-pull-right,
-a.lms-ui-confirm-button > i.fa-pull-right,
-div.lms-ui-confirm-button > i.fa-pull-right,
-button.lms-ui-apply-button > i.fa-pull-right,
-a.lms-ui-apply-button > i.fa-pull-right,
-div.lms-ui-apply-button > i.fa-pull-right {
+button.lms-ui-button-confirm > i.fa-pull-right,
+a.lms-ui-button-confirm > i.fa-pull-right,
+div.lms-ui-button-confirm > i.fa-pull-right,
+button.lms-ui-button-apply > i.fa-pull-right,
+a.lms-ui-button-apply > i.fa-pull-right,
+div.lms-ui-button-apply > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-confirm-button > i:before,
-a.lms-ui-confirm-button > i:before,
-div.lms-ui-confirm-button > i:before,
-button.lms-ui-apply-button > i:before,
-a.lms-ui-apply-button > i:before,
-div.lms-ui-apply-button > i:before {
+button.lms-ui-button-confirm > i:before,
+a.lms-ui-button-confirm > i:before,
+div.lms-ui-button-confirm > i:before,
+button.lms-ui-button-apply > i:before,
+a.lms-ui-button-apply > i:before,
+div.lms-ui-button-apply > i:before {
   content: "\f560";
 }
-button.lms-ui-mail-button > i,
-a.lms-ui-mail-button > i,
-div.lms-ui-mail-button > i,
-button.lms-ui-send-button > i,
-a.lms-ui-send-button > i,
-div.lms-ui-send-button > i {
+button.lms-ui-button-mail > i,
+a.lms-ui-button-mail > i,
+div.lms-ui-button-mail > i,
+button.lms-ui-button-send > i,
+a.lms-ui-button-send > i,
+div.lms-ui-button-send > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7727,35 +7640,34 @@ div.lms-ui-send-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-mail-button > i.fa-pull-left,
-a.lms-ui-mail-button > i.fa-pull-left,
-div.lms-ui-mail-button > i.fa-pull-left,
-button.lms-ui-send-button > i.fa-pull-left,
-a.lms-ui-send-button > i.fa-pull-left,
-div.lms-ui-send-button > i.fa-pull-left {
+button.lms-ui-button-mail > i.fa-pull-left,
+a.lms-ui-button-mail > i.fa-pull-left,
+div.lms-ui-button-mail > i.fa-pull-left,
+button.lms-ui-button-send > i.fa-pull-left,
+a.lms-ui-button-send > i.fa-pull-left,
+div.lms-ui-button-send > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-mail-button > i.fa-pull-right,
-a.lms-ui-mail-button > i.fa-pull-right,
-div.lms-ui-mail-button > i.fa-pull-right,
-button.lms-ui-send-button > i.fa-pull-right,
-a.lms-ui-send-button > i.fa-pull-right,
-div.lms-ui-send-button > i.fa-pull-right {
+button.lms-ui-button-mail > i.fa-pull-right,
+a.lms-ui-button-mail > i.fa-pull-right,
+div.lms-ui-button-mail > i.fa-pull-right,
+button.lms-ui-button-send > i.fa-pull-right,
+a.lms-ui-button-send > i.fa-pull-right,
+div.lms-ui-button-send > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-mail-button > i:before,
-a.lms-ui-mail-button > i:before,
-div.lms-ui-mail-button > i:before,
-button.lms-ui-send-button > i:before,
-a.lms-ui-send-button > i:before,
-div.lms-ui-send-button > i:before {
+button.lms-ui-button-mail > i:before,
+a.lms-ui-button-mail > i:before,
+div.lms-ui-button-mail > i:before,
+button.lms-ui-button-send > i:before,
+a.lms-ui-button-send > i:before,
+div.lms-ui-button-send > i:before {
   content: "\f0e0";
 }
-button.lms-ui-clipboard-button > i,
-a.lms-ui-clipboard-button > i,
-div.lms-ui-clipboard-button > i {
+button.lms-ui-button-clipboard > i,
+a.lms-ui-button-clipboard > i,
+div.lms-ui-button-clipboard > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7769,26 +7681,25 @@ div.lms-ui-clipboard-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-clipboard-button > i.fa-pull-left,
-a.lms-ui-clipboard-button > i.fa-pull-left,
-div.lms-ui-clipboard-button > i.fa-pull-left {
+button.lms-ui-button-clipboard > i.fa-pull-left,
+a.lms-ui-button-clipboard > i.fa-pull-left,
+div.lms-ui-button-clipboard > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-clipboard-button > i.fa-pull-right,
-a.lms-ui-clipboard-button > i.fa-pull-right,
-div.lms-ui-clipboard-button > i.fa-pull-right {
+button.lms-ui-button-clipboard > i.fa-pull-right,
+a.lms-ui-button-clipboard > i.fa-pull-right,
+div.lms-ui-button-clipboard > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-clipboard-button > i:before,
-a.lms-ui-clipboard-button > i:before,
-div.lms-ui-clipboard-button > i:before {
+button.lms-ui-button-clipboard > i:before,
+a.lms-ui-button-clipboard > i:before,
+div.lms-ui-button-clipboard > i:before {
   content: "\f328";
 }
-button.lms-ui-view-button > i,
-a.lms-ui-view-button > i,
-div.lms-ui-view-button > i {
+button.lms-ui-button-view > i,
+a.lms-ui-button-view > i,
+div.lms-ui-button-view > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7802,36 +7713,35 @@ div.lms-ui-view-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-view-button > i.fa-pull-left,
-a.lms-ui-view-button > i.fa-pull-left,
-div.lms-ui-view-button > i.fa-pull-left {
+button.lms-ui-button-view > i.fa-pull-left,
+a.lms-ui-button-view > i.fa-pull-left,
+div.lms-ui-button-view > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-view-button > i.fa-pull-right,
-a.lms-ui-view-button > i.fa-pull-right,
-div.lms-ui-view-button > i.fa-pull-right {
+button.lms-ui-button-view > i.fa-pull-right,
+a.lms-ui-button-view > i.fa-pull-right,
+div.lms-ui-button-view > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-view-button > i:before,
-a.lms-ui-view-button > i:before,
-div.lms-ui-view-button > i:before {
+button.lms-ui-button-view > i:before,
+a.lms-ui-button-view > i:before,
+div.lms-ui-button-view > i:before {
   content: "\f06e";
 }
-button.lms-ui-view-button > i.pdf:before,
-a.lms-ui-view-button > i.pdf:before,
-div.lms-ui-view-button > i.pdf:before {
+button.lms-ui-button-view > i.pdf:before,
+a.lms-ui-button-view > i.pdf:before,
+div.lms-ui-button-view > i.pdf:before {
   content: "\f1c1";
 }
-button.lms-ui-view-button > i.xls:before,
-a.lms-ui-view-button > i.xls:before,
-div.lms-ui-view-button > i.xls:before {
+button.lms-ui-button-view > i.xls:before,
+a.lms-ui-button-view > i.xls:before,
+div.lms-ui-button-view > i.xls:before {
   content: "\f1c3";
 }
-button.lms-ui-info-button > i,
-a.lms-ui-info-button > i,
-div.lms-ui-info-button > i {
+button.lms-ui-button-info > i,
+a.lms-ui-button-info > i,
+div.lms-ui-button-info > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7845,26 +7755,23 @@ div.lms-ui-info-button > i {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
 }
-button.lms-ui-info-button > i.fa-pull-left,
-a.lms-ui-info-button > i.fa-pull-left,
-div.lms-ui-info-button > i.fa-pull-left {
+button.lms-ui-button-info > i.fa-pull-left,
+a.lms-ui-button-info > i.fa-pull-left,
+div.lms-ui-button-info > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-info-button > i.fa-pull-right,
-a.lms-ui-info-button > i.fa-pull-right,
-div.lms-ui-info-button > i.fa-pull-right {
+button.lms-ui-button-info > i.fa-pull-right,
+a.lms-ui-button-info > i.fa-pull-right,
+div.lms-ui-button-info > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-info-button > i:before,
-a.lms-ui-info-button > i:before,
-div.lms-ui-info-button > i:before {
+button.lms-ui-button-info > i:before,
+a.lms-ui-button-info > i:before,
+div.lms-ui-button-info > i:before {
   content: "\f129";
 }
-button.lms-ui-fileupload-button {
-  color: #800000;
-  border-radius: 3px;
+button.lms-ui-button {
   border: 1px solid #615847;
   color: black;
   text-decoration: none;
@@ -7875,39 +7782,43 @@ button.lms-ui-fileupload-button {
   background-repeat: no-repeat;
   background-position: 3px 3px;
 }
+button.lms-ui-button.lms-ui-button-icon {
+  padding-left: 25px;
+}
+button.lms-ui-button:hover,
+button.lms-ui-button:active {
+  text-decoration: none;
+  outline: none;
+  border: 1px solid #615847;
+}
+button.lms-ui-button:not([disabled]):hover {
+  background-color: #DFD5BD;
+  box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
+}
+button.lms-ui-button:not([disabled]):active {
+  background-color: #CEBD9B;
+  box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
+}
+button.lms-ui-button:not([disabled]):focus {
+  outline: none;
+  border: 1px solid black;
+  box-shadow: 0px 0px 1px 1px black;
+}
+button.lms-ui-button[disabled] {
+  color: #888888;
+  cursor: no-drop;
+}
+button.lms-ui-button[disabled]:before {
+  color: #888888;
+}
+button.lms-ui-fileupload-button {
+  color: #800000;
+  border-radius: 3px;
+}
 button.lms-ui-fileupload-button:hover {
   color: #336600;
   cursor: pointer;
   text-decoration: underline;
-}
-button.lms-ui-fileupload-button.lms-ui-button-icon {
-  padding-left: 25px;
-}
-button.lms-ui-fileupload-button.lms-ui-button-disabled {
-  color: grey;
-  cursor: no-drop;
-}
-button.lms-ui-fileupload-button:hover,
-button.lms-ui-fileupload-button:active {
-  text-decoration: none;
-  outline: none;
-}
-button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):hover,
-button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):active {
-  border: 1px solid #615847;
-}
-button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):hover {
-  background-color: #DFD5BD;
-  box-shadow: inset 1px 1px 3px 0px rgba(0, 0, 0, 0.6);
-}
-button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):active {
-  background-color: #CEBD9B;
-  box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
-}
-button.lms-ui-fileupload-button:not(.lms-ui-button-disabled):focus {
-  outline: none;
-  border: 1px solid black;
-  box-shadow: 0px 0px 1px 1px black;
 }
 button.lms-ui-fileupload-button.lms-ui-fileupload-dropzone {
   box-shadow: 0px 0px 10px 1px blue;
@@ -9369,6 +9280,50 @@ div.lms-ui-wysiwyg-editor {
   font-weight: bold;
   padding-top: 3em;
   padding-bottom: 3em;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-loading {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-loading > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("reload.gif");
+  animation: fa-spin 2s infinite linear;
+  -webkit-animation: fa-spin 0.75s infinite linear !important;
+  animation: fa-spin 0.75s infinite linear !important;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-loading > i.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-loading > i.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-loading > i:before {
+  color: red;
+  content: "\f021";
+}
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-loading > i:before {
+  color: black;
 }
 td.lms-ui-mac-address-selection {
   padding: 0 !important;

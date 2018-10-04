@@ -5,7 +5,7 @@
 {tab_container id="customerdevices"}
 
 	{tab_header content_id="devicespanel"}
-		{tab_header_cell icon="lms-ui-netdev-icon"}
+		{tab_header_cell icon="lms-ui-icon-netdev"}
 			<strong>{t a=$customerdevices|@count|default:"0"}Network Devices ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -61,7 +61,7 @@
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
-							<i class="lms-ui-netdev-icon"></i>
+							<i class="lms-ui-icon-netdev"></i>
 							<strong>{$customerdevice.name}</strong>
 							{if $customerdevice.location}<BR>
 								{$customerdevice.location|truncate:60:"...":true}

@@ -35,7 +35,7 @@ $(function() {
 		var url = '?m=' + module + '&persistent-filter=' + selection + '&action=update&api=1';
 
 		$('html,body').css('cursor', 'wait');
-		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
+		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', true);
 
 		$.ajax(url, {
 			method: "POST",
@@ -49,7 +49,7 @@ $(function() {
 			},
 			complete: function(data) {
 				$('html,body').css('cursor', 'auto');
-				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').removeClass('lms-ui-button-disabled');
+				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', false);
 			}
 		});
 		return false;
@@ -70,7 +70,7 @@ $(function() {
 		url = '?m=' + module + '&persistent-filter=' + selection + '&action=delete&api=1'
 
 		$('html,body').css('cursor', 'wait');
-		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
+		$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', true);
 
 		$.ajax(url, {
 			method: "POST",
@@ -83,7 +83,7 @@ $(function() {
 			},
 			complete: function() {
 				$('html,body').css('cursor', 'auto');
-				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').removeClass('lms-ui-button-disabled');
+				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', false);
 			}
 		});
 		return false;
@@ -95,10 +95,10 @@ $(function() {
 			var selectelem = div.find('.scombobox')
 			var selection = selectelem.scombobox('val');
 			if (selection != -1 && selection.length < 5) {
-				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').addClass('lms-ui-button-disabled');
+				$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', true);
 				return false;
 			}
-			$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').removeClass('lms-ui-button-disabled');
+			$('.lms-ui-filter-modify-button,.lms-ui-filter-delete-button').prop('disabled', false);
 			var newname = true;
 			selectelem.find('select option').each(function() {
 				if ($(this).val() == selection) {

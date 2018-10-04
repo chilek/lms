@@ -3,7 +3,7 @@
 {tab_container id="customernetworksbox"}
 
 	{tab_header content_id="networkspanel-`$layout.module`"}
-		{tab_header_cell icon="lms-ui-network-icon"}
+		{tab_header_cell icon="lms-ui-icon-network"}
 			<strong>{t a=$customernetworks|@count|default:"0"}Customer Networks ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -67,7 +67,7 @@
 
 					<div class="lms-ui-tab-table-column buttons">
 						<A href="?m=netedit&networkset&id={$network.id}">
-							<i class="lms-ui-{if $network.disabled}disconnected{else}connected{/if}-icon"
+							<i class="lms-ui-icon-{if $network.disabled}disconnected{else}connected{/if}"
 									title="{if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></i>
 						</A>
 						<A href="?m=netdel&id={$network.id}" class="lms-ui-delete-button"

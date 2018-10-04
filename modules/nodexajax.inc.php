@@ -58,6 +58,7 @@ function getNodeLocks($nodeid) {
 	$nodelocklist = $SMARTY->fetch('node/nodelocklist.html');
 
 	$result->assign('nodelocktable', 'innerHTML', $nodelocklist);
+	$result->assign('nodelockaddlink', 'disabled', false);
 
 	return $result;
 }
@@ -67,19 +68,26 @@ function addNodeLock($nodeid, $params) {
 
 	$result = new xajaxResponse();
 
-	if (empty($params['days']))
+	if (empty($params)) {
+		$result->assign('nodelockaddlink', 'disabled', false);
 		return $result;
+	}
+
+	$formdata = array();
+	parse_str($params,$formdata);
+
 	$days = 0;
-	foreach ($params['days'] as $key => $value)
+	foreach ($formdata['days'] as $key => $value)
 		$days += (1 << $key);
-	$fromsec = $params['fhour'] * 3600 + $params['fminute'] * 60;
-	$tosec = $params['thour'] * 3600 + $params['tminute'] * 60;
-	if ($fromsec >= $tosec || !$days)
+	$fromsec = $formdata['fhour'] * 3600 + $formdata['fminute'] * 60;
+	$tosec = $formdata['thour'] * 3600 + $formdata['tminute'] * 60;
+	if ($fromsec >= $tosec || !$days) {
+		$result->assign('nodelockaddlink', 'disabled', false);
 		return $result;
+	}
 
 	$DB->Execute('INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)', array($nodeid, $days, $fromsec, $tosec));
 	$result->call('xajax_getNodeLocks', $nodeid);
-	$result->assign('nodelockaddlink', 'disabled', false);
 
 	return $result;
 }
@@ -90,7 +98,6 @@ function delNodeLock($nodeid, $id) {
 	$result = new xajaxResponse();
 	$DB->Execute('DELETE FROM nodelocks WHERE id = ?', array($id));
 	$result->call('xajax_getNodeLocks', $nodeid);
-	$result->assign('nodelocktable', 'disabled', false);
 
 	return $result;
 }

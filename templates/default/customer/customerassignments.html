@@ -10,7 +10,7 @@
 {tab_container id="customerassignments"}
 
 	{tab_header content_id="customerassignmentpanel"}
-		{tab_header_cell icon="lms-ui-assignment-icon"}
+		{tab_header_cell icon="lms-ui-icon-assignment"}
 			<strong>{trans("Customer Liabilities:")}</strong>
 			<label id="assignment_type_filter">
 				{trans("Type:")}
@@ -182,7 +182,7 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column options">
 								{if $a.tariffid || $a.liabilityid}
-									<i class="lms-ui-options-icon lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
+									<i class="lms-ui-icon-options lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column period">

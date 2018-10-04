@@ -6,7 +6,7 @@
 {tab_container id="customermessages"}
 
 	{tab_header content_id="messagespanel"}
-		{tab_header_cell icon="lms-ui-message-icon"}
+		{tab_header_cell icon="lms-ui-icon-message"}
 			<strong>{trans("Customer Messages:")}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -61,13 +61,13 @@
 					</TD>
 					<TD class="bold" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{if $item.type == $smarty.const.MSG_MAIL}
-							<i class="lms-ui-mail-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-mail lms-ui-fixed-width-icon"></i>
 						{elseif $item.type == $smarty.const.MSG_WWW}
-							<i class="lms-ui-web-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-web lms-ui-fixed-width-icon"></i>
 						{elseif $item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT}
-							<i class="lms-ui-userpanel-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-userpanel lms-ui-fixed-width-icon"></i>
 						{else}
-							<i class="lms-ui-sms-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-sms lms-ui-fixed-width-icon"></i>
 						{/if}
 						{$item.subject}
 					</TD>
