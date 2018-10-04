@@ -30,8 +30,8 @@ $(function() {
 	});
 
 	$('#delete-nodegroups').click(function() {
-		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length
-			&& confirm($t("Are you sure, you want to remove node from selected groups?"))) {
+		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length &&
+			confirm($t("Are you sure, you want to remove node from selected groups?"))) {
 			$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id={$nodeinfo.id}&is_sure=1')
 				.submit();
 		}

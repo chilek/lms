@@ -82,7 +82,7 @@ function updateManagementUrl(id) {
 	$.each(elems, function(index, elem) {
 		params[elem] = $('#' + elem + '_edit_' + id).val();
 	});
-	params['urlid'] = id;
+	params.urlid = id;
 	xajax_updateManagementUrl(id, params);
 }
 

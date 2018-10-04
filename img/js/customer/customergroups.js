@@ -31,8 +31,8 @@ $(function() {
 	});
 
 	$('#delete-groups').click(function() {
-		if (!$(this).closest('div.lms-ui-multi-check').find('input:checked').length
-			|| !confirm($t("Are you sure, you want to remove customer from selected groups?"))) {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input:checked').length ||
+			!confirm($t("Are you sure, you want to remove customer from selected groups?"))) {
 			return false;
 		}
 		var form = $('form#customergroupassignment');
