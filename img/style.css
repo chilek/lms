@@ -4928,6 +4928,36 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   width: 1.5em;
   text-align: center;
 }
+.lms-ui-nodesession-icon,
+.lms-ui-session-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+  transform: rotate(90deg);
+}
+.lms-ui-nodesession-icon.fa-pull-left,
+.lms-ui-session-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-nodesession-icon.fa-pull-right,
+.lms-ui-session-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-nodesession-icon:before,
+.lms-ui-session-icon:before {
+  content: "\f362";
+}
 .lms-ui-convert-icon,
 .lms-ui-transform-icon {
   font-weight: normal;

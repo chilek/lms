@@ -992,6 +992,19 @@ button.lms-ui-button {
 	text-align: center;
 }
 
+
+.lms-ui-nodesession-icon,
+.lms-ui-session-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	transform: rotate(90deg);
+	&:before {
+		//content: @fa-var-download;
+		content: @fa-var-exchange-alt;
+	}
+}
+
 .lms-ui-convert-icon,
 .lms-ui-transform-icon {
 	.fa-icon;
