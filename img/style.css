@@ -5681,7 +5681,7 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 .lms-ui-info-icon:before {
   content: "\f129";
 }
-.lms-ui-open-icon {
+.lms-ui-icon-open {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5697,16 +5697,16 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   vertical-align: unset;
   color: black;
 }
-.lms-ui-open-icon.fa-pull-left {
+.lms-ui-icon-open.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-open-icon.fa-pull-right {
+.lms-ui-icon-open.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-open-icon:before {
+.lms-ui-icon-open:before {
   content: "\f518";
 }
-.lms-ui-close-icon {
+.lms-ui-icon-close {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -5722,13 +5722,13 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   vertical-align: unset;
   color: black;
 }
-.lms-ui-close-icon.fa-pull-left {
+.lms-ui-icon-close.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-close-icon.fa-pull-right {
+.lms-ui-icon-close.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-close-icon:before {
+.lms-ui-icon-close:before {
   content: "\f02d";
 }
 .lms-ui-nodegroup-icon,
@@ -7855,9 +7855,9 @@ a.lms-ui-info-button > i:before,
 div.lms-ui-info-button > i:before {
   content: "\f129";
 }
-button.lms-ui-open-button > i,
-a.lms-ui-open-button > i,
-div.lms-ui-open-button > i {
+button.lms-ui-button-open > i,
+a.lms-ui-button-open > i,
+div.lms-ui-button-open > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7873,24 +7873,24 @@ div.lms-ui-open-button > i {
   vertical-align: unset;
   color: black;
 }
-button.lms-ui-open-button > i.fa-pull-left,
-a.lms-ui-open-button > i.fa-pull-left,
-div.lms-ui-open-button > i.fa-pull-left {
+button.lms-ui-button-open > i.fa-pull-left,
+a.lms-ui-button-open > i.fa-pull-left,
+div.lms-ui-button-open > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-open-button > i.fa-pull-right,
-a.lms-ui-open-button > i.fa-pull-right,
-div.lms-ui-open-button > i.fa-pull-right {
+button.lms-ui-button-open > i.fa-pull-right,
+a.lms-ui-button-open > i.fa-pull-right,
+div.lms-ui-button-open > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-open-button > i:before,
-a.lms-ui-open-button > i:before,
-div.lms-ui-open-button > i:before {
+button.lms-ui-button-open > i:before,
+a.lms-ui-button-open > i:before,
+div.lms-ui-button-open > i:before {
   content: "\f518";
 }
-button.lms-ui-close-button > i,
-a.lms-ui-close-button > i,
-div.lms-ui-close-button > i {
+button.lms-ui-button-close > i,
+a.lms-ui-button-close > i,
+div.lms-ui-button-close > i {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -7906,19 +7906,19 @@ div.lms-ui-close-button > i {
   vertical-align: unset;
   color: black;
 }
-button.lms-ui-close-button > i.fa-pull-left,
-a.lms-ui-close-button > i.fa-pull-left,
-div.lms-ui-close-button > i.fa-pull-left {
+button.lms-ui-button-close > i.fa-pull-left,
+a.lms-ui-button-close > i.fa-pull-left,
+div.lms-ui-button-close > i.fa-pull-left {
   margin-right: .3em;
 }
-button.lms-ui-close-button > i.fa-pull-right,
-a.lms-ui-close-button > i.fa-pull-right,
-div.lms-ui-close-button > i.fa-pull-right {
+button.lms-ui-button-close > i.fa-pull-right,
+a.lms-ui-button-close > i.fa-pull-right,
+div.lms-ui-button-close > i.fa-pull-right {
   margin-left: .3em;
 }
-button.lms-ui-close-button > i:before,
-a.lms-ui-close-button > i:before,
-div.lms-ui-close-button > i:before {
+button.lms-ui-button-close > i:before,
+a.lms-ui-button-close > i:before,
+div.lms-ui-button-close > i:before {
   content: "\f02d";
 }
 button.lms-ui-fileupload-button {

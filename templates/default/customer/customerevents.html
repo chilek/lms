@@ -81,18 +81,18 @@
 					</div>
 					<div class="lms-ui-tab-table-column buttons">
 						{if $eventlist[eventlist].closed}
-							<a class="lms-ui-close-button" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open">
+							<a class="lms-ui-button-close" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open">
 								<i title="{trans("Open")}"></i>
 							</a>
 						{else}
-							<a class="lms-ui-open-button" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close">
+							<a class="lms-ui-button-open" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close">
 								<i title="{trans("close")}"></i>
 							</a>
 						{/if}
-						<a class="lms-ui-delete-button" href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
+						<a class="lms-ui-button-delete" href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
 							<i title="{trans("Delete")}"></i>
 						</a>
-						<a class="lms-ui-edit-button" href="?m=eventedit&amp;id={$eventlist[eventlist].id}">
+						<a class="lms-ui-button-edit" href="?m=eventedit&amp;id={$eventlist[eventlist].id}">
 							<i title="{trans("Edit")}"></i>
 						</a>
 
