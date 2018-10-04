@@ -5656,6 +5656,31 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 .lms-ui-view-icon.xls:before {
   content: "\f1c3";
 }
+.lms-ui-info-icon {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+.lms-ui-info-icon.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-info-icon.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-info-icon:before {
+  content: "\f129";
+}
 .lms-ui-nodegroup-icon,
 .lms-ui-ngroup-icon,
 .lms-ui-ng-icon {
@@ -6144,7 +6169,9 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   color: navy;
   content: "\f108";
 }
-.lms-ui-ipnetwork-icon {
+.lms-ui-ipnetwork-icon,
+.lms-ui-networks-icon,
+.lms-ui-network-icon {
   font-weight: normal;
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
@@ -6160,13 +6187,19 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
   vertical-align: unset;
   color: black;
 }
-.lms-ui-ipnetwork-icon.fa-pull-left {
+.lms-ui-ipnetwork-icon.fa-pull-left,
+.lms-ui-networks-icon.fa-pull-left,
+.lms-ui-network-icon.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-ipnetwork-icon.fa-pull-right {
+.lms-ui-ipnetwork-icon.fa-pull-right,
+.lms-ui-networks-icon.fa-pull-right,
+.lms-ui-network-icon.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-ipnetwork-icon:before {
+.lms-ui-ipnetwork-icon:before,
+.lms-ui-networks-icon:before,
+.lms-ui-network-icon:before {
   color: darkslategray;
   content: "\f0ac";
 }
@@ -6687,6 +6720,64 @@ button.lms-ui-button:not(.lms-ui-button-disabled):focus {
 .lms-ui-password-icon:before {
   color: seagreen;
   content: "\f084";
+}
+button.lms-ui-ipnetwork-button > i,
+a.lms-ui-ipnetwork-button > i,
+div.lms-ui-ipnetwork-button > i,
+button.lms-ui-networks-button > i,
+a.lms-ui-networks-button > i,
+div.lms-ui-networks-button > i,
+button.lms-ui-network-button > i,
+a.lms-ui-network-button > i,
+div.lms-ui-network-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-ipnetwork-button > i.fa-pull-left,
+a.lms-ui-ipnetwork-button > i.fa-pull-left,
+div.lms-ui-ipnetwork-button > i.fa-pull-left,
+button.lms-ui-networks-button > i.fa-pull-left,
+a.lms-ui-networks-button > i.fa-pull-left,
+div.lms-ui-networks-button > i.fa-pull-left,
+button.lms-ui-network-button > i.fa-pull-left,
+a.lms-ui-network-button > i.fa-pull-left,
+div.lms-ui-network-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-ipnetwork-button > i.fa-pull-right,
+a.lms-ui-ipnetwork-button > i.fa-pull-right,
+div.lms-ui-ipnetwork-button > i.fa-pull-right,
+button.lms-ui-networks-button > i.fa-pull-right,
+a.lms-ui-networks-button > i.fa-pull-right,
+div.lms-ui-networks-button > i.fa-pull-right,
+button.lms-ui-network-button > i.fa-pull-right,
+a.lms-ui-network-button > i.fa-pull-right,
+div.lms-ui-network-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-ipnetwork-button > i:before,
+a.lms-ui-ipnetwork-button > i:before,
+div.lms-ui-ipnetwork-button > i:before,
+button.lms-ui-networks-button > i:before,
+a.lms-ui-networks-button > i:before,
+div.lms-ui-networks-button > i:before,
+button.lms-ui-network-button > i:before,
+a.lms-ui-network-button > i:before,
+div.lms-ui-network-button > i:before {
+  color: darkslategray;
+  content: "\f0ac";
 }
 button.lms-ui-archiveview-button > i,
 a.lms-ui-archiveview-button > i,
@@ -7646,6 +7737,39 @@ button.lms-ui-view-button > i.xls:before,
 a.lms-ui-view-button > i.xls:before,
 div.lms-ui-view-button > i.xls:before {
   content: "\f1c3";
+}
+button.lms-ui-info-button > i,
+a.lms-ui-info-button > i,
+div.lms-ui-info-button > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+  color: black;
+}
+button.lms-ui-info-button > i.fa-pull-left,
+a.lms-ui-info-button > i.fa-pull-left,
+div.lms-ui-info-button > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-info-button > i.fa-pull-right,
+a.lms-ui-info-button > i.fa-pull-right,
+div.lms-ui-info-button > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-info-button > i:before,
+a.lms-ui-info-button > i:before,
+div.lms-ui-info-button > i:before {
+  content: "\f129";
 }
 button.lms-ui-fileupload-button {
   color: #800000;

@@ -1248,6 +1248,15 @@ button.lms-ui-button {
 	}
 }
 
+.lms-ui-info-icon {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-info;
+	}
+}
+
 .lms-ui-nodegroup-icon,
 .lms-ui-ngroup-icon,
 .lms-ui-ng-icon {
@@ -1394,7 +1403,9 @@ button.lms-ui-button {
 	}
 }
 
-.lms-ui-ipnetwork-icon {
+.lms-ui-ipnetwork-icon,
+.lms-ui-networks-icon,
+.lms-ui-network-icon {
 	.fa-icon;
 	.fas;
 	.lms-ui-icon;
@@ -1603,6 +1614,14 @@ button.lms-ui-button {
 }
 
 button,a,div {
+	&.lms-ui-ipnetwork-button,
+	&.lms-ui-networks-button,
+	&.lms-ui-network-button {
+		& > i {
+			.lms-ui-ipnetwork-icon;
+		}
+	}
+
 	&.lms-ui-archiveview-button,
 	&.lms-ui-archive-button,
 	&.lms-ui-transactions-button,
@@ -1744,6 +1763,12 @@ button,a,div {
 	&.lms-ui-view-button {
 		& > i {
 			.lms-ui-view-icon;
+		}
+	}
+
+	&.lms-ui-info-button {
+		& > i {
+			.lms-ui-info-icon;
 		}
 	}
 }
