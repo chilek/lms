@@ -241,20 +241,21 @@ function addManagementUrl($params) {
 	}
 
 	$result->call('xajax_getManagementUrls');
-	$result->call('managementUrlErrors', $error);
+	$result->call('managementUrlResponse', $error);
 	$result->assign('managementurladdlink', 'disabled', false);
 
 	return $result;
 }
 
 function delManagementUrl($id) {
-	global $DB, $SYSLOG;
+	global $SYSLOG;
 
 	$result = new xajaxResponse();
 
 	$nodeid = intval($_GET['id']);
 	$id = intval($id);
 
+	$DB = LMSDB::getInstance();
 	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
 	if ($res && $SYSLOG) {
 		$args = array(
@@ -270,14 +271,14 @@ function delManagementUrl($id) {
 }
 
 function updateManagementUrl($urlid, $params) {
-	global $DB, $SYSLOG;
+	global $SYSLOG;
 
 	$result = new xajaxResponse();
 
 	$urlid = intval($urlid);
 	$nodeid = intval($_GET['id']);
 
-	$res = validateManagementUrl($params, true);
+	$res = validateManagementUrl($params);
 
 	$error = array();
 	foreach ($res as $key => $val)
@@ -293,6 +294,7 @@ function updateManagementUrl($urlid, $params) {
 			'comment' => $params['comment'],
 			SYSLOG::RES_MGMTURL => $urlid,
 		);
+		$DB = LMSDB::getInstance();
 		$DB->Execute('UPDATE managementurls SET url = ?, comment = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_NODE] = $nodeid;
@@ -302,6 +304,7 @@ function updateManagementUrl($urlid, $params) {
 	}
 
 	$result->call('xajax_getManagementUrls', $params);
+	$result->call('managementUrlReponse', $error);
 	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;

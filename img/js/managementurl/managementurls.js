@@ -86,11 +86,15 @@ function updateManagementUrl(id) {
 	xajax_updateManagementUrl(id, params);
 }
 
-function managementUrlErrors(errors) {
-	$.each(errors, function(index, value) {
-		$('#managementurlspanel #' + index).addClass('alert')
-			.removeAttr('data-tooltip').attr('title', value);
-	});
+function managementUrlResponse(errors) {
+	if (errors) {
+		$.each(errors, function (index, value) {
+			$('#managementurlspanel #' + index).addClass('alert')
+				.removeAttr('data-tooltip').attr('title', value);
+		});
+	} else {
+		hideAddManagementUrl();
+	}
 }
 
 $('#add_management_url').hide();

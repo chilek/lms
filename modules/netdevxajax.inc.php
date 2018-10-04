@@ -24,9 +24,7 @@
  *  $Id$
  */
 
-function validateManagementUrl($params, $update = false) {
-	global $DB;
-
+function validateManagementUrl($params) {
 	$error = NULL;
 
 	if (!strlen($params['url']))
@@ -37,7 +35,7 @@ function validateManagementUrl($params, $update = false) {
 	return $error;
 }
 
-function getManagementUrls($formdata = NULL) {
+function getManagementUrls() {
 	global $SMARTY, $DB;
 
 	$result = new xajaxResponse();
@@ -47,9 +45,6 @@ function getManagementUrls($formdata = NULL) {
 	$mgmurls = NULL;
 	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE netdevid = ? ORDER BY id', array($netdevid));
 	$SMARTY->assign('mgmurls', $mgmurls);
-	if (isset($formdata['error']))
-		$SMARTY->assign('error', $formdata['error']);
-	$SMARTY->assign('formdata', $formdata);
 	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
 
 	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
@@ -60,45 +55,50 @@ function getManagementUrls($formdata = NULL) {
 function addManagementUrl($params) {
 	global $DB, $SYSLOG;
 
+	$DB = LMSDB::getInstance();
+
 	$result = new xajaxResponse();
 
-	$error = validateManagementUrl($params);
+	$formdata = array();
+	parse_str($params, $formdata);
 
-	$params['error'] = $error;
+	$error = validateManagementUrl($formdata);
 
 	$netdevid = intval($_GET['id']);
 
 	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
-			$params['url'] = 'http://' . $params['url'];
+		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $formdata['url']))
+			$formdata['url'] = 'http://' . $formdata['url'];
 
 		$args = array(
 			SYSLOG::RES_NETDEV => $netdevid,
-			'url' => $params['url'],
-			'comment' => $params['comment'],
+			'url' => $formdata['url'],
+			'comment' => $formdata['comment'],
 		);
 		$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)', array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_MGMTURL] = $DB->GetLastInsertID('managementurls');
 			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_ADD, $args);
 		}
-		$params = NULL;
+		$formdata = NULL;
 	}
 
-	$result->call('xajax_getManagementUrls', $params);
+	$result->call('xajax_getManagementUrls');
+	$result->call('managementUrlResponse', $error);
 	$result->assign('managementurladdlink', 'disabled', false);
 
 	return $result;
 }
 
 function delManagementUrl($id) {
-	global $DB, $SYSLOG;
+	global $SYSLOG;
 
 	$result = new xajaxResponse();
 
 	$netdevid = intval($_GET['id']);
 	$id = intval($id);
 
+	$DB = LMSDB::getInstance();
 	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
 	if ($res && $SYSLOG) {
 		$args = array(
@@ -107,14 +107,14 @@ function delManagementUrl($id) {
 		);
 		$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_DELETE, $args);
 	}
-	$result->call('xajax_getManagementUrls', $netdevid);
+	$result->call('xajax_getManagementUrls');
 	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;
 }
 
 function updateManagementUrl($urlid, $params) {
-	global $DB, $SYSLOG;
+	global $SYSLOG;
 
 	$result = new xajaxResponse();
 
@@ -137,6 +137,7 @@ function updateManagementUrl($urlid, $params) {
 			'comment' => $params['comment'],
 			SYSLOG::RES_MGMTURL => $urlid,
 		);
+		$DB = LMSDB::getInstance();
 		$DB->Execute('UPDATE managementurls SET url = ?, comment = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_NETDEV] = $netdevid;
@@ -146,6 +147,7 @@ function updateManagementUrl($urlid, $params) {
 	}
 
 	$result->call('xajax_getManagementUrls', $params);
+	$result->call('managementUrlResponse', $error);
 	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;
