@@ -1,30 +1,27 @@
 <!--// $Id$ //-->
-{*$xajax*}
-<div class="lms-ui-sortable" id="transactions">
+
 <FORM name="search" method="post" action="?m=archiveview">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" name="search[resourcetype]" value="{$resourcetype}">
-<INPUT type="hidden" name="search[resourceid]" value="{$resourceid}">
-<INPUT type="hidden" name="search[userid]" value="{$userid}">
-<TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="transactionpanel">
-		<TD>
-			<IMG src="img/recover.gif" alt="">
-			<span class="bold">{trans("Transaction Log:")}</span>&nbsp;({t a=300}last $a transactions{/t})
-		</TD>
-		<TD class="text-right nobr">
-			<A id="more-transactions">{trans("More")} &raquo;</A>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="transactionpanel" class="dark" style="display: none;">
-		<TD class="fall" id="transactiontable" colspan="2">
+	<INPUT type="submit" class="hiddenbtn">
+	<INPUT type="hidden" name="search[resourcetype]" value="{$resourcetype}">
+	<INPUT type="hidden" name="search[resourceid]" value="{$resourceid}">
+	<INPUT type="hidden" name="search[userid]" value="{$userid}">
+</FORM>
+
+{tab_container id="transactions"}
+
+	{tab_header content_id="transactionpanel"}
+		{tab_header_cell icon="lms-ui-transactions-icon"}
+			<strong>{trans("Transaction Log:")}</strong>&nbsp;({t a=300}last $a transactions{/t})
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="#" id="more-transactions">{trans("More")} &raquo;</A>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="transactionpanel"}
+
+		{tab_table}
+
 			<TABLE id="transactions-datatable" class="lmsbox-inner{if $transactions} lms-ui-datatable{/if}"{if $transactions} data-order='[[ 0, "desc" ]]' data-page-length="10" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
@@ -79,16 +76,13 @@
 			</TBODY>
 			{/if}
 			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
-</div>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('transactionpanel') == '1')
-		document.getElementById('transactionpanel').style.display = '';
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}
+
+<SCRIPT>
 
 	$(function() {
 		$('#more-transactions').click(function(e) {
@@ -96,5 +90,5 @@
 			$('form[name=search]').submit();
 		});
 	});
-//-->
+
 </SCRIPT>

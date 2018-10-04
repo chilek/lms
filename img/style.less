@@ -1494,7 +1494,13 @@ button.lms-ui-button {
 	}
 }
 
-.lms-ui-archiveview-icon {
+.lms-ui-archiveview-icon,
+.lms-ui-archive-icon,
+.lms-ui-transactions-icon,
+.lms-ui-transaction-icon,
+.lms-ui-logging-icon,
+.lms-ui-log-icon,
+.lms-ui-history-icon {
 	.fa-icon;
 	.fas;
 	.lms-ui-icon;
@@ -1597,6 +1603,18 @@ button.lms-ui-button {
 }
 
 button,a,div {
+	&.lms-ui-archiveview-button,
+	&.lms-ui-archive-button,
+	&.lms-ui-transactions-button,
+	&.lms-ui-transaction-button,
+	&.lms-ui-logging-button,
+	&.lms-ui-log-button,
+	&.lms-ui-history-button {
+		& > i {
+			.lms-ui-history-icon;
+		}
+	}
+
 	&.lms-ui-convert-button,
 	&.lms-ui-transform-button {
 		& > i {
