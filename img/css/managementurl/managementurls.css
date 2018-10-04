@@ -30,6 +30,9 @@
 #managementurlspanel .buttons {
   width: 4em;
 }
+#managementurlspanel #add_management_url .lms-ui-tab-buttons *:not(:first-child) {
+  margin-left: 0.5em;
+}
 @media all and (max-width: 768px) {
   #managementurlspanel .col-2 {
     flex-direction: column !important;

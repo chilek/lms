@@ -21,8 +21,10 @@
 {if ConfigHelper::checkPrivilege('privileges.network_management')}
 		{tab_button_panel id="add_management_url"}
 			{tab_buttons}
+				<strong>{trans("URL:")}</strong>
 				<input type="text" size="80" form="managementurladd" name="url" id="url" class="url"
 						value="{if !$formdata.urlid}{$formdata.url}{/if}" {tip text="Enter management URL" trigger="url"}>
+				<strong>{trans("Comment:")}</strong>
 				<input type="text" size="40" form="managementurladd" name="comment" id="comment" class="comment"
 						value="{if !$formdata.urlid}{$formdata.comment}{/if}" {tip text="Enter URL comment" trigger="comment"}>
 				<a HREF="javascript:addManagementUrl();" class="lms-ui-button-save" {tip text="Add new management URL"}>
