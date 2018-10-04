@@ -5632,7 +5632,8 @@ li.lms-ui-suggestion-item a {
   margin-left: .3em;
 }
 .lms-ui-icon-clipboard:before {
-  content: "\f328";
+  color: darkorange;
+  content: "\f0ea";
 }
 .lms-ui-icon-view {
   font-weight: normal;
@@ -5799,6 +5800,7 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-cgroup:before,
 .lms-ui-icon-cg:before {
   content: "\f0c0";
+  color: darkorange;
 }
 .lms-ui-icon-warning,
 .lms-ui-icon-warn,
@@ -5864,7 +5866,31 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-warnon:before {
   content: "\f071";
 }
-.lms-ui-icon-connect,
+.lms-ui-icon-connect {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-connect.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-connect.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-connect:before {
+  color: green;
+  content: "\f205";
+}
 .lms-ui-icon-plug {
   font-weight: normal;
   vertical-align: -0.125em;
@@ -5880,15 +5906,12 @@ li.lms-ui-suggestion-item a {
   line-height: unset;
   vertical-align: unset;
 }
-.lms-ui-icon-connect.fa-pull-left,
 .lms-ui-icon-plug.fa-pull-left {
   margin-right: .3em;
 }
-.lms-ui-icon-connect.fa-pull-right,
 .lms-ui-icon-plug.fa-pull-right {
   margin-left: .3em;
 }
-.lms-ui-icon-connect:before,
 .lms-ui-icon-plug:before {
   content: "\f1e6";
 }
@@ -5919,7 +5942,8 @@ li.lms-ui-suggestion-item a {
   margin-left: .3em;
 }
 .lms-ui-icon-connected:before {
-  content: "\f1e6";
+  color: green;
+  content: "\f205";
 }
 .lms-ui-icon-disconnected {
   font-weight: normal;
@@ -5935,7 +5959,11 @@ li.lms-ui-suggestion-item a {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  color: black;
+  -webkit-transform: rotate(180deg);
+  /* to support Safari and Android browser */
+  -ms-transform: rotate(180deg);
+  /* to support IE 9 */
+  transform: rotate(180deg);
 }
 .lms-ui-icon-disconnected.fa-pull-left {
   margin-right: .3em;
@@ -5944,7 +5972,8 @@ li.lms-ui-suggestion-item a {
   margin-left: .3em;
 }
 .lms-ui-icon-disconnected:before {
-  content: "\f1e6";
+  content: "\f205";
+  color: darkorange;
 }
 .lms-ui-icon-node {
   font-weight: normal;
@@ -5969,6 +5998,31 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-node:before {
   content: "\f108";
+}
+.lms-ui-icon-actions {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-actions.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-actions.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-actions:before {
+  content: "\f085";
+  color: red;
 }
 .lms-ui-icon-nodeoff {
   font-weight: normal;
@@ -7755,7 +7809,8 @@ div.lms-ui-button-clipboard > i.fa-pull-right {
 button.lms-ui-button-clipboard > i:before,
 a.lms-ui-button-clipboard > i:before,
 div.lms-ui-button-clipboard > i:before {
-  content: "\f328";
+  color: darkorange;
+  content: "\f0ea";
 }
 button.lms-ui-button-view > i,
 a.lms-ui-button-view > i,
@@ -8144,6 +8199,9 @@ table.lms-ui-datatable > tbody tr:hover.parent + .child {
 table.dataTable > tbody > tr.child ul.dtr-details > li {
   border-bottom: 0;
   padding: 0;
+}
+table.dataTable > tbody > tr.child ul.dtr-details > li:last-child span.dtr-title {
+  display: none;
 }
 tr.space_row > td {
   padding-top: 20px;
