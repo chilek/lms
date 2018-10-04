@@ -67,7 +67,7 @@
 
 					<div class="lms-ui-tab-table-column buttons">
 						<A href="?m=netedit&networkset&id={$network.id}">
-							<i class="lms-ui-{if $node.access}connected{else}disconnected{/if}-icon"
+							<i class="lms-ui-{if $network.disabled}disconnected{else}connected{/if}-icon"
 									title="{if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></i>
 						</A>
 						<A href="?m=netdel&id={$network.id}" class="lms-ui-delete-button"

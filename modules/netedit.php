@@ -32,7 +32,7 @@ if(!$LMS->NetworkExists($_GET['id']))
 if(isset($_GET['id']) && isset($_GET['networkset']))
 {
 	$LMS->NetworkSet($_GET['id']);
-	$SESSION->redirect('?m=netlist#'.$_GET['id']);
+	$SESSION->redirect('?' . $SESSION->get('backto'));
 }
 
 if($SESSION->is_set('ntlp.'.$_GET['id']) && ! isset($_GET['page']))
