@@ -5897,6 +5897,7 @@ li.lms-ui-suggestion-item a {
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  display: inline-block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -5905,13 +5906,6 @@ li.lms-ui-suggestion-item a {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("node.gif");
 }
 .lms-ui-icon-nodeoff.fa-pull-left {
   margin-right: .3em;
@@ -5937,6 +5931,7 @@ li.lms-ui-suggestion-item a {
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  display: inline-block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -5945,13 +5940,6 @@ li.lms-ui-suggestion-item a {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("node.gif");
   text-stroke-width: 1px;
   text-stroke-color: gold;
   -webkit-text-stroke-width: 1px;
@@ -5981,6 +5969,7 @@ li.lms-ui-suggestion-item a {
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  display: inline-block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -5989,13 +5978,6 @@ li.lms-ui-suggestion-item a {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("node.gif");
   text-stroke-width: 1px;
   text-stroke-color: red;
   -webkit-text-stroke-width: 1px;
@@ -8660,195 +8642,6 @@ table.dataTable thead tr:last-child th {
     opacity: 1;
   }
 }
-.lms-ui-icon-administration {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("users.gif");
-}
-.lms-ui-icon-customer {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("customer.gif");
-}
-.lms-ui-icon-node {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("node.gif");
-}
-.lms-ui-icon-voip {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("voip.gif");
-}
-.lms-ui-icon-netdevice {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("netdev.gif");
-}
-.lms-ui-icon-wireless {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("wireless.gif");
-}
-.lms-ui-icon-network {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("network.gif");
-}
-.lms-ui-icon-finances {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("money.gif");
-}
-.lms-ui-icon-document {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("docum.gif");
-}
-.lms-ui-icon-hosting {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("account.gif");
-}
-.lms-ui-icon-message {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("mailsms.gif");
-}
-.lms-ui-icon-reload {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("reload.gif");
-}
-.lms-ui-icon-stats {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("traffic.gif");
-}
-.lms-ui-icon-helpdesk {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("ticket.gif");
-}
-.lms-ui-icon-timetable {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("calendar.gif");
-}
-.lms-ui-icon-password {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("pass.gif");
-}
-.lms-ui-icon-configuration {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("settings.gif");
-}
-.lms-ui-icon-documentation {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("doc.gif");
-}
-.lms-ui-icon-log {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("recover.gif");
-}
-.lms-ui-icon-logout {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("logout.gif");
-}
-.lms-ui-icon-userpanel {
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("cms.gif");
-}
 .chosen-container {
   text-align: left;
   min-width: 250px;
@@ -9293,6 +9086,7 @@ div.lms-ui-wysiwyg-editor {
   vertical-align: -0.125em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  display: inline-block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -9301,13 +9095,6 @@ div.lms-ui-wysiwyg-editor {
   font-weight: 900;
   line-height: unset;
   vertical-align: unset;
-  vertical-align: middle;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-  background: url("reload.gif");
   animation: fa-spin 2s infinite linear;
   -webkit-animation: fa-spin 0.75s infinite linear !important;
   animation: fa-spin 0.75s infinite linear !important;
