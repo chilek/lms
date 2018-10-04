@@ -26,7 +26,7 @@
 
 function smarty_block_box_buttons($params, $content, $template, $repeat) {
 	if (!$repeat) {
-		return '<div class="lms-ui-box-buttons">'
+		return '<div class="lms-ui-button-boxs">'
 				. $content
 			. '</div>';
 	}

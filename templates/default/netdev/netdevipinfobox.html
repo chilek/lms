@@ -13,7 +13,7 @@
     <thead>
 		<tr>
 			<td width="1%">
-				<img src="img/ip.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeipdata.id|string_format:"%04d"}" alt="">
+				<img src="img/ip.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeipdata.id|string_format:"%04d"}" alt="">
 			</td>
 			<td width="99%" colspan="2" class="bold">
 				{$nodeipdata.name} ({$nodeipdata.id|string_format:"%04d"})
@@ -46,7 +46,7 @@
 								</tr>
 								<tr>
 									<td>
-										<img src="img/ip.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeipdata.ip}" alt="">
+										<img src="img/ip.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeipdata.ip}" alt="">
 									</td>
 									<td>
 										{trans("IP address:")}
@@ -59,7 +59,7 @@
 								{if $nodeipdata.ip_pub != "0.0.0.0"}
 								<tr>
 									<td>
-										<img src="img/ip_pub.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeinfo.ip_pub}" alt="">
+										<img src="img/ip_pub.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip_pub}" alt="">
 									</td>
 									<td>
 										{trans("Pub. IP address:")}

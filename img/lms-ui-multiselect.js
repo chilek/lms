@@ -45,7 +45,7 @@ function multiselect(options) {
 		}
 	} else {
 		$('<span/>')
-			.addClass('lms-ui-multiselect-icon')
+			.addClass('lms-ui-icon-multiselect')
 			.appendTo(wrapper);
 	}
 

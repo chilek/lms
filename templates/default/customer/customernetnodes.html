@@ -5,7 +5,7 @@
 {tab_container id="customernetnodes"}
 
 	{tab_header content_id="netnodepanel"}
-		{tab_header_cell icon="lms-ui-netnode-icon"}
+		{tab_header_cell icon="lms-ui-icon-netnode"}
 			<strong>{t a=$customernetnodes|@count|default:"0"}Network Nodes ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -42,7 +42,7 @@
 			{$customer_netnode_id = $customernetnode.id}
 			<div class="lms-ui-tab-table-row" data-target-url="?m=netnodeinfo&id={$customernetnode.id}">
 				<div class="lms-ui-tab-table-wrapper col-3">
-					<div class="lms-ui-tab-table-column name" class="lms-ui-netnode-button">
+					<div class="lms-ui-tab-table-column name" class="lms-ui-button-netnode">
 						<i></i> <strong>{$customernetnode.name}</strong>
 						{if $customernetnode.location}
 							<BR>{$customernetnode.location|truncate:60:"...":true}
@@ -59,7 +59,7 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					<a href="?m=netnodeedit&id={$customernetnode.id}" class="lms-ui-edit-button">
+					<a href="?m=netnodeedit&id={$customernetnode.id}" class="lms-ui-button-edit">
 						<i title="{trans("Edit")}"></i>
 					</a>
 				</div>

@@ -10,7 +10,7 @@
 {tab_container id="customerassignments"}
 
 	{tab_header content_id="customerassignmentpanel"}
-		{tab_header_cell icon="lms-ui-assignment-icon"}
+		{tab_header_cell icon="lms-ui-icon-assignment"}
 			<strong>{trans("Customer Liabilities:")}</strong>
 			<label id="assignment_type_filter">
 				{trans("Type:")}
@@ -32,7 +32,7 @@
 				{trans("<!assignment>Commited")}
 				<input type="checkbox" id="commited" value="1"{if $commited} checked{/if}>
 			</label>
-			<a id="clear_filter" class="lms-ui-delete-button" href="#"><i></i><a>
+			<a id="clear_filter" class="lms-ui-button-delete" href="#"><i></i><a>
 		{/tab_header_cell}
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
@@ -182,7 +182,7 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column options">
 								{if $a.tariffid || $a.liabilityid}
-									<i class="lms-ui-options-icon lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
+									<i class="lms-ui-icon-options lms-ui-tooltip-customerassignmentinfo" data-resourceid="{$a.id}"></i>
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column period">
@@ -197,15 +197,15 @@
 				<div class="lms-ui-tab-table-column buttons">
 					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
 						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
-								class="lms-ui-wait-button" {tip text="Enable/disable accounting of selected liability"}>
+								class="lms-ui-button-wait" {tip text="Enable/disable accounting of selected liability"}>
 							<i title="{if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if}"></i>
 						</A>
 					{/if}
-					<A class="lms-ui-delete-button" onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
+					<A class="lms-ui-button-delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
 							href="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}>
 						<i title="{trans("Delete")}"></i>
 					</A>
-					<a class="lms-ui-edit-button" href="?m=customerassignmentedit&id={$a.id}">
+					<a class="lms-ui-button-edit" href="?m=customerassignmentedit&id={$a.id}">
 						<i title="{trans("Edit")}"></i>
 					</a>
 					<input type="checkbox" name="customerassignments[{$a.id}]" form="customerassignments-form"
@@ -271,7 +271,7 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
-				<button type="button" id="delete-assignments" class="lms-ui-button lms-ui-delete-button">
+				<button type="button" id="delete-assignments" class="lms-ui-button lms-ui-button-delete">
 					<i></i> {trans("Delete")}
 				</button>
 				<label>

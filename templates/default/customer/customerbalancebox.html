@@ -16,7 +16,7 @@
 		{$content_id=null}
 	{/if}
 	{tab_header content_id=$content_id}
-		{tab_header_cell icon="lms-ui-finances-icon"}
+		{tab_header_cell icon="lms-ui-icon-finances"}
 			<strong>{trans("Customer Account:")}</strong>
 			{if $limit}
 				{$n=$limit*-1}
@@ -105,91 +105,91 @@
 						{/foreach}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-							<a href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1" class="lms-ui-transform-button" rel="external">
+							<a href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1" class="lms-ui-button-transform" rel="external">
 								<i title="{trans("Convert to invoice")}"></i>
 							</a>
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
-							<A class="invoicesend lms-ui-mail-button" href="?m=invoicesend&id={$item.docid}">
+							<A class="invoicesend lms-ui-button-mail" href="?m=invoicesend&id={$item.docid}">
 								<i title="{trans("Send invoice")}"></i>
 							</A>
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.referenced}
-								<A HREF="?m=invoicenote&id={$item.docid}&action=init" class="lms-ui-correction-button">
+								<A HREF="?m=invoicenote&id={$item.docid}&action=init" class="lms-ui-button-correction">
 									<i title="{trans("Revise")}"></i>
 								</A>
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-view-button lms-ui-tooltip-invoiceinfo"
+								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-button-view lms-ui-tooltip-invoiceinfo"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("View")}"></i>
 								</A>
 								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external">
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("Invoice")}"></i>
 								</A>
 								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 								<A href="?m=invoiceedit&id={$item.docid}&action=edit" rel="external"
 										{if $item.published}OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
-										class="lms-ui-edit-button lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
+										class="lms-ui-button-edit lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
 									<i title="{trans("Invoice")}"></i>
 								</A>
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-view-button lms-ui-tooltip-invoiceinfo"
+								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-button-view lms-ui-tooltip-invoiceinfo"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("View")}"></i>
 								</A>
 								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-invoiceinfo"
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-invoiceinfo"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("pro forma invoice")}"></i>
 								</A>
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 								<A href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1" rel="external"
 										{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
-										class="lms-ui-edit-button lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
+										class="lms-ui-button-edit lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
 									<i title="{trans("pro forma invoice")}"></i>
 								</A>
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 								<A href="?m=invoice&id={$item.docid}&dontpublish=1"
-										class="lms-ui-view-button lms-ui-tooltip-docnumber"
+										class="lms-ui-button-view lms-ui-tooltip-docnumber"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("View")}"></i>
 								</A>
 								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-docnumber"
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-docnumber"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("Credit note")}"></i>
 								</A>
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 								<A href="?m=invoicenoteedit&id={$item.docid}&action=edit" rel="external"
 										{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
-										class="lms-ui-edit-button lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
+										class="lms-ui-button-edit lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
 									<i title="{trans("Invoice")}"></i>
 								</A>
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-docnumber"
+								<A href="?m=receipt&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-docnumber"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("Cash receipt")}"></i>
-								<a href="?m=receiptedit&id={$item.docid}" class="lms-ui-edit-button lms-ui-tooltip-docnumber"
+								<a href="?m=receiptedit&id={$item.docid}" class="lms-ui-button-edit lms-ui-tooltip-docnumber"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("Cash receipt")}"></i>
 								</a>
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=note&id={$item.docid}&dontpublish=1" class="lms-ui-view-button lms-ui-tooltip-docnumber"
+								<A href="?m=note&id={$item.docid}&dontpublish=1" class="lms-ui-button-view lms-ui-tooltip-docnumber"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("View")}"></i>
 								</A>
 								{/if}
-								<A href="?m=note&id={$item.docid}" class="lms-ui-print-button lms-ui-tooltip-docnumber"
+								<A href="?m=note&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-docnumber"
 										data-resourceid="{$item.docid}" rel="external">
 									<i title="{trans("Debit note")}"></i>
 								</A>
@@ -214,21 +214,21 @@
 
 			{tab_buttons}
 				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-				<button type="button" class="lms-ui-button lms-ui-delete-button" onclick="javascript:delpos();">
+				<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delpos();">
 					<i></i> {trans("Delete")}
 				</button>
 				{/if}
-				<button type="button" class="lms-ui-button lms-ui-mail-button">
+				<button type="button" class="lms-ui-button lms-ui-button-mail">
 					<i></i> {trans("Send invoices")}
 				</button>
 				{trans("Print")}:
-				<button type="button" class="lms-ui-button lms-ui-print-button" onclick="javascript:print_doc('invoice')">
+				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_doc('invoice')">
 					<i></i> {trans("invoices")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-cash-button" onclick="javascript:printr();">
+				<button type="button" class="lms-ui-button lms-ui-button-cash" onclick="javascript:printr();">
 					<i></i> {trans("cash receipts")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-dnote-button" onclick="javascript:print_doc('note');">
+				<button type="button" class="lms-ui-button lms-ui-button-dnote" onclick="javascript:print_doc('note');">
 					<i></i> {trans("debit notes")}
 				</button>
 				<label>
@@ -278,7 +278,7 @@
 						{trans("income/expense")}
 					</label>
 					{if $sourcelist}
-					<div class="isource lms-ui-isource-button">
+					<div class="isource lms-ui-button-isource">
 						<i></i>
 						<SELECT form="addbalance-form" name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
 							<OPTION value="0">{trans("- none -")}</OPTION>
@@ -299,7 +299,7 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{if $customerinfo.balance < 0}
-				<button type="button" class="lms-ui-button lms-ui-edit-button" id="clear-account">
+				<button type="button" class="lms-ui-button lms-ui-button-edit" id="clear-account">
 					<i></i> {trans("Clear Account")}
 				</button>
 				{/if}
@@ -307,11 +307,11 @@
 
 			{tab_buttons}
 				{if $instantpayment}
-				<button type="button" class="lms-ui-button lms-ui-cash-button" onclick="javascript:AddBalance(true);">
+				<button type="button" class="lms-ui-button lms-ui-button-cash" onclick="javascript:AddBalance(true);">
 					<i></i> {trans("Instant payment")}
 				</button>
 				{/if}
-				<button type="button" class="lms-ui-button lms-ui-save-button" onclick="javascript:AddBalance();">
+				<button type="button" class="lms-ui-button lms-ui-button-save" onclick="javascript:AddBalance();">
 					<i></i> {trans("Submit")}
 				</button>
 			{/tab_buttons}
@@ -455,7 +455,7 @@
 		}
 	});
 
-	$('.lms-ui-mail-button').click(function() {
+	$('.lms-ui-button-mail').click(function() {
 		if (confirm($t("Are you sure, you want to send invoices to customer?"))) {
 			send_invoices();
 		}

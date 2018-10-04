@@ -219,10 +219,10 @@
 
 	{if $layout.module != 'eventadd'}
 	{box_buttons}
-		<button class="lms-ui-button lms-ui-save-button" onclick="javascript:document.ticket.submit();" accesskey="s">
+		<button class="lms-ui-button lms-ui-button-save" onclick="javascript:document.ticket.submit();" accesskey="s">
 			<i></i> {trans("Submit")}
 		</button>
-		<button class="lms-ui-button lms-ui-cancel-button" type="button"
+		<button class="lms-ui-button lms-ui-button-cancel" type="button"
 				onclick="location.href='?m={if $queue}rtqueueview&id={$queue}{elseif $ticket.queueid}rtqueueview&id={$ticket.queueid}{else}rtqueuelist{/if}'">
 			<i></i> {trans("Cancel")}
 		</button>

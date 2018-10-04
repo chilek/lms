@@ -122,11 +122,11 @@
 {if $customerinfo.pin}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/pin.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$customerinfo.pin}" ALT="">
+			<IMG SRC="img/pin.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$customerinfo.pin}" ALT="">
 		</TD>
 		<TD WIDTH="99%">
 			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-				<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$customerinfo.pin}">
+				<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$customerinfo.pin}">
 					<i></i> {trans("Copy")}
 				</button>
 			{else}

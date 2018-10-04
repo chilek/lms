@@ -6,7 +6,7 @@
 {tab_container id="customermessages"}
 
 	{tab_header content_id="messagespanel"}
-		{tab_header_cell icon="lms-ui-message-icon"}
+		{tab_header_cell icon="lms-ui-icon-message"}
 			<strong>{trans("Customer Messages:")}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
@@ -61,13 +61,13 @@
 					</TD>
 					<TD class="bold" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{if $item.type == $smarty.const.MSG_MAIL}
-							<i class="lms-ui-mail-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-mail lms-ui-fixed-width-icon"></i>
 						{elseif $item.type == $smarty.const.MSG_WWW}
-							<i class="lms-ui-web-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-web lms-ui-fixed-width-icon"></i>
 						{elseif $item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT}
-							<i class="lms-ui-userpanel-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-userpanel lms-ui-fixed-width-icon"></i>
 						{else}
-							<i class="lms-ui-sms-icon lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-sms lms-ui-fixed-width-icon"></i>
 						{/if}
 						{$item.subject}
 					</TD>
@@ -84,7 +84,7 @@
 						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
-						<A class="lms-ui-delete-button" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&id={$item.id}">
+						<A class="lms-ui-button-delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&id={$item.id}">
 							<i title="{trans("Delete")}"></i>
 						</A>
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}">
@@ -103,7 +103,7 @@
 
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button lms-ui-delete-button" id="delete-messages">
+				<button type="button" class="lms-ui-button lms-ui-button-delete" id="delete-messages">
 					<i></i> {trans("Delete")}
 				</button>
 			{/tab_buttons}

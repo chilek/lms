@@ -27,7 +27,7 @@
 $menu = array(
 		'admin' => array(
 			'name' => trans('Administration'),
-			'css' => 'lms-ui-administration-icon',
+			'css' => 'lms-ui-icon-administration',
 			'link' =>'?m=welcome',
 			'tip' => trans('System information and management'),
 			'accesskey' =>'i',
@@ -81,7 +81,7 @@ $menu = array(
 
 		'customers' => array(
 			'name' => trans('Customers'),
-			'css' => 'lms-ui-customer-icon',
+			'css' => 'lms-ui-icon-customer',
 			'link' =>'?m=customerlist',
 			'tip' => trans('Customers Management'),
 			'accesskey' =>'u',
@@ -134,7 +134,7 @@ $menu = array(
 
 		'nodes' => array(
 			'name' => trans('Nodes'),
-			'css' => 'lms-ui-node-icon',
+			'css' => 'lms-ui-icon-node',
 			'link' =>'?m=nodelist',
 			'tip' => trans('Nodes Management'),
 			'accesskey' =>'k',
@@ -193,7 +193,7 @@ $menu = array(
 
 		'VoIP' => array(
 			'name' => trans('VoIP'),
-			'css' => 'lms-ui-phone-icon',
+			'css' => 'lms-ui-icon-phone',
 			'tip' => trans('VoIP Management'),
 			'accesskey' =>'v',
 			'prio' => 11,
@@ -251,7 +251,7 @@ $menu = array(
 
 		'netdevices' => array(
 			'name' => trans('Net Devices'),
-			'css' => 'lms-ui-netdev-icon',
+			'css' => 'lms-ui-icon-netdev',
 			'link' =>'?m=netdevlist',
 			'tip' => trans('Network Devices Management'),
 			'accesskey' =>'o',
@@ -310,7 +310,7 @@ $menu = array(
 
 		'networks' => array(
 			'name' => trans('IP Networks'),
-			'css' => 'lms-ui-ipnetwork-icon',
+			'css' => 'lms-ui-icon-ipnetwork',
 			'link' =>'?m=netlist',
 			'tip' => trans('IP Address Pools Management'),
 			'accesskey' =>'t',
@@ -345,7 +345,7 @@ $menu = array(
 
 		'finances' => array(
 			'name' => trans('Finances'),
-			'css' => 'lms-ui-finances-icon',
+			'css' => 'lms-ui-icon-finances',
 			'link' =>'?m=tarifflist',
 			'tip' => trans('Subscriptions and Network Finances Management'),
 			'accesskey' =>'f',
@@ -470,7 +470,7 @@ $menu = array(
 
 		'documents' => array(
 			'name' => trans('Documents'),
-			'css' => 'lms-ui-document-icon',
+			'css' => 'lms-ui-icon-document',
 			'link' =>'?m=documentlist',
 			'tip' => trans('Documents Management'),
 			'accesskey' => '',
@@ -511,7 +511,7 @@ $menu = array(
 
 		'hosting' => array(
 			'name' => trans('Hosting'),
-			'css' => 'lms-ui-hosting-icon',
+			'css' => 'lms-ui-icon-hosting',
 			'link' =>'?m=accountlist',
 			'tip' => trans('Hosting Services Management'),
 			'accesskey' =>'a',
@@ -564,7 +564,7 @@ $menu = array(
 
 		'messages' => array(
 			'name' => trans('Messages'),
-			'css' => 'lms-ui-message-icon',
+			'css' => 'lms-ui-icon-message',
 			'link' =>'?m=messageadd',
 			'tip' => trans('Customers Messaging'),
 			'accesskey' =>'m',
@@ -587,7 +587,7 @@ $menu = array(
 
 		'reload' => array(
 			'name' => trans('Reload'),
-			'css' => 'lms-ui-reload-icon',
+			'css' => 'lms-ui-icon-reload',
 			'link' =>'?m=reload',
 			'tip' => trans(''),
 			'accesskey' =>'r',
@@ -596,7 +596,7 @@ $menu = array(
 
 		'stats' => array(
 			'name' => trans('Stats'),
-			'css' => 'lms-ui-stats-icon',
+			'css' => 'lms-ui-icon-stats',
 			'link' =>'?m=traffic',
 			'tip' => trans('Statistics of Internet Link Usage'),
 			'accesskey' =>'x',
@@ -649,7 +649,7 @@ $menu = array(
 
 		'helpdesk' => array(
 			'name' => trans('Helpdesk'),
-			'css' => 'lms-ui-helpdesk-icon',
+			'css' => 'lms-ui-icon-helpdesk',
 			'link' =>'?m=rtqueuelist',
 			'tip' => trans('Requests Tracking'),
 			'accesskey' =>'h',
@@ -702,7 +702,7 @@ $menu = array(
 
 		'timetable' => array(
 			'name' => trans('Timetable'),
-			'css' => 'lms-ui-timetable-icon',
+			'css' => 'lms-ui-icon-timetable',
 			'link' =>'?m=eventlist',
 			'tip' => trans('Events Tracking'),
 			'accesskey' =>'v',
@@ -731,7 +731,7 @@ $menu = array(
 
 		'password' => array(
 			'name' => trans('Password'),
-			'css' => 'lms-ui-password-icon',
+			'css' => 'lms-ui-icon-password',
 			'link' => '?m=chpasswd',
 			'tip' => trans('Allows you to change your password'),
 			'accesskey' => 'p',
@@ -740,7 +740,7 @@ $menu = array(
 
 		'config' => array(
 			'name' => trans('Configuration'),
-			'css' => 'lms-ui-configuration-icon',
+			'css' => 'lms-ui-icon-configuration',
 			'link' =>'?m=configlist',
 			'tip' => trans('System Configuration'),
 			'accesskey' =>'o',
@@ -817,7 +817,7 @@ $menu = array(
 
 		'documentation' => array(
 			'name' => trans('Documentation'),
-			'css' => 'lms-ui-documentation-icon',
+			'css' => 'lms-ui-icon-documentation',
 			'link' => (is_dir('doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang)
 				? 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang . DIRECTORY_SEPARATOR
 				: 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR),
@@ -848,7 +848,7 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.logging', false))) {
 	$menu['log'] = array(
 		'name' => trans('Transaction Log'),
-		'css' => 'lms-ui-archiveview-icon',
+		'css' => 'lms-ui-icon-archiveview',
 		'link' => '?m=archiveview',
 		'tip' => trans('Transaction Log Management'),
 		'accesskey' => 't',

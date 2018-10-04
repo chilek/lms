@@ -1,43 +1,64 @@
 <!--// $Id$ //-->
 {$xajax}
-<TABLE class="lmsbox lms-ui-sortable" id="nodelocks">
-	<COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-    <THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="nodelockspanel">
-		<TD class="bold">
-			<IMG src="img/time.gif" alt="">
-			{trans("Locks:")}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="nodelockspanel" style="display: none;">
-		<TD style="width: 100%;">
-			<FORM id="nodelockadd" name="nodelockadd">
-			<DIV id="nodelocktable">
-			</DIV>
-			</FORM>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('nodelockspanel') == '1')
-	document.getElementById('nodelockspanel').style.display = '';
 
-function addNodeLock() {
-	xajax.$('nodelockaddlink').disabled = true;
-	xajax_addNodeLock({$nodeinfo.id}, xajax.getFormValues('nodelockadd'));
-}
+{css}
 
-function delNodeLock(id) {
-	xajax.$('nodelocktable').disabled = true;
-	xajax_delNodeLock({$nodeinfo.id}, id);
-}
+<FORM id="nodelockadd" name="nodelockadd">
+	<input type="hidden" class="nodeid" value="{$nodeinfo.id}">
+</FORM>
 
-xajax_getNodeLocks({$nodeinfo.id});
-//-->
-</SCRIPT>
+{tab_container id="nodelocks"}
+
+	{tab_header content_id="nodelockspanel"}
+		{tab_header_cell icon="lms-ui-icon-nodesession"}
+			<strong>{trans("Locks:")}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="nodelockspanel"}
+
+		{tab_table id="nodelocktable"}
+		<div class="lms-ui-tab-loading">
+			<i></i>
+		</div>
+		{/tab_table}
+
+		{tab_button_panel}
+			{tab_buttons}
+				{foreach $_DAYS as $daynr => $dayname}
+					<label>
+						{$dayname}
+						<input type="checkbox" name="days[{$daynr}]" id="lockdays_{$daynr}" value="1" form="nodelockadd">
+					</label>
+				{/foreach}
+				<select name="fhour" form="nodelockadd">
+					{for $i = 0 to 23}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>:<select name="fminute" form="nodelockadd">
+					{for $i = 0 to 59}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>
+				<select name="thour" form="nodelockadd">
+					{for $i = 0 to 23}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>:<select name="tminute" form="nodelockadd">
+					{for $i = 0 to 59}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>
+			{/tab_buttons}
+			{tab_buttons}
+				<button type="button" id="nodelockaddlink" class="lms-ui-button lms-ui-button-add"
+					onclick="javascript:addNodeLock();" {tip text="Add new lock"}>
+					<i></i> {trans("Add")}
+				</button>
+			{/tab_buttons}
+		{/tab_button_panel}
+
+	{/tab_contents}
+{/tab_container}
+
+{js}

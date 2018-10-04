@@ -49,7 +49,7 @@
 								</tr>
 								<tr>
 									<TD style="width: 1%;">
-				                       <img src="img/ip.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeinfo.ip}" alt="">
+				                       <img src="img/ip.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip}" alt="">
 									</td>
 									<td>
 										{trans("IP address:")}
@@ -62,7 +62,7 @@
 								{if $nodeinfo.ip_pub != "0.0.0.0"}
 								<tr>
 									<td>
-										<img src="img/ip_pub.gif" class="lms-ui-clipboard-button" data-clipboard-text="{$nodeinfo.ip_pub}"s alt="">
+										<img src="img/ip_pub.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip_pub}"s alt="">
 									</td>
 									<td>
 										{trans("Pub. IP address:")}
@@ -101,7 +101,7 @@
 									</td>
 									<td>
 										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
-										<button class="lms-ui-clipboard-button lms-ui-button" data-clipboard-text="{$nodeinfo.passwd}">{trans("Copy")}</button>
+										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd}">{trans("Copy")}</button>
 										{else}
 											{$nodeinfo.passwd}
 										{/if}

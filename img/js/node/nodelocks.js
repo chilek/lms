@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*
  * LMS version 1.11-git
  *
  *  (C) Copyright 2001-2018 LMS Developers
@@ -24,15 +22,14 @@
  *  $Id$
  */
 
-function smarty_block_tab_table($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$id = isset($params['id']) ? $params['id'] : null;
-
-		return '
-			<div class="lms-ui-tab-table"' . ($id ? ' id="' . $id . '"' : '') . '>
-				' . $content . '
-			</div>';
-	}
+function addNodeLock() {
+	$('#nodelockaddlink').prop('disabled', true);
+	xajax_addNodeLock($('#nodelockadd .nodeid').val(), $('#nodelockadd').serialize());
 }
 
-?>
+function delNodeLock(id) {
+	$('#nodelocktable').prop('disabled', true);
+	xajax_delNodeLock($('#nodelockadd .nodeid').val(), id);
+}
+
+xajax_getNodeLocks($('#nodelockadd .nodeid').val());
