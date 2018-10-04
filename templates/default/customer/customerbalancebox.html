@@ -329,11 +329,11 @@
 
 	function AddBalance(with_receipt) {
 		if (document.forms['addbalance'].elements['addbalance[value]'].value == '') {
-			alert('{trans("Enter transaction value")}!');
+			alert($t("Enter transaction value") + '!');
 			return;
 		}
 		if (document.forms['addbalance'].elements['addbalance[comment]'].value == '') {
-			alert('{trans("Enter transaction comment")}!');
+			alert($t("Enter transaction comment") + '!');
 			return;
 		}
 		if (typeof(with_receipt) == 'boolean' && with_receipt)
@@ -431,16 +431,16 @@
 	{
 		if ($('tr[data-published="1"] :checked').length) {
 			{if ConfigHelper::checkPrivilege('published_document_modification')}
-			if (!confirm('{trans("Some documents have been published already! Are you sure you want to delete them despite this?")}')) {
+			if (!confirm($t("Some documents have been published already! Are you sure you want to delete them despite this?"))) {
 				return;
 			}
 			{else}
-			alert('{trans("Some documents have been published already!")}');
+			alert($t("Some documents have been published already!"));
 			return;
 			{/if}
 		}
 
-		if (!confirm('{trans("Are you sure, you want to delete selected operation(s) and document item(s)?")}'))
+		if (!confirm($t("Are you sure, you want to delete selected operation(s) and document item(s)?")))
 			return;
 
 		document.addbalance.action="?m=balancedel";

@@ -4,6 +4,7 @@
 </FORM>
 
 {css}
+{js}
 
 {tab_container id="nodegroups"}
 
@@ -99,24 +100,3 @@
 
 	{/tab_contents}
 {/tab_container}
-
-<script>
-
-	$(function() {
-		{if !empty($othernodegroups)}
-		$('#add-nodegroups').click(function() {
-			if ($("input[name='nodegroupid[]']").filter(':checked').length) {
-				$('form#nodegroupassignment').submit();
-			}
-		});
-		{/if}
-		$('#delete-nodegroups').click(function() {
-			if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length
-				&& confirm('{trans("Are you sure, you want to remove node from selected groups?")}')) {
-				$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id={$nodeinfo.id}&is_sure=1')
-					.submit();
-			}
-		});
-	});
-
-</script>

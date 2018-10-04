@@ -1,32 +1,7 @@
 <!--// $Id$ //-->
-<SCRIPT>
-
-	function setstatus(access) {
-		if(access)
-			document.custnodeslist.action = '?m=nodeset&access=1';
-		else
-			document.custnodeslist.action = '?m=nodeset';
-
-		document.custnodeslist.submit();
-	}
-
-	function setwarning(warning) {
-		if(warning)
-			document.custnodeslist.action = '?m=nodewarn&warning=1';
-		else
-			document.custnodeslist.action = '?m=nodewarn';
-
-		document.custnodeslist.submit();
-	}
-
-	function setgroup(act) {
-		document.custnodeslist.action = '?m=nodegroup&action=' + act + '&groupid=' + document.getElementById('groupselect').value;
-		document.custnodeslist.submit();
-	}
-
-</SCRIPT>
 
 {css}
+{js}
 
 <FORM method="post" action="" name="custnodeslist" id="custnodeslist-form">
 </FORM>

@@ -1,5 +1,7 @@
 <!--// $Id$ //-->
+
 {css}
+{js}
 
 <form method="POST" name="customerdocuments" id="customerdocuments-form">
 </form>
@@ -170,52 +172,3 @@
 
 	{/tab_contents}
 {/tab_container}
-
-<SCRIPT>
-
-	function toggle_all_attachments(docid) {
-		var elem = $('#allattachments-' + docid);
-		var toggle = $('#allattachments-toggle-' + docid);
-		elem.toggle();
-		if (elem.is(':visible'))
-			toggle.html('<img src="img/desc_order.gif">');
-		else
-			toggle.html('<img src="img/asc_order.gif">');
-	}
-
-	function delete_docs() {
-		if (!confirm('{trans("Are you sure, you want to delete selected documents?")}'))
-			return;
-
-		document.customerdocuments.action="?m=documentdel&is_sure=1";
-		document.customerdocuments.target="";
-		document.customerdocuments.submit();
-	}
-
-	function print_docs() {
-		document.customerdocuments.action="?m=documentview";
-		document.customerdocuments.target="_blank";
-		document.customerdocuments.submit();
-	}
-
-	function mark_docs() {
-		document.customerdocuments.action="?m=documentedit&action=confirm";
-		document.customerdocuments.target="";
-		document.customerdocuments.submit();
-	}
-
-	function send_documents() {
-		document.customerdocuments.action="?m=documentsend";
-		document.customerdocuments.target="_blank";
-		document.customerdocuments.submit();
-	}
-
-	$('.documentsend').click(function() {
-		if (!confirm('{trans("Are you sure, you want to send document to customer?")}')) {
-			return false;
-		}
-		window.open($(this).attr('href'));
-		return false;
-	});
-
-</SCRIPT>

@@ -1,8 +1,10 @@
 <!--// $Id$ //-->
 
 {css}
+{js}
 
 <FORM method="post" name="customergroupassignment" id="customergroupassignment" action="?m=customergroup&action=add&id={$customerinfo.id}">
+	<input type="hidden" class="customerid" value="{$customerinfo.id}">
 </FORM>
 
 {tab_container id="customergroups"}
@@ -105,25 +107,3 @@
 
 	{/tab_contents}
 {/tab_container}
-
-<script>
-
-	$(function() {
-		{if !empty($othercustomergroups)}
-		$('#add-groups').click(function() {
-			if ($("input[name='customergroupid[]']").filter(':checked').length)
-				$('form#customergroupassignment').submit();
-			else
-				return false;
-		});
-		{/if}
-		$('#delete-groups').click(function() {
-			if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
-			|| !confirm('{trans("Are you sure, you want to remove customer from selected groups?")}'))
-				return false;
-			$('form#customergroupassignment').attr('action', '?m=customergroup&action=delete&id={$customerinfo.id}&is_sure=1');
-			$('form#customergroupassignment').submit();
-		});
-	});
-
-</script>
