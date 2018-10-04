@@ -299,10 +299,9 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{if $customerinfo.balance < 0}
-				<A href="?m=customerbalanceok&id={$customerinfo.id}" class="lms-ui-edit-button"
-						OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');">
+				<button type="button" class="lms-ui-button lms-ui-edit-button" id="clear-account">
 					<i></i> {trans("Clear Account")}
-				</A>
+				</button>
 				{/if}
 			{/tab_buttons}
 
@@ -461,6 +460,12 @@
 	$('.lms-ui-mail-button').click(function() {
 		if (confirm($t("Are you sure, you want to send invoices to customer?"))) {
 			send_invoices();
+		}
+	});
+
+	$('#clear-account').click(function() {
+		if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}')) {
+			location.href = '?m=customerbalanceok&id={$customerinfo.id}';
 		}
 	});
 
