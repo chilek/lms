@@ -36,12 +36,16 @@ function NodeStats($id, $dt) {
 	return $result;
 }
 
-function getNodeLocks($nodeid) {
-	global $SMARTY, $DB;
+function getNodeLocks() {
+	global $SMARTY;
 
 	$result = new xajaxResponse();
+
 	$nodelocks = NULL;
-	$locks = $DB->GetAll('SELECT id, days, fromsec, tosec FROM nodelocks WHERE nodeid = ? ORDER BY id', array($nodeid));
+	$nodeid = intval($_GET['id']);
+	$DB = LMSDB::getInstance();
+	$locks = $DB->GetAll('SELECT id, days, fromsec, tosec FROM nodelocks WHERE nodeid = ? ORDER BY id',
+		array($nodeid));
 	if ($locks)
 		foreach ($locks as $lock) {
 			$fromsec = intval($lock['fromsec']);
@@ -63,9 +67,7 @@ function getNodeLocks($nodeid) {
 	return $result;
 }
 
-function addNodeLock($nodeid, $params) {
-	global $DB;
-
+function addNodeLock($params) {
 	$result = new xajaxResponse();
 
 	if (empty($params)) {
@@ -86,17 +88,25 @@ function addNodeLock($nodeid, $params) {
 		return $result;
 	}
 
-	$DB->Execute('INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)', array($nodeid, $days, $fromsec, $tosec));
+	$nodeid = intval($_GET['id']);
+
+	$DB = LMSDB::getInstance();
+	$DB->Execute('INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)',
+		array($nodeid, $days, $fromsec, $tosec));
+
 	$result->call('xajax_getNodeLocks', $nodeid);
 
 	return $result;
 }
 
-function delNodeLock($nodeid, $id) {
-	global $DB;
-
+function delNodeLock($id) {
 	$result = new xajaxResponse();
+
+	$nodeid = intval($_GET['id']);
+
+	$DB = LMSDB::getInstance();
 	$DB->Execute('DELETE FROM nodelocks WHERE id = ?', array($id));
+
 	$result->call('xajax_getNodeLocks', $nodeid);
 
 	return $result;
@@ -169,9 +179,7 @@ function getNodeStats($nodeid) {
 	return $result;
 }
 
-function validateManagementUrl($params, $update = false) {
-	global $DB;
-
+function validateManagementUrl($params) {
 	$error = NULL;
 
 	if (!strlen($params['url']))
@@ -182,8 +190,10 @@ function validateManagementUrl($params, $update = false) {
 	return $error;
 }
 
-function getManagementUrls($formdata = NULL) {
-	global $SMARTY, $DB;
+function getManagementUrls() {
+	global $SMARTY;
+
+	$DB = LMSDB::getInstance();
 
 	$result = new xajaxResponse();
 
@@ -192,9 +202,6 @@ function getManagementUrls($formdata = NULL) {
 	$mgmurls = NULL;
 	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE nodeid = ? ORDER BY id', array($nodeid));
 	$SMARTY->assign('mgmurls', $mgmurls);
-	if (isset($formdata['error']))
-		$SMARTY->assign('error', $formdata['error']);
-	$SMARTY->assign('formdata', $formdata);
 	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
 
 	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
@@ -203,34 +210,38 @@ function getManagementUrls($formdata = NULL) {
 }
 
 function addManagementUrl($params) {
-	global $DB, $SYSLOG;
+	global $SYSLOG;
+
+	$DB = LMSDB::getInstance();
 
 	$result = new xajaxResponse();
 
-	$error = validateManagementUrl($params);
+	$formdata = array();
+	parse_str($params, $formdata);
 
-	$params['error'] = $error;
+	$error = validateManagementUrl($formdata);
 
 	$nodeid = intval($_GET['id']);
 
 	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
-			$params['url'] = 'http://' . $params['url'];
+		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $formdata['url']))
+			$formdata['url'] = 'http://' . $formdata['url'];
 
 		$args = array(
 			SYSLOG::RES_NODE => $nodeid,
-			'url' => $params['url'],
-			'comment' => $params['comment'],
+			'url' => $formdata['url'],
+			'comment' => $formdata['comment'],
 		);
 		$DB->Execute('INSERT INTO managementurls (nodeid, url, comment) VALUES (?, ?, ?)', array_values($args));
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_MGMTURL] = $DB->GetLastInsertID('managementurls');
 			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_ADD, $args);
 		}
-		$params = NULL;
+		$formdata = NULL;
 	}
 
-	$result->call('xajax_getManagementUrls', $params);
+	$result->call('xajax_getManagementUrls');
+	$result->call('managementUrlErrors', $error);
 	$result->assign('managementurladdlink', 'disabled', false);
 
 	return $result;
@@ -252,7 +263,7 @@ function delManagementUrl($id) {
 		);
 		$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_DELETE, $args);
 	}
-	$result->call('xajax_getManagementUrls', $nodeid);
+	$result->call('xajax_getManagementUrls');
 	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;

@@ -24,12 +24,12 @@
 
 function addNodeLock() {
 	$('#nodelockaddlink').prop('disabled', true);
-	xajax_addNodeLock($('#nodelockadd .nodeid').val(), $('#nodelockadd').serialize());
+	xajax_addNodeLock($('#nodelockadd').serialize());
 }
 
 function delNodeLock(id) {
 	$('#nodelocktable').prop('disabled', true);
-	xajax_delNodeLock($('#nodelockadd .nodeid').val(), id);
+	xajax_delNodeLock(id);
 }
 
 $("#nodelockspanel .lms-ui-button-delete").click(function() {
@@ -37,4 +37,4 @@ $("#nodelockspanel .lms-ui-button-delete").click(function() {
 		.find('select').val(0);
 });
 
-xajax_getNodeLocks($('#nodelockadd .nodeid').val());
+xajax_getNodeLocks();

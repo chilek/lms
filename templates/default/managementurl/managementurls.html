@@ -1,103 +1,54 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="managementurls">
-    <THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="managementurlspanel">
-		<TD class="bold">
-			<IMG src="img/network.gif" alt="">
-			{trans("Management URL's:")}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="managementurlspanel" style="display: none;">
-		<TD style="width: 100%;">
-			<FORM id="managementurladd" name="managementurladd">
-			<DIV id="managementurltable">
-			</DIV>
-			</FORM>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('managementurlspanel') == '1') {
-	document.getElementById('managementurlspanel').style.display = '';
-	xajax_getManagementUrls();
-}
 
-function showOrHideManagementUrlsPanel() {
-	if (xjx.$('managementurlspanel').style.display == '')
-		xajax_getManagementUrls();
-}
+{css}
 
+<FORM id="managementurladd" name="managementurladd">
+</FORM>
 
-function addManagementUrl() {
-	xjx.$('managementurladdlink').disabled = true;
-	xajax_addManagementUrl(xjx.getFormValues('managementurladd'));
-}
+{tab_container id="managementurls"}
 
-function delManagementUrl(id) {
-	xjx.$('managementurltable').disabled = true;
-	xajax_delManagementUrl(id);
-}
+	{tab_header content_id="managementurlspanel"}
+		{tab_header_cell icon="lms-ui-icon-web"}
+			<strong>{trans("Management URL's:")}</strong>
+		{/tab_header_cell}
+	{/tab_header}
 
-function toggleEditManagementUrl(id) {
-	var elems = ['url', 'comment'];
-	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
+	{tab_contents id="managementurlspanel"}
 
-	for (i = 0; i < elems.length; i++) {
-		xjx.$(elems[i] + '_' + id).style.display = (edit ? 'none' : '');
-		xjx.$(elems[i] + '_edit_' + id).style.display = (edit ? '' : 'none');
-	}
-	xjx.$('cancel_button_' + id).style.display = (edit ? '' : 'none');
-	xjx.$('save_button_' + id).style.display = (edit ? '' : 'none');
-	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
-}
+		{tab_table id="managementurltable" hourglass=1}
+		{/tab_table}
 
-function showAddManagementUrl() {
-	var elems = ['url', 'comment'];
+{if ConfigHelper::checkPrivilege('privileges.network_management')}
+		{tab_button_panel id="add_management_url"}
+			{tab_buttons}
+				<input type="text" size="80" form="managementurladd" name="url" id="url" class="url"
+						value="{if !$formdata.urlid}{$formdata.url}{/if}" {tip text="Enter management URL" trigger="url"}>
+				<input type="text" size="40" form="managementurladd" name="comment" id="comment" class="comment"
+						value="{if !$formdata.urlid}{$formdata.comment}{/if}" {tip text="Enter URL comment" trigger="comment"}>
+				<a HREF="javascript:addManagementUrl();" class="lms-ui-button-save" {tip text="Add new management URL"}>
+					<i></i>
+				</a>
+				<A HREF="javascript:hideAddManagementUrl();" class="lms-ui-button-cancel" {tip text="Cancel"}>
+					<i></i>
+				</A>
+			{/tab_buttons}
+		{/tab_button_panel}
 
-	for (i = 0; i < elems.length; i++) {
-		xjx.$(elems[i]).value = '';
-		xjx.$(elems[i]).onmouseover = '';
-	}
+		{tab_button_panel id="management_url_buttons"}
+			{tab_buttons}
+			{/tab_buttons}
+			{tab_buttons}
+				<button type="button" id="managementurladdlink" onclick="javascript:showAddManagementUrl();"
+						class="lms-ui-button lms-ui-button-add"
+						{tip text="Add new management URL"}>
+					<i></i> {trans("Add")}
+				</button>
+			{/tab_buttons}
+		{/tab_button_panel}
+{/if}
 
-	
-	xjx.$('managementurladdlink').style.display = ('none');
-	xjx.$('add_management_url').style.display = ('');
-	xjx.$('url').focus();
-}
+	{/tab_contents}
 
-function hideAddManagementUrl() {
-	xjx.$('add_management_url').style.display = ('none');
-	if (xjx.$('managementurls') != null) {
-		xjx.$('no_management_urls').style.display = ('');
-	}
-	xjx.$('managementurladdlink').style.display = ('');
-	xajax_getManagementUrls();
-}
+{/tab_container}
 
-function updateManagementUrl(id) {
-	var elems = ['url', 'comment'];
-	var params = {};
-
-	xjx.$('managementurltable').disabled = true;
-	for (i = 0; i < elems.length; i++) {
-		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
-//		xjx.$(elems[i] + '_edit_' + id).disabled = true;
-	}
-	params['urlid'] = id;
-//	xjx.$('save_button_' + id).disabled = true;
-//	xjx.$('cancel_button_' + id).disabled = true;
-//	xjx.$('delete_button_' + id).disabled = true;
-	xajax_updateManagementUrl(id, params);
-}
-
-$(function() {
-	$('tr[data-lmsbox-content="managementurlspanel"]').click(function() {
-		showOrHideManagementUrlsPanel();
-	});
-});
-//-->
-</SCRIPT>
+{js}

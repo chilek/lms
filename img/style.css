@@ -5565,8 +5565,7 @@ li.lms-ui-suggestion-item a {
   font-variant: normal;
   text-rendering: auto;
   line-height: 1;
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
+  font-family: 'Font Awesome 5 Brands';
   line-height: unset;
   vertical-align: unset;
 }
