@@ -3191,9 +3191,6 @@ div.lms-ui-wysiwyg-editor {
 			> :nth-child(n+2) {
 				margin-left: 0.2em;
 			}
-		}
-
-		.lms-ui-tab-header-cell {
 			> i {
 				width: 1.3em;
 				text-align: center;
@@ -3201,6 +3198,19 @@ div.lms-ui-wysiwyg-editor {
 			display: flex;
 			flex-direction: row;
 			justify-content: flex-start;
+			align-items: center;
+			flex-wrap: wrap;
+
+			@media all and (max-width: 768px) {
+				&:not(:first-child) {
+					flex-direction: column;
+					align-items: flex-start;
+				}
+			}
+		}
+
+		@media all and (max-width: 768px) {
+			flex-direction: column;
 		}
 	}
 

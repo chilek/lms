@@ -9163,17 +9163,30 @@ div.lms-ui-wysiwyg-editor {
   padding: 0.2em;
   cursor: pointer;
 }
-.lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell > :nth-child(n+2) {
-  margin-left: 0.2em;
-}
 .lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell > :nth-child(n+2) {
+  margin-left: 0.2em;
 }
 .lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell > i {
   width: 1.3em;
   text-align: center;
+}
+@media all and (max-width: 768px) {
+  .lms-ui-tab-container .lms-ui-tab-header .lms-ui-tab-header-cell:not(:first-child) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+@media all and (max-width: 768px) {
+  .lms-ui-tab-container .lms-ui-tab-header {
+    flex-direction: column;
+  }
 }
 .lms-ui-tab-container .lms-ui-tab-contents {
   display: flex;
