@@ -956,6 +956,16 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-nodelock,
+.lms-ui-icon-lock {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-lock;
+	}
+}
+
 .lms-ui-icon-convert,
 .lms-ui-icon-transform {
 	.fa-icon;
@@ -3263,7 +3273,7 @@ div.lms-ui-wysiwyg-editor {
 			padding-top: 3em;
 			padding-bottom: 3em;
 		}
-		.lms-ui-tab-loading {
+		.lms-ui-tab-hourglass {
 			width: 100%;
 			text-align: center;
 			font-weight: bold;

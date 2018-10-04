@@ -10,17 +10,14 @@
 {tab_container id="nodelocks"}
 
 	{tab_header content_id="nodelockspanel"}
-		{tab_header_cell icon="lms-ui-icon-nodesession"}
+		{tab_header_cell icon="lms-ui-icon-nodelock"}
 			<strong>{trans("Locks:")}</strong>
 		{/tab_header_cell}
 	{/tab_header}
 
 	{tab_contents id="nodelockspanel"}
 
-		{tab_table id="nodelocktable"}
-		<div class="lms-ui-tab-loading">
-			<i></i>
-		</div>
+		{tab_table id="nodelocktable" hourglass=1}
 		{/tab_table}
 
 		{tab_button_panel}
