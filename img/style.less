@@ -1778,6 +1778,19 @@ button,a,div {
 			.lms-ui-icon-info;
 		}
 	}
+
+	&.lms-ui-button-open {
+		& > i {
+			.lms-ui-icon-open;
+		}
+	}
+
+	&.lms-ui-button-close {
+		& > i {
+			.lms-ui-icon-close;
+		}
+	}
+
 }
 
 button.lms-ui-button {
@@ -1819,18 +1832,6 @@ button.lms-ui-button {
 		cursor: no-drop;
 		&:before {
 			color: @blend;
-		}
-	}
-
-	&.lms-ui-button-open {
-		& > i {
-			.lms-ui-icon-open;
-		}
-	}
-
-	&.lms-ui-button-close {
-		& > i {
-			.lms-ui-icon-close;
 		}
 	}
 }
