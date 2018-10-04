@@ -1212,7 +1212,8 @@ li.lms-ui-suggestion-item {
 	.fas;
 	.lms-ui-icon;
 	&:before {
-		content: @fa-var-clipboard;
+		color: darkorange;
+		content: @fa-var-paste;
 	}
 }
 
@@ -1277,6 +1278,7 @@ li.lms-ui-suggestion-item {
 	.lms-ui-icon;
 	&:before {
 		content: @fa-var-users;
+		color: darkorange;
 	}
 }
 
@@ -1304,7 +1306,15 @@ li.lms-ui-suggestion-item {
 	-webkit-text-stroke-color: black;
 }
 
-.lms-ui-icon-connect,
+.lms-ui-icon-connect {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: green;
+		content: @fa-var-toggle-on;
+	}
+}
 .lms-ui-icon-plug {
 	.fa-icon;
 	.fas;
@@ -1324,8 +1334,16 @@ li.lms-ui-suggestion-item {
 }
 
 .lms-ui-icon-disconnected {
-	.lms-ui-icon-connect;
-	color: black;
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	-webkit-transform: rotate(180deg);  /* to support Safari and Android browser */
+	-ms-transform: rotate(180deg);      /* to support IE 9 */
+	transform: rotate(180deg);
+	&:before {
+		content: @fa-var-toggle-on;
+		color: darkorange;
+	}
 }
 
 .lms-ui-icon-node {
@@ -1334,6 +1352,16 @@ li.lms-ui-suggestion-item {
 	.lms-ui-icon;
 	&:before {
 		content: @fa-var-desktop;
+	}
+}
+
+.lms-ui-icon-actions {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-cogs;
+		color: red;
 	}
 }
 
