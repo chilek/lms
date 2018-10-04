@@ -5688,6 +5688,54 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-info:before {
   content: "\f129";
 }
+.lms-ui-icon-open {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-open.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-open.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-open:before {
+  content: "\f518";
+}
+.lms-ui-icon-close {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-close.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-close.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-close:before {
+  content: "\f02d";
+}
 .lms-ui-icon-nodegroup,
 .lms-ui-icon-ngroup,
 .lms-ui-icon-ng {
@@ -7782,6 +7830,70 @@ button.lms-ui-button-info > i:before,
 a.lms-ui-button-info > i:before,
 div.lms-ui-button-info > i:before {
   content: "\f129";
+}
+button.lms-ui-button-open > i,
+a.lms-ui-button-open > i,
+div.lms-ui-button-open > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+button.lms-ui-button-open > i.fa-pull-left,
+a.lms-ui-button-open > i.fa-pull-left,
+div.lms-ui-button-open > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-button-open > i.fa-pull-right,
+a.lms-ui-button-open > i.fa-pull-right,
+div.lms-ui-button-open > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-button-open > i:before,
+a.lms-ui-button-open > i:before,
+div.lms-ui-button-open > i:before {
+  content: "\f518";
+}
+button.lms-ui-button-close > i,
+a.lms-ui-button-close > i,
+div.lms-ui-button-close > i {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+button.lms-ui-button-close > i.fa-pull-left,
+a.lms-ui-button-close > i.fa-pull-left,
+div.lms-ui-button-close > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-button-close > i.fa-pull-right,
+a.lms-ui-button-close > i.fa-pull-right,
+div.lms-ui-button-close > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-button-close > i:before,
+a.lms-ui-button-close > i:before,
+div.lms-ui-button-close > i:before {
+  content: "\f02d";
 }
 button.lms-ui-button {
   border: 1px solid #615847;

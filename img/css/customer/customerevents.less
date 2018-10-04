@@ -1,0 +1,86 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+#eventspanel {
+	.creation-date {
+		width: 20em;
+	}
+	.type {
+		width: 8em;
+	}
+	.number {
+		width: 8em;
+	}
+	.title {
+		width: 40em;
+	}
+	.description {
+		width: 40em;
+	}
+	.buttons {
+		width: 10em;
+	}
+
+	@media all and (max-width: 1700px) {
+		.col-4 + .col-2 {
+			flex-direction: column !important;
+			width: 20em !important;
+		}
+
+	(.col-2 + .col-2) div {
+		flex-grow: 0 !important;
+		width: 100% !important;
+	}
+	}
+	@media all and (max-width: 1500px) {
+		.col-2 {
+			flex-direction: column !important;
+			width: 20em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+	@media all and (max-width: 1024px) {
+		.col-4 {
+			flex-direction: column !important;
+			width: 20em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+	@media all and (max-width: 768px) {
+		.col-5 {
+			flex-direction: column !important;
+			width: 40em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+}

@@ -1,92 +1,108 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="customerevents">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="eventspanel">
-		<TD>
-			<IMG src="img/calendar.gif" alt="">
-			<span class="bold">{trans("Customer Timetable:")}</span>
+{css}
+
+{tab_container id="customerevents"}
+
+	{tab_header content_id="eventspanel"}
+		{tab_header_cell icon="fas fa-calendar-alt"}
+			<strong>{trans("Customer Timetable:")}</strong>
 			{if $limit}
 				({t a=$limit}last $a events{/t})
 			{/if}
-		</TD>
-		<TD class="text-right nobr">
-			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>&nbsp;
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>
 			<A href="?m={$layout.module}&id={if $nodeinfo.id}{$nodeinfo.id}{else}{$customerinfo.id}{/if}&allevents={if $allevents}0{else}1{/if}">{if $allevents}{trans("Hide closed")}{else}{trans("Show closed")}{/if} &raquo;</A>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="eventspanel"  style="display: none;">
-		<TD colspan="2">
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<THEAD>
-				<TR class="lms-ui-header-panel">
-					<TD style="width: 1%;" class="nobr">
-						{trans("Date:")}
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-						{trans("Type:")}
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-						{trans("ID:")}
-					</TD>
-					<TD style="width: 40%;" class="bold nobr">
-						{trans("Title:")}
-					</TD>
-					<TD style="width: 49%;" class="nobr">
-						{trans("Description:")}
-					</TD>
-					<TD style="width: 1%;" class="nobr"></TD>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{section name=eventlist loop=$eventlist max=$limit}
-				<TR class="highlight{if $eventlist[eventlist].closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
-					<TD style="width: 1%;" class="nobr">
-						{$eventlist[eventlist].date|date_format:"%Y/%m/%d"}
-					</TD>
-					<TD style="width: 1%;" align="center" class="nobr">
-						{$_EVENTTYPES[$eventlist[eventlist].type]}
-					</TD>
-					<TD style="width: 1%;" class="bold">
-						<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}">{$eventlist[eventlist].ticketid}</A>
-					</TD>
-					<TD style="width: 40%;" class="bold">
-						{$eventlist[eventlist].title}
-					</TD>
-					<TD style="width: 49%;">
-						{$eventlist[eventlist].description}
-					</TD>
-					<TD style="width: 1%;" class="text-right nobr">
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="eventspanel"}
+		{tab_table}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-5">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column creation-date">
+								<strong>{trans("Date:")}</strong>
+							</div>
+							<div class="lms-ui-tab-table-column type">
+								<strong>{trans("Type:")}</strong>
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column number">
+								{trans("ID:")}
+							</div>
+							<div class="lms-ui-tab-table-column title">
+								{trans("Title:")}
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper">
+						<div class="lms-ui-tab-table-column description">
+							{trans("Description:")}
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+
+			{section name=eventlist loop=$eventlist max=$limit}
+				<div class="lms-ui-tab-table-row{if $eventlist[eventlist].closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+					<div class="lms-ui-tab-table-wrapper col-5">
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column creation-date">
+									{$eventlist[eventlist].date|date_format:"%Y/%m/%d"}
+								</div>
+								<div class="lms-ui-tab-table-column type">
+									{$_EVENTTYPES[$eventlist[eventlist].type]}
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column number">
+									<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}">{$eventlist[eventlist].ticketid|default:"---"}</A>
+								</div>
+								<div class="lms-ui-tab-table-column title">
+									{$eventlist[eventlist].title}
+								</div>
+							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-wrapper">
+							<div class="lms-ui-tab-table-column description">
+								{$eventlist[eventlist].description}
+							</div>
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-column buttons">
 						{if $eventlist[eventlist].closed}
-						<A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="{trans("Open")}" title="{trans("Open")}"></A>
+							<a class="lms-ui-button-close" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open">
+								<i title="{trans("Open")}"></i>
+							</a>
 						{else}
-						<A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close"><IMG src="img/open.gif" alt="{trans("Close")}" title="{trans("Close")}"></A>
+							<a class="lms-ui-button-open" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close">
+								<i title="{trans("Close")}"></i>
+							</a>
 						{/if}
-						<A href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-						<A href="?m=eventedit&amp;id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-					</TD>
-				</TR>
-				{sectionelse}
-				<TR>
-					<TD class="empty-table" colspan="6">
-						<P>{trans("There are no events in timetable.")}</P>
-					</TD>
-				</TR>
-				{/section}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('eventspanel') == '1')
-		document.getElementById('eventspanel').style.display = '';
-//-->
-</SCRIPT>
+						<a class="lms-ui-button-delete" href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
+							<i title="{trans("Delete")}"></i>
+						</a>
+						<a class="lms-ui-button-edit" href="?m=eventedit&amp;id={$eventlist[eventlist].id}">
+							<i title="{trans("Edit")}"></i>
+						</a>
+
+					</div>
+				</div>
+			{sectionelse}
+				<div class="lms-ui-tab-empty-table">
+					{trans("There are no events in timetable.")}
+				</div>
+			{/section}
+		{/tab_table}
+	{/tab_contents}
+{/tab_container}
