@@ -112,8 +112,8 @@ if (isset($_POST['document'])) {
 		if ($document['reference']) {
 			$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
 				WHERE id = ?', array($document['reference']));
-			$SMARTY->assignByRef('document', $document);
 		}
+		$SMARTY->assignByRef('document', $document);
 
 		if ($document['templ']) {
 			foreach ($documents_dirs as $doc)
