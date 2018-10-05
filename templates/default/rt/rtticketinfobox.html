@@ -17,7 +17,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" class="bold" colspan="3">
-			<IMG src="img/ticket.gif" alt="">
+			<i class="lms-ui-icon-helpdesk"></i>
 			{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
@@ -48,7 +48,7 @@
 						<TABLE>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/ticket.gif" alt="">
+									<i class="lms-ui-icon-subject"></i>
 									{trans("Subject:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
@@ -57,7 +57,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/service-type.png" alt="">
+									<i class="lms-ui-icon-service"></i>
 									{trans("Service type:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
@@ -66,7 +66,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/ticket-type.png" alt="">
+									<i class="lms-ui-icon-type"></i>
 									{trans("Ticket type:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
@@ -75,7 +75,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/customer.gif" alt="">
+									<i class="lms-ui-icon-customer"></i>
 									{trans("Customer:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
@@ -101,7 +101,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/users.gif" alt="">
+									<i class="lms-ui-icon-requestor"></i>
 									{trans("Requestor:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
@@ -120,7 +120,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/calendar.gif" alt="">
+									<i class="lms-ui-icon-timetable"></i>
 									{trans("Create time:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -130,7 +130,7 @@
 							{if $ticket.creatorid}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/users.gif" alt="">
+									<i class="lms-ui-icon-user"></i>
 									{trans("Created by:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -140,7 +140,7 @@
 							{/if}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/time.gif" alt="">
+									<i class="lms-ui-icon-uptime"></i>
 									{trans("Uptime:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -149,7 +149,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="valign-top bold nobr">
-									<IMG src="img/queue.gif" alt="">
+									<i class="lms-ui-icon-categories"></i>
 									{trans("Categories:")}
 								</TD>
 								<TD style="width: 99%;" class="nobr">
@@ -166,7 +166,7 @@
 						<TABLE>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/users.gif" alt="">
+									<i class="lms-ui-icon-user"></i>
 									{trans("Owner:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -179,7 +179,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/verifier.png" alt="">
+									<i class="lms-ui-icon-verifier"></i>
 									{trans("Verifier:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -192,7 +192,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/calendar.gif" alt="">
+									<i class="lms-ui-icon-timetable"></i>
 									{trans("<!rt>Deadline:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -205,7 +205,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/queue.gif" alt="">
+									<i class="lms-ui-icon-queue"></i>
 									{trans("Queue:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -214,7 +214,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/dead.gif" alt="">
+									<i class="lms-ui-icon-status"></i>
 									{trans("Status:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -223,7 +223,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/desc.gif" alt="">
+									<i class="lms-ui-icon-cause"></i>
 									{trans("Cause:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -235,7 +235,7 @@
 							{if $ticket.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/desc.gif" alt="">
+									<i class="lms-ui-icon-user"></i>
 									{trans("Remover:")}
 								</TD>
 								<TD style="width: 99%;">
@@ -254,7 +254,7 @@
 							{/if}
 							<TR>
 								<TD class="bold nobr">
-									<IMG src="img/volcano.png" alt="">
+									<i class="lms-ui-icon-source"></i>
 									{trans("Ticket source:")}
 								</TD>
 								<TD>
@@ -263,7 +263,7 @@
 							</TR>
 							<TR>
 								<TD class="bold nobr">
-									<IMG src="img/report.gif" alt="">
+									<i class="lms-ui-icon-priority"></i>
 									{trans("Priority:")}
 								</TD>
 								<TD>
