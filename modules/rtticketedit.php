@@ -29,7 +29,8 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $id = intval($_GET['id']);
-$action = $_GET['action'];
+if(!empty($_GET['action']))
+	$action = $_GET['action'];
 
 if (!($LMS->CheckTicketAccess($id) & RT_RIGHT_WRITE))
 	access_denied();
@@ -360,7 +361,7 @@ if(isset($_POST['ticket']))
 	$ticket['type'] = $ticketedit['type'];
 	$ticket['state'] = $ticketedit['state'];
 	$ticket['owner'] = $ticketedit['owner'];
-	$ticket['verifier'] = $ticketedit['verifier'];
+	$ticket['verifierid'] = $ticketedit['verifierid'];
 	$ticket['cause'] = $ticketedit['cause'];
 	$ticket['source'] = $ticketedit['source'];
 	$ticket['address_id'] = $ticketedit['address_id'];
