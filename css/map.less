@@ -1,17 +1,39 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+@import "lms-variables";
+
 div.map {
 	position: absolute;
 	width: 85%;
 	height: 85%;
-	width: expression((parseInt(document.body.clientWidth) - 200) + 'px');	/* IE fix */
-	height: expression((parseInt(document.body.clientHeight) - 150) + 'px');	/* IE fix */
 }
 
 div.smallmap {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	width: expression(parseInt(document.body.clientWidth) + 'px');	/* IE fix */
-	height: expression(parseInt(document.body.clientHeight) + 'px');	/* IE fix */
 }
 
 div.olPopup {
@@ -24,7 +46,7 @@ div.olPopupContent {
 }
 
 div.lmsPopupTitleBar {
-	background-color: #CEBD9B;
+	background-color: @dark;
 	white-space: nowrap;
 	width: auto; height: 18px;
 	overflow: visible;
@@ -33,7 +55,7 @@ div.lmsPopupTitleBar {
 }
 
 div.lmsPopupTitle {
-	background-color: #CEBD9B;
+	background-color: @dark;
 	font-weight: bold;
 	float: left;
 	width: auto; height: 16px;
@@ -43,7 +65,7 @@ div.lmsPopupTitle {
 }
 
 div.lmsPopupCloseBox {
-	background-color: #CEBD9B;
+	background-color: @dark;
 	float: right;
 	width: 16px; height: 16px;
 	padding: 1px;
@@ -51,41 +73,37 @@ div.lmsPopupCloseBox {
 }
 
 div.lmsInfoPopupContents {
-	background-color: #DFD5BD;
+	background-color: @light;
 	padding: 6px;
-	border-color: black;
-	border: 1px solid black;
+	border: @frame;
 	width: auto !important;
-	width: 100%;		/* IE fix */
 	height: auto;
 	white-space: nowrap;
 	overflow: visible;
 }
 
 div.lmsInfoPopupName {
-	background-color: #DFD5BD;
+	background-color: @light;
 	font-weight: bold;
 	padding: 2px;
 	width: auto !important;
-	width: 100%;		/* IE fix */
 	height: auto;
 	white-space: nowrap;
 	clear: both;
 }
 
 div.lmsInfoPopupAddress {
-	background-color: #DFD5BD;
+	background-color: @light;
 	padding: 2px;
 	border: none;
 	width: auto !important;
-	width: 100%;		/* IE fix */
 	height: auto;
 	white-space: nowrap;
 	clear: both;
 }
 
 div.lmsInfoPopupDetails {
-	background-color: #DFD5BD;
+	background-color: @light;
 	padding: 2px;
 	border: none;
 	width: auto; height: auto;
@@ -94,8 +112,8 @@ div.lmsInfoPopupDetails {
 }
 
 div.lmsMapPopupContents {
-	border: 1px solid black;
-	background-color: #DFD5BD;
+	border: @frame;
+	background-color: @light;
 	width: auto; height: auto;
 	white-space: nowrap;
 	overflow: visible;
@@ -117,10 +135,9 @@ div.lmsMapPopupAddress {
 }
 
 div.lmsIpPopupContents {
-	border: 1px solid black;
-	background-color: #DFD5BD;
+	border: @frame;
+	background-color: @light;
 	width: auto !important;
-	width: 100%;		/* IE fix */
 	height: auto;
 	padding: 6px;
 	white-space: nowrap;
@@ -132,11 +149,11 @@ div.lmsIpPopupLabel {
 }
 
 div.lmsPingContentsFrame {
-	border: 1px solid black;
+	border: @frame;
 	padding: 0px;
 	width: 450px;
 	height: 300px;
-	background-color: #DFD5BD;
+	background-color: @light;
 }
 
 div.lmsPingContents {
@@ -146,7 +163,6 @@ div.lmsPingContents {
 	bottom: 48px;
 	width: 100%;
 	height: auto !important;
-	height: 250px;	/* IE fix */
 	overflow: auto;
 	padding: 0px;
 }
@@ -160,32 +176,32 @@ div.olControlPanel {
 	display: block;
 	float: left;
 	width: 22px; height: 22px;
-	border: 1px solid black;
+	border: @frame;
 	margin: 1px;
 	background-position: center center;
 	background-repeat: no-repeat;
 }
 
 .lmsCheckButtonItemActive {
-	background: white url("ip.gif");
+	background: white url('@{lms-img-path}ip.gif');
 }
 
 .lmsCheckButtonItemInactive {
-	background: white url("ip.gif");
+	background: white url('@{lms-img-path}ip.gif');
 }
 
 .lmsCenterButtonItemActive {
-	background: white url("network.gif");
+	background: white url('@{lms-img-path}network.gif');
 }
 
 .lmsCenterButtonItemInactive {
-	background: white url("network.gif");
+	background: white url('@{lms-img-path}network.gif');
 }
 
 .lmsRefreshButtonItemActive {
-	background: red url("reload.gif");
+	background: red url('@{lms-img-path}reload.gif');
 }
 
 .lmsRefreshButtonItemInactive {
-	background: white url("reload.gif");
+	background: white url('@{lms-img-path}reload.gif');
 }

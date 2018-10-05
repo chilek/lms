@@ -1,24 +1,28 @@
-@darkbrown: #615847;
-@superlight: #F4F0EC;
-@lucid: #EBE4D6;
-@light: #DFD5BD;
-@dark: #CEBD9B;
-@superdark: #AE9D7B;
-@highlight: #CCFFCC;
-@alert: #FF9B9B;
-@blend: #888888;
-@font-size: 8pt;
-@fonts: Arial, Helvetica, Verdana;
-@icon-size: 16px;
-@link: #800000;
-@linkhover: #336600;
-@red-light: #ffb1b1;
-@red-lucid: #fccdcd;
-@select-border: 1px solid #a9a9a9;
-@slave: 0px 0px 10px 1px blue;
-@frame: 1px solid black;
-@dotted-line: 1px dotted grey;
-@rtmessage-current: 2px solid brown;
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+@import "lms-variables";
 
 @import "fontawesome/less/fontawesome";
 @fa-font-path: "fontawesome/webfonts";
@@ -481,7 +485,7 @@ select {
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	appearance: none;
-	background-image: url(1.png);
+	background-image: url('@{lms-img-path}1.png');
 	background-repeat: no-repeat;
 	background-position: right top;
 	border: @select-border;
@@ -521,7 +525,7 @@ div.lms-ui-multiselect {
 
 span.lms-ui-multiselect-icon {
 	float: right;
-	background-image: url(1.png);
+	background-image: url('@{lms-img-path}1.png');
 	background-repeat: no-repeat;
 	width: 16px;
 	height: 14px;
@@ -750,103 +754,103 @@ li.lms-ui-suggestion-item {
 	}
 	&.lms-ui-suggestion-customer-status-awaiting::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(wait.gif);
+		background-image: url('@{lms-img-path}wait.gif');
 	}
 	&.lms-ui-suggestion-customer-status-interested::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(unk.gif);
+		background-image: url('@{lms-img-path}unk.gif');
 	}
 	&.lms-ui-suggestion-customer-status-disconnected::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(node_off.gif);
+		background-image: url('@{lms-img-path}node_off.gif');
 	}
 	&.lms-ui-suggestion-customer-status-debtcollection::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(money.gif);
+		background-image: url('@{lms-img-path}money.gif');
 	}
 	&.lms-ui-suggestion-node-status-unknown::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(node_unk.gif);
+		background-image: url('@{lms-img-path}node_unk.gif');
 	}
 	&.lms-ui-suggestion-node-status-online::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(node_on.gif);
+		background-image: url('@{lms-img-path}node_on.gif');
 	}
 	&.lms-ui-suggestion-node-status-offline::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(node_off.gif);
+		background-image: url('@{lms-img-path}node_off.gif');
 	}
 	&.lms-ui-suggestion-netdevice::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(netdev.gif);
+			background-image: url('@{lms-img-path}netdev.gif');
 	}
 	&.lms-ui-suggestion-wireless::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(wireless.gif);
+		background-image: url('@{lms-img-path}wireless.gif');
 	}
 
 	&.lms-ui-suggestion-wireless-uni {
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(wireless.gif);
+			background-image: url('@{lms-img-path}wireless.gif');
 		}
 		color: teal;
 	}
 	&.lms-ui-suggestion-wireless-nni {
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(wireless.gif);
+			background-image: url('@{lms-img-path}wireless.gif');
 		}
 		color: brown;
 	}
 	&.lms-ui-suggestion-network::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(network.gif);
+		background-image: url('@{lms-img-path}network.gif');
 	}
 	&.lms-ui-suggestion-netnode::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(netnode.png);
+			background-image: url('@{lms-img-path}netnode.png');
 	}
 	&.lms-ui-suggestion-customer-status-connected::before {
 		.lms-ui-suggestion-icon;
-		background-image: url(customer.gif);
+		background-image: url('@{lms-img-path}customer.gif');
 	}
 	&.lms-ui-suggestion-ticket-state-new {
 		.red;
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(new.gif);
+			background-image: url('@{lms-img-path}new.gif');
 		}
 	}
 	&.lms-ui-suggestion-ticket-state-open {
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(open.gif);
+			background-image: url('@{lms-img-path}open.gif');
 		}
 	}
 	&.lms-ui-suggestion-ticket-state-resolved {
 		.blend;
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(resolved.gif);
+			background-image: url('@{lms-img-path}resolved.gif');
 		}
 	}
 	&.lms-ui-suggestion-ticket-state-dead {
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(dead.gif);
+			background-image: url('@{lms-img-path}dead.gif');
 		}
 	}
 	&.lms-ui-suggestion-ticket-state-scheduled {
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(calendar.gif);
+			background-image: url('@{lms-img-path}calendar.gif');
 		}
 	}
 	&.lms-ui-suggestion-ticket-state-waiting {
 		&::before {
 			.lms-ui-suggestion-icon;
-			background-image: url(calendar.gif);
+			background-image: url('@{lms-img-path}calendar.gif');
 		}
 	}
 }
@@ -2581,10 +2585,10 @@ table.dataTable {
 	}
 	thead {
 		.sorting_asc {
-			background-image: url(asc_order.gif);
+			background-image: url('@{lms-img-path}asc_order.gif');
 		}
 		.sorting_desc {
-			background-image: url(desc_order.gif);
+			background-image: url('@{lms-img-path}desc_order.gif');
 		}
 		.sorting {
 			background-image: none;
@@ -2723,7 +2727,7 @@ table.dataTable {
 	}
 
 	& .ui-selectmenu-icon.ui-icon {
-		background: url("1.png") !important;
+		background: url('@{lms-img-path}1.png') !important;
 	}
 }
 
@@ -2992,7 +2996,7 @@ table.dataTable {
 	/*
 	.chosen-search input[type=text] {
 		padding: 2px 20px 2px 5px;
-		background: url(chosen-sprite.png) no-repeat 100% -23px;
+		background: url('@{lms-img-path}chosen-sprite.png') no-repeat 100% -23px;
 	}
 	*/
 	.chosen-drop {

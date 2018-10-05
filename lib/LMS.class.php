@@ -101,8 +101,8 @@ class LMS
             require(LIB_DIR . DIRECTORY_SEPARATOR . 'xajax' . DIRECTORY_SEPARATOR . 'xajax_core' . DIRECTORY_SEPARATOR . 'xajax.inc.php');
             $this->xajax = new xajax();
             $this->xajax->configure('errorHandler', true);
-            $this->xajax->configure('javascript Dir', SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'xajax_js');
-            $this->xajax->configure('javascript URI', 'img/xajax_js');
+            $this->xajax->configure('javascript Dir', SYS_DIR . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'xajax_js');
+            $this->xajax->configure('javascript URI', 'js/xajax_js');
             //$this->xajax->configure('deferScriptGeneration', false);
         }
     }

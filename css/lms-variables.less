@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*
  * LMS version 1.11-git
  *
  *  (C) Copyright 2001-2018 LMS Developers
@@ -24,10 +22,25 @@
  *  $Id$
  */
 
-function smarty_function_js(array $params, Smarty_Internal_Template $template) {
-	$js_file = preg_replace(array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
-		array('', ''), $template->template_resource) . '.js';
-	return '<script src="js/templates/' . $js_file . '"></script>';
-}
-
-?>
+@darkbrown: #615847;
+@superlight: #F4F0EC;
+@lucid: #EBE4D6;
+@light: #DFD5BD;
+@dark: #CEBD9B;
+@superdark: #AE9D7B;
+@highlight: #CCFFCC;
+@alert: #FF9B9B;
+@blend: #888888;
+@font-size: 8pt;
+@fonts: Arial, Helvetica, Verdana;
+@icon-size: 16px;
+@link: #800000;
+@linkhover: #336600;
+@red-light: #ffb1b1;
+@red-lucid: #fccdcd;
+@select-border: 1px solid #a9a9a9;
+@slave: 0px 0px 10px 1px blue;
+@frame: 1px solid black;
+@dotted-line: 1px dotted grey;
+@rtmessage-current: 2px solid brown;
+@lms-img-path: "../img/";
