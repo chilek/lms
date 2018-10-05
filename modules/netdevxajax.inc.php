@@ -82,6 +82,7 @@ function addManagementUrl($params) {
 		}
 
 		$result->call('hideAddManagementUrl');
+		$result->call('managementUrlResponse', $error);
 		$result->call('getManagementUrls');
 	} else
 		$result->call('managementUrlResponse', $error);
@@ -144,11 +145,12 @@ function updateManagementUrl($urlid, $params) {
 			$args[SYSLOG::RES_NETDEV] = $netdevid;
 			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_UPDATE, $args);
 		}
-		$params = NULL;
-	}
 
-	$result->call('getManagementUrls', $params);
-	$result->call('managementUrlResponse', $error);
+		$result->call('managementUrlResponse', $error);
+		$result->call('getManagementUrls');
+	} else
+		$result->call('managementUrlResponse', $error);
+
 	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;

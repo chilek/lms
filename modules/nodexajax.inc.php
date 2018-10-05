@@ -239,6 +239,7 @@ function addManagementUrl($params) {
 		}
 
 		$result->call('hideAddManagementUrl');
+		$result->call('managementUrlResponse', $error);
 		$result->call('getManagementUrls');
 	} else
 		$result->call('managementUrlResponse', $error);
@@ -301,11 +302,12 @@ function updateManagementUrl($urlid, $params) {
 			$args[SYSLOG::RES_NODE] = $nodeid;
 			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_UPDATE, $args);
 		}
-		$params = NULL;
-	}
 
-	$result->call('getManagementUrls', $params);
-	$result->call('managementUrlReponse', $error);
+		$result->call('managementUrlResponse', $error);
+		$result->call('getManagementUrls');
+	} else
+		$result->call('managementUrlResponse', $error);
+
 	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;

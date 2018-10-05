@@ -28,8 +28,6 @@ function getManagementUrls() {
 
 function addManagementUrl() {
 	$('#managementurladdlink').prop('disabled', true);
-	$('#managementurlspanel #managementurltable').html(
-		$('#managementurlspanel .lms-ui-tab-hourglass-template').html());
 	xajax_addManagementUrl($('#managementurladd').serialize());
 }
 
@@ -95,10 +93,15 @@ function updateManagementUrl(id) {
 }
 
 function managementUrlResponse(errors) {
-	$.each(errors, function (index, value) {
-		$('#managementurlspanel #' + index).addClass('alert')
-			.removeAttr('data-tooltip').attr('title', value);
-	});
+	if (!$.isArray(errors)) {
+		$.each(errors, function (index, value) {
+			$('#managementurlspanel #' + index).addClass('alert')
+				.removeAttr('data-tooltip').attr('title', value);
+		});
+	} else {
+		$('#managementurlspanel #managementurltable').html(
+			$('#managementurlspanel .lms-ui-tab-hourglass-template').html());
+	}
 }
 
 $('#add_management_url').hide();
