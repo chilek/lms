@@ -43,7 +43,7 @@ function smarty_function_multi_location_box( $params = array(), $template )
     // when use first time write script content
     if ( !defined('MULTI_LOCATION_BOX') ) {
         define('MULTI_LOCATION_BOX', 1);
-        echo '<script type="text/javascript" src="img/multi_location_box.js"></script>';
+        echo '<script type="text/javascript" src="js/multi_location_box.js"></script>';
     }
 
     if ( !empty($params['addresses']) ) {
