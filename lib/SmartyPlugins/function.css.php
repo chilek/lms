@@ -27,7 +27,7 @@
 function smarty_function_css(array $params, Smarty_Internal_Template $template) {
 	$css_file = preg_replace(array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
 		array('', ''), $template->template_resource) . '.css';
-	return '<script>$("head").append($(\'<link rel="stylesheet" type="text/css" href="img/css/'
+	return '<script>$("head").append($(\'<link rel="stylesheet" type="text/css" href="css/templates/'
 		. $css_file . '">\'));</script>';
 }
 

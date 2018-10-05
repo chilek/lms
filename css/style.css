@@ -1,3 +1,49 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
 /*!
  * Font Awesome Free 5.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
@@ -4336,7 +4382,7 @@ select {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  background-image: url(1.png);
+  background-image: url('../img/1.png');
   background-repeat: no-repeat;
   background-position: right top;
   border: 1px solid #a9a9a9;
@@ -4381,7 +4427,7 @@ div.lms-ui-multiselect.lms-ui-multiselect-filter {
 }
 span.lms-ui-multiselect-icon {
   float: right;
-  background-image: url(1.png);
+  background-image: url('../img/1.png');
   background-repeat: no-repeat;
   width: 16px;
   height: 14px;
@@ -4650,63 +4696,63 @@ li.lms-ui-suggestion-item a {
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(wait.gif);
+  background-image: url('../img/wait.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-customer-status-interested::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(unk.gif);
+  background-image: url('../img/unk.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-customer-status-disconnected::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(node_off.gif);
+  background-image: url('../img/node_off.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-customer-status-debtcollection::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(money.gif);
+  background-image: url('../img/money.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-node-status-unknown::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(node_unk.gif);
+  background-image: url('../img/node_unk.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-node-status-online::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(node_on.gif);
+  background-image: url('../img/node_on.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-node-status-offline::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(node_off.gif);
+  background-image: url('../img/node_off.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-netdevice::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(netdev.gif);
+  background-image: url('../img/netdev.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-wireless::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(wireless.gif);
+  background-image: url('../img/wireless.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-wireless-uni {
   color: teal;
@@ -4716,7 +4762,7 @@ li.lms-ui-suggestion-item a {
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(wireless.gif);
+  background-image: url('../img/wireless.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-wireless-nni {
   color: brown;
@@ -4726,28 +4772,28 @@ li.lms-ui-suggestion-item a {
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(wireless.gif);
+  background-image: url('../img/wireless.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-network::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(network.gif);
+  background-image: url('../img/network.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-netnode::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(netnode.png);
+  background-image: url('../img/netnode.png');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-customer-status-connected::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(customer.gif);
+  background-image: url('../img/customer.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-new {
   color: #FF0000;
@@ -4757,14 +4803,14 @@ li.lms-ui-suggestion-item a {
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(new.gif);
+  background-image: url('../img/new.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-open::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(open.gif);
+  background-image: url('../img/open.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-resolved {
   color: #888888;
@@ -4774,28 +4820,28 @@ li.lms-ui-suggestion-item a {
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(resolved.gif);
+  background-image: url('../img/resolved.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-dead::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(dead.gif);
+  background-image: url('../img/dead.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-scheduled::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(calendar.gif);
+  background-image: url('../img/calendar.gif');
 }
 .lms-ui-suggestion-name.lms-ui-suggestion-ticket-state-waiting::before {
   content: "";
   padding-right: 17px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(calendar.gif);
+  background-image: url('../img/calendar.gif');
 }
 .lms-ui-suggestion-description {
   font-size: 10px;
@@ -8532,10 +8578,10 @@ table.dataTable tbody td {
   padding: 2px;
 }
 table.dataTable thead .sorting_asc {
-  background-image: url(asc_order.gif);
+  background-image: url('../img/asc_order.gif');
 }
 table.dataTable thead .sorting_desc {
-  background-image: url(desc_order.gif);
+  background-image: url('../img/desc_order.gif');
 }
 table.dataTable thead .sorting {
   background-image: none;
@@ -8661,7 +8707,7 @@ table.dataTable thead tr:last-child th {
   cursor: default;
 }
 .lms-ui-address-select .ui-selectmenu-icon.ui-icon {
-  background: url("1.png") !important;
+  background: url('../img/1.png') !important;
 }
 .lms-ui-menu-item-icon {
   font-size: 1.6em;
@@ -8874,7 +8920,7 @@ table.dataTable thead tr:last-child th {
   /*
 	.chosen-search input[type=text] {
 		padding: 2px 20px 2px 5px;
-		background: url(chosen-sprite.png) no-repeat 100% -23px;
+		background: url('@{lms-img-path}chosen-sprite.png') no-repeat 100% -23px;
 	}
 	*/
 }

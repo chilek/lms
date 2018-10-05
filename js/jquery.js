@@ -37,7 +37,7 @@ function savePersistentSettings(data) {
 }
 
 var dataTablesLanguage = {};
-$.ajax("img/jquery-datatables-i18n/" + lmsSettings.language + ".json", {
+$.ajax("js/jquery-datatables-i18n/" + lmsSettings.language + ".json", {
 	method: "GET",
 	success: function(data, textStatus, jqXHR) {
 		dataTablesLanguage = data;
@@ -774,7 +774,7 @@ $(function() {
 
 		$(elem).DataTable({
 //			language: {
-//				url: "img/jquery-datatables-i18n/" + lmsSettings.language + ".json"
+//				url: "js/jquery-datatables-i18n/" + lmsSettings.language + ".json"
 //			},
 			responsive: {
 				details: {
@@ -1031,7 +1031,7 @@ $(function() {
 					}
 				}
 			},
-			language_url: lmsSettings.language == 'en' ? null : 'img/tinymce4/langs/' + lmsSettings.language + '.js',
+			language_url: lmsSettings.language == 'en' ? null : 'js/tinymce4/langs/' + lmsSettings.language + '.js',
 			skin_url: 'img/tinymce4/skins/lms',
 			theme: "modern",
 			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",

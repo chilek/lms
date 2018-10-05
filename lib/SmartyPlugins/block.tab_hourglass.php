@@ -1,5 +1,4 @@
 <?php
-
 /**
  * LMS version 1.11-git
  *
@@ -24,10 +23,24 @@
  *  $Id$
  */
 
-function smarty_function_js(array $params, Smarty_Internal_Template $template) {
-	$js_file = preg_replace(array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
-		array('', ''), $template->template_resource) . '.js';
-	return '<script src="js/templates/' . $js_file . '"></script>';
-}
+/**
+ * Created by PhpStorm.
+ * User: chilek
+ * Date: 05.10.18
+ * Time: 08:08
+ */
 
-?>
+function smarty_block_tab_hourglass($params, $content, $template, $repeat) {
+	if (!$repeat) {
+		$content = '<div class="lms-ui-tab-hourglass">
+						<i></i>' . $content . '
+					</div>';
+
+		if (isset($params['template']) && $params['template'])
+			return '<div class="lms-ui-tab-hourglass-template">
+						' . $content . '
+					</div>';
+		else
+			return $content;
+	}
+}
