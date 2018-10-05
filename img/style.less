@@ -1259,6 +1259,45 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-unread {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-book;
+		color: royalblue;
+	}
+}
+
+.lms-ui-icon-read {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-book-open;
+	}
+}
+
+.lms-ui-icon-urgent {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-bell;
+		color: darkorange;
+	}
+}
+
+.lms-ui-icon-critical {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-bell;
+		color: red;
+	}
+}
+
 .lms-ui-icon-nodegroup,
 .lms-ui-icon-ngroup,
 .lms-ui-icon-ng {
@@ -1352,6 +1391,24 @@ li.lms-ui-suggestion-item {
 	.lms-ui-icon;
 	&:before {
 		content: @fa-var-desktop;
+	}
+}
+
+.lms-ui-icon-verifier {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-user-circle;
+	}
+}
+
+.lms-ui-icon-deadline {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-hourglass-end;
 	}
 }
 
@@ -2678,6 +2735,11 @@ table.dataTable {
 
 .lms-ui-quick-search-icon {
 	font-size: 1.4em;
+}
+
+.lms-ui-indicator-icon {
+	font-size: 1.5em;
+	vertical-align: middle;
 }
 
 .ui-menu-item {

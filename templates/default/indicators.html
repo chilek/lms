@@ -2,29 +2,29 @@
 {if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
 <a href="?m=indicators&action=critical" class="lms-ui-indicator" title="{trans("Critical tickets")}" id="indicator-critical" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
-    <img src="img/24-ring-red.png">
+    <i class="lms-ui-indicator-icon lms-ui-icon-critical" style="size: 1.5em"></i>
 </a>
 <a href="?m=indicators&action=urgent" class="lms-ui-indicator" title="{trans("Urgent tickets")}" id="indicator-urgent" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
-    <img src="img/ring-orange.png">
+    <i class="lms-ui-indicator-icon lms-ui-icon-urgent"></i>
 </a>
 <a href="?m=indicators&action=unread" class="lms-ui-indicator" title="{trans("Unread tickets")}" id="indicator-unread" style="display: none;">
     <span class="lms-ui-indicator-counter">0</span>
-    <img src="img/ticket-unread.png">
+    <i class="lms-ui-indicator-icon lms-ui-icon-unread"></i>
 </a>
 <a href="?m=indicators&action=expired" class="lms-ui-indicator" title="{trans("<!rt>Owned expired tickets")}" id="indicator-expired" style="display:none;">
     <span class="lms-ui-indicator-counter">0</span>
-    <img src="img/deadline.png">
+    <i class="lms-ui-indicator-icon lms-ui-icon-deadline"></i>
 </a>
 <a href="?m=indicators&action=expired2" class="lms-ui-indicator" title="{trans("<!rt>Verifier expired tickets")}" id="indicator-expired2" style="display:none;">
-<span class="lms-ui-indicator-counter">0</span>
-<img src="img/verifier.png">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-verifier"></i>
 </a>
 {/if}
 {if ConfigHelper::CheckPrivilege('timetable_management')}
 <a href="?m=indicators&action=events" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
-<span class="lms-ui-indicator-counter">0</span>
-<img src="img/calendar.gif">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-timetable"></i>
 </a>
 {/if}
 <script>
