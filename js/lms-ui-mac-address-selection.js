@@ -24,7 +24,7 @@
 
 $(function() {
 	$('#add-mac').click(function() {
-		var key = $('.mac').length;
+		var key = $('.lms-ui-mac-address-selection .mac').length;
 		$('<tr id="mac' + key + '" class="mac">' +
 			'<td style="width: 100%;">' +
 			'<input type="text" name="' + $(this).attr('data-field-prefix') + '[macs][' + key + ']" value="" ' +
@@ -33,7 +33,7 @@ $(function() {
 			'&nbsp;<a href="#" class="mac-selector" ' +
 			'title="' + $t('Click to select MAC from the list') + '">&raquo;&raquo;&raquo;</a>' +
 			'</td>' +
-			'</tr>').insertAfter($('.mac').last());
+			'</tr>').insertAfter($('.lms-ui-mac-address-selection .mac').last());
 	});
 
 	$(document).on('click', '.mac-selector,.remove-mac', function() {
