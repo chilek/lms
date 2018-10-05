@@ -9073,7 +9073,7 @@ table.dataTable thead tr:last-child th {
   /*
 	.chosen-search input[type=text] {
 		padding: 2px 20px 2px 5px;
-		background: url('@{lms-img-path}chosen-sprite.png') no-repeat 100% -23px;
+		background: url('@{lms-img-path}/chosen-sprite.png') no-repeat 100% -23px;
 	}
 	*/
 }
