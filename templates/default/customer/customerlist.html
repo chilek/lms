@@ -93,7 +93,7 @@
 				{/section}
 			</SELECT>
 
-			{if count($customergroups) > 0}
+			{if is_array($customergroups) && count($customergroups)}
 				{trans("Group:")}
 				<input type="hidden" name="g[]" value="">
 				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all groups -")}">
