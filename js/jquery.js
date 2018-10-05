@@ -1032,7 +1032,7 @@ $(function() {
 				}
 			},
 			language_url: lmsSettings.language == 'en' ? null : 'js/tinymce4/langs/' + lmsSettings.language + '.js',
-			skin_url: 'img/tinymce4/skins/lms',
+			skin_url: 'css/tinymce4',
 			theme: "modern",
 			plugins: "preview,autoresize,contextmenu,fullscreen,searchreplace,table,image,link,anchor,textcolor,autosave,paste",
 			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link anchor image ' +
