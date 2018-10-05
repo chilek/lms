@@ -22,13 +22,21 @@
  *  $Id$
  */
 
+function getManagementUrls() {
+	xajax_getManagementUrls();
+}
+
 function addManagementUrl() {
 	$('#managementurladdlink').prop('disabled', true);
+	$('#managementurlspanel #managementurltable').html(
+		$('#managementurlspanel .lms-ui-tab-hourglass-template').html());
 	xajax_addManagementUrl($('#managementurladd').serialize());
 }
 
 function delManagementUrl(id) {
 	$('#managementurltable').prop('disabled', true);
+	$('#managementurlspanel #managementurltable').html(
+		$('#managementurlspanel .lms-ui-tab-hourglass-template').html());
 	xajax_delManagementUrl(id);
 }
 
@@ -87,16 +95,12 @@ function updateManagementUrl(id) {
 }
 
 function managementUrlResponse(errors) {
-	if (errors) {
-		$.each(errors, function (index, value) {
-			$('#managementurlspanel #' + index).addClass('alert')
-				.removeAttr('data-tooltip').attr('title', value);
-		});
-	} else {
-		hideAddManagementUrl();
-	}
+	$.each(errors, function (index, value) {
+		$('#managementurlspanel #' + index).addClass('alert')
+			.removeAttr('data-tooltip').attr('title', value);
+	});
 }
 
 $('#add_management_url').hide();
 
-xajax_getManagementUrls();
+getManagementUrls();

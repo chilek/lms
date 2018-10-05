@@ -15,7 +15,8 @@
 
 	{tab_contents id="managementurlspanel"}
 
-		{tab_table id="managementurltable" hourglass=1}
+		{tab_table id="managementurltable"}
+			{tab_hourglass}{/tab_hourglass}
 		{/tab_table}
 
 {if ConfigHelper::checkPrivilege('privileges.network_management')}
@@ -48,6 +49,8 @@
 			{/tab_buttons}
 		{/tab_button_panel}
 {/if}
+
+		{tab_hourglass template=1}{/tab_hourglass}
 
 	{/tab_contents}
 

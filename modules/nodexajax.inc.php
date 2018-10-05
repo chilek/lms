@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -94,7 +94,7 @@ function addNodeLock($params) {
 	$DB->Execute('INSERT INTO nodelocks (nodeid, days, fromsec, tosec) VALUES (?, ?, ?, ?)',
 		array($nodeid, $days, $fromsec, $tosec));
 
-	$result->call('xajax_getNodeLocks', $nodeid);
+	$result->call('getNodeLocks');
 
 	return $result;
 }
@@ -107,7 +107,7 @@ function delNodeLock($id) {
 	$DB = LMSDB::getInstance();
 	$DB->Execute('DELETE FROM nodelocks WHERE id = ?', array($id));
 
-	$result->call('xajax_getNodeLocks', $nodeid);
+	$result->call('getNodeLocks');
 
 	return $result;
 }
@@ -237,11 +237,12 @@ function addManagementUrl($params) {
 			$args[SYSLOG::RES_MGMTURL] = $DB->GetLastInsertID('managementurls');
 			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_ADD, $args);
 		}
-		$formdata = NULL;
-	}
 
-	$result->call('xajax_getManagementUrls');
-	$result->call('managementUrlResponse', $error);
+		$result->call('hideAddManagementUrl');
+		$result->call('getManagementUrls');
+	} else
+		$result->call('managementUrlResponse', $error);
+
 	$result->assign('managementurladdlink', 'disabled', false);
 
 	return $result;
@@ -264,7 +265,7 @@ function delManagementUrl($id) {
 		);
 		$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_DELETE, $args);
 	}
-	$result->call('xajax_getManagementUrls');
+	$result->call('getManagementUrls');
 	$result->assign('managementurltable', 'disabled', false);
 
 	return $result;
@@ -303,7 +304,7 @@ function updateManagementUrl($urlid, $params) {
 		$params = NULL;
 	}
 
-	$result->call('xajax_getManagementUrls', $params);
+	$result->call('getManagementUrls', $params);
 	$result->call('managementUrlReponse', $error);
 	$result->assign('managementurltable', 'disabled', false);
 

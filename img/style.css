@@ -9310,6 +9310,9 @@ div.lms-ui-wysiwyg-editor {
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-hourglass > i:before {
   color: black;
 }
+.lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-hourglass-template {
+  display: none;
+}
 td.lms-ui-mac-address-selection {
   padding: 0 !important;
 }

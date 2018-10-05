@@ -22,13 +22,21 @@
  *  $Id$
  */
 
+function getNodeLocks() {
+	xajax_getNodeLocks();
+}
+
 function addNodeLock() {
 	$('#nodelockaddlink').prop('disabled', true);
+	$('#nodelockspanel #nodelocktable').html(
+		$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
 	xajax_addNodeLock($('#nodelockadd').serialize());
 }
 
 function delNodeLock(id) {
 	$('#nodelocktable').prop('disabled', true);
+	$('#nodelockspanel #nodelocktable').html(
+		$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
 	xajax_delNodeLock(id);
 }
 
@@ -37,4 +45,4 @@ $("#nodelockspanel .lms-ui-button-delete").click(function() {
 		.find('select').val(0);
 });
 
-xajax_getNodeLocks();
+getNodeLocks();
