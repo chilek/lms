@@ -181,7 +181,7 @@ $SMARTY->assign('nastypes', $LMS->GetNAStypes());
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('NNnodes', $LMS->GetNetNodes());
 $SMARTY->assign('producers', $LMS->GetProducers());
-$SMARTY->assign('models', json_encode($LMS->GetModels()));
+$SMARTY->assign('models', $LMS->GetModels());
 
 if (ConfigHelper::checkConfig('phpui.ewx_support'))
 	$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));

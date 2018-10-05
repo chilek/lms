@@ -842,9 +842,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
 		$result = array();
 		foreach ($models as $model) {
-			if (!isset($result['p' . $model['producerid']]))
-				$result['p' . $model['producerid']] = array();
-			$result['p' . $model['producerid']]['m' . $model['id']] = $model;
+			if (!isset($result[$model['producerid']]))
+				$result[$model['producerid']] = array();
+			$result[$model['producerid']][$model['id']] = $model;
 		}
 
 		return $result;

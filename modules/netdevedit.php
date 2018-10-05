@@ -717,7 +717,7 @@ if ($subtitle)
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('NNnodes', $LMS->GetNetNodes());
 $SMARTY->assign('producers', $LMS->GetProducers());
-$SMARTY->assign('models', json_encode($LMS->GetModels()));
+$SMARTY->assign('models', $LMS->GetModels());
 
 $SMARTY->assign('error'                , $error);
 $SMARTY->assign('netdev'           , $netdev);

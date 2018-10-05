@@ -200,11 +200,11 @@
 
 <script>
 
-	var models = JSON.parse('{$models}');
+	var models = JSON.parse('{json_encode($models)}');
 
 	function initModels(producerid) {
 		var values = [];
-		$.each(models['p' + producerid], function (key, item) {
+		$.each(models[producerid], function (key, item) {
 			values.push({
 				value: item.id,
 				text: item.name
