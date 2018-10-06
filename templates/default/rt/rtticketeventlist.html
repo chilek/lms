@@ -12,11 +12,11 @@
         <TD class="text-right nobr">
             {if $ticket.state != $smarty.const.RT_RESOLVED}
             {if $ticket.customerid}
-            <A href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
-            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
+                <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'><i></i></button>
+                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}'><i></i></button>
             {else}
-            <A href="?m=eventadd&ticketid={$ticket.ticketid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
-            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
+                <button type="button" class="lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'></button>
+                <button type="button" class="lms-ui-button-close" onclick='window.location.href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}'></button>
             {/if}
             {/if}
         </TD>
