@@ -8,8 +8,8 @@
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			{if $ticket.state != 2}
-			<A href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}"><IMG src="img/note.gif" alt=""> {trans("New Note")}</A>
-			<A href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}"><IMG src="img/mail.gif" alt=""> {trans("New Message")}</A>
+			<button type="button" class="lms-ui-button" onclick='onclick='window.location.href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}"'><i class="lms-ui-icon-note"></i>{trans("New Note")}
+			<button type="button" class="lms-ui-button" onclick='onclick='window.location.href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}"'><i class="lms-ui-icon-message"></i>{trans("New Message")}
 			{/if}
 		</TD>
 	</TR>
