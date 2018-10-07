@@ -8,9 +8,13 @@
 
 			var mainMenuVisible = getCookie('main-menu-visible');
 			mainMenuVisible = mainMenuVisible === null || mainMenuVisible == 'true';
-			if (!mainMenuVisible) {
+			if (mainMenuVisible) {
+				$('#lms-ui-menu-panel-toggle').addClass('visible');
+			} else {
 				$('#lms-ui-menu-panel').hide();
+				$('#lms-ui-menu-panel-toggle').switchClass('fa-angle-left', 'fa-angle-right');
 			}
+
 
 			$('#lms-ui-menu-panel-toggle').click(function () {
 				var mainMenuVisible = $('#lms-ui-menu-panel').toggle().is(':visible');

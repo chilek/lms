@@ -61,7 +61,7 @@ if(isset($_POST['ticket']))
 	if(!empty($ticket['deadline'])) {
 		$dtime = datetime_to_timestamp($ticket['deadline']);
 		if($dtime < time())
-			$error['deadline'] = trans("Ticket deadline could not be set in the past");
+			$error['deadline'] = trans("Ticket deadline could not be set in past");
 	}
 
 	if($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid'])

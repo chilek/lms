@@ -35,12 +35,6 @@
 
 			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
 
-			if (mainMenuVisible) {
-				$('#lms-ui-menu-panel-toggle').addClass('visible');
-			} else {
-				$('#lms-ui-menu-panel-toggle').switchClass('fa-angle-left', 'fa-angle-right');
-			}
-
 			$('#lms-ui-back-to-top').click(function() {
 				$('#lms-ui-module-view').animate({ scrollTop: 0 });
 			});
