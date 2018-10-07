@@ -330,7 +330,7 @@
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
-				<span class="blend"><IMG src="img/resolved.gif" alt=""> {trans("Ticket have open assigned events!")}</A>&nbsp;</span>
+				<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
 					<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=verify"><i class="lms-ui-icon-verifier"></i> {trans("Transfer ticket to verifier")}</A>
@@ -344,7 +344,7 @@
 				{/if}
 			{/if}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<a href="?m=rtrestore&id={$ticket.ticketid}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$ticket.ticketid|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}"> {trans("Restore<!RT>")}</a>
+			<a href="?m=rtrestore&id={$ticket.ticketid}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$ticket.ticketid|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><i class="lms-ui-icon-restore"></i>{trans("Restore<!RT>")}</a>
 			<a href="?m=rtticketdel&id={$ticket.ticketid}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$ticket.ticketid|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</a>
 			{else}
 			<a href="?m=rtticketdel&id={$ticket.ticketid}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$ticket.ticketid|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete")}">{trans("Delete")}</a>

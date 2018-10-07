@@ -17,8 +17,7 @@
     <THEAD>
         <TR{if $day == $today} class="superdark"{/if}>
             <TD class="bold nobr">
-                <IMG src="img/calendar.gif" alt="">
-                {$day|date_format:"%A"}
+                <i class="lms-ui-icon-timetable">{$day|date_format:"%A"}
             </TD>
             <TD colspan="3">
                 <span class="bold">({$day|date_format:"%x"})</span>
@@ -29,8 +28,8 @@
             </TD>
             <TD colspan="2" class="text-right nobr">
                 <div class="no-print">
-                    <A href="?m=eventprint&day={$day}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
-                    <A href="?m=eventadd&amp;day={$day|date_format:"%d"}&amp;month={$day|date_format:"%m"}&amp;year={$day|date_format:"%Y"}"><IMG src="img/save.gif" alt=""> {trans("Add Event")}</A>&nbsp;
+                    <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href=?m=eventadd&amp;day={$day|date_format:"%d"}&amp;month={$day|date_format:"%m"}&amp;year={$day|date_format:"%Y"}'><i></i>{trans("Add Event")}</button>
+                    <button type="button" class="lms-ui-button lms-ui-button-print" onclick='window.location.href=?m=eventprint&day={$day}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}" target="_blank'><i></i>{trans("Print")}</button>
                 </div>
             </TD>
         </TR>
