@@ -1081,6 +1081,15 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-search {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-search;
+	}
+}
+
 .lms-ui-icon-clone,
 .lms-ui-icon-copy {
 	.fa-icon;
@@ -1159,6 +1168,24 @@ li.lms-ui-suggestion-item {
 	&:before {
 		content: @fa-var-print;
 		color: saddlebrown;
+	}
+}
+
+.lms-ui-icon-descending {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-sort-down;
+	}
+}
+
+.lms-ui-icon-ascending {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-sort-up;
 	}
 }
 
