@@ -1448,6 +1448,11 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-content {
+	width: 2em;
+	text-align: center;
+}
+
 .lms-ui-icon-categories {
 	.fa-icon;
 	.fas;
@@ -1455,6 +1460,16 @@ li.lms-ui-suggestion-item {
 	&:before {
 		content: @fa-var-check-square;
 		color: darkblue;
+	}
+}
+
+.lms-ui-icon-description {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-audio-description;
+		color: darkslateblue;
 	}
 }
 
@@ -1608,6 +1623,16 @@ li.lms-ui-suggestion-item {
 	&:before {
 		color: purple;
 		content: @fa-var-ticket-alt;
+	}
+}
+
+.lms-ui-icon-event-type {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: darkslategrey;
+		content: @fa-var-calendar;
 	}
 }
 
