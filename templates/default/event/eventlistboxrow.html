@@ -24,25 +24,25 @@
         {/foreach}
     </TD>
     <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
-        <IMG src="img/calendar.gif" alt=""> <a href="?m=eventinfo&id={$event.id}"><span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
-        {if $event.description != ''}<br><IMG src="img/info1.gif" alt=""> {$event.description}{/if}
-        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><IMG src="img/note.gif" alt=""> {$event.note}</span>{/if}
+        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i><span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
+        {if $event.description != ''}<br><i class="lms-ui-icon-description"></i>{$event.description}{/if}
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><<i class="lms-ui-icon-note"></i>{$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2">
         {if $event.netnode_name}
-            <img src="img/netnode.png"> <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-            {if !empty($event.netnode_location)}<br><img src="img/location.png"> {$event.netnode_location}{/if}
+        <i class="lms-ui-icon-netnode"></i><a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
+            {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i>{$event.netnode_location}{/if}
         {else}
-            {if $event.customername}
-            <img src="img/customer.gif"> <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
-            {if !empty($event.address_id)}
-            <img src="img/location.png"> {$event.location}
-            {elseif !empty($event.nodeid)}
-                <a href="?m=nodeinfo&id={$event.nodeid}">{$event.nodelocation}</a>
-            {else}
-                <img src="img/location.png"> {$event.customerlocation}
-            {/if}
-            {/if}
+        {if $event.customername}
+        <i class="lms-ui-icon-customer"></i><A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+        {if !empty($event.address_id)}
+        <i class="lms-ui-icon-location"></i>{$event.location}
+        {elseif !empty($event.nodeid)}
+        <a href="?m=nodeinfo&id={$event.nodeid}">{$event.nodelocation}</a>
+        {else}
+        <i class="lms-ui-icon-location"></i>{$event.customerlocation}
+        {/if}
+        {/if}
         {/if}
     </TD>
     <TD class="text-right nobr">
