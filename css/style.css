@@ -68,10 +68,10 @@
   vertical-align: -0.0667em;
 }
 .fa-xs {
-  font-size: .75em;
+  font-size: 0.75em;
 }
 .fa-sm {
-  font-size: .875em;
+  font-size: 0.875em;
 }
 .fa-1x {
   font-size: 1em;
@@ -123,9 +123,9 @@
   line-height: inherit;
 }
 .fa-border {
-  border-radius: .1em;
+  border-radius: 0.1em;
   border: solid 0.08em #eee;
-  padding: .2em .25em .15em;
+  padding: 0.2em 0.25em 0.15em;
 }
 .fa-pull-left {
   float: left;
@@ -138,14 +138,14 @@
 .far.fa-pull-left,
 .fal.fa-pull-left,
 .fab.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .fa.fa-pull-right,
 .fas.fa-pull-right,
 .far.fa-pull-right,
 .fal.fa-pull-right,
 .fab.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .fa-spin {
   animation: fa-spin 2s infinite linear;
@@ -3919,7 +3919,7 @@ TABLE {
 }
 #lms-ui-menu-panel-toggle:not(.visible) {
   background-color: #AE9D7B;
-  padding: 0.1em 0.0em 0.3em 0.1em;
+  padding: 0.1em 0em 0.3em 0.1em;
   border: 1px solid black;
   border-radius: 0 0 0.5em 0em;
 }
@@ -4946,11 +4946,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-nodesession.fa-pull-left,
 .lms-ui-icon-session.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodesession.fa-pull-right,
 .lms-ui-icon-session.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodesession:before,
 .lms-ui-icon-session:before {
@@ -4974,11 +4974,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-nodelock.fa-pull-left,
 .lms-ui-icon-lock.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodelock.fa-pull-right,
 .lms-ui-icon-lock.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodelock:before,
 .lms-ui-icon-lock:before {
@@ -5002,11 +5002,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-convert.fa-pull-left,
 .lms-ui-icon-transform.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-convert.fa-pull-right,
 .lms-ui-icon-transform.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-convert:before,
 .lms-ui-icon-transform:before {
@@ -5030,11 +5030,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-correct.fa-pull-left,
 .lms-ui-icon-correction.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-correct.fa-pull-right,
 .lms-ui-icon-correction.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-correct:before,
 .lms-ui-icon-correction:before {
@@ -5060,12 +5060,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-cashsource.fa-pull-left,
 .lms-ui-icon-isource.fa-pull-left,
 .lms-ui-icon-importsource.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-cashsource.fa-pull-right,
 .lms-ui-icon-isource.fa-pull-right,
 .lms-ui-icon-importsource.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-cashsource:before,
 .lms-ui-icon-isource:before,
@@ -5090,11 +5090,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-debitnote.fa-pull-left,
 .lms-ui-icon-dnote.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-debitnote.fa-pull-right,
 .lms-ui-icon-dnote.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-debitnote:before,
 .lms-ui-icon-dnote:before {
@@ -5118,11 +5118,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-money.fa-pull-left,
 .lms-ui-icon-cash.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-money.fa-pull-right,
 .lms-ui-icon-cash.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-money:before,
 .lms-ui-icon-cash:before {
@@ -5147,11 +5147,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-hourglass.fa-pull-left,
 .lms-ui-icon-wait.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-hourglass.fa-pull-right,
 .lms-ui-icon-wait.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-hourglass:before,
 .lms-ui-icon-wait:before {
@@ -5175,11 +5175,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-options.fa-pull-left,
 .lms-ui-icon-option.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-options.fa-pull-right,
 .lms-ui-icon-option.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-options:before,
 .lms-ui-icon-option:before {
@@ -5203,11 +5203,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-assignment.fa-pull-left,
 .lms-ui-icon-assign.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-assignment.fa-pull-right,
 .lms-ui-icon-assign.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-assignment:before,
 .lms-ui-icon-assign:before {
@@ -5231,11 +5231,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-save.fa-pull-left,
 .lms-ui-icon-submit.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-save.fa-pull-right,
 .lms-ui-icon-submit.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-save:before,
 .lms-ui-icon-submit:before {
@@ -5257,10 +5257,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-cancel.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-cancel.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-cancel:before {
   content: "\f55a";
@@ -5281,10 +5281,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-location.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-location.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-location:before {
   content: "\f3c5";
@@ -5306,10 +5306,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-search.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-search.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-search:before {
   content: "\f002";
@@ -5330,10 +5330,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-next.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-next.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-next:before {
   content: "\f101";
@@ -5354,10 +5354,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-previous.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-previous.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-previous:before {
   content: "\f100";
@@ -5380,11 +5380,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-clone.fa-pull-left,
 .lms-ui-icon-copy.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-clone.fa-pull-right,
 .lms-ui-icon-copy.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-clone:before,
 .lms-ui-icon-copy:before {
@@ -5408,11 +5408,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-delete.fa-pull-left,
 .lms-ui-icon-remove.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-delete.fa-pull-right,
 .lms-ui-icon-remove.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-delete:before,
 .lms-ui-icon-remove:before {
@@ -5434,10 +5434,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-trash.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-trash.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-trash:before {
   content: "\f1f8";
@@ -5462,12 +5462,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-edit.fa-pull-left,
 .lms-ui-icon-change.fa-pull-left,
 .lms-ui-icon-modify.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-edit.fa-pull-right,
 .lms-ui-icon-change.fa-pull-right,
 .lms-ui-icon-modify.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-edit:before,
 .lms-ui-icon-change:before,
@@ -5492,11 +5492,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-fileupload.fa-pull-left,
 .lms-ui-icon-upload.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-fileupload.fa-pull-right,
 .lms-ui-icon-upload.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-fileupload:before,
 .lms-ui-icon-upload:before {
@@ -5520,11 +5520,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-back.fa-pull-left,
 .lms-ui-icon-return.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-back.fa-pull-right,
 .lms-ui-icon-return.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-back:before,
 .lms-ui-icon-return:before {
@@ -5550,12 +5550,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-add.fa-pull-left,
 .lms-ui-icon-new.fa-pull-left,
 .lms-ui-icon-append.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-add.fa-pull-right,
 .lms-ui-icon-new.fa-pull-right,
 .lms-ui-icon-append.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-add:before,
 .lms-ui-icon-new:before,
@@ -5578,10 +5578,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-print.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-print.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-print:before {
   content: "\f02f";
@@ -5603,10 +5603,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-descending.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-descending.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-descending:before {
   content: "\f0dd";
@@ -5627,10 +5627,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-ascending.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-ascending.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-ascending:before {
   content: "\f0de";
@@ -5653,11 +5653,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-confirm.fa-pull-left,
 .lms-ui-icon-apply.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-confirm.fa-pull-right,
 .lms-ui-icon-apply.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-confirm:before,
 .lms-ui-icon-apply:before {
@@ -5681,11 +5681,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-mail.fa-pull-left,
 .lms-ui-icon-send.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-mail.fa-pull-right,
 .lms-ui-icon-send.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-mail:before,
 .lms-ui-icon-send:before {
@@ -5709,11 +5709,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-phone.fa-pull-left,
 .lms-ui-icon-call.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-phone.fa-pull-right,
 .lms-ui-icon-call.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-phone:before,
 .lms-ui-icon-call:before {
@@ -5737,11 +5737,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-sms.fa-pull-left,
 .lms-ui-icon-mobile.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-sms.fa-pull-right,
 .lms-ui-icon-mobile.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-sms:before,
 .lms-ui-icon-mobile:before {
@@ -5764,11 +5764,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-www.fa-pull-left,
 .lms-ui-icon-web.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-www.fa-pull-right,
 .lms-ui-icon-web.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-www:before,
 .lms-ui-icon-web:before {
@@ -5792,11 +5792,11 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-userpanel.fa-pull-left,
 .lms-ui-icon-panel.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-userpanel.fa-pull-right,
 .lms-ui-icon-panel.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-userpanel:before,
 .lms-ui-icon-panel:before {
@@ -5819,10 +5819,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-clipboard.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-clipboard.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-clipboard:before {
   color: darkorange;
@@ -5844,10 +5844,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-view.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-view.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-view:before {
   content: "\f06e";
@@ -5874,10 +5874,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-info.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-info.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-info:before {
   content: "\f129";
@@ -5898,10 +5898,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-open.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-open.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-open:before {
   content: "\f518";
@@ -5922,10 +5922,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-close.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-close.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-close:before {
   content: "\f02d";
@@ -5947,10 +5947,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-unread.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-unread.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-unread:before {
   content: "\f02d";
@@ -5972,10 +5972,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-read.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-read.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-read:before {
   content: "\f518";
@@ -5996,10 +5996,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-urgent.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-urgent.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-urgent:before {
   content: "\f0f3";
@@ -6021,10 +6021,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-critical.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-critical.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-critical:before {
   content: "\f0f3";
@@ -6050,12 +6050,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-nodegroup.fa-pull-left,
 .lms-ui-icon-ngroup.fa-pull-left,
 .lms-ui-icon-ng.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodegroup.fa-pull-right,
 .lms-ui-icon-ngroup.fa-pull-right,
 .lms-ui-icon-ng.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodegroup:before,
 .lms-ui-icon-ngroup:before,
@@ -6082,12 +6082,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-customergroup.fa-pull-left,
 .lms-ui-icon-cgroup.fa-pull-left,
 .lms-ui-icon-cg.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-customergroup.fa-pull-right,
 .lms-ui-icon-cgroup.fa-pull-right,
 .lms-ui-icon-cg.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-customergroup:before,
 .lms-ui-icon-cgroup:before,
@@ -6115,12 +6115,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-warning.fa-pull-left,
 .lms-ui-icon-warn.fa-pull-left,
 .lms-ui-icon-warnoff.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-warning.fa-pull-right,
 .lms-ui-icon-warn.fa-pull-right,
 .lms-ui-icon-warnoff.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-warning:before,
 .lms-ui-icon-warn:before,
@@ -6151,10 +6151,10 @@ li.lms-ui-suggestion-item a {
   -webkit-text-stroke-color: black;
 }
 .lms-ui-icon-warnon.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-warnon.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-warnon:before {
   content: "\f071";
@@ -6175,10 +6175,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-connect.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-connect.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-connect:before {
   color: green;
@@ -6200,10 +6200,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-plug.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-plug.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-plug:before {
   content: "\f1e6";
@@ -6229,10 +6229,10 @@ li.lms-ui-suggestion-item a {
   -webkit-text-stroke-color: black;
 }
 .lms-ui-icon-connected.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-connected.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-connected:before {
   color: green;
@@ -6259,10 +6259,10 @@ li.lms-ui-suggestion-item a {
   transform: rotate(180deg);
 }
 .lms-ui-icon-disconnected.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-disconnected.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-disconnected:before {
   content: "\f205";
@@ -6284,10 +6284,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-node.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-node.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-node:before {
   content: "\f108";
@@ -6308,10 +6308,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-verifier.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-verifier.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-verifier:before {
   content: "\f51c";
@@ -6332,10 +6332,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-deadline.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-deadline.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-deadline:before {
   content: "\f253";
@@ -6356,10 +6356,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-actions.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-actions.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-actions:before {
   content: "\f085";
@@ -6381,10 +6381,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-uptime.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-uptime.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-uptime:before {
   content: "\f017";
@@ -6410,10 +6410,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-categories.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-categories.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-categories:before {
   content: "\f14a";
@@ -6435,10 +6435,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-restore.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-restore.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-restore:before {
   content: "\f2ea";
@@ -6459,10 +6459,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-description.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-description.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-description:before {
   content: "\f29e";
@@ -6484,19 +6484,19 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-nodeoff.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodeoff.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodeoff:before {
   content: "\f108";
 }
 .lms-ui-icon-nodeoff.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodeoff.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodeoff:before {
   color: navy;
@@ -6522,19 +6522,19 @@ li.lms-ui-suggestion-item a {
   -webkit-text-stroke-color: gold;
 }
 .lms-ui-icon-nodeon.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodeon.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodeon:before {
   content: "\f108";
 }
 .lms-ui-icon-nodeon.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodeon.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodeon:before {
   color: navy;
@@ -6560,19 +6560,19 @@ li.lms-ui-suggestion-item a {
   -webkit-text-stroke-color: red;
 }
 .lms-ui-icon-nodeunk.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodeunk.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodeunk:before {
   content: "\f108";
 }
 .lms-ui-icon-nodeunk.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-nodeunk.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-nodeunk:before {
   color: navy;
@@ -6598,12 +6598,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-netdev.fa-pull-left,
 .lms-ui-icon-netdevice.fa-pull-left,
 .lms-ui-icon-device.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-netdev.fa-pull-right,
 .lms-ui-icon-netdevice.fa-pull-right,
 .lms-ui-icon-device.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-netdev:before,
 .lms-ui-icon-netdevice:before,
@@ -6626,10 +6626,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-customer.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-customer.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-customer:before {
   color: darkorange;
@@ -6651,10 +6651,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-userpanel.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-userpanel.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-userpanel:before {
   color: orange;
@@ -6676,10 +6676,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-phone.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-phone.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-phone:before {
   color: darkred;
@@ -6701,10 +6701,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-node.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-node.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-node:before {
   color: navy;
@@ -6730,12 +6730,12 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-ipnetwork.fa-pull-left,
 .lms-ui-icon-networks.fa-pull-left,
 .lms-ui-icon-network.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-ipnetwork.fa-pull-right,
 .lms-ui-icon-networks.fa-pull-right,
 .lms-ui-icon-network.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-ipnetwork:before,
 .lms-ui-icon-networks:before,
@@ -6759,10 +6759,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-netdev.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-netdev.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-netdev:before {
   color: mediumslateblue;
@@ -6784,10 +6784,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-subject.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-subject.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-subject:before {
   color: black;
@@ -6809,10 +6809,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-user.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-user.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-user:before {
   color: darkred;
@@ -6834,10 +6834,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-owner.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-owner.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-owner:before {
   color: darkred;
@@ -6859,10 +6859,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-queue.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-queue.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-queue:before {
   color: darkred;
@@ -6884,10 +6884,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-netnode.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-netnode.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-netnode:before {
   color: brown;
@@ -6909,10 +6909,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-service.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-service.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-service:before {
   color: dodgerblue;
@@ -6934,10 +6934,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-type.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-type.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-type:before {
   color: purple;
@@ -6959,10 +6959,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-event-type.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-event-type.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-event-type:before {
   color: darkslategrey;
@@ -6984,10 +6984,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-requestor.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-requestor.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-requestor:before {
   color: red;
@@ -7009,10 +7009,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-helpdesk.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-helpdesk.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-helpdesk:before {
   color: darkblue;
@@ -7034,10 +7034,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-calendar.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-calendar.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-calendar:before {
   content: "\f073";
@@ -7058,10 +7058,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-timetable.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-timetable.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-timetable:before {
   content: "\f073";
@@ -7085,10 +7085,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-administration.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-administration.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-administration:before {
   color: red;
@@ -7110,10 +7110,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-reload.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-reload.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-reload:before {
   color: red;
@@ -7135,10 +7135,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-source.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-source.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-source:before {
   content: "\f00a";
@@ -7159,10 +7159,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-priority.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-priority.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-priority:before {
   color: red;
@@ -7184,10 +7184,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-cause.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-cause.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-cause:before {
   color: red;
@@ -7209,10 +7209,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-logout.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-logout.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-logout:before {
   color: red;
@@ -7234,10 +7234,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-configuration.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-configuration.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-configuration:before {
   color: red;
@@ -7271,7 +7271,7 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-logging.fa-pull-left,
 .lms-ui-icon-log.fa-pull-left,
 .lms-ui-icon-history.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-archiveview.fa-pull-right,
 .lms-ui-icon-archive.fa-pull-right,
@@ -7280,7 +7280,7 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-logging.fa-pull-right,
 .lms-ui-icon-log.fa-pull-right,
 .lms-ui-icon-history.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-archiveview:before,
 .lms-ui-icon-archive:before,
@@ -7308,10 +7308,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-finances.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-finances.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-finances:before {
   color: green;
@@ -7333,10 +7333,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-status.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-status.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-status:before {
   color: cornflowerblue;
@@ -7358,10 +7358,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-status-resolved.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-status-resolved.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-status-resolved:before {
   color: dimgrey;
@@ -7383,10 +7383,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-wireless.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-wireless.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-wireless:before {
   color: purple;
@@ -7408,10 +7408,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-hosting.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-hosting.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-hosting:before {
   color: brown;
@@ -7433,10 +7433,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-add.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-add.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-add:before {
   color: yellowgreen;
@@ -7458,10 +7458,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-document.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-document.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-document:before {
   color: orangered;
@@ -7483,10 +7483,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-stats.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-stats.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-stats:before {
   color: lightseagreen;
@@ -7508,10 +7508,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-externalid.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-externalid.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-externalid:before {
   color: grey;
@@ -7533,10 +7533,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-message.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-message.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-message:before {
   color: darkorange;
@@ -7558,10 +7558,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-note.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-note.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-note:before {
   color: darkred;
@@ -7583,10 +7583,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-documentation.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-documentation.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-documentation:before {
   color: indigo;
@@ -7608,10 +7608,10 @@ li.lms-ui-suggestion-item a {
   vertical-align: unset;
 }
 .lms-ui-icon-password.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-icon-password.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-icon-password:before {
   color: seagreen;
@@ -7637,12 +7637,12 @@ div.lms-ui-button-netnode > i {
 button.lms-ui-button-netnode > i.fa-pull-left,
 a.lms-ui-button-netnode > i.fa-pull-left,
 div.lms-ui-button-netnode > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-netnode > i.fa-pull-right,
 a.lms-ui-button-netnode > i.fa-pull-right,
 div.lms-ui-button-netnode > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-netnode > i:before,
 a.lms-ui-button-netnode > i:before,
@@ -7682,7 +7682,7 @@ div.lms-ui-button-networks > i.fa-pull-left,
 button.lms-ui-button-network > i.fa-pull-left,
 a.lms-ui-button-network > i.fa-pull-left,
 div.lms-ui-button-network > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-ipnetwork > i.fa-pull-right,
 a.lms-ui-button-ipnetwork > i.fa-pull-right,
@@ -7693,7 +7693,7 @@ div.lms-ui-button-networks > i.fa-pull-right,
 button.lms-ui-button-network > i.fa-pull-right,
 a.lms-ui-button-network > i.fa-pull-right,
 div.lms-ui-button-network > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-ipnetwork > i:before,
 a.lms-ui-button-ipnetwork > i:before,
@@ -7763,7 +7763,7 @@ div.lms-ui-button-log > i.fa-pull-left,
 button.lms-ui-button-history > i.fa-pull-left,
 a.lms-ui-button-history > i.fa-pull-left,
 div.lms-ui-button-history > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-archiveview > i.fa-pull-right,
 a.lms-ui-button-archiveview > i.fa-pull-right,
@@ -7786,7 +7786,7 @@ div.lms-ui-button-log > i.fa-pull-right,
 button.lms-ui-button-history > i.fa-pull-right,
 a.lms-ui-button-history > i.fa-pull-right,
 div.lms-ui-button-history > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-archiveview > i:before,
 a.lms-ui-button-archiveview > i:before,
@@ -7838,7 +7838,7 @@ div.lms-ui-button-convert > i.fa-pull-left,
 button.lms-ui-button-transform > i.fa-pull-left,
 a.lms-ui-button-transform > i.fa-pull-left,
 div.lms-ui-button-transform > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-convert > i.fa-pull-right,
 a.lms-ui-button-convert > i.fa-pull-right,
@@ -7846,7 +7846,7 @@ div.lms-ui-button-convert > i.fa-pull-right,
 button.lms-ui-button-transform > i.fa-pull-right,
 a.lms-ui-button-transform > i.fa-pull-right,
 div.lms-ui-button-transform > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-convert > i:before,
 a.lms-ui-button-convert > i:before,
@@ -7882,7 +7882,7 @@ div.lms-ui-button-correct > i.fa-pull-left,
 button.lms-ui-button-correction > i.fa-pull-left,
 a.lms-ui-button-correction > i.fa-pull-left,
 div.lms-ui-button-correction > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-correct > i.fa-pull-right,
 a.lms-ui-button-correct > i.fa-pull-right,
@@ -7890,7 +7890,7 @@ div.lms-ui-button-correct > i.fa-pull-right,
 button.lms-ui-button-correction > i.fa-pull-right,
 a.lms-ui-button-correction > i.fa-pull-right,
 div.lms-ui-button-correction > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-correct > i:before,
 a.lms-ui-button-correct > i:before,
@@ -7932,7 +7932,7 @@ div.lms-ui-button-isource > i.fa-pull-left,
 button.lms-ui-button-importsource > i.fa-pull-left,
 a.lms-ui-button-importsource > i.fa-pull-left,
 div.lms-ui-button-importsource > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-cashsource > i.fa-pull-right,
 a.lms-ui-button-cashsource > i.fa-pull-right,
@@ -7943,7 +7943,7 @@ div.lms-ui-button-isource > i.fa-pull-right,
 button.lms-ui-button-importsource > i.fa-pull-right,
 a.lms-ui-button-importsource > i.fa-pull-right,
 div.lms-ui-button-importsource > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-cashsource > i:before,
 a.lms-ui-button-cashsource > i:before,
@@ -7982,7 +7982,7 @@ div.lms-ui-button-debitnote > i.fa-pull-left,
 button.lms-ui-button-dnote > i.fa-pull-left,
 a.lms-ui-button-dnote > i.fa-pull-left,
 div.lms-ui-button-dnote > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-debitnote > i.fa-pull-right,
 a.lms-ui-button-debitnote > i.fa-pull-right,
@@ -7990,7 +7990,7 @@ div.lms-ui-button-debitnote > i.fa-pull-right,
 button.lms-ui-button-dnote > i.fa-pull-right,
 a.lms-ui-button-dnote > i.fa-pull-right,
 div.lms-ui-button-dnote > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-debitnote > i:before,
 a.lms-ui-button-debitnote > i:before,
@@ -8026,7 +8026,7 @@ div.lms-ui-button-cash > i.fa-pull-left,
 button.lms-ui-button-money > i.fa-pull-left,
 a.lms-ui-button-money > i.fa-pull-left,
 div.lms-ui-button-money > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-cash > i.fa-pull-right,
 a.lms-ui-button-cash > i.fa-pull-right,
@@ -8034,7 +8034,7 @@ div.lms-ui-button-cash > i.fa-pull-right,
 button.lms-ui-button-money > i.fa-pull-right,
 a.lms-ui-button-money > i.fa-pull-right,
 div.lms-ui-button-money > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-cash > i:before,
 a.lms-ui-button-cash > i:before,
@@ -8071,7 +8071,7 @@ div.lms-ui-button-hourglass > i.fa-pull-left,
 button.lms-ui-button-wait > i.fa-pull-left,
 a.lms-ui-button-wait > i.fa-pull-left,
 div.lms-ui-button-wait > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-hourglass > i.fa-pull-right,
 a.lms-ui-button-hourglass > i.fa-pull-right,
@@ -8079,7 +8079,7 @@ div.lms-ui-button-hourglass > i.fa-pull-right,
 button.lms-ui-button-wait > i.fa-pull-right,
 a.lms-ui-button-wait > i.fa-pull-right,
 div.lms-ui-button-wait > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-hourglass > i:before,
 a.lms-ui-button-hourglass > i:before,
@@ -8115,7 +8115,7 @@ div.lms-ui-button-save > i.fa-pull-left,
 button.lms-ui-button-submit > i.fa-pull-left,
 a.lms-ui-button-submit > i.fa-pull-left,
 div.lms-ui-button-submit > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-save > i.fa-pull-right,
 a.lms-ui-button-save > i.fa-pull-right,
@@ -8123,7 +8123,7 @@ div.lms-ui-button-save > i.fa-pull-right,
 button.lms-ui-button-submit > i.fa-pull-right,
 a.lms-ui-button-submit > i.fa-pull-right,
 div.lms-ui-button-submit > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-save > i:before,
 a.lms-ui-button-save > i:before,
@@ -8153,12 +8153,12 @@ div.lms-ui-button-cancel > i {
 button.lms-ui-button-cancel > i.fa-pull-left,
 a.lms-ui-button-cancel > i.fa-pull-left,
 div.lms-ui-button-cancel > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-cancel > i.fa-pull-right,
 a.lms-ui-button-cancel > i.fa-pull-right,
 div.lms-ui-button-cancel > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-cancel > i:before,
 a.lms-ui-button-cancel > i:before,
@@ -8191,7 +8191,7 @@ div.lms-ui-button-clone > i.fa-pull-left,
 button.lms-ui-button-copy > i.fa-pull-left,
 a.lms-ui-button-copy > i.fa-pull-left,
 div.lms-ui-button-copy > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-clone > i.fa-pull-right,
 a.lms-ui-button-clone > i.fa-pull-right,
@@ -8199,7 +8199,7 @@ div.lms-ui-button-clone > i.fa-pull-right,
 button.lms-ui-button-copy > i.fa-pull-right,
 a.lms-ui-button-copy > i.fa-pull-right,
 div.lms-ui-button-copy > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-clone > i:before,
 a.lms-ui-button-clone > i:before,
@@ -8235,7 +8235,7 @@ div.lms-ui-button-delete > i.fa-pull-left,
 button.lms-ui-button-remove > i.fa-pull-left,
 a.lms-ui-button-remove > i.fa-pull-left,
 div.lms-ui-button-remove > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-delete > i.fa-pull-right,
 a.lms-ui-button-delete > i.fa-pull-right,
@@ -8243,7 +8243,7 @@ div.lms-ui-button-delete > i.fa-pull-right,
 button.lms-ui-button-remove > i.fa-pull-right,
 a.lms-ui-button-remove > i.fa-pull-right,
 div.lms-ui-button-remove > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-delete > i:before,
 a.lms-ui-button-delete > i:before,
@@ -8285,7 +8285,7 @@ div.lms-ui-button-change > i.fa-pull-left,
 button.lms-ui-button-modify > i.fa-pull-left,
 a.lms-ui-button-modify > i.fa-pull-left,
 div.lms-ui-button-modify > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-edit > i.fa-pull-right,
 a.lms-ui-button-edit > i.fa-pull-right,
@@ -8296,7 +8296,7 @@ div.lms-ui-button-change > i.fa-pull-right,
 button.lms-ui-button-modify > i.fa-pull-right,
 a.lms-ui-button-modify > i.fa-pull-right,
 div.lms-ui-button-modify > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-edit > i:before,
 a.lms-ui-button-edit > i:before,
@@ -8335,7 +8335,7 @@ div.lms-ui-button-fileupload > i.fa-pull-left,
 button.lms-ui-button-upload > i.fa-pull-left,
 a.lms-ui-button-upload > i.fa-pull-left,
 div.lms-ui-button-upload > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-fileupload > i.fa-pull-right,
 a.lms-ui-button-fileupload > i.fa-pull-right,
@@ -8343,7 +8343,7 @@ div.lms-ui-button-fileupload > i.fa-pull-right,
 button.lms-ui-button-upload > i.fa-pull-right,
 a.lms-ui-button-upload > i.fa-pull-right,
 div.lms-ui-button-upload > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-fileupload > i:before,
 a.lms-ui-button-fileupload > i:before,
@@ -8379,7 +8379,7 @@ div.lms-ui-button-back > i.fa-pull-left,
 button.lms-ui-button-return > i.fa-pull-left,
 a.lms-ui-button-return > i.fa-pull-left,
 div.lms-ui-button-return > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-back > i.fa-pull-right,
 a.lms-ui-button-back > i.fa-pull-right,
@@ -8387,7 +8387,7 @@ div.lms-ui-button-back > i.fa-pull-right,
 button.lms-ui-button-return > i.fa-pull-right,
 a.lms-ui-button-return > i.fa-pull-right,
 div.lms-ui-button-return > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-back > i:before,
 a.lms-ui-button-back > i:before,
@@ -8429,7 +8429,7 @@ div.lms-ui-button-new > i.fa-pull-left,
 button.lms-ui-button-append > i.fa-pull-left,
 a.lms-ui-button-append > i.fa-pull-left,
 div.lms-ui-button-append > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-add > i.fa-pull-right,
 a.lms-ui-button-add > i.fa-pull-right,
@@ -8440,7 +8440,7 @@ div.lms-ui-button-new > i.fa-pull-right,
 button.lms-ui-button-append > i.fa-pull-right,
 a.lms-ui-button-append > i.fa-pull-right,
 div.lms-ui-button-append > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-add > i:before,
 a.lms-ui-button-add > i:before,
@@ -8462,7 +8462,7 @@ div.lms-ui-button-new > i.fa-pull-left,
 button.lms-ui-button-append > i.fa-pull-left,
 a.lms-ui-button-append > i.fa-pull-left,
 div.lms-ui-button-append > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-add > i.fa-pull-right,
 a.lms-ui-button-add > i.fa-pull-right,
@@ -8473,7 +8473,7 @@ div.lms-ui-button-new > i.fa-pull-right,
 button.lms-ui-button-append > i.fa-pull-right,
 a.lms-ui-button-append > i.fa-pull-right,
 div.lms-ui-button-append > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-add > i:before,
 a.lms-ui-button-add > i:before,
@@ -8507,12 +8507,12 @@ div.lms-ui-button-print > i {
 button.lms-ui-button-print > i.fa-pull-left,
 a.lms-ui-button-print > i.fa-pull-left,
 div.lms-ui-button-print > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-print > i.fa-pull-right,
 a.lms-ui-button-print > i.fa-pull-right,
 div.lms-ui-button-print > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-print > i:before,
 a.lms-ui-button-print > i:before,
@@ -8546,7 +8546,7 @@ div.lms-ui-button-confirm > i.fa-pull-left,
 button.lms-ui-button-apply > i.fa-pull-left,
 a.lms-ui-button-apply > i.fa-pull-left,
 div.lms-ui-button-apply > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-confirm > i.fa-pull-right,
 a.lms-ui-button-confirm > i.fa-pull-right,
@@ -8554,7 +8554,7 @@ div.lms-ui-button-confirm > i.fa-pull-right,
 button.lms-ui-button-apply > i.fa-pull-right,
 a.lms-ui-button-apply > i.fa-pull-right,
 div.lms-ui-button-apply > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-confirm > i:before,
 a.lms-ui-button-confirm > i:before,
@@ -8590,7 +8590,7 @@ div.lms-ui-button-mail > i.fa-pull-left,
 button.lms-ui-button-send > i.fa-pull-left,
 a.lms-ui-button-send > i.fa-pull-left,
 div.lms-ui-button-send > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-mail > i.fa-pull-right,
 a.lms-ui-button-mail > i.fa-pull-right,
@@ -8598,7 +8598,7 @@ div.lms-ui-button-mail > i.fa-pull-right,
 button.lms-ui-button-send > i.fa-pull-right,
 a.lms-ui-button-send > i.fa-pull-right,
 div.lms-ui-button-send > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-mail > i:before,
 a.lms-ui-button-mail > i:before,
@@ -8628,12 +8628,12 @@ div.lms-ui-button-clipboard > i {
 button.lms-ui-button-clipboard > i.fa-pull-left,
 a.lms-ui-button-clipboard > i.fa-pull-left,
 div.lms-ui-button-clipboard > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-clipboard > i.fa-pull-right,
 a.lms-ui-button-clipboard > i.fa-pull-right,
 div.lms-ui-button-clipboard > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-clipboard > i:before,
 a.lms-ui-button-clipboard > i:before,
@@ -8661,12 +8661,12 @@ div.lms-ui-button-view > i {
 button.lms-ui-button-view > i.fa-pull-left,
 a.lms-ui-button-view > i.fa-pull-left,
 div.lms-ui-button-view > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-view > i.fa-pull-right,
 a.lms-ui-button-view > i.fa-pull-right,
 div.lms-ui-button-view > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-view > i:before,
 a.lms-ui-button-view > i:before,
@@ -8703,12 +8703,12 @@ div.lms-ui-button-info > i {
 button.lms-ui-button-info > i.fa-pull-left,
 a.lms-ui-button-info > i.fa-pull-left,
 div.lms-ui-button-info > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-info > i.fa-pull-right,
 a.lms-ui-button-info > i.fa-pull-right,
 div.lms-ui-button-info > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-info > i:before,
 a.lms-ui-button-info > i:before,
@@ -8735,12 +8735,12 @@ div.lms-ui-button-open > i {
 button.lms-ui-button-open > i.fa-pull-left,
 a.lms-ui-button-open > i.fa-pull-left,
 div.lms-ui-button-open > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-open > i.fa-pull-right,
 a.lms-ui-button-open > i.fa-pull-right,
 div.lms-ui-button-open > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-open > i:before,
 a.lms-ui-button-open > i:before,
@@ -8767,12 +8767,12 @@ div.lms-ui-button-close > i {
 button.lms-ui-button-close > i.fa-pull-left,
 a.lms-ui-button-close > i.fa-pull-left,
 div.lms-ui-button-close > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 button.lms-ui-button-close > i.fa-pull-right,
 a.lms-ui-button-close > i.fa-pull-right,
 div.lms-ui-button-close > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 button.lms-ui-button-close > i:before,
 a.lms-ui-button-close > i:before,
@@ -10134,10 +10134,10 @@ div.lms-ui-wysiwyg-editor {
   animation: fa-spin 0.75s infinite linear !important;
 }
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-hourglass > i.fa-pull-left {
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-hourglass > i.fa-pull-right {
-  margin-left: .3em;
+  margin-left: 0.3em;
 }
 .lms-ui-tab-container div.lms-ui-tab-table .lms-ui-tab-hourglass > i:before {
   color: red;
