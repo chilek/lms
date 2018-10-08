@@ -52,47 +52,57 @@
 			</div>
 
 			{section name=eventlist loop=$eventlist max=$limit}
-				<div class="lms-ui-tab-table-row{if $eventlist[eventlist].closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+			{$event=$eventlist[eventlist]}
+				<div class="lms-ui-tab-table-row{if $event.closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$event.id}'">
 					<div class="lms-ui-tab-table-wrapper col-5">
 						<div class="lms-ui-tab-table-wrapper col-4">
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column creation-date">
-									{$eventlist[eventlist].date|date_format:"%Y/%m/%d"}
+									{$event.date|date_format:"%Y/%m/%d"}
+									{if $event.endtime == 86400}
+										{if $event.enddate > $event.date}- {$event.enddate|date_format:"%Y/%m/%d"}{/if}
+										{trans("whole day")}
+									{else}
+										{($event.date + $event.begintime)|date_format:"%H:%M"}
+										{if $event.begintime != $event.endtime}
+											- {($event.enddate + $event.endtime)|date_format:"%H:%M"}
+										{/if}
+									{/if}
 								</div>
 								<div class="lms-ui-tab-table-column type">
-									{$_EVENTTYPES[$eventlist[eventlist].type]}
+									{$_EVENTTYPES[$event.type]}
 								</div>
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column number">
-									<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}">{$eventlist[eventlist].ticketid|default:"---"}</A>
+									<A href="?m=rtticketview&id={$event.ticketid}">{$event.ticketid|default:"---"}</A>
 								</div>
 								<div class="lms-ui-tab-table-column title">
-									{$eventlist[eventlist].title}
+									{$event.title}
 								</div>
 							</div>
 						</div>
 
 						<div class="lms-ui-tab-table-wrapper">
 							<div class="lms-ui-tab-table-column description">
-								{$eventlist[eventlist].description}
+								{$event.description}
 							</div>
 						</div>
 					</div>
 					<div class="lms-ui-tab-table-column buttons">
-						{if $eventlist[eventlist].closed}
-							<a class="lms-ui-button-close" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open">
+						{if $event.closed}
+							<a class="lms-ui-button-close" href="?m=eventedit&amp;id={$event.id}&amp;action=open">
 								<i title="{trans("Open")}"></i>
 							</a>
 						{else}
-							<a class="lms-ui-button-open" href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close">
+							<a class="lms-ui-button-open" href="?m=eventedit&amp;id={$event.id}&amp;action=close">
 								<i title="{trans("Close")}"></i>
 							</a>
 						{/if}
-						<a class="lms-ui-button-delete" href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
+						<a class="lms-ui-button-delete" href="?m=eventdel&amp;id={$event.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
 							<i title="{trans("Delete")}"></i>
 						</a>
-						<a class="lms-ui-button-edit" href="?m=eventedit&amp;id={$eventlist[eventlist].id}">
+						<a class="lms-ui-button-edit" href="?m=eventedit&amp;id={$event.id}">
 							<i title="{trans("Edit")}"></i>
 						</a>
 
