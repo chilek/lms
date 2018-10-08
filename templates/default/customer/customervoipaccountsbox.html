@@ -1,86 +1,88 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="customervoipaccountsbox">
-	<COLGROUP>
-		<COL style="width: 99%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="voipaccountspanel">
-		<TD class="bold">
-			<IMG src="img/voip.gif" alt="">
-			{t a=$customervoipaccounts|@count|default:"0"}Voip Accounts ($a):{/t}
-		</TD>
-		<TD class="text-right nobr">
-			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="voipaccountspanel" style="display: none;">
-		<TD colspan="2">
-			<TABLE class="lmsbox-inner lms-background-cycle">
-				{block name="customervoipaccountsbox-list-columns"}
-				<COLGROUP>
-						<COL style="width: 96%;">
-						<COL style="width: 1%;" span="5">
-						{assign var='number_of_table_columns' value='6'}
-				</COLGROUP>
-				{/block}
-				<THEAD>
-				{block name="customervoipaccountsbox-list-header"}
-				<TR class="lms-ui-header-panel">
-					<TD class="bold nobr">{trans("Login:")}</TD>
-					<TD class="nobr">{trans("ID:")}</TD>
-					<TD class="nobr" colspan="2">{trans("Password:")}</TD>
-					<TD class="nobr">{trans("Phone number:")}</TD>
-					<TD>&nbsp;</TD>
-				</TR>
-				{/block}
-				</THEAD>
-				<TBODY>
-				{cycle name=voips values="light,lucid" print=false}
-				{foreach $customervoipaccounts as $voipaccount}
+{css}
+
+{tab_container id="customervoipaccountsbox"}
+	{tab_header content_id="voipaccountspanel"}
+		{tab_header_cell icon="lms-ui-icon-phone"}
+			<strong>{t a=$customervoipaccounts|@count|default:"0"}Voip Accounts ($a):{/t}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
+			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}{/tab_header_cell}
+	{/tab_header}
+	{tab_contents id="voipaccountspanel"}
+		{tab_table}
+		{block name="customervoipaccountsbox-list-columns"}
+				{assign var='number_of_table_columns' value='5'}
+		{/block}
+			<div class="lms-ui-tab-table-row header">
+			{block name="customervoipaccountsbox-list-header"}
+				<div class="lms-ui-tab-table-wrapper col-4">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column login">
+							<strong>{trans("Login:")}</strong>
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column password">
+							{trans("Password:")}
+						</div>
+						<div class="lms-ui-tab-table-column number">
+							{trans("Phone number:")}
+						</div>
+					</div>
+				</div>
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			{/block}
+			</div>
+			{foreach $customervoipaccounts as $voipaccount}
 				{block name="customervoipaccountsbox-list-row"}
-				<TR class="highlight {cycle name=voips}"  >
-					<TD class="bold nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						{$voipaccount.login}
-					</TD>
-					<TD class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						({$voipaccount.id|string_format:"%04d"})
-					</TD>
-					<TD class="nobr" colspan="2" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
-					</TD>
-					<TD class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						{foreach $voipaccount.phones as $phone}
-						{$phone.phone}{if !$phone@last}<br>{/if}
-						{/foreach}
-					</TD>
-					<TD class="text-right nobr">
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" href="?m=voipaccountdel&amp;id={$voipaccount.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-						<A href="?m=voipaccountedit&amp;id={$voipaccount.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-						<A href="?m=voipaccountinfo&amp;id={$voipaccount.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
-					</TD>
-				</TR>
+				<div class="lms-ui-tab-table-row">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column login" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+								{$voipaccount.login}
+							</div>
+							<div class="lms-ui-tab-table-column id" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+								({$voipaccount.id|string_format:"%04d"})
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column password"  onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+								{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
+							</div>
+							<div class="lms-ui-tab-table-column number" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+								{foreach $voipaccount.phones as $phone}
+									{$phone.phone}{if !$phone@last}<br>{/if}
+								{/foreach}
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-column buttons">
+						<a class="lms-ui-button-delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" href="?m=voipaccountdel&amp;id={$voipaccount.id}">
+							<i title="{trans("Delete")}"></i>
+						</a>
+						<a class="lms-ui-button-edit" href="?m=voipaccountedit&amp;id={$voipaccount.id}">
+							<i title="{trans("Edit")}"></i>
+						</a>
+						<a class="lms-ui-button-info" href="?m=voipaccountinfo&amp;id={$voipaccount.id}">
+							<i title="{trans("Info")}"></i>
+						</a>
+					</div>
+				</div>
 				{/block}
-				{foreachelse}
+			{foreachelse}
 				{block name="customervoipaccountsbox-list-empty-row"}
-				<TR>
-					<TD class="empty-table" colspan="{$number_of_table_columns}">
-						<p>{trans("That customer does not own any voip account.")}</p>
-					</TD>
-				</TR>
+				<div class="lms-ui-tab-empty-table">
+					{trans("That customer does not own any voip account.")}
+				</div>
 				{/block}
-				{/foreach}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('voipaccountspanel') == '1')
-		document.getElementById('voipaccountspanel').style.display = '';
-//-->
-</SCRIPT>
+			{/foreach}
+		{/tab_table}
+	{/tab_contents}
+{/tab_container}
