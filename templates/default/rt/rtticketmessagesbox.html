@@ -4,12 +4,12 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/open.gif" alt=""> <B>{trans("Ticket History")}</B>
+			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			{if $ticket.state != 2}
-			<A href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}"><IMG src="img/note.gif" alt=""> {trans("New Note")}</A>
-			<A href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}"><IMG src="img/mail.gif" alt=""> {trans("New Message")}</A>
+			<button type="button" class="lms-ui-button" onclick='onclick='window.location.href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}"'><i class="lms-ui-icon-note"></i>{trans("New Note")}
+			<button type="button" class="lms-ui-button" onclick='onclick='window.location.href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}"'><i class="lms-ui-icon-message"></i>{trans("New Message")}
 			{/if}
 		</TD>
 	</TR>
@@ -18,15 +18,15 @@
 	<TR>
 		<TD style="width: 100%;" class="navigation" colspan="3">
 			{if $ticket.prev_ticketid != NULL}
-				<A href="?m=rtticketview&amp;id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
+				<A href="?m=rtticketview&amp;id={$ticket.prev_ticketid}"><i class="lms-ui-icon-previous"></i>{trans("Previous ticket")}</A>
 			{else}
-				&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}
+				<i class="lms-ui-icon-previous"></i>{trans("Previous ticket")}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
 			{if $ticket.next_ticketid != NULL}
-				<A href="?m=rtticketview&amp;id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
+				<A href="?m=rtticketview&amp;id={$ticket.next_ticketid}">{trans("Next ticket")}<i class="lms-ui-icon-next"></i></A>
 			{else}
-				{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;
+				{trans("Next ticket")}<i class="lms-ui-icon-next"></i>
 			{/if}
 		</TD>
 	</TR>

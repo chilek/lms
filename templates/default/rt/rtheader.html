@@ -1,37 +1,36 @@
 {block name="rtheader"}
 <TR class="lms-ui-header-panel" {tip text="Click on column name to change sorting order"}>
     <TD class="bold">
-        <img src="img/ticket.gif" alt="">
-        <br>
-        <img src="img/calendar.gif" alt="">
+        <i class="lms-ui-icon-content lms-ui-icon-helpdesk"></i>
     </TD>
     <TD class="bold">{trans("Ticket's state:")}</TD>
     <TD class="bold nobr">
-        <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=ticketid{if $filter.direction == "asc" && $filter.order == "ticketid"},desc{/if}">{trans("ID:")}</a> {if $filter.order == "ticketid"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-        / <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=priority{if $filter.direction == "asc" && $filter.order == "priority"},desc{/if}">{trans("Priority:")}</a> {if $filter.order == "priority"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-        {if empty($filter.ids) || count($filter.ids)!=1}<a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=queue{if $filter.direction == "asc" && $filter.order == "queue"},desc{/if}">/ {trans("Queue:")}</a>{if $filter.order == "queue"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}{/if}
+        <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=ticketid{if $filter.direction == "asc" && $filter.order == "ticketid"},desc{/if}">{trans("ID:")}</a>{if $filter.order == "ticketid"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
+        / <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=priority{if $filter.direction == "asc" && $filter.order == "priority"},desc{/if}">{trans("Priority:")}</a> {if $filter.order == "priority"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
+        {if empty($filter.ids) || count($filter.ids)!=1}<a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=queue{if $filter.direction == "asc" && $filter.order == "queue"},desc{/if}">/ {trans("Queue:")}</a>{if $filter.order == "queue"}<i class="lms-ui-icon-{if $filter.direction == "desc"}descending{else}ascending{/if}"></i>{/if}{/if}
         <br>
-        <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=createtime{if $filter.direction == "asc" && $filter.order == "createtime"},desc{/if}"> {trans("Create time:")}</a>{if $filter.order == "createtime"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=createtime{if $filter.direction == "asc" && $filter.order == "createtime"},desc{/if}"> {trans("Create time:")}</a>{if $filter.order == "createtime"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
     </TD>
     <TD class="nobr bold">
-        <img src="img/service-type.png"> {trans("Service type:")}<br>
-        <img src="img/ticket-type.png"> {trans("<!rtheader>Ticket type:")}</TD>
-    <TD class="nobr bold">
-        <img src="img/ticket.gif"> <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=subject{if $filter.direction == "asc" && $filter.order == "subject"},desc{/if}">{trans("Subject:")}</a> {if $filter.order == "subject"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br>
-        <img src="img/customer.gif"> <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=requestor{if $filter.direction == "asc" && $filter.order == "requestor"},desc{/if}">{trans("Submitter:")}</a> {if $filter.order == "requestor"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <i class="lms-ui-icon-content lms-ui-icon-service"></i>{trans("Service type:")}<br>
+        <i class="lms-ui-icon-content lms-ui-icon-type"></i>{trans("<!rtheader>Ticket type:")}
     </TD>
     <TD class="nobr bold">
-        <img src="img/home.gif" alt=""> <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=location{if $filter.direction == "asc" && $filter.order == "location"},desc{/if}">{trans("Location:")}</a>{if $filter.order == "location"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <i class="lms-ui-icon-content lms-ui-icon-helpdesk"></i><a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=subject{if $filter.direction == "asc" && $filter.order == "subject"},desc{/if}">{trans("Subject:")}</a> {if $filter.order == "subject"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}<br>
+            <i class="lms-ui-icon-content lms-ui-icon-customer"></i><a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=requestor{if $filter.direction == "asc" && $filter.order == "requestor"},desc{/if}">{trans("Submitter:")}</a> {if $filter.order == "requestor"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
+    </TD>
+    <TD class="nobr bold">
+        <i class="lms-ui-icon-content lms-ui-icon-location"></i><a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=location{if $filter.direction == "asc" && $filter.order == "location"},desc{/if}">{trans("Location:")}</a>{if $filter.order == "location"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
     </TD>
     <TD class="nobr bold text-center">
-        <img src="img/calendar.gif" alt=""> <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=deadline{if $filter.direction == "asc" && $filter.order == "deadline"},desc{/if}">{trans("<!rtheader>Deadline:")}</a>{if $filter.order == "deadline"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <i class="lms-ui-icon-content lms-ui-icon-deadline"></i><a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=deadline{if $filter.direction == "asc" && $filter.order == "deadline"},desc{/if}">{trans("<!rtheader>Deadline:")}</a>{if $filter.order == "deadline"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
     </TD>
     <TD class="nobr bold">
-        <img src="img/users.gif" alt=""> <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=owner{if $filter.direction == "asc" && $filter.order == "owner"},desc{/if}">{trans("Owner:")}</a>{if $filter.order == "owner"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br>
-        <img src="img/calendar.gif" alt=""> <a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=lastmodified{if $filter.direction == "asc" && $filter.order == "lastmodified"},desc{/if}">{trans("Modified:")}</a> {if $filter.order == "lastmodified"}<img src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <i class="lms-ui-icon-content lms-ui-icon-user"></i><a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=owner{if $filter.direction == "asc" && $filter.order == "owner"},desc{/if}">{trans("Owner:")}</a>{if $filter.order == "owner"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}<br>
+        <i class="lms-ui-icon-content lms-ui-icon-modify"></i><a href="?m={$layout.module}{if !empty($filter.ids)}&id[]={implode('&id[]=', $filter.ids)}{/if}&{if $filter.state == -1}s=-1{elseif !empty($filter.state)}s[]={implode('&s[]=', $filter.state)}{/if}&o=lastmodified{if $filter.direction == "asc" && $filter.order == "lastmodified"},desc{/if}">{trans("Modified:")}</a> {if $filter.order == "lastmodified"}<i class="lms-ui-icon-{if $filter.direction == 'desc'}descending{else}ascending{/if}"></i>{/if}
     </TD>
     <TD class="nobr bold">
-        <img src="img/calendar.gif" alt=""> {trans("Events:")}
+        <i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("Events:")}
     </TD>
     <TD></TD>
 </TR>

@@ -3,9 +3,9 @@
 <TR class="{if $ticket.state == $smarty.const.RT_RESOLVED}blend {/if}highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}" data-target-url="?m=rtticketview&id={$ticket.id}">
 	<TD class="text-center">
 		{if $ticket.unread}
-		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><img src="img/{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}ring-red{else}ticket-unread{/if}.png" alt=""></a>
+		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i></a>
 		{elseif $ticket.messageid}
-		<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><img src="img/{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}ring-red{else}search-results{/if}.png" alt=""></a>
+		<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}priority{else}search{/if}"></i></a>
 		{/if}
 	</TD>
 	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">
@@ -47,12 +47,13 @@
 	</TD>
 	<TD class="nobr valign-middle">
 		{if $ticket.netnodeid}
-			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><img src="img/netnode.png" alt=""> {$ticket.netnode_name}</a>
+			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><i class="lms-ui-icon-content lms-ui-icon-netnode"></i>{$ticket.netnode_name}</a>
 		{/if}
+		{if $ticket.netdevid && $ticket.netnodeid }<br>{/if}
 		{if $ticket.netdevid}
-			<a href="?m=netdevinfo&id={$ticket.netdevid}"><img src="img/netdev.png" alt=""> {$ticket.netdev_name}</a>
+			<a href="?m=netdevinfo&id={$ticket.netdevid}"><i class="lms-ui-icon-content lms-ui-icon-netdevice"></i>{$ticket.netdev_name}</a>
 		{/if}
-		{if $ticket.netdevid || $ticket_netnode_location}<br>{/if}
+		{if $ticket.netdevid || $ticket.netnodeid }<br>{/if}
 		{if $ticket.address_id}
 			{$ticket.vacity} {$ticket.street} {$ticket.house}
 			{if $ticket.flat}/{$ticket.flat}{/if}

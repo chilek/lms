@@ -7,16 +7,16 @@
     <THEAD>
     <TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
         <TD class="bold">
-            <IMG src="img/calendar.gif" alt=""> {trans("Timetable assigned events:")}
+            <i class="lms-ui-icon-timetable"></i> {trans("Timetable assigned events:")}
         </TD>
         <TD class="text-right nobr">
             {if $ticket.state != $smarty.const.RT_RESOLVED}
             {if $ticket.customerid}
-            <A href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
-            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
+                <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'><i></i>{trans("Add")}</button>
+                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}'><i></i>{trans("Close all")}</button>
             {else}
-            <A href="?m=eventadd&ticketid={$ticket.ticketid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
-            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
+                <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'>{trans("Add")}</button>
+                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}'>{trans("Close all")}</button>
             {/if}
             {/if}
         </TD>
