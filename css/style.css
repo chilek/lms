@@ -5127,6 +5127,7 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-money:before,
 .lms-ui-icon-cash:before {
   content: "\f0d6";
+  color: green;
 }
 .lms-ui-icon-hourglass,
 .lms-ui-icon-wait {
@@ -5263,6 +5264,103 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-cancel:before {
   content: "\f55a";
+}
+.lms-ui-icon-location {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-location.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-location.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-location:before {
+  content: "\f3c5";
+  color: orange;
+}
+.lms-ui-icon-search {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-search.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-search.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-search:before {
+  content: "\f002";
+}
+.lms-ui-icon-next {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-next.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-next.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-next:before {
+  content: "\f101";
+}
+.lms-ui-icon-previous {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-previous.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-previous.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-previous:before {
+  content: "\f100";
 }
 .lms-ui-icon-clone,
 .lms-ui-icon-copy {
@@ -5487,6 +5585,55 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-print:before {
   content: "\f02f";
+  color: saddlebrown;
+}
+.lms-ui-icon-descending {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-descending.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-descending.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-descending:before {
+  content: "\f0dd";
+}
+.lms-ui-icon-ascending {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-ascending.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-ascending.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-ascending:before {
+  content: "\f0de";
 }
 .lms-ui-icon-confirm,
 .lms-ui-icon-apply {
@@ -5782,6 +5929,7 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-close:before {
   content: "\f02d";
+  color: dimgrey;
 }
 .lms-ui-icon-unread {
   font-weight: normal;
@@ -6166,7 +6314,7 @@ li.lms-ui-suggestion-item a {
   margin-left: .3em;
 }
 .lms-ui-icon-verifier:before {
-  content: "\f2bd";
+  content: "\f51c";
 }
 .lms-ui-icon-deadline {
   font-weight: normal;
@@ -6216,6 +6364,109 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-actions:before {
   content: "\f085";
   color: red;
+}
+.lms-ui-icon-uptime {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-uptime.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-uptime.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-uptime:before {
+  content: "\f017";
+  color: darkslategrey;
+}
+.lms-ui-icon-content {
+  width: 2em;
+  text-align: center;
+}
+.lms-ui-icon-categories {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-categories.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-categories.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-categories:before {
+  content: "\f14a";
+  color: darkblue;
+}
+.lms-ui-icon-restore {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-restore.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-restore.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-restore:before {
+  content: "\f2ea";
+}
+.lms-ui-icon-description {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-description.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-description.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-description:before {
+  content: "\f29e";
+  color: darkslateblue;
 }
 .lms-ui-icon-nodeoff {
   font-weight: normal;
@@ -6517,6 +6768,31 @@ li.lms-ui-suggestion-item a {
   color: mediumslateblue;
   content: "\f0a0";
 }
+.lms-ui-icon-subject {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-subject.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-subject.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-subject:before {
+  color: black;
+  content: "\f64a";
+}
 .lms-ui-icon-user {
   font-weight: normal;
   vertical-align: -0.125em;
@@ -6539,8 +6815,58 @@ li.lms-ui-suggestion-item a {
   margin-left: .3em;
 }
 .lms-ui-icon-user:before {
-  color: darkorange;
+  color: darkred;
   content: "\f007";
+}
+.lms-ui-icon-owner {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-owner.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-owner.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-owner:before {
+  color: darkred;
+  content: "\f2bd";
+}
+.lms-ui-icon-queue {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-queue.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-queue.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-queue:before {
+  color: darkred;
+  content: "\f5eb";
 }
 .lms-ui-icon-netnode {
   font-weight: normal;
@@ -6567,6 +6893,106 @@ li.lms-ui-suggestion-item a {
   color: brown;
   content: "\f5fd";
 }
+.lms-ui-icon-service {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-service.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-service.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-service:before {
+  color: dodgerblue;
+  content: "\f013";
+}
+.lms-ui-icon-type {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-type.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-type.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-type:before {
+  color: purple;
+  content: "\f3ff";
+}
+.lms-ui-icon-event-type {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-event-type.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-event-type.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-event-type:before {
+  color: darkslategrey;
+  content: "\f133";
+}
+.lms-ui-icon-requestor {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-requestor.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-requestor.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-requestor:before {
+  color: red;
+  content: "\f183";
+}
 .lms-ui-icon-helpdesk {
   font-weight: normal;
   vertical-align: -0.125em;
@@ -6590,7 +7016,7 @@ li.lms-ui-suggestion-item a {
 }
 .lms-ui-icon-helpdesk:before {
   color: darkblue;
-  content: "\f47e";
+  content: "\f0ae";
 }
 .lms-ui-icon-calendar {
   font-weight: normal;
@@ -6692,6 +7118,80 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-reload:before {
   color: red;
   content: "\f021";
+}
+.lms-ui-icon-source {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-source.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-source.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-source:before {
+  content: "\f00a";
+}
+.lms-ui-icon-priority {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-priority.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-priority.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-priority:before {
+  color: red;
+  content: "\f2cb";
+}
+.lms-ui-icon-cause {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-cause.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-cause.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-cause:before {
+  color: red;
+  content: "\f069";
 }
 .lms-ui-icon-logout {
   font-weight: normal;
@@ -6817,6 +7317,56 @@ li.lms-ui-suggestion-item a {
   color: green;
   content: "\f0d6";
 }
+.lms-ui-icon-status {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-status.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-status.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-status:before {
+  color: cornflowerblue;
+  content: "\f02d";
+}
+.lms-ui-icon-status-resolved {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-status-resolved.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-status-resolved.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-status-resolved:before {
+  color: dimgrey;
+  content: "\f02d";
+}
 .lms-ui-icon-wireless {
   font-weight: normal;
   vertical-align: -0.125em;
@@ -6866,6 +7416,31 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-hosting:before {
   color: brown;
   content: "\f233";
+}
+.lms-ui-icon-add {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-add.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-add.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-add:before {
+  color: yellowgreen;
+  content: "\f0fe";
 }
 .lms-ui-icon-document {
   font-weight: normal;
@@ -6966,6 +7541,31 @@ li.lms-ui-suggestion-item a {
 .lms-ui-icon-message:before {
   color: darkorange;
   content: "\f0e0";
+}
+.lms-ui-icon-note {
+  font-weight: normal;
+  vertical-align: -0.125em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: unset;
+  vertical-align: unset;
+}
+.lms-ui-icon-note.fa-pull-left {
+  margin-right: .3em;
+}
+.lms-ui-icon-note.fa-pull-right {
+  margin-left: .3em;
+}
+.lms-ui-icon-note:before {
+  color: darkred;
+  content: "\f304";
 }
 .lms-ui-icon-documentation {
   font-weight: normal;
@@ -7443,6 +8043,7 @@ button.lms-ui-button-money > i:before,
 a.lms-ui-button-money > i:before,
 div.lms-ui-button-money > i:before {
   content: "\f0d6";
+  color: green;
 }
 button.lms-ui-button-hourglass > i,
 a.lms-ui-button-hourglass > i,
@@ -7852,6 +8453,40 @@ a.lms-ui-button-append > i:before,
 div.lms-ui-button-append > i:before {
   content: "\f0fe";
 }
+button.lms-ui-button-add > i.fa-pull-left,
+a.lms-ui-button-add > i.fa-pull-left,
+div.lms-ui-button-add > i.fa-pull-left,
+button.lms-ui-button-new > i.fa-pull-left,
+a.lms-ui-button-new > i.fa-pull-left,
+div.lms-ui-button-new > i.fa-pull-left,
+button.lms-ui-button-append > i.fa-pull-left,
+a.lms-ui-button-append > i.fa-pull-left,
+div.lms-ui-button-append > i.fa-pull-left {
+  margin-right: .3em;
+}
+button.lms-ui-button-add > i.fa-pull-right,
+a.lms-ui-button-add > i.fa-pull-right,
+div.lms-ui-button-add > i.fa-pull-right,
+button.lms-ui-button-new > i.fa-pull-right,
+a.lms-ui-button-new > i.fa-pull-right,
+div.lms-ui-button-new > i.fa-pull-right,
+button.lms-ui-button-append > i.fa-pull-right,
+a.lms-ui-button-append > i.fa-pull-right,
+div.lms-ui-button-append > i.fa-pull-right {
+  margin-left: .3em;
+}
+button.lms-ui-button-add > i:before,
+a.lms-ui-button-add > i:before,
+div.lms-ui-button-add > i:before,
+button.lms-ui-button-new > i:before,
+a.lms-ui-button-new > i:before,
+div.lms-ui-button-new > i:before,
+button.lms-ui-button-append > i:before,
+a.lms-ui-button-append > i:before,
+div.lms-ui-button-append > i:before {
+  color: yellowgreen;
+  content: "\f0fe";
+}
 button.lms-ui-button-print > i,
 a.lms-ui-button-print > i,
 div.lms-ui-button-print > i {
@@ -7883,6 +8518,7 @@ button.lms-ui-button-print > i:before,
 a.lms-ui-button-print > i:before,
 div.lms-ui-button-print > i:before {
   content: "\f02f";
+  color: saddlebrown;
 }
 button.lms-ui-button-confirm > i,
 a.lms-ui-button-confirm > i,
@@ -8142,6 +8778,7 @@ button.lms-ui-button-close > i:before,
 a.lms-ui-button-close > i:before,
 div.lms-ui-button-close > i:before {
   content: "\f02d";
+  color: dimgrey;
 }
 button.lms-ui-button {
   border: 1px solid #615847;
