@@ -20,8 +20,8 @@
 		{tab_table}
 			<div class="lms-ui-tab-table-row header">
 				<div class="lms-ui-tab-table-wrapper col-5">
-					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-wrapper col-2">
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-wrapper creation-date-type col-2">
 							<div class="lms-ui-tab-table-column creation-date">
 								<strong>{trans("Date:")}</strong>
 							</div>
@@ -29,17 +29,14 @@
 								<strong>{trans("Type:")}</strong>
 							</div>
 						</div>
-						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column number">
-								{trans("Ticket ID:")}
-							</div>
-							<div class="lms-ui-tab-table-column title">
-								{trans("Title:")}
-							</div>
+						<div class="lms-ui-tab-table-column number">
+							{trans("Ticket ID:")}
 						</div>
 					</div>
-
-					<div class="lms-ui-tab-table-wrapper">
+					<div class="lms-ui-tab-table-wrapper title-description col-2">
+						<div class="lms-ui-tab-table-column title">
+							{trans("Title:")}
+						</div>
 						<div class="lms-ui-tab-table-column description">
 							{trans("Description:")}
 						</div>
@@ -55,8 +52,8 @@
 			{$event=$eventlist[eventlist]}
 				<div class="lms-ui-tab-table-row{if $event.closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$event.id}'">
 					<div class="lms-ui-tab-table-wrapper col-5">
-						<div class="lms-ui-tab-table-wrapper col-4">
-							<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-wrapper col-3">
+							<div class="lms-ui-tab-table-wrapper creation-date-type col-2">
 								<div class="lms-ui-tab-table-column creation-date">
 									{$event.date|date_format:"%Y/%m/%d"}
 									{if $event.endtime == 86400}
@@ -73,21 +70,19 @@
 									{$_EVENTTYPES[$event.type]}
 								</div>
 							</div>
-							<div class="lms-ui-tab-table-wrapper col-2">
-								<div class="lms-ui-tab-table-column number">
-									{if $event.ticketid}
-										<A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
-									{else}
-										---
-									{/if}
-								</div>
-								<div class="lms-ui-tab-table-column title">
-									{$event.title}
-								</div>
+							<div class="lms-ui-tab-table-column number">
+								{if $event.ticketid}
+									<A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
+								{else}
+									---
+								{/if}
 							</div>
 						</div>
 
-						<div class="lms-ui-tab-table-wrapper">
+						<div class="lms-ui-tab-table-wrapper title-description col-2">
+							<div class="lms-ui-tab-table-column title">
+								{$event.title}
+							</div>
 							<div class="lms-ui-tab-table-column description">
 								{$event.description}
 							</div>

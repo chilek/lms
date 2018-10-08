@@ -7,7 +7,10 @@
 			<strong>{t a=$customervoipaccounts|@count|default:"0"}Voip Accounts ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
-			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}{/tab_header_cell}
+			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}
+				<A href="?m=voipaccountadd&ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>
+			{/if}
+		{/tab_header_cell}
 	{/tab_header}
 	{tab_contents id="voipaccountspanel"}
 		{tab_table}

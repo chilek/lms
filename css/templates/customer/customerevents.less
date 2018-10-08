@@ -33,28 +33,27 @@
 		width: 8em;
 	}
 	.title {
-		width: 40em;
+		width: 30em;
 	}
 	.description {
-		width: 40em;
+		width: 30em;
 	}
 	.buttons {
 		width: 10em;
 	}
 
 	@media all and (max-width: 1700px) {
-		.col-4 + .col-2 {
+		.creation-date-type {
 			flex-direction: column !important;
 			width: 20em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
 		}
-
-	(.col-2 + .col-2) div {
-		flex-grow: 0 !important;
-		width: 100% !important;
-	}
 	}
 	@media all and (max-width: 1500px) {
-		.col-2 {
+		.title-description {
 			flex-direction: column !important;
 			width: 20em !important;
 			div {
@@ -64,9 +63,9 @@
 		}
 	}
 	@media all and (max-width: 1024px) {
-		.col-4 {
+		.col-3 {
 			flex-direction: column !important;
-			width: 20em !important;
+			width: 17em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
@@ -76,7 +75,7 @@
 	@media all and (max-width: 768px) {
 		.col-5 {
 			flex-direction: column !important;
-			width: 40em !important;
+			width: 30em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;

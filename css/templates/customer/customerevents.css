@@ -31,40 +31,40 @@
   width: 8em;
 }
 #eventspanel .title {
-  width: 40em;
+  width: 30em;
 }
 #eventspanel .description {
-  width: 40em;
+  width: 30em;
 }
 #eventspanel .buttons {
   width: 10em;
 }
 @media all and (max-width: 1700px) {
-  #eventspanel .col-4 + .col-2 {
+  #eventspanel .creation-date-type {
     flex-direction: column !important;
     width: 20em !important;
   }
-  #eventspanel (.col-2 + .col-2) div {
+  #eventspanel .creation-date-type div {
     flex-grow: 0 !important;
     width: 100% !important;
   }
 }
 @media all and (max-width: 1500px) {
-  #eventspanel .col-2 {
+  #eventspanel .title-description {
     flex-direction: column !important;
     width: 20em !important;
   }
-  #eventspanel .col-2 div {
+  #eventspanel .title-description div {
     flex-grow: 0 !important;
     width: 100% !important;
   }
 }
 @media all and (max-width: 1024px) {
-  #eventspanel .col-4 {
+  #eventspanel .col-3 {
     flex-direction: column !important;
-    width: 20em !important;
+    width: 17em !important;
   }
-  #eventspanel .col-4 div {
+  #eventspanel .col-3 div {
     flex-grow: 0 !important;
     width: 100% !important;
   }
@@ -72,7 +72,7 @@
 @media all and (max-width: 768px) {
   #eventspanel .col-5 {
     flex-direction: column !important;
-    width: 40em !important;
+    width: 30em !important;
   }
   #eventspanel .col-5 div {
     flex-grow: 0 !important;
