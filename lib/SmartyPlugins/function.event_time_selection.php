@@ -45,7 +45,7 @@ function smarty_function_event_time_selection($params, $template) {
 						Utils::tip(array(
 							'class' => 'calendar-time',
 							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-							'trigger' => 'date',
+							'trigger' => 'begin',
 						), $template)
 						. '>
 					' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
@@ -53,7 +53,7 @@ function smarty_function_event_time_selection($params, $template) {
 						Utils::tip(array(
 							'class' => 'calendar-time',
 							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-							'trigger' => 'enddate',
+							'trigger' => 'end',
 						), $template)
 						. '>
 				</div>'

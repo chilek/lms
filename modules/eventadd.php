@@ -48,14 +48,12 @@ if(isset($_POST['event']))
 		$event['usergroup'] = 0;
 	$SESSION->save('eventgid', $event['usergroup']);
 
-	if (!($event['title'] || $event['description'] || $event['date']))
-		$SESSION->redirect('?m=eventlist');
-
 	if ($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
 	elseif(strlen($event['title']) > 255)
 		$error['title'] = trans('Event title is too long!');
 
+	$date = 0;
 	if ($event['begin'] == '')
 		$error['begin'] = trans('You have to specify event day!');
 	else {
@@ -74,11 +72,11 @@ if(isset($_POST['event']))
 		}
 	}
 
-	$end = 0;
+	$enddate = 0;
 	if ($event['end'] != '') {
 		if (isset($event['wholedays'])) {
 			$enddate = date_to_timestamp($event['end']);
-			if (empty($date))
+			if (empty($enddate))
 				$error['end'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 			else
 				$endtime = 86400;
@@ -89,7 +87,7 @@ if(isset($_POST['event']))
 			else
 				$endtime = datetime_to_timestamp($event['end']) - $enddate;
 		}
-	} else {
+	} elseif ($date) {
 		$enddate = $date;
 		if (isset($event['wholedays']))
 			$endtime = 86400;
