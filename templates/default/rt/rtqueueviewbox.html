@@ -47,12 +47,13 @@
 	</TD>
 	<TD class="nobr valign-middle">
 		{if $ticket.netnodeid}
-			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><i class="lms-ui-icon-netnode"></i>{$ticket.netnode_name}</a>
+			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><i class="lms-ui-icon-content lms-ui-icon-netnode"></i>{$ticket.netnode_name}</a>
 		{/if}
+		{if $ticket.netdevid && $ticket.netnodeid }<br>{/if}
 		{if $ticket.netdevid}
-			<a href="?m=netdevinfo&id={$ticket.netdevid}"><i class="lms-ui-icon-netdevice"></i>{$ticket.netdev_name}</a>
+			<a href="?m=netdevinfo&id={$ticket.netdevid}"><i class="lms-ui-icon-content lms-ui-icon-netdevice"></i>{$ticket.netdev_name}</a>
 		{/if}
-		{if $ticket.netdevid || $ticket_netnode_location}<br>{/if}
+		{if $ticket.netdevid || $ticket.netnodeid }<br>{/if}
 		{if $ticket.address_id}
 			{$ticket.vacity} {$ticket.street} {$ticket.house}
 			{if $ticket.flat}/{$ticket.flat}{/if}
