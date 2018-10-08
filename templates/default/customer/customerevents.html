@@ -31,7 +31,7 @@
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column number">
-								{trans("ID:")}
+								{trans("Ticket ID:")}
 							</div>
 							<div class="lms-ui-tab-table-column title">
 								{trans("Title:")}
@@ -75,7 +75,11 @@
 							</div>
 							<div class="lms-ui-tab-table-wrapper col-2">
 								<div class="lms-ui-tab-table-column number">
-									<A href="?m=rtticketview&id={$event.ticketid}">{$event.ticketid|default:"---"}</A>
+									{if $event.ticketid}
+										<A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
+									{else}
+										---
+									{/if}
 								</div>
 								<div class="lms-ui-tab-table-column title">
 									{$event.title}
