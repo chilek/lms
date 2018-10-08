@@ -24,7 +24,7 @@
 
 #voipaccountspanel {
 	.login {
-		width: 60em;
+		width: 30em;
 	}
 	.id {
 		width: 8em;
@@ -41,27 +41,27 @@
 	}
 
 	@media all and (max-width: 1700px) {
-		.col-4 + .col-2 {
+		.col-4 .col-2:first-child {
 			flex-direction: column !important;
-			width: 10em !important;
+			width: 23em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
 		}
 
-	(.col-2 + .col-2) div {
-		flex-grow: 0 !important;
-		width: 100% !important;
 	}
-	}
-	@media all and (max-width: 1500px) {
-		.col-2 {
+	@media all and (max-width: 1300px) {
+		.col-4 .col-2:nth-child(2) {
 			flex-direction: column !important;
-			width: 20em !important;
+			width: 16em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
 			}
 		}
 	}
-	@media all and (max-width: 1024px) {
+	@media all and (max-width: 768px) {
 		.col-4 {
 			flex-direction: column !important;
 			width: 20em !important;

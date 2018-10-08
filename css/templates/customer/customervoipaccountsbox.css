@@ -22,7 +22,7 @@
  *  $Id$
  */
 #voipaccountspanel .login {
-  width: 60em;
+  width: 30em;
 }
 #voipaccountspanel .id {
   width: 8em;
@@ -38,26 +38,26 @@
   padding-right: 0.2em;
 }
 @media all and (max-width: 1700px) {
-  #voipaccountspanel .col-4 + .col-2 {
+  #voipaccountspanel .col-4 .col-2:first-child {
     flex-direction: column !important;
-    width: 10em !important;
+    width: 23em !important;
   }
-  #voipaccountspanel (.col-2 + .col-2) div {
+  #voipaccountspanel .col-4 .col-2:first-child div {
     flex-grow: 0 !important;
     width: 100% !important;
   }
 }
-@media all and (max-width: 1500px) {
-  #voipaccountspanel .col-2 {
+@media all and (max-width: 1300px) {
+  #voipaccountspanel .col-4 .col-2:nth-child(2) {
     flex-direction: column !important;
-    width: 20em !important;
+    width: 16em !important;
   }
-  #voipaccountspanel .col-2 div {
+  #voipaccountspanel .col-4 .col-2:nth-child(2) div {
     flex-grow: 0 !important;
     width: 100% !important;
   }
 }
-@media all and (max-width: 1024px) {
+@media all and (max-width: 768px) {
   #voipaccountspanel .col-4 {
     flex-direction: column !important;
     width: 20em !important;

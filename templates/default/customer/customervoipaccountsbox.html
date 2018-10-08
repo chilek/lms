@@ -44,21 +44,21 @@
 			</div>
 			{foreach $customervoipaccounts as $voipaccount}
 				{block name="customervoipaccountsbox-list-row"}
-				<div class="lms-ui-tab-table-row">
+				<div class="lms-ui-tab-table-row" data-target-url="?m=voipaccountinfo&id={$voipaccount.id}">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column login" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+							<div class="lms-ui-tab-table-column login">
 								{$voipaccount.login}
 							</div>
-							<div class="lms-ui-tab-table-column id" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+							<div class="lms-ui-tab-table-column id">
 								({$voipaccount.id|string_format:"%04d"})
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper col-2">
-							<div class="lms-ui-tab-table-column password"  onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+							<div class="lms-ui-tab-table-column password">
 								{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
 							</div>
-							<div class="lms-ui-tab-table-column number" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+							<div class="lms-ui-tab-table-column number">
 								{foreach $voipaccount.phones as $phone}
 									{$phone.phone}{if !$phone@last}<br>{/if}
 								{/foreach}

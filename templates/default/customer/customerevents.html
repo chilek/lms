@@ -50,7 +50,7 @@
 
 			{section name=eventlist loop=$eventlist max=$limit}
 			{$event=$eventlist[eventlist]}
-				<div class="lms-ui-tab-table-row{if $event.closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$event.id}'">
+				<div class="lms-ui-tab-table-row{if $event.closed} blend{/if}" data-target-url="?m=eventinfo&id={$event.id}">
 					<div class="lms-ui-tab-table-wrapper col-5">
 						<div class="lms-ui-tab-table-wrapper col-3">
 							<div class="lms-ui-tab-table-wrapper creation-date-type col-2">
