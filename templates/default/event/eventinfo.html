@@ -32,7 +32,7 @@
 		</TD>
 		<TD>
 			{$event.date|date_format:"%x (%A)"}
-			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+			{($event.date + $event.begintime)|date_format:"%H:%M"}
 		</TD>
 	</TR>
 	{if $event.begintime != $event.endtime || $event.enddate > $event.date}
@@ -46,10 +46,11 @@
 		<TD>
 			{if $event.enddate}
 			{$event.enddate|date_format:"%x (%A)"}
+			{($event.enddate + $event.endtime)|date_format:"%H:%M"}
 			{else}
 			{$event.date|date_format:"%x (%A)"}
+			{($event.date + $event.endtime)|date_format:"%H:%M"}
 			{/if}
-			{math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
 		</TD>
 	</TR>
 	{/if}
