@@ -192,18 +192,22 @@ function eventTimeSlider(options) {
 
 	$(_slider).find('.ui-slider-handle:last-child').focus();
 
-	function RoundTime(item) {
+	function RoundUnixTimeStamp(uts) {
+		return Math.round(uts / 1000 / lmsSettings.eventTimeStep / 60) *
+			lmsSettings.eventTimeStep * 60 * 1000;
+	}
+
+	function RoundDateTime(item) {
 		if (item.getValue()) {
 			item.setOptions({
-				value: new Date(Math.round(item.getValue().getTime() / 1000 / lmsSettings.eventTimeStep / 60) *
-					lmsSettings.eventTimeStep * 60 * 1000)
+				value: new Date(RoundUnixTimeStamp(item.getValue().getTime()))
 			});
 		}
 	}
 
 	start_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
-			RoundTime(this);
+			RoundDateTime(this);
 			var options = [];
 			if (whole_days) {
 				options = [ 0, 1440 ];
@@ -223,7 +227,7 @@ function eventTimeSlider(options) {
 	});
 	end_input.datetimepicker('setOptions', {
 		onChangeDateTime: function() {
-			RoundTime(this);
+			RoundDateTime(this);
 			var options = [];
 			if (whole_days) {
 				options = [ 0, 1440 ];
@@ -266,6 +270,7 @@ function eventTimeSlider(options) {
 	$('.lms-ui-event-whole-days-checkbox').change(function () {
 		var startdt = start_input.datetimepicker('getValue');
 		var enddt = end_input.datetimepicker('getValue');
+		var rounded_startdt, rounded_enddt;
 
 		if ($(this).prop('checked')) {
 			$(_slider).dragslider('disable');
@@ -292,22 +297,24 @@ function eventTimeSlider(options) {
 				format: 'Y/m/d H:i'
 			});
 			if (startdt !== null) {
-				start_input.val(dateTimeToString(startdt));
+				rounded_startdt = new Date(RoundUnixTimeStamp(startdt.getTime()));
+				start_input.val(dateTimeToString(rounded_startdt));
 			}
 			end_input.datetimepicker('setOptions', {
 				timepicker: true,
 				format: 'Y/m/d H:i'
 			});
 			if (enddt !== null) {
-				end_input.val(dateTimeToString(enddt));
+				rounded_enddt = new Date(RoundUnixTimeStamp(enddt.getTime()));
+				end_input.val(dateTimeToString(rounded_enddt));
 			}
 			whole_days = false;
 			var values = [ 0, 1440 ];
 			if (startdt !== null) {
-				values[0] = startdt.getHours() * 60 + startdt.getMinutes();
+				values[0] = rounded_startdt.getHours() * 60 + rounded_startdt.getMinutes();
 			}
 			if (enddt !== null) {
-				values[1] = enddt.getHours() * 60 + enddt.getMinutes();
+				values[1] = rounded_enddt.getHours() * 60 + rounded_enddt.getMinutes();
 			}
 			$(_slider).dragslider('values', values);
 		}
