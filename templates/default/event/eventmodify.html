@@ -6,7 +6,7 @@
 	{if empty($event.ticketid)}
 		<H1>{$layout.pagetitle}</H1>
 	{else}
-		<H1>{trans("Add new event to request:")} #{$event.ticketid}</H1>
+		<H1>{t a=$event.ticketid}Add new event to request #$a{/t}</H1>
 	{/if}
 	<style>
 		#event.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
