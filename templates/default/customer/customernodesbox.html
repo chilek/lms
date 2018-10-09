@@ -142,25 +142,18 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					<A href="?m=nodeset&id={$node.id}">
-						<i class="lms-ui-icon-{if $node.access}connected{else}disconnected{/if}"
-								title="{if $node.access}{trans("Disconnect")}{else}{trans("Connect")}{/if}"></i>
-					</A>
-					<A href="?m=nodewarn&id={$node.id}">
-						<i class="lms-ui-icon-{if $node.warning}warnon{else}warnoff{/if}" {if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></i>
-					</A>
-					<A class="lms-ui-button-delete" href="?m=nodedel&id={$node.id}" onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
-						<i title="{trans("Delete")}"></i>
-					</A>
-					<a class="lms-ui-button-clone" href="?m=nodeadd&ownerid={$customerinfo.id}&premac[]={$node.mac|replace:",":"&premac[]="}&prename={t a=$node.name}$a_clone{/t}{if $node.address_id}&pre_address_id={$node.address_id}{/if}">
-						<i title="{trans("Clone")}"></i>
-					</a>
-					<A class="lms-ui-button-edit" href="?m=nodeedit&id={$node.id}">
-						<i title="{trans("Edit")}"></i>
-					</A>
-					<A class="lms-ui-button-view" href="?m=nodeinfo&id={$node.id}">
-						<i title="{trans("Info")}"></i>
-					</A>&nbsp;
+					{button type="link" href="?m=nodeset&id={$node.id}"
+						icon="lms-ui-icon-{if $node.access}connected{else}disconnected{/if}"
+						tip="{if $node.access}Disconnect{else}Connect{/if}"}
+					{button type="link" href="?m=nodewarn&id={$node.id}"
+						icon="lms-ui-icon-{if $node.warning}warnon{else}warnoff{/if}"
+						tip="{if $node.warning}Disable notice{else}Enable notice{/if}"}
+					{button type="link" href="?m=nodedel&id={$node.id}" icon="delete" tip="Delete"
+						onclick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')"}
+					{button type="link" href="?m=nodeadd&ownerid={$customerinfo.id}&premac[]={$node.mac|replace:",":"&premac[]="}&prename={t a=$node.name}$a_clone{/t}{if $node.address_id}&pre_address_id={$node.address_id}{/if}"
+						icon="clone" tip="Clone"}
+					{button type="link" href="?m=nodeedit&id={$node.id}" icon="edit" tip="Edit"}
+					{button type="link" href="?m=nodeinfo&id={$node.id}" icon="view" tip="Info"}
 					<INPUT type="checkbox" class="lms-ui-multi-check" name="marks[{$node.id}]" value="{$node.id}" form="custnodeslist-form">
 				</div>
 			</div>
@@ -181,27 +174,15 @@
 		{tab_button_panel}
 			{tab_buttons}
 				<i class="lms-ui-icon-plug"></i>
-				<button type="button" class="lms-ui-button" onclick="javascript:setstatus(1);">
-					{trans("Connect")}
-				</button>
-				<button type="button" class="lms-ui-button" onclick="javascript:setstatus(0);">
-					{trans("Disconnect")}
-				</button>
+				{button onclick="javascript:setstatus(1);" label="Connect"}
+				{button onclick="javascript:setstatus(0);" label="Disconnect"}
 				<i class="lms-ui-icon-warning"></i>
-				<button type="button" class="lms-ui-button" onclick="javascript:setwarning(1);">
-					{trans("Enable")}
-				</button>
-				<button type="button" class="lms-ui-button" onclick="javascript:setwarning(0);">
-					{trans("Disable")}
-				</button>
+				{button onclick="javascript:setwarning(1);" label="Enable"}
+				{button onclick="javascript:setwarning(0);" label="Disable"}
 				{if $allnodegroups}
 				<i class="lms-ui-icon-cg"></i>
-				<button type="button" class="lms-ui-button" onclick="javascript:setgroup('setgroup');">
-					{trans("Add")}
-				</button>
-				<button type="button" class="lms-ui-button" onclick="javascript:setgroup('unsetgroup');">
-					{trans("Remove")}
-				</button>
+				{button onclick="javascript:setgroup('setgroup');" label="Add"}
+				{button onclick="javascript:setgroup('unsetgroup');" label="Remove"}
 				<SELECT SIZE="1" id="groupselect">
 					{foreach $allnodegroups as $nodegroup}
 						<OPTION value="{$nodegroup.id}"{if $listdata.nodegroup == $nodegroup.id} selected{/if}>

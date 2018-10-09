@@ -64,10 +64,9 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					<A class="lms-ui-button-delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')"
-							href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}">
-						<i title="{trans("Remove customer from group")}"></i>
-					</A>
+					{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')"
+						href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}"
+						tip="Remove customer from group"}
 					<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]"
 							value="{$customergroup.id}" class="lms-ui-multi-check" form="customergroupassignment">
 				</div>

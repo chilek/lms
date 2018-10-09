@@ -105,94 +105,94 @@
 						{/foreach}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-							<a href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1" class="lms-ui-button-transform" rel="external">
-								<i title="{trans("Convert to invoice")}"></i>
-							</a>
+								{button type="link" icon="transform" external=true
+									href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1"
+									tip="Convert to invoice"}
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
-							<A class="invoicesend lms-ui-button-mail" href="?m=invoicesend&id={$item.docid}">
-								<i title="{trans("Send invoice")}"></i>
-							</A>
+								{button type="link" icon="mail" class="invoicesend" href="?m=invoicesend&id={$item.docid}"
+									tip="Send invoice"}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								{if !$item.referenced}
-								<A HREF="?m=invoicenote&id={$item.docid}&action=init" class="lms-ui-button-correction">
-									<i title="{trans("Revise")}"></i>
-								</A>
+									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+										tip="Revise"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-button-view lms-ui-tooltip-invoiceinfo"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("View")}"></i>
-								</A>
+									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
+										href="?m=invoice&id={$item.docid}&dontpublish=1"
+										resourceid="{$item.docid}" external=true tip="View"}
 								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("Invoice")}"></i>
-								</A>
+								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
+									href="?m=invoice&id={$item.docid}"
+									resourceid="{$item.docid}" external=true tip="Invoice"}
 								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-								<A href="?m=invoiceedit&id={$item.docid}&action=edit" rel="external"
-										{if $item.published}OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
-										class="lms-ui-button-edit lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
-									<i title="{trans("Invoice")}"></i>
-								</A>
+									{if $item.published}
+										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
+									{else}
+										{$onclick=""}
+									{/if}
+									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										href="?m=invoiceedit&id={$item.docid}&action=edit" external=true
+										onclick=$onclick resourceid="{$item.docid}" tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-button-view lms-ui-tooltip-invoiceinfo"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("View")}"></i>
-								</A>
+									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
+										href="?m=invoice&id={$item.docid}&dontpublish=1"
+										resourceid="{$item.docid}" external=true tip="View"}
 								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-invoiceinfo"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("pro forma invoice")}"></i>
-								</A>
+								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
+									href="?m=invoice&id={$item.docid}"
+									resourceid="{$item.docid}" external=true tip="pro forma invoice"}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1" rel="external"
-										{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
-										class="lms-ui-button-edit lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
-									<i title="{trans("pro forma invoice")}"></i>
-								</A>
+									{if $item.published}
+										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
+									{else}
+										{$onclick=""}
+									{/if}
+									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
+										onclick=$onclick
+										resourceid="{$item.docid}" external=true tip="pro forma invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoice&id={$item.docid}&dontpublish=1"
-										class="lms-ui-button-view lms-ui-tooltip-docnumber"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("View")}"></i>
-								</A>
+									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+										href="?m=invoice&id={$item.docid}&dontpublish=1"
+										resourceid="{$item.docid}" external=true tip="View"}
 								{/if}
-								<A href="?m=invoice&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-docnumber"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("Credit note")}"></i>
-								</A>
+								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+									href="?m=invoice&id={$item.docid}"
+									resourceid="{$item.docid}" external=true tip="Credit note"}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=invoicenoteedit&id={$item.docid}&action=edit" rel="external"
-										{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}
-										class="lms-ui-button-edit lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}">
-									<i title="{trans("Invoice")}"></i>
-								</A>
+									{if $item.published}
+										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
+									{else}
+										{$onclick=""}
+									{/if}
+									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										href="?m=invoicenoteedit&id={$item.docid}&action=edit"
+										onclick=$onclick
+										resourceid="{$item.docid}" external=true tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-docnumber"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("Cash receipt")}"></i>
-								<a href="?m=receiptedit&id={$item.docid}" class="lms-ui-button-edit lms-ui-tooltip-docnumber"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("Cash receipt")}"></i>
-								</a>
+								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+									href="?m=receipt&id={$item.docid}"
+									resourceid="{$item.docid}" external=true tip="Cash receipt"}
+								{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+									href="?m=receiptedit&id={$item.docid}"
+									resourceid="{$item.docid}" externa=true tip="Cash receipt"}
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-								<A href="?m=note&id={$item.docid}&dontpublish=1" class="lms-ui-button-view lms-ui-tooltip-docnumber"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("View")}"></i>
-								</A>
+									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+										href="?m=note&id={$item.docid}&dontpublish=1"
+										resourceid="{$item.docid}" external=true tip="View"}
 								{/if}
-								<A href="?m=note&id={$item.docid}" class="lms-ui-button-print lms-ui-tooltip-docnumber"
-										data-resourceid="{$item.docid}" rel="external">
-									<i title="{trans("Debit note")}"></i>
-								</A>
+								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+									href="?m=note&id={$item.docid}"
+									resourceid="{$item.docid}" external=true tip="Debit note"}
 							{/if}
 						{/if}
 						<INPUT type="checkbox" form="addbalance-form" NAME="marks{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
@@ -214,23 +214,13 @@
 
 			{tab_buttons}
 				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-				<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delpos();">
-					<i></i> {trans("Delete")}
-				</button>
+				{button icon="delete" onclick="javascript:delpos();" label="Delete"}
 				{/if}
-				<button type="button" class="lms-ui-button lms-ui-button-mail">
-					<i></i> {trans("Send invoices")}
-				</button>
+				{button icon="mail" label="Send invoices"}
 				{trans("Print")}:
-				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_doc('invoice')">
-					<i></i> {trans("invoices")}
-				</button>
-				<button type="button" class="lms-ui-button lms-ui-button-cash" onclick="javascript:printr();">
-					<i></i> {trans("cash receipts")}
-				</button>
-				<button type="button" class="lms-ui-button lms-ui-button-dnote" onclick="javascript:print_doc('note');">
-					<i></i> {trans("debit notes")}
-				</button>
+				{button icon="print" label="invoices" onclick="javascript:print_doc('invoice')"}
+				{button icon="cash" label="cash receipt" onclick="javascript:printr();"}
+				{button icon="dnote" label="debit notes" onclick="javascript:print_doc('note');"}
 				<label>
 					<INPUT type="checkbox" form="addbalance-form" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}>
 					{trans("original")}
@@ -299,21 +289,15 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{if $customerinfo.balance < 0}
-				<button type="button" class="lms-ui-button lms-ui-button-edit" id="clear-account">
-					<i></i> {trans("Clear Account")}
-				</button>
+					{button icon="edit" id="clear-account" label="Clear Account"}
 				{/if}
 			{/tab_buttons}
 
 			{tab_buttons}
 				{if $instantpayment}
-				<button type="button" class="lms-ui-button lms-ui-button-cash" onclick="javascript:AddBalance(true);">
-					<i></i> {trans("Instant payment")}
-				</button>
+					{button icon="cash" onclick="javascript:AddBalance(true);" label="Instant payment"}
 				{/if}
-				<button type="button" class="lms-ui-button lms-ui-button-save" onclick="javascript:AddBalance();">
-					<i></i> {trans("Submit")}
-				</button>
+				{button icon="save" onclick="javascript:AddBalance();" label="Submit"}
 			{/tab_buttons}
 
 		{/tab_button_panel}

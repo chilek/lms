@@ -84,9 +84,8 @@
 						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
-						<A class="lms-ui-button-delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&id={$item.id}">
-							<i title="{trans("Delete")}"></i>
-						</A>
+						{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')"
+							href="?m=messagedel&id={$item.id}" tip="Delete"}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}">
 					</TD>
 				</TR>
@@ -103,17 +102,13 @@
 
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button lms-ui-button-delete" id="delete-messages">
-					<i></i> {trans("Delete")}
-				</button>
+				{button icon="delete" id="delete-messages" label="Delete"}
 			{/tab_buttons}
 			{tab_buttons}
-						<label>
-							{trans("Check All")}
-							<input type="checkbox" class="lms-ui-multi-check-all">
-						</label>
-					</TD>
-				</TR>
+				<label>
+					{trans("Check All")}
+					<input type="checkbox" class="lms-ui-multi-check-all">
+				</label>
 			{/tab_buttons}
 		{/tab_button_panel}
 

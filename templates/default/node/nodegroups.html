@@ -56,10 +56,10 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					<A class="lms-ui-button-delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')"
-							href="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}">
-						<i title="{trans("Remove assignment")}"></i>
-					</A>
+					{button type="link" icon="delete"
+						onclick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')"
+						href="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"
+						tip="Remove assignment"}
 					<input type="checkbox" form="nodegroupassignment" name="markednodegroupid[{$nodegroup.id}]" value="{$nodegroup.id}" class="lms-ui-multi-check">
 				</div>
 			</div>
@@ -75,9 +75,7 @@
 		{tab_button_panel}
 			{tab_buttons}
 				{if !empty($othernodegroups)}
-				<button type="button" id="add-nodegroups" class="lms-ui-button lms-ui-button-add" {tip text="Add node to groups"}>
-					<i></i> {trans("Add")}
-				</button>
+				{button id="add-nodegroups" icon="add" tip="Add node to groups" label="Add"}
 				<SELECT SIZE="1" NAME="nodegroupid[]" form="nodegroupassignment" class="lms-ui-multiselect"
 						{tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}"
 						data-shorten-to-default-value="false">
@@ -88,9 +86,7 @@
 				{/if}
 			{/tab_buttons}
 			{tab_buttons}
-				<button type="button" id="delete-nodegroups" class="lms-ui-button lms-ui-button-delete">
-					<i></i> {trans("Delete")}
-				</button>
+				{button id="delete-nodegroups" icon="delete" label="Delete"}
 				<label>
 					{trans("Check All")}
 					<input type="checkbox" class="lms-ui-multi-check-all">

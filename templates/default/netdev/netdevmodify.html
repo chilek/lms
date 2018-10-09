@@ -187,12 +187,8 @@
 
 		{box_buttons}
 			{block name="netdevmodify-buttons"}
-			<button class="lms-ui-button lms-ui-button-save" id="submit_button" accesskey="s">
-				{trans("Submit")}
-			</button>
-			<button class="lms-ui-button lms-ui-button-cancel" type="button" onclick="location.href = '?m=netdevlist';">
-				{trans("Cancel")}
-			</button>
+			{button type="submit" id="submit_button" icon="save" accesskey="s" label="Submit"}
+			{button icon="cancel" onclick="location.href = '?m=netdevlist';" label="Cancel"}
 			{/block}
 		{/box_buttons}
 	{/box_container}

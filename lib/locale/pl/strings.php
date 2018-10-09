@@ -4166,4 +4166,7 @@ $_LANG['- replace -'] = '- zastąp -';
 $_LANG['- append -'] = '- dołącz -';
 $_LANG['- remove -'] = '- usuń -';
 
+$_LANG['Enable accounting of selected liability'] = 'Włącz naliczanie wybranych zobowiązań';
+$_LANG['Disable accounting of selected liability'] = 'Wyłącz naliczanie wybranych zobowiązań';
+
 ?>

@@ -28,14 +28,9 @@
 			<label> <input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<button type="button" class="lms-ui-button lms-ui-button-icon group-action-run">
-				<i class="fas fa-reply-all"></i>
-				{trans("Run group action")}
-			</button>
-			<button type="button" class="lms-ui-button lms-ui-button-add"
-					onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
-				<i></i> {trans("New Ticket")}
-			</button>
+			{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+			{button icon="add" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}';"
+				label="New Ticket"}
 		</TD>
 	</TR>
     </THEAD>
@@ -54,14 +49,9 @@
 				<input type="checkbox" class="lms-ui-multi-check-all">
 				{trans("Check all")}
 			</label>
-			<button type="button" class="lms-ui-button group-action-run">
-				<i class="fas fa-reply-all"></i>
-				{trans("Run group action")}
-			</button>
-			<button type="button" class="lms-ui-button lms-ui-button-add"
-					onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}'">
-				<i></i> {trans("New Ticket")}
-			</button>
+			{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+			{button icon="add" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}';"
+				label="New Ticket"}
 		</TD>
 	</TR>
 	</TFOOT>

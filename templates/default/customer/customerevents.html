@@ -90,21 +90,16 @@
 					</div>
 					<div class="lms-ui-tab-table-column buttons">
 						{if $event.closed}
-							<a class="lms-ui-button-close" href="?m=eventedit&amp;id={$event.id}&amp;action=open">
-								<i title="{trans("Open")}"></i>
-							</a>
+							{button type="link" icon="close" href="?m=eventedit&id={$event.id}&action=open"
+								tip="Open"}
 						{else}
-							<a class="lms-ui-button-open" href="?m=eventedit&amp;id={$event.id}&amp;action=close">
-								<i title="{trans("Close")}"></i>
-							</a>
+							{button type="link" icon="open" href="?m=eventedit&id={$event.id}&action=close"
+								tip="Close"}
 						{/if}
-						<a class="lms-ui-button-delete" href="?m=eventdel&amp;id={$event.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
-							<i title="{trans("Delete")}"></i>
-						</a>
-						<a class="lms-ui-button-edit" href="?m=eventedit&amp;id={$event.id}">
-							<i title="{trans("Edit")}"></i>
-						</a>
-
+						{button type="link" icon="delete" href="?m=eventdel&id={$event.id}"
+							onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"
+							tip="Delete"}
+						{button type="link" icon="edit" href="?m=eventedit&id={$event.id}" tip="Edit"}
 					</div>
 				</div>
 			{sectionelse}

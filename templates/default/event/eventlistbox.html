@@ -28,8 +28,10 @@
             </TD>
             <TD colspan="2" class="text-right nobr">
                 <div class="no-print">
-                    <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&day={$day|date_format:"%d"}&amp;month={$day|date_format:"%m"}&amp;year={$day|date_format:"%Y"}"' target="_blank"><i></i>{trans("Add Event")}</button>
-                    <button type="button" class="lms-ui-button lms-ui-button-print" onclick='window.location.href="?m=eventprint&day={$day}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}"' target="_blank"><i></i>{trans("Print")}</button>
+					{button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"%d"}&month={$day|date_format:"%m"}&year={$day|date_format:"%Y"}';"
+						external=true label="Add Event"}
+					{button icon="print" onclick="window.location.href='?m=eventprint&day={$day}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}';"
+						external=true label="Print"}
                 </div>
             </TD>
         </TR>

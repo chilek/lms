@@ -36,21 +36,18 @@
 
 	<div class="lms-ui-tab-table-column buttons">
 		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
-		<a HREF="javascript:toggleEditManagementUrl({$urlid});" class="lms-ui-button-edit" id="edit_button_{$urlid}"
-				{if $edit} style="display: none;"{/if}>
-			<i title="{trans("Edit management URL")}"></i>
-		</a>
-		<a HREF="javascript:updateManagementUrl({$urlid});" class="lms-ui-button-save" id="save_button_{$urlid}"
-				{if !$edit} style="display: none;"{/if}>
-			<i title="{trans("Save")}"></i>
-		</a>
-		<a HREF="javascript:toggleEditManagementUrl({$urlid});" class="lms-ui-button-cancel" id="cancel_button_{$urlid}"
-				{if !$edit} style="display: none;"{/if}>
-			<i title="{trans("Cancel")}"></i>
-		</a>
-		<a HREF="javascript:delManagementUrl({$urlid});" class="lms-ui-button-delete" id="delete_button_{$urlid}">
-			<i title="{trans("Remove management URL")}"></i>
-		</a>
+		{button type="link" icon="edit" id="edit_button_{$urlid}"
+			onclick="javascript:toggleEditManagementUrl({$urlid});"
+			tip="Edit management URL" visible=!$edit}
+		{button type="link" icon="save" id="save_button_{$urlid}"
+			onclick="javascript:updateManagementUrl({$urlid});"
+			tip="Save" visible=$edit}
+		{button type="link" icon="cancel" id="cancel_button_{$urlid}"
+			onclick="javascript:toggleEditManagementUrl({$urlid});"
+			tip="Cancel" visible=$edit}
+		{button type="link" icon="delete" id="delete_button_{$urlid}"
+			onclick="javascript:delManagementUrl({$urlid});"
+			tip="Remove management URL"}
 		{/if}
 	</div>
 </div>

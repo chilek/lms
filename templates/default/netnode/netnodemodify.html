@@ -174,12 +174,9 @@
 	{/box_contents}
 
 	{box_buttons}
-		<button class="lms-ui-button lms-ui-button-save" onclick="javascript:document.netnode.submit();" ACCESSKEY="s">
-			<i></i> {trans("Submit")}
-		</button>
-		<button class="lms-ui-button lms-ui-button-cancel" onclick="location.href='?m=netnodeinfo&id={$netnode.id}'" type="button">
-			<i></i> {trans("Cancel")}
-		</button>
+		{button type="submit" icon="save" onclick="javascript:document.netnode.submit();"
+			accesskey="s" label="Submit"}
+		{button icon="cancel" onclick="location.href='?m=netnodeinfo&id={$netnode.id}';" label="Cancel"}
 	{/box_buttons}
 {/box_container}
 

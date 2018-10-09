@@ -196,18 +196,12 @@
 
 				<div class="lms-ui-tab-table-column buttons">
 					{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
-								class="lms-ui-button-wait" {tip text="Enable/disable accounting of selected liability"}>
-							<i title="{if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if}"></i>
-						</A>
+						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
+							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
 					{/if}
-					<A class="lms-ui-button-delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
-							href="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}>
-						<i title="{trans("Delete")}"></i>
-					</A>
-					<a class="lms-ui-button-edit" href="?m=customerassignmentedit&id={$a.id}">
-						<i title="{trans("Edit")}"></i>
-					</a>
+					{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
+						href="?m=customerassignmentdel&id={$a.id}" tip="Delete customer's liability"}
+					{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
 					<input type="checkbox" name="customerassignments[{$a.id}]" form="customerassignments-form"
 							value="{$a.id}" class="lms-ui-multi-check">
 				</div>
@@ -271,9 +265,7 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
-				<button type="button" id="delete-assignments" class="lms-ui-button lms-ui-button-delete">
-					<i></i> {trans("Delete")}
-				</button>
+				{button id="delete-assignments" icon="delete" label="Delete"}
 				<label>
 					{trans("Check All")}
 					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">

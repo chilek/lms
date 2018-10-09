@@ -66,20 +66,16 @@
 					</div>
 
 					<div class="lms-ui-tab-table-column buttons">
-						<A href="?m=netedit&networkset&id={$network.id}">
-							<i class="lms-ui-icon-{if $network.disabled}disconnected{else}connected{/if}"
-									title="{if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></i>
-						</A>
-						<A href="?m=netdel&id={$network.id}" class="lms-ui-button-delete"
-								onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')">
-							<i title="{trans("Delete")}"></i>
-						</A>
-						<A href="?m=netedit&id={$network.id}" class="lms-ui-button-edit">
-							<i title="{trans("Edit")}"></i>
-						</A>
-						<A href="?m=netinfo&id={$network.id}" class="lms-ui-button-info">
-							<i title="{trans("Info")}"></i>
-						</A>&nbsp;
+						{button type="link" href="?m=netedit&networkset&id={$network.id}"
+							icon="lms-ui-icon-{if $network.disabled}disconnected{else}connected{/if}"
+							tip="{if $network.disabled}Connect{else}Disconnect{/if}"}
+						{button type="link" href="?m=netdel&id={$network.id}" icon="delete"
+							onclick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')"
+							tip="Delete"}
+						{button type="link" href="?m=netedit&id={$network.id}" icon="edit"
+							tip="Edit"}
+						{button type="link" href="?m=netinfo&id={$network.id}" icon="info"
+							tip="Info"}
 					</div>
 				</div>
 

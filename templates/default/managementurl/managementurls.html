@@ -28,12 +28,10 @@
 				<strong>{trans("Comment:")}</strong>
 				<input type="text" size="40" form="managementurladd" name="comment" id="comment" class="comment"
 						value="{if !$formdata.urlid}{$formdata.comment}{/if}" {tip text="Enter URL comment" trigger="comment"}>
-				<a HREF="javascript:addManagementUrl();" class="lms-ui-button-save" {tip text="Add new management URL"}>
-					<i></i>
-				</a>
-				<A HREF="javascript:hideAddManagementUrl();" class="lms-ui-button-cancel" {tip text="Cancel"}>
-					<i></i>
-				</A>
+				{button type="link" icon="save"
+					onclick="javascript:addManagementUrl();" tip="Add new management URL"}
+				{button type="link" icon="cancel"
+					onclick="javascript:hideAddManagementUrl();" tip="Cancel"}
 			{/tab_buttons}
 		{/tab_button_panel}
 
@@ -41,11 +39,8 @@
 			{tab_buttons}
 			{/tab_buttons}
 			{tab_buttons}
-				<button type="button" id="managementurladdlink" onclick="javascript:showAddManagementUrl();"
-						class="lms-ui-button lms-ui-button-add"
-						{tip text="Add new management URL"}>
-					<i></i> {trans("Add")}
-				</button>
+				{button id="managementurladdlink" onclick="javascript:showAddManagementUrl();"
+					icon="add" tip="Add new management URL" label="Add"}
 			{/tab_buttons}
 		{/tab_button_panel}
 {/if}

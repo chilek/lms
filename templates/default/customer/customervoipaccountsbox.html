@@ -67,15 +67,12 @@
 					</div>
 
 					<div class="lms-ui-tab-table-column buttons">
-						<a class="lms-ui-button-delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" href="?m=voipaccountdel&amp;id={$voipaccount.id}">
-							<i title="{trans("Delete")}"></i>
-						</a>
-						<a class="lms-ui-button-edit" href="?m=voipaccountedit&amp;id={$voipaccount.id}">
-							<i title="{trans("Edit")}"></i>
-						</a>
-						<a class="lms-ui-button-info" href="?m=voipaccountinfo&amp;id={$voipaccount.id}">
-							<i title="{trans("Info")}"></i>
-						</a>
+						{button type="link" icon="delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')"
+							href="?m=voipaccountdel&id={$voipaccount.id}" tip="Delete"}
+						{button type="link" icon="edit" href="?m=voipaccountedit&id={$voipaccount.id}"
+							tip="Edit"}
+						{button type="link" icon="info" href="?m=voipaccountinfo&id={$voipaccount.id}"
+							tip="Info"}
 					</div>
 				</div>
 				{/block}
