@@ -137,6 +137,9 @@ if(isset($_POST['event']))
 	if (!isset($event['customerid']))
 		$event['customerid'] = $event['custid'];
 
+	if (isset($event['helpdesk']) && empty($event['ticketid']))
+		$error['ticketid'] = trans('Ticket id should not be empty!');
+
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
 
@@ -147,7 +150,7 @@ if(isset($_POST['event']))
 		$event['begintime'] = $begintime;
 		$event['enddate'] = $enddate;
 		$event['endtime'] = $endtime;
-		$event['helpdesk'] = isset($event['helpdesk']) && !empty($event['ticketid']) ? $event['ticketid'] : null;
+		$event['helpdesk'] = isset($event['helpdesk']) ? $event['ticketid'] : null;
 		$LMS->EventUpdate($event);
 
 		$SESSION->redirect('?m=eventlist');

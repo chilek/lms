@@ -120,8 +120,10 @@
 						{/box_row}
 
 						{box_row icon="img/ticket.gif" label="Assign ticket" labelid="helpdesk-on"}
-							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if isset($event.helpdesk)} checked{/if}>
-							<input type="text" name="event[ticketid]" value="{$event.ticketid}">
+							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"
+									{if isset($event.helpdesk) && $event.helpdesk} checked{/if}>
+							<input type="text" name="event[ticketid]" id="ticketid" value="{$event.ticketid}"
+									{if !isset($event.helpdesk) || !$event.helpdesk}style="display: none;"{/if} {tip trigger="ticketid"}>
 						{/box_row}
 {/if}
 
@@ -147,7 +149,7 @@
 				{button icon="cancel" onclick="location.href='?m=eventlist';" label="Cancel"}
 			{/box_buttons}
 		{/box_container}
-        <div id="row"{if $layout.module == 'eventedit' || empty($event['helpdesk'])} style="display:none;"}{/if}>
+        <div id="row"{if $layout.module == 'eventedit' || empty($event.helpdesk)} style="display:none;"}{/if}>
 		{include file="rt/rtticketmodify.html"}
         </div>
 	</form>
@@ -182,11 +184,13 @@
 				$('#customernotify-row').show();
 			}
 
-			{if $layout.module == 'eventadd'}
 			$('#helpdesk-on').change(function () {
+				{if $layout.module == 'eventadd'}
 				$('#row').toggle();
+				{else}
+				$('#ticketid').toggle();
+				{/if}
 			});
-			{/if}
 		});
 
 		function update_user_selection(users) {

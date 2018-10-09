@@ -4170,4 +4170,6 @@ $_LANG['- remove -'] = '- usuń -';
 $_LANG['Enable accounting of selected liability'] = 'Włącz naliczanie wybranych zobowiązań';
 $_LANG['Disable accounting of selected liability'] = 'Wyłącz naliczanie wybranych zobowiązań';
 
+$_LANG['Ticket id should not be empty!'] = 'Identyfikator zgłoszenia nie powinien być pusty!';
+
 ?>
