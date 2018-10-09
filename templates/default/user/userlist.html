@@ -42,7 +42,7 @@
     <TBODY>
 	{foreach $userslist as $user}
 	{if $user.id}
-	<TR class="highlight {cycle} {if !$user.access}blend{/if}" data-target-url="?m=userinfo&id={$user.id}">
+	<TR class="highlight{if !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}">
 		<TD class="nobr">
 			<IMG src="img/users.gif" alt=""> {$user.login}
 		</TD>
