@@ -19,19 +19,13 @@
 	{tab_contents id="eventspanel"}
 		{tab_table}
 			<div class="lms-ui-tab-table-row header">
-				<div class="lms-ui-tab-table-wrapper col-5">
-					<div class="lms-ui-tab-table-wrapper col-3">
-						<div class="lms-ui-tab-table-wrapper creation-date-type col-2">
-							<div class="lms-ui-tab-table-column creation-date">
-								<strong>{trans("Date:")}</strong>
-							</div>
-							<div class="lms-ui-tab-table-column type">
-								<strong>{trans("Type:")}</strong>
-							</div>
-						</div>
-						<div class="lms-ui-tab-table-column number">
-							{trans("Ticket ID:")}
-						</div>
+				<div class="lms-ui-tab-table-column type">
+					<strong>{trans("Type:")}</strong>
+					<br>{trans("Ticket ID:")}
+				</div>
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-column creation-date">
+						<strong>{trans("Date:")}</strong>
 					</div>
 					<div class="lms-ui-tab-table-wrapper title-description col-2">
 						<div class="lms-ui-tab-table-column title">
@@ -51,40 +45,31 @@
 			{section name=eventlist loop=$eventlist max=$limit}
 			{$event=$eventlist[eventlist]}
 				<div class="lms-ui-tab-table-row{if $event.closed} blend{/if}" data-target-url="?m=eventinfo&id={$event.id}">
-					<div class="lms-ui-tab-table-wrapper col-5">
-						<div class="lms-ui-tab-table-wrapper col-3">
-							<div class="lms-ui-tab-table-wrapper creation-date-type col-2">
-								<div class="lms-ui-tab-table-column creation-date">
-									{$event.date|date_format:"%Y/%m/%d"}
-									{if $event.endtime == 86400}
-										{if $event.enddate > $event.date}- {$event.enddate|date_format:"%Y/%m/%d"}{/if}
-										{trans("whole day")}
-									{else}
-										{($event.date + $event.begintime)|date_format:"%H:%M"}
-										{if $event.begintime != $event.endtime}
-											- {($event.enddate + $event.endtime)|date_format:"%H:%M"}
-										{/if}
-									{/if}
-								</div>
-								<div class="lms-ui-tab-table-column type">
-									{$_EVENTTYPES[$event.type]}
-								</div>
-							</div>
-							<div class="lms-ui-tab-table-column number">
-								{if $event.ticketid}
-									<A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
-								{else}
-									---
+					<div class="lms-ui-tab-table-column type" style="{if !$event.closed}{if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}{/if}">
+						{$_EVENTTYPES[$event.type]}
+						{if $event.ticketid}
+							<br><A href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</A>
+						{/if}
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-column creation-date">
+							{$event.date|date_format:"%Y/%m/%d"}
+							{if $event.endtime == 86400}
+								{if $event.enddate > $event.date}- {$event.enddate|date_format:"%Y/%m/%d"}{/if}
+								{trans("whole day")}
+							{else}
+								{($event.date + $event.begintime)|date_format:"%H:%M"}
+								{if $event.begintime != $event.endtime}
+									- {($event.enddate + $event.endtime)|date_format:"%H:%M"}
 								{/if}
-							</div>
+							{/if}
 						</div>
-
 						<div class="lms-ui-tab-table-wrapper title-description col-2">
 							<div class="lms-ui-tab-table-column title">
 								{$event.title}
 							</div>
 							<div class="lms-ui-tab-table-column description">
-								{$event.description}
+								{$event.description|default:"-"}
 							</div>
 						</div>
 					</div>

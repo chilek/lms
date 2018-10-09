@@ -23,14 +23,16 @@
  */
 
 #eventspanel {
-	.creation-date {
-		width: 20em;
-	}
 	.type {
 		width: 8em;
 	}
-	.number {
-		width: 8em;
+	.lms-ui-tab-table-row:not(.header) .type {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.creation-date {
+		width: 15em;
 	}
 	.title {
 		width: 30em;
@@ -42,20 +44,10 @@
 		width: 10em;
 	}
 
-	@media all and (max-width: 1700px) {
-		.creation-date-type {
-			flex-direction: column !important;
-			width: 20em !important;
-			div {
-				flex-grow: 0 !important;
-				width: 100% !important;
-			}
-		}
-	}
-	@media all and (max-width: 1500px) {
+	@media all and (max-width: 1400px) {
 		.title-description {
 			flex-direction: column !important;
-			width: 20em !important;
+			width: 25em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
@@ -63,19 +55,15 @@
 		}
 	}
 	@media all and (max-width: 1024px) {
-		.col-3 {
+		.title-description {
 			flex-direction: column !important;
 			width: 17em !important;
-			div {
-				flex-grow: 0 !important;
-				width: 100% !important;
-			}
 		}
 	}
 	@media all and (max-width: 768px) {
-		.col-5 {
+		.col-3 {
 			flex-direction: column !important;
-			width: 30em !important;
+			width: 15em !important;
 			div {
 				flex-grow: 0 !important;
 				width: 100% !important;
