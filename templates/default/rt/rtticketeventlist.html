@@ -14,10 +14,10 @@
             {if $ticket.state != $smarty.const.RT_RESOLVED}
             {if $ticket.customerid}
                 <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'><i></i>{trans("Add")}</button>
-                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&id={$ticket.ticketid}&action=close&ticketid={$ticket.ticketid}'><i></i>{trans("Close all")}</button>
+                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&action=close&ticketid={$ticket.ticketid}'><i></i>{trans("Close all")}</button>
             {else}
                 <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'>{trans("Add")}</button>
-                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&id={$ticket.ticketid}&action=close&ticketid={$ticket.ticketid}'>{trans("Close all")}</button>
+                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&action=close&ticketid={$ticket.ticketid}'>{trans("Close all")}</button>
             {/if}
             {/if}
         </TD>
