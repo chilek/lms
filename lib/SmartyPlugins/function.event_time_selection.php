@@ -47,7 +47,7 @@ function smarty_function_event_time_selection($params, $template) {
 							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
 							'trigger' => 'begin',
 						), $template)
-						. '>
+						. ' required>
 					' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
 						. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
 						Utils::tip(array(
