@@ -3876,6 +3876,7 @@ $_LANG['Helpdesk assignment:'] = 'Przypisanie do Helpdesk:';
 $_LANG['This event is not assigned to any helpdesk request.'] = 'Zdarzenie nie jest przypisane do żadnego zgłoszenia w helpdesk.';
 $_LANG['Request not assigned to any customer.'] = 'Zgłoszenie nie jest przypisane do żadnego klienta.';
 $_LANG['Request not assigned to any customer location.'] = 'Zgłoszenie nie jest przypisane do żadnej lokalizacji klienta.';
+$_LANG['Request not assigned to any node.'] = 'Zgłoszenie nie jest przypisane do żadnego komputera.';
 
 $_LANG['Result:'] = 'Wynik:';
 

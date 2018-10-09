@@ -29,16 +29,14 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
-
-if (!empty($_GET['ticketid']))
+if (isset($_GET['ticketid']) && !empty($_GET['ticketid']))
 	$eventticketid = intval($_GET['ticketid']);
+
+if (isset($_POST['helpdesk']) && isset($_POST['ticket']))
+	$ticket = $_POST['ticket'];
 
 $userlist = $LMS->GetUserList();
 unset($userlist['total']);
-
-if(isset($_POST['ticket']))
-	$ticket = $_POST['ticket'];
 
 if(isset($_POST['event']))
 {
@@ -288,7 +286,8 @@ if(isset($_POST['event']))
 		$event['wholedays'] = false;
 		$event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
 	}
-	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
+	if (!isset($eventticketid))
+		$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 }
 
 if (isset($event['helpdesk'])) {
@@ -344,6 +343,8 @@ if (isset($event['helpdesk'])) {
 	$SMARTY->assign('queuelist', $queuelist);
 	$SMARTY->assign('categories', $categories);
 	$SMARTY->assign('ticket', $ticket);
+} elseif (isset($eventticketid)) {
+	$event['ticketid'] = $eventticketid;
 }
 
 if (isset($_GET['customerid']))

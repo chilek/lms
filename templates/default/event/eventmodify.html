@@ -79,16 +79,24 @@
 					{/box_row}
 
 					{box_row icon="img/home.gif" label="Location:"}
-						<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}> </select>
+						{if !isset($event.ticketid)}
+							<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}> </select>
+						{else}
+							{trans("Request not assigned to any customer location.")}
+						{/if}
 					{/box_row}
 
 					{box_row icon="img/node.gif" label="Node:" visible=!empty($nodes)}
-						<select id="nodes" name="event[nodeid]" {tip text="Select node"}>
-							<option value="">{trans("- none -")}</option>
-							{foreach $nodes as $node}
-								<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
-							{/foreach}
-						</select>
+						{if !isset($event.ticketid)}
+							<select id="nodes" name="event[nodeid]" {tip text="Select node"}>
+								<option value="">{trans("- none -")}</option>
+								{foreach $nodes as $node}
+									<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
+								{/foreach}
+							</select>
+						{else}
+							{trans("Request not assigned to any node.")}
+						{/if}
 					{/box_row}
 
 					{box_row icon="img/users.gif" label="Users:" field_class="multiselect"}
