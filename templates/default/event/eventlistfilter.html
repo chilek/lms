@@ -1,6 +1,6 @@
 {block name=eventlistfilter}
 <TR>
-    <TD colspan="5" class="text-center nobr no-print">
+    <TD colspan="6" class="text-center nobr no-print">
         <A href="?m=eventlist&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
         {section name=days loop=$days.day}
         {if !$days.dow[days]}<span class="light">{/if}<A href="?m=eventlist&day={$days.day[days]}&month={$filter.month}&year={$filter.year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</span>{/if}
@@ -9,7 +9,7 @@
     </TD>
 </TR>
 <TR>
-    <TD colspan="5" class="nobr no-print">
+    <TD colspan="6" class="nobr no-print">
         <div class="lms-ui-filter-container">
         <div class="lms-ui-filter-definition">
         <FORM method="POST" action="?m=eventlist" name="filter">
