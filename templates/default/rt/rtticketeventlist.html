@@ -1,51 +1,47 @@
 <!-- $Id$ -->
 <TABLE class="lmsbox">
-    <COLGROUP>
-        <COL style="width: 99%;">
-        <COL style="width: 1%;">
-    </COLGROUP>
-    <THEAD>
-    <TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
-        <TD class="bold">
-            <i class="lms-ui-icon-timetable"></i> {trans("Timetable assigned events:")}
-        </TD>
-        <TD class="text-right nobr">
-            {$ticket.customerid}
-            {if $ticket.state != $smarty.const.RT_RESOLVED}
-            {if $ticket.customerid}
-                <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'><i></i>{trans("Add")}</button>
-                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}'><i></i>{trans("Close all")}</button>
-            {else}
-                <button type="button" class="lms-ui-button lms-ui-button-add" onclick='window.location.href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"'>{trans("Add")}</button>
-                <button type="button" class="lms-ui-button lms-ui-button-close" onclick='window.location.href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}'>{trans("Close all")}</button>
-            {/if}
-            {/if}
-        </TD>
-    </TR>
-    </THEAD>
-    <TBODY>
-    <TR id="eventpanel-{$layout.module}" style="display: none;">
-        <TD colspan="2">
-            <table class="lmsbox lms-ui-background-cycle">
-                <COLGROUP>
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%; min-width:90px;">
-                    <COL style="width: 95%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;">
-                    <COL style="width: 1%;" class="no-print">
-                </COLGROUP>
-                <THEAD class="">
-                    {include file="event/eventlistheader.html"}
-                </THEAD>
-                <TBODY>
-                    {foreach from=$assignedevents item=event}
-                        {include file="event/eventlistboxrow.html" overdue=1}
-                    {/foreach}
-                </TBODY>
-            </table>
-        </TD>
-    </TR>
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
+		<TD class="bold">
+			<i class="lms-ui-icon-timetable"></i> {trans("Timetable assigned events:")}
+		</TD>
+		<TD class="text-right nobr">
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{button icon="add" label="Add"
+					onclick="location.href='?m=eventadd&ticketid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
+				{button icon="close" label="Close all"
+					onclick="location.href='?m=eventedit&action=close&ticketid={$ticket.ticketid}';"}
+			{/if}
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR id="eventpanel-{$layout.module}" style="display: none;">
+		<TD colspan="2">
+			<table class="lmsbox lms-ui-background-cycle">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%; min-width:90px;">
+					<COL style="width: 95%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;" class="no-print">
+				</COLGROUP>
+				<THEAD class="">
+				{include file="event/eventlistheader.html"}
+				</THEAD>
+				<TBODY>
+				{foreach from=$assignedevents item=event}
+					{include file="event/eventlistboxrow.html" overdue=1}
+				{/foreach}
+				</TBODY>
+			</table>
+		</TD>
+	</TR>
 </TABLE>
 <SCRIPT type="text/javascript">
 	if (getCookie('eventpanel-{$layout.module}') == '1')
