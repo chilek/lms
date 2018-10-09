@@ -3332,46 +3332,64 @@ div.lms-ui-wysiwyg-editor {
 	box-shadow: @slave;
 }
 
-.lms-ui-event-time-slider {
-	width: 25em;
-	margin-left: 0.9em;
-}
-
 .lms-ui-event-time-container {
-	display: inline-flex;
-	justify-content: flex-start;
-	align-items: flex-start;
-	& .lms-ui-event-time-left-panel {
-		display: inline-flex;
-		align-items: center;
-		justify-content: space-between;
-		flex-direction: column;
-		& > div {
-			margin: 0.35em;
+	display: flex;
+	flex-direction: column;
+	width: 90%;
+	flex-grow: 1;
+	.lms-ui-event-time-top-panel {
+		display: flex;
+		flex-direction: row;
+		.lms-ui-event-time-period {
+			display: flex;
+			flex-direction: column;
+			flex-grow: 1;
+			.lms-ui-event-time-date {
+				display: flex;
+				justify-content: flex-end;
+				&:not(:first-child) {
+					margin-top: 0.5em;
+				}
+				& > * {
+					margin-left: 0.3em;
+				}
+			}
 		}
-		& .lms-ui-event-time-legend {
-			height: 2em;
-			width: 30em;
-			transform: scale(0.85);
+		.lms-ui-event-whole-days {
 			display: inline-flex;
-			white-space: nowrap;
-		}
-		& .lms-ui-event-time-legend-label {
-			margin-left: -1.62em;
-			transform: rotate(90deg) translateX(0.3em) translateY(-0.38em);
-		}
-		& .lms-ui-event-time-legend-scale {
-			transform: rotate(90deg) translateX(1.8em) translateY(0.3em);
+			flex-direction: row;
+			justify-content: flex-start;
+			align-items: center;
+			flex-grow: 1;
+			margin-left: 1em;
 		}
 	}
-	& .lms-ui-event-time-right-panel {
-		display: inline-flex;
+	.lms-ui-event-time-bottom-panel {
+		display: flex;
 		flex-direction: column;
-		justify-content: flex-start;
-		align-items: flex-start;
-		& > * {
-			margin: 0.35em;
+		.lms-ui-event-time-legend {
+			margin-top: 1em;
+			margin-left: -1.5em;
+			height: 2em;
+			width: 25em;
+			transform: scale(0.85);
+			display: flex;
+			flex-direction: row;
+			white-space: nowrap;
+			& .lms-ui-event-time-legend-label {
+				margin-left: -1.62em;
+				transform: rotate(90deg) translateX(0.3em) translateY(-0.38em);
+			}
+			& .lms-ui-event-time-legend-scale {
+				transform: rotate(90deg) translateX(1.8em) translateY(0.3em);
+			}
 		}
+		.lms-ui-event-time-slider {
+			width: 25em;
+			margin-left: 1em;
+			margin-top: 0.7em;
+		}
+
 	}
 }
 

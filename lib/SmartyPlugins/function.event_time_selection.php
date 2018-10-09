@@ -38,36 +38,40 @@ function smarty_function_event_time_selection($params, $template) {
 
 	return '
 		<div class="lms-ui-event-time-container">
-			<div class="lms-ui-event-time-left-panel">
-				<div>
-					' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
-						. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
-						Utils::tip(array(
-							'class' => 'calendar-time',
-							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-							'trigger' => 'begin',
-						), $template)
-						. ' required>
-					' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
-						. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
-						Utils::tip(array(
-							'class' => 'calendar-time',
-							'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-							'trigger' => 'end',
-						), $template)
-						. '>
-				</div>'
-				. $legend_code .
-				'<div>
-					<div class="lms-ui-event-time-slider"></div>
+			<div class="lms-ui-event-time-top-panel">
+				<div class="lms-ui-event-time-period">
+					<div class="lms-ui-event-time-date">
+						' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
+							. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
+							Utils::tip(array(
+								'class' => 'calendar-time',
+								'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+								'trigger' => 'begin',
+							), $template)
+							. ' required>
+					</div>
+					<div class="lms-ui-event-time-date">
+						' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
+							. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
+							Utils::tip(array(
+								'class' => 'calendar-time',
+								'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+								'trigger' => 'end',
+							), $template)
+							. '>
+					</div>
+				</div>
+				<div class="lms-ui-event-whole-days">
+					<label>
+						<input type="checkbox" class="lms-ui-event-whole-days-checkbox" name="' . $field_prefix . '[wholedays]" value="1"
+							' . ($whole_days ? 'checked' : '') . '>
+							' . trans("whole days") . '
+					</label>
 				</div>
 			</div>
-			<div class="lms-ui-event-time-right-panel">
-				<label>
-					<input type="checkbox" class="lms-ui-event-whole-days" name="' . $field_prefix . '[wholedays]" value="1"
-						' . ($whole_days ? 'checked' : '') . '>
-					' . trans("whole days") . '
-				</label>
+			<div class="lms-ui-event-time-bottom-panel">'
+				. $legend_code .
+				'<div class="lms-ui-event-time-slider"></div>
 			</div>
 		</div>
 		<script>

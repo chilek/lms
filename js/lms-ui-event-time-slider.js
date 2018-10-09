@@ -263,7 +263,7 @@ function eventTimeSlider(options) {
 			dt.getMinutes()
 		);
 	}
-	$('.lms-ui-event-whole-days').change(function () {
+	$('.lms-ui-event-whole-days-checkbox').change(function () {
 		var startdt = start_input.datetimepicker('getValue');
 		var enddt = end_input.datetimepicker('getValue');
 
