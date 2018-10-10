@@ -1,102 +1,107 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="netradiosectors">
-    <THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="radiosectorpanel">
-		<TD class="bold">
-			<IMG src="img/wireless.gif" alt="">
-			{trans("Radio sectors:")}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="radiosectorpanel" style="display: none;">
-		<TD style="width: 100%;">
-			<FORM id="radiosectoradd" name="radiosectoradd">
-			<DIV id="radiosectortable">
-			</DIV>
-			</FORM>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('radiosectorpanel') == '1') {
-	$('#radiosectorpanel').show();
-	xajax_getRadioSectors();
-}
 
-function showOrHideRadioSectorPanel() {
-	if ($('#radiosectorpanel').is(':visible')) {
-		xajax_getRadioSectors();
-	}
-}
+{css}
 
-function addRadioSector() {
-	xjx.$('save_new_radiosector_button').disabled = true;
-	xjx.$('cancel_new_radiosector_button').disabled = true;
-	xajax_addRadioSector(xjx.getFormValues('radiosectoradd'));
-}
+<form id="radiosectoradd" name="radiosectoradd">
+</form>
 
-function delRadioSector(id) {
-	xjx.$('radiosectortable').disabled = true;
-	xajax_delRadioSector(id);
-}
+{tab_container id="netradiosectors"}
 
-function toggleEditRadioSector(id) {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth', 'secret'];
-	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
+	{tab_header content_id="radiosectorpanel"}
+		{tab_header_cell icon="lms-ui-icon-wireless"}
+			<strong>{trans("Radio sectors:")}</strong>
+		{/tab_header_cell}
+	{/tab_header}
 
-	for (i = 0; i < elems.length; i++) {
-		xjx.$(elems[i] + '_' + id).style.display = (edit ? 'none' : '');
-		xjx.$(elems[i] + '_edit_' + id).style.display = (edit ? '' : 'none');
-	}
-	xjx.$('cancel_button_' + id).style.display = (edit ? '' : 'none');
-	xjx.$('save_button_' + id).style.display = (edit ? '' : 'none');
-	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
-}
+	{tab_contents id="radiosectorpanel"}
 
-function showAddRadioSector() {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'frequency', 'frequency2', 'bandwidth', 'secret'];
-	for (i = 0; i < elems.length; i++) {
-		xjx.$(elems[i]).value = '';
-		xjx.$(elems[i]).onmouseover = '';
-	}
-	xjx.$('technology').value = 0;
-	if (xjx.$('no_radio_sectors') != null) {
-		xjx.$('no_radio_sectors').style.display = ('none');
-	}
-	xjx.$('radiosectoraddlink').style.display = ('none');
-	xjx.$('add_radio_sector').style.display = ('');
-	xjx.$('name').focus();
-}
+		{tab_table id="radiosectortable"}
+			{tab_hourglass}{/tab_hourglass}
+		{/tab_table}
 
-function hideAddRadioSector() {
-	xjx.$('add_radio_sector').style.display = ('none');
-	if (xjx.$('no_radio_sectors') != null) {
-		xjx.$('no_radio_sectors').style.display = ('');
-	}
-	xjx.$('radiosectoraddlink').style.display = ('');
-	xajax_getRadioSectors();
-}
+{if ConfigHelper::checkPrivilege('privileges.network_management')}
+		{tab_button_panel id="add_radio_sector"}
+			{tab_buttons}
+				<div class="name">
+					<i class="lms-ui-icon-wireless"></i>
+					<input type="text" size="20" name="name" id="name" value="{$formdata.name}" {tip text="Enter name" trigger="name"}
+						form="radiosectoradd">
+				</div>
+				<div class="azimuth-width">
+					<input type="text" size="6" name="azimuth" id="azimuth" value="{$formdata.azimuth}" {tip text="Enter azimuth in degrees" trigger="azimuth"}
+							form="radiosectoradd">
+					<br>
+					<input type="text" size="6" name="width" id="width" value="{$formdata.width}" {tip text="Enter angular width in degrees" trigger="width"}
+							form="radiosectoradd">
+				</div>
+				<div class="altitude-range">
+					<input type="text" size="3" name="altitude" id="altitude" value="{$formdata.altitude}" {tip text="Enter altitude in meters" trigger="altitude"}
+							form="radiosectoradd">
+					<br>
+					<input type="text" size="6" name="rsrange" id="rsrange" value="{$formdata.rsrange}" {tip text="Enter range in meters" trigger="rsrange"}
+							form="radiosectoradd">
+				</div>
+				<div class="license">
+					<input type="text" size="23" name="license" id="license" value="{$formdata.license}" {tip text="Enter radio license number" trigger="license"}
+							form="radiosectoradd">
+				</div>
+				<div class="link-tech-intf-type">
+					<SELECT NAME="technology" id="technology" {tip trigger="technology" text="Select link technology"}
+							form="radiosectoradd">
+						<OPTION value="0">{trans("- unknown -")}</OPTION>
+						{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
+							<OPTION value="{$technologyidx}"{if $formdata.technology == $technologyidx} selected{/if}>{$technology}</OPTION>
+						{/foreach}
+					</SELECT>
+					<br>
+					<SELECT NAME="type" id="type" {tip trigger="type" text="Select network interface type"}
+							form="radiosectoradd">
+						{foreach $_NETWORK_INTERFACE_TYPES as $typeidx => $type}
+							<OPTION value="{$typeidx}"{if $formdata.type == $typeidx} selected{/if}>{$type.label}</OPTION>
+						{/foreach}
+					</SELECT>
+				</div>
+				<div class="frequency-bandwidth">
+					<input type="text" size="6" name="frequency" id="frequency" value="{$formdata.frequency}" {tip text="Enter frequency in GHz" trigger="frequency"}
+							form="radiosectoradd">
+					/
+					<input type="text" size="6" name="frequency2" id="frequency2" value="{$formdata.frequency2}" {tip text="Enter frequency in GHz" trigger="frequency2"}
+							form="radiosectoradd">
+					<br>
+					<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}
+							form="radiosectoradd">
+				</div>
+				<div class="nodes-devices">
+				</div>
+				<div class="enc-key">
+					<input type="text" size="14" name="secret" id="secret" value="{$formdata.secret}" {tip text="Enter encryption key" trigger="secret"}
+							form="radiosectoradd">
+				</div>
 
-function updateRadioSector(id) {
-	var params = {};
-    var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth', 'secret'];
+				<div class="buttons">
+					{button type="link" icon="save" tip="Save" onclick="javascript:addRadioSector();"
+						id="save_new_radiosector_button"}
+					{button type="link" icon="cancel" tip="Cancel" onclick="javascript:hideAddRadioSector();"
+						id="cancel_new_radiosector_button"}
+				</div>
+			{/tab_buttons}
+		{/tab_button_panel}
 
-	xjx.$('radiosectortable').disabled = true;
-	for (i = 0; i < elems.length; i++) {
-		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
-	}
-	params['rsid'] = id;
-	xajax_updateRadioSector(id, params);
-}
+		{tab_button_panel id="radio_sector_buttons"}
+			{tab_buttons}
+			{/tab_buttons}
 
-$(function() {
-	$('tr[data-lmsbox-content="radiosectorpanel"]').click(function() {
-		showOrHideRadioSectorPanel();
-	});
-});
+			{tab_buttons}
+				{button id="radiosectoraddlink" onclick="javascript:showAddRadioSector();"
+					tip="Add new radio sector" label="Add" icon="add"}
+			{/tab_buttons}
+		{/tab_button_panel}
+{/if}
 
-//-->
-</SCRIPT>
+		{tab_hourglass template=1}{/tab_hourglass}
+
+	{/tab_contents}
+
+{/tab_container}
+
+{js}

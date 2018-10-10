@@ -1,0 +1,152 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+#radiosectorpanel {
+	.name {
+		width: 20em;
+	}
+	.azimuth-width {
+		width: 10em;
+	}
+	.altitude-range {
+		width: 10em;
+	}
+	.license {
+		width: 15em;
+	}
+	.link-tech-intf-type {
+		width: 20em;
+	}
+	.frequency-bandwidth {
+		width: 15em;
+	}
+	.nodes-devices {
+		width: 8em;
+	}
+	.enc-key {
+		width: 17em;
+	}
+	.buttons {
+		width: 8em;
+	}
+
+	#technology-interface {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#add_radio_sector .lms-ui-tab-buttons {
+		flex-wrap: wrap;
+		> * {
+			flex-grow: 1;
+			&:not(:first-child) {
+				margin-left: 0.5em;
+			}
+		}
+	}
+
+	@media all and (max-width: 1800px) {
+		.node-devices-enc-key {
+			flex-direction: column !important;
+			width: 12em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+	@media all and (max-width: 1600px) {
+		.azimuth-width-altitude-range {
+			flex-direction: column !important;
+			width: 10em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+		.license {
+			width: 10em;
+		}
+	}
+	@media all and (max-width: 1400px) {
+		.azimuth-width-altitude-range-license {
+			flex-direction: column !important;
+			width: 10em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+		.link-tech-intf-type-frequency-bandwidth {
+			flex-direction: column !important;
+			width: 10em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+		.name {
+			width: 17em;
+		}
+		.license {
+			width: 10em;
+		}
+	}
+
+	@media all and (max-width: 1200px) {
+		.link-tech-intf-type-frequency-bandwidth-node-devices-enc-key {
+			flex-direction: column !important;
+			width: 10em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+		.name {
+			width: 13em;
+		}
+	}
+
+	@media all and (max-width: 1024px) {
+		.name-azimuth-width-altitude-range-license {
+			flex-direction: column !important;
+			width: 10em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+
+	@media all and (max-width: 768px) {
+		.col-8 {
+			flex-direction: column !important;
+			width: 15em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+}

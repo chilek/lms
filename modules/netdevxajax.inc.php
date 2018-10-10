@@ -156,9 +156,7 @@ function updateManagementUrl($urlid, $params) {
 	return $result;
 }
 
-function validateRadioSector($params, $update = false) {
-	global $DB;
-
+function validateRadioSector($params) {
 	$error = NULL;
 
 	if (!strlen($params['name']))
@@ -215,12 +213,14 @@ function validateRadioSector($params, $update = false) {
 }
 
 function getRadioSectors($formdata = NULL, $result = NULL) {
-	global $SMARTY, $DB;
+	global $SMARTY;
 
 	if (! $result)
 		$result = new xajaxResponse();
 
 	$netdevid = intval($_GET['id']);
+
+	$DB = LMSDB::getInstance();
 
 	$radiosectors = $DB->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END) AS computers,
 		((CASE WHEN l1.devices IS NULL THEN 0 ELSE l1.devices END)
@@ -260,25 +260,26 @@ function addRadioSector($params) {
 
 	$netdevid = intval($_GET['id']);
 
-	$error = validateRadioSector($params);
+	$formdata = array();
+	parse_str($params, $formdata);
 
-	$params['error'] = $error;
+	$error = validateRadioSector($formdata);
 
 	if (!$error) {
 		$args = array(
-			'name' => $params['name'],
-			'azimuth' => $params['azimuth'],
-			'width' => $params['width'],
-			'altitude' => $params['altitude'],
-			'rsrange' => $params['rsrange'],
-			'license' => (strlen($params['license']) ? $params['license'] : null),
-			'technology' => intval($params['technology']),
-			'type' => intval($params['type']),
-			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
-			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
-			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
+			'name' => $formdata['name'],
+			'azimuth' => $formdata['azimuth'],
+			'width' => $formdata['width'],
+			'altitude' => $formdata['altitude'],
+			'rsrange' => $formdata['rsrange'],
+			'license' => (strlen($formdata['license']) ? $formdata['license'] : null),
+			'technology' => intval($formdata['technology']),
+			'type' => intval($formdata['type']),
+			'frequency' => (strlen($formdata['frequency']) ? $formdata['frequency'] : null),
+			'frequency2' => (strlen($formdata['frequency2']) ? $formdata['frequency2'] : null),
+			'bandwidth' => (strlen($formdata['bandwidth']) ? str_replace(',', '.', $formdata['bandwidth'] / 1000) : null),
 			SYSLOG::RES_NETDEV => $netdevid,
-			'secret' => intval($params['secret']),
+			'secret' => intval($formdata['secret']),
 		);
 		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology, type,
 			frequency, frequency2, bandwidth, netdev, secret)
@@ -288,26 +289,27 @@ function addRadioSector($params) {
 			$args[SYSLOG::RES_RADIOSECTOR] = $DB->GetLastInsertID('netradiosectors');
 			$SYSLOG->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_ADD, $args);
 		}
-		$params = NULL;
-	}
-	$result = getRadioSectors($params, $result);
-	//$result->call('xajax_getRadioSectors', $params);
-	$result->assign('add_new_radiosector_button', 'disabled', false);
-	$result->assign('cancel_new_radiosector_button', 'disabled', false);
-	$result->call('get_radio_sectors_for_self_netdev', null);
-	$result->call('change_nodelinktechnology', null);
+
+		$result->call('hideAddRadioSector');
+		$result->call('radioSectorResponse', $error);
+		$result->call('getRadioSectors');
+	} else
+		$result->call('radioSectorResponse', $error);
+
+	$result->assign('radiosectoraddlink', 'disabled', false);
 
 	return $result;
 }
 
 function delRadioSector($id) {
-	global $DB, $SYSLOG;
+	global $SYSLOG;
 
 	$result = new xajaxResponse();
 
 	$netdevid = intval($_GET['id']);
 	$id = intval($id);
 
+	$DB = LMSDB::getInstance();
 	$res = $DB->Execute('DELETE FROM netradiosectors WHERE id = ?', array($id));
 	if ($res && $SYSLOG) {
 		$args = array(
@@ -316,7 +318,8 @@ function delRadioSector($id) {
 		);
 		$SYSLOG->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_DELETE, $args);
 	}
-	$result->call('xajax_getRadioSectors', NULL);
+
+	$result->call('getRadioSectors');
 	$result->assign('radiosectortable', 'disabled', false);
 	$result->call('get_radio_sectors_for_self_netdev', null);
 	$result->call('change_nodelinktechnology', null);
@@ -332,11 +335,10 @@ function updateRadioSector($rsid, $params) {
 	$rsid = intval($rsid);
 	$netdevid = intval($_GET['id']);
 
-	$res = validateRadioSector($params, true);
+	$res = validateRadioSector($params);
 	$error = array();
 	foreach ($res as $key => $val)
 		$error[$key . '_edit_' . $rsid] = $val;
-	$params['error'] = $error;
 
 	if (!$error) {
 		$args = array(
@@ -348,11 +350,11 @@ function updateRadioSector($rsid, $params) {
 			'license' => (strlen($params['license']) ? $params['license'] : null),
 			'technology' => intval($params['technology']),
 			'type' => intval($params['type']),
+			'secret' => $params['secret'],
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
 			SYSLOG::RES_RADIOSECTOR => $rsid,
-			'secret' => $params['secret'],
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
 			rsrange = ?, license = ?, technology = ?, type = ?, secret = ?,
@@ -361,10 +363,14 @@ function updateRadioSector($rsid, $params) {
 			$args[SYSLOG::RES_NETDEV] = $netdevid;
 			$SYSLOG->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_UPDATE, $args);
 		}
-		$params = NULL;
-	}
 
-	$result->call('xajax_getRadioSectors', null);
+		$result->call('radioSectorResponse', $error);
+		$result->call('getRadioSectors');
+	} else
+		$result->call('radioSectorResponse', $error);
+
+	$result->assign('radiosectortable', 'disabled', false);
+
 	$result->call('get_radio_sectors_for_self_netdev', null);
 	$result->call('change_nodelinktechnology', null);
 
