@@ -4174,4 +4174,6 @@ $_LANG['Ticket id should not be empty!'] = 'Identyfikator zgłoszenia nie powini
 
 $_LANG['Network interface type:'] = 'Typ interfejsu sieciowego:';
 
+$_LANG['(no password)'] = '(brak hasła)';
+
 ?>
