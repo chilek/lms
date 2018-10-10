@@ -1,0 +1,77 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+#attachmentbox-netdevid, #attachmentbox-netnodeid {
+	.date {
+		width: 25em;
+	}
+	.creator {
+		width: 20em;
+	}
+	.description {
+		width: 30em;
+	}
+	.buttons {
+		width: 5em;
+		flex-wrap: wrap;
+		.files {
+			white-space: nowrap;
+			align-self: flex-end;
+			flex-direction: column;
+		}
+	}
+
+	.lms-ui-tab-buttons {
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
+	@media all and (max-width: 1200px) {
+		.date-creator {
+			flex-direction: column !important;
+			width: 20em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+	@media all and (max-width: 768px) {
+		.col-3 {
+			flex-direction: column !important;
+			width: 20em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+		.lms-ui-tab-buttons {
+			flex-direction: column;
+			align-items: flex-start;
+			> :not(:first-child) {
+				margin-top: 0.3em;
+			}
+		}
+	}
+}
