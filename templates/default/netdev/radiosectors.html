@@ -24,29 +24,43 @@
 			{tab_buttons}
 				<div class="name">
 					<i class="lms-ui-icon-wireless"></i>
-					<input type="text" size="20" name="name" id="name" value="{$formdata.name}" {tip text="Enter name" trigger="name"}
-						form="radiosectoradd">
+					<input type="text" size="20" name="name" id="name" value="{$formdata.name}"
+							class="radio-sector-edit-field"
+							{tip text="Enter name" trigger="name"}
+							form="radiosectoradd">
 				</div>
 				<div class="azimuth-width">
-					<input type="text" size="6" name="azimuth" id="azimuth" value="{$formdata.azimuth}" {tip text="Enter azimuth in degrees" trigger="azimuth"}
+					<input type="text" size="6" name="azimuth" id="azimuth" value="{$formdata.azimuth}"
+							class="radio-sector-edit-field"
+							{tip text="Enter azimuth in degrees" trigger="azimuth"}
 							form="radiosectoradd">
 					<br>
-					<input type="text" size="6" name="width" id="width" value="{$formdata.width}" {tip text="Enter angular width in degrees" trigger="width"}
+					<input type="text" size="6" name="width" id="width" value="{$formdata.width}"
+							class="radio-sector-edit-field"
+							{tip text="Enter angular width in degrees" trigger="width"}
 							form="radiosectoradd">
 				</div>
 				<div class="altitude-range">
-					<input type="text" size="3" name="altitude" id="altitude" value="{$formdata.altitude}" {tip text="Enter altitude in meters" trigger="altitude"}
+					<input type="text" size="3" name="altitude" id="altitude" value="{$formdata.altitude}"
+							class="radio-sector-edit-field"
+							{tip text="Enter altitude in meters" trigger="altitude"}
 							form="radiosectoradd">
 					<br>
-					<input type="text" size="6" name="rsrange" id="rsrange" value="{$formdata.rsrange}" {tip text="Enter range in meters" trigger="rsrange"}
+					<input type="text" size="6" name="rsrange" id="rsrange" value="{$formdata.rsrange}"
+							class="radio-sector-edit-field"
+							{tip text="Enter range in meters" trigger="rsrange"}
 							form="radiosectoradd">
 				</div>
 				<div class="license">
-					<input type="text" size="23" name="license" id="license" value="{$formdata.license}" {tip text="Enter radio license number" trigger="license"}
+					<input type="text" size="23" name="license" id="license" value="{$formdata.license}"
+							class="radio-sector-edit-field"
+							{tip text="Enter radio license number" trigger="license"}
 							form="radiosectoradd">
 				</div>
 				<div class="link-tech-intf-type">
-					<SELECT NAME="technology" id="technology" {tip trigger="technology" text="Select link technology"}
+					<SELECT NAME="technology" id="technology"
+							class="radio-sector-edit-field"
+							{tip trigger="technology" text="Select link technology"}
 							form="radiosectoradd">
 						<OPTION value="0">{trans("- unknown -")}</OPTION>
 						{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
@@ -54,7 +68,9 @@
 						{/foreach}
 					</SELECT>
 					<br>
-					<SELECT NAME="type" id="type" {tip trigger="type" text="Select network interface type"}
+					<SELECT NAME="type" id="type"
+							class="radio-sector-edit-field"
+							{tip trigger="type" text="Select network interface type"}
 							form="radiosectoradd">
 						{foreach $_NETWORK_INTERFACE_TYPES as $typeidx => $type}
 							<OPTION value="{$typeidx}"{if $formdata.type == $typeidx} selected{/if}>{$type.label}</OPTION>
@@ -62,20 +78,28 @@
 					</SELECT>
 				</div>
 				<div class="frequency-bandwidth">
-					<input type="text" size="6" name="frequency" id="frequency" value="{$formdata.frequency}" {tip text="Enter frequency in GHz" trigger="frequency"}
+					<input type="text" size="6" name="frequency" id="frequency" value="{$formdata.frequency}"
+							class="radio-sector-edit-field"
+							{tip text="Enter frequency in GHz" trigger="frequency"}
 							form="radiosectoradd">
 					/
-					<input type="text" size="6" name="frequency2" id="frequency2" value="{$formdata.frequency2}" {tip text="Enter frequency in GHz" trigger="frequency2"}
+					<input type="text" size="6" name="frequency2" id="frequency2" value="{$formdata.frequency2}"
+							class="radio-sector-edit-field"
+							{tip text="Enter frequency in GHz" trigger="frequency2"}
 							form="radiosectoradd">
 					<br>
-					<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}
-							form="radiosectoradd">
+					<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}"
+							class="radio-sector-edit-field"
+							{tip text="Enter bandwidth in MHz" trigger="bandwidth"}
+							form="radiosectoradd" class="radio-sector-edit-field">
 				</div>
 				<div class="nodes-devices">
 				</div>
 				<div class="enc-key">
-					<input type="text" size="14" name="secret" id="secret" value="{$formdata.secret}" {tip text="Enter encryption key" trigger="secret"}
-							form="radiosectoradd">
+					<input type="text" size="14" name="secret" id="secret" value="{$formdata.secret}"
+							class="radio-sector-edit-field"
+							{tip text="Enter encryption key" trigger="secret"}
+							form="radiosectoradd" class="radio-sector-edit-field">
 				</div>
 
 				<div class="buttons">

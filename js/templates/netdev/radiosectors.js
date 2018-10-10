@@ -69,23 +69,19 @@ function toggleEditRadioSector(id) {
 }
 
 function showAddRadioSector() {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'frequency', 'frequency2', 'bandwidth', 'secret'];
-
-	$.each(elems, function(index, elem) {
-		$('#' + elem).val('').off('mouseover');
-	});
-	$('#technology').val(0);
+	$('#add_radio_sector').show().find('.radio-sector-edit-field').each(function() {
+		$(this).attr('data-old-value', $(this).val()).attr('data-old-tooltip', $(this).attr('title'));
+	}).first().focus();
 
 	$('#radio_sector_buttons').hide();
-	$('#add_radio_sector').show();
-	$('#radiosectorpanel #name').focus();
 }
 
 function hideAddRadioSector() {
-	$('#add_radio_sector').hide();
+	$('#add_radio_sector').hide().find('.radio-sector-edit-field').each(function() {
+		$(this).val($(this).attr('data-old-value')).removeAttr('data-tooltip').removeClass('alert')
+			.attr('title', $(this).attr('data-old-tooltip'));
+	});
 	$('#radio_sector_buttons').show();
-	$('#radiosectorpanel #name,#azimuth').removeClass('alert')
-		.filter('#name').removeAttr('data-tooltip').attr('title', $t("Enter name"));
 }
 
 function updateRadioSector(id) {
