@@ -3612,15 +3612,17 @@ div.lms-ui-wysiwyg-editor {
 			&:not(.header):not(.footer):hover {
 				background-color: @highlight;
 			}
-
+			.buttons > :last-child {
+				margin-right: 0.4em;
+			}
 			@media all and (max-width: 768px) {
 				.buttons {
 					flex-direction: column !important;
 					justify-content: flex-start !important;
 					width: 2em !important;
 					& > * {
-						padding-right: 0.5em;
-						padding-top: 0.2em;
+						margin-right: 0.5em;
+						margin-top: 0.2em;
 					}
 				}
 			}
