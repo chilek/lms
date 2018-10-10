@@ -100,7 +100,7 @@
 				</div>
 				<div class="lms-ui-tab-table-column license">
 					<span id="license_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.license|default:"-"}</span>
-					<input type="text" size="23" name="license_edit_{$rsid}" id="license_edit_{$rsid}"
+					<input type="text" size="18" name="license_edit_{$rsid}" id="license_edit_{$rsid}"
 							value="{if $edit}{$formdata.license}{else}{$radiosector.license}{/if}"
 							class="radio-sector-edit-field"
 							{tip text="Enter radio license number" trigger="license_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>

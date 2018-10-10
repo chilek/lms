@@ -51,12 +51,11 @@
 		width: 8em;
 	}
 
-	#add_radio_sector .lms-ui-tab-buttons {
-		flex-wrap: wrap;
-		> * {
+	#add_radio_sector {
+		.lms-ui-tab-buttons {
 			flex-grow: 1;
-			&:not(:first-child) {
-				margin-left: 0.5em;
+			.lms-ui-tab-table-row.footer {
+				border-top: 0;
 			}
 		}
 	}
