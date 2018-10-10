@@ -4172,4 +4172,6 @@ $_LANG['Disable accounting of selected liability'] = 'Wyłącz naliczanie wybran
 
 $_LANG['Ticket id should not be empty!'] = 'Identyfikator zgłoszenia nie powinien być pusty!';
 
+$_LANG['Network interface type:'] = 'Typ interfejsu sieciowego:';
+
 ?>
