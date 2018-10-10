@@ -1,257 +1,328 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="netdevconnbox">
-    <COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicedevices">
-		<TD class="bold nobr">
-			<IMG SRC="img/mac.gif" alt="">
-			{t a=$netdevlist|@count}Connected devices ($a):{/t}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="devicedevices" style="display:none;">
-		<TD style="width: 100%;">
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<COLGROUP>
-					<COL style="width: 96%;">
-					<COL style="width: 1;">
-					<COL style="width: 1;">
-					<COL style="width: 1;">
-					<COL style="width: 1;">
-				</COLGROUP>
-        <THEAD>
-	<TR class="lms-ui-header-panel">
-		<TD>
-			<IMG src="img/netdev.gif" ALT=""> <span class="bold">{trans("Name")} / {trans("Producer")}:</span><BR>
-			<IMG src="img/home.gif" ALT=""> {trans("Location:")}
-		</TD>
-		<TD class="nobr">
-			{trans("Link technology:")}<BR>
-			{trans("Link speed:")}
-		</TD>
-		<TD class="text-right nobr">
-			{trans("Port")}:<BR>
-			{trans("ID:")}
-		</TD>
-		<TD class="nobr">
-			<IMG src="img/netdev_takenports.gif" ALT=""> {trans("Dest. port")}:<BR>
-			<IMG src="img/port.gif" ALT=""> {trans("Ports (used):")}
-		</TD>
-		<TD>&nbsp;</TD>
-	</TR>
-        </THEAD>
-        <TBODY>
-	{foreach $netdevlist as $netdevice}
-	<TR class="highlight">
-		<TD class="valign-top nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdevice.id}';">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevice.id}"><span class="bold">{$netdevice.name} {if $netdevice.producer}/ {$netdevice.producer}{/if}</span></A><BR>
-			<IMG src="img/home.gif" ALT=""> {$netdevice.location}{if $netdevice.borough_name} ({$netdevice.state_name} / {$netdevice.district_name} / {$_BOROUGHTYPES[$netdevice.borough_type]} {$netdevice.borough_name}){/if}
-		</TD>
-		<TD class="valign-top nobr" id="dev_{$netdevice.id}">
-			{if $netdevice.linktechnology}{$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}{/if}{if $netdevice.linktype == 1 && ($netdevice.srcradiosector || $netdevice.dstradiosector)} ({if $netdevice.srcradiosector}{$netdevice.srcradiosector}{else}-{/if}/{if $netdevice.dstradiosector}{$netdevice.dstradiosector}{else}-{/if}){/if}<BR>
-			{if $netdevice.linkspeed}{$_LINKSPEEDS[$netdevice.linkspeed]}{/if}
-		</TD>
-		<TD class="text-right nobr" onClick="return self.location.href='?m=netdevinfo&id={$netdevice.id}';">
-			<IMG src="img/empty.gif" height="16">[{if $netdevice.srcport}{$netdevice.srcport}{/if}]<BR>
-			({$netdevice.id|string_format:"%04d"})
-		</TD>
-		<TD class="nobr">
-			<span id="devlinkproperties_{$netdevice.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
-				<IMG SRC="img/{if $netdevice.linktype == 1}wireless.gif{elseif $netdevice.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{trans("Change connection properties")}" {tip trigger="devlinkproperties_$netdevice.id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}<br>{if $netdevice.linktype == 1}{if $netdevice.srcradiosector}{trans("Radio sector:")} {$netdevice.srcradiosector}<br>{/if}{if $netdevice.dstradiosector}{trans("Destination radio sector:")} {$netdevice.dstradiosector}<br>{/if}{/if}{if $netdevice.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}</span>"}>
-			</span>
-			<span onClick="return self.location.href='?m=netdevinfo&id={$netdevice.id}';">
-			[{if $netdevice.dstport}{$netdevice.dstport}{/if}]
-			<BR><IMG SRC="img/port.gif" ALT=""> {$netdevice.ports} ({$netdevice.takenports})
-			</span>
-		</TD>
-		<TD class="text-right">
-			<A HREF="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdevice.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" {tip text="Delete connection"}></A>
-		</TD>
-	</TR>
-	{foreachelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<P>{trans("No such connected devices.")}</P>
-		</TD>
-	</TR>
-	{/foreach}
-	<TR class="lms-ui-button-panel">
-		<TD class="text-center nobr" COLSPAN="6">
-			{if $netdev.ports == $netdev.takenports}
-			<span class="bold">{trans("All ports in that device are in use.")}</span>
-			{elseif !$restnetdevlist}
-			<span class="bold">{trans("No such devices for connection.")}</span>
-			{else}
-			<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
-			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
-			<TABLE style="width: 100%;">
-				<COLGROUP>
-					<COL style="width: 99%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-				<TR>
-					<TD class="dark nobr">
-						<span class="bold">{trans("Connect")}:</span>
-						{trans("Device:")}<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select" trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev()">
-						{section name=restnetdevlist loop=$restnetdevlist}
-							{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
-							{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}
-							{if $restnetdevlist[restnetdevlist].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$restnetdevlist[restnetdevlist].location|cat:")"}{/if}
-							<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}"{if $connect.id == $restnetdevlist[restnetdevlist].id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
-						{/section}
-						</SELECT>
-						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdev.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>&nbsp;
-						<label for="srcport">{trans("Port")}:</label><INPUT name="srcport" id="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
-						<SELECT NAME="srcradiosector" id="connboxsrcradiosector" {tip trigger="connboxsrcradiosector" text="Select radio sector"}{if $devlinktype != 1} style="display: none;"{/if}>
-							<OPTION value="0">- {trans("none")} -</OPTION>
-						</SELECT>
-						<label for="dstport">{trans("Dest. port")}:</label><INPUT name="dstport" id="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2" {tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}>
-						<SELECT NAME="dstradiosector" id="connboxdstradiosector" {tip trigger="connboxdstradiosector" text="Select radio sector"}{if $devlinktype != 1} style="display: none;"{/if}>
-							<OPTION value="0">- {trans("none")} -</OPTION>
-							{foreach $netdev.radiosectors as $radiosector}
-							<OPTION value="{$radiosector.id}"{if $radiosector.id == $netlinkdstradiosector} selected{/if}>{$radiosector.name}</OPTION>
-							{/foreach}
-						</SELECT>
-						<SELECT name="linktype" id="connboxlinktype" {tip trigger="linktype" text="Select link type"} onchange="change_devlinktype(this.options[this.selectedIndex].value)">
-							{foreach from=$_LINKTYPES item=item key=key}
-							<OPTION VALUE="{$key}"{if $key==$devlinktype} selected{/if}>{$item}</OPTION>
-							{/foreach}
-						</SELECT>
-						<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"} onchange="change_devlinktechnology(this.options[this.selectedIndex].value)">
-							<OPTION value="0">{trans("- unknown -")}</OPTION>
-							{if !$devlinktype}{$devlinktype = 0}{/if}
-							{foreach $_LINKTECHNOLOGIES[$devlinktype] as $linktechnologyidx => $linktechnology}
-							<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $devlinktechnology} selected{/if}>{$linktechnology}</OPTION>
-							{/foreach}
-						</SELECT>
-						<SELECT name="linkspeed" id="connboxlinkspeed" {tip trigger="linkspeed" text="Select link speed"}>
-							{foreach from=$_LINKSPEEDS item=item key=key}
-								<OPTION VALUE="{$key}"{if $key==$devlinkspeed || (!$devlinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-					<TD class="dark nobr">
-						<A HREF="javascript:document.connect.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt="">
-					</TD>
-				</TR>
-			</TABLE>
-			</FORM>
-			{/if}
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-               </TD>
-       </TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-function change_devlinktype(linktype) {
-	linktype = parseInt(linktype);
-	var options = xjx.$('connboxlinktechnology').options;
-	while (options.length)
-		options.remove(0);
-	options.add(new Option('{trans("- unknown -")}', 0));
-	switch (linktype) {
-		case 0:
-			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 1:
-			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 2:
-			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-	}
-	xjx.$('connboxsrcradiosector').style.display = (linktype == 1 ? '' : 'none');
-	xjx.$('connboxdstradiosector').style.display = (linktype == 1 ? '' : 'none');
 
-	if (linktype == 1) {
-		var selected = xjx.$('srcnetdev').selectedIndex;
-		if (selected) {
-			netdev = xjx.$('srcnetdev').options[selected].value;
-			xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev);
+{css}
+
+<form method="GET" action="?m=netdevedit" name="connect" id="connect-form">
+<form>
+
+{tab_container id="netdevconnbox"}
+
+	{tab_header content_id="devicedevices"}
+		{tab_header_cell icon="lms-ui-icon-netdev"}
+			<strong>{t a=$netdevlist|@count}Connected devices ($a):{/t}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="devicedevices"}
+
+		{tab_table}
+
+			{if $netdevlist}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-8">
+					<div class="lms-ui-tab-table-wrapper name-location-link col-4">
+						<div class="lms-ui-tab-table-wrapper name-location col-2">
+							<div class="lms-ui-tab-table-column name">
+								<i class="lms-ui-icon-netdev"></i> <strong>{trans("Name")} / {trans("Producer")}:</strong>
+							</div>
+							<div class="lms-ui-tab-table-column location">
+								<i class="lms-ui-icon-location"></i> {trans("Location:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper link col-2">
+							<div class="lms-ui-tab-table-column link-tech">
+								{trans("Link technology:")}
+							</div>
+							<div class="lms-ui-tab-table-column link-speed">
+								{trans("Link speed:")}
+							</div>
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper id-port-taken-ports-used-ports col-4">
+						<div class="lms-ui-tab-table-wrapper id-port col-2">
+							<div class="lms-ui-tab-table-column id">
+								{trans("ID:")}
+							</div>
+							<div class="lms-ui-tab-table-column port">
+								{trans("Port")}:
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper taken-ports-used-ports col-2">
+							<div class="lms-ui-tab-table-column taken-ports">
+								{trans("Dest. port")}:
+							</div>
+							<div class="lms-ui-tab-table-column used-ports">
+								<i class="lms-ui-icon-plug"></i> {trans("Ports (used):")}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $netdevlist as $netdevice}
+			<div class="lms-ui-tab-table-row">
+				<div class="lms-ui-tab-table-wrapper col-8">
+					<div class="lms-ui-tab-table-wrapper name-location-link col-4">
+						<div class="lms-ui-tab-table-wrapper name-location col-2">
+							<div class="lms-ui-tab-table-column name" data-target-url="?m=netdevinfo&id={$netdevice.id}">
+								<i class="lms-ui-icon-netdev"></i>
+								<a name="{$netdevice.id}">
+									<strong>
+										{$netdevice.name} {if $netdevice.producer}/ {$netdevice.producer}{/if}
+									</strong>
+								</A>
+							</div>
+							<div class="lms-ui-tab-table-column location" data-target-url="?m=netdevinfo&id={$netdevice.id}">
+								{if $netdevice.location}
+									{$netdevice.location}
+									<i class="lms-ui-icon-location"></i>
+									{if $netdevice.borough_name}
+										({$netdevice.state_name} / {$netdevice.district_name} / {$_BOROUGHTYPES[$netdevice.borough_type]} {$netdevice.borough_name})
+									{/if}
+								{else}
+									-
+								{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper link col-2">
+							<div class="lms-ui-tab-table-column link-tech" id="dev-link-tech-{$netdevice.id}">
+								{if $netdevice.linktechnology}{$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}{else}-{/if}
+								{if $netdevice.linktype == $smarty.const.LINKTYPE_WIRELESS && ($netdevice.srcradiosector || $netdevice.dstradiosector)} ({if $netdevice.srcradiosector}{$netdevice.srcradiosector}{else}-{/if}/{if $netdevice.dstradiosector}{$netdevice.dstradiosector}{/if}){/if}
+							</div>
+							<div class="lms-ui-tab-table-column link-speed" id="dev-link-speed-{$netdevice.id}">
+								{if $netdevice.linkspeed}{$_LINKSPEEDS[$netdevice.linkspeed]}{else}-{/if}
+							</div>
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper id-port-taken-ports-used-ports col-4">
+						<div class="lms-ui-tab-table-wrapper id-port col-2">
+							<div class="lms-ui-tab-table-column id" data-target-url="?m=netdevinfo&id={$netdevice.id}">
+								({$netdevice.id|string_format:"%04d"})
+							</div>
+							<div class="lms-ui-tab-table-column port" data-target-url="?m=netdevinfo&id={$netdevice.id}">
+								[{if $netdevice.srcport}{$netdevice.srcport}{else}-{/if}]
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper taken-ports-used-ports col-2">
+							<div class="lms-ui-tab-table-column taken-ports">
+								<span id="dev-link-port-{$netdevice.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$netdevice.id}', true);">
+									<i class="{if $netdevice.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $netdevice.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
+											{tip trigger="dev-link-port-{$netdevice.id}"
+												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$netdevice.linktype]}<br>{if $netdevice.linktype == $smarty.const.LINKETYPE_WIRELESS}{if $netdevice.srcradiosector}{trans("Radio sector:")} {$netdevice.srcradiosector}<br>{/if}{if $netdevice.dstradiosector}{trans("Destination radio sector:")} {$netdevice.dstradiosector}<br>{/if}{/if}{if $netdevice.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$netdevice.linktype][$netdevice.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$netdevice.linkspeed]}</span>"}>
+									</i>
+								</span>
+								[{if $netdevice.dstport}{$netdevice.dstport}{else}-{/if}]
+							</div>
+							<div class="lms-ui-tab-table-column used-ports">
+								<i class="lms-ui-icon-plug"></i> {$netdevice.ports} ({$netdevice.takenports})
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="lms-ui-tab-table-column buttons">
+					{button type="link" href="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdevice.id}"
+						onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"
+						icon="delete" tip="Delete connection"}
+				</div>
+			</div>
+			{foreachelse}
+
+			<div class="lms-ui-tab-empty-table">
+				{trans("No such connected devices.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+		{tab_button_panel}
+			{tab_buttons}
+				{if $netdev.ports == $netdev.takenports}
+					<strong>{trans("All ports in that device are in use.")}</strong>
+				{elseif $nodelist == NULL}
+					<strong>{trans("No such devices for connection.")}</strong>
+				{else}
+					<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit" form="connect-form">
+					<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}" form="connect-form">
+					<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect" form="connect-form">
+
+					<strong>{trans("Connect")}:</strong>
+					<span class="nobr">
+						{trans("Device:")}
+						<SELECT NAME="netdev" id="srcnetdev" {tip class="lms-ui-advanced-select" trigger="link" text="Select from list device for connection"}
+								onchange="get_radio_sectors_for_netdev()" form="connect-form">
+							{foreach $restnetdevlist as $dev}
+							{assign var=netdevname value=$dev.name}
+							{if $dev.producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$dev.producer}{/if}
+							{if $dev.location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$dev.location|cat:")"}{/if}
+							<OPTION VALUE="{$dev.id}"{if $connect.id == $dev.id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+							{/foreach}
+						</SELECT>
+						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdev.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
+					</span>
+
+					<label class="nobr">
+						{trans("Port")}:
+						<INPUT type="text" name="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2"
+								{tip text="Enter port number in device for connection (optional)" trigger="srcport"}
+								form="connect-form">
+					</label>
+					<SELECT NAME="srcradiosector" id="connboxsrcradiosector" {tip trigger="connboxsrcradiosector" text="Select radio sector"}
+							{if $devlinktype != $smarty.const.LINKTYPE_WIRELESS} style="display: none;"{/if}
+							form="connect-form">
+						<OPTION value="0">- {trans("none")} -</OPTION>
+					</SELECT>
+
+					<label class="nobr">
+						{trans("Dest. port")}:
+						<INPUT type="text" name="dstport" value="{if $connect.dstport}{$connect.dstport}{/if}" size="2"
+								{tip text="Enter port number in device to which device will be connected (optional)" trigger="dstport"}
+								form="connect-form">
+					</label>
+					<SELECT NAME="dstradiosector" id="connboxdstradiosector" {tip trigger="connboxdstradiosector" text="Select radio sector"}
+							{if $devlinktype != $smarty.const.LINKTYPE_WIRELESS} style="display: none;"{/if}
+							form="connect-form">
+						<OPTION value="0">- {trans("none")} -</OPTION>
+						{foreach $netdev.radiosectors as $radiosector}
+						<OPTION value="{$radiosector.id}"{if $radiosector.id == $netlinkdstradiosector} selected{/if}>{$radiosector.name}</OPTION>
+						{/foreach}
+					</SELECT>
+
+					<SELECT name="linktype" id="connboxlinktype" {tip trigger="linktype" text="Select link type"}
+							onchange="change_devlinktype(this.options[this.selectedIndex].value)"
+							form="connect-form">
+						{foreach $_LINKTYPES as $key => $item}
+						<OPTION VALUE="{$key}"{if $key==$devlinktype} selected{/if}>{$item}</OPTION>
+						{/foreach}
+					</SELECT>
+
+					<SELECT NAME="linktechnology" id="connboxlinktechnology" {tip trigger="connboxlinktechnology" text="Select link technology"}
+							onchange="change_devlinktechnology(this.options[this.selectedIndex].value)"
+							form="connect-form">
+						<OPTION value="0">{trans("- unknown -")}</OPTION>
+						{if !$devlinktype}{$devlinktype = 0}{/if}
+						{foreach $_LINKTECHNOLOGIES[$devlinktype] as $linktechnologyidx => $linktechnology}
+						<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $devlinktechnology} selected{/if}>{$linktechnology}</OPTION>
+						{/foreach}
+					</SELECT>
+
+					<SELECT name="linkspeed" id="connboxlinkspeed" {tip trigger="linkspeed" text="Select link speed"}
+							form="connect-form">
+						{foreach $_LINKSPEEDS as $key => $item}
+						<OPTION VALUE="{$key}"{if $key==$devlinkspeed || (!$devlinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
+						{/foreach}
+					</SELECT>
+
+					{button icon="save" onclick="javascript:document.connect.submit();" label="Connect"}
+				{/if}
+			{/tab_buttons}
+		{/tab_button_panel}
+
+	{/tab_contents}
+
+{/tab_container}
+
+<SCRIPT>
+
+	function change_devlinktype(linktype) {
+		linktype = parseInt(linktype);
+		var options = xjx.$('connboxlinktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- unknown -")}', 0));
+		switch (linktype) {
+			case 0:
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 1:
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 2:
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
+		xjx.$('connboxsrcradiosector').style.display = (linktype == 1 ? '' : 'none');
+		xjx.$('connboxdstradiosector').style.display = (linktype == 1 ? '' : 'none');
+	
+		if (linktype == 1) {
+			var selected = xjx.$('srcnetdev').selectedIndex;
+			if (selected) {
+				netdev = xjx.$('srcnetdev').options[selected].value;
+				xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev);
+			}
 		}
 	}
-}
-
-function change_devlinktechnology(linktechnology) {
-	linktechnology = parseInt(linktechnology);
-	var linktype = xjx.$('connboxlinktype').options[xjx.$('connboxlinktype').selectedIndex].value;
-	if (linktype != 1)
-		return;
-	var netdev = xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value;
-	if (netdev !== undefined) {
-		xjx.$('connboxsrcradiosector').disabled = true;
+	
+	function change_devlinktechnology(linktechnology) {
+		linktechnology = parseInt(linktechnology);
+		var linktype = xjx.$('connboxlinktype').options[xjx.$('connboxlinktype').selectedIndex].value;
+		if (linktype != 1)
+			return;
+		var netdev = xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value;
+		if (netdev !== undefined) {
+			xjx.$('connboxsrcradiosector').disabled = true;
+			xjx.$('connboxdstradiosector').disabled = true;
+			xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev, linktechnology);
+			xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id}, linktechnology);
+		}
+	}
+	
+	function get_radio_sectors_for_self_netdev() {
 		xjx.$('connboxdstradiosector').disabled = true;
-		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev, linktechnology);
-		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id}, linktechnology);
+		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id});
 	}
-}
-
-function get_radio_sectors_for_self_netdev() {
-	xjx.$('connboxdstradiosector').disabled = true;
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id});
-}
-
-function get_radio_sectors_for_netdev() {
-	xjx.$('connboxsrcradiosector').disabled = true;
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value);
-}
-
-function radio_sectors_received_for_srcnetdev(radiosectors) {
-	var options = xjx.$('connboxsrcradiosector').options;
-	var oldvalue = options[xjx.$('connboxsrcradiosector').selectedIndex].value;
-	while (options.length)
-		options.remove(0);
-	options.add(new Option('- {trans("none")} -', 0));
-	if (radiosectors !== null) {
-		radiosectors.forEach(function(elem) {
-			var option = new Option(elem.name, elem.id);
-			if (elem.id == oldvalue)
-				option.selected = true;
-			options.add(option);
-		});
+	
+	function get_radio_sectors_for_netdev() {
+		xjx.$('connboxsrcradiosector').disabled = true;
+		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value);
 	}
-	xjx.$('connboxsrcradiosector').disabled = false;
-}
-
-function radio_sectors_received_for_dstnetdev(radiosectors) {
-	var options = xjx.$('connboxdstradiosector').options;
-	var oldvalue = options[xjx.$('connboxdstradiosector').selectedIndex].value;
-	while (options.length)
-		options.remove(0);
-	options.add(new Option('- {trans("none")} -', 0));
-	if (radiosectors !== null) {
-		radiosectors.forEach(function(elem) {
-			var option = new Option(elem.name, elem.id);
-			if (elem.id == oldvalue)
-				option.selected = true;
-			options.add(option);
-		});
+	
+	function radio_sectors_received_for_srcnetdev(radiosectors) {
+		var options = xjx.$('connboxsrcradiosector').options;
+		var oldvalue = options[xjx.$('connboxsrcradiosector').selectedIndex].value;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('- {trans("none")} -', 0));
+		if (radiosectors !== null) {
+			radiosectors.forEach(function(elem) {
+				var option = new Option(elem.name, elem.id);
+				if (elem.id == oldvalue)
+					option.selected = true;
+				options.add(option);
+			});
+		}
+		xjx.$('connboxsrcradiosector').disabled = false;
 	}
-	xjx.$('connboxdstradiosector').disabled = false;
-}
+	
+	function radio_sectors_received_for_dstnetdev(radiosectors) {
+		var options = xjx.$('connboxdstradiosector').options;
+		var oldvalue = options[xjx.$('connboxdstradiosector').selectedIndex].value;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('- {trans("none")} -', 0));
+		if (radiosectors !== null) {
+			radiosectors.forEach(function(elem) {
+				var option = new Option(elem.name, elem.id);
+				if (elem.id == oldvalue)
+					option.selected = true;
+				options.add(option);
+			});
+		}
+		xjx.$('connboxdstradiosector').disabled = false;
+	}
+	
+	{if $restnetdevlist[0]}
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', {$restnetdevlist[0].id});
+	{/if}
 
-{if $restnetdevlist[0]}
-xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', {$restnetdevlist[0].id});
-{/if}
-
-if (getCookie('devicedevices') == '1') {
-	$('#devicedevices').show();
-}
-//-->
 </SCRIPT>

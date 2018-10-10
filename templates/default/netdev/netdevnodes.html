@@ -1,212 +1,262 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox lms-ui-sortable" id="netdevnodes">
-    <COLGROUP>
-		<COL style="width: 100%;">
-	</COLGROUP>
-	<THEAD>
-	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicenodes">
-		 <TD class="bold nobr">
-			<IMG SRC="img/node.gif" ALT="">
-			{t a=$netcomplist|@count}Connected nodes ($a):{/t}
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="devicenodes" style="display:none;">
-		<TD style="width: 100%;">
-			<TABLE class="lmsbox-inner lms-ui-background-cycle">
-				<COLGROUP>
-					<COL style="width: 96%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-				</COLGROUP>
-                            <THEAD>
-				<TR class="lms-ui-header-panel">
-					<TD class="nobr">
-						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span>
-						/ <IMG src="img/home.gif" ALT=""> {trans("Location:")}
-						<BR>
-						<img src="img/customer.gif" ALT=""> {trans("Owner:")}
-					</TD>
-					<TD class="nobr">
-						{trans("Link technology:")}<BR>
-						{trans("Link speed:")}
-					</TD>
-					<TD class="text-right nobr">
-						{trans("Node ID:")}<BR>
-						{trans("Customer ID:")}
-					</TD>
-					<TD class="nobr">
-						<img src="img/netdev_takenports.gif"> {trans("Port")}:<BR>
-						<img src="img/ip.gif" ALT=""> {trans("Network")} / {trans("IP address:")}
-					</TD>
-					<TD>&nbsp;</TD>
-				</TR>
-                            </THEAD>
-                            <TBODY>
-				{foreach $netcomplist as $node}
-				<TR class="highlight">
-					<TD onClick="return self.location.href='?m=nodeinfo&id={$node.id}';">
-						<IMG SRC="img/node.gif" ALT=""> <span class="bold">{$node.name}</span>
-						{if $node.location}
-						/ <IMG src="img/home.gif" ALT=""> {$node.location}{if $node.borough_name} ({$node.state_name} / {$node.district_name} / {$_BOROUGHTYPES[$node.borough_type]} {$node.borough_name}){/if}
-						{/if}
-						<BR>
-						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner}</A>
-					</TD>
-					<TD class="valign-top nobr" id="node_{$node.id}">
-						{if $node.linktechnology}{$_LINKTECHNOLOGIES[$node.linktype][$node.linktechnology]}{/if}{if $node.linktype == 1 && $node.radiosector} ({$node.radiosector}){/if}<BR>
-						{if $node.linkspeed}{$_LINKSPEEDS[$node.linkspeed]}{/if}
-					</TD>
-					<TD class="text-right nobr" onClick="return self.location.href='?m=nodeinfo&id={$node.id}';">
-						({$node.id|string_format:"%04d"})<BR>
-						<span class="blend">({$node.ownerid|string_format:"%04d"})</span>
-					</TD>
-					<TD class="nobr">
-						<span id="nodelinkproperties_{$node.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$node.id}', false);" >
-							<IMG src="{if $node.linktype == 1}img/wireless.gif{elseif $node.linktype == 2}img/netdev_takenports.gif{else}img/netdev_takenports.gif{/if}" alt="{trans("Change connection properties ")}" {tip trigger="nodelinkproperties_$node.id" text="<span style=\"white-space: nowrap;\">{trans("Link type:")} {$_LINKTYPES[$node.linktype]}<br>{if $node.linktype == 1 && $node.radiosector}{trans("Radio sector:")} {$node.radiosector}<br>{/if}{if $node.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$node.linktype][$node.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$node.linkspeed]}</span>"}>
-						</span>
-						<span onclick="return self.location.href='?m=nodeinfo&id={$node.id}';">
-						[{if $node.port}{$node.port}{/if}]
-						<BR><IMG SRC="img/ip.gif" ALT=""> {$node.netname} / {$node.ip}{if $node.ip_pub != "0.0.0.0"} ({$node.ip_pub}){/if}
-						</span>
-					</TD>
-					<TD class="text-right">
-						<A HREF="?m=netdevedit&action=disconnectnode&id={$netdev.id}&nodeid={$node.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete connection"}></A>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD colspan="5" class="empty-table">
-						<p>{trans("No such connected nodes.")}</p>
-					</TD>
-				</TR>
+
+{css}
+
+<form method="GET" action="?m=netdevedit" name="connectnode" id="connectnode-form">
+</form>
+
+{tab_container id="netdevipbox"}
+
+	{tab_header content_id="devicenodes"}
+		{tab_header_cell icon="lms-ui-icon-node"}
+			<strong>{t a=$netcomplist|@count}Connected nodes ($a):{/t}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="devicenodes"}
+
+		{tab_table}
+
+			{if $netcomplist}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-8">
+					<div class="lms-ui-tab-table-wrapper name-owner-nodeid-ownerid col-4">
+						<div class="lms-ui-tab-table-wrapper name-owner col-2">
+							<div class="lms-ui-tab-table-column name">
+								<i class="lms-ui-icon-node"></i> <strong>{trans("Name:")}</strong>
+								/ <i class="lms-ui-icon-location"></i> {trans("Location:")}
+							</div>
+							<div class="lms-ui-tab-table-column owner">
+								<i class="lms-ui-icon-customer"></i> {trans("Owner:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper nodeid-ownerid col-2">
+							<div class="lms-ui-tab-table-column nodeid">
+								{trans("Node ID:")}
+							</div>
+							<div class="lms-ui-tab-table-column ownerid">
+								{trans("Customer ID:")}
+							</div>
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper link-taken-ports-network col-4">
+						<div class="lms-ui-tab-table-wrapper link col-2">
+							<div class="lms-ui-tab-table-column link-tech">
+								{trans("Link technology:")}
+							</div>
+							<div class="lms-ui-tab-table-column link-speed">
+								{trans("Link speed:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper taken-ports-network col-2">
+							<div class="lms-ui-tab-table-column taken-ports">
+								<i class="lms-ui-icon-plug"></i> {trans("Port")}:
+							</div>
+							<div class="lms-ui-tab-table-column network">
+								<i class="lms-ui-icon-ipnetwork"></i> {trans("Network")} / {trans("IP address:")}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $netcomplist as $node}
+			<div class="lms-ui-tab-table-row">
+				<div class="lms-ui-tab-table-wrapper col-8">
+					<div class="lms-ui-tab-table-wrapper name-owner-nodeid-ownerid col-4">
+						<div class="lms-ui-tab-table-wrapper name-owner col-2">
+							<div class="lms-ui-tab-table-column name" data-target-url="?m=nodeinfo&id={$node.id}">
+								<i class="lms-ui-icon-node"></i> <strong>{$node.name}</strong>
+								{if $node.location}
+									/ <i class="lms-ui-icon-location"></i>
+									{$node.location}{if $node.borough_name} ({$node.state_name} / {$node.district_name} / {$_BOROUGHTYPES[$node.borough_type]} {$node.borough_name}){/if}
+								{else}
+									-
+								{/if}
+							</div>
+							<div class="lms-ui-tab-table-column owner" data-target-url="?m=customerinfo&id={$node.ownerid}">
+								<i class="lms-ui-icon-customer"></i>
+								<A href="?m=customerinfo&id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner}</A>
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper nodeid-ownerid col-2">
+							<div class="lms-ui-tab-table-column nodeid" data-target-url="?m=nodeinfo&id={$node.id}">
+								({$node.id|string_format:"%04d"})
+							</div>
+							<div class="lms-ui-tab-table-column ownerid blend" data-target-url="?m=customerinfo&id={$node.ownerid}">
+								({$node.ownerid|string_format:"%04d"})
+							</div>
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper link-taken-ports-network col-4">
+						<div class="lms-ui-tab-table-wrapper link col-2">
+							<div class="lms-ui-tab-table-column link-tech" id="node-link-tech-{$node.id}">
+								{if $node.linktechnology}{$_LINKTECHNOLOGIES[$node.linktype][$node.linktechnology]}{else}-{/if}
+								{if $node.linktype == $smarty.const.LINKTYPE_WIRELESS && $node.radiosector} ({$node.radiosector}){/if}
+							</div>
+							<div class="lms-ui-tab-table-column link-speed" id="node-link-speed-{$node.id}">
+								{if $node.linkspeed}{$_LINKSPEEDS[$node.linkspeed]}{else}-{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper taken-ports-network col-2">
+							<div class="lms-ui-tab-table-column taken-ports">
+								<span id="node-link-port-{$node.id}" onClick="javascript:netlinkpropertieschoosewin('{$netdev.id}', '{$node.id}', false);">
+									<i class="{if $node.linktype == $smarty.const.LINKTYPE_WIRELESS}lms-ui-icon-wireless{elseif $node.linktype == $smarty.const.LINKTYPE_FIBER}lms-ui-icon-fiber{else}lms-ui-icon-wired{/if}"
+											{tip trigger="node-link-port-{$node.id}"
+												text="<span class=\"nobr\">{trans("Link type:")} {$_LINKTYPES[$node.linktype]}<br>{if $node.linktype == $smarty.const.LINKTYPE_WIRELESS && $node.radiosector}{trans("Radio sector:")} {$node.radiosector}<br>{/if}{if $node.linktechnology}{trans("Link technology:")} {$_LINKTECHNOLOGIES[$node.linktype][$node.linktechnology]}<br>{/if}{trans("Link speed:")} {$_LINKSPEEDS[$node.linkspeed]}</span>"}>
+									</i>
+								</span>
+								[{if $node.port}{$node.port}{else}-{/if}]
+							</div>
+							<div class="lms-ui-tab-table-column network" data-target-url="?m=nodeinfo&id={$node.id}">
+								<i class="lms-ui-icon-ipnetwork"></i> {$node.netname} / {$node.ip}
+								{if $node.ip_pub != "0.0.0.0"} ({$node.ip_pub}){/if}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					{button type="link" href="?m=netdevedit&action=disconnectnode&id={$netdev.id}&nodeid={$node.id}"
+						onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"
+						icon="delete" tip="Delete connection"}
+				</div>
+			</div>
+			{foreachelse}
+
+			<div class="lms-ui-tab-empty-table">
+				{trans("No such connected nodes.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+		{tab_button_panel}
+			{tab_buttons}
+				{if $netdev.ports == $netdev.takenports}
+					<strong>{trans("All ports in that device are in use.")}</strong>
+				{elseif $nodelist == NULL}
+					<strong>{trans("No such nodes to connection.")}</strong>
+				{else}
+					<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit" form="connectnode-form">
+					<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}" form="connectnode-form">
+					<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode" form="connectnode-form">
+
+					<strong>{trans("Connect")}:</strong>
+					<span class="nobr">
+						{trans("Node:")}
+						<SELECT NAME="nodeid" style="width: 300px" {tip class="lms-ui-advanced-select" trigger="linknode" text="Select node, which you want to connect to device"}
+								form="connectnode-form">
+							{foreach $nodelist as $node}
+								<OPTION VALUE="{$node.id}"{if $connectnode.id == $node.id} selected{/if}>{$node.name} ({$node.ip})</OPTION>
+							{/foreach}
+						</SELECT>
+						<a href="#" onclick="return nodeChooseWin(document.connectnode.elements['nodeid']);" {tip trigger="netdev" text="Search node"}>&raquo;&raquo;&raquo;</A>&nbsp;
+					</span>
+
+					<label class="nobr">
+						{trans("Dest. port")}:
+						<INPUT type="text" name="port" id="port"
+								value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}
+								form="connectnode-form">
+					</label>
+					<SELECT NAME="radiosector" id="devnodesradiosector"
+							{tip trigger="devnodesradiosector" text="Select radio sector"}{if $nodelinktype != 1} style="display: none;"{/if}
+							form="connectnode-form">
+						<OPTION value="0">- {trans("none")} -</OPTION>
+						{foreach $netdev.radiosectors as $radiosector}
+							<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodelinkradiosector} selected{/if}>{$radiosector.name}</OPTION>
+						{/foreach}
+					</SELECT>
+					<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"}
+							onchange="change_nodelinktype(this.options[this.selectedIndex].value)"
+							form="connectnode-form">
+						{foreach from=$_LINKTYPES item=item key=key}
+							<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
+						{/foreach}
+					</SELECT>
+					{if !isset($nodelinktype)}{$devnodeslinktype = 0}{else}{$devnodeslinktype = $nodelinktype}{/if}
+					<SELECT NAME="linktechnology" id="devnodeslinktechnology"
+							{tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology()"
+							form="connectnode-form">
+						<OPTION value="0">{trans("- unknown -")}</OPTION>
+						{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
+							<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
+						{/foreach}
+					</SELECT>
+					<SELECT NAME="linkspeed" id="devnodeslinkspeed" {tip trigger="devnodeslinkspeed" test="Select link speed"}
+							form="connectnode-form">
+						{foreach $_LINKSPEEDS as $key => $item}
+							<OPTION value="{$key}"{if $key==$nodelinkspeed || (!$nodelinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
+						{/foreach}
+					</SELECT>
+					{button icon="save" onclick="javascript:document.connectnode.submit();" label="Connect"}
+				{/if}
+			{/tab_buttons}
+		{/tab_button_panel}
+
+	{/tab_contents}
+
+{/tab_container}
+
+<SCRIPT>
+
+	function change_nodelinktype(linktype) {
+		linktype = parseInt(linktype);
+		var options = xjx.$('devnodeslinktechnology').options;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('{trans("- unknown -")}', 0));
+		switch (linktype) {
+			case 0:
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
 				{/foreach}
-				<TR class="lms-ui-button-panel">
-					<TD class="text-center nobr" COLSPAN="5">
-						{if $netdev.ports == $netdev.takenports}
-						<span class="bold">{trans("All ports in that device are in use.")}</span>
-						{elseif $nodelist == NULL}
-						<span class="bold">{trans("No such nodes to connection.")}</span>
-						{else}
-						<FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
-						<INPUT type="submit" class="hiddenbtn">
-						<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-						<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
-						<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
-						<TABLE style="width: 100%;">
-							<COLGROUP>
-								<COL style="width: 99%;">
-								<COL style="width: 1;">
-							</COLGROUP>
-							<TR>
-								<TD class="dark nobr">
-									<span class="bold">{trans("Connect")}:</span>
-									{trans("Node:")}
-									<SELECT NAME="nodeid" style="width: 300px" {tip class="lms-ui-advanced-select" trigger="linknode" text="Select node, which you want to connect to device"}>
-									{section name=nodelist loop=$nodelist}
-										<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
-									{/section}
-									</SELECT>
-									<a href="javascript: void(0);" onclick="return nodeChooseWin(document.connectnode.elements['nodeid']);" {tip trigger="netdev" text="Search node"}>&raquo;&raquo;&raquo;</A>&nbsp;
-
-									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-									<SELECT NAME="radiosector" id="devnodesradiosector" {tip trigger="devnodesradiosector" text="Select radio sector"}{if $nodelinktype != 1} style="display: none;"{/if}>
-										<OPTION value="0">- {trans("none")} -</OPTION>
-										{foreach $netdev.radiosectors as $radiosector}
-										<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodelinkradiosector} selected{/if}>{$radiosector.name}</OPTION>
-										{/foreach}
-									</SELECT>
-									<SELECT NAME="linktype" id="devnodeslinktype" {tip trigger="devnodeslinktype" text="Select link type"} onchange="change_nodelinktype(this.options[this.selectedIndex].value)">
-										{foreach from=$_LINKTYPES item=item key=key}
-										<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
-										{/foreach}
-									</SELECT>
-									{if !isset($nodelinktype)}{$devnodeslinktype = 0}{else}{$devnodeslinktype = $nodelinktype}{/if}
-									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology()">
-										<OPTION value="0">{trans("- unknown -")}</OPTION>
-										{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
-										<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
-										{/foreach}
-									</SELECT>
-									<SELECT NAME="linkspeed" id="devnodeslinkspeed" {tip trigger="devnodeslinkspeed" test="Select link speed"}>
-										{foreach from=$_LINKSPEEDS item=item key=key}
-											<OPTION value="{$key}"{if $key==$nodelinkspeed || (!$nodelinkspeed && $key==100000)} selected{/if}>{$item}</OPTION>
-										{/foreach}
-								</TD>
-								<TD class="dark text-right nobr">
-									<A HREF="javascript:document.connectnode.submit(); ">{trans("Connect")}</A> <IMG src="img/save.gif" alt="">
-								</TD>
-							</TR>
-						</TABLE>
-						</FORM>
-						{/if}
-					</TD>
-				</TR>
-                            </TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-function change_nodelinktype(linktype) {
-	linktype = parseInt(linktype);
-	var options = xjx.$('devnodeslinktechnology').options;
-	while (options.length)
-		options.remove(0);
-	options.add(new Option('{trans("- unknown -")}', 0));
-	switch (linktype) {
-		case 0:
-			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 1:
-			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 2:
-			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
+				break;
+			case 1:
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 2:
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+		}
+		xjx.$('devnodesradiosector').style.display = (linktype == 1 ? '' : 'none');
+		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdev.id});
 	}
-	xjx.$('devnodesradiosector').style.display = (linktype == 1 ? '' : 'none');
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdev.id});
-}
 
-function change_nodelinktechnology() {
-	linktechnology = parseInt(xjx.$('devnodeslinktechnology').options[xjx.$('devnodeslinktechnology').selectedIndex].value);
-	var linktype = xjx.$('devnodeslinktype').value;
-	if (linktype != 1)
-		return;
-	xjx.$('devnodesradiosector').disabled = true;
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdev.id}, linktechnology);
-}
-
-function radio_sectors_received_for_node(radiosectors) {
-	var options = xjx.$('devnodesradiosector').options;
-	var oldvalue = options[xjx.$('devnodesradiosector').selectedIndex].value;
-	while (options.length)
-		options.remove(0);
-	options.add(new Option('- {trans("none")} -', 0));
-	if (radiosectors !== null) {
-		radiosectors.forEach(function(elem) {
-			var option = new Option(elem.name, elem.id);
-			if (elem.id == oldvalue)
-				option.selected = true;
-			options.add(option);
-		});
+	function change_nodelinktechnology() {
+		linktechnology = parseInt(xjx.$('devnodeslinktechnology').options[xjx.$('devnodeslinktechnology').selectedIndex].value);
+		var linktype = xjx.$('devnodeslinktype').value;
+		if (linktype != 1)
+			return;
+		xjx.$('devnodesradiosector').disabled = true;
+		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdev.id}, linktechnology);
 	}
-	xjx.$('devnodesradiosector').disabled = false;
-}
 
-if (getCookie('devicenodes') == '1')
-	xjx.$('devicenodes').style.display = '';
-//-->
+	function radio_sectors_received_for_node(radiosectors) {
+		var options = xjx.$('devnodesradiosector').options;
+		var oldvalue = options[xjx.$('devnodesradiosector').selectedIndex].value;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('- {trans("none")} -', 0));
+		if (radiosectors !== null) {
+			radiosectors.forEach(function(elem) {
+				var option = new Option(elem.name, elem.id);
+				if (elem.id == oldvalue)
+					option.selected = true;
+				options.add(option);
+			});
+		}
+		xjx.$('devnodesradiosector').disabled = false;
+	}
+
 </SCRIPT>

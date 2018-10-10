@@ -207,8 +207,8 @@ switch ($action) {
 
 	case 'connect':
 		$linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
-		$srcradiosector = ($linktype == 1 ? intval($_GET['srcradiosector']) : null);
-		$dstradiosector = ($linktype == 1 ? intval($_GET['dstradiosector']) : null);
+		$srcradiosector = ($linktype == LINKTYPE_WIRELESS ? intval($_GET['srcradiosector']) : null);
+		$dstradiosector = ($linktype == LINKTYPE_WIRELESS ? intval($_GET['dstradiosector']) : null);
 		$linktechnology = !empty($_GET['linktechnology']) ? intval($_GET['linktechnology']) : '0';
 		$linkspeed = !empty($_GET['linkspeed']) ? intval($_GET['linkspeed']) : '100000';
 		$dev['srcport'] = !empty($_GET['srcport']) ? intval($_GET['srcport']) : '0';
@@ -222,7 +222,7 @@ switch ($action) {
 		$takenports2 = $LMS->CountNetDevLinks($dev['id']);
 
 		if ($ports1 <= $takenports1 || $ports2 <= $takenports2)
-			$error['linknode'] = trans('No free ports on device!');
+			$error['srcport'] = trans('No free ports on device!');
 		else {
 			if ($dev['srcport']) {
 				if (!preg_match('/^[0-9]+$/', $dev['srcport']) || $dev['srcport'] > $ports2) {
