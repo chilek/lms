@@ -1094,7 +1094,9 @@ $(function() {
 			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
 			}
-			parent.append($('<div class="lms-ui-wysiwyg-editor"><label><input type="checkbox" name="' + inputname +
+			parent.append($('<div class="lms-ui-wysiwyg-editor"><label>' +
+				'<input type="hidden" name="' + inputname + '" value="false">' +
+				'<input type="checkbox" name="' + inputname +
 				'" value="true"' + (wysiwyg ? ' checked' : '') + '>' + $t('visual editor') +
 				'</label></div')).find('div.lms-ui-wysiwyg-editor').append(this);
 
