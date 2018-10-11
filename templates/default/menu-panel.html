@@ -1,5 +1,6 @@
 <i id="lms-ui-menu-panel-toggle" class="fas fa-angle-left"></i>
 <nav id="lms-ui-menu-panel" class="no-print">
+	<div id="lms-ui-menu-panel-container">
 	<div id="lms-ui-logo">
 		<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}">
 	</div>
@@ -95,4 +96,11 @@
 	<div id="lms-ui-copyrights">
 		&copy; 2001-{$smarty.now|date_format:'%Y'}<br><A href="?m=copyrights">LMS Developers</A>
 	</div>
+	</div>
 </nav>
+<script>
+
+	var menuPanelContainer = $('#lms-ui-menu-panel-container');
+	menuPanelContainer.css('margin-right', menuPanelContainer.width() - menuPanelContainer.outerWidth() + 'px');
+
+</script>
