@@ -1040,7 +1040,7 @@ $(function() {
 				'| removeformat',
 			image_advtab: true,
 			height: 250,
-			width: 700,
+			width: '100%',
 			resize: 'both',
 			branding: false,
 			paste_data_images: true
