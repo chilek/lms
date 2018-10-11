@@ -7,9 +7,9 @@
 			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
-			{if $ticket.state != 2}
-			<button type="button" class="lms-ui-button" onclick='onclick='window.location.href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}"'><i class="lms-ui-icon-note"></i>{trans("New Note")}
-			<button type="button" class="lms-ui-button" onclick='onclick='window.location.href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}"'><i class="lms-ui-icon-message"></i>{trans("New Message")}
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{button icon="lms-ui-icon-note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
+				{button icon="lms-ui-icon-message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
 			{/if}
 		</TD>
 	</TR>
