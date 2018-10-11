@@ -101,6 +101,6 @@
 <script>
 
 	var menuPanelContainer = $('#lms-ui-menu-panel-container');
-	menuPanelContainer.css('margin-right', menuPanelContainer.width() - menuPanelContainer.outerWidth() + 'px');
+	menuPanelContainer.css('margin-right', menuPanelContainer[0].clientWidth - menuPanelContainer[0].offsetWidth + 'px');
 
 </script>
