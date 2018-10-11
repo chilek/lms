@@ -107,20 +107,20 @@
 	$(function() {
 		$('#lms-ui-menu-panel').on('mouseenter touchstart', function () {
 			if ($('#lms-ui-menu-panel').css('--lms-mobile')) {
-				$(this).clearQueue().animate({
+				$(this).stop(true).animate({
 					width: '12em'
 				});
 			}
 		}).on('mouseleave', function () {
 			if ($('#lms-ui-menu-panel').css('--lms-mobile')) {
-				$(this).clearQueue().animate({
+				$(this).stop(true).animate({
 					width: '3em'
 				});
 			}
 		});
 		$('#lms-ui-contents').on('mouseenter touchstart', function () {
 			if ($('#lms-ui-menu-panel').css('--lms-mobile')) {
-				$('#lms-ui-menu-panel').clearQueue().animate({
+				$('#lms-ui-menu-panel').stop(true).animate({
 					width: '3em'
 				});
 			}
