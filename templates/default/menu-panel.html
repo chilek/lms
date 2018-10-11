@@ -103,4 +103,28 @@
 	var menuPanelContainer = $('#lms-ui-menu-panel-container');
 	menuPanelContainer.css('margin-right', menuPanelContainer[0].clientWidth - menuPanelContainer[0].offsetWidth + 'px');
 
+
+	$(function() {
+		$('#lms-ui-menu-panel').on('mouseenter touchstart', function () {
+			if ($('#lms-ui-menu-panel').css('--lms-mobile')) {
+				$(this).animate({
+					width: '12em'
+				});
+			}
+		}).on('mouseleave', function () {
+			if ($('#lms-ui-menu-panel').css('--lms-mobile')) {
+				$(this).animate({
+					width: '3em'
+				});
+			}
+		});
+		$('#lms-ui-contents').on('mouseenter touchstart', function () {
+			if ($('#lms-ui-menu-panel').css('--lms-mobile')) {
+				$('#lms-ui-menu-panel').animate({
+					width: '3em'
+				});
+			}
+		});
+	});
+
 </script>

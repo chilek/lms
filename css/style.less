@@ -94,6 +94,14 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	align-items: center;
 }
 
+@media all and (max-width: 900px) {
+	#lms-ui-menu-panel {
+		min-width: unset;
+		width: 3em;
+		--lms-mobile: 1;
+	}
+}
+
 #lms-ui-menu-panel-toggle {
 	position: absolute;
 	left: 0.15em;
