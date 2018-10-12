@@ -27,83 +27,73 @@ function getManagementUrls() {
 }
 
 function addManagementUrl() {
-	$('#managementurladdlink').prop('disabled', true);
 	xajax_addManagementUrl($('#managementurladd').serialize());
 }
 
 function delManagementUrl(id) {
-	$('#managementurltable').prop('disabled', true);
-	$('#managementurlspanel #managementurltable').html(
-		$('#managementurlspanel .lms-ui-tab-hourglass-template').html());
 	xajax_delManagementUrl(id);
 }
 
 function toggleEditManagementUrl(id) {
-	var elems = ['url', 'comment'];
 	var edit = $('#edit_button_' + id).is(':visible');
 
-	$.each(elems, function(index, elem) {
-		if (edit) {
-			$('#' + elem + '_' + id).hide();
-			$('#' + elem + '_edit_' + id).show();
-		} else {
-			$('#' + elem + '_' + id).show();
-			$('#' + elem + '_edit_' + id).hide();
-		}
-	});
-
 	if (edit) {
+		$('#managementurltable [data-urlid="' + id + '"]')
+			.find('.url-info-field').hide().end()
+			.find('.url-edit-field').show();
+
 		$('#cancel_button_' + id + ',#save_button_' + id).show();
 		$('#edit_button_' + id).hide();
+		$('#edit_button_' + id).closest('.lms-ui-tab-table-row').find('.url-edit-field').each(function() {
+			$(this).attr('data-old-value', $(this).val());
+		});
 	} else {
+		$('#managementurltable [data-urlid="' + id + '"]')
+			.find('.url-info-field').show().end()
+			.find('.url-edit-field').hide();
+
 		$('#cancel_button_' + id + ',#save_button_' + id).hide();
 		$('#edit_button_' + id).show();
+		$('#edit_button_' + id).closest('.lms-ui-tab-table-row').find('.url-edit-field').each(function() {
+			$(this).val($(this).attr('data-old-value'));
+		});
 	}
 }
 
 function showAddManagementUrl() {
-	var elems = ['url', 'comment'];
-
-	$.each(elems, function(index, elem) {
-		$('#' + elem).val('').off('mouseover');
-	});
+	$('#add_management_url').show().find('.url-edit-field').each(function() {
+		$(this).attr('data-old-value', $(this).val()).attr('data-old-tooltip', $(this).attr('title'));
+	}).first().focus();
 
 	$('#management_url_buttons').hide();
-	$('#add_management_url').show();
-	$('#url').focus();
+
 }
 
 function hideAddManagementUrl() {
-	$('#add_management_url').hide();
+	$('#add_management_url').hide().find('.url-edit-field').each(function() {
+		$(this).val($(this).attr('data-old-value')).removeAttr('data-tooltip').removeClass('alert')
+			.attr('title', $(this).attr('data-old-tooltip'));
+	});
 	$('#management_url_buttons').show();
-	$('#managementurlspanel #url,#comment').removeClass('alert')
-		.filter('#url').removeAttr('data-tooltip').attr('title', $t("Enter management URL"));
+
 }
 
 function updateManagementUrl(id) {
-	var elems = ['url', 'comment'];
 	var params = {};
 
-	$('#managementurltable').prop('disabled', true);
-	$.each(elems, function(index, elem) {
-		params[elem] = $('#' + elem + '_edit_' + id).val();
+	$('#managementurltable [data-urlid="' + id + '"] .url-edit-field').each(function() {
+		params[$(this).attr('id').replace(/_edit_[0-9]+$/, '')] = $(this).val();
 	});
 	params.urlid = id;
+
 	xajax_updateManagementUrl(id, params);
 }
 
-function managementUrlResponse(errors) {
-	if (!$.isArray(errors)) {
-		$.each(errors, function (index, value) {
-			$('#managementurlspanel #' + index).addClass('alert')
-				.removeAttr('data-tooltip').attr('title', value);
-		});
-	} else {
-		$('#managementurlspanel #managementurltable').html(
-			$('#managementurlspanel .lms-ui-tab-hourglass-template').html());
-	}
+function managementUrlErrors(errors) {
+	$.each(errors, function (index, value) {
+		$('#managementurlspanel #' + index).addClass('alert')
+			.removeAttr('data-tooltip').attr('title', value);
+	});
 }
 
 $('#add_management_url').hide();
-
-getManagementUrls();

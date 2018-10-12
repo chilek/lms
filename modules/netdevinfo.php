@@ -97,6 +97,8 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	$SMARTY->assign('restnetdevlist', $netdevlist);
 	$SMARTY->assign('netdevips', $netdevips);
 	$SMARTY->assign('nodelist', $nodelist);
+	$SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $id));
+	$SMARTY->assign('radiosectors', $LMS->GetRadioSectors($id));
 	$SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
 	$SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
 	$SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));

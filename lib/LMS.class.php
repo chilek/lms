@@ -39,6 +39,7 @@ class LMS
     public $_version = '1.11-git'; // class version
     public $_revision = '$Format:%cI$'; // %H for last commit checksum
     private $mail_object = NULL;
+    private static $lms = null;
     protected $plugin_manager;
     protected $user_manager;
     protected $customer_manager;
@@ -64,24 +65,31 @@ class LMS
 
 	const db_dump_multi_record_limit = 500;
 
-    public function __construct(&$DB, &$AUTH, &$SYSLOG)
-    { // class variables setting
-        $this->DB = &$DB;
-        $this->AUTH = &$AUTH;
-        $this->SYSLOG = &$SYSLOG;
+	public function __construct(&$DB, &$AUTH, &$SYSLOG) {
+	// class variables setting
+		$this->DB = &$DB;
+		$this->AUTH = &$AUTH;
+		$this->SYSLOG = &$SYSLOG;
 
-        $this->cache = new LMSCache();
+		$this->cache = new LMSCache();
 
-	if (preg_match('/.+Format:.+/', $this->_revision))
-		$this->_revision = '';
-    }
+		if (preg_match('/.+Format:.+/', $this->_revision))
+			$this->_revision = '';
+
+		self::$lms = $this;
+	}
 
     public function _postinit()
     {
         return TRUE;
     }
 
-    public function InitUI()
+	public static function getInstance() {
+		return self::$lms;
+	}
+
+
+	public function InitUI()
     {
         // set current user
         switch (ConfigHelper::getConfig('database.type')) {
@@ -1426,6 +1434,46 @@ class LMS
 	public function GetModels($producerid = null) {
 		$manager = $this->getNetDevManager();
 		return $manager->GetModels($producerid);
+	}
+
+	public function GetRadioSectors($netdevid, $technology = 0) {
+		$manager = $this->getNetDevManager();
+		return $manager->GetRadioSectors($netdevid, $technology);
+	}
+
+	public function AddRadioSector($netdevid, array $radiosector) {
+		$manager = $this->getNetDevManager();
+		return $manager->AddRadioSector($netdevid, $radiosector);
+	}
+
+	public function DeleteRadioSector($id) {
+		$manager = $this->getNetDevManager();
+		return $manager->DeleteRadioSector($id);
+	}
+
+	public function UpdateRadioSector($id, array $radiosector) {
+		$manager = $this->getNetDevManager();
+		return $manager->UpdateRadioSector($id, $radiosector);
+	}
+
+	public function GetManagementUrls($type, $id) {
+		$manager = $this->getNetDevManager();
+		return $manager->GetManagementUrls($type, $id);
+	}
+
+	public function AddManagementUrl($type, $id, array $url) {
+		$manager = $this->getNetDevManager();
+		return $manager->AddManagementUrl($type, $id, $url);
+    }
+
+	public function DeleteManagementUrl($type, $id) {
+		$manager = $this->getNetDevManager();
+		return $manager->DeleteManagementUrl($type, $id);
+	}
+
+	public function updateManagementUrl($type, $id, array $url) {
+		$manager = $this->getNetDevManager();
+		return $manager->updateManagementUrl($type, $id, $url);
 	}
 
 	public function GetNetNode($id)

@@ -725,6 +725,8 @@ $SMARTY->assign('objectid'             , $netdev['id']);
 $SMARTY->assign('netdevlist'           , $netdevconnected);
 $SMARTY->assign('netcomplist'          , $netcomplist);
 $SMARTY->assign('nodelist'             , $nodelist);
+$SMARTY->assign('mgmurls', $LMS->GetManagementUrls(LMSNetDevManager::NETDEV_URL, $netdev['id']));
+$SMARTY->assign('radiosectors', $LMS->GetRadioSectors($netdev['id']));
 $SMARTY->assign('netdevcontype'        , $netdevcontype);
 $SMARTY->assign('netdevauthtype'       , $netdevauthtype);
 $SMARTY->assign('netdevips'            , $netdevips);

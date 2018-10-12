@@ -59,11 +59,12 @@
 {foreach $radiosectors as $radiosector}
 {$rsid = $radiosector.id}
 {if $formdata.rsid && $formdata.rsid == $rsid}{$edit = true}{else}{$edit = false}{/if}
-<div class="lms-ui-tab-table-row">
+<div class="lms-ui-tab-table-row" data-rsid="{$rsid}">
 	<div class="lms-ui-tab-table-wrapper col-8">
 		<div class="lms-ui-tab-table-wrapper name-azimuth-width-altitude-range-license col-4">
 			<div class="lms-ui-tab-table-column name">
-				<i class="lms-ui-icon-wireless"></i> <span id="name_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.name}</span>
+				<i class="lms-ui-icon-wireless"></i> <span id="name_{$rsid}"{if $edit} style="display: none;"{/if}
+						class="radio-sector-info-field">{$radiosector.name}</span>
 				<input type="text" size="20" name="name_edit_{$rsid}" id="name_edit_{$rsid}"
 						value="{if $edit}{$formdata.name}{else}{$radiosector.name}{/if}"
 						class="radio-sector-edit-field"
@@ -72,26 +73,30 @@
 			<div class="lms-ui-tab-table-wrapper azimuth-width-altitude-range-license col-3">
 				<div class="lms-ui-tab-table-wrapper azimuth-width-altitude-range col-2">
 					<div class="lms-ui-tab-table-column azimuth-width">
-						<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.azimuth}$a deg.{/t}</span>
+						<span id="azimuth_{$rsid}"{if $edit} style="display: none;"{/if}
+								class="radio-sector-info-field">{t a=$radiosector.azimuth}$a deg.{/t}</span>
 						<input type="text" size="6" name="azimuth_edit_{$rsid}" id="azimuth_edit_{$rsid}"
 								value="{if $edit}{$formdata.azimuth}{else}{$radiosector.azimuth}{/if}"
 								class="radio-sector-edit-field"
 								{tip text="Enter azimuth in degrees" trigger="azimuth_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 						<br>
-						<span id="width_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.width}$a deg.{/t}</span>
+						<span id="width_{$rsid}"{if $edit} style="display: none;"{/if}
+								class="radio-sector-info-field">{t a=$radiosector.width}$a deg.{/t}</span>
 						<input type="text" size="6" name="width_edit_{$rsid}" id="width_edit_{$rsid}"
 								value="{if $edit}{$formdata.width}{else}{$radiosector.width}{/if}"
 								class="radio-sector-edit-field"
 								{tip text="Enter angular width in degrees" trigger="width_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 					</div>
 					<div class="lms-ui-tab-table-column altitude-range">
-						<span id="altitude_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.altitude}$a m{/t}</span>
+						<span id="altitude_{$rsid}"{if $edit} style="display: none;"{/if}
+								class="radio-sector-info-field">{t a=$radiosector.altitude}$a m{/t}</span>
 						<input type="text" size="3" name="altitude_edit_{$rsid}" id="altitude_edit_{$rsid}"
 								value="{if $edit}{$formdata.altitude}{else}{$radiosector.altitude}{/if}"
 								class="radio-sector-edit-field"
 								{tip text="Enter altitude in meters" trigger="altitude_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
 						<br>
-						<span id="rsrange_{$rsid}"{if $edit} style="display: none;"{/if}>{t a=$radiosector.rsrange}$a m{/t}</span>
+						<span id="rsrange_{$rsid}"{if $edit} style="display: none;"{/if}
+								class="radio-sector-info-field">{t a=$radiosector.rsrange}$a m{/t}</span>
 						<input type="text" size="6" name="rsrange_edit_{$rsid}" id="rsrange_edit_{$rsid}"
 								value="{if $edit}{$formdata.rsrange}{else}{$radiosector.rsrange}{/if}"
 								class="radio-sector-edit-field"
@@ -99,7 +104,8 @@
 					</div>
 				</div>
 				<div class="lms-ui-tab-table-column license">
-					<span id="license_{$rsid}"{if $edit} style="display: none;"{/if}>{$radiosector.license|default:"-"}</span>
+					<span id="license_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">{$radiosector.license|default:"-"}</span>
 					<input type="text" size="18" name="license_edit_{$rsid}" id="license_edit_{$rsid}"
 							value="{if $edit}{$formdata.license}{else}{$radiosector.license}{/if}"
 							class="radio-sector-edit-field"
@@ -110,7 +116,8 @@
 		<div class="lms-ui-tab-table-wrapper link-tech-intf-type-frequency-bandwidth-node-devices-enc-key col-4">
 			<div class="lms-ui-tab-table-wrapper link-tech-intf-type-frequency-bandwidth col-2">
 				<div class="lms-ui-tab-table-column link-tech-intf-type">
-					<span id="technology_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.technology}{$_LINKTECHNOLOGIES[1][$radiosector.technology]}{/if}</span>
+					<span id="technology_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">{if $radiosector.technology}{$_LINKTECHNOLOGIES[1][$radiosector.technology]}{/if}</span>
 					<SELECT NAME="technology_edit_{$rsid}" id="technology_edit_{$rsid}"
 							class="radio-sector-edit-field"
 							{tip trigger="technology_edit_{$rsid}" text="Select link technology"}{if !$edit} style="display: none;"{/if}>
@@ -120,7 +127,8 @@
 						{/foreach}
 					</SELECT>
 					<br>
-					<span id="type_{$rsid}"{if $edit} style="display: none;"{/if}>{$_NETWORK_INTERFACE_TYPES[$radiosector.type].label}</span>
+					<span id="type_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">{$_NETWORK_INTERFACE_TYPES[$radiosector.type].label}</span>
 					<SELECT NAME="type_edit_{$rsid}" id="type_edit_{$rsid}"
 							class="radio-sector-edit-field"
 							{tip trigger="type_edit_{$rsid}" text="Select network interface type"}{if !$edit} style="display: none;"{/if}>
@@ -130,19 +138,24 @@
 					</SELECT>
 				</div>
 				<div class="lms-ui-tab-table-column frequency-bandwidth">
-					<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
+					<span id="frequency_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">{if $radiosector.frequency}{t a=((float)$radiosector.frequency)|replace:",":"."}$a GHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
 					<input type="text" size="6" name="frequency_edit_{$rsid}" id="frequency_edit_{$rsid}"
 							value="{if $edit}{$formdata.frequency}{else}{if $radiosector.frequency}{((float)$radiosector.frequency)|replace:",":"."}{/if}{/if}"
 							class="radio-sector-edit-field"
 							{tip text="Enter frequency in GHz" trigger="frequency_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}>
-					<span id="frequency_separator_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency2} / {/if}</span>
-					<span id="frequency_separator_edit_{$rsid}"{if !$edit} style="display: none;"{/if}> / </span>
-					<span id="frequency2_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.frequency2}{t a=((float)$radiosector.frequency2)|replace:",":"."}$a GHz{/t}{/if}</span>
+					<span id="frequency_separator_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">{if $radiosector.frequency2} / {/if}</span>
+					<span id="frequency_separator_edit_{$rsid}"{if !$edit} style="display: none;"{/if}
+							class="radio-sector-edit-field"> / </span>
+					<span id="frequency2_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">{if $radiosector.frequency2}{t a=((float)$radiosector.frequency2)|replace:",":"."}$a GHz{/t}{/if}</span>
 					<input type="text" size="6" name="frequency2_edit_{$rsid}" id="frequency2_edit_{$rsid}"
 							value="{if $edit}{$formdata.frequency2}{else}{if $radiosector.frequency2}{((float)$radiosector.frequency2)|replace:",":"."}{/if}{/if}"
 							class="radio-sector-edit-field"
 							{tip text="Enter frequency in GHz" trigger="frequency2_edit_{$rsid}"}{if !$edit} style="display: none;"{/if}><br>
-					<span id="bandwidth_{$rsid}"{if $edit} style="display: none;"{/if}>{if $radiosector.bandwidth}{t a=$radiosector.bandwidth}$a MHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
+					<span id="bandwidth_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">{if $radiosector.bandwidth}{t a=$radiosector.bandwidth}$a MHz{/t}{else}{trans("(default for link technology)")}{/if}</span>
 					<input type="text" size="10" name="bandwidth_edit_{$rsid}" id="bandwidth_edit_{$rsid}"
 							value="{if $edit}{$formdata.bandwidth}{else}{if $radiosector.bandwidth}{$radiosector.bandwidth}{/if}{/if}"
 							class="radio-sector-edit-field"
@@ -156,7 +169,8 @@
 					{$radiosector.devices}
 				</div>
 				<div class="lms-ui-tab-table-column enc-key">
-					<span id="secret_{$rsid}"{if $edit} style="display: none;"{/if}>
+					<span id="secret_{$rsid}"{if $edit} style="display: none;"{/if}
+							class="radio-sector-info-field">
 						{if $radiosector.secret}
 							{if ConfigHelper::checkConfig('phpui.protect_passwords')}
 								<button class="lms-ui-button-clipboard lms-ui-button" title="{trans("Click copies to clipboard")}"

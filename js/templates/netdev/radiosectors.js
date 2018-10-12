@@ -27,39 +27,33 @@ function getRadioSectors() {
 }
 
 function addRadioSector() {
-	$('#radiosectoraddlink').prop('disabled', true);
 	xajax_addRadioSector($('#radiosectoradd').serialize());
 }
 
 function delRadioSector(id) {
-	$('#radiosectortable').prop('disabled', true);
 	$('#radiosectorpanel #radiosectortable').html(
 		$('#radiosectorpanel .lms-ui-tab-hourglass-template').html());
 	xajax_delRadioSector(id);
 }
 
 function toggleEditRadioSector(id) {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency',
-		'frequency_separator', 'frequency2', 'bandwidth', 'secret'];
 	var edit = $('#edit_button_' + id).is(':visible');
 
-	$.each(elems, function(index, elem) {
-		if (edit) {
-			$('#' + elem + '_' + id).hide();
-			$('#' + elem + '_edit_' + id).show();
-		} else {
-			$('#' + elem + '_' + id).show();
-			$('#' + elem + '_edit_' + id).hide();
-		}
-	});
-
 	if (edit) {
+		$('#radiosectortable [data-rsid="' + id + '"]')
+			.find('.radio-sector-info-field').hide().end()
+			.find('.radio-sector-edit-field').show();
+
 		$('#cancel_button_' + id + ',#save_button_' + id).show();
 		$('#edit_button_' + id).hide();
 		$('#edit_button_' + id).closest('.lms-ui-tab-table-row').find('.radio-sector-edit-field').each(function() {
 			$(this).attr('data-old-value', $(this).val());
 		});
 	} else {
+		$('#radiosectortable [data-rsid="' + id + '"]')
+			.find('.radio-sector-info-field').show().end()
+			.find('.radio-sector-edit-field').hide();
+
 		$('#cancel_button_' + id + ',#save_button_' + id).hide();
 		$('#edit_button_' + id).show();
 		$('#edit_button_' + id).closest('.lms-ui-tab-table-row').find('.radio-sector-edit-field').each(function() {
@@ -85,30 +79,21 @@ function hideAddRadioSector() {
 }
 
 function updateRadioSector(id) {
-	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'type', 'frequency',
-		'frequency_separator', 'frequency2', 'bandwidth', 'secret'];
 	var params = {};
 
-	$('#radiosectortable').prop('disabled', true);
-	$.each(elems, function(index, elem) {
-		params[elem] = $('#' + elem + '_edit_' + id).val();
+	$('#radiosectortable [data-rsid="' + id + '"] .radio-sector-edit-field').each(function() {
+		params[$(this).attr('id').replace(/_edit_[0-9]+$/, '')] = $(this).val();
 	});
 	params.rsid = id;
+
 	xajax_updateRadioSector(id, params);
 }
 
-function radioSectorResponse(errors) {
-	if (!$.isArray(errors)) {
-		$.each(errors, function (index, value) {
-			$('#radiosectorpanel #' + index).addClass('alert')
-				.removeAttr('data-tooltip').attr('title', value);
-		});
-	} else {
-		$('#radiosectorpanel #radiosectortable').html(
-			$('#radiosectorpanel .lms-ui-tab-hourglass-template').html());
-	}
+function radioSectorErrors(errors) {
+	$.each(errors, function (index, value) {
+		$('#radiosectorpanel #' + index).addClass('alert')
+			.removeAttr('data-tooltip').attr('title', value);
+	});
 }
 
 $('#add_radio_sector').hide();
-
-getRadioSectors();

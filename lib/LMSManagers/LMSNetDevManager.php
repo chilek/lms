@@ -30,6 +30,8 @@
  */
 class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 {
+	const NETDEV_URL = 1;
+	const NODE_URL = 2;
 
     public function GetNetDevLinkedNodes($id)
     {
@@ -848,5 +850,185 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 		}
 
 		return $result;
+	}
+
+	public function GetRadioSectors($netdevid, $technology = 0) {
+		$radiosectors = $this->db->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END) AS computers,
+				((CASE WHEN l1.devices IS NULL THEN 0 ELSE l1.devices END)
+				+ (CASE WHEN l2.devices IS NULL THEN 0 ELSE l2.devices END)) AS devices
+			FROM netradiosectors s
+			LEFT JOIN (
+				SELECT linkradiosector AS rs, COUNT(*) AS computers
+				FROM nodes n WHERE n.ownerid IS NOT NULL AND linkradiosector IS NOT NULL
+				GROUP BY rs
+			) n ON n.rs = s.id
+			LEFT JOIN (
+				SELECT srcradiosector, COUNT(*) AS devices FROM netlinks GROUP BY srcradiosector
+			) l1 ON l1.srcradiosector = s.id
+			LEFT JOIN (
+				SELECT dstradiosector, COUNT(*) AS devices FROM netlinks GROUP BY dstradiosector
+			) l2 ON l2.dstradiosector = s.id
+			WHERE s.netdev = ?' . ($technology ? ' AND (technology = ' . intval($technology) . ' OR technology = 0)' : '') . '
+			ORDER BY s.name', array($netdevid));
+
+		if (!empty($radiosectors)) {
+			foreach ($radiosectors as &$radiosector)
+				if (!empty($radiosector['bandwidth']))
+					$radiosector['bandwidth'] *= 1000;
+			unset($radiosector);
+		}
+
+		return $radiosectors;
+	}
+
+	public function AddRadioSector($netdevid, array $radiosector) {
+		$args = array(
+			'name' => $radiosector['name'],
+			'azimuth' => $radiosector['azimuth'],
+			'width' => $radiosector['width'],
+			'altitude' => $radiosector['altitude'],
+			'rsrange' => $radiosector['rsrange'],
+			'license' => (strlen($radiosector['license']) ? $radiosector['license'] : null),
+			'technology' => intval($radiosector['technology']),
+			'type' => intval($radiosector['type']),
+			'frequency' => (strlen($radiosector['frequency']) ? $radiosector['frequency'] : null),
+			'frequency2' => (strlen($radiosector['frequency2']) ? $radiosector['frequency2'] : null),
+			'bandwidth' => (strlen($radiosector['bandwidth']) ? str_replace(',', '.', $radiosector['bandwidth'] / 1000) : null),
+			SYSLOG::RES_NETDEV => $netdevid,
+			'secret' => intval($radiosector['secret']),
+		);
+
+		$this->db->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology, type,
+			frequency, frequency2, bandwidth, netdev, secret)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array_values($args));
+
+		$rsid = $this->db->GetLastInsertID('netradiosectors');
+
+		if ($rsid && $this->syslog) {
+			$args[SYSLOG::RES_RADIOSECTOR] = $rsid;
+			$this->syslog->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_ADD, $args);
+		}
+
+		return $rsid;
+	}
+
+	public function DeleteRadioSector($id) {
+		if ($this->syslog)
+			$netdevid = $this->db->GetOne('SELECT netdev FROM netradiosectors WHERE id = ?',
+				array($id));
+
+		$res = $this->db->Execute('DELETE FROM netradiosectors WHERE id = ?', array($id));
+
+		if ($res && $this->syslog) {
+			$args = array(
+				SYSLOG::RES_RADIOSECTOR => $id,
+				SYSLOG::RES_NETDEV => $netdevid,
+			);
+			$this->syslog->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_DELETE, $args);
+		}
+	}
+
+	public function UpdateRadioSector($id, array $radiosector) {
+		$args = array(
+			'name' => $radiosector['name'],
+			'azimuth' => $radiosector['azimuth'],
+			'width' => $radiosector['width'],
+			'altitude' => $radiosector['altitude'],
+			'rsrange' => $radiosector['rsrange'],
+			'license' => (strlen($radiosector['license']) ? $radiosector['license'] : null),
+			'technology' => intval($radiosector['technology']),
+			'type' => intval($radiosector['type']),
+			'secret' => $radiosector['secret'],
+			'frequency' => (strlen($radiosector['frequency']) ? $radiosector['frequency'] : null),
+			'frequency2' => (strlen($radiosector['frequency2']) ? $radiosector['frequency2'] : null),
+			'bandwidth' => (strlen($radiosector['bandwidth']) ? str_replace(',', '.', $radiosector['bandwidth'] / 1000) : null),
+			SYSLOG::RES_RADIOSECTOR => $id,
+		);
+
+		$res = $this->db->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
+			rsrange = ?, license = ?, technology = ?, type = ?, secret = ?,
+			frequency = ?, frequency2 = ?, bandwidth = ? WHERE id = ?', array_values($args));
+
+		if ($res && $this->syslog) {
+			$args[SYSLOG::RES_NETDEV] = $this->db->GetOne('SELECT netdev FROM netradiosectors WHERE id = ?',
+				array($id));
+			$this->syslog->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_UPDATE, $args);
+		}
+
+		return $res;
+	}
+
+	public function GetManagementUrls($type, $id) {
+		return $this->db->GetAll('SELECT id, url, comment FROM managementurls WHERE '
+			. ($type == self::NETDEV_URL ? 'netdevid' : 'nodeid') . ' = ? ORDER BY id',
+			array($id));
+	}
+
+	public function AddManagementUrl($type, $id, array $url) {
+		if ($type == self::NETDEV_URL) {
+			$args = array(
+				SYSLOG::RES_NETDEV => $id,
+				'url' => $url['url'],
+				'comment' => $url['comment'],
+			);
+			$this->db->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)',
+				array_values($args));
+		} else {
+			$args = array(
+				SYSLOG::RES_NODE => $id,
+				'url' => $url['url'],
+				'comment' => $url['comment'],
+			);
+			$this->db->Execute('INSERT INTO managementurls (nodeid, url, comment) VALUES (?, ?, ?)',
+				array_values($args));
+		}
+
+		$urlid = $this->db->GetLastInsertID('managementurls');
+
+		if ($urlid && $this->syslog) {
+			$args[SYSLOG::RES_MGMTURL] = $urlid;
+			$this->syslog->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_ADD, $args);
+		}
+
+		return $urlid;
+	}
+
+	public function DeleteManagementUrl($type, $id) {
+		$res = $this->db->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
+
+		if ($res && $this->syslog) {
+			$args = array(
+				SYSLOG::RES_MGMTURL => $id,
+				($type == self::NETDEV_URL ? SYSLOG::RES_NETDEV : SYSLOG::RES_NODE) => $id,
+			);
+			$this->syslog->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_DELETE, $args);
+		}
+
+		return $res;
+	}
+
+	public function updateManagementUrl($type, $id, array $url) {
+		$args = array(
+			'url' => $url['url'],
+			'comment' => $url['comment'],
+			SYSLOG::RES_MGMTURL => $id,
+		);
+
+		$res = $this->db->Execute('UPDATE managementurls SET url = ?, comment = ? WHERE id = ?',
+			array_values($args));
+
+		if ($res && $this->syslog) {
+			if ($type == self::NETDEV_URL)
+				$args[SYSLOG::RES_NETDEV] = $this->db->GetOne('SELECT netdevid FROM managementurls WHERE id = ?',
+					array($id));
+			else
+				$args[SYSLOG::RES_NODE] = $this->db->GetOne('SELECT nodeid FROM managementurls WHERE id = ?',
+					array($id));
+
+			$this->syslog->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_UPDATE, $args);
+		}
+
+		return $res;
 	}
 }

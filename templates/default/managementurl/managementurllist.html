@@ -18,19 +18,25 @@
 {foreach $mgmurls as $mgmurl}
 {$urlid = $mgmurl.id}
 {if $formdata.urlid && $formdata.urlid == $urlid}{$edit = true}{else}{$edit = false}{/if}
-<div class="lms-ui-tab-table-row">
+<div class="lms-ui-tab-table-row" data-urlid="{$urlid}">
 	<div class="lms-ui-tab-table-wrapper col-2">
 		<div class="lms-ui-tab-table-column url">
-			<span id="url_{$urlid}"{if $edit} style="display: none;"{/if}>
+			<span id="url_{$urlid}"{if $edit} style="display: none;"{/if} class="url-info-field">
 				<a href="{$mgmurl.url}"{if preg_match("/^(https?|ftp):/", $mgmurl.url)} target="_blank"{/if}>{$mgmurl.url}</a>
 			</span>
-			<input type="text" size="80" name="url_edit_{$urlid}" id="url_edit_{$urlid}" value="{if $edit}{$formdata.url}{else}{$mgmurl.url}{/if}" {tip text="Enter management URL" trigger="url_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
+			<input type="text" size="80" name="url_edit_{$urlid}" id="url_edit_{$urlid}"
+					value="{if $edit}{$formdata.url}{else}{$mgmurl.url}{/if}"
+					class="url-edit-field"
+					{tip text="Enter management URL" trigger="url_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
 		</div>
 		<div class="lms-ui-tab-table-column comment">
-			<span id="comment_{$urlid}"{if $edit} style="display: none;"{/if}>
+			<span id="comment_{$urlid}"{if $edit} style="display: none;"{/if} class="url-info-field">
 				{$mgmurl.comment}
 			</span>
-			<input type="text" size="40" name="comment_edit_{$urlid}" id="comment_edit_{$urlid}" value="{if $edit}{$formdata.comment}{else}{$mgmurl.comment}{/if}" {tip text="Enter URL comment" trigger="comment_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
+			<input type="text" size="40" name="comment_edit_{$urlid}" id="comment_edit_{$urlid}"
+					value="{if $edit}{$formdata.comment}{else}{$mgmurl.comment}{/if}"
+					class="url-edit-field"
+					{tip text="Enter URL comment" trigger="comment_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
 		</div>
 	</div>
 

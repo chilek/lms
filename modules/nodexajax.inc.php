@@ -179,148 +179,33 @@ function getNodeStats($nodeid) {
 	return $result;
 }
 
-function validateManagementUrl($params) {
-	$error = NULL;
-
-	if (!strlen($params['url']))
-		$error['url'] = trans('Management URL cannot be empty!');
-	elseif (strlen($params['url']) < 10)
-		$error['url'] = trans('Management URL is too short!');
-
-	return $error;
-}
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'managementurls.inc.php');
 
 function getManagementUrls() {
-	global $SMARTY;
-
-	$DB = LMSDB::getInstance();
-
 	$result = new xajaxResponse();
 
-	$nodeid = intval($_GET['id']);
-
-	$mgmurls = NULL;
-	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE nodeid = ? ORDER BY id', array($nodeid));
-	$SMARTY->assign('mgmurls', $mgmurls);
-	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
-
-	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
+	_getManagementUrls(LMSNetDevManager::NODE_URL, $result);
 
 	return $result;
 }
 
 function addManagementUrl($params) {
-	global $SYSLOG;
-
-	$DB = LMSDB::getInstance();
-
-	$result = new xajaxResponse();
-
-	$formdata = array();
-	parse_str($params, $formdata);
-
-	$error = validateManagementUrl($formdata);
-
-	$nodeid = intval($_GET['id']);
-
-	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $formdata['url']))
-			$formdata['url'] = 'http://' . $formdata['url'];
-
-		$args = array(
-			SYSLOG::RES_NODE => $nodeid,
-			'url' => $formdata['url'],
-			'comment' => $formdata['comment'],
-		);
-		$DB->Execute('INSERT INTO managementurls (nodeid, url, comment) VALUES (?, ?, ?)', array_values($args));
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_MGMTURL] = $DB->GetLastInsertID('managementurls');
-			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_ADD, $args);
-		}
-
-		$result->call('hideAddManagementUrl');
-		$result->call('managementUrlResponse', $error);
-		$result->call('getManagementUrls');
-	} else
-		$result->call('managementUrlResponse', $error);
-
-	$result->assign('managementurladdlink', 'disabled', false);
-
-	return $result;
+	return _addManagementUrl(LMSNetDevManager::NODE_URL, $params);
 }
 
 function delManagementUrl($id) {
-	global $SYSLOG;
-
-	$result = new xajaxResponse();
-
-	$nodeid = intval($_GET['id']);
-	$id = intval($id);
-
-	$DB = LMSDB::getInstance();
-	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
-	if ($res && $SYSLOG) {
-		$args = array(
-			SYSLOG::RES_MGMTURL => $id,
-			SYSLOG::RES_NETDEV => $nodeid,
-		);
-		$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_DELETE, $args);
-	}
-	$result->call('getManagementUrls');
-	$result->assign('managementurltable', 'disabled', false);
-
-	return $result;
+	return _delManagementUrl(LMSNetDevManager::NODE_URL, $id);
 }
 
-function updateManagementUrl($urlid, $params) {
-	global $SYSLOG;
-
-	$result = new xajaxResponse();
-
-	$urlid = intval($urlid);
-	$nodeid = intval($_GET['id']);
-
-	$res = validateManagementUrl($params);
-
-	$error = array();
-	foreach ($res as $key => $val)
-		$error[$key . '_edit_' . $urlid] = $val;
-	$params['error'] = $error;
-
-	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
-			$params['url'] = 'http://' . $params['url'];
-
-		$args = array(
-			'url' => $params['url'],
-			'comment' => $params['comment'],
-			SYSLOG::RES_MGMTURL => $urlid,
-		);
-		$DB = LMSDB::getInstance();
-		$DB->Execute('UPDATE managementurls SET url = ?, comment = ? WHERE id = ?', array_values($args));
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_NODE] = $nodeid;
-			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_UPDATE, $args);
-		}
-
-		$result->call('managementUrlResponse', $error);
-		$result->call('getManagementUrls');
-	} else
-		$result->call('managementUrlResponse', $error);
-
-	$result->assign('managementurltable', 'disabled', false);
-
-	return $result;
+function updateManagementUrl($id, $params) {
+	return _updateManagementUrl(LMSNetDevManager::NODE_URL, $id, $params);
 }
 
 function getRadioSectors($netdev, $technology = 0) {
-	global $DB;
-
 	$result = new xajaxResponse();
 
-	$radiosectors = $DB->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?'
-		. ($technology ? ' AND (technology = ' . intval($technology) . ' OR technology = 0)' : '')
-		. ' ORDER BY name', array($netdev));
+	$lms = LMS::getInstance();
+	$radiosectors = $lms->GetRadioSectors($netdev, $technology);
 
 	$result->call('radio_sectors_received', $radiosectors);
 

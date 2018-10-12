@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSNetDevManagerInterface
  * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSNetDevManagerInterface
 {
@@ -72,4 +71,20 @@ interface LMSNetDevManagerInterface
 	public function GetProducers();
 
 	public function GetModels($producerid = null);
+
+	public function GetRadioSectors($netdevid, $technology = 0);
+
+	public function AddRadioSector($netdevid, array $radiosector);
+
+	public function DeleteRadioSector($id);
+
+	public function UpdateRadioSector($id, array $radiosector);
+
+	public function GetManagementUrls($type, $id);
+
+	public function AddManagementUrl($type, $id, array $url);
+
+	public function DeleteManagementUrl($type, $id);
+
+	public function updateManagementUrl($type, $id, array $url);
 }

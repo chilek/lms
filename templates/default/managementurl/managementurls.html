@@ -16,17 +16,17 @@
 	{tab_contents id="managementurlspanel"}
 
 		{tab_table id="managementurltable"}
-			{tab_hourglass}{/tab_hourglass}
+			{include file="managementurl/managementurllist.html"}
 		{/tab_table}
 
 {if ConfigHelper::checkPrivilege('privileges.network_management')}
 		{tab_button_panel id="add_management_url"}
 			{tab_buttons}
 				<strong>{trans("URL:")}</strong>
-				<input type="text" size="80" form="managementurladd" name="url" id="url" class="url"
+				<input type="text" size="80" form="managementurladd" name="url" id="url" class="url-edit-field"
 						value="{if !$formdata.urlid}{$formdata.url}{/if}" {tip text="Enter management URL" trigger="url"}>
 				<strong>{trans("Comment:")}</strong>
-				<input type="text" size="40" form="managementurladd" name="comment" id="comment" class="comment"
+				<input type="text" size="40" form="managementurladd" name="comment" id="comment" class="url-edit-field"
 						value="{if !$formdata.urlid}{$formdata.comment}{/if}" {tip text="Enter URL comment" trigger="comment"}>
 				{button type="link" icon="save"
 					onclick="javascript:addManagementUrl();" tip="Add new management URL"}
@@ -44,8 +44,6 @@
 			{/tab_buttons}
 		{/tab_button_panel}
 {/if}
-
-		{tab_hourglass template=1}{/tab_hourglass}
 
 	{/tab_contents}
 
