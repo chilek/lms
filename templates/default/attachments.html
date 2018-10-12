@@ -1,123 +1,90 @@
-<style>
-    tr.lms-ui-button-panel > td {
-        padding-top: 10px;
-    }
-</style>
-<table class="lmsbox lms-ui-sortable" id="attachmentbox-{$attachmenttype}"">
-    <COLGROUP>
-        <COL style="width: 99%;">
-        <COL style="width: 1%;">
-    </COLGROUP>
-    <THEAD>
-        <TR class="hand lmsbox-titlebar" data-lmsbox-content="attachmentpanel-{$attachmenttype}">
-            <TD class="bold">
-                <IMG src="img/attach.gif" alt="">
-                {t a=$filecontainers|@count|default:"0"}Attachments ($a):{/t}
-            </TD>
-            <TD class="text-right nobr">
-            </TD>
-        </TR>
-    </THEAD>
-    <TBODY>
-        <TR id="attachmentpanel-{$attachmenttype}" style="display:none;">
-            <TD colspan="2">
-                <form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}">
-                <TABLE class="lmsbox-inner lms-ui-background-cycle">
-                    <COLGROUP>
-                        <COL style="width: 1%;">
-                        <COL style="width: 1%;">
-                        <COL style="width: 96%;">
-                        <COL style="width: 1%;">
-                        <COL style="width: 1%;">
-                    </COLGROUP>
-                    <tbody>
-                        <TR class="lms-ui-header-panel">
-                            <td class="bold nobr">
-                                {trans("Creation date:")}
-                            </td>
-                            <td class="bold nobr">
-                                {trans("Creator:")}
-                            </td>
-                            <td class="bold nobr" colspan="2">
-                                {trans("Description:")}
-                            </td>
-                            <td class="bold nobr text-right">
-                                {trans("Files:")}
-                            </td>
-                        </TR>
-                        {foreach $filecontainers as $container}
-                        <TR>
-                            <td class="nobr">
-                                {$container.creationdate|date_format:"%Y/%m/%d %H:%M:%S"}
-                            </td>
-                            <td class="nobr">
-                                <a href="?m=userinfo&id={$container.creatorid}">{$container.creatorname}</a>
-                            </td>
-                            <td class="nobr" colspan="2">
-                                {$container.description}
-                            </td>
-                            <td class="nobr text-right">
-                                <a href="?m=attachments&attachmentaction=downloadzippedcontainer&type={$attachmenttype}&id={$container.id}" title="{trans("Download file container as zip archive")}">
-                                    <img src="img/save.gif">
-                                </a>
-                                <a href="?m=attachments&attachmentaction=deletecontainer&type={$attachmenttype}&id={$container.id}" onclick="return confirm('{trans("Are you sure you want to delete this file container?")}')" title="{trans("Delete file container")}">
-                                    <img src="img/delete.gif">
-                                </a>
-                                <a href="#" class="toggle-file-list" data-container-id="{$container.id}" title="{trans("Show file list")}">
-                                    <img src="img/asc_order.gif">
-                                </a>
-                                <div id="files-{$container.id}" style="display: none;">
-                                    {foreach $container.files as $file}
-                                    {documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
-                                    url="?m=attachments&attachmentaction=viewfile&type={$attachmenttype}&id={$container.id}&fileid={$file.id}" external=true
-                                    text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
-                                    <br>
-                                    {/foreach}
-                                </div>
-                            </td>
-                        </TR>
-                        {foreachelse}
-                        <tr>
-                            <td colspan="5" class="empty-table">
-                                <p>{trans("There are no file containers in database.")}</p>
-                            </td>
-                        </tr>
-                        {/foreach}
-                        <TR class="lms-ui-button-panel">
-                            <td class="bold valign-top nobr text-right">
-                                {trans("Description:")}
-                            </td>
-                            <td class="valign-top nobr">
-                                <input type="text" name="upload[description]" size="50" value="{$upload.description}">
-                            </td>
-                            <TD class="bold nobr valign-top" colspan="2">
-                                {fileupload id="files" fileupload=$fileupload}
-                            </td>
-                            <td class="bold nobr valign-top text-right">
-                                <a href="javascript:document.upload.submit();">
-                                    <img src="img/save.gif">
-                                    {trans("Add")}
-                                </a>
-                            </td>
-                        </TR>
-                    </tbody>
-                </table>
-                </form>
-            </TD>
-        </TR>
-    </TBODY>
-</table>
-<SCRIPT type="text/javascript">
-if (getCookie('attachmentpanel-{$attachmenttype}') == '1') {
-	$('#attachmentpanel-{$attachmenttype}').show();
-}
+<!--// $Id$ //-->
 
-$(function() {
-    $('.toggle-file-list').click(function() {
-		var containerid = parseInt($(this).attr('data-container-id'));
-		var elem = $('#files-' + containerid);
-		elem.toggle();
-		$(this).html('<img src="img/' + (elem.is(':visible')  ? 'desc' : 'asc') + '_order.gif">');
-	});
-});
-</SCRIPT>
+{css}
+{js}
+
+<form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form">
+</form>
+
+{tab_container id="attachmentbox-{$attachmenttype}"}
+    {tab_header content_id="attachmentpanel-{$attachmenttype}"}
+        {tab_header_cell icon="lms-ui-icon-fileupload"}
+            <strong>{t a=$filecontainers|@count|default:"0"}Attachments ($a):{/t}</strong>
+        {/tab_header_cell}
+    {/tab_header}
+
+    {tab_contents id="attachmentpanel-{$attachmenttype}"}
+        {tab_table}
+            <div class="lms-ui-tab-table-row header">
+                <div class="lms-ui-tab-table-wrapper col-3">
+                    <div class="lms-ui-tab-table-wrapper date-creator col-2">
+                        <div class="lms-ui-tab-table-column bold date">
+                            {trans("Creation date:")}
+                        </div>
+                        <div class="lms-ui-tab-table-column bold creator">
+                            {trans("Creator:")}
+                        </div>
+                    </div>
+                    <div class="lms-ui-tab-table-column bold description">
+                        {trans("Description:")}
+                    </div>
+                </div>
+
+                <div class="lms-ui-tab-table-column bold buttons">
+                    {trans("Files:")}
+                </div>
+            </div>
+
+            {foreach $filecontainers as $container}
+            <div class="lms-ui-tab-table-row">
+                <div class="lms-ui-tab-table-wrapper col-3">
+                    <div class="lms-ui-tab-table-wrapper date-creator col-2">
+                        <div class="lms-ui-tab-table-column date">
+                            {$container.creationdate|date_format:"%Y/%m/%d %H:%M:%S"}
+                        </div>
+                        <div class="lms-ui-tab-table-column creator">
+                            <a href="?m=userinfo&id={$container.creatorid}">{$container.creatorname}</a>
+                        </div>
+                    </div>
+                    <div class="lms-ui-tab-table-column description">
+                        {$container.description|default:"---"}
+                    </div>
+                </div>
+
+                <div class="lms-ui-tab-table-column buttons">
+                    {button type="link" href="?m=attachments&attachmentaction=downloadzippedcontainer&type={$attachmenttype}&id={$container.id}"
+                    icon="fileupload" tip="Download file container as zip archive"}
+                    {button type="link" href="?m=attachments&attachmentaction=deletecontainer&type={$attachmenttype}&id={$container.id}"
+                    onclick="return confirm('{trans("Are you sure you want to delete this file container?")}')"
+                    icon="delete" tip="Delete file container"}
+                    <a href="#" class="toggle-file-list" data-container-id="{$container.id}" title="{trans("Show file list")}">
+                        <img src="img/asc_order.gif">
+                    </a>
+                    <div id="files-{$container.id}" style="display: none;" class="files">
+                        {foreach $container.files as $file}
+                            {documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
+                            url="?m=attachments&attachmentaction=viewfile&type={$attachmenttype}&id={$container.id}&fileid={$file.id}" external=true
+                            text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+                            <br>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+            {foreachelse}
+                <div class="lms-ui-tab-empty-table">
+                    {trans("There are no file containers in database.")}
+                </div>
+            {/foreach}
+
+            {tab_button_panel}
+                {tab_buttons}
+                    {trans("Description:")}
+                    <input type="text" name="upload[description]" size="50" value="{$upload.description}" form="upload-form">
+                    {fileupload id="files" fileupload=$fileupload form="upload-form"}
+                    {button icon="add" onclick="javascript:document.upload.submit();" label="Add"}
+                {/tab_buttons}
+            {/tab_button_panel}
+
+        {/tab_table}
+    {/tab_contents}
+{/tab_container}

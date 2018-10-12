@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  */
 
 function smarty_function_fileupload($params, $template) {
-	static $vars = array('id', 'fileupload');
+	static $vars = array('id', 'fileupload', 'form');
 
 	$result = '';
 	foreach ($vars as $var)
@@ -54,7 +54,7 @@ function smarty_function_fileupload($params, $template) {
 			<div class="lms-ui-button-fileupload-container">
 				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' alert' : '') . '" id="' . $id . '_button" '
 					. (isset($error_tip_params) ? Utils::tip($error_tip_params, $template) : '') . '><i></i> ' . trans("Select files") . '</button>
-				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;">
+				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" form="' . $form . '">
 			</div>
 			<div class="fileupload-files">';
 	if (!empty($fileupload) && isset($fileupload[$id]))
@@ -63,19 +63,20 @@ function smarty_function_fileupload($params, $template) {
 					<a href="#" class="fileupload-file"><i class="fas fa-trash"></i>
 						' . $file['name'] . ' (' . $file['sizestr'] . ')
 					</a>
-					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '">
-					<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '">
-					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '">
+					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '" form="' . $form . '">
+					<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '" form="' . $form . '">
+					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" form="' . $form . '">
 				</div>';
 	$result .= '</div>
 			<div class="fileupload-status alert bold">
 			</div>
-			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="' . $fileupload[$id . '-tmpdir'] . '">
+			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="' . $fileupload[$id . '-tmpdir'] . '" form="' . $form . '">
 		</div>';
 	$result .= '<script type="text/javascript">
 		<!--
 			$(function() {
 				var elemid = "' . $id . '";
+				var formid = "' . $form . '";
 				var elem = $("#" + elemid);
 				var progressbar = elem.find(".fileupload-progressbar");
 				var progresslabel = progressbar.find(".fileupload-progress-label");
@@ -114,9 +115,9 @@ function smarty_function_fileupload($params, $template) {
 									var size = get_size_unit(file.size);
 									fileupload_files.append(\'<div><a href="#" class="fileupload-file"><i class="fas fa-trash"></i>&nbsp;\'
 										+ file.name + \' (\' + size.size + \' \' + size.unit + \')</a>\'
-										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][name]" value="\' + file.name + \'">\'
-										+ \'<input type="hidden" class="fileupload-file-size" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][size]" value="\' + file.size + \'">\'
-										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][type]" value="\' + file.type + \'">\'
+										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][name]" value="\' + file.name + \'" form="\' + formid + \'">\'
+										+ \'<input type="hidden" class="fileupload-file-size" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][size]" value="\' + file.size + \'" form="\' + formid + \'">\'
+										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][type]" value="\' + file.type + \'" form="\' + formid + \'">\'
 										+ "</div>");
 									elem.find(".fileupload-file").on("click", function() {
 										$(this).parent().remove();
@@ -151,7 +152,7 @@ function smarty_function_fileupload($params, $template) {
 					e.stopPropagation();
 					$(this).removeClass("lms-ui-fileupload-dropzone");
 					var files = e.originalEvent.dataTransfer.files;
-					var form = $(this).closest("form");
+					var form = $("#" +formid);
 					var formdata = new FormData(form.get(0));
 					formdata.delete("' . $id . '[]");
 					$(files).each(function(index, file) {
@@ -182,7 +183,7 @@ function smarty_function_fileupload($params, $template) {
 					value: false
 				});
 				elem.find("input[type=file]").on("change", function() {
-					var form = $(this).closest("form");
+					var form = $("#" +formid);
 					var formdata = new FormData(form.get(0));
 					upload_files(form, formdata);
 				});
