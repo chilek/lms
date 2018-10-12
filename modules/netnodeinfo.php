@@ -42,6 +42,10 @@ if ($nodeinfo['ownerid']) {
 $SMARTY->assign('nodeinfo', $result);
 $SMARTY->assign('objectid', $result['id']);
 
+$attachmenttype = 'netnodeid';
+$attachmentresourceid = $id;
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
+
 $nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name", array($id));
 $SMARTY->assign('netdevlist', $nlist);
 
