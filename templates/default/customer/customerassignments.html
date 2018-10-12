@@ -119,7 +119,7 @@
 				{if $a.tariffid || $a.liabilityid}data-target-url="?m=customerassignmentedit&id={$a.id}"{/if}>
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
-						<div class="lms-ui-tab-table-column liability"
+						<div class="lms-ui-tab-table-column liability">
 							{if !$a.tariffid && !$a.liabilityid}
 								<strong>{trans("Suspending of all liabilities")}</strong>
 							{else}
