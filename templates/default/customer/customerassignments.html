@@ -115,11 +115,11 @@
 					data-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
 				{/if}
 				data-downceil="{$a.real_downceil|default:"0"}"
-				data-upceil="{$a.real_upceil|default:"0"}">
+				data-upceil="{$a.real_upceil|default:"0"}"
+				{if $a.tariffid || $a.liabilityid}data-target-url="?m=customerassignmentedit&id={$a.id}"{/if}>
 				<div class="lms-ui-tab-table-wrapper col-8">
 					<div class="lms-ui-tab-table-wrapper col-4">
 						<div class="lms-ui-tab-table-column liability"
-								{if $a.tariffid || $a.liabilityid} OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}';"{/if}>
 							{if !$a.tariffid && !$a.liabilityid}
 								<strong>{trans("Suspending of all liabilities")}</strong>
 							{else}
