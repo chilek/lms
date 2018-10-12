@@ -1,6 +1,7 @@
 <!--// $Id$ //-->
 
 {css}
+{js}
 
 <form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form">
 </form>
@@ -87,14 +88,3 @@
         {/tab_table}
     {/tab_contents}
 {/tab_container}
-
-<SCRIPT type="text/javascript">
-	$(function() {
-		$('.toggle-file-list').click(function() {
-			var containerid = parseInt($(this).attr('data-container-id'));
-			var elem = $('#files-' + containerid);
-			elem.toggle();
-			$(this).html('<img src="img/' + (elem.is(':visible')  ? 'desc' : 'asc') + '_order.gif">');
-		});
-	});
-</SCRIPT>
