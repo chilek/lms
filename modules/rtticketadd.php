@@ -163,7 +163,7 @@ if(isset($_POST['ticket']))
 		$id = $LMS->TicketAdd($ticket, $files);
 
 		// deletes uploaded files
-		if (!empty($files))
+		if (!empty($files) && !empty($tmppath))
 			rrmdir($tmppath);
 
 		if (isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.newticket_notify')) {

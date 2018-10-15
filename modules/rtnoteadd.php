@@ -88,7 +88,7 @@ elseif(isset($_POST['note']))
 			), $files);
 
 		// deletes uploaded files
-		if (!empty($files))
+		if (!empty($files) && !empty($tmppath))
 			rrmdir($tmppath);
 
 		// setting status and the ticket owner

@@ -352,7 +352,7 @@ if (isset($_POST['document'])) {
 		}
 
 		// deletes uploaded files
-		if (!empty($attachments))
+		if (!empty($attachments) && !empty($tmppath))
 			rrmdir($tmppath);
 
 		die;

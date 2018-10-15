@@ -563,7 +563,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 					);
 
 				// deletes uploaded files
-				rrmdir($tmppath);
+				if (!empty($tmppath))
+					rrmdir($tmppath);
 			}
 
 			$debug_email = ConfigHelper::getConfig('mail.debug_email');

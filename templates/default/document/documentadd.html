@@ -42,7 +42,7 @@
 	}
 //-->
 </script>
-<FORM name="documentadd" method="POST" action="?m=documentadd">
+<FORM name="documentadd" method="POST" id="documentadd-form" action="?m=documentadd">
 <INPUT type="submit" class="hiddenbtn">
 {if $customer.id}{$cid=$customer.id}{elseif $document.customerid}{$cid=$document.customerid}{else}{$cid=""}{/if}
 <TABLE class="lmsbox">
@@ -142,7 +142,7 @@
 			{trans("Files:")}
 		</TD>
 		<TD>
-			{fileupload id="attachments" fileupload=$fileupload}
+			{fileupload id="attachments" fileupload=$fileupload form="documentadd-form"}
 		</TD>
 	</TR>
 	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>

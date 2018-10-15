@@ -369,7 +369,7 @@ if (isset($_POST['message'])) {
 		}
 
 		// deletes uploaded files
-		if (!empty($files))
+		if (!empty($files) && !empty($tmppath))
 			rrmdir($tmppath);
 
 		$backto = $SESSION->get('backto');

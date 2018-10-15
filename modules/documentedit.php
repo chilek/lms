@@ -162,7 +162,8 @@ if(isset($_POST['document']))
 					break;
 				}
 			}
-			rrmdir($tmppath);
+			if (!empty($tmppath))
+				rrmdir($tmppath);
 		}
 	}
 

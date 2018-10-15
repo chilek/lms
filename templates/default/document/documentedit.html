@@ -14,7 +14,7 @@
 	}
 //-->
 </script>
-<P><FORM name="documentedit" method="POST" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
+<P><FORM name="documentedit" method="POST" id="documentedit-form" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="customerid" value="{$document.customerid}">
 <TABLE class="lmsbox">
@@ -97,7 +97,7 @@
 			{trans("New files:")}
 		</TD>
 		<TD>
-			{fileupload id="attachments" fileupload=$fileupload}
+			{fileupload id="attachments" fileupload=$fileupload form="documentedit-form"}
 		</TD>
 	</TR>
 	{if !empty($document.attachments)}

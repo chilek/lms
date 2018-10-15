@@ -27,7 +27,7 @@
 	}
 //-->
 </SCRIPT>
-<FORM name="documentgen" method="POST" action="?m=documentgen" enctype="multipart/form-data">
+<FORM name="documentgen" method="POST" id="documentgen-form" action="?m=documentgen" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -126,7 +126,7 @@
 			{trans("Files:")}
 		</TD>
 		<TD>
-			{fileupload id="attachments" fileupload=$fileupload}
+			{fileupload id="attachments" fileupload=$fileupload form="documentgen-form"}
 		</TD>
 	</TR>
 	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>

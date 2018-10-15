@@ -204,7 +204,7 @@ if (isset($_POST['document'])) {
 
 	if (!$error) {
 		$error = $LMS->AddDocumentFileAttachments($files);
-		if (empty($error))
+		if (empty($error) && !empty($tmppath))
 			rrmdir($tmppath);
 	}
 

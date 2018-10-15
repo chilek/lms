@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<FORM method="POST" name="note" action="?m=rtnoteadd">
+<FORM method="POST" name="note" id="note-form" action="?m=rtnoteadd">
 <INPUT type="hidden" name="note[inreplyto]" value ="{$note.inreplyto|default:"0"}">
 <INPUT type="hidden" name="note[references]" value ="{$note.references|escape|default:""}">
 <INPUT type="hidden" name="note[ticketid]" value="{$note.ticketid}">
@@ -37,7 +37,7 @@
 			{trans("Attachments:")}
 		</TD>
 		<TD>
-			{fileupload id="files" fileupload=$fileupload}
+			{fileupload id="files" fileupload=$fileupload form="note-form"}
 		</TD>
 	</TR>
 	<TR>
