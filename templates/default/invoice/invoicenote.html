@@ -205,13 +205,13 @@
 		</TD>
 		<TD>
 		    {if $invoice.closed}
-		    {$item.count|string_format:"%.3f"}<BR>{$item.jm}
+		    {$item.count|string_format:"%.3f"}<BR>{$item.content}
 			{elseif $item.deleted}
 			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.3f"}
-			<INPUT TYPE="hidden" VALUE="{$item.jm}" NAME="jm[{$itemid}]">{$item.jm}
+			<INPUT TYPE="hidden" VALUE="{$item.content}" NAME="content[{$itemid}]">{$item.content}
 			{else}
 			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$itemid}]" SIZE="3">
-			<INPUT TYPE="text" VALUE="{$item.jm}" NAME="jm[{$itemid}]" SIZE="3">
+			<INPUT TYPE="text" VALUE="{$item.content}" NAME="content[{$itemid}]" SIZE="3">
 			{/if}
 		</TD>
 		<TD class="text-right nobr">

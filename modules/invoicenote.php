@@ -47,7 +47,7 @@ if (isset($_GET['id']) && $action == 'init')
 		$nitem['discount']	= str_replace(',', '.', $item['pdiscount']);
 		$nitem['pdiscount']	= str_replace(',', '.', $item['pdiscount']);
 		$nitem['vdiscount']	= str_replace(',', '.', $item['vdiscount']);
-		$nitem['jm']		= str_replace(',', '.', $item['content']);
+		$nitem['content']		= str_replace(',', '.', $item['content']);
 		$nitem['valuenetto']	= str_replace(',', '.', $item['basevalue']);
 		$nitem['valuebrutto']	= str_replace(',', '.', $item['value']);
 		$nitem['s_valuenetto']	= str_replace(',', '.', $item['totalbase']);
@@ -232,7 +232,7 @@ switch($action)
 			$idx = $item['itemid'];
 			$contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
 			$contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
-			$contents[$idx]['jm'] = isset($newcontents['jm'][$idx]) ? $newcontents['jm'][$idx] : $item['jm'];
+			$contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
 			$contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
 
 			$contents[$idx]['discount'] = str_replace(',', '.', isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount']);
@@ -420,7 +420,7 @@ switch($action)
 				'value' => $item['valuebrutto'],
 				SYSLOG::RES_TAX => $item['taxid'],
 				'prodid' => $item['prodid'],
-				'content' => $item['jm'],
+				'content' => $item['content'],
 				'count' => $item['count'],
 				'pdiscount' => $item['pdiscount'],
 				'vdiscount' => $item['vdiscount'],
