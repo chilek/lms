@@ -204,7 +204,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 		/* invoice data */
 		$i = 1;
-		foreach ($this->data['content'] as $item) {
+		foreach ($this->data['content'] as $itemid => $item) {
 			$h = $this->backend->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
 			$this->backend->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
 			$this->backend->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, $h, 'M');
@@ -215,7 +215,10 @@ class LMSTcpdfInvoice extends LMSInvoice {
 				$this->backend->Cell($h_width['discount'], $h, sprintf('%.2f%%', $item['pdiscount']), 1, 0, 'R', 0, '', 1);
 			elseif (!empty($this->data['vdiscount']))
 				$this->backend->Cell($h_width['discount'], $h, moneyf($item['vdiscount']), 1, 0, 'R', 0, '', 1);
-			$this->backend->Cell($h_width['basevalue'], $h, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
+			if (empty($item['count']) && isset($this->data['invoice']))
+				$this->backend->Cell($h_width['basevalue'], $h, moneyf($this->data['invoice']['content'][$itemid]['basevalue']), 1, 0, 'R', 0, '', 1);
+			else
+				$this->backend->Cell($h_width['basevalue'], $h, moneyf($item['basevalue']), 1, 0, 'R', 0, '', 1);
 			$this->backend->Cell($h_width['totalbase'], $h, moneyf($item['totalbase']), 1, 0, 'R', 0, '', 1);
 			$this->backend->Cell($h_width['taxlabel'], $h, $item['taxlabel'], 1, 0, 'C', 0, '', 1);
 			$this->backend->Cell($h_width['totaltax'], $h, moneyf($item['totaltax']), 1, 0, 'R', 0, '', 1);

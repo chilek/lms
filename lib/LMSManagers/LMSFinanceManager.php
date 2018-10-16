@@ -1522,7 +1522,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
             }
 
-            if ($result['content'] = $this->db->GetAll('SELECT invoicecontents.value AS value,
+            if ($result['content'] = $this->db->GetAllByKey('SELECT invoicecontents.value AS value,
 						itemid, taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
 								CASE WHEN taxes.taxed = 0 THEN -1 ELSE taxes.value END
 							) END) AS taxvalue, taxes.label AS taxlabel,
@@ -1531,7 +1531,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						FROM invoicecontents
 						LEFT JOIN taxes ON taxid = taxes.id
 						WHERE docid=?
-						ORDER BY itemid', array($invoiceid))
+						ORDER BY itemid', 'itemid', array($invoiceid))
             )
                 foreach ($result['content'] as $idx => $row) {
                     if (isset($result['invoice'])) {
