@@ -488,8 +488,9 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
 $SMARTY->assign('invoice', $invoice);
+$SMARTY->assign('refdoc', $invoice);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('numberplanlist', $numberplanlist);
-$SMARTY->display('invoice/invoicenote.html');
+$SMARTY->display('invoice/invoicenotemodify.html');
 
 ?>

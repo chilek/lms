@@ -461,6 +461,7 @@ if ($action != '')
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
+$SMARTY->assign('refdoc', $cnote);
 $SMARTY->assign('taxeslist', $taxeslist);
 
 $args = array(
@@ -471,6 +472,6 @@ $args = array(
 );
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
 
-$SMARTY->display('invoice/invoicenoteedit.html');
+$SMARTY->display('invoice/invoicenotemodify.html');
 
 ?>

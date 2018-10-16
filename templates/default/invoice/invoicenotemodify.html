@@ -1,0 +1,311 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<script>
+
+	function printinvoice() {
+		var add = "";
+		if (document.save.original.checked)
+			add += "&original=1";
+		if (document.save.copy.checked)
+			add += "&copy=1";
+		document.save.action = "?m={$layout.module}&action=save&print=1" + add;
+		document.save.submit();
+	}
+
+	$(function() {
+		$('form[name="setheader"] [name="cnote[number]"]').focus();
+	});
+
+</script>
+<FORM NAME="setheader" METHOD="POST" ACTION="?m={$layout.module}&action=setheader">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
+	<THEAD>
+	<TR>
+		<TD class="bold" COLSPAN="2">
+			{trans("Main Information:")}
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Credit note number:")}
+		</TD>
+		<TD class="nobr">
+			<INPUT TYPE="TEXT" NAME="cnote[number]" VALUE="{$cnote.number}" SIZE="10"
+					{tip text="Enter credit note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			{if $numberplanlist}
+				<SELECT name="cnote[numberplanid]" {tip text="Select numbering plan"}>
+					{foreach item=plan from=$numberplanlist}
+						{assign var=period value=$plan.period}
+						<OPTION value="{$plan.id}"{if $plan.id==$cnote.numberplanid} selected{/if}>{number number=$plan.next template=$plan.template time=$cnote.cdate customerid=$refdoc.customerid} ({$_NUM_PERIODS.$period})</OPTION>
+					{/foreach}
+				</SELECT>
+			{else}
+				<INPUT type="hidden" name="cnote[numberplanid]" value="0">
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Settlement date:")}
+		</TD>
+		<TD class="nobr">
+			<INPUT TYPE="TEXT" NAME="cnote[cdate]" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
+					placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+			{if $cnote.cdatewarning}
+				<INPUT TYPE="HIDDEN" NAME="cnote[cdatewarning]" VALUE="1">
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Sale date:")}
+		</TD>
+		<TD class="nobr">
+			<INPUT TYPE="TEXT" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}" SIZE="10"
+					placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Deadline:")}
+		</TD>
+		<TD class="nobr">
+			<input type="text" name="cnote[deadline]" value="{$cnote.deadline|date_format:"%Y/%m/%d"}" size="10"
+					placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Payment type (cash/transfer/etc):")}
+		</TD>
+		<TD class="nobr">
+			<SELECT name="cnote[paytype]" {tip text="Select payment type" trigger="paytype"}>
+				{foreach from=$_PAYTYPES item=item key=key}
+					<OPTION value="{$key}"{if $cnote.paytype==$key} selected{/if}>{$item}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	{if $refdoc.divisionid != $refdoc.current_divisionid}
+		<TR>
+			<TD class="bold nobr">
+				{trans("Use current division data:")}
+			</TD>
+			<TD class="nobr">
+				<INPUT TYPE="checkbox" NAME="cnote[use_current_division]" VALUE="1"{if $cnote.use_current_division} CHECKED{/if}
+						{tip text="Seller data change"}>
+			</TD>
+		</TR>
+	{/if}
+	<TR>
+		<td class="bold nobr">
+			<label for="use_current_customer_data">{trans("Use current customer data:")}</label>
+		</td>
+		<TD class="nobr">
+			<input type="checkbox" id="use_current_customer_data" name="cnote[use_current_customer_data]" value="1"
+					{if $cnote.use_current_customer_data} checked{/if} {tip text="Check it if you want to use current customer data"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			{trans("Reason:")}
+		</TD>
+		<TD class="nobr">
+			<TEXTAREA NAME="cnote[reason]" ROWS="4" COLS="50" {tip text="Enter reason (optional)"}>{$cnote.reason}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="buttons" COLSPAN="2">
+			<A HREF="javascript:document.setheader.submit();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+</FORM>
+<BR>
+<FORM NAME="save" METHOD="POST" ACTION="?m={$layout.module}&action=save">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 92%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+	<TR>
+		<TD class="bold">
+			{trans("No.")}
+		</TD>
+		<TD>
+			{trans("Name of product, commodity or service:")}
+		</TD>
+		<TD class="nobr">
+			{trans("Product ID:")}
+		</TD>
+		<TD class="text-right">
+			{trans("Amount:")}<BR>
+			{trans("Unit:")}
+		</TD>
+		<TD class="text-right nobr">
+			{trans("Discount:")}
+		</TD>
+		<TD class="text-right nobr">
+			{trans("Net Price:")}
+		</TD>
+		<TD class="text-right">
+			{trans("Tax:")}
+		</TD>
+		<TD class="text-right nobr">
+			{trans("Gross Price:")}
+		</TD>
+		<TD>
+			&nbsp;
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	{foreach $contents as $itemid => $item}
+		<TR class="highlight{if $item.deleted} blend{/if}">
+			<TD class="bold">
+				{$itemid}.
+			</TD>
+			<TD>
+				{if $refdoc.closed}
+					{$item.name}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name}
+				{else}
+					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48" style="width: 100%">
+				{/if}
+			</TD>
+			<TD class="nobr">
+				{if $refdoc.closed}
+					{$item.prodid}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]">{$item.prodid}
+				{else}
+					<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]" SIZE="6">
+				{/if}
+			</TD>
+			<TD>
+				{if $refdoc.closed}
+					{$item.count|string_format:"%.3f"}<BR>{$item.content}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.3f"}
+					<INPUT TYPE="hidden" VALUE="{$item.content}" NAME="content[{$itemid}]">{$item.content}
+				{else}
+					<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$itemid}]" SIZE="3">
+					<INPUT TYPE="text" VALUE="{$item.content}" NAME="content[{$itemid}]" SIZE="3">
+				{/if}
+			</TD>
+			<TD class="text-right nobr">
+				{if $refdoc.closed}
+					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]">
+					<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" NAME="discount_type[{$itemid}]">
+					{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
+				{else}
+					<INPUT TYPE="text" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]" SIZE="6" {tip text="Enter discount percentage or value"}><BR>
+					<SELECT name="discount_type[{$itemid}]">
+						{foreach from=$_DISCOUNTTYPES item=item2 key=key}
+							<OPTION value="{$key}"{if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>{$item2}</OPTION>
+						{/foreach}
+					</SELECT>
+				{/if}
+			</TD>
+			<TD class="text-right nobr">
+				{if $refdoc.closed}
+					{$item.valuenetto|money_format}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$itemid}]">{$item.valuenetto|money_format}
+				{else}
+					<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$itemid}]" SIZE="6">
+				{/if}
+			</TD>
+			<TD class="text-right nobr">
+				{if $refdoc.closed}
+					{$item.tax}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$itemid}]">{$item.tax}
+				{else}
+					<SELECT size="1" name="taxid[{$itemid}]" {tip text="Select Tax rate"}>
+						{foreach item=tax from=$taxeslist}
+							<OPTION value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</OPTION>
+						{/foreach}
+					</SELECT>
+				{/if}
+			</TD>
+			<TD class="text-right nobr">
+				{if $refdoc.closed}
+					{$item.valuebrutto|money_format}
+				{elseif $item.deleted}
+					<INPUT TYPE="hidden" VALUE="{$item.valuebrutto}" NAME="valuebrutto[{$itemid}]">{$item.valuebrutto|money_format}
+				{else}
+					<INPUT TYPE="text" VALUE="{$item.valuebrutto|string_format:"%.2f"}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
+				{/if}
+			</TD>
+			<TD class="nobr">
+				{if $refdoc.closed}
+				{elseif $item.deleted}
+					<A HREF="?m={$layout.module}&action=recoverpos&itemid={$itemid}"><IMG SRC="img/recover.gif" {tip text="Recover this item"}></A>
+				{else}
+					<A HREF="?m={$layout.module}&action=deletepos&itemid={$itemid}"><IMG SRC="img/delete.gif" {tip text="Remove this item"}></A>
+				{/if}
+			</TD>
+		</TR>
+	{/foreach}
+	{if $contents}
+		<TR>
+			<TD COLSPAN="5" class="bold text-right">
+				{trans("Total:")}
+			</TD>
+			<TD class="bold nobr text-right">
+				{sum array=$contents column=s_valuenetto string_format="%01.2f"}
+			</TD>
+			<TD>
+				&nbsp;
+			</TD>
+			<TD class="bold nobr text-right">
+				{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
+			</TD>
+			<TD>
+				&nbsp;
+			</TD>
+		</TR>
+	{/if}
+	<TR class="lms-ui-button-panel">
+		<TD COLSPAN="9" class="text-right">
+			{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
+			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
+			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
+			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+			{if $error}
+				<A HREF="javascript:alert('{trans("There are errors in credit note main information!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+				<A HREF="javascript:alert('{trans("There are errors in credit note main information!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			{else}
+				<A HREF="javascript:document.save.submit()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+				<A HREF="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			{/if}
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+</FORM>
+{/block}
