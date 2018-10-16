@@ -57,6 +57,7 @@ if (isset($_GET['id']) && $action == 'init')
 		$nitem['itemid']	= $item['itemid'];
 		$invoicecontents[$nitem['itemid']] = $nitem;
 	}
+	$invoice['content'] = $invoicecontents;
 
 	if (empty($invoice['divisionid']))
 		$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
@@ -223,6 +224,8 @@ switch($action)
 			break;
 
 		$SESSION->restore('invoiceid', $invoice['id']);
+
+		$invoicecontents = $invoice['content'];
 		$newcontents = r_trim($_POST);
 
 		foreach ($contents as $item) {
@@ -260,16 +263,23 @@ switch($action)
 				$contents[$idx]['valuebrutto'] = $item['valuebrutto'];
 
 			if (isset($item['deleted']) && $item['deleted']) {
-				$contents[$idx]['valuebrutto'] = 0;
-				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'],2);
-				$contents[$idx]['count'] = 0;
+				$contents[$idx]['valuebrutto'] = f_round(-1 * $invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count']);
+				$contents[$idx]['cash'] = f_round($invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
+				$contents[$idx]['count'] = f_round(-1 * $invoicecontents[$idx]['count'], 3);
 			} elseif ($contents[$idx]['count'] != $item['count']
-				|| $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
-				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'] - $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
-			else
+				|| $contents[$idx]['valuebrutto'] != $item['valuebrutto']) {
+				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
+				$contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
+				$contents[$idx]['cash'] = f_round($contents[$idx]['valuebrutto'] * $contents[$idx]['count']
+					- $invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
+			} else {
 				$contents[$idx]['cash'] = 0;
-			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
-			$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
+				$contents[$idx]['valuebrutto'] = 0;
+				$contents[$idx]['count'] = 0;
+			}
+			$contents[$idx]['cash'] = str_replace(',', '.', $contents[$idx]['cash']);
+			$contents[$idx]['valuebrutto'] = str_replace(',', '.', $contents[$idx]['valuebrutto']);
+			$contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
 		}
 
 		$cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);

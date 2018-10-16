@@ -133,7 +133,7 @@ switch ($action) {
 		$cnote['oldcdate'] = $oldcdate;
 		$cnote['oldnumber'] = $oldnumber;
 		$cnote['oldnumberplanid'] = $oldnumberplanid;
-		$cnote['invoice'] = $oldcnote['invoice'];
+		$invoice = $oldcnote['invoice'];
 
 		$SESSION->restore('cnoteid', $cnote['id']);
 
@@ -144,7 +144,7 @@ switch ($action) {
 			if (checkdate($smonth, $sday, $syear)) {
 				$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
 				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				if ($sdate < $cnote['invoice']['sdate'])
+				if ($sdate < $invoice['sdate'])
 					$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
 			} else {
 				$error['sdate'] = trans('Incorrect date format! Using current date.');
@@ -157,7 +157,7 @@ switch ($action) {
 			list ($year, $month, $day) = explode('/', $cnote['cdate']);
 			if (checkdate($month, $day, $year)) {
 				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				if($cnote['cdate'] < $cnote['invoice']['cdate'])
+				if($cnote['cdate'] < $invoice['cdate'])
 					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
 			} else {
 				$error['cdate'] = trans('Incorrect date format! Using current date.');
@@ -212,8 +212,8 @@ switch ($action) {
 		$paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 		$iid   = $cnote['id'];
 
-		$newcontents = r_trim($_POST);
 		$invoicecontents = $cnote['invoice']['content'];
+		$newcontents = r_trim($_POST);
 
 		foreach ($contents as $idx => $item) {
 			$contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
@@ -245,19 +245,27 @@ switch ($action) {
 
 			if ($contents[$idx]['valuenetto'] != $item['valuenetto'])
 				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
+			elseif (f_round($contents[$idx]['valuebrutto']) == f_round($item['valuebrutto']))
+				$contents[$idx]['valuebrutto'] = $item['valuebrutto'];
 
 			if (isset($item['deleted']) && $item['deleted']) {
-				$contents[$idx]['valuebrutto'] = 0;
-				$contents[$idx]['cash'] = round($invoicecontents[$idx]['total'] * $item['count'], 2);
-				$contents[$idx]['count'] = 0;
+				$contents[$idx]['valuebrutto'] = f_round(-1 * $invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count']);
+				$contents[$idx]['cash'] = f_round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count'], 2);
+				$contents[$idx]['count'] = f_round(-1 * $invoicecontents[$idx]['count'], 3);
+			} elseif ($contents[$idx]['count'] != $item['count']
+					|| $contents[$idx]['valuebrutto'] != $item['valuebrutto']) {
+				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['value']);
+				$contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
+				$contents[$idx]['cash'] = f_round($contents[$idx]['valuebrutto'] * $contents[$idx]['count']
+					- $invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count'], 2);
 			} else {
-				if ($contents[$idx]['count'] != $invoicecontents[$idx]['count']
-					|| $contents[$idx]['valuebrutto'] != $invoicecontents[$idx]['value'])
-					$contents[$idx]['cash'] = round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count']
-						- $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
-				$contents[$idx]['valuebrutto'] = $invoicecontents[$idx]['value'] - $contents[$idx]['valuebrutto'];
-				$contents[$idx]['count'] = $invoicecontents[$idx]['count'] - $contents[$idx]['count'];
+				$contents[$idx]['cash'] = 0;
+				$contents[$idx]['valuebrutto'] = 0;
+				$contents[$idx]['count'] = 0;
 			}
+			$contents[$idx]['cash'] = str_replace(',', '.', $contents[$idx]['cash']);
+			$contents[$idx]['valuebrutto'] = str_replace(',', '.', $contents[$idx]['valuebrutto']);
+			$contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
 		}
 
 		$DB->BeginTrans();
@@ -387,7 +395,7 @@ switch ($action) {
 				$args = array(
 					SYSLOG::RES_DOC => $iid,
 					'itemid' => $itemid,
-					'value' => str_replace(',', '.', -$item['valuebrutto']),
+					'value' => str_replace(',', '.', $item['valuebrutto']),
 					SYSLOG::RES_TAX => $item['taxid'],
 					'prodid' => $item['prodid'],
 					'content' => $item['content'],
