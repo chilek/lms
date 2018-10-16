@@ -169,7 +169,8 @@
 			{trans("<!rt>Deadline:")}
 		</TD>
 		<TD>
-			<INPUT TYPE="TEXT" NAME="note[deadline]" VALUE="{$note.deadline|date_format:"%Y/%m/%d %H:%M"}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+			<INPUT TYPE="TEXT" NAME="note[deadline]" VALUE="{if $note.deadline}{$note.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
+					SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
 		</TD>
 	</TR>
     </TBODY>
