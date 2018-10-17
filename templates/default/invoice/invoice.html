@@ -229,7 +229,7 @@
 {/if}
 {cycle values="grey,white" print=false name=cycle2}
 {counter start=0 print=false}
-{foreach $invoice.content as itemid => $item}
+{foreach from=$invoice.content item=item}
     <TR class="{cycle name=cycle2}">
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
 	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="flr">
@@ -250,11 +250,7 @@
 	</TD>
 	{/if}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{if empty($item.count) && isset($invoice.invoice)}
-		{$invoice.invoice.content[$itemid].basevalue}
-		{else}
 		{$item.basevalue|money_format}
-		{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|money_format}

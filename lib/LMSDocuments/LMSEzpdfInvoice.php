@@ -787,7 +787,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		// pozycje faktury
 		$i = 0;
 		if (isset($this->data['content']))
-			foreach ($this->data['content'] as $itemid => $item) {
+			foreach ($this->data['content'] as $item) {
 				$data[$i]['no'] = $i + 1;
 				$data[$i]['name'] = $item['description'];
 				$data[$i]['prodid'] = $item['prodid'];
@@ -799,10 +799,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 					$data[$i]['discount'] = sprintf('%.2f %%', $item['pdiscount']);
 				elseif (!empty($item['vdiscount']))
 					$data[$i]['discount'] = moneyf($item['vdiscount']);
-				if (empty($item['count']) && isset($this->data['invoice']))
-					$data[$i]['basevalue'] = moneyf($this->data['invoice']['content'][$itemid]['basevalue']);
-				else
-					$data[$i]['basevalue'] = moneyf($item['basevalue']);
+				$data[$i]['basevalue'] = moneyf($item['basevalue']);
 				$data[$i]['totalbase'] = moneyf($item['totalbase']);
 				$data[$i]['taxlabel'] = $item['taxlabel'];
 				$data[$i]['totaltax'] = moneyf($item['totaltax']);
