@@ -176,14 +176,13 @@
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="pagination.html"}
+			{include file="pagination.html" form="page-form"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY class="lms-ui-multi-check">
-	<FORM METHOD="POST" NAME="page" ACTION="?m=documentedit&action=confirm">
-	<INPUT type="hidden" name="page" value="1">
+	<FORM METHOD="POST" NAME="page" id="page-form" ACTION="?m=documentedit&action=confirm">
 	{foreach $documentlist as $doc}
 	{assign var=docid value=$doc.docid}
 	<TR class="highlight{if $doc.closed} blend{/if}">
@@ -261,7 +260,7 @@
 	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="5">
-			{include file="pagination.html"}
+			{include file="pagination.html" form="page-form"}
 		</TD>
 	</TR>
 	{/if}
