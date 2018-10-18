@@ -109,7 +109,6 @@ function lmsFileUpload(elemid, formid) {
 			var fileReader = new FileReader();
 			fileReader.readAsDataURL(file);
 			formdata.append(elemid + '[]', file);
-			delete fileReader;
 		});
 		upload_files(formelem, formdata);
 	});
