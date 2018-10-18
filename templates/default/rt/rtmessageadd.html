@@ -21,7 +21,7 @@
 
 </style>
 <H1>{$layout.pagetitle}</H1>
-<FORM method="POST" name="message" form="message-form" action="?m=rtmessageadd">
+<FORM method="POST" name="message" id="message-form" action="?m=rtmessageadd">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
