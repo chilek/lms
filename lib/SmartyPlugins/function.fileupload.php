@@ -153,7 +153,7 @@ function smarty_function_fileupload($params, $template) {
 					e.stopPropagation();
 					$(this).removeClass("lms-ui-fileupload-dropzone");
 					var files = e.originalEvent.dataTransfer.files;
-					var form = ' . ($form ? '$("#" +' . $form . ')' : '$(this).closest("form");') . '
+					var form = ' . ($form ? '$("#' . $form . '")' : '$(this).closest("form");') . '
 					var formdata = new FormData(form.get(0));
 					formdata.delete("' . $id . '[]");
 					$(files).each(function(index, file) {
@@ -184,7 +184,7 @@ function smarty_function_fileupload($params, $template) {
 					value: false
 				});
 				elem.find("input[type=file]").on("change", function() {
-					var form = ' . ($form ? '$("#" +' . $form . ')' : '$(this).closest("form");') . '
+					var form = ' . ($form ? '$("#' . $form . '")' : '$(this).closest("form");') . '
 					var formdata = new FormData(form.get(0));
 					upload_files(form, formdata);
 				});
