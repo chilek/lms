@@ -60,7 +60,7 @@ if($message['deluserid'])
 if($message['customerid'])
 	$message['customername'] = $LMS->GetCustomerName($message['customerid']);
 	
-if(count($message['attachments']))
+if (!empty($message['attachments']) && count($message['attachments']))
 	foreach($message['attachments'] as $key => $val) 
 	{
 		list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR
