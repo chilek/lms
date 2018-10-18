@@ -76,7 +76,7 @@ function smarty_function_fileupload($params, $template) {
 		</div>';
 	$result .= '<script>
 			$(function() {
-				new lmsFileUpload("' . $id . '", "' . $form . '");
+				new lmsFileUpload("' . $id . '"' . ($form ? ', "' . $form . '"' : '') . ');
 			});
 		</script>';
 
