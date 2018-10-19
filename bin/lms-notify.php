@@ -591,13 +591,27 @@ if (empty($types) || in_array('documents', $types)) {
 
 // contracts
 if (empty($types) || in_array('contracts', $types)) {
+	$expiration_type = ConfigHelper::getConfig($config_section . '.expiration_type', 'assignments');
 	$days = $notifications['contracts']['days'];
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, MAX(a.dateto) AS cdate,
+			SUM(value) AS balance, d.dateto AS cdate,
 			m.email, x.phone
 		FROM customers c
-		JOIN cash ON (c.id = cash.customerid)
-		JOIN assignments a ON (c.id = a.customerid)
+		JOIN cash ON (c.id = cash.customerid) "
+		. ($expiration_type == 'assignments' ?
+			"JOIN (
+				SELECT MAX(a.dateto) AS dateto, a.customerid
+				FROM assignments a
+				WHERE a.dateto > 0
+				GROUP BY a.customerid
+				HAVING(a.dateto) >= $daystart + $days * 86400 AND d.dateto < $daystart + ($days + 1) * 86400
+			) d ON d.customerid = c.id" :
+			"JOIN (
+				SELECT DISTINCT customerid, 0 AS dateto FROM documents
+				JOIN documentcontents dc ON dc.docid = documents.id
+				WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
+					AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
+			) d ON d.customerid = c.id") . "
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
 			WHERE (type & ?) = ?
@@ -609,12 +623,11 @@ if (empty($types) || in_array('contracts', $types)) {
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone
-		HAVING MAX(a.dateto) >= $daystart + ? * 86400 AND MAX(a.dateto) < $daystart + (? + 1) * 86400",
+		WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400",
 		array(CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
-			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-			$days, $days));
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS));
 
 	if (!empty($customers)) {
 		$notifications['contracts']['customers'] = array();
