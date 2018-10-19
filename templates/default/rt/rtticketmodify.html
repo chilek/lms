@@ -134,6 +134,14 @@
 				<INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
 			{/box_row}
 
+			{box_row icon="img/dead.gif" label="Status:"}
+				<SELECT name="ticket[state]" {tip text="Select status" trigger="state"}>
+					{foreach $_RT_STATES as $stateidx => $state}
+					<OPTION value="{$stateidx}"{if $ticket.state == $stateidx} selected{/if}>{$state.label}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
 			{box_row icon="img/queue.gif" label="Queue:"}
 				<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 					{foreach $queuelist as $item}
