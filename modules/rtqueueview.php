@@ -157,11 +157,8 @@ if (isset($_GET['s'])) {
 		$filter['state'] = array(intval($_GET['s']));
 } elseif (!isset($filter['state'])) {
 	$filter['state'] = ConfigHelper::getConfig('phpui.ticketlist_status');
-	if (strlen($filter['state'])) {
+	if (strlen($filter['state']))
 		$filter['state'] = explode(',', $filter['state']);
-		if (count($filter['state']) == 1)
-			$filter['state'] = array_shift($filter['state']);
-	}
 }
 
 // priority
