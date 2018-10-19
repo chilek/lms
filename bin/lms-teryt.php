@@ -1293,7 +1293,8 @@ if ( isset($options['explicit-node-locations']) ) {
 		echo 'Determining explicit TERYT node locations...' . PHP_EOL;
 
 	$nodes = $DB->GetAll('SELECT id, ownerid FROM nodes
-		WHERE ownerid IS NOT NULL AND address_id IS NULL');
+		WHERE ownerid IS NOT NULL AND address_id IS NULL
+		ORDER BY id');
 	if (!empty($nodes))
 		foreach ($nodes as $node) {
 			$address = GetDefaultCustomerTerytAddress($node['ownerid']);
