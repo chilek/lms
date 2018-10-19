@@ -509,6 +509,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 59: case 60: case 61:
                      $contracts = $state - 58;
                      $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
+                     $contracts_expiration_type = ConfigHelper::getConfig('contracts.expiration_type', 'documents');
                      break;
             case 62:
                     $einvoice =1;
@@ -771,32 +772,56 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHERE ownerid > 0 AND ipaddr <> 0
                     GROUP BY ownerid
                 ) s ON (s.ownerid = c.id) '
-                . ($contracts == 1 ? '
-                    LEFT JOIN (
-                        SELECT COUNT(*), d.customerid FROM documents d
-                        JOIN documentcontents dc ON dc.docid = d.id
-                                WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-                                GROUP BY d.customerid
-                        ) d ON d.customerid = c.id' : '')
-                    . ($contracts == 2 ? '
-                        JOIN (
-                            SELECT SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END),
-                                SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
-                                d.customerid FROM documents d
-                            JOIN documentcontents dc ON dc.docid = d.id
-                            WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-                            GROUP BY d.customerid
-                            HAVING SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
-                                AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
-                        ) d ON d.customerid = c.id' : '')
-                . ($contracts == 3 ? '
-                    JOIN (
-                        SELECT DISTINCT d.customerid FROM documents d
-                        JOIN documentcontents dc ON dc.docid = d.id
-                        WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
-                            AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-                    ) d ON d.customerid = c.id' : '')
-                . ' WHERE c.deleted = ' . intval($deleted)
+				. ($contracts == 1 ?
+					($contracts_expiration_type == 'documents' ?
+						'LEFT JOIN (
+							SELECT COUNT(*), d.customerid FROM documents d
+							JOIN documentcontents dc ON dc.docid = d.id
+							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+							GROUP BY d.customerid
+						) d ON d.customerid = c.id' :
+						'LEFT JOIN (
+							SELECT customerid
+							FROM assignments
+							WHERE dateto > 0
+							GROUP BY customerid
+							HAVING MAX(dateto) < ?NOW?
+						) ass ON ass.customerid = c.id') : '')
+				. ($contracts == 2 ?
+					($contracts_expiration_type == 'documents' ?
+						'JOIN (
+							SELECT SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END),
+								SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
+								d.customerid FROM documents d
+							JOIN documentcontents dc ON dc.docid = d.id
+							WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+							GROUP BY d.customerid
+							HAVING SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
+								AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
+						) d ON d.customerid = c.id' :
+						'JOIN (
+							SELECT customerid
+							FROM assignments
+							WHERE dateto > 0
+							GROUP BY customerid
+							HAVING MAX(dateto) < ?NOW?
+						) ass ON ass.customerid = c.id') : '')
+				. ($contracts == 3 ?
+					($contracts_expiration_type == 'documents' ?
+						'JOIN (
+							SELECT DISTINCT d.customerid FROM documents d
+							JOIN documentcontents dc ON dc.docid = d.id
+							WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
+								AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+						) d ON d.customerid = c.id' :
+						'JOIN (
+							SELECT customerid
+							FROM assignments
+							WHERE dateto > 0
+							GROUP BY customerid
+							HAVING MAX(dateto) >= ?NOW? AND MAX(dateto) <= ?NOW? + 86400 * ' . $contracts_days . '
+						) ass ON ass.customerid = c.id') : '')
+				. ' WHERE c.deleted = ' . intval($deleted)
                 . (($state < 50 && $state > 0) ? ' AND c.status = ' . intval($state) : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($online ? ' AND s.online = 1' : '')
@@ -815,7 +840,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					FROM customer_addresses ca
 					JOIN addresses a ON a.id = ca.address_id
 					WHERE a.city_id IS NULL)' : '')
-                . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
+				. ($contracts == 1 ? ($contracts_expiration_type == 'documents' ?
+						' AND d.customerid IS NULL' :
+						' AND ass.customerid IS NULL') : '')
                 . ($assigment ? ' AND c.id IN ('.$assigment.')' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
                 . ($network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
