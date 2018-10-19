@@ -39,6 +39,7 @@ $parameters = array(
     'd'  => 'delete',
     'b'  => 'buildings',
     'o'  => 'only-unique-city-matches',
+	'e'  => 'explicit-node-locations',
 );
 
 foreach ($parameters as $key => $val) {
@@ -78,6 +79,7 @@ lms-teryt.php
 -b, --buildings                    analyze building base and load it into database
 -l, --list                         state names or ids which will be taken into account
 -o, --only-unique-city-matches     update TERYT location only if city matches uniquely
+-e, --explicit-node-locations      set explicit TERYT locations for nodes
 
 EOF;
     exit(0);
@@ -254,6 +256,26 @@ function getIdents( $city = null, $street = null, $only_unique_city_matches = fa
 			return array();
 	} else
 		return array();
+}
+
+function GetDefaultCustomerTerytAddress($customerid) {
+	global $LMS;
+
+	$addresses = $LMS->getCustomerAddresses($customerid);
+	if (count($addresses) == 1) {
+		$address = reset($addresses);
+		if (empty($address['teryt']))
+			return null;
+		else
+			return $address;
+	}
+
+	foreach ($addresses as $address)
+		if ($address['location_address_type'] == DEFAULT_LOCATION_ADDRESS
+			&& !empty($address['teryt']))
+			return $address;
+
+	return null;
 }
 
 ini_set('memory_limit', '512M');
@@ -1258,6 +1280,34 @@ if ( isset($options['merge']) ) {
 	if (!$quiet)
 		echo 'Matched TERYT addresses: ' . $updated . PHP_EOL;
     unset( $addresses, $updated, $location_cache );
+}
+
+//==============================================================================
+// Determine explicit node TERYT locations
+//
+// -e --explicit-node-locations
+//==============================================================================
+
+if ( isset($options['explicit-node-locations']) ) {
+	if (!$quiet)
+		echo 'Determining explicit TERYT node locations...' . PHP_EOL;
+
+	$nodes = $DB->GetAll('SELECT id, ownerid FROM nodes
+		WHERE ownerid IS NOT NULL AND address_id IS NULL');
+	if (!empty($nodes))
+		foreach ($nodes as $node) {
+			$address = GetDefaultCustomerTerytAddress($node['ownerid']);
+			if (empty($address))
+				continue;
+
+			if (!$quiet)
+				printf('Setting explicit TERYT location address for node: %d (city: %s, street: %s, house: %s, flat: %s)' . PHP_EOL,
+					$node['id'], $address['location_city_name'], $address['location_street_name'],
+					$address['location_house'], $address['location_flat']);
+
+			$DB->Execute('UPDATE nodes SET address_id = ? WHERE id = ?',
+				array($address['address_id'], $node['id']));
+		}
 }
 
 //==============================================================================
