@@ -1092,7 +1092,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			a.house AS location_house, a.zip AS location_zip
 		FROM nodes n
 		LEFT JOIN addresses a ON n.address_id = a.id
-		WHERE n.ownerid IS NOT NULL AND a.city_id <> 0 AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
+		WHERE n.ownerid IS NOT NULL AND a.city_id IS NOT NULL AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
 		GROUP BY n.linktype, n.linktechnology, a.street, a.street_id, a.city_id, a.city, a.house, a.zip");
 	if (empty($ranges))
 		continue;
