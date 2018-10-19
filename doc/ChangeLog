@@ -162,6 +162,8 @@ version ?.??.?? (????-??-??):
     or not ('false' by default) [chilan]
   - enhancement: contracts.expiration_type configuration variable controls how expiring
     contract calculation is made ('documents' by default) [chilan]
+  - improvement: allow to automatically determine explicit teryt node locations basing
+    on customer addresses [chilan]
 
 version 1.11.23 (2018-03-21):
 
