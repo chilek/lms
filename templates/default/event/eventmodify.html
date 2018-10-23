@@ -102,7 +102,9 @@
 					{box_row icon="img/users.gif" label="Users:" field_class="multiselect"}
 						<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
 							{foreach $userlist as $user}
+								{if $user.access}
 								<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+								{/if}
 							{/foreach}
 						</SELECT> <br> <label>
 							<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
