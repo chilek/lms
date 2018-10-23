@@ -155,6 +155,8 @@ elseif (!isset($filter['state'])) {
 if (is_array($filter['state'])) {
 	if (in_array(-1, $filter['state']))
 		$filter['state'] = -1;
+	else
+		$filter['state'] = Utils::filterIntegers($filter['state']);
 } elseif ($filter['state'] < 0)
 	$filter['state'] = intval($filter['state']);
 else
