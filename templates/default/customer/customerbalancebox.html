@@ -216,7 +216,7 @@
 				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 				{button icon="delete" onclick="javascript:delpos();" label="Delete"}
 				{/if}
-				{button icon="mail" label="Send invoices"}
+				{button icon="mail" class="multiinvoicesend" label="Send invoices"}
 				{trans("Print")}:
 				{button icon="print" label="invoices" onclick="javascript:print_doc('invoice')"}
 				{button icon="cash" label="cash receipt" onclick="javascript:printr();"}
@@ -440,7 +440,7 @@
 		e.preventDefault();
 	});
 
-	$('.lms-ui-button-mail:not(.invoicesend)').click(function() {
+	$('.multiinvoicesend').click(function() {
 		if (confirm($t("Are you sure, you want to send invoices to customer?"))) {
 			send_invoices();
 		}
