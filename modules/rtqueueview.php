@@ -145,21 +145,20 @@ if (isset($_GET['d']))
     $filter['deadline'] = $_GET['d'];
 
 // status/state
-if (isset($_GET['s'])) {
-	if (is_array($_GET['s'])) {
-		if (in_array(-1, $_GET['s']))
-			$filter['state'] = -1;
-		else
-			$filter['state'] = $_GET['s'];
-	} elseif ($_GET['s'] < 0)
-		$filter['state'] = intval($_GET['s']);
-	else
-		$filter['state'] = array(intval($_GET['s']));
-} elseif (!isset($filter['state'])) {
+if (isset($_GET['s']))
+	$filter['state'] = $_GET['s'];
+elseif (!isset($filter['state'])) {
 	$filter['state'] = ConfigHelper::getConfig('phpui.ticketlist_status');
 	if (strlen($filter['state']))
 		$filter['state'] = explode(',', $filter['state']);
 }
+if (is_array($filter['state'])) {
+	if (in_array(-1, $filter['state']))
+		$filter['state'] = -1;
+} elseif ($filter['state'] < 0)
+	$filter['state'] = intval($filter['state']);
+else
+	$filter['state'] = array(intval($filter['state']));
 
 // priority
 if (isset($_GET['priority'])) {
