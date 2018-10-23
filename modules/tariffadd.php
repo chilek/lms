@@ -247,6 +247,7 @@ $SMARTY->assign('voip_tariffs', $LMS->getVoipTariffs());
 $SMARTY->assign('voip_tariffrules', $LMS->getVoipTariffRuleGroups());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
 	'doctype' => DOC_INVOICE,
+	'next' => false,
 )));
 $SMARTY->display('tariff/tariffadd.html');
 

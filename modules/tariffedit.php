@@ -243,6 +243,7 @@ $SMARTY->assign('tariff'          , $tariff);
 $SMARTY->assign('taxeslist'       , $LMS->GetTaxes());
 $SMARTY->assign('numberplanlist'  , $LMS->GetNumberPlans(array(
 	'doctype' => DOC_INVOICE,
+	'next' => false,
 )));
 $SMARTY->assign('error'           , $error);
 $SMARTY->display('tariff/tariffedit.html');
