@@ -1278,10 +1278,10 @@ class LMS
         return $manager->GetNetworkParams($id);
     }
 
-    public function GetNetworkList($order = 'id,asc')
+    public function GetNetworkList(array $search)
     {
         $manager = $this->getNetworkManager();
-        return $manager->GetNetworkList($order);
+        return $manager->GetNetworkList($search);
     }
 
     public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0)

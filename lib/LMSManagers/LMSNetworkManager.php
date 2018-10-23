@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -220,16 +220,14 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			WHERE ownerid IS NULL AND netdev = ?', array($id));
     }
 
-    public function GetNetworkList( $search = 'id,asc' )
+    public function GetNetworkList(array $search)
     {
-		if( is_array($search) )
-			$order = array_key_exists('order', $search) ? $search['order'] : 'id,asc';
-		else if( $search == '' )
-			$order = 'id,asc';
-		else
-			$order = $search;
-		if (!is_array($search))
-			$search = array();
+    	if (!is_array($search))
+    		$search = array(
+    			'order' => 'id,asc',
+			);
+
+		$order = isset($search['order']) && !empty($search['order']) ? $search['order'] : 'id,asc';
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -333,30 +331,43 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 		}
 		$sqlwhere = rtrim($sqlwhere, $search['operatorType']);
 
+		$count = isset($search['count']) && !empty($search['count']);
+
+		if ($count) {
+			return $this->db->GetOne('SELECT COUNT(n.id)
+				FROM networks n
+				LEFT JOIN hosts h ON h.id = n.hostid
+				' . ($sqlwhere != ' WHERE' ? $sqlwhere : ''));
+		}
+
 		$networks = $this->db->GetAll( 'SELECT 
-														n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
-														address AS addresslong, mask, interface, gateway, dns, dns2, 
-														domain, wins, dhcpstart, dhcpend,
-														mask2prefix(inet_aton(mask)) AS prefix,
-														broadcast(address, inet_aton(mask)) AS broadcastlong, vlanid,
-														inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
-														pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
-														(SELECT COUNT(*) 
-															FROM nodes 
-															WHERE netid = n.id AND ipaddr <> 0 AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
-																OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
-														) AS assigned,
-														(SELECT COUNT(*) 
-															FROM nodes 
-															WHERE netid = n.id AND ipaddr <> 0 AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
-																OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
-																AND (?NOW? - lastonline < ?)
-														) AS online
-													FROM 
-														networks n LEFT JOIN hosts h ON h.id = n.hostid' . ($sqlwhere != ' WHERE' ? $sqlwhere : '') . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
-													, array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))));
-		
-        if($networks) {											
+				n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
+				address AS addresslong, mask, interface, gateway, dns, dns2, 
+				domain, wins, dhcpstart, dhcpend,
+				mask2prefix(inet_aton(mask)) AS prefix,
+				broadcast(address, inet_aton(mask)) AS broadcastlong, vlanid,
+				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
+				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
+				(SELECT COUNT(*) 
+					FROM nodes 
+					WHERE netid = n.id AND ipaddr <> 0 AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
+				) AS assigned,
+				(SELECT COUNT(*) 
+					FROM nodes 
+					WHERE netid = n.id AND ipaddr <> 0 AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
+						AND (?NOW? - lastonline < ?)
+				) AS online
+			FROM networks n
+			LEFT JOIN hosts h ON h.id = n.hostid'
+			. ($sqlwhere != ' WHERE' ? $sqlwhere : '')
+			. ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+			. (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
+			. (isset($search['offset']) ? ' OFFSET ' . $search['offset'] : ''),
+			array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))));
+
+        if($networks) {
             $size = 0;
             $assigned = 0;
             $online = 0;

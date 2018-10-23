@@ -59,7 +59,7 @@ interface LMSNetworkManagerInterface
 
     public function GetNetDevIPs($id);
 
-    public function GetNetworkList($order = 'id,asc');
+    public function GetNetworkList(array $search);
 
     public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0);
 

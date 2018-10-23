@@ -2,7 +2,12 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
 <H1>{$layout.pagetitle}</H1>
+
+<FORM method="GET" action="?m=netlist" name="page" form="page-form">
+</FORM>
+
 <table class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<col style="width: 95%;">
@@ -48,6 +53,13 @@
 			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 	</TR>
+	<TR>
+		<TD class="lms-ui-pagination" COLSPAN="6">
+			{if $pagination->getTotal() != 0}
+				{include file="pagination.html" form="page-form"}
+			{/if}
+		</TD>
+	</TR>
 	</THEAD>
 	<TFOOT>
 	<TR>
@@ -55,6 +67,13 @@
 			{trans("Total:")} {$listdata.size|default:"0"}/{$listdata.assigned|default:"0"}/{$listdata.online|default:"0"}
 		</TD>
 		<TD colspan="4"></TD>
+	</TR>
+	<TR>
+		<TD class="lms-ui-pagination" COLSPAN="6">
+			{if $pagination->getTotal() != 0}
+				{include file="pagination.html" form="page-form"}
+			{/if}
+		</TD>
 	</TR>
 	</TFOOT>
 	<TBODY>
