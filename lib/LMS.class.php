@@ -3746,8 +3746,19 @@ class LMS
 		$filename = str_replace('%number', $document_number, $filename);
 		$filename = preg_replace('/[^[:alnum:]_\.]/i', '_', $filename);
 
-		$data['type'] = trans('ORIGINAL');
-		$document->Draw($data);
+		if (!isset($doc['which']) || !count($doc['which']))
+			$which = array(trans('ORIGINAL'));
+		else
+			$which = $doc['which'];
+
+		$idx = 0;
+		foreach ($which as $type) {
+			$data['type'] = $type;
+			$document->Draw($data);
+			$idx++;
+			if ($idx < count($which))
+				$document->NewPage();
+		}
 
 		return array(
 			'filename' => $filename . '.' . $fext,
@@ -3786,6 +3797,7 @@ class LMS
 		foreach ($docs as $doc) {
 			$doc['invoice_filename'] = $invoice_filename;
 			$doc['dnote_filename'] = $dnote_filename;
+			$doc['which'] = $which;
 
 			$document = $this->GetFinancialDocument($doc, $SMARTY);
 
