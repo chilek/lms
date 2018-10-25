@@ -381,7 +381,8 @@ $(function() {
 	});
 
 	$('.lms-ui-combobox').each(function() {
-		$(this).scombobox($.extend({},
+		$(this).scombobox($.extend({ wrap: false },
+			$(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {},
 			$(this).attr('data-alt-field') ? { altField: $(this).attr('data-alt-field') } : {},
 			$(this).attr('data-alt-invalid-field') ? { altInvalidField: $(this).attr('data-alt-invalid-field') } : {}
 		));
