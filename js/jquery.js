@@ -373,11 +373,13 @@ $(function() {
 		});
 	});
 
-	$('select.lms-ui-advanced-select').chosen({
-		no_results_text: $t('No results match'),
-		placeholder_text_single: $t('Select an Option'),
-		search_contains: true,
-		disable_search_threshold: 5
+	$('select.lms-ui-advanced-select').each(function() {
+		$(this).chosen($.extend({
+			no_results_text: $t('No results match'),
+			placeholder_text_single: $t('Select an Option'),
+			search_contains: true,
+			disable_search_threshold: 5
+		}, $(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {}));
 	});
 
 	$('.lms-ui-combobox').each(function() {
