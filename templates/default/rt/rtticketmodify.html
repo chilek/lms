@@ -195,7 +195,8 @@
 			{/box_row}
 
 			{box_row icon="img/netnode.png" label="Network node:"}
-				<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
+				<SELECT name="ticket[netnodeid]" size="30" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}
+						onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
 					<OPTION value="">{trans("- none -")}</OPTION>
 					{foreach $netnodelist as $idx => $netnode}
 					<OPTION value="{$idx}" {if $idx == $ticket.netnodeid} selected{/if}> {$netnode.name} ({$netnode.id})</OPTION>
