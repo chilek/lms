@@ -24,14 +24,14 @@
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
-			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()">
+			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
 				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
 				<OPTION value="{LMSHtmlTransferForm::VALUE_BALANCE}">{trans("<!transferform>balance")}</OPTION>
 				<OPTION value="{LMSHtmlTransferForm::VALUE_CUSTOM}">{trans("<!transferform>custom")}</OPTION>
 			</SELECT>
-			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;">
+			<input type="text" name="newtransferformcustomvalue" pattern="[0-9]+(\.[0-9]{literal}{1,2}{/literal})?" size="5" style="display: none;" form="addbalance-form">
 			<A id="newdocanchor" href="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("New document:")}</A>
-			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
+			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)" form="addbalance-form">
 				<OPTION value="?m=invoicenew&action=init&customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
 				<OPTION value="?m=invoicenew&action=init&proforma=1&customerid={$balancelist.customerid}">{trans("pro forma invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&type=in&action=init&customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
@@ -39,9 +39,9 @@
 				<OPTION value="?m=noteadd&action=init&customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
 			</SELECT>
 			<A href="javascript:show_list()">{trans("Show All:")}</A>
-			<INPUT type="hidden" name="cat" value="customerid">
-			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
-			<SELECT name="showlist" id="showlistselect">
+			<INPUT type="hidden" name="cat" value="customerid" form="addbalance-form">
+			<INPUT type="hidden" name="search" value="{$balancelist.customerid}" form="addbalance-form">
+			<SELECT name="showlist" id="showlistselect" form="addbalance-form">
 				{if $limit}<OPTION value="list">{trans("transactions")}</OPTION>{/if}
 				<OPTION value="invoice">{trans("invoices")}</OPTION>
 				<OPTION value="invoicepro">{trans("pro forma invoices")}</OPTION>
