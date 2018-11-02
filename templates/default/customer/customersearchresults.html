@@ -3,8 +3,8 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
+
 	function setWarnings(on)
 	{
 		if (on == 1)
@@ -20,19 +20,29 @@
 		document.setwarnings.submit();
 	}
 
-	function customerGroup(add)
-	{
-		if (add == 1)
-		{
-			document.setwarnings.action = '?m=customergroup&oper=addtogroup';
+	function changeCustomerGroups(oper) {
+		var action = null;
+
+		switch (oper) {
+			case 1:
+				action = '?m=customergroup&oper=addtogroups';
+				break;
+			case 0:
+				action = '?m=customergroup&oper=removefromgroups';
+				break;
+			case 2:
+				action = '?m=customergroup&oper=changegroups';
+				break;
 		}
-		else
-		{
-			document.setwarnings.action = '?m=customergroup&oper=removefromgroup';
+
+		if (action === null) {
+			return false;
 		}
+
+		document.setwarnings.action = action;
 		document.setwarnings.submit();
 	}
--->
+
 </SCRIPT>
 <FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
 <TABLE class="lmsbox">
@@ -146,11 +156,20 @@
 	</TR>
 	<TR class="ftop">
 		<TD width="100%" align="left" COLSPAN="4" nowrap>
-			<IMG SRC="img/group.gif"> <A HREF="javascript:customerGroup(1);">{trans("Add")}</A> / <A HREF="javascript:customerGroup(0);">{trans("Remove Group")}</A>:
-			<SELECT SIZE="1" NAME="setwarnings[customergroup]">
-				{section name=customergroups loop=$customergroups}
-				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
-				{/section}
+			<IMG SRC="img/group.gif"> <A HREF="javascript:changeCustomerGroups(1);">{trans("Add")}</A>
+			/
+			<A HREF="javascript:changeCustomerGroups(0);">{trans("Remove")}</A>
+			/
+			<A HREF="javascript:changeCustomerGroups(2);">{trans("Change Groups")}</A>:
+			{if is_array($listdata.customergroup)}
+				{$groups=array_flip($listdata.customergroup)}
+			{else}
+				{$groups=array()}
+			{/if}
+			<SELECT SIZE="1" class="lms-ui-multiselect" NAME="setwarnings[customergroup][]" multiple>
+				{foreach $customergroups as $customergroup}
+				<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

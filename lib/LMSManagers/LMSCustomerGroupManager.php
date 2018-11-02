@@ -291,24 +291,33 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
      * @param array $customerassignmentdata Customer assignment data
      * @return type
      */
-    public function CustomerassignmentDelete($customerassignmentdata)
-    {
-        if ($this->syslog) {
-            $assign = $this->db->GetRow('SELECT id, customerid FROM customerassignments
-				WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
-                $customerassignmentdata['customerid']));
-            if ($assign) {
-                $args = array(
-                    SYSLOG::RES_CUSTASSIGN => $assign['id'],
-                    SYSLOG::RES_CUST => $assign['customerid'],
-                    SYSLOG::RES_CUSTGROUP => $customerassignmentdata['customergroupid']
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
-            }
-        }
-        return $this->db->Execute('DELETE FROM customerassignments 
-			WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
-                    $customerassignmentdata['customerid']));
+	public function CustomerassignmentDelete($customerassignmentdata) {
+		if ($this->syslog) {
+			if (isset($customerassignmentdata['customergroupid']))
+				$assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+					WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
+					$customerassignmentdata['customerid']));
+			else
+				$assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+					WHERE customerid = ?', array($customerassignmentdata['customerid']));
+			if (!empty($assigns))
+				foreach ($assigns as $assign) {
+					$args = array(
+						SYSLOG::RES_CUSTASSIGN => $assign['id'],
+						SYSLOG::RES_CUST => $assign['customerid'],
+						SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
+					);
+					$this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
+				}
+		}
+
+		if (isset($customerassignmentdata['customergroupid']))
+			return $this->db->Execute('DELETE FROM customerassignments 
+				WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
+					$customerassignmentdata['customerid']));
+		else
+			return $this->db->Execute('DELETE FROM customerassignments 
+				WHERE customerid=?', array($customerassignmentdata['customerid']));
     }
     
     /**

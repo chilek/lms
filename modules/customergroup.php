@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -49,25 +49,43 @@ if ($action == 'delete') {
 				&& $LMS->CustomerExists($uid))
 				$LMS->CustomerAssignmentAdd(
 					array('customerid' => $uid, 'customergroupid' => $groupid));
-} elseif(!empty($_POST['setwarnings'])) {
+} elseif (!empty($_POST['setwarnings'])) {
 	$setwarnings = $_POST['setwarnings'];
 	$oper = isset($_GET['oper']) ? $_GET['oper'] : '';
-	$groupid = isset($setwarnings['customergroup']) ? $setwarnings['customergroup'] : 0;
 
-	if ($oper != '' && $groupid != 0)
-	{
-		$customerassignmentdata['customergroupid'] = $groupid;
-		foreach($setwarnings['mcustomerid'] as $uid)
-		{
-			$customerassignmentdata['customerid'] = $uid;
-			switch ($oper)
-			{
-				case 'addtogroup':
-					if (!$LMS->CustomerassignmentExist($groupid, $uid))
-						$LMS->CustomerassignmentAdd($customerassignmentdata);
+	if (isset($setwarnings['customergroup'])) {
+		if (is_array($setwarnings['customergroup']))
+			$groups = $setwarnings['customergroup'];
+		else
+			$groups = array($setwarnings['customergroup']);
+		$groups = Utils::filterIntegers($groups);
+	} else
+		$groups = null;
+
+	if ($oper != '' && !empty($groups)) {
+		foreach ($setwarnings['mcustomerid'] as $cid) {
+			$customerassignmentdata['customerid'] = $cid;
+			switch ($oper) {
+				case 'addtogroups':
+					foreach ($groups as $groupid)
+						if (!$LMS->CustomerassignmentExist($groupid, $cid)) {
+							$customerassignmentdata['customergroupid'] = $groupid;
+							$LMS->CustomerassignmentAdd($customerassignmentdata);
+						}
 					break;
-				case 'removefromgroup':
+				case 'removefromgroups':
+					foreach ($groups as $groupid) {
+						$customerassignmentdata['customergroupid'] = $groupid;
+						$LMS->CustomerassignmentDelete($customerassignmentdata);
+					}
+					break;
+				case 'changegroups':
+					unset($customerassignmentdata['customergroupid']);
 					$LMS->CustomerassignmentDelete($customerassignmentdata);
+					foreach ($groups as $groupid) {
+						$customerassignmentdata['customergroupid'] = $groupid;
+						$LMS->CustomerassignmentAdd($customerassignmentdata);
+					}
 					break;
 			}
 		}
