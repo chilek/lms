@@ -164,6 +164,7 @@ version ?.??.?? (????-??-??):
     contract calculation is made ('documents' by default) [chilan]
   - improvement: allow to automatically determine explicit teryt node locations basing
     on customer addresses [chilan]
+  - enhancement: allow to move found customers between many customer groups [chilan]
 
 version 1.11.23 (2018-03-21):
 
