@@ -3000,6 +3000,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','messagelist_pagelimit','100','',0),
 ('phpui','recordlist_pagelimit','100','',0),
 ('phpui','cashreglog_pagelimit','100','',0),
+('phpui','networklist_pagelimit','100','',0),
 ('phpui','reload_type','sql','',0),
 ('phpui','reload_execcmd','/bin/true','',0),
 ('phpui','reload_sqlquery','','',0),
@@ -3463,4 +3464,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018093000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018110700');
