@@ -36,7 +36,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
 if (isset($filter['edate']) && !empty($filter['edate']))
 	list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
 
-if (!empty($_POST)) {
+if (!isset($_POST['loginform']) && !empty($_POST)) {
 	$filter['month'] = isset($_POST['month']) ? $_POST['month'] : date('m');
 	$filter['year'] = isset($_POST['year']) ? $_POST['year'] : date('Y');
 	$filter['day'] = isset($_POST['day']) ? $_POST['day'] : date('j');
