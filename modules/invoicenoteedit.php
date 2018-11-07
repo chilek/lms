@@ -28,7 +28,7 @@ $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if (isset($_GET['id']) && $action == 'edit') {
-	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
+	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkPrivilege('published_document_modification'))
 		return;
 
 	$cnote = $LMS->GetInvoiceContent($_GET['id']);
