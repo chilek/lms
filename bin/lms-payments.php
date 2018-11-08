@@ -729,53 +729,55 @@ foreach ($assigns as $assign) {
 
 			$value = str_replace(',', '.', sprintf("%.2f", $alldays != 30 ? $diffdays * $val / $alldays : $value));
 
-			//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value" . PHP_EOL;
+			if (floatval($value)) {
+				//print "value: $val diffdays: $diffdays alldays: $alldays settl_value: $value" . PHP_EOL;
 
-			$sdesc = $s_comment;
-			$sdesc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $sdesc);
-			$sdesc = preg_replace("/\%tariff/", $assign['name'], $sdesc);
-			$sdesc = preg_replace("/\%attribute/", $assign['attribute'], $sdesc);
-			$sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);
-			$sdesc = preg_replace("/\%period/", $period, $sdesc);
-			$sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
-			$sdesc = preg_replace("/\%current_period/", $current_period, $sdesc);
-			$sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
-			$sdesc = preg_replace("/\%prev_period/", $prev_period, $sdesc);
+				$sdesc = $s_comment;
+				$sdesc = preg_replace("/\%type/", $assign['tarifftype'] != SERVICE_OTHER ? $SERVICETYPES[$assign['tarifftype']] : '', $sdesc);
+				$sdesc = preg_replace("/\%tariff/", $assign['name'], $sdesc);
+				$sdesc = preg_replace("/\%attribute/", $assign['attribute'], $sdesc);
+				$sdesc = preg_replace("/\%desc/", $assign['description'], $sdesc);
+				$sdesc = preg_replace("/\%period/", $period, $sdesc);
+				$sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
+				$sdesc = preg_replace("/\%current_period/", $current_period, $sdesc);
+				$sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
+				$sdesc = preg_replace("/\%prev_period/", $prev_period, $sdesc);
 
-			if ($assign['invoice'])
-			{
-				if (($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 
-					WHERE tariffid=? AND value=$value AND docid=? AND description=?",
-					array($assign['tariffid'], $invoices[$cid], $sdesc))) != 0)
+				if ($assign['invoice'])
 				{
-					$DB->Execute("UPDATE invoicecontents SET count=count+1 
-						WHERE tariffid=? AND docid=? AND description=?",
-						array($assign['tariffid'], $invoices[$cid], $sdesc));
+					if (($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents
+						WHERE tariffid=? AND value=$value AND docid=? AND description=?",
+						array($assign['tariffid'], $invoices[$cid], $sdesc))) != 0)
+					{
+						$DB->Execute("UPDATE invoicecontents SET count=count+1
+							WHERE tariffid=? AND docid=? AND description=?",
+							array($assign['tariffid'], $invoices[$cid], $sdesc));
 
-					if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
-                        $DB->Execute("UPDATE cash SET value = value + ($value * -1) 
-                            WHERE docid = ? AND itemid = $tmp_itemid",
-                            array($invoices[$cid]));
-				} else {
-					$itemid++;
+						if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+	                        $DB->Execute("UPDATE cash SET value = value + ($value * -1)
+	                            WHERE docid = ? AND itemid = $tmp_itemid",
+	                            array($invoices[$cid]));
+					} else {
+						$itemid++;
 
-					$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid, 
-						content, count, description, tariffid, itemid, pdiscount, vdiscount) 
-						VALUES (?, $value, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
-						array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
-						$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
-					if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
-                        $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
-                            VALUES($currtime, $value * -1, ?, $cid, ?, ?, $itemid)",
-                            array($assign['taxid'], $sdesc, $invoices[$cid]));
-				}
-			} else
-				$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment) 
-					VALUES ($currtime, $value * -1, ?, $cid, ?)", array($assign['taxid'], $sdesc));
+						$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid,
+							content, count, description, tariffid, itemid, pdiscount, vdiscount)
+							VALUES (?, $value, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
+							array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
+							$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
+						if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+	                        $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
+	                            VALUES($currtime, $value * -1, ?, $cid, ?, ?, $itemid)",
+	                            array($assign['taxid'], $sdesc, $invoices[$cid]));
+					}
+				} else
+					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment)
+						VALUES ($currtime, $value * -1, ?, $cid, ?)", array($assign['taxid'], $sdesc));
 
-			if (!$quiet) print "CID:$cid\tVAL:$value\tDESC:$sdesc" . PHP_EOL;
+				if (!$quiet) print "CID:$cid\tVAL:$value\tDESC:$sdesc" . PHP_EOL;
+			}
 
-			// remove settlment flag
+			// remove settlement flag
 			$DB->Execute("UPDATE assignments SET settlement = 0 WHERE id = ?", array($assign['assignmentid']));
 		}
 	}
