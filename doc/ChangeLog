@@ -165,6 +165,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to automatically determine explicit teryt node locations basing
     on customer addresses [chilan]
   - enhancement: allow to move found customers between many customer groups [chilan]
+  - improvement: click on table row with ctrl key pressed open link in new window [chilan]
 
 version 1.11.23 (2018-03-21):
 
