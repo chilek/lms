@@ -329,6 +329,10 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
 	}
 
 	$mail_body = iconv($charset, 'UTF-8', $mail_body);
+	if ($partdata['content-type'] == 'text/html') {
+		$html2text = new \Html2Text\Html2Text($mail_body, array());
+		$mail_body = $html2text->getText();
+	}
 }
 
 mailparse_msg_free($mail);
