@@ -175,7 +175,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         return $this->db->GetRow(
                         'SELECT *, inet_ntoa(address) AS netip, broadcast(address, inet_aton(mask)) AS broadcast
-            FROM networks WHERE id = ?', array($id)
+            FROM networks WHERE id ' . (is_array($id) ? 'IN' : '=') . ' ?', array($id)
         );
     }
 
