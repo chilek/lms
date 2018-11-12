@@ -106,7 +106,7 @@
 			      <input type="hidden" name="g[]" value="">
 			{/if}
 
-			{if count($nodegroups) > 0}
+			{if !empty($nodegroups) && count($nodegroups)}
 				{trans("Nodes Group:<!short>")}
 				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
