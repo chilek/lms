@@ -62,7 +62,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 break;
         }
 
-        if (count($search)) {
+        if (!empty($search) && count($search)) {
             foreach ($search as $idx => $value) {
                 if ($value != '') {
                     switch ($idx) {
@@ -136,7 +136,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 			unset($voipaccount);
 		}
 
-        $voipaccountlist['total'] = count($voipaccountlist);
+        $voipaccountlist['total'] = empty($voipaccountlist) ? 0 : count($voipaccountlist);
         $voipaccountlist['order'] = $order;
         $voipaccountlist['direction'] = $direction;
 
