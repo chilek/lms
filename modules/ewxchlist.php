@@ -74,7 +74,7 @@ function GetChannelsList($order='name,asc')
 		)'
 		.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
-	$channels['total'] = count($channels);
+	$channels['total'] = empty($channels) ? 0 : count($channels);
 	$channels['order'] = $order;
 	$channels['direction'] = $direction;
 
