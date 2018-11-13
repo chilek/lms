@@ -269,14 +269,14 @@ if (isset($_POST['customeradd'])) {
 		0 => array(
 			'contact' => '',
 			'name' => '',
-			'type' => CONTACT_LANDLINE
+			'type' => 0
 		)
 	);
 	$customeradd['phones'] = array(
 		0 => array(
 			'contact' => '',
 			'name' => '',
-			'type' => ''
+			'type' => 0
 		)
 	);
 }
