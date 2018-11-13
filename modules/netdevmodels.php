@@ -400,7 +400,7 @@ function GetModelList($pid = NULL) {
 
 $modellist = GetModelList($pid);
 
-$listdata['total'] = count($modellist);
+$listdata['total'] = empty($modellist) ? 0 : count($modellist);
 
 $page = (!$_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.netdevmodel_pagelimit', $listdata['total']);
