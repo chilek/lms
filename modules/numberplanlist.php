@@ -81,7 +81,7 @@ $SESSION->save('nplp', $page);
 $layout['pagetitle'] = trans('Numbering Plans List');
 
 $numberplanlist = GetNumberPlanList();
-$listdata['total'] = count($numberplanlist);
+$listdata['total'] = empty($numberplanlist) ? 0 : count($numberplanlist);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
