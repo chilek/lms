@@ -214,7 +214,7 @@ switch($action)
 		$cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
 
 		// when registry is not selected but we've got only one registry in database
-		if(!$receipt['regid'] && count($cashreglist) == 1)
+		if(!$receipt['regid'] && (!empty($cashreglist) && count($cashreglist) == 1))
 			$receipt['regid'] = key($cashreglist);
 
 		if(!$receipt['regid'] || !$receipt['type'])
@@ -904,7 +904,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 $SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $receipt['regid'])));
 $SMARTY->assign('cashreglist', $cashreglist);
-$SMARTY->assign('cashregcount', count($cashreglist));
+$SMARTY->assign('cashregcount', empty($cashreglist) ? 0 : count($cashreglist));
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);
