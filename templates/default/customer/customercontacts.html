@@ -42,15 +42,16 @@
 		<IMG src="{$properties.ui.legend.icon}" alt="">
 	</TD>
 	<TD style="width: 99%;" class="nobr">
-		<span class="contacttype-hidden bold" data-type="{$type}"{if count($customerinfo[$type|cat:'s'])} style="display: none;"{/if}>
+		{$ctype=$type|cat:'s'}
+		<span class="contacttype-hidden bold" data-type="{$type}"{if isset($customerinfo[$ctype]) && count($customerinfo[$ctype])} style="display: none;"{/if}>
 			<a class="contacttype-show" data-type="{$type}">{$properties.ui.legend.text} &raquo;&raquo;&raquo;</a>
 		</span>
-		<fieldset class="contacttype-visible nobr" data-type="{$type}" style="width: 1%;{if !count($customerinfo[$type|cat:'s'])} display: none;{/if}">
+		<fieldset class="contacttype-visible nobr" data-type="{$type}" style="width: 1%;{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
 			<legend class="bold">
 				<a class="contacttype-hide" data-type="{$type}">{$properties.ui.legend.text} &laquo;&laquo;&laquo;</a>
 			</legend>
 			<table class="contacts" data-type="{$type}">
-				{foreach $customerinfo[$type|cat:'s'] as $key => $item}
+				{foreach $customerinfo[$ctype] as $key => $item}
 				<TR>
 					<TD>
 						{if !$item@first}<HR>{/if}
