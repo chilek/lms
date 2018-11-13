@@ -61,7 +61,7 @@ function GetAliasList($order='login,asc', $customer=NULL, $domain='')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
-	$list['total'] = count($list);
+	$list['total'] = empty($list) ? 0 : count($list);
 	$list['order'] = $order;
 	$list['customer'] = $customer;
 	$list['domain'] = $domain;
