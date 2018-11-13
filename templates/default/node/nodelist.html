@@ -71,7 +71,7 @@
 					<input type="hidden" name="n" value="0">
 				{/if}
 
-				{if count($nodegroups) > 0}
+				{if !empty($nodegroups) && count($nodegroups)}
 					<SPAN class="nobr">{trans("Group:")}</SPAN>
 					<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
