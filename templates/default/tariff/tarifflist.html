@@ -88,7 +88,7 @@
 					<OPTION value="1"{if $listdata.state == 1} SELECTED{/if}>{trans("enabled")}</OPTION>
 					<OPTION value="2"{if $listdata.state == 2} SELECTED{/if}>{trans("disabled")}</OPTION>
 				</SELECT>
-				{if count($customergroups) > 0}
+				{if !empty($customergroups) && count($customergroups)}
 					{trans("Group:")}
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</OPTION>
@@ -99,7 +99,7 @@
 				{else}
 					<input type="hidden" name="g" value="">
 				{/if}
-				{if count($tags) > 0}
+				{if !empty($tags) && count($tags)}
 					{trans("Tags:")}
 					<SELECT size="5" name="tg[]" class="lms-ui-multiselect lms-ui-multiselect-filter" onchange="document.choosefilter.submit();" {tip text="Select tariff tags"} multiple data-default-value="{trans("- all -")}">
 						{foreach $tags as $tag}
