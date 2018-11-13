@@ -746,7 +746,11 @@ $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
 $SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM vusers WHERE phone <> \'\' ORDER BY name'));
-$SMARTY->assign('netdevices', $LMS->GetNetDevList());
+
+$netdevices = $LMS->GetNetDevList();
+unset($netdevices['total'], $netdevices['order'], $netdevices['direction']);
+$SMARTY->assign('netdevices', $netdevices);
+
 $SMARTY->display('message/messageadd.html');
 
 ?>

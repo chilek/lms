@@ -267,7 +267,7 @@
 						<SELECT name="message[netdev]" id="netdev" class="lms-ui-advanced-select" {tip trigger="netdev" text="Select network device"}>
 							<option value="">{trans("- none -")}</option>
 							{foreach $netdevices as $netdev}
-							<option value="{$netdev.id}"{if $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
+							<option value="{$netdev.id}"{if isset($message.netdev) && $netdev.id == $message.netdev} selected{/if}>{$netdev.name}</option>
 							{/foreach}
 						</SELECT>
 						<label>
