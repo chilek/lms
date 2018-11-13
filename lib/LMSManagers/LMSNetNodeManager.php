@@ -114,7 +114,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			unset($netnode);
 		}
 
-		$nlist['total']        = count($nlist);
+		$nlist['total']        = empty($nlist) ? 0 : count($nlist);
 		$nlist['order']        = $order;
 		$nlist['direction']    = $dir;
 

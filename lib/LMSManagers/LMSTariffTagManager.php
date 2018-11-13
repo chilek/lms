@@ -73,7 +73,7 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
                 . 'WHERE t.id = tariffid AND tarifftagid = ? '
                 . ' GROUP BY t.id, t.name ORDER BY t.name', array($id));
 
-        $result['tariffscount'] = count($result['tariffs']);
+        $result['tariffscount'] = empty($result['tariffs']) ? 0 : count($result['tariffs']);
         $result['count'] = $result['tariffscount'];
         return $result;
     }

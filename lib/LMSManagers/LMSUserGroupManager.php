@@ -73,7 +73,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
                 . 'WHERE vu.id = userid AND usergroupid = ? '
                 . ' GROUP BY vu.id, vu.name, vu.lastname ORDER BY vu.lastname', array($id));
 
-        $result['userscount'] = count($result['users']);
+        $result['userscount'] = empty($result['users']) ? 0 : count($result['users']);
         $result['count'] = $result['userscount'];
         return $result;
     }
