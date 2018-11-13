@@ -63,7 +63,7 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 			GROUP BY customerid
 		) cc ON cc.customerid = c.id
 		 WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ' . $privacy_condition
-		 .($customerid ? ' AND c.id = '.intval($customerid) : '')
+		 .($customerid ? ' AND events.customerid = '.intval($customerid) : '')
 		.(!empty($userid) ? ' AND EXISTS (
 			SELECT 1 FROM eventassignments
 			WHERE eventid = events.id AND userid ' . (is_array($userid) ? 'IN (' . implode(',', Utils::filterIntegers($userid)) . ')' : '=' . intval($userid)) . '
