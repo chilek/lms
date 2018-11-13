@@ -103,7 +103,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				<input type="hidden" name="group" value="all">
 				<SELECT size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
 					{foreach $grouplist as $group}
-					<OPTION value="{$group.id}"{if in_array($group.id, $listdata.group)} selected{/if}>{$group.name|truncate:30:"...":true}</OPTION>
+					<OPTION value="{$group.id}"{if !empty($listdata.group) && in_array($group.id, $listdata.group)} selected{/if}>{$group.name|truncate:30:"...":true}</OPTION>
 					{/foreach}
 				</SELECT>
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
