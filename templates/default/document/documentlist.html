@@ -146,7 +146,7 @@
                         <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                     </span>
 
-					{if count($numberplans) > 0}
+					{if !empty($numberplans) && count($numberplans)}
 					{trans("Number plan:")}
 					<SELECT name="p" onChange="javascript:applyFilter();" {tip text="Select numbering plan"}>
 						<OPTION value="0">- {trans("all")} -</OPTION>
