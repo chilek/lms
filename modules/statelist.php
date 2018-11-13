@@ -25,7 +25,7 @@
  */
 
 $statelist = $DB->GetAll('SELECT * FROM states ORDER BY name');
-$listdata['total'] = count($statelist);
+$listdata['total'] = empty($statelist) ? 0 : count($statelist);
 
 if ($SESSION->is_set('cslp') && !isset($_GET['page']))
 	$SESSION->restore('cslp', $_GET['page']);
