@@ -37,7 +37,7 @@ $promolist = $DB->GetAll('SELECT p.id, p.name, p.description, p.datefrom, p.date
 		FROM promotions p
 		ORDER BY p.name');
 
-$listdata['total'] = count($promolist);
+$listdata['total'] = empty($promolist) ? 0 : count($promolist);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
