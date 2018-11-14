@@ -441,6 +441,16 @@ if (isset($_POST['message'])) {
 					$message['destination'] = implode(',', $message['destination']);
 			}
 
+			$ticketid = sprintf("%06d", $message['ticketid']);
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_message_keep_original_title', false)))
+				$title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
+					ORDER BY id LIMIT 1', array($message['ticketid']));
+			else
+				$title = $reply['subject'];
+			$custmail_subject = ConfigHelper::getConfig('phpui.helpdesk_message_mail_subject', '%title');
+			$custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+			$custmail_subject = str_replace('%title', $title, $custmail_subject);
+			$reply['subject'] = $custmail_subject;
 			$message['subject'] = 'Re: ' . $reply['subject'];
 			$message['inreplyto'] = $reply['id'];
 			$message['references'] = implode(' ', $reply['references']);
@@ -453,6 +463,16 @@ if (isset($_POST['message'])) {
 
 		} else {
 			$reply = $LMS->GetFirstMessage($ticketid);
+			$ticketid = sprintf("%06d", $message['ticketid']);
+			if(ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_message_keep_original_title', false)))
+				$title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
+					ORDER BY id LIMIT 1', array($message['ticketid']));
+			else
+				$title = $reply['subject'];
+			$custmail_subject = ConfigHelper::getConfig('phpui.helpdesk_message_mail_subject', '%title');
+			$custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+			$custmail_subject = str_replace('%title', $title, $custmail_subject);
+			$message['subject'] = $custmail_subject;
 			$message['inreplyto'] = $reply['id'];
 			$message['references'] = implode(' ', $reply['references']);
 		}
