@@ -50,13 +50,16 @@ if(isset($_POST['group']))
 $SESSION->save('blg', $g);
 $SESSION->save('blge', $ge);
 
+$SESSION->save('bls', $s);
+
 if($c == 'cdate' && $s)
 {
 	$date = date_to_timestamp($s);
-	if(empty($date))
-		$s = date('Y/m/d', time());
+	if (empty($date))
+		$s = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
+	else
+		$s = $date;
 }
-$SESSION->save('bls', $s);
 
 if(!empty($_POST['from']))
 {
