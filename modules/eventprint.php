@@ -96,9 +96,9 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 
 $date = $_GET['day'];
 
-if(!$date)
+if(empty($date))
 {
-	$SESSION->redirect('?m=eventlist');
+	$date=date_to_timestamp(time());
 }
 
 $eventlist = GetEvents($date, $_GET['a'], $_GET['t'], $_GET['u'], intval($_GET['privacy']), $_GET['closed']);
