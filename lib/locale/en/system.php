@@ -41,7 +41,11 @@ function check_ssn($ssn)
 
 function check_zip($zip)
 {
-	return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
+	if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
+		return true;
+	} else {
+		return preg_match('/^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$/', $zip);
+	}
 }
 
 function check_regon($regon) // business registration number
