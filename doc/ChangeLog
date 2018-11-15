@@ -168,6 +168,7 @@ version ?.??.?? (????-??-??):
   - improvement: click on table row with ctrl key pressed open link in new window [chilan]
   - improvement: added phpui.skip_zip_validation configuration variable that allows to skip zip
     code format validation [Mike Nowak]
+  - improvement: lms-sendinvoice.php: sendinvoices.limit can be percentage value [chilan]
 
 version 1.11.23 (2018-03-21):
 
