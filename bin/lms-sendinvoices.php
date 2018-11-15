@@ -229,7 +229,7 @@ else {
 	$add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
 	$dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
 	$mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
-	$count_limit = intval(ConfigHelper::getConfig('sendinvoices.limit', '0'));
+	$count_limit = ConfigHelper::getConfig('sendinvoices.limit', '0');
 
 	if (empty($sender_email))
 		die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -287,7 +287,7 @@ else {
 	if ($test)
 		echo "WARNING! You are using test mode." . PHP_EOL;
 
-	if (!empty($count_limit))
+	if (!empty($count_limit) && preg_match('/^[0-9]+$/', $count_limit))
 		$count_offset = $curr_h * $count_limit;
 }
 
@@ -311,9 +311,37 @@ if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
 
 if ($backup)
 	$args = array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
-else
+else {
 	$args = array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
 		CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
+
+	if (!empty($count_limit) && preg_match('/^(?<percent>[0-9]+)%$/', $count_limit, $m)) {
+		$percent = intval($m['percent']);
+		if ($percent < 1 || $percent > 99)
+			$count_limit = 0;
+		else {
+			$count = intval($DB->GetOne("SELECT COUNT(*)
+				FROM documents d
+				LEFT JOIN customers c ON c.id = d.customerid
+				JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+					FROM customercontacts
+					WHERE (type & ?) = ?
+					GROUP BY customerid
+				) m ON m.customerid = c.id
+				WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?) AND c.invoicenotice = 1
+					AND d.cdate >= $daystart AND d.cdate <= $dayend"
+				. (!empty($groupnames) ? $customergroups : ""), $args));
+			if (empty($count))
+				die;
+
+			$count_limit = floor(($percent * $count) / 100);
+			$count_offset = $curr_h * $count_limit;
+			if ($count_offset >= $count)
+				die;
+		}
+	}
+}
+
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template" . ($backup ? '' : ', m.email') . "
 		FROM documents d
 		LEFT JOIN customers c ON c.id = d.customerid"
