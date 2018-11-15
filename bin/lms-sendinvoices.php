@@ -73,6 +73,7 @@ lms-sendinvoices.php
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
+-i, --inteval==ms               force delay interval between subsequent posts
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 -b, --backup                    make financial document file backup
 -o, --output-directory=/path    output directory for document backup
@@ -231,6 +232,11 @@ else {
 	$mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
 	$count_limit = ConfigHelper::getConfig('sendinvoices.limit', '0');
 
+	if (isset($options['interval']))
+		$interval = intval($options['interval']);
+	else
+		$interval = ConfigHelper::getConfig('sendinvoices.interval', 0);
+
 	if (empty($sender_email))
 		die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
 
@@ -369,7 +375,7 @@ if (!empty($docs)) {
 	} else
 		$LMS->SendInvoices($docs, 'backend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype' , 'invoice_filename', 'dnote_filename', 'debug_email',
 			'mail_body', 'mail_subject', 'mail_format', 'currtime', 'sender_email', 'sender_name', 'extrafile',
-			'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',
+			'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message', 'interval',
 			'smtp_options'));
 }
 

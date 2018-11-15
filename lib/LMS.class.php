@@ -3986,6 +3986,9 @@ class LMS
 					if ($add_message)
 						$this->DB->Execute('UPDATE messageitems SET status = ?, error = ?
 							WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
+
+					if (isset($interval) && !empty($interval))
+						usleep($interval * 1000);
 				}
 			}
 		}
