@@ -235,7 +235,7 @@ else {
 	if (isset($options['interval']))
 		$interval = intval($options['interval']);
 	else
-		$interval = ConfigHelper::getConfig('sendinvoices.interval', 0);
+		$interval = intval(ConfigHelper::getConfig('sendinvoices.interval', 0));
 
 	if (empty($sender_email))
 		die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
