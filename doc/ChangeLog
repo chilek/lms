@@ -169,6 +169,8 @@ version ?.??.?? (????-??-??):
   - improvement: added phpui.skip_zip_validation configuration variable that allows to skip zip
     code format validation [Mike Nowak]
   - improvement: lms-sendinvoices.php: sendinvoices.limit can be percentage value [chilan]
+  - improvement: lms-sendinvoices.php: sendinvoices.interval or --interval parameter allow to specify
+    delay in milliseconds between subsequent posts [chilan]
 
 version 1.11.23 (2018-03-21):
 
