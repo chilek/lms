@@ -73,7 +73,7 @@ lms-sendinvoices.php
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
 -g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
--i, --inteval==ms               force delay interval between subsequent posts
+-i, --interval=ms               force delay interval between subsequent posts
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 -b, --backup                    make financial document file backup
 -o, --output-directory=/path    output directory for document backup
@@ -233,9 +233,14 @@ else {
 	$count_limit = ConfigHelper::getConfig('sendinvoices.limit', '0');
 
 	if (isset($options['interval']))
-		$interval = intval($options['interval']);
+		$interval = $options['interval'];
 	else
-		$interval = intval(ConfigHelper::getConfig('sendinvoices.interval', 0));
+		$interval = ConfigHelper::getConfig('sendinvoices.interval', 0);
+	if ($interval == 'random')
+		$interval = -1;
+	else
+		$interval = intval($interval);
+
 
 	if (empty($sender_email))
 		die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
