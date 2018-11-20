@@ -76,7 +76,7 @@
                 {counter}.
             </TD>
             <TD class="invoice-contents-sortable-handler">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;" value="{$item.name}" {tip text="Enter description"}>
+                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][name]" SIZE="40" style="width: 300px; display: none;" value="{htmlspecialchars($item.name)}" {tip text="Enter description"}>
                 <span class="invoice-contents-field-value">{$item.name}</span>
             </TD>
             <TD class="nobr">
