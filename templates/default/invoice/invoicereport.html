@@ -22,7 +22,7 @@
 			{trans("No.")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
-			{if $doctype == 'invoices'}{trans("Invoice No.")}{else}{trans("Debit Note No.")}{/if}<BR>
+			{if in_array(DOC_DNOTE, $doctypes)}{trans("Debit Note No.")}{else}{trans("Invoice No.")}{/if}<BR>
 			{trans("Draw-up date")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
@@ -33,9 +33,9 @@
 			{trans("Contractor")}
 		</TD>
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{if $doctype == 'invoices'}{trans("Gross value")}{else}{trans("Value")}{/if}
+			{if in_array(DOC_DNOTE, $doctypes)}{trans("Value")}{else}{trans("Gross value")}{/if}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Net value")} {$tax.label}
@@ -73,7 +73,7 @@
 		<TD ALIGN="RIGHT">
 			{$invoice.brutto|string_format:"%01.2f"}
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
@@ -105,7 +105,7 @@
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
 		</TD>
-		{if $doctype == 'invoices'}
+		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">

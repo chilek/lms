@@ -271,7 +271,7 @@ if ($items) {
 }
 
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->assign('doctype', $doctype);
+$SMARTY->assign('doctypes', $doctypes);
 $SMARTY->assign('taxes', $taxeslist);
 $SMARTY->assign('taxescount', $taxescount);
 $SMARTY->assign('layout', $layout);
