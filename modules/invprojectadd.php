@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,17 +33,14 @@ if(!empty($_POST['invprojectadd']))
 		$SESSION->redirect('?m=invprojectadd');
 	}
 
-	if($DB->GetOne('SELECT 1 FROM invprojects WHERE name = ?', array($invproject['name'])))
+	if ($LMS->ProjectByNameExists($invproject['name']))
 		$error['name'] = trans('Investment project with specified name already exists!');
 		
 	if (!$error) {
-		$args = array(
-			'name' => $invproject['name'],
+		$LMS->AddProject(array(
+			'projectname' => $invproject['name'],
 			'divisionid' => $invproject['divisionid'],
-			'type' => INV_PROJECT_REGULAR,
-		);
-		$DB->Execute('INSERT INTO invprojects (name, divisionid, type)
-			VALUES (?, ?, ?)', array_values($args));
+		));
 
 		if(!isset($invproject['reuse']))
 		{
@@ -57,7 +54,7 @@ $layout['pagetitle'] = trans('New investment project');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('invprojectadd', $invproject);
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('error', $error);
 $SMARTY->display('invproject/invprojectadd.html');
 

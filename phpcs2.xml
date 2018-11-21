@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="lms-code-standard">
+
+    <description>PHP Code Sniffer 2 configuration file</description>
+
+    <arg name="extensions" value="php"/>
+    <arg name="warning-severity" value="0"/>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/templates_c/*</exclude-pattern>
+
+    <rule ref="PSR2"/>
+
+</ruleset>

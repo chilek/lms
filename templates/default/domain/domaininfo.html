@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -106,9 +106,9 @@
 {/if}
 	<TR>
 		<TD align="right" colspan="3">
-			<A href="?m=recordlist&d={$domain.id}">{trans("Records")} <IMG src="img/dns.gif" alt="[ {trans("Records")} ]"></A>
-			<A href="?m=accountlist&d={$domain.id}">{trans("Accounts")} <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]"></A>
-			<A href="?m=aliaslist&d={$domain.id}">{trans("Aliases")} <IMG src="img/alias.gif" alt="[ {trans("Aliases")} ]"></A>
+			<A href="?m=recordlist&d={$domain.id}">{trans("Records")} <IMG src="img/dns.gif" alt="{trans("Records")}"></A>
+			<A href="?m=accountlist&d={$domain.id}">{trans("Accounts")} <IMG src="img/account.gif" alt="{trans("Accounts")}"></A>
+			<A href="?m=aliaslist&d={$domain.id}">{trans("Aliases")} <IMG src="img/alias.gif" alt="{trans("Aliases")}"></A>
 			<A href="?m=domainedit&id={$domain.id}" accesskey="e">{trans("Edit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=domaindel&id={$domain.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that domain and all accounts/aliases in that domain?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 		</TD>

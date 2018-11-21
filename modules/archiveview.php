@@ -25,7 +25,7 @@
  */
 
 function GetPropertyNames($resource, $params) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$names = $SYSLOG->GetResourcePropertyNames($resource);
@@ -50,20 +50,20 @@ function GetPropertyNames($resource, $params) {
 }
 
 function GetPropertyValues($resource, $propname, $propvalue) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$values = $SYSLOG->GetResourcePropertyValues($resource, $propname);
 	if (empty($values) || count($values) > 19)
 		$result->assign('propertyvaluedata', 'innerHTML', '<input type="text" size="20" name="propertyvalue" id="propertyvalue"'
-			. (!empty($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
+			. (strlen($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
 	else {
 		$options = '<SELECT size="1" name="propertyvalue" id="propertyvalue">';
 		$options .= '<OPTION value="">' . trans('- all -') . '</OPTION>';
 		foreach ($values as $value) {
 			$data = array('resource' => $resource, 'name' => $propname, 'value' => $value);
 			$SYSLOG->DecodeMessageData($data);
-			$options .= '<OPTION value="' . $value . '"' . (!empty($propvalue) && $propvalue == $value ? ' selected' : '') . '>'
+			$options .= '<OPTION value="' . $value . '"' . (strlen($propvalue) && $propvalue == $value ? ' selected' : '') . '>'
 				. (strlen($data['value']) > 50 ? substr($data['value'], 0, 50) . '...' : $data['value'])
 				. '</OPTION>';
 		}
@@ -92,22 +92,20 @@ if (isset($_POST['search'])) {
 	$SESSION->remove('arvpv');
 }
 
-if (isset($_POST['datefrom']))
-	if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $_POST['datefrom'])) {
-		list ($year, $month, $day) = explode('/', $_POST['datefrom']);
-		$datefrom = mktime(0, 0, 0, $month, $day, $year);
-	} else
+if (isset($_POST['datefrom'])) {
+	$datefrom = date_to_timestamp($_POST['datefrom']);
+	if(empty($datefrom))
 		$datefrom = 0;
+}
 else
 	$SESSION->restore('arvdf', $datefrom);
 $SESSION->save('arvdf', $datefrom);
 
-if (isset($_POST['dateto']))
-	if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $_POST['dateto'])) {
-		list ($year, $month, $day) = explode('/', $_POST['dateto']);
-		$dateto = mktime(0, 0, 0, $month, $day, $year);
-	} else
+if (isset($_POST['dateto'])) {
+	$dateto = date_to_timestamp($_POST['dateto']);
+	if(empty($dateto))
 		$dateto = 0;
+}
 else
 	$SESSION->restore('arvdt', $dateto);
 $SESSION->save('arvdt', $dateto);
@@ -160,7 +158,7 @@ if ($SYSLOG) {
 	$args = array('limit' => $limit + 1);
 	if (!empty($user)) $args['userid'] = $user;
 	if (!empty($resourcetype)) {
-		$args['key'] = $SYSLOG_RESOURCE_KEYS[$resourcetype];
+		$args['key'] = SYSLOG::getResourceKey($resourcetype);
 		$args['value'] = $resourceid;
 	}
 	if (!empty($datefrom)) $args['datefrom'] = $datefrom;
@@ -168,7 +166,7 @@ if ($SYSLOG) {
 	$args['offset'] = $page * $limit;
 	if (!empty($propertyname)) {
 		$args['propname'] = $propertyname;
-		if (!empty($propertyvalue)) $args['propvalue'] = $propertyvalue;
+		if (strlen($propertyvalue)) $args['propvalue'] = $propertyvalue;
 	}
 	$trans = $SYSLOG->GetTransactions($args);
 	if (!empty($trans)) {

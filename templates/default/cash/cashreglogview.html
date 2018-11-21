@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -27,7 +27,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$cashreglog}
 		</TD>
 	</TR>
@@ -53,9 +53,9 @@
 			{$cashreglog[cashreglog].description|replace:"\n":"<BR>"}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -69,7 +69,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$cashreglog}
 		</TD>
 	</TR>

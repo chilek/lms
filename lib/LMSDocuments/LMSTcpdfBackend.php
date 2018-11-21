@@ -74,15 +74,6 @@ class LMSTcpdfBackend extends LMSTCPDF {
 	public function WriteToString() {
 		return $this->Output(null, 'S');
 	}
-        
-        public function SetFont($family, $style = '', $size = null, $fontfile = '', $subset = 'default', $out = true)
-        {
-            if ($family === 'arial') {
-                $fontfile = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'arial' . $style . '.php';
-            }
-            parent::SetFont($family, $style, $size, $fontfile, $subset, $out);
-        }
-        
 }
 
 ?>

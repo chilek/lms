@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,11 +24,10 @@
  *  $Id$
  */
 
-define('DBVERSION', '2016020503'); // here should be always the newest version of database!
+define('DBVERSION', '2018111600'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /**
- * LMSDB_driver_mysqli
  * 
  * Database access layer abstraction for LMS. LMSDB drivers should extend this
  * class.
@@ -39,7 +38,7 @@ abstract class LMSDB_common implements LMSDBInterface
 {
 
     /** @var string LMS version * */
-    protected $_version = '1.11-git';
+    protected $_version = DBVERSION;
 
     /** @var string LMS revision * */
     protected $_revision = '$Revision$';
@@ -514,6 +513,28 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $this->_driver_day($date);
 	}
 
+	/**
+	 * Regular expression match for selected field.
+	 *
+	 * @param string $field
+	 * @param string $regexp
+	 * @return regexp match string
+	 */
+	public function RegExp($field, $regexp) {
+		return $this->_driver_regexp($field, $regexp);
+	}
+
+	/**
+	* Check if database resource exists (table, view)
+	*
+	* @param string $name
+	* @param int $type
+	* @return exists boolean
+	*/
+	public function ResourceExists($name, $type) {
+		return $this->_driver_resourceexists($name, $type);
+	}
+
     /**
      * Prepares query before execution.
      * 
@@ -526,22 +547,20 @@ abstract class LMSDB_common implements LMSDBInterface
     protected function _query_parser($query, array $inputarray = NULL)
     {
         // replace metadata
-        $query = preg_replace('/\?NOW\?/i', $this->_driver_now(), $query);
-        $query = preg_replace('/\?LIKE\?/i', $this->_driver_like(), $query);
+        $query = str_ireplace('?NOW?', $this->_driver_now(), $query);
+        $query = str_ireplace('?LIKE?', $this->_driver_like(), $query);
 
         if ($inputarray) {
-            $queryelements = explode("\0", str_replace('?', "?\0", $query));
-            $query = '';
-            foreach ($queryelements as $queryelement) {
-                if (strpos($queryelement, '?') !== FALSE) {
-                    list($key, $value) = each($inputarray);
-                    $queryelement = str_replace('?', $this->_quote_value($value), $queryelement);
-                }
-                $query .= $queryelement;
+            foreach ($inputarray as $k=>$v) {
+                $inputarray[$k] = $this->_quote_value($v);
             }
-        }
-        return $query;
 
+            $query = str_replace('%', '%%', $query); //escape params like %some_value%
+            $query = vsprintf(str_replace('?','%s',$query), $inputarray);
+            $query = str_replace('%%', '%', $query);
+        }
+
+        return $query;
     }
 
     /**
@@ -559,10 +578,31 @@ abstract class LMSDB_common implements LMSDBInterface
             return 'NULL';
         } elseif (is_string($input)) {
             return '\'' . addcslashes($input, "'\\\0") . '\'';
+        } elseif (is_array($input)) {
+            return $this->_quote_array($input);
         } else {
             return $input;
         }
 
+    }
+
+    /**
+     * Quotes array.
+     *
+     * @param array $input
+     * @return string
+     */
+    protected function _quote_array(array $input)
+    {
+        if (!$input) {
+            return 'NULL';
+        }
+
+        foreach ($input as $k=>$v) {
+            $input[$k] = $this->_quote_value($v);
+        }
+
+        return '(' . implode(',', $input) . ')';
     }
 
     /**
@@ -681,6 +721,11 @@ abstract class LMSDB_common implements LMSDBInterface
 				array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass)))) {
 			if ($dbver > $dbversion) {
 				set_time_limit(0);
+
+				if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
+					WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')) > 1)
+					$this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
+
 				$lastupgrade = $dbversion;
 
 				if (is_null($libdir))
@@ -750,3 +795,4 @@ abstract class LMSDB_common implements LMSDBInterface
 	}
 
 }
+

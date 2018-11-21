@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,7 +48,7 @@ if(isset($_POST['nodegroup']))
 	
 	if($nodegroupedit['name'] == '')
 		$error['name'] = trans('Group name required!');
-	elseif(strlen($nodegroupedit['name']) > 32)
+	elseif(strlen($nodegroupedit['name']) > 255)
 		$error['name'] = trans('Group name is too long!');
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
@@ -60,12 +60,12 @@ if(isset($_POST['nodegroup']))
 		$args = array(
 			'name' => $nodegroupedit['name'],
 			'description' => $nodegroupedit['description'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $nodegroupedit['id']
+			SYSLOG::RES_NODEGROUP => $nodegroupedit['id']
 		);
 		$LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
 				WHERE id=?', array_values($args));
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=nodegroupinfo&id='.$id);
 	}
@@ -79,7 +79,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('nodegroup',$nodegroup);
 $SMARTY->assign('nodes', $nodes);
-$SMARTY->assign('nodescount', sizeof($nodes));
+$SMARTY->assign('nodescount', count($nodes));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);

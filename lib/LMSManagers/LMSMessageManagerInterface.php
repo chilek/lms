@@ -38,4 +38,6 @@ interface LMSMessageManagerInterface
     public function UpdateMessageTemplate($id, $type, $name, $subject, $message);
     
     public function GetMessageTemplates($type);
+
+	public function GetMessageList(array $params);
 }

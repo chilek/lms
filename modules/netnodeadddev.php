@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,22 +24,19 @@
  *  $Id$
  */
 $id = intval($_GET['id']);
-$row = $DB->GetRow('SELECT * FROM netnodes WHERE id=?',array($id));
-if (!$row)
+$netnode = $LMS->GetNetNode($id);
+if (empty($netnode))
 	$SESSION->redirect('?m=netnodelist');
+
 $list = $_GET['list'];
 if (!empty($list)) {
 	$items = explode(',',$list);
 	foreach($items as $it) {
-		$DB->Execute("UPDATE netdevices SET netnodeid=?,location=?,location_city=?,
-			location_street=?,location_house=?,location_flat=?,longitude=?,latitude=? WHERE id=?",
-			array($id,$row['location'],$row['location_city'],$row['location_street'],
-			$row['location_house'],$row['location_flat'],$row['longitude'],$row['latitude'],$it));
+		$DB->Execute("UPDATE netdevices SET netnodeid=?,address_id=?,longitude=?,latitude=? WHERE id=?",
+			array($id,$netnode['address_id'],$netnode['longitude'],$netnode['latitude'],$it));
 	}
 }
 
+$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 
-
-header('Location: ?m=netnodeinfo&id='.$id);
-		
 ?>

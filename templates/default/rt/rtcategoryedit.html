@@ -1,64 +1,81 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="category" ACTION="?m=rtcategoryedit&id={$category.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLSPAN>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLSPAN>
     <THEAD>
 	<TR>
-	    <TD width="1%">
+	    <TD>
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{trans("Name:")}</B></TD>
-	    <TD width="98%">
-		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}><B> ({$category.id|string_format:"%04d"})</B>
+	    <TD class="bold">{trans("Name:")}</TD>
+	    <TD class="bold">
+		<INPUT TYPE="TEXT" NAME="category[name]" VALUE="{$category.name}" {tip text="Enter category name" trigger="name" bold=1}>({$category.id|string_format:"%04d"})
 	    </TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-	    <TD width="1%">
+	    <TD>
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%">
-		<TEXTAREA NAME="category[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
+	    <TD class="bold">{trans("Description:")}</TD>
+	    <TD>
+		<TEXTAREA NAME="category[description]" COLS="50" ROWS="2" {tip text="Enter additional information (optional)"}>{$category.description}</TEXTAREA>
 	    </TD>
 	</TR>
 	<TR>
-	    <TD width="1%">
+		<TD>
+			<IMG src="img/queue.gif" ALT="">
+		</TD>
+		<TD class="bold">{trans("Category style:")}</TD>
+		<TD>
+			<TEXTAREA NAME="category[style]" COLS="50" ROWS="2" {tip text="Enter category CSS style (optional):"}>{$category.style}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+	    <TD>
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{trans("Users:")}</B></TD>
-	    <TD width="98%">
+	    <TD><B>{trans("Users:")}</B></TD>
+	    <TD>
 		    <TABLE class="lmsbox">
+			<COLSPAN>
+				<COL style="width:99%">
+				<COL style="width:1%">
+			</COLSPAN>
                         <THEAD>
 			<TR>
-			    <TD width="99%"><B>{trans("User")}</B>
-			    </TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Owner")}</B></TD>
+			    <TD class="bold">{trans("User")}</TD>
+			    <TD class="bold nobr align-center">{trans("Owner")}</TD>
 			</TR>
                         </THEAD>
-                        <TBODY>
+                        <TBODY class="lms-ui-multi-check">
 			{cycle values="light,lucid" print=false}
 			{foreach from=$category.owners item=user}
-			<TR class="highlight {cycle}"  >
-			    <TD width="99%">
+			<TR class="highlight {cycle}">
+			    <TD>
 				<A href="?m=userinfo&id={$user.id}">{$user.name}</A>
 			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="category[users][{$user.id}]" value="1" {if $user.owner > 0}CHECKED{/if}>
+			    <TD class="text-center">
+			    	    <INPUT type="checkbox" name="category[users][{$user.id}]" class="lms-ui-multi-check" value="1" {if $user.owner > 0}CHECKED{/if}>
 			    </TD>
 			</TR>
 			{/foreach}
                         <TR>
-                                <TD width="1%" class="text-right">
+                                <TD class="text-right">
                                         <label for="allbox">{trans("Check All")}</label>
                                 </TD>
-                                <TD width="1%" align="center">             
-                                        <INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('category', this)">
+                                <TD class="text-center">
+                                        <INPUT TYPE="checkbox" NAME="allbox" id="allbox" class="lms-ui-multi-check-all">
                                 </TD>
                         </TR> 
                         </TBODY>
@@ -66,17 +83,19 @@
 	    </TD>
 	</TR>
 	<TR>
-	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.category.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
-		<A HREF="?m=rtcategorylist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
+	    <TD COLSPAN="3" class="text-right">
+	    	<A HREF="javascript:document.category.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
+		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+		<A HREF="?m=rtcategorylist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 	    </TD>
 	</TR>
     </TBODY>
 </TABLE></FORM></P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['category'].elements['category[name]'].focus();
+$(function() {
+	$('form[name="category"] [name="category[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

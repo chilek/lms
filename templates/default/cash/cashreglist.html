@@ -1,9 +1,9 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
@@ -38,32 +38,33 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{foreach from=$reglist item=reg}
-	<TR class="highlight {cycle}{if $reg.disabled} blend{/if}">
-		<TD onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';" class="nobr bold">
-                        <IMG src="img/queue.gif" ALT=""> {$reg.name}
+	{foreach $reglist as $reg}
+	<TR class="highlight {if $reg.disabled} blend{/if}" data-target-url="?m=receiptlist&regid={$reg.id}">
+		<TD class="nobr bold">
+			<IMG src="img/queue.gif" ALT=""> {$reg.name}
 		</TD>
 		<TD class="text-right">
 			({$reg.id|string_format:"%04d"})
 		</TD>
-		<TD class="nobr text-right{if $reg.balance < 0} alert{/if}" onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';">
+		<TD class="nobr text-right{if $reg.balance < 0} alert{/if}">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			{$reg.balance|money_format}
 			{/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';">
+		<TD class="text-right">
 			{$reg.in_template|default:"%N/LMS/%Y"}<BR>
 			{$reg.out_template|default:"%N/LMS/%Y"}
 		</TD>
-		<TD onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';">
+		<TD>
 			{$reg.description}
 		</TD>
-		<TD class="text-right nobr">
-			<A HREF="?m=receiptlist&amp;regid={$reg.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=cashregdel&amp;id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=cashregedit&amp;id={$reg.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=cashreginfo&amp;id={$reg.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+		<TD class="lms-ui-buttons text-right nobr">
+			<A HREF="?m=receiptadd&type=in&action=init&regid={$reg.id}"><IMG SRC="img/kp.png" alt="New Cash-in Receipt")}" title="{trans("New Cash-in Receipt")}"></A>
+			<A HREF="?m=receiptadd&type=out&action=init&regid={$reg.id}"><IMG SRC="img/kw.png" alt="New Cash-out Receipt")}" title="{trans("New Cash-out Receipt")}"></A>
+			<A HREF="?m=receiptlist&amp;regid={$reg.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
+			<A HREF="?m=cashregdel&amp;id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A HREF="?m=cashregedit&amp;id={$reg.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A HREF="?m=cashreginfo&amp;id={$reg.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -88,7 +89,7 @@
 		</TD>
 		<TD COLSPAN="2"></TD>
 		<TD class="text-right nobr">
-                        <A href="?m=cashregadd">{trans("Add registry")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=cashregadd">{trans("Add registry")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TFOOT>

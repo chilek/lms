@@ -1,85 +1,92 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 95%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/payment.gif" ALT=""><BR>
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
-		<TD WIDTH="95%" ALIGN="left">
+		<TD class="text-left">
 			<B>{trans("Name:")}</B><BR>
 			{trans("Creditor:")}
 		</TD>
-		<TD WIDTH="1%" ALIGN="right">
+		<TD class="text-right">
 			{trans("ID:")}
 		</TD>
-		<TD WIDTH="1%" ALIGN="right">
+		<TD class="text-right">
 			{trans("Value:")}
 		</TD>	
-		<TD NOWRAP WIDTH="1%" ALIGN="right">
+		<TD class="text-right nobr">
 			{trans("Payment day:")}
 		</TD>
-		<TD NOWRAP WIDTH="1%" ALIGN="RIGHT">
-			<B>{t a=$listdata.total}Total: $a{/t}</B>
+		<TD class="bold text-right nobr">
+			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=payments loop=$paymentlist}
-	<FORM NAME="addbalance{$smarty.section.payments.index}" METHOD="POST" ACTION="?m=balanceadd">
-	<TR class="highlight {cycle}"  >
-		<TD WIDTH="1%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+	{foreach $paymentlist as $payment}
+	<TR class="highlight" data-target-url="?m=paymentinfo&id={$payment.id}">
+		<FORM NAME="addbalance{$payment@index}" METHOD="POST" ACTION="?m=balanceadd">
+		<TD>
 			<IMG SRC="img/payment.gif" ALT=""><BR>
 			<IMG SRC="img/creditor.gif" ALT="">
 		</TD>
-		<TD WIDTH="95%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
-			<B>{$paymentlist[payments].name}</B><BR>
-			{$paymentlist[payments].creditor}
+		<TD>
+			<B>{$payment.name}</B><BR>
+			{$payment.creditor}
 		</TD>
-		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
-			({$paymentlist[payments].id|string_format:"%04d"})
+		<TD class="text-right">
+			({$payment.id|string_format:"%04d"})
 		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="text-right nobr">
-			{$paymentlist[payments].value|money_format} 
+		<TD class="text-right nobr">
+			{$payment.value|money_format} 
 		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="text-right nobr">
-			{$paymentlist[payments].payday} 
+		<TD class="text-right nobr">
+			{$payment.payday} 
 		</TD>
-		<TD WIDTH="1%" class="text-right nobr">
+		<TD class="lms-ui-buttons text-right nobr">
 			<INPUT type="submit" class="hiddenbtn">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$paymentlist[payments].value}">
-			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
-			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="[ {trans("Account payment")} ]" title="[ {trans("Account payment")} ]"></A>
-			<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that payment?")}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>&nbsp;
+			<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{math equation="x*-1" x=$payment.value}">
+			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
+			<A HREF="javascript:document.addbalance{$smarty.section.payments.index}.submit();"><IMG src="img/pay.gif" alt="{trans("Account payment")}" title="{trans("Account payment")}"></A>
+			<A HREF="?m=paymentdel&id={$payment.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that payment?")}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A HREF="?m=paymentedit&id={$payment.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A HREF="?m=paymentinfo&id={$payment.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>&nbsp;
 		</TD>
+		</FORM>
 	</TR>
-	</FORM>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD COLSPAN="6" class="empty-table">
 			<p>{trans("No such standing payments in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD COLSPAN="4" WIDTH="98%">
+		<TD COLSPAN="4">
 			&nbsp;
 		</TD>
-		<TD WIDTH="1%" ALIGN="right">
+		<TD class="bold text-right">
 			<IMG SRC="img/info2.gif" ALT="">&nbsp;<B>{trans("Total:")}</B>
 		</TD>
-		<TD WIDTH="1%" ALIGN="left">
-			<B>{$listdata.total}</B>
+		<TD class="bold text-left">
+			{$listdata.total}
 		</TD>
 	</TR>
     </TFOOT>

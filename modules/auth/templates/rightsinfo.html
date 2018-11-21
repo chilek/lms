@@ -24,7 +24,7 @@
 				</B>
 			</TD> 
 			<TD width="1%">
-				{if sizeof($rights.$key)==$module.count || $rights.$key=="1"}
+				{if count($rights.$key)==$module.count || $rights.$key=="1"}
 					<img src="modules/auth/img/check.gif" alt="">
 				{elseif is_array($rights.$key)}
 					<img src="modules/auth/img/check_blend.gif" alt="">

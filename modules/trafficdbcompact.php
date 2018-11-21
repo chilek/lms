@@ -123,8 +123,9 @@ if(isset($_GET['level']))
 			if (!$record['download'] && !$record['upload'])
 				continue;
 
-			$values[] = sprintf('(%d, %d, %d, %d, %d)',
-				$node['id'], $record['maxtime'], $record['upload'], $record['download'], $record['nodesessionid']);
+			$values[] = sprintf('(%d, %d, %d, %d, %s)',
+				$node['id'], $record['maxtime'], $record['upload'], $record['download'],
+				$DB->Escape(empty($record['nodesessionid']) ? null : $record['nodesessionid']));
 		}
 
 		if (!empty($values))

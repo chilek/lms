@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -120,38 +120,23 @@
 					<B>{trans("Type/Quota:")}</B>
 				    </TD>
 				    <TD width="98%">
-					    <table width="100%">
-						    {if ($account.type & 1) == 1}	    
-						    <tr>
-							    <td width="1%" nowrap>{trans("shell")}</td>
-							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_sh} MB</td><td width="97%">]</td>
-						    </tr>
-						    {/if}
-						    {if ($account.type & 2) == 2}
-						    <tr>
-							    <td width="1%" nowrap>{trans("mail")}</td>
-							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_mail} MB</td><td width="97%">]</td>
-						    </tr>
-						    {/if}
-						    {if ($account.type & 4) == 4}
-						    <tr>
-							    <td width="1%" nowrap>{trans("www")}</td>
-							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_www} MB</td><td width="97%">]</td>
-						    </tr>
-						    {/if}
-						    {if ($account.type & 8) == 8}
-						    <tr>
-							    <td width="1%" nowrap>{trans("ftp")}</td>
-							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_ftp} MB</td><td width="97%">]</td>
-						    </tr>
-						    {/if}
-						    {if ($account.type & 16) == 16}
-						    <tr>
-							    <td width="1%" nowrap>{trans("sql")}</td>
-							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_sql} MB</td><td width="97%">]</td>
-						    </tr>
-						    {/if}
-					    </table>
+						<table width="100%">
+							{foreach $_ACCOUNTTYPES as $typeidx => $type}
+							{if ($account.type & $typeidx) == $typeidx}
+							<tr>
+								<td style="width: 1%;" class="nobr">
+									{$type.label}
+								</td>
+								<td style="width: 1%;">[</td>
+								<td style="width: 1%;" class="text-right nobr">
+									{$idx='quota_'|cat:$type.alias}
+									{$account[$idx]} MB
+								</td>
+								<td style="width: 97%;">]</td>
+							</tr>
+							{/if}
+							{/foreach}
+						</table>
 				    </TD>
 				</TR>
 				{if $account.description}
@@ -222,10 +207,10 @@
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 					    {assign var=name value="`$alias.login`@`$alias.domain`"}
-					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete assignment with alias: \'$a\'?{/t}')"><IMG src="img/eraser.gif" alt="[ {trans("Delete assignment")} ]" title="[ {trans("Delete assignment")} ]"></A>
-					    <A href="?m=aliasdel&id={$alias.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete assignment with alias: \'$a\'?{/t}')"><IMG src="img/eraser.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}"></A>
+					    <A href="?m=aliasdel&id={$alias.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 					</TD>
 				</TR>
 				{foreachelse}

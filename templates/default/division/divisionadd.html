@@ -1,79 +1,75 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=divisionadd" name="division">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/division.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Name:")}</B>
+		<TD class="bold">
+			{trans("Name:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="division[shortname]" value="{$division.shortname|escape}" size="40" {tip text="Enter division short name" trigger="shortname" bold=1}>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/division.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Long name:")}</B>
+		<TD class="bold nobr">
+			{trans("Long name:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
 		</TD>
 	</TR>
+	<tr>
+		<td>
+			<img src="img/home.gif" alt="">
+		</td>
+		<td class="bold nobr">
+			{trans("Address:")}
+		</td>
+		<td>
+			{location_box
+				prefix               = "division"
+				address_id           = "{$division.address_id}"
+				location_name        = "{$division.location_name}"
+				location_state_name  = "{$division.location_state_name}"
+				location_state       = "{$division.location_state}"
+				location_city_name   = "{$division.location_city_name}"
+				location_city        = "{$division.location_city}"
+				location_street_name = "{$division.location_street_name}"
+				location_street      = "{$division.location_street}"
+				location_house       = "{$division.location_house}"
+				location_flat        = "{$division.location_flat}"
+				location_zip         = "{$division.location_zip}"
+				location_country_id  = "{$division.location_country_id}"
+				teryt                = "{$division.teryt}"
+			}
+		</td>
+	</tr>
 	<TR>
-		<TD width="1%">
-			<IMG src="img/home.gif" alt="">
-		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Address:")}</B>
-		</TD>
-		<TD width="98%">
-			<TABLE width="100%" cellpadding="2" cellspacing="0">
-			    <TR>
-				<TD width="1%" NOWRAP>{trans("Address:")}</TD>
-				<TD width="99%"><INPUT type="text" size="30" value="{$division.address}" name="division[address]" {tip text="Enter address" trigger="address"}></TD>
-			    </TR>
-			    <TR>
-				<TD width="1%" NOWRAP>{trans("City:")}</TD>
-				<TD width="99%"><INPUT type="TEXT" size="30" value="{$division.city}" name="division[city]" {tip text="Enter city" trigger="city"}></TD>
-			    </TR>
-			    <TR>
-				<TD width="1%" NOWRAP>{trans("Zip:")}</TD>
-				<TD width="99%"><INPUT type="text" size="10" value="{$division.zip}" name="division[zip]" {tip text="Enter zip code" trigger="zip"}></TD>
-			    </TR>
-			    <TR>
-				<TD width="1%" NOWRAP>{trans("Country:")}</TD>
-				<TD width="99%">
-					<SELECT NAME="division[countryid]" {tip text="Select country" trigger="countryid"}>
-				                <OPTION value="0"></OPTION>
-						{foreach from=$countries item=item key=key}
-				                <OPTION value="{$key}"{if $key==$division.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
-						{/foreach}
-					</SELECT>
-				</TD>
-			    </TR>
-			</TABLE>    
-		</TD>
-	</TR>
-	<TR>	
-		<TD width="%1">
+		<TD>
 			<IMG src="img/serialnumber.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("TEN")}</B>
+		<TD class="bold nobr">
+			{trans("TEN")}
 		</TD>
-		<TD width="99%">
+		<TD>
 			<INPUT TYPE="text" size="40" value="{$division.ten}" name="division[ten]" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
 			{if $division.tenwarning}
 			<INPUT TYPE="HIDDEN" NAME="division[tenwarning]" VALUE="1">
@@ -81,90 +77,143 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="%1">
+		<TD>
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Tax Office Code:")}
+		</TD>
+		<TD>
+			{if isset($_TAX_OFFICE_CODES)}
+			<SELECT name="division[tax_office_code]" {tip text="Enter Tax Office Code (optional)" trigger="tax_office_code"}>
+				<OPTION value="0">{trans("- none -")}</OPTION>
+				{foreach $_TAX_OFFICE_CODES as $code => $tax_office}
+				<OPTION value="{$code}"{if $division.tax_office_code == $code} selected{/if}>{$tax_office}</OPTION>
+				{/foreach}
+			</SELECT>
+			{else}
+			<INPUT TYPE="text" size="10" value="{if $divsion.tax_office_code > 0}{$division.tax_office_code}{/if}" name="division[tax_office_code]" {tip text="Enter Tax Office Code (optional)" trigger="tax_office_code"}>
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD>
 			<IMG src="img/serialnumber.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("REGON")}</B>
+		<TD class="bold nobr">
+			{trans("REGON")}
 		</TD>
-		<TD width="99%">
+		<TD>
 			<INPUT TYPE="text" size="40" value="{$division.regon}" name="division[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
+			<IMG src="img/serialnumber.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("RBE Name:")}
+		</TD>
+		<TD>
+			<TEXTAREA name="division[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$division.rbename|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG src="img/serialnumber.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("RBE:")}
+		</TD>
+		<TD>
+			<INPUT type="text" value="{$division.rbe}" name="division[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG src="img/phone.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Telecom number:")}
+		</TD>
+		<TD>
+			<INPUT type="text" value="{$division.telecomnumber}" name="division[telecomnumber]" size="30" {tip text="Enter Telecom Registry Number (optional)" trigger="telecomnumber"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
 			<IMG src="img/card.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Bank account:")}</B>
+		<TD class="bold nobr">
+			{trans("Bank account:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="division[account]" VALUE="{$division.account}" SIZE="45" {tip text="Enter bank account or mass payments account prefix (optional)" trigger="account"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Description:")}</B>
+		<TD class="bold nobr">
+			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA NAME="division[description]" COLS="45" ROWS="4" {tip text="Enter additional information (optional)"}>{$division.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/print.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Invoice header:")}</B>
+		<TD class="bold nobr">
+			{trans("Invoice header:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA NAME="division[inv_header]" COLS="45" ROWS="4" {tip text="Enter invoice header (optional)" trigger="inv_header"}>{$division.inv_header}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/print.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Invoice footer:")}</B>
+		<TD class="bold nobr">
+			{trans("Invoice footer:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA NAME="division[inv_footer]" COLS="45" ROWS="4" {tip text="Enter invoice footer (optional)" trigger="inv_footer"}>{$division.inv_footer}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/print.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Invoice author:")}</B>
+		<TD class="bold nobr">
+			{trans("Invoice author:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="division[inv_author]" VALUE="{$division.inv_author}" SIZE="45" {tip text="Enter invoices author (optional)" trigger="inv_author"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/print.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Invoice creation place:")}</B>
+		<TD class="bold nobr">
+			{trans("Invoice creation place:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="division[inv_cplace]" VALUE="{$division.inv_cplace}" SIZE="45" {tip text="Enter invoices creation place (optional)" trigger="inv_cplace"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/print.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Payment type:")}</B>
+		<TD class="bold nobr">
+			{trans("Payment type:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<SELECT name="division[inv_paytype]" {tip text="Select default invoices payment type" trigger="paytype"}>
 				<OPTION value=""{if !$division.inv_paytype} selected{/if}>- {trans("default")} -</OPTION>
 				{foreach from=$_PAYTYPES item=item key=key}
@@ -174,23 +223,23 @@
 		</TD>
 	</TR>
 	<TR>
-                <TD WIDTH="1%">
-		        <IMG src="img/print.gif" ALT="">
+		<TD>
+			<IMG src="img/print.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Deadline:")}</B>
+		<TD class="bold">
+			{trans("Deadline:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<SELECT name="division[inv_paytime]" {tip text="Select default deadline in days" trigger="inv_paytime"}>
-			        <OPTION value=""{if !strlen($division.inv_paytime)} selected{/if}>- {trans("default")} -</OPTION>
-			        <OPTION value="0"{if $division.inv_paytime=="0"} selected{/if}>0</OPTION>
-			        <OPTION value="7"{if $division.inv_paytime==7} selected{/if}>7</OPTION>
-			        <OPTION value="10"{if $division.inv_paytime==10} selected{/if}>10</OPTION>
-			        <OPTION value="14"{if $division.inv_paytime==14} selected{/if}>14</OPTION>
-			        <OPTION value="21"{if $division.inv_paytime==21} selected{/if}>21</OPTION>
-			        <OPTION value="30"{if $division.inv_paytime==30} selected{/if}>30</OPTION>
+				<OPTION value=""{if !strlen($division.inv_paytime)} selected{/if}>- {trans("default")} -</OPTION>
+				<OPTION value="0"{if $division.inv_paytime=="0"} selected{/if}>0</OPTION>
+				<OPTION value="7"{if $division.inv_paytime==7} selected{/if}>7</OPTION>
+				<OPTION value="10"{if $division.inv_paytime==10} selected{/if}>10</OPTION>
+				<OPTION value="14"{if $division.inv_paytime==14} selected{/if}>14</OPTION>
+				<OPTION value="21"{if $division.inv_paytime==21} selected{/if}>21</OPTION>
+				<OPTION value="30"{if $division.inv_paytime==30} selected{/if}>30</OPTION>
 			</SELECT>
-	        </TD>
+		</TD>
 	</TR>
 	<TR>
 		<TD align="right" colspan="3">
@@ -203,7 +252,11 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['division'].elements['division[shortname]'].focus();
+$(function() {
+	$('form[name="division"] [name="division[shortname]"]').focus();
+
+	check_teryt(['location', 'location_city'], true);
+});
 //-->
 </SCRIPT>
 {/block}

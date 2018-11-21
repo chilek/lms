@@ -1,8 +1,20 @@
 <table width="100%" cellspacing="0" cellpadding="0" class="light" style="background-image:url('style/old/keyboard.jpg'); background-repeat:no-repeat;">
     <tr>
 	<td align="right" style="padding-right:15px;">
-	    <h2><b>LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br />
-	    @ {$layout.hostname}</b></h2>
+		<h2>
+		{if $company_logo}
+			<img src="{$company_logo}" alt=""/>
+		{/if}
+		{if $page_header}
+			{if $company_logo}<br/>{/if}{$page_header}
+		{/if}
+		{if !$page_header && !$company_logo}
+			<span class="bold">
+			LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br/>
+			@ {$layout.hostname}
+			</span>
+		{/if}
+		</h2>
 	</td>
     </tr>
 <tr><td>

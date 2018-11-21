@@ -42,7 +42,7 @@
 						{if $tariff.upceil}{$tariff.upceil} kbit/s{else}-{/if}
 					</TD>
 					<TD>
-						<A href="?m=promotionedit&action=tariffdel&id={$promotion.id}&tid={$tariff.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this assignment?")}');"><IMG src="img/delete.gif" alt="[ {trans("Delete assignment")} ]" title="[ {trans("Delete assignment")} ]"></A>
+						<A href="?m=promotionedit&action=tariffdel&id={$promotion.id}&tid={$tariff.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this assignment?")}');"><IMG src="img/delete.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}"></A>
 					</TD>
 				</TR>
 				{foreachelse}

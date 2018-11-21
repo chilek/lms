@@ -1,11 +1,9 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 {if $customerinfo}
-{include file="calendar_js.html"}
-<div>
     {include file="voipaccount/voipaccountaddbox.html"}
     {block name=extra_content}{/block}
     {include file="customer/customerinfobox.html" customerpanel=1}
@@ -18,7 +16,6 @@
     {include file="customer/customergroups.html"}
     {include file="customer/customerassignments.html"}
     {include file="customer/customerbalancebox.html" limit=-10}
-</div>
 {else}
     {include file="voipaccount/voipaccountaddbox.html"}
     {block name=extra_content}{/block}

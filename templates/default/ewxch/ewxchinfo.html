@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -117,7 +117,7 @@
 					</TD>
 					<TD align="right">
 					    {if $channel.id}
-						<A href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove this assignment?")}')"  {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
+						<A href="?m=ewxchedit&action=remove&id={$channel.id}&devid={$item.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove this assignment?")}')"  {tip text="Remove this device from the channel"}><IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
 					    {/if}
 					</TD>
 				</TR>
@@ -141,7 +141,7 @@
 			        			{/foreach}
 						</SELECT>
 					<TD ALIGN="RIGHT" CLASS="ftop" COLSPAN="2" NOWRAP>
-				    		<A HREF="javascript:document.device.submit()" {tip text="Add device to the channel"}>{trans("Add")} <IMG SRC="img/save.gif" alt="[ {trans("Add")} ]"></A>
+						<A HREF="javascript:document.device.submit()" {tip text="Add device to the channel"}>{trans("Add")} <IMG SRC="img/save.gif" alt="{trans("Add")}"></A>
 					</TD>
 				</TR>
 				</FORM>

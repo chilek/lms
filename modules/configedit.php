@@ -24,26 +24,36 @@
  *  $Id$
  */
 
-function ConfigOptionExists($id) 
-{
-	global $DB;
-	return ($DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id)) ? TRUE : FALSE);
+function ConfigOptionExists($params) {
+	extract($params);
+	$DB = LMSDB::getInstance();
+	if (isset($section))
+		return $DB->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?',
+			array($section, $variable));
+	else
+		return $DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id));
 }
 
-$id = intval($_GET['id']);
+if (isset($_GET['s']) && isset($_GET['v']))
+	$params = array(
+		'section' => $_GET['s'],
+		'variable' => $_GET['v'],
+	);
+else
+	$params['id'] = $_GET['id'];
 
-if ($id && !ConfigOptionExists($id))
+$id = ConfigOptionExists($params);
+if (empty($id))
 	$SESSION->redirect('?m=configlist');
 
 if (isset($_GET['statuschange'])) {
 	if ($SYSLOG) {
 		$disabled = $DB->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $id,
+			SYSLOG::RES_UICONF => $id,
 			'disabled' => $disabled ? 0 : 1
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE, $args,
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+		$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
 	}
 	$DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
 	$SESSION->redirect('?m=configlist');
@@ -58,8 +68,9 @@ if(isset($_POST['config']))
 	$cfg = $_POST['config'];
 	$cfg['id'] = $id;
 
-	foreach($cfg as $key => $val)
-		$cfg[$key] = trim($val);
+	foreach ($cfg as $key => $val)
+		if ($key != 'wysiwyg')
+			$cfg[$key] = trim($val);
 
 	if(!ConfigHelper::checkPrivilege('superuser'))
 		$cfg['type'] = $config['type'];
@@ -99,14 +110,13 @@ if(isset($_POST['config']))
 			'description' => $cfg['description'],
 			'disabled' => $cfg['disabled'],
 			'type' => $cfg['type'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $cfg['id']
+			SYSLOG::RES_UICONF => $cfg['id']
 		);
 		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ?, type = ? WHERE id = ?',
 			array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+			$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=configlist');
 	}

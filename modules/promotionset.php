@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,14 +29,13 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id) {
 	$args = array(
 		'disabled' => !empty($_GET['access']) ? 0 : 1,
-		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $id
+		SYSLOG::RES_PROMO => $id
 	);
 	$DB->Execute('UPDATE promotions SET disabled = ? WHERE id = ?',
 		array_values($args));
 
 	if ($SYSLOG)
-		$SYSLOG->AddMessage(SYSLOG_RES_PROMO, SYSLOG_OPER_UPDATE,
-			$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+		$SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
 }
 
 header('Location: ?'.$SESSION->get('backto'));

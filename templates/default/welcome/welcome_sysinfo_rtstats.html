@@ -1,5 +1,5 @@
 {if $rtstats}
-<table width="100%">
+<table width="100%" id="lms-ui-welcome-box-rtstats">
     {if $rtstats|@count >= 3}
     {assign var="hboxesinrow" value="3"}
     {else}
@@ -17,20 +17,20 @@
             {/if}
             <table class="lmsbox">
                 <colgroup>
-                    <col style="width: 50%;"/>
-                    <col style="width: 50%;"/>
+                    <col style="width: 50%;">
+                    <col style="width: 50%;">
                 </colgroup>
                 <thead>
                     <tr>
                         <td colspan="2" class="text-center bold nobr">
-                            <a href="?m=rtticketadd&amp;catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><img src="img/ticket.gif" alt=""></a>&nbsp;{trans("Helpdesk:")}&nbsp;<a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}">{$rtcategorystats.name}</a>
+                            <a href="?m=rtticketview&amp;catid={$rtcategorystats.id}" {tip text="Add new ticket" trigger="newticket"}><img src="img/ticket.gif" alt=""></a>&nbsp;{trans("Helpdesk:")}&nbsp;<a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}">{$rtcategorystats.name}</a>
                         </td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="text-right bold">
-                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s=0&amp;o=lastmodified,desc">{trans("New:")}</a>
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s={$smarty.const.RT_NEW}&priority=all&unread=-1&amp;o=lastmodified,desc">{trans("New:")}</a>
                         </td>
                         <td>
                             {$rtcategorystats.new|default:"0"}
@@ -38,7 +38,7 @@
                     </tr>
                     <tr>
                         <td class="text-right bold">
-                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s=1&amp;o=lastmodified,desc">{trans("Opened:")}</a>
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s={$smarty.const.RT_OPEN}&priority=all&unread=-1&amp;o=lastmodified,desc">{trans("Opened:")}</a>
                         </td>
                         <td>
                             {$rtcategorystats.opened|default:"0"}
@@ -46,7 +46,7 @@
                     </tr>
                     <tr>
                         <td class="text-right bold">
-                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s=3&amp;o=lastmodified,desc">{trans("Dead:")}</a>
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s={$smarty.const.RT_DEAD}&priority=all&unread=-1&amp;o=lastmodified,desc">{trans("Dead:")}</a>
                         </td>
                         <td>
                             {$rtcategorystats.dead|default:"0"}
@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <td class="text-right bold nobr">
-                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s=-1&amp;o=lastmodified,desc">{trans("Unresolved:")}</a>
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&s=-1&priority=all&unread=-1&o=lastmodified,desc">{trans("Unresolved:")}</a>
                         </td>
                         <td>
                             {$rtcategorystats.unresolved|default:"0"}
@@ -62,7 +62,7 @@
                     </tr>
                     <tr>
                         <td class="text-right bold">
-                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s=2&amp;o=lastmodified,desc">{trans("Resolved:")}</a>
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s={$smarty.const.RT_RESOLVED}&priority=all&unread=-1o=lastmodified,desc">{trans("Resolved:")}</a>
                         </td>
                         <td>
                             {$rtcategorystats.resolved|default:"0"}
@@ -70,10 +70,18 @@
                     </tr>
                     <tr>
                         <td class="text-right bold">
-                            <a href="?m=rtqueuelist">{trans("Total:")}</a>
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}&amp;s=-1&priority=all&unread=1&amp;o=lastmodified,desc">{trans("Unread:")}</a>
                         </td>
                         <td>
-                            {math equation="a+b+c+d" a=$rtcategorystats.opened b=$rtcategorystats.new c=$rtcategorystats.dead d=$rtcategorystats.resolved}
+                            {$rtcategorystats.unread|default:"0"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right bold">
+                            <a href="?m=rtqueueview&amp;catid={$rtcategorystats.id}">{trans("Total:")}</a>
+                        </td>
+                        <td>
+                            {math equation="a+b+c+d+e" a=$rtcategorystats.opened b=$rtcategorystats.new c=$rtcategorystats.dead d=$rtcategorystats.resolved e=$rtcategorystats.unread}
                         </td>
                     </tr>
                 </tbody>

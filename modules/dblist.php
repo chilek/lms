@@ -54,7 +54,9 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 					}
 					
 					$dblist['name'][] = $name;
-					$dblist['size'][] = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					$dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					list ($hsize, $hunit) = setunits($filesize);
+					$dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
 					$dblist['type'][] = 'plain';
 				}
 			}
@@ -74,7 +76,9 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 						$dblist['time'][] = (int) $name;
 					}
 					$dblist['name'][] = $name;
-					$dblist['size'][] = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					$dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					list ($hsize, $hunit) = setunits($filesize);
+					$dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
 					$dblist['type'][] = 'gz';
 				}
 			}
@@ -84,9 +88,9 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 }
 
 if(isset($dblist['time']))
-	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name']);
+	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name'],$dblist['hsize']);
 
-$dblist['total'] = isset($dblist['time']) ? sizeof($dblist['time']) : 0;
+$dblist['total'] = isset($dblist['time']) ? count($dblist['time']) : 0;
 
 $SMARTY->assign('dblist', $dblist);
 $SMARTY->display('dblist.html');

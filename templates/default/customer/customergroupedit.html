@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ -->
 <H1>{$layout.pagetitle}</H1>
@@ -15,7 +15,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" VALUE="{$customergroup.name}" NAME="customergroup[name]" SIZE="40" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" VALUE="{$customergroup.name}" NAME="customergroup[name]" SIZE="40" required {tip trigger="name" bold=1}>
 			<B>&nbsp;({$customergroup.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
@@ -35,7 +35,7 @@
 </FORM>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
-		        {if sizeof($customergroups) > 1 && $customergroup.count}
+		        {if count($customergroups) > 1 && $customergroup.count}
 			<FORM name="tmove" method="get" action="">
 			    <input type="hidden" name="is_sure" value="1">
 			    <input type="hidden" name="m" value="customergroupmove">
@@ -56,7 +56,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['tedit'].elements['customergroup[name]'].focus();
+$(function() {
+	$('form[name="tedit"] [name="customergroup[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {include file="customer/customergroupassignments.html"}

@@ -2,7 +2,7 @@
  @author Maciej_Wawryk
  -->
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
     <h1>{$layout.pagetitle}</h1>
     <table class="lmsbox">
@@ -13,7 +13,7 @@
 		    <td width="1%"><img src="img/group.gif" alt=""></td>
 		    <td width="1%" nowrap><b>{trans("Name:")}</b></td>
 		    <td width="98%">
-			<input type="text" value="{$usergroup.name}" name="usergroup[name]" size="40" {tip trigger="name" bold=1}>
+			<input type="text" value="{$usergroup.name}" name="usergroup[name]" size="40" required {tip trigger="name" bold=1}>
 			<b>&nbsp;({$usergroup.id|string_format:"%04d"})</b>
 		    </td>
 		</tr>
@@ -29,7 +29,7 @@
 	</form>
 	    <tr>
 		<td width="100%" colspan="3" align="right">
-		    {if sizeof($usergroups) > 1 && $usergroup.count}
+		    {if count($usergroups) > 1 && $usergroup.count}
 			<form name="tmove" method="get" action="">
 			    <input type="hidden" name="is_sure" value="1">
 			    <input type="hidden" name="m" value="usergroupmove">
@@ -49,7 +49,11 @@
 	</tbody>
     </table>
     <script type="text/javascript">
-	document.forms['tedit'].elements['usergroup[name]'].focus();
+	<!--
+		$(function() {
+			$('form[name="tedit"] [name="usergroup[name]"]').focus();
+		});
+	//-->
     </script>
     {include file="user/usergroupassignments.html"}
 {/block}

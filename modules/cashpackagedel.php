@@ -39,34 +39,35 @@ elseif ($_GET['is_sure'] != 1) {
 	$DB->BeginTrans();
 
 	if ($SYSLOG) {
-		$imports = $DB->GetCol('SELECT id, customerid, sourceid FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
+		$imports = $DB->GetAll('SELECT id, customerid, sourceid FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
 		if (!empty($imports)) {
 			$importids = array();
 			foreach ($imports as $import) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $import['id'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $import['customerid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $import['sourceid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
+					SYSLOG::RES_CASHIMPORT => $import['id'],
+					SYSLOG::RES_CUST => $import['customerid'],
+					SYSLOG::RES_CASHSOURCE => $import['sourceid'],
+					SYSLOG::RES_SOURCEFILE => $sourcefileid,
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				$SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_DELETE, $args, array_keys($args));
 				$importids[] = $import['id'];
 			}
 			$cash = $DB->GetAll('SELECT id, customerid, docid FROM cash WHERE importid IN (' . implode(',', $importids) . ')');
-			foreach ($cash as $item) {
-				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item['id'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $item['customerid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $item['docid'],
-				);
-				$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
-			}
+			if (!empty($cash))
+				foreach ($cash as $item) {
+					$args = array(
+						SYSLOG::RES_CASH => $item['id'],
+						SYSLOG::RES_CUST => $item['customerid'],
+						SYSLOG::RES_DOC => $item['docid'],
+					);
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+				}
 			$userid = $DB->GetOne('SELECT userid FROM sourcefiles WHERE id = ?', array($sourcefileid));
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userid,
+				SYSLOG::RES_SOURCEFILE => $sourcefileid,
+				SYSLOG::RES_USER => $userid,
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_SOURCEFILE, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$SYSLOG->AddMessage(SYSLOG::RES_SOURCEFILE, SYSLOG::OPER_DELETE, $args);
 		}
 	}
 	$DB->Execute('DELETE FROM cash WHERE importid IN (

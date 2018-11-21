@@ -109,7 +109,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				// groups test
 				if(gc)
 				{
-					if( ownerid==0 ) continue;
+					if( !ownerid ) continue;
 					m = gc;
 					
 					res1 = g->db->pquery(g->db->conn, "SELECT customergroupid FROM customerassignments WHERE customerid=?", g->db->get_data(res,i,"ownerid"));

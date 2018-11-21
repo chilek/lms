@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,6 +36,11 @@ class LMSDB
     const MYSQL = 'mysql';
     const MYSQLI = 'mysqli';
     const POSTGRESQL = 'postgres';
+
+	const RESOURCE_TYPE_TABLE = 1;
+	const RESOURCE_TYPE_VIEW = 2;
+	const RESOURCE_TYPE_COLUMN = 3;
+	const RESOURCE_TYPE_CONSTRAINT = 4;
 
     private static $db;
     
@@ -86,8 +91,6 @@ class LMSDB
 
         switch ($dbtype) {
             case self::MYSQL:
-                $db = new LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname);
-                break;
             case self::MYSQLI:
                 $db = new LMSDB_driver_mysqli($dbhost, $dbuser, $dbpasswd, $dbname);
                 break;

@@ -1,0 +1,32 @@
+{include file="header.html"}
+{box title="Help Center"}
+{if $solution.title}
+	<div class="card">
+		<div class="card-header">
+			{$solution.title}
+		</div>
+		<div class="card-block">
+			<h4 class="card-title">{$solution.body}</h4>
+			<div class="card-block">
+				{if $questions}
+					{trans("Select:")}
+					{section name=mysec loop=$questions}
+						<a class="card-link"href="?m=help&pr={$questions[mysec].id}">{$questions[mysec].title}</a>
+					{/section}
+				{else}
+					{trans("Now, you can only select:")}
+					<a class="card-link" href="?m=helpdesk&subject={$solution.title}">{trans("Contact with administrators")}</a>
+					<a class="card-link" href="?m=help">{trans("Back to beginning")}</a>
+				{/if}
+				{if $solution.reference>0}
+					<a class="card-link" href="?m=help&pr={$solution.reference}">{trans("Back to previous level")}</a>
+				{/if}
+			</div>
+		</div>
+	</div>
+{else}
+	<div class="alert alert-info">{trans("This module is not configured yet.")}</div>
+{/if}
+{/box}
+
+{include file="footer.html"}

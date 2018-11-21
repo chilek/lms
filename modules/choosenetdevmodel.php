@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,25 +45,27 @@ if (isset($_GET['ajax']) && isset($_GET['what'])) {
 		print "false;";
 		die;
 	}
-        $eligible = $actions = array();
-        $list = $DB->GetAll('
-            SELECT id, name
-            FROM netdeviceproducers
-            WHERE name ?LIKE? ' . $DB->Escape("%$search%") . '
-                OR alternative_name ?LIKE? ' . $DB->Escape("%$search%") . '
-            ORDER BY name
-            LIMIT 10'
-        );
-        if (!empty($list)) {
-            foreach ($list as $idx => $row) {
-                $eligible[$idx] = escape_js($row['name']);
-                $actions[$idx] = sprintf("javascript: search_producer(%d)", $row['id']);
-            }
-            print "this.eligible = [\"" . implode('","', $eligible) . "\"];\n";
-            print "this.actions = [\"" . implode('","', $actions) . "\"];\n";
-        } else {
-            print "false;\n";
-        }
+    $list = $DB->GetAll('SELECT id, name
+        FROM netdeviceproducers
+        WHERE name ?LIKE? ' . $DB->Escape("%$search%") . '
+            OR alternative_name ?LIKE? ' . $DB->Escape("%$search%") . '
+        ORDER BY name
+        LIMIT 10'
+    );
+
+	$result = array();
+	if ($list)
+	    foreach ($list as $idx => $row) {
+	    	$name = $row['name'];
+	    	$name_class = '';
+	    	$description = $description_class = '';
+    		$action = sprintf("javascript: search_producer(%d)", $row['id']);
+
+			$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+		}
+    header('Content-Type: application/json');
+    if (!empty($result))
+        echo json_encode(array_values($result));
 	die;
 }
 

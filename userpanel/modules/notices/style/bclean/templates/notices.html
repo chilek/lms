@@ -1,84 +1,76 @@
 {include file="header.html"}
 {$xajax}
 {if $warning}
-{box title="Warning to you"}
-<table class="table">
-    <tr>
-        <td>
-            {$warning}
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a href="?m=notices&amp;confirm_old=1">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
-        </td>
-    </tr>
-</table>
-{/box}
+	{box title="Warning to you"}
+	<div class="alert alert-warning" role="alert">
+		{$warning}
+		<a class="alert-link" href="?m=notices&amp;confirm_old=1">{trans("I confirm reading")}</a>
+	</div>
+	{/box}
 {/if}
 {if $notice_urgent}
-<SCRIPT type="text/javascript">
+	<SCRIPT type="text/javascript">
 <!--
-    xajax_setNoticeRead({$notice_urgent.id});
+		xajax_setNoticeRead({$notice_urgent.id});
 //-->
-</SCRIPT>
-<div id="dialog">
-    <div id="dialog-bg">
-        <div id="dialog-title">{$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"}<br />{$notice_urgent.subject}</div>
-        <div id="dialog-description">
-            {box}
-            <table style="width: 100%;" cellpadding="3" class="light">
-                <tr>
-                    <td style="word-break:break-all;">{$notice_urgent.body}</td>
-                </tr>
-                <tr class="darkest">
-                    <td align="center"><a href="?m=notices&amp;confirm_urgent={$notice_urgent.id}">{trans("I confirm reading")}</a></td>
-                </tr>
-            </table>
-            {/box}
-        </div>
-    </div>
-</div>
+	</SCRIPT>
+	<div id="dialog">
+		<div id="dialog-bg">
+			<div id="dialog-title">{$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"}<br />{$notice_urgent.subject}</div>
+			<div id="dialog-description">
+				{box}
+				<table style="width: 100%;" cellpadding="3" class="light">
+					<tr>
+						<td style="word-break:break-all;">{$notice_urgent.body}</td>
+					</tr>
+					<tr class="darkest">
+						<td align="center"><a href="?m=notices&amp;confirm_urgent={$notice_urgent.id}">{trans("I confirm reading")}</a></td>
+					</tr>
+				</table>
+				{/box}
+			</div>
+		</div>
+	</div>
 </div>
 {/if}
 {box title="Notice to you"}
 {if $notice}
-<div class="table-responsive">
-<table class="table table-bordered">
-    <tr class="bg-primary">
-        <th>{trans("Date:")}</th>
-        <th>{trans("Status:")}</th>
-        <th>{trans("Subject:")}</th>
-        <th>{trans("Read status:")}</th>
-    </tr>
-    {foreach $notice as $items}
-    <tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
-        <td>{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
-        <td>{if $items.type==6 }<b>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
-        <td>{$items.subject}</td>
-        <td>{if $items.type==6 && $items.status==1}{trans("Unread")}{elseif $items.type==6 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{elseif $items.type==5 && $items.status==1}{trans("Unread")}{elseif $items.type==5 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}</td>
-    </tr>
-    <tr id="{$items.id}"  style="display:none;">
-        <td colspan="4" >
-            <h3>{trans("Body:")}</h3>
-            {$items.body}<br /><br />
-            {if $items.status !=2}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
-    </tr>
-    <SCRIPT type="text/javascript">
-        <!--
-        function ReadNotice(elem) {
-            xajax_setNoticeRead(elem);
-            showOrHide(elem);
-        }
-        if (getCookie('{$items.id}') == '1')
-            document.getElementById('{$items.id}').style.display = '';
-        //-->
-    </SCRIPT>
-    {/foreach}
-</table>
-</div>
+	<div class="table-responsive">
+		<table class="table table-bordered table-condensed table-striped">
+			<tr class="bg-primary text-white">
+				<th>{trans("Date:")}</th>
+				<th>{trans("Status:")}</th>
+				<th>{trans("Subject:")}</th>
+				<th>{trans("Read status:")}</th>
+			</tr>
+			{foreach $notice as $items}
+				<tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
+					<td>{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
+					<td>{if $items.type==6 }<b>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
+					<td>{$items.subject}</td>
+					<td>{if $items.type==6 && $items.status==1}{trans("Unread")}{elseif $items.type==6 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{elseif $items.type==5 && $items.status==1}{trans("Unread")}{elseif $items.type==5 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}</td>
+				</tr>
+				<tr id="{$items.id}" style="display:none;">
+					<td colspan="4" >
+						<h3>{trans("Body:")}</h3>
+						{$items.body}<br /><br />
+						{if $items.status !=2}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
+				</tr>
+				<SCRIPT type="text/javascript">
+					<!--
+					function ReadNotice(elem) {
+						xajax_setNoticeRead(elem);
+						showOrHide(elem);
+					}
+					if (getCookie('{$items.id}') == '1')
+						document.getElementById('{$items.id}').style.display = '';
+					//-->
+				</SCRIPT>
+			{/foreach}
+		</table>
+	</div>
 {else}
-<div class="alert alert-info" role="alert">{trans("We don't have any notices to you.")}</div>
+	<div class="alert alert-info" role="alert">{trans("We don't have any notices to you.")}</div>
 {/if}
 {/box}
 {include file="footer.html"}

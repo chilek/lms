@@ -1,162 +1,24 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+{$xajax}
 <H1>{$layout.pagetitle}</H1>
-<FORM method="POST" name="ticket" action="?m=rtticketadd" enctype="multipart/form-data">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 50%;">
-			<TABLE width="50%" cellpadding="3">
-				<TR>
-					<TD style="width: 1%;" class="bold nobr">
-						<IMG src="img/ticket.gif" alt="">
-						{trans("Subject:")}
-					</TD>
-					<TD style="width: 99%;">
-						<INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-		<TD style="width: 50%;">
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR>
-		<TD style="width: 50%;">
-			<TABLE width="50%" cellpadding="3">
-				<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/customer.gif" alt="">
-			{trans("Submitter:")}
-		</TD>
-		<TD style="width: 99%;">
-			<TABLE width="100%" cellpadding="1">
-				<TR>
-					<TD colspan="2" class="nobr">
-						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer"}
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;">{trans("Name/Surname:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="ticket[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}></TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;">{trans("Firstname")}:</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="ticket[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}></TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;">{trans("E-mail:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="ticket[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/mail.gif" alt="">
-			{trans("Content:")}
-		</TD>
-		<TD style="width: 99%;">
-			<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticker content" trigger="body"} >{$ticket.body}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/attach.gif" alt="">
-			{trans("Attachments:")}
-		</TD>
-		<TD style="width: 99%;">
-			<INPUT name="files[]" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/queue.gif" alt="">
-			{trans("Categories:")}
-		</TD>
-		<TD style="width: 99%;" class="nobr">
-			<TABLE width="100%" cellpadding="1" {tip trigger="categories"}>
-				{foreach from=$categories item=category}
-				<TR>
-					<TD style="width: 1%;" class="text-center=">
-						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}checked{/if}>
-					</TD>
-					<TD style="width: 99%;">
-						<label for="cat{$category.id}">{$category.name}</label>
-					</TD>
-				</TR>
-				{/foreach}
-			</TABLE>
-		</TD>
-			</TABLE>
-		</TD>
-		<TD style="width: 50%;" class="valign-top">
-			<TABLE width="50%" cellpadding="3">
-
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/users.gif" alt="">
-			{trans("Owner:")}
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
-				<OPTION value="0">- {trans("select user")} -</OPTION>
-				{foreach from=$userlist item=item}
-				<OPTION value="{$item.id}"{if $item.id == $ticket.owner} selected{/if}>{$item.name}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/queue.gif" alt="">
-			{trans("Queue:")}
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"}>
-				{foreach from=$queuelist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $queue}SELECTED{/if}>{$item.name}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/desc.gif" alt="">
-			{trans("Cause:")}
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
-				<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
-				<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
-				<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;" class="buttons" colspan="2">
-			<A href="javascript:document.ticket.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m={if $queue}rtqueueview&amp;id={$queue}{else}rtqueuelist{/if}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
+<FORM method="POST" name="ticket" id="ticket-form" action="?m=rtticketadd">
+    {include file="rt/rtticketmodify.html"}
 </FORM>
+
+<script src="js/rtticketmodify.js"></script>
+<script>
+
+	$(function() {
+		$('[name="ticket[subject]"]').focus();
+	});
+
+	initCustomerSelection({$customerid}, {$ticket.address_id});
+
+</script>
+
 {if $customerinfo}{include file="customer/customerinfobox.html" info_link=true}{/if}
-<SCRIPT type="text/javascript">
-<!--
-document.forms['ticket'].elements['ticket[subject]'].focus();
-//-->
-</SCRIPT>
+
 {/block}

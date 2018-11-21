@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,17 +25,20 @@
  */
 
 if (isset($_GET['id']))
-	$id = intval($_GET['id']);
+	$ids = array(intval($_GET['id']));
+elseif (isset($_POST['customerassignments']))
+	$ids = Utils::filterIntegers($_POST['customerassignments']);
+
 if (isset($_GET['cid']))
 	$cid = intval($_GET['cid']);
 
-if ($_GET['is_sure'] == '1' && (isset($id) || isset($cid))) {
-	if (isset($id)) {
-		$customer = $DB->GetOne('SELECT a.customerid
-			FROM assignments a
-			JOIN customerview c ON (c.id = a.customerid)
-			WHERE a.id = ?', array($id));
-		$ids = array($id);
+if ($_GET['is_sure'] == '1' && (isset($ids) || isset($cid))) {
+	if (isset($ids)) {
+		if (!empty($ids))
+			$customer = $DB->GetOne('SELECT a.customerid
+				FROM assignments a
+				JOIN customerview c ON (c.id = a.customerid)
+				WHERE a.id = ?', array(reset($ids)));
 	} else {
 		$customer = $DB->GetOne('SELECT id FROM customerview
 			WHERE id = ?', array($cid));
@@ -46,9 +49,12 @@ if ($_GET['is_sure'] == '1' && (isset($id) || isset($cid))) {
 	if (!$customer)
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 
-	if (!empty($ids))
+	if (!empty($ids)) {
+		$DB->BeginTrans();
 		foreach ($ids as $id)
 			$LMS->DeleteAssignment($id);
+		$DB->CommitTrans();
+	}
 
 	$backto = $SESSION->get('backto');
 	// infinite loop prevention

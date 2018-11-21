@@ -1,0 +1,14 @@
+[Unit]
+Description=LMS Daemon
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/default/lmsd
+ExecStart=/usr/local/lmsd/bin/lmsd --pidfile /var/run/lmsd.pid
+ExecReload=/usr/local/lmsd/bin/lmsd --reload
+PIDFile=/var/run/lmsd.pid
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

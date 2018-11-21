@@ -2,10 +2,10 @@
  @author Maciej_Wawryk
  -->
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
     <h1>{$layout.pagetitle}</h1>
-    <table class="lmsbox">
+    <table class="lmsbox lms-ui-background-cycle">
 	<colgroup>
 	    <col style="width: 97%;">
 	    <col style="width: 1%;">
@@ -31,37 +31,36 @@
 	    </tr>
 	</tfoot>
 	<tbody>
-	    {cycle values="light,lucid" print=false}
-	    {section name=usergroups loop=$usergrouplist}
-		<tr class="highlight {cycle}"  >
-		    <td onClick="return self.location.href='?m=usergroupinfo&amp;id={$usergrouplist[usergroups].id}';">
-			<img src="img/group.gif" alt="">&nbsp;<span class="bold">{$usergrouplist[usergroups].name}</span><br>
-			{if $usergrouplist[usergroups].description}<img src="img/info1.gif" alt="">&nbsp;{$usergrouplist[usergroups].description}{/if}
+	    {foreach $usergrouplist as $usergroup}
+		<tr class="highlight" data-target-url="?m=usergroupinfo&id={$usergroup.id}">
+		    <td>
+				<img src="img/group.gif" alt="">&nbsp;<span class="bold">{$usergroup.name}</span><br>
+				{if $usergroup.description}<img src="img/info1.gif" alt="">&nbsp;{$usergroup.description}{/if}
 		    </td>
-		    <td class="text-right" onClick="return self.location.href='?m=usergroupinfo&amp;id={$usergrouplist[usergroups].id}';">
-			({$usergrouplist[usergroups].id|string_format:"%04d"})
+		    <td class="text-right">
+				({$usergroup.id|string_format:"%04d"})
 		    </td>
-		    <td class="text-right" onClick="return self.location.href='?m=usergroupinfo&amp;id={$usergrouplist[usergroups].id}';">
-			{$usergrouplist[usergroups].userscount} 
+		    <td class="text-right">
+				{$usergroup.userscount} 
 		    </td>
-		    <td class="text-right nobr">
-			{if $usergrouplist[usergroups].userss}
-			<a href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
-			{else}
-			<a href="?m=usergroupdel&amp;id={$usergrouplist[usergroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
-			{/if}
-			<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
-			<a href="?m=usergroupedit&amp;id={$usergrouplist[usergroups].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
-			<a href="?m=usergroupinfo&amp;id={$usergrouplist[usergroups].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
+		    <td class="lms-ui-buttons text-right nobr">
+				{if $usergroup.userscount}
+				<a href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
+				{else}
+				<a href="?m=usergroupdel&amp;id={$usergroup.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+				{/if}
+				<img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>
+				<a href="?m=usergroupedit&amp;id={$usergroup.id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></a>
+				<a href="?m=usergroupinfo&amp;id={$usergroup.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></a>
 		    </td>
 		</tr>
-	    {sectionelse}
+	    {foreachelse}
 		<tr>
 		    <td colspan="4" class="empty-table">
 			<p>{trans("There are no such groups in database.")}</p>
 		    </td>
 		</tr>
-	{/section}
+		{/foreach}
 	</tbody>
     </table>
 {/block}

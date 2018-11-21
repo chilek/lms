@@ -1,30 +1,472 @@
 <!--// $Id$ //-->
+{$disable_active_links=ConfigHelper::getConfig('phpui.disable_active_links_in_nodeinfo', 'true')}
+
 {$xajax}
-<SCRIPT type="text/javascript">
+
+<style>
+    .tab-beautify td { padding: 3px; }
+    .tab-beautify tr td:nth-child(2) {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+</style>
+
+<table class="lmsbox">
+    <thead>
+		<tr>
+			<td style="width: 1%;">
+				<img src="img/node.gif" alt="">
+			</td>
+			<td style="width: 99%;" colspan="2">
+				<span class="bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</span>
+			</td>
+		</tr>
+    </thead>
+    <tbody>
+		<tr>
+			<td width="100%" colspan="3" class="container">
+				<table style="width: 100%;" cellpadding="0">
+					<tr>
+						<td width="50%" class="valign-top">
+							<table style="width: 100%" class="tab-beautify">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+
+								{block name="nodeinfobox-leftcolumn"}
+								<tr>
+									<td>
+										<img src="img/network.gif" alt="">
+									</td>
+									<td>
+										{trans("Network:")}
+									</td>
+									<td>
+										<a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
+									</td>
+								</tr>
+								<tr>
+									<TD style="width: 1%;">
+				                       <img src="img/ip.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip}" alt="">
+									</td>
+									<td>
+										{trans("IP address:")}
+									</td>
+									<td>
+										<a href="javascript:ping_popup('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
+									</td>
+								</tr>
+
+								{if $nodeinfo.ip_pub != "0.0.0.0"}
+								<tr>
+									<td>
+										<img src="img/ip_pub.gif" class="lms-ui-button-clipboard" data-clipboard-text="{$nodeinfo.ip_pub}"s alt="">
+									</td>
+									<td>
+										{trans("Pub. IP address:")}
+									</td>
+									<td>
+										<a href="javascript:ping_popup('{$nodeinfo.ip_pub}')">{$nodeinfo.ip_pub}</a>
+									</td>
+								</tr>
+								{/if}
+
+								{assign var="counter" value=0}
+								{$macs=array()}
+								{foreach from=$nodeinfo.macs item=item}
+								<tr>
+									<td>
+										<a href="javascript:changeMacFormat('mac{$counter}')" title="{trans("Change the format of presentation of the MAC address.")}"><img src="img/mac.gif" alt=""></a>
+									</td>
+									<td>
+										{trans("MAC address:")}
+									</td>
+									<td>
+										<span id="mac{$counter}">{$item.mac}</span> {if $item.producer}({$item.producer}){/if}<br>
+										{$macs[]=$item.mac}
+									</td>
+								</tr>
+								{math equation="x+1" x=$counter assign="counter"}
+								{/foreach}
+
+								{if $nodeinfo.passwd}
+								<tr>
+									<td>
+										<img src="img/passwd.gif" alt="">
+									</td>
+									<td>
+										{trans("Password:")}
+									</td>
+									<td>
+										{if ConfigHelper::checkConfig('phpui.protect_passwords')}
+										<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$nodeinfo.passwd}">{trans("Copy")}</button>
+										{else}
+											{$nodeinfo.passwd}
+										{/if}
+									</td>
+								</tr>
+								{/if}
+
+								{if $nodeinfo.location}
+								<tr>
+									<td>
+										<img src="img/home.gif">
+									</td>
+									<td>
+										{trans("Location:")}
+									</td>
+									<td>
+										{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
+									</td>
+								</tr>
+								{/if}
+
+								{if $nodeinfo.netdev || $netdevices}
+									{if !$nodeinfo.netdev && $netdevices}
+										<form method="get" action="?m=nodeedit" name="nodelink">
+											<input type="hidden" name="m" value="nodeedit">
+											<input type="hidden" name="id" value="{$nodeinfo.id}">
+											<input type="hidden" name="action" value="link">
+											<input type="submit" class="hiddenbtn">
+									{/if}
+
+									{if !$disable_active_links || $nodeinfo.netdev}
+									<tr>
+										<td>
+											<img src="img/netdev.gif" alt="">
+										</td>
+										<td>
+											{trans("Net device:")}
+										</td>
+										<TD class="nobr">
+											{if $nodeinfo.netdev}
+												<span class="bold">
+													<a href="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
+												</span>
+
+												{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
+												<img src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
+											{else}
+												{if $netdevices}
+													<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodelink.elements['devid']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
+
+													<select size="1" style="width: 300px;" name="devid" id="netdev" {tip trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
+						                                <option value="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</option>
+														{section name=netdev loop=$netdevices}
+															{assign var=netdevname value=$netdevices[netdev].name}
+															{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
+															{if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
+															<OPTION value="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
+														{/section}
+													</select>
+
+													<a href="javascript: void(0);" onClick="return netdevfrommapchoosewin(document.nodelink.elements['devid']);" {tip text="Click to select network device from map"}>&raquo;&raquo;&raquo;</A>
+													<input type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+													<br>
+
+													<select name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
+														{foreach from=$_LINKTYPES item=item key=key}
+															<option value="{$key}"{if $linktype == $key} selected{/if}>{$item}</option>
+														{/foreach}
+													</select>
+
+													<select name="radiosector" id="radiosector" {tip trigger="radiosector" text="Select radio sector"} style="display: none;">
+														<option value="0">- {trans("none")} -</option>
+													</select>
+
+													<select name="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)">
+														<option value="0">{trans("- unknown -")}</option>
+														{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+															<option value="{$linktechnologyidx}"{if $linktechnology == $linktechnologyidx} selected{/if}>{$linktechnology}</option>
+														{/foreach}
+													</select>
+
+													<select name="linkspeed" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
+														{foreach from=$_LINKSPEEDS item=item key=key}
+															<option value="{$key}"{if $linkspeed == $key} selected{/if}>{$item}</option>
+														{/foreach}
+													</select>
+
+													<a href="javascript:document.nodelink.submit();">{trans("Connect")} <img src="img/edit.gif" alt=""></a>
+												{/if}
+											{/if}
+										</td>
+									</tr>
+									{/if}
+
+									{if !$nodeinfo.netdev && $netdevices}
+										</form>
+									{/if}
+								{/if}
+
+								<tr>
+									<td>
+										<img src="img/money.gif" alt="">
+									</td>
+									<td>
+									     {trans("Investment project:")}
+									</td>
+									<td>
+										{$nodeinfo.projectname}
+									</td>
+								</tr>
+
+								{if !$disable_active_links || ($nodeinfo.chkmac + $nodeinfo.halfduplex) != 0}
+								<tr>
+									<td>
+										<img src="img/options.gif" alt="">
+									</td>
+									<td>
+										{trans("Options:")}
+									</td>
+									<td class="nobr">
+										{if $disable_active_links}
+											<ol class="lms-inline-list">
+												{if $nodeinfo.chkmac}<li>{trans("MAC checking")}</li>{/if}
+												{if $nodeinfo.halfduplex}<li>{trans("Half duplex")}</li>{/if}
+											</ol>
+										{else}
+                                            <label>
+                                                <input type="checkbox" class="configcheckbox" data-field="chkmac" name="chkmac" value="1" {if $nodeinfo.chkmac} checked{/if}>
+                                                {trans("MAC checking")}
+                                            </label>
+
+                                            <label>
+                                                <input type="checkbox" class="configcheckbox" data-field="halfduplex" name="duplex" value="1" {if $nodeinfo.halfduplex} checked{/if}>
+                                                {trans("Half duplex")}
+                                            </label>
+										{/if}
+									</td>
+								</tr>
+								{/if}
+
+								{if !$disable_active_links || $nodeinfo.authtype != 0}
+								<tr>
+									<td>
+										<img src="img/netdev.gif" alt="">
+									</td>
+									<td>
+										{trans("Type:")}
+									</td>
+									<td class="nobr">
+										{if $disable_active_links}
+											<ol class="lms-inline-list">
+												{foreach $_SESSIONTYPES as $idx => $sessiontype}
+													{if $nodeinfo.authtype & $idx}
+														<li>{$sessiontype.label}</li>
+													{/if}
+												{/foreach}
+											</ol>
+										{else}
+											{$first=true}
+											{foreach $_SESSIONTYPES as $idx => $sessiontype}
+												{if $disable_active_links}
+													{if !$first} / {/if}{$first=false}{$sessiontype.label}
+												{else}
+													<label>
+														<input type="checkbox" name="authtype[{$idx}]" value="{$idx}" class="authtype" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} {if ($nodeinfo.authtype & $idx) == $idx} checked{/if}>
+														{$sessiontype.label}
+													</label><br>
+												{/if}
+											{/foreach}
+										{/if}
+									</td>
+								</tr>
+								{/if}
+								{/block}
+							</table>
+						</td>
+						<td width="50%" class="valign-top">
+							<table width="100%" id="nodeinfo" class="tab-beautify">
+							{block name="nodeinfobox-rightcolumn"}
+                                <colgroup>
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 98%;">
+                                </colgroup>
+
+								{if $nodeinfo.info}
+								<tr>
+									<td>
+										<img src="img/info1.gif" alt="{trans("Description:")}">
+									</td>
+									<td>
+										{trans("Description:")}
+									</td>
+									<td>
+										<table style="width: 100%;" cellpadding="5">
+											<tr>
+												<td class="fall superlight">
+													{$nodeinfo.info|replace:"\n":"<br>"}
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								{/if}
+
+								<tr>
+									<td>
+										{if $disable_active_links}
+											<img src="img/{if ! $nodeinfo.access}no{/if}access.gif" alt="">
+										{else}
+											<a href="?m=nodeset&id={$nodeinfo.id}"><img src="img/{if ! $nodeinfo.access}no{/if}access.gif" alt=""></a>
+										{/if}
+									</td>
+									<td>
+										{trans("Status:")}
+									</td>
+									<td>
+										{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}
+									</td>
+								</tr>
+
+								{if $nodeinfo.longitude || $nodeinfo.latitude}
+								<tr>
+									<td>
+										<img src="img/home.gif" alt="{trans("GPS coordinates:")}">
+									</td>
+									<td>
+										{trans("GPS longitude:")}
+									</td>
+									<td class="nobr">
+										{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
+										<input type="hidden" ID="longitude" name="longitude" value="{$nodeinfo.longitude}">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<img src="img/home.gif" alt="{trans("GPS coordinates:")}">
+									</td>
+									<td>
+										<span class="bold">{trans("GPS latitude:")}</span>
+									</td>
+									<td class="nobr">
+										{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
+										<input type="hidden" ID="latitude" name="latitude" value="{$nodeinfo.latitude}">
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+									</td>
+									<td>
+										<a href="?m=netdevmap&nodeid={$nodeinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
+									</td>
+								</tr>
+								{/if}
+
+								<tr>
+									<td>
+										{if $disable_active_links}
+											<img src="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" alt="">
+										{else}
+											<a href="?m=nodewarn&id={$nodeinfo.id}"><img src="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" alt=""></a>
+										{/if}
+									</td>
+									<td>
+										{trans("Notices:")}
+									</td>
+									<td>
+										{if $nodeinfo.warning}
+											{trans("yes")}
+										{else}
+											{trans("no")}
+										{/if}
+									</td>
+								</tr>
+
+								{if $nodeinfo.lastonline}
+								<tr>
+									<td>
+										<img src="img/time.gif" alt="">
+									</td>
+									<td>
+										{trans("last online:")}
+									</td>
+									<td>
+										{$nodeinfo.lastonlinedate}
+									</td>
+								</tr>
+								{/if}
+
+								<tr>
+									<td>
+										<img src="img/users.gif" alt="">
+									</td>
+									<td>
+										{trans("Created:")}<br>
+										{trans("Modified:")}
+									</td>
+									<td>
+										{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
+										{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+									</td>
+								</tr>
+							{/block}
+						</table>
+					</td>
+				</tr>
+			</TABLE>
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 100%; text-align: right;" colspan="3">
+			{block name="nodeinfobox-buttons"}
+			<a href="?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></a>
+			<a href="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></A>
+			<a href="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
+				{trans("Delete")}
+				<img src="img/delete.gif" alt="">
+			</a>
+			{/block}
+		</td>
+	</tr>
+    </tbody>
+</table>
+
+<script type="text/javascript">
 <!--
-	function chkmac_change()
-	{
-		if (xjx.$('chkmac').checked)
-			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=chkmac&chkmac=1';
-		else
-			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=chkmac&chkmac=0';
-	}
+    xajax_getNodeStats({$nodeinfo.id});
 
-	function duplex_change()
-	{
-		if (xjx.$('duplex').checked)
-			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=1';
-		else
-			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
-	}
+    {if !$disable_active_links}
+    $( function() {
+        var link = '?m=nodeedit&id={$nodeinfo.id}';
+        var nodeid = {$nodeinfo.id};
 
-	function change_authtype() {
-		var authtype = 0;
-		{foreach $_SESSIONTYPES as $idx => $sessiontype}
-		authtype |= (xjx.$('authtype{$idx}').checked == true) * {$idx};
-		{/foreach}
-		location.href = '?m=nodeedit&id={$nodeinfo.id}&action=authtype&authtype=' + authtype;
-	}
+        $( '.authtype' ).click( function() {
+           var sum = 0;
+
+            $.each( $( '.authtype' ), function() {
+                if ( this.checked )
+                    sum += parseInt( $(this).val() );
+                });
+
+            $.ajax({
+                url: link + '&action=updatenodefield',
+                method: "POST",
+                data: {
+                    nodeid: nodeid,
+                    field : 'authtype',
+                    val   : sum
+                }
+            });
+        });
+
+        $( '.configcheckbox' ).click( function() {
+            $.ajax({
+                url: link + '&action=updatenodefield',
+                method: "POST",
+                data: {
+                    nodeid: nodeid,
+                    field : $(this).attr('data-field'),
+                    val   : (( this.checked ) ? 1 : 0)
+                }
+            });
+        });
+    });
+    {/if}
 
 	function change_netdevice(id) {
 		if (xjx.$('linktype').value == 1) {
@@ -104,285 +546,5 @@
 	}
 
 	xajax_getRadioSectors({$nodeinfo.netdev}, {$nodeinfo.linktechnology});
-//-->
-</SCRIPT>
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/node.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<span class="bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</span>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD style="width: 100%;" COLSPAN="3" CLASS="container">
-			<TABLE style="width: 100%;" CELLPADDING="0">
-				<TR>
-					<TD style="width: 50%; vertical-align: top;">
-						<TABLE style="width: 100%" CELLPADDING="3">
-						{block name="nodeinfobox-leftcolumn"}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<a href="javascript:ping_popup('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
-		</TD>
-	</TR>
-	{if $nodeinfo.ip_pub != "0.0.0.0"}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<a href="javascript:ping_popup('{$nodeinfo.ip_pub}')">{$nodeinfo.ip_pub}</a>
-		</TD>
-	</TR>
-	{/if}
-	{assign var="counter" value=0}
-	{foreach from=$nodeinfo.macs item=item}
-	<TR>
-		<TD style="width: 1%;">
-			<a href="javascript:changeMacFormat('mac{$counter}')"><IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}"></a>
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<span id="mac{$counter}">{$item.mac}</span> {if $item.producer}({$item.producer}){/if}<BR>
-		</TD>
-	</TR>
-	{math equation="x+1" x=$counter assign="counter"}
-	{/foreach}
-{if $nodeinfo.passwd}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			{$nodeinfo.passwd}
-		</TD>
-	</TR>
-{/if}
-{if $nodeinfo.location}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			{$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
-		</TD>
-	</TR>
-{/if}
-{if $nodeinfo.netdev || $netdevices}
-{if !$nodeinfo.netdev && $netdevices}
-	<FORM METHOD="GET" ACTION="?m=nodeedit" NAME="nodelink">
-	<INPUT TYPE="HIDDEN" NAME="m" VALUE="nodeedit">
-	<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$nodeinfo.id}">
-	<INPUT TYPE="HIDDEN" NAME="action" VALUE="link">
-	<INPUT type="submit" class="hiddenbtn">
-{/if}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			{if $nodeinfo.netdev}
-				<span class="bold">
-				<A HREF="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
-				</span>
-				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
-				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
-			{else}
-				{if $netdevices}
-				<SELECT SIZE="1" style="width: 300px;" NAME="devid" id="netdev" {tip trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
-				<OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
-					{section name=netdev loop=$netdevices}
-					{assign var=netdevname value=$netdevices[netdev].name}
-					{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
-					{if $netdevices[netdev].location}{assign var=netdevname value=$netdevname|cat:" ("|cat:$netdevices[netdev].location|cat:")"}{/if}
-					<OPTION VALUE="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
-					{/section}
-				</SELECT>
-				<a href="javascript: void(0);" onClick="return netdevfrommapchoosewin(document.nodelink.elements['devid']);" {tip text="Click to select network device from map"}>&raquo;&raquo;&raquo;</A>
-				<INPUT type="text" name="port" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-				<BR>
-				<SELECT name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
-					{foreach from=$_LINKTYPES item=item key=key}
-					<OPTION VAlUE="{$key}">{$item}</OPTION>
-					{/foreach}
-				</SELECT>
-				<SELECT NAME="radiosector" id="radiosector" {tip trigger="radiosector" text="Select radio sector"} style="display: none;">
-					<OPTION value="0">- {trans("none")} -</OPTION>
-				</SELECT>
-				<SELECT NAME="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)">
-					<OPTION value="0">{trans("- unknown -")}</OPTION>
-					{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-					<OPTION value="{$linktechnologyidx}">{$linktechnology}</OPTION>
-					{/foreach}
-				</SELECT>
-				<SElECT name="linkspeed" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
-					{foreach from=$_LINKSPEEDS item=item key=key}
-					<OPTION VALUE="{$key}"{if $key==100000} selected{/if}>{$item}</OPTION>
-					{/foreach}
-				</SELECT>
-				<A HREF="javascript:document.nodelink.submit(); ">{trans("Connect")} <IMG SRC="img/edit.gif" alt=""></A>
-				{/if}
-			{/if}
-		</TD>
-	</TR>
-{if !$nodeinfo.netdev && $netdevices}
-	</FORM>
-{/if}
-{/if}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/money.gif" ALT="{trans("Investment project:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			{$nodeinfo.projectname}
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/options.gif" ALT="">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
-			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/netdev.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" class="nobr" COLSPAN="2">
-			{foreach $_SESSIONTYPES as $idx => $sessiontype}
-			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
-			{/foreach}
-		</TD>
-	</TR>
-					{/block}
-					</TABLE>
-				</TD>
-				<TD style="width: 50%; vertical-align: top;">
-					<TABLE style="width: 100%;" CELLPADDING="3" id="nodeinfo">
-					{block name="nodeinfobox-rightcolumn"}
-{if $nodeinfo.info}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<TABLE style="width; 100%;" cellpadding="5">
-				<TR>
-					<TD class="fall superlight">
-						{$nodeinfo.info|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-{/if}
-{if $nodeinfo.longitude || $nodeinfo.latitude}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS longitude:")}</span>
-		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
-			{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
-			<INPUT TYPE="hidden" ID="longitude" NAME="longitude" VALUE="{$nodeinfo.longitude}">
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS latitude:")}</span>
-		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
-			{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
-			<INPUT TYPE="hidden" ID="latitude" NAME="latitude" VALUE="{$nodeinfo.latitude}"> 
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 2%;" COLSPAN="2">
-		</TD>
-		<TD style="width: 98%;">
-			<a HREF="?m=netdevmap&nodeid={$nodeinfo.id}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
-		</TD>
-	</TR>
-{/if}
-	<TR>
-		<TD style="width: 1%;">
-			<A HREF="?m=nodeset&amp;id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<span class="bold">{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</span>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<A HREF="?m=nodewarn&amp;id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<span class="bold">{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</span>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/time.gif" ALT="">
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("last online:")}</span>
-		</TD>
-		<TD style="width: 98%;">
-			{if $nodeinfo.lastonline}{$nodeinfo.lastonlinedate}{else}-{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/users.gif" ALT="">
-		</TD>
-		<TD style="width: 1%;">
-			<span class="bold">{trans("Created:")}<BR>
-			{trans("Modified:")}</span>
-		</TD>
-		<TD style="width: 98%;">
-			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
-			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
-		</TD>
-	</TR>
-						{/block}
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%; text-align: right;" COLSPAN="3">
-			<A HREF="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
-		</TD>
-	</TR>	
-    </TBODY>
-</TABLE>
-<script type="text/javascript">
-<!--
-	xajax_getNodeStats({$nodeinfo.id});
 //-->
 </script>

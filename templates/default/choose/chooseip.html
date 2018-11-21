@@ -5,29 +5,31 @@
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
 <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="img/common.js"></script>
+{include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/common.js"></script>
 {if $js}<script type="text/javascript">
 {$js}
 </script>{/if}
 </head>
 {if ! $part}
+<script>
+	autoiframe_correct_size();
+</script>
 <frameset name="all" frameborder="0" framespacing="0" ROWS="65,*,27">
-	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top{if $device}&device={$device}{/if}">
-	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main{if $device}&device={$device}{/if}">
-	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=chooseip&p=down{if $device}&device={$device}{/if}">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}">
+	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main&netid={$netid}{if $ip}&ip={$ip}{/if}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=chooseip&p=down&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}">
 </frameset>
 {/if}
 {if $part == "main"}
-<body>
+<body class="lms-ui-popup">
 	<script type="text/javascript">
 	<!--
 	function send_address_settings(ipaddr) {
 		sendvalue(targetfield1, ipaddr);
 		if (targetfield2 != null)
-			for (var i = 0; i < targetfield2.options.length; i++)
-				if (targetfield2.options[i].value == '{$netid}')
-					targetfield2.options[i].selected = true;
+			$(targetfield2).val({$netid});
 	}
 	//-->
 	</script>
@@ -59,23 +61,23 @@
 </body>
 {/if}
 {if $part == "top"}
-<body>
+<body class="lms-ui-popup">
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center">
 			<B>{trans("Select IP address:")}</B>
 		</td>
 	</tr>
-	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main{if $device}&device={$device}{/if}">
+	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}">
 	<INPUT type="submit" class="hiddenbtn">
 	<tr>
 		<td class="fall light" align="center">
-			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
-				{section name=networks loop=$networks}
-				<OPTION VALUE="{$networks[networks].id}" {if $networks[networks].id == $netid} SELECTED {/if} {if $networks[networks].disabled == 1} class="alert" {/if}>{$networks[networks].name|truncate:20:"":true}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
-				{sectionelse}
+			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
+				{foreach $networks as $net}
+				<OPTION VALUE="{$net.id}"{if $net.id == $netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
+				{foreachelse}
 				<OPTION VALUE="0">{trans("You don't have any IP network.")}</OPTION>
-				{/section}
+				{/foreach}
 			</SELECT>
 		</TD>
 	</tr>
@@ -84,28 +86,28 @@
 </body>
 {/if}
 {if $part == "down"}
-<body>
+<body class="lms-ui-popup">
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall light" align="center">
 			<B>
-			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page=1'; return false;">&#9668;</A>{elseif $network.pages > 1}<span CLASS="blend">&#9668;</span>{/if}
+			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page=1'; return false;">&#9668;</A>{elseif $network.pages > 1}<span CLASS="blend">&#9668;</span>{/if}
 
-			{if $network.page - 50 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 50" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{elseif $network.pages > 50}<span CLASS="blend">&laquo;&laquo;&laquo;</span>{/if}
+			{if $network.page - 50 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page={math equation="x - 50" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{elseif $network.pages > 50}<span CLASS="blend">&laquo;&laquo;&laquo;</span>{/if}
 
-			{if $network.page - 10 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 10" x=$network.page}'; return false;">&laquo;&laquo;</A>{elseif $network.pages > 10}<span CLASS="blend">&laquo;&laquo;</span>{/if}
+			{if $network.page - 10 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page={math equation="x - 10" x=$network.page}'; return false;">&laquo;&laquo;</A>{elseif $network.pages > 10}<span CLASS="blend">&laquo;&laquo;</span>{/if}
 
-			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</A>{else}<span CLASS="blend">&laquo;</span>{/if}
+			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</A>{else}<span CLASS="blend">&laquo;</span>{/if}
 
 			{t a=$network.page b=$network.pages}Page $a of $b{/t}
 
-			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</A>{else}<span CLASS="blend">&raquo;<span>{/if}</B>
+			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</A>{else}<span CLASS="blend">&raquo;<span>{/if}</B>
 
-			{if $network.page + 10 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 10" x=$network.page}'; return false;">&raquo;&raquo;</A>{elseif $network.pages > 10}<span CLASS="blend">&raquo;&raquo;<span>{/if}</B>
+			{if $network.page + 10 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page={math equation="x + 10" x=$network.page}'; return false;">&raquo;&raquo;</A>{elseif $network.pages > 10}<span CLASS="blend">&raquo;&raquo;<span>{/if}</B>
 
-			{if $network.page + 50 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 50" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{elseif $network.pages > 50}<span CLASS="blend">&raquo;&raquo;&raquo;<span>{/if}</B>
+			{if $network.page + 50 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page={math equation="x + 50" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{elseif $network.pages > 50}<span CLASS="blend">&raquo;&raquo;&raquo;<span>{/if}</B>
 
-			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={$network.pages}'; return false;">&#9658;</A>{elseif $network.pages > 1}<span CLASS="blend">&#9658;<span>{/if}
+			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&page={$network.pages}'; return false;">&#9658;</A>{elseif $network.pages > 1}<span CLASS="blend">&#9658;<span>{/if}
 			</B>
 		</td>
 	</tr>

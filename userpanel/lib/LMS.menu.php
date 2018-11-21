@@ -78,9 +78,9 @@ foreach($USERPANEL->MODULES as $menupos)
 
 
 // Add Userpanel menu to LMS main menu
-$menu[] = array(
+$menu['userpanel'] = array(
 	'name' => trans('Userpanel'),
-	'img' => 'cms.gif',
+	'css' => 'lms-ui-menu-item-icon lms-ui-icon-userpanel',
 	'link' => '?m=userpanel',
 	'tip' => trans('Userpanel'),
 	'prio' => '80',

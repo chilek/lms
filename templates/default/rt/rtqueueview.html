@@ -1,167 +1,87 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+
+<TABLE class="lmsbox lms-ui-background-cycle lms-ui-multi-check">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 50%;">
+        <COL style="width: 45%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+    </COLGROUP>
     <THEAD>
-	<TR {tip text="Click on column name to change sorting order"}>
-		<TD colspan="2" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction == "asc" && $queuedata.order == "ticketid"},desc{/if}"><B>{trans("ID:")}</B></A> {if $queuedata.order == "ticketid"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/calendar.gif" alt="">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction == "asc" && $queuedata.order == "createtime"},desc{/if}">{trans("Create time:")}</A>{if $queuedata.order == "createtime"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="97%">
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction == "asc" && $queuedata.order == "subject"},desc{/if}"><B>{trans("Subject:")}</B></A> {if $queuedata.order == "subject"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=requestor{if $queuedata.direction == "asc" && $queuedata.order == "requestor"},desc{/if}">{trans("Submitter:")}</A> {if $queuedata.order == "requestor"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=owner{if $queuedata.direction == "asc" && $queuedata.order == "owner"},desc{/if}"><B>{trans("Owner")}</B></A>{if $queuedata.order == "owner"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}:<BR>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction == "asc" && $queuedata.order == "lastmodified"},desc{/if}">{trans("Last modified:")}</A> {if $queuedata.order == "lastmodified"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Total:")} {$queuedata.total|default:"0"}</B>
-		</TD>
-	</TR>
-	<TR>
-		<TD colspan="5">
-		    <TABLE cellpadding="0" cellspacing="0">
-			<TR>
-			    <TD width="1%" NOWRAP>
-			    <FORM method="GET" action="?m=rtqueueview" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="rtqueueview">
-				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{trans("Filter:")}</B>
-				{trans("Queue:")}
-				<SELECT size="1" name="id" OnChange="document.filter.submit();">
-					<OPTION value="">- {trans("all")} -</OPTION>
-					{foreach from=$queues item=q}
-					<OPTION value="{$q.id}"{if $queuedata.id == $q.id} SELECTED{/if}>{$q.name}</OPTION>
-					{/foreach}
-				</SELECT>&nbsp;
-				{trans("Category:")}
-				<SELECT size="1" name="catid" OnChange="document.filter.submit();">
-					<OPTION value="">- {trans("all")} -</OPTION>
-					{foreach from=$categories item=q}
-					<OPTION value="{$q.id}"{if $queuedata.catid == $q.id} SELECTED{/if}>{$q.name}</OPTION>
-					{/foreach}
-				</SELECT>&nbsp;
-				{trans("Status:")}
-				<SELECT size="1" name="s" OnChange="document.filter.submit();">
-					<OPTION value=""{if $queuedata.state == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
-					<OPTION value="0"{if $queuedata.state == "0"} SELECTED{/if}>{trans("new")}</OPTION>
-					<OPTION value="1"{if $queuedata.state == "1"} SELECTED{/if}>{trans("opened")}</OPTION>
-					<OPTION value="2"{if $queuedata.state == "2"} SELECTED{/if}>{trans("resolved")}</OPTION>
-					<OPTION value="3"{if $queuedata.state == "3"} SELECTED{/if}>{trans("dead")}</OPTION>
-					<OPTION value="-1"{if $queuedata.state == "-1"} SELECTED{/if}>{trans("not resolved")}</OPTION>
-				</SELECT>&nbsp;
-				{trans("Owner:")}
-				<SELECT size="1" name="owner" OnChange="document.filter.submit();">
-				        <OPTION value="">{trans("- all users -")}</OPTION>
-					{section name="users" loop=$users}
-					 <OPTION value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</OPTION>
-					{/section}
-				</SELECT>
-			    </FORM>
-			    </TD>
-			    <TD width="99%" align="right">
-				<A HREF="?m=rtticketadd&id={$queuedata.id}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
-			    </TD>
-			</TR>
-		    </TABLE>
-		</TD>
-	</TR>		
-	{if $queuedata.total != 0}
-	<TR>
-		<TD class="pagination" colspan="5">
-			{include file="scroller.html" listdata=$queuedata loop=$queue}
-		</TD>
-	</TR>
-	{/if}
+        {include file="rt/rtfilter.html"}
+        <TR>
+            <TD class="lms-ui-pagination" COLSPAN="6">
+                {if $pagination->getTotal() != 0}
+                {include file="pagination.html" form="filter-form"}
+                {/if}
+            </TD>
+			<TD class="lms-ui-pagination text-right nobr" colspan="4">
+				<label> <input type="checkbox" class="lms-ui-multi-check-all">
+					{trans("Check all")}
+				</label>
+				{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+				{button icon="add" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}';"
+					label="New Ticket"}
+			</TD>
+		</TR>
+        {include file="rt/rtheader.html"}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=ticket loop=$queue start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}"  >
-		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
-			{if $queue[ticket].state == 0}
-				<IMG src="img/new.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
-			{elseif $queue[ticket].state == 1}
-				<IMG src="img/open.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
-			{elseif $queue[ticket].state == 2}
-				<IMG src="img/resolved.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
-			{elseif $queue[ticket].state == 3}
-				<IMG src="img/dead.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
-			{/if}
-		</TD>
-		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
-			{if $queue[ticket].state == 0}
-				<span class="red">
-			{elseif $queue[ticket].state == 3}
-				<span class="brown">
-			{/if}
-			<B>{$queue[ticket].id|string_format:"%06d"}</B><BR>
-			{$queue[ticket].createtime|date_format:"%Y/%m/%d %H:%M:%S"}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
-		</TD>
-		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
-			{if $queue[ticket].state == 3}
-				<span class="brown">
-			{elseif $queue[ticket].state == 0}
-				<span class="red">
-			{/if}
-			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
-			{if $queue[ticket].customerid}
-				<span {tip a=$queue[ticket].customerid dynpopup='?m=nodelistshort&id=$a'}>
-				{$queue[ticket].requestor|escape|truncate:"60":"..."}
-				({$queue[ticket].address})
-				</span>
-			{else}
-				{$queue[ticket].requestor|escape}
-			{/if}
-			{if $queue[ticket].requestoremail && !$queue[ticket].customerid}
-				&lt;{$queue[ticket].requestoremail}&gt;
-			{/if}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
-		</TD>
-		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
-			{if $queue[ticket].state == 3}
-				<span class="brown">
-			{elseif $queue[ticket].state == 0}
-				<span class="red">
-			{/if}
-			{if $queue[ticket].ownername}{$queue[ticket].ownername|truncate:25:"...":true}{else}-{/if}<BR>
-			{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
-		</TD>
-		<TD align="right" NOWRAP>
-			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
-			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> </A>
-			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"> </A>
-		</TD>
-	</TR>
-	{sectionelse}
-	<TR>
-		<TD COLSPAN="5" class="empty-table">
-			<p>{trans("This queue is empty.")}</p>
-		</TD>
-	</TR>
-	{/section}
+        {include file="rt/rtqueueviewbox.html"}
     </TBODY>
     <TFOOT>
-	{if $queuedata.total != 0}
-	<TR>
-		<TD class="pagination" colspan="5">
-			{include file="scroller.html" listdata=$queuedata loop=$queue}
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD COLSPAN="5" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.id}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
-		</TD>
-	</TR>
+        <TR>
+            <TD class="lms-ui-pagination" COLSPAN="6">
+                {if $pagination->getTotal() != 0}
+                {include file="pagination.html" form="filter-form"}
+                {/if}
+            </TD>
+			<TD class="lms-ui-pagination text-right nobr" colspan="4">
+				<label> <input type="checkbox" class="lms-ui-multi-check-all">
+					{trans("Check all")}
+				</label>
+				{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
+				{button icon="add" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}';"
+					label="New Ticket"}
+			</TD>
+		</TR>
     </TFOOT>
 </TABLE>
+<script>
+
+	$(function() {
+		function disableLink() {
+			var disabled = $('.lms-ui-multi-check:checked').length < 2;
+			if (disabled) {
+				$('.group-action-run').prop('disabled', true);
+			} else {
+				$('.group-action-run').prop('disabled', false);
+			}
+		};
+		disableLink();
+
+		$('.lms-ui-multi-check:checkbox,.lms-ui-multi-check-all:checkbox').click(function () {
+			disableLink();
+		});
+
+		$('.group-action-run').click(function () {
+			var ticketid = [];
+			$('[name="ticketid[]"]:checked').each(function () {
+				ticketid.push($(this).val());
+			});
+			location.href = '?m=rtmessageadd&ticketid[]=' + ticketid.join('&ticketid[]=');
+		});
+	});
+
+</script>
 {/block}

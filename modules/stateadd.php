@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $stateadd = isset($_POST['stateadd']) ? $_POST['stateadd'] : NULL;
 
-if(sizeof($stateadd)) 
+if(count($stateadd)) 
 {
 	$stateadd['name'] = trim($stateadd['name']);
 
@@ -47,8 +47,8 @@ if(sizeof($stateadd))
 				VALUES (?,?)', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE]] = $DB->GetLastInsertID('states');
-			$SYSLOG->AddMessage(SYSLOG_RES_STATE, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE]));
+			$args[SYSLOG::RES_STATE] = $DB->GetLastInsertID('states');
+			$SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_ADD, $args);
 		}
 
 		if (!isset($stateadd['reuse']))

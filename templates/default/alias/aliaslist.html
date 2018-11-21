@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
  {if $layout.module=="aliassearch"}{assign var=suffix value="&s=1"}{/if}
@@ -58,7 +58,7 @@
 	</TR>		
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="4">
+		<TD class="lms-ui-pagination" COLSPAN="4">
 			{include file="scroller.html" loop=$aliaslist adlink=$suffix}
 		</TD>
 	</TR>
@@ -81,9 +81,9 @@
 		<TD class="text-right">
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`"}
                         <SPAN class="nobr">
-			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t a=$alias}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
-			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A> 
+			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t a=$alias}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
                         </SPAN>
 		</TD>
 	</TR>
@@ -96,7 +96,7 @@
 	{/section}
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="4">
+		<TD class="lms-ui-pagination" colspan="4">
 			{include file="scroller.html" loop=$aliaslist adlink=$suffix}
 		</TD>
 	</TR>

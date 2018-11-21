@@ -4,6 +4,7 @@
     <tr>
 	<td>
 {box title=$title}
+{$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
 <table class="width: 100%;" cellpadding="3">
 	{foreach from=$ticket.messages item=message}
         <tr class="darkest">
@@ -37,7 +38,8 @@
 			{/if}
 		</td>
 		<td width="1%">
-			{if $ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets')}
+			{if ($ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
+				&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
 			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
 			{else}&nbsp;{/if}
 		</td>

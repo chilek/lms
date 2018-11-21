@@ -1,230 +1,264 @@
 <!-- $Id$ -->
-<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdevinfo.id}&ip={$nodeipdata.id}">
-    <INPUT type="submit" class="hiddenbtn">
-    <INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
-    <INPUT TYPE="hidden" NAME="ipadd[createdby]" VALUE="{$nodeipdata.createdby}">
-    <INPUT TYPE="hidden" NAME="ipadd[creationdateh]" VALUE="{$nodeipdata.creationdateh}">
-    <INPUT TYPE="hidden" NAME="ipadd[moddate]" VALUE="{$nodeipdata.moddate}">
-    <INPUT TYPE="hidden" NAME="ipadd[modifiedby]" VALUE="{$nodeipdata.modifiedby}">
-    <INPUT TYPE="hidden" NAME="ipadd[moddateh]" VALUE="{$nodeipdata.moddateh}">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Name:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name}" MAXLENGTH="32" size="30" {tip text="Enter address name" trigger="ipname" bold=1}>
-			<B>({$nodeipdata.id|string_format:"%04d"})</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-    <TR>
-        <TD WIDTH="100%" COLSPAN="3" CLASS="flr container">
-			<TABLE WIDTH="100%" CELLPADDING="0">
-				<TR>
-					<TD WIDTH="50%" style="vertical-align:top;">
-						<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/network.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Network:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<SELECT NAME="ipadd[netid]" {tip text="Choose network" trigger="netid"}>
-				<OPTION value="0">{trans("- automatic selection -")}</OPTION>
-				{foreach $networks as $net}
-				<OPTION VALUE="{$net.id}" {if $net.id == $nodeipdata.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("IP address:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'], document.editipaddr['ipadd[netid]'], {$nodeipdata.netid}, {$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	{if ConfigHelper::checkConfig('phpui.public_ip')}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/ip_pub.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Pub. IP address:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr_pub]" VALUE="{if $nodeipdata.ip_pub!="0.0.0.0"}{$nodeipdata.ip_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr_pub]'], null, {$nodeipdata.netid}, {$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/mac.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("MAC:")}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
-			<TABLE width="100%" cellpadding="1" cellspacing="0">
-				{foreach from=$nodeipdata.macs item=item key=key}
-				<TR ID="mac{$key}">
-					<TD width="100%"><INPUT TYPE="TEXT" NAME="ipadd[macs][{$key}]" VALUE="{$item}" {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements['ipadd[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A>
-				</TR>
-				{/foreach}
-			</TABLE>
-			<INPUT TYPE="HIDDEN" ID="macscount" VALUE="{$item@total}">
-			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/passwd.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Password:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="ipadd[passwd]" VALUE="{$nodeipdata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/options.gif" ALT="{trans("Options:")}">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Options:")}</B>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="ipadd[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
-			<label for="chkduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="ipadd[halfduplex]" VALUE="1" ID="chkduplex" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
-			{if ConfigHelper::checkConfig('phpui.radius')}
-			&nbsp;
-			<label for="chknas">{trans("NAS")}:</label><INPUT TYPE="checkbox" NAME="ipadd[nas]" VALUE="1" ID="chknas" {tip text="Select NAS on or off" trigger="nas"}{if $nodeipdata.nas} checked{/if}>
-			{/if}
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/netdev.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" class="nobr" COLSPAN="2">
-			{foreach $_SESSIONTYPES as $idx => $sessiontype}
-			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="ipadd[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeipdata.authtype & idx) == $idx} checked{/if}></label>&nbsp;
-			{/foreach}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/network.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Network:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<B><A HREF="?m=netinfo&id={$netdevinfo.netid}">{$nodeipdata.netname}</A></B>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Status:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<SELECT SIZE="1" NAME="ipadd[access]" {tip text="Select address status"}>
-				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	                                                </TABLE>
-					        </TD>
-					        <TD WIDTH="50%" style="vertical-align:top;">
-					                <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/info.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Description:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional information (optional)"}>{$nodeipdata.info}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/users.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Created:")}<BR>
-			{trans("Modified:")}</B>
-		</TD>
-		<TD WIDTH="98%">
-			{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<BR>
-			{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
-		</TD>
-	</TR>
-                                                </TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
-<!--
-	function GenPasswd()
-	{
-		var passwd = new Array();
-		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdev.id}&ip={$nodeipdata.id}">
+
+<INPUT type="submit" class="hiddenbtn">
+<INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
+<INPUT TYPE="hidden" NAME="ipadd[createdby]" VALUE="{$nodeipdata.createdby}">
+<INPUT TYPE="hidden" NAME="ipadd[creationdateh]" VALUE="{$nodeipdata.creationdateh}">
+<INPUT TYPE="hidden" NAME="ipadd[moddate]" VALUE="{$nodeipdata.moddate}">
+<INPUT TYPE="hidden" NAME="ipadd[modifiedby]" VALUE="{$nodeipdata.modifiedby}">
+<INPUT TYPE="hidden" NAME="ipadd[moddateh]" VALUE="{$nodeipdata.moddateh}">
+
+<style>
+    .tab-beautify td { padding: 3px; }
+    .tab-beautify tr td:nth-child(2) {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+</style>
+
+<table class="lmsbox">
+    <thead>
+		<tr>
+			<td width="1%">
+				<img src="img/ip.gif" alt="">
+			</td>
+			<td width="1%" class="bold">
+				{trans("Name:")}
+			</td>
+			<td width="98%">
+				<input type="text" name="ipadd[name]" value="{$nodeipdata.name}" maxlength="32" size="30" {tip text="Enter address name" trigger="ipname" bold=1}>
+				<b>({$nodeipdata.id|string_format:"%04d"})</b>
+			</td>
+		</tr>
+    </thead>
+    <tbody>
+	    <tr>
+	        <td width="100%" colspan="3" class="flr container">
+				<table width="100%">
+					<tr>
+						<td width="50%" class="valign-top">
+							<table width="100%" class="tab-beautify">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+
+								<tr>
+									<td>
+										<img src="img/network.gif" alt="">
+									</td>
+									<td>
+										{trans("Network:")}
+									</td>
+									<td>
+										<select name="ipadd[netid]" {tip text="Choose network" trigger="netid"}>
+											<option value="0">{trans("- automatic selection -")}</option>
+											{foreach $networks as $net}
+											<option value="{$net.id}" {if $net.id == $nodeipdata.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<img src="img/ip.gif" alt="">
+									</td>
+									<td>
+										{trans("IP address:")}
+									</td>
+									<td>
+										<input type="text" name="ipadd[ipaddr]" value="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}>
+										<a href="javascript: void(0);" onClick="return ipchoosewin({
+												ipelem: document.editipaddr['ipadd[ipaddr]'],
+												ip: document.editipaddr['ipadd[ipaddr]'].value,
+												netelem: document.editipaddr['ipadd[netid]'],
+												netid: document.editipaddr['ipadd[netid]'].value,
+												device: {$netdev.id}
+											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+										<br>
+										<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
+									</td>
+								</tr>
+								<script type="text/javascript">
+								<!--
+									$(function() {
+										$('#selectfirstfreeaddress').click(function() {
+											var netid = $('[name="ipadd[netid]"]').val();
+											if (netid == 0)
+												return;
+											xajax_getFirstFreeAddress(netid, $('[name="ipadd[ipaddr]"]').uniqueId().attr('id'));
+										});
+									});
+								//-->
+								</script>
+
+								{if ConfigHelper::checkConfig('phpui.public_ip')}
+								<tr>
+									<td>
+										<img src="img/ip_pub.gif" alt="">
+									</td>
+									<td>
+										{trans("Pub. IP address:")}
+									</td>
+									<td>
+										<input type="hidden" name="ipadd[pubnetid]" value="{$nodeipdata.pubnetid}">
+										<input type="text" name="ipadd[ipaddr_pub]" value="{if $nodeipdata.ipaddr_pub!="0.0.0.0"}{$nodeipdata.ipaddr_pub}{/if}" {tip text="Enter IP address" trigger="ipaddr_pub"}>
+										<a href="javascript: void(0);" onClick="return ipchoosewin({
+												ipelem: document.editipaddr['ipadd[ipaddr_pub]'],
+												ip: document.editipaddr['ipadd[ipaddr_pub]'].value,
+												netelem: document.editipaddr['ipadd[pubnetid]'],
+												netid: document.editipaddr['ipadd[pubnetid]'].value,
+												privnetid: document.editipaddr['ipadd[netid]'].value,
+												device: {$netdev.id}
+											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+									</td>
+								</tr>
+								{/if}
+
+								<tr>
+									<td>
+										<img src="img/mac.gif" alt="">
+									</td>
+									<td>
+										{trans("MAC:")}
+									</td>
+									<td class="lms-ui-mac-address-selection nobr">
+										{mac_address_selection form="ipadd" macs=$nodeipdata.macs}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<img src="img/passwd.gif" alt="">
+									</td>
+									<td>
+										{trans("Password:")}
+									</td>
+									<td>
+										<input type="text" name="ipadd[passwd]" id="password" value="{$nodeipdata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}>
+										<a href="#" id="passGen" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</a>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<img src="img/options.gif" alt="{trans("Options:")}">
+									</td>
+									<td>
+										{trans("Options:")}
+									</td>
+									<td>
+										<label>
+											<input type="checkbox" name="ipadd[chkmac]" value="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodeipdata.chkmac} checked{/if}>&nbsp;
+											{trans("MAC checking")}
+										</label>
+
+										<label>
+											<input type="checkbox" name="ipadd[halfduplex]" value="1" id="chkduplex" {tip text="Select transmission mode" trigger="halfduplex"}{if $nodeipdata.halfduplex} checked{/if}>
+											{trans("Half duplex")}
+										</label>
+
+										{if ConfigHelper::checkConfig('phpui.radius')}
+											<label>
+												<input type="checkbox" name="ipadd[nas]" value="1" id="chknas" {tip text="Select NAS on or off" trigger="nas"}{if $nodeipdata.nas} checked{/if}>
+												{trans("NAS")}
+											</label>
+										{/if}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<img src="img/netdev.gif" alt="">
+									</td>
+									<td>
+										{trans("Type:")}
+									</td>
+									<td class="nobr">
+										{foreach $_SESSIONTYPES as $idx => $sessiontype}
+											<label>
+												<input type="checkbox" name="ipadd[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeipdata.authtype & $idx) == $idx} checked{/if}>
+												{$sessiontype.label}
+											</label><BR>
+										{/foreach}
+									</td>
+								</tr>
+							</table>
+					    </td>
+					    <td width="50%" class="valign-top">
+                            <table width="100%" class="tab-beautify">
+                                <colgroup>
+                                    <col style="width: 1%">
+                                    <col style="width: 1%">
+                                    <col style="width: 98%">
+                                </colgroup>
+
+								<tr>
+									<td>
+										<img src="img/info.gif" alt="">
+									</td>
+									<td>
+										{trans("Description:")}
+									</td>
+									<td>
+										<textarea name="ipadd[info]" rows="5" cols="40" {tip text="Enter additional information (optional)"}>{$nodeipdata.info}</textarea>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/{if !$nodeipdata.access}no{/if}access.gif" alt="">
+									</td>
+									<td>
+										{trans("Status:")}
+									</td>
+									<td>
+										<select size="1" name="ipadd[access]" {tip text="Select address status"}>
+											<option value="1"{if $nodeipdata.access} selected{/if}>{trans("connected<!singular>")}</option>
+											<option value="0"{if ! $nodeipdata.access} selected{/if}>{trans("disconnected<!singular>")}</option>
+										</select>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/users.gif" alt="">
+									</td>
+									<td>
+										{trans("Created:")}<br>
+										{trans("Modified:")}
+									</td>
+									<td>
+										{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<br>
+										{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+									</td>
+								</tr>
+	                        </table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="text-right">
+				<a href="javascript:document.editipaddr.submit();" ACCESSKEY="S">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+				<a href="?m=netdevinfo&id={$netdev.id}{if isset($nodeipdata.id)}&ip={$nodeipdata.id}{/if}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+			</td>
+		</tr>
+    </tbody>
+</table>
+</form>
+
+<script>
+
+	$( '#passGen' ).click( function() {
 		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
-		if (length > 32) length = 32;
 
-		for (var i=0; i<length; i++)
-		{
-			n = Math.floor(Math.random() * items.length);
-			passwd[i] = items.substring(n, n+1);
-		}
+		if (length > 32)
+			length = 32;
 
-		document.forms['editipaddr'].elements['ipadd[passwd]'].value = passwd.join("");
-	}
+		$( '#password' ).val( generate_random_string(length) );
+		event.preventDefault();
+	});
 
-	function newmac()
-	{
-		var macscountelem = document.getElementById('macscount');
-		var nr = macscountelem.value;
-		var lastmacelem = document.getElementById('mac' + (nr - 1));
-		var newrow = lastmacelem.parentNode.insertRow(lastmacelem.rowIndex + 1);
-		newrow.id = 'mac' + nr;
-		var newcell = newrow.insertCell(0);
-		newcell.style.width = '100%';
-		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="ipadd[macs][' + nr + ']" VALUE=""'
-			+ ' onmouseover="popup(\'{trans("Enter MAC address")}\')" onmouseout="pophide()">'
-			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements[\'ipadd[macs][' + nr + ']\']);"'
-			+ ' onmouseover="popup(\'{trans("Click to select MAC from the list")}\')" onmouseout="pophide()">&nbsp;&raquo;&raquo;&raquo;</A>';
-		macscountelem.value = parseInt(nr) + 1;
-	}
-//-->
-</SCRIPT>
+</script>

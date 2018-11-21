@@ -5,20 +5,17 @@
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
 <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<link href="img/map.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="img/common.js"></script>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<link href="css/map.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/common.js"></script>
 {if $js}<script type="text/javascript">
 <!--
 	{$js}
 //-->
 </script>{/if}
 {if $part == "main"}
-<script type="text/javascript" language="JavaScript" src="img/OpenLayers/OpenLayers.js"></script>
-<script type="text/javascript" language="JavaScript" src="img/OpenLayers/lang/{$_ui_language}.js"></script>
-<script type="text/javascript" language="JavaScript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" language="JavaScript" src="img/map.js"></script>
-<script type="text/javascript" language="JavaScript">
+{include file="openlayers.html"}
+<script type="text/javascript">
 <!--
 	function init()
 	{
@@ -29,15 +26,21 @@
 		else
 			map = createMap(devices, devlinks, nodes, nodelinks, false);
 
-		map.events.register("click", map,
-			function(e) {
-				var lonlat = map.getLonLatFromViewPortPx(e.xy)
+		function click(e) {
+			var lonlat
+			if (typeof(e.feature) === 'undefined') {
+				lonlat = map.getLonLatFromViewPortPx(e.xy)
 					.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
-				sendvalue(targetfield1, lonlat.lon);
-				sendvalue(targetfield2, lonlat.lat);
-				OpenLayers.Event.stop(e);
+			} else {
+				lonlat = e.xy;
 			}
-		);
+			sendvalue(targetfield1, lonlat.lon);
+			sendvalue(targetfield2, lonlat.lat);
+			OpenLayers.Event.stop(e);
+		}
+
+		map.events.register("click", map, click);
+		map.events.register("feature_click", map, click);
 
 		set_lastonline_limit({ConfigHelper::getConfig('phpui.lastonline_limit')});
 		setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
@@ -55,12 +58,12 @@
 </frameset>
 {/if}
 {if $part == "main"}
-<body onload="init()">
+<body onload="init()" class="lms-ui-popup">
 <div id="map" class="smallmap"></div>
 </body>
 {/if}
 {if $part == "top"}
-<body>
+<body class="lms-ui-popup">
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center">

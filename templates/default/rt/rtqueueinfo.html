@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -40,50 +40,75 @@
 	</TR>
 	{/if}
 	<TR>
+		<TD width="1%">
+			<IMG src="img/verifier.png" ALT="">
+		</TD>
+		<TD width="1%"><B>{trans("<!rt>Verifier:")}</B></TD>
+		<TD width="98%">
+		{if $queue.verifierid}
+			<a href="?m=userinfo&id={$queue.verifier.id}">{$queue.verifier.name}</a>
+		{else}
+			{trans("None")}
+		{/if}
+		</TD>
+	</TR>
+	<TR>
 	    <TD width="1%">
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
 	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
 	    <TD width="98%">
 		    <TABLE class="lmsbox">
-                        <THEAD>
-			<TR>
-			    <TD width="96%"><B>{trans("User")}</B>
-			    </TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Delete (+R)")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Notice (+R)")}</B></TD>
-			</TR>
-                        </THEAD>
-                        <TBODY>
-			{cycle values="light,lucid" print=false}
-			{foreach from=$queue.rights item=right}
-			{if $right.rights}
-			<TR class="highlight {cycle}"  >
-			    <TD width="96%">
-				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-				<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				{if $right.rights > 0}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 2) == 2}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 4) == 4}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			    <TD width="1%" align="center">
-				{if ($right.rights & 8) == 8}<IMG src="img/pass.gif" alt="">{/if}
-			    </TD>
-			</TR>
-			{/if}
-			{/foreach}
-                        </TBODY>
-		</TABLE>
+				<COLGROUP>
+					<COL style="width: {100-count($_RT_RIGHTS)}%;">
+					{foreach $_RT_RIGHTS as $label}
+					<COL style="width: 1%;">
+					{/foreach}
+				</COLGROUP>
+				<THEAD>
+					<TR>
+						<TD class="bold">{trans("User")}</TD>
+						{foreach $_RT_RIGHTS as $label}
+						<TD class="text-center bold nobr">{$label}</TD>
+						{/foreach}
+					</TR>
+				</THEAD>
+				<TBODY>
+					{cycle values="light,lucid" print=false}
+					{foreach from=$queue.rights item=right}
+					{if $right.rights}
+					<TR class="highlight {cycle}"  >
+						<TD>
+							<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
+							<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
+						</TD>
+						{foreach $_RT_RIGHTS as $rightvalue => $label}
+						<TD class="text-center">
+							{if ($right.rights & $rightvalue) == $rightvalue}<IMG src="img/pass.gif" alt="">{/if}
+						</TD>
+						{/foreach}
+					</TR>
+					{/if}
+					{/foreach}
+				</TBODY>
+			</TABLE>
 	    </TD>
 	</TR>
+	{if !empty($queue.categories)}
+	<TR>
+		<TD>
+			<IMG src="img/queue.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Default categories:")}
+		</TD>
+		<TD>
+			<FIELDSET>
+				{foreach $queue.categories as $category}{if !$category@first}, {/if}<a href="?m=rtqueueview&catid={$category.categoryid}">{$category.name}</a>{/foreach}
+			</FIELDSET>
+		 </TD>
+	</TR>
+	{/if}
 	{if $queue.newticketsubject}
 	<TR>
 		<TD style="width: 1%;">
@@ -170,9 +195,14 @@
 	{/if}
 	<TR>
 	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
-	        <A HREF="?m=rtqueueview&id={$queue.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
-	    	<A HREF="?m=rtqueueedit&id={$queue.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+	        <A HREF="?m=rtqueueview&id={$queue.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
+	    	<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
+		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+			<A HREF="?m=rtrestore&amp;id={$queue.id}&amp;qaction=restore" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to restore queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"> {trans("Restore<!RT>")}</A>
+			<A HREF="?m=rtremove&amp;id={$queue.id}&amp;qaction=delperm" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to permanently remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete permanently")}" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</A>
+		{else}
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=delete" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"> {trans("Delete")}</A>
+		{/if}
 	    </TD>
 	</TR>
     </TBODY>

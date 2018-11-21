@@ -1,3 +1,4 @@
+.idea/*
 assets/*
 templates_c/*
 userpanel/templates_c/*
@@ -5,16 +6,22 @@ lib/Smarty/*
 nbproject/private
 lms.ini
 backups/*
+bin/voip/cache/*
+bin/voip/templates_c/*
+voipcalls/*
 documents/*
 !documents/templates
 cache/*
 contrib/LMS2Nagios-php/generated/*
 lib/teryt/*
+js/xajax_js/deferred/*
 composer.lock
-
+.project
+rtattachments/*
 # Temporary files
 *~
 *.swp
 *.swo
 
+/components/*
 /vendor/

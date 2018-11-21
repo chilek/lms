@@ -1,0 +1,484 @@
+{include file="header.html"}
+
+<STYLE>
+	.margin {
+		padding: 50px;
+		font-weight: bold;
+	}
+    .help-tip {
+        font-weight: bold;
+        font-size: 1.1em;
+        color: #900000;
+    }
+    .help-tip:hover {
+        cursor: help;
+    }
+    .billing-tab {
+        width: 100%;
+    }
+    .billing-tab tr:first-child td {
+        font-weight: bold;
+        width: 1%;
+    }
+    .billing-tab tr td {
+        padding: 6px 10px;
+        white-space: nowrap;
+    }
+    .settings-tab {
+        margin: 0 auto;
+        min-width: 400px;
+        text-align: left;
+    }
+
+    {if count($user_accounts) > 1}
+    .settings-tab tbody {
+       display: none;
+    }
+    {/if}
+
+    .settings-tab tbody tr td {
+        padding-bottom: 15px;
+    }
+    .settings-tab th:nth-child(1) {
+        width: 150px;
+    }
+    .settings-tab th:nth-child(2) {
+        width: 200px;
+    }
+    .filters {
+        margin: 0 auto;
+        font-weight: bold;
+        font-size: 1.2em;
+        border-spacing: 0;
+    }
+    .filters tr td {
+        padding: 0 25px;
+        white-space: nowrap;
+        border-left: 2px solid black;
+    }
+    .filters tr td:first-child {
+        border: 0;
+    }
+    .lms-input { padding: 4px; }
+    .lms-ui-pagination a {
+        font-size: 1.1em;
+    }
+    .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+        padding: 2px 15px;
+        outline: none;
+    }
+    .ui-state-active,
+    .ui-widget-content .ui-state-active,
+    .ui-widget-header .ui-state-active,
+    a.ui-button:active,
+    .ui-button:active,
+    .ui-button.ui-state-active:hover {
+        background: #900000;
+        border: 1px solid black;
+    }
+    .ui-tabs .ui-tabs-nav li {
+        border-radius: 4px;
+        font-weight: bold;
+        border-bottom-width: 1px;
+        padding: 1px;
+    }
+    .ui-tabs {
+        padding: 0;
+        background: none;
+    }
+    .ui-widget.ui-widget-content {
+        border: 0;
+    }
+    .ui-widget-header {
+        border: 0;
+        background: none;
+    }
+    .ui-datepicker {
+        background-color: #EEE;
+        border: 1px solid gray !important;
+    }
+
+    .flex-container {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+
+        -webkit-flex-flow: row wrap;
+        justify-content: space-around;
+    }
+
+    .userpanel-phones-sortable {
+        -webkit-padding-start: 20px;
+        margin: 0;
+    }
+
+    .userpanel-phones-sortable li {
+        width: 150px;
+        line-height: 22px;
+        background-color: #eeeeee;
+        text-align: center;
+        border: 1px solid black;
+        margin-bottom: 5px;
+        padding: 0;
+        font-weight: bold;
+        border-radius: 2px;
+    }
+</STYLE>
+
+<DIV ID="tabs">
+	{if $user_accounts}
+    <UL>
+        <LI><A HREF="#tab-billings">{trans("Billings")}</A></LI>
+        <LI><A HREF="#tab-settings">{trans("Settings")}</A></LI>
+    </UL>
+
+    <DIV ID="tab-billings">
+        <TABLE WIDTH="100%" cellpadding="10" ALIGN="center">
+            <TR>
+                <TD>
+                    <FORM METHOD="GET" ACTION="?m=voip">
+                        <INPUT TYPE="HIDDEN" NAME="m" VALUE="voip">
+
+                        <TABLE CLASS="filters">
+                            <TR>
+                                <TD>
+                                    {if count($customer_phone_list) > 1}
+                                        {trans("My phones:")}
+                                    {else}
+                                        {trans("My number:")}
+                                    {/if}
+                                </TD>
+                                <TD>{trans("Date range:")}</TD>
+                                <TD>{trans("Connection type:")}</TD>
+                                <TD>{trans("Status:")}</TD>
+                                <TD ROWSPAN="2">
+                                    <INPUT TYPE="submit" CLASS="submit-btn" VALUE="{trans("Search")} &raquo;">
+                                </TD>
+                            </TR>
+                            <TR>
+                                <TD>
+                                    {if count($customer_phone_list) > 1}
+                                    <SELECT NAME="phone" CLASS="lms-input">
+                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        {foreach from=$customer_phone_list item=phone}
+                                        <OPTION VALUE="{$phone}"{if $params.phone == $phone} SELECTED{/if}>{$phone}</OPTION>
+                                        {/foreach}
+                                    </SELECT>
+                                    {else if count($customer_phone_list) == 1}
+                                        {assign var=tmp value=array_values($customer_phone_list)}
+                                        {$tmp[0]}
+                                    {else}
+                                        <DIV CLASS="text-center">&ndash;&ndash;&ndash;</DIV>
+                                    {/if}
+                                </TD>
+                                <TD>
+                                    {trans("from")}
+                                    <INPUT TYPE="text"
+                                           SIZE="10"
+                                           NAME="date_from"
+                                           CLASS="calendar lms-input"
+                                           VALUE="{if isset($params.frangefrom)}{$params.frangefrom}{/if}">
+
+                                    {trans("to")}
+                                    <INPUT TYPE="text"
+                                           SIZE="10"
+                                           NAME="date_to"
+                                           CLASS="calendar lms-input"
+                                           VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
+                                </TD>
+                                <TD>
+                                    <SELECT SIZE="1" NAME="ftype" CLASS="lms-input">
+                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
+                                        <OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
+                                    </SELECT>
+                                </TD>
+                                <TD>
+                                    <SELECT SIZE="1" NAME="fstatus" CLASS="lms-input">
+                                        <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                        <OPTION VALUE="{CALL_ANSWERED}"      {if $params.fstatus == CALL_ANSWERED}  SELECTED{/if}>{trans("answered")}</OPTION>
+                                        <OPTION VALUE="{CALL_NO_ANSWER}"     {if $params.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
+                                        <OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
+                                        <OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
+                                    </SELECT>
+                                </TD>
+                            </TR>
+                        </TABLE>
+                    </FORM>
+                </TD>
+            </TR>
+            {if $billings}
+            <TR>
+                {assign var=pagin_result value=$pagination->getPages()}
+                {if count($pagin_result.pages) > 1}
+                    <TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+                    {include file="pagination.html"}
+                    </TD>
+                {else}
+                    <TD COLSPAN="100%" STYLE="padding:10px 0;"></TD>
+                {/if}
+            </TR>
+            {/if}
+            <TR>
+                <TD ALIGN="CENTER">
+                    {box title="Billing list"}
+                        <TABLE CLASS="billing-tab">
+                            <TR CLASS="darkest">
+                                <TD>{trans("Begin time:<!voip>")}</TD>
+                                <TD>{trans("Caller:")}</TD>
+                                <TD>{trans("Callee:")}</TD>
+                                <TD>{trans("Call begin time:")}</TD>
+                                <TD>{trans("Call answer time:")}</TD>
+                                <TD>{trans("Connection type:")}</TD>
+                                <TD>{trans("Status:")}</TD>
+                                <TD>{trans("Price:")}</TD>
+                                <TD>{trans("Others:")}</TD>
+                            </TR>
+
+                            {if $billings}
+                                {section name=i loop=$billings start=(($pagination->getCurrentPage()-1)*$pagination->getItemsPerPage()) max=$pagination->getItemsPerPage()}
+                                    <TR CLASS="dark">
+                                        <TD>{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}</TD>
+                                        <TD>{$billings[i].caller}</TD>
+                                        <TD>{$billings[i].callee}</TD>
+                                        <TD>{if $billings[i].callbegintime>60}{floor($billings[i].callbegintime/60)}min{/if} {$billings[i].callbegintime%60}s</TD>
+                                        <TD>{if $billings[i].callanswertime>60}{floor($billings[i].callanswertime/60)}min{/if} {$billings[i].callanswertime%60}s</TD>
+                                        <TD>
+                                            {if $billings[i].type == CALL_OUTGOING}
+                                                {trans("outgoing")}
+                                            {elseif $billings[i].type == CALL_INCOMING}
+                                                {trans("incoming")}
+                                            {/if}
+                                        </TD>
+                                        <TD>
+                                            {if $billings[i].status == CALL_BUSY}
+                                                {trans("busy<!voip>")}
+                                            {elseif $billings[i].status == CALL_ANSWERED}
+                                                {trans("answered")}
+                                            {elseif $billings[i].status == CALL_NO_ANSWER}
+                                                {trans("no answer")}
+                                            {elseif $billings[i].status == CALL_SERVER_FAILED}
+                                                {trans("server error")}
+                                            {/if}
+                                        </TD>
+                                        <TD>{$billings[i].price|money_format}</TD>
+                                        <TD STYLE="text-align: right; color: black;">
+                                            {if $billings[i].callanswertime}
+                                                {if $billings[i].type == CALL_OUTGOING}
+                                                    {assign var=flags value=$billings[i].caller_flags}
+                                                {else if $billings[i].type == CALL_INCOMING}
+                                                    {assign var=flags value=$billings[i].callee_flags}
+                                                {else}
+                                                    {assign var=flags value=0}
+                                                {/if}
+
+                                                {if $flags & CALL_FLAG_CUSTOMER_RECORDING}
+                                                    {documentview id="{$billings[i].id}"
+                                                                  type="audio/mp3"
+                                                                  name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
+                                                                  url="?m=voip&record={$billings[i].id}"
+                                                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
+                                                {/if}
+                                            {/if}
+                                        </TD>
+                                    </TR>
+                                {/section}
+                            {else}
+                                <TR CLASS="darkest">
+                                    <TD COLSPAN="100%" CLASS="bold text-center" STYLE="padding:20px 0;">
+                                        {trans("No such data for selected period.")}
+                                    </TD>
+                                </TR>
+                            {/if}
+                        </TABLE>
+                    {/box}
+                </TD>
+            </TR>
+            {if $billings}
+            <TR>
+                {assign var=pagin_result value=$pagination->getPages()}
+                {if count($pagin_result.pages) > 1}
+                    <TD CLASS="lms-ui-pagination text-center" COLSPAN="100%" STYLE="padding:10px 0;">
+                        {include file="pagination.html"}
+                    </TD>
+                {else}
+                    <TD COLSPAN="100%" STYLE="padding:10px 0;"></TD>
+                {/if}
+            </TR>
+            {/if}
+        </TABLE>
+    </DIV>
+
+    <DIV ID="tab-settings" STYLE="display:none;">
+        <table class="settings-tab">
+            <thead>
+                <tr>
+                    <th colspan="3"><span style="font-size: 16px;">{trans("Settings")}</span></th>
+                </tr>
+                {if count($user_accounts) > 1}
+                <tr>
+                    <th style="font-weight: normal;">{trans("Select account")}</th>
+                    <th colspan="2">
+                        <select id="account-select" class="lms-input">
+                            <option value="0">{trans("- all -")}</option>
+                            {foreach $user_accounts as $acc}
+                            <option value="{$acc.id}">{$acc.login}</option>
+                            {/foreach}
+                        </select>
+                    <th>
+                </tr>
+                {/if}
+                <tr>
+                    <th colspan="3"><hr></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="customer-call-recording">
+                    <td>{trans("Call recording")} :</td>
+                    <td>
+                        <label><input type="radio" name="callrecording" id="callrecordyes" value="1" checked> {trans("yes")}</label>
+                        <label><input type="radio" name="callrecording" id="callrecordno" value="0"> {trans("no")}</label>
+                    </td>
+                    <td><span class="help-tip" title="{trans("You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab.")}">?</span></td>
+                </tr>
+
+                {if count($user_accounts) > 1}
+                <tr id="customer-phones">
+                    <td class="valign-top">{trans("Assigned phones")} :</td>
+                    <td>
+                        <ol id="phones-sortable" class="userpanel-phones-sortable"></ol>
+                    </td>
+                    <td class="valign-top"><span class="help-tip" title="{trans("Change indexes for phones assigned to your account.")}">?</span></td>
+                </tr>
+                {/if}
+
+                <tr>
+                    <td colspan="3" style="text-align: right; padding-top: 20px;">
+                        <span id="updateacc-status" style="font-weight:bold;"></span>
+                        &nbsp;&nbsp;&nbsp;
+                        <button type="button" id="save-settings" class="submit-btn">{trans("Save")}</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </DIV>
+    {else}
+
+    <div class="text-center margin">
+        {trans("You don't have any VoIP account.")}
+    </div>
+
+    {/if}
+
+</DIV>
+<BR><BR>
+
+{if $user_accounts}
+<script>
+    $( function() {
+        {if count($user_accounts) == 1}
+            {assign var=useracc value=reset($user_accounts)}
+            updateRecordingRadioBtn( {$useracc.flags} );
+        {/if}
+
+        $( "#tabs" ).tabs();
+
+        $( ".userpanel-phones-sortable" ).sortable({
+            axis: 'y'
+        });
+        $( ".userpanel-phones-sortable" ).disableSelection();
+
+        $( '#account-select' ).change( function() {
+            var accid = $( this ).val();
+
+            if ( accid != 0 ) {
+                $.ajax({
+                    method: "POST",
+                    url: "?m=voip&action=getaccountinfo",
+                    data: { "accid" : accid },
+                })
+                .done(function(data) {
+                    if ( !data ) {
+                        return 0;
+                        console.log( 'error' );
+                    }
+
+                    var parsed_data = JSON.parse(data);
+
+                    $( '.userpanel-phones-sortable' ).empty();
+
+                    updateRecordingRadioBtn( parsed_data[0]['flags'] );
+
+                    if (parsed_data.length > 1) {
+                        $( '#customer-phones' ).css('display', 'table-row');
+                        $.each(parsed_data, function( k, v ) {
+                            $("#phones-sortable").append('<li>' + v['phone'] + '</li>');
+                        });
+                    } else {
+                        $( '#customer-phones' ).css('display', 'none');
+                    }
+
+                    $( '.settings-tab tbody' ).css('display', 'table-row-group');
+                });
+            } else {
+                $( '.settings-tab tbody' ).css('display', 'none');
+            }
+        });
+
+        $( '#save-settings' ).click( function() {
+            var save_btn = $( this );
+            save_btn.attr( 'disabled', true );
+            $( '#updateacc-status' ).stop()
+                                    .css( 'color', 'black' )
+                                    .text( "{trans("Loading")}..." )
+                                    .fadeIn();
+
+            var phones = [];
+            $.each( $( '.userpanel-phones-sortable' ).children(), function() {
+                phones.push( $(this).text() );
+            });
+
+            $.ajax({
+                method: "POST",
+                url: "?m=voip&action=updateaccountinfo",
+                data: { "voipaccid" : {if count($user_accounts) > 1}$( '#account-select' ).val(){else}{$useracc['id']}{/if},
+                        "recording" : $('input[name=callrecording]:checked').val(),
+                        "phones"    : phones }
+            })
+            .done(function(data) {
+                if ( !data ) {
+                    $( '#updateacc-status' ).text( "Occoured problem" ).css( 'color', '#900000' ).fadeOut(5000);
+
+                    console.log( 'Update failed.' );
+                    return 0;
+                }
+
+                $( '#updateacc-status' ).text( "{trans("Saved")}" ).css( 'color', '#004d1a' ).fadeOut(5000);
+                console.log( 'Update success.' );
+                save_btn.attr( 'disabled', false );
+            });
+        });
+
+        /*
+         * \brief Function check/uncheck radio button responsibility for customer call recordings.
+         *
+         * \param  int/string customer flags
+         */
+        function updateRecordingRadioBtn( flags ) {
+            if (flags & {CALL_FLAG_CUSTOMER_RECORDING}) {
+                $( '#callrecordyes' ).prop( 'checked', true );
+            } else {
+                $( '#callrecordno' ).prop( 'checked', true );
+            }
+        }
+    } );
+</script>
+{/if}
+
+{include file="footer.html"}

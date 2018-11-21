@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,16 +23,15 @@
  *
  *  $Id$
  */
+
 $id = intval($_GET['id']);
 $did = intval($_GET['did']);
 
-
 if (!empty($id)) {
-	$DB->Execute("UPDATE netdevices SET netnodeid=NULL,location='',location_city=NULL,
-			location_street=NULL,location_house=NULL,location_flat=NULL,longitude=NULL,latitude=NULL WHERE id=".$did);
-	header('Location: ?m=netnodeinfo&id='.$id);	
+	$DB->Execute("UPDATE netdevices SET netnodeid=NULL,address_id=NULL,longitude=NULL,latitude=NULL WHERE id=?", array($did));
+	$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 } else {
-	header('Location: ?m=netnodelist');
+	$SESSION->redirect('?m=netnodelist');
 }
-		
+
 ?>

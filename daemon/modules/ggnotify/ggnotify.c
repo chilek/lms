@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -111,12 +111,12 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 	
 		res = g->db->query(g->db->conn, 
 				"SELECT customers.id AS id, pin, name, lastname, "
-				"SUM(cash.value) AS balance, imessengers.uid AS im "
+				"SUM(cash.value) AS balance, customercontacts.contact AS im "
 				"FROM customers "
-				"LEFT JOIN imessengers ON customers.id = imessengers.customerid "
+				"LEFT JOIN customercontacts ON customers.id = customercontacts.customerid "
 				"LEFT JOIN cash ON customers.id = cash.customerid "
-				"WHERE deleted = 0 AND imessengers.type = 0 "
-				"GROUP BY customers.id, imessengers.uid, pin, name, lastname");
+				"WHERE deleted = 0 AND (customercontacts.type & 512) > 0 "
+				"GROUP BY customers.id, customercontacts.contact, pin, name, lastname");
 
 		if( g->db->nrows(res) )
 		{

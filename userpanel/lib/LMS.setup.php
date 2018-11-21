@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -72,6 +72,8 @@ else {
 	$modulefile_include = ($module_dir !== null ? $module_dir . $module.'/functions.php' : NULL);
 }
 
+$SMARTY->setDefaultResourceType('extendsall');
+
 if (isset($modulefile_include))
 {
 	include($modulefile_include);
@@ -87,17 +89,17 @@ if (isset($modulefile_include))
 	{
 		if ($function=='setup') {
 			$layout['info'] = trans('This module does not have any configuration settings');
-			$SMARTY->display('file:' . ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
+			$SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_error.html');
 		} else {
 			$layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);
-			$SMARTY->display('file:' . ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
+			$SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_error.html');
 		}
 	}
 } 
 else
 {
 	$layout['error'] = trans('Userpanel module <b>$a</b> not found!', $module);
-	$SMARTY->display('file:' . ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
+	$SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_error.html');
 }
 
 ?>

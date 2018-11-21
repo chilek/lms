@@ -1,6 +1,8 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<script type="text/javascript">
 <!--
 	function SelectAllCustomers()
 	{
@@ -12,117 +14,154 @@
 				document.setrights.elements[0].options[i].selected = false;
 	}
 //-->
-</SCRIPT>
+</script>
 <H1>{$layout.pagetitle}</H1>
-<TABLE width="100%" cellpadding="3">
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+	<COLGROUP>
+	<TBODY>
 	<TR>
 	<FORM NAME="setdefaultrights" METHOD="POST" ACTION="?m=userpanel&f=submit_rights_default">
-		<TD WIDTH="1%" VALIGN="TOP">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="dark">
-					<TD CLASS="fall" WIDTH="99%" COLSPAN="3">
-						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{trans("Default Userpanel Rights:")}</B>
+		<TD class="valign-top">
+			<TABLE class="lmsbox-innerbox">
+				<COLGROUP>
+					<COL style="width: 99%;">
+				</COLGROUP>
+				<THEAD>
+				<TR>
+					<TD COLSPAN="3" class="bold">
+						<IMG SRC="img/settings.gif" alt="">&nbsp;{trans("Default Userpanel Rights:")}
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="flr" COLSPAN="3" VALIGN="TOP">
-						<TABLE cellpadding="3" cellspacing="0" WIDTH="100%">
-							<TR class="dark">
-								<TD WIDTH="1%" NOWRAP class="fleftu">{trans("Module:")}</TD>
-								<TD WIDTH="97%" NOWRAP class="fbt">{trans("Description:")}</TD>
-								<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+				</THEAD>
+				<TBODY>
+				<TR>
+					<TD COLSPAN="3" class="valign-top">
+						<TABLE class="lmsbox">
+							<COLGROUP>
+								<COL style="width: 1%;">
+								<COL style="width: 97%;">
+								<COL style="width: 1%;">
+							</COLGROUP>
+							<THEAD>
+							<TR>
+								<TD class="nobr">{trans("Module:")}</TD>
+								<TD class="nobr"">{trans("Description:")}</TD>
+								<TD>&nbsp;</TD>
 							</TR>
+							</THEAD>
+							<TBODY class="lms-ui-multi-check">
 							{cycle values="light,lucid" print=false}
 							{foreach from=$userpanelrights item=right}
 							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-								<TD CLASS="fleft" WIDTH="1%" NOWRAP>{$right.module}</TD>
-								<TD WIDTH="97%" NOWRAP><label for="setdefaultrights{$right.id}">{t}{$right.description}{/t}</label></TD>
-								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setdefaultrights[{$right.id}]" ID="setdefaultrights{$right.id}" VALUE="{$right.id}"{if $right.setdefault} CHECKED{/if}></TD>
+								<TD class="nobr">{$right.module}</TD>
+								<TD class="nobr"><label for="setdefaultrights{$right.id}">{t}{$right.description}{/t}</label></TD>
+								<TD>
+									<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="setdefaultrights[{$right.id}]" ID="setdefaultrights{$right.id}" VALUE="{$right.id}"{if $right.setdefault} CHECKED{/if}>
+								</TD>
 							</TR>
 							{foreachelse}
 							<TR>
-								<TD class="flr" align="center" WIDTH="100%" colspan="3">
-								<p>&nbsp;</p>
-								<p><B>{trans("There are any userpanel rights.")}</B></p>
-								<p>&nbsp;</p>
+								<TD class="empty-table" colspan="3">
+									<p>{trans("There are any userpanel rights.")}</p>
 								</TD>
 							</TR>
 							{/foreach}
-							<TR>
-								<TD CLASS="ftop" COLSPAN="3"></TD>
-							</TR>
+							</TBODY>
 						</TABLE>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="fbottomu" ALIGN="RIGHT" COLSPAN="3">
+				<TR>
+					<TD class="buttons" COLSPAN="3">
 						<A HREF="javascript:document.setdefaultrights.submit()" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				<TR>
+				</TBODY>
 			</TABLE>
 		</TD>
 	</FORM>
 	</TR>
 	<TR>
 	<FORM NAME="setrights" METHOD="POST" ACTION="?m=userpanel&f=submit_rights">
-		<TD WIDTH="1%" VALIGN="TOP">
-			<TABLE width="100%" cellpadding="3">
-				<TR CLASS="dark">
-					<TD CLASS="fleftu" WIDTH="1%">
-						<IMG SRC="img/{if $layout.lmsv.2 == 6}user{else}customer{/if}.gif" alt="">&nbsp;<B>{trans("Customers:")}</B>
+		<TD class="valign-top">
+			<TABLE class="lmsbox-innerbox">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 99%;">
+				</COLGROUP>
+				<THEAD>
+				<TR>
+					<TD class="bold">
+						<IMG SRC="img/{if $layout.lmsv.2 == 6}user{else}customer{/if}.gif" alt="">&nbsp;{trans("Customers:")}
 					</TD>
-					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/settings.gif" alt="">&nbsp;<B>{trans("Userpanel Rights:")}</B>
+					<TD COLSPAN="2" class="bold">
+						<IMG SRC="img/settings.gif" alt="">&nbsp;{trans("Userpanel Rights:")}
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="fleft">
+				</THEAD>
+				<TBODY>
+				<TR>
+					<TD>
 						<SELECT size="20" name="setrights[mcustomerid][]" multiple {tip text="Select customers"}>
-							{foreach from=$customerlist item=item}
+							{foreach $customerlist as $item}
 							<OPTION value="{$item.id}">{$item.customername|truncate:50:" ..."} ({$item.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD CLASS="fright" COLSPAN="2" style="vertical-align: top;">
-						<TABLE cellpadding="3" cellspacing="0" WIDTH="100%">
-							<TR class="dark">
-								<TD WIDTH="1%" NOWRAP class="fleftu">{trans("Module:")}</TD>
-								<TD WIDTH="97%" NOWRAP class="fbt">{trans("Description:")}</TD>
-								<TD WIDTH="1%" class="frightu">&nbsp;</TD>
+					<TD COLSPAN="2" class="valign-top">
+						<TABLE class="lmsbox">
+							<COLGROUP>
+								<COL style="width: 1%;">
+								<COL style="width: 97%;">
+								<COL style="width: 1%;">
+							</COLGROUP>
+							<THEAD>
+							<TR>
+								<TD class="nobr">{trans("Module:")}</TD>
+								<TD class="nobr">{trans("Description:")}</TD>
+								<TD>&nbsp;</TD>
 							</TR>
+							</THEAD>
+							<TBODY class="lms-ui-multi-check">
 							{cycle values="light,lucid" print=false}
-							{foreach from=$userpanelrights item=right}
+							{foreach $userpanelrights as $right}
 							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-								<TD CLASS="fleft" WIDTH="1%" NOWRAP>{$right.module}</TD>
-								<TD WIDTH="97%" NOWRAP><label for="setrightsrights{$right.id}">{t}{$right.description}{/t}</label></TD>
-								<TD CLASS="fright"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrightsrights{$right.id}" VALUE="{$right.id}"></TD>
+								<TD class="nobr">{$right.module}</TD>
+								<TD class="nobr">
+									<label for="setrightsrights{$right.id}">{t}{$right.description}{/t}</label>
+								</TD>
+								<TD>
+									<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrightsrights{$right.id}" VALUE="{$right.id}">
+								</TD>
 							</TR>
 							{foreachelse}
 							<TR>
-								<TD class="flr" align="center" WIDTH="100%" colspan="3">
-								<p>&nbsp;</p>
-								<p><B>{trans("There are any userpanel rights.")}</B></p>
-								<p>&nbsp;</p>
+								<TD class="empty-table" colspan="3">
+									<p>{trans("There are any userpanel rights.")}</p>
 								</TD>
 							</TR>
 							{/foreach}
-							<TR>
-								<TD CLASS="ftop" COLSPAN="3"></TD>
-							</TR>
+							</TBODY>
 						</TABLE>
 					</TD>
 				</TR>
-				<TR CLASS="light">
-					<TD CLASS="fbl" WIDTH="1%">
-						<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" id="selectall" onchange="SelectAllCustomers()"></INPUT><label for="selectall">{trans("Select All")}</label>
+				<TR>
+					<TD>
+						<label>
+							<INPUT TYPE="checkbox" NAME="customers" CLASS="box light" onchange="SelectAllCustomers()"></INPUT>
+							{trans("Select All")}
+						</label>
 					</TD>
-					<TD CLASS="fbr" ALIGN="RIGHT" COLSPAN="2">
+					<TD COLSPAN="2" class="buttons">
 						<A HREF="javascript:document.setrights.submit()" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
 				<TR>
+				</TBODY>
 			</TABLE>
 		</TD>
 	</FORM>
 	</TR>
+	</TBODY>
 </TABLE>
-{include file="footer.html"}
+{/block}

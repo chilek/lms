@@ -85,26 +85,32 @@ function _smarty_function_userpaneltip($params, $template)
     $text = str_replace("\r", '', $text);
     $text = str_replace("\n", '<BR>', $text);
 
-    if (ConfigHelper::getConfig('userpanel.hint')=='classic')
-    {
-	if($tpl[$params['trigger']])
-	    $result = ' onmouseover="return overlib(\'<b><font color=red>'.$error.'</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
-	elseif($params['text'] != '')
-	    $result = 'onmouseover="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
-	$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($params['bold'] ? ' CLASS="bold" ' : ''));
-    } 
-    elseif (ConfigHelper::getConfig('userpanel.hint')=='none')
-    {
-	$result = "";
-    }
-    else
-    {
-    	if($tpl[$params['trigger']])
-		$result = "onmouseover=\"javascript:displayhint('<font style=&quot;color: red&quot;>".$error."</font>')\" onmouseout=\"javascript:hidehint()\" ";
-	else
-		$result = "onmouseover=\"javascript:displayhint('".$text."')\" onmouseout=\"javascript:hidehint()\" ";
-	$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' class="alert bold" ' : ' class="alert" ') : ($params['bold'] ? ' class="bold" ' : ''));
-    }
+	if (isset($params['class'])) {
+		$class = $params['class'];
+		unset($params['class']);
+	} else
+		$class = '';
+
+	if (ConfigHelper::getConfig('userpanel.hint') == 'classic') {
+		if ($tpl[$params['trigger']])
+			$result = ' onmouseover="return overlib(\'<b><font color=red>' . $error . '</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
+		elseif ($params['text'] != '')
+			$result = 'onmouseover="return overlib(\'' . $text . '\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
+		$result .= ' class="' . (empty($class) ? '' : $class)
+			. ($tpl[$params['trigger']] ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+			. '" ';
+	} elseif (ConfigHelper::getConfig('userpanel.hint') == 'none') {
+		$result = "";
+	} else {
+		if ($tpl[$params['trigger']])
+			$result = "onmouseover=\"javascript:displayhint('<font style=&quot;color: red&quot;>" . $error . "</font>')\" onmouseout=\"javascript:hidehint()\" ";
+		else
+			$result = "onmouseover=\"javascript:displayhint('" . $text . "')\" onmouseout=\"javascript:hidehint()\" ";
+		$result .= ' class="' . (empty($class) ? '' : $class)
+			. ($tpl[$params['trigger']] ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+			. '" ';
+	}
+
     return $result;
 }
 
@@ -122,6 +128,10 @@ function _smarty_function_img($params, $template)
 	    $file = 'style/'.$style.'/'.$params['src'];
     elseif(file_exists('style/default/'.$params['src']))
     	    $file = 'style/default/'.$params['src'];
+	elseif (preg_match('/^https?:\/\//i', $params['src']))
+		$file = $params['src'];
+	else
+		$file = 'img/' . $params['src'];
 
     $result  = '<img ';
     $result .= 'src="'.$file.'" ';

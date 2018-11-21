@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -68,8 +68,7 @@ class LMSEzpdfTransferForm extends LMSDocument {
 		$y -= $lineh;
 		$this->backend->addText($x + 220, $y, $font_size, sprintf('%.2f', $balance));
 		$y -= $lineh;
-		$this->backend->addText($x, $y, $font_size, trans('$a dollars $b cents',
-			to_words(floor($balance)), to_words(round(($balance - floor($balance)) * 100))));
+		$this->backend->addText($x, $y, $font_size, moneyf_in_words($balance));
 		$y -= $lineh;
 		$this->backend->addText($x, $y, $font_size, $this->truncate($this->data['customername']));
 		$y -= $lineh;

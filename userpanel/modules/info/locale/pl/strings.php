@@ -80,5 +80,54 @@ $_LANG['indefinitely'] = 'bezterminowo';
 $_LANG['Bank accounts:'] = 'Konta bankowe:';
 $_LANG['Phones:'] = 'Telefony:';
 $_LANG['Postal address:'] = 'Adres korespondencyjny:';
+$_LANG['Show confirmed documents only:'] = 'Pokaż wyłącznie dokumenty zatwierdzone:';
+$_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokumenty, które zostały zatwierdzone';
+$_LANG['Company data'] = 'Dane firmy';
+$_LANG['Personal data'] = 'Dane osobowe';
+$_LANG['Company name'] = 'Nazwa firmy';
+$_LANG['Information about the subscriber'] = 'Informacje o abonencie';
+
+$_LANG['building'] = 'budynek';
+$_LANG['apartment'] = 'lokal';
+$_LANG['lastname'] = 'nazwa/nazwisko';
+
+$_LANG['Incorrect Social Security Number!'] = 'Niepoprawny numer PESEL!';
+$_LANG['Incorrect Tax Exempt Number!'] = 'Niepoprawny numer NIP!';
+
+$_LANG['Customer data change notifications sent to operator'] = 'Powiadomienia o zmianie danych klienta wysyłane do operatora';
+$_LANG['Mail sender:'] = 'Nadawca listu:';
+$_LANG['Enter customer data change notification mail sender'] = 'Wprowadź nadawcę listu z powiadomieniem o zmianie danych klienta';
+$_LANG['Mail recipient:'] = 'Odbiorca listu:';
+$_LANG['Enter customer data change notification mail recipient'] = 'Wprowadź odbiorcę listu z powiadomieniem o zmianie danych klienta';
+$_LANG['Mail subject:'] = 'Temat listu:';
+$_LANG['Enter customer data change notification mail subject'] = 'Wprowadź temat listu z powiadomieniem o zmianie danych klienta';
+$_LANG['Mail body:'] = 'Treść listu:';
+$_LANG['Enter customer data change notification mail body'] = 'Wprowadź treść listu z powiadomieniem o zmianie danych klienta';
+
+$_LANG['Customer data change notifications sent to customer'] = 'Powiadomienia o zmianie danych klienta wysyłane do klienta';
+$_LANG['Confirmation mail subject:'] = 'Temat listu z potwierdzeniem:';
+$_LANG['Enter customer data change confirmation mail subject'] = 'Wprowadź temat listu z potwierdzeniem o zmianie danych klienta';
+$_LANG['Confirmation mail body:'] = 'Treść listu z potwierdzeniem:';
+$_LANG['Enter customer data change confirmation mail body'] = 'Wprowadź treść listu z potwierdzeniem o zmianie danych klienta';
+$_LANG['Rejection mail subject:'] = 'Temat listu z odmową:';
+$_LANG['Enter customer data change rejection mail subject'] = 'Wprowadź temat listu z odmową zmiany danych klienta';
+$_LANG['Rejection mail body:'] = 'Treść listu z odmową:';
+$_LANG['Enter customer data change rejection mail body'] = 'Wprowadź treść listu z odmową zmiany danych klienta';
+
+$_LANG['Update PIN'] = 'Zmień PIN';
+$_LANG['PIN Update'] = 'Aktualizacja PIN';
+$_LANG['Current PIN'] = 'Aktualny PIN';
+$_LANG['Enter current PIN'] = 'Wprowadź aktualny PIN';
+$_LANG['New PIN'] = 'Nowy PIN';
+$_LANG['Enter new PIN'] = 'Wprowadź nowy PIN';
+$_LANG['New PIN confirm'] = 'Potwierdzenie nowego PIN';
+$_LANG['Enter new PIN (again)'] = 'Wprowadź nowy PIN (ponownie)';
+$_LANG['Incorrect current PIN!'] = 'Niepoprawny aktualny PIN!';
+$_LANG['Entered PINs do not match!'] = 'Wprowadzone kody PIN nie pasują do siebie!';
+$_LANG['PINs cannot be empty!'] = "Kody PIN nie mogą być puste!";
+$_LANG['New PIN should be different than old PIN!'] = 'Nowy PIN powinien być inny niż stary PIN!';
+$_LANG['PIN should have at least $a, maximum $b characters and contain only \'$c\' characters!'] = 'PIN powinien posiadać co najmniej $a, maksimum $b znaków oraz składać się ze znaków \'$c\'!';
+$_LANG['PIN changes:'] = 'Zmiany kodu PIN:';
+$_LANG['Allow customer to change PIN'] = 'Pozwól klientowi na zmianę kodu PIN';
 
 ?>

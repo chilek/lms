@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2016 LMS Developers
+ *  Copyright (C); 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,21 +26,29 @@
 
 /**
  * LMSFinanceManagerInterface
- * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
+ *
  */
 interface LMSFinanceManagerInterface
 {
+    public function GetPromotionNameBySchemaID($id);
+
+    public function GetPromotionNameByID($id);
+
     public function GetCustomerTariffsValue($id);
 
-    public function GetCustomerAssignments($id, $show_expired = false);
+    public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true);
 
     public function DeleteAssignment($id);
 
     public function AddAssignment($data);
 
-    public function SuspendAssignment($id, $suspend = TRUE);
+	public function ValidateAssignment($data);
+
+	public function UpdateExistingAssignments($data);
+
+	public function SuspendAssignment($id, $suspend = TRUE);
+
+	public function GetInvoiceList(array $params);
 
     public function AddInvoice($invoice);
 
@@ -50,7 +58,9 @@ interface LMSFinanceManagerInterface
 
     public function GetInvoiceContent($invoiceid);
 
-    public function GetNoteContent($id);
+	public function GetNoteList(array $params);
+
+	public function GetNoteContent($id);
 
     public function TariffAdd($tariff);
 
@@ -60,17 +70,23 @@ interface LMSFinanceManagerInterface
 
     public function GetTariff($id, $network = NULL);
 
-    public function GetTariffs();
+    public function GetTariffs($forced_id = null);
 
     public function TariffSet($id);
 
     public function TariffExists($id);
 
-    public function ReceiptContentDelete($docid, $itemid = 0);
+	public function ReceiptDelete($docid);
 
-    public function DebitNoteContentDelete($docid, $itemid = 0);
+	public function ReceiptContentDelete($docid, $itemid = 0);
 
-    public function AddBalance($addbalance);
+	public function DebitNoteDelete($noteid);
+
+	public function DebitNoteContentDelete($docid, $itemid = 0);
+
+	public function GetBalanceList(array $params);
+
+	public function AddBalance($addbalance);
 
     public function DelBalance($id);
 
@@ -95,4 +111,18 @@ interface LMSFinanceManagerInterface
     public function GetTaxes($from = NULL, $to = NULL);
     
     public function CalcAt($period, $date);
+
+	public function isDocumentPublished($id);
+
+	public function isDocumentReferenced($id);
+
+	public function GetReceiptList(array $params);
+
+	public function AddReceipt(array $receipt);
+
+	public function GetCashRegistries($cid = null);
+
+	public function GetOpenedLiabilities($customerid);
+
+	public function GetPromotions();
 }

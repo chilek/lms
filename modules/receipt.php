@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,22 +27,48 @@
 function GetReceipt($id) {
 	$db = LMSDB::getInstance();
 
-	if ($receipt = $db->GetRow('SELECT d.*, u.name AS user, n.template,
+	if ($receipt = $db->GetRow('SELECT d.*, cc.name AS country, cd.name AS div_country,
+					u.name AS user, n.template,
 					ds.name AS d_name, ds.address AS d_address,
-					ds.zip AS d_zip, ds.city AS d_city
+					ds.zip AS d_zip, ds.city AS d_city, cds.name AS d_country
 				FROM documents d
-				LEFT JOIN users u ON (d.userid = u.id)
+				LEFT JOIN countries cc ON cc.id = d.countryid
+				LEFT JOIN countries cd ON cd.id = d.div_countryid
+				LEFT JOIN vusers u ON (d.userid = u.id)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN customers c ON (d.customerid = c.id)
-				LEFT JOIN divisions ds ON (ds.id = c.divisionid)
+				LEFT JOIN vdivisions ds ON (ds.id = c.divisionid)
+				LEFT JOIN countries cds ON cds.id = ds.countryid
 				WHERE d.type = 2 AND d.id = ?', array($id))) {
+		// if division for receipt is not defined and there is only one division in database
+		// we try to use this division
+		if (!empty($receipt['divisionid'])) {
+			$receipt['d_name'] = $receipt['div_name'];
+			$receipt['d_address'] = $receipt['div_address'];
+			$receipt['d_zip'] = $receipt['div_zip'];
+			$receipt['d_city'] = $receipt['div_city'];
+			$receipt['d_countryid'] = $receipt['div_countryid'];
+			$receipt['d_country'] = $receipt['div_country'];
+		}
+		if (empty($receipt['d_name']) && $db->GetOne('SELECT COUNT(*) FROM divisions') == 1)
+			$receipt = array_merge($receipt, $db->GetRow('SELECT d.name AS d_name, address AS d_address,
+					zip AS d_zip, city AS d_city, countryid AS d_countryid, c.name AS d_country
+				FROM vdivisions d
+				LEFT JOIN countries c ON c.id = d.countryid'));
+
 		$receipt['contents'] = $db->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
 		$receipt['total'] = 0;
 
 		foreach ($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
 
-		$receipt['number'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], $receipt['extnumber']);
+		$receipt['number'] = docnumber(array(
+			'number' => $receipt['number'],
+			'template' => $receipt['template'],
+			'cdate' => $receipt['cdate'],
+			'ext_num' => $receipt['extnumber'],
+			'customerid' => $receipt['customerid'],
+		));
 
 		if ($receipt['total'] < 0) {
 			$receipt['type'] = 'out';
@@ -72,14 +98,14 @@ if ($receipt_type == 'pdf') {
 } else
 	$document = new LMSHtmlReceipt($SMARTY);
 
-if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'])) {
+if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks'])) {
 	$SESSION->restore('rlm', $rlm);
 	$SESSION->remove('rlm');
 
-	if (sizeof($_POST['marks']))
+	if (count($_POST['marks']))
 		foreach ($_POST['marks'] as $id => $mark)
 			$rlm[$id] = $mark;
-	if (sizeof($rlm))
+	if (count($rlm))
 		foreach ($rlm as $mark)
 			$ids[] = intval($mark);
 
@@ -96,10 +122,15 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 	sort($ids);
 
 	$layout['pagetitle'] = trans('Cash Receipts');
-	$type = !empty($_GET['which']) ? $_GET['which'] : '';
+
+	$type = array();
+	if (isset($_GET['which']) && !empty($_GET['which']))
+		$type = explode(',', $_GET['which']);
+	if (empty($type))
+		$type = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
 
 	$i = 0;
-	$count = sizeof($ids);
+	$count = count($ids);
 	foreach ($ids as $idx => $receiptid) {
 		if ($receipt = GetReceipt($receiptid)) {
 			if ($count == 1)
@@ -112,10 +143,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 			$document->Draw($receipt);
 		}
 	}
-	$SMARTY->display('clearfooter.html');
 } elseif ($receipt = GetReceipt($_GET['id'])) {
 	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($_GET['id']));
-	if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))) {
+	if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))) {
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
 		die;
@@ -127,7 +157,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 
 	$receipt['last'] = true;
 	$receipt['first'] = true;
-	$receipt['which'] = isset($_GET['which']) ? $_GET['which'] : NULL;
+
+	$receipt['which'] = array();
+	if (isset($_GET['which']) && !empty($_GET['which']))
+		$receipt['which'] = explode(',', $_GET['which']);
+	if (empty($receipt['which']))
+		$receipt['which'] = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
+
 	$document->Draw($receipt);
 }
 

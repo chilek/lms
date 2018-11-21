@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -99,7 +99,7 @@ if(isset($_POST['domain']))
 			master = ?, last_check = ?, type = ?, notified_serial = ?,
 			account = ?, mxbackup = ? WHERE id = ?', 
 			array(	$domain['name'],
-				$domain['ownerid'],
+				empty($domain['ownerid']) ? null : $domain['ownerid'],
 				$domain['description'],
 				$domain['master'],
 				$domain['last_check'],
@@ -112,7 +112,7 @@ if(isset($_POST['domain']))
 		
 		// accounts owner update
 		if($domain['ownerid'])
-			$DB->Execute('UPDATE passwd SET ownerid = ? WHERE domainid = ? AND ownerid != 0',
+			$DB->Execute('UPDATE passwd SET ownerid = ? WHERE domainid = ? AND ownerid IS NOT NULL',
 					array($domain['ownerid'], $domain['id'])); 
 
 		$SESSION->redirect('?m=domainlist');

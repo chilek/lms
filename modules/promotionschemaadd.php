@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -55,12 +55,12 @@ if ($schema) {
 		$data = implode(';', $data);
 
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $schema['promotionid'],
+			SYSLOG::RES_PROMO => $schema['promotionid'],
 			'name' => $schema['name'],
 			'description' => $schema['description'],
 			'data' => $data,
 			'continuation' => !empty($schema['continuation']) ? 1 : 0,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => !empty($schema['ctariffid']) ? $schema['ctariffid'] : null
+			SYSLOG::RES_TARIFF => !empty($schema['ctariffid']) ? $schema['ctariffid'] : null
 		);
 		$DB->Execute('INSERT INTO promotionschemas (promotionid, name,
 			description, data, continuation, ctariffid)
@@ -69,11 +69,8 @@ if ($schema) {
 		$sid = $DB->GetLastInsertId('promotionschemas');
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA]] = $sid;
-			$SYSLOG->AddMessage(SYSLOG_RES_PROMOSCHEMA, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+			$args[SYSLOG::RES_PROMOSCHEMA] = $sid;
+			$SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_ADD, $args);
 		}
 
 		// pre-fill promotionassignments with all tariffs in specified promotion
@@ -83,18 +80,17 @@ if ($schema) {
 			GROUP BY tariffid', array($schema['promotionid']));
 		if (!empty($tariffs)) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $schema['promotionid'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $sid
+				SYSLOG::RES_PROMO => $schema['promotionid'],
+				SYSLOG::RES_PROMOSCHEMA => $sid
 			);
 			foreach ($tariffs as $tariff) {
 				$DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid)
 					VALUES (?, ?)', array($sid, $tariff));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $tariff;
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]] =
+					$args[SYSLOG::RES_TARIFF] = $tariff;
+					$args[SYSLOG::RES_PROMOASSIGN] =
 						$DB->GetLastInsertID('promotionassignments');
-					$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_ADD, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_ADD, $args);
 				}
 			}
 		}
@@ -109,6 +105,7 @@ if ($schema) {
 	}
 } else {
 	$schema['promotionid'] = $_GET['id'];
+	$schema['promotionname'] = $LMS->GetPromotionNameByID($schema['promotionid']);
 	$schema['continuation'] = 1;
 	$schema['periods'] = array(0);
 }

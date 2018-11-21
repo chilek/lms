@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,43 +24,27 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Remove queue ID: $a',sprintf("%04d",$_GET['id']));
+$queue = intval($_GET['id']);
+$qaction = ($_GET['qaction']);
+$ticket = $DB->GetOne('SELECT id FROM rttickets WHERE queueid = ?', array($queue));
 
-if(!$LMS->QueueExists($_GET['id']))
+if ($qaction == 'delete')
 {
-	$body = '<P>'.trans('Specified ID is not proper or does not exist!').'</P>';
-}
-else
-{
-	if($_GET['is_sure']!=1)
+	$del = 1;
+	$nodel = 0;
+	$deltime = time();
+	$DB->BeginTrans();
+	$DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $queue));
+	$DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and queueid = ?', array($del, Auth::GetCurrentUser(), $nodel, $queue));
+	if ($deltickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
 	{
-		$body = '<P>'.trans('Do you want to remove queue called $a?',$LMS->GetQueueName($_GET['id'])).'</P>'; 
-		$body .= '<P>'.trans('All tickets and messages in queue will be lost.').'</P>';
-		$body .= '<P><A HREF="?m=rtqueuedel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
-		$body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';
+		foreach ($deltickets as $delticket) {
+			$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $delticket));
+		}
 	}
-	else
-	{
-		$queue = intval($_GET['id']);
-
-	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-        if (!empty($mail_dir)) {
-            // remove attachment files
-            if ($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
-            {
-                foreach ($tickets as $ticket) {
-                    rmdir($mail_dir.sprintf('/%06d', $ticket));
-                }
-            }
-        }
-
-        $DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue));
-
-		$SESSION->redirect('?m=rtqueuelist');
-	}
+	$DB->CommitTrans();
 }
 
-$SMARTY->assign('body',$body);
-$SMARTY->display('dialog.html');
+$SESSION->redirect('?m=rtqueuelist');
 
 ?>

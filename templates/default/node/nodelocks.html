@@ -1,42 +1,64 @@
 <!--// $Id$ //-->
 {$xajax}
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR class="hand" onclick="showOrHide('nodelockspanel');">
-		<TD>
-			<IMG src="img/time.gif" alt="">
-			<span class="bold"><A name="nodelocks">{trans("Locks:")}</A></span>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="nodelockspanel" style="display: none;">
-		<TD style="width: 100%;">
-			<FORM id="nodelockadd" name="nodelockadd">
-			<DIV id="nodelocktable">
-			</DIV>
-			</FORM>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('nodelockspanel') == '1')
-{
-	document.getElementById('nodelockspanel').style.display = '';
-}
 
-function addNodeLock() {
-	xajax.$('nodelockaddlink').disabled = true;
-	xajax_addNodeLock({$nodeinfo.id}, xajax.getFormValues('nodelockadd'));
-}
+{css}
 
-function delNodeLock(id) {
-	xajax.$('nodelocktable').disabled = true;
-	xajax_delNodeLock({$nodeinfo.id}, id);
-}
+<FORM id="nodelockadd" name="nodelockadd">
+</FORM>
 
-xajax_getNodeLocks({$nodeinfo.id});
-//-->
-</SCRIPT>
+{tab_container id="nodelocks"}
+
+	{tab_header content_id="nodelockspanel"}
+		{tab_header_cell icon="lms-ui-icon-nodelock"}
+			<strong>{trans("Locks:")}</strong>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="nodelockspanel"}
+
+		{tab_table id="nodelocktable"}
+			{tab_hourglass}{/tab_hourglass}
+		{/tab_table}
+
+		{tab_button_panel}
+			{tab_buttons}
+				{foreach $_DAYS as $daynr => $dayname}
+					<label>
+						{$dayname}
+						<input type="checkbox" name="days[{$daynr}]" id="lockdays_{$daynr}" value="1" form="nodelockadd">
+					</label>
+				{/foreach}
+				<select name="fhour" form="nodelockadd">
+					{for $i = 0 to 23}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>:<select name="fminute" form="nodelockadd">
+					{for $i = 0 to 59}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>
+				<select name="thour" form="nodelockadd">
+					{for $i = 0 to 23}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>:<select name="tminute" form="nodelockadd">
+					{for $i = 0 to 59}
+					<option value="{$i}">{$i|string_format:"%02d"}</option>
+					{/for}
+				</select>
+				<a class="lms-ui-button-delete">
+					<i title="{trans("Clear")}"></i>
+				</a>
+			{/tab_buttons}
+			{tab_buttons}
+				{button id="nodelockaddlink" icon="add"
+					onclick="javascript:addNodeLock();" tip="Add new lock" label="Add"}
+			{/tab_buttons}
+		{/tab_button_panel}
+
+		{tab_hourglass template=1}{/tab_hourglass}
+
+	{/tab_contents}
+{/tab_container}
+
+{js}

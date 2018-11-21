@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,7 +44,7 @@ else
 
 $taxrateedit = isset($_POST['taxrateedit']) ? $_POST['taxrateedit'] : NULL;
 
-if(sizeof($taxrateedit)) 
+if(count($taxrateedit))
 {
 	foreach($taxrateedit as $idx => $key)
 		$taxrateedit[$idx] = trim($key);
@@ -74,43 +74,39 @@ if(sizeof($taxrateedit))
 	if(!$taxrateedit['taxed'] && $taxrateedit['value']!=0)
 		$error['value'] = trans('Incorrect tax rate percentage value (non-zero value and taxing not checked)!');
 
-	if($taxrateedit['validfrom'] == '')
-		$validfrom = 0;
-	else
+	if(!empty($taxrateedit['validfrom']))
 	{
-		list($fyear, $fmonth, $fday) = explode('/',$taxrateedit['validfrom']);
-		if(!checkdate($fmonth, $fday, $fyear))
+		$validfrom = date_to_timestamp($taxrateedit['validfrom']);
+		if(empty($validfrom))
 			$error['validfrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-		else
-			$validfrom = mktime(0, 0, 0, $fmonth, $fday, $fyear);
 	}
-
-	if($taxrateedit['validto'] == '')
-		$validto = 0;
 	else
-	{
-		list($tyear, $tmonth, $tday) = explode('/',$taxrateedit['validto']);
-		if(!checkdate($tmonth, $tday, $tyear))
-			$error['validto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-		else
-			$validto = mktime(23, 59, 59, $tmonth, $tday, $tyear);
-	}
+		$validfrom = 0;
+
+        if(!empty($taxrateedit['validto']))
+        {
+                $validto = date_to_timestamp($taxrateedit['validto']);
+                if(empty($validto))
+                        $error['validto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+        }
+        else
+                $validto = 0;
 
 	if (!$error) {
 		$args = array(
-			'label' => $taxrateedit['label'], 
+			'label' => $taxrateedit['label'],
 			'value' => $taxrateedit['value'],
 			'taxed' => $taxrateedit['taxed'],
+			'reversecharge' => isset($taxrateedit['reversecharge']) ? intval($taxrateedit['reversecharge']) : 0,
 			'validfrom' => $validfrom,
 			'validto' => $validto,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $taxrateedit['id']
+			SYSLOG::RES_TAX => $taxrateedit['id']
 		);
-		$DB->Execute('UPDATE taxes SET label=?, value=?, taxed=?,validfrom=?,validto=? WHERE id=?',
+		$DB->Execute('UPDATE taxes SET label=?, value=?, taxed=?, reversecharge=?, validfrom=?,validto=? WHERE id=?',
 			array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_TAX, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+			$SYSLOG->AddMessage(SYSLOG::RES_TAX, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=taxratelist');
 	} else

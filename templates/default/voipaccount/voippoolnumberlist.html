@@ -1,0 +1,121 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<P STYLE="display: none;"><INPUT TYPE="submit" CLASS="hiddenbtn"></P>
+
+{assign var='bulb_off' value='<img class="bulb lms-ui-cursor-pointer" src="img/noaccess.gif" alt="[&nbsp;'|cat:trans("Connect")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Connect")|cat:'&nbsp;">'}
+{assign var='bulb_on' value='<img class="bulb lms-ui-cursor-pointer" src="img/access.gif" alt="[&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;">'}
+{assign var='edit_ico' value='<img class="edit-pool lms-ui-cursor-pointer" src="img/edit.gif" alt="[&nbsp;'|cat:trans("Edit")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Edit")|cat:'&nbsp;">'}
+{assign var='delete_ico' value='<img class="delete-pool lms-ui-cursor-pointer" src="img/delete.gif" alt="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Delete")|cat:'&nbsp;">'}
+
+<TABLE id="poolnumbers" class="lmsbox lms-ui-datatable">
+    <COLGROUP>
+        <COL STYLE="width: 1%;">
+        <COL STYLE="width: 93%;">
+        <COL STYLE="width: 1%;">
+        <COL STYLE="width: 1%;">
+        <COL STYLE="width: 1%;">
+        <COL STYLE="width: 1%;">
+        <COL STYLE="width: 1%;">
+        <COL STYLE="width: 1%;">
+        <COL STYLE="width: 1%;">
+    </COLGROUP>
+    <THEAD>
+        <TR class="bold nobr">
+            <TH>{trans("Name")}</TH>
+            <TH data-orderable="false">{trans("Description")}</TH>
+            <TH>{trans("Pool type:")}</TH>
+            <TH>{trans("First number")}</TH>
+            <TH>{trans("Last number")}</TH>
+            <TH>{trans("Quantity of numbers")}</TH>
+            <TH>{trans("Used")}</TH>
+            <TH>{trans("Free")}</TH>
+            <TH data-orderable="false"></TH>
+        </TR>
+    </THEAD>
+    <TBODY>
+        {foreach from=$pool_list item=pool}
+        {assign var=size value=$pool.poolend-$pool.poolstart+1}
+
+        <TR data-pool-id="{$pool.id}" {if $pool.disabled == 1} CLASS="blend"{/if}>
+            <TD data-role="name" CLASS="nobr">{$pool.name}</TD>
+            <TD data-role="desc">{$pool.description}</TD>
+            <TD data-role="type" data-typeid="{$pool.typeid}">{$pool.type}</TD>
+            <TD data-role="pstart">{$pool.poolstart}</TD>
+            <TD data-role="pend">{$pool.poolend}</TD>
+            <TD>{$pool.size}</TD>
+            <TD>{$pool.phones_used}</TD>
+            <TD>{$pool.phones_unused}</TD>
+            <TD CLASS="nobr">
+                {if $pool.disabled == 1}{$bulb_off}{else}{$bulb_on}{/if}
+                {$edit_ico}
+                {$delete_ico}
+            </TD>
+        </TR>
+        {/foreach}
+    </TBODY>
+</TABLE>
+
+<DIV CLASS="text-right">
+      <button id="pool-add-dialog-show-btn">{trans("Add")}</button>
+</DIV>
+
+{include file='voipaccount/voippoolnumberadddialog.html'}
+{include file='voipaccount/voippoolnumberremovedialog.html'}
+{include file='voipaccount/voippoolnumbereditdialog.html'}
+
+<SCRIPT TYPE="text/javascript">
+<!--
+
+$( function() {
+    // ----- Change pool status active/inactive -----
+
+    // Protection against fast click in bulb.
+    // Bulbs becomes active after end of already started ajax call.
+    var bulb_ready = true;
+
+    $('body').on("click", ".bulb", function() {
+        if (bulb_ready == true) {
+            bulb_ready = false;
+        } else {
+            return 0;
+        }
+
+        var row    = $(this).closest("tr")
+        var poolid = $(row).attr("data-pool-id");
+        var state  = ($(row).hasClass("blend")) ? 0 : 1;
+        var bulb_handler = $(this);
+
+        $.ajax({
+            method: "POST",
+            url: "?m=voippoolnumberlist&action=changestate",
+            data: { poolid: poolid,
+                    state: state }
+        })
+        .done(function(data) {
+            if (!data) {
+                $(row).toggleClass("blend");
+
+                if (state) {
+                    $(bulb_handler).attr("src"  ,"img/noaccess.gif")
+                                   .attr("title","{trans("Connect")}")
+                                   .attr("alt"  ,"{trans("Connect")}");
+                } else {
+                    $(bulb_handler).attr("src"  ,"img/access.gif")
+                                   .attr("title","{trans("Disconnect")}")
+                                   .attr("alt"  ,"{trans("Disconnect")}");
+                }
+            }
+
+            bulb_ready = true;
+        });
+    });
+});
+
+//-->
+
+</SCRIPT>
+{/block}

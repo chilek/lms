@@ -1,0 +1,230 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+	<!--// $Id$ //-->
+	{$xajax}
+	{if empty($event.ticketid)}
+		<H1>{$layout.pagetitle}</H1>
+	{else}
+		<H1>{t a=$event.ticketid}Add new event to request #$a{/t}</H1>
+	{/if}
+	<style>
+		#event.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+			width: 12em;
+		}
+
+		#event.lms-ui-box-container .lms-ui-box-row-field.multiselect {
+			flex-direction: column !important;
+			align-items: flex-start !important;
+		}
+	</style>
+	<P class="text-center">
+	<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
+		<INPUT type="hidden" name="event[id]" value="{$event.id}">
+		<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
+		<INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
+		<INPUT type="submit" class="hiddenbtn">
+
+		{box_container id="event"}
+			{box_header icon="img/calendar.gif" label="Title:"}
+				<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title"}>
+			{/box_header}
+
+			{box_contents}
+				{box_panel}
+					{block name="eventmodify_left_panel"}
+
+					{box_row icon="img/time.gif" label="Time:"}
+						{event_time_selection field_prefix="event" begin=$event.begin end=$event.end wholedays=$event.wholedays}
+					{/box_row}
+
+					{box_row icon="img/info.gif" label="Description:"}
+						<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
+					{/box_row}
+
+					{/block}
+				{/box_panel}
+
+				{box_panel}
+					{block name="eventmodify_right_panel"}
+
+					{box_row icon="img/access.gif" label="Status:"}
+						<label>
+							<INPUT type="checkbox" name="event[private]" {tip text="Select event's status"}{if $event.private}CHECKED{/if}>
+							{trans("private")}
+						</label>
+					{/box_row}
+
+					{box_row icon="img/desc.gif" label="Type:"}
+						<SELECT name="event[type]" size="1">
+							{foreach from=$_EVENTTYPES key=key item=type}
+								<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
+							{/foreach}
+						</SELECT>
+					{/box_row}
+
+					{box_row icon="img/customer.gif" label="Customer:"}
+						{if $layout.module == 'eventedit' || (empty($event.ticketid) && empty($event.customerid))}
+							{$customer_selector='[name=&quot;event[custid]&quot;]'}
+							{$address_selector='[name=&quot;event[address_id]&quot;]'}
+							{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer('{$customer_selector}', '{$address_selector}');"}
+						{else}
+							{if !empty($event.customerid)}
+								{$event.customername} ({$event.customerid})
+								<input type="hidden" name="event[custid]" value="{$event.customerid}">
+							{else}
+								{trans("Request not assigned to any customer.")}
+							{/if}
+						{/if}
+					{/box_row}
+
+					{box_row icon="img/home.gif" label="Location:"}
+						{if !isset($event.ticketid)}
+							<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}> </select>
+						{else}
+							{trans("Request not assigned to any customer location.")}
+						{/if}
+					{/box_row}
+
+					{box_row icon="img/node.gif" label="Node:" visible=!empty($nodes)}
+						{if !isset($event.ticketid)}
+							<select id="nodes" name="event[nodeid]" {tip text="Select node"}>
+								<option value="">{trans("- none -")}</option>
+								{foreach $nodes as $node}
+									<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
+								{/foreach}
+							</select>
+						{else}
+							{trans("Request not assigned to any node.")}
+						{/if}
+					{/box_row}
+
+					{box_row icon="img/users.gif" label="Users:" field_class="multiselect"}
+						<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+							{foreach $userlist as $user}
+								{if $user.access}
+								<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+								{/if}
+							{/foreach}
+						</SELECT> <br> <label>
+							<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
+							{trans("All users")}<br> </label>
+						{foreach $usergroups as $group}
+							<label>
+								<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" value="{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
+								{$group.name}<br> </label>
+						{/foreach}
+					{/box_row}
+
+{if $layout.module == 'eventedit'}
+						{box_row icon="img/note.gif" label="Note:"}
+							<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
+						{/box_row}
+
+						{box_row icon="img/ticket.gif" label="Assign ticket" labelid="helpdesk-on"}
+							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"
+									{if isset($event.helpdesk) && $event.helpdesk} checked{/if}>
+							<input type="text" name="event[ticketid]" id="ticketid" value="{$event.ticketid}"
+									{if !isset($event.helpdesk) || !$event.helpdesk}style="display: none;"{/if} {tip trigger="ticketid"}>
+						{/box_row}
+{/if}
+
+{if $layout.module == 'eventadd' && empty($event.ticketid)}
+						{box_row icon="img/ticket.gif" label="Create ticket" labelid="helpdesk-on"}
+							<input type="checkbox" id="helpdesk-on" name="event[helpdesk]" value="1"{if !empty($event['helpdesk'])} checked{/if}>
+						{/box_row}
+{/if}
+
+					{/block}
+				{/box_panel}
+			{/box_contents}
+
+			{box_buttons}
+				{if $layout.module == 'eventadd'}
+				<label {tip text="Display this form again, when this event is saved"}>
+					<INPUT type="checkbox" name="event[reuse]"{if $event.reuse} checked{/if}>
+					{trans("Reuse")}
+				</label>
+				{/if}
+				{button type="submit" icon="save" onclick="javascript:document.event.submit();"
+					accesskey="s" label="Submit"}
+				{button icon="cancel" onclick="location.href='?m=eventlist';" label="Cancel"}
+			{/box_buttons}
+		{/box_container}
+        <div id="row"{if $layout.module == 'eventedit' || empty($event.helpdesk)} style="display:none;"}{/if}>
+		{include file="rt/rtticketmodify.html"}
+        </div>
+	</form>
+	<script src="js/rtticketmodify.js"></script>
+	<script>
+
+		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
+
+	</script>
+	<script type="text/javascript" src="js/lms-ui-event-time-slider.js"></script>
+	<SCRIPT>
+
+		$(function () {
+			$('[name="event[title]"]').focus();
+
+			$('[name="event[rtqueue]"]').change(function () {
+				var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
+				if (newticket_notify === undefined) {
+					$('#customernotify-row').hide();
+					$('#customernotify').attr('checked', false);
+				} else {
+					$('#customernotify-row').show();
+					$('#customernotify').attr('checked', true);
+				}
+				xajax_GetCategories($(this).val());
+			});
+
+			var newticket_notify = $('[name="event[rtqueue]"]').find(':selected').attr('data-newticket-notify');
+			if (newticket_notify === undefined) {
+				$('#customernotify-row').hide();
+			} else {
+				$('#customernotify-row').show();
+			}
+
+			$('#helpdesk-on').change(function () {
+				{if $layout.module == 'eventadd'}
+				$('#row').toggle();
+				{else}
+				$('#ticketid').toggle();
+				{/if}
+			});
+		});
+
+		function update_user_selection(users) {
+			var userms = $('.lms-ui-multiselect').data('multiselect-object');
+			{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
+			userms.updateSelection(users);
+			{else}
+			userms.filterSelection(users);
+			{/if}
+		}
+
+		var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {
+			change: function (event, ui) {
+				xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
+			}
+		});
+
+		getCustomerAddresses( {intval($event.customerid)}, function (addresses) {
+			customer_addresses.setAddressList(addresses);
+
+			{if intval($event.customerid)}
+			{if $event.address_id}
+			$('#customer_addresses').val( {$event.address_id} );
+			{else}
+			if (Object.keys(addresses).length == 1) {
+				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
+			}
+			{/if}
+			{/if}
+
+			customer_addresses.init();
+		});
+
+	</SCRIPT>
+{/block}

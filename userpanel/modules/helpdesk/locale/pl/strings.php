@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Customer:'] = 'Klient:';
+
 $_LANG['Allows you to contact with network administrator'] = 'Pozwala Ci skontaktować się z administratorem';
 $_LANG['Body:'] = 'Treść:';
 $_LANG['Cancel'] = 'Anuluj';
@@ -66,5 +68,10 @@ $_LANG['Default categories:'] = 'Domyślne kategorie:';
 $_LANG['Show tickets from selected queues only:'] = 'Pokaż zgłoszenia jedynie z wybranych kolejek:';
 $_LANG['Allow message add to closed tickets:'] = 'Pozwól na dodawanie wiadomości do zamkniętych zgłoszeń:';
 $_LANG['Limit ticket movements to selected queues:'] = 'Ogranicz przesunięcia zgłoszenia do wybranych kolejek:';
+
+$_LANG['Visible ticket sources:'] = 'Źródła widocznych zgłoszeń:';
+$_LANG['Helpdesk visible ticket sources in Userpanel'] = 'Widoczne źródła zgłoszeń Helpdesku w Userpanelu';
+
+$_LANG['Allow to reopen tickets newer than:'] = 'Pozwól na ponowne otwieranie zgłoszeń nowszych niż:';
 
 ?>

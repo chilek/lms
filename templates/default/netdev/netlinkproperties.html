@@ -6,13 +6,13 @@
     <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
     <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-    <link href="img/style.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="img/common.js"></script>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/common.js"></script>
     {$xajax}
 </head>
 <body class="light">
 <div id="overDiv" style="position: absolute; visibility: hidden; z-index: 100;"></div>
-<script type="text/javascript" language="JavaScript" src="img/overlib.js"></script>
+<script type="text/javascript" src="js/overlib.js"></script>
 	<FORM name="netlinkproperties" method="GET">
 	<table id="propertiestable" style="width: 100%;" cellpadding="3">
 		<tr class="light">
@@ -90,121 +90,126 @@
 	</table>
 	<input type="hidden" name="linkspeedname" id="linkspeedname" value="">
 	</FORM>
-<script type="text/javascript">
-<!--
-function change_linktype(linktype) {
-	linktype = parseInt(linktype);
-	var options = xjx.$('linktechnology').options;
-	while (options.length)
-		options.remove(0);
-	options.add(new Option('{trans("- unknown -")}', 0));
-	switch (linktype) {
-		case 0:
-			{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 1:
-			{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-		case 2:
-			{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
-			options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
-			{/foreach}
-			break;
-	}
-	if (xjx.$('radiosector') != null) {
-		if (linktype != 1)
-			xjx.$('radiosector').selectedIndex = 0;
-		xjx.$('radiosector').disabled = (linktype != 1);
-	} else {
-		if (linktype != 1) {
-			xjx.$('srcradiosector').selectedIndex = 0;
-			xjx.$('dstradiosector').selectedIndex = 0;
-		}
-		xjx.$('srcradiosector').disabled = (linktype != 1);
-		xjx.$('dstradiosector').disabled = (linktype != 1);
-	}
-}
 
-function change_linktechnology(linktechnology) {
-	linktechnology = parseInt(linktechnology);
-	var linktype = xjx.$('linktype').options[xjx.$('linktype').selectedIndex].value;
-	if (linktype != 1)
-		return;
-	if (xjx.$('radiosector') != null)
-		xjx.$('radiosector').disabled = true;
-	else {
-		xjx.$('srcradiosector').disabled = true;
-		xjx.$('dstradiosector').disabled = true;
-	}
-	xajax_get_radio_sectors_for_technology(linktechnology);
-}
+<script>
 
-function update_radio_sector_list(radiosectors) {
-	Object.keys(radiosectors).forEach(function(control) {
-		var options = xjx.$(control).options;
-		var oldvalue = options[xjx.$(control).selectedIndex].value;
+	function change_linktype(linktype) {
+		linktype = parseInt(linktype);
+		var options = xjx.$('linktechnology').options;
 		while (options.length)
 			options.remove(0);
-		options.add(new Option('- {trans("none")} -', 0));
-		if (radiosectors[control] !== null) {
-			radiosectors[control].forEach(function(elem) {
-				var option = new Option(elem.name, elem.id);
-				if (elem.id == oldvalue)
-					option.selected = true;
-				options.add(option);
-			});
+		options.add(new Option('{trans("- unknown -")}', 0));
+		switch (linktype) {
+			case 0:
+				{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 1:
+				{foreach $_LINKTECHNOLOGIES[1] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
+			case 2:
+				{foreach $_LINKTECHNOLOGIES[2] as $linktechnologyidx => $linktechnology}
+				options.add(new Option('{$linktechnology}', {$linktechnologyidx}));
+				{/foreach}
+				break;
 		}
-	});
-	if (xjx.$('radiosector') != null)
-		xjx.$('radiosector').disabled = false;
-	else {
-		xjx.$('srcradiosector').disabled = false;
-		xjx.$('dstradiosector').disabled = false;
+		if (xjx.$('radiosector') != null) {
+			if (linktype != 1)
+				xjx.$('radiosector').selectedIndex = 0;
+			xjx.$('radiosector').disabled = (linktype != 1);
+		} else {
+			if (linktype != 1) {
+				xjx.$('srcradiosector').selectedIndex = 0;
+				xjx.$('dstradiosector').selectedIndex = 0;
+			}
+			xjx.$('srcradiosector').disabled = (linktype != 1);
+			xjx.$('dstradiosector').disabled = (linktype != 1);
+		}
 	}
-}
 
-function submit_netlink_properties() {
-	var form = document.forms['netlinkproperties'];
-	var linktype = form.elements['linktype'].value;
-	var radiosector = (form.elements['radiosector'] != null ? form.elements['radiosector'].value : null);
-	var srcradiosector = (form.elements['srcradiosector'] != null ? form.elements['srcradiosector'].value : null);
-	var dstradiosector = (form.elements['dstradiosector'] != null ? form.elements['dstradiosector'].value : null);
-	var linktechnology = form.elements['linktechnology'].value;
-	var linkspeed = form.elements['linkspeed'].value;
+	function change_linktechnology(linktechnology) {
+		linktechnology = parseInt(linktechnology);
+		var linktype = xjx.$('linktype').options[xjx.$('linktype').selectedIndex].value;
+		if (linktype != 1)
+			return;
+		if (xjx.$('radiosector') != null)
+			xjx.$('radiosector').disabled = true;
+		else {
+			xjx.$('srcradiosector').disabled = true;
+			xjx.$('dstradiosector').disabled = true;
+		}
+		xajax_get_radio_sectors_for_technology(linktechnology);
+	}
 
-	xajax_update_netlink_properties({$link.id}, {$link.devid}, {
-			type: linktype,
-			radiosector: radiosector,
-			srcradiosector: srcradiosector,
-			dstradiosector: dstradiosector,
-			technology: linktechnology,
-			speed: linkspeed
-		} );
-}
+	function update_radio_sector_list(radiosectors) {
+		Object.keys(radiosectors).forEach(function(control) {
+			var options = xjx.$(control).options;
+			var oldvalue = options[xjx.$(control).selectedIndex].value;
+			while (options.length)
+				options.remove(0);
+			options.add(new Option('- {trans("none")} -', 0));
+			if (radiosectors[control] !== null) {
+				radiosectors[control].forEach(function(elem) {
+					var option = new Option(elem.name, elem.id);
+					if (elem.id == oldvalue)
+						option.selected = true;
+					options.add(option);
+				});
+			}
+		});
+		if (xjx.$('radiosector') != null)
+			xjx.$('radiosector').disabled = false;
+		else {
+			xjx.$('srcradiosector').disabled = false;
+			xjx.$('dstradiosector').disabled = false;
+		}
+	}
 
-function update_netlink_info(content1, content2) {
-	var elem = window.parent.document.getElementById(
-		'{if $link.isnetlink}dev{else}node{/if}_' + '{$link.devid}');
-	elem.innerHTML = content1;
-	elem = window.parent.document.getElementById(
-		'{if $link.isnetlink}dev{else}node{/if}linkproperties_' + '{$link.devid}');
-	elem.innerHTML = content2;
+	function submit_netlink_properties() {
+		var form = document.forms['netlinkproperties'];
+		var linktype = form.elements['linktype'].value;
+		var radiosector = (form.elements['radiosector'] != null ? form.elements['radiosector'].value : null);
+		var srcradiosector = (form.elements['srcradiosector'] != null ? form.elements['srcradiosector'].value : null);
+		var dstradiosector = (form.elements['dstradiosector'] != null ? form.elements['dstradiosector'].value : null);
+		var linktechnology = form.elements['linktechnology'].value;
+		var linkspeed = form.elements['linkspeed'].value;
 
-	window.parent.popclick();
-}
+		xajax_update_netlink_properties({$link.id}, {$link.devid}, {
+				type: linktype,
+				radiosector: radiosector,
+				srcradiosector: srcradiosector,
+				dstradiosector: dstradiosector,
+				technology: linktechnology,
+				speed: linkspeed
+			} );
+	}
 
-function resize_frame() {
-	var pt = xjx.$('propertiestable'),
-	h = pt.offsetHeight;
-	autoiframe_setsize('autoiframe', 350, Math.max(h, 10));
-}
+	function update_netlink_info(tech_content, speed_content, port_content) {
+		var elem = window.parent.document.getElementById(
+			'{if $link.isnetlink}dev{else}node{/if}-link-tech-' + '{$link.devid}');
+		elem.innerHTML = tech_content;
+		elem = window.parent.document.getElementById(
+			'{if $link.isnetlink}dev{else}node{/if}-link-speed-' + '{$link.devid}');
+		elem.innerHTML = speed_content;
+		elem = window.parent.document.getElementById(
+			'{if $link.isnetlink}dev{else}node{/if}-link-port-' + '{$link.devid}');
+		elem.innerHTML = port_content;
 
-resize_frame();
-//-->
+		window.parent.popclick();
+	}
+
+	function resize_frame() {
+		var pt = xjx.$('propertiestable'),
+		h = pt.offsetHeight;
+		autoiframe_setsize('autoiframe', 350, Math.max(h, 10));
+	}
+
+	resize_frame();
+
 </script>
+
 </body>
 </html>

@@ -5,8 +5,8 @@
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script type="text/JavaScript" src="js/common.js"> </script>
 </head>
 <body bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
 
@@ -41,16 +41,16 @@
 					    <TD width="1%" class="frightu"></TD>
 					</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
-				{section name=balancelist loop=$balancelist.id start=$balancelist.id-$limit}
+				{section name=balancelist loop=$balancelist.list start=$balancelist.list-$limit-1}
 					<TR bgcolor="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-					    <TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
-					    <TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|money_format}</nobr></TD>
+					    <TD width="1%"><nobr>{$balancelist.list[balancelist].date}</nobr></TD>
+					    <TD width="1%" align="right"><nobr>{$balancelist.list[balancelist].value|money_format}</nobr></TD>
 					    <TD width="1%" align="center">&raquo;</TD>
-					    <TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
-					    <TD width="95%">{$balancelist.comment[balancelist]}</TD>
+					    <TD width="1%" align="right"><nobr>{if $balancelist.list[balancelist].after < 0}<FONT color="red">{/if}{$balancelist.list[balancelist].after|money_format}{if $balancelist.list[balancelist].after < 0}</FONT>{/if}</nobr></TD>
+					    <TD width="95%">{$balancelist.list[balancelist].comment}</TD>
 					    <TD width="1%">
-						    {if $balancelist.doctype[balancelist]==1}
-						    <A href="invoice.php?id={$balancelist.docid[balancelist]}" target="_BLANK"><IMG src="img/print.gif" border="0" alt="[ {trans("Invoice")} ]" align="absmiddle"></A>
+						    {if $balancelist.list[balancelist].doctype==1}
+						    <A href="invoice.php?id={$balancelist.list[balancelist].docid}" target="_BLANK"><IMG src="img/print.gif" border="0" alt="{trans("Invoice")}" align="absmiddle"></A>
 						    {/if}
 					    </TD>
 					</TR>

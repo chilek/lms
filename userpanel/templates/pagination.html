@@ -1,0 +1,17 @@
+<DIV CLASS="pagin-box">
+	{if $pagin_result.prev}
+		<A CLASS="pagin-button active" HREF="?{$pagination->getLink()}&page={$pagin_result.prev}">&laquo;&nbsp;{trans("Previous<!pagin>")}</A>
+	{/if}
+
+	{foreach from=$pagin_result.pages item=p}
+		{if $p.flag == "current"}
+			<A CLASS="pagin-button inactive" HREF="#">{$p.page_num}</A>
+		{else}
+			<A CLASS="pagin-button active" HREF="?{$pagination->getLink()}&page={$p.page_num}">{$p.page_num}</A>
+		{/if}
+	{/foreach}
+
+	{if $pagin_result.next}
+		<A CLASS="pagin-button active" HREF="?{$pagination->getLink()}&page={$pagin_result.next}">{trans("Next<!pagin>")}&nbsp;&raquo;</A>	
+	{/if}
+</DIV>

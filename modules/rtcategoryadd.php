@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,8 +45,8 @@ if(isset($_POST['category']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO rtcategories (name, description) VALUES (?, ?)',
-				array(trim($category['name']), $category['description']));
+		$DB->Execute('INSERT INTO rtcategories (name, description, style) VALUES (?, ?, ?)',
+				array(trim($category['name']), $category['description'], $category['style']));
 
 		$id = $DB->GetLastInsertId('rtcategories');
 

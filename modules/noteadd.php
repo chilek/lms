@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -75,7 +75,7 @@ switch($action)
 	break;
 
 	case 'deletepos':
-		if(sizeof($contents))
+		if(count($contents))
 			foreach($contents as $idx => $row)
 				if($row['posuid'] == $_GET['posuid']) 
 					unset($contents[$idx]);
@@ -127,7 +127,12 @@ switch($action)
 		{
 			if(!preg_match('/^[0-9]+$/', $note['number']))
 				$error['number'] = trans('Debit note number must be integer!');
-			elseif($LMS->DocumentExists($note['number'], DOC_DNOTE, $note['numberplanid'], $note['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $note['number'],
+					'doctype' => DOC_DNOTE,
+					'planid' => $note['numberplanid'],
+					'cdate' => $note['cdate'],
+				)))
 				$error['number'] = trans('Debit note number $a already exists!', $note['number']);
 		}
 
@@ -158,19 +163,35 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
-			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions'));
+			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions'));
 
 			if(!$note['number'])
-				$note['number'] = $LMS->GetNewDocumentNumber(DOC_DNOTE, $note['numberplanid'], $note['cdate']);
+				$note['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_DNOTE,
+					'planid' => $note['numberplanid'],
+					'cdate' => $note['cdate'],
+					'customerid' => $customer['id'],
+				));
 			else
 			{
 				if(!preg_match('/^[0-9]+$/', $note['number']))
 					$error['number'] = trans('Debit note number must be integer!');
-				elseif($LMS->DocumentExists($note['number'], DOC_DNOTE, $note['numberplanid'], $note['cdate']))
+				elseif($LMS->DocumentExists(array(
+						'number' => $note['number'],
+						'doctype' => DOC_DNOTE,
+						'planid' => $note['numberplanid'],
+						'cdate' => $note['cdate'],
+						'customerid' => $customer['id'],
+					)))
 					$error['number'] = trans('Debit note number $a already exists!', $note['number']);
-				
+
 				if($error)
-					$note['number'] = $LMS->GetNewDocumentNumber(DOC_DNOTE, $note['numberplanid'], $note['cdate']);
+					$note['number'] = $LMS->GetNewDocumentNumber(array(
+						'doctype' => DOC_DNOTE,
+						'planid' => $note['numberplanid'],
+						'cdate' => $note['cdate'],
+						'customerid' => $customer['id'],
+					));
 			}
 			
 			// set paytime
@@ -189,37 +210,41 @@ switch($action)
 
 			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+				FROM vdivisions WHERE id = ?',array($customer['divisionid']));
 
 			if ($note['numberplanid'])
-				$fullnumber = docnumber($note['number'],
-					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-					$cdate);
+				$fullnumber = docnumber(array(
+					'number' => $note['number'],
+					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
+					'cdate' => $cdate,
+					'customerid' => $customer['id'],
+				));
 			else
 				$fullnumber = null;
 
 			$args = array(
 				'number' => $note['number'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
+				SYSLOG::RES_NUMPLAN => !empty($note['numberplanid']) ? $note['numberplanid'] : null,
 				'type' => DOC_DNOTE,
 				'cdate' => $cdate,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
+				SYSLOG::RES_CUST => $customer['id'],
 				'name' => $customer['customername'],
-				'address' => $customer['address'],
+				'address' => ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+					? $customer['city'] . ', ' : '') . $customer['address'],
 				'paytime' => $note['paytime'],
 				'ten' => $customer['ten'],
 				'ssn' => $customer['ssn'],
 				'zip' => $customer['zip'],
-				'city' => $customer['city'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+				'city' => $customer['postoffice'] ? $customer['postoffice'] : $customer['city'],
+				SYSLOG::RES_COUNTRY => !empty($customer['countryid']) ? $customer['countryid'] : null,
+				SYSLOG::RES_DIV => !empty($customer['divisionid']) ? $customer['divisionid'] : null,
 				'div_name' => ($division['name'] ? $division['name'] : ''),
 				'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 				'div_address' => ($division['address'] ? $division['address'] : ''), 
 				'div_city' => ($division['city'] ? $division['city'] : ''), 
 				'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-				'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+				'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => !empty($division['countryid']) ? $division['countryid'] : null,
 				'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
 				'div_regon' => ($division['regon'] ? $division['regon'] : ''),
 				'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -239,13 +264,13 @@ switch($action)
 
 			$nid = $DB->GetLastInsertID('documents');
 
+			$LMS->UpdateDocumentPostAddress($nid, $customer['id']);
+
 			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $nid;
-				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+				$args[SYSLOG::RES_DOC] = $nid;
+				unset($args[SYSLOG::RES_USER]);
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args,
+					array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
 			}
 
 			$itemid = 0;
@@ -254,7 +279,7 @@ switch($action)
 				$item['value'] = str_replace(',','.', $item['value']);
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $nid,
+					SYSLOG::RES_DOC => $nid,
 					'itemid' => $itemid,
 					'value' => $item['value'],
 					'description' => $item['description']
@@ -263,12 +288,9 @@ switch($action)
 					VALUES (?, ?, ?, ?)', array_values($args));
 
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT]] = $DB->GetLastInsertID('debitnotecontents');
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$args[SYSLOG::RES_DNOTECONT] = $DB->GetLastInsertID('debitnotecontents');
+					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_ADD, $args);
 				}
 
 				$LMS->AddBalance(array(
@@ -324,7 +346,10 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('note', $note);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_DNOTE, date('Y/m', $note['cdate'])));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_DNOTE,
+	'cdate' => date('Y/m', $note['cdate']),
+)));
 //$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('note/noteadd.html');
 

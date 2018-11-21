@@ -1,41 +1,37 @@
 {box title="Request history"}
 <div class="table-responsive">
-<table class="table table-bordered table-hover">
-    <tr class="bg-primary">
-        <th>{trans("Number:")}</th>
-        <th>{trans("Date:")}</th>
-        <th>{trans("Subject:")}</th>
-        <th>{trans("Last modified:")}</th>
-        <th>{trans("Status:")}</th>
-    </tr>
-    {section name=helpdesklist loop=$helpdesklist start=$limit}
-    <tr {userpaneltip text="Click icon on the left to see request details"}>
-        <td>
-            {if $helpdesklist[helpdesklist].state == $smarty.const.RT_RESOLVED}
-            <a class="btn btn-secondary" href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</a>
-            {elseif $helpdesklist[helpdesklist].state == $smarty.const.RT_NEW}
-            <a class="btn btn-primary" href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</a>
-            {/if}
-        </td>
-        <td>{$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"}</td>
-        <td><b>{$helpdesklist[helpdesklist].subject|escape}</b></td>
-        <td>{$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</td>
-        <td><b>
-                {if $helpdesklist[helpdesklist].state == 0}{trans("new")}
-                {elseif $helpdesklist[helpdesklist].state == 1}{trans("open")}
-                {elseif $helpdesklist[helpdesklist].state == 2}{trans("resolved")}
-                {else}{trans("dead")}
-                {/if}</b>
-        </td>
-        {sectionelse}
-    <tr>
-        <td colspan="5">
-            <p>&nbsp;</p>
-            <p><b>{trans("No such requests in database.")}</b></p>
-            <p>&nbsp;</p>
-        </td>
-    </tr>
-    {/section}
-</table>
+	<table class="table table-bordered table-striped table-condensed">
+		<tr class="bg-primary text-white">
+			<th>{trans("Number:")}</th>
+			<th>{trans("Subject:")}</th>
+		</tr>
+		{section name=helpdesklist loop=$helpdesklist start=$limit}
+			<tr {userpaneltip text="Click icon on the left to see request details"}>
+				<td>{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
+				<td>
+					{if $helpdesklist[helpdesklist].state == 0}
+						<span class="badge badge-primary">{trans("new")}</span>
+					{elseif $helpdesklist[helpdesklist].state == 1}
+						<span class="badge badge-info">{trans("open")}</span>
+					{elseif $helpdesklist[helpdesklist].state == 2}
+						<span class="badge badge-success">{trans("resolved")}</span>
+					{else}
+						<span class="badge badge-default">{trans("dead")}</span>
+					{/if}
+					<a class="font-weight-bold" href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
+						{$helpdesklist[helpdesklist].subject|escape}
+					</a>
+					<br>
+					<small class="text-muted">{trans("Date:")} {$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"} &nbsp; {trans("Last modified:")} {$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</small>
+				</td>
+			</tr>
+		{sectionelse}
+			<tr>
+				<td colspan="2">
+					{trans("No such requests in database.")}
+				</td>
+			</tr>
+		{/section}
+	</table>
 </div>
 {/box}

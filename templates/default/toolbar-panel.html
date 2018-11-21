@@ -1,0 +1,57 @@
+<!--// $Id$ //-->
+{if !ConfigHelper::checkConfig('phpui.hide_toolbar')}
+	<div id="lms-ui-toolbar" class="lms-ui-tool-panel no-print">
+
+		<div class="lms-ui-toolbar-shortcuts">
+			<a href="?m=welcome" {tip text="Basic system information"}><img src="img/home.png" width="20" alt=""></a>
+		</div>
+
+		<div class="lms-ui-toolbar-shortcut-separator"></div>
+
+		<div class="lms-ui-toolbar-shortcut">
+			<a href="?m=messageadd" {tip text="Allows you to send messages to customers"}><img src="img/mail_add.png" width="20" alt=""></a>
+			<a href="?m=rtqueuelist" {tip text="Requests Tracking"}><img src="img/ticket.gif" width="20" alt=""></a>
+			<a href="?m=documentadd" {tip text="Allows you to add new document"}><img src="img/docum.gif" width="20" alt=""></a>
+		</div>
+
+		<div class="lms-ui-toolbar-shortcut-separator"></div>
+
+		<div class="lms-ui-toolbar-shortcut">
+			<a href="?m=customerlist" {tip text="List of Customers"}><img src="img/users.png" width="20" alt=""></a>
+			<a href="?m=customeradd" {tip text="Allows you to add new customer"}><img src="img/user_add.png" width="20" alt=""></a>
+			<a href="?m=customerwarn" {tip text="Allows you to send notices to customers"}><img src="img/user_warning.png" width="20" alt=""></a>
+		</div>
+
+		<div class="lms-ui-toolbar-shortcut-separator"></div>
+
+		<div class="lms-ui-toolbar-shortcut">
+			<a href="?m=nodelist" {tip text="List of nodes"}><img src="img/computers.png" width="20" alt=""></a>
+			<a href="?m=nodeadd" {tip text="Allows you to add new node"}><img src="img/computer_add.png" width="20" alt=""></a>
+			<a href="?m=nodewarn" {tip text="Allows you to send notices to customers"}><img src="img/computer_warning.png" width="20" alt=""></a>
+		</div>
+
+		<div class="lms-ui-toolbar-shortcut-separator"></div>
+
+		<div class="lms-ui-toolbar-shortcut">
+			<a href="?m=eventlist" {tip text="Timetable"}><img src="img/calendar.png" width="20" alt=""></a>
+			<a href="?m=eventadd" {tip text="New Event Addition"}><img src="img/calendar_add.png" width="20" alt=""></a>
+			<a href="?m=traffic&amp;bar=day" {tip text="Last day stats for all networks"}><img src="img/traffic.gif" width="20" alt=""></a>
+		</div>
+
+		<div class="lms-ui-toolbar-shortcut-separator"></div>
+
+		<div class="lms-ui-toolbar-shortcut">
+			<a href="?m=balancenew" {tip text="Add new financial operation"}><img src="img/payment.gif" width="20" alt=""></a>
+			<a href="?m=receiptadd" {tip text="Generate cash receipt"}><img src="img/pay.gif" width="20" alt=""></a>
+			<a href="?m=invoicenew" {tip text="Generate invoice"}><img src="img/money.gif" width="20" alt=""></a>
+		</div>
+
+		<div class="lms-ui-toolbar-shortcut-separator"></div>
+
+		<div class="lms-ui-toolbar-shortcut">
+			<a href="?m=reload" {tip text="Reload"}><img src="img/refresh.png" width="20" alt=""></a>
+			<a {tip class="tip" text="Allows you to logout" bold=1} {if ConfigHelper::getConfig('phpui.logout_confirmation')}onClick="if (confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&amp;is_sure=1'; }"{else}href="?m=logout&amp;is_sure=1"{/if}><img src="img/Exit.png" width="20" alt=""></a>
+		</div>
+
+	</div>
+{/if}

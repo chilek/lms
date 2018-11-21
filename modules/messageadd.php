@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -53,15 +53,15 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 
 	$group = intval($filter['group']);
 	$network = intval($filter['network']);
-	if (is_array($filter['customergroup'])) {
-		$customergroup = array_map('intval', $filter['customergroup']);
-		$customergroup = implode(',', $customergroup);
-	} else
+	if (is_array($filter['customergroup']))
+		$customergroup = implode(',', Utils::filterIntegers($filter['customergroup']));
+	else
 		$customergroup = intval($filter['customergroup']);
 	$nodegroup = intval($filter['nodegroup']);
 	$linktype = intval($filter['linktype']);
 	$tarifftype = intval($filter['tarifftype']);
 	$consent = isset($filter['consent']);
+	$netdevices = isset($filter['netdevices']) ? $filter['netdevices'] : null;
 
 	if($group == 50)
 	{
@@ -77,6 +77,12 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$notindebted = ($group == 53) ? 1 : 0;
 	$indebted2 = ($group == 57) ? 1 : 0;
 	$indebted3 = ($group == 58) ? 1 : 0;
+	$opened_documents = ($group == 59) ? 1 : 0;
+
+	$expired_indebted = ($group == 61) ? 1 : 0;
+	$expired_notindebted = ($group == 60) ? 1 : 0;
+	$expired_indebted2 = ($group == 62) ? 1 : 0;
+	$expired_indebted3 = ($group == 63) ? 1 : 0;
 
 	if ($group >= 50) $group = 0;
 
@@ -107,6 +113,32 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		) a ON a.customerid = c.id ';
 	}
 
+	$deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
+
+	if ($expired_indebted || $expired_indebted2 || $expired_indebted3 || $expired_notindebted)
+		$expired_debt_table = "
+			LEFT JOIN (
+				SELECT SUM(value) AS value, cash.customerid
+				FROM cash
+				JOIN customers c ON c.id = cash.customerid
+				LEFT JOIN divisions ON divisions.id = c.divisionid
+				LEFT JOIN documents d ON d.id = cash.docid
+				WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ?NOW?)
+						OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
+							(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END)) * 86400 < ?NOW?)))
+					OR (cash.docid IS NOT NULL AND ((d.type IN (" . DOC_RECEIPT . ',' . DOC_CNOTE . ") AND cash.time < ?NOW?
+						OR (d.type IN (" . DOC_INVOICE . ',' . DOC_DNOTE . ") AND d.cdate + d.paytime * 86400 < ?NOW?))))
+				GROUP BY cash.customerid
+			) b2 ON (b2.customerid = c.id)";
+	else
+		$expired_debt_table = '';
+
+	if (!empty($netdevices))
+		$netdevtable = ' JOIN (
+				SELECT DISTINCT n.ownerid FROM nodes n
+				WHERE n.ownerid IS NOT NULL AND netdev IN (' . implode(',', $netdevices) . ')
+			) nd ON nd.ownerid = c.id ';
+
 	$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
 	$recipients = $LMS->DB->GetAll('SELECT c.id, pin, '
@@ -119,6 +151,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
 		) b ON (b.customerid = c.id)
+		' . $expired_debt_table . '
 		LEFT JOIN (SELECT a.customerid,
 			SUM((CASE a.suspended
 				WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
@@ -142,6 +175,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0) 
 			GROUP BY a.customerid
 		) t ON (t.customerid = c.id) '
+		. (isset($netdevtable) ? $netdevtable : '')
 		. (isset($mailtable) ? $mailtable : '')
 		. (isset($smstable) ? $smstable : '')
 		. ($tarifftype ? $tarifftable : '')
@@ -161,12 +195,19 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			WHERE linktype = ' . $linktype . ')' : '')
 		.($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
-		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
+		. ($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
 		. ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
 		. ($indebted3 ? ' AND COALESCE(b.value, 0) < -t.value * 2' : '')
-		.($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
+		. ($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
+		. ($expired_indebted ? ' AND COALESCE(b2.value, 0) < 0' : '')
+		. ($expired_indebted2 ? ' AND COALESCE(b2.value, 0) < -t.value' : '')
+		. ($expired_indebted3 ? ' AND COALESCE(b2.value, 0) < -t.value * 2' : '')
+		. ($expired_notindebted ? ' AND COALESCE(b2.value, 0) >= 0' : '')
+		. ($opened_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
+			WHERE documents.closed = 0
+				AND documents.type NOT IN (' . DOC_INVOICE . ',' . DOC_CNOTE . ',' . DOC_DNOTE . '))' : '')
 		. ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
-			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0
+			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
 				AND (datefrom = 0 OR datefrom < ?NOW?)
 				AND (dateto = 0 OR dateto > ?NOW?))' : '')
 		.' ORDER BY customername');
@@ -210,17 +251,127 @@ function BodyVars(&$body, $data)
 		}
 		$body = str_replace('%last_10_in_a_table', $last10, $body);
 	}
+
+	$hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(
+		'body' => $body,
+		'data' => $data,
+	));
+	$body = $hook_data['body'];
+}
+
+function FindNetDeviceUplink($netdevid) {
+	static $uplink_netdev = null;
+	static $visited = array();
+	static $root_netdevid = null;
+	static $netdev_links = null;
+	static $DB = null;
+
+	if (is_null($DB))
+		$DB = LMSDB::getInstance();
+
+	if (empty($root_netdevid))
+		$root_netdevid = ConfigHelper::getConfig('phpui.root_netdevice_id');
+
+	if (is_null($netdev_links)) {
+		$netlinks = $DB->GetAll('SELECT id, src, dst FROM netlinks');
+		if (!empty($netlinks))
+			foreach ($netlinks as $netlink) {
+				if (!isset($netdev_links[$netlink['src']]))
+					$netdev_links[$netlink['src']] = array();
+				$netdev_links[$netlink['src']][] = $netlink['dst'];
+				if (!isset($netdev_links[$netlink['dst']]))
+					$netdev_links[$netlink['dst']] = array();
+				$netdev_links[$netlink['dst']][] = $netlink['src'];
+			}
+		else
+			$netdev_links = array();
+	}
+
+	$visited[$netdevid] = true;
+
+	if ($root_netdevid == $netdevid)
+		return $uplink_netdev;
+
+	if (!isset($netdev_links[$netdevid]))
+		return null;
+
+	foreach ($netdev_links[$netdevid] as $netdev) {
+		if (isset($visited[$netdev]))
+			continue;
+
+		if ($netdev == $root_netdevid)
+			return $netdev;
+		else
+			$uplink_netdev = FindNetDeviceUplink($netdev);
+			if (!empty($uplink_netdev))
+				return $netdev;
+	}
+
+	return $uplink_netdev;
+}
+
+function GetNetDevicesInSubtree($netdevid) {
+	static $uplink_netdev = null;
+	static $netdevices = array();
+	static $visited = array();
+	static $netdev_links = null;
+	static $DB = null;
+
+	if (is_null($uplink_netdev)) {
+		$uplink_netdev = FindNetDeviceUplink($netdevid);
+		if (empty($uplink_netdev))
+			$uplink_netdev = 0;
+	}
+
+	if (is_null($DB))
+		$DB = LMSDB::getInstance();
+
+	if (is_null($netdev_links)) {
+		$netlinks = $DB->GetAll('SELECT id, src, dst FROM netlinks');
+		if (!empty($netlinks))
+			foreach ($netlinks as $netlink) {
+				if (!isset($netdev_links[$netlink['src']]))
+					$netdev_links[$netlink['src']] = array();
+				$netdev_links[$netlink['src']][] = $netlink['dst'];
+				if (!isset($netdev_links[$netlink['dst']]))
+					$netdev_links[$netlink['dst']] = array();
+				$netdev_links[$netlink['dst']][] = $netlink['src'];
+			}
+		else
+			$netdev_links = array();
+	}
+
+	$netdevices[] = $netdevid;
+	$visited[$netdevid] = true;
+
+	if (!isset($netdev_links[$netdevid]))
+		return array();
+
+	foreach ($netdev_links[$netdevid] as $netdev) {
+		if ($netdev == $uplink_netdev || isset($visited[$netdev]))
+			continue;
+		GetNetDevicesInSubtree($netdev);
+	}
+
+	return $netdevices;
 }
 
 $layout['pagetitle'] = trans('Message Add');
 
-if (isset($_POST['message'])) {
+if (isset($_POST['message']) && !isset($_GET['sent'])) {
 	$message = $_POST['message'];
+
+	$message['netdevices'] = array();
+	if (!empty($message['netdev']))
+		if (isset($message['wholesubtree'])) {
+			$message['netdevices'] = GetNetDevicesInSubtree($message['netdev']);
+		} else
+			$message['netdevices'][] = $message['netdev'];
 
 	if (!in_array($message['type'], array(MSG_MAIL, MSG_SMS, MSG_ANYSMS, MSG_WWW, MSG_USERPANEL)))
 		$message['type'] = MSG_USERPANEL_URGENT;
 
-	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 58
+	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 63
 		|| ($message['group'] > CSTATUS_LAST && $message['group'] < 50)))
 		$error['group'] = trans('Incorrect customers group!');
 
@@ -254,7 +405,7 @@ if (isset($_POST['message'])) {
 	$msgtmplid = intval($message['tmplid']);
 	$msgtmploper = intval($message['tmploper']);
 	$msgtmplname = $message['tmplname'];
-	if ($msgtmploper > 1) {
+	if (!isset($_GET['count_recipients']) && $msgtmploper > 1) {
 		switch ($message['type']) {
 			case MSG_MAIL:
 				$msgtmpltype = TMPL_MAIL;
@@ -296,32 +447,6 @@ if (isset($_POST['message'])) {
 		else
 			$error['mailbody'] = trans('Message body is required!');
 
-	$files = array();
-	if (!empty($_FILES['file']['name'][0])) {
-		foreach ($_FILES['file']['name'] as $fileidx => $filename)
-			if (is_uploaded_file($_FILES['file']['tmp_name'][$fileidx]) && $_FILES['file']['size'][$fileidx]) {
-				$data = '';
-				$fd = fopen($_FILES['file']['tmp_name'][$fileidx], 'r');
-				if ($fd) {
-					while (!feof($fd))
-						$data .= fread($fd,256);
-					fclose($fd);
-					$files[] = array(
-						'content_type' => $_FILES['file']['type'][$fileidx],
-						'filename' => $_FILES['file']['name'][$fileidx],
-						'data' => $data,
-					);
-				}
-			} else // upload errors
-				switch($_FILES['file']['error'][$fileidx]) {
-					case 1:
-					case 2: $error['file'] = trans('File is too large.'); break;
-					case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-					case 4: $error['file'] = trans('Path to file was not specified.'); break;
-					default: $error['file'] = trans('Problem during file upload.'); break;
-				}
-	}
-
 	if(!$error)
 	{
 		$recipients = array();
@@ -356,17 +481,33 @@ if (isset($_POST['message'])) {
 			$error['subject'] = trans('Unable to send message. No recipients selected!');
 	}
 
+	if (isset($_GET['count_recipients'])) {
+		header('Content-Type: application/json');
+		die(json_encode(array(
+			'recipients' => empty($error) ? count($recipients) : -1,
+		)));
+	}
+
+	if ($message['type'] == MSG_MAIL) {
+		$result = handle_file_uploads('files', $error);
+		extract($result);
+		$SMARTY->assign('fileupload', $fileupload);
+	}
+
 	if(!$error)
 	{
 		set_time_limit(0);
 
 		$message['body'] = str_replace("\r", '', $message['body']);
 
-		if($message['type'] == MSG_MAIL)
-			$message['body'] = wordwrap($message['body'],76,"\n");
+		if ($message['type'] == MSG_MAIL) {
+			$message['body'] = wordwrap($message['body'], 76, "\n");
+			$dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
+			$mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
+		}
 
 		$SMARTY->assign('message', $message);
-		$SMARTY->assign('recipcount', sizeof($recipients));
+		$SMARTY->assign('recipcount', count($recipients));
 		$SMARTY->display('message/messagesend.html');
 
 		$DB->BeginTrans();
@@ -376,7 +517,7 @@ if (isset($_POST['message'])) {
 				$message['type'],
 				$message['subject'],
 				$message['body'],
-				$AUTH->id,
+				Auth::GetCurrentUser(),
 				$message['type'] == MSG_MAIL ? '"' . $message['from'] . '" <' . $message['sender'] . '>' : '',
 			));
 
@@ -394,22 +535,37 @@ if (isset($_POST['message'])) {
 			else
 				$recipients[$key]['destination'] = explode(',', $row['phone']);
 
-			foreach ($recipients[$key]['destination'] as $destination)
+			$customerid = isset($row['id']) ? $row['id'] : 0;
+			foreach ($recipients[$key]['destination'] as $destination) {
 				$DB->Execute('INSERT INTO messageitems (messageid, customerid,
 					destination, status)
-					VALUES (?, ?, ?, ?)', array(
-						$msgid,
-						isset($row['id']) ? $row['id'] : 0,
-						$destination, MSG_NEW,
-					));
+					VALUES (?, ?, ?, ?)', array($msgid, empty($customerid) ? null : $customerid, $destination, MSG_NEW));
+				if ($message['type'] == MSG_MAIL && (!empty($dsn_email) || !empty($mdn_email))) {
+					$msgitemid = $DB->GetLastInsertID('messageitems');
+					if (!isset($msgitems[$customerid]))
+						$msgitems[$customerid] = array();
+					$msgitems[$customerid][$destination] = $msgitemid;
+				}
+			}
 		}
 
 		$DB->CommitTrans();
 
 		if($message['type'] == MSG_MAIL)
 		{
-			if (empty($files))
-				$files = null;
+			$attachments = NULL;
+			if (!empty($files)) {
+				foreach ($files as $file)
+					$attachments[] = array(
+						'content_type' => $file['type'],
+						'filename' => $file['name'],
+						'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
+					);
+
+				// deletes uploaded files
+				if (!empty($tmppath))
+					rrmdir($tmppath);
+			}
 
 			$debug_email = ConfigHelper::getConfig('mail.debug_email');
 			if(!empty($debug_email))
@@ -417,11 +573,22 @@ if (isset($_POST['message'])) {
 
 			$headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $message['sender'] . '>';
 			$headers['Subject'] = $message['subject'];
-			$headers['Reply-To'] = $headers['From'];
+
+			$reply_email = ConfigHelper::getConfig('mail.reply_email');
+			$headers['Reply-To'] = empty($reply_email) ? $message['sender'] : $reply_email;
+
 			if (isset($message['copytosender']))
 				$headers['Cc'] = $headers['From'];
 			if (!empty($message['wysiwyg']))
 				$headers['X-LMS-Format'] = 'html';
+			if (!empty($dsn_email)) {
+				$headers['From'] = $dsn_email;
+				$headers['Delivery-Status-Notification-To'] = true;
+			}
+			if (!empty($mdn_email)) {
+				$headers['Return-Receipt-To'] = $mdn_email;
+				$headers['Disposition-Notification-To'] = $mdn_email;
+			}
 		} elseif ($message['type'] != MSG_WWW) {
 			$debug_phone = ConfigHelper::getConfig('sms.debug_phone');
 			if (!empty($debug_phone))
@@ -432,6 +599,8 @@ if (isset($_POST['message'])) {
 			$body = $message['body'];
 
 			BodyVars($body, $row);
+
+			$customerid = isset($row['id']) ? $row['id'] : 0;
 
 			foreach ($row['destination'] as $destination) {
 				$orig_destination = $destination;
@@ -447,15 +616,19 @@ if (isset($_POST['message'])) {
 					echo '<img src="img/sms.gif" border="0" align="absmiddle" alt=""> ';
 				}
 
-				echo trans('$a of $b ($c) $d:', ($key + 1), sizeof($recipients),
-				sprintf('%02.1f%%', round((100 / sizeof($recipients)) * ($key + 1), 1)),
+				echo trans('$a of $b ($c) $d:', ($key + 1), count($recipients),
+				sprintf('%02.1f%%', round((100 / count($recipients)) * ($key + 1), 1)),
 					$row['customername'] . ' &lt;' . $destination . '&gt;');
 				flush();
 
 				if ($message['type'] == MSG_MAIL) {
 					if (isset($message['copytosender']))
 						$destination .= ',' . $message['sender'];
-					$result = $LMS->SendMail($destination, $headers, $body, $files);
+					if (!empty($dsn_email) || !empty($mdn_email)) {
+						$headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
+						$headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
+					}
+					$result = $LMS->SendMail($destination, $headers, $body, $attachments);
 				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 					$result = MSG_SENT;
 				else
@@ -472,17 +645,21 @@ if (isset($_POST['message'])) {
 
 				if (!is_int($result) || $result == MSG_SENT)
 					$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW?,
-						error = ? WHERE messageid = ? AND customerid = ?
+						error = ? WHERE messageid = ? AND '
+							. (empty($customerid) ? 'customerid IS NULL' : 'customerid = ' . intval($customerid)) . '
 							AND destination = ?',
 						array(
 							is_int($result) ? $result : MSG_ERROR,
 							is_int($result) ? null : $result,
 							$msgid,
-							isset($row['id']) ? $row['id'] : 0,
 							$orig_destination,
 						));
 			}
 		}
+
+		echo '<script type="text/javascript">';
+		echo "history.replaceState({}, '', location.href.replace(/&sent=1/gi, '') + '&sent=1');";
+		echo '</script>';
 
 		$SMARTY->display('footer.html');
 		$SESSION->close();
@@ -567,8 +744,13 @@ $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
-$SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM users WHERE phone <> \'\' ORDER BY name'));
+$SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
+$SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM vusers WHERE phone <> \'\' ORDER BY name'));
+
+$netdevices = $LMS->GetNetDevList();
+unset($netdevices['total'], $netdevices['order'], $netdevices['direction']);
+$SMARTY->assign('netdevices', $netdevices);
+
 $SMARTY->display('message/messageadd.html');
 
 ?>

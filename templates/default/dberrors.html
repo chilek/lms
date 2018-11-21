@@ -1,19 +1,17 @@
 <!--// $Id$ //-->
-<TABLE width="100%" cellpadding="10" class="fall">
-	<TR class="superlight">
-		<TD style="width: 1%;">
-			<IMG SRC="img/warning.png" ALT="[ {trans("Error!")} ]">
-		</TD>
-		<TD style="width: 99%;">
-			<span class="alert">{trans("Database errors occurred!")}</span><BR>
-			{foreach from=$layout.dberrors item=dberror}
-				{if $layout.dbdebug}
-					<span class="bold">({math equation="x*1000" x=$dberror.time format="%.4f"} ms):</span> {$dberror.query}<BR>
-				{else}
-					<span class="bold">{trans("Query:")}</span> {$dberror.query}<BR>
-					<span class="bold">{trans("Error:")}</span> {$dberror.error}<BR>
-				{/if}
-			{/foreach}
-		</TD>
-	</TR>
-</TABLE>
+<div id="lms-ui-dberrors">
+	<p>
+		<IMG SRC="img/warning.png" ALT="{trans("Error!")}">
+		<span class="alert">{trans("Database errors occurred!")}</span><BR>
+	</p>
+	<p>
+		{foreach $layout.dberrors as $dberror}
+			{if $layout.dbdebug}
+				<span class="bold">({math equation="x*1000" x=$dberror.time format="%.4f"} ms):</span> {$dberror.query}<BR>
+			{else}
+				<span class="bold">{trans("Query:")}</span> {$dberror.query}<BR>
+				<span class="bold">{trans("Error:")}</span> {$dberror.error}<BR>
+			{/if}
+		{/foreach}
+	</p>
+</div>

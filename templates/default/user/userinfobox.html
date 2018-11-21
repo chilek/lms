@@ -11,10 +11,21 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
-			{trans("First/last name:")}
+			{trans("First name:")}
 		</TD>
 		<TD style="width: 98%;" class="fright bold">
-			{$userinfo.name}
+			{$userinfo.firstname}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD style="width: 1%;" class="fleft">
+			<IMG src="img/users.gif" alt="">
+		</TD>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Last name:")}
+		</TD>
+		<TD style="width: 98%;" class="fright bold">
+			{$userinfo.lastname}
 		</TD>
 	</TR>
 {if $userinfo.position}
@@ -47,17 +58,6 @@
 		<TD style="width: 1%;" class="bold">{trans("Phone:")}</TD>
 		<TD style="width: 98%;" class="fright">
 			{$userinfo.phone}
-		</TD>
-	</TR>
-{/if}
-{if $userinfo.swekey_id}
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/swekey/swekey-green-8x16.png" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">{trans("Swekey:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			{$userinfo.swekey_id}
 		</TD>
 	</TR>
 {/if}

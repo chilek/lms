@@ -1,3 +1,6 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1><span class="bold">{$layout.pagetitle}</span></H1>
 <FORM name="reload" method="POST" action="?m=reload&amp;setreloads">
@@ -6,54 +9,76 @@
     <THEAD>
 	<TR>
 		<TD>
-		<div style="float:left">
-			<span class="bold">{trans("Select hosts for configuration reload:")}</span></div> <div id="reloadtxt" style="display:none; float:right"><span class="bold">{trans("Reload configuration in:")} </span> <span id="reloadtimer" class="bold"></span> </div>
+			<div class="bold" style="float:left">
+				{trans("Select hosts for configuration reload:")}
+			</div>
+			<div id="reloadtxt" class="bold" style="display:none; float:right">
+				{trans("Reload configuration in:")}
+				<span id="reloadtimer"></span>
+			</div>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD width="100%">
-			<TABLE class="lmsbox-inner">
-                            <THEAD>
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 96%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<THEAD>
 				<TR>
-					<TD width="1%" nowrap><IMG src="img/host.gif" ALT=""> <span class="bold">{trans("Name:")}</span></TD>
-					<TD width="96%" nowrap>{trans("Description:")}</TD>
-					<TD width="1%" align="right" nowrap>{trans("Last Reload:")}</TD>
-					<TD width="1%" nowrap>{trans("Status:")}</TD>
-					<TD width="1%"></TD>
+					<TD class="bold nobr">
+						<IMG src="img/host.gif" ALT=""> {trans("Name:")}
+					</TD>
+					<TD class="nobr">{trans("Description:")}</TD>
+					<TD class="text-center nobr">{trans("Last Reload:")}</TD>
+					<TD class="text-center nobr">{trans("Status:")}</TD>
+					<TD></TD>
 				</TR>
-                            </THEAD>
-                            <TBODY>
-				{cycle values="light,lucid" print=false}
-				{section name=hosts loop=$hosts}
-				<TR class="highlight {cycle}"  >
-					<TD nowrap onClick="return checkElement({$hosts[hosts].id});"><IMG src="img/host.gif" ALT=""> <span class="bold">{$hosts[hosts].name}</span></TD>
-					<TD onClick="return checkElement({$hosts[hosts].id});">{$hosts[hosts].description}</TD>
-					<TD align="right" nowrap onClick="return checkElement({$hosts[hosts].id});">{if $hosts[hosts].lastreload}{$hosts[hosts].lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</TD>
-					<TD nowrap onClick="return checkElement({$hosts[hosts].id});">{if $hosts[hosts].reload==1}{trans("waiting")}
-						    {elseif $hosts[hosts].reload==0}{trans("OK")}
-						    {else}{trans("unknown")}{/if}</TD>
+				</THEAD>
+				<TBODY class="lms-ui-multi-check">
+				{foreach $hosts as $host}
+				<TR class="highlight">
+					<TD class="bold nobr">
+						<IMG src="img/host.gif" ALT=""> {$host.name}
+					</TD>
+					<TD>{$host.description}</TD>
+					<TD class="text-center nobr">
+						{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}
+					</TD>
+					<TD class="text-center nobr">
+						{if $host.reload==1}{trans("waiting")}
+						{elseif $host.reload==0}{trans("OK")}
+						{else}{trans("unknown")}{/if}
+					</TD>
 					<TD>
-						<INPUT TYPE="checkbox" NAME="hosts[]" ID="{$hosts[hosts].id}" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
+						<INPUT TYPE="checkbox" NAME="hosts[]" class="lms-ui-multi-check" id="{$host.id}" VALUE="{$host.id}"{if $host.reload} checked{/if}>
 					</TD>
 				</TR>
-				{sectionelse}
+				{foreachelse}
 				<TR>
-					<TD colspan="4" class="empty-table">
-						{trans("No such hosts in database.")}
+					<TD colspan="5" class="empty-table">
+						<p>{trans("No such hosts in database.")}</p>
 					</TD>
 				</TR>
-				{/section}
-				<TR>
-					<TD colspan="2"nowrap>
-						<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('reload', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
+				{/foreach}
+				<TR class="dark ftop">
+					<TD colspan="2" class="nobr">
+						<label>
+							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
+							{trans("Check All")}
+						</label>
 					</TD>
-					<TD ALIGN="right" colspan="3" nowrap>
+					<TD colspan="3" class="buttons">
 						<A href="javascript:document.reload.submit();">{trans("Submit")} <IMG src="img/save.gif" ALT=""></A>
 					</TD>
 				</TR>
-                            </TBODY>
+				</TBODY>
 			</TABLE>
 		</TD>
 	</TR>
@@ -62,13 +87,13 @@
 </FORM>
 {if $serverTime}
 <SCRIPT type="text/javascript">
-        <!--
+<!--
 
 	var serverTime = new Date("{$serverTime}");
 	var timerOn = false;
-{section name=hosts loop=$hosts}
-	{if $hosts[hosts].reload==1}timerOn=true;{/if}
-{/section}
+{foreach $hosts as $host}
+	{if $host.reload==1}timerOn=true;{/if}
+{/foreach}
 	var timer;
 	var userDate = new Date();
 
@@ -90,6 +115,7 @@
 	if (timerOn && typeof(serverTime) != 'undefined')
 		ShowSeconds();
 
-	//-->
+//-->
 </SCRIPT>
 {/if}
+{/block}

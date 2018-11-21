@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,5 +38,6 @@ $_LANG['Print<BR>Payment<BR>Form'] = 'Wydruk<BR>Formularza<BR>Wpłaty';
 $_LANG['We are please for punctual payment in value: <B>$a</B> with comment: $b'] = 'Prosimy o terminową wpłatę w wysokości: <B>$a</B> z dopiskiem: $b';
 $_LANG['You have no outstandings towards as.'] = 'Nie posiadasz zaległości wobec nas.';
 $_LANG['You have overpayments on value: $a, they will be moved as payments for future subscriptions or services.'] = 'Posiadasz nadpłaty w wysokości: $a, zostaną one rozliczone jako płatności za przyszły abonament lub usługę.';
+$_LANG['Account:'] = 'Konto:';
 
 ?>

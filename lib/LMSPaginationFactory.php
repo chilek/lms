@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSPaginationFactory
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSPaginationFactory
 {
@@ -39,15 +38,16 @@ class LMSPaginationFactory
      * @param int $total Total
      * @param int $per_page Per page
      * @param boolean $short Short
+	 * @param string $instance_name Instance name
      * @return \LMSPagination Pagination
      */
-    public static function getPagination($page, $total, $per_page, $short = false)
+    public static function getPagination($page, $total, $per_page, $short = false, $instance_name = null)
     {
         $pagination = null;
         if ($short) {
-            $pagination = new LMSPaginationShort($page, $total, $per_page);
+            $pagination = new LMSPaginationShort($page, $total, $per_page, $instance_name);
         } else {
-            $pagination = new LMSPaginationLong($page, $total, $per_page);
+            $pagination = new LMSPaginationLong($page, $total, $per_page, $instance_name);
         }
         return $pagination;
     }

@@ -35,6 +35,7 @@ $this->LockTables("documents");
 $offset = 0;
 do {
 	$docs = $this->GetAll("SELECT id, cdate, number, numberplanid FROM documents
+		WHERE fullnumber IS NULL
 		ORDER BY id LIMIT 30000 OFFSET $offset");
 	$stop = empty($docs);
 	if (!$stop) {
@@ -43,7 +44,11 @@ do {
 				$template = $numberplans[$doc['numberplanid']]['template'];
 			else
 				$template = DEFAULT_NUMBER_TEMPLATE;
-			$fullnumber = docnumber($doc['number'], $template, $doc['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $doc['number'],
+				'template' => $template,
+				'cdate' => $doc['cdate'],
+			));
 			$this->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
 				array($fullnumber, $doc['id']));
 		}

@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
@@ -18,7 +18,7 @@
 	</TR>
         {if $listdata.total != 0}
         <TR>
-                <TD class="pagination" {if $divisions}colspan="7"{else}colspan="5"{/if}>
+                <TD class="lms-ui-pagination" {if $divisions}colspan="7"{else}colspan="5"{/if}>
                         {include file="scroller.html" loop=$invprojectlist}
                 </TD>
         </TR>
@@ -49,8 +49,8 @@
 			{$invproject.netnodes}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A HREF="?m=invprojectedit&id={$invproject.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=invprojectdel&id={$invproject.id}" OnClick="return confirmLink(this, '{t a=$invproject.name}Are you sure, you want to remove investment project \'$a\' ?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=invprojectedit&id={$invproject.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A HREF="?m=invprojectdel&id={$invproject.id}" OnClick="return confirmLink(this, '{t a=$invproject.name}Are you sure, you want to remove investment project \'$a\' ?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}

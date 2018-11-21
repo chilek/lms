@@ -1,0 +1,60 @@
+{if !$pool}
+    <div class="network-container plus">
+        <span class="net-name">
+            {$ip} / {$mask}
+        </span>
+
+        {if count($hosts) > 1}
+            <select style="margin-left: 5px;" class="host-select">
+                {foreach $hosts as $h}
+                <option data-netname="{$h.net_name}">{$h.host}</option>
+                {/foreach}
+            </select>
+        {else}
+            <input type="hidden" class="host-select" value="{$hosts[0].host}">
+            &nbsp;&nbsp;<b>{$hosts[0].host}</b>
+        {/if}
+
+        <div class="net-data" data-ip="{$ip}" data-mask="{$mask}" data-netname="{$hosts[0].net_name}"></div>
+    </div>
+{else}
+    <div class="network-container auto-column">
+        {if $network}
+            <div class="ip-address blend bold">
+                <img src="img/network.gif" alt=""> NETWORK
+            </div>
+
+            {$pool['start'] = $pool['start'] + 1}
+        {/if}
+
+        {if $broadcast}
+            {$pool['end'] = $pool['end'] - 1}
+        {/if}
+
+        {for $i=$pool['start'] to $pool['end']}
+            <div class="ip-address highlight">
+                {if isset($used_ips[$i])}
+                    {if $used_ips[$i]['netdev_name']}
+                        <a href="?m=netdevinfo&id={$used_ips[$i]['id']}" class="blend">
+                            <img src="img/netdev.gif" alt=""> {$used_ips[$i]['netdev_name']}
+                        </a>
+                    {else}
+                        <a href="?m=nodeinfo&id={$used_ips[$i]['id']}" class="blend">
+                            <img src="img/node.gif" alt=""> {$used_ips[$i]['name']}
+                        </a>
+                    {/if}
+                {else}
+                    {$tmp = long_ip($i)}
+
+                    <a href="?m=nodeadd&preip={$tmp}&prenetwork={$hostid}">{$tmp}</a>
+                {/if}
+            </div>
+        {/for}
+
+        {if $broadcast}
+            <div class="ip-address blend bold">
+                <img src="img/network.gif" alt=""> BROADCAST
+            </div>
+        {/if}
+    </div>
+{/if}

@@ -23,7 +23,7 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
 .tabnotsel:hover	{ font-size: 12px; text-decoration: none; color: white; }
 .tabsel:hover		{ font-size: 12px; text-decoration: none; color: black; }
 .superlight	{ background-color: #EEEEEE; }
-.light		{ background-color: #DDDDDD; }
+.light		{ background-color: #F1F1F1; }
 .dark		{ background-color: #CCCCCC; }
 .darkest	{ background-color: #BBBBBB; }
 .hand		{ cursor: pointer; }
@@ -109,4 +109,75 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
     line-height: 24px;
     /*border-top: 1px solid #B9B9B9;*/
     cursor: default;
+}
+
+.userbox {
+    border-spacing: 0;
+    border-collapse: separate;
+    border: 2px solid #940000;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.userbox-title {
+    text-align:left;
+    color: white;
+    white-space: nowrap;
+    background-color: #940000;
+    padding-left: 5px;
+    padding-top: 2px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.pagin-box .pagin-button {
+    display: inline-block;
+    text-decoration: none;
+    padding: 7px;
+    border-radius: 3px;
+    color: black;
+    border: 1px solid gray;
+}
+
+.pagin-box .active:hover {
+    cursor: pointer;
+    background-color: #940000;
+    color: white;
+    border: 1px solid black;
+}
+
+.pagin-box .inactive {
+    background-color: lightgray;
+    pointer-events: none;
+    cursor: default;
+}
+
+.submit-btn {
+    border-radius: 7px;
+    padding: 2px 25px;
+    height: 30px;
+    font-weight: bold;
+    background-color: #900000;
+    color: white;
+    -webkit-box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	outline:0;
+}
+
+.submit-btn:hover {
+    cursor: pointer;
+    background-color: #b30000;
+}
+
+.billing-tab tr:nth-child(n+2):nth-last-child(n+2):hover {
+    background-color: #a6a6a6;
+}
+
+.lms-ui-customer-property-changed {
+	color: red;
+}
+
+div.g-recaptcha {
+    margin: 20px 10px 0px 10px;
 }

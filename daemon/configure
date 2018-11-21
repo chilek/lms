@@ -13277,7 +13277,7 @@ fi
 
     if test -f "${MYSQL_CONFIG}"; then
         MYSQL_INC=`$MYSQL_CONFIG --include`
-        if test -d `echo $MYSQL_INC |cut -c 3-` ; then
+        if test -d `echo $MYSQL_INC |cut -d" " -f1 |cut -c 3-` ; then
             have_mysql=yes
         else
             as_fn_error $? "mysql_config pointed on non existent directory. Your MySQL installation may be broken or you might need to use the --with-mysql=PATH configure option to point right mysql_config" "$LINENO" 5

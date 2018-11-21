@@ -1,28 +1,35 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 96%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=messagelist&amp;o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 		</TD>
-		<TD WIDTH="96%" nowrap>
+		<TD class="nobr">
 			<A href="?m=messagelist&amp;o=subject{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Subject:")}</A> {if $listdata.order == "subject"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=messagelist&amp;o=cnt{if $listdata.direction == "asc" && $listdata.order == "cnt"},desc{/if}">{trans("Recipients:")}</A> {if $listdata.order == "cnt"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
-			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
+		<TD class="bold nobr">
+			{t a=$listdata.total}Total: $a{/t}&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="5" nowrap>
+		<TD colspan="5" class="nobr">
 			<FORM METHOD="POST" NAME="page" action="?m=messagelist">
 			<INPUT type="submit" class="hiddenbtn">
 			<B>{trans("Filter:")} </B> 
@@ -60,24 +67,23 @@
 			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
 		</TD>
-	</TR>		
-	{if $listdata.total != 0}
+	</TR>
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="5">
-			{include file="scroller.html" loop=$messagelist scrollerno=1}
+		<TD class="lms-ui-pagination" COLSPAN="5">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
-	{assign var=message value=$messagelist[messagelist]}
-	<TR class="highlight {cycle}{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{else} blend{/if}">
-		<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
+    <TBODY class="lms-ui-multi-check">
+	<form method="post" name="messages">
+	{foreach $messagelist as $message}
+	<TR class="highlight{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}" data-target-url="?m=messageinfo&id={$message.id}">
+		<TD class="nobr">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
-		<TD WIDTH="1%" ALIGN="right" NOWRAP onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
+		<TD class="text-right nobr">
 			{if $message.type == $smarty.const.MSG_MAIL}
 			<img src="img/email.gif" alt="email">
 			{elseif $message.type == $smarty.const.MSG_WWW}
@@ -88,40 +94,61 @@
 			<img src="img/sms.gif" alt="sms">
 			{/if}
 		</TD>
-		<TD WIDTH="96%" onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
+		<TD class="bold">
 			{$message.subject}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
+		<TD class="lms-ui-buttons text-right nobr">
 			{$message.cnt|default:0}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-			<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&amp;id={$message.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=messageinfo&amp;id={$message.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+		<TD class="lms-ui-buttons text-right nobr">
+			<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&amp;id={$message.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=messageinfo&amp;id={$message.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="lms-ui-multi-check"{if $marks.messageid} checked{/if}>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
-		<TD COLSPAN="5" class="empty-table">
+		<TD colspan="5" class="empty-table">
 			<p>{trans("No such messages in database.")}</p>
 		</TD>
 	</TR>	
-	{/section}
+	{/foreach}
+	</form>
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="5">
-			{include file="scroller.html" loop=$messagelist scrollerno=2}
+		<TD class="lms-ui-pagination" COLSPAN="5">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="2%" colspan="2" NOWRAP>
+		<TD colspan="2" class="nobr">
 		</TD>
-		<TD COLSPAN="3">
-			<B>{t a=$listdata.total}Total: $a{/t}</B>
+		<TD class="bold">
+			{t a=$listdata.total}Total: $a{/t}
+		</TD>
+		<TD colspan="2" class="text-right nobr">
+			<a id="delete-messages">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
+			<label>
+				{trans("Check All")}
+				<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
+			</label>
 		</TD>
 	</TR>
+	<script type="text/javascript">
+	<!--
+		$(function() {
+			$('#delete-messages').click(function() {
+				if (!$(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length
+					|| !confirm('{trans("Are you sure, you want to delete all selected messages?")}'))
+					return false;
+				$('form[name=messages]').attr('action', '?m=messagedel&is_sure=1').submit();
+			});
+		});
+	//-->
+	</script>
     </TFOOT>
 </TABLE>
 {/block}

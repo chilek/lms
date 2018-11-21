@@ -1,0 +1,207 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+@import "lms-variables";
+
+div.map {
+	position: absolute;
+	width: 85%;
+	height: 85%;
+}
+
+div.smallmap {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+div.olPopup {
+	overflow: visible;
+}
+
+div.olPopupContent {
+	overflow: visible;
+	padding: 0px;
+}
+
+div.lmsPopupTitleBar {
+	background-color: @dark;
+	white-space: nowrap;
+	width: auto; height: 18px;
+	overflow: visible;
+	border-left-width: 1pt; border-left-style: solid; border-top-width: 1pt; border-top-style: solid; border-right-width: 1pt; border-right-style: solid;
+	display: block;
+}
+
+div.lmsPopupTitle {
+	background-color: @dark;
+	font-weight: bold;
+	float: left;
+	width: auto; height: 16px;
+	line-height: 16px;
+	overflow: visible;
+	padding-left: 2px;
+}
+
+div.lmsPopupCloseBox {
+	background-color: @dark;
+	float: right;
+	width: 16px; height: 16px;
+	padding: 1px;
+	overflow: visible;
+}
+
+div.lmsInfoPopupContents {
+	background-color: @light;
+	padding: 6px;
+	border: @frame;
+	width: auto !important;
+	height: auto;
+	white-space: nowrap;
+	overflow: visible;
+}
+
+div.lmsInfoPopupName {
+	background-color: @light;
+	font-weight: bold;
+	padding: 2px;
+	width: auto !important;
+	height: auto;
+	white-space: nowrap;
+	clear: both;
+}
+
+div.lmsInfoPopupAddress {
+	background-color: @light;
+	padding: 2px;
+	border: none;
+	width: auto !important;
+	height: auto;
+	white-space: nowrap;
+	clear: both;
+}
+
+div.lmsInfoPopupDetails {
+	background-color: @light;
+	padding: 2px;
+	border: none;
+	width: auto; height: auto;
+	white-space: nowrap;
+	clear: both;
+}
+
+div.lmsMapPopupContents {
+	border: @frame;
+	background-color: @light;
+	width: auto; height: auto;
+	white-space: nowrap;
+	overflow: visible;
+}
+
+div.lmsMapPopupName {
+	padding: 2px;
+	font-weight: bold;
+	width: auto; height: auto;
+	white-space: nowrap;
+}
+
+div.lmsMapPopupAddress {
+	padding: 2px;
+	padding-left: 10px;
+	width: auto; height: auto;
+	white-space: nowrap;
+	overflow: visible;
+}
+
+div.lmsIpPopupContents {
+	border: @frame;
+	background-color: @light;
+	width: auto !important;
+	height: auto;
+	padding: 6px;
+	white-space: nowrap;
+	overflow: visible;
+}
+
+div.lmsIpPopupLabel {
+	font-weight: bold;
+}
+
+div.lmsPingContentsFrame {
+	border: @frame;
+	padding: 0px;
+	width: 450px;
+	height: 300px;
+	background-color: @light;
+}
+
+div.lmsPingContents {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	bottom: 48px;
+	width: 100%;
+	height: auto !important;
+	overflow: auto;
+	padding: 0px;
+}
+
+div.olControlPanel {
+	position: absolute;
+	left: 60px; top: 5px;
+}
+
+.olControlPanel div {
+	display: block;
+	float: left;
+	width: 22px; height: 22px;
+	border: @frame;
+	margin: 1px;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.lmsCheckButtonItemActive {
+	background: white url('@{lms-img-path}/ip.gif');
+}
+
+.lmsCheckButtonItemInactive {
+	background: white url('@{lms-img-path}/ip.gif');
+}
+
+.lmsCenterButtonItemActive {
+	background: white url('@{lms-img-path}/network.gif');
+}
+
+.lmsCenterButtonItemInactive {
+	background: white url('@{lms-img-path}/network.gif');
+}
+
+.lmsRefreshButtonItemActive {
+	background: red url('@{lms-img-path}/reload.gif');
+}
+
+.lmsRefreshButtonItemInactive {
+	background: white url('@{lms-img-path}/reload.gif');
+}

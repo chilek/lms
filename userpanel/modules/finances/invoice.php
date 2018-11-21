@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,7 +35,7 @@ if ($invoice_type == 'pdf') {
 	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
 	$pdf_type = ucwords($pdf_type);
 	$classname = 'LMS' . $pdf_type . 'Invoice';
-	$document = new $classname('A4', 'portrait', trans('Invoices'));
+	$document = new $classname(trans('Invoices'));
 } else {
 	// use LMS templates directory
 	define('SMARTY_TEMPLATES_DIR', ConfigHelper::getConfig('directories.smarty_templates_dir', ConfigHelper::getConfig('directories.sys_dir').'/templates'));
@@ -67,7 +67,11 @@ if(!empty($_POST['inv']))
 			continue;
 
 		if ($count == 1)
-			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $invoice['number'],
+				'template' => $invoice['template'],
+				'cdate' => $invoice['cdate'],
+			));
 
 		if($i == $count)
 			$invoice['last'] = TRUE;
@@ -76,6 +80,9 @@ if(!empty($_POST['inv']))
 		$document->Draw($invoice);
 		if (!isset($invoice['last']))
 			$document->NewPage();
+
+		if (!$invoice['published'])
+			$LMS->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
 	}
 } else {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
@@ -86,7 +93,11 @@ if(!empty($_POST['inv']))
 	$invoice['last'] = TRUE;
 	$invoice['type'] = $type;
 
-	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+	$docnumber = docnumber(array(
+		'number' => $invoice['number'],
+		'template' => $invoice['template'],
+		'cdate' => $invoice['cdate'],
+	));
 
 	if(!isset($invoice['invoice']))
 		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
@@ -94,6 +105,9 @@ if(!empty($_POST['inv']))
 		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
 
 	$document->Draw($invoice);
+
+	if (!$invoice['published'])
+		$LMS->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
 }
 
 if (!is_null($attachment_name) && isset($docnumber)) {

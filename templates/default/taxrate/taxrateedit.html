@@ -1,76 +1,91 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=taxrateedit&id={$taxrateedit.id}" name="taxrateedit">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/tax.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Label:")}</B>
+		<TD class"bold">
+			{trans("Label:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="taxrateedit[label]" value="{$taxrateedit.label}" size="16" {tip text="Enter tax rate label" trigger="label"}>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/pay.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Value:")}</B>
+		<TD class="bold nobr">
+			{trans("Value:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="taxrateedit[value]" value="{$taxrateedit.value|string_format:"%.2f"}" size="10" {tip text="Enter percentage value of tax rate" trigger="value"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/pay.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Taxing:")}</B>
+		<TD class="bold">
+			<label for="taxing">
+				{trans("Taxing:")}
+			</label>
 		</TD>
 		<TD width="98%">
-			<INPUT type="checkbox" name="taxrateedit[taxed]" value="1" {tip text="Select taxing status"}{if $taxrateedit.taxed!="0"}CHECKED{/if}>
+			<INPUT type="checkbox" id="taxing" name="taxrateedit[taxed]" value="1" {tip text="Select taxing status"}{if $taxrateedit.taxed!="0"}CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
+			<IMG src="img/pay.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			<label for="reversecharge">
+				{trans("Reverse charge:")}
+			</label>
+		</TD>
+		<TD width="98%">
+			<INPUT type="checkbox" id="reversecharge" name="taxrateedit[reversecharge]" value="1" {tip text="Check if reverse charge should be applied"}{if $taxrateedit.reversecharge} checked{/if}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Binds from date:")}</B>
+		<TD class="bold nobr">
+			{trans("Binds from date:")}
 		</TD>
-		<TD width="98%">
-			<div class="calendar">
-			<INPUT type="text" name="taxrateedit[validfrom]" value="{$taxrateedit.validfrom}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
-			</div>
+		<TD>
+			<INPUT type="text" name="taxrateedit[validfrom]" value="{$taxrateedit.validfrom}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Binds to date:")}</B>
+		<TD class="bold nobr">
+			{trans("Binds to date:")}
 		</TD>
-		<TD width="98%">
-			<div class="calendar">
-			<INPUT type="text" name="taxrateedit[validto]" value="{$taxrateedit.validto}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
-			</div>
+		<TD>
+			<INPUT type="text" name="taxrateedit[validto]" value="{$taxrateedit.validto}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD align="right" colspan="3">
+		<TD class="buttons" colspan="3">
 			<A href="javascript:document.taxrateedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=taxratelist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
@@ -79,7 +94,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['taxrateedit'].elements['taxrateedit[label]'].focus();
+	$(function() {
+		$('form[name="taxrateedit"] [name="taxrateedit[label]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

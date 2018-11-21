@@ -1,7 +1,6 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{include file="calendar_js.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM name="useradd" method="post" action="?m=useradd">
@@ -15,17 +14,25 @@
 			<IMG src="img/pass.gif" alt=""> {trans("Login:")}
 		</TD>
 		<TD style="width: 99%;">
-			<INPUT type="text" name="useradd[login]" value="{$useradd.login}" {tip text="Enter user login" trigger="login" bold=1}>
+			<INPUT type="text" name="useradd[login]" value="{$useradd.login}" required {tip text="Enter user login" trigger="login" bold=1}>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("First/last name:")}
+			<IMG src="img/users.gif" alt=""> {trans("First name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="useradd[name]" value="{$useradd.name}" size="40" {tip text="Enter user name" trigger="name"}>
+			<INPUT type="text" name="useradd[firstname]" value="{$useradd.firstname}" size="40" required {tip text="Enter user first name" trigger="firstname"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/users.gif" alt=""> {trans("Last name:")}
+		</TD>
+		<TD>
+			<INPUT type="text" name="useradd[lastname]" value="{$useradd.lastname}" size="40" required {tip text="Enter user last name" trigger="lastname"}>
 		</TD>
 	</TR>
 	<TR>
@@ -41,7 +48,7 @@
 			<IMG src="img/mail.gif" alt=""> {trans("E-mail:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="useradd[email]" value="{$useradd.email}" size="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
+			<INPUT type="email" name="useradd[email]" value="{$useradd.email}" size="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
 		</TD>
 	</TR>
 	<TR>
@@ -49,7 +56,7 @@
 			<IMG src="img/sms.gif" alt=""> {trans("Phone:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="useradd[phone]" value="{$useradd.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+			<INPUT type="tel" name="useradd[phone]" value="{$useradd.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
 	</TR>
 	<TR>
@@ -75,10 +82,8 @@
 			<img src="img/calendar.gif" alt=""> {trans("Account active:")}
 		</td>
 		<td class="nobr">
-			<div class="calendar">
-			{trans('from')}:<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" {tip text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
-			{trans('to')}:<input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10"  {tip text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
-			</div>
+			{trans('from')}:<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
+			{trans('to')}:<input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
 		</td>
 	</tr>
 	<TR>
@@ -86,7 +91,7 @@
 			<IMG src="img/pass.gif" alt=""> {trans("Password:")}
 		</TD>
 		<TD>
-			<INPUT type="password" name="useradd[password]" {tip text="Enter password" trigger="password"}>
+			<INPUT type="password" name="useradd[password]" required {tip text="Enter password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR>
@@ -94,7 +99,7 @@
 			<IMG src="img/pass.gif" alt=""> {trans("Repeat password:")}
 		</TD>
 		<TD>
-			<INPUT type="password" name="useradd[confirm]" {tip text="Confirm password" trigger="password"}>
+			<INPUT type="password" name="useradd[confirm]" required {tip text="Confirm password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR>
@@ -162,7 +167,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['useradd'].elements['useradd[login]'].focus();
+$(function() {
+	$('form[name="useradd"] [name="useradd[login]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

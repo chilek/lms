@@ -1,22 +1,24 @@
 {box title="Your computers"}
 <div class="table-responsive">
-<table class="table table-hover table-bordered">
-    <tr class="bg-primary">
-        <th>Opis urządzenia:</th>
-        <th>MAC adres</th>
-        <th>Publiczne IP:</th>
-    </tr>
-    {section name=usernodes loop=$usernodes}
-    {if $usernodes[usernodes].id}
-    <tr class="{if !$usernodes[usernodes].access}text-muted{/if}">
-        <td>{$usernodes[usernodes].name}</td>
-        <td>{$usernodes[usernodes].mac|replace:",":"<br/>"}</td>
-        <td>{$usernodes[usernodes].ip}</td>        
-    </tr>
-    {/if}
-    {sectionelse}
-    <tr><td colspan="3">{trans("You don't have any computers.")}</td></tr>
-    {/section}
-</table>
+	<table class="table table-hover table-bordered table-striped table-condensed">
+		<tr class="bg-primary text-white">
+			<th>Opis urządzenia:</th>
+			<th>MAC adres</th>
+			<th>Publiczne IP:</th>
+		</tr>
+		{section name=usernodes loop=$usernodes}
+			{if $usernodes[usernodes].id}
+				<tr class="{if !$usernodes[usernodes].access}text-muted{/if}">
+					<td>{$usernodes[usernodes].name}</td>
+					<td>{$usernodes[usernodes].mac|replace:",":"<br/>"}</td>
+					<td>{$usernodes[usernodes].ip}</td>
+				</tr>
+			{/if}
+		{sectionelse}
+			<tr>
+				<td colspan="3">{trans("You don't have any computers.")}</td>
+			</tr>
+		{/section}
+	</table>
 </div>
 {/box}

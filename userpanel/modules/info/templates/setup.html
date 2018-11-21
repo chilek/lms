@@ -6,26 +6,131 @@
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=info&f=submit_setup">
 	<TABLE WIDTH="100%">
-	    <TR>
-		<TD WIDTH="1%" NOWRAP>
-		    <label for="hide_nodesbox">{trans("Hide customer nodes box:")}</label>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-		    <INPUT type="checkbox" NAME="hide_nodesbox" ID="hide_nodesbox" value="1"{if $hide_nodesbox} checked{/if} {tip text="Don't show customer nodes box if he hasn't any nodes"}>
-    		</TD>
-	    </TR>
-	    <TR>
-		<TD WIDTH="1%" NOWRAP>
-		    {trans("Text of data processing agreement:")}
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-		    <TEXTAREA NAME="consent_text" rows="4" cols="50" {tip text="Enter text of agreement for personal data processing"}>{$consent_text}</TEXTAREA>
-    		</TD>
-	    </TR>
+		<TR>
+			<TD WIDTH="1%" NOWRAP>
+				<label for="hide_nodesbox">{trans("Hide customer nodes box:")}</label>
+			</TD>
+			<TD WIDTH="99%" NOWRAP>
+				<INPUT type="checkbox" NAME="hide_nodesbox" ID="hide_nodesbox" value="1"{if $hide_nodesbox} checked{/if} {tip text="Don't show customer nodes box if he hasn't any nodes"}>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH="1%" NOWRAP>
+				<label for="show_confirmed_documents_only">{trans("Show confirmed documents only:")}</label>
+			</TD>
+			<TD WIDTH="99%" NOWRAP>
+				<INPUT type="checkbox" NAME="show_confirmed_documents_only" ID="show_confirmed_documents_only" value="1"{if $show_confirmed_documents_only} checked{/if} {tip text="Show only documents which are confirmed"}>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH="1%" NOWRAP>
+				{trans("Text of data processing agreement:")}
+			</TD>
+			<TD WIDTH="99%" NOWRAP>
+				<TEXTAREA NAME="consent_text" rows="4" cols="50" {tip text="Enter text of agreement for personal data processing"}>{$consent_text}</TEXTAREA>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="nobr">
+				<label for="pin_changes">{trans("PIN changes:")}</label>
+			</TD>
+			<TD class="nobr">
+				<input type="checkbox" name="pin_changes" id="pin_changes" value="1"{if $pin_changes} checked{/if} {tip text="Allow customer to change PIN"}>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="nobr" colspan="2">
+				<fieldset>
+					<legend class="bold">
+						{trans("Customer data change notifications sent to operator")}
+					</legend>
+					<table>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_sender">{trans("Mail sender:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_notification_mail_sender" id="change_notification_mail_sender" value="{$change_notification_mail_sender}" {tip text="Enter customer data change notification mail sender"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_recipient">{trans("Mail recipient:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_notification_mail_recipient" id="change_notification_mail_recipient" value="{$change_notification_mail_recipient}" {tip text="Enter customer data change notification mail recipient"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_subject">{trans("Mail subject:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_notification_mail_subject" id="change_notification_mail_subject" value="{$change_notification_mail_subject}" {tip text="Enter customer data change notification mail subject"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_body">{trans("Mail body:")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="change_notification_mail_body" id="change_notification_mail_body" cols="60" rows="7" {tip text="Enter customer data change notification mail body"}>{$change_notification_mail_body}</TEXTAREA>
+							</TD>
+						</TR>
+					</table>
+				</fieldset>
+			</TD>
+		</TR>
+
+		<TR>
+			<TD class="nobr" colspan="2">
+				<fieldset>
+					<legend class="bold">
+						{trans("Customer data change notifications sent to customer")}
+					</legend>
+					<table>
+						<TR>
+							<TD class="nobr">
+								<label for="customer_change_confirmation_mail_subject">{trans("Confirmation mail subject:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_confirmation_mail_subject" id="change_confirmation_mail_subject" value="{$change_confirmation_mail_subject}" {tip text="Enter customer data change confirmation mail subject"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_confirmation_mail_body">{trans("Confirmation mail body:")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="change_confirmation_mail_body" id="change_confirmation_mail_body" cols="60" rows="7" {tip text="Enter customer data change confirmation mail body"}>{$change_confirmation_mail_body}</TEXTAREA>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_rejection_mail_subject">{trans("Rejection mail subject:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_rejection_mail_subject" id="change_rejection_mail_subject" value="{$change_rejection_mail_subject}" {tip text="Enter customer data change rejection mail subject"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_rejection_mail_body">{trans("Rejection mail body:")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="change_rejection_mail_body" id="change_rejection_mail_body" cols="60" rows="7" {tip text="Enter customer data change rejection mail body"}>{$change_rejection_mail_body}</TEXTAREA>
+							</TD>
+						</TR>
+					</table>
+				</fieldset>
+			</TD>
+		</TR>
+
+
 	</TABLE>
 	<p align="right">
-	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+		<A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+		<A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 	</p>
 	</FORM>
     </TD></TR>

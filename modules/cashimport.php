@@ -103,17 +103,13 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 					$DB->GetRow('SELECT customerid, sourceid, sourcefileid
 						FROM cashimport WHERE id = ?', array($id)));
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $id,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $sourceid,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
+					SYSLOG::RES_CASHIMPORT => $id,
+					SYSLOG::RES_CUST => $customerid,
+					SYSLOG::RES_CASHSOURCE => $sourceid,
+					SYSLOG::RES_SOURCEFILE => $sourcefileid,
 					'closed' => 1,
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+				$SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
 			}
 		}
 } elseif (isset($_GET['action']) && $_GET['action'] == 'save') {
@@ -127,16 +123,12 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 					$DB->GetRow('SELECT sourceid, sourcefileid
 						FROM cashimport WHERE id = ?', array($idx)));
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $idx,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $sourceid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $sourcefileid,
+						SYSLOG::RES_CASHIMPORT => $idx,
+						SYSLOG::RES_CUST => $id,
+						SYSLOG::RES_CASHSOURCE => $sourceid,
+						SYSLOG::RES_SOURCEFILE => $sourcefileid,
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
 				}
 			}
 } elseif (isset($_POST['marks'])) {
@@ -214,13 +206,11 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 									WHERE id = ? OR reference = ?',
 										array($inv['id'], $inv['id']));
 								$args = array(
-									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $balance['customerid'],
+									SYSLOG::RES_DOC => $docid,
+									SYSLOG::RES_CUST => $balance['customerid'],
 									'closed' => 1,
 								);
-								$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+								$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
 							}
 
 							$value -= $inv['value'];
@@ -232,17 +222,13 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 			$DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
 			if ($SYSLOG) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $import['id'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $balance['customerid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $import['sourceid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $import['sourcefileid'],
+					SYSLOG::RES_CASHIMPORT => $import['id'],
+					SYSLOG::RES_CUST => $balance['customerid'],
+					SYSLOG::RES_CASHSOURCE => $import['sourceid'],
+					SYSLOG::RES_SOURCEFILE => $import['sourcefileid'],
 					'closed' => 1,
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+				$SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
 			}
 
 			$LMS->AddBalance($balance);
@@ -252,7 +238,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 	}
 }
 
-$divisions = $DB->GetAllByKey('SELECT id, name FROM divisions ORDER BY name', 'id');
+$divisions = $LMS->GetDivisions(array('order' => 'name'));
 
 $divisions[0] = array('id' => 0, 'name' => '');
 
@@ -262,7 +248,7 @@ if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 	WHERE i.closed = 0 AND i.value > 0
 	ORDER BY i.id'))
 {
-	$listdata['total'] = sizeof($importlist);
+	$listdata['total'] = count($importlist);
 
 	foreach($importlist as $idx => $row)
 	{
@@ -280,8 +266,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count
     FROM sourcefiles s
-    LEFT JOIN users u ON (u.id = s.userid)
-    ORDER BY s.idate DESC LIMIT 10');
+    LEFT JOIN vusers u ON (u.id = s.userid)
+    ORDER BY s.idate DESC');
 
 $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('listdata', isset($listdata) ? $listdata : NULL);

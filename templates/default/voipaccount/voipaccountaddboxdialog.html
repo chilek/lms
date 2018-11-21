@@ -1,0 +1,189 @@
+<STYLE>
+    #first_avible {
+        visibility: hidden;
+    }
+</STYLE>
+
+<DIV ID="pool-select-number-dialog" CLASS="lms-ui-dialog" TITLE="{trans("Select number<!voip>")}">
+    <FORM ACTION="?m={$layout.module}" METHOD="POST">
+        {trans("Pool numbers")}<BR>
+        <SELECT ID="pool_list" STYLE="width: 20%;">
+            <OPTION VALUE="0">- {trans("select")} -</OPTION>
+            {foreach $pool_list as $v}
+            <OPTION VALUE="{$v.id}">{$v.name}</OPTION>
+            {/foreach}
+        </SELECT>
+        &nbsp;<A HREF="#" ID="first_avible">{trans("select first avible")}</A>
+        <BR><BR>
+
+        <DIV CLASS="lmsbox">
+            <TABLE ID="numbers-table" CLASS="lms-ui-datatable">
+                <THEAD>
+                    <TR>
+                        <TH>{trans("Phone number:")}</TH>
+                        <TH>Status</TH>
+                    </TR>
+                </THEAD>
+                <TBODY></TBODY>
+            </TABLE>
+        </DIV>
+
+        <INPUT TYPE="submit" style="position:absolute; top:-1000px">
+    </FORM>
+</DIV>
+
+<SCRIPT TYPE="text/javascript">
+<!--
+
+var pool_add_dialog;
+var cached_pool_numbers = [];
+var selected_input;
+var datatable;
+var prev;
+{if count($pool_list) == 1}
+var datatable_initialized = 0;
+{/if}
+
+$( function() {
+    datatable = $( "#numbers-table" ).DataTable();
+
+    pool_select_number_dialog = new LmsUiDialog('pool-select-number-dialog');
+    pool_select_number_dialog.setDialogWidth(800);
+
+    /*
+     * \brief Open dialog and save input where put phone.
+     */
+    $( "body" ).on("click", ".show-pool-list", function() {
+        selected_input = $(this).closest( "tr" ).find( "input" );
+        markSelectedPhones();
+
+        {if count($pool_list) == 1}
+        if (datatable_initialized == 0) {
+            var pooltmpid = $( "#pool_list option:nth-child(2)").val();
+
+            $( "#pool_list" ).val( pooltmpid );
+            $( "#pool_list" ).trigger( "change" );
+            datatable_initialized = 1;
+        }
+        {/if}
+
+        pool_select_number_dialog.open();
+    });
+
+    /*
+     * \brief Insert selected phone number from dialog to input.
+     */
+    $( "#numbers-table" ).on("click", "tbody tr", function() {
+
+        if ( $(this).find( "td:nth-child(2)" ).text().length || $(this).children().length == 1) {
+            return 0;
+        }
+
+        if ( selected_input.val() != '' ) {
+            var old_selected = $("#numbers-table").find('tr td:contains("' + selected_input.val() + '")');
+            $( old_selected ).closest( "tr" )
+                             .removeClass( "blend" )
+                             .find( "td:nth-child(2)" ).text("");
+        }
+
+        selected_input.val( $(this).find( "td:first-child" ).text() );
+        pool_select_number_dialog.close();
+        $( this ).addClass( "blend" );
+        $( this ).find( 'td:nth-child(2)' ).text( '{trans("used")}' );
+    });
+
+    /*
+     * \brief Reload phone numbers after change pool numbers.
+     */
+    $( "#pool_list" ).change( function() {
+        var poolid = $(this).val();
+
+        if (poolid == 0) {
+            datatable.clear().draw();
+            $( "#first_avible" ).css( "visibility", "hidden" );
+            return 0;
+        } else if (cached_pool_numbers[ poolid ] != undefined) {
+            loadNumbersToTable( cached_pool_numbers[ poolid ] );
+        } else {
+            $.ajax({
+                method: "POST",
+                url: "?m=voipaccountadd&action=getpoolnumbers",
+                data: { "poolid" : poolid },
+            })
+            .done(function(data) {
+                cached_pool_numbers[ poolid ] = data;
+                loadNumbersToTable( data );
+            });
+        }
+
+        $( "#first_avible" ).css( "visibility", "visible" );
+    });
+
+    /*
+     * Function insert phone numbers to datatables.
+     *
+     * \param data json array
+     */
+    function loadNumbersToTable( data ) {
+        datatable.clear();
+        datatable.rows.add( JSON.parse(data) ).draw().nodes();
+
+        markSelectedPhones();
+    }
+
+    /*
+     * \brief Disable/enable table row in datatables who is already in use.
+     * Function take into account numbers from inputs.
+     */
+    function markSelectedPhones() {
+        var phones_in_inputs = [];
+
+        $( "#phone_numbers_table input" ).each( function() {
+            if ($(this).val().length) {
+                phones_in_inputs.push($(this).val());
+            }
+        });
+
+        phones_in_inputs.sort();
+
+        var phones = datatable.column(0, { order : "index" }).data();
+        $.each(phones_in_inputs, function(index, phone) {
+            if ((rowIndex = phones.indexOf(phone)) > -1) {
+                datatable.cell(rowIndex, 1).data("{trans("used")}");
+                $( datatable.row(rowIndex).invalidate().node() ).addClass( "blend" );
+            }
+        });
+
+        $.each($(prev).not(phones_in_inputs).get(), function(index, phone) {
+            if ((rowIndex = phones.indexOf(phone)) > -1) {
+                datatable.cell(rowIndex, 1).data("");
+                $( datatable.row(rowIndex).invalidate().node() ).removeClass( "blend" );
+            }
+        });
+
+        datatable.draw();
+        prev = phones_in_inputs;
+    }
+
+    /*
+     * \brief Select first avible number from selected pool.
+     */
+    $( "#first_avible" ).click( function() {
+
+        var phones = datatable.column(1, { order : "index" }).data();
+
+        $.each(phones, function(rowIndex, state) {
+            if ( state.length )
+                return true; //continue
+
+            datatable.cell( rowIndex, 1 ).data("{trans("used")}");
+            $( datatable.row( rowIndex ).invalidate().node() ).addClass( "blend" );
+            datatable.draw();
+            selected_input.val( datatable.cell( rowIndex, 0 ).data() );
+            pool_select_number_dialog.close();
+            return false;
+        });
+    });
+});
+//-->
+</SCRIPT>

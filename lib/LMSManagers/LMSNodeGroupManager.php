@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -98,14 +98,13 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
 				FROM nodegroups WHERE id = ?', array($id));
 
         $result['nodes'] = $this->GetNodesWithGroup($id, $network);
-        $result['nodescount'] = sizeof($result['nodes']);
+        $result['nodescount'] = empty($result['nodes']) ? 0 : count($result['nodes']);
 
         return $result;
     }
 
     public function CompactNodeGroups()
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $this->db->BeginTrans();
         $this->db->LockTables('nodegroups');
         if ($nodegroups = $this->db->GetAll('SELECT id, prio FROM nodegroups ORDER BY prio ASC')) {
@@ -114,10 +113,10 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
                 $this->db->Execute('UPDATE nodegroups SET prio=? WHERE id=?', array($prio, $row['id']));
                 if ($this->syslog) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $row['id'],
+                        SYSLOG::RES_NODEGROUP => $row['id'],
                         'prio' => $prio
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+                    $this->syslog->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
                 }
                 $prio++;
             }

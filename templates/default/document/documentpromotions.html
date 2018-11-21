@@ -1,0 +1,75 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox" id="documentpromotions">
+	<COLGROUP>
+		<COL style="width: 100%;">
+	</COLGROUP>
+	<THEAD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="documentpromotionpanel">
+		<TD>
+			<IMG src="img/promoschema.gif" alt="">
+			<span class="bold">{trans("Promotion Schema:")}</span>
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR id="documentpromotionpanel"  style="display: none;">
+		<TD>
+			<TABLE class="lmsbox-inner">
+				<TBODY>
+				<TR>
+					<TD>
+						{include file="customer/customerassignmenthelper.html" variable_prefix="document[assignment]" variables=$document.assignment promotion_only=1}
+					</TD>
+				</TR>
+				</TBODY>
+			</TABLE>
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+<SCRIPT>
+	var tariffTypes = [];
+	{foreach $tariffs as $tariff}
+	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
+	{/foreach}
+
+	var selected = {};
+	{if !empty($document.assignment.snodes)}
+	selected["snodes"] = {json_encode($document.assignment.snodes)};
+	{/if}
+	{if !empty($document.assignment.sphones)}
+	selected["sphones"] = {json_encode($document.assignment.sphones)};
+	{/if}
+	selected["location"] = "{if isset($document.assignment.location)}{$document.assignment.location}{/if}";
+	selected["recipient_address_id"] = "{if isset($document.assignment.recipient_address_id)}{$document.assignment.recipient_address_id}{else}0{/if}";
+
+	var assignment_settings = {
+		customerid: {if !empty($cid)}{$cid}{else}0{/if},
+		selected: selected,
+		internetTariffType: {$smarty.const.SERVICE_INTERNET},
+		phoneTariffType: {$smarty.const.SERVICE_PHONE},
+		tariffTypes: tariffTypes,
+		variablePrefix: 'document[assignment]',
+		hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
+	}
+
+	var customer_assignment_helper = new CustomerAssignmentHelper(assignment_settings);
+
+	$('#a_period').remove();
+
+	$(function() {
+		$('#submit-button').click(function (e) {
+			if (parseInt($('#promotion-select').val()) && !customer_assignment_helper.validate(e)) {
+				return;
+			}
+			document.documentadd.submit();
+		});
+
+		$('[data-lmsbox-content="documentpromotionpanel"]').click(function() {
+			init_multiselects('select.lms-ui-multiselect-deferred:visible');
+		});
+	});
+
+	if (getCookie('documentpromotionpanel') == '1')
+		$('#documentpromotionpanel').show();
+</SCRIPT>

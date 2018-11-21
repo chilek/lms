@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2013 LMS Developers
+ *  Copyright (C); 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,24 +27,25 @@
 /**
  * LMSHelpdeskManagerInterface
  * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSHelpdeskManagerInterface
 {
 
     public function GetQueue($id);
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL);
+	public function GetQueueContents(array $params);
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL);
 
-    public function GetQueueList($stats = true);
+	public function GetQueueList(array $params);
 
     public function GetQueueNames();
 
     public function QueueExists($id);
 
     public function GetQueueIdByName($queue);
+
+    public function GetQueueVerifier($id);
 
     public function GetQueueName($id);
 
@@ -64,19 +65,57 @@ interface LMSHelpdeskManagerInterface
 
     public function GetCategoryIdByName($category);
 
-    public function GetCategoryListByUser($userid = NULL);
+    public function GetUserCategories($userid = NULL);
 
     public function RTStats();
 
     public function GetQueueByTicketId($id);
 
+    public function GetEventsByTicketId($id);
+
+    public function GetQueueNameByTicketId($id);
+
     public function TicketExists($id);
 
+//	public function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false);
+
+	public function TicketMessageAdd($message, $files = null);
+
     public function TicketAdd($ticket, $files = NULL);
+
+	public function GetLastMessageID();
 
     public function GetTicketContents($id);
 
     public function GetMessage($id);
-    
-    public function TicketChange($ticketid, array $props); 
+
+    public function GetFirstMessage($ticketid);
+
+    public function GetLastMessage($ticketid);
+
+    public function TicketChange($ticketid, array $props);
+
+	public function GetQueueCategories($queueid);
+
+	public function ReplaceNotificationSymbols($text, array $params);
+
+	public function ReplaceNotificationCustomerSymbols($text, array $params);
+
+	public function NotifyUsers(array $params);
+
+	public function CleanupTicketLastView();
+
+	public function MarkQueueAsRead($queueid);
+
+	public function MarkTicketAsRead($ticketid);
+
+	public function MarkTicketAsUnread($ticketid);
+
+	public function GetIndicatorStats();
+
+	public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null);
+
+	public function GetTicketPhoneFrom($ticketid);
+
+	public function CheckTicketAccess($ticketid);
 }

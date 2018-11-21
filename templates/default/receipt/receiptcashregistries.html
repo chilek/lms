@@ -1,0 +1,6 @@
+<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
+	<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
+	{foreach $cashreglist as $c}
+	<OPTION VALUE="{$c.id}"{if $c.id == $regid || count($cashreglist) == 1} selected{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+	{/foreach}
+</SELECT>

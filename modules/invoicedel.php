@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,11 +26,16 @@
 
 $id = intval($_GET['id']);
 
-if($id && $_GET['is_sure'] == '1')
-{
+if ($id && $_GET['is_sure'] == '1') {
+	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification'))
+		return;
+
+	if ($LMS->isDocumentReferenced($_GET['id']))
+		return;
+
 	$LMS->InvoiceDelete($id);
 }
 
-$SESSION->redirect('?m=invoicelist');
+$SESSION->redirect($_SERVER['HTTP_REFERER']);
 
 ?>

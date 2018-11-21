@@ -1,80 +1,50 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
+{$xajax}
 <script type="text/javascript">
 <!--
-	function setnumberplans()
-	{
-		var type = document.forms['documentedit'].elements['document[type]'].value,
-			plans = document.getElementById('numberplans');
-
-		if (type == 0)
-		{
-			plans.style.display = 'none';
-			plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
-		}
-		else
-		{
-			var p = [], pr = [];
-			var s = {$document.numberplanid|default:0};
-			{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-				p[{$key}] = [];
-				pr[{$key}] = [];
-				{foreach from=$allnumberplans item=plan}{if $plan.doctype == $key}{assign var=period value=$plan.period}
-					p[{$key}][{$plan.id}] = '{number number=$plan.next template=$plan.template time=$document.cdate}';
-					pr[{$key}][{$plan.id}] = '{$_NUM_PERIODS.$period}';
-				{/if}{/foreach}
-			{/if}{/foreach}
-			if (p[type].length)
-			{
-				var key, result = '<SELECT name="document[numberplanid]">';
-				for (key in p[type])
-				{
-					result = result + '<OPTION value="' + key + '"';
-					if(key == s)
-						result += ' SELECTED';
-					result = result + '>' + p[type][key] + ' (' + pr[type][key] + ') </OPTION>';
-				}
-				result += '</SELECT>';
-
-				plans.innerHTML = result;
-			}
-			else
-				plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
-
-			plans.style.display = 'inline';
-		}
+	function setnumberplans() {
+		reset_login_timeout();
+		xajax_GetNumberPlans(document.forms['documentedit'].elements['document[type]'].value,
+			document.forms['documentedit'].elements['document[numberplanid]'].value,
+			{$document.customerid});
 	}
 //-->
 </script>
-<P><FORM name="documentedit" method="POST" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
+<P><FORM name="documentedit" method="POST" id="documentedit-form" action="?m=documentedit&id={$document.id}" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="customerid" value="{$document.customerid}">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/docum.gif" alt="">
 		</TD>
-		<TD width="1%" NOWRAP>
-			<B>{trans("Title:")}
+		<TD class="bold nobr">
+			{trans("Title:")}
 		</TD>
-		<TD width="98%" NOWRAP>
-			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
+		<TD class="nobr">
+			<INPUT type="text" name="document[title]" value="{$document.title}" required {tip text="Enter document title" trigger="title"} size="40">
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Type:")}
+		<TD class="bold">
+			{trans("Type:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
@@ -83,73 +53,95 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/docum.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Number:")}
+		<TD class="bold">
+			{trans("Number:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="document[number]" value="{$document.number}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
-			{if $numberplans}
-			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplans}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-			{/foreach}
-			</SELECT>
-			{else}
-				<INPUT type="hidden" name="document[numberplanid]" value="0">
-			{/if}
+			<DIV id="numberplans" style="display: {if empty($numberplans)}none{else}inline{/if};">
+			{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate customerid=$document.customerid}
 			</DIV>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Period:")}
+		<TD class="bold">
+			{trans("Period:")}
 		</TD>
-		<TD width="98%">
-			<div class="calendar">
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
-			</div>
+		<TD>
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}
+		<TD class="bold">
+			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
 		</TD>
 	</TR>
-{*
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/save.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("File:")}
+		<TD class="bold nobr">
+			{trans("New files:")}
 		</TD>
-		<TD width="98%">
-			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+		<TD>
+			{fileupload id="attachments" fileupload=$fileupload form="documentedit-form"}
 		</TD>
 	</TR>
+	{if !empty($document.attachments)}
 	<TR>
-		<TD width="1%">
+		<TD>
+			<IMG src="img/attach.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Attached files:")}
+		</TD>
+		<TD class="nobr">
+			<script type="text/javascript">
+			<!--
+				$(function() {
+					$('.docattach').on('click', function() {
+						var elem = $(this);
+						elem.toggleClass('blend crossed');
+						elem.html('<img src="img/' + (elem.hasClass('blend') ? 'cancel' : 'delete') + '.gif"> ' + elem.attr('data-filename'));
+						elem.siblings('input').val(+ elem.hasClass('blend'));
+						return false;
+					});
+				});
+			//-->
+			</script>
+			{foreach $document.attachments as $docattach}
+			<div>
+				<a href="#" class="docattach{if $document.attachments[$docattach.id].deleted} blend crossed{/if}" data-filename="{$docattach.filename}">
+					<img src="img/{if $document.attachments[$docattach.id].deleted}cancel{else}delete{/if}.gif"> {$docattach.filename}
+				</a>
+				<input type="hidden" name="document[attachments][{$docattach.id}][deleted]" value="{$document.attachments[$docattach.id].deleted}">
+			</div>
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
+{*
+	<TR>
+		<TD>
 			<IMG src="img/class.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Template:")}
+		<TD class="bold">
+			{trans("Template:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<SELECT SIZE="1" NAME="document[template]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="template"}>
 				<OPTION VALUE="0">... {trans("select template")} ...</OPTION>
 				{foreach from=$docengines item=item}
@@ -160,16 +152,18 @@
 	</TR>
 *}
 	<TR>
-		<TD width="1%">
-	        	<IMG src="img/confirm.gif" ALT="">
+		<TD>
+			<IMG src="img/confirm.gif" ALT="">
 		</TD>
-		<TD width="1%" nowrap><B>{trans("Confirmed:")}</B></TD>
-		<TD width="98%">
-		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
+		<TD class="bold nobr">
+			<label for="closed">{trans("Confirmed:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="3" align="right" NOWRAP>
+		<TD colspan="3" class="buttons">
 			<A href="javascript: document.documentedit.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="?m=customerinfo&id={$document.customerid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
@@ -179,8 +173,9 @@
 </FORM></P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['documentedit'].elements['document[title]'].focus();
-setnumberplans();
+	$(function() {
+		$('form[name="documentedit"] [name="document[title]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

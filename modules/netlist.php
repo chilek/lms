@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,10 +26,30 @@
 
 $layout['pagetitle'] = trans('IP Networks');
 
-if (isset($_GET['o']))
-    $netlist = $LMS->GetNetworkList($_GET['o']);
+$search = array(
+    'count' => true,
+);
+
+$search['total'] = intval($LMS->GetNetworkList($search));
+
+if (isset($_GET['page']))
+	$search['page'] = intval($_GET['page']);
+elseif ($SESSION->is_set('netlist_page'))
+    $SESSION->restore('netlist_page', $search['page']);
 else
-    $netlist = $LMS->GetNetworkList();
+	$search['page'] = 1;
+$SESSION->save('netlist_page', $search['page']);
+
+$search['limit'] = intval(ConfigHelper::getConfig('phpui.networklist_pagelimit', $search['total']));
+$search['offset'] = ($search['page'] - 1) * $search['limit'];
+$search['count'] = false;
+
+if (isset($_GET['o']))
+	$search['order'] = $_GET['o'];
+$netlist = $LMS->GetNetworkList($search);
+
+$pagination = LMSPaginationFactory::getPagination($search['page'], $search['total'], $search['limit'],
+	ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $listdata['size'] = $netlist['size'];
 $listdata['assigned'] = $netlist['assigned'];
@@ -37,15 +57,15 @@ $listdata['online'] = $netlist['online'];
 $listdata['order'] = $netlist['order'];
 $listdata['direction'] = $netlist['direction'];
 
-
 unset($netlist['assigned']);
 unset($netlist['size']);
 unset($netlist['online']);
 unset($netlist['order']);
 unset($netlist['direction']);
 
-$listdata['total'] = sizeof($netlist);
+$listdata['total'] = count($netlist);
 
+$SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netlist',$netlist);
 $SMARTY->display('net/netlist.html');

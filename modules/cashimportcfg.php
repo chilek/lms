@@ -54,6 +54,11 @@ $patterns[] = array(
     'pinvoice_year' => 2,	// year position in $invoice_regexp
     'pinvoice_month' => 0,	// month position in $invoice_regexp
 
+	'comment_replace' => array(
+		'from' => array('/^(.+)$/'),
+		'to' => array('$1 (z rachunku: %srcaccount%, na rachunek: %dstaccount%, od klienta: %customername%)'),
+	),
+
     'encoding' => 'UTF-8',	// imported data encoding (for conversion)
 
     'modvalue' => 0,		// if not zero do value = value * modvalue

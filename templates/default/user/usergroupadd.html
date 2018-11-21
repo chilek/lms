@@ -2,7 +2,7 @@
  @author Maciej_Wawryk
  -->
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
     <h1>{$layout.pagetitle}</h1>
     <form method="post" name="usergroupadd" action="?m=usergroupadd">
@@ -14,7 +14,7 @@
 		<tr>
 		    <td style="width: 1%"><img src="img/group.gif" alt=""></td>
 		    <td style="width: 1%" class="bold">{trans("Name:")}</td>
-		    <td style="width: 98%"><input type="text" name="usergroupadd[name]" value="{$usergroupadd.name}" size="50" {tip trigger="name" bold=1}></td>
+		    <td style="width: 98%"><input type="text" name="usergroupadd[name]" value="{$usergroupadd.name}" size="50" required {tip trigger="name" bold=1}></td>
 		</tr>
 	    </thead>
 	    <tbody>
@@ -33,6 +33,10 @@
 	</table>
     </form>
     <script type="text/javascript">
-	document.forms['usergroupadd'].elements['usergroupadd[name]'].focus();
+	<!--
+		$(function() {
+			$('forms[name="usergroupadd"] [name="usergroupadd[name]"]').focus();
+		});
+	//-->
     </script>
 {/block}

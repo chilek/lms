@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,7 +31,7 @@ if (isset($_GET['is_sure'])) {
 	if (!$regid)
 		$SESSION->redirect('?m=cashreglist');
 
-	if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) < 256) {
+	if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid)) < 256) {
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
 		die;
@@ -39,11 +39,11 @@ if (isset($_GET['is_sure'])) {
 
 	if ($SYSLOG) {
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREGHIST] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $regid,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userid,
+			SYSLOG::RES_CASHREGHIST => $id,
+			SYSLOG::RES_CASHREG => $regid,
+			SYSLOG::RES_USER => $userid,
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_CASHREGHIST, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_CASHREGHIST, SYSLOG::OPER_DELETE, $args);
 	}
 	$DB->Execute('DELETE FROM cashreglog WHERE id = ?', array($id));
 }

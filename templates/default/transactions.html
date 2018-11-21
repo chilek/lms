@@ -1,57 +1,62 @@
 <!--// $Id$ //-->
-{*$xajax*}
+
 <FORM name="search" method="post" action="?m=archiveview">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" name="search[resourcetype]" value="{$resourcetype}">
-<INPUT type="hidden" name="search[resourceid]" value="{$resourceid}">
-<INPUT type="hidden" name="search[userid]" value="{$userid}">
-</p>
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR class="hand">
-		<TD onclick="showOrHide('transactionpanel');">
-			<IMG src="img/recover.gif" alt="">
-			<span class="bold"><A name="transactions">{trans("Transaction Log:")}</A></span>&nbsp;({t a=20}last $a transactions{/t})
-		</TD>
-		<TD class="text-right">
-			<A href="javascript:document.search.submit();">{trans("More")} &raquo;</A>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="transactionpanel" style="display: none;">
-		<TD style="width: 100%;" class="fall" id="transactiontable" colspan="2">
-			<TABLE class="lmsbox-inner">
+	<INPUT type="submit" class="hiddenbtn">
+	<INPUT type="hidden" name="search[resourcetype]" value="{$resourcetype}">
+	<INPUT type="hidden" name="search[resourceid]" value="{$resourceid}">
+	<INPUT type="hidden" name="search[userid]" value="{$userid}">
+</FORM>
+
+{tab_container id="transactions"}
+
+	{tab_header content_id="transactionpanel"}
+		{tab_header_cell icon="lms-ui-icon-transactions"}
+			<strong>{trans("Transaction Log:")}</strong>&nbsp;({t a=300}last $a transactions{/t})
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="#" id="more-transactions">{trans("More")} &raquo;</A>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="transactionpanel"}
+
+		{tab_table}
+
+			<TABLE id="transactions-datatable" class="lmsbox-inner{if $transactions} lms-ui-datatable{/if}"{if $transactions} data-order='[[ 0, "desc" ]]' data-page-length="10" style="display: none;"{/if} width="100%">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 97%;">
+				</COLGROUP>
 			{if $transactions}
 				<THEAD>
 				<TR>
-					<TD style="width: 1%;" class="fleftu nobr">{trans("Date:")}</TD>
-					<TD style="width: 1%;" class="fbt nobr">{trans("User:")}</TD>
-					<TD style="width: 1%;" class="fbt nobr">{trans("Module:")}</TD>
-					<TD style="width: 97%;" class="fbt nobr">{trans("Operations:")}</TD>
+					<TH class="bold nobr">{trans("Date:")}</TH>
+					<TH class="bold nobr">{trans("User:")}</TH>
+					<TH class="bold nobr">{trans("Module:")}</TH>
+					<TH class="bold nobr" data-orderable="false">{trans("Operations:")}</TH>
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle values="light,lucid" print=false name=trans}
 				{foreach $transactions as $tr}
-				<TR class="{cycle name=trans}">
-					<TD style="width: 1%;" class="valign-bottom nobr">
+				<TR>
+					<TD class="valign-bottom nobr">
 						{$tr.time|date_format:"Y.m.d H:i:s"}
 					</TD>
-					<TD style="width: 1%;" class="text-center valign-bottom nobr">
+					<TD class="text-center valign-bottom nobr">
 						<a href="?m=userinfo&amp;id={$tr.userid}">{$tr.login}</a>
 					</TD>
-					<TD style="width: 1%;" class="text-center valign-bottom nobr">
+					<TD class="text-center valign-bottom nobr">
 						{$tr.module}
 					</TD>
-					<TD style="width: 97%;" class="valign-bottom">
+					<TD class="valign-bottom">
 						{if $tr.messages}
 							{if count($tr.messages) > 10}{$start = 9 - count($tr.messages)}...<br>
 							{else}{$start=-1}{/if}
 							{section name=messages loop=$tr.messages start=$start step=-1}
 								{$message = $tr.messages[messages]}
-								<span class="bold">{$_SYSLOG_RESOURCES[$message.resource]}: {$_SYSLOG_OPERATIONS[$message.operation]}</span>
+								<span class="bold">{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></span>
 								{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
 								{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
 								{if !$messages@last}<br>{/if}
@@ -65,20 +70,25 @@
 			<TBODY>
 			<TR>
 				<TD class="empty-table" colspan="4">
-					{trans("No such transactions in database.")}
+					<p>{trans("No such transactions in database.")}</p>
 				</TD>
 			</TR>
 			</TBODY>
 			{/if}
 			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('transactionpanel') == '1')
-	document.getElementById('transactionpanel').style.display = '';
-//-->
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}
+
+<SCRIPT>
+
+	$(function() {
+		$('#more-transactions').click(function(e) {
+			e.stopPropagation();
+			$('form[name=search]').submit();
+		});
+	});
+
 </SCRIPT>

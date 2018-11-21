@@ -93,7 +93,7 @@ if($alias)
 	if(empty($_GET['addaccount']) && empty($_GET['delaccount'])
 		&& empty($_GET['addmailforward']) && empty($_GET['delmailforward']))
 	{
-		if(!sizeof($alias['accounts']) && !sizeof($alias['mailforwards']))
+		if(!count($alias['accounts']) && !count($alias['mailforwards']))
 		{
 			$error['accountid'] = trans('You have to select destination account!');
 			$error['mailforward'] = trans('You have to specify forward e-mail!');
@@ -128,11 +128,11 @@ if($alias)
 		
 		$id = $DB->GetLastInsertId('aliases');
 		
-		if (sizeof($alias['accounts']))
+		if (count($alias['accounts']))
 			foreach($alias['accounts'] as $account)
 				$DB->Execute('INSERT INTO aliasassignments (aliasid, accountid)
 					VALUES(?,?)', array($id, $account['id']));
-		if (sizeof($alias['mailforwards']))
+		if (count($alias['mailforwards']))
 			foreach($alias['mailforwards'] as $mailforward)
 				$DB->Execute('INSERT INTO aliasassignments (aliasid, mail_forward)
 					VALUES(?,?)', array($id, $mailforward));
@@ -166,7 +166,7 @@ elseif(!empty($_GET['domainid']))
 	$alias['accounts'] = array();
 }
 
-if(isset($alias['accounts']) && sizeof($alias['accounts']))
+if(isset($alias['accounts']) && count($alias['accounts']))
 {
 	$where = 'AND passwd.id NOT IN ('.implode(',',array_keys($alias['accounts'])).')';
 }

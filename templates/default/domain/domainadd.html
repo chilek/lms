@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -15,7 +15,7 @@
 			<B>{trans("Domain:")}</b>
 		</TD>
 		<TD width="98%" NOWRAP>
-			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" {tip text="Enter domain name" trigger="name"} size="20">
+			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" required {tip text="Enter domain name" trigger="name"} size="20">
 		</TD>
 	</TR>
     </THEAD>
@@ -119,7 +119,9 @@ function hideslave() {
 	document.getElementById('ipmailserver').style.display = '';
 }
 
-document.forms['domainadd'].elements['domainadd[name]'].focus();
+$(function() {
+	$('form[name="domainadd"] [name="domainadd[name]"]').focus();
+});
 
 if (document.getElementById('domainadd[type]').value == 'SLAVE')
 	showslave();

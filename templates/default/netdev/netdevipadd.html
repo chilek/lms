@@ -1,38 +1,36 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$xajax}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevipaddbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevinfobox.html" devicepanel=1}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevipbox.html" devicepanel=1}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="managementurl/managementurls.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevconnbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevnodes.html"}
-		</TD>
-	</TR>
-</TABLE>
+<div id="netdevipadd-sortable" class="lms-ui-sortable-persistent">
+{block name=netdevipaddrbox}
+	{include file="netdev/netdevipaddbox.html"}
+{/block}
+{block name=netdevinfobox}
+	{include file="netdev/netdevinfobox.html" devicepanel=1}
+{/block}
+{block name=netdevipbox}
+	{include file="netdev/netdevipbox.html"}
+{/block}
+{block name=netdevattachments}
+	{include file="attachments.html" attachmenttype="netdevid" attachmentresourceid=$netdev.id}
+{/block}
+{block name=netdevmanagementurl}
+	{include file="managementurl/managementurls.html"}
+{/block}
+{block name=netdevconnbox}
+	{include file="netdev/netdevconnbox.html"}
+{/block}
+{block name=netdevnodes}
+	{include file="netdev/netdevnodes.html"}
+{/block}
+{block name=netdevradiosectors}
+	{include file="netdev/radiosectors.html"}
+{/block}
+</div>
+<script type="text/javascript">
+	restoreSortable('netdevipadd-sortable', '{$netdevvipadd_sortable_order}');
+</script>
 {/block}

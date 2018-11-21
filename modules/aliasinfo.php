@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,10 +38,10 @@ $alias['accounts'] = $DB->GetAllByKey('SELECT p.id, p.login, d.name AS domain
 		WHERE p.id IN (SELECT accountid FROM aliasassignments
 			WHERE aliasid = ?)', 'id', array($alias['id'])); 
 $mailforwards = $DB->GetAllByKey('SELECT mail_forward
-		FROM aliasassignments WHERE aliasid = ? AND accountid = 0 AND mail_forward <> \'\'',
+		FROM aliasassignments WHERE aliasid = ? AND accountid IS NULL AND mail_forward <> \'\'',
 		'mail_forward', array($alias['id']));
 $alias['mailforwards'] = array();
-if(sizeof($mailforwards))
+if(count($mailforwards))
 	foreach($mailforwards as $mailforward => $idx)
 		$alias['mailforwards'][] = $mailforward;
 

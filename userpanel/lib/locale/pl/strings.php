@@ -99,5 +99,12 @@ $_LANG['Authentication type:'] = 'Rodzaj uwierzytelniania:';
 $_LANG['Userpanel authentication type'] = 'Rodzaj uwierzytelniania używany przez Userpanel';
 
 $_LANG['Page header'] = 'Nagłówek strony';
+$_LANG['Company logo'] = 'Logo firmy';
+$_LANG['Enter path to your company logo'] = 'Wpisz ścieżkę do logo firmy';
+
+$_LANG['Google reCAPTCHA site key:'] = 'Klucz witryny Google reCAPTCHA:';
+$_LANG['Enter Google reCAPTCHA site key'] = 'Podaj klucz witryny Google reCAPTCHA:';
+$_LANG['Google reCAPTCHA secret:'] = 'Podaj tajne hasło Google reCAPTCHA:';
+$_LANG['Enter Google reCAPTCHA secret'] = 'Podaj tajne hasło Google reCAPTCHA:';
 
 ?>

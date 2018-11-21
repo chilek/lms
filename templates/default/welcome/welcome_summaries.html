@@ -1,8 +1,8 @@
 {if !ConfigHelper::checkPrivilege('hide_summaries')}
-<table class="lmsbox">
+<table class="lmsbox" id="lms-ui-welcome-box-summaries">
     <colgroup>
-        <col style="width: 50%;"/>
-        <col style="width: 50%;"/>
+        <col style="width: 50%;">
+        <col style="width: 50%;">
     </colgroup>
     <thead>
         <tr>
@@ -18,6 +18,14 @@
             </td>
             <td>
                 {$nodestats.online}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                <a href="?m=nodelist&amp;s=7">{trans("With warning")}:</a>
+            </td>
+            <td>
+                {$nodestats.withwarning}
             </td>
         </tr>
         <tr>

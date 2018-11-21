@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <h1 class="text-center alert">{trans("Access denied!")}</h1>
@@ -11,12 +11,12 @@
 	</tr>
 	<tr>
 		<td class="empty-table">
-			{trans("You have no access rights to this part of system.")}
+			<p>{trans("You have no access rights to this part of system.")}</p>
 		</td>
 	</tr>
 </table>
 {if $layout.popup}
-<script type="text/javascript" src="img/autoiframe.js"></script>
-<script type="text/javascript" src="img/common.js"></script>
+<script type="text/javascript" src="js/autoiframe.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
 {/if}
 {/block}

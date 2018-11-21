@@ -81,9 +81,9 @@ try {
 //bug - modyfikacje błednego wsdl-a z BGZ-tu - zamiast http musi byc https!!
 class My_SoapClient extends SoapClient {
 //source http://www.victorstanciu.ro/php-soapclient-port-bug-workaround/ +modification
-    public function __doRequest($request, $location, $action, $version) {
+    public function __doRequest($request, $location, $action, $version, $one_way = 0) {
  			$location='https'.substr($location,4);
-        $return = parent::__doRequest($request, $location, $action, $version);
+        $return = parent::__doRequest($request, $location, $action, $version, $one_way);
         return $return;
     }
 }
@@ -105,7 +105,13 @@ function mt940Parser($file){
 			$dwukropek=stripos($line,':');
 			if ( ($dwukropek==0)&&($dwukropek!==false) ){
 				$pole=preg_split('/:/',$line);
-				$wplaty_parser[$i][$pole[1]]=trim($pole[2]);
+                                if (isset($pole[4])){
+                                        $wplaty_parser[$i][$pole[1]]=trim($pole[2]).':'.trim($pole[3]).':'.trim($pole[4]);
+                                }elseif(isset($pole[3])){
+                                        $wplaty_parser[$i][$pole[1]]=trim($pole[2]).':'.trim($pole[3]);
+                                }else{
+					$wplaty_parser[$i][$pole[1]]=trim($pole[2]);
+                                }
 				switch ($pole[1]) {
    				case '61':
    					$wplaty_parser[$i]['value']=str_replace(",", ".", trim(substr($pole[2],11,strpos($pole[2],'NOTREF')-11)));

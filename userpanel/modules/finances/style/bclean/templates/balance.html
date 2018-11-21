@@ -2,13 +2,14 @@
 <div class="row">
     <div class="col-md-12">
         {if $userinfo.balance < 0}
-        <h1>{trans("Current balance:")} <strong class="text-danger">{$userinfo.balance|money_format}</strong></h1>
-        {if !ConfigHelper::checkConfig('userpanel.disable_transferform')}
-        <br/><a class="btn btn-primary" href="?m=finances&amp;f=transferform" target="_blank">{trans("Click here to print payment form")}</a>
-        {/if}
+			<h1>{trans("Current balance:")} <strong class="text-danger">{$userinfo.balance|money_format}</strong></h1>
+            {$custom_content}
+				{if !ConfigHelper::checkConfig('userpanel.disable_transferform')}
+				<br/><a class="btn btn-primary" href="?m=finances&amp;f=transferform" target="_blank">{trans("Click here to print payment form")}</a>
+			{/if}
         {else}
-        <h1>{trans("Current balance:")} <strong class="text-success">{$userinfo.balance|money_format}</strong></h1>
-        <button type="button" class="btn btn-primary" disabled>{trans("All your covenants are settled")}.</button>
+			<h1>{trans("Current balance:")} <strong class="text-success">{$userinfo.balance|money_format}</strong></h1>
+			<button type="button" class="btn btn-primary" disabled>{trans("All your covenants are settled")}.</button>
         {/if}
     </div>
 </div>

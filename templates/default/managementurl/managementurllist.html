@@ -1,66 +1,65 @@
-<TABLE class="lmsbox-inner">
-<THEAD>
-<TR>
-	<TD style="width: 48%;" class="nobr" COLSPAN="2">{trans("URL:")}</TD>
-	<TD style="width: 48%;">{trans("Comment:")}</TD>
-	<TD style="width: 2%;">&nbsp;</TD>
-</TR>
-</THEAD>
-<TBODY>
-{cycle name=managementurls values="light,lucid" print=false}
-{foreach from=$mgmurls item=mgmurl}
+{if $mgmurls}
+<div class="lms-ui-tab-table-row header">
+	<div class="lms-ui-tab-table-wrapper col-2">
+		<div class="lms-ui-tab-table-column url">
+			<strong>{trans("URL:")}</strong>
+		</div>
+		<div class="lms-ui-tab-table-column comment">
+			{trans("Comment:")}
+		</div>
+	</div>
+
+	<div class="lms-ui-tab-table-column buttons">
+		&nbsp;
+	</div>
+</div>
+{/if}
+
+{foreach $mgmurls as $mgmurl}
 {$urlid = $mgmurl.id}
 {if $formdata.urlid && $formdata.urlid == $urlid}{$edit = true}{else}{$edit = false}{/if}
-<TR class="highlight {cycle name=managementurls}"  >
-	<TD class="nobr" COLSPAN="2">
-		<span id="url_{$urlid}"{if $edit} style="display: none;"{/if}>
-		<a href="{$mgmurl.url}"{if preg_match("/^(https?|ftp):/", $mgmurl.url)} target="_blank"{/if}>{$mgmurl.url}</a>
-		</span>
-		<input type="text" size="80" name="url_edit_{$urlid}" id="url_edit_{$urlid}" value="{if $edit}{$formdata.url}{else}{$mgmurl.url}{/if}" {tip text="Enter management URL" trigger="url_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
-	</TD>
-	<TD class="nobr">
-		<span id="comment_{$urlid}"{if $edit} style="display: none;"{/if}>{$mgmurl.comment}</span>
-		<input type="text" size="40" name="comment_edit_{$urlid}" id="comment_edit_{$urlid}" value="{if $edit}{$formdata.comment}{else}{$mgmurl.comment}{/if}" {tip text="Enter URL comment" trigger="comment_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
-	</TD>
-	<TD class="text-right nobr">
+<div class="lms-ui-tab-table-row" data-urlid="{$urlid}">
+	<div class="lms-ui-tab-table-wrapper col-2">
+		<div class="lms-ui-tab-table-column url">
+			<span id="url_{$urlid}"{if $edit} style="display: none;"{/if} class="url-info-field">
+				<a href="{$mgmurl.url}"{if preg_match("/^(https?|ftp):/", $mgmurl.url)} target="_blank"{/if}>{$mgmurl.url}</a>
+			</span>
+			<input type="text" size="80" name="url_edit_{$urlid}" id="url_edit_{$urlid}"
+					value="{if $edit}{$formdata.url}{else}{$mgmurl.url}{/if}"
+					class="url-edit-field"
+					{tip text="Enter management URL" trigger="url_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
+		</div>
+		<div class="lms-ui-tab-table-column comment">
+			<span id="comment_{$urlid}"{if $edit} style="display: none;"{/if} class="url-info-field">
+				{$mgmurl.comment}
+			</span>
+			<input type="text" size="40" name="comment_edit_{$urlid}" id="comment_edit_{$urlid}"
+					value="{if $edit}{$formdata.comment}{else}{$mgmurl.comment}{/if}"
+					class="url-edit-field"
+					{tip text="Enter URL comment" trigger="comment_edit_{$urlid}"}{if !$edit} style="display: none;"{/if}>
+		</div>
+	</div>
+
+	<div class="lms-ui-tab-table-column buttons">
 		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
-		<A HREF="javascript:toggleEditManagementUrl({$urlid});" id="edit_button_{$urlid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit management URL"}></A>
-		<A HREF="javascript:updateManagementUrl({$urlid});" id="save_button_{$urlid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
-		<A HREF="javascript:toggleEditManagementUrl({$urlid});" id="cancel_button_{$urlid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
-		<A HREF="javascript:delManagementUrl({$urlid});" id="delete_button_{$urlid}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove management URL"}></A>
+		{button type="link" icon="edit" id="edit_button_{$urlid}"
+			onclick="javascript:toggleEditManagementUrl({$urlid});"
+			tip="Edit management URL" visible=!$edit}
+		{button type="link" icon="save" id="save_button_{$urlid}"
+			onclick="javascript:updateManagementUrl({$urlid});"
+			tip="Save" visible=$edit}
+		{button type="link" icon="cancel" id="cancel_button_{$urlid}"
+			onclick="javascript:toggleEditManagementUrl({$urlid});"
+			tip="Cancel" visible=$edit}
+		{button type="link" icon="delete" id="delete_button_{$urlid}"
+			onclick="javascript:delManagementUrl({$urlid});"
+			tip="Remove management URL"}
 		{/if}
-	</TD>
-</TR>
+	</div>
+</div>
+
 {foreachelse}
-<TR id="no_management_urls">
-	<TD class="empty-table" colspan="4">
-		<p>{trans("No management URL's.")}</p>
-	</TD>
-</TR>
+<div class="lms-ui-tab-empty-table" id="no_management_urls">
+	{trans("No management URL's.")}
+</div>
 {/foreach}
-{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
-<TR cellpadding="5" id="add_management_url" style="{if ! $formdata}display: none;{/if}">
-	<TD COLSPAN="2" class="nobr">
-		<input type="text" size="80" name="url" id="url" value="{if !$formdata.urlid}{$formdata.url}{/if}" {tip text="Enter management URL" trigger="url"}>
-	</TD>
-	<TD class="nobr">
-		<input type="text" size="40" name="comment" id="comment" value="{if !$formdata.urlid}{$formdata.comment}{/if}" {tip text="Enter URL comment" trigger="comment"}>
-	</TD>
-	<TD class="text-right nobr" ROWSPAN="2">
-		<A HREF="javascript:addManagementUrl();" id="cancel_new_radiosector_button" {tip text="Add new management URL"}> <IMG SRC="img/save.gif" alt="[ {trans("Add")} ]"></A>
-		<A HREF="javascript:hideAddManagementUrl();" id="cancel_new_radiosector_button"><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
-		
-	</TD>
-<TR>
-{/if}
-<TR>
-	<TD class="dark ftop text-right nobr" COLSPAN="4">
-		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
-		&nbsp;<A id="managementurladdlink" HREF="javascript:showAddManagementUrl();;" {tip text="Add new management URL"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>
-		{else}
-		&nbsp;
-		{/if}
-	</TD>
-</TR>
-</TBODY>
-</TABLE>

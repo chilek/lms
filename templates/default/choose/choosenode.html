@@ -5,8 +5,8 @@
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
 <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="img/common.js"></script>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/common.js"></script>
 {if $js}<script type="text/javascript">
 <!--
 	{$js}
@@ -20,7 +20,7 @@
 </frameset>
 {/if}
 {if $part == "main"}
-<body>
+<body class="lms-ui-popup">
 <script type="text/javascript">
 <!--
 	var targetfield = window.opener.targetfield;
@@ -44,7 +44,7 @@
 <form name="nodelist">
 <table width="100%" cellpadding="3" id="table">
 	{cycle values="light,lucid" print=false}
-	{if sizeof($nodelist) > 0}
+	{if count($nodelist) > 0}
 	{section name=nodelist loop=$nodelist}
 	{if $nodelist[nodelist].id}
 	<tr class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
@@ -84,7 +84,7 @@
 		    <table width="100%" cellpadding="3" id="table">
 			<tr>
 			    <td align="left" class="nobr">
-			        {if sizeof($nodelist) > 1}
+			        {if count($nodelist) > 1}
 				<input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('nodelist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				{/if}
 			    </td>

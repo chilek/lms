@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {if $unlockedit}
@@ -18,35 +18,41 @@
 {/if}
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 2%;">
+		<COL style="width: 48%;">
+		<COL style="width: 2%;">
+		<COL style="width: 48%;">
+	</COLGROUP>
 	{if $unlockedit}<FORM method="post" action="?m=netedit&amp;id={$network.id}" name="netedit"><INPUT type="submit" class="hiddenbtn">{/if}
 	<THEAD>
 	<TR>
 		{if !$unlockedit}
-		<TD style="width: 100%;" class="bold" colspan="4">
+		<TD class="bold" colspan="4">
 			<IMG src="img/network.gif" alt=""> {$network.name} ({$network.id|string_format:"%04d"})
 		</TD>
 		{else}
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/network.gif" alt=""> {trans("Name:")}
 		</TD>
-		<TD style="width: 99%;" class="bold" colspan="3">
-			 <INPUT type="text" name="networkdata[name]" value="{$network.name}" {tip trigger="name" bold=1}> ({$network.id|string_format:"%04d"})
+		<TD class="bold" colspan="3">
+			 <INPUT type="text" name="networkdata[name]" value="{$network.name}" required {tip trigger="name" bold=1}> ({$network.id|string_format:"%04d"})
 		</TD>
 		{/if}
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/ip.gif" alt=""> {trans("Address/prefix:")}
 		</TD>
-		<TD style="width: 48%;" class="nobr">
-			{if $unlockedit}<INPUT type="text" name="networkdata[address]" value="{$network.address}" {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}
+		<TD class="nobr">
+			{if $unlockedit}<INPUT type="text" name="networkdata[address]" value="{$network.address}" required {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}
 		</TD>
-		<TD style="width: 2%;" class="bold nobr" rowspan="2">
+		<TD class="bold nobr" rowspan="2">
 			<IMG src="img/dhcp.gif" alt=""> {trans("DHCP range:")}
 		</TD>
-		<TD style="width: 48%;" rowspan="2">
+		<TD rowspan="2">
 			{if $unlockedit}<INPUT type="text" name="networkdata[dhcpstart]" value="{$network.dhcpstart}" {tip text="Enter first address of DHCP range (optional)" trigger="dhcpstart"}><BR>
 			<INPUT type="text" name="networkdata[dhcpend]" value="{$network.dhcpend}" {tip text="Enter last address of DHCP range (optional)" trigger="dhcpend"}>{else}
 			{$network.dhcpstart}<BR>
@@ -56,7 +62,7 @@
 	</TR>
 	{if !$unlockedit}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<img src="img/cmp.gif" alt=""> {trans("Network size:")}
 		</TD>
 		<TD style="width: 49%;">
@@ -65,32 +71,34 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD style="width: 1%;" class="bold">
+		<TD class="bold">
 			<IMG src="img/mac.gif" alt=""> {trans("Interface:")}
 		</TD>
-		<TD style="width: 99%;" colspan="3">
+		<TD colspan="3">
 			{if $unlockedit}
-			<INPUT type="text" name="networkdata[interface]" value="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
+			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
+			<span class="bold">{trans("vlan:")}</span>
+			<INPUT TYPE="text" NAME="networkdata[vlanid]" VALUE="{if $network.vlanid}{$network.vlanid}{/if}" SIZE="5" MAXLENGTH="4" {tip text="Enter vlan ID (optional)" trigger="vlanid"}>
 			{else}
-			{$network.interface}
+			{if !empty($network.interface)}{$network.interface}{/if}{if !empty($network.vlanid)}, {trans("vlan:")} {$network.vlanid}{/if}
 			{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 2%;" class="bold nobr">
+		<TD class="bold nobr">
 			<img src="img/gateway.gif" alt=""> {trans("Gateway:")}
 		</TD>		
-		<TD style="width: 48%;">
+		<TD>
 			{if $unlockedit}
 			<INPUT type="text" name="networkdata[gateway]" value="{$network.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}> 
 			{else}
 			{$network.gateway}
 			{/if}
 		</TD>
-		<TD style="width: 2%;" class="bold nobr">
+		<TD class="bold nobr">
 			<img src="img/dns.gif" alt=""> {trans("DNS servers:")}
 		</TD>
-		<TD style="width: 48%;">
+		<TD>
 			{if $unlockedit}
 			<INPUT type="text" name="networkdata[dns]" value="{$network.dns}" {tip text="Enter primary DNS address (optional)" trigger="dns"}><BR>
 			<INPUT type="text" name="networkdata[dns2]" value="{$network.dns2}" {tip text="Enter secondary DNS address (optional)" trigger="dns2"}>
@@ -101,20 +109,20 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 2%;" class="bold nobr">
+		<TD class="bold nobr">
 			<img src="img/wins.gif" alt=""> {trans("WINS server:")}
 		</TD>
-		<TD style="width: 48%;">
+		<TD>
 			{if $unlockedit}
 			<INPUT type="text" name="networkdata[wins]" value="{$network.wins}" {tip text="Enter WINS server address (optional)" trigger="wins"}>
 			{else}
 			{$network.wins}
 			{/if}
 		</TD>
-		<TD style="width: 2%;" class="bold nobr">
+		<TD class="bold nobr">
 			<img src="img/node.gif" alt=""> {trans("Domain:")}
 		</TD>
-		<TD style="width: 48%;">
+		<TD>
 			{if $unlockedit}
 			<INPUT type="text" name="networkdata[domain]" value="{$network.domain}" {tip text="Enter network domain (optional)" trigger="domain"}>
 			{else}
@@ -124,10 +132,10 @@
 	</TR>
 	{if $network.ownerid || $unlockedit}
 	<tr>
-		<TD style="width: 2%;" class="fleft bold nobr">
+		<TD class="bold nobr">
 			<img src="img/customer.gif" alt=""> {trans("Customer:")}
 		</td>
-		<TD style="width: 98%;" colspan="3">
+		<TD colspan="3">
 			{if $unlockedit}
 				{customerlist form="netedit" customers=$customers selected=$network.ownerid selectname="networkdata[customerid]" inputname="networkdata[ownerid]" selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
 			{else}
@@ -136,12 +144,34 @@
 		</td>
 	</tr>
 	{/if}
+	<TR>
+		<TD class="bold nobr">
+			<img src="img/network.gif" alt="">
+			{trans("Public network:")}
+		</TD>
+		<TD colspan="3">
+			{if $unlockedit}
+			<select size="1" name="networkdata[pubnetid]" {tip text="Assign public network (optional)"}>
+				<option value="0">{trans("- select public network -")}</option>
+				{foreach $networks as $net}
+				{if $net.id neq $network.id}
+				<option value="{$net.id}" {if $network.pubnetid == $net.id} selected{/if}>{$net.name} ({$net.address}/{$net.prefix})</option>
+				{/if}
+				{/foreach}
+			</select>
+			{elseif $network.pubnetid}
+			{$network.pubnet.name} ({$network.pubnet.address}/{$network.pubnet.prefix})
+			{else}
+			{trans("- none -")}
+			{/if}
+		</TD>
+	</TR>
 	{if $network.hostid || $unlockedit}
 	<tr> 
-		<TD style="width: 2%;" class="fleft bold nobr">
+		<TD class="bold nobr">
 			<img src="img/host.gif" alt=""> {trans("Host:")}
 		</td>
-		<TD style="width: 98%;" colspan="3">
+		<TD colspan="3">
 			{if $unlockedit}
 			<select size="1" name="networkdata[hostid]" {tip text="Select host" trigger="hostid"}>
 				<option value="0">{trans("- none -")}</option>
@@ -155,15 +185,53 @@
 		</td>
 	</tr>
 	{/if}
+	<TR>
+		<TD class="bold nobr">
+			<img src="img/node.gif" alt=""> {trans("SNAT IP:")}
+		</TD>
+		<TD colspan="3">
+			{if $unlockedit}
+			<INPUT type="text" name="networkdata[snat]" value="{$network.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
+			{else}
+			{$network.snat}
+			{/if}
+		</TD>
+	</TR>
+	{if $network.authtype || $unlockedit}
+	<TR>
+		<TD class="bold nobr">
+			<IMG SRC="img/netdev.gif" ALT=""> {trans("Type:")}
+		</TD>
+		<TD colspan="3" class="nobr">
+			{$first = true}
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
+			{if $unlockedit}
+			<label>
+				<INPUT TYPE="checkbox" NAME="networkdata[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if $network.authtype & $idx} checked{/if}>
+				{$sessiontype.label}
+			</label>
+			{else}
+			{if $network.authtype & $idx}
+			{if !$first} / {/if}{$sessiontype.label}{$first = false}{/if}
+			{/if}
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
 	{if $network.notes || $unlockedit}
 	<TR>
-		<TD style="width: 50%;" colspan="2">
-			<TABLE width="100%" cellpadding="5">
+		<TD colspan="2">
+			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 99%;">
+				</COLGROUP>
+				<TBODY>
 				<TR>
-					<TD style="width: 1%;" class="nobr">
+					<TD class="nobr">
 						<IMG src="img/info1.gif" alt="">
 					</TD>
-					<TD style="width: 99%;">
+					<TD>
 						{if $unlockedit}
 						<TEXTAREA name="networkdata[notes]" cols="50" rows="5" {tip text="Enter notes (optional)"}>{$network.notes}</TEXTAREA>
 						{else}
@@ -177,19 +245,20 @@
 						{/if}
 					</TD>
 				</TR>
+				</TBODY>
 			</TABLE>
 		</TD>
-		<TD style="width: 50%;" colspan="2">
+		<TD colspan="2">
 		</TD>
 	</TR>
 	{/if}
 	{if $unlockedit}</form>{/if}
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="4">
+		<TD class="text-right" colspan="4">
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
 			<INPUT type="submit" class="hiddenbtn">
-			<A href="?m=netcmp&amp;id={$network.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!")}');">{trans("Put in order")} <img src="img/cmp.gif" alt="[ {trans("Put in order")} ]"></A>
+			<A href="?m=netcmp&amp;id={$network.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!")}');">{trans("Put in order")} <img src="img/cmp.gif" alt="{trans("Put in order")}"></A>
 			<input type="hidden" name="is_sure" value="1">
 			<input type="hidden" name="m" value="netremap">
 			<input type="hidden" name="id" value="{$network.id}">
@@ -203,26 +272,32 @@
 				{/section}
 			</select>
 			{/if}
-			<A href="javascript:document.netedit.submit()" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt="[ {trans("Submit")} ]"></a>
-			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="[ {trans("Remove")} ]"></A>
-			<A href="?m=netinfo&amp;id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="[ {trans("Cancel")} ]"></A>
+			<A href="javascript:document.netedit.submit()" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt="{trans("Submit")}"></a>
+			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
+			<A href="?m=netinfo&amp;id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="{trans("Cancel")}"></A>
 			</form>
 			{else}
-			<A href="?m=netedit&amp;id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
-			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="[ {trans("Remove")} ]"></A>
+			<A href="?m=netedit&amp;id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="{trans("Edit")}"></A>
+			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
 			{/if}
 		</TD>
 	</TR>
 	{if $network.page}
 	<TR>
-		<TD style="width: 100%;" colspan="4">
-			<table class="lmsbox-inner">
+		<TD colspan="4">
+			<table class="lmsbox-innerbox">
+				<COLGROUP>
+					<COL style="width: 25%;">
+					<COL style="width: 25%;">
+					<COL style="width: 25%;">
+					<COL style="width: 25%;">
+				</COLGROUP>
 				<THEAD>
 				<TR>
-					<TD style="width: 50%;" class="bold" colspan="2">
+					<TD class="bold" colspan="2">
 						<img src="img/ip.gif" alt=""> {trans("IP addresses status:")}
 					</TD>
-					<TD style="width: 50%;" class="text-right bold" colspan="2">
+					<TD class="text-right bold" colspan="2">
 						{if $network.page > 1}<A href="?m=net{if $unlockedit}edit{else}info{/if}&amp;id={$network.id}&amp;page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<span class="blend">&laquo;&laquo;&laquo;</span>{/if}
 						{t a=$network.page b=$network.pages}Page $a of $b{/t} {if $network.page < $network.pages}<A href="?m=net{if $unlockedit}edit{else}info{/if}&amp;id={$network.id}&amp;page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<span class="blend">&raquo;&raquo;&raquo;</span>{/if}
 					</TD>
@@ -244,7 +319,7 @@
 				{section name=network loop=$network.nodes.id max=$network.rows}
 				<TR class="{cycle}">
 					{section name=subnetwork loop=$network.nodes.address start=$smarty.section.network.index step=$network.rows}
-					<TD style="width: 25%;" class="highlight text-center" {if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]} onclick="return self.location.href='?m=netdevinfo&amp;id={$network.nodes.netdev[subnetwork]}'"{else}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=nodeinfo&amp;id={$network.nodes.id[subnetwork]}'"{else}{if !$network.nodes.name[subnetwork]} onclick="return self.location.href='?m=nodeadd&amp;preip={$network.nodes.address[subnetwork]}'"{/if}{/if}{/if}>
+					<TD class="highlight text-center" {if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]} onclick="return self.location.href='?m=netdevinfo&amp;id={$network.nodes.netdev[subnetwork]}'"{else}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=nodeinfo&amp;id={$network.nodes.id[subnetwork]}'"{else}{if !$network.nodes.name[subnetwork]} onclick="return self.location.href='?m=nodeadd&amp;preip={$network.nodes.address[subnetwork]}'"{/if}{/if}{/if}>
 					<img src="img/{if !$network.nodes.ownerid[subnetwork] && $network.nodes.name[subnetwork]}netdev{else}node{/if}.gif" style="float: left;" alt="">
 					{if !$network.nodes.ownerid[subnetwork] && $network.nodes.netdev[subnetwork]}
 						<a href="?m=netdevinfo&amp;id={$network.nodes.netdev[subnetwork]}" {tip text=$network.nodes.address[subnetwork]}><span class="blend">{$network.nodes.name[subnetwork]}</span></A>

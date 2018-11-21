@@ -1,26 +1,31 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
+	<COLSPAN>
+		<COL style="width: 1%">
+		<COL style="width: 1%">
+		<COL style="width: 99%">
+	</COLSPAN>
     <THEAD>
 	<TR>
-	    <TD width="1%">
+	    <TD>
 		<IMG src="img/queue.gif" ALT="">
 	    </TD>
-	    <TD width="99%" colspan="2"><B>{$category.name} ({$category.id|string_format:"%04d"})</B></TD>
+	    <TD class="bold" colspan="2">{$category.name} ({$category.id|string_format:"%04d"})</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{if $category.description}
 	<TR>
-	    <TD width="1%">
+	    <TD>
 		<IMG src="img/info1.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{trans("Description:")}</B></TD>
-	    <TD width="98%">
-		<TABLE width="100%" cellpadding="5">
+	    <TD class="bold">{trans("Description:")}</TD>
+	    <TD>
+		<TABLE cellpadding="5">
 		    <TR>
 			<TD class="fall superlight">
 			    {$category.description|replace:"\n":"<BR>"}
@@ -30,18 +35,31 @@
 	    </TD>
 	</TR>
 	{/if}
+        <TR>
+            <TD>
+                <IMG src="img/queue.gif" ALT="">
+            </TD>
+            <TD class="bold">{trans("Category style:")}
+	    </TD>
+            <TD class="bold">
+		{if $category.style}
+			<span style="{$category.style}">{$category.name}</span>
+		{else}
+			<span style="{$_CATEGORY_DEFAULT_STYLE}">{$category.name}</span>
+		{/if}
+            </TD>
+        </TR>
 	<TR>
-	    <TD width="1%">
+	    <TD>
 		<IMG src="img/users.gif" ALT="">
 	    </TD>
-	    <TD width="1%"><B>{trans("Users:")}</B></TD>
-	    <TD width="98%">
+	    <TD class="bold">{trans("Users:")}</TD>
+	    <TD>
 		    <TABLE class="lmsbox">
                         <THEAD>
 			<TR>
-			    <TD width="99%"><B>{trans("User")}</B>
-			    </TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Owner")}</B></TD>
+			    <TD class="bold">{trans("User")}</TD>
+			    <TD class="text-center nobr bold">{trans("Owner")}</TD>
 			</TR>
                         </THEAD>
                         <TBODY>
@@ -49,11 +67,11 @@
 			{foreach from=$category.owners item=owner}
 			{if $owner}
 			<TR class="highlight {cycle}"  >
-			    <TD width="99%">
+			    <TD>
 				<A href="?m=userinfo&id={$owner.id}">{$owner.name}</A>
 				<INPUT type="hidden" name="category[usernames][{$right.id}]" value="{$right.name}">
 			    </TD>
-			    <TD width="1%" align="center">
+			    <TD class="text-center">
 				{if $owner.owner > 0}<IMG src="img/pass.gif" alt="">{/if}
 			    </TD>
 			</TR>
@@ -64,10 +82,10 @@
 	    </TD>
 	</TR>
 	<TR>
-	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
-	        <A HREF="?m=rtqueueview&catid={$category.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
-	    	<A HREF="?m=rtcategoryedit&id={$category.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+	    <TD COLSPAN="3" class="text-right"> 
+	        <A HREF="?m=rtqueueview&catid={$category.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
+	    	<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
+		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 	    </TD>
 	</TR>
     </TBODY>

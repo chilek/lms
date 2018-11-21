@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -549,11 +549,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"d.countryid AS div_countryid, d.ten AS div_ten, d.regon AS div_regon, "
 		"d.account AS div_account, d.inv_header AS div_inv_header, d.inv_footer AS div_inv_footer, "
 		"d.inv_author AS div_inv_author, d.inv_cplace AS div_inv_cplace, "
-		"(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype, "
-		"(CASE a.liabilityid WHEN 0 THEN t.name ELSE li.name END) AS name, "
-		"(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE li.taxid END) AS taxid, "
-		"(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE li.prodid END) AS prodid, "
-		"(CASE a.liabilityid WHEN 0 THEN "
+		"(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE -1 END) AS tarifftype, "
+		"(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE li.name END) AS name, "
+		"(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE li.taxid END) AS taxid, "
+		"(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE li.prodid END) AS prodid, "
+		"(CASE WHEN a.liabilityid IS NULL THEN "
 		    "ROUND((t.value - t.value * a.pdiscount / 100) - a.vdiscount, 2) "
 			"ELSE ROUND((li.value - li.value * a.pdiscount / 100) - a.vdiscount, 2) "
 			"END) AS value "
@@ -561,8 +561,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"JOIN customeraddressview c ON (a.customerid = c.id) "
 		"LEFT JOIN tariffs t ON (a.tariffid = t.id) "
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
-		"LEFT JOIN divisions d ON (d.id = c.divisionid) "
+		"LEFT JOIN vdivisions d ON (d.id = c.divisionid) "
 		"WHERE c.status = 3 AND c.deleted = 0 "
+			"AND a.commited = 1 "
 		    "AND ("
 		        "(a.period="_DISPOSABLE_" AND at=?) "
 		        "OR (("
@@ -593,7 +594,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	{
 		struct plan *plans = (struct plan *) malloc(sizeof(struct plan));
 		int invoice_number = 0;
-		char *invoice_numbertemplate = NULL;
+		char *invoice_numbertemplate = "%N/LMS/%Y";
 
 		if( g->db->nrows(res) )
 		{
@@ -645,7 +646,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			if( last_cid != cid )
 			{
 				result = g->db->pquery(g->db->conn, "SELECT 1 FROM assignments "
-					"WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0 "
+					"WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL "
 					    "AND (datefrom <= ? OR datefrom = 0) AND (dateto >= ? OR dateto = 0)",
 					cid_c, currtime, currtime);
 
@@ -755,30 +756,29 @@ void reload(GLOBAL *g, struct payments_module *p)
 					last_plan = numberplan;
 
 					// numberplan found
-					if (numberplan >= 0)
-					{
+					if (numberplan >= 0) {
 						numberplanid = strdup(itoa(plans[numberplan].plan));
 						period = plans[numberplan].period;
 						number = plans[numberplan].number;
 						numbertemplate = plans[numberplan].numbertemplate;
-					}
-					else // not found, use default/shared plan
-					{
+					} else { // not found, use default/shared plan
 						numberplanid = strdup(itoa(p->numberplanid));
 						period = p->num_period;
 						number = invoice_number;
-						numbertemplate = invoice_numbertemplate;
+						if (p->numberplanid)
+							numbertemplate = NULL;
+						else
+							numbertemplate = invoice_numbertemplate;
 					}
 
-					if(!number)
-					{
+					if (!number && (numberplan >= 0 || !numbertemplate)) {
 						char *start = get_num_period_start(&tt, period);
 						char *end = get_num_period_end(&tt, period);
 
 						// set invoice number
 						result = g->db->pquery(g->db->conn, "SELECT MAX(number) AS number FROM documents "
 							"WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", 
-							start, end, numberplanid); 
+							start, end, numberplanid);
 
 						if( g->db->nrows(result) )
 							number = atoi(g->db->get_data(result,0,"number"));
@@ -1071,7 +1071,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	    "WHERE id IN ("
 		    "SELECT liabilityid FROM assignments "
 	        "WHERE dateto < ? - 86400 * ? AND dateto != 0 AND at < ? - 86400 * ? "
-		        "AND liabilityid != 0)",
+		        "AND liabilityid IS NOT NULL)",
 	    currtime, exp_days, itoa(today), exp_days);
 	g->db->pexec(g->db->conn, "DELETE FROM assignments "
 	    "WHERE dateto < ? - 86400 * ? AND dateto != 0 AND at < ? - 86400 * ?",
@@ -1121,27 +1121,27 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->numberplanid = g->config_getint(p->base.ini, p->base.instance, "numberplan", 0);
 	p->check_invoices = g->config_getbool(p->base.ini, p->base.instance, "check_invoices", 0);
 
-	p->tariff_internet = _TARIFF_INTERNET_;
-	p->tariff_hosting = _TARIFF_HOSTING_;
-	p->tariff_service = _TARIFF_SERVICE_;
-	p->tariff_phone = _TARIFF_PHONE_;
-	p->tariff_tv = _TARIFF_TV_;
-	p->tariff_other = _TARIFF_OTHER_;
+	p->tariff_internet = _SERVICE_INTERNET_;
+	p->tariff_hosting = _SERVICE_HOSTING_;
+	p->tariff_service = _SERVICE_SERVICE_;
+	p->tariff_phone = _SERVICE_PHONE_;
+	p->tariff_tv = _SERVICE_TV_;
+	p->tariff_other = _SERVICE_OTHER_;
 
 	res = g->db->query(g->db->conn, "SELECT var, value FROM uiconfig WHERE section='tarifftypes' AND disabled=0");
 	for (i = 0; i < g->db->nrows(res); i++) {
 		char *val = g->db->get_data(res, i, "value");
-		if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_INTERNET_))
+		if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_INTERNET_))
 			p->tariff_internet = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_HOSTING_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_HOSTING_))
 			p->tariff_hosting = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_SERVICE_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_SERVICE_))
 			p->tariff_service = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_PHONE_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_PHONE_))
 			p->tariff_phone = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_TV_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_TV_))
 			p->tariff_tv = strdup(val);
-		else if (!strcmp(g->db->get_data(res, i, "var"), _TARIFF_OTHER_))
+		else if (!strcmp(g->db->get_data(res, i, "var"), _SERVICE_OTHER_))
 			p->tariff_other = strdup(val);
 	}
 	g->db->free(&res);

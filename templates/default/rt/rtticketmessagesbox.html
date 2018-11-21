@@ -4,12 +4,12 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/open.gif" alt=""> <B>{trans("Ticket History")}</B>
+			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
-			{if $ticket.state != 2}
-			<A href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}">{trans("New Note")} <IMG src="img/note.gif" alt=""></A>
-			<A href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}">{trans("New Message")} <IMG src="img/mail.gif" alt=""></A>
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{button icon="lms-ui-icon-note" label="New Note" onclick="window.location.href = '?m=rtnoteadd&ticketid={$ticket.ticketid}';"}
+				{button icon="lms-ui-icon-message" label="New Message" onclick="window.location.href = '?m=rtmessageadd&ticketid={$ticket.ticketid}';"}
 			{/if}
 		</TD>
 	</TR>
@@ -18,15 +18,15 @@
 	<TR>
 		<TD style="width: 100%;" class="navigation" colspan="3">
 			{if $ticket.prev_ticketid != NULL}
-				<A href="?m=rtticketview&amp;id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
+				<A href="?m=rtticketview&amp;id={$ticket.prev_ticketid}"><i class="lms-ui-icon-previous"></i>{trans("Previous ticket")}</A>
 			{else}
-				&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}
+				<i class="lms-ui-icon-previous"></i>{trans("Previous ticket")}
 			{/if}
 			&nbsp;&nbsp;&nbsp;
 			{if $ticket.next_ticketid != NULL}
-				<A href="?m=rtticketview&amp;id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
+				<A href="?m=rtticketview&amp;id={$ticket.next_ticketid}">{trans("Next ticket")}<i class="lms-ui-icon-next"></i></A>
 			{else}
-				{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;
+				{trans("Next ticket")}<i class="lms-ui-icon-next"></i>
 			{/if}
 		</TD>
 	</TR>
@@ -34,60 +34,85 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 100%;" colspan="3">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner" id="messages">
 				{counter start=0 skip=1 print=false assign=msgidx}
 				{foreach from=$ticket.messages item=message}
-				{if isset($message.customerid) && isset($message.subject)}
+				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
 				<THEAD>
-				<TR>
+				<TR id="rtmessage-{$message.id}"{if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rtmessage-deleted"{/if}>
 					<TD style="width: 1%;" class="valign-top text-right bold nobr">
 						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 					</TD>
 					<TD style="width: 1%;" class="text-right bold">
-						{trans("From:")}<BR>{trans("Subject:")}
+						{trans("From:")}{if $message.type == $smarty.const.RTMESSAGE_REGULAR}<BR>{trans("Subject:")}{/if}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{if $message.customerid}
-						<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
-						{elseif $message.userid}
-						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
-						{elseif $message.mailfrom}
-						<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
-						{else}
-						{$ticket.requestor|escape}
-						{if $ticket.requestoremail}
-						&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
-						{/if}
-						{/if}
+						{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
+							{if $message.customerid}
+								<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
+							{elseif $message.userid}
+								<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
+							{elseif $message.mailfrom}
+								<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
+							{else}
+								{$ticket.requestor|escape}
+								{if $ticket.requestoremail}
+									&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
+								{/if}
+							{/if}
+							{if $message.phonefrom}
+							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><img src="img/phone.gif"> {$message.phonefrom}</A>
+							{/if}
 						<BR>
 						{$message.subject|escape}
+						{else}
+						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
+						{/if}
 					</TD>
 					<TD style="width: 97%;" class="text-right">
 						{if $message.attachments}
-						{foreach $message.attachments as $attachment}
-						<A href="?m=rtmessageview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$attachment.filename}"{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"} onmouseover="popup('?m=rtattachmentview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$attachment.filename}',1,0,30,15);" onmouseout="pophide();"{/if}>{$attachment.filename} <IMG src="img/attach.gif" alt=""></A>
-						{/foreach}
+							{foreach $message.attachments as $attachment}
+								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
+									url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}"
+									text="<IMG src=\"img/attach.gif\" alt=\"\"> {$attachment.filename}"}
+							{/foreach}
 						{/if}
-						<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
-						{if $msgidx > 0}
-						<A href="?m=rtmessagedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
-						{/if}
-						{if $ticket.state != 2}
-						<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}">{trans("Answer")} <IMG src="img/forward.gif" alt=""></A>
+
+						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
+							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
+								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
+							{else}
+								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=delete" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+							{/if}
+						{else}
+							<A href="?m=rtmessageview&amp;id={$message.id}"><IMG src="img/view.gif" alt=""> {trans("Details")}</A>
+							{if $msgidx > 0}
+								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
+								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
+								{else}
+								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=delete" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+								{/if}
+							{/if}
+							{if $ticket.state != $smarty.const.RT_RESOLVED}
+								<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}"><IMG src="img/forward.gif" alt=""> {trans("Answer")}</A>
+							{/if}
 						{/if}
 					</TD>
 				</TR>
 				</THEAD>
 				<TBODY>
 				<TR>
-					<TD colspan="4" class="fbt superlight">
-						{$message.body|escape|replace:"\n":"<BR>"}
+					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0} class="lucid lms-ui-rtmessage-deleted fbt" {else} class="fbt superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
+						{$message.body|escape|replace:"\n":"<BR>"|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"}
 					</TD>
 				</TR>
 				</TBODY>
 				{counter print=false}
-				{elseif $message.type != $smarty.const.RTNOTE}
-					<tr class="blend">
+				{else}
+				<TBODY>
+					<tr id="rtmessage-{$message.id}" class="blend">
 						<td width="1%" class="fbt text-right nobr valign-top">
 							<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 						</td>
@@ -99,31 +124,7 @@
 							{$message.body}
 						</td>
 					</tr>
-				{else}
-				<THEAD>
-				<TR>
-					<TD style="width: 1%;" class="text-right bold nobr">
-						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
-					</TD>
-					<TD style="width: 1%;" class="text-right bold">
-						{trans("From:")}
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
-					</TD>
-					<TD style="width: 97%;" class="text-right nobr">
-						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
-					</TD>
-				</TR>
-				</THEAD>
-				<TBODY>
-					<TR>
-						<TD colspan="4" class="fbt superlight blend">
-							{$message.body|escape|replace:"\n":"<BR>"}
-						</TD>
-					</TR>
 				</TBODY>
-				{counter print=false}
 				{/if}
 				{/foreach}
 			</TABLE>
@@ -131,3 +132,13 @@
 	</TR>
 	</TBODY>
 </TABLE>
+<script type="text/javascript" src="js/Autolinker.min.js"></script>
+<script type="text/javascript">
+    var myTextEl = document.getElementById( 'messages' );
+    myTextEl.innerHTML = Autolinker.link( myTextEl.innerHTML );
+	if (location.hash.length) {
+		$('tr' + location.hash).parent('thead').addClass('lms-ui-rtmessage-current')
+			.next('tbody').addClass('lms-ui-rtmessage-current');
+		$('tr' + location.hash).parent('tbody').addClass('lms-ui-rtsystemmessage-current');
+	}
+</script>

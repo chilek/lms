@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,25 +29,31 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if(isset($_GET['id']) && $action=='edit')
 {
-    $note = $LMS->GetNoteContent($_GET['id']);
+	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
+		return;
+
+	$note = $LMS->GetNoteContent($_GET['id']);
 
     $SESSION->remove('notecontents');
     $SESSION->remove('notecustomer');
 
     $i = 0;
-    foreach ($note['content'] as $item) {
-	$i++;
-	$nitem['description']	= $item['description'];
-	$nitem['value']		= $item['value'];
-	$nitem['posuid']	= $i;
-	$SESSION->restore('notecontents', $notecontents);
-	$notecontents[] = $nitem;
-	$SESSION->save('notecontents', $notecontents);
-    }
+	foreach ($note['content'] as $item) {
+		$i++;
+		$nitem['description']	= $item['description'];
+		$nitem['value']		= $item['value'];
+		$nitem['posuid']	= $i;
+		$SESSION->restore('notecontents', $notecontents);
+		$notecontents[] = $nitem;
+		$SESSION->save('notecontents', $notecontents);
+	}
 
-    $SESSION->save('notecustomer', $LMS->GetCustomer($note['customerid'], true));
-    $note['oldcdate'] = $note['cdate'];
-    $SESSION->save('note', $note);
+	$note['oldcdate'] = $note['cdate'];
+	$note['oldnumber'] = $note['number'];
+	$note['oldnumberplanid'] = $note['numberplanid'];
+
+	$SESSION->save('notecustomer', $LMS->GetCustomer($note['customerid'], true));
+	$SESSION->save('note', $note);
     $SESSION->save('noteid', $note['id']);
 }
 
@@ -56,7 +62,12 @@ $SESSION->restore('notecustomer', $customer);
 $SESSION->restore('note', $note);
 $SESSION->restore('noteediterror', $error);
 
-$ntempl = docnumber($note['number'], $note['template'], $note['cdate']);
+$ntempl = docnumber(array(
+	'number' => $note['number'],
+	'template' => $note['template'],
+	'cdate' => $note['cdate'],
+	'customerid' => $note['customerid'],
+));
 $layout['pagetitle'] = trans('Debit Note Edit: $a', $ntempl);
 
 if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
@@ -79,7 +90,7 @@ switch($action)
 	break;
 
 	case 'deletepos':
-		if(sizeof($contents))
+		if(count($contents))
 			foreach($contents as $idx => $row)
 				if($row['posuid'] == $_GET['posuid']) 
 					unset($contents[$idx]);
@@ -87,8 +98,10 @@ switch($action)
 
 	case 'setcustomer':
 		
-		$olddate = $note['oldcdate'];
-		
+		$oldcdate = $note['oldcdate'];
+		$oldnumber = $note['oldnumber'];
+		$oldnumberplanid = $note['oldnumberplanid'];
+
 		unset($note); 
 		unset($customer);
 		unset($error);
@@ -98,11 +111,14 @@ switch($action)
 			foreach($note as $key => $val)
 				$note[$key] = $val;
 		
-		$note['oldcdate'] = $olddate;
+		$note['oldcdate'] = $oldcdate;
+		$note['oldnumber'] = $oldnumber;
+		$note['oldnumberplanid'] = $oldnumberplanid;
+
 		$note['paytime'] = sprintf('%d', $note['paytime']);
 
-                if($note['paytime'] < 0)
-                        $note['paytime'] = 14;
+		if ($note['paytime'] < 0)
+			$note['paytime'] = 14;
 
 		if($note['cdate']) // && !$note['cdatewarning'])
 		{
@@ -123,9 +139,23 @@ switch($action)
 			else
 				$error['cdate'] = trans('Incorrect date format!');
 		}
-		
+
 		$note['customerid'] = $_POST['customerid'];
-		
+
+		if ($note['number']) {
+			if (!preg_match('/^[0-9]+$/', $note['number']))
+				$error['number'] = trans('Debit note number must be integer!');
+			elseif (($note['oldcdate'] != $note['cdate'] || $note['oldnumber'] != $note['number']
+					|| $note['oldnumberplanid'] != $note['numberplanid']) && ($docid = $LMS->DocumentExists(array(
+					'number' => $note['number'],
+					'doctype' => DOC_DNOTE,
+					'planid' => $note['numberplanid'],
+					'cdate' => $note['cdate'],
+					'customerid' => $note['customerid'],
+				))) > 0 && $docid != $note['id'])
+				$error['number'] = trans('Debit note number $a already exists!', $note['number']);
+		}
+
 		if(!$error)
 			if($LMS->CustomerExists($note['customerid']))
 				$customer = $LMS->GetCustomer($note['customerid'], true);
@@ -138,26 +168,60 @@ switch($action)
 			$SESSION->restore('noteid', $note['id']);
 
 			$DB->BeginTrans();
-                        $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
+            $DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans'));
+
+			if (!$note['number'])
+				$note['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_DNOTE,
+					'planid' => $note['numberplanid'],
+					'cdate' => $note['cdate'],
+					'customerid' => $customer['id'],
+				));
+			else {
+				if (!preg_match('/^[0-9]+$/', $note['number']))
+					$error['number'] = trans('Debit note number must be integer!');
+				elseif (($note['cdate'] != $note['oldcdate'] || $note['number'] != $note['oldnumber']
+					|| $note['numberplanid'] != $note['oldnumberplanid']) && $docid = $LMS->DocumentExists(array(
+					'number' => $note['number'],
+					'doctype' => DOC_DNOTE,
+					'planid' => $note['numberplanid'],
+					'cdate' => $note['cdate'],
+					'customerid' => $customer['id'],
+				)) > 0 && $docid != $note['id'])
+					$error['number'] = trans('Debit note number $a already exists!', $note['number']);
+
+				if ($error) {
+					$note['number'] = $LMS->GetNewDocumentNumber(array(
+						'doctype' => DOC_DNOTE,
+						'planid' => $note['numberplanid'],
+						'cdate' => $note['cdate'],
+						'customerid' => $customer['id'],
+					));
+					$error = null;
+				}
+			}
 
 			$cdate = !empty($note['cdate']) ? $note['cdate'] : time();
 
 			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+				FROM vdivisions WHERE id = ?',array($customer['divisionid']));
 
 			if ($note['numberplanid'])
-				$fullnumber = docnumber($note['number'],
-					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-					$cdate);
+				$fullnumber = docnumber(array(
+					'number' => $note['number'],
+					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
+					'cdate' => $cdate,
+					'customerid' => $customer['id'],
+				));
 			else
 				$fullnumber = null;
 
 			$args = array(
 				'number' => $note['number'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
+				SYSLOG::RES_NUMPLAN => !empty($note['numberplanid']) ? $note['numberplanid'] : null,
 				'cdate' => $cdate,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+				SYSLOG::RES_CUST => $customer['id'],
 				'name' => $customer['customername'],
 				'address' => $customer['address'],
 				'paytime' => $note['paytime'],
@@ -165,14 +229,14 @@ switch($action)
 				'ssn' => $customer['ssn'],
 				'zip' => $customer['zip'],
 				'city' => $customer['city'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+				SYSLOG::RES_COUNTRY => !empty($customer['countryid']) ? $division['countryid'] : null,
+				SYSLOG::RES_DIV => !empty($customer['divisionid']) ? $customer['divisionid'] : null,
 				'div_name' => ($division['name'] ? $division['name'] : ''),
 				'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 				'div_address' => ($division['address'] ? $division['address'] : ''), 
 				'div_city' => ($division['city'] ? $division['city'] : ''), 
 				'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-				'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+				'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => (!empty($division['countryid']) ? $division['countryid'] : null),
 				'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
 				'div_regon' => ($division['regon'] ? $division['regon'] : ''),
 				'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -181,7 +245,7 @@ switch($action)
 				'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 				'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 				'fullnumber' => $fullnumber,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+				SYSLOG::RES_DOC => $note['id'],
 			);
 			$DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
 				cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
@@ -191,28 +255,28 @@ switch($action)
 				div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?
 				WHERE id = ?', array_values($args));
 
+			$LMS->UpdateDocumentPostAddress($note['id'], $customer['id']);
+
 			if ($SYSLOG) {
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
+					array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
 				$dnoteconts = $DB->GetCol('SELECT id FROM debitnotecontents WHERE docid = ?', array($note['id']));
 				foreach ($dnoteconts as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $item,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_DNOTECONT => $item,
+						SYSLOG::RES_DOC => $note['id'],
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
 				}
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($note['id']));
 				foreach ($cashids as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $item,
+						SYSLOG::RES_DOC => $note['id'],
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 			}
 			$DB->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($note['id']));
@@ -224,7 +288,7 @@ switch($action)
 				$item['value'] = str_replace(',','.', $item['value']);
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+					SYSLOG::RES_DOC => $note['id'],
 					'itemid' => $itemid,
 					'value' => $item['value'],
 					'description' => $item['description']
@@ -232,11 +296,9 @@ switch($action)
 				$DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
 					VALUES (?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT]] = $DB->GetLastInsertID('debitnotecontents');
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$args[SYSLOG::RES_DNOTECONT] = $DB->GetLastInsertID('debitnotecontents');
+					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_ADD, $args);
 				}
 
 				$LMS->AddBalance(array(

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -58,6 +58,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
         //$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').'-mysqli)';
         $this->_version .= '';
         $this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
+		$this->Execute('SET SESSION sql_mode = \'\'');
 
     }
 
@@ -179,7 +180,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_multi_execute($query)
     {
         $this->_query = $query;
-        $total_result = FALSE;
+        $total_result = TRUE;
         $db_errors = array();
 
         $queries = preg_split("/;+(?=([^'|^\\\']*['|\\\'][^'|^\\\']*['|\\\'])*[^'|^\\\']*[^'|^\\\']$)/", $query);
@@ -187,7 +188,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
             if (strlen(trim($q)) > 0) {
                 $this->_driver_execute($q);           // can not use mysqli_multi_query because it returns 'error 2014 - Commands out of sync; you can't run this command now'
                 if ($this->_error == TRUE) {
-                    $total_result = TRUE;
+                    $total_result = FALSE;
                     $db_errors = array_merge($db_errors, $this->errors);
                 }
             }
@@ -437,4 +438,53 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
 		return 'DAY(' . $date . ')';
 	}
 
+	/**
+	 * Regular expression match for selected field.
+	 *
+	 * @param string $field
+	 * @param string $regexp
+	 * @return regexp match string
+	 */
+	public function _driver_regexp($field, $regexp) {
+		return $field . ' REGEXP \'' . $regexp . '\'';
+	}
+
+	/**
+	* Check if database resource exists (table, view)
+	*
+	* @param string $name
+	* @param int $type
+	* @return exists boolean
+	*/
+	public function _driver_resourceexists($name, $type) {
+		switch ($type) {
+			case LMSDB::RESOURCE_TYPE_TABLE:
+			case LMSDB::RESOURCE_TYPE_VIEW:
+				if ($type == LMSDB::RESOURCE_TYPE_TABLE)
+					$type = 'BASE TABLE';
+				else
+					$type = 'VIEW';
+				return $this->GetOne('SELECT COUNT(*) FROM information_schema.tables
+					WHERE table_schema = ? AND table_name = ? AND table_type = ?',
+					array($this->_dbname, $name, $type)) > 0;
+				break;
+			case LMSDB::RESOURCE_TYPE_COLUMN:
+				list ($table_name, $column_name) = explode('.', $name);
+				return $this->GetOne('SELECT COUNT(*) FROM information_schema.columns
+					WHERE table_schema = ? AND table_name = ? AND column_name = ?',
+					array($this->_dbname, $table_name, $column_name)) > 0;
+				break;
+			case LMSDB::RESOURCE_TYPE_CONSTRAINT:
+				if (strpos($name, '.') !== false) {
+					list ($table_name, $constraint_name) = explode('.', $name);
+					return $this->GetOne('SELECT COUNT(*) FROM information_schema.table_constraints
+						WHERE table_schema = ? AND table_name = ? AND constraint_name = ?',
+							array($this->_dbname, $table_name, $constraint_name)) > 0;
+				} else
+					return $this->GetOne('SELECT COUNT(*) FROM information_schema.table_constraints
+						WHERE table_schema = ? AND constraint_name = ?',
+						array($this->_dbname, $name)) > 0;
+				break;
+		}
+	}
 }

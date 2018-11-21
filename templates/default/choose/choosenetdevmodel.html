@@ -6,14 +6,15 @@
         <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-        <link href="img/style.css" rel="stylesheet" type="text/css">
-        <script type="text/javascript" src="img/common.js"></script>
-        <script type="text/javascript" src="img/autosuggest.js"></script>
+        {include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="js/common.js"></script>
+        <script type="text/javascript" src="js/autosuggest.js"></script>
     </head>
-    <body class="light">
+    <body class="light lms-ui-popup">
         {$xajax}
         <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
-        <script type="text/javascript" language="JavaScript" src="img/overlib.js"></script>
+        <script type="text/javascript" src="js/overlib.js"></script>
         {if !empty($producers)}
         <div id="autosuggest"><ul></ul></div>
         <form name="search" id="search" method="post" action="?m=choosenetdevmodel">
@@ -28,7 +29,10 @@
             </table>
         </form>
         <script type="text/javascript">
-            new AutoSuggest(document.forms['search'], document.forms['search'].elements['search_producer'], '?m=choosenetdevmodel&ajax=1&what=', 1);
+		<!--
+			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+			new AutoSuggest(document.forms['search'], document.forms['search'].elements['search_producer'], '?m=choosenetdevmodel&ajax=1&what=', 1);
+		//-->
         </script>
         {/if}
         <table id="modeltable" width="100%" cellpadding="3">

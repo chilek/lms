@@ -1,0 +1,93 @@
+{block name="eventlistbox"}
+<style>
+    .event-single-sortable-handler {
+        cursor: grab;
+    }
+</style>
+{foreach $daylist as $day}
+<TABLE class="lmsbox lms-ui-background-cycle event-day-table">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%; min-width:90px;">
+        <COL style="width: 95%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;" class="no-print">
+    </COLGROUP>
+    <THEAD>
+        <TR{if $day == $today} class="superdark"{/if}>
+            <TD class="bold nobr">
+                <i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{$day|date_format:"%A"}
+            </TD>
+            <TD colspan="3">
+                <span class="bold">({$day|date_format:"%x"})</span>
+                {if $getHolidays[$day]}
+                <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>
+                {/if}
+                <a href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
+            </TD>
+            <TD colspan="2" class="text-right nobr">
+                <div class="no-print">
+					{button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"%d"}&month={$day|date_format:"%m"}&year={$day|date_format:"%Y"}';"
+						external=true label="Add Event"}
+					{button icon="print" onclick="window.location.href='?m=eventprint&day={$day}&u={$filter.customerid}{foreach $filter.userid as $userid}&a[]={$userid}{/foreach}{foreach $filter.type as $type}&t[]={$type}{/foreach}&closed={$filter.closed}&privacy={$filter.privacy}';"
+						external=true label="Print"}
+                </div>
+            </TD>
+        </TR>
+    </THEAD>
+    <TBODY class="event-day" data-event-day="{$day}">
+        {foreach $eventlist as $event}
+        {if $event.date == $day}
+            {include file="event/eventlistboxrow.html"}
+        {/if}
+        {/foreach}
+    </TBODY>
+</TABLE>
+{/foreach}
+<script>
+
+    $('.event-day').sortable({
+        axis: 'y',
+        items: '.event-single',
+        handle: '.event-single-sortable-handler',
+        opacity: 0.9,
+        placeholder: 'light',
+        connectWith: '.event-day',
+        helper: function (e,  ui) {
+        	$('table.lmsbox').find('.event-single[data-event-id="' + $(ui).attr('data-event-id') + '"]')
+                .not(ui).hide();
+        	return ui;
+        },
+		update: function (e, ui) {
+			if (ui.sender == null) {
+				return;
+            }
+        	var eventid = ui.item.attr('data-event-id');
+			var items = $('.event-single[data-event-id="' + eventid + '"]').not(ui.item);
+			var day = ui.item.closest('.event-day-table').next('.event-day-table');
+			items.each(function() {
+				if (day.length) {
+					day.find('.event-day').append(this);
+					day = day.next('.event-day-table');
+					$(this).show();
+				}
+            });
+			var delta = ui.item.closest('.event-day').attr('data-event-day') - ui.sender.attr('data-event-day');
+			$('html,body').css('cursor', 'wait');
+			$.ajax('?m={$layout.module}&api=1', {
+                method: "GET",
+                data: {
+                	action: 'eventmove',
+                	id: eventid,
+                    delta: delta
+                },
+                complete: function() {
+                	$('html,body').css('cursor', 'auto');
+                }
+            });
+		}
+    });
+
+</script>
+{/block}

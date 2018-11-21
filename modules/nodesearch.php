@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,46 @@
  *
  *  $Id: nodesearch.php,v 1.46 2012/01/02 11:01:35 alec Exp $
  */
+
+if (isset($_GET['ajax'])) {
+	header('Content-type: text/plain');
+	$search = urldecode(trim($_GET['what']));
+
+	switch ($_GET['mode']) {
+		case 'netdev':
+			$candidates = $DB->GetAll('SELECT
+					nd.name AS item,
+					n.ipaddr,
+					COUNT(nd.id) AS entries
+				FROM netdevices nd
+				LEFT JOIN nodes n ON n.netdev = nd.id AND n.ownerid IS NULL
+				WHERE LOWER(nd.name) ?LIKE? LOWER(' . $DB->Escape('%' . $search . '%') . ')
+					OR INET_NTOA(n.ipaddr) ?LIKE? (' . $DB->Escape('%' . $search . '%') . ')
+				GROUP BY item, n.ipaddr
+				ORDER BY entries DESC, item ASC
+				LIMIT 15');
+			break;
+	}
+
+	$result = array();
+
+	if ($candidates)
+		foreach ($candidates as $idx => $row) {
+			$name = $row['ipaddr']
+				&& preg_match('/' . str_replace('.','\\.', $search) . '/', long_ip($row['ipaddr']))
+				? long_ip($row['ipaddr']) : $row['item'];
+			$name_class = '';
+			$description = $row['entries'] . ' ' . trans('entries');
+			$description_class = '';
+			$action = '';
+
+			$result[$row['item']] = compact('name', 'name_long', 'name_class', 'description', 'description_class', 'action');
+		}
+	header('Content-Type: application/json');
+	if (!empty($result))
+		echo json_encode(array_values($result));
+	exit;
+}
 
 function get_loc_boroughs($districtid) {
 	global $DB, $BOROUGHTYPES;
@@ -85,6 +125,34 @@ function connect_nodes($nodeids, $deviceid, $linktype, $linktechnology, $linkspe
 	return $JSResponse;
 }
 
+function assign_nodes($nodeids, $nodegroupid) {
+	$JSResponse = new xajaxResponse();
+
+	$DB = LMSDB::getInstance();
+
+	foreach ($nodeids as $nodeid)
+		$DB->Execute("INSERT INTO nodegroupassignments (nodeid, nodegroupid) VALUES (?, ?)",
+			array($nodeid, $nodegroupid));
+
+	$JSResponse->call('operation_finished');
+
+	return $JSResponse;
+}
+
+function unassign_nodes($nodeids, $nodegroupid) {
+	$JSResponse = new xajaxResponse();
+
+	$DB = LMSDB::getInstance();
+
+	foreach ($nodeids as $nodeid)
+		$DB->Execute("DELETE FROM nodegroupassignments WHERE nodeid = ? AND nodegroupid = ?",
+			array($nodeid, $nodegroupid));
+
+	$JSResponse->call('operation_finished');
+
+	return $JSResponse;
+}
+
 function macformat($mac) {
 	$res = str_replace('-', ':', $mac);
 	// allow eg. format "::ab:3::12", only whole addresses
@@ -138,12 +206,12 @@ $nodesearch['mac'] = macformat($nodesearch['mac']);
 $LMS->InitXajax();
 
 if (isset($_GET['search'])) {
-	$LMS->RegisterXajaxFunction('connect_nodes');
+	$LMS->RegisterXajaxFunction(array('connect_nodes', 'assign_nodes', 'unassign_nodes'));
 	$SMARTY->assign('xajax', $LMS->RunXajax());
 
 	$layout['pagetitle'] = trans('Nodes Search Results');
 
-	$nodelist = $LMS->GetNodeList($o, $nodesearch, $k);
+	$nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'sqlskey' => $k));
 
 	$listdata['total'] = $nodelist['total'];
 	$listdata['order'] = $nodelist['order'];
@@ -182,8 +250,10 @@ if (isset($_GET['search'])) {
 		$SMARTY->display('print/printnodelist.html');
 	elseif ($listdata['total'] == 1)
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodelist[0]['id']);
-	else
+	else {
+		$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 		$SMARTY->display('node/nodesearchresults.html');
+	}
 }
 else {
 	$LMS->RegisterXajaxFunction('select_location');

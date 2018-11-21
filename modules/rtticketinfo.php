@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,8 +31,8 @@ if(! $LMS->TicketExists($id))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $id);
-$catrights = $LMS->GetUserRightsToCategory($AUTH->id, 0, $id);
+$rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id);
+$catrights = $LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), 0, $id);
 if(!$rights || !$catrights)
 {
 	$SMARTY->display('noaccess.html');
@@ -40,11 +40,9 @@ if(!$rights || !$catrights)
 	die;
 }
 
-$ticket = $DB->GetRow('SELECT t.id, t.cause, t.creatorid, c.name AS creator, 
-		    t.createtime, t.resolvetime
-		    FROM rttickets t
-		    LEFT JOIN users c ON (t.creatorid = c.id)
-		    WHERE t.id = ?', array($id));
+//$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$ticket = $LMS->GetTicketContents($id);
 
 $ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
 		    WHERE ticketid = ?

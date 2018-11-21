@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -62,28 +62,31 @@ foreach ($schema['data'] as $idx => $data) {
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
 $schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
-    a.tariffid, a.id, a.data, a.optional, a.selectionid
+    a.tariffid, a.id, a.data, a.optional, a.label
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)
     WHERE a.promotionschemaid = ?
-    ORDER BY t.name, t.value DESC', array($schema['id']));
+    ORDER BY a.orderid', array($schema['id']));
 
 if (!empty($schema['tariffs'])) {
-    foreach ($schema['tariffs'] as $idx => $value) {
-        $tmp = explode(';', $value['data']);
-        $data = array();
-        foreach ($tmp as $didx => $d) {
-            list($data['value'][$didx], $data['period'][$didx]) = explode(':', $d);
-        }
-        $schema['tariffs'][$idx]['data'] = $data;
-    }
+	$schema['selections'] = array();
+	foreach ($schema['tariffs'] as $idx => $value) {
+		$tmp = explode(';', $value['data']);
+		$data = array();
+		foreach ($tmp as $didx => $d)
+			list($data['value'][$didx], $data['period'][$didx]) = explode(':', $d);
+		$schema['tariffs'][$idx]['data'] = $data;
+		if (!empty($value['label']))
+			$schema['selections'][] = $value['label'];
+	}
+	$schema['selections'] = array_unique($schema['selections']);
 }
 
 $tariffs = $DB->GetAll('SELECT t.name, t.value, t.id, t.upceil, t.downceil
     FROM tariffs t
-    WHERE t.id NOT IN (
+    ' . (ConfigHelper::checkConfig('phpui.promotion_tariff_duplicates') ? '' : ' WHERE t.id NOT IN (
         SELECT tariffid FROM promotionassignments
-        WHERE promotionschemaid = ?)
+        WHERE promotionschemaid = ?)') . '
     ORDER BY t.name, t.value DESC', array($schema['id']));
 
 $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);

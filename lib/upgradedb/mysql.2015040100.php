@@ -26,8 +26,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW vnodes");
-$this->Execute("DROP VIEW vmacs");
+$this->Execute("DROP VIEW IF EXISTS vnodes");
+$this->Execute("DROP VIEW IF EXISTS vmacs");
 $this->Execute("ALTER TABLE nodes CHANGE location_house location_house varchar(32) DEFAULT NULL");
 $this->Execute("ALTER TABLE nodes CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
 $this->Execute("CREATE VIEW vnodes AS

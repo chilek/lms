@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,11 +31,11 @@ if ($id && $_GET['is_sure'] == '1') {
 		$config = $DB->GetRow('SELECT instanceid, hostid FROM daemonconfig c
 			JOIN daemoninstances i ON i.id = c.instanceid WHERE c.id = ?', array($id));
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $config['instanceid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $config['hostid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $id
+			SYSLOG::RES_DAEMONINST => $config['instanceid'],
+			SYSLOG::RES_HOST => $config['hostid'],
+			SYSLOG::RES_DAEMONCONF => $id
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_DELETE, $args);
 	}
 	$DB->Execute('DELETE FROM daemonconfig WHERE id = ?', array($id));
 }

@@ -3,15 +3,16 @@ LMS Userpanel theme "bclean"
 Features
 --------
   - use Bootstrap v4
-  - (almost) valid HTML5
+  - valid HTML5
   - clean and minimal template
 
 Requirments
 --------
   - Bootstrap v4
+  - Tether library for Tooltips
 
 ### Version
-0.1.0
+0.3.0
 
 ### Install Bootstrap with composer (default)
 Got to theme directory ```userpanel/style/bclean/```
@@ -21,18 +22,8 @@ composer install
 composer update
 ```
 
-### Add Bootstrap from CDN
-Got to theme directory ```userpanel/style/bclean/templates``` and add or replace path to bootstrap v4 in header.html and login.html
-```html
-<link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" integrity="sha384-XXXXXXXX" crossorigin="anonymous">
-```
-
-
 ### Todos
- - add and correct translations
- - test on mobile devices
- - rewrite all files from old theme
- - find errors and fix them :)
+ - find errors and fix them
 
 License
 ----

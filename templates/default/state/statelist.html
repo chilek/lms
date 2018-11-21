@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -13,7 +13,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="4">
+		<TD class="lms-ui-pagination" COLSPAN="4">
 			{include file="scroller.html" loop=$statelist}
 		</TD>
 	</TR>
@@ -33,8 +33,8 @@
 			{$statelist[statelist].description|replace:"\n":"<BR>"}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t a=$statelist[statelist].name}Are you sure, you want to delete state \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=stateedit&id={$statelist[statelist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=statedel&id={$statelist[statelist].id}" OnClick="return confirmLink(this, '{t a=$statelist[statelist].name}Are you sure, you want to delete state \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=stateedit&id={$statelist[statelist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -48,7 +48,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="4">
+		<TD class="lms-ui-pagination" COLSPAN="4">
 			{include file="scroller.html" loop=$statelist}
 		</TD>
 	</TR>

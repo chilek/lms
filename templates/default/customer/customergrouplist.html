@@ -1,9 +1,9 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 97%;">
 		<COL style="width: 1%;">
@@ -23,7 +23,7 @@
 			{trans("Members:")}
 		</TD>
 		<TD scope="col" class="text-right nobr">
-			{t a=$listdata.total|default:"0"}Total: $a{/t}
+			<span class="text-right"><A HREF="?m=customergroupadd"><IMG src="img/group.gif"> {trans("Add group")}</A></span><BR>{t a=$listdata.total|default:"0"}Total: $a{/t}
 		</TD>
 	</TR>
 	</THEAD>
@@ -36,37 +36,36 @@
 	</TR>
 	</TFOOT>
 	<TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=customergroups loop=$customergrouplist}
-	<TR class="highlight {cycle}"  >
-		<TD onClick="return self.location.href='?m=customergroupinfo&amp;id={$customergrouplist[customergroups].id}';">
-			<IMG src="img/group.gif" alt="">&nbsp;<span class="bold">{$customergrouplist[customergroups].name}</span><BR>
-			{if $customergrouplist[customergroups].description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergrouplist[customergroups].description}{/if}
+	{foreach $customergrouplist as $customergroup}
+	<TR class="highlight" data-target-url="?m=customergroupinfo&id={$customergroup.id}">
+		<TD>
+			<IMG src="img/group.gif" alt="">&nbsp;<span class="bold">{$customergroup.name}</span><BR>
+			{if $customergroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergroup.description}{/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=customergroupinfo&amp;id={$customergrouplist[customergroups].id}';">
-			({$customergrouplist[customergroups].id|string_format:"%04d"})
+		<TD class="text-right">
+			({$customergroup.id|string_format:"%04d"})
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=customergroupinfo&amp;id={$customergrouplist[customergroups].id}';">
-			{$customergrouplist[customergroups].customerscount} 
+		<TD class="text-right">
+			{$customergroup.customerscount} 
 		</TD>
-		<TD class="text-right nobr">
-			{if $customergrouplist[customergroups].customers}
+		<TD class="lms-ui-buttons text-right nobr">
+			{if $customergroup.customerscount}
 			<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
 			{else}
-			<A href="?m=customergroupdel&amp;id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			<A href="?m=customergroupdel&amp;id={$customergroup.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
 			{/if}
-			<IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=customergroupedit&amp;id={$customergrouplist[customergroups].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A href="?m=customergroupinfo&amp;id={$customergrouplist[customergroups].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=customergroupedit&amp;id={$customergroup.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=customergroupinfo&amp;id={$customergroup.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD colspan="4" class="empty-table">
 			<p>{trans("There are no such groups in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
 	</TBODY>
 </TABLE>
 {/block}

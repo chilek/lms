@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,9 +44,10 @@ if(isset($_POST['category']))
 
 	if(!$error)
 	{
-		$DB->Execute('UPDATE rtcategories SET name=?, description=? WHERE id=?', 
+		$DB->Execute('UPDATE rtcategories SET name=?, description=?, style=? WHERE id=?',
 				array(trim($category['name']),
 					$category['description'],
+					$category['style'],
 					$category['id']));
 
 		$DB->Execute('DELETE FROM rtcategoryusers WHERE categoryid=?', array($category['id']));

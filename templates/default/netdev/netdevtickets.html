@@ -1,0 +1,35 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox lms-ui-sortable" id="netdevtickets">
+    <THEAD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="netdevticketpanel">
+		<TD class="bold">
+			<IMG src="img/ticket.gif" alt="">
+			{trans("Assigned tickets:")} ({count($queue)})
+		</TD>
+		<TD class="text-right nobr">
+			<A href="?m=rtticketadd&netdevid={$queue_netdevid}"><IMG src="img/save.gif" alt="{trans("Add new")}"> {trans("Add new")}</A>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR id="netdevticketpanel" style="display: none;">
+		<TD width="100%" colspan="2">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
+				<THEAD>
+					{include "rt/rtheader.html"}
+				</THEAD>
+				<TBODY>
+					{include "rt/rtqueueviewbox.html"}
+				</TBODY>
+			</TABLE>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('netdevticketpanel') == '1') {
+	$('#netdevticketpanel').show();
+}
+//-->
+</SCRIPT>

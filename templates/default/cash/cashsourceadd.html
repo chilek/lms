@@ -1,41 +1,60 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P><FORM method="POST" action="?m=cashsourceadd" name="sourceadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<img src="img/isource.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Name:")}</B>
+		<TD class="bold">
+			{trans("Name:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" size="40" name="sourceadd[name]" value="{$sourceadd.name}" {tip text="Enter source name" trigger="name" bold=1}>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
+			<img src="img/card.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Bank account:")}
+		</TD>
+		<TD>
+			<INPUT type="text" name="sourceadd[account]" VALUE="{$sourceadd.account}" SIZE="45" {tip text="Enter main bank account number (optional)" trigger="account"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
 			<img src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}</B>
+		<TD class="bold">
+			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA rows="5" cols="50" name="sourceadd[description]" {tip text="Enter additional information (optional)" trigger="description"}>{$sourceadd.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD align="right" colspan="3">
+		<TD class="buttons" colspan="3">
 			<A href="javascript:document.sourceadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=cashsourcelist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="sourceadd[reuse]" id="reuse" value="ON" {if $sourceadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this source is saved")}</label>
+			<label>
+				<INPUT type="checkbox" name="sourceadd[reuse]" value="ON" {if $sourceadd.reuse}checked{/if}>
+				{trans("Display this form again, when this source is saved")}
+			</label>
 		</TD>
 	</TR>
     </TBODY>
@@ -43,7 +62,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['sourceadd'].elements['sourceadd[name]'].focus();
+$(function() {
+	$('form[name="sourceadd"] [name="sourceadd[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

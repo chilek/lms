@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {if $layout.module=="domainsearch"}{assign var=suffix value="&s=1"}{/if}
@@ -65,7 +65,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>
@@ -95,9 +95,9 @@
 			{$domainlist[domainlist].cnt|default:0}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=domaindel&amp;id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t a=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$a\' and all accounts/aliases in that domain?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=domainedit&amp;id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A href="?m=domaininfo&amp;id={$domainlist[domainlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A href="?m=domaindel&amp;id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t a=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$a\' and all accounts/aliases in that domain?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=domainedit&amp;id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=domaininfo&amp;id={$domainlist[domainlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -111,7 +111,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$domainlist adlink=$suffix}
 		</TD>
 	</TR>

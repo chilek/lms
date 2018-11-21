@@ -1,51 +1,59 @@
 {include file="header.html"}
-{box title=$title}
-<div class="table-responsive">
-<table class="table table-bordered">
-    {foreach from=$ticket.messages item=message}
-    <tr>
-        <td>
-            <b>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</b>
-        </td>
-        <td>
-            <b>{trans("From:")}<br/>{trans("Subject:")}</b>
-        </td>
-        <td>
-            {if $message.customerid}
-            {$message.customername}
-            {elseif $message.userid}
-            {$message.username}
-            {elseif $message.mailfrom}
-            {$message.mailfrom|escape}
-            {else}
-            {$ticket.requestor|escape}
-            {if $ticket.requestoremail}
-            &lt;{$ticket.requestoremail|escape}&gt;
-            {/if}
-            {/if}
-            <br />
-            {$message.subject|escape}
-        </td>
-        <td>
-            {if $message.attachments}
-            {foreach $message.attachments as $attachment}
-            {if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename} {img src="attach.gif" alt=""}</a>
-            {/foreach}
-            {/if}
-        </td>
-        <td>
-            {if $ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets')}
-            <a class="btn btn-primary" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
-            {else}&nbsp;{/if}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="5">
-            {$message.body|escape|replace:"\n":"<br/>"}
-        </td>
-    </tr>
-    {/foreach}
-</table>
-</div>
-{/box}
+<h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
+{$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
+{foreach $ticket.messages as $message}
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">
+				<strong>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</strong>
+			</h4>
+			<h6 class="card-subtitle text-muted">
+				{trans("Subject:")} <strong>{$message.subject|escape}</strong>
+			</h6>
+		</div>
+		<div class="card-block">
+			<div class="card-block">
+				<blockquote class="blockquote">
+					<p class="mb-0">{$message.body|escape|replace:"\n":"<br/>"}</p>
+					<footer class="blockquote-footer">{trans("From")}:
+						<strong>
+							{if $message.customerid}
+								{$message.customername}
+							{elseif $message.userid}
+								{$message.username}
+							{elseif $message.mailfrom}
+								{$message.mailfrom|escape}
+							{else}
+								{$ticket.requestor|escape}
+								{if $ticket.requestoremail}
+									&lt;{$ticket.requestoremail|escape}&gt;
+								{/if}
+							{/if}
+						</strong>
+					</footer>
+				</blockquote>
+
+				{if $message.attachments}
+					<strong>{trans("Attachments:")}</strong>
+					<ul class="list-inline">
+						{foreach $message.attachments as $attachment}
+							{if !$attachment@first}
+							{/if}
+							<li class="list-inline-item">
+								<a class="btn btn-secondary btn-sm" href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename}</a>
+							</li>
+						{/foreach}
+					</ul>
+				{/if}
+
+				{if ($ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
+					&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
+					<a class="btn btn-success" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
+				{/if}
+			</div>
+		</div>
+	</div>
+{/foreach}
+
 {include file="footer.html"}
+

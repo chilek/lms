@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,7 +35,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
         switch($order)
         {
 		case 'id':
-                        $sqlord = ' ORDER BY id';
+		        $sqlord = ' ORDER BY id';
 		break;
 		case 'producer':
 		        $sqlord = ' ORDER BY producer';
@@ -60,7 +60,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 		break;
 	}
 
-	if(sizeof($search)) foreach($search as $idx => $value)
+	if(count($search)) foreach($search as $idx => $value)
 	{
 		$value = trim($value);
 	        if($value!='')
@@ -84,6 +84,9 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 				case 'ports':
 				        $searchargs[] = "ports = ".intval($value);
 				break;
+				case 'location':
+					$searchargs[] = "UPPER(a.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
+					break;
 				default:
 					// UPPER here is a postgresql ILIKE bug workaround
 					$searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
@@ -95,16 +98,17 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 	if(isset($searchargs))
                 $searchargs = ' WHERE ('.implode(' '.$sqlskey.' ',$searchargs).')';
 
-	$netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, d.location, d.description, d.producer, 
-				d.model, d.serialnumber, d.ports,
-                		(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid > 0)
-	            		+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports
-	        		FROM netdevices d'
-				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND ownerid = 0)' : '')
+	$netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, a.location, d.description, d.producer,
+					d.model, d.serialnumber, d.ports,
+					(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
+					+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports
+				FROM netdevices d
+					LEFT JOIN vaddresses a ON d.address_id = a.id'
+				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid IS NULL)' : '')
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
-	$netdevlist['total'] = sizeof($netdevlist);
+	$netdevlist['total'] = count($netdevlist);
 	$netdevlist['order'] = $order;
 	$netdevlist['direction'] = $direction;
 

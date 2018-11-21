@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,20 +29,19 @@ namespace LMS\Tests;
 /**
  * LMSPaginationFactoryTest
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSPaginationFactoryTest extends \PHPUnit_Framework_TestCase
 {
     
     public function testIfShortFactoryFlagWorks()
     {
-        $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, true);
+        $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, true, null);
         $this->assertInstanceOf('LMSPaginationShort', $pagination);
     }
     
     public function testIfLongFactoryFlagWorks()
     {
-        $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, false);
+        $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, false, null);
         $this->assertInstanceOf('LMSPaginationLong', $pagination);
     }
     

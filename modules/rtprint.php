@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.reports'))
+if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') && !ConfigHelper::checkPrivilege('reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -36,6 +36,7 @@ switch($type)
 		$days  = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
 		$times = !empty($_GET['times']) ? intval($_GET['times']) : intval($_POST['times']);
 		$queue = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
+		$removed = !empty($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
 		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
 		$datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
 		$dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
@@ -49,33 +50,42 @@ switch($type)
 			$where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
 		else
 			$where[] = 'tc.categoryid IS NULL';
-	
-		if($datefrom)
-		{
-        		if (check_date($datefrom)) {
-                		list ($year, $month, $day) = explode('/', $datefrom);
-                		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
-        		} else
-                		$datefrom = 0;
-			$where[] = 'rttickets.createtime >= '.$datefrom;	                                                                
-		}
 
-		if($dateto)
+			if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
+			$where[] = 'rttickets.deleted = 0';
+			else
+			{
+				if($removed != '')
+				{
+					if($removed == '-1')
+						$where[] = 'rttickets.deleted = 0';
+						else
+							$where[] = 'rttickets.deleted = 1';
+				}
+			}
+	
+		if(!empty($datefrom))
 		{
-        		if (check_date($dateto)) {
-                		list ($year, $month, $day) = explode('/', $dateto);
-                		$dateto = mktime(0, 0, 0, $month, $day, $year);  
-        		} else
-                		$dateto = 0;	                                                                
-			$where[] = 'rttickets.createtime <= '.$dateto;	                                                                
+			$datefrom=date_to_timestamp($datefrom);
+			$where[] = 'rttickets.createtime >= '.$datefrom;
 		}
+		else
+			$datefrom = 0;
+
+		if(!empty($dateto))
+		{
+			$dateto=date_to_timestamp($dateto);
+			$where[] = 'rttickets.createtime <= '.$dateto;
+		}
+		else
+			$dateto = 0;
 
     		if($list = $DB->GetAll('SELECT COUNT(*) AS total, customerid, '
 				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
 		               	    FROM rttickets
 		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    LEFT JOIN customers ON (customerid = customers.id)
-				    WHERE customerid != 0'
+				    WHERE customerid IS NOT NULL'
 				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 				    .' GROUP BY customerid, customers.lastname, customers.name'
 				    .($times ? ' HAVING COUNT(*) > '.$times : '')
@@ -96,7 +106,7 @@ switch($type)
 			
 			foreach($list as $idx => $row)
 			{
-				$list[$idx]['customer'] = isset($customer[$row['customerid']]) ? $customer[$row['customerid']]['total'] : 0;
+				$list[$idx]['customer'] = isset($customer[$row['customerid']]) ? $customer[$row['customerid']]['total'] : null;
 				$list[$idx]['company'] = isset($company[$row['customerid']]) ? $company[$row['customerid']]['total'] : 0;
 				$list[$idx]['other'] = $list[$idx]['total'] - $list[$idx]['customer'] - $list[$idx]['company'];
 			}
@@ -114,6 +124,7 @@ switch($type)
 		$customer = !empty($_GET['customer']) ? intval($_GET['customer']) : intval($_POST['customer']);
 		$queue 	  = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
 		$status   = isset($_GET['status']) ? $_GET['status'] : $_POST['status'];
+		$removed  = isset($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
 		$subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
 		$extended = !empty($_GET['extended']) ? true : !empty($_POST['extended']) ? true : false;
 		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
@@ -121,7 +132,7 @@ switch($type)
 		$dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
 
 		if($queue)
-			$where[] = 'queueid = '.$queue;
+			$where[] = 'rttickets.queueid = '.$queue;
 		if($customer)
 			$where[] = 'customerid = '.$customer;
 		if($days)
@@ -142,37 +153,46 @@ switch($type)
     				$where[] = 'rttickets.state = '.intval($status);
 		}
 
-		if($datefrom)
-		{
-        		if (check_date($datefrom)) {
-                		list ($year, $month, $day) = explode('/', $datefrom);
-                		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
-        		} else
-                		$datefrom = 0;
-			$where[] = 'rttickets.createtime >= '.$datefrom;	                                                                
-		}
+		if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
+			$where[] = 'rttickets.deleted = 0';
+			else
+			{
+				if($removed != '')
+				{
+					if($removed == '-1')
+						$where[] = 'rttickets.deleted = 0';
+						else
+							$where[] = 'rttickets.deleted = 1';
+				}
+			}
+		if(!empty($datefrom))
+                {
+                        $datefrom=date_to_timestamp($datefrom);
+                        $where[] = 'rttickets.createtime >= '.$datefrom;
+                }
+		else
+			$datefrom = 0;
 
-		if($dateto)
-		{
-        		if (check_date($dateto)) {
-                		list ($year, $month, $day) = explode('/', $dateto);
-                		$dateto = mktime(0, 0, 0, $month, $day, $year);  
-        		} else
-                		$dateto = 0;	                                                                
-			$where[] = 'rttickets.createtime <= '.$dateto;	                                                                
-		}
+                if(!empty($dateto))
+                {
+                        $dateto=date_to_timestamp($dateto);
+                        $where[] = 'rttickets.createtime <= '.$dateto;
+                }
+		else
+			$dateto = 0;
 
 		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
-			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
+			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
-				? ', address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
-					FROM customercontacts WHERE customerid = customers.id AND (customercontacts.type & '. (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE) .' > 0 ) GROUP BY customerid) AS phones,
+				? ', city, address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
+					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & '. (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE) .' > 0 ) GROUP BY customerid) AS phones,
 					(SELECT ' . $DB->GroupConcat('contact', ',', true) . '
-					FROM customercontacts WHERE customerid = customers.id AND (customercontacts.type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .
-                                        ') GROUP BY customerid) AS emails ' : '')
+					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' > 0)
+					GROUP BY customerid) AS emails ' : '')
 			.'FROM rttickets
+			JOIN rtrights r ON r.queueid = rttickets.queueid AND r.rights & ' . RT_RIGHT_READ . ' > 0
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
-			LEFT JOIN customers ON (customerid = customers.id)
+			LEFT JOIN customeraddressview c ON (customerid = c.id)
 			WHERE 1 = 1 '
 			.(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 			.' ORDER BY createtime', 'id');
@@ -180,12 +200,8 @@ switch($type)
 		if ($list && $extended)
 		{
 			$tickets = implode(',', array_keys($list));
-			if ($content = $DB->GetAll('(SELECT body, ticketid, createtime, 0 AS note
+			if ($content = $DB->GetAll('(SELECT body, ticketid, createtime, rtmessages.type AS note
 				FROM rtmessages
-				WHERE ticketid in ('.$tickets.'))
-				UNION
-				(SELECT body, ticketid, createtime, 1 AS note
-				FROM rtnotes
 				WHERE ticketid in ('.$tickets.'))
 			        ORDER BY createtime'))
 			{
@@ -207,13 +223,13 @@ switch($type)
 	break;
 
 	default:
-		$categories = $LMS->GetCategoryListByUser($AUTH->id);
+		$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 
 		$layout['pagetitle'] = trans('Reports');
 
 		if (!ConfigHelper::checkConfig('phpui.big_networks'))
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		$SMARTY->assign('queues', $LMS->GetQueueList());
+		$SMARTY->assign('queues', $LMS->GetQueueList(array('stats' => false)));
 		$SMARTY->assign('categories', $categories);
 		$SMARTY->display('rt/rtprintindex.html');
 	break;

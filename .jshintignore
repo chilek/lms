@@ -1,0 +1,15 @@
+**/vendor/**
+**/xajax_js/deferred/**
+**/js/jquery*/**
+**/js/tinymce*/**
+**/js/xajax_js/**
+**/js/sprintf.min.js
+**/js/mousetrap/**
+**/js/OpenLayers/**
+plugins/**
+**/*.min.js
+**/overlib.js
+templates/default/**/*.js
+components/**
+**/js/lms-ui-combobox.js
+**/js/locale/*.js

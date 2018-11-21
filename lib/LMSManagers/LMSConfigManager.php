@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,9 +28,87 @@
  * LMSConfigManager
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
-class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
-{
+class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface {
+	private $default_config_types = array(
+		'phpui.force_ssl'					=> CONFIG_TYPE_BOOLEAN,
+		'phpui.allow_mac_sharing'			=> CONFIG_TYPE_BOOLEAN,
+		'phpui.smarty_debug'				=> CONFIG_TYPE_BOOLEAN,
+		'phpui.use_current_payday'			=> CONFIG_TYPE_BOOLEAN,
+		'phpui.helpdesk_backend_mode'		=> CONFIG_TYPE_BOOLEAN,
+		'phpui.helpdesk_reply_body'			=> CONFIG_TYPE_BOOLEAN,
+		'phpui.to_words_short_version'		=> CONFIG_TYPE_BOOLEAN,
+		'phpui.newticket_notify'			=> CONFIG_TYPE_BOOLEAN,
+		'phpui.short_pagescroller'			=> CONFIG_TYPE_BOOLEAN,
+		'phpui.big_networks'				=> CONFIG_TYPE_BOOLEAN,
+		'phpui.ewx_support'					=> CONFIG_TYPE_BOOLEAN,
+		'phpui.helpdesk_stats'				=> CONFIG_TYPE_BOOLEAN,
+		'phpui.helpdesk_customerinfo'		=> CONFIG_TYPE_BOOLEAN,
+		'phpui.logging'						=> CONFIG_TYPE_BOOLEAN,
+		'phpui.note_check_payment'			=> CONFIG_TYPE_BOOLEAN,
+		'phpui.public_ip'					=> CONFIG_TYPE_BOOLEAN,
+		'phpui.radius'						=> CONFIG_TYPE_BOOLEAN,
+		'phpui.hide_summaries'				=> CONFIG_TYPE_BOOLEAN,
+		'phpui.use_invoices'				=> CONFIG_TYPE_BOOLEAN,
+		'phpui.hide_toolbar'				=> CONFIG_TYPE_BOOLEAN,
+		'phpui.default_assignment_invoice'	=> CONFIG_TYPE_BOOLEAN,
+		'phpui.invoice_check_payment'		=> CONFIG_TYPE_BOOLEAN,
+		'phpui.logout_confirmation'		=> CONFIG_TYPE_BOOLEAN,
+		'finances.cashimport_checkinvoices'	=> CONFIG_TYPE_BOOLEAN,
+		'receipts.show_nodes_warning'		=> CONFIG_TYPE_BOOLEAN,
+		'invoices.customer_bankaccount'		=> CONFIG_TYPE_BOOLEAN,
+		'invoices.customer_credentials'		=> CONFIG_TYPE_BOOLEAN,
+		'invoices.print_balance_history'	=> CONFIG_TYPE_BOOLEAN,
+		'mail.phpmailer_is_html'			=> CONFIG_TYPE_BOOLEAN,
+		'mail.smtp_persist'					=> CONFIG_TYPE_BOOLEAN,
+		'phpui.customerlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.billinglist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.nodelist_pagelimit'			=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.balancelist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.configlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.invoicelist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.ticketlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.accountlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.domainlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.aliaslist_pagelimit'			=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.receiptlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.taxratelist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.numberplanlist_pagelimit'	=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.divisionlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.documentlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.recordlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.voipaccountlist_pagelimit'	=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.networkhosts_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.messagelist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.cashreglog_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.debitnotelist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.printout_pagelimit'			=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.timeout'						=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.timetable_days_forward'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.nodepassword_length'			=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.check_for_updates_period'	=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.quicksearch_limit'			=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.ping_type'					=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.autosuggest_max_length'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.passwordhistory'				=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'mail.debug_email'					=> CONFIG_TYPE_EMAIL,
+		'mail.phpmailer_from'				=> CONFIG_TYPE_EMAIL,
+		'sendinvoices.debug_email'			=> CONFIG_TYPE_EMAIL,
+		'sendinvoices.sender_email'			=> CONFIG_TYPE_EMAIL,
+		'userpanel.debug_email'				=> CONFIG_TYPE_EMAIL,
+		'zones.hostmaster_mail'				=> CONFIG_TYPE_EMAIL,
+		'phpui.reload_type'					=> CONFIG_TYPE_RELOADTYPE,
+		'notes.type'						=> CONFIG_TYPE_DOCTYPE,
+		'receipts.type'						=> CONFIG_TYPE_DOCTYPE,
+		'phpui.report_type'					=> CONFIG_TYPE_DOCTYPE,
+		'phpui.document_type'				=> CONFIG_TYPE_DOCTYPE,
+		'invoices.type'						=> CONFIG_TYPE_DOCTYPE,
+		'phpui.document_margins'			=> CONFIG_TYPE_MARGINS,
+		'mail.backend'						=> CONFIG_TYPE_MAIL_BACKEND,
+		'mail.smtp_secure'					=> CONFIG_TYPE_MAIL_SECURE,
+		'payments.date_format'				=> CONFIG_TYPE_DATE_FORMAT,
+	);
 
     public function GetConfigSections()
     {
@@ -45,114 +123,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $this->db->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
     }
 
-    public function GetConfigDefaultType($option)
-    {
-        switch ($option) {
-            case 'phpui.force_ssl':
-            case 'phpui.allow_mac_sharing':
-            case 'phpui.smarty_debug':
-            case 'phpui.use_current_payday':
-            case 'phpui.helpdesk_backend_mode':
-            case 'phpui.helpdesk_reply_body':
-            case 'phpui.to_words_short_version':
-            case 'phpui.newticket_notify':
-            case 'phpui.short_pagescroller':
-            case 'phpui.big_networks':
-            case 'phpui.ewx_support':
-            case 'phpui.helpdesk_stats':
-            case 'phpui.helpdesk_customerinfo':
-            case 'phpui.logging':
-            case 'phpui.note_check_payment':
-            case 'phpui.public_ip':
-            case 'phpui.radius':
-            case 'phpui.hide_summaries':
-            case 'phpui.use_invoices':
-            case 'phpui.hide_toolbar':
-            case 'phpui.default_assignment_invoice':
-            case 'phpui.invoice_check_payment':
-            case 'finances.cashimport_checkinvoices':
-            case 'receipts.show_nodes_warning':
-            case 'invoices.customer_bankaccount':
-            case 'invoices.customer_credentials':
-            case 'invoices.print_balance_history':
-            case 'mail.phpmailer_is_html':
-            case 'mail.smtp_persist':
-                $type = CONFIG_TYPE_BOOLEAN;
-                break;
-
-            case 'phpui.customerlist_pagelimit':
-            case 'phpui.nodelist_pagelimit':
-            case 'phpui.balancelist_pagelimit':
-            case 'phpui.configlist_pagelimit':
-            case 'phpui.invoicelist_pagelimit':
-            case 'phpui.ticketlist_pagelimit':
-            case 'phpui.accountlist_pagelimit':
-            case 'phpui.domainlist_pagelimit':
-            case 'phpui.aliaslist_pagelimit':
-            case 'phpui.receiptlist_pagelimit':
-            case 'phpui.taxratelist_pagelimit':
-            case 'phpui.numberplanlist_pagelimit':
-            case 'phpui.divisionlist_pagelimit':
-            case 'phpui.documentlist_pagelimit':
-            case 'phpui.recordlist_pagelimit':
-            case 'phpui.voipaccountlist_pagelimit':
-            case 'phpui.networkhosts_pagelimit':
-            case 'phpui.messagelist_pagelimit':
-            case 'phpui.cashreglog_pagelimit':
-            case 'phpui.debitnotelist_pagelimit':
-            case 'phpui.printout_pagelimit':
-            case 'phpui.timeout':
-            case 'phpui.timetable_days_forward':
-            case 'phpui.nodepassword_length':
-            case 'phpui.check_for_updates_period':
-            case 'phpui.quicksearch_limit':
-                $type = CONFIG_TYPE_POSITIVE_INTEGER;
-                break;
-
-            case 'mail.debug_email':
-            case 'mail.phpmailer_from':
-            case 'sendinvoices.debug_email':
-            case 'sendinvoices.sender_email':
-            case 'userpanel.debug_email':
-            case 'zones.hostmaster_mail':
-                $type = CONFIG_TYPE_EMAIL;
-                break;
-
-            case 'phpui.reload_type':
-                $type = CONFIG_TYPE_RELOADTYPE;
-                break;
-
-            case 'notes.type':
-            case 'receipts.type':
-            case 'phpui.report_type':
-            case 'phpui.document_type':
-            case 'invoices.type':
-                $type = CONFIG_TYPE_DOCTYPE;
-                break;
-
-            case 'phpui.document_margins':
-                $type = CONFIG_TYPE_MARGINS;
-                break;
-
-            case 'mail.backend':
-                $type = CONFIG_TYPE_MAIL_BACKEND;
-                break;
-
-            case 'mail.smtp_secure':
-                $type = CONFIG_TYPE_MAIL_SECURE;
-                break;
-
-            case 'payments.date_format':
-                $type = CONFIG_TYPE_DATE_FORMAT;
-                break;
-
-            default:
-                $type = CONFIG_TYPE_NONE;
-                break;
-        }
-
-        return $type;
-    }
+	public function GetConfigDefaultType($option) {
+		return array_key_exists($option, $this->default_config_types)
+			? $this->default_config_types[$option] : CONFIG_TYPE_NONE;
+	}
 
     public function CheckOption($option, $value, $type)
     {
@@ -186,7 +160,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 break;
 
             case CONFIG_TYPE_MARGINS:
-                if (!preg_match('/^\d,\d,\d,\d$/', $value))
+                if (!preg_match('/^\d+,\d+,\d+,\d+$/', $value))
                     return trans('Margins should consist of 4 numbers separated by commas!');
                 break;
 

@@ -33,10 +33,11 @@
 				    {$schema.description}
 			    </TD>
 			    <TD NOWRAP>
-				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
-				<A HREF="?m=promotionschemadel&id={$schema.id}" onClick="return confirmLink(this, '{t a=$schema.name}Are you sure, you want to remove schema \'$a\'?{/t}')"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-				<A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
+				<A HREF="?m=promotionschemadel&id={$schema.id}" onClick="return confirmLink(this, '{t a=$schema.name}Are you sure, you want to remove schema \'$a\'?{/t}')"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+                               <A HREF="?m=promotionschemaclone&id={$schema.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+                               <A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 			    </TD>
 			</TR>
 			{foreachelse}

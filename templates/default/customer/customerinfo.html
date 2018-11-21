@@ -1,9 +1,16 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
+{if $receipt.receipt}
+<SCRIPT type="text/javascript">
+<!--
+	window.open('?m=receipt&id={$receipt.receipt}&which={$receipt.which}');
+//-->
+</SCRIPT>
+{/if}
+<div id="customerinfo-sortable" class="lms-ui-sortable-persistent">
 {block name="customerinfobox"}
 	{include file="customer/customerinfobox.html"}
 {/block}
@@ -33,6 +40,12 @@
 {block name="customergroups"}
 	{include file="customer/customergroups.html"}
 {/block}
+{block name="customerdevices"}
+	{include file="customer/customerdevices.html"}
+{/block}
+{block name="customernetnodes"}
+	{include file="customer/customernetnodes.html"}
+{/block}
 {block name="customerassignments"}
 	{include file="customer/customerassignments.html"}
 {/block}
@@ -42,4 +55,10 @@
 {block name="customeractions"}
 	{include file="customer/customeractions.html"}
 {/block}
+</div>
+<script type="text/javascript">
+<!--
+	restoreSortable('customerinfo-sortable', '{$customerinfo_sortable_order}');
+//-->
+</script>
 {/block}

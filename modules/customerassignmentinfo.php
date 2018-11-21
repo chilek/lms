@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,17 +21,31 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: 057973c06cb75a3348be6172466bc1bce55a4cb4 $
  */
 
 $a = $DB->GetRow('SELECT a.invoice, a.settlement,
-        a.numberplanid, a.paytype, n.template, n.period, a.attribute
-		FROM assignments a
-		LEFT JOIN numberplans n ON (n.id = a.numberplanid)
-		WHERE a.id = ?',array(intval($_GET['id'])));
+        a.numberplanid, a.paytype, n.template, n.period, a.attribute,
+        d.number AS docnumber, d.type AS doctype, d.cdate,
+        n2.template AS numtemplate, a.customerid, a.separatedocument
+    FROM assignments a
+    LEFT JOIN numberplans n ON (n.id = a.numberplanid)
+    LEFT JOIN documents d ON d.id = a.docid
+    LEFT JOIN numberplans n2 ON n2.id = d.numberplanid
+    WHERE a.id = ?', array($_GET['id']));
 
-if ($a['template']) {
+if ($a['template'])
     $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';
+
+if (!empty($a['docnumber'])) {
+    $a['docnumber'] = docnumber(array(
+       'number' => $a['docnumber'],
+       'template' => $a['numtemplate'],
+       'cdate' => $a['cdate'],
+       'customerid' => empty($a['customerid']) ? null : $a['customerid'],
+    ));
+    $a['document'] = trans('$a no. $b issued on $c',
+        $DOCTYPES[$a['doctype']], $a['docnumber'], date('Y/m/d', $a['cdate']));
 }
 
 $a['paytypename'] = $PAYTYPES[$a['paytype']];

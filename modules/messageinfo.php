@@ -102,7 +102,7 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 
 $message = $DB->GetRow('SELECT m.*, u.name
 		FROM messages m
-		LEFT JOIN users u ON (u.id = m.userid) 
+		LEFT JOIN vusers u ON (u.id = m.userid) 
 		WHERE m.id = ?', array(intval($_GET['id'])));
 
 if(!$message)
@@ -158,7 +158,7 @@ unset($itemlist['status']);
 unset($itemlist['order']);
 unset($itemlist['direction']);
 
-$listdata['total'] = sizeof($itemlist);
+$listdata['total'] = count($itemlist);
 
 if ($SESSION->is_set('milp') && !isset($_GET['page']))
 	$SESSION->restore('milp', $_GET['page']);

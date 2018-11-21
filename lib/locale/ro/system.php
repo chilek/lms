@@ -41,22 +41,11 @@ function check_ssn($ssn)
 
 function check_zip($zip)
 {
-	return preg_match('/^[0-9]{6}$/', $zip);
-}
-
-function check_gg($im) //check_im for polish gadu gadu -zet
-{
-	return preg_match('/^[0-9]{0,32}$/', $im);
-}
-
-function check_yahoo($im) 
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
-}
-
-function check_skype($im) 
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
+	if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
+		return true;
+	} else {
+		return preg_match('/^[0-9]{6}$/', $zip);
+	}
 }
 
 function check_regon($regon) // business registration number
@@ -83,6 +72,15 @@ function format_bankaccount($account) {
 
 function getHolidays($year = null) {
 	return array();
+}
+
+/*!
+ * \brief Generate random postcode
+ *
+ * \return string
+ */
+function generateRandomPostcode() {
+    return sprintf("%06d", rand(0, 999999));
 }
 
 ?>

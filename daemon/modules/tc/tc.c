@@ -133,10 +133,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 				ROUND(SUM(downceil)/COUNT(DISTINCT nodes.id)) AS downceil, \
 				ROUND(SUM(climit)/COUNT(DISTINCT nodes.id)) AS climit, \
 				ROUND(SUM(plimit)/COUNT(DISTINCT nodes.id)) AS plimit \
-			FROM assignments \
+			FROM assignments a \
 				LEFT JOIN tariffs ON (tariffid = tariffs.id) \
 				LEFT JOIN nodes ON (customerid = ownerid) \
-			WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
+			WHERE access = 1 AND a.datefrom <= %NOW% AND (a.dateto >= %NOW% OR a.dateto = 0) \
 			GROUP BY customerid \
 			ORDER BY customerid");
 		

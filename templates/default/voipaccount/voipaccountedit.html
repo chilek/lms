@@ -1,9 +1,8 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
-{include file="calendar_js.html"}
 {include file="voipaccount/voipaccounteditbox.html"}
 {include file="customer/customerinfobox.html" customerpanel=1}
 {include file="customer/customernodesbox.html"}

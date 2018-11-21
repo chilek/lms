@@ -1,8 +1,8 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR>
 		<TD width="46%" NOWRAP>{trans("Host:")}</TD>
@@ -36,16 +36,15 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
 	{section name=recordslist loop=$recordslist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight">
 		<TD NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].name}</TD>
 		<TD align="center">{$recordslist[recordslist].ttl}</TD>
 		<TD align="center" NOWRAP>{$recordslist[recordslist].type}</TD>
@@ -53,9 +52,9 @@
 		<TD align="left" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].content}</TD>
 		<TD class="nobr text-right">			
 			{if $showaddedit}
-			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
+			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			{if $recordslist[recordslist].type != "SOA"}
-			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {trans("Delete")} ]" alt="[ {trans("Delete")} ]"></A> 
+			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="{trans("Delete")}" alt="{trans("Delete")}"></A>
 			{/if}
 			{/if}
 		</TD>
@@ -71,7 +70,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$recordslist adlink=$suffix}
 		</TD>
 	</TR>

@@ -13,7 +13,12 @@
 			{img src="person.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			<b>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
+			<b>{$userinfo.customername}
+			{if isset($fields_changed.lastname) || isset($fields_changed.name)}
+			({if isset($fields_changed.lastname) && $fields_changed.lastname.fieldvalue != $userinfo.lastname}<span class="lms-ui-customer-property-changed">{$fields_changed.lastname.fieldvalue}</span>{else}{$userinfo.lastname}{/if}
+			{if isset($fields_changed.name) && $fields_changed.name.fieldvalue != $userinfo.name}<span class="lms-ui-customer-property-changed">{$fields_changed.name.fieldvalue}</span>{else}{$userinfo.name}{/if})
+			{/if}
+			({$userinfo.id|string_format:"%04d"})</b>
 		</td>
 	</tr>
 {if $userinfo.emails}
@@ -23,7 +28,10 @@
 		</td>
 		<td width="99%" colspan="2">
 			{foreach $userinfo.emails as $email}
-				{$email.email}{if !$email@last}<BR />{/if}
+				{$emailid='email'|cat:$email.id}
+				{$email.email}
+				{if isset($fields_changed[$emailid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$emailid].fieldvalue})</span>{/if}
+				{if !$email@last}<BR />{/if}
 			{/foreach}
 		</td>
 	</tr>
@@ -33,8 +41,17 @@
 			{img src="address.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.address}<br/>
+			{$userinfo.address}
+			{if isset($fields_changed.street) || isset($fields_changed.building) || isset($fields_changed.apartment)}
+				({if isset($fields_changed.street)}<span class="lms-ui-customer-property-changed">{$fields_changed.street.fieldvalue}</span>{else}{$userinfo.street}{/if}
+				{if isset($fields_changed.building)}<span class="lms-ui-customer-property-changed">{$fields_changed.building.fieldvalue}</span>{else}{$userinfo.building}{/if}{if isset($fields_changed.apartment)}<span class="lms-ui-customer-property-changed">/{$fields_changed.apartment.fieldvalue}</span>{else}/{$userinfo.apartment}{/if})
+			{/if}
+			<br/>
 			{$userinfo.zip} {$userinfo.city}
+			{if isset($fields_changed.zip) || isset($fields_changed.city)}
+			({if isset($fields_changed.zip)}<span class="lms-ui-customer-property-changed">{$fields_changed.zip.fieldvalue}</span>{else}{$userinfo.zip}{/if}
+			{if isset($fields_changed.city)}<span class="lms-ui-customer-property-changed">{$fields_changed.city.fieldvalue}</span>{else}{$userinfo.city}{/if})
+			{/if}
 		</td>
 	</tr>
 {if $userinfo.contacts}
@@ -43,35 +60,27 @@
 			{img src="phone.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			{foreach from=$userinfo.contacts item=item}
-        			{if $item.phone}{$item.phone}<BR />{/if}
-	        	{/foreach}
+			{foreach $userinfo.contacts as $item}
+				{$phoneid='phone'|cat:$item.id}
+				{$item.phone}{if isset($fields_changed[$phoneid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$phoneid].fieldvalue})</span>{/if}{if !$item@last}<BR />{/if}
+			{/foreach}
 		</td>
 	</tr>
 {/if}
-{if $userinfo.im != "" && $userinfo.im != 0}
+{foreach $userinfo.ims as $item}
 	<tr>
 		<td width="1%">
+			{if $item.type & $smarty.const.CONTACT_IM_GG}
 			{img src="gg.gif" alt=""}
-		</td>
-		<td width="99%" colspan="2">
-			{$userinfo.im}
-		</td>
-	</tr>
-{/if}
-{foreach from=$userinfo.messengers item=item}
-	<tr>
-		<td width="1%">
-			{if $item.type == $smarty.const.IM_GG}
-			{img src="gg.gif" alt=""}
-			{elseif $item.type == $smarty.const.IM_YAHOO}
+			{elseif $item.type & $smarty.const.CONTACT_IM_YAHOO}
 			{img src="yahoo.gif" alt=""}
-			{elseif $item.type == $smarty.const.IM_SKYPE}
+			{elseif $item.type & $smarty.const.CONTACT_IM_SKYPE}
 			{img src="skype.gif" alt=""}
 			{/if}
 		</td>
 		<td width="99%" colspan="2">
-			{$item.uid}
+			{$imid='im'|cat:$item.id}
+			{$item.uid}{if isset($fields_changed[$imid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$imid].fieldvalue})</span>{/if}
 		</td>
 	</tr>
 {/foreach}
@@ -81,7 +90,7 @@
 			<b>{trans("TEN")}</b>
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.ten}
+			{$userinfo.ten}{if isset($fields_changed.ten)} <span class="lms-ui-customer-property-changed">({$fields_changed.ten.fieldvalue})</span>{/if}
 		</td>
 	</tr>
 {/if}
@@ -91,7 +100,7 @@
 			<b>{trans("SSN")}</b>
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.ssn}
+			{$userinfo.ssn}{if isset($fields_changed.ssn)} <span class="lms-ui-customer-property-changed">({$fields_changed.ssn.fieldvalue})</span>{/if}
 		</td>
 	</tr>
 {/if}
@@ -132,7 +141,10 @@
 	}
 	<tr>
 		<td width="100%" colspan="3" align="right">
-			<a href="?m=info&amp;f=updateuserform" accesskey="A">{trans("Actualize data")} {img src="edit.gif" alt="[ Edit ]"}</a>
+			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
+			<a href="?m=info&f=updatepinform" accesskey="P">{trans("Update PIN")} {img src="pin.gif" alt="PIN"}</a>
+			{/if}
+			<a href="?m=info&amp;f=updateuserform" accesskey="A">{trans("Actualize data")} {img src="edit.gif" alt="Edit"}</a>
 		</td>
 	</tr>
 	{/if}

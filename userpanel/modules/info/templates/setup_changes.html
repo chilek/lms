@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P>
@@ -6,43 +8,64 @@
 	<TR>
 		<TD>
 		<FORM NAME="changes" METHOD="POST" ACTION="?m=userpanel&module=info&f=changes">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD WIDTH="30%" NOWRAP class="fleftu"><B>{trans("Customer:")}</B></TD>
-					<TD WIDTH="15%" NOWRAP class="fbt">{trans("Field:")}</TD>
-					<TD WIDTH="25%" NOWRAP class="fbt">{trans("Old value:")}</TD>
-					<TD WIDTH="25%" NOWRAP class="fbt">{trans("New value:")}</TD>
-					<TD WIDTH="5%" class="frightu">&nbsp;</TD>
+			<TABLE class="lmsbox">
+				<COLGROUP>
+					<COL style="width: 30%;">
+					<COL style="width: 15%;">
+					<COL style="width: 25%;">
+					<COL style="width: 25%;">
+					<COL style="width: 5%;">
+				</COLGROUP>
+				<THEAD>
+				<TR>
+					<TD class="bold nobr">{trans("Customer:")}</TD>
+					<TD class="nobr">{trans("Field:")}</TD>
+					<TD class="nobr">{trans("Old value:")}</TD>
+					<TD class="nobr">{trans("New value:")}</TD>
+					<TD>&nbsp;</TD>
 				</TR>
+				</THEAD>
+				<TBODY class="lms-ui-multi-check">
 				{cycle values="light,lucid" print=false}
-				{foreach from=$userchanges item=change}
-				<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD CLASS="fleft" WIDTH="30%" NOWRAP onClick="return self.location.href='?m=customerinfo&id={$change.customerid}';"><B>{$change.customername|truncate:50:" ..."} ({$change.customerid|string_format:"%04d"})</B></TD>
-					<TD WIDTH="15%" NOWRAP>{t}{$change.fieldname|regex_replace:"/[^a-z]/":""}{/t}</TD>
-					<TD WIDTH="25%" NOWRAP>{$change.oldvalue}</TD>
-					<TD WIDTH="25%" NOWRAP>{$change.newvalue}</TD>
-					<TD CLASS="fright" WIDTH="5%"><INPUT CLASS="box {cycle}" TYPE="checkbox" NAME="userchanges[]" VALUE="{$change.changeid}"></TD>
+				{foreach $userchanges as $change}
+				<TR class="lms-ui-multi-check {cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+					<TD class="bold nobr" onClick="return self.location.href='?m=customerinfo&id={$change.customerid}';">
+						{$change.customername|truncate:50:" ..."} ({$change.customerid|string_format:"%04d"})
+					</TD>
+					<TD class="nobr">{t}{$change.fieldname|regex_replace:"/[^a-z]/":""}{/t}</TD>
+					<TD class="nobr">{$change.oldvalue}</TD>
+					<TD class="nobr">{$change.newvalue}</TD>
+					<TD>
+						<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="userchanges[]" VALUE="{$change.changeid}">
+					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="5" class="fall">
-					<p>&nbsp;</p>
-					<p><B>{trans("There are any changes to accept.")}</B></p>
-					<p>&nbsp;</p>
+					<TD class="empty-table" colspan="5">
+						<p>{trans("There are any changes to accept.")}</p>
 					</TD>
 				</TR>
 				{/foreach}
-				<TR class="dark">
-					<TD ALIGN="RIGHT" CLASS="fall" COLSPAN="5" ROWSPAN="1" NOWRAP>
+				</TBODY>
+				<TFOOT>
+				<TR>
+					<td class="nobr">
+						<label>
+							{trans("Select All")}
+							<input type="checkbox" class="lms-ui-multi-check-all">
+						</label>
+					</td>
+					<TD class="buttons" COLSPAN="4">
 						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_save';document.changes.submit()">{trans("Save")} <IMG SRC="img/save.gif" alt=""></A>
 						/
 						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_delete';document.changes.submit()">{trans("Delete")} <IMG SRC="img/delete.gif" alt=""></A>
 					</TD>
 				</TR>
+				</TFOOT>
 			</TABLE>
 		</TD>
 	</FORM>
 	</TR>
 </TABLE>
 </P>
-{include file="footer.html"}
+{/block}

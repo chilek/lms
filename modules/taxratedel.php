@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,8 +33,8 @@ if ($_GET['is_sure'] == 1 && $id) {
 		) == 0) {
 		$DB->Execute('DELETE FROM taxes WHERE id=?', array($id));
 		if ($SYSLOG) {
-			$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $id);
-			$SYSLOG->AddMessage(SYSLOG_RES_TAX, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$args = array(SYSLOG::RES_TAX => $id);
+			$SYSLOG->AddMessage(SYSLOG::RES_TAX, SYSLOG::OPER_DELETE, $args);
 		}
 	}
 }

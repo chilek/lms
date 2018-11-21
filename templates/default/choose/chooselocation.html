@@ -6,21 +6,21 @@
     <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
     <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-    <link href="img/style.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="img/common.js"></script>
-    <script type="text/javascript" src="img/autosuggest.js"></script>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript" src="js/autosuggest.js"></script>
     {$xajax}
 </head>
-<body class="light">
+<body class="light lms-ui-popup">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
-<script type="text/javascript" language="JavaScript" src="img/overlib.js"></script>
+<script type="text/javascript" src="js/overlib.js"></script>
     {if !empty($states)}
     <div id="autosuggest"><ul></ul></div>
     <form name="search" id="search" method="post" action="?m=chooselocation">
     <input type="submit" class="hiddenbtn">
     <table id="searchtable" cellpadding="5" width="100%">
         <tr>
-            <td class="fall dark" nowrap>
+            <td class="fall dark nobr">
                  <img src="img/home.gif" alt="">
                  <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();" {tip text="Enter city name"}>
             </td>
@@ -28,7 +28,10 @@
     </table>
     </form>
     <script type="text/javascript">
-        new AutoSuggest(document.forms['search'],document.forms['search'].elements['searchcity'],'?m=chooselocation&ajax=1&mode=city&what=',1);
+	<!--
+		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+		new AutoSuggest(document.forms['search'],document.forms['search'].elements['searchcity'],'?m=chooselocation&ajax=1&mode=city&what=',1);
+	//-->
     </script>
     {/if}
 	<table id="locationtable" width="100%" cellpadding="3">
@@ -84,19 +87,19 @@
 		    </td>
 	    </tr>
 	    <tr class="light" id="house"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{trans("House No.")}:</td>
+		    <td class="nobr">{trans("House No.")}:</td>
 		    <td>
                 <input type="text" size="8" maxlength="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
 		    </td>
 	    </tr>
 	    <tr class="light" id="flat"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{trans("Flat No.")}:</td>
+		    <td class="nobr">{trans("Flat No.")}:</td>
 		    <td>
                 <input type="text" size="8" maxlength="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
 		    </td>
 	    </tr>
         <tr class="light">
-            <td colspan="2" align="right" nowrap>
+            <td colspan="2" class="text-right nobr">
                 <a href="javascript:submit_location()" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
             </td>
         </tr>
@@ -174,12 +177,13 @@ function search_update(cityid, districtid, stateid)
 
 function submit_location()
 {
-	var city = document.getElementById('city_sel'),
-		street = document.getElementById('street_sel'),
-		house = document.getElementById('house_input'),
-		flat = document.getElementById('flat_input'),
-		cr = document.getElementById('city'),
-		loc = window.parent.document.getElementById('location');
+	var city     = document.getElementById('city_sel'),
+		street   = document.getElementById('street_sel'),
+		house    = document.getElementById('house_input'),
+		flat     = document.getElementById('flat_input'),
+		cr       = document.getElementById('city'),
+		loc      = window.parent.document.getElementById('location');
+		loc_city = window.parent.document.getElementById('location_city');
 
 	if (cr.style.display == 'none' || city.value == 0) {
 		alert('{trans("City has not been selected!")}');
@@ -204,10 +208,26 @@ function submit_location()
 	locform.elements[varname+'[location_flat]'].value = flat.value;
 
 	if (loc) {
-		 loc.value = build_location_str(
+		locat = build_location_str(
 			city.value ? city.options[city.selectedIndex].text : '',
 			street.value ? street.options[street.selectedIndex].text : '',
 			house.value, flat.value);
+		if (!/^(.+)\s*,\s*(.+)$/.test(locat)) {
+			// handle variant with city without street names
+			/^.+\((.+)\)$/.test(city.options[city.selectedIndex].text);
+			var borough = RegExp.$1;
+			{foreach $_BOROUGHTYPES as $key => $item}
+			borough = borough.replace('{$item} ', '');
+			{/foreach}
+			locat = borough + ', ' + locat;
+			/^(.+)\s*,\s*(.+)$/.test(locat);
+		}
+		if (loc_city) {
+			loc.value = RegExp.$2;
+			loc_city.value = RegExp.$1;
+		} else {
+			loc.value = locat;
+		}
 	}
 
 	window.parent.popclick();
@@ -254,6 +274,7 @@ document.search.searchcity.focus();
 {/if}
 
 resize_frame();
+
 //-->
 </script>
 </body>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,16 +27,16 @@
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
-if(sizeof($useradd))
+if(count($useradd))
 {
-    
+
         $error = array();
-    
+
 	foreach($useradd as $key => $value)
 	    if (!is_array($value))
 		    $useradd[$key] = trim($value);
 
-	if($useradd['login']=='' && $useradd['name']=='' && $useradd['password']=='' && $useradd['confirm']=='')
+	if($useradd['login']=='' && $useradd['firstname']=='' && $useradd['lastname']=='' && $useradd['password']=='' && $useradd['confirm']=='')
 	{
 		$SESSION->redirect('?m=useradd');
 	}
@@ -51,8 +51,10 @@ if(sizeof($useradd))
 	if($useradd['email']!='' && !check_email($useradd['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
-	if($useradd['name']=='')
-		$error['name'] = trans('You have to enter first and lastname!');
+	if ($useradd['firstname'] == '')
+		$error['firstname'] = trans('You have to enter first and lastname!');
+	if ($useradd['lastname'] == '')
+		$error['lastname'] = trans('You have to enter first and lastname!');
 
 	if ($useradd['password'] == '')
 		$error['password'] = trans('Empty passwords are not allowed!');
@@ -61,31 +63,23 @@ if(sizeof($useradd))
 	elseif (!check_password_strength($useradd['password']))
 		$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
 
-	if($useradd['accessfrom'] == '')
-		$accessfrom = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$useradd['accessfrom']))
+	if(!empty($useradd['accessfrom']))
 	{
-		list($y, $m, $d) = explode('/', $useradd['accessfrom']);
-		if(checkdate($m, $d, $y))
-			$accessfrom = mktime(0, 0, 0, $m, $d, $y);
-		else
+		$accessfrom=date_to_timestamp($useradd['accessfrom']);
+		if(empty($accessfrom))
 			$error['accessfrom'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessfrom'] = trans('Incorrect charging time!');
+		$accessfrom = 0;
 
-	if($useradd['accessto'] == '')
-		$accessto = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $useradd['accessto']))
+	if(!empty($useradd['accessto']))
 	{
-		list($y, $m, $d) = explode('/', $useradd['accessto']);
-		if(checkdate($m, $d, $y))
-			$accessto = mktime(23, 59, 59, $m, $d, $y);
-		else
+		$accessto=date_to_timestamp($useradd['accessto']);
+		if(empty($accessto))
 			$error['accessto'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessto'] = trans('Incorrect charging time!');
+		$accessto = 0;
 
 	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
 		$error['accessto'] = trans('Incorrect date range!');
@@ -94,7 +88,7 @@ if(sizeof($useradd))
 	$useradd['rights'] = implode(',', $rights);
 
 	if (!empty($useradd['ntype']))
-		$useradd['ntype'] = array_sum(array_map('intval', $useradd['ntype']));
+		$useradd['ntype'] = array_sum(Utils::filterIntegers($useradd['ntype']));
 
         $hook_data = $LMS->executeHook('useradd_validation_before_submit', array('useradd' => $useradd,
                                                                                  'error' => $error));
@@ -112,13 +106,12 @@ if(sizeof($useradd))
 					VALUES(?, ?)', array($idx, $id));
 				if ($SYSLOG) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] =>
+						SYSLOG::RES_EXCLGROUP =>
 							$DB->GetLastInsertID('excludedgroups'),
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $idx,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id
+						SYSLOG::RES_CUSTGROUP => $idx,
+						SYSLOG::RES_USER => $id
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_ADD,
-						$args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
 				}
 			}
 

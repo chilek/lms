@@ -22,7 +22,7 @@
 			{trans("No.")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Invoice No.")}<BR>
+			{if $doctype == 'invoices'}{trans("Invoice No.")}{else}{trans("Debit Note No.")}{/if}<BR>
 			{trans("Draw-up date")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
@@ -33,11 +33,12 @@
 			{trans("Contractor")}
 		</TD>
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Gross value")}
+			{if $doctype == 'invoices'}{trans("Gross value")}{else}{trans("Value")}{/if}
 		</TD>
+		{if $doctype == 'invoices'}
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Net value")}
+			{trans("Net value")} {$tax.label}
 		</TD>
 		{if $tax.value}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
@@ -48,7 +49,9 @@
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Total Tax")}
 		</TD>
+		{/if}
 	</TR>
+	{if !isset($printonlysummary)}
 	{cycle values="grey,white" print=false}
 	{foreach item=invoice from=$invoicelist}
 	<TR class="{cycle}">
@@ -64,12 +67,13 @@
 			{$invoice.pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			<B>{$invoice.custname}</B> ({$invoice.customerid|string_format:"%04d"}){if $invoice.ten}, {$invoice.ten}{/if}<BR>
+			<B>{$invoice.custname}</B> {if !isset($printcustomerid)}({$invoice.customerid|string_format:"%04d"}){/if}{if $invoice.ten}, {$invoice.ten}{/if}<BR>
 			{$invoice.custaddress}
 		</TD>
 		<TD ALIGN="RIGHT">
 			{$invoice.brutto|string_format:"%01.2f"}
 		</TD>
+		{if $doctype == 'invoices'}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
@@ -84,6 +88,7 @@
 		<TD ALIGN="RIGHT">
 			{$invoice.tax|string_format:"%01.2f"}
 		</TD>
+		{/if}
 	</TR>
 	{foreachelse}
 	<TR>
@@ -92,6 +97,7 @@
 		</TD>
 	</TR>
 	{/foreach}
+	{/if}
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
@@ -99,6 +105,7 @@
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
 		</TD>
+		{if $doctype == 'invoices'}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
@@ -113,6 +120,7 @@
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
 		</TD>
+		{/if}
 	</TR>
 </TABLE>
 {include file="clearfooter.html"}

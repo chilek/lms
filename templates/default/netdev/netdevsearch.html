@@ -1,133 +1,138 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="search" METHOD="POST" ACTION="?m=netdevsearch&amp;search=1">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD COLSPAN="3">
-			<B>{trans("Find devices matching the following search criteria:")}</B>
+		<TD COLSPAN="3" class="bold">
+			{trans("Find devices matching the following search criteria:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/search.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Name:")}</B>
-		<TD WIDTH="98%">
+		<TD class="bold">
+			{trans("Name:")}
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[name]" VALUE="" {tip text="Enter device name or it's fragment"}> 
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Manufacturer:")}</B>
+		<TD class="bold nobr">
+			{trans("Manufacturer:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[producer]" VALUE="" {tip text="Enter producer name or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/netdev_model.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Model:")}</B>
+		<TD class="bold nobr">
+			{trans("Model:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[model]" VALUE="" {tip text="Enter device model or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Serial number:")}</B>
+		<TD class="bold nobr">
+			{trans("Serial number:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[serialnumber]" VALUE="" {tip text="Enter device serial number or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/port.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Number of ports:")}</B>
+		<TD class="bold nobr">
+			{trans("Number of ports:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[ports]" VALUE="" {tip text="Enter number of ports"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Location:")}</B>
+		<TD class="bold nobr">
+			{trans("Location:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[location]" VALUE="" {tip text="Enter device location or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/desc.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Description:")}</B>
+		<TD class="bold nobr">
+			{trans("Description:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[description]" VALUE="" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/ip.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("IP address:")}</B>
+		<TD class="bold nobr">
+			{trans("IP address:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[ipaddr]" VALUE="" {tip text="Enter IP address or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/mac.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("MAC address:")}</B>
+		<TD  class="bold nobr">
+			{trans("MAC address:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<INPUT TYPE="TEXT" NAME="search[mac]" VALUE="" {tip text="Enter MAC address or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%"></TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Qualification operator:")}</B>
+		<TD></TD>
+		<TD class="bold nobr">
+			{trans("Qualification operator:")}
 		</TD>
-		<TD WIDTH="98%">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
+		<TD>
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
+		<TD COLSPAN="3" class="buttons">
 			<A HREF="javascript:document.search.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=netdevlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
-	</TR>	
+	</TR>
     </TBODY>
 </TABLE>
 </FORM>

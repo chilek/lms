@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,57 +24,112 @@
  *  $Id$
  */
 
-if($layout['module'] != 'customeredit')
-{
-	$customerinfo = $LMS->GetCustomer($customerid);
+if ($layout['module'] != 'customeredit') {
+    $customerinfo = $LMS->GetCustomer($customerid);
 
-    if(!$customerinfo)
-    {
+    if (!$customerinfo) {
         $SESSION->redirect('?m=customerlist');
     }
 
-	$SMARTY->assignByRef('customerinfo', $customerinfo);
-
+    $SMARTY->assignByRef('customerinfo', $customerinfo);
 }
 
-$expired = !empty($_GET['expired']) ? true : false;
-$assignments = $LMS->GetCustomerAssignments($customerid, !empty($expired) ? $expired : NULL);
-$customergroups = $LMS->CustomergroupGetForCustomer($customerid);
-$othercustomergroups = $LMS->GetGroupNamesWithoutCustomer($customerid);
-$balancelist = $LMS->GetCustomerBalanceList($customerid);
+$expired              = !empty($_GET['expired']) ? true : false;
+$commited             = !empty($_GET['commited']) ? true : false;
+$allevents            = isset($_GET['allevents']) && !empty($_GET['allevents']);
+//$assignments          = $LMS->GetCustomerAssignments($customerid, !empty($expired) ? $expired : NULL);
+$assignments          = $LMS->GetCustomerAssignments($customerid, true, false);
+$customergroups       = $LMS->CustomergroupGetForCustomer($customerid);
+$othercustomergroups  = $LMS->GetGroupNamesWithoutCustomer($customerid);
+$balancelist          = $LMS->GetCustomerBalanceList($customerid);
 $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
-$documents = $LMS->GetDocuments($customerid, 10);
-$taxeslist = $LMS->GetTaxes();
-$allnodegroups = $LMS->GetNodeGroupNames();
-$messagelist = $LMS->GetMessages($customerid, 10);
-$eventlist = $LMS->EventSearch(array('customerid' => $customerid), 'date,desc', true);
-$customernodes = $LMS->GetCustomerNodes($customerid);
-$customernetworks = $LMS->GetCustomerNetworks($customerid, 10);
+$documents            = $LMS->GetDocuments($customerid, 10);
+$taxeslist            = $LMS->GetTaxes();
+$allnodegroups        = $LMS->GetNodeGroupNames();
+$messagelist          = $LMS->GetMessages($customerid);
+$params = array(
+	'customerid' => $customerid,
+);
+if ($allevents)
+	$params['closed'] = '';
+$eventlist            = $LMS->EventSearch($params, 'date,desc', true);
+$customernodes        = $LMS->GetCustomerNodes($customerid);
+$customernetnodes = $LMS->GetCustomerNetNodes($customerid);
+
+// prepare node assignments array which allows to easily map nodes to assignments
+$nodeassignments = array();
+if (!empty($assignments))
+	foreach ($assignments as $assignment)
+		if (!empty($assignment['nodes']))
+			foreach ($assignment['nodes'] as $node) {
+				if (!isset($nodeassignments[$node['id']]))
+					$nodeassignments[$node['id']] = array();
+				$nodeassignments[$node['id']] = array(
+					'assignment' => $assignment,
+				);
+			}
+
+$customernetworks     = $LMS->GetCustomerNetworks($customerid, 10);
 $customerstats = array(
-	'tickets' => $DB->GetRow('SELECT COUNT(*) AS all, SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
-		FROM rttickets WHERE customerid = ?', array(RT_RESOLVED, $customerid)),
-	'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
-	'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
+		'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
+		FROM rttickets t
+		JOIN rtrights r ON r.queueid = t.queueid
+		WHERE r.userid = ?'
+			. (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0': '')
+			. (' AND customerid = ?'), array(RT_RESOLVED, Auth::GetCurrentUser(), $customerid)),
+		'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
+		'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
 
+$customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
+unset($customerdevices['total']);
+unset($customerdevices['order']);
+unset($customerdevices['direction']);
+
+$counter = count($customerdevices);
+for ($i=0; $i<$counter; ++$i) {
+    $customerdevices[$i]['ips'] = $LMS->GetNetDevIPs( $customerdevices[$i]['id'] );
+}
+
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-	$trans = $SYSLOG->GetTransactions(array('key' => $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], 'value' => $customerid));
+	$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
 	if (!empty($trans))
 		foreach ($trans as $idx => $tran)
 			$SYSLOG->DecodeTransaction($trans[$idx]);
 	$SMARTY->assign('transactions', $trans);
-	$SMARTY->assign('resourcetype', SYSLOG_RES_CUST);
+	$SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
 	$SMARTY->assign('resourceid', $customerid);
 }
 
-if(!empty($documents))
-{
-        $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
-	        FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
+if(!empty($documents)) {
+    $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
+        FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array(Auth::GetCurrentUser())));
+}
+
+// try to determine preselected cash registry numberplan for instant cash receipt creations
+$cashregistries = $LMS->GetCashRegistries($customerid);
+if (!empty($cashregistries)) {
+	if (count($cashregistries) == 1)
+		$SMARTY->assign('instantpayment', 1);
+	else {
+		$cashregistries = array_filter($cashregistries, function($cashreg) {
+			return !empty($cashreg['isdefault']);
+		});
+		if (count($cashregistries) == 1)
+			$SMARTY->assign('instantpayment', 1);
+	}
+}
+
+// prepare saved receipt to print
+if ($receipt = $SESSION->get('receiptprint')) {
+	$SMARTY->assign('receipt', $receipt);
+	$SESSION->remove('receiptprint');
 }
 
 $SMARTY->assign(array(
-	'expired' => $expired, 
+	'expired' => $expired,
+	'commited' => $commited,
+	'allevents' => $allevents,
 	'time' => $SESSION->get('addbt'),
 	'taxid' => $SESSION->get('addbtax'),
 	'comment' => $SESSION->get('addbc'),
@@ -84,8 +139,11 @@ $SMARTY->assign(array(
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->assignByRef('customernodes', $customernodes);
 $SMARTY->assignByRef('customernetworks', $customernetworks);
+$SMARTY->assignByRef('customerdevices', $customerdevices);
+$SMARTY->assignByRef('customernetnodes', $customernetnodes);
 $SMARTY->assignByRef('customerstats', $customerstats);
 $SMARTY->assignByRef('assignments', $assignments);
+$SMARTY->assignByRef('nodeassignments', $nodeassignments);
 $SMARTY->assignByRef('customergroups', $customergroups);
 $SMARTY->assignByRef('othercustomergroups', $othercustomergroups);
 $SMARTY->assignByRef('balancelist', $balancelist);

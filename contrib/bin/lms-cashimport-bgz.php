@@ -1,9 +1,10 @@
+#!/usr/bin/env php
 <?php
 
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,7 +49,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-cashimport-bgz.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 	exit(0);
@@ -57,7 +58,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-cashimport-bgz.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -72,7 +73,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-cashimport-bgz.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 }
@@ -121,10 +122,10 @@ try {
 
 // Include required files (including sequence is important)
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 // Initialize Session, Auth and LMS classes
@@ -448,7 +449,7 @@ function parse_file($filename, $contents) {
 				if (!$sourcefileid) {
 					$DB->Execute('INSERT INTO sourcefiles (name, idate, userid)
 						VALUES (?, ?NOW?, ?)',
-						array($filename, $AUTH->id));
+						array($filename, Auth::GetCurrentUser()));
 
 					$sourcefileid = $DB->GetLastInsertId('sourcefiles');
 				}

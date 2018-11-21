@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
 <FORM method="POST" action="?m=eventnote&id={$event.id}" name="event">
@@ -78,7 +80,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<IMG src="img/info.gif" alt="">
+			<IMG src="img/note.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Note:")}</B>
@@ -102,11 +104,11 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
+			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 		</TD>
 	</TR>
         {/block}
 </TABLE>
 </P>
-{include file="footer.html"}
+{/block}

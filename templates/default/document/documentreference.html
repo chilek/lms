@@ -1,0 +1,28 @@
+{if $cid && $references}
+<TD>
+    <IMG src="img/docum.gif" alt="">
+</TD>
+<TD class="bold nobr">
+    {trans("Reference document:")}
+</TD>
+<TD class="nobr">
+    <SELECT name="document[reference]" {tip text="Select reference document" trigger="reference"}>
+        <OPTION value=""{if !$document.reference} selected{/if}>{trans("- none -")}</OPTION>
+        {foreach $references as $doc}
+        {number number=$doc.number template=$doc.template time=$doc.cdate customerid=$cid assign="number"}
+        <OPTION value="{$doc.docid}"{if $document.reference.id == $doc.docid} selected{/if}>{t a=$_DOCTYPES[$doc.type] b=$number c=$doc.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}</OPTION>
+        {/foreach}
+    </SELECT>
+</TD>
+<script>
+    $(function() {
+        $('[name="document[reference]"]').change(function() {
+            if (parseInt($(this).val())) {
+                $('#a_reference_document_limit').show();
+            } else {
+                $('#a_reference_document_limit').hide();
+            }
+        }).trigger('change');
+    });
+</script>
+{/if}

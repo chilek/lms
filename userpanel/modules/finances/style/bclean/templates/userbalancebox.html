@@ -3,75 +3,94 @@
 <div class="row">
     <div class="col-md-12">
         <form name="invoices" action="?m=finances&amp;f=invoice" method="POST" target="_blank">
-	    <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <tr class="bg-primary">
-                    <th>{trans("Date")}</th>
-                    <th>Zobowiązanie</th>
-                    <th>Wpłata</th>
-                    <th>Saldo</th>
-                    <th>Tytuł przelewu / Opis faktury VAT</th>
-                    {if !$disable_invoices}
-                    <th></th>
-                    {/if}
-                </tr>  
-                {section name=balancelist loop=$balancelist.list step=-1}
-                {$item=$balancelist.list[balancelist]}
-                <tr>
-                    <td>{$item.date|date_format:"%Y-%m-%d %H:%M:%S"}</td>
-                    {if $item.value > 0}
-                    <td></td>        
-                    <td class="bg-success">
-                        {if $item.value > 0 && $item.type != 4}+{/if}
-                        {$item.value|money_format}
-                    </td>
-                    {else}   
-                    <td class="bg-danger">
-                        {if $item.type == 4}-{/if}
-                        {$item.value|money_format}
-                    </td>
-                    <td></td>
-                    {/if}        
-                    <td>
-                        {if $item.after < 0}
-                        <strong>{$item.after|money_format}</strong>
-                        {else}
-                        {$item.after|money_format}
-                        {/if}
-                    </td>
-                    <td>{$item.comment}</td>
-                    {if !$disable_invoices}
-                    <td>
-                        {if $item.doctype==1 || $item.doctype==3}
-                        <a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" target="_blank">Wydrukuj</a> <input type="checkbox" name="inv[{$item.docid}]" value="1" />
-                        {else}
-                        &nbsp;
-                        {/if}
-                    </td>
-                    {/if}
-                </tr>
-                {sectionelse}
-                <tr>
-                    <td colspan="6">
-                        <p>&nbsp;</p>
-                        <p><b>{trans("No such transactions on your account.")}</b></p>
-                        <p>&nbsp;</p>
-                    </td>
-                </tr>
-                {/section}
-                {if !$disable_invoices}
-                <tr>
-                    <td colspan="5">&nbsp;</td>
-                    <td>
-                        <label>{trans("Check all")}&nbsp;<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" /></label>
-                        <br/><br/>            
-                        <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>            
-                    </td>
-                </tr>
-                {/if}
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover table-condensed">
+					<thead>
+						<tr class="bg-primary text-white">
+							<th>{trans("Date")}</th>
+							<th>{trans("Commitment")}</th>
+							<th>{trans("Payment")}</th>
+							<th>{trans("Balance")}</th>
+							<th>{trans("Transfer title")} / {trans("Invoice title")}</th>
+								{if !$disable_invoices}
+								<th></th>
+								{/if}
+						</tr>
+					</thead>
+					{$ldate = ConfigHelper::getConfig('userpanel.show_last_years', 5)}
+					{if $ldate}
+						{$ldate = ($smarty.now - $ldate * 366 * 86400)}
+					{else}
+						{$ldate = 0}
+					{/if}
+					<tbody>
+					{section name=balancelist loop=$balancelist.list step=-1}
+						{$item=$balancelist.list[balancelist]}
+						{if $item.time > $ldate}
+						<tr {if $item.value > 0} class="table-success"{else} class="table-danger"{/if}>
+							<td>{$item.date|date_format:"%Y-%m-%d"}</td>
+							{if $item.value > 0}
+								<td></td>
+								<td class="text-success font-weight-bold">
+									{if $item.value > 0 && $item.type != 4}+{/if}
+									{$item.value|money_format}
+								</td>
+							{else}
+								<td class="text-danger font-weight-bold">
+									{if $item.type == 4}-{/if}
+									{$item.value|money_format}
+								</td>
+								<td></td>
+							{/if}
+							<td>
+								{if $item.after < 0}
+									<strong>{$item.after|money_format}</strong>
+								{else}
+									{$item.after|money_format}
+								{/if}
+							</td>
+							<td>{$item.comment}</td>
+							{if !$disable_invoices}
+								<td>
+									{foreach $item.customlinks as $link}
+										<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>{if isset($link.icon)}{img src="`$link.icon`" alt="`$link.label`" text=$link.tip}{else}{$link.label}{/if}</a>
+									{if isset($link.extra)}{$link.extra}{/if}
+								{/foreach}
+								{if $item.doctype==1 || $item.doctype==3}
+									<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" target="_blank">{trans("Print")}</a> <input type="checkbox" name="inv[{$item.docid}]" value="1" />
+								{else}
+									&nbsp;
+								{/if}
+							</td>
+							{/if}
+						</tr>
+						{/if}
+					{sectionelse}
+						<tr>
+							<td colspan="6">
+								{trans("No such transactions on your account.")}
+							</td>
+						</tr>
+					{/section}
+					</tbody>
+				{if !$disable_invoices}
+					<tfoot>
+						<tr>
+							<td colspan="5">&nbsp;</td>
+							<td>
+								<label>
+									{trans("Check all")}
+									<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
+								</label>
+								<br>
+								<a class="btn btn-primary btn-sm" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+							</td>
+						</tr>
+					</tfoot>
+				{/if}
             </table>
-	    </div>
-        </form>
-    </div>
+		</div>
+	</form>
+</div>
 </div>
 {/box}

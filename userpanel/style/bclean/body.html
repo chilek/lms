@@ -1,26 +1,27 @@
-<div class="row">
-    <div class="col-md-12">
-        <br/><h1>{$page_header} <small class="text-muted">{trans('Virtual Customer Service')}</small></h1>
-    </div>
-</div>
+<h1 class="mt-1">
+	{if $company_logo}
+		<img src="{$company_logo}">
+	{/if}
+	{if $page_header}
+		<br><small class="text-muted">{$page_header}</small>
+	{/if}
+	{if !$company_logo && !$page_header}
+		<br><small class="text-muted">{trans('Virtual Customer Service')}</small>
+	{/if}
+</h1>
 {if $modules}
-<div class="row">
-    <div class="col-md-12">
-        <nav class="navbar navbar-dark bg-inverse">
-            <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
-                &#9776;
-            </button>
-            <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
-                <ul class="nav navbar-nav">
-                    {foreach from=$modules item=menuitem}
-                    <li class="nav-item {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}">
-                        <a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>{$smarty.get.page} {$menuitem.name|replace:" ":"&nbsp;"}</a>
-                    </li>
-                    {/foreach}
-                </ul>
-            </div>
-        </nav>
-    </div>
-</div>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-toggleable-md">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				{foreach from=$modules item=menuitem}
+					<li class="nav-item {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}">
+						<a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>{$menuitem.name|replace:" ":"&nbsp;"}</a>
+					</li>
+				{/foreach}
+			</ul>
+		</div>
+	</nav>
 {/if}
-<hr/>

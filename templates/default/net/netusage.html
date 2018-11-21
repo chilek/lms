@@ -1,0 +1,262 @@
+{extends file="layout.html"}
+
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+
+<style>
+    .network {
+        padding: 3px;
+    }
+    .network-container {
+        padding-left: 20px;
+        padding-top: 3px;
+    }
+    .net-name:hover {
+        cursor: pointer;
+    }
+    .ip-address {
+        padding-top: 3px;
+    }
+    .plus .net-name::before {
+        content: '\2795'; color: black; font-size: 0.8em;
+    }
+    .net-name::before {
+        content: '\2796'; color: black; font-size: 0.8em;
+    }
+    .plus .net-data {
+        display: none;
+    }
+
+    {$col_count  = 16}
+    {$col_width  = '13em'}
+    {$col_border = '1px solid #cebd9b'}
+    .auto-column {
+        -webkit-column-width: {$col_width};
+        -webkit-column-gap: 1em;
+        -webkit-column-rule: {$col_border};
+        -webkit-column-count: {$col_count};
+        -moz-column-width: {$col_width};
+        -moz-column-gap: 1em;
+        -moz-column-rule: {$col_border};
+        -moz-column-count: {$col_count};
+        -ms-column-width: {$col_width};
+        -ms-column-gap: 1em;
+        -ms-column-rule: {$col_border};
+        -ms-column-count: {$col_count};
+        column-width: {$col_width};
+        column-gap: 1em;
+        column-rule: {$col_border};
+        column-count: {$col_count};
+    }
+	.free-network-container .free-network {
+		margin-left: 14px;
+	}
+	.free-network-container .big-free-network {
+		cursor: pointer;
+	}
+	.free-network-container .big-free-network::before {
+		content: '\2796'; color: darkgreen; font-size: 0.8em;
+	}
+	.free-network-container.plus .big-free-network::before {
+		content: '\2795'; color: darkgreen; font-size: 0.8em;
+	}
+	.free-subnetwork-container {
+		display: none;
+	}
+	.free-subnetwork-container.free-subnetwork-container-expanded {
+	}
+	.free-subnetwork-container {
+		margin-left: 14px;
+		padding-left: 20px;
+		padding-top: 3px;
+	}
+	.free-subnetwork {
+		padding-top: 3px;
+	}
+</style>
+
+<form name="search" method="post" action="?m=netusage">
+    <table class="lmsbox">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 98%;">
+    </colgroup>
+    <thead>
+    <tr>
+        <td colspan="3" class="bold">
+            {trans("Find IP networks matching the following search criteria:")}
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <img src="img/ip.gif" alt="">
+        </td>
+        <td class="bold nobr">
+            {trans("Network/Address:")}
+        </td>
+        <td>
+            <input type="text" name="ip" value="{$ip}">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="img/ip.gif" alt="">
+        </td>
+        <td class="bold nobr">
+            {trans("Mask:")}
+        </td>
+        <td>
+            <select name="mask">
+                <option value="255.255.0.0"{if $mask == 16} selected{/if}>/16 (255.255.0.0)</option>
+                <option value="255.255.128.0"{if $mask == 17} selected{/if}>/17 (255.255.128.0)</option>
+                <option value="255.255.192.0"{if $mask == 18} selected{/if}>/18 (255.255.192.0)</option>
+                <option value="255.255.224.0"{if $mask == 19} selected{/if}>/19 (255.255.224.0)</option>
+                <option value="255.255.240.0"{if $mask == 20} selected{/if}>/20 (255.255.240.0)</option>
+                <option value="255.255.248.0"{if $mask == 21} selected{/if}>/21 (255.255.248.0)</option>
+                <option value="255.255.252.0"{if $mask == 22} selected{/if}>/22 (255.255.252.0)</option>
+                <option value="255.255.254.0"{if $mask == 23} selected{/if}>/23 (255.255.254.0)</option>
+                <option value="255.255.255.0"{if $mask == 24} selected{/if}>/24 (255.255.255.0)</option>
+                <option value="255.255.255.128"{if $mask == 25} selected{/if}>/25 (255.255.255.128)</option>
+                <option value="255.255.255.192"{if $mask == 26} selected{/if}>/26 (255.255.255.192)</option>
+                <option value="255.255.255.224"{if $mask == 27} selected{/if}>/27 (255.255.255.224)</option>
+                <option value="255.255.255.240"{if $mask == 28} selected{/if}>/28 (255.255.255.240)</option>
+                <option value="255.255.255.248"{if $mask == 29} selected{/if}>/29 (255.255.255.248)</option>
+                <option value="255.255.255.252"{if $mask == 30} selected{/if}>/30 (255.255.255.252)</option>
+                <option value="255.255.255.254"{if $mask == 31} selected{/if}>/31 (255.255.255.254)</option>
+                <option value="255.255.255.255"{if $mask == 32} selected{/if}>/32 (255.255.255.255)</option>
+            </select>
+        </td>
+    </tr>
+
+    {if $host_list && count($host_list) > 1}
+        <tr>
+            <td>
+                <img src="img/host.gif" alt="">
+            </td>
+            <td class="bold nobr">
+                {trans("Host")}:
+            </td>
+            <td>
+                <select name="host">
+                    <option value="">{trans('all')}</option>
+
+                    {foreach $host_list as $h}
+                    <option{if $h.name == $selected_host} selected{/if}>{$h.name}</option>
+                    {/foreach}
+                </select>
+            </td>
+        </tr>
+    {/if}
+
+    <tr>
+        <td class="buttons" colspan="3">
+            <a href="javascript:document.search.submit();">{trans("Search")} <img src="img/search.gif" alt=""></a>
+        </td>
+    </tr>
+
+    {if $network_list}
+        <tr>
+            <td>
+                <img src="img/network.gif" alt="">
+            </td>
+            <td class="bold nobr" colspan="2">
+                {trans("Result:")}
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3">
+            {foreach $network_list as $v}
+                <div class="network">
+                    {if !$v.hosts}
+                        <div class="network-container free-network-container{if $v.mask < 24} plus{/if}">
+                            <div class="{if $v.mask < 24}big-free-network{else}free-network{/if}">
+                                <a href="?m=netadd&pre_ip={$v.ip}&pre_prefix={$v.mask}" alt="" style="color: darkgreen;" title="{trans('Click to add.')}">
+                                    {$v.ip} / {$v.mask}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="free-subnetwork-container">
+                            {$subnetworks=pow(2, 24-$v.mask)}
+                            {$octets=explode(".", $v.ip)}
+                            {for $subnet=0 to $subnetworks-1}
+                            {$subip=sprintf("%s.%s.%s.%s", $octets[0], $octets[1], $octets[2]+$subnet, $octets[3])}
+                            <div class="free-subnetwork">
+                                <a href="?m=netadd&pre_ip={$subip}&pre_prefix=24" alt="" style="color: darkgreen;" title="{trans('Click to add.')}">
+                                    {$subip} / 24
+                                </a>
+                            </div>
+                            {/for}
+                        </div>
+                    {else}
+                        {network_container ip=$v.ip mask=$v.mask hosts=$v.hosts}
+                    {/if}
+                </div>
+            {/foreach}
+            </td>
+        </tr>
+    {/if}
+    </tbody>
+</table>
+</form>
+
+<script>
+    $( function() {
+        $( document ).on('click', '.net-name', function() {
+            var net_container = $(this).closest('.network-container');
+            var net_data      = net_container.find('.net-data').first();
+
+            net_container.toggleClass('plus');
+            net_data.attr('data-host', net_container.find('.host-select').val());
+
+            loadNetwork(net_data);
+        });
+
+        $( document ).on('change', '.host-select', function() {
+            var net_container = $(this).closest('.network-container');
+            var net_data      = net_container.find('.net-data').first();
+
+            net_data.attr('data-host'   , net_container.find('.host-select').val());
+            net_data.attr('data-netname', net_container.find('.host-select :selected').attr('data-netname'));
+            net_data.removeAttr('data-status');
+
+            loadNetwork(net_data);
+        });
+
+		$( document ).on('click', '.free-network-container', function(e) {
+			if (e.target.className == 'big-free-network') {
+				$(this).siblings('.free-subnetwork-container').toggle();
+				$(this).toggleClass('plus');
+			}
+		});
+    });
+
+    function loadNetwork( net_data ) {
+        if ( net_data.attr('data-status') == 'loaded' ) {
+            return true;
+        }
+
+        net_data.attr('data-status', 'loaded');
+
+        $.ajax({
+            type: "POST",
+            url : "?m=netusage&ajax",
+            data: {
+                ip     : net_data.attr('data-ip'),
+                mask   : net_data.attr('data-mask'),
+                host   : net_data.attr('data-host'),
+                netname: net_data.attr('data-netname')
+            },
+            success: function(ret) {
+                net_data.html(ret);
+            }
+        });
+    }
+</script>
+
+{/block}

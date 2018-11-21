@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -11,7 +11,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="2">
+		<TD class="lms-ui-pagination" COLSPAN="2">
 			{include file="scroller.html" loop=$typelist}
 		</TD>
 	</TR>
@@ -25,7 +25,7 @@
 			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=documenttypeedit&amp;id={$key}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=documenttypeedit&amp;id={$key}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -37,7 +37,7 @@
 	{/foreach}
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="2">
+		<TD class="lms-ui-pagination" COLSPAN="2">
 			{include file="scroller.html" loop=$typelist}
 		</TD>
 	</TR>

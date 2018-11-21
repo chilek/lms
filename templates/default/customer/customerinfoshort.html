@@ -1,15 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!--// $Id$ //-->
-<html><head>
-<meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
-<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
-</head>
-<body>
 <TABLE class="lmsbox-inner" id="table">
     <THEAD>
 	<TR>
@@ -35,8 +23,8 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{$customerinfo.address}<BR>
-			{$customerinfo.zip} {$customerinfo.city}
+			{if $customerinfo.postoffice && $customerinfo.postoffice != $customerinfo.city && $customerinfo.street}{$customerinfo.city}, {/if}{$customerinfo.address}<BR>
+			{$customerinfo.zip} {if $customerinfo.postoffice}{$customerinfo.postoffice}{else}{$customerinfo.city}{/if}
 		</TD>
 	</TR>
 {if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
@@ -46,8 +34,11 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address != ""}<BR>{$customerinfo.post_address}{/if}
-			<BR>{$customerinfo.post_zip} {$customerinfo.post_city}
+			{if $customerinfo.post_address != ""}<BR>
+				{if $customerinfo.post_postoffice && $customerinfo.post_postoffice != $customerinfo.post_city && $customerinfo.post_street}{$customerinfo.post_city}, {/if}
+				{$customerinfo.post_address}
+			{/if}
+			<BR>{$customerinfo.post_zip} {if $customerinfo.post_postoffice}{$customerinfo.post_postoffice}{else}{$customerinfo.post_city}{/if}
 		</TD>
 	</TR>
 {/if}
@@ -77,32 +68,24 @@
 		</TD>
 	</TR>
 {/if}
-{foreach from=$customerinfo.messengers item=item}
+{if !empty($customerinfo.ims)}
 	<TR>
 		<TD>
-			{if $item.type == $smarty.const.IM_GG}
-			<IMG src="http://status.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
-			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<IMG src="http://opi.yahoo.com/online?u='{$item.uid}'&m=g&t=5" alt="">
-			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<IMG src="http://mystatus.skype.com/smallicon/{$item.uid}" alt="">
-			{else}
-			<IMG src="img/gg.gif" alt="">
-			{/if}
+			<IMG src="img/skype.gif" alt="">
 		</TD>
-		<TD>
-			{if $item.type == $smarty.const.IM_GG}
-			<A HREF="gg:{$item.uid}">{$item.uid}</A>
-			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
-			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<A HREF="skype:{$item.uid}?call">{$item.uid}</A>
-			{else}
-			{$item.uid}
-			{/if}
+		<TD class="nobr">
+			{$properties = $_CUSTOMERCONTACTTYPES['im']}
+			{foreach $customerinfo.ims as $im}
+				<span{if ($im.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
+				{if isset($properties.formatter)}{call_user_func($properties['formatter'], $im)}{else}{$im.contact}{/if}
+				{if $im.typestr}[{$im.typestr}]{/if}
+				{if $im.name} ({$im.name|truncate:"40":"...":true}){/if}
+				</span>
+				{if !$im@last}<br>{/if}
+			{/foreach}
 		</TD>
 	</TR>
-{/foreach}
+{/if}
 {if $customerinfo.icn != ""}
 	<TR>
 		<TD WIDTH="1%">
@@ -178,11 +161,3 @@
 {/if}
     </TBODY>
 </TABLE>
-<SCRIPT TYPE="text/javascript">
-<!--
-var table = document.getElementById('table');
-autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight);
-//-->
-</SCRIPT>
-</BODY>
-</HTML>

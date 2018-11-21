@@ -48,7 +48,7 @@
 		<TD NOWRAP>
 			{if $ticket.customerid}
 			{$ticket.customername|truncate:"50":"...":true} ({$ticket.customerid|string_format:"%04d"})
-			{if $ticket.address}<BR>{$ticket.address}{/if}
+			{if $ticket.city}<BR>{$ticket.city}{if $ticket.address}, {$ticket.address}{/if}{/if}
 			{if $ticket.phones}<BR>{trans("phone:")} {$ticket.phones}{/if}
 			{if $ticket.emails}<BR>{trans("email:")} {$ticket.emails}{/if}
 			{else}

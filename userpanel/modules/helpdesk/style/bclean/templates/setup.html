@@ -50,7 +50,7 @@
                         <TD WIDTH="99%" NOWRAP>
                             <SELECT NAME="default_userid" {tip text="Sender of new request notifications and his email. If not specified notifications goes from queue address."}> 
                                 <OPTION value="0" SELECTED>{trans("- select user -")}</OPTION>
-                                {foreach from=$userlist item=user}
+                                {foreach $userlist as $user}
                                 <OPTION value="{$user.id}"{if $user.id == $default_userid} SELECTED{/if}>{$user.name}</OPTION>
                                 {/foreach}
                             </SELECT>
@@ -69,7 +69,7 @@
                             {trans("Default categories:")}
                         </TD>
                         <TD WIDTH="99%" NOWRAP>
-                            {foreach from=$categories item=category}
+                            {foreach $categories as $category}
                             <INPUT type="checkbox" name="lms_categories[{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
                             <label for="cat{$category.id}">{$category.name}</label><BR>
                             {/foreach}

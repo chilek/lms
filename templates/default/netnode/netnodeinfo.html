@@ -1,15 +1,22 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
 <H1>{$layout.pagetitle}</H1>
-<TABLE style="width: 100%;">
-	<TR>
-		<TD style="width: 100%;">
-			{include file="netnode/netnodeinfobox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;">
-			{include file="netnode/netnodedevices.html"}
-		</TD>
-	</TR>
-</TABLE>
-{include file="footer.html"}
+<div id="netnodeinfo-sortable" class="lms-ui-sortable-persistent">
+{block name=netnodeinfobox}
+	{include file="netnode/netnodeinfobox.html"}
+{/block}
+{block name=netnodevices}
+	{include file="netnode/netnodedevices.html"}
+{/block}
+{block name=netnodeattachments}
+	{include file="attachments.html" attachmenttype="netnodeid" attachmentresourceid=$nodeinfo.id}
+{/block}
+{block name=netnodetickets}
+	{include file="netnode/netnodetickets.html"}
+{/block}
+</div>
+<script>
+	restoreSortable('netnodeinfo-sortable', '{$netnodeinfo_sortable_order}');
+</script>
+{/block}

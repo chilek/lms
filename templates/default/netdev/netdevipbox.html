@@ -1,85 +1,123 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-    <THEAD>
-        <TR>
-	        <TD width="99%" class="hand" align="left" nowrap="nowrap" onClick="showOrHide('deviceips');">
-			<IMG SRC="img/ip.gif" ALT="">
-			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
-		</TD>
-	        <TD width="1%" class="text-right nobr">
-			<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A>
-		</TD>	
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR id="deviceips" style="display:none;">
-	        <TD WIDTH="100%" colspan="2">
-		        <TABLE class="lmsbox-inner">
-                            <THEAD>
-	<TR>
-	        <TD WIDTH="95%"><B>{trans("Name:")}</B></TD>
-		<TD WIDTH="1%" align="right">{trans("ID:")}</TD>
-		<TD WIDTH="1%" align="right">{trans("Address:")}</TD>
-		<TD WIDTH="1%" align="right">{trans("MAC:")}</TD>
-		<TD WIDTH="1%" align="right">{trans("Network")}</TD>
-		<TD WIDTH="1%">&nbsp;</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	{if $netdevips}
-	{cycle values="light,lucid" print=false}
-	{section name=list loop=$netdevips}
-	<TR class="highlight {cycle}{if ! $netdevips[list].access} blend{/if}"  >
-		<TD WIDTH="95%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" class="nobr">
-			<B>{$netdevips[list].name}</B>
-			{if $netdevips[list].location}<BR>
-			    {$netdevips[list].info|truncate:50:"...":true}
+
+{css}
+
+{tab_container id="netdevipbox"}
+
+	{tab_header content_id="deviceips"}
+		{tab_header_cell icon="lms-ui-icon-ipnetwork"}
+			<strong>{t a=$netdevips|@count}IP addresses ($a):{/t}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A HREF="?m=netdevedit&action=addip&id={$netdev.id}">{trans("New address")} &raquo;</A>
+		{/tab_header_cell}
+
+	{/tab_header}
+
+	{tab_contents id="deviceips"}
+
+		{tab_table}
+
+			{if $netdevips}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-5">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							<strong>{trans("Name:")}</strong>
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column address">
+								{trans("Address:")}
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{trans("MAC:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-column network">
+							{trans("Network")}
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
 			{/if}
-		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
-			({$netdevips[list].id|string_format:"%04d"})
-		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" NOWRAP>
-			{$netdevips[list].ip}{if $netdevips[list].ip_pub!="0.0.0.0"} ({$netdevips[list].ip_pub}){/if}<BR>
-		</TD>
-		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
-			{$netdevips[list].mac|replace:",":"<BR>"}
-		</TD>
-		<TD class="bold" WIDTH="1%" align="right" NOWRAP>
-			<a href="?m=netinfo&id={$netdevips[list].netid}">{$netdevips[list].netname|truncate:"20":"...":true}</a>
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<A href="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if}></A>
-			<A HREF="?m=netdevedit&action=ipdel&id={$netdevinfo.id}&ip={$netdevips[list].id}" onClick="return confirmLink(this, '{t a=$netdevips[list].name}Are you sure, you want to delete address \'$a\' from database?{/t}')"><IMG SRC="img/delete.gif" ALT="" {tip text="Delete"}></A>
-			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" ALT="" {tip text="Edit"}></A>
-			<A HREF="?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}"><IMG SRC="img/info.gif" ALT="" {tip text="Info"}></A>
-		</TD>
-	</TR>
-	{/section}
-	{else}
-        <TR>
-    		<TD colspan="6" class="empty-table">
-			<p>{trans("No IP addresses on device.")}</p>
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD WIDTH="100%" COLSPAN="6">
-			<IMG SRC="img/access.gif">
-			<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1">{trans("Connect")}</A>/<A HREF="?m=netdevedit&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&action=ipset">{trans("Disconnect")}</A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-if (getCookie('deviceips') == '1')
-{
-	document.getElementById('deviceips').style.display = '';
-}
-//-->
-</SCRIPT>
+
+			{foreach $netdevips as $netdevip}
+			<div class="lms-ui-tab-table-row{if !$netdevip.access} blend{/if}"
+					data-target-url="?m=netdevinfo&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}">
+				<div class="lms-ui-tab-table-wrapper col-5">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							<strong>{$netdevip.name}</strong>
+							{if $netdevip.location}<BR>
+								{$netdevip.info|truncate:50:"...":true}
+							{/if}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							({$netdevip.id|string_format:"%04d"})
+						</div>
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column address">
+								{$netdevip.ip}{if $netdevip.ip_pub!="0.0.0.0"} ({$netdevip.ip_pub}){/if}<BR>
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{if empty($netdevip.mac)}
+									{trans("<!mac>- none -")}
+								{else}
+									{$netdevip.mac|replace:",":"<BR>"}
+								{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-column network">
+							<strong>
+								<a href="?m=netinfo&id={$netdevip.netid}">{$netdevip.netname|truncate:"20":"...":true}</a>
+							</strong>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					{button type="link" href="?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevip.id}"
+						icon="lms-ui-icon-{if $netdevip.access}connected{else}disconnected{/if}" tip="{if $netdevip.access}Disconnect{else}Connect{/if}"}
+					{button type="link" href="?m=netdevedit&action=ipdel&id={$netdev.id}&ip={$netdevip.id}"
+						onclick="return confirmLink(this, '{t a=$netdevip.name}Are you sure, you want to delete address \'$a\' from database?{/t}');"
+						icon="delete" tip="Delete"}
+					{button type="link" href="?m=netdevedit&action=editip&id={$netdev.id}&ip={$netdevip.id}"
+						icon="edit" tip="Edit"}
+					{button type="link" href="?m=netdevinfo&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&ip={$netdevip.id}"
+						icon="info" tip="Info"}
+				</div>
+			</div>
+			{foreachelse}
+
+			<div class="lms-ui-tab-empty-table">
+				{trans("No IP addresses on device.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+		{if $netdevips}
+		{tab_button_panel}
+			{tab_buttons}
+				{button icon="lms-ui-icon-connected" onclick="location.href='?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&access=1';"
+					label="Connect"}
+				{button icon="lms-ui-icon-disconnected" onclick="location.href='?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset';"
+					label="Disconnect"}
+			{/tab_buttons}
+		{/tab_button_panel}
+		{/if}
+
+	{/tab_contents}
+
+{/tab_container}

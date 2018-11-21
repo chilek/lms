@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2015 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -43,19 +43,24 @@ abstract class LMSPagination
     
     /** @var int Total pages */
     protected $pages;
-    
+
+    /** @var string Instance name */
+    protected $instance_name;
+
     /**
      * Constructs pagination
      * 
      * @param int $page Current page
      * @param int $total Total records
      * @param int $per_page Records per page
+	 * @param string @instance_name Instance name
      */
-    public function __construct($page, $total, $per_page)
+    public function __construct($page, $total, $per_page, $instance_name = null)
     {
         $this->setPage($page);
         $this->setPerPage($per_page, false);
         $this->setTotal($total, false);
+        $this->setInstanceName($instance_name);
         $this->calculatePages();
     }
 
@@ -89,7 +94,17 @@ abstract class LMSPagination
         return $this->per_page;
     }
 
-    /**
+	/**
+	 * Returns instance name
+	 *
+	 * @return string Instance name
+	 */
+	public function getInstanceName()
+	{
+		return $this->instance_name;
+	}
+
+	/**
      * Returns total pages
      * 
      * @return int Total pages
@@ -170,7 +185,7 @@ abstract class LMSPagination
     /**
      * Sets total records
      * 
-     * @param int $page Total records
+     * @param int $total Total records
      * @param int $recalculate_pages Recalculate pages flag
      * @throws DomainException if total records is not an integer or is less than 0
      */
@@ -206,6 +221,14 @@ abstract class LMSPagination
             $this->calculatePages();
         }
     }
+
+    /**
+	 * Sets pagintation instance name
+	 * @param string @instance_name Instance name
+	 */
+    public function setInstanceName($instance_name) {
+    	$this->instance_name = $instance_name;
+	}
 
     /**
      * Calculates total pages

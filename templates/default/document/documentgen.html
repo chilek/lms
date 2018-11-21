@@ -1,116 +1,100 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 {$xajax}
 <script type="text/javascript">
 <!--
-	function getplugin() {
+	function DocTemplateChanged() {
 		reset_login_timeout();
-		xajax_plugin(document.forms['documentgen'].elements['document[templ]'].value, 0);
+		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
+			$('[name="document[templ]"]').val(),
+			0);
 	}
 
-	function gettemplates() {
+	function DocTypeChanged() {
 		reset_login_timeout();
-		var doctype = document.forms['documentgen'].elements['document[type]'].value;
-		xajax_GetTemplates(doctype);
+		xajax_DocTypeChanged($('[name="document[type]"]').val(),
+			$('[name="document[numberplanid]"]').val(),
+			0);
 	}
 
-	function printdoc()
-	{
+	function printdoc() {
 		document.documentgen.action = "?m=documentgen&print=1";
 		document.documentgen.target = "_blank";
 		document.documentgen.submit();
 	}
 //-->
 </SCRIPT>
-<FORM name="documentgen" method="POST" action="?m=documentgen">
+<FORM name="documentgen" method="POST" id="documentgen-form" action="?m=documentgen" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/docum.gif" alt="">
 		</TD>
-		<TD width="1%" NOWRAP>
-			<b>{trans("Title:")}</b>
+		<TD class="bold nobr">
+			{trans("Title:")}
 		</TD>
-		<TD width="98%" NOWRAP>
-			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
+		<TD class="nobr">
+			<INPUT type="text" id="title" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/docum.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<b>{trans("First number:")}</b>
+		<TD class="bold nobr">
+			{trans("First number:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			{if $numberplans}
-			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplans}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-			{/foreach}
-			{else}
-				<INPUT type="hidden" name="document[numberplanid]" value="0">
-			{/if}
-			</SELECT>
+			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
+			{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate}
+			</DIV>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Period:")}</b>
+		<TD class="bold">
+			{trans("Period:")}
 		</TD>
-		<TD width="98%">
-			<div class="calendar">
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
-			</div>
+		<TD>
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Description:")}</b>
+		<TD class="bold">
+			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
 		</TD>
 	</TR>
-{*
 	<TR>
-		<TD width="1%">
-			<IMG src="img/save.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<b>{trans("File:")}</b>
-		</TD>
-		<TD width="98%">
-			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
-		</TD>
-	</TR>
-*}
-	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Type:")}</b>
+		<TD class="bold">
+			{trans("Type:")}
 		</TD>
-		<TD width="98%">
-			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"} onchange="gettemplates();">
+		<TD>
+			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"} onchange="DocTypeChanged();">
 				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
@@ -119,14 +103,14 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/class.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Template:")}</b>
+		<TD class="bold">
+			{trans("Template:")}
 		</TD>
-		<TD width="98%">
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select document template" trigger="templ"} id="templ" onchange="getplugin();">
+		<TD>
+			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select document template" trigger="templ"} id="templ" onchange="DocTemplateChanged();">
 				<OPTION VALUE="0">... {trans("select template")} ...</OPTION>
 				{foreach $docengines as $docengine}
 				<OPTION VALUE="{$docengine.name}"{if $document.templ==$docengine.name} SELECTED{/if}>{$docengine.title}</OPTION>
@@ -135,30 +119,56 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
-	        	<IMG src="img/confirm.gif" ALT="">
+		<TD>
+			<IMG src="img/save.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap><B>{trans("Confirmed:")}</B></TD>
-		<TD width="98%">
-		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
+		<TD class="bold">
+			{trans("Files:")}
+		</TD>
+		<TD>
+			{fileupload id="attachments" fileupload=$fileupload form="documentgen-form"}
+		</TD>
+	</TR>
+	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
+		<TD>
+			<img src="img/attach.gif">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Document attachments:")}
+		</TD>
+		<TD id="attachment-cell">
+			{$attachment_result}
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
-	        	<IMG src="img/customer.gif" ALT="">
+		<TD>
+			<IMG src="img/confirm.gif" ALT="">
 		</TD>
-		<TD width="1%" nowrap><B>{trans("Customers:")}</B></TD>
-		<TD width="98%">
+		<TD class="bold nobr">
+			<label for="closed">{trans("Confirmed:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG src="img/customer.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Customers:")}
+		</TD>
+		<TD>
 			<TABLE width="100%">
 				<TR>
-					<TD width="1%" {tip text="Select customer's group"} class="nobr">
+					<TD width="1%" {tip text="Select customer's group"}>
 						{foreach $_CSTATUSES as $statusidx => $status}
-						<label><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} checked{/if}>{$status.plurallabel}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if (!isset($filter) && $statusidx == $smarty.const.CSTATUS_CONNECTED) || (isset($filter) && $statusidx == $filter)} checked{/if}>{$status.plurallabel}</label><BR>
 						{/foreach}
-						<label><INPUT class="radio light" type="radio" name="filter" value="51">{trans("with disconnected nodes")}</label><BR>
-						<label><INPUT class="radio light" type="radio" name="filter" value="52">{trans("in debt")}</label><BR>
-						<label><INPUT class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</label><BR>
-						<label><INPUT class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</label>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="51"{if isset($filter) && $filter == 51} checked{/if}>{trans("with disconnected nodes")}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="52"{if isset($filter) && $filter == 52} checked{/if}>{trans("in debt")}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="-1"{if isset($filter) && $filter == -1} checked{/if}>{trans("without nodes")}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="0"{if isset($filter) && $filter == 0} checked{/if}>{trans("all<!customers>")}</label>
 					</TD>
 					<TD width="5%">&nbsp;</TD>
 					<TD width="1%" class="nobr">
@@ -167,16 +177,17 @@
 					</TD>
 					<TD width="97%">
 						<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
-							<OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
-							{section name="networks" loop=$networks}
-							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
-							{/section}
-						</SELECT><BR><BR>
+							<OPTION value="0">{trans("- all networks -")}</OPTION>
+							{foreach $networks as $net}
+							<OPTION value="{$net.id}"{if $network == $net.id} selected{/if}>{$net.name|truncate:40:"...":true}</OPTION>
+							{/foreach}
+						</SELECT>
+						<BR><BR>
 						<SELECT size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
 							<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
-							{section name="customergroups" loop=$customergroups}
-							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
-							{/section}
+							{foreach $customergroups as $group}
+							<OPTION value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"...":true}</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>
@@ -184,18 +195,23 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="3" align="right" NOWRAP>
+		<TD colspan="3" class="buttons">
 			<A href="javascript:document.documentgen.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
 		{*	<A href="?m=">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A> *}
 			<A href="javascript:printdoc();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
-</TABLE><BR><DIV id="plugin" name="plugin">{$plugin_result}</DIV>
+</TABLE>
+<BR>
+<DIV id="plugin" name="plugin">{$plugin_result}</DIV>
+{$script_result}
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['documentgen'].elements['document[title]'].focus();
+	$(function() {
+		$('form[name="documentgen"] [name="document[title]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

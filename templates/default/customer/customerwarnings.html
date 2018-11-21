@@ -1,9 +1,8 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
-<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <SCRIPT type="text/javascript">
 <!--
 	function SelectAllCustomers()
@@ -50,8 +49,8 @@
 	}
 
 	function messageTemplateReceived(message) {
-		if (tinyMCE.get('message') != undefined) {
-			tinyMCE.get('message').setContent(message);
+		if (tinyMCE.editors.length) {
+			tinyMCE.editors[0].setContent(message);
 			xjx.$('message').value = message;
 		} else
 			xjx.$('message').value = message;
@@ -90,23 +89,21 @@
 					<TD colspan="2">
 						<TABLE cellpadding="3">
 							<TR>
-								<TD>
-									<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('message');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-									<label for="message_label">{trans("visual editor")}</label>
+								<TD colspan="3">
+									<label>
+										{trans("Message template:")}
+										<select name="setwarnings[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
+											<option value="0">{trans("- none -")}</option>
+											{foreach $messagetemplates as $msgtmpl}
+											<option value="{$msgtmpl.id}">{$msgtmpl.name}</option>
+											{/foreach}
+										</select>
+									</label>
 								</TD>
-								<TD colspan="2" class="text-right">
-									<label for="msgtmplid">{trans("Message template:")}</label>
-									<select name="setwarnings[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
-										<option value="0">{trans("- none -")}</option>
-										{foreach $messagetemplates as $msgtmpl}
-										<option value="{$msgtmpl.id}">{$msgtmpl.name}</option>
-										{/foreach}
-									</select>
-								</TD> 
 							</TR>
 							<TR>
 								<TD colspan="3" {tip text="Customer notice content"}>
-									<TEXTAREA name="setwarnings[message]" id="message" rows="20" cols="75">{$warnmessage}</TEXTAREA>
+									<TEXTAREA name="setwarnings[message]" class="lms-ui-wysiwyg-editor" rows="20" cols="75">{$warnmessage}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
@@ -139,13 +136,10 @@
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
-<!--//
-document.forms['setwarnings'].elements['setwarnings[message]'].focus();
-
-tinymce_init('{$_ui_language}');
-{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
-toggle_visual_editor('message');
-{/if}
+<!--
+	$(function() {
+		$('form[name="setwarnings"] [name="setwarnings[message]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -62,33 +62,29 @@ if(isset($_POST['instance']))
 	if (!$error) {
 		$args = array(
 			'name' => $instedit['name'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $instedit['hostid'], 
+			SYSLOG::RES_HOST => $instedit['hostid'], 
 			'description' => $instedit['description'],
 			'module' => $instedit['module'],
 			'crontab' => $instedit['crontab'],
 			'priority' => $instedit['priority'],
 			'disabled' => $instedit['disabled'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $instedit['id']
+			SYSLOG::RES_DAEMONINST => $instedit['id']
 		);
 		$DB->Execute('UPDATE daemoninstances SET name=?, hostid=?, description=?, module=?, crontab=?, priority=?, disabled=? WHERE id=?',
 				array_values($args));
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_DAEMONINST, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_DAEMONINST, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=daemoninstancelist');
 	}
 } elseif(isset($_GET['statuschange'])) {
 	if ($SYSLOG) {
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $instance['hostid'],
+			SYSLOG::RES_DAEMONINST => $id,
+			SYSLOG::RES_HOST => $instance['hostid'],
 			'disabled' => $instance['disabled'] ? 0 : 1
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DAEMONINST, SYSLOG_OPER_UPDATE, $args,
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+		$SYSLOG->AddMessage(SYSLOG::RES_DAEMONINST, SYSLOG::OPER_UPDATE, $args);
 	}
 	if($instance['disabled'])
 		$DB->Execute('UPDATE daemoninstances SET disabled=0 WHERE id=?', array($id));

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -50,22 +50,20 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     /**
      * Adds customer group
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @param array $customergroupdata Customer group data
      * @return boolean|int Customer group id on success, false on failure
      */
     public function CustomergroupAdd($customergroupdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->db->Execute('INSERT INTO customergroups (name, description) VALUES (?, ?)', array($customergroupdata['name'], $customergroupdata['description']))) {
             $id = $this->db->GetLastInsertID('customergroups');
             if ($this->syslog) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id,
+                    SYSLOG::RES_CUSTGROUP => $id,
                     'name' => $customergroupdata['name'],
                     'description' => $customergroupdata['description']
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+                $this->syslog->AddMessage(SYSLOG::RES_CUSTGROUP, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         } else {
@@ -76,20 +74,18 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     /**
      * Updates customer group
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @param array $customergroupdata Customer group data
      * @return type
      */
     public function CustomergroupUpdate($customergroupdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $customergroupdata['name'],
             'description' => $customergroupdata['description'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customergroupdata['id']
+            SYSLOG::RES_CUSTGROUP => $customergroupdata['id']
         );
         if ($this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+            $this->syslog->AddMessage(SYSLOG::RES_CUSTGROUP, SYSLOG::OPER_UPDATE, $args);
         return $this->db->Execute('UPDATE customergroups SET name=?, description=? 
 				WHERE id=?', array_values($args));
     }
@@ -97,27 +93,25 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     /**
      * Deletes customer group
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @param type $id
      * @return boolean
      */
     public function CustomergroupDelete($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if (!$this->CustomergroupWithCustomerGet($id)) {
             if ($this->syslog) {
-                $custassigns = $this->db->Execute('SELECT id, customerid, customergroupid FROM customerassignments
+                $custassigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
 					WHERE customergroupid = ?', array($id));
                 if (!empty($custassigns))
                     foreach ($custassigns as $custassign) {
                         $args = array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $custassign['id'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custassign['customerid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $custassign['customergroupid']
+                            SYSLOG::RES_CUSTASSIGN => $custassign['id'],
+                            SYSLOG::RES_CUST => $custassign['customerid'],
+                            SYSLOG::RES_CUSTGROUP => $custassign['customergroupid']
                         );
-                        $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                        $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
-                $this->syslog->AddMessage(SYSLOG_RES_CUSTGROUP, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP]));
+                $this->syslog->AddMessage(SYSLOG::RES_CUSTGROUP, SYSLOG::OPER_DELETE, array(SYSLOG::RES_CUSTGROUP => $id));
             }
             $this->db->Execute('DELETE FROM customergroups WHERE id=?', array($id));
             return TRUE;
@@ -202,7 +196,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 			(ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                 . ' GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
 
-        $result['customerscount'] = sizeof($result['customers']);
+        $result['customerscount'] = empty($result['customers']) ? 0 : count($result['customers']);
         $result['count'] = $network ? $this->CustomergroupWithCustomerGet($id) : $result['customerscount'];
 
         return $result;
@@ -218,16 +212,21 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         if ($customergrouplist = $this->db->GetAll('SELECT id, name, description,
 				(SELECT COUNT(*)
 					FROM customerassignments 
-					WHERE customergroupid = customergroups.id
+					WHERE customergroupid = g.id
 				) AS customerscount
-				FROM customergroups ORDER BY name ASC')) {
+				FROM customergroups g
+				WHERE NOT EXISTS (
+					SELECT 1 FROM excludedgroups
+					WHERE userid = lms_current_user() AND customergroupid = g.id
+				)
+				ORDER BY name ASC')) {
             $totalcount = 0;
 
             foreach ($customergrouplist as $idx => $row) {
                 $totalcount += $row['customerscount'];
             }
 
-            $customergrouplist['total'] = sizeof($customergrouplist);
+            $customergrouplist['total'] = count($customergrouplist);
             $customergrouplist['totalcount'] = $totalcount;
         }
 
@@ -289,51 +288,56 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     /**
      * Deletes customer assignment
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @param array $customerassignmentdata Customer assignment data
      * @return type
      */
-    public function CustomerassignmentDelete($customerassignmentdata)
-    {
-        global $SYSLOG_RESOURCE_KEYS;
-        if ($this->syslog) {
-            $assign = $this->db->GetRow('SELECT id, customerid FROM customerassignments
-				WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
-                $customerassignmentdata['customerid']));
-            if ($assign) {
-                $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $assign['customerid'],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
-                );
-                $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
-            }
-        }
-        return $this->db->Execute('DELETE FROM customerassignments 
-			WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
-                    $customerassignmentdata['customerid']));
+	public function CustomerassignmentDelete($customerassignmentdata) {
+		if ($this->syslog) {
+			if (isset($customerassignmentdata['customergroupid']))
+				$assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+					WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
+					$customerassignmentdata['customerid']));
+			else
+				$assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+					WHERE customerid = ?', array($customerassignmentdata['customerid']));
+			if (!empty($assigns))
+				foreach ($assigns as $assign) {
+					$args = array(
+						SYSLOG::RES_CUSTASSIGN => $assign['id'],
+						SYSLOG::RES_CUST => $assign['customerid'],
+						SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
+					);
+					$this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
+				}
+		}
+
+		if (isset($customerassignmentdata['customergroupid']))
+			return $this->db->Execute('DELETE FROM customerassignments 
+				WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
+					$customerassignmentdata['customerid']));
+		else
+			return $this->db->Execute('DELETE FROM customerassignments 
+				WHERE customerid=?', array($customerassignmentdata['customerid']));
     }
     
     /**
      * Adds customer assignment
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @param array  $customerassignmentdata Customer assignment data
      * @return type
      */
     public function CustomerassignmentAdd($customerassignmentdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $res = $this->db->Execute('INSERT INTO customerassignments (customergroupid, customerid) VALUES (?, ?)', array($customerassignmentdata['customergroupid'],
             $customerassignmentdata['customerid']));
         if ($this->syslog && $res) {
             $id = $this->db->GetLastInsertID('customerassignments');
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $id,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerassignmentdata['customerid'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customerassignmentdata['customergroupid']
+                SYSLOG::RES_CUSTASSIGN => $id,
+                SYSLOG::RES_CUST => $customerassignmentdata['customerid'],
+                SYSLOG::RES_CUSTGROUP => $customerassignmentdata['customergroupid']
             );
-            $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+            $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_ADD, $args);
         }
         return $res;
     }
@@ -360,7 +364,8 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     public function GetCustomerWithoutGroupNames($groupid, $network = NULL)
     {
         if ($network) {
-            $net = $this->GetNetworkParams($network);
+            $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $net = $network_manager->GetNetworkParams($network);
         }
 
         return $this->db->GetAll('SELECT c.id AS id, ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername

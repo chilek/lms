@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -47,8 +47,8 @@ if(isset($_POST['registry']))
 		$args = array(
 			'name' => $registry['name'],
 			'description' => $registry['description'],
-			'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['in_numberplanid'],
-			'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['out_numberplanid'],
+			'in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['in_numberplanid']) ? null : $registry['in_numberplanid'],
+			'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
 			'disabled' => isset($registry['disabled']) ? 1 : 0,
 		);
 		$DB->Execute('INSERT INTO cashregs (name, description, in_numberplanid, out_numberplanid, disabled)
@@ -57,28 +57,24 @@ if(isset($_POST['registry']))
 		$id = $DB->GetOne('SELECT id FROM cashregs WHERE name=?', array($registry['name']));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG]] = $id;
-			$SYSLOG->AddMessage(SYSLOG_RES_CASHREG, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
-					'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-					'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			$args[SYSLOG::RES_CASHREG] = $id;
+			$SYSLOG->AddMessage(SYSLOG::RES_CASHREG, SYSLOG::OPER_ADD, $args,
+				array('in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN),
+					'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN)));
 		}
 
 		if (isset($registry['rights']))
 			foreach ($registry['rights'] as $right)
 				if ($right['rights']) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $id,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $right['id'],
+						SYSLOG::RES_CASHREG => $id,
+						SYSLOG::RES_USER => $right['id'],
 						'rights' => $right['rights'],
 					);
 					$DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)', array_values($args));
 					if ($SYSLOG) {
-						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT]] = $DB->GetLastInsertID('cashrights');
-						$SYSLOG->AddMessage(SYSLOG_RES_CASHRIGHT, SYSLOG_OPER_ADD, $args,
-							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+						$args[SYSLOG::RES_CASHRIGHT] = $DB->GetLastInsertID('cashrights');
+						$SYSLOG->AddMessage(SYSLOG::RES_CASHRIGHT, SYSLOG::OPER_ADD, $args);
 					}
 				}
 
@@ -100,7 +96,9 @@ $layout['pagetitle'] = trans('New Cash Registry');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('registry', $registry);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_RECEIPT,
+)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('cash/cashregadd.html');
 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,15 +36,18 @@ switch($type)
 		{
 			case 0:
 				$layout['pagetitle'] = trans('Nodes List');
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network'], NULL, $_POST['customergroup']);
+				$nodelist = $LMS->GetNodeList(array('order' => $_POST['order'].','.$_POST['direction'],
+					'network' => $_POST['network'], 'customergroup' => $_POST['customergroup']));
 			break;
 			case 1:
 				$layout['pagetitle'] = trans('List of Connected Nodes');
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['network'], 1, $_POST['customergroup']);
+				$nodelist = $LMS->GetNodeList(array('order' => $_POST['order'].','.$_POST['direction'],
+					'network' => $_POST['network'], 'status' => 1, 'customergroup' => $_POST['customergroup']));
 			break;
 			case 2:
 				$layout['pagetitle'] = trans('List of Disconnected Nodes');
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction'], NULL, NULL,  $_POST['network'], 2, $_POST['customergroup']);
+				$nodelist = $LMS->GetNodeList(array('order' => $_POST['order'].','.$_POST['direction'],
+					'network' => $_POST['network'], 'status' => 2, 'customergroup' => $_POST['customergroup']));
 			break;
 			case 3:
 				$layout['pagetitle'] = trans('Nodes List for Customers In Debt');

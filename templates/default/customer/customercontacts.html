@@ -1,0 +1,108 @@
+<!--// $Id$ //-->
+<SCRIPT type="text/javascript">
+<!--
+	function newcontact(type) {
+		var table = $('table.contacts[data-type="' + type + '"]');
+		var innerHTML = '<tr class="light"><td class="nobr">';
+		var nr = $('tr', table).length - 1;
+		if (nr)
+			innerHTML += '<HR>';
+		innerHTML += '<table class="lmsbox-inner"><tr><td>';
+		switch (type) {
+			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
+			case '{$contacttype}':
+				{if isset($properties.ui.typeselectors)}
+				innerHTML += '<SELECT name="{$formelemprefix}[{$contacttype}s][' + nr + '][typeselector]">'
+					{foreach $properties.ui.typeselectors as $typeselector}
+					+ '<OPTION value="{$typeselector}">{$_CONTACTTYPES[$typeselector]}</OPTION>'
+					{/foreach}
+					+ '</SELECT>&nbsp;';
+				{/if}
+				innerHTML += '<INPUT TYPE="text" size="{$properties.ui.size}" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+					+ ' title="{$properties.ui.tip}"></td><td class="valign-top">';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}{if $flagproperties@index && !($flagproperties@index % 3)}<br>{/if}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+				innerHTML += '</td></tr><tr><td colspan="2"><INPUT TYPE="text" size="68" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][name]"'
+					+ ' title="{trans("Enter contact name/description (optional)")}">';
+				break;
+			{/foreach}
+		}
+		innerHTML += '</td></tr></table>';
+		innerHTML += '</td></tr>';
+		table.append(innerHTML);
+		$('[title]', table).tooltip({
+			position: { my: "left top" }
+		});
+		table.append($('.newcontact', table));
+	}
+//-->
+</SCRIPT>
+{foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
+<TR>
+	<TD style="width: 1%;" class="valign-top">
+		<IMG src="{$properties.ui.legend.icon}" alt="">
+	</TD>
+	<TD style="width: 99%;" class="nobr">
+		{$ctype=$type|cat:'s'}
+		<span class="contacttype-hidden bold" data-type="{$type}"{if isset($customerinfo[$ctype]) && count($customerinfo[$ctype])} style="display: none;"{/if}>
+			<a class="contacttype-show" data-type="{$type}">{$properties.ui.legend.text} &raquo;&raquo;&raquo;</a>
+		</span>
+		<fieldset class="contacttype-visible nobr" data-type="{$type}" style="width: 1%;{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
+			<legend class="bold">
+				<a class="contacttype-hide" data-type="{$type}">{$properties.ui.legend.text} &laquo;&laquo;&laquo;</a>
+			</legend>
+			<table class="contacts" data-type="{$type}">
+				{foreach $customerinfo[$ctype] as $key => $item}
+				<TR>
+					<TD>
+						{if !$item@first}<HR>{/if}
+						<table class="lmsbox-inner">
+							<TR>
+								<TD>
+									{if isset($properties.ui.typeselectors)}
+									<SELECT name="{$formelemprefix}[{$type}s][{$key}][typeselector]">
+										{foreach $properties.ui.typeselectors as $typeselector}
+										<OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
+										{/foreach}
+									</SELECT>
+									{/if}
+									<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="{$formelemprefix}[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
+								</TD>
+								<TD class="valign-top">
+									{foreach $properties.ui.flags as $flagtype => $flagproperties}
+									{if $flagproperties@index && !($flagproperties@index % 3)}<br>{/if}
+									<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
+										<INPUT type="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$type}s][{$key}][type][]"{if isset($item.type) && ($item.type & $flagtype)} checked{/if}>
+										{$flagproperties.label}
+									</label>
+									{/foreach}
+									</TD>
+							</TR>
+							<TR>
+								<TD colspan="2">
+									<INPUT type="text" size="68" value="{$item.name}" name="{$formelemprefix}[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+								</TD>
+							</TR>
+						</table>
+					</TD>
+				</TR>
+				{/foreach}
+				<TR class="newcontact">
+					<TD>
+						<A onclick="javascript:newcontact('{$type}')">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+					</TD>
+				</TR>
+			</table>
+		</fieldset>
+	</TD>
+</TR>
+{/foreach}
+<script type="text/javascript">
+<!--
+	$('.contacttype-show').click(function() {
+		$(this).parent().hide().siblings('.contacttype-visible').show();
+	});
+	$('.contacttype-hide').click(function() {
+		$(this).closest('fieldset').hide().siblings('.contacttype-hidden').show();
+	});
+//-->
+</script>

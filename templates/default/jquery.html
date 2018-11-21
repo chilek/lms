@@ -1,0 +1,73 @@
+<link href="js/jqueryui/themes/base/jquery-ui.min.css" rel="stylesheet" type="text/css">
+<link href="js/jquery-datetimepicker/build/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
+<link href="js/jquery-datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<link href="js/jquery-datatables-responsive/css/dataTables.responsive.min.css" rel="stylesheet" type="text/css">
+<link href="js/jquery-chosen/chosen.min.css" rel="stylesheet" type="text/css">
+<link href="js/jquery-simple-combobox/css/jquery.scombobox.min.css" rel="stylesheet" type="text/css">
+<script>
+	var $_LANG = {}
+</script>
+<script type="text/javascript" src="js/locale/{$language}.js"></script>
+<script type="text/javascript" src="js/language.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/jqueryui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jqueryui/ui/minified/i18n/datepicker-{$language}.js"></script>
+<script type="text/javascript" src="js/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script type="text/javascript" src="js/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="js/jquery-datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" src="js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="js/clipboard.min.js"></script>
+<script type="text/javascript" src="js/jquery-chosen/chosen.jquery.min.js"></script>
+{*
+<script type="text/javascript" src="js/jquery-simple-combobox/js/jquery.scombobox.min.js"></script>
+*}
+<script src="js/sprintf.min.js"></script>
+<script type="text/javascript">
+<!--
+	var lmsSettings = {
+		language: '{$language}',
+		settingsTimeout: {intval(ConfigHelper::getConfig('phpui.settings_timeout', 28800))},
+		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if},
+		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}',
+		defaultTerytCity: '{ConfigHelper::getConfig('phpui.default_teryt_city')}',
+        zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
+        multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom')}true{else}false{/if},
+		multiSelectMaxVisible: '{ConfigHelper::getConfig('phpui.multiselect_max_visible', 0)}',
+        eventTimeStep: {ConfigHelper::getConfig('phpui.event_time_step', 30)}
+	};
+
+	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
+	$(function() {
+		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+			$('[title]').removeAttr('title');
+		}
+	});
+	{/if}
+
+	$( function() {
+		var lmsErrors = {
+			{if $error}
+			{foreach $error as $k=>$v}
+				"{$k|replace:'"':'\"'}":"{$v|replace:'"':'\"'}",
+			{/foreach}
+			{/if}
+		};
+
+		$.each( lmsErrors, function( index, value ) {
+			$("[name='" + index + "']")
+				.attr('title', value)
+				.addClass('alert');
+		});
+	});
+//-->
+</script>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/lms-ui-deferred-submit.js"></script>
+<script type="text/javascript" src="js/lms-ui-persistent-filter.js"></script>
+<script type="text/javascript" src="js/lms-ui-dialog.js"></script>
+<script type="text/javascript" src="js/lms-ui-iconselectmenu.js"></script>
+<script type="text/javascript" src="js/lms-ui-multiselect.js"></script>
+<script type="text/javascript" src="js/lms-ui-dragslider.js"></script>
+<script type="text/javascript" src="js/lms-ui-datepicker.js"></script>
+<script type="text/javascript" src="js/lms-ui-combobox.js"></script>
+<script type="text/javascript" src="js/lms-ui-fileupload.js"></script>

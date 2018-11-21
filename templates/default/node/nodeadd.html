@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
@@ -8,7 +8,6 @@
 	{include file="node/nodeaddbox.html"}
 {/block}
 {if $customerinfo}
-{include file="calendar_js.html"}
 {block name="customerinfobox"}
 	{include file="customer/customerinfobox.html" customerpanel=1}
 {/block}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $numberplanadd = isset($_POST['numberplanadd']) ? $_POST['numberplanadd'] : NULL;
 
-if(sizeof($numberplanadd)) 
+if(count($numberplanadd)) 
 {
 	$numberplanadd['template'] = trim($numberplanadd['template']);
 
@@ -37,8 +37,9 @@ if(sizeof($numberplanadd))
 
 	if($numberplanadd['template'] == '')
 		$error['template'] = trans('Number template is required!');
-	elseif(!preg_match('/%[1-9]{0,1}N/', $numberplanadd['template']))
-		$error['template'] = trans('Template must consist "%N" specifier!');
+	elseif (!preg_match('/%[1-9]{0,1}N/', $numberplanadd['template'])
+		&& !preg_match('/%[1-9]{0,1}C/', $numberplanadd['template']))
+		$error['template'] = trans('Template must contain "%N" or "%C" specifier!');
 
 	if($numberplanadd['doctype'] == 0)
 		$error['doctype'] = trans('Document type is required!');
@@ -72,9 +73,8 @@ if(sizeof($numberplanadd))
 		$id = $DB->GetLastInsertID('numberplans');
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]] = $id;
-			$SYSLOG->AddMessage(SYSLOG_RES_NUMPLAN, SYSLOG_OPER_ADD,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			$args[SYSLOG::RES_NUMPLAN] = $id;
+			$SYSLOG->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_ADD, $args);
 		}
 
 		if (!empty($_POST['selected']))
@@ -84,11 +84,11 @@ if(sizeof($numberplanadd))
 				if ($SYSLOG) {
 					$planassignid = $DB->GetLastInsertID('numberplanassignments');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $planassignid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $id,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => intval($idx)
+						SYSLOG::RES_NUMPLANASSIGN => $planassignid,
+						SYSLOG::RES_NUMPLAN => $id,
+						SYSLOG::RES_DIV => intval($idx)
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -121,7 +121,7 @@ $layout['pagetitle'] = trans('New Numbering Plan');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanadd', $numberplanadd);
-$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name FROM divisions WHERE status = 0 ORDER BY shortname', 'id'));
+$SMARTY->assign('available', $LMS->GetDivisions(array('status' => 0)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanadd.html');
 

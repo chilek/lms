@@ -2,24 +2,85 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="dark"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
-    <TR CLASS="light"><TD CLASS="fall">
-	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=finances&f=submit_setup">
-	    <INPUT CLASS="box light" TYPE="checkbox" NAME="disable_transferform" ID="disable_transferform" VALUE="1" {if $disable_transferform == 1}CHECKED{/if}>
-		<label for="disable_transferform">{trans("Turn off access to transfer form")}</label><br>
-	    <INPUT CLASS="box light" TYPE="checkbox" NAME="disable_invoices" ID="disable_invoices" VALUE="1" {if $disable_invoices == 1}CHECKED{/if}>
-		<label for="disable_invoices">{trans("Turn off access to invoice printing")}</label><br>
-	    <INPUT CLASS="box light" TYPE="checkbox" NAME="invoice_duplicate" ID="invoice_duplicate" VALUE="1" {if $invoice_duplicate == 1}CHECKED{/if}>
-		<label for="invoice_duplicate">{trans("Print invoice duplicate instead of original")}</label><br>
-	    <INPUT CLASS="box light" TYPE="checkbox" NAME="show_tariffname" ID="show_tariffname" VALUE="1" {if $show_tariffname == 1}CHECKED{/if}>
-		<label for="show_tariffname">{trans("Show tariff's name")}</label><br>
-	    <INPUT CLASS="box light" TYPE="checkbox" NAME="show_speeds" ID="show_speeds" VALUE="1" {if $show_speeds == 1}CHECKED{/if}>
-		<label for="show_speeds">{trans("Show upload/download rates/ceils")}</label><br>
-	<p align="right">
-	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
-	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-	</p>
-	</FORM>
-    </TD></TR>
+	<TR CLASS="dark">
+		<TD CLASS="fall bold">{trans("Module Configuration:")}</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fall">
+			<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=finances&f=submit_setup">
+				<table width="100%">
+					<colgroup>
+						<col style="width: 1%;">
+						<col style="width: 99%;">
+					</colgroup>
+					<tr>
+						<td class="nobr">
+							<label for="disable_tranferform">
+								{trans("Turn off access to transfer form")}
+							</label>
+						</td>
+						<td>
+							<INPUT CLASS="box light" TYPE="checkbox" NAME="disable_transferform" id="disable_tranferform" VALUE="1"{if $disable_transferform == 1} checked{/if}>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							<label for="disable_invoices">
+								{trans("Turn off access to invoice printing")}
+							</label>
+						</td>
+						<td>
+							<INPUT CLASS="box light" TYPE="checkbox" NAME="disable_invoices" id="disable_invoices" VALUE="1"{if $disable_invoices == 1} checked{/if}>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							<label for="invoice_duplicate">
+								{trans("Print invoice duplicate instead of original")}
+							</label>
+						</td>
+						<td>
+							<INPUT CLASS="box light" TYPE="checkbox" NAME="invoice_duplicate" id="invoice_duplicate" VALUE="1"{if $invoice_duplicate == 1} checked{/if}>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							<label for="show_tariffname">
+								{trans("Show tariff's name")}
+							</label>
+						</td>
+						<td>
+							<INPUT CLASS="box light" TYPE="checkbox" NAME="show_tariffname" id="show_tariffname" VALUE="1"{if $show_tariffname == 1} checked{/if}>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							<label for="show_speeds">
+								{trans("Show upload/download rates/ceils")}
+							</label>
+						</td>
+						<td>
+							<INPUT CLASS="box light" TYPE="checkbox" NAME="show_speeds" id="show_speeds" VALUE="1"{if $show_speeds == 1} checked{/if}>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							<label for="show_last_years">
+								{trans("Show transactions from last selected years:")}
+							</label>
+						</td>
+						<td>
+							<input type="text" class="box light" name="show_last_years" id="show_last_years" value="{$show_last_years}">
+						</td>
+					</tr>
+				</table>
+				<p align="right">
+					<A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+					<A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")}
+						<IMG SRC="img/save.gif" ALT=""></A>
+				</p>
+			</FORM>
+		</TD>
+	</TR>
 </TABLE>
 {include file="footer.html"}

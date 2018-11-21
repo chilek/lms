@@ -1,16 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!--// $Id$ //-->
-<html><head>
-<meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
-<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
-</head>
-<body>
 <TABLE class="lmsbox-inner" id="table">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
 		<TD style="width: 1%;">
@@ -23,39 +16,49 @@
     </THEAD>
     <TBODY>
     {if $assignment.attribute}
-       <TR>
-               <TD><IMG src="img/id.gif" ALT=""></TD>
-               <TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Attribute:")}</span></TD>
-               <TD style="white-space: nowrap;">{if $assignment.attribute}{$assignment.attribute}{/if}</TD>
-       </TR>
-    {/if}
-        <TR>
+	<TR>
 		<TD><IMG src="img/id.gif" ALT=""></TD>
-		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Numbering Plan:")}</span></TD>
-		<TD style="white-space: nowrap;">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
+		<TD class="bold nobr">{trans("Attribute:")}</TD>
+		<TD class="nobr">{if $assignment.attribute}{$assignment.attribute}{/if}</TD>
+    </TR>
+    {/if}
+	<TR>
+		<TD><IMG src="img/id.gif" ALT=""></TD>
+		<TD class="bold nobr">{trans("Numbering Plan:")}</TD>
+		<TD class="nobr">{if $assignment.numberplan}{$assignment.numberplan}{else}{trans("default")}{/if}</TD>
 	</TR>
 	<TR>
 		<TD><IMG src="img/print.gif" ALT=""></TD>
-		<TD style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Payment Type:")}</span></TD>
-		<TD style="white-space: nowrap;">{if $assignment.paytypename}{$assignment.paytypename}{else}{trans("default")}{/if}</TD>
+		<TD class="bold nobr">{trans("Payment Type:")}</TD>
+		<TD class="nobr">{if $assignment.paytypename}{$assignment.paytypename}{else}{trans("default")}{/if}</TD>
 	</TR>
 	<TR>
 		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD style="width: 1%; white-space: nowrap;">{trans("with invoice")}:</TD>
-		<TD>{if $assignment.invoice}{trans("yes")}{else}{trans("no")}{/if}</TD>
+		<TD class="nobr">{trans("document type:")}</TD>
+		<TD>
+			{if $assignment.invoice == $smarty.const.DOC_INVOICE}
+			{trans("invoice")}
+			{elseif $assignment.invoice == $smarty.const.DOC_INVOICE_PRO}
+			{trans("pro forma invoice")}
+			{else}
+			{trans("no")}
+			{/if}
+		</TD>
 	</TR>
 	<TR>
 		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD style="width: 1%; white-space: nowrap;">{trans("with settlement")}:</TD>
+		<TD class="nobr">{trans("separate document")}:</TD>
+		<TD>{if $assignment.separatedocument}{trans("yes")}{else}{trans("no")}{/if}</TD>
+	</TR>
+	<TR>
+		<TD><IMG src="img/options.gif" ALT=""></TD>
+		<TD class="nobr">{trans("with settlement")}:</TD>
 		<TD>{if $assignment.settlement}{trans("yes")}{else}{trans("no")}{/if}</TD>
+	</TR>
+	<TR>
+		<TD><IMG src="img/docum.gif" ALT=""></TD>
+		<TD class="nobr">{trans("Reference document:")}</TD>
+		<TD>{if $assignment.document}{$assignment.document}{else}{trans("none")}{/if}</TD>
 	</TR>
     </TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
-var table = document.getElementById('table');
-autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight);
-//-->
-</SCRIPT>
-</BODY>
-</HTML>

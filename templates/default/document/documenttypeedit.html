@@ -1,92 +1,86 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
-<!--
-	function set_all_rights(user_id, all_checkbox) {
-                
-                var document_rights_form = document.forms['typeedit'];
-                var rights_values = new Array('1', '2', '4', '8', '16', 'all');
-                
-                for (i = 0; i < rights_values.length; i++) {
-                        var checkbox_name = 'rights[' + user_id + '][' + rights_values[i] + ']';
-                        document_rights_form.elements[checkbox_name].checked = all_checkbox.checked;
-                }
-                
-	}
-//-->
-</SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=documenttypeedit&id={$documenttype.id}" name="typeedit">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="100%" colspan="3">
+		<TD colspan="3" class="bold">
 			<IMG src="img/docum.gif" alt="">
-			<B>{trans("Name:")} {$documenttype.name}</B>
+			{trans("Name:")} {$documenttype.name}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Permissions:")}</B>
+		<TD class="bold nobr">
+			{trans("Permissions:")}
 		</TD>
-		<TD width="98%">
-		    <TABLE class="lmsbox">
-                        <THEAD>
-			<TR>
-			    <TD width="95%"><B>{trans("User")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Viewing")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Creating")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Confirming")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Editing")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Deleting")}</B></TD>
-                            <TD width="1%" align="center" nowrap><B>{trans("All rights")}</B></TD>
-			</TR>
-                        </THEAD>
-                        <TBODY>
-			{cycle values="light,lucid" print=false}
-			{foreach from=$documenttype.rights item=right key=key}
-			<TR class="highlight {cycle}"  >
-			    <TD width="95%">
-				<A href="?m=userinfo&id={$key}">{$right.name}</A>
-			    </TD>
-			    <TD width="1%" align="center">
-				    <INPUT type="checkbox" name="rights[{$key}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="rights[{$key}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="rights[{$key}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="rights[{$key}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="rights[{$key}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
-			    </TD>
-                            <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="rights[{$key}][all]" value="all"  onclick='set_all_rights({$key}, this)' {if $right.rights == 31}CHECKED{/if}>
-			    </TD>
-			</TR>
-			{/foreach}
-			<TR>
-			    <TD width="95%"></TD>
-			    <TD width="5%" colspan="6"></TD>
-			</TR>
-                        </TBODY>
-		</TABLE>			
+		<TD>
+			<TABLE class="lmsbox">
+				<COLGROUP>
+					<COL style="width: 95%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<THEAD>
+				<TR>
+					<TD class="bold">{trans("User")}</TD>
+					<TD class="bold text-center nobr">{trans("Viewing")}</TD>
+					<TD class="bold text-center nobr">{trans("Creating")}</TD>
+					<TD class="bold text-center nobr">{trans("Confirming")}</TD>
+					<TD class="bold text-center nobr">{trans("Editing")}</TD>
+					<TD class="bold text-center nobr">{trans("Deleting")}</TD>
+				</TR>
+				</THEAD>
+				<TBODY>
+				{cycle values="light,lucid" print=false}
+				{foreach from=$documenttype.rights item=right key=key}
+				<TR class="highlight {cycle} lms-ui-row-all-check">
+					<TD>
+						<A href="?m=userinfo&id={$key}">{$right.name}</A>
+					</TD>
+					<TD class="text-center">
+						<INPUT type="checkbox" name="rights[{$key}][1]" value="1"{if ($right.rights & 1)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="rights[{$key}][2]" value="2"{if ($right.rights & 2)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="rights[{$key}][4]" value="4"{if ($right.rights & 4)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="rights[{$key}][8]" value="8"{if ($right.rights & 8)} checked{/if}>
+					</TD>
+					<TD class="text-center">
+						<INPUT type="checkbox" name="rights[{$key}][16]" value="16"{if ($right.rights & 16)} checked{/if}>
+					</TD>
+				</TR>
+				{/foreach}
+				<TR>
+					<TD></TD>
+					<TD colspan="5"></TD>
+				</TR>
+				</TBODY>
+		</TABLE>
 		</TD>
 	</TR>
 	<TR>
-		<TD align="right" colspan="3">
+		<TD colspan="3" class="buttons">
 			<A href="javascript:document.typeedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=documenttypes">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>

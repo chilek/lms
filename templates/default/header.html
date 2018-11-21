@@ -1,95 +1,50 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <!--// $Id$ //-->
 <html>
 <head>
-    <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle|striphtml} :{/if}::</title>
-    <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-    <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-    <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-    <link href="{ConfigHelper::getConfig('phpui.style', 'img/style.css')}" rel="stylesheet" type="text/css">
-    <link href="img/map.css" rel="stylesheet" type="text/css">
-    <link href="img/lms-net.gif" rel="shortcut icon">
-    <script type="text/javascript" src="img/common.js"> </script>
-    <script type="text/javascript" src="img/ClickShowHideMenu.js"> </script>
-    <script type="text/javascript" src="img/autosuggest.js"> </script>
+	<title>{block name=title}::: LMS :::{/block}</title>
+	<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+	<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+	<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
+	<link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
+	<link href="css/map.css" rel="stylesheet" type="text/css">
+	{block name="extra-css-styles"}{/block}
+	<link href="img/lms-net.gif" rel="shortcut icon">
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/ClickShowHideMenu.js"></script>
+	<script type="text/javascript" src="js/autosuggest.js"></script>
+	<script type="text/javascript" src="js/mousetrap/mousetrap.min.js"></script>
+	<script type="text/javascript" src="js/mousetrap/plugins/global-bind/mousetrap-global-bind.min.js"></script>
 </head>
 <body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
-<script type="text/javascript" src="img/overlib.js"></script>
-{if !$layout.popup}
-<div id="pagecontainer">
-    <div id="pageleftbar">
-	<table width="100%">
-		<tr>
-			<td class="text-center valign-top bottomline">
-				<br>
-				<img src="{ConfigHelper::getConfig('phpui.logo', 'img/logo-40.png')}" alt="LMS {$layout.lmsv}"><br>
-				<span class="bold">LMS {$layout.lmsv}</span><br>
-				&nbsp;<br>
-			</td>
-		</tr>
-	</table>
-	<table id="click-menu1" class="click-menu" cellpadding="0" cellspacing="0">
-		{foreach from=$newmenu item=menuitem name=menu}
-		<tr>
-			<td class="click-menu bottomline">
-				<div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
-					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><span style="margin-left: 21px">{$menuitem.name}</span></div>
-				</div>
-				<div class="section">
-				{if $menuitem.submenu}
-				{foreach from=$menuitem.submenu item=submenuitem}
-					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$a</B>" a=$submenuitem.tip}{/if}>
-						<div class="box2"><a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
-					</div>
-				{/foreach}
-				{/if}
-				</div>
-			</td>
-		</tr>
-		{/foreach}
-		<tr>
-			<td class="click-menu bottomline">
-				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&amp;is_sure=1'; } ">
-					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><span class="nobr" style="margin-left: 21px">{trans("Logout")} {$layout.logname|truncate:10:"..."}</span></div>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td class="text-center bold nobr" style="font-size: 7pt;">&nbsp;<br>LMS {$layout.lmsv}<br>{if $layout.lmsvr}({$layout.lmsvr})<br>{/if}DB: {$layout.dbschversion}<br>@ {$layout.hostname}&nbsp;<br>&nbsp;<br></td>
-		</tr>
-	</table>
-	<script type="text/javascript">
-		var clickMenu1 = new ClickShowHideMenu('click-menu1');
-		clickMenu1.init();
-	</script>
-    </div>
-    <div id="pagecontent">
-	{block name="quicksearch"}
-    	<div id="autosuggest"><ul><li></li></ul></div>
-    	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
-	<table width="100%" cellpadding="0" cellspacing="0">
-		<tr>
-		    <td style="width: 1%" class="nobr">
-			{trans("Search:")}
-			{include file="quicksearchcontents.html"}
-			{* Enter key submit hack for IE *}
-			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
-		    </td>
-		    <td style="width: 99%" class="text-right nobr">
-			&nbsp;<A href="?m=copyrights">&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</A>
-		    </td>
-		</tr>
-	</table>
-	</form>
-	<SCRIPT type="text/javascript">
-		<!--//
-		document.forms['quicksearch'].elements['customerinput'].focus();
-		//-->
-	</SCRIPT>
+<button id="lms-ui-back-to-top" class="lms-ui-button lms-ui-button-back">
+	<i></i> {trans("Back to top")}
+</button>
+<script type="text/javascript" src="js/overlib.js"></script>
+{if $layout.popup}
+	{block name=module_content}{/block}
+{else}
+	{block name=pageleftbar}
+		{include file="menu-panel.html"}
 	{/block}
-	{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
-		{include file="toolbar.html"}
-	{/if}
-	<hr>
+	{block name=pagecontent}
+		{include file="spinner.html"}
+		<script>
+
+			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+
+			$('#lms-ui-back-to-top').click(function() {
+				$('#lms-ui-module-view').animate({ scrollTop: 0 });
+			});
+
+		</script>
+		<section id="lms-ui-contents" style="display: none;">
+			{include file="quicksearch-indicators-panel.html"}
+			{include file="toolbar-panel.html"}
+			<div id="lms-ui-module-view">
+				{block name=module_content}{/block}
+				{/block}
 {/if}

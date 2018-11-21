@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$source = $DB->GetRow('SELECT id, name, description FROM cashsources WHERE id=?', array($_GET['id']));
+$source = $DB->GetRow('SELECT id, name, description, account FROM cashsources WHERE id=?', array($_GET['id']));
 
 if(!$source)
 {
@@ -38,7 +38,7 @@ if(isset($_POST['sourceedit']))
 	$sourceedit = $_POST['sourceedit'];
 	$sourceedit['name'] = trim($sourceedit['name']);
 	$sourceedit['description'] = trim($sourceedit['description']);
-	
+
 	if($sourceedit['name'] == '')
 		$error['name'] = trans('Source name is required!');
 	elseif(mb_strlen($sourceadd['name'])>32)
@@ -47,23 +47,27 @@ if(isset($_POST['sourceedit']))
 		if($DB->GetOne('SELECT 1 FROM cashsources WHERE name = ?', array($sourceedit['name'])))
 			$error['name'] = trans('Source with specified name exists!');
 
+	if ($sourceedit['account'] != '' && (strlen($sourceedit['account'])>48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $sourceedit['account'])))
+		$error['account'] = trans('Wrong account number!');
+
 	if (!$error) {
 		$args = array(
 			'name' => $sourceedit['name'],
 			'description' => $sourceedit['description'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $_GET['id']
+			'account' => $sourceedit['account'],
+			SYSLOG::RES_CASHSOURCE => $_GET['id']
 		);
-		$DB->Execute('UPDATE cashsources SET name=?, description=? WHERE id=?', array_values($args));
+		$DB->Execute('UPDATE cashsources SET name=?, description=?, account=? WHERE id=?', array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_CASHSOURCE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]));
+			$SYSLOG->AddMessage(SYSLOG::RES_CASHSOURCE, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=cashsourcelist');
 	}
 
 	$source['name'] = $sourceedit['name'];
 	$source['description'] = $sourceedit['description'];
+	$source['account'] = $sourceedit['account'];
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

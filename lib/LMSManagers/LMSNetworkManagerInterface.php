@@ -59,7 +59,7 @@ interface LMSNetworkManagerInterface
 
     public function GetNetDevIPs($id);
 
-    public function GetNetworkList($order = 'id,asc');
+    public function GetNetworkList(array $search);
 
     public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0);
 
@@ -76,4 +76,8 @@ interface LMSNetworkManagerInterface
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false);
     
     public function ScanNodes();
+
+	public function GetNetworkPageForIp($netid, $ip);
+
+	public function GetPublicNetworkID($netid);
 }

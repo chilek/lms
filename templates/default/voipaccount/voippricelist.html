@@ -1,0 +1,194 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+{$xajax}
+<h1>{trans("Price lists")}</h1>
+
+<style>
+    #group_search {
+        width: 210px;
+    }
+
+    #groups_table tr td:first-child {
+        min-width: 30px;
+    }
+
+    #groups_table tr td {
+        min-width: 75px;
+        padding-right: 10px;
+    }
+
+    #groups_table input {
+        width: 70px;
+    }
+
+    #groups_table #group_search {
+        width: 200px;
+    }
+</style>
+
+<form name="voippricelist" id="voippricelist" method="post" action="?m=voippricelist{if isset($pricelist.id)}&id={$pricelist.id}{/if}" enctype="multipart/form-data">
+    <table class="lmsbox">
+        <thead>
+            <tr>
+                <td class="bold" width="40%" colspan="2">
+                    <img src="img/add.gif" alt=""> {trans("Create")} / {trans("Edit")}
+                </td>
+            </tr>
+        </thead>
+        <tbody id="voippricelist-add">
+            <tr>
+                <td style="vertical-align: top;">
+                    <table>
+                        <tr>
+                            <td><img src="img/size.gif" alt=""></td>
+                            <td><b>{trans("Price list:")}</b></td>
+                            <td>
+                                <select id="tariff_select" style="width: 205px;">
+                                    <option value="0">--</option>
+                                    {if !empty($price_list)}
+                                        {foreach from=$price_list item=list}
+                                        <option value="{$list.id}" {if !empty($pricelist.id) && $pricelist.id == $list.id}SELECTED{/if}>
+                                            {$list.name}
+                                        </option>
+                                        {/foreach}
+                                    {/if}
+                                </select>
+                                &nbsp;&nbsp;<a href="javascript:loadTariff();">{trans("load<!voip>")}</a>
+                                &nbsp;&nbsp;<a href="javascript:deleteTariff();">{trans("delete")}</a>
+                            </td>
+                        </tr>
+                        <tr class="space_row">
+                            <td><img src="img/customer.gif" alt=""></td>
+                            <td><b>{trans("Name:")}</b></td>
+                            <td>
+                                {if isset($pricelist.id)}
+                                <input type="hidden"
+                                       name="pricelist[id]"
+                                       value="{$pricelist.id}">
+                                {/if}
+                                <input type="text"
+                                       id="pricelist_name"
+                                       name="pricelist[name]"
+                                       value="{if isset($pricelist.name)}{$pricelist.name}{/if}"
+                                       style="width: 200px;"
+                                       maxlength="100"
+                                       {tip text="Enter tariff name" trigger="name"}>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="img/desc.gif" alt=""></td>
+                            <td><b>{trans("Description:")}</b></td>
+                            <td>
+                                <textarea name="pricelist[description]" style="width: 200px;">{if isset($pricelist.description)}{$pricelist.description}{/if}</textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="vertical-align: top;">
+                    <fieldset style="display: block; min-width: 30%;">
+                        <legend><b>{trans("Prefix groups assigned to price list")}</b></legend>
+
+                        {if !empty($pricelist.group) && count($pricelist.group) > 50}
+                        <div style="text-align: right;">
+                            <a href="javascript:document.voippricelist.submit();">
+                                {trans("Submit")} <img src="img/save.gif" alt="">
+                            </a>
+                            <a href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">
+                                {trans("Cancel")} <img src="img/cancel.gif" alt="">
+                            </a>
+                        </div>
+                        {/if}
+
+                        <table id="groups_table" name="groups_table">
+                            <tr>
+                                <td colspan="100%"><b>{trans("Add group")}</b></td>
+                            </tr>
+                            <tr>
+                                <td colspan="100%">
+                                    <input name="file" type="file" style="width: 220px;" {tip text="" trigger="file"}>
+                                </td>
+                            </tr>
+                            <tr class="space_row">
+                                <td colspan="100%"><b>{trans("Related groups:")}</b></td>
+                            </tr>
+                            <tr>
+                                <td>{trans("Id")}</td>
+                                <td style="width: 230px;">{trans("Group name")}</td>
+                                <td {tip text="Cena za jedną jednostkę taryfikacyjną"}>{trans("Price")}</td>
+                                <td {tip text="Ilość jednostek po cenie promocyjnej"}>{trans("Number of units")}</td>
+                            </tr>
+                            {if isset($pricelist)}
+                            {foreach from=$pricelist.group item=group}
+                                {include file="voipaccount/voippricelisttablerow.html"}
+                            {/foreach}
+                            {/if}
+                        </table>
+
+                        {if !$pricelist.group}
+                        <div id="groups_table_info" style="text-align: center; padding: 10px; font-weight: bold;">
+                            {trans("No prefix groups assigned to tariff.")}
+                        </div>
+                        {/if}
+                    </fieldset>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right" colspan="2">
+                    <a href="javascript:document.voippricelist.submit();">
+                        {trans("Submit")} <img src="img/save.gif" alt="">
+                    </a>
+                    <a href="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}voipaccountlist{/if}">
+                        {trans("Cancel")} <img src="img/cancel.gif" alt="">
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+<SCRIPT type="text/javascript">
+<!--
+    var table = document.getElementById("groups_table");
+    var pricelist_list = document.getElementById("tariff_select");
+
+    // load tariffs
+    function loadTariff() {
+        var id = pricelist_list.selectedIndex;
+
+        if (id == 0)
+            return 0;
+
+        window.location.href = "?m=voippricelist&id=" + pricelist_list[id].value;
+    }
+
+    // delete tariff
+    function deleteTariff() {
+        var id = pricelist_list.selectedIndex;
+
+        if (id == 0)
+            return 0;
+
+        if (!confirm("{trans("Are you sure that you want remove tariff rule")} '" + pricelist_list[id].text + "' ?"))
+            return 0;
+
+        window.location.href = "?m=voippricelist&id=" + pricelist_list[id].value + "&action=delete";
+    }
+
+    // groups table is empty check
+    function groupsTableInfoUpdate() {
+        var rows = table.rows.length;
+        var info = document.getElementById("groups_table_info");
+
+        if (rows == 4)
+            info.style.display = "block";
+        else
+            info.style.display = "none";
+    }
+
+    groupsTableInfoUpdate();
+//-->
+</SCRIPT>
+{/block}

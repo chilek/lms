@@ -1,0 +1,9 @@
+<phpunit>
+
+    <testsuites>
+        <testsuite name="LMS test suite">
+            <directory>tests/</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>

@@ -1,48 +1,62 @@
+{if isset($layout.userpanel_module)}
+	{$layout['module'] = $layout['userpanel_module']}
+{/if}
+
+{$instance_name = $pagination->getInstanceName()}
+
 <span class="bold">
 {trans("Page:")}
-{if $pagination->getPage() > 1}
-    <a href="?m={$layout.module}&amp;page={$pagination->getPreviousPage()}">
+	{if $pagination->getPage() > 1}
+	<a href="?m={$layout.module}{if isset($instance_name)}&instance={$instance_name}{/if}&page={$pagination->getPreviousPage()}">
 {/if}
-    {'&laquo;'|str_repeat:3}
-{if $pagination->getPage() > 1}
+		<i class="lms-ui-icon-previous"></i>
+		{if $pagination->getPage() > 1}
     </a>
+	{/if}
+	{section name=pagination loop=$pagination->getPages()+1 step=1 start=1}
+		{if $pagination->getPage() == $smarty.section.pagination.index}
+			[{$smarty.section.pagination.index}]
+		{else}
+			{if $pagination->displayLink($smarty.section.pagination.index)}
+				<a href="?m={$layout.module}{if isset($instance_name)}&instance={$instance_name}{/if}&page={$smarty.section.pagination.index}">{$smarty.section.pagination.index}</a>
+			{/if}
+			{if !$pagination->displayLink($smarty.section.pagination.index) && $pagination->displayLink($smarty.section.pagination.index + 1)}
+				&hellip;
+			{/if}
+		{/if}
+	{/section}
+	{if $pagination->getPage() < $pagination->getPages()}
+	<a href="?m={$layout.module}{if isset($instance_name)}&instance={$instance_name}{/if}&page={$pagination->getNextPage()}">
 {/if}
-{section name=pagination loop=$pagination->getPages()+1 step=1 start=1}
-    {if $pagination->getPage() == $smarty.section.pagination.index}
-        [{$smarty.section.pagination.index}]
-    {else}
-        {if $pagination->displayLink($smarty.section.pagination.index)}
-        <a href="?m={$layout.module}&amp;page={$smarty.section.pagination.index}">{$smarty.section.pagination.index}</a>
-        {/if}
-        {if !$pagination->displayLink($smarty.section.pagination.index) && $pagination->displayLink($smarty.section.pagination.index + 1)}
-        &hellip;
-        {/if}
-    {/if}
-{/section}
-{if $pagination->getPage() < $pagination->getPages()}
-    <a href="?m={$layout.module}&amp;page={$pagination->getNextPage()}">
-{/if}
-    {'&raquo;'|str_repeat:3}
-{if $pagination->getPage() < $pagination->getPages()}
+		<i class="lms-ui-icon-next"></i>
+		{if $pagination->getPage() < $pagination->getPages()}
     </a>
-{/if}
+	{/if}
 </span>
-    ({t a=$pagination->getFirstOnPage() b=$pagination->getLastOnPage() c=$pagination->getTotal()}records $a - $b of $c{/t})
+({t a=$pagination->getFirstOnPage() b=$pagination->getLastOnPage() c=$pagination->getTotal()}records $a - $b of $c{/t})
 {if $pagination->displayGoTo()}
-    {counter name=scroller print=false assign=scrollerno}
-    <script type="text/javascript">
-    <!--
-        function pagechange{$scrollerno}() {
-            var elem = document.getElementById('page{$scrollerno}');
-            var pageelem = document.getElementById('page');
-            if (pageelem !== null) {
-                pageelem.value = elem.value;
-                elem.form.submit();
-            }
-        }
-    //-->
-    </script>
-    {t a="<input class=\"scroller\" type=\"text\" id=\"page`$scrollerno`\" value=\"\" size=\"3\">"}Go to $a page{/t}
-    <a href="javascript: void(0);" onclick="javascript: pagechange{$scrollerno}();">{'&raquo;'|str_repeat:3}</a>
-    </form>
+	{counter name=scroller print=false assign=scrollerno}
+	<script>
+
+		function pagechange(pageid) {
+			var elem = $('#' + pageid)
+			var pageelem = elem.prev('.page');
+			if (pageelem.length) {
+				pageelem.val(elem.val());
+				elem[0].form.submit();
+			}
+		}
+
+	</script>
+	{if isset($instance_name)}
+		{$pageid='page-'|cat:$instance_name}
+	{else}
+		{$pageid='page-'|cat:$scrollerno}
+	{/if}
+	{if isset($instance_name)}
+		<input type="hidden" name="instance" class=instance" value="{$instance_name}"{if isset($form)} form="{$form}"{/if}>
+	{/if}
+	<input type="hidden" name="page" class="page" value="1"{if isset($form)} form="{$form}"{/if}>
+	{t a="<input class=\"scroller\" type=\"number\" min=\"1\" max=\"`$pagination->getPages()`\" id=\"{$pageid}\" value=\"\" size=\"3\">"}Go to $a page{/t}
+	<a href="#" onclick="javascript: pagechange('{$pageid}');">{'&raquo;'|str_repeat:3}</a>
 {/if}

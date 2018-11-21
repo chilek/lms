@@ -1,8 +1,7 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
 	function CountSelectedCustomers()
@@ -109,9 +108,7 @@
 						<B>{trans("Date:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						<div class="calendar-time">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" maxlength="15" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
-						</div>
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" maxlength="15" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				{if $sourcelist}

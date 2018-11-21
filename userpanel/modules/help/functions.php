@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ function get_solution($id)
 function get_first_solution()
 {
     global $DB;
-    return $DB->GetOne('SELECT id FROM up_help WHERE reference = 0');
+    return $DB->GetOne('SELECT id FROM up_help WHERE reference IS NULL');
 }
 
 function update_solution($id,$title,$body)

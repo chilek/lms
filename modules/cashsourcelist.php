@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-function GetSourceList()
-{
-	global $DB;
-	$list = $DB->GetAll("SELECT id, name, description, deleted FROM cashsources ORDER BY name");
+function GetSourceList() {
+	$DB = LMSDB::getInstance();
+
+	$list = $DB->GetAll("SELECT id, name, description, account, deleted FROM cashsources ORDER BY name");
 	return $list;
 }
 

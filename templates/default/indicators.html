@@ -1,0 +1,53 @@
+{block name=indicatorcontents}
+{if ConfigHelper::CheckPrivilege('helpdesk_administration') || ConfigHelper::CheckPrivilege('helpdesk_operation')}
+<a href="?m=indicators&action=critical" class="lms-ui-indicator" title="{trans("Critical tickets")}" id="indicator-critical" style="display: none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="fa-2x lms-ui-indicator-icon lms-ui-icon-critical"></i>
+</a>
+<a href="?m=indicators&action=urgent" class="lms-ui-indicator" title="{trans("Urgent tickets")}" id="indicator-urgent" style="display: none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-urgent"></i>
+</a>
+<a href="?m=indicators&action=unread" class="lms-ui-indicator" title="{trans("Unread tickets")}" id="indicator-unread" style="display: none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-unread"></i>
+</a>
+<a href="?m=indicators&action=expired" class="lms-ui-indicator" title="{trans("<!rt>Owned expired tickets")}" id="indicator-expired" style="display:none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-deadline"></i>
+</a>
+<a href="?m=indicators&action=expired2" class="lms-ui-indicator" title="{trans("<!rt>Verifier expired tickets")}" id="indicator-expired2" style="display:none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-verifier"></i>
+</a>
+{/if}
+{if ConfigHelper::CheckPrivilege('timetable_management')}
+<a href="?m=indicators&action=events" class="lms-ui-indicator" title="{trans("Today's events assigned to you")}" id="indicator-events" style="display: none;">
+    <span class="lms-ui-indicator-counter">0</span>
+    <i class="lms-ui-indicator-icon lms-ui-icon-timetable"></i>
+</a>
+{/if}
+<script>
+    function getIndicatorStats() {
+		$.ajax('?m=indicators&ajax=1&api=1', {
+				method: "POST",
+				dataType: "json"
+			}
+		).done(function (data) {
+			$.each(data, function (idx, value) {
+				if (parseInt(value))
+                    $('#indicator-' + idx).show();
+				else
+					$('#indicator-' + idx).hide();
+				$('#indicator-' + idx + ' .lms-ui-indicator-counter').html(value);
+			});
+		});
+	}
+
+    getIndicatorStats();
+
+    setInterval(function() {
+    	    getIndicatorStats();
+        }, {ConfigHelper::getConfig('phpui.indicator_refresh_interval', 120)} * 1000);
+</script>
+{/block}

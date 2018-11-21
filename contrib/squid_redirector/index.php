@@ -74,16 +74,18 @@ try {
 
 // Initialize templates engine
 $SMARTY = new Smarty;
+$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 // Initialize LMS class
 
 $SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
-$AUTH = new Auth($DB, $SESSION, $SYSLOG);
+$AUTH = new Auth($DB, $SESSION);
 $SYSLOG = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;

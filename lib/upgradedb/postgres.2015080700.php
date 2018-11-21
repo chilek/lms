@@ -33,7 +33,10 @@ $CONTACT_EMAIL = 8;
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE customercontacts RENAME phone TO contact");
-$this->Execute("UPDATE customercontacts SET type = ? WHERE type IS NULL OR type = 0", array($CONTACT_LANDLINE));
+$this->Execute("UPDATE customercontacts SET type = type | ? WHERE type = 0 OR type = ?",
+	array($CONTACT_LANDLINE, $CONTACT_FAX));
+$this->Execute("UPDATE customercontacts SET type = ? WHERE type IS NULL",
+	array($CONTACT_LANDLINE));
 
 $customers = $this->GetAll("SELECT id, email FROM customers WHERE email <> ''");
 if (!empty($customers)) {

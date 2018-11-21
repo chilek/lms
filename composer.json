@@ -3,21 +3,106 @@
     "description": "Lan Management System (LMS)",
     "homepage": "http://lms.org.pl/",
     "license": "GPL-2.0",
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "xdan/datetimepicker",
+                "version": "2.5.20",
+                "dist": {
+                    "url": "https://github.com/xdan/datetimepicker/archive/2.5.20.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "alexei/sprintf.js",
+                "version": "1.1.1",
+                "dist": {
+                    "url": "https://github.com/alexei/sprintf.js/archive/1.1.1.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "ccampbell/mousetrap",
+                "version": "1.6.2",
+                "dist": {
+                    "url": "https://github.com/ccampbell/mousetrap/archive/1.6.2.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "ivkremer/jquery-simple-combobox",
+                "version": "1.1.29",
+                "dist": {
+                    "url": "https://github.com/ivkremer/jquery-simple-combobox/archive/1.1.29.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fortawesome/font-awesome",
+                "version": "5.3.1",
+                "source": {
+                    "url": "https://github.com/FortAwesome/Font-Awesome.git",
+                    "type": "git",
+                    "reference": "5.3.1"
+                }
+            }
+        }
+    ],
     "require": {
+	"php" : ">=5.3",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^5.2",
         "tecnickcom/tcpdf": "^6.2",
         "spipu/html2pdf": "^4.5",
-        "components/normalize.css": "^3.0"
+        "components/normalize.css": "^3.0",
+        "smarty/smarty": "3.1.33",
+        "rospdf/pdf-php": "^0.12",
+        "components/jqueryui": "^1",
+        "xdan/datetimepicker": "^2",
+        "alexei/sprintf.js": "^1",
+        "datatables/datatables": "^1.10",
+        "setasign/fpdi-tcpdf": "^1.6",
+        "pear/mail": "^1.3",
+        "gusapi/gusapi": "^3",
+        "erusev/parsedown": "^1",
+        "tecnickcom/tc-lib-barcode": "^1",
+        "zenorocha/clipboardjs": "^2.0",
+        "harvesthq/chosen": "^1.8",
+        "tinymce/tinymce": "^4",
+        "ccampbell/mousetrap": "^1",
+        "ivkremer/jquery-simple-combobox": "^1",
+		"fortawesome/font-awesome": "^5",
+        "html2text/html2text": "^4",
+        "drmonty/datatables-responsive": "^2.2"
     },
-    "require_dev": {
-        "phpunit/phpunit": "5.1.*"
+    "require-dev": {
+        "phpunit/phpunit": "^4",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "classmap": ["lib/", "plugins/"]
     },
     "autoload-dev": {
         "psr-4": { "LMS\\Tests\\": "tests/" }
+    },
+    "scripts": {
+        "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF", "@repairEZPDF" ],
+        "repairHTML2PDF": "sed -i -e 's/class HTML2PDF_myPdf extends TCPDF/class HTML2PDF_myPdf extends LMSTCPDF/' vendor/spipu/html2pdf/_class/myPdf.class.php",
+        "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php",
+        "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts"
     }
 }

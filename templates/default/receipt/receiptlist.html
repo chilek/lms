@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -9,14 +9,13 @@
 {if $receipt.receipt2}
 <SCRIPT type="text/javascript">window.open('?m=receipt&id={$receipt.receipt2}&which={$receipt.which}');</SCRIPT>
 {/if}
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
 	function prints()
 	{
 		var add = "";
 		if (document.page.original.checked && document.page.copy.checked)
-			add = "";
+			add = "&which=original,copy";
 		else if (document.page.original.checked && !document.page.copy.checked)
 			add = "&which=original";
 		else if (!document.page.original.checked && document.page.copy.checked)
@@ -51,9 +50,10 @@
 {/if}
 //-->
 </SCRIPT>
+{$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
@@ -82,7 +82,6 @@
 	</TR>
 	<TR>
 		<TD colspan="7">
-				<div style="float: left;">
 				<B>{trans("Filter:")} </B> 
 				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
@@ -94,32 +93,25 @@
 					<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
 					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
 				</SELECT>&nbsp;
-				</div>
-				<div class="calendar" style="float: left;">
 				<B>{trans("Period:")}</B>&nbsp;
-				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				</div>
-				<div style="float: left;">
+				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<INPUT type="checkbox" id="advances" name="advances" value="1"{if $listdata.advances} checked{/if}><label for="advances">{trans("not settled adv. only")}</label>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
-				</div>
 		</TD>
-	</TR>		
-	{if $listdata.total != 0}
+	</TR>
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="7">
-			{include file="scroller.html" loop=$receiptlist scrollerno=1}
+		<TD class="lms-ui-pagination" COLSPAN="7">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
-	{assign var=receipt value=$receiptlist[receiptlist]}
+    <TBODY class="lms-ui-multi-check">
+	{foreach $receiptlist as $receipt}
 	{assign var=receiptid value=$receipt.id}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight">
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<span class="alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
@@ -147,27 +139,27 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 			{if !$receipt.closed}
-			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" ALT="[ {trans("Settle advance")} ]" title="[ {trans("Settle advance")} ]"></A>
+			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" alt="{trans("Settle advance")}" title="{trans("Settle advance")}"></A>
 			{/if}
-			<A onClick="return confirmLink(this, '{t a=$receipt.number}Are you sure, you want to remove receipt \'$a\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
-			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}"{if $marks.$receiptid}CHECKED{/if}>
+			<A onClick="return confirmLink(this, '{t a=$receipt.number}Are you sure, you want to remove receipt \'$a\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
+			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}" class="lms-ui-multi-check"{if $marks.$receiptid} checked{/if}>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD COLSPAN="7" class="empty-table">
 			<p>{trans("No such receipts in database.")}</p>
 		</TD>
 	</TR>	
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
-	<TR id="end">
-		<TD class="pagination" WIDTH="100%" COLSPAN="7">
-			{include file="scroller.html" loop=$receiptlist scrollerno=2}
+	{if $pagination->getTotal() != 0}
+	<TR>
+		<TD class="lms-ui-pagination" COLSPAN="7">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
@@ -177,11 +169,20 @@
 				<TR>
 					<TD ALIGN="left" nowrap>
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
-						<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-						<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>
+						 <label>
+							<INPUT type="checkbox" id="original" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}>
+							{trans("original")}
+						</label>
+						<label>
+							<INPUT type="checkbox" id="copy" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+							{trans("copy")}
+						</label>
 					</TD>
 					<TD class="text-right nobr">
-						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" VALUE="1">
+						<label>
+							{trans("Check All")}
+							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
+						</label>
 					</TD>
 				</TR>
 			</TABLE>
@@ -210,8 +211,8 @@
 		<TD colspan="3" align="right">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>{/if}
 			<A href="?m=cashreglogview&regid={$listdata.regid}">{trans("Cash history")} <img src="img/value.gif" alt=""></A>&nbsp;
-			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A>&nbsp;
-			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}"><img src="img/kp.png" alt=""> {trans("New Cash-in Receipt")}</A>&nbsp;
+			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}"><img src="img/kw.png" alt=""> {trans("New Cash-out Receipt")}</A>
 		</TD>
 	</TR>
     </TFOOT>

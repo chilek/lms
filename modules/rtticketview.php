@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,28 +25,29 @@
  */
 
 if(! $LMS->TicketExists($_GET['id']))
-{
 	$SESSION->redirect('?m=rtqueuelist');
-}
+else
+	$id = $_GET['id'];
 
-$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']);
-$catrights = $LMS->GetUserRightsToCategory($AUTH->id, 0, $_GET['id']);
+if (!$LMS->CheckTicketAccess($id))
+	access_denied();
 
-if(!$rights || !$catrights)
-{
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
-}
+$ticket = $LMS->GetTicketContents($id);
+$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+if (empty($categories))
+	$categories = array();
 
-$ticket = $LMS->GetTicketContents($_GET['id']);
-$categories = $LMS->GetCategoryListByUser($AUTH->id);
+if($ticket['deluserid'])
+	$ticket['delusername'] = $LMS->GetUserName($ticket['deluserid']);
 
 if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) {
 	$yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
-	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets 
-			    WHERE customerid = ? AND createtime >= ? 
-			    GROUP BY cause', 'cause', array($ticket['customerid'], $yearago));
+	//$del = 0;
+	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets
+				WHERE 1=1'
+				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rttickets.deleted = 0' : '')
+				. ' AND customerid = ? AND createtime >= ?'
+				. ' GROUP BY cause', 'cause', array($ticket['customerid'], $yearago));
 
 	$SMARTY->assign('stats', $stats);
 }
@@ -67,7 +68,9 @@ if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customeri
 
 foreach($categories as $category)
 	$catids[] = $category['id'];
-$iteration = $LMS->GetQueueContents($ticket['queueid'], $order='createtime,desc', $state=-1, 0, $catids);
+$iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc', 'state' => -1, 'priority' => 0,
+	'owner' => -1, 'catids' => $catids));
+
 if (!empty($iteration['total'])) {
 	foreach ($iteration as $idx => $element)
 		if (isset($element['id']) && intval($element['id']) == intval($_GET['id'])) {
@@ -85,13 +88,38 @@ foreach ($categories as $category)
 	$ncategories[] = $category;
 }
 $categories = $ncategories;
+$assignedevents = $LMS->GetEventsByTicketId($id);
+
+$LMS->MarkTicketAsRead($id);
 
 $layout['pagetitle'] = trans('Ticket Review: $a',sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+
+if (isset($_GET['highlight'])) {
+	$highlight = $_GET['highlight'];
+	if (isset($highlight['regexp']))
+		foreach ($ticket['messages'] as &$message)
+			$message['body'] = preg_replace('/(' . $highlight['pattern'] . ')/i',
+			'[matched-text]$1[/matched-text]', $message['body']);
+	else
+		foreach ($ticket['messages'] as &$message) {
+			$offset = 0;
+			while (($pos = mb_stripos($message['body'], $highlight['pattern'], $offset)) !== false) {
+				$message['body'] = mb_substr($message['body'], 0, $pos)
+					. '[matched-text]' . mb_substr($message['body'], $pos, mb_strlen($highlight['pattern']))
+					. '[/matched-text]' . mb_substr($message['body'], $pos + mb_strlen($highlight['pattern']));
+				$offset = $pos + strlen('[matched-text][/matched-text]') + mb_strlen($highlight['pattern']) + 1;
+			}
+		}
+	unset($message);
+}
+
 $SMARTY->assign('ticket', $ticket);
+
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('assignedevents', $assignedevents);
 $SMARTY->display('rt/rtticketview.html');
 
 ?>

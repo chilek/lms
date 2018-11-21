@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ if(isset($_POST['nodegroupadd']))
 	
 	if($nodegroupadd['name'] == '')
 		$error['name'] = trans('Group name required!');
-	elseif(strlen($nodegroupadd['name']) > 32)
+	elseif(strlen($nodegroupadd['name']) > 255)
 		$error['name'] = trans('Group name is too long!');
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupadd['name']))
 		$error['name'] = trans('Invalid chars in group name!');
@@ -57,8 +57,8 @@ if(isset($_POST['nodegroupadd']))
 				VALUES (?, ?, ?)', array_values($args));
 		$id = $DB->GetLastInsertID('nodegroups');
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]] = $id;
-			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+			$args[SYSLOG::RES_NODEGROUP] = $id;
+			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_ADD, $args);
 		}
 
 		if (isset($nodegroupadd['reuse'])) 

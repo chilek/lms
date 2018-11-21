@@ -1,43 +1,49 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
 <form name="nodesearchresults">
-<table class="lmsbox">
+<table class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 96%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
-		<TD style="width: 96%;">
+		<TD>
 			<img src="img/node.gif" ALT=""> <A href="?m=nodesearch&search&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><span class="bold">{trans("Name:")}</span></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/customer.gif" ALT=""> <A href="?m=nodesearch&search&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order == "owner"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD style="text-align: right; vertical-align: top; width: 1%; white-space: nowrap;">
+		<TD class="text-right valign-top nobr">
 			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=ownerid{if $listdata.direction == "asc" && $listdata.order == "ownerid"},desc{/if}">{trans("Owner ID:")}</A> {if $listdata.order == "ownerid"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
+		<TD class="nobr">
 			<img src="img/ip.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction == "asc" && $listdata.order == "ip"},desc{/if}">{trans("IP address:")}</A> {if $listdata.order == "ip"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<A href="?m=nodesearch&search&o=ip{if $listdata.direction == "asc" && $listdata.order == "ip"},desc{/if}">({trans("Pub. IP address:")})</A> {if $listdata.order == "ip"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/mac.gif" ALT="">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction == "asc" && $listdata.order == "mac"},desc{/if}">{trans("MAC address:")}</A> {if $listdata.order == "mac"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD colspan="2" style="width: 2%; text-align: right; white-space: nowrap;">
-			<span class="bold">{t a=$listdata.total}Total: $a{/t}</span>
+		<TD colspan="2" class="text-gith bold nobr">
+			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="5">
+		<TD class="lms-ui-pagination" colspan="5">
 			{include file="scroller.html" loop=$nodelist adlink="&search=1"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
-	{cycle values="light,lucid" print=false}
+    <TBODY class="lms-ui-multi-check">
 	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
-		<TD style="width: 95%;" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
+	<TR class="highlight {if ! $nodelist[nodelist].access} blend{/if}"  >
+		<TD onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
 			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $lastonline_limit}
@@ -52,25 +58,25 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<span class="bold">{$nodelist[nodelist].name}</span></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
 		</TD>
-		<TD style="width: 1%; text-align: right; vertical-align: top;" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
+		<TD class="valign-top nobr">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>
 			<img src="img/empty.gif" ALT="" width="1" height="16"><span class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</span>
 		</TD>
-		<TD style="width: 1%; vertical-align: top; white-space: nowrap;" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
+		<TD class="valign-top nobr">
 			<img src="img/ip.gif" ALT="">&nbsp;{$nodelist[nodelist].ip}{if $nodelist[nodelist].ip_pub != "0.0.0.0"} ({$nodelist[nodelist].ip_pub}){/if}<BR>
 			<img src="img/mac.gif" ALT="">&nbsp;{$nodelist[nodelist].mac|replace:",":"<BR><img src=\"img/mac.gif\" ALT=\"\">&nbsp;"}
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<a href="?m=nodeset&amp;id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}[ {trans("Disconnect")} ]{else}[ {trans("Connect")} ]{/if}"></A>
-			<a href="?m=nodewarn&amp;id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}[ {trans("Enable notices")} ]{else}[ {trans("Disable notices")} ]{/if}"></A>
-			<a href="?m=nodedel&amp;id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
-			<a href="?m=nodeedit&amp;id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
-			<a href="?m=nodeinfo&amp;id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="[ {trans("Info")} ]"></A>
+		<TD class="nobr">
+			<a href="?m=nodeset&amp;id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}{trans("Disconnect")}{else}{trans("Connect")}{/if}"></A>
+			<a href="?m=nodewarn&amp;id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}{trans("Enable notices")}{else}{trans("Disable notices")}{/if}"></A>
+			<a href="?m=nodedel&amp;id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="{trans("Delete")}"></A>
+			<a href="?m=nodeedit&amp;id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="{trans("Edit")}"></A>
+			<a href="?m=nodeinfo&amp;id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="{trans("Info")}"></A>
 		</TD>
-		<TD style="width: 1%;">
-			<INPUT TYPE="checkbox" NAME="marks[{$nodelist[nodelist].id}]" VALUE="{$nodelist[nodelist].id}"{if $marks.$nodeid}CHECKED{/if}>
+		<TD>
+			<INPUT TYPE="checkbox" NAME="marks[{$nodelist[nodelist].id}]" VALUE="{$nodelist[nodelist].id}"{if $marks.$nodeid}CHECKED{/if} class="lms-ui-multi-check">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -81,117 +87,148 @@
 	</TR>
 	{/section}
     </TBODY>
-    <THEAD>
+    <TFOOT>
+	<TR class="dark">
+		<TD class="nobr" colspan="2">
+			<table>
+				<tr>
+					<td class="nobr">
+						<label>
+							<span class="bold">{trans("Operation:")}</span>
+							<select onChange="javascript:changeOperation(this.value);" id="operation">
+								<option value="1">{trans("Connect to device")}</option>
+								<option value="2">{trans("Assign to node group")}</option>
+								<option value="3">{trans("Unassign from node group")}</option>
+							</select>
+						</label>
+					</td>
+					<td class="nobr">
+						<table>
+							<tr id="deviceconnect" class="operationparams" style="display: none;">
+								<td>
+									<select id="device">
+										{foreach from=$netdevlist item=item}
+										<option value="{$item.id}">{$item.name}</option>
+										{/foreach}
+									</select>
+									<select id="linktype" onchange="change_linktype(this.options[this.selectedIndex].value)">
+										{foreach from=$_LINKTYPES item=item key=key}
+										<option value="{$key}">{$item}</option>
+										{/foreach}
+									</select>
+									<select id="linktechnology">
+										<option value="0">{trans("- unknown -")}</option>
+										{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
+										<option value="{$linktechnologyidx}">{$linktechnology}</option>
+										{/foreach}
+									</select>
+									<select id="linkspeed">
+										{foreach from=$_LINKSPEEDS item=item key=key}
+										<option value="{$key}"{if $key==100000} selected{/if}>{$item}</option>
+										{/foreach}
+									</select>
+								</td>
+							</tr>
+							<tr id="nodegroups" class="operationparams" style="display: none;">
+								<td>
+									<select id="nodegroup">
+										{foreach $nodegroups as $nodegroup}
+										<option value="{$nodegroup.id}"{if $key==$nodegroup.id} selected{/if}>{$nodegroup.name}</option>
+										{/foreach}
+									</select>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td class="nobr">
+						<a id="submit-button" href="javascript:applyOperation();"><img src="img/save.gif" alt=""> {trans("Submit")}</a>
+					</td>
+				</tr>
+			</table>
+		</TD>
+		<TD class="text-right nobr" colspan="3">
+			<label>
+				{trans("Check All")}
+				<input type="checkbox" class="lms-ui-multi-check-all">
+			</label>
+		</TD>
+	</TR>
+	</TFOOT>
+	<THEAD>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="5">
+		<TD class="lms-ui-pagination" colspan="5">
 			{include file="scroller.html" loop=$nodelist adlink="&search=1"}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD style="width: 97%; text-align: right;" COLSPAN="2">
-			<span class="bold">
-				{trans("Total:")}<BR>
-				{trans("Connected<!nodes>:")}<BR>
-				{trans("Disconnected:")}
-			</span>
+		<TD class="bold text-right" COLSPAN="2">
+			{trans("Total:")}<BR>
+			{trans("Connected<!nodes>:")}<BR>
+			{trans("Disconnected:")}
 		</TD>
-		<TD style="width: 3%; vertical-align: top;" COLSPAN="3">
-			<span class="bold">
-				{if $listdata.total}{$listdata.total}{else}0{/if}<BR>
-				{if $listdata.totalon}{$listdata.totalon}{else}0{/if}<BR>
-				{if $listdata.totaloff}{$listdata.totaloff}{else}0{/if}
-			</span>
+		<TD class="valign-top bold" COLSPAN="3">
+			{if $listdata.total}{$listdata.total}{else}0{/if}<BR>
+			{if $listdata.totalon}{$listdata.totalon}{else}0{/if}<BR>
+			{if $listdata.totaloff}{$listdata.totaloff}{else}0{/if}
 		</TD>
 	</TR>
-	<TR>
-		<TD style="width: 97%; white-space: nowrap;" colspan="2">
-			<table>
-				<tr>
-					<td style="white-space: nowrap;">
-						<label for="operation"><span class="bold">{trans("Operation:")}</span></label>
-						<select id="operation" onChange="javascript:changeOperation(this.value);">
-							<option value="1">{trans("Connect to device")}</option>
-						</select>
-					</td>
-					<td id="deviceconnect" style="white-space: nowrap;">
-						<select id="device">
-							{foreach from=$netdevlist item=item}
-							<option value="{$item.id}">{$item.name}</option>
-							{/foreach}
-						</select>
-						<select id="linktype" onchange="change_linktype(this.options[this.selectedIndex].value)">
-							{foreach from=$_LINKTYPES item=item key=key}
-							<option value="{$key}">{$item}</option>
-							{/foreach}
-						</select>
-						<select id="linktechnology">
-							<option value="0">{trans("- unknown -")}</option>
-							{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-							<option value="{$linktechnologyidx}">{$linktechnology}</option>
-							{/foreach}
-						</select>
-						<select id="linkspeed">
-							{foreach from=$_LINKSPEEDS item=item key=key}
-							<option value="{$key}"{if $key==100000} selected{/if}>{$item}</option>
-							{/foreach}
-						</select>
-					</td>
-					<td style="white-space:nowrap;">
-						<a href="javascript:applyOperation();"><img src="img/save.gif" alt=""> {trans("Submit")}</a>
-					</td>
-				</tr>
-			</table>
-		</TD>
-		<TD style="width: 3%; text-align: right; white-space: nowrap;" colspan="3">
-			<label for="checkallnodes">{trans("Check All")}</label><input type="checkbox" id="checkallnodes" onChange="CheckAll('nodesearchresults', this);">
-		</TD>
-	</TR>
-    </TBODY>
+	</THEAD>
 </TABLE>
 </form>
 <SCRIPT type="text/javascript">
 <!--
 	function changeOperation(operation) {
+		$('.operationparams').hide();
+		switch (parseInt(operation)) {
+			case 1:
+				$('#deviceconnect').show();
+				break;
+			case 2:
+			case 3:
+				$('#nodegroups').show();
+				break;
+		}
 	}
 
-	var operationFinished = true;
+	changeOperation(1);
 
 	function applyOperation() {
-		if (!operationFinished) {
-			alert('Previous operation has not been finished yet!');
+		if (!$('#submit-button').is(':visible')) {
+			alert('{trans("Previous operation has not been finished yet!")}');
 			return;
 		}
-		operationFinished = false;
 
 		var nodeids = [];
-		var inputs = document.getElementsByTagName("INPUT");
-		for (i = 0, len = inputs.length; i < len; i++) {
-			var e = inputs[i];
-			if (e.type == 'checkbox' && e.name.match(/^marks/) && e.checked)
-				nodeids.push(e.value);
-		}
+		$('input[name^="mark"]:checked').each(function(key, elem) {
+			nodeids.push($(elem).val());
+		});
 		if (!nodeids.length) {
 			alert('{trans("You haven\'t selected any nodes!")}');
 			return;
 		}
 
-		var operation = parseInt(document.getElementById('operation').value);
+		$('#submit-button').hide();
+
+		var operation = parseInt($('#operation').val());
 		switch (operation) {
 			case 1:
 				xajax_connect_nodes(nodeids,
-					document.getElementById('device').value,
-					document.getElementById('linktype').value,
-					document.getElementById('linktechnology').value,
-					document.getElementById('linkspeed').value);
+					$('#device').val(), $('#linktype').val(),
+					$('#linktechnology').val(), $('#linkspeed').val());
+				break;
+			case 2:
+				xajax_assign_nodes(nodeids, $('#nodegroup').val());
+				break;
+			case 3:
+				xajax_unassign_nodes(nodeids, $('#nodegroup').val());
 				break;
 		}
 	}
 
-	function operation_finished()
-	{
-		operationFinished = true;
+	function operation_finished() {
+		$('#submit-button').show();
 	}
 
 	function change_linktype(linktype) {

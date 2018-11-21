@@ -1,106 +1,21 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 96%;">
+        <COL style="width: 1%;">
+    </COLGROUP>
     <THEAD>
-	<TR>
-		<TD width="1%" valign="top" NOWRAP>
-			<IMG src="img/time.gif" alt=""> <B>{trans("Time:")}</B>
-		</TD>
-		<TD width="1%" valign="top" NOWRAP>
-			<IMG src="img/desc.gif" alt=""> {trans("Type:")}
-		</TD>
-		<TD width="95%" valign="top" NOWRAP>
-			<IMG src="img/calendar.gif" alt=""> <B>{trans("Title:")}</B><BR>
-			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
-		</TD>
-		<TD width="1%" valign="top" NOWRAP>
-			<IMG src="img/users.gif" alt=""> {trans("User:")}
-		</TD>
-		<TD width="1%" NOWRAP valign="top" align="right">
-			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
-		</TD>
-		<TD width="1%" NOWRAP>
-		</TD>
-	</TR>
+        {include file="event/eventlistheader.html"}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=daylist loop=$daylist}
-	<TR>
-		<TD width="100%" colspan="6">
-                    <TABLE class="lmsbox">
-                        <THEAD>
-                            <TR>
-                                    <TD width="1%" nowrap colspan="2">
-                                            <IMG src="img/calendar.gif" alt="">
-                                            <B>{$daylist[daylist]|date_format:"%A"}</B>
-                                    </TD>
-                                    <TD width="96%">
-                                            <B>({$daylist[daylist]|date_format:"%x"})</B>
-                                    </TD>
-                                    <TD width="3%" colspan="3" align="right" nowrap>
-                                            <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-                                            <A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>
-                                    </TD>
-                            </TR>
-                        </THEAD>
-                        <TBODY>
-                        {if $counter%2 && $counter!=0}{cycle print=false}{/if}
-                        {assign var=counter value=0}
-                            {section name=eventlist loop=$eventlist}
-                            {if $eventlist[eventlist].date == $daylist[daylist]}
-                            {math equation="x+1" x=$counter assign=counter}
-                            <TR class="highlight {cycle}{if $eventlist[eventlist].closed} blend{/if}"  >
-                                <TD width="1%" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'" class="text-right valign-top nobr">
-                                        <IMG src="img/time.gif" alt="">
-                                        {math equation="floor(x/100)" x=$eventlist[eventlist].begintime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].begintime format="%02d"}
-                                        {if $eventlist[eventlist].begintime != $eventlist[eventlist].endtime}
-                                        - {math equation="floor(x/100)" x=$eventlist[eventlist].endtime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].endtime format="%02d"}
-                                        {/if}
-                                </TD>
-                                <TD width="1%" valign="top" align="center" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
-                                        {$_EVENTTYPES[$eventlist[eventlist].type]}
-                                </TD>
-                                <TD width="96%" valign="top" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
-                                        <IMG src="img/calendar.gif" alt=""> <B>{$eventlist[eventlist].title}</B><BR>
-                                        <IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}
-                                </TD>
-                                <TD width="1%" class="valign-top nobr">
-                                        {foreach item=user from=$eventlist[eventlist].userlist}
-                                                <A href="?m=userinfo&id={$user.id}">{$user.name|truncate:"25":"..."}</A><BR>
-                                        {/foreach}
-                                </TD>
-                                <TD width="1%" align="right" valign="top">
-                                        {if $eventlist[eventlist].customername}
-                                                <A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"40":"..."}</A>
-                                        {/if}
-                                </TD>
-                                <TD width="1%" align="right" nowrap>
-                                        {if $eventlist[eventlist].closed}
-                                        <A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"></A> 
-                                        {else}
-                                        <A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"></A> 
-                                        {/if}&nbsp;
-                                        <A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
-                                        <A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A> 
-                                </TD>
-                            </TR>
-                            {/if}
-                            {/section}
-                        </TBODY>
-                    </TABLE>
-                </TD>
-	</TR>
-	{sectionelse}
-	<TR>
-		<TD colspan="6" class="empty-table">
-			<p>{trans("No such events matching search criteria.")}</p>
-		</TD>
-	</TR>
-	{/section}
+        {include file="event/eventlistbox.html"}
     </TBODY>
 </TABLE>
+<H2>{trans("Total events:")} {count($eventlist)}</H2>
 {/block}

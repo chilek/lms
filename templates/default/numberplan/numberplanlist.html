@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -17,7 +17,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="8">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="scroller.html" loop=$numberplanlist}
 		</TD>
 	</TR>
@@ -51,8 +51,8 @@
 			{if $numberplanlist[numberplanlist].isdefault}{trans("yes")}{/if}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=numberplandel&amp;id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=numberplandel&amp;id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -66,7 +66,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="8">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="scroller.html" loop=$numberplanlist}
 		</TD>
 	</TR>

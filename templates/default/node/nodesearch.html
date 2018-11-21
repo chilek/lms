@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
@@ -27,6 +27,10 @@
 <INPUT TYPE="hidden" NAME="m" VALUE="nodesearch">
 </p>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
 	<THEAD>
 	<TR>
 		<TD colspan="2" class="bold">
@@ -36,43 +40,43 @@
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/node.gif" width="16" alt=""> {trans("Node name:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT TYPE="text" NAME="search[name]" {tip text="Enter node name or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/mac.gif" width="16" alt=""> {trans("MAC address:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT TYPE="text" NAME="search[mac]" {tip text="Enter MAC address or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/ip.gif" width="16" alt=""> {trans("IP address:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT TYPE="text" NAME="search[ipaddr]" {tip text="Enter IP address or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/home.gif" width="16" alt=""> {trans("Location:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT TYPE="text" NAME="search[location]" {tip text="Enter node location"}>
 		</TD>
 	</TR>
 {if !empty($states)}
 	<tr id="state">
-		<td style="width: 1%;" class="bold nobr">
+		<td class="bold nobr">
 			<IMG src="img/home.gif" width="16" alt=""> {trans("State")}:
 		</td>
-		<td style="width: 99%;">
+		<td>
 			<select id="state_sel" name="search[state]" onchange="change_selection(this)" {tip text="Select state"} style="width: 20%;">
 				<option value="0"></option>
 				{foreach from=$states item=item}
@@ -82,10 +86,10 @@
 		</td>
 	</tr>
 	<tr id="district"{if empty($districts)} style="display: none;"{/if}>
-		<td style="width: 1%;" class="bold nobr">
+		<td class="bold nobr">
 			<IMG src="img/home.gif" width="16" alt=""> {trans("District")}:
 		</td>
-		<td style="width: 99%;">
+		<td>
 			<select id="district_sel" name="search[district]" onchange="change_selection(this)" {tip text="Select district"} style="width: 20%;">
 				{if !$data.districtid}
 				<option value="0"></option>
@@ -97,10 +101,10 @@
 		</td>
 	</tr>
 	<tr id="borough"{if empty($boroughs)} style="display: none;"{/if}>
-		<td style="width: 1%;" class="bold nobr">
+		<td class="bold nobr">
 			<IMG src="img/home.gif" width="16" alt=""> {trans("Commune")}:
 		</td>
-		<td style="width: 99%;">
+		<td>
 			<select id="borough_sel" name="search[borough]" {tip text="Select commune"} style="width: 20%;">
 				{if !$data.boroughid}
 				<option value="0"></option>
@@ -113,24 +117,32 @@
 	</tr>
 {/if}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/info1.gif" width="16" alt=""> {trans("Description:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<INPUT TYPE="text" NAME="search[info]" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<td class="bold nobr">
+			<img src="img/netdev.gif"> {trans("Device:")}
+		</td>
+		<td>
+			<input type="text" name="search[netdev]" id="netdev" {tip text="Enter network device name or ip address"}>
+		</td>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
 		</TD>
-		<TD style="width: 99%;">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} checked{/if}><label for="operator0">{trans("AND")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} checked{/if}><label for="operator1">{trans("OR")}</label>
+		<TD>
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} checked{/if}><label for="operator0">{trans("and")}</label>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} checked{/if}><label for="operator1">{trans("or")}</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="2">
+		<TD class="buttons" colspan="2">
 			<A href="javascript:Search()" accesskey="s">{trans("Search")} <IMG src="img/search.gif" alt=""></A>
 			<A href="javascript:PrintList()">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
@@ -173,7 +185,12 @@ function update_selection(type, data, selected)
 	select.focus();
 }
 
-document.forms['nodesearch'].elements['search[name]'].focus();
+$(function() {
+	$('form[name="nodesearch"] [name="search[name]"]').focus();
+
+	new AutoSuggest(document.getElementById('nodesearch'),document.getElementById('netdev'),'?m=nodesearch&ajax=1&mode=netdev&what=',0);
+});
+
 //-->
 </SCRIPT>
 {/block}

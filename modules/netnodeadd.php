@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,23 +24,53 @@
  *  $Id$
  */
 
-if(isset($_POST['netnode']))
-{
-	$netnodedata = $_POST['netnode'];
+if ($api) {
+	if (!isset($_POST['in']))
+		die;
+	$netnodedata = json_decode(base64_decode($_POST['in']), true);
+} else {
+	$LMS->InitXajax();
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+	$SMARTY->assign('xajax', $LMS->RunXajax());
 
-	if($netnodedata['name'] == '')
-		$error['name'] = trans('Net node name is required!');
+	if (isset($_POST['netnode']))
+		$netnodedata = $_POST['netnode'];
+}
 
-	if($netnodedata['divisionid'] == '-1')
+
+if (isset($netnodedata)) {
+	if ($netnodedata['name'] == '')
+		$error['name'] = trans('Network node name is required!');
+
+	if ($api) {
+		if (isset($netnodedata['division'])) {
+			$division = $LMS->GetDivisionByName($netnodedata['division']);
+			if (empty($division))
+				$error['divisionid'] = trans('Division is required!');
+			else
+				$netnodedata['divisionid'] = $division['id'];
+		} else
+			$error['divisionid'] = trans('Division is required!');
+	} elseif ($netnodedata['divisionid'] == '-1')
 		$error['divisionid'] = trans('Division is required!');
 
-	if ($netnodedata['invprojectid'] == '-1') { // nowy projekt
-		if (!strlen(trim($netnodedata['projectname']))) {
-		 $error['projectname'] = trans('Project name is required');
-		}
-		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
-			array($netnodedata['projectname'], INV_PROJECT_SYSTEM)))
+	if (!strlen($netnodedata['projectid']) && !empty($netnodedata['project'])) {
+		$project = $LMS->GetProjectByName($netnodedata['project']);
+		if (empty($project)) {
+			$netnodedata['projectid'] = -1;
+		} else
+			$netnodedata['projectid'] = $project['id'];
+	}
+
+	if ($netnodedata['invprojectid'] == '-1') { // new investment project
+		if (!strlen(trim($netnodedata['projectname'])))
+			$error['projectname'] = trans('Project name is required');
+		if ($LMS->ProjectByNameExists($netnodedata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
+	}
+
+	if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
+		$error['location_zip'] = trans('Incorrect ZIP code!');
 	}
 
 	if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy
@@ -49,56 +79,42 @@ if(isset($_POST['netnode']))
 		}
 	}
 
-    if(!$error)
-    {
-
-        if (empty($netnodedata['teryt'])) {
-            $netnodedata['location_city'] = null;
-            $netnodedata['location_street'] = null;
-            $netnodedata['location_house'] = null;
-            $netnodedata['location_flat'] = null;
-        }
-
-	$ipi = $netnodedata['invprojectid'];
-	if ($ipi == '-1') {
-		$DB->BeginTrans();
-		$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-			array($netnodedata['projectname'], INV_PROJECT_REGULAR));
-		$ipi = $DB->GetLastInsertID('invprojects');
-		$DB->CommitTrans();
+	if (isset($netnodedata['terc']) && isset($netnodedata['simc']) && isset($netnodedata['ulic'])) {
+		$teryt = $LMS->TerytToLocation($netnodedata['terc'], $netnodedata['simc'], $netnodedata['ulic']);
+		$netnodedata['teryt'] = 1;
+		$netnodedata['location_state'] = $teryt['location_state'];
+		$netnodedata['location_state_name'] = $teryt['location_state_name'];
+		$netnodedata['location_city'] = $teryt['location_city'];
+		$netnodedata['location_city_name'] = $teryt['location_city_name'];
+		$netnodedata['location_street'] = $teryt['location_street'];
+		$netnodedata['location_street_name'] = $teryt['location_street_name'];
 	}
 
-	$args = array('name'=>$netnodedata['name'],
-		'type'=>$netnodedata['type'],
-		'status'=>$netnodedata['status'],
-		'location' => $netnodedata['location'],
-		'location_city' => $netnodedata['location_city'] ? $netnodedata['location_city'] : null,
-		'location_street' => $netnodedata['location_street'] ? $netnodedata['location_street'] : null,
-		'location_house' => $netnodedata['location_house'] ? $netnodedata['location_house'] : null,
-		'location_flat' => $netnodedata['location_flat'] ? $netnodedata['location_flat'] : null,
-		'longitude' => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : NULL,
-		'latitude' => !empty($netnodedata['latitude']) ? str_replace(',', '.', $netnodedata['latitude']) : NULL,
-		'ownership'=>$netnodedata['ownership'],
-		'coowner'=>$netnodedata['coowner'],
-		'uip'=>$netnodedata['uip'],
-		'miar'=>$netnodedata['miar'],
-		'divisionid' => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : NULL
-            );
+	if (intval($netnodedata['lastinspectiontime']) > time())
+		$error['lastinspectiontime'] = trans('Date from the future not allowed!');
 
-	if ($netnodedata['invprojectid'] == '-1' || intval($ipi)>0) {
-		$args['invprojectid'] = intval($ipi);
-		$fields = 'name,type,status,location,location_city,location_street,location_house,location_flat,longitude,latitude,ownership,coowner,uip,miar,divisionid,invprojectid';
-		$values = "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
-	} else {
-		$fields = 'name,type,status,location,location_city,location_street,location_house,location_flat,longitude,latitude,ownership,coowner,uip,miar,divisionid';
-		$values = "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
+	if (!$error) {
+		if ($netnodedata['projectid'] == -1)
+			$netnodedata['projectid'] = $LMS->AddProject($netnodedata);
+		elseif (empty($netnodedata['projectid']))
+			$netnodedata['projectid'] = null;
+
+		$netnodeid = $LMS->NetNodeAdd($netnodedata);
+
+		if ($api) {
+			if ($netnodeid) {
+				header('Content-Type: application/json');
+				echo json_encode(array('id' => $netnodeid));
+			}
+			die;
+		}
+
+		$SESSION->redirect('?m=netnodeinfo&id=' . $netnodeid);
+	} elseif ($api) {
+		header('Content-Type: application/json');
+		echo json_encode($error);
+		die;
 	}
-
-
-	$DB->Execute("INSERT INTO netnodes (".$fields.") VALUES (".$values.")",array_values($args));
-	$netnodeid = $DB->GetLastInsertID('netnodes');
-	$SESSION->redirect('?m=netnodeinfo&id='.$netnodeid);
-    }
 
 	$SMARTY->assign('error', $error);
 
@@ -106,19 +122,20 @@ if(isset($_POST['netnode']))
 	$netnodedata = array();
 	$netnodedata['uip'] = 0;
 	$netnodedata['miar'] = 0;
-	$netnodedata['invprojectid'] = '-2'; // brak projektu
+	$netnodedata['invprojectid'] = '-2'; // no investment project selected
 	$netnodedata['ownership'] = 0;
+	if (isset($_GET['customerid'])) {
+		$netnodedata['ownerid'] = $_GET['customerid'];
+		$netnodedata['ownership'] = 2;
+	}
 }
 
-$SMARTY->assign('netnode', $netnodedata);
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
-
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
-	array(INV_PROJECT_SYSTEM));
-
 $layout['pagetitle'] = trans('New Net Device Node');
-$SMARTY->assign('NNprojects',$nprojects);
 
-$SMARTY->display('netnode/netnodeadd.html');
+$SMARTY->assign('netnode'  , $netnodedata);
+$SMARTY->assign('divisions', $LMS->GetDivisions());
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
+
+$SMARTY->display('netnode/netnodemodify.html');
 
 ?>

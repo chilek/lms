@@ -1,0 +1,57 @@
+<!-- $Id$ -->
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
+		<TD class="bold">
+			<i class="lms-ui-icon-timetable"></i> {trans("Timetable assigned events:")}
+		</TD>
+		<TD class="text-right nobr">
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+				{button icon="add" label="Add"
+					onclick="location.href='?m=eventadd&ticketid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
+				{button icon="close" label="Close all"
+					onclick="location.href='?m=eventedit&action=close&ticketid={$ticket.ticketid}';"}
+			{/if}
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR id="eventpanel-{$layout.module}" style="display: none;">
+		<TD colspan="2">
+			<table class="lmsbox{if !$assignedevents}-inner{/if} lms-ui-background-cycle">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%; min-width:90px;">
+					<COL style="width: 95%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;" class="no-print">
+				</COLGROUP>
+				{if $assignedevents}
+				<THEAD class="">
+					{include file="event/eventlistheader.html"}
+				</THEAD>
+				{/if}
+				<TBODY>
+				{foreach $assignedevents as $event}
+					{include file="event/eventlistboxrow.html" overdue=1}
+				{foreachelse}
+					<TR>
+						<TD class="empty-table" colspan="6">
+							<p>{trans("There are no events in timetable.")}</p>
+						</TD>
+					</TR>
+				{/foreach}
+				</TBODY>
+			</table>
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT type="text/javascript">
+	if (getCookie('eventpanel-{$layout.module}') == '1')
+		document.getElementById('eventpanel-{$layout.module}').style.display = '';
+</SCRIPT>

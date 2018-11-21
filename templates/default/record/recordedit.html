@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <H1>{$layout.pagetitle}</H1>
 <FORM name="record" method="POST" action="{if $layout.module == 'recordedit'}?m=recordedit&id={$record.id}{else}?m=recordadd&d={$record.domain_id}{/if}">
@@ -102,7 +102,7 @@
 	<TR id="email" style="display: none">
                 <TD width="1%"><IMG src="img/mail.gif" alt=""></TD>
 	        <TD width="1%" nowrap>{trans("E-mail address:")}</TD>
-		<TD width="98%"><input type="text" value="{$record.email|escape}" name="record[email]" size="40" {tip text="Enter e-mail address" trigger="email"}></TD>
+		<TD width="98%"><input type="email" value="{$record.email|escape}" name="record[email]" size="40" {tip text="Enter e-mail address" trigger="email"}></TD>
 	</TD>
 	<TR id="serial" style="display: none">
                 <TD width="1%"><IMG src="img/serialnumber.gif" alt=""></TD>
@@ -219,9 +219,11 @@ function change_rec_type(select)
 	}
 }
 
-var elem = document.forms['record'].elements['record[type]'];
-elem.focus();
-change_rec_type(elem);
+$(function() {
+	var elem = $('form[name="record"] [name="record[type]"]');
+	elem.focus();
+	change_rec_type(elem[0]);
+});
 //-->
 </SCRIPT>
 {/block}

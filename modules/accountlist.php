@@ -26,7 +26,7 @@
 
 function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NULL, $domain='')
 {
-	global $DB;
+	global $DB, $ACCOUNTTYPES;
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -54,9 +54,12 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 		break;
 	}
 
+	$quota_fields = array();
+	foreach ($ACCOUNTTYPES as $typeidx => $atype)
+		$quota_fields[] = 'p.quota_' . $atype['alias'];
 	$list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin, 
-			p.expdate, d.name AS domain, p.type, 
-			p.quota_www, p.quota_sh, p.quota_mail, p.quota_ftp, p.quota_sql, '
+			p.expdate, d.name AS domain, p.type, '
+			. implode(', ', $quota_fields) . ', '
 			.$DB->Concat('c.lastname', "' '",'c.name').' AS customername 
 		FROM passwd p
 		LEFT JOIN customers c ON c.id = p.ownerid 
@@ -69,7 +72,7 @@ function GetAccountList($order='login,asc', $customer=NULL, $type=NULL, $kind=NU
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
-	$list['total'] = sizeof($list);
+	$list['total'] = empty($list) ? 0 : count($list);
 	$list['order'] = $order;
 	$list['type'] = $type;
 	$list['kind'] = $kind;

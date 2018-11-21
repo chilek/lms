@@ -25,8 +25,6 @@
  */
 
 class LMSEzpdfReceipt extends LMSDocument {
-	protected $id;
-
 	public function __construct($title, $pagesize = 'A4', $orientation = 'portrait') {
 		parent::__construct('LMSEzpdfBackend', $title, $pagesize, $orientation);
 	}
@@ -41,7 +39,10 @@ class LMSEzpdfReceipt extends LMSDocument {
 //		$this->backend->text_align_left($x + 2,$y + 2,$font_size - 4, trans('Stamp:'));
 		$y = $this->backend->text_wrap($x + 2, $y, 170, $font_size - 2, '<b>' . $this->data['d_name'] . '</b>', NULL);
 		$y = $this->backend->text_wrap($x + 2, $y, 170, $font_size - 2, '<b>' . $this->data['d_address'] . '</b>', NULL);
-		$this->backend->text_wrap($x + 2, $y, 170, $font_size - 2,'<b>' . $this->data['d_zip'] . ' ' . $this->data['d_city'] . '</b>', NULL);
+		$y = $this->backend->text_wrap($x + 2, $y, 170, $font_size - 2,'<b>' . $this->data['d_zip'] . ' ' . $this->data['d_city'] . '</b>', NULL);
+		if (!empty($this->data['countryid']) && !empty($this->data['d_countryid'])
+			&& $this->data['countryid'] != $this->data['d_countryid'])
+			$this->backend->text_wrap($x + 2, $y, 170, $font_size - 2,'<b>' . $this->data['d_country'] . '</b>', NULL);
 		$y = $yy - $font_size;
 
 		if($this->data['type'] == 'out')
@@ -90,7 +91,13 @@ class LMSEzpdfReceipt extends LMSDocument {
 		else
 			$this->backend->text_align_left($x+2,$y+2,$font_size-4, trans('From who:'));
 		$y = $this->backend->text_wrap($x+40,$y-4,240,$font_size-2,'<b>' . $this->data['name'] . '</b>', NULL);
-		$y = $this->backend->text_wrap($x+40,$y,240,$font_size-2,'<b>' . $this->data['zip'] . ' ' . $this->data['city'] . ' ' . $this->data['address'] . '</b>', NULL);
+		if (!empty($this->data['countryid']) && !empty($this->data['d_countryid'])
+			&& $this->data['countryid'] != $this->data['d_countryid'])
+			$country = ', ' . $this->data['country'];
+		else
+			$country = '';
+		$y = $this->backend->text_wrap($x+2,$y,240,$font_size-2,'<b>' . $this->data['zip'] . ' ' . $this->data['city']
+			. ', ' . $this->data['address'] . $country . '</b>', NULL);
 
 		$y += $font_size/2;
 		$this->backend->line($x, $yy, $x, $y);
@@ -191,8 +198,7 @@ class LMSEzpdfReceipt extends LMSDocument {
 		$y -= 16;
 
 		$this->backend->text_align_left($x+2,$y,8, trans('In words:'));
-		$y = $this->backend->text_wrap($x+40,$y,300,$font_size-2, trans('$a dollars $b cents',
-			to_words(floor($this->data['total'])), to_words($this->data['totalg'])),'');
+		$y = $this->backend->text_wrap($x+40,$y,300,$font_size-2, moneyf_in_words($this->data['total']), '');
 		$y -= 8;
 
 		$y += $font_size/2;
@@ -207,20 +213,17 @@ class LMSEzpdfReceipt extends LMSDocument {
 	public function Draw($data) {
 		parent::Draw($data);
 
-		$top = 800;
-		$y = $this->receipt_header(80, $top);
-		$y = $this->receipt_buyer(80, $y);
-		$y = $this->receipt_data(80, $y);
-		$y = $this->receipt_footer(80, $y);
-		if (!$this->data['which']) {
-			$y -= 20;
+		$y = 800;
+
+		foreach ($this->data['which'] as $which) {
 			$y = $this->receipt_header(80, $y);
 			$y = $this->receipt_buyer(80, $y);
 			$y = $this->receipt_data(80, $y);
 			$y = $this->receipt_footer(80, $y);
+			$y -= 20;
 		}
 		if (!$this->data['last'])
-			$this->id = $this->backend->newPage(1, $this->id);
+			$this->NewPage();
 	}
 }
 

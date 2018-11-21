@@ -152,9 +152,9 @@ my $dbq = $dbase->prepare("
     JOIN cash ON customers.id = cash.customerid
     LEFT JOIN documents ON cash.docid=documents.id
     WHERE $filter
-    GROUP BY customers.id, lastname, name
+    GROUP BY customers.id, lastname, customers.name
     HAVING SUM(cash.value) < $limit
-    ORDER BY lastname, name
+    ORDER BY lastname, customers.name
 ");
 
 $dbq->execute();

@@ -57,11 +57,14 @@ function update_netlink_properties($id, $devid, $link) {
 		$LMS->SetNodeLinkType($devid, $link);
 
 	switch ($link['type']) {
-		case 0: case 2:
-			$bitmap = 'netdev_takenports.gif';
+		case LINKTYPE_WIRE:
+			$icon = 'lms-ui-icon-wired';
 			break;
-		case 1:
-			$bitmap = 'wireless.gif';
+		case LINKTYPE_FIBER:
+			$icon = 'lms-ui-icon-fiber';
+			break;
+		case LINKTYPE_WIRELESS:
+			$icon = 'lms-ui-icon-wireless';
 	}
 
 	if ($isnetlink) {
@@ -70,25 +73,25 @@ function update_netlink_properties($id, $devid, $link) {
 	} else
 		$radiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['radiosector']));
 
-	$content1 = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
+	$tech_content = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
 			. (!$isnetlink ? ($radiosectorname ? " ($radiosectorname)" : '')
 				: ($srcradiosectorname || $dstradiosectorname ? ' ('
 					. ($srcradiosectorname ? $srcradiosectorname : '-')
 					. '/' . ($dstradiosectorname ? $dstradiosectorname : '-') . ')' : ''))
-			: '')
-		. '<br>' . $LINKSPEEDS[$link['speed']];
+			: '');
 
-	$content2 = "<IMG src=\"img/" . $bitmap
-			. "\" alt=\"[ " . trans("Change connection properties") . " ]\" title=\"[ " . trans("Change connection properties") . " ]\""
-			. " onmouseover=\"popup('<span class=&quot;nobr;&quot;>" . trans("Link type:") . " " . $LINKTYPES[$link['type']] . "<br>"
-			. (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . " " . $radiosectorname . "<br>" : '')
-				: ($srcradiosectorname ? trans("Radio sector:") . " " . $srcradiosectorname . "<br>" : '')
-					. ($dstradiosectorname ? trans("Destination radio sector:") . " " . $dstradiosectorname . "<br>" : ''))
-			. ($link['technology'] ? trans("Link technology:") . " " . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . "<br>" : '')
-			. trans("Link speed:") . " " . $LINKSPEEDS[$link['speed']]
-			. "</span>');\" onmouseout=\"pophide();\">";
+	$speed_content = $LINKSPEEDS[$link['speed']];
 
-	$result->call('update_netlink_info', $content1, $content2);
+	$port_content = '<i class="' . $icon . '" 
+			 title="<span class=&quot;nobr;&quot;>' . trans("Link type:") . ' ' . $LINKTYPES[$link['type']] . '<br>'
+			. (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . ' ' . $radiosectorname . '<br>' : '')
+				: ($srcradiosectorname ? trans("Radio sector:") . ' ' . $srcradiosectorname . '<br>' : '')
+					. ($dstradiosectorname ? trans("Destination radio sector:") . ' ' . $dstradiosectorname . '<br>' : ''))
+			. ($link['technology'] ? trans("Link technology:") . ' ' . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . '<br>' : '')
+			. trans("Link speed:") . ' ' . $LINKSPEEDS[$link['speed']]
+			. '</span>"></i>';
+
+	$result->call('update_netlink_info', $tech_content, $speed_content, $port_content);
 
 	return $result;
 }

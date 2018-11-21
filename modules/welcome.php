@@ -55,6 +55,8 @@ if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkCon
 if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')) {
 	$SMARTY->assign('customerstats', $LMS->CustomerStats());
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
+	$documentsnotapproved=$DB->GetOne('SELECT COUNT(id) AS sum FROM documents WHERE type < 0 AND closed = 0');
+	$SMARTY->assign('documentsnotapproved', ( $documentsnotapproved ? $documentsnotapproved : 0));
 
 	 if (file_exists(ConfigHelper::getConfig('directories.userpanel_dir') . DIRECTORY_SEPARATOR . 'index.php')) {
 		$customerschanges=$DB->GetOne('SELECT COUNT(id) FROM up_info_changes');
@@ -64,6 +66,7 @@ if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkCon
 
 $layout['plugins'] = $plugin_manager->getAllPluginInfo();
 
+$SMARTY->assign('welcome_sortable_order', json_encode($SESSION->get_persistent_setting('welcome-sortable-order')));
 $SMARTY->display('welcome/welcome.html');
 
 ?>

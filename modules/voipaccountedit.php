@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(!$LMS->VoipAccountExists($_GET['id']))
+if (!$LMS->VoipAccountExists($_GET['id']))
 	if(isset($_GET['ownerid']))
 		header('Location: ?m=customerinfo&id='.$_GET['ownerid']);
 	else
@@ -34,32 +34,31 @@ $voipaccountid = intval($_GET['id']);
 $voipaccountinfo = $LMS->GetVoipAccount($voipaccountid);
 $customerid = $voipaccountinfo['ownerid'];
 
-if(!isset($_GET['ownerid']))
+if (!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto') . '&ownerid='.$customerid);
 else
 	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Voip Account Edit: $a', $voipaccountinfo['login']);
 
-if(isset($_POST['voipaccountedit']))
-{
+if (isset($_POST['voipaccountedit'])) {
 	$voipaccountedit = $_POST['voipaccountedit'];
-	
-	foreach($voipaccountedit as $key => $value) {
+	//$voipaccountedit['address_id'] = $voipaccountinfo['address_id'];
+
+	foreach ($voipaccountedit as $key => $value) {
 		if (!is_array($value)) {
 			$voipaccountedit[$key] = trim($value);
 		}
 	}
-	
-	if($voipaccountedit['login']=='')
+
+	if ($voipaccountedit['login']=='')
 		$error['login'] = trans('Voip account login is required!');
-	else
-	{
+	else {
 		$loginids = $LMS->GetVoipAccountIDByLogin($voipaccountedit['login']);
 
 		$foundid = 0;
-		if(isset($loginids))
-			foreach($loginids as $loginid)
+		if (isset($loginids))
+			foreach ($loginids as $loginid)
 			{
 				$foundid = ($loginid['id'] == $voipaccountedit['id']);
 				if($foundid)
@@ -67,91 +66,96 @@ if(isset($_POST['voipaccountedit']))
 				else
 					$error['login'] = trans('Specified login is in use!');
 			}
-/*		if($foundid)
-		{
-			$phoneid = $LMS->GetVoipAccountIDByPhone($voipaccountedit['phone']);
-			if(isset($phoneid) && $phoneid != $foundid)
-				$error['login'] = trans('Specified login is in use!');
-		}
-*/
-
 	}
-	if(!$error['login'])
-		if(!preg_match('/^[_a-z0-9-]+$/i', $voipaccountedit['login']))
+
+	if (!$error['login'])
+		if (!preg_match('/^[_a-z0-9-]+$/i', $voipaccountedit['login']))
 			$error['login'] = trans('Specified login contains forbidden characters!');
-		elseif(strlen($voipaccountedit['login'])>32)
+		elseif (strlen($voipaccountedit['login'])>32)
 			$error['login'] = trans('Voip account login is too long (max.32 characters)!');
 
-	if($voipaccountedit['passwd']=='')
+	if ($voipaccountedit['passwd']=='')
 		$error['passwd'] = trans('Voip account password is required!');
-	elseif(strlen($voipaccountedit['passwd']) > 32)
+	elseif (strlen($voipaccountedit['passwd']) > 32)
 		$error['passwd'] = trans('Voip account password is too long (max.32 characters)!');
-	elseif(!preg_match('/^[_a-z0-9-@]+$/i', $voipaccountedit['passwd']))
-		$error['passwd'] = trans('Specified password contains forbidden characters!');		
+	elseif (!preg_match('/^[_a-z0-9-@%]+$/i', $voipaccountedit['passwd']))
+		$error['passwd'] = trans('Specified password contains forbidden characters!');
 
-	if($voipaccountedit['phone']=='')
-		$error['phone'] = trans('Voip account phone number is required!');
-	elseif(strlen($voipaccountedit['phone']) > 32)
-		$error['phone'] = trans('Voip account phone number is too long (max.32 characters)!');
-	elseif($LMS->GetVoipAccountIDByPhone($voipaccountedit['phone']) && $LMS->GetVoipAccountIDByPhone($voipaccountedit['phone']) != $voipaccountedit['id'])
-		$error['phone'] = trans('Specified phone is in use!');
-	elseif(!preg_match('/^[0-9]+$/', $voipaccountedit['phone']))
-		$error['phone'] = trans('Specified phone number contains forbidden characters or is too short!');
-
-	if(!$LMS->CustomerExists($voipaccountedit['ownerid']))
-		$error['customer'] = trans('You have to select owner!');
-	else
-	{
-		$status = $LMS->GetCustomerStatus($voipaccountedit['ownerid']);
-		if($status == 1) // unknown (interested)
-			$error['customer'] = trans('Selected customer is not connected!');
-		elseif($status == 2) // awaiting
-	                $error['customer'] = trans('Voip account owner is not connected!');
+	foreach ($voipaccountedit['phone'] as $k => $phone) {
+		if (!strlen($phone))
+			$error['phone'.$k] = trans('Voip account phone number is required!');
+		elseif (strlen($phone) > 32)
+			$error['phone'.$k] = trans('Voip account phone number is too long (max.32 characters)!');
+		elseif (($accountid = $LMS->GetVoipAccountIDByPhone($phone)) > 0 && $accountid != $voipaccountedit['id'])
+			$error['phone'.$k] = trans('Specified phone is in use!');
+		elseif (!preg_match('/^C?[0-9]+$/', $phone))
+			$error['phone'.$k] = trans('Specified phone number contains forbidden characters!');
 	}
 
-	$voipaccountinfo['login'] = $voipaccountedit['login'];
-	$voipaccountinfo['passwd'] = $voipaccountedit['passwd'];
-	$voipaccountinfo['phone'] = $voipaccountedit['phone'];
-	$voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
-	$voipaccountinfo['location'] = $voipaccountedit['location'];
-	$voipaccountinfo['location_city'] = $voipaccountedit['location_city'];
-	$voipaccountinfo['location_street'] = $voipaccountedit['location_street'];
-	$voipaccountinfo['location_house'] = $voipaccountedit['location_house'];
-	$voipaccountinfo['location_flat'] = $voipaccountedit['location_flat'];
+	if (!$LMS->CustomerExists($voipaccountedit['ownerid']))
+		$error['customer'] = trans('You have to select owner!');
+	else {
+		$status = $LMS->GetCustomerStatus($voipaccountedit['ownerid']);
+		if ($status == 1) // unknown (interested)
+			$error['customer'] = trans('Selected customer is not connected!');
+		elseif ($status == 2) // awaiting
+	        $error['customer'] = trans('Voip account owner is not connected!');
+	}
 
-        $hook_data = $plugin_manager->executeHook(
-            'voipaccountedit_before_submit',
-            array(
-                'voipaccountedit' => $voipaccountedit,
-                'error' => $error
-            )
-        );
-        $voipaccountedit = $hook_data['voipaccountedit'];
-        $error = $hook_data['error'];
-        
-	if(!$error)
-	{
-		if (empty($voipaccountedit['teryt'])) {
-			$voipaccountedit['location_city'] = null;
-			$voipaccountedit['location_street'] = null;
-			$voipaccountedit['location_house'] = null;
-			$voipaccountedit['location_flat'] = null;
-		}
+	$flags = 0;
+	if (!empty($voipaccountedit['admin_record_flag']))
+		$flags |= CALL_FLAG_ADMIN_RECORDING;
 
+    if (!empty($voipaccountedit['customer_record_flag']))
+		$flags |= CALL_FLAG_CUSTOMER_RECORDING;
+
+	if (ConfigHelper::checkPrivilege('superuser')) {
+		$voipaccountinfo['balance'] = $voipaccountedit['balance'];
+		$voipaccountinfo['cost_limit'] = (strlen($voipaccountedit['cost_limit'])) ? $voipaccountedit['cost_limit'] : NULL;
+	} else {
+		$voipaccountedit['balance'] = $voipaccountinfo['balance'];
+		$voipaccountedit['cost_limit'] = $voipaccountinfo['cost_limit'];
+	}
+
+    $voipaccountinfo['flags']   = $voipaccountedit['flags'] = $flags;
+    $voipaccountinfo['login']   = $voipaccountedit['login'];
+    $voipaccountinfo['passwd']  = $voipaccountedit['passwd'];
+    $voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
+
+    foreach ($voipaccountedit['phone'] as $k=>$v)
+        $voipaccountinfo['phones'][$k] = array('phone'=>$v);
+
+    // check if selected address belongs to customer
+    if ( $voipaccountedit['address_id'] != -1 && !$LMS->checkCustomerAddress($voipaccountedit['address_id'], $voipaccountedit['ownerid']) ) {
+        $error['address_id'] = trans('Selected address was not assigned to customer.');
+        $voipaccountedit['address_id'] = null;
+    }
+
+    $hook_data = $plugin_manager->executeHook(
+        'voipaccountedit_before_submit',
+        array(
+            'voipaccountedit' => $voipaccountedit,
+            'error' => $error
+        )
+    );
+
+    $voipaccountedit = $hook_data['voipaccountedit'];
+    $error = $hook_data['error'];
+
+	if (!$error) {
 		$LMS->VoipAccountUpdate($voipaccountedit);
 		$SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountedit['id']);
 		die;
 	}
-} else
-	if ($voipaccountinfo['location_city'] && $voipaccountinfo['location_street'])
-		$voipaccountinfo['teryt'] = 1;
+}
 
-$customers = $LMS->GetCustomerNames();
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 include(MODULES_DIR.'/customer.inc.php');
 
 $hook_data = $plugin_manager->executeHook(
-    'voipaccountedit_before_display', 
+    'voipaccountedit_before_display',
     array(
         'voipaccountinfo' => $voipaccountinfo,
         'smarty' => $SMARTY,
@@ -160,10 +164,13 @@ $hook_data = $plugin_manager->executeHook(
 
 $voipaccountinfo = $hook_data['voipaccountinfo'];
 
-$SMARTY->assign('customervoipaccounts',$customervoipaccounts);
-$SMARTY->assign('error',$error);
-$SMARTY->assign('voipaccountinfo',$voipaccountinfo);
-$SMARTY->assign('customers',$customers);
+$SMARTY->assign('pool_list'           , $DB->GetAll("SELECT id,name FROM voip_pool_numbers;"));
+$SMARTY->assign('customervoipaccounts', $customervoipaccounts);
+$SMARTY->assign('error'               , $error);
+$SMARTY->assign('voipaccountinfo'     , $voipaccountinfo);
+$SMARTY->assign('customers'           , $customers);
+$SMARTY->assign('customer_addresses'  , $LMS->getCustomerAddresses($voipaccountinfo['ownerid']) );
+
 $SMARTY->display('voipaccount/voipaccountedit.html');
 
 ?>

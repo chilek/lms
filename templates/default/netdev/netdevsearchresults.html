@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -28,7 +28,7 @@
     <TBODY>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="4" WIDTH="100%">
+		<TD class="lms-ui-pagination" colspan="4" WIDTH="100%">
 			{include file="scroller.html" loop=$netdevlist adlink="&search=1"}
 		</TD>
 	</TR>
@@ -48,9 +48,9 @@
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdevlist[netdevlist].serialnumber}
 		</TD>
 		<TD WIDTH="1%" align="right" class="nobr">
-			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdevlist[netdevlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
@@ -65,7 +65,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="4" WIDTH="100%">
+		<TD class="lms-ui-pagination" colspan="4" WIDTH="100%">
 			{include file="scroller.html" loop=$netdevlist adlink="&search=1"}
 		</TD>
 	</TR>

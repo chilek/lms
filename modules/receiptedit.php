@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,15 +27,15 @@
 if(isset($_GET['id']))
 {
 	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($_GET['id']));
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<256)
+	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<256)
 	{
 	        $SMARTY->display('noaccess.html');
 	        $SESSION->close();
 	        die;
 	}			
 
-	$receipt = $DB->GetRow('SELECT documents.*, template 
-			    FROM documents 
+	$receipt = $DB->GetRow('SELECT documents.*, numberplans.template
+			    FROM documents
 			    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			    WHERE documents.id = ? AND type = ?', array($_GET['id'], DOC_RECEIPT));
 
@@ -140,7 +140,7 @@ if(isset($_GET['id']))
 // receipt positions adding with double click protection
 function additem(&$content, $item)
 {
-        for($i=0, $x=sizeof($content); $i<$x; $i++)
+        for($i=0, $x=count($content); $i<$x; $i++)
 	        if($content[$i]['value'] == $item['value']
 			&& $content[$i]['description'] == $item['description']
 			&& $content[$i]['posuid'] > $item['posuid'] - 1)
@@ -157,8 +157,13 @@ $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
 $SESSION->restore('receiptediterror', $error);
 
-$receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], 
-			    isset($receipt['extnumber']) ? $receipt['extnumber'] : '');
+$receipt['titlenumber'] = docnumber(array(
+	'number' => $receipt['number'],
+	'template' => $receipt['template'],
+	'cdate' => $receipt['cdate'],
+	'ext_num' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
+	'customerid' => $receipt['customerid'],
+));
 
 if($receipt['type']=='in')
 	$layout['pagetitle'] = trans('Cash-in Receipt Edit: $a', $receipt['titlenumber']);
@@ -182,7 +187,7 @@ switch($action)
 	break;
 	case 'deletepos':
 
-		if(sizeof($contents))
+		if(count($contents))
 			foreach($contents as $idx => $row)
 				if($row['posuid'] == $_GET['posuid']) 
 					unset($contents[$idx]);
@@ -253,13 +258,24 @@ switch($action)
 			$receipt['cdate'] = $oldcdate;
 			
 		if(!$receipt['number'])
-			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_RECEIPT,
+				'planid' => $receipt['numberplanid'],
+				'cdate' => $receipt['cdate'],
+				'customerid' => $receipt['customerid'],
+			));
 		else
 		{
 			if(!preg_match('/^[0-9]+$/', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
 			elseif($receipt['number']!=$oldnumber)
-				if($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+				if($LMS->DocumentExists(array(
+						'number' => $receipt['number'],
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+						'customerid' => $receipt['customerid'],
+					)))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
 
@@ -361,26 +377,28 @@ switch($action)
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
 			if ($SYSLOG) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $receipt['id'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+					SYSLOG::RES_DOC => $receipt['id'],
+					SYSLOG::RES_CUST => $customer['id'],
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args,
-					array_keys($args));
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
 			}
 
-			$fullnumber = docnumber($receipt['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				$receipt['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				'cdate' => $receipt['cdate'],
+				'customerid' => $customer['id'],
+			));
 
 			// re-add receipt 
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
 				'extnumber' => $receipt['extnumber'] ? $receipt['extnumber'] : '',
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $receipt['numberplanid'],
+				SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
 				'cdate' => $receipt['cdate'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+				SYSLOG::RES_CUST => $customer['id'],
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				'name' => $customer['customername'],
 				'address' => $customer['address'],
 				'zip' => $customer['zip'],
@@ -396,12 +414,9 @@ switch($action)
 			$rid = $DB->GetLastInsertId('documents');
 
 			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $rid;
-				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+				$args[SYSLOG::RES_DOC] = $rid;
+				unset($args[SYSLOG::RES_USER]);
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args);
 			}
 
 			// delete old receipt content and assignments
@@ -409,27 +424,21 @@ switch($action)
 				$items = $DB->GetAll('SELECT itemid, regid FROM receiptcontents WHERE docid = ?', array($receipt['id']));
 				foreach ($items as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $receipt['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $item['regid'],
+						SYSLOG::RES_DOC => $receipt['id'],
+						SYSLOG::RES_CUST => $customer['id'],
+						SYSLOG::RES_CASHREG => $item['regid'],
 						'itemid' => $item['itemid'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG]));
+					$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
 				}
 				$items = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($receipt['id']));
 				foreach ($items as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $receipt['id'],
+						SYSLOG::RES_CASH => $item,
+						SYSLOG::RES_CUST => $customer['id'],
+						SYSLOG::RES_DOC => $receipt['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 			}
 			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
@@ -445,41 +454,35 @@ switch($action)
 					$value = str_replace(',', '.', $item['value'] * -1);
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $rid,
+					SYSLOG::RES_DOC => $rid,
 					'itemid' => $iid,
 					'value' => $value,
 					'description' => $item['description'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $receipt['regid'],
+					SYSLOG::RES_CASHREG => $receipt['regid'],
 				);
 				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 						VALUES(?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_ADD, $args);
 				}
 
 				$args = array(
 					'type' => 1,
 					'time' => $receipt['cdate'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $rid,
+					SYSLOG::RES_DOC => $rid,
 					'itemid' => $iid,
 					'value' => $value,
 					'comment' => $item['description'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] =>$customer['id']
+					SYSLOG::RES_USER => Auth::GetCurrentUser(),
+					SYSLOG::RES_CUST => $customer['id']
 				);
 				$DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid, customerid)
 						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH]] = $DB->GetLastInsertID('cash');
-					unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]));
+					$args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
+					unset($args[SYSLOG::RES_USER]);
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -492,22 +495,23 @@ switch($action)
 			// delete old receipt 
 			$DB->Execute('DELETE FROM documents WHERE id = ?', array($receipt['id']));
 			if ($SYSLOG) {
-				$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $receipt['id']);
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args,
-					array_keys($args));
+				$args = array(SYSLOG::RES_DOC => $receipt['id']);
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
 			}
 
-			$fullnumber = docnumber($receipt['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				$receipt['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				'cdate' => $receipt['cdate'],
+			));
 
 			$args = array(
 				'type' => DOC_RECEIPT,
 				'number' => $receipt['number'],
 				'extnumber' => $receipt['extnumber'] ? $receipt['extnumber'] : '',
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $receipt['numberplanid'],
+				SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
 				'cdate' => $receipt['cdate'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 				'closed' => $receipt['closed'],
 				'fullnumber' => $fullnumber,
@@ -520,11 +524,9 @@ switch($action)
 			$rid = $DB->GetLastInsertId('documents');
 
 			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $rid;
-				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+				$args[SYSLOG::RES_DOC] = $rid;
+				unset($args[SYSLOG::RES_USER]);
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args);
 			}
 
 
@@ -533,23 +535,19 @@ switch($action)
 				$items = $DB->GetAll('SELECT itemid, regid FROM receiptcontents WHERE docid = ?', array($receipt['id']));
 				foreach ($items as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $receipt['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $item['regid'],
+						SYSLOG::RES_DOC => $receipt['id'],
+						SYSLOG::RES_CASHREG => $item['regid'],
 						'itemid' => $item['itemid'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG]));
+					$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
 				}
 				$items = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($receipt['id']));
 				foreach ($items as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $receipt['id'],
+						SYSLOG::RES_CASH => $item,
+						SYSLOG::RES_DOC => $receipt['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 			}
 			$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($receipt['id']));
@@ -565,36 +563,32 @@ switch($action)
 					$value = str_replace(',', '.', $item['value'] * -1);
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $rid,
+					SYSLOG::RES_DOC => $rid,
 					'itemid' => $iid,
 					'value' => $value,
 					'description' => $item['description'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $receipt['regid'],
+					SYSLOG::RES_CASHREG => $receipt['regid'],
 				);
 				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 						VALUES(?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG)
-					$SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG]));
+					$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_ADD, $args);
 
 				$args = array(
 					'type' => 1,
 					'time' => $receipt['cdate'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $rid,
+					SYSLOG::RES_DOC => $rid,
 					'itemid' => $iid,
 					'value' => $value,
 					'comment' => $item['description'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+					SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				);
 				$DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid)
 						VALUES(?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH]] = $DB->GetLastInsertID('cash');
-					unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]));
+					$args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
+					unset($args[SYSLOG::RES_USER]);
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -631,7 +625,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 
 $SMARTY->assign('cashreglist', $cashreglist);
-$SMARTY->assign('cashregcount', sizeof($cashreglist));
+$SMARTY->assign('cashregcount', count($cashreglist));
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);

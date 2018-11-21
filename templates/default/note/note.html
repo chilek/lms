@@ -9,6 +9,9 @@
 <H2 align="center" class="hdf">
 {number number=$note.number template=$note.template time=$note.cdate assign=number}
 <B>{t a=$number}Debit Note No. $a{/t}</B>
+{if $note.dontpublish}
+<BR><B>{trans("NO ACCOUNTANT DOCUMENT")}</B>
+{/if}
 </H2>
 <BR>
 
@@ -82,7 +85,7 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 			{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 				{$note.value|string_format:"%d"|to_words:0:"":1} {$note.valuep|string_format:"%02d"}/100
 			{else}
-				{t a=$note.value|string_format:"%d"|to_words b=$note.valuep|to_words}$a dollars $b cents{/t}
+				{moneyf_in_words($note.value+($note.valuep/100))}
 			{/if}
 		</TD>
 	</TR>
@@ -107,12 +110,13 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 
 <!-- The Other Page of Invoice customerbalancelist + customerpin -->
 <!-- insert page break here and buy auto-duplex printer :p -->
-
+{if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.customer_credentials', true)))}
 {if $note.customerpin}
 	<BR><BR>
 	<B>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}</B><BR>
 	PIN: <CODE>{$note.customerpin|string_format:"%04d"}</CODE>
 	<BR><BR>
+{/if}
 {/if}
 
 {* 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,7 +31,7 @@ if ($kind == 2)
 		COALESCE(SUM(cash.value), 0.00) AS balance
 		FROM customerview c 
 		LEFT JOIN cash ON (c.id = cash.customerid)
-		LEFT JOIN divisions d ON (d.id = c.divisionid)
+		LEFT JOIN vdivisions d ON (d.id = c.divisionid)
 		WHERE deleted = 0'
 		. ($customer ? ' AND c.id = '.$customer : '')
 		. ($group ?
@@ -69,13 +69,17 @@ if ($kind == 2)
 else
 	$document = new LMSEzpdfMipTransferForm(trans('Form of Cash Transfer'), 'A4', 'portrait');
 
-$count = sizeof($list);
+$count = count($list);
 $i = 0;
 
 foreach ($list as $row) {
 	if ($kind == 1) {
 		$row = $LMS->GetInvoiceContent($row);
-		$row['t_number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+		$row['t_number'] = docnumber(array(
+			'number' => $row['number'],
+			'template' => $row['template'],
+			'cdate' => $row['cdate'],
+		));
 	}
 	$i++;
 	$row['last'] = ($i == $count);

@@ -35,12 +35,12 @@ class LMSHtmlInvoice extends LMSHtmlDocument {
 			$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
 		else
 			$template_file = ConfigHelper::getConfig('invoices.template_file');
-		if (!$this->smarty->templateExists($template_file))
+		if (!$this->smarty->templateExists('file:' . $template_file))
 			$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
 		$this->smarty->assign('type', $this->data['type']);
 		$this->smarty->assign('duplicate', $this->data['type'] == trans('DUPLICATE'));
 		$this->smarty->assign('invoice', $this->data);
-		$this->contents .= $this->smarty->fetch($template_file);
+		$this->contents .= $this->smarty->fetch('file:' . $template_file);
 	}
 }
 

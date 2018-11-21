@@ -33,7 +33,7 @@ foreach($typelist as $idx => $name)
 if ($SESSION->is_set('dtlp') && !isset($_GET['page']))
 	$SESSION->restore('dtlp', $_GET['page']);
 
-$listdata['total'] = sizeof($typelist);
+$listdata['total'] = count($typelist);
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = ConfigHelper::getConfig('phpui.documenttypes_pagelimit', $listdata['total']);

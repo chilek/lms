@@ -1,9 +1,8 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <script type="text/javascript">
 <!--
 	function saveheader()
@@ -38,12 +37,28 @@
     <TBODY>
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Debit note number:")}</B>
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="note[number]" VALUE="{$note.number}" SIZE="10" {tip text="Enter note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			{if $numberplanlist}
+			<SELECT name="note[numberplanid]" {tip text="Select numbering plan"}>
+				{foreach item=plan from=$numberplanlist}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$note.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$note.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+				{/foreach}
+			</SELECT>
+			{else}
+			<INPUT type="hidden" name="note[numberplanid]" value="0">
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<div class="calendar">
-			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			</div>
+			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $note.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
 			{/if}
@@ -171,7 +186,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="9" ALIGN="RIGHT">
+		<TD COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="?m=notelist">{trans("Cancel")} <IMG src="img/cancel.gif"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
@@ -190,7 +205,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['setcustomer'].elements['note[cdate]'].focus();
+$(function() {
+	$('form[name="setcustomer"] [name="note[number]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

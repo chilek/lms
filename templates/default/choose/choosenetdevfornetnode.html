@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+<title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/common.js"></SCRIPT>
+{if $js}<script type="text/javascript">
+<!--
+	{$js}
+//-->
+</script>{/if}
+</head>
+{if !$part}
+<frameset frameborder="0" framespacing="0" ROWS="30,*,30">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=choosenetdevfornetnode&id={$objectid}&p=top">
+	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=choosenetdevfornetnode&id={$objectid}&p=main">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=choosenetdevfornetnode&id={$objectid}&p=bottom">
+</frameset>
+{/if}
+{if $part == 'top'}
+<body class="lms-ui-popup">
+<table cellpadding="5" width="100%">
+	<tr>
+		<td class="fall dark bold text-center">
+			{trans("Select net devices to add")}
+		</td>
+	</tr>
+</table>
+</body>
+{/if}
+{if $part == 'bottom'}
+<body class="lms-ui-popup">
+<script type="text/javascript">
+<!--
+	function SaveForm() {
+		var result = '';
+		var doc = null;
+		for (var i = 0; i < window.parent.frames.length; i++)
+			if (window.parent.frames[i].name == 'm')
+				doc = window.parent.frames[i].document;
+		var inputTags = doc.getElementsByTagName('input');
+
+		for (var i = 0; i < inputTags.length; i++) {
+			if (inputTags[i].type = 'checkbox'
+				&& inputTags[i].name.lastIndexOf('nd', 0) === 0
+				&& inputTags[i].checked) {
+				if (result!='')
+					result += ',';
+				result += inputTags[i].value;
+			}
+		}
+		window.parent.parent.location='?m=netnodeadddev&id={$objectid}&list=' + result;
+		window.parent.parent.popclick();
+	}
+
+	function CloseForm() {
+		window.parent.parent.popclick();
+	}
+
+	function FilterForm() {
+		var txt = document.getElementById('flt').value;
+		var doc = null;
+		for (var i = 0; i < window.parent.frames.length; i++)
+			if (window.parent.frames[i].name == 'm')
+				doc = window.parent.frames[i].document;
+		if (txt.trim() != '') {
+			txt = txt.toLowerCase();
+			var rows = doc.getElementsByTagName('tr');
+			for (var i = 0; i < rows.length; i++)
+				if (rows[i].getAttribute('data-netdevname').lastIndexOf(txt, 0) != 0)
+					rows[i].style.display = 'none';
+				else
+					rows[i].style.display = '';
+		} else {
+			var rows = doc.getElementsByTagName('tr');
+			for (var i = 0; i < rows.length; i++)
+				if (rows[i].getAttribute('data-netdevname').lastIndexOf(txt,0) === 0)
+					rows[i].style.display = '';
+		}
+	}
+//-->
+</script>
+
+<table cellpadding="5" width="100%">
+	<tr>
+		<td class="fall dark text-center nobr">
+			<img src="img/cancel.gif" alt=""> <a href="javascript:CloseForm()">{trans("Cancel")}</a>
+			{if $netdevlist.total > 0}
+			<input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('netdevlist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
+			{/if}
+			<IMG src="img/search.gif" ALT="{trans('Filter devices by name')}">
+			<INPUT TYPE="text" NAME="flt" ID="flt" {tip text="Filter devices by name"} onkeyup="FilterForm();">
+			<a href="javascript:SaveForm()">{trans("Add")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+</table>
+</body>
+{/if}
+{if $part == 'main'}
+<body class="lms-ui-popup">
+<form name="netdevlist">
+<table cellpadding="5" width="100%">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
+	{cycle values="light,lucid" print=false}
+	{if $netdevlist.total > 0}
+	{section name=netdevlist loop=$netdevlist}
+	{if $netdevlist[netdevlist].id}
+	<tr class="highlight {cycle}"  id="ndsp{$netdevlist[netdevlist].id}" data-netdevname="{$netdevlist[netdevlist].name|strtolower}">
+		<td>
+			<input type="checkbox" class="box {cycle print=false}{cycle}" name="nd{$netdevlist[netdevlist].id}" id="nd{$netdevlist[netdevlist].id}" value="{$netdevlist[netdevlist].id}">
+		</td>
+		<td class="text-left nobr" onclick="document.getElementById('nd{$netdevlist[netdevlist].id}').checked=!document.getElementById('nd{$netdevlist[netdevlist].id}').checked">
+			<img src="img/netdev.gif" alt="">
+			<span class="bold">{$netdevlist[netdevlist].name}</span>
+			{if $netdevlist[netdevlist].location}
+			<br>
+			<img src="img/home.gif" alt="">
+			{$netdevlist[netdevlist].location|truncate:60:"...":true}
+			{/if}
+		</td>
+		<td class="text-right nobr" onclick="document.getElementById('nd{$netdevlist[netdevlist].id}').checked=!document.getElementById('nd{$netdevlist[netdevlist].id}').checked">
+			{if $netdevlist[netdevlist].producer}
+			<img src="img/producer.gif" alt="">
+			{$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model}
+			{/if}
+		</td>
+	</tr>
+	{/if}
+	{/section}
+	{else}
+	<tr>
+		<td colspan="3" class="empty-table">
+			<p>{trans("Net devices are missing.")}</p>
+		</td>
+	</tr>
+	{/if}
+</table>
+</form>
+</body>
+{/if}
+</html>

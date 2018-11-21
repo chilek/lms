@@ -1,0 +1,71 @@
+{include file="clearheader.html"}
+
+<TABLE WIDTH="850">
+	<TR>
+		<TD WIDTH="500">
+			<H1>{trans("Sending register")}</H1>
+		</TD>
+		<TD WIDTH="350" class="text-right">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %x"}<BR>
+			{t a=$layout.logname}Prepared by: $a{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="850">
+	<THEAD style="border: 1px black solid">
+		<TR>
+			<TD class="head" colspan="10">Imię i nazwisko (nazwa) nadawcy: {$division.name} {$division.address}</TD>
+		</TR>
+		<TR class="text-center head">
+			<TD class="head text-center" width="50">{trans("No.")}</TD>
+			<TD class="head text-center" width="150">{trans("First/last name")}<BR>{trans("Name")}</TD>
+			<TD class="head text-center" width="250">{trans("Address")}</TD>
+			<TD class="head text-center" width="50">{trans("Value")}</TD>
+			<TD class="head text-center" width="50">{trans("Mass")}</TD>
+			<TD class="head text-center" width="100">{trans("Sending number")}</TD>
+			<TD class="head text-center" width="50">{trans("Note")}</TD>
+			<TD class="head text-center" width="50">{trans("Charge")}</TD>
+			<TD class="head text-center" width="50">{trans("Cash on delivery")}</TD>
+			<TD class="head text-center" width="50">{trans("Cash on delivery fee")}</TD>
+		</TR>
+		<TR>
+			<TD class="head text-center">1</TD>
+			<TD class="head text-center">2</TD>
+			<TD class="head text-center">3</TD>
+			<TD class="head text-center">4</TD>
+			<TD class="head text-center">5</TD>
+			<TD class="head text-center">6</TD>
+			<TD class="head text-center">7</TD>
+			<TD class="head text-center">8</TD>
+			<TD class="head text-center">9</TD>
+			<TD class="head text-center">10</TD>
+		</TR>
+	</THEAD>
+	<TBODY>
+	{section name=customerlist loop=$customerlist}
+	{if $customerlist[customerlist].id}
+	<TR class="text-center" height="50">{assign var=cid value=$customerlist[customerlist].id}
+		<TD style="border: 1px black solid">{counter}.</TD>
+		<TD style="border: 1px black solid"><B>{$customerlist[customerlist].customername}</B></TD>
+		<TD style="border: 1px black solid">
+			{if $customerlist[customerlist].post_full_address!=''}
+				{$customerlist[customerlist].post_full_address}
+			{else}
+				{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city neq ""},{/if} {$customerlist[customerlist].address}
+			{/if}
+		</TD>
+		<TD style="border: 1px black solid"></TD>
+		<TD style="border: 1px black solid"></TD>
+		<TD style="border: 1px black solid"></TD>
+		<TD style="border: 1px black solid"></TD>
+		<TD style="border: 1px black solid"></TD>
+		<TD style="border: 1px black solid"></TD>
+		<TD style="border: 1px black solid"></TD>
+	</TR>
+	{/if}
+	{/section}
+	</TBODY>
+	</TFOOT>
+</TABLE>
+{include file="clearfooter.html"}

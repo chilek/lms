@@ -1,0 +1,35 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+    <h1>{$layout.pagetitle}</h1>
+    <form method="post" name="tarifftagadd" action="?m=tarifftagadd">
+        <input type="submit" class="hiddenbtn">
+        <table class="lmsbox">
+            <thead>
+                <tr>
+                    <td style="width: 1%" class="bold">{trans("Name:")}</td>
+                    <td style="width: 99%"><input type="text" name="tarifftagadd[name]" value="{$tarifftagadd.name}" size="50" required {tip trigger="name" bold=1}></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 1%" class="bold">{trans("Description:")}</td>
+                    <td style="width: 99%"><textarea name="tarifftagadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$tarifftagadd.description}</textarea></td>
+                </tr>
+                <tr>
+                    <td style="width: 100%" class="text-right" colspan="2">
+                        <a href="javascript:document.tarifftagadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+                        <a href="?m=tarifftaglist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <script type="text/javascript">
+	<!--
+		$(function() {
+			$('form[name="tarifftagadd"] [name="tarifftagadd[name]"]').focus();
+		});
+	//-->
+    </script>
+{/block}

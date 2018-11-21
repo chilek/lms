@@ -25,7 +25,7 @@
  */
 
 $_LANG['$a dollars $b cents'] = '$a zł $b gr';
-$_LANG['Accounting day:'] = 'Dzień naliczania:';
+$_LANG['Accounting day'] = 'Dzień naliczania';
 $_LANG['Admin:'] = 'Administrator:';
 $_LANG['After:'] = 'Po:';
 $_LANG['All your covenants are settled'] = 'Wszystkie Twoje zobowiązania są rozliczone';
@@ -46,7 +46,7 @@ $_LANG['from'] = 'od';
 $_LANG['Gross Value:'] = 'Wartość brutto:';
 $_LANG['in it:'] = 'w tym:';
 $_LANG['Invoice:'] = 'Faktura:';
-$_LANG['Invoice No. $a'] = 'Faktura Nr $a';
+$_LANG['Invoice No. $a'] = 'Faktura nr $a';
 $_LANG['Invoices'] = 'Faktury';
 $_LANG['In words:'] = 'Słownie:';
 $_LANG['Module Configuration:'] = 'Konfiguracja modułu:';
@@ -94,5 +94,14 @@ $_LANG['monthly ($a)'] = 'miesięcznie ($a)';
 $_LANG['Reason:'] = 'Powód:';
 $_LANG['Check all'] = 'Zaznacz wszystkie';
 $_LANG['Print selected'] = 'Drukuj zaznaczone';
+$_LANG['Current balance:'] = 'Bieżące saldo:';
+$_LANG['Download speed'] = 'Prędkość pobierania';
+$_LANG['Upload speed'] = 'Prędkość wysyłania';
+$_LANG['Commitment'] = 'Zobowiązanie';
+$_LANG['Payment'] = 'Wpłata';
+$_LANG['Transfer title'] = 'Tytuł przelewu';
+$_LANG['Invoice title'] = 'Tytuł faktury';
+
+$_LANG['Show transactions from last selected years:'] = 'Pokaż transakcje z ostatnich wybranych lat:';
 
 ?>

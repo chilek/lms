@@ -85,7 +85,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('customergroup',$customergroup);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customers', $customers);
-$SMARTY->assign('customerscount', sizeof($customers));
+$SMARTY->assign('customerscount', count($customers));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups',$LMS->CustomergroupGetAll());
 $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);

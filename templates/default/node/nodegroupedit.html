@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ -->
 <H1>{$layout.pagetitle}</H1>
@@ -15,7 +15,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" VALUE="{$nodegroup.name}" NAME="nodegroup[name]" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" VALUE="{$nodegroup.name}" NAME="nodegroup[name]" required {tip trigger="name" bold=1}>
 			<B>&nbsp;({$nodegroup.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
@@ -35,7 +35,7 @@
 </FORM>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
-			{if sizeof($nodegroups) > 1 && $nodegroup.count}
+			{if count($nodegroups) > 1 && $nodegroup.count}
 			<FORM name="tmove" method="get" action="">
 			    <input type="hidden" name="is_sure" value="1">
 		            <input type="hidden" name="m" value="nodegroupmove">
@@ -56,7 +56,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['tedit'].elements['nodegroup[name]'].focus();
+$(function() {
+	$('forms[name="tedit"] [name="nodegroup[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {include file="node/nodegroupassignments.html"}

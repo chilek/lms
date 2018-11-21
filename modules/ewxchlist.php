@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -66,7 +66,7 @@ function GetChannelsList($order='name,asc')
 		(
 		SELECT 0 AS id, \''.trans('default').'\' AS name,
 		    ch.upceil, ch.downceil, 0 AS upceil_n, 0 AS downceil_n, 0, ch.id AS cid,
-		    (SELECT COUNT(DISTINCT netdev) FROM vnodes WHERE netdev > 0 AND id IN (
+		    (SELECT COUNT(DISTINCT netdev) FROM vnodes WHERE netdev IS NOT NULL AND id IN (
 		        SELECT nodeid FROM ewx_stm_nodes WHERE channelid = ch.id)) AS devcnt,
 		    (SELECT COUNT(*) FROM ewx_stm_nodes WHERE channelid = ch.id) AS nodecnt
 		    FROM ewx_stm_channels ch
@@ -74,7 +74,7 @@ function GetChannelsList($order='name,asc')
 		)'
 		.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
-	$channels['total'] = sizeof($channels);
+	$channels['total'] = empty($channels) ? 0 : count($channels);
 	$channels['order'] = $order;
 	$channels['direction'] = $direction;
 

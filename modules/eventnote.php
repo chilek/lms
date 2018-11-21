@@ -1,16 +1,12 @@
 <?php
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, 
-	date, begintime, endtime, customerid, private, closed, ' 
-	.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
-	FROM events LEFT JOIN customers ON (customers.id = customerid)
-	WHERE events.id = ?', array($_GET['id']));
+$event = $LMS->GetEvent($_GET['id']);
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
 
-$eventuserlist = $DB->GetAll('SELECT userid AS id, users.name
-	FROM users, eventassignments
-	WHERE users.id = userid AND eventid = ?', array($event['id']));
+$eventuserlist = $DB->GetAll('SELECT userid AS id, vusers.name
+	FROM vusers, eventassignments
+	WHERE vusers.id = userid AND eventid = ?', array($event['id']));
 
 if(isset($_POST['event'])) {
 	$event = $_POST['event'];

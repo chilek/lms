@@ -1,9 +1,9 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$xajax}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
 	function savereceipt(print)
@@ -41,6 +41,7 @@
 	}
 //-->
 </SCRIPT>
+{$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&amp;action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
@@ -58,13 +59,8 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Cash Registry:")}</B>
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
-				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
-				{foreach from=$cashreglist item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id == $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
+		<TD WIDTH="99%" NOWRAP id="cashregistries">
+			{include file="receipt/receiptcashregistries.html" regid=$receipt.regid}
 		</TD>
 	</TR>
 	{if !$receipt.type}
@@ -100,7 +96,7 @@
 			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} {if ($rights & 256) != 256}readonly{else}OnClick="javascript:cal1.popup();"{/if}>
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" class="calendar" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"} {if ($rights & 256) != 256}readonly{/if}>
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
@@ -124,9 +120,9 @@
 				</TD>
 				<TD style="width: 99%;" class="nobr">
 					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
 					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val(), $('[name=\'receipt[regid]\']').val())"}
 					{/if}
 				</TD>
 			</TR>
@@ -135,7 +131,10 @@
 			{if  $cashregcount > 1 && $receipt.type=="out"}
 			<TR>
 			    <TD width="100%" colspan="2" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" {if $receipt.o_type=="move"} checked{/if}> {trans("assets move")}
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" {if $receipt.o_type=="move"} checked{/if}>
+						{trans("assets move")}
+					</label>
 			    </TD>
 			</TR>
 			{/if}
@@ -144,7 +143,10 @@
 			{if $receipt.type=="out"}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}> <label="radio_advance">{trans("advance")}:</label>
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}>
+						{trans("advance")}:
+					</label>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[adv_name]" VALUE="{$receipt.adv_name}" SIZE="70" {tip text="Enter recipient" trigger="adv_name"} onclick="document.getElementById('radio_advance').checked=true">
@@ -155,7 +157,10 @@
 		    {if ($rights & 16)==16}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}> <label for="radio_other">{trans("other")}:</label>
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}>
+						{trans("other")}:
+					</label>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[other_name]" VALUE="{$receipt.other_name}" SIZE="70" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if} onclick="document.getElementById('radio_other').checked=true">
@@ -187,12 +192,13 @@
 		</TD>
 		<TD WIDTH="1%" nowrap>
 			<B>{$customer.customername}</B> 
-			&nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
+			&nbsp;&raquo;&nbsp; {if $customer.postoffice && $customer.postoffice != $customer.city && $customer.street}{$customer.city}, {/if}{$customer.address},
+				{$customer.zip} {if $customer.postoffice}{$customer.postoffice}{else}{$customer.city}{/if}
 			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
 		</TD>
 		<TD WIDTH="98%" align="right">
 			{if $customer.groups}<span class="red bold">
-			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
+			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customer.groups)}, {/if}{/foreach})
 			</span>{/if}
 		</TD>
 	</TR>
@@ -264,19 +270,32 @@
 <BR>
 <FORM name="movecash" method="POST" action="?m=receiptadd&amp;action=movecash">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="100%">
-			<B>{trans("Moving assets:")}</B>
+		<TD colspan="2" class="bold">
+			{trans("Moving assets:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD nowrap>
-			<B>{trans("Value:")}</B>
+		<TD class="nobr">
+            <span class="bold">{trans("Value:")}</span>
 			<INPUT TYPE="TEXT" NAME="value" VALUE="" SIZE="10" {tip text="Enter value"}>
-			<B>{trans("Cash Registry:")}
+			<br>
+			<a href="javascript:GetCashRegistryBalance();">{trans("get source registry balance")}</a>
+            <script>
+                function GetCashRegistryBalance() {
+                    xajax_GetCashRegistryBalance($('[name="receipt[regid]"]').val());
+				}
+            </script>
+		</TD>
+		<TD class="bold nobr valign-top">
+			{trans("Cash Registry:")}
 			<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
 				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
@@ -284,11 +303,11 @@
 				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/if}
 				{/foreach}
-	    		</SELECT>
+			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" ALIGN="right">
+		<TD class="buttons" colspan="2">
 			<A HREF="javascript:document.movecash.submit();">{trans("Save & Print")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
@@ -430,8 +449,14 @@
 	</TR>
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT">
-			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
+			<label>
+				<INPUT type="checkbox" id="original" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}>
+				{trans("original")}
+			</label>
+			<label>
+				<INPUT type="checkbox" id="copy" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{trans("copy")}
+			</label>
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			<A HREF="?m=receiptadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
@@ -459,12 +484,10 @@
 {/if}
 <SCRIPT type="text/javascript">
 <!--
-{if $receipt.cdate}
-var cal1 = new calendar(document.forms['setcustomer'].elements['receipt[cdate]']);
-cal1.time_comp = false;
-{/if}
 {if !$receipt.selected}
-document.forms['setcustomer'].elements['receipt[regid]'].focus();
+$(function() {
+	$('form[name="setcustomer"] [name="receipt[regid]"]').focus();
+});
 {/if}
 //-->
 </SCRIPT>

@@ -3,11 +3,9 @@
     <THEAD>
 	<TR{if $devicepanel} class="hand" onClick="showOrHide('devicepanel');"{/if}>
 		<TD WIDTH="1%">
-			<IMG SRC="img/netdev.gif" ALT="">
+			<IMG SRC="img/netnode.png" ALT="">
 		</TD>
-		<TD WIDTH="99%">
-			<B>{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</B>
-		</TD>
+		<TD WIDTH="99%" class="nobr bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</TD>
 	</TR>
     </THEAD>
     <TBODY>
@@ -15,16 +13,14 @@
 	    <TD WIDTH="100%" COLSPAN="2"{if $devicepanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
 				<TR>
-					<TD WIDTH="100%" style="vertical-align:top;">
+					<TD WIDTH="100%" class="valign-top">
 						<TABLE WIDTH="100%" CELLPADDING="3">
        	{if $nodeinfo.division}
         <TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/division.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Division:")}</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">{trans("Division:")}</TD>
 		<TD WIDTH="98%">
 		        {$nodeinfo.division}
 		</TD>
@@ -34,9 +30,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Type:")}</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">{trans("Type:")}</TD>
 		<TD WIDTH="98%">
 		        {$_NETELEMENTTYPES[$nodeinfo.type]}
 		</TD>
@@ -45,9 +39,7 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%">
-		        <B>{trans("Status:")}</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">{trans("Status:")}</TD>
 		<TD WIDTH="98%">
 		        {$_NETELEMENTSTATUSES[$nodeinfo.status]}
 		</TD>
@@ -57,36 +49,30 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Project:")}</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">{trans("Project:")}</TD>
 		<TD WIDTH="98%">
 			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname}{/if}
 		</TD>
 	</TR>
-	
-	
+
 	{if $nodeinfo.location}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Location:")}</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">{trans("Location:")}</TD>
 		<TD WIDTH="98%">
-		        {$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
+			{$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
 		</TD>
 	</TR>
 	{/if}
+
 	{if $nodeinfo.longitude || $nodeinfo.latitude}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS longitude:")}</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">{trans("GPS longitude:")}</TD>
 		<TD WIDTH="98%">
 			<INPUT ID="longitude" TYPE="hidden" VALUE="{$nodeinfo.longitude}">
 			{$nodeinfo.longitude}
@@ -96,8 +82,8 @@
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("GPS latitude:")}</B>
+		<TD WIDTH="1%" class="nobr bold">
+			{trans("GPS latitude:")}
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT ID="latitude" TYPE="hidden" VALUE="{$nodeinfo.latitude}">
@@ -108,50 +94,75 @@
 		<TD WIDTH="2%" COLSPAN="2">
 		</TD>
 		<TD WIDTH="98%">
-			<a HREF="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>			
+			<a HREF="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
 		</TD>
 	</TR>
 	{/if}
-
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Ownership:")}</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">{trans("Ownership:")}</TD>
 		<TD WIDTH="98%">
 			{$_NETELEMENTOWNERSHIPS[$nodeinfo.ownership]} {if ($nodeinfo.ownership >= 1)} ({$nodeinfo.coowner}) {/if}
 		</TD>
 	</TR>
+	{if $nodeinfo.ownerid != null}
+	<tr>
+		<td>
+			<img src="img/customer.gif" alt="">
+		</td>
+		<td class="bold">
+			{trans("Owner:")}
+		</td>
+		<td>
+			<a href="?m=customerinfo&id={$nodeinfo.ownerid}">{$nodeinfo.owner}</a>
+		</td>
+	</tr>
+	{/if}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>Udostępnianie powierzchni</B>
-		</TD>
+		<TD WIDTH="1%" class="nobr bold">Udostępnianie powierzchni</TD>
 		<TD WIDTH="98%">
 			{if ($nodeinfo.uip == 1)} {trans('Yes')} {else} {trans('No')} {/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/producer.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>Instalacja anten</B>
-		</TD>
+		<TD WIDTH="1%">	<IMG SRC="img/producer.gif" ALT=""></TD>
+		<TD WIDTH="1%" class="nobr bold">Instalacja anten</TD>
 		<TD WIDTH="98%">
 			{if ($nodeinfo.miar == 1)} {trans('Yes')} {else} {trans('No')} {/if}
 		</TD>
 	</TR>
-
-	
-	                        	</TABLE>
+	{if $nodeinfo.info}
+	<TR>
+		<TD WIDTH="1%"><IMG SRC="img/note.gif" ALT=""></TD>
+		<TD width="1%" class="bold">{trans('Note')}</TD>
+		<TD width="98%">{$nodeinfo.info}</TD>
+	</TR>
+	{/if}
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/users.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Created:')}</TD>
+                <TD width="98%">{$nodeinfo.createtime|date_format:"%Y/%m/%d (%A)"}</TD>
+        </TR>
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/calendar.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Last inspection:')}</TD>
+                <TD width="98%">
+					{if $nodeinfo.lastinspectiontime}{$nodeinfo.lastinspectiontime|date_format:"%Y/%m/%d (%A)"}{else}-{/if}
 				</TD>
-				
-				</TR>
+        </TR>
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Administrative contact:')}</TD>
+                <TD width="98%">{$nodeinfo.admcontact}</TD>
+        </TR>
+</TABLE>
+				</TD>
+	</TR>
 			</TABLE>
 {if !$devicepanel}
     		</TD>
@@ -159,7 +170,7 @@
 	<TR>
 	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
 {/if}
-			<A href="?m=netnodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<A href="?m=netnodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
 			<A href="?m=netnodedel&id={$nodeinfo.id}" OnClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>

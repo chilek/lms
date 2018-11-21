@@ -18,8 +18,11 @@
 		<TD WIDTH="15" ALIGN="CENTER" CLASS="HEAD">
 			{trans("No.")}
 		</TD>
-		<TD WIDTH="30" CLASS="HEAD" ALIGN="CENTER">
+		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
 			{trans("ID")}
+		</TD>
+		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
+			{trans("External ID")}
 		</TD>
 		<TD WIDTH="400" CLASS="HEAD">
 			<B>{trans("First/last name")} / {trans("Name")}</B><BR>
@@ -46,6 +49,9 @@
 		<TD ALIGN="CENTER">
 			{$customerlist[customerlist].id|string_format:"%04d"}
 		</TD>
+		<TD ALIGN="CENTER">
+			{if $customerlist[customerlist].extid}{$customerlist[customerlist].extid}{/if}
+		</TD>
 		<TD>
 			<B>{$customerlist[customerlist].customername}</B><BR>
 			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].address}<BR>
@@ -65,7 +71,7 @@
 	{/if}{/section}
 	{if ConfigHelper::checkConfig('privileges.superuser') || (!ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries'))}
 	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="3" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
+		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 	</TR>

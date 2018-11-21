@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,138 +24,29 @@
  *  $Id$
  */
 
-function validateManagementUrl($params, $update = false) {
-	global $DB;
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'managementurls.inc.php');
 
-	$error = NULL;
-
-	if (!strlen($params['url']))
-		$error['url'] = trans('Management URL cannot be empty!');
-	elseif (strlen($params['url']) < 10)
-		$error['url'] = trans('Management URL is too short!');
-
-	return $error;
-}
-
-function getManagementUrls($formdata = NULL) {
-	global $SMARTY, $DB;
-
+function getManagementUrls() {
 	$result = new xajaxResponse();
 
-	$netdevid = intval($_GET['id']);
-
-	$mgmurls = NULL;
-	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE netdevid = ? ORDER BY id', array($netdevid));
-	$SMARTY->assign('mgmurls', $mgmurls);
-	if (isset($formdata['error']))
-		$SMARTY->assign('error', $formdata['error']);
-	$SMARTY->assign('formdata', $formdata);
-	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
-
-	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
+	_getManagementUrls(LMSNetDevManager::NETDEV_URL, $result);
 
 	return $result;
 }
 
 function addManagementUrl($params) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
-
-	$result = new xajaxResponse();
-
-	$error = validateManagementUrl($params);
-
-	$params['error'] = $error;
-
-	$netdevid = intval($_GET['id']);
-
-	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
-			$params['url'] = 'http://' . $params['url'];
-
-		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
-			'url' => $params['url'],
-			'comment' => $params['comment'],
-		);
-		$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)', array_values($args));
-		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL]] = $DB->GetLastInsertID('managementurls');
-			$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
-		}
-		$params = NULL;
-	}
-
-	$result->call('xajax_getManagementUrls', $params);
-	$result->assign('managementurladdlink', 'disabled', false);
-
-	return $result;
+	return _addManagementUrl(LMSNetDevManager::NETDEV_URL, $params);
 }
 
 function delManagementUrl($id) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
-
-	$result = new xajaxResponse();
-
-	$netdevid = intval($_GET['id']);
-	$id = intval($id);
-
-	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
-	if ($res && $SYSLOG) {
-		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
-		);
-		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_DELETE, $args, array_keys($args));
-	}
-	$result->call('xajax_getManagementUrls', $netdevid);
-	$result->assign('managementurltable', 'disabled', false);
-
-	return $result;
+	return _delManagementUrl(LMSNetDevManager::NETDEV_URL, $id);
 }
 
-function updateManagementUrl($urlid, $params) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
-
-	$result = new xajaxResponse();
-
-	$urlid = intval($urlid);
-	$netdevid = intval($_GET['id']);
-
-	$res = validateManagementUrl($params, true);
-
-	$error = array();
-	foreach ($res as $key => $val)
-		$error[$key . '_edit_' . $urlid] = $val;
-	$params['error'] = $error;
-
-	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
-			$params['url'] = 'http://' . $params['url'];
-
-		$args = array(
-			'url' => $params['url'],
-			'comment' => $params['comment'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $urlid,
-		);
-		$DB->Execute('UPDATE managementurls SET url = ?, comment = ? WHERE id = ?', array_values($args));
-		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
-			$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
-		}
-		$params = NULL;
-	}
-
-	$result->call('xajax_getManagementUrls', $params);
-	$result->assign('managementurltable', 'disabled', false);
-
-	return $result;
+function updateManagementUrl($id, $params) {
+	return _updateManagementUrl(LMSNetDevManager::NETDEV_URL, $id, $params);
 }
 
-function validateRadioSector($params, $update = false) {
-	global $DB;
-
+function validateRadioSector($params) {
 	$error = NULL;
 
 	if (!strlen($params['name']))
@@ -192,6 +83,9 @@ function validateRadioSector($params, $update = false) {
 	if (strlen($params['license']) > 63)
 		$error['license'] = trans('Radio sector license number is too long!');
 
+    if (strlen($params['secret']) > 63)
+        $error['secret'] = trans('Encryption key is too long!');
+
 	if (strlen($params['frequency']) && !preg_match('/^[0-9]{1,3}(\.[0-9]{1,5})?$/', $params['frequency']))
 		$error['frequency'] = trans('Radio sector frequency has invalid format!');
 
@@ -208,179 +102,132 @@ function validateRadioSector($params, $update = false) {
 	return $error;
 }
 
-function getRadioSectors($formdata = NULL, $result = NULL) {
-	global $SMARTY, $DB;
+function _getRadioSectors($result) {
+	$lms = LMS::getInstance();
+	$radiosectors = $lms->GetRadioSectors($_GET['id']);
 
-	if (! $result)
-		$result = new xajaxResponse();
-
-	$netdevid = intval($_GET['id']);
-
-	$radiosectors = $DB->GetAll('SELECT s.*, (CASE WHEN n.computers IS NULL THEN 0 ELSE n.computers END) AS computers,
-		((CASE WHEN l1.devices IS NULL THEN 0 ELSE l1.devices END)
-		+ (CASE WHEN l2.devices IS NULL THEN 0 ELSE l2.devices END)) AS devices
-		FROM netradiosectors s
-		LEFT JOIN (
-			SELECT linkradiosector AS rs, COUNT(*) AS computers
-			FROM nodes n WHERE n.ownerid > 0 AND linkradiosector IS NOT NULL
-			GROUP BY rs
-		) n ON n.rs = s.id
-		LEFT JOIN (
-			SELECT srcradiosector, COUNT(*) AS devices FROM netlinks GROUP BY srcradiosector
-		) l1 ON l1.srcradiosector = s.id
-		LEFT JOIN (
-			SELECT dstradiosector, COUNT(*) AS devices FROM netlinks GROUP BY dstradiosector
-		) l2 ON l2.dstradiosector = s.id
-		WHERE s.netdev = ?
-		ORDER BY s.name', array($netdevid));
-	foreach ($radiosectors as $rsidx => $radiosector)
-		if (!empty($radiosector['bandwidth']))
-			$radiosectors[$rsidx]['bandwidth'] *= 1000;
-	$SMARTY->assign('radiosectors', $radiosectors);
-	if (isset($formdata['error']))
-		$SMARTY->assign('error', $formdata['error']);
-	$SMARTY->assign('formdata', $formdata);
-	$radiosectorlist = $SMARTY->fetch('netdev/radiosectorlist.html');
+	$smarty = LMSSmarty::getInstance();
+	$smarty->assign('radiosectors', $radiosectors);
+	$radiosectorlist = $smarty->fetch('netdev/radiosectorlist.html');
 
 	$result->assign('radiosectortable', 'innerHTML', $radiosectorlist);
+}
+
+function getRadioSectors() {
+	$result = new xajaxResponse();
+
+	_getRadioSectors($result);
 
 	return $result;
 }
 
 function addRadioSector($params) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
-
 	$result = new xajaxResponse();
 
-	$netdevid = intval($_GET['id']);
+	$formdata = array();
+	parse_str($params, $formdata);
 
-	$error = validateRadioSector($params);
-
-	$params['error'] = $error;
+	$error = validateRadioSector($formdata);
 
 	if (!$error) {
-		$args = array(
-			'name' => $params['name'],
-			'azimuth' => $params['azimuth'],
-			'width' => $params['width'],
-			'altitude' => $params['altitude'],
-			'rsrange' => $params['rsrange'],
-			'license' => (strlen($params['license']) ? $params['license'] : null),
-			'technology' => intval($params['technology']),
-			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
-			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
-			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
-		);
-		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology,
-			frequency, frequency2, bandwidth, netdev)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			array_values($args));
-		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');
-			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
-		}
-		$params = NULL;
-	}
-	$result = getRadioSectors($params, $result);
-	//$result->call('xajax_getRadioSectors', $params);
-	$result->assign('add_new_radiosector_button', 'disabled', false);
-	$result->assign('cancel_new_radiosector_button', 'disabled', false);
+		$lms = LMS::getInstance();
+		$lms->AddRadioSector($_GET['id'], $formdata);
+
+		$result->call('hideAddRadioSector');
+
+		_getRadioSectors($result);
+	} else
+		$result->call('radioSectorErrors', $error);
 
 	return $result;
 }
 
 function delRadioSector($id) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
-
 	$result = new xajaxResponse();
 
-	$netdevid = intval($_GET['id']);
-	$id = intval($id);
+	$lms = LMS::getInstance();
+	$lms->DeleteRadioSector($id);
 
-	$res = $DB->Execute('DELETE FROM netradiosectors WHERE id = ?', array($id));
-	if ($res && $SYSLOG) {
-		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
-		);
-		$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_DELETE, $args, array_keys($args));
-	}
-	$result->call('xajax_getRadioSectors', NULL);
-	$result->assign('radiosectortable', 'disabled', false);
+	_getRadioSectors($result);
+
+	$result->call('get_radio_sectors_for_self_netdev', null);
+	$result->call('change_nodelinktechnology', null);
 
 	return $result;
 }
 
 function updateRadioSector($rsid, $params) {
-	global $DB;
-
 	$result = new xajaxResponse();
 
 	$rsid = intval($rsid);
-	$netdevid = intval($_GET['id']);
 
-	$res = validateRadioSector($params, true);
+	$res = validateRadioSector($params);
 	$error = array();
 	foreach ($res as $key => $val)
 		$error[$key . '_edit_' . $rsid] = $val;
-	$params['error'] = $error;
 
 	if (!$error) {
-		$args = array(
-			'name' => $params['name'],
-			'azimuth' => $params['azimuth'],
-			'width' => $params['width'],
-			'altitude' => $params['altitude'],
-			'rsrange' => $params['rsrange'],
-			'license' => (strlen($params['license']) ? $params['license'] : null),
-			'technology' => intval($params['technology']),
-			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
-			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
-			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
-		);
-		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
-			rsrange = ?, license = ?, technology = ?,
-			frequency = ?, frequency2 = ?, bandwidth = ? WHERE id = ?', array_values($args));
-		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
-			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
-		}
-		$params = NULL;
-	}
+		$lms = LMS::getInstance();
+		$lms->UpdateRadioSector($rsid, $params);
 
-	$result->call('xajax_getRadioSectors', $params);
+		_getRadioSectors($result);
+	} else
+		$result->call('radioSectorErrors', $error);
+
+	$result->call('get_radio_sectors_for_self_netdev', null);
+	$result->call('change_nodelinktechnology', null);
 
 	return $result;
 }
 
 function getRadioSectorsForNetdev($callback_name, $devid, $technology = 0) {
-	global $DB;
-
 	$result = new xajaxResponse();
 
 	if (!in_array($callback_name, array('radio_sectors_received_for_srcnetdev', 'radio_sectors_received_for_dstnetdev',
 		'radio_sectors_received_for_node')))
 		return $result;
 
-	$technology = intval($technology);
-	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
-		. ($technology ? ' AND (technology = ' . $technology . ' OR technology = 0)' : '')
-		. ' ORDER BY name', array(intval($devid)));
+	$lms = LMS::getInstance();
+	$radiosectors = $lms->GetRadioSectors($devid, $technology);
 	$result->call($callback_name, $radiosectors);
 
 	return $result;
 }
 
-$LMS->InitXajax();
+function getFirstFreeAddress($netid, $elemid) {
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
+
+	$result = new xajaxResponse();
+
+	$reservedaddresses = intval(ConfigHelper::getConfig('phpui.first_reserved_addresses', 0, true));
+	$net = $LMS->GetNetworkRecord($netid);
+	$ip = '';
+
+	foreach ($net['nodes']['id'] as $idx => $nodeid) {
+		if ($idx < $reservedaddresses)
+			continue;
+		if ($nodeid) {
+			$firstnodeid = $idx;
+			$ip = '';
+		}
+		if (!$nodeid && !isset($net['nodes']['name'][$idx]) && empty($ip)) {
+			$ip = $net['nodes']['address'][$idx];
+			if (isset($firstnodeid))
+				break;
+		}
+	}
+	if (!empty($ip))
+		$result->assign($elemid, 'value', $ip);
+
+	return $result;
+}
+
 $LMS->RegisterXajaxFunction(array(
 	'getManagementUrls','addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
 	'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
-	'getRadioSectorsForNetdev',
+	'getRadioSectorsForNetdev', 'getFirstFreeAddress'
 ));
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

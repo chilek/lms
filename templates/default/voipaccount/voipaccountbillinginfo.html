@@ -1,0 +1,214 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<h1>{trans("Call details")}</h1>
+<!--// $Id$ //-->
+<table class="lmsbox">
+    <colgroup>
+        <col style="width: 1%;"/>
+        <col style="width: 1%;"/>
+        <col style="width: 98%;"/>
+    </colgroup>
+    <thead>
+        {block name="voipaccountinfobox-login"}
+        <tr>
+            <td>
+                <img src="img/info3.gif" alt="">
+            </td>
+            <td class="bold" colspan="2">
+                {trans("Billing")} {trans("no.")} {$cdr.id}
+            </td>
+        </tr>
+        {/block}
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <img src="img/voip.gif" alt="">
+            </td>
+            <td class="bold nobr">
+                {trans("Caller:")}
+            </td>
+            <td class="bold nobr">
+				{if $cdr.callervoipaccountid}
+				<a href="?m=voipaccountinfo&id={$cdr.callervoipaccountid}">{$cdr.caller}</a>
+				{else}
+				{$cdr.caller}
+				{/if}
+            </td>
+        </tr>
+		{if $cdr.caller_prefix_group}
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Location:")}
+            </td>
+            <td class="nobr">
+               {$cdr.caller_prefix_group}
+            </td>
+        </tr>
+		{/if}
+		{if $cdr.caller_flags}
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Flags:")}
+            </td>
+            <td class="nobr">
+				{if $cdr.caller_flags & CALL_FLAG_ADMIN_RECORDING}
+					{trans("recording turned on")}<BR>
+
+					{if $cdr.caller_flags & CALL_FLAG_CUSTOMER_RECORDING}
+						{trans("recorded call available for customer")}
+					{else}
+						{trans("recorded call unavailable for customer")}
+					{/if}
+				{else}
+					{trans("recording turned off")}
+				{/if}
+            </td>
+        </tr>
+		{/if}
+		{if $cdr.callervoipaccountid}
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Customer:")}
+            </td>
+            <td class="nobr">
+               <a href="?m=customerinfo&id={$cdr.callerownerid}">{$cdr.callercustomername}</a>
+            </td>
+        </tr>
+		{/if}
+
+		<tr class="space_row">
+            <td>
+                <img src="img/voip.gif" alt="">
+            </td>
+            <td class="bold nobr">
+                {trans("Callee:")}
+            </td>
+            <td class="bold nobr">
+				{if $cdr.calleevoipaccountid}
+				<a href="?m=voipaccountinfo&id={$cdr.calleevoipaccountid}">{$cdr.callee}</a>
+				{else}
+				{$cdr.callee}
+				{/if}
+            </td>
+        </tr>
+		{if $cdr.callee_prefix_group}
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Location:")}
+            </td>
+            <td class="nobr">
+               {$cdr.callee_prefix_group}
+            </td>
+        </tr>
+		{/if}
+		{if $cdr.callee_flags}
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Flags:")}
+            </td>
+            <td class="nobr">
+				{if $cdr.callee_flags & CALL_FLAG_ADMIN_RECORDING}
+					- {trans("recording turned on")}<BR>
+
+					{if $cdr.callee_flags & CALL_FLAG_CUSTOMER_RECORDING}
+						- {trans("recorded call available for customer")}
+					{else}
+						- {trans("recorded call unavailable for customer")}
+					{/if}
+				{else}
+					- {trans("recording turned off")}
+				{/if}
+            </td>
+        </tr>
+		{/if}
+		{if $cdr.calleevoipaccountid}
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Customer:")}
+            </td>
+            <td class="nobr">
+               <a href="?m=customerinfo&id={$cdr.calleeownerid}">{$cdr.calleecustomername}</a>
+            </td>
+        </tr>
+		{/if}
+
+		<tr class="space_row">
+            <td>
+                <img src="img/unk.gif" alt="">
+            </td>
+            <td class="bold nobr">
+                {trans("Details")}
+            </td>
+            <td></td>
+        </tr>
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Date:")}
+            </td>
+            <td class="nobr">
+               {$cdr.call_start_time|date_format:"%e %B %Y %H:%M:%S"}
+            </td>
+        </tr>
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Call begin time:")}
+            </td>
+            <td class="nobr">
+               {if $cdr.totaltime>60}{floor($cdr.totaltime/60)}min{/if} {$cdr.totaltime%60}s
+            </td>
+        </tr>
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Call answer time:")}
+            </td>
+            <td class="nobr">
+               {if $cdr.billedtime>60}{floor($cdr.billedtime/60)}min{/if} {$cdr.billedtime%60}s
+            </td>
+        </tr>
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Status:")}
+            </td>
+            <td class="nobr">
+				{if $cdr.status == $smarty.const.CALL_BUSY}
+					{trans("busy<!voip>")}
+				{else if $cdr.status == $smarty.const.CALL_ANSWERED}
+					{trans("answered")}
+				{else if $cdr.status == $smarty.const.CALL_NO_ANSWER}
+					{trans("no answer")}
+				{/if}
+            </td>
+        </tr>
+		<tr>
+            <td></td>
+            <td class="bold nobr">
+                {trans("Price:")}
+            </td>
+            <td class="nobr">
+               {$cdr.price|money_format}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="text-right" colspan="3">
+                <a href="?m=voipaccountbillinglist">
+					{trans("Back")} <img src="img/recover.gif" alt="delete">
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/block}

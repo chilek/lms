@@ -1,43 +1,30 @@
-<!--
- @author Maciej_Wawryk
--->
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-    <head>
-	<meta name="GENERATOR" content="LMS {$layout.lmsv}">
-	<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-	<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-	<title>::: LMS :::</title>
-	<link href="img/style.css" rel="stylesheet" type="text/css">
-	<script TYPE="text/javascript" SRC="img/autoiframe.js"></script>
-	<script TYPE="text/javascript" SRC="img/common.js"></script>
-    </head>
-    <body>
-	<table style="width: 100%;" cellpadding="3" id="table">
-	    <tr class="dark">
-		<td style="width: 1%;"><img src="img/info.gif" alt=""></td>
-		<td style="width: 99%; white-space: nowrap;" colspan="2"><span class="bold">O fakturze:</span></td>
-	    </tr>
-	    <tr class="light">
-		<td><img src="img/id.gif" ALT=""></td>
-		<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Number:")}</span></td>
-		<td style="white-space: nowrap;">{if $invoice.ntempl}{$invoice.ntempl}{else}{$invoice.template}{/if}</td>
-	    </tr>
-	    <tr class="light">
-		<td><img src="img/money.gif" ALT=""></td>
-		<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Deadline:")}</span></td>
-		<td style="white-space: nowrap;">{if $invoice.pdate}{$invoice.pdate|date_format:"%d.%m.%Y"}{/if}</td>
-	    </tr>
-	    <tr class="light">
-		<td><img src="img/options.gif" ALT=""></TD>
-		<td style="width: 1%; white-space: nowrap;"><span class="bold">{trans("Payment type:")}</span></td>
-		<td style="white-space: nowrap;">{if $invoice.paytypename}{$invoice.paytypename}{/if}</td>
-	    </tr>
-	</table>
-	<script type="text/javascript">
-	    var table = document.getElementById('table');
-	    autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight);
-	</script>
-    </body>
-</HTML>
+<table style="width: 100%;" cellpadding="3" id="table">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
+	<TBODY>
+		<tr class="dark">
+			<td><img src="img/info.gif" alt=""></td>
+			<td class="bold nobr" colspan="2">
+				{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}{trans("About pro forma invoice:")}{else}{trans("About invoice:")}{/if}
+			</td>
+		</tr>
+		<tr class="light">
+			<td><img src="img/id.gif" ALT=""></td>
+			<td class="bold nobr">{trans("Number:")}</td>
+			<td class="nobr">{if $invoice.ntempl}{$invoice.ntempl}{else}{$invoice.template}{/if}</td>
+		</tr>
+		<tr class="light">
+			<td><img src="img/money.gif" ALT=""></td>
+			<td class="bold nobr">{trans("Deadline:")}</td>
+			<td class="nobr">{if $invoice.pdate}{$invoice.pdate|date_format:"%d.%m.%Y"}{/if}</td>
+		</tr>
+		<tr class="light">
+			<td><img src="img/options.gif" ALT=""></TD>
+			<td class="bold nobr">{trans("Payment type:")}</td>
+			<td class="nobr">{if $invoice.paytypename}{$invoice.paytypename}{/if}</td>
+		</tr>
+	</TBODY>
+</table>

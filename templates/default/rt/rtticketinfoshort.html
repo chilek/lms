@@ -1,64 +1,75 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!--// $Id$ //-->
-<html><head>
-<meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="img/autoiframe.js"></script>
-<script type="text/javascript" src="img/common.js"></script>
-</head>
-<BODY>
 <TABLE class="lmsbox-inner" id="table">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
 	<THEAD>
 	<TR>
-		<TD style="width: 100%;" class="bold nobr" colspan="2">
+		<TD class="bold" colspan="2">
 			<IMG src="img/ticket.gif" alt="">
-			{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}
+			{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	{if $ticket.creatorid}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/users.gif" alt="">
 			{trans("Created by:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD>
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
 		</TD>
 	</TR>
 	{/if}
+	{if $ticket.invprojectid}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
+			<IMG src="img/money.gif" alt="">
+			{trans("Investment project:")}
+		</TD>
+		<TD>
+			{$ticket.invproject_name} ({$ticket.invprojectid})
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD class="bold nobr">
 			<IMG src="img/time.gif" alt="">
 			{trans("Uptime:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD>
 			{$ticket.uptime}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;"  class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/desc.gif" alt="">
 			{trans("Cause:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD>
 			{if $ticket.cause==2}{trans("company's side")}
 			{elseif $ticket.cause==1}{trans("customer's side")}
 			{else}{trans("unknown/other")}{/if}
 		</TD>
 	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/report.gif" alt="">
+			{trans("Priority:")}
+		</TD>
+		<TD>
+			{$_RT_PRIORITIES[$ticket.priority]}
+		</TD>
 	{if $ticket.message}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold">
 			<IMG src="img/info.gif" alt="">
 			{trans("Body:")}
 		</TD>
-		<TD style="width: 99%;">
-			<TABLE width="{if strlen($ticket.message)<50}100%{else}300{/if}" cellpadding="5">
+		<TD>
+			<TABLE width="{if strlen($ticket.message)<50}100%{/if}" cellpadding="5">
 				<TR>
 					<TD class="fall superlight">
 						{$ticket.message|replace:"\n":"<BR>"}
@@ -70,11 +81,3 @@
 	{/if}
 	</TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
-var table = document.getElementById('table');
-autoiframe_setsize('autoiframe', table.offsetWidth < 450 ? table.offsetWidth : 450, table.offsetHeight);
-//-->
-</SCRIPT>
-</BODY>
-</HTML>

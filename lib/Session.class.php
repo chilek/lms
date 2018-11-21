@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,22 +29,28 @@ class Session {
 	public $SID = NULL;			// session unique ID
 	public $_version = '1.11-git';		// library version
 	public $_revision = '$Revision$';	// library revision
-	public $_content = array();		// session content array
+	private $_content = array();		// session content array
+	private $_persistent_settings = array();	// user persistent settings
 	public $_updated = FALSE;			// indicates that content has
 						// been altered
 	public $DB = NULL;				// database library object
 	public $timeout = 600;			// timeout since session will
 						// be destroyed
+	private $settings_timeout = 28800;			// timeout since user settings will
+						// be cleared
 	public $autoupdate = FALSE;		// do automatic update on each
 						// save() or save_by_ref() ?
 	public $GCprob = 10;			// probality (in percent) of
 						// garbage collector procedure
 
-	public function __construct(&$DB, $timeout = 0) {
+	public function __construct(&$DB, $timeout = 0, $settings_timeout = 0) {
 		$this->DB =& $DB;
 
 		if (isset($timeout) && $timeout != 0)
 			$this->timeout = $timeout;
+
+		if (isset($settings_timeout))
+			$this->settings_timeout = $settings_timeout;
 
 		if (!isset($_COOKIE['SID']))
 			$this->_createSession();
@@ -73,10 +79,16 @@ class Session {
 		return md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
 	}
 
-	public function restore_user_settings() {
-		$settings = $this->DB->GetOne('SELECT settings FROM users WHERE login = ?', array($this->_content['session_login']));
-		if (!empty($settings))
-			$this->_content = array_merge($this->_content, unserialize($settings));
+	public function restore_user_settings($force_settings_restore = false) {
+		$settings = $this->DB->GetRow('SELECT settings, persistentsettings FROM users WHERE login = ?', array($this->_content['session_login']));
+		if (!empty($settings)) {
+			if (isset($settings['persistentsettings']))
+				$this->_persistent_settings = unserialize($settings['persistentsettings']);
+			$settings = unserialize($settings['settings']);
+			if (!empty($settings) && (!isset($settings['mtime'])
+				|| time() - $settings['mtime'] < $this->settings_timeout || $force_settings_restore))
+				$this->_content = array_merge($this->_content, $settings);
+		}
 	}
 
 	public function save($variable, $content) {
@@ -142,7 +154,8 @@ class Session {
 	public function _createSession() {
 		$this->SID = $this->makeSID();
 		$this->_content = array();
-		$this->DB->Execute('INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)', array($this->SID, serialize($this->makeVData()), serialize($this->_content)));
+		$this->DB->Execute('INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)',
+			array($this->SID, serialize($this->makeVData()), serialize($this->_content)));
 		setcookie('SID', $this->SID);
 	}
 
@@ -158,7 +171,7 @@ class Session {
 				if (!isset($_POST['xjxfun']))
 					$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
 				$this->_content = unserialize($row['content']);
-				$this->restore_user_settings();
+				$this->restore_user_settings(true);
 				return;
 			}
 		} elseif ($row)
@@ -170,23 +183,136 @@ class Session {
 	public function _saveSession() {
 		static $session_variables = array('session_id' => true, 'session_login' => true,
 			'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
-			'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true);
+			'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
+			'session_passwdrequiredchange' => true);
 
 		if ($this->autoupdate || $this->_updated) {
 			$session_content = array_intersect_key($this->_content, $session_variables);
 			$settings_content = array_diff_key($this->_content, $session_variables);
+			$settings_content['mtime'] = time();
 			$this->DB->Execute('UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
 				array(serialize($session_content), $this->SID));
-			$this->DB->Execute('UPDATE users SET settings = ? WHERE login = ?',
-				array(serialize($settings_content), $this->_content['session_login']));
+			$this->DB->Execute('UPDATE users SET settings = ?, persistentsettings = ? WHERE login = ?',
+				array(serialize($settings_content), serialize($this->_persistent_settings), $this->_content['session_login']));
 		}
 	}
 
 	public function _destroySession()
 	{
+		if (isset($this->_content['mtime']) && time() - $this->_content['mtime'] >= $this->settings_timeout)
+			if (isset($this->_content['session_login']))
+				$this->DB->Execute('UPDATE users SET settings = ? WHERE login = ?', array('', $this->_content['session_login']));
 		$this->DB->Execute('DELETE FROM sessions WHERE id = ?', array($this->SID));
 		$this->_content = array();
 		$this->SID = NULL;
+	}
+
+	public function get_persistent_setting($variable) {
+		if (isset($this->_persistent_settings[$variable]))
+			return $this->_persistent_settings[$variable];
+		else
+			return NULL;
+	}
+
+	public function save_persistent_setting($variable, $content) {
+		$this->_persistent_settings[$variable] = $content;
+
+		if ($this->autoupdate)
+			$this->_saveSession();
+		else
+			$this->_updated = true;
+	}
+
+	public function saveFilter($filter, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		$this->_content['filters'][$module] = $filter;
+
+		if ($this->autoupdate)
+			$this->_saveSession();
+		else
+			$this->_updated = true;
+	}
+
+	public function getFilter($module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (!isset($this->_content['filters'][$module]))
+			return array();
+
+		return $this->_content['filters'][$module];
+	}
+
+	public function removeFilter($module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (isset($this->_content['filters'][$module])) {
+			unset($this->_content['filters'][$module]);
+			if ($this->autoupdate)
+				$this->_saveSession();
+			else
+				$this->_updated = true;
+			return true;
+		} else
+			return false;
+	}
+
+	public function savePersistentFilter($name, $filter, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		$this->_persistent_settings['filters'][$module][$name] = $filter;
+
+		if ($this->autoupdate)
+			$this->_saveSession();
+		else
+			$this->_updated = true;
+	}
+
+	public function getPersistentFilter($name, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (!isset($this->_persistent_settings['filters'][$module][$name]))
+			return array();
+
+		return $this->_persistent_settings['filters'][$module][$name];
+	}
+
+	public function getAllPersistentFilters($module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (!isset($this->_persistent_settings['filters'][$module]))
+			return array();
+
+		$result = array();
+
+		foreach ($this->_persistent_settings['filters'][$module] as $filter_name => $filter)
+			$result[] = array(
+				'text' => $filter_name,
+				'value' => $filter_name,
+			);
+
+		return $result;
+	}
+
+	public function removePersistentFilter($name, $module = null) {
+		if (empty($module))
+			$module = $this->_content['module'];
+
+		if (isset($this->_persistent_settings['filters'][$module][$name])) {
+			unset($this->_persistent_settings['filters'][$module][$name]);
+			if ($this->autoupdate)
+				$this->_saveSession();
+			else
+				$this->_updated = TRUE;
+			return true;
+		} else
+			return false;
 	}
 
 	public function _garbageCollector()

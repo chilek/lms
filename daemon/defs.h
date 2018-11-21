@@ -19,16 +19,16 @@
 // Tariff types
 #define TARIFFTYPES_SECTION "tarifftypes"
 
-#define _TARIFF_INTERNET_ "internet"
-#define _TARIFF_HOSTING_ "hosting"
-#define _TARIFF_SERVICE_ "service"
-#define _TARIFF_PHONE_ "phone"
-#define _TARIFF_TV_ "tv"
-#define _TARIFF_OTHER_ "other"
+#define _SERVICE_INTERNET_ "internet"
+#define _SERVICE_HOSTING_ "hosting"
+#define _SERVICE_SERVICE_ "service"
+#define _SERVICE_PHONE_ "phone"
+#define _SERVICE_TV_ "tv"
+#define _SERVICE_OTHER_ "other"
 
-#define TARIFF_INTERNET 1
-#define TARIFF_HOSTING 2
-#define TARIFF_SERVICE 3
-#define TARIFF_PHONE 4
-#define TARIFF_TV 5
-#define TARIFF_OTHER -1
+#define SERVICE_INTERNET 1
+#define SERVICE_HOSTING 2
+#define SERVICE_SERVICE 3
+#define SERVICE_PHONE 4
+#define SERVICE_TV 5
+#define SERVICE_OTHER -1

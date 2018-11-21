@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -481,7 +481,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		"JOIN nodes n ON (na.nodeid = n.id) "
 		"LEFT JOIN netdevices d ON (n.netdev = d.id) "
 		"WHERE "
-			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0)"
+			"a.datefrom <= %NOW% AND (a.dateto >= %NOW% OR a.dateto = 0)"
 			"%disabled"
 			"%enets"
 	);
@@ -1721,7 +1721,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 		g->db->pexec(g->db->conn, "INSERT INTO ewx_stm_nodes (nodeid, mac, ipaddr, "
 		        "channelid, uprate, upceil, downrate, downceil, halfduplex) "
 				"VALUES (?, '?', INET_ATON('?'), ?, ?, ?, ?, ?, ?)", 
-				itoa(h.id), h.mac, h.ip, channelid, uprate, upceil, downrate, downceil, halfduplex);
+				itoa(h.id), h.mac, h.ip, chid ? channelid : "NULL", uprate, upceil, downrate, downceil, halfduplex);
 
 		free(uprate);
 		free(upceil);

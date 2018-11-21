@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,8 +36,7 @@ if(isset($_GET['is_sure']))
 		@unlink(ConfigHelper::getConfig('directories.backup_dir').'/' . $filename);
 	}
 	if (isset($filename) && $SYSLOG)
-		$SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_DELETE,
-			array('filename' => $filename), null);
+		$SYSLOG->AddMessage(SYSLOG::RES_DBBACKUP, SYSLOG::OPER_DELETE, array('filename' => $filename));
 
 	$SESSION->redirect('?m=dblist');
 } 

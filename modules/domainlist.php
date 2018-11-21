@@ -71,7 +71,7 @@ function GetDomainList($order = 'name,asc', $customer = '', $filtr = '') {
 			. $where
 			. ($sqlord != '' ? $sqlord : ''));
 
-	$list['total'] = sizeof($list);
+	$list['total'] = empty($list) ? 0 : count($list);
 	$list['order'] = $order;
 	$list['direction'] = $direction;
 	$list['customer'] = $customer;

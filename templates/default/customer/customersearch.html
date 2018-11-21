@@ -1,9 +1,8 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!-- 
 	function PrintList() {
@@ -85,6 +84,13 @@
 			<INPUT type="text" name="search[address]" VALUE="{$search.address}">
 			<span class="bold">{trans("City:")}</span> <INPUT type="text" name="search[city]" VALUE="{$search.city}">
 			<span class="bold">{trans("Postcode:")}</span> <INPUT type="text" name="search[zip]" VALUE="{$search.zip}" SIZE="10">
+			<span class="bold">{trans("Address type:")}</span>
+			<SELECT name="search[addresstype]">
+				<OPTION value="">{trans("- all -")}</OPTION>
+				<OPTION value="{$smarty.const.BILLING_ADDRESS}">{trans("settlement<!addresstype>")}</OPTION>
+				<OPTION value="{$smarty.const.POSTAL_ADDRESS}">{trans("postal")}</OPTION>
+				<OPTION value="{$smarty.const.LOCATION_ADDRESS}">{trans("localisation<!addresstype>")}</OPTION>
+			</SELECT>
 		</TD>
 	</TR>
 	<TR>
@@ -92,7 +98,7 @@
 			<IMG src="img/phone.gif" alt=""> {trans("Phone:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT type="text" name="search[phone]" VALUE="{$search.phone}">
+			<INPUT type="tel" name="search[phone]" VALUE="{$search.phone}">
 		</TD>
 	</TR>
 	<TR>
@@ -100,7 +106,7 @@
 			<IMG src="img/mail.gif" alt=""> {trans("E-mail:")}
 		</TD>
 		<TD style="width: 99%;">
-			<INPUT type="text" name="search[email]" VALUE="{$search.email}">
+			<INPUT type="email" name="search[email]" VALUE="{$search.email}">
 		</TD>
 	</TR>
 	{*
@@ -239,11 +245,10 @@
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/money.gif" alt=""> {trans("Tariffs:")}
 		</TD>
-		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="search[tariffs][]" multiple id="customertariffs">
-				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
-				{foreach from=$tariffs item=item}
-				 	<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+		<TD style="width: 99%;" class="multiselect">
+			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+				{foreach $tariffs as $item}
+				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -255,7 +260,7 @@
 		<TD style="width: 99%;">
 			<SELECT SIZE="1" name="search[tarifftype]">
 				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
-				{foreach $_TARIFFTYPES as $id => $name}
+				{foreach $_SERVICETYPES as $id => $name}
 				 	<OPTION VALUE="{$id}">{$name}</OPTION>
 				{/foreach}
 			</SELECT>
@@ -266,10 +271,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
 		</TD>
 		<TD style="width: 99%;">
-			<div class="calendar">
-			{trans("from")} <INPUT type="text" value="" name="search[createdfrom]" size="10">
-			{trans("to")} <INPUT type="text" value="" name="search[createdto]" size="10">
-			</div>
+			{trans("from")} <INPUT type="text" class="calendar" value="" name="search[createdfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
+			{trans("to")} <INPUT type="text" class="calendar" value="" name="search[createdto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 		</TD>
 	</TR>
 	<TR>
@@ -277,10 +280,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Deleted:")}
 		</TD>
 		<TD style="width: 99%;">
-			<div class="calendar">
-			{trans("from")} <INPUT type="text" value="" name="search[deletedfrom]" size="10">
-			{trans("to")} <INPUT type="text" value="" name="search[deletedto]" size="10">
-			</div>
+			{trans("from")} <INPUT type="text" class="calendar" value="" name="search[deletedfrom]" size="10" placeholder="{trans("yyyy/mm/dd")}">
+			{trans("to")} <INPUT type="text" class="calendar" value="" name="search[deletedto]" size="10" placeholder="{trans("yyyy/mm/dd")}">
 		</TD>
 	</TR>
 	<TR>
@@ -288,8 +289,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
 		</TD>
 		<TD style="width: 99%;">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
 		</TD>
 	</TR>
 	<TR>
@@ -327,7 +328,26 @@
 				<OPTION VALUE="54">{trans("without group")}</OPTION>
 				<OPTION VALUE="55">{trans("without tariff")}</OPTION>
 				<OPTION VALUE="56">{trans("suspended<!plural>")}</OPTION>
+				<OPTION value="59">{trans("without contracts")}</OPTION>
+				<OPTION value="60">{trans("with expired contracts")}</OPTION>
+				<OPTION value="61">{trans("with expiring contracts")}</OPTION>
 			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<img src="img/money.gif" alt=""> {trans("Balance:")}
+		</TD>
+		<TD>
+			<label>
+				<input type="radio" name="search[balance_relation]" value="-1" checked>
+				{trans("less or equal")}
+			</label>
+			<label>
+				<input type="radio" name="search[balance_relation]" value="1">
+				{trans("greater or equal")}
+			</label>
+			&nbsp;<input type="text" name="search[balance]" size="7">
 		</TD>
 	</TR>
 	<TR>
@@ -335,11 +355,11 @@
 			<IMG src="img/network.gif" alt=""> {trans("Network:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="n">
-				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
-				{section name=networks loop=$networks}
-				<OPTION value="{$networks[networks].id}" {if $listdata.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"...":true}</OPTION>
-				{/section}
+			<input type="hidden" name="n" value="all">
+			<SELECT SIZE="1" name="n[]" class="lms-ui-multiselect" data-default-value="{trans("- all networks -")}" multiple>
+				{foreach $networks as $network}
+				<OPTION value="{$network.id}"{if $listdata.network && in_array($network.id, $listdata.network)} selected{/if}>{$network.name|truncate:50:"...":true}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
@@ -350,6 +370,7 @@
 		<TD style="width: 99%;">
 			<SELECT SIZE="1" name="g">
 				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+				<OPTION value="-1"{if $listdata.customergroup == -1} selected{/if}>{trans("- without assigned groups -")}</OPTION>
 				{section name=customergroups loop=$customergroups}
 				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
 				{/section}
@@ -381,8 +402,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['customersearch'].elements['search[customername]'].focus();
-multiselect('customersearch', 'customertariffs', '{t}- all -{/t}', null);
+	$(function() {
+		$('form[name="customersearch"] [name="search[customername]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -55,22 +55,22 @@ if($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 			$aid = $DB->GetOne('SELECT a.id FROM nodegroupassignments a
 				WHERE a.nodeid = ? AND a.nodegroupid = ?', array($nid, $to));
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN] => $aid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $to
+				SYSLOG::RES_NODEGROUPASSIGN => $aid,
+				SYSLOG::RES_NODE => $nid,
+				SYSLOG::RES_NODEGROUP => $to
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
 		}
 
 		$assigns = $DB->GetAll('SELECT id, nodeid FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
 		if (!empty($assigns))
 			foreach ($assigns as $assign) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN] => $assign['id'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $assign['nodeid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $from
+					SYSLOG::RES_NODEGROUPASSIGN => $assign['id'],
+					SYSLOG::RES_NODE => $assign['nodeid'],
+					SYSLOG::RES_NODEGROUP => $from
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
 			}
 	}
 	

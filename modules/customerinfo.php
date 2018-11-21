@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,12 +24,40 @@
  *  $Id$
  */
 
+if (isset($_GET['ajax'])) {
+	if (!isset($_POST['id']))
+		die;
+	if (is_array($_POST['id']))
+		$ids = $_POST['id'];
+	else
+		$ids = array($_POST['id']);
+
+	$customernames = array();
+	foreach ($ids as $id) {
+		if (!($id = intval($id)))
+			continue;
+		$customername = $LMS->GetCustomerName($id);
+		if (!empty($customername))
+			$customernames[$id] = $customername;
+	}
+	header('Content-Type: application/json');
+
+	if (empty($customernames))
+		echo json_encode(array('error' => trans("Not exists")));
+	else
+		echo json_encode(array('customernames' => $customernames));
+
+	die;
+}
+
 $customerid = intval($_GET['id']);
 
 $LMS->InitXajax();
 
 if (!isset($_POST['xjxfun'])) {
+
 	include(MODULES_DIR.'/customer.inc.php');
+	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 	//if($customerinfo['cutoffstop'] > mktime(0,0,0))
 	//        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
@@ -47,8 +75,8 @@ $hook_data = $LMS->executeHook(
 	)
 );
 $customerinfo = $hook_data['customerinfo'];
-
 $SMARTY->assign('xajax', $LMS->RunXajax());
+$SMARTY->assign('customerinfo_sortable_order', $SESSION->get_persistent_setting('customerinfo-sortable-order'));
 $SMARTY->display('customer/customerinfo.html');
 
 ?>

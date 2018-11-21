@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -39,6 +39,7 @@ class LMS
     public $_version = '1.11-git'; // class version
     public $_revision = '$Format:%cI$'; // %H for last commit checksum
     private $mail_object = NULL;
+    private static $lms = null;
     protected $plugin_manager;
     protected $user_manager;
     protected $customer_manager;
@@ -50,6 +51,7 @@ class LMS
     protected $node_manager;
     protected $node_group_manager;
     protected $net_dev_manager;
+    protected $net_node_manager;
     protected $helpdesk_manager;
     protected $finance_manager;
     protected $event_manager;
@@ -57,34 +59,46 @@ class LMS
     protected $massage_manager;
     protected $config_manager;
     protected $user_group_manager;
+    protected $division_manager;
+    protected $project_manager;
+	protected $file_manager;
 
-    public function __construct(&$DB, &$AUTH, &$SYSLOG)
-    { // class variables setting
-        $this->DB = &$DB;
-        $this->AUTH = &$AUTH;
-        $this->SYSLOG = &$SYSLOG;
+	const db_dump_multi_record_limit = 500;
 
-        $this->cache = new LMSCache();
+	public function __construct(&$DB, &$AUTH, &$SYSLOG) {
+	// class variables setting
+		$this->DB = &$DB;
+		$this->AUTH = &$AUTH;
+		$this->SYSLOG = &$SYSLOG;
 
-	if (preg_match('/.+Format:.+/', $this->_revision))
-		$this->_revision = '';
-    }
+		$this->cache = new LMSCache();
+
+		if (preg_match('/.+Format:.+/', $this->_revision))
+			$this->_revision = '';
+
+		self::$lms = $this;
+	}
 
     public function _postinit()
     {
         return TRUE;
     }
 
-    public function InitUI()
+	public static function getInstance() {
+		return self::$lms;
+	}
+
+
+	public function InitUI()
     {
         // set current user
         switch (ConfigHelper::getConfig('database.type')) {
             case 'postgres':
-                $this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array($this->AUTH->id));
+                $this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array(strval(Auth::GetCurrentUser())));
                 break;
             case 'mysql':
             case 'mysqli':
-                $this->DB->Execute('SET @lms_current_user=?', array($this->AUTH->id));
+                $this->DB->Execute('SET @lms_current_user=?', array(Auth::GetCurrentUser()));
                 break;
         }
     }
@@ -95,7 +109,9 @@ class LMS
             require(LIB_DIR . DIRECTORY_SEPARATOR . 'xajax' . DIRECTORY_SEPARATOR . 'xajax_core' . DIRECTORY_SEPARATOR . 'xajax.inc.php');
             $this->xajax = new xajax();
             $this->xajax->configure('errorHandler', true);
-            $this->xajax->configure('javascript URI', 'img');
+            $this->xajax->configure('javascript Dir', SYS_DIR . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'xajax_js');
+            $this->xajax->configure('javascript URI', 'js/xajax_js');
+            //$this->xajax->configure('deferScriptGeneration', false);
         }
     }
 
@@ -134,7 +150,7 @@ class LMS
       if( $loglevel <= ConfigHelper::getConfig('phpui.loglevel') && $message )
       {
       $this->DB->Execute('INSERT INTO syslog (time, userid, level, message)
-      VALUES (?NOW?, ?, ?, ?)', array($this->AUTH->id, $loglevel, $message));
+      VALUES (?NOW?, ?, ?, ?)', array(Auth::GetCurrentUser(), $loglevel, $message));
       }
       }
      */
@@ -179,10 +195,12 @@ class LMS
      * @param mixed $hook_data Hook data
      * @return mixed Modfied hook data
      */
-    public function executeHook($hook_name, $hook_data = null)
-    {
-        return $this->plugin_manager->executeHook($hook_name, $hook_data);
-    }
+	public function executeHook($hook_name, $hook_data = null) {
+		if (!empty($this->plugin_manager))
+			return $this->plugin_manager->executeHook($hook_name, $hook_data);
+		else
+			return $hook_data;
+	}
 
     /*
      *  Database functions (backups)
@@ -190,6 +208,8 @@ class LMS
 
     public function DBDump($filename = NULL, $gzipped = FALSE, $stats = FALSE)
     { // dump database to file
+        $dbtype = ConfigHelper::getConfig('database.type');
+
         if (!$filename)
             return FALSE;
 
@@ -201,13 +221,15 @@ class LMS
         if ($dumpfile) {
             $tables = $this->DB->ListTables();
 
-            switch (ConfigHelper::getConfig('database.type')) {
+            switch ($dbtype) {
                 case 'postgres':
                     fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
+                    $value_prefix = 'E';
                     break;
                 case 'mysql':
                 case 'mysqli':
                     fputs($dumpfile, "SET foreign_key_checks = 0;\n");
+                    $value_prefix = '';
                     break;
             }
 
@@ -221,9 +243,36 @@ class LMS
 
             // Since we're using foreign keys, order of tables is important
             // Note: add all referenced tables to the list
-            $order = array('users', 'customers', 'customergroups', 'nodes', 'numberplans',
-                'assignments', 'rtqueues', 'rttickets', 'rtmessages', 'domains',
-                'cashsources', 'sourcefiles', 'ewx_channels', 'hosts');
+            $order = array(
+				'users', 'countries', 'location_states', 'location_districts',
+				'location_boroughs', 'location_cities', 'location_street_types',
+				'location_streets', 'location_buildings', 'addresses', 'divisions',
+				'customers', 'numberplans', 'states', 'zipcodes', 'customer_addresses',
+				'documents', 'documentcontents', 'documentattachments', 'cashregs',
+				'receiptcontents', 'taxes', 'voipaccounts', 'voip_rule_groups',
+				'voip_prefix_groups', 'voip_rules', 'voip_tariffs', 'voip_rule_states',
+				'voip_prefixes', 'voip_cdr', 'voip_price_groups', 'tariffs', 'voip_numbers',
+				'voip_pool_numbers', 'voip_emergency_numbers', 'liabilities', 'assignments',
+				'voip_number_assignments', 'invoicecontents', 'debitnotecontents',
+				'cashsources', 'sourcefiles', 'cashimport', 'cash', 'pna', 'ewx_channels',
+				'ewx_stm_channels', 'hosts', 'networks', 'invprojects',
+				'netnodes', 'netdeviceproducers', 'netdevicemodels', 'netdevices',
+				'netradiosectors', 'nodes', 'ewx_stm_nodes', 'nodelocks', 'macs', 'nodegroups',
+				'nodegroupassignments', 'nodeassignments', 'tarifftags', 'tariffassignments',
+				'promotions', 'promotionschemas', 'promotionassignments', 'payments',
+				'numberplanassignments', 'customergroups', 'customerassignments', 'nodesessions',
+				'stats', 'netlinks', 'rtqueues', 'rttickets', 'rtticketlastview', 'rtmessages', 'rtrights',
+				'rtattachments', 'rtcategories', 'rtcategoryusers', 'rtticketcategories',
+				'rtqueuecategories', 'domains', 'passwd', 'records', 'domainmetadata',
+				'supermasters', 'aliases', 'aliasassignments', 'uiconfig', 'events',
+				'eventassignments', 'sessions', 'daemoninstances', 'daemonconfig', 'docrights',
+				'cashrights', 'cashreglog', 'ewx_pt_config', 'dbinfo', 'customercontacts',
+				'excludedgroups', 'messages', 'messageitems', 'nastypes', 'managementurls',
+				'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata',
+				'templates', 'usergroups', 'userassignments', 'passwdhistory',
+				'filecontainers', 'files', 'up_rights',
+				'up_rights_assignments', 'up_customers', 'up_help', 'up_info_changes'
+			);
 
             foreach ($tables as $idx => $table) {
                 if (in_array($table, $order)) {
@@ -238,26 +287,36 @@ class LMS
                 if ($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
                     continue;
 
+                $record = $this->DB->GetRow('SELECT * FROM ' . $tablename . ' LIMIT 1');
+                if (empty($record))
+                    continue;
+                $fields = array_keys($record);
+
+                $query = 'INSERT INTO ' . $tablename . ' (' . implode(',', $fields) . ') VALUES ';
+                $record_limit = self::db_dump_multi_record_limit;
+                $records = array();
                 $this->DB->Execute('SELECT * FROM ' . $tablename);
                 while ($row = $this->DB->_driver_fetchrow_assoc()) {
-                    fputs($dumpfile, "INSERT INTO $tablename (");
-                    foreach ($row as $field => $value) {
-                        $fields[] = $field;
+                    $values = array();
+                    foreach ($row as $value) {
                         if (isset($value))
-                            $values[] = "'" . addcslashes($value, "\r\n\'\"\\") . "'";
+                            $values[] = $value_prefix . "'" . addcslashes($value, "\r\n\'\"\\") . "'";
                         else
                             $values[] = 'NULL';
                     }
-                    fputs($dumpfile, implode(', ', $fields));
-                    fputs($dumpfile, ') VALUES (');
-                    fputs($dumpfile, implode(', ', $values));
-                    fputs($dumpfile, ");\n");
-                    unset($fields);
-                    unset($values);
+                    $records[] = '(' . implode(', ', $values) . ')';
+                    $record_limit--;
+                    if (!$record_limit) {
+                        fputs($dumpfile, $query . implode(',', $records) . ";\n");
+                        $records = array();
+                        $record_limit = self::db_dump_multi_record_limit;
+                    }
                 }
+                if ($record_limit < self::db_dump_multi_record_limit)
+                    fputs($dumpfile, $query . implode(',', $records) . ";\n");
             }
 
-            if (preg_match('/^mysqli?$/', ConfigHelper::getConfig('database.type')))
+            if (preg_match('/^mysqli?$/', $dbtype))
                 fputs($dumpfile, "SET foreign_key_checks = 1;\n");
 
             if ($gzipped && extension_loaded('zlib'))
@@ -279,20 +338,11 @@ class LMS
             $res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . DIRECTORY_SEPARATOR . $filename, FALSE, $stats);
         }
         if ($this->SYSLOG)
-            $this->SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_ADD, array('filename' => $filename), null);
+            $this->SYSLOG->AddMessage(SYSLOG::RES_DBBACKUP, SYSLOG::OPER_ADD, array('filename' => $filename));
         return $res;
     }
 
-	public function CleanupInvprojects() {
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
-			$this->DB->Execute("DELETE FROM invprojects WHERE type <> ? AND id NOT IN
-				(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM vnodes WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
-				array(INV_PROJECT_SYSTEM));
-	}
-
-    /*
+	/*
      * Users
      */
 
@@ -407,7 +457,7 @@ class LMS
         $manager = $this->getCustomerManager();
         return $manager->DeleteCustomer($id);
     }
-    
+
     public function DeleteCustomerPermanent($id)
     {
         $manager = $this->getCustomerManager();
@@ -437,6 +487,16 @@ class LMS
         $manager = $this->getCashManager();
         return $manager->GetCashByID($id);
     }
+
+	public function CashImportParseFile($filename, $contents, $patterns, $quiet = true) {
+		$manager = $this->getCashManager();
+		return $manager->CashImportParseFile($filename, $contents, $patterns, $quiet);
+	}
+
+	public function CashImportCommit() {
+		$manager = $this->getCashManager();
+		return $manager->CashImportCommit();
+	}
 
     public function GetCustomerStatus($id)
     {
@@ -480,6 +540,18 @@ class LMS
         return $manager->getCustomerNodes($id, $count);
     }
 
+    public function getCustomerNetDevNodes($id, $count = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerNetDevNodes($id, $count);
+    }
+
+    public function GetCustomerNetDevs($customer_id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerNetDevs($customer_id);
+    }
+
     public function GetCustomerNetworks($id, $count = null)
     {
         $manager = $this->getCustomerManager();
@@ -498,11 +570,51 @@ class LMS
         return $manager->getCustomerBalanceList($id, $totime, $direction);
     }
 
+	public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC') {
+		$manager = $this->getCustomerManager();
+		return $manager->getCustomerShortBalanceList($customerid, $limit, $order);
+	}
+
     public function CustomerStats()
     {
         $manager = $this->getCustomerManager();
         return $manager->customerStats();
     }
+
+    public function checkCustomerAddress($a_id, $c_id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->checkCustomerAddress($a_id, $c_id);
+    }
+
+    public function getCustomerAddresses($id, $hide_deleted = false)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerAddresses($id, $hide_deleted);
+    }
+
+    public function getAddressForCustomerStuff( $customer_id )
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getAddressForCustomerStuff( $customer_id );
+    }
+
+    public function getFullAddressForCustomerStuff( $customer_id )
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getFullAddressForCustomerStuff( $customer_id );
+    }
+
+    public function GetCustomerContacts($id, $mask = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerContacts($id, $mask);
+    }
+
+	public function GetCustomerDivision($id) {
+		$manager = $this->getCustomerManager();
+		return $manager->GetCustomerDivision($id);
+	}
 
     /*
      * Customer groups
@@ -697,10 +809,10 @@ class LMS
         return $manager->GetNode($id);
     }
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
+    public function GetNodeList(array $params = array())
     {
         $manager = $this->getNodeManager();
-        return $manager->GetNodeList($order, $search, $sqlskey, $network, $status, $customergroup, $nodegroup, $limit, $offset, $count);
+        return $manager->GetNodeList($params);
     }
 
     public function NodeSet($id, $access = -1)
@@ -823,133 +935,202 @@ class LMS
         return $manager->SetNodeLinkType($node, $link);
     }
 
+    public function updateNodeField($nodeid, $field, $value)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->updateNodeField($nodeid, $field, $value);
+    }
+
+    public function GetUniqueNodeLocations($customerid) {
+        $manager = $this->getNodeManager();
+        return $manager->GetUniqueNodeLocations( $customerid );
+    }
+
+	public function GetNodeLocations($customerid, $address_id = null) {
+		$manager = $this->getNodeManager();
+		return $manager->GetNodeLocations($customerid, $address_id);
+	}
+
     /*
      *  Tarrifs and finances
      */
 
+    public function GetPromotionNameBySchemaID($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->GetPromotionNameBySchemaID($id);
+    }
+
+    public function GetPromotionNameByID($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->GetPromotionNameByID($id);
+    }
+
     public function GetCustomerTariffsValue($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetCustomerTariffsValue($id);
     }
 
-    public function GetCustomerAssignments($id, $show_expired = false)
+	public function GetCustomerAssignmentValue($id)
+	{
+		$manager = $this->getFinanceManager();
+		return $manager->GetCustomerAssignmentValue($id);
+	}
+
+	public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
-        $manager = $this->getFinanaceManager();
-        return $manager->GetCustomerAssignments($id, $show_expired);
+        $manager = $this->getFinanceManager();
+        return $manager->GetCustomerAssignments($id, $show_expired, $show_approved);
     }
 
     public function DeleteAssignment($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->DeleteAssignment($id);
     }
 
     public function AddAssignment($data)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->AddAssignment($data);
     }
 
-    public function SuspendAssignment($id, $suspend = TRUE)
+	public function ValidateAssignment($data) {
+		$manager = $this->getFinanceManager();
+		return $manager->ValidateAssignment($data);
+	}
+
+	public function UpdateExistingAssignments($data) {
+		$manager = $this->getFinanceManager();
+		return $manager->UpdateExistingAssignments($data);
+	}
+
+	public function SuspendAssignment($id, $suspend = TRUE)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->SuspendAssignment($id, $suspend);
     }
 
-    public function AddInvoice($invoice)
+	public function GetInvoiceList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetInvoiceList($params);
+	}
+
+	public function AddInvoice($invoice)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->AddInvoice($invoice);
     }
 
     public function InvoiceDelete($invoiceid)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->InvoiceDelete($invoiceid);
     }
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->InvoiceContentDelete($invoiceid, $itemid);
     }
 
     public function GetInvoiceContent($invoiceid)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetInvoiceContent($invoiceid);
     }
 
-    public function GetNoteContent($id)
+	public function GetNoteList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetNoteList($params);
+	}
+
+	public function GetNoteContent($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetNoteContent($id);
     }
 
     public function TariffAdd($tariff)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffAdd($tariff);
     }
 
     public function TariffUpdate($tariff)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffUpdate($tariff);
     }
 
     public function TariffDelete($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffDelete($id);
     }
 
     public function GetTariff($id, $network = NULL)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetTariff($id, $network);
     }
 
-    public function GetTariffs()
+    public function GetTariffs($forced_id = null)
     {
-        $manager = $this->getFinanaceManager();
-        return $manager->GetTariffs();
+        $manager = $this->getFinanceManager();
+        return $manager->GetTariffs($forced_id);
     }
 
     public function TariffSet($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffSet($id);
     }
 
     public function TariffExists($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffExists($id);
     }
 
-    public function ReceiptContentDelete($docid, $itemid = 0)
+	public function ReceiptDelete($docid) {
+		$manager = $this->getFinanceManager();
+		return $manager->ReceiptDelete($docid);
+	}
+
+	public function ReceiptContentDelete($docid, $itemid = 0)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->ReceiptContentDelete($docid, $itemid);
     }
 
-    public function DebitNoteContentDelete($docid, $itemid = 0)
+	public function DebitNoteDelete($noteid) {
+		$manager = $this->getFinanceManager();
+		return $manager->DebitNoteDelete($noteid);
+	}
+
+	public function DebitNoteContentDelete($docid, $itemid = 0)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->DebitNoteContentDelete($docid, $itemid);
     }
 
     public function AddBalance($addbalance)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->AddBalance($addbalance);
     }
 
-    public function DelBalance($id)
+	public function GetBalanceList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetBalanceList($params);
+	}
+
+	public function DelBalance($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->DelBalance($id);
     }
 
@@ -959,49 +1140,49 @@ class LMS
 
     public function GetPaymentList()
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPaymentList();
     }
 
     public function GetPayment($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPayment($id);
     }
 
     public function GetPaymentName($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPaymentName($id);
     }
 
     public function GetPaymentIDByName($name)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPaymentIDByName($name);
     }
 
     public function PaymentExists($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentExists($id);
     }
 
     public function PaymentAdd($paymentdata)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentAdd($paymentdata);
     }
 
     public function PaymentDelete($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentDelete($id);
     }
 
     public function PaymentUpdate($paymentdata)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentUpdate($paymentdata);
     }
 
@@ -1010,10 +1191,20 @@ class LMS
         $manager = $this->getNetworkManager();
         return $manager->ScanNodes();
     }
+    public function GetNetworkPageForIp($netid, $ip)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetNetworkPageForIp($netid, $ip);
+    }
 
-    /*
-     *  IP Networks
-     */
+	public function GetPublicNetworkID($netid) {
+		$manager = $this->getNetworkManager();
+		return $manager->GetPublicNetworkID($netid);
+	}
+
+	/*
+	 *  IP Networks
+	 */
 
     public function NetworkExists($id)
     {
@@ -1087,10 +1278,10 @@ class LMS
         return $manager->GetNetworkParams($id);
     }
 
-    public function GetNetworkList($order = 'id,asc')
+    public function GetNetworkList(array $search)
     {
         $manager = $this->getNetworkManager();
-        return $manager->GetNetworkList($order);
+        return $manager->GetNetworkList($search);
     }
 
     public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0)
@@ -1235,6 +1426,102 @@ class LMS
         return $manager->NetDevUnLink($dev1, $dev2);
     }
 
+	public function GetProducers() {
+		$manager = $this->getNetDevManager();
+		return $manager->GetProducers();
+	}
+
+	public function GetModels($producerid = null) {
+		$manager = $this->getNetDevManager();
+		return $manager->GetModels($producerid);
+	}
+
+	public function GetRadioSectors($netdevid, $technology = 0) {
+		$manager = $this->getNetDevManager();
+		return $manager->GetRadioSectors($netdevid, $technology);
+	}
+
+	public function AddRadioSector($netdevid, array $radiosector) {
+		$manager = $this->getNetDevManager();
+		return $manager->AddRadioSector($netdevid, $radiosector);
+	}
+
+	public function DeleteRadioSector($id) {
+		$manager = $this->getNetDevManager();
+		return $manager->DeleteRadioSector($id);
+	}
+
+	public function UpdateRadioSector($id, array $radiosector) {
+		$manager = $this->getNetDevManager();
+		return $manager->UpdateRadioSector($id, $radiosector);
+	}
+
+	public function GetManagementUrls($type, $id) {
+		$manager = $this->getNetDevManager();
+		return $manager->GetManagementUrls($type, $id);
+	}
+
+	public function AddManagementUrl($type, $id, array $url) {
+		$manager = $this->getNetDevManager();
+		return $manager->AddManagementUrl($type, $id, $url);
+    }
+
+	public function DeleteManagementUrl($type, $id) {
+		$manager = $this->getNetDevManager();
+		return $manager->DeleteManagementUrl($type, $id);
+	}
+
+	public function updateManagementUrl($type, $id, array $url) {
+		$manager = $this->getNetDevManager();
+		return $manager->updateManagementUrl($type, $id, $url);
+	}
+
+	public function GetNetNode($id)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->GetNetNode($id);
+    }
+
+	public function GetNetNodes() {
+		$manager = $this->getNetNodeManager();
+		return $manager->GetNetNodes();
+	}
+
+	public function GetCustomerNetNodes($id) {
+		$manager = $this->getNetNodeManager();
+		return $manager->GetCustomerNetNodes($id);
+	}
+
+	public function GetNetNodeList($search, $order)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->GetNetNodeList($search, $order);
+    }
+
+    public function NetNodeAdd($netnodedata)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeAdd($netnodedata);
+    }
+
+    public function NetNodeExists($id)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeExists($id);
+    }
+
+    public function NetNodeDelete($id)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeDelete($id);
+    }
+
+    public function NetNodeUpdate($netnodedata)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeUpdate($netnodedata);
+    }
+
     public function GetUnlinkedNodes()
     {
         $manager = $this->getNetworkManager();
@@ -1257,10 +1544,9 @@ class LMS
         return $manager->GetQueue($id);
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL)
-    {
+	public function GetQueueContents(array $params) {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueContents($ids, $order, $state, $owner, $catids);
+        return $manager->GetQueueContents($params);
     }
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL)
@@ -1269,11 +1555,10 @@ class LMS
         return $manager->GetUserRightsRT($user, $queue, $ticket);
     }
 
-    public function GetQueueList($stats = true)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueList($stats);
-    }
+	public function GetQueueList($params) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetQueueList($params);
+	}
 
     public function GetQueueNames()
     {
@@ -1290,7 +1575,19 @@ class LMS
     public function GetQueueIdByName($queue)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueIdByName($id);
+        return $manager->GetQueueIdByName($queue);
+    }
+
+    public function GetQueueVerifier($id)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetQueueVerifier($id);
+    }
+
+    public function GetQueueNameByTicketId($id)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetQueueNameByTicketId($id);
     }
 
     public function GetQueueName($id)
@@ -1347,10 +1644,10 @@ class LMS
         return $manager->GetCategoryIdByName($category);
     }
 
-    public function GetCategoryListByUser($userid = NULL)
+    public function GetUserCategories($userid = NULL)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetCategoryListByUser($userid);
+        return $manager->GetUserCategories($userid);
     }
 
     public function RTStats()
@@ -1371,11 +1668,28 @@ class LMS
         return $manager->TicketExists($id);
     }
 
+/*
+	public function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup);
+	}
+*/
+
+	public function TicketMessageAdd($message, $files = null) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->TicketMessageAdd($message, $files);
+	}
+
     public function TicketAdd($ticket, $files = NULL)
     {
         $manager = $this->getHelpdeskManager();
         return $manager->TicketAdd($ticket, $files);
     }
+
+	public function GetLastMessageID() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetLastMessageID();
+	}
 
     public function GetTicketContents($id)
     {
@@ -1389,15 +1703,86 @@ class LMS
         return $manager->TicketChange($ticketid, $props);
     }
 
+    public function GetQueueCategories($queueid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetQueueCategories($queueid);
+    }
+
     public function GetMessage($id)
     {
         $manager = $this->getHelpdeskManager();
         return $manager->GetMessage($id);
     }
 
-    /*
-     * Konfiguracja LMS-UI
-     */
+	public function GetFirstMessage($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetFirstMessage($ticketid);
+	}
+
+	public function GetLastMessage($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetLastMessage($ticketid);
+	}
+
+	public function ReplaceNotificationSymbols($text, array $params) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->ReplaceNotificationSymbols($text, $params);
+	}
+
+	public function ReplaceNotificationCustomerSymbols($text, array $params) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->ReplaceNotificationCustomerSymbols($text, $params);
+	}
+
+	public function NotifyUsers($params) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->NotifyUsers($params);
+	}
+
+	public function CleanupTicketLastView() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->CleanupTicketLastView();
+	}
+
+	public function MarkQueueAsRead($queueid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->MarkQueueAsRead($queueid);
+	}
+
+	public function MarkTicketAsRead($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->MarkTicketAsRead($ticketid);
+	}
+
+	public function MarkTicketAsUnread($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->MarkTicketAsUnread($ticketid);
+	}
+
+	public function GetIndicatorStats() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetIndicatorStats();
+	}
+
+	public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order);
+	}
+
+	public function GetTicketPhoneFrom($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetTicketPhoneFrom($ticketid);
+	}
+
+	public function CheckTicketAccess($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->CheckTicketAccess($ticketid);
+	}
+
+	/*
+	 *  LMS-UI configuration
+	 */
 
     public function GetConfigOptionId($var, $section)
     {
@@ -1423,7 +1808,7 @@ class LMS
 
     public function GetHostingLimits($customerid)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetHostingLimits($customerid);
     }
 
@@ -1580,137 +1965,212 @@ class LMS
         return FALSE;
     }
 
-    public function SendMail($recipients, $headers, $body, $files = NULL, $host = null, $port = null, $user = null, $pass = null, $auth = null, $persist = null)
-    {
-	$persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
+	public function SendMail($recipients, $headers, $body, $files = NULL, $persist = null, $smtp_options = null) {
+		$persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
 
-	if(ConfigHelper::getConfig('mail.backend') == 'pear'){
-	    @include_once('Mail.php');
-	    if (!class_exists('Mail'))
-		return trans('Can\'t send message. PEAR::Mail not found!');
+		if (ConfigHelper::getConfig('mail.backend') == 'pear') {
+			if (!is_object($this->mail_object) || !$persist) {
+				$params['host'] = (!isset($smtp_options['host']) ? ConfigHelper::getConfig('mail.smtp_host') : $smtp_options['host']);
+				$params['port'] = (!isset($smtp_options['port']) ? ConfigHelper::getConfig('mail.smtp_port') : $smtp_options['port']);
+				$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+				if (!empty($smtp_username) || isset($smtp_options['user'])) {
+					$params['auth'] = (!isset($smtp_options['auth']) ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $smtp_options['auth']);
+					if ($params['auth'] == 'false')
+						$params['auth'] = false;
+					$params['username'] = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
+					$params['password'] = (!isset($smtp_options['pass']) ? ConfigHelper::getConfig('mail.smtp_password') : $smtp_options['pass']);
+				} else
+					$params['auth'] = false;
+				$params['persist'] = $persist;
 
-	    if (!is_object($this->mail_object) || !$persist) {
-		$params['host'] = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
-		$params['port'] = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
-		$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
-		if (!empty($smtp_username) || $user) {
-		    $params['auth'] = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
-		    $params['username'] = (!$user ? $smtp_username : $user);
-		    $params['password'] = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
-		} else
-		    $params['auth'] = false;
-		$params['persist'] = $persist;
+				$error = $this->mail_object = & Mail::factory('smtp', $params);
+				//if (PEAR::isError($error))
+				if (is_a($error, 'PEAR_Error'))
+					return $error->getMessage();
+			}
 
-		$error = $this->mail_object = & Mail::factory('smtp', $params);
-		//if (PEAR::isError($error))
-		if (is_a($error, 'PEAR_Error'))
-		    return $error->getMessage();
-	    }
+			$headers['X-Mailer'] = 'LMS-' . $this->_version;
+			if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
+				if (!empty($_SERVER['REMOTE_ADDR']))
+					$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+				if (isset($_SERVER['HTTP_USER_AGENT']))
+					$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+			}
+			$headers['Mime-Version'] = '1.0';
+			$headers['Subject'] = qp_encode($headers['Subject']);
+			$headers['Precedence'] = 'bulk';
 
-	    $headers['X-Mailer'] = 'LMS-' . $this->_version;
-	    if (!empty($_SERVER['REMOTE_ADDR']))
-		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-	    if (isset($_SERVER['HTTP_USER_AGENT']))
-		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
-	    $headers['Mime-Version'] = '1.0';
-	    $headers['Subject'] = qp_encode($headers['Subject']);
+			$debug_email = ConfigHelper::getConfig('mail.debug_email');
+			if (!empty($debug_email)) {
+				$recipients = ConfigHelper::getConfig('mail.debug_email');
+				$headers['To'] = '<' . $recipients . '>';
+			} else {
+				if (isset($headers['Cc']))
+					$recipients .= ',' . $headers['Cc'];
+				if (isset($headers['Bcc']))
+					$recipients .= ',' . $headers['Bcc'];
+			}
 
-	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
-	    if (!empty($debug_email)) {
-		$recipients = ConfigHelper::getConfig('mail.debug_email');
-		$headers['To'] = '<' . $recipients . '>';
-	    }
+			if (empty($headers['Date']))
+				$headers['Date'] = date('r');
 
-	    if (empty($headers['Date']))
-		$headers['Date'] = date('r');
+			if ($files || $headers['X-LMS-Format'] == 'html') {
+				$boundary = '-LMS-' . str_replace(' ', '.', microtime());
+				$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
+				$buf = "\nThis is a multi-part message in MIME format.\n\n";
+				$buf .= '--' . $boundary . "\n";
+				$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
+				$buf .= $body . "\n";
+				if ($files)
+					foreach ($files as $chunk) {
+						$buf .= '--' . $boundary . "\n";
+						$buf .= "Content-Transfer-Encoding: base64\n";
+						$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
+						$buf .= "Content-Description:\n";
+						$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+						$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+					}
+				$buf .= '--' . $boundary . '--';
+			} else {
+				$headers['Content-Type'] = 'text/plain; charset=UTF-8';
+				$buf = $body;
+			}
 
-	    if ($files || $headers['X-LMS-Format'] == 'html') {
-		$boundary = '-LMS-' . str_replace(' ', '.', microtime());
-		$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
-		$buf = "\nThis is a multi-part message in MIME format.\n\n";
-		$buf .= '--' . $boundary . "\n";
-		$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
-		$buf .= $body . "\n";
-		if ($files)
-		    while (list(, $chunk) = each($files)) {
-			$buf .= '--' . $boundary . "\n";
-			$buf .= "Content-Transfer-Encoding: base64\n";
-			$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
-			$buf .= "Content-Description:\n";
-			$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
-			$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
-		    }
-		$buf .= '--' . $boundary . '--';
-	    } else {
-		$headers['Content-Type'] = 'text/plain; charset=UTF-8';
-		$buf = $body;
-	    }
+			$this->executeHook('email_before_send', array('email' => $this->mail_object, 'backend' => 'pear'));
 
-	    $error = $this->mail_object->send($recipients, $headers, $buf);
-	    //if (PEAR::isError($error))
-	    if (is_a($error, 'PEAR_Error'))
-		return $error->getMessage();
-	    else
-		return MSG_SENT;
+			$error = $this->mail_object->send($recipients, $headers, $buf);
+			//if (PEAR::isError($error))
+			if (is_a($error, 'PEAR_Error'))
+				return $error->getMessage();
+			else
+				return MSG_SENT;
+		} elseif(ConfigHelper::getConfig('mail.backend') == 'phpmailer') {
+			$this->mail_object = new PHPMailer();
+			$this->mail_object->isSMTP();
+
+			$this->mail_object->SMTPKeepAlive = $persist;
+
+			$this->mail_object->Host = (!isset($smtp_options['host']) ? ConfigHelper::getConfig('mail.smtp_host') : $smtp_options['host']);
+			$this->mail_object->Port = (!isset($smtp_options['port']) ? ConfigHelper::getConfig('mail.smtp_port') : $smtp_options['port']);
+			$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+			if (!empty($smtp_username) || isset($smtp_options['user'])) {
+				$this->mail_object->Username = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
+				$this->mail_object->Password = (!isset($smtp_options['pass']) ? ConfigHelper::getConfig('mail.smtp_password') : $smtp_options['pass']);
+				$auth_type = isset($smtp_options['auth']) ? $smtp_options['auth'] : ConfigHelper::getConfig('mail.smtp_auth_type', true);
+				if (is_bool($auth_type))
+					$this->mail_object->SMTPAuth = $auth_type;
+				elseif ($auth_type == 'false')
+					$this->mail_object->SMTPAuth = false;
+				else {
+					$this->mail_object->SMTPAuth = true;
+					$this->mail_object->AuthType = $auth_type;
+				}
+				$this->mail_object->SMTPSecure = ConfigHelper::getConfig('mail.smtp_secure', '', true);
+				if ($this->mail_object->SMTPSecure == 'false') {
+					$this->mail_object->SMTPSecure = '';
+					$this->mail_object->SMTPAutoTLS = false;
+				}
+			}
+
+			$this->mail_object->SMTPOptions = array(
+				'ssl' => array(
+					'verify_peer' => isset($smtp_options['ssl_verify_peer']) ? $smtp_options['ssl_verify_peer']
+						: ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer', false, true)),
+					'verify_peer_name' => isset($smtp_options['ssl_verify_peer_name']) ? $smtp_options['ssl_verify_peer_name']
+						: ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer_name', false, true)),
+					'allow_self_signed' => isset($smtp_options['ssl_allow_self_signed']) ? $smtp_options['ssl_allow_self_signed']
+						: ConfigHelper::checkValue(ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed', true)),
+				)
+			);
+
+			$this->mail_object->XMailer = 'LMS-' . $this->_version;
+			if (!ConfigHelper::checkConfig('mail.hide_sensitive_headers')) {
+				if (!empty($_SERVER['REMOTE_ADDR']))
+					$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
+				if (isset($_SERVER['HTTP_USER_AGENT']))
+					$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
+			}
+
+			foreach (array('References', 'In-Reply-To', 'Message-ID') as $header_name)
+				if (isset($headers[$header_name]))
+					if ($header_name == 'Message-ID')
+						$this->mail_object->MessageID = $headers[$header_name];
+					else
+						$this->mail_object->addCustomHeader($header_name . ': ' . $headers[$header_name]);
+			$this->mail_object->addCustomHeader('Precedence: bulk');
+
+			if (isset($headers['Disposition-Notification-To']))
+				$this->mail_object->ConfirmReadingTo = $headers['Disposition-Notification-To'];
+			elseif (isset($headers['Return-Receipt-To']))
+				$this->mail_object->ConfirmReadingTo = $headers['Return-Receipt-To'];
+
+			$this->mail_object->Dsn = isset($headers['Delivery-Status-Notification-To']);
+
+			preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/iA', $headers['From'], $from);
+			$this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
+			$this->mail_object->addReplyTo($headers['Reply-To']);
+			$this->mail_object->CharSet = 'UTF-8';
+			$this->mail_object->Subject = $headers['Subject'];
+
+			$debug_email = ConfigHelper::getConfig('mail.debug_email');
+			if (!empty($debug_email)) {
+				$this->mail_object->SMTPDebug = 2;
+				$recipients = ConfigHelper::getConfig('mail.debug_email');
+			} else {
+				if (isset($headers['Cc']))
+					foreach (explode(',', $headers['Cc']) as $cc)
+						$this->mail_object->addCC($cc);
+				if (isset($headers['Bcc']))
+					foreach (explode(',', $headers['Bcc']) as $bcc)
+						$this->mail_object->addBCC($bcc);
+			}
+
+			if (empty($headers['Date']))
+				$headers['Date'] = date('r');
+
+			if ($files)
+				foreach ($files as $chunk)
+					$this->mail_object->AddStringAttachment($chunk['data'],$chunk['filename'],'base64',$chunk['content_type']);
+
+			if ($headers['X-LMS-Format'] == 'html') {
+				$this->mail_object->isHTML(true);
+				$this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
+				$this->mail_object->msgHTML($body);
+			} else {
+				$this->mail_object->isHTML(false);
+				$this->mail_object->Body = $body;
+			}
+
+			foreach (explode(",", $recipients) as $recipient)
+				$this->mail_object->addAddress($recipient);
+
+			if (isset($headers['X-Priority']) && intval($headers['X-Priority'])) {
+				$this->mail_object->Priority = intval($headers['X-Priority']);
+				unset($headers['X-Priority']);
+			}
+
+			foreach ($headers as $name => $value) {
+				if (strpos(strtolower($name), 'x') === 0) {
+					$this->mail_object->addCustomHeader($name, $value);
+				}
+			}
+
+			// setup your cert & key file
+			$cert = LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert';
+			$key = LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key';
+
+			// set email digital signature
+			if (file_exists($cert) && file_exists($key))
+				$this->mail_object->sign($cert, $key, null);
+
+			$this->executeHook('email_before_send', array('email' => $this->mail_object, 'backend' => 'phpmailer'));
+
+			if (!$this->mail_object->Send())
+				return "Mailer Error: " . $this->mail_object->ErrorInfo;
+			else
+				return MSG_SENT;
+		}
 	}
-	elseif(ConfigHelper::getConfig('mail.backend') == 'phpmailer'){
-	    $this->mail_object = new PHPMailer();
-	    $this->mail_object->isSMTP();
-
-	    $this->mail_object->SMTPKeepAlive = $persist;
-
-	    $this->mail_object->Host = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
-	    $this->mail_object->Port = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
-	    $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
-	    if (!empty($smtp_username) || $user) {
-		$this->mail_object->Username = (!$user ? $smtp_username : $user);
-		$this->mail_object->Password = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
-		$this->mail_object->SMTPAuth  = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
-		$this->mail_object->SMTPSecure  = (!$auth ? ConfigHelper::getConfig('mail.smtp_secure', true) : $auth);
-	    }
-	    $this->mail_object->XMailer = 'LMS-' . $this->_version;
-	    if (!empty($_SERVER['REMOTE_ADDR']))
-		$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
-	    if (isset($_SERVER['HTTP_USER_AGENT']))
-		$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
-
-	    preg_match('/^(.+) <([a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>$/A', $headers['From'], $from);
-	    $this->mail_object->setFrom($from[2], trim($from[1], "\""));
-	    $this->mail_object->CharSet = 'UTF-8';
-	    $this->mail_object->Subject = $headers['Subject'];
-
-	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
-	    if (!empty($debug_email)) {
-                $this->mail_object->SMTPDebug = 2;
-		$recipients = ConfigHelper::getConfig('mail.debug_email');
-	    }
-
-	    if (empty($headers['Date']))
-		$headers['Date'] = date('r');
-
-	    if ($files)
-	        while (list(, $chunk) = each($files))
-		    $this->mail_object->AddStringAttachment($chunk['data'],$chunk['filename'],'base64',$chunk['content_type']);
-
-	    if($headers['X-LMS-Format'] == 'html') {
-	        $this->mail_object->isHTML(true);
-	        $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
-	        $this->mail_object->msgHTML($body);
-	    } else {
-		$this->mail_object->isHTML(false);
-		$this->mail_object->Body = $body;
-	    }
-
-	    foreach(explode(",", $recipients) as $recipient)
-	    	$this->mail_object->addAddress($recipient);
-
-	    if(!$this->mail_object->Send()) {
-		return "Mailer Error: " . $this->mail_object->ErrorInfo;
-	    } else {
-		return MSG_SENT;
-	    }
-	}
-    }
 
     public function SendSMS($number, $message, $messageid = 0, $script_service = null)
     {
@@ -1765,6 +2225,7 @@ class LMS
 
         // call external SMS handler(s)
         $data = $this->ExecHook('send_sms_before', $data);
+        $data = $this->executeHook('send_sms_before', $data);
 
 	if ($data['abort'])
 		if (is_string($data['result'])) {
@@ -1907,14 +2368,27 @@ class LMS
                 }
 
                 $filename = $dir . DIRECTORY_SEPARATOR . 'lms-' . $messageid . '-' . $number;
-                $latin1 = iconv('UTF-8', 'ASCII', $message);
-                $alphabet = '';
-                if (strlen($latin1) != mb_strlen($message, 'UTF-8')) {
-                    $alphabet = "Alphabet: UCS2\n";
-                    $message = iconv('UTF-8', 'UNICODEBIG', $message);
-                }
-                //$message = clear_utf($message);
-                $file = sprintf("To: %s\n%s\n%s", $number, $alphabet, $message);
+
+				$headers = array();
+				$headers['To'] = $number;
+
+				$latin1 = iconv('UTF-8', 'ASCII', $message);
+				if (strlen($latin1) != mb_strlen($message, 'UTF-8')) {
+					$headers['Alphabet'] = 'UCS2';
+					$message = iconv('UTF-8', 'UNICODEBIG', $message);
+				}
+
+				$queue = ConfigHelper::getConfig('sms.queue', '', true);
+				if (!empty($queue))
+					$headers['Queue'] = $queue;
+
+				$header = '';
+				array_walk($headers, function($value, $key) use (&$header) {
+						$header .= $key . ': ' . $value . "\n";
+					});
+
+				//$message = clear_utf($message);
+				$file = sprintf("%s\n%s", $header, $message);
 
                 if ($fp = fopen($filename, 'w')) {
                     fwrite($fp, $file);
@@ -1986,6 +2460,7 @@ class LMS
                     'to' => $number,
                     'message' => $message,
                     'from' => !empty($from) ? $from : 'ECO',
+                    'encoding' => 'utf-8',
                 );
                 $fast = ConfigHelper::getConfig('sms.fast');
                 if (!empty($fast))
@@ -2046,11 +2521,38 @@ class LMS
         return $manager->GetDocuments($customerid, $limit);
     }
 
-    public function GetTaxes($from = NULL, $to = NULL)
+	public function GetDocumentList(array $params) {
+		$manager = $this->getDocumentManager();
+		return $manager->GetDocumentList($params);
+	}
+
+	public function GetTaxes($from = NULL, $to = NULL)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetTaxes($from, $to);
     }
+
+    public function EventAdd($event)
+    {
+        $manager = $this->getEventManager();
+        return $manager->EventAdd($event);
+    }
+
+    public function EventUpdate($event)
+    {
+        $manager = $this->getEventManager();
+        return $manager->EventUpdate($event);
+    }
+
+	public function EventDelete($id) {
+		$manager = $this->getEventManager();
+		return $manager->EventDelete($id);
+	}
+
+	public function GetEvent($id) {
+		$manager = $this->getEventManager();
+		return $manager->GetEvent($id);
+	}
 
     public function EventSearch($search, $order = 'date,asc', $simple = false)
     {
@@ -2058,25 +2560,102 @@ class LMS
         return $manager->EventSearch($search, $order, $simple);
     }
 
-    public function GetNumberPlans($doctype = NULL, $cdate = NULL, $division = NULL, $next = true)
+    public function GetEventList(array $params)
     {
-        $manager = $this->getDocumentManager();
-        return $manager->GetNumberPlans($doctype, $cdate, $division, $next);
+        $manager = $this->getEventManager();
+        return $manager->GetEventList($params);
     }
 
-    public function GetNewDocumentNumber($doctype = NULL, $planid = NULL, $cdate = NULL)
+    public function GetCustomerIdByTicketId($id)
     {
-        $manager = $this->getDocumentManager();
-        return $manager->GetNewDocumentNumber($doctype, $planid, $cdate);
+        $manager = $this->getEventManager();
+        return $manager->GetCustomerIdByTicketId($id);
     }
 
-    public function DocumentExists($number, $doctype = NULL, $planid = 0, $cdate = NULL)
-    {
-        $manager = $this->getDocumentManager();
-        return $manager->DocumentExists($number, $doctype, $planid, $cdate);
+	public function EventOverlaps(array $params) {
+		$manager = $this->getEventManager();
+		return $manager->EventOverlaps($params);
+	}
+
+    public function AssignUserToEvent($id, $userid) {
+        $manager = $this->getEventManager();
+        return $manager->AssignUserToEvent($id, $userid);
     }
 
-    public function GetCountryStates()
+    public function UnassignUserFromEvent($id, $userid) {
+        $manager = $this->getEventManager();
+        return $manager->UnassignUserFromEvent($id, $userid);
+    }
+
+	public function MoveEvent($id, $delta) {
+		$manager = $this->getEventManager();
+		return $manager->MoveEvent($id, $delta);
+	}
+
+	public function GetEventsByTicketId($id)
+    {
+         $manager = $this->getHelpdeskManager();
+         return $manager->GetEventsByTicketId($id);
+    }
+
+    public function GetNumberPlans($properties)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->GetNumberPlans($properties);
+    }
+
+    public function GetNewDocumentNumber($properties)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->GetNewDocumentNumber($properties);
+    }
+
+    public function DocumentExists($properties)
+    {
+        $manager = $this->getDocumentManager();
+        return $manager->DocumentExists($properties);
+    }
+
+	public function CommitDocuments(array $ids) {
+		$manager = $this->getDocumentManager();
+		return $manager->CommitDocuments($ids);
+	}
+
+	public function UpdateDocumentPostAddress($docid, $customerid) {
+		$manager = $this->getDocumentManager();
+		return $manager->UpdateDocumentPostAddress($docid, $customerid);
+	}
+
+	public function DeleteDocumentAddresses($docid) {
+		$manager = $this->getDocumentManager();
+		return $manager->DeleteDocumentAddresses($docid);
+	}
+
+	public function AddDocumentFileAttachments(array $files) {
+		$manager = $this->getDocumentManager();
+		return $manager->AddDocumentFileAttachments($files);
+	}
+
+	public function DocumentAttachmentExists($md5sum) {
+		$manager = $this->getDocumentManager();
+		return $manager->DocumentAttachmentExists($md5sum);
+	}
+
+	public function GetDocumentFullContents($id) {
+		$manager = $this->getDocumentManager();
+		return $manager->GetDocumentFullContents($id);
+	}
+
+	public function SendDocuments($docs, $type, $params) {
+		$manager = $this->getDocumentManager();
+		return $manager->SendDocuments($docs, $type, $params);
+	}
+
+	/*
+	 *  Location
+	 */
+
+	public function GetCountryStates()
     {
         $manager = $this->getLocationManager();
         return $manager->GetCountryStates();
@@ -2100,18 +2679,115 @@ class LMS
         return $manager->UpdateCountryState($zip, $stateid);
     }
 
-    public function GetNAStypes()
+    public function DeleteAddress( $address_id ) {
+        $manager = $this->getLocationManager();
+        return $manager->DeleteAddress( $address_id );
+    }
+
+    public function InsertAddress( $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->InsertAddress( $args );
+    }
+
+    public function InsertCustomerAddress( $customer_id, $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->InsertCustomerAddress( $customer_id, $args );
+    }
+
+    public function UpdateAddress( $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->UpdateAddress( $args );
+    }
+
+    public function UpdateCustomerAddress( $customer_id, $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->UpdateCustomerAddress( $customer_id, $args );
+    }
+
+    public function ValidAddress( $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->ValidAddress( $args );
+    }
+
+    public function CopyAddress( $address_id ) {
+        $manager = $this->getLocationManager();
+        return $manager->CopyAddress( $address_id );
+    }
+
+    public function GetAddress( $address_id ) {
+        $manager = $this->getLocationManager();
+        return $manager->GetAddress( $address_id );
+    }
+
+	public function GetCustomerAddress( $customer_id, $type = BILLING_ADDRESS ) {
+		$manager = $this->getLocationManager();
+		return $manager->GetCustomerAddress( $customer_id, $type );
+	}
+
+	public function TerytToLocation($terc, $simc, $ulic) {
+		$manager = $this->getLocationManager();
+		return $manager->TerytToLocation($terc, $simc, $ulic);
+	}
+
+	public function GetZipCode(array $params) {
+		$manager = $this->getLocationManager();
+		return $manager->GetZipCode($params);
+	}
+
+	public function GetCitiesWithSections() {
+		$manager = $this->getLocationManager();
+		return $manager->GetCitiesWithSections();
+	}
+
+	public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');
     }
 
     public function CalcAt($period, $date)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->CalcAt($period, $date);
     }
 
-    /**
+	public function isDocumentPublished($id)
+	{
+		$manager = $this->getFinanceManager();
+		return $manager->isDocumentPublished($id);
+	}
+
+	public function isDocumentReferenced($id) {
+		$manager = $this->getFinanceManager();
+		return $manager->isDocumentReferenced($id);
+	}
+
+	public function GetReceiptList(array $params) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetReceiptList($params);
+	}
+
+	public function AddReceipt(array $receipt)
+	{
+		$manager = $this->getFinanceManager();
+		return $manager->AddReceipt($receipt);
+	}
+
+	public function GetCashRegistries($cid = null) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetCashRegistries($cid);
+	}
+
+	public function GetOpenedLiabilities($customerid) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetOpenedLiabilities($customerid);
+	}
+
+	public function GetPromotions() {
+		$manager = $this->getFinanceManager();
+		return $manager->GetPromotions();
+	}
+
+	/**
      * VoIP functions
      */
     public function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND')
@@ -2186,6 +2862,26 @@ class LMS
         return $manager->voipAccountUpdate($voipaccountdata);
     }
 
+    public function getVoipBillings(array $params)
+    {
+    	$manager = $this->getVoipAccountManager();
+        return $manager->getVoipBillings($params);
+    }
+
+    public function getVoipTariffs()
+    {
+        return $this->getVoipAccountManager()->getVoipTariffs();
+    }
+
+    public function getVoipTariffRuleGroups()
+    {
+        return $this->getVoipAccountManager()->getVoipTariffRuleGroups();
+    }
+
+	/**
+	 * End VoIP functions
+	 */
+
     public function GetCustomerVoipAccounts($id)
     {
         $manager = $this->getVoipAccountManager();
@@ -2233,7 +2929,12 @@ class LMS
         return $manager->GetMessageTemplates($type);
     }
 
-    /**
+	public function GetMessageList(array $params) {
+		$manager = $this->getMessageManager();
+		return $manager->GetMessageList($params);
+	}
+
+		/**
      * Returns user manager
      * 
      * @return \LMSUserManagerInterface User manager
@@ -2364,6 +3065,19 @@ class LMS
     }
 
     /**
+     * Returns net node manager
+     * 
+     * @return LMSNetNodeManagerInterface Net node manager
+     */
+    protected function getNetNodeManager()
+    {
+        if (!isset($this->net_node_manager)) {
+            $this->net_node_manager = new LMSNetNodeManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->net_node_manager;
+    }
+
+    /**
      * Returns helpdesk manager
      * 
      * @return LMSHelpdeskManagerInterface Helpdesk manager
@@ -2381,7 +3095,7 @@ class LMS
      * 
      * @return LMSFinanceManagerInterface Finance manager
      */
-    protected function getFinanaceManager()
+    protected function getFinanceManager()
     {
         if (!isset($this->finance_manager)) {
             $this->finance_manager = new LMSFinanceManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
@@ -2766,5 +3480,522 @@ class LMS
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupGetAll();
     }
-    
+
+    /**
+     * Returns tariff tag manager
+     *
+     * @return LMSTariffTagManagerInterface Tariff tag manager
+     */
+    protected function getTariffTagManager()
+    {
+        if (!isset($this->tariff_tag_manager)) {
+            $this->tariff_tag_manager = new LMSTariffTagManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->tariff_tag_manager;
+    }
+
+    public function TarifftagGetId($name)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffTagGetId($name);
+    }
+
+    public function TarifftagAdd($tarifftagdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagAdd($tarifftagdata);
+    }
+
+    public function TarifftagGetList()
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagGetList();
+    }
+
+    public function TarifftagGet($id)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagGet($id);
+    }
+
+    public function TarifftagExists($id)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagExists($id);
+    }
+
+    public function GetTariffWithoutTagNames($tagid)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->GetTariffWithoutTagNames($tagid);
+    }
+
+    public function TariffassignmentDelete($tariffassignmentdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffassignmentDelete($tariffassignmentdata);
+    }
+
+    public function TariffassignmentExist($tagid, $tariffid)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffassignmentExist($tagid, $tariffid);
+    }
+
+    public function TariffassignmentAdd($tariffassignmentdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffassignmentAdd($tariffassignmentdata);
+    }
+
+    public function TarifftagDelete($id)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagDelete($id);
+    }
+
+    public function TarifftagUpdate($tarifftagdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagUpdate($tarifftagdata);
+    }
+
+    public function TarifftagGetAll()
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagGetAll();
+    }
+
+	/*
+	 * divisions
+	 */
+	protected function getDivisionManager() {
+		if (!isset($this->division_manager))
+			$this->division_manager = new LMSDivisionManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->division_manager;
+	}
+
+	public function GetDivision($id) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivision($id);
+	}
+
+	public function GetDivisionByName($name) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivisionByName($name);
+	}
+
+	public function GetDivisions($params = array()) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivisions($params);
+	}
+
+	public function AddDivision($division) {
+		$manager = $this->getDivisionManager();
+		return $manager->AddDivision($division);
+	}
+
+	public function DeleteDivision($id) {
+		$manager = $this->getDivisionManager();
+		return $manager->DeleteDivision($id);
+
+	}
+
+	public function UpdateDivision($division) {
+		$manager = $this->getDivisionManager();
+		return $manager->UpdateDivision($division);
+
+	}
+
+	/*
+	 * projects
+	 */
+	protected function getProjectManager() {
+		if (!isset($this->project_manager))
+			$this->project_manager = new LMSProjectManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->project_manager;
+	}
+
+	public function CleanupProjects() {
+		$manager = $this->getProjectManager();
+		$manager->CleanupProjects();
+	}
+
+	public function GetProjects() {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjects();
+	}
+
+	public function GetProject($id) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProject($id);
+	}
+
+	public function GetProjectByName($name) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjectByName($name);
+	}
+
+	public function ProjectByNameExists($name) {
+		$manager = $this->getProjectManager();
+		return $manager->ProjectByNameExists($name);
+	}
+
+	public function AddProject($project) {
+		$manager = $this->getProjectManager();
+		return $manager->AddProject($project);
+	}
+
+	public function DeleteProject($id) {
+		$manager = $this->getProjectManager();
+		return $manager->DeleteProject($id);
+	}
+
+	public function UpdateProject($id, $project) {
+		$manager = $this->getProjectManager();
+		return $manager->UpdateProject($id, $project);
+	}
+
+	public function GetProjectType($id) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjectType($id);
+	}
+
+		// files
+	protected function getFileManager() {
+		if (!isset($this->file_manager))
+			$this->file_manager = new LMSFileManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->file_manager;
+	}
+
+	public function GetFileContainers($type, $id) {
+		$manager = $this->getFileManager();
+		return $manager->GetFileContainers($type, $id);
+	}
+
+	public function GetFile($id) {
+		$manager = $this->getFileManager();
+		return $manager->GetFile($id);
+	}
+
+	public function GetZippedFileContainer($id) {
+		$manager = $this->getFileManager();
+		return $manager->GetZippedFileContainer($id);
+	}
+
+	public function AddFileContainer(array $params) {
+		$manager = $this->getFileManager();
+		return $manager->AddFileContainer($params);
+	}
+
+	public function DeleteFileContainer($id) {
+		$manager = $this->getFileManager();
+		return $manager->DeleteFileContainer($id);
+	}
+
+	public function DeleteFileContainers($type, $resourceid) {
+		$manager = $this->getFileManager();
+		return $manager->DeleteFileContainers($type, $resourceid);
+	}
+
+	public function FileExists($md5sum) {
+		$manager = $this->getFileManager();
+		return $manager->FileExists($md5sum);
+	}
+
+	public function GetFinancialDocument($doc, $SMARTY) {
+		if ($doc['doctype'] == DOC_DNOTE) {
+			$type = ConfigHelper::getConfig('notes.type', '');
+			if ($type == 'pdf')
+				$document = new LMSTcpdfDebitNote(trans('Notes'));
+			else
+				$document = new LMSHtmlDebitNote($SMARTY);
+
+			$filename = $doc['dnote_filename'];
+
+			$data = $this->GetNoteContent($doc['id']);
+		} else {
+			$type = ConfigHelper::getConfig('invoices.type', '');
+			if ($type == 'pdf') {
+				$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+				$pdf_type = ucwords($pdf_type);
+				$classname = 'LMS' . $pdf_type . 'Invoice';
+				$document = new $classname(trans('Invoices'));
+			} else
+				$document = new LMSHtmlInvoice($SMARTY);
+
+			$filename = $doc['invoice_filename'];
+
+			$data = $this->GetInvoiceContent($doc['id']);
+		}
+
+		if ($type == 'pdf')
+			$fext = 'pdf';
+		else
+			$fext = 'html';
+
+		$document_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+		$document_number = docnumber(array(
+			'number' => $doc['number'],
+			'template' => $document_number,
+			'cdate' => $doc['cdate'] + date('Z'),
+			'customerid' => $doc['customerid'],
+		));
+
+		$filename = preg_replace('/%docid/', $doc['id'], $filename);
+		$filename = str_replace('%number', $document_number, $filename);
+		$filename = preg_replace('/[^[:alnum:]_\.]/i', '_', $filename);
+
+		if (!isset($doc['which']) || !count($doc['which']))
+			$which = array(trans('ORIGINAL'));
+		else
+			$which = $doc['which'];
+
+		$idx = 0;
+		foreach ($which as $type) {
+			$data['type'] = $type;
+			$document->Draw($data);
+			$idx++;
+			if ($idx < count($which))
+				$document->NewPage();
+		}
+
+		return array(
+			'filename' => $filename . '.' . $fext,
+			'data' => $document->WriteToString(),
+			'document' => $data,
+		);
+	}
+
+	public function SendInvoices($docs, $type, $params) {
+		extract($params);
+
+		if ($type == 'frontend')
+			$eol = '<br>';
+		else
+			$eol = PHP_EOL;
+
+		$month = sprintf('%02d', intval(date('m', $currtime)));
+		$day = sprintf('%02d', intval(date('d', $currtime)));
+		$year = sprintf('%04d', intval(date('Y', $currtime)));
+
+		if ($invoice_filetype == 'pdf')
+			$invoice_ftype = 'application/pdf';
+		else
+			$invoice_ftype = 'text/html';
+
+		if ($dnote_filetype == 'pdf')
+			$dnote_ftype = 'application/pdf';
+		else
+			$dnote_ftype = 'text/html';
+
+		$from = $sender_email;
+
+		if (!empty($sender_name))
+			$from = "$sender_name <$from>";
+
+		foreach ($docs as $doc) {
+			$doc['invoice_filename'] = $invoice_filename;
+			$doc['dnote_filename'] = $dnote_filename;
+			$doc['which'] = $which;
+
+			$document = $this->GetFinancialDocument($doc, $SMARTY);
+
+			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
+			$invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+			if (!is_null($mail_body))
+				if (is_readable($mail_body) && ($mail_body[0] == DIRECTORY_SEPARATOR))
+					$body = file_get_contents($mail_body);
+				else
+					$body = $mail_body;
+			$subject = $mail_subject;
+
+			$invoice_number = docnumber(array(
+				'number' => $doc['number'],
+				'template' => $invoice_number,
+				'cdate' => $doc['cdate'] + date('Z'),
+				'customerid' => $doc['customerid'],
+			));
+			$body = preg_replace('/%invoice/', $invoice_number, $body);
+			$body = preg_replace('/%balance/', $this->GetCustomerBalance($doc['customerid']), $body);
+			$body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
+			$body = str_replace('\n', "\n", $body);
+			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
+			$filename = $document['filename'];
+			$doc['name'] = '"' . $doc['name'] . '"';
+
+			$body = preg_replace('/%bankaccount/',
+				format_bankaccount(bankaccount($doc['customerid'], $document['document']['account'])), $body);
+			$deadline = $doc['cdate'] + $document['document']['paytime'] * 86400;
+			$body = preg_replace('/%deadline-y/', strftime("%Y", $deadline), $body);
+			$body = preg_replace('/%deadline-m/', strftime("%m", $deadline), $body);
+			$body = preg_replace('/%deadline-d/', strftime("%d", $deadline), $body);
+			$body = preg_replace('/%deadline_month_name/', strftime("%B", $deadline), $body);
+			$body = preg_replace('/%pin/', $document['document']['customerpin'], $body);
+			$body = preg_replace('/%cid/', $doc['customerid'], $body);
+			// invoices, debit notes
+			$body = preg_replace('/%value/', $document['document']['total'], $body);
+			$body = preg_replace('/%cdate-y/', strftime("%Y", $document['document']['cdate']), $body);
+			$body = preg_replace('/%cdate-m/', strftime("%m", $document['document']['cdate']), $body);
+			$body = preg_replace('/%cdate-d/', strftime("%d", $document['document']['cdate']), $body);
+			list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+			$body = preg_replace('/%lastday/', strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $body);
+
+			if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
+				$lastN = $this->GetCustomerShortBalanceList($doc['customerid'], $m['number']);
+				if (empty($lastN))
+					$lN = '';
+				else {
+					// ok, now we are going to rise up system's load
+					$lN = "-----------+-----------+-----------+----------------------------------------------------\n";
+					foreach ($lastN as $row_s) {
+						$op_time = strftime("%Y/%m/%d", $row_s['time']);
+						$op_amount = sprintf("%9.2f", $row_s['value']);
+						$op_after = sprintf("%9.2f", $row_s['after']);
+						$for_what = sprintf("%-52s", $row_s['comment']);
+						$lN = $lN . "$op_time | $op_amount | $op_after | $for_what\n";
+					}
+					$lN = $lN . "-----------+-----------+-----------+----------------------------------------------------\n";
+				}
+				$body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
+			}
+
+			$mailto = array();
+			$mailto_qp_encoded = array();
+			foreach (explode(',', $custemail) as $email) {
+				$mailto[] = $doc['name'] . " <$email>";
+				$mailto_qp_encoded[] = qp_encode($doc['name']) . " <$email>";
+			}
+			$mailto = implode(', ', $mailto);
+			$mailto_qp_encoded = implode(', ', $mailto_qp_encoded);
+
+			if (!$quiet || $test) {
+				switch ($doc['doctype']) {
+					case DOC_DNOTE:
+						$msg = trans('Debit Note No. $a for $b', $invoice_number, $mailto);
+						break;
+					case DOC_CNOTE:
+						$msg = trans('Credit Note No. $a for $b', $invoice_number, $mailto);
+						break;
+					case DOC_INVOICE:
+						$msg = trans('Invoice No. $a for $b', $invoice_number, $mailto);
+						break;
+					case DOC_INVOICE_PRO:
+						$msg = trans('Pro Forma Invoice No. $a for $b', $invoice_number, $mailto);
+						break;
+				}
+				if ($type == 'frontend') {
+					echo htmlspecialchars($msg) . $eol;
+					flush();
+					ob_flush();
+				} else
+					echo $msg . $eol;
+			}
+
+			if (!$test) {
+				$files = array();
+				$files[] = array(
+					'content_type' => $doc['doctype'] == DOC_DNOTE ? $dnote_ftype : $invoice_ftype,
+					'filename' => $filename,
+					'data' => $document['data'],
+				);
+
+				if ($extrafile) {
+					$files[] = array(
+						'content_type' => mime_content_type($extrafile),
+						'filename' => basename($extrafile),
+						'data' => file_get_contents($extrafile)
+					);
+				}
+
+				$headers = array(
+					'From' => empty($dsn_email) ? $from : $dsn_email,
+					'To' => $mailto_qp_encoded,
+					'Subject' => $subject,
+					'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
+				);
+
+				if (!empty($mdn_email)) {
+					$headers['Return-Receipt-To'] = $mdn_email;
+					$headers['Disposition-Notification-To'] = $mdn_email;
+				}
+
+				if (!empty($dsn_email))
+					$headers['Delivery-Status-Notification-To'] = $dsn_email;
+
+				if (!empty($notify_email))
+					$headers['Cc'] = $notify_email;
+
+				if (isset($mail_format) && $mail_format == 'html')
+					$headers['X-LMS-Format'] = 'html';
+
+                $data = array(
+                    'body' => $body,
+                    'doc' => $doc,
+                    'mail_format' => $mail_format,
+                    'headers' => $headers
+                );
+                $data = $this->executeHook('invoice_email_before_send', $data);
+                $body = $data['body'];
+                $headers = $data['headers'];
+
+				if ($add_message) {
+					$this->DB->Execute('INSERT INTO messages (subject, body, cdate, type, userid)
+						VALUES (?, ?, ?NOW?, ?, ?)',
+						array($subject, $body, MSG_MAIL, Auth::GetCurrentUser()));
+					$msgid = $this->DB->GetLastInsertID('messages');
+					foreach (explode(',', $custemail) as $email) {
+						$this->DB->Execute('INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+							VALUES (?, ?, ?, ?NOW?, ?)',
+							array($msgid, $doc['customerid'], $email, MSG_NEW));
+						$msgitemid = $this->DB->GetLastInsertID('messageitems');
+						if (!isset($msgitems[$doc['customerid']]))
+							$msgitems[$doc['customerid']] = array();
+						$msgitems[$doc['customerid']][$email] = $msgitemid;
+					}
+				}
+
+				foreach (explode(',', $custemail) as $email) {
+					if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
+						$headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
+						$headers['Message-ID'] = '<messageitem-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';
+					}
+
+					$res = $this->SendMail($email, $headers, $body,
+						$files, null, (isset($smtp_options) ? $smtp_options : null));
+
+					if (is_string($res)) {
+						$msg = trans('Error sending mail: $a', $res);
+						if ($type == 'backend')
+							fprintf(STDERR, $msg . $eol);
+						else {
+							echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
+							flush();
+						}
+						$status = MSG_ERROR;
+					} else {
+						$status = MSG_SENT;
+						$res = NULL;
+					}
+
+					if ($status == MSG_SENT) {
+						$this->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($doc['id']));
+						$published = true;
+					}
+
+					if ($add_message)
+						$this->DB->Execute('UPDATE messageitems SET status = ?, error = ?
+							WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
+
+					if (isset($interval) && !empty($interval)) {
+						if ($interval == -1)
+							$delay = mt_rand(500, 5000);
+						else
+							$dalay = intval($interval) * 1000;
+						usleep($delay);
+					}
+				}
+			}
+		}
+	}
 }

@@ -84,8 +84,9 @@
 			<B>{trans("Balance:")}<B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-		<H2>	{if $customerinfo.balance < 0}<FONT COLOR="red"><B>{$customerinfo.balance|money_format}</B></FONT>{else}{$customerinfo.balance|money_format}{/if}</H2>
+		<H2>	{if $customerinfo.balance < 0}<FONT COLOR="red"><B>{$customerinfo.balance|money_format}</B></FONT>{else}{$customerinfo.balance|money_format}{/if}{$custombalancedata}</H2>
 		</TD>
+	</TR>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
@@ -117,7 +118,7 @@
 	{/if}
 	<TR CLASS="light">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT">
-<!--			<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, 'Jesteś pewien, że chcesz usunąć użytkownika: {$customerinfo.customername|upper} z bazy danych?\n\nJeżeli dany użytkownik posiada jakiekolwiek komputery, zostaną automatycznie usunięte z bazy danych, a informacje o nich nieodwracalnie stracone!')">Usuń <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
+<!--			<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="Edytuj"></A> <A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, 'Jesteś pewien, że chcesz usunąć użytkownika: {$customerinfo.customername|upper} z bazy danych?\n\nJeżeli dany użytkownik posiada jakiekolwiek komputery, zostaną automatycznie usunięte z bazy danych, a informacje o nich nieodwracalnie stracone!')">Usuń <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
 		</TD>
 	</TR>
 </TABLE>

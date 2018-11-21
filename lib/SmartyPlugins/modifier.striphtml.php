@@ -52,7 +52,9 @@ function smarty_modifier_striphtml($args) {
 
 	$args = preg_replace ($search, $replace, $args);
 	return preg_replace_callback("'&#(\d+);'",
-		create_function('$m', "return chr(\$m[1]);"),
+		function($m) {
+			return chr($m[1]);
+		},
 		$args);
 }
 

@@ -1,13 +1,23 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 	<!--
 	function DeleteMarked()
 	{
+		if ($('tr[data-published="1"] :checked').length) {
+			{if ConfigHelper::checkPrivilege('published_document_modification')}
+			if (!confirm('{trans("Some documents have been published already! Are you sure you want to delete them despite this?")}')) {
+				return;
+			}
+			{else}
+			alert('{trans("Some documents have been published already!")}');
+			return;
+			{/if}
+		}
+
 		if(!confirm('{trans("Are you sure, you want to delete selected operation(s) and/or document item(s)?")}'))
 			return;
 
@@ -71,7 +81,7 @@
 </SCRIPT>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
@@ -130,6 +140,7 @@
                                 <OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
                                 <OPTION value="documented"{if $listdata.cat == "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
                                 <OPTION value="notdocumented"{if $listdata.cat == "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
+                                <OPTION value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</OPTION>
                         </SELECT>
                         {trans("Group:")}
                         <SELECT size="1" name="group">
@@ -140,74 +151,80 @@
                         </SELECT>
                         <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>&nbsp;
                         </div>
-                        <div class="calendar">
-                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="14" maxlength="14" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar-time" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="14" maxlength="14" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar-time" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                         <A href="javascript:filter();">&raquo;&raquo;&raquo;</A><BR>
-                        </div>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="10">
-			{include file="scroller.html" loop=$balancelist scrollerno=1}
+		<TD class="lms-ui-pagination" COLSPAN="10">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}"  >
+    <TBODY class="lms-ui-multi-check">
+	{foreach $balancelist as $balance}
+	<TR class="highlight"{if $balance.docid} data-published="{$balance.published}"{/if}>
 		<TD class="nobr">
-                        {$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
+                        {$balance.time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="nobr">
-			{if $balancelist[balancelist].userid}{$balancelist[balancelist].user|truncate:16:"...":true}{else}-{/if}
+			{if $balance.userid}{$balance.user|truncate:16:"...":true}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balancelist[balancelist].covenant}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
+			{if $balance.covenant}{($balance.value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-                        {if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
+                        {if !$balance.covenant && $balance.value > 0}{$balance.value|money_format}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
+			{if !$balance.covenant && $balance.value < 0}{($balance.value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD class="text-center">
 			&raquo;
 		</TD>
 		<TD class="text-right nobr">
-                        {if $balancelist[balancelist].covenant}-{else}{$balancelist[balancelist].after|money_format}{/if}
+                        {if $balance.covenant}-{else}{$balance.after|money_format}{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balancelist[balancelist].customerid}<A HREF="?m=customerinfo&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</A>{else} - {/if}
+			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|truncate:20:"...":true}</A>{else} - {/if}
 		</TD>
 		<TD>
-			{$balancelist[balancelist].comment}
+			{$balance.comment}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balancelist[balancelist].docid}
-				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
-				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_CNOTE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
-				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_RECEIPT}
-				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
-				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_DNOTE}
-				<A HREF="?m=note&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
+			{if $balance.docid}
+				{if $balance.doctype==$smarty.const.DOC_INVOICE}
+				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+				<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+				{/if}
+				<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/print.gif" ALT="{trans("Invoice")}"></A>
+				{elseif $balance.doctype==$smarty.const.DOC_CNOTE}
+				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+				<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+				{/if}
+				<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printn.gif" alt="{trans("Credit note")}"></A>
+				{elseif $balance.doctype==$smarty.const.DOC_RECEIPT}
+				<A HREF="?m=receipt&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printr.gif" alt="{trans("Cash receipt")}"></A>
+				{elseif $balance.doctype==$smarty.const.DOC_DNOTE}
+				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+				<A HREF="?m=note&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+				{/if}
+				<A HREF="?m=note&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printd.gif" alt="{trans("Debit note")}"></A>
 				{/if}
 			{/if}
-			<INPUT TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
+			<INPUT TYPE="checkbox" class="lms-ui-multi-check" NAME="marks[{$balance.id}]" VALUE="{$balance.id}">
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD COLSPAN="10" class="empty-table">
 			<p>{trans("No such transactions found in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
 	<TR>
@@ -220,13 +237,16 @@
 			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 		</TD>
 		<TD colspan="2" class="text-right nobr">
-                        <label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1">
+			<label>
+				{trans("Check All")}
+				<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" NAME="allbox" VALUE="1">
+			</label>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="10">
-			{include file="scroller.html" loop=$balancelist scrollerno=2}
+		<TD class="lms-ui-pagination" COLSPAN="10">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}

@@ -42,19 +42,18 @@ else {
 				if ($SYSLOG) {
 					$customerid = $DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array($docid));
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+						SYSLOG::RES_DOC => $docid,
+						SYSLOG::RES_CUST => $customerid,
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
 					$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($docid));
 					foreach ($cashids as $cashid) {
 						$args = array(
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+							SYSLOG::RES_CASH => $cashid,
+							SYSLOG::RES_DOC => $docid,
+							SYSLOG::RES_CUST => $customerid,
 						);
-						$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-							array_keys($args));
+						$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 					}
 				}
 				$DB->Execute('DELETE FROM documents WHERE id=?', array($docid));
@@ -66,25 +65,24 @@ else {
 			if (!empty($contents))
 				foreach ($contents as $content) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $content['docid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $_GET['id'],
+						SYSLOG::RES_DOC => $content['docid'],
+						SYSLOG::RES_CASHREG => $_GET['id'],
 						'itemid' => $content['itemid'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
 				}
 			$cashrights = $DB->GetAll('SELECT id, userid FROM cashrights WHERE regid = ?', array($_GET['id']));
 			if (!empty($cashrights))
 				foreach ($cashrights as $cashright) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT] => $cashright['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $cashright['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $_GET['id'],
+						SYSLOG::RES_CASHRIGHT => $cashright['id'],
+						SYSLOG::RES_USER => $cashright['id'],
+						SYSLOG::RES_CASHREG => $_GET['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASHRIGHT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASHRIGHT, SYSLOG::OPER_DELETE, $args);
 				}
-			$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $_GET['id']);
-			$SYSLOG->AddMessage(SYSLOG_RES_CASHREG, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$args = array(SYSLOG::RES_CASHREG => $_GET['id']);
+			$SYSLOG->AddMessage(SYSLOG::RES_CASHREG, SYSLOG::OPER_DELETE, $args);
 		}
 		$DB->Execute('DELETE FROM receiptcontents WHERE regid=?', array($_GET['id']));
 		$DB->Execute('DELETE FROM cashrights WHERE regid = ?', array($_GET['id']));

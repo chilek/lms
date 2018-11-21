@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = (isset($_GET['id'])) ? $_GET['id'] : $AUTH->id;
+$id = (isset($_GET['id'])) ? $_GET['id'] : Auth::GetCurrentUser();
 
 if ($LMS->UserExists($id)) {
 	if(isset($_POST['passwd'])) {
@@ -50,7 +50,7 @@ if ($LMS->UserExists($id)) {
 
 	$passwd['id'] = $id;
 
-	$layout['pagetitle'] = trans('Password Change for User $a', $DB->GetOne('SELECT name FROM users WHERE id = ?', array($id)));
+	$layout['pagetitle'] = trans('Password Change for User $a', $DB->GetOne('SELECT name FROM vusers WHERE id = ?', array($id)));
 
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);

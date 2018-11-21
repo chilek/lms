@@ -55,7 +55,11 @@ if($customeraccounts = $DB->GetAll('SELECT passwd.*, domains.name AS domain
 	}
 
 $document['template'] = $DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($document['numberplanid']));
-$document['nr'] = docnumber($document['number'], $document['template']);
+$document['nr'] = docnumber(array(
+	'number' => $document['number'],
+	'template' => $document['template'],
+	'customerid' => $document['customerid'],
+));
 
 $SMARTY->assign(
 		array(

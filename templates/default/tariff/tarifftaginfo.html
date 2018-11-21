@@ -1,0 +1,32 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+    <h1>{$layout.pagetitle}</h1>
+    <table class="lmsbox">
+        <thead>
+            <tr>
+                <td style="width: 100%;" class="bold nobr">{$tarifftag.name} ({$tarifftag.id|string_format:"%04d"})</td>
+            </tr>
+        </thead>
+        <tbody>
+            {if $tarifftag.description}
+                <tr>
+                    <td style="width: 100%;">
+                        <table width="100%" cellpadding="3"> 
+                            <tr>
+                                <td class="fall superlight">{$tarifftag.description|replace:"\n":"<br>"}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            {/if}
+            <tr>
+                <td class="text-right">
+                    <a href="?m=tarifftagedit&amp;id={$tarifftag.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
+                    {if $tarifftag.count == 0} <a href="?m=tarifftagdel&amp;id={$tarifftag.id}" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that tag?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a>{/if}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    {include file="tariff/tarifftagassignments.html"}
+{/block}

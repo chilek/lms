@@ -1,71 +1,76 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/{if $message.type == $smarty.const.MSG_SMS}sms{elseif $message.type == $smarty.const.MSG_WWW}network{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}cms{else}email{/if}.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Subject:")}</B>
+		<TD class="bold nobr">
+			{trans("Subject:")}
 		</TD>
-		<TD WIDTH="98%">
-			<B>{$message.subject}</B>
+		<TD>
+			{$message.subject}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/users.gif" ALT=""> 
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("User:")}</B>
+		<TD class="bold">
+			{trans("User:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			{if $message.userid}
 			<a href="?m=userinfo&id={$message.userid}">{$message.name}</a>
 			{else}LMS{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/time.gif" ALT=""> 
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Creation date:")}</B>
+		<TD class="bold">
+			{trans("Creation date:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 	</TR>
 {if $message.sender}
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/mail.gif" ALT=""> 
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Sender:")}</B>
+		<TD class="bold">
+			{trans("Sender:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			{$message.sender|escape:"html"}
 		</TD>
 	</TR>
 {/if}
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/edit.gif" ALT=""> 
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Message body:")}</B>
+		<TD class="bold nobr">
+			{trans("Message body:")}
 		</TD>
-		<TD WIDTH="98%">
+		<TD>
 			<TABLE WIDTH="100%" CELLPADDING="5">
-		                <TR>
-			                <TD CLASS="fall superlight">
+				<TR>
+					<TD CLASS="fall superlight">
 						{$message.body|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -73,39 +78,47 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="3" ALIGN="RIGHT">
-			 <A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+		<TD COLSPAN="3" class="buttons">
+			<A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 <BR>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 95%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=messageinfo&id={$message.id}&o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=messageinfo&id={$message.id}&o=destination{if $listdata.direction == "asc" && $listdata.order == "destination"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order == "destination"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="95%" align="right" nowrap>
+		<TD class="text-right nobr">
 			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")} ({trans("Error message")})</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" align="right" nowrap>
-			{trans("Last read on:")} ({trans("only userpanel message")})
+		<TD class="text-right nobr">
+			{trans("Last read on:")}
 		</TD>
-		<TD WIDTH="1%" align="right" nowrap>
+		<TD class="text-right nobr">
 			{trans("Was confirm on:")} ({trans("only userpanel message")})
 		</TD>
-		<TD WIDTH="1%" nowrap>
-			<B>{t a=$listdata.total}Total: $a{/t}</B>&nbsp;
+		<TD class="bold nobr">
+			{t a=$listdata.total}Total: $a{/t}&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="6" nowrap>
+		<TD colspan="6" class="nobr">
 			<FORM METHOD="POST" NAME="page" action="?m=messageinfo&id={$message.id}">
-			<B>{trans("Filter:")} </B> 
+			<span class="bold">{trans("Filter:")}</span>
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 			<SELECT size="1" name="cat">
 				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
@@ -130,7 +143,7 @@
 	</TR>		
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$itemlist scrollerno=1}
 		</TD>
 	</TR>
@@ -141,37 +154,36 @@
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
 	<TR class="{cycle}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
 				{trans("none")}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			{trans("{$item.destination|escape}")}
 		</TD>
-		<TD WIDTH="95%" align="right">
+		<TD class="text-right">
 			{if $item.status == $smarty.const.MSG_SENT}
 				{trans("sent")}
 			{elseif $item.status == $smarty.const.MSG_ERROR}
 				{trans("errornous")}{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_DELIVERED}
-				{trans("delivered")}
+				{trans("delivered")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
 			{else}
 				{trans("waiting")}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" align="right">
-			{if ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
-				&& $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+		<TD class="text-right">
+			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
-		<TD WIDTH="1%" align="right">
+		<TD class="text-right">
 			{if $item.status == $smarty.const.MSG_DELIVERED
 				&& ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
 				&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+		<TD class="text-right nobr">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -185,16 +197,14 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="6">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="scroller.html" loop=$itemlist scrollerno=2}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD WIDTH="2%" colspan="5" NOWRAP>
-		</TD>
-		<TD COLSPAN="5">
-			<B>{t a=$listdata.total}Total: $a{/t}</B>
+		<TD colspan="6" class="bold text-right">
+			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 	</TR>
     </TFOOT>

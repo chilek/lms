@@ -1,55 +1,71 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 95%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<IMG src="img/promo.gif" ALT=""> <B>{trans("Name:")}</B>
+		<TD class="bold nobr">
+			<IMG src="img/promo.gif" ALT=""> {trans("Name:")} ({trans("Effective date")})
 		</TD>
-		<TD WIDTH="1%" align="right" NOWRAP>
+		<TD class="text-right nobr">
 			{trans("ID:")}
 		</TD>
-		<TD WIDTH="95%">
+		<TD>
 			{trans("Description:")}
 		</TD>
-		<TD align="right" WIDTH="1%" NOWRAP>
+		<TD class="text-right nobr">
 			{trans("Schemas:")}
 		</TD>
-		<TD align="right" WIDTH="1%" NOWRAP>
+		<TD class="text-right nobr">
 			{trans("Tariffs:")}
 		</TD>
-		<TD WIDTH="1%" align="right" nowrap>
+		<TD class="text-right nobr">
 			<A href="?m=promotionadd">{trans("Add promotion")} <IMG src="img/save.gif" alt=""> </A>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{foreach from=$promotionlist item=promo}
-	<TR class="highlight {cycle}{if $promo.disabled} blend{/if}"  >
+	{foreach $promotionlist as $promo}
+	<TR class="highlight {if $promo.disabled} blend{/if}"  >
 		<TD nowrap onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			<IMG src="img/promo.gif" ALT=""> <B>{$promo.name}</B>
+			{if $promo.datefrom || $promo.dateto}
+				{if $promo.datefrom}
+				({trans("from:")} {$promo.datefrom|date_format:"%Y/%m/%d"}{if !$promo.dateto}){/if}
+				{/if}
+				{if $promo.dateto}
+				{if !$promo.datefrom}({/if}{trans("to:")} {$promo.dateto|date_format:"%Y/%m/%d"})
+				{/if}
+			{/if}
 		</TD>
-		<TD ALIGN="right">
+		<TD class="text-right">
 			({$promo.id|string_format:"%04d"})
 		</TD>
 		<TD onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			{$promo.description}
 		</TD>
-		<TD ALIGN="right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
+		<TD class="text-right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			{$promo.scs|default:"-"}
 		</TD>
-		<TD ALIGN="right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
+		<TD class="text-right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			{$promo.tariffs|default:"-"}
 		</TD>
-		<TD align="right" NOWRAP>
-			<A HREF="?m=promotionset&amp;id={$promo.id}&amp;access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
-			<A HREF="?m=promotiondel&amp;id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=promotionedit&amp;id={$promo.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=promotioninfo&amp;id={$promo.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+		<TD class="text-right nobr">
+			<A HREF="?m=promotionset&amp;id={$promo.id}&amp;access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
+			<A HREF="?m=promotiondel&amp;id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A HREF="?m=promotionclone&id={$promo.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+			<A HREF="?m=promotionedit&amp;id={$promo.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A HREF="?m=promotioninfo&amp;id={$promo.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -62,15 +78,15 @@
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD COLSPAN="2" ALIGN="RIGHT">
+		<TD COLSPAN="2" class="bold text-right">
 			<IMG src="img/info2.gif" ALT="">
-			<B>{trans("Total:")}</B>
+			{trans("Total:")}
 		</TD>
-		<TD nowrap>
-			<B>{$listdata.total|default:"0"}</B>
+		<TD class="bold nobr">
+			{$listdata.total|default:"0"}
 		</TD>
 		<TD COLSPAN="2"></TD>
-		<TD align="right">
+		<TD class="text-right">
 			<A href="?m=promotionadd">{trans("Add promotion")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>

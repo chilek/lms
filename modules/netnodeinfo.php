@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,36 +25,54 @@
  */
 
 $id = intval($_GET['id']);
-$result = $DB->GetRow('SELECT n.*, p.name AS projectname,
-	lb.name AS borough_name, lb.type AS borough_type,
-	ld.name AS district_name, ls.name AS state_name,
-        (SELECT d.shortname FROM divisions d WHERE d.id = n.divisionid) AS division
-	FROM netnodes n
-	LEFT JOIN invprojects p ON n.invprojectid = p.id
-	LEFT JOIN location_cities lc ON lc.id = n.location_city
-	LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-	LEFT JOIN location_districts ld ON ld.id = lb.districtid
-	LEFT JOIN location_states ls ON ls.id = ld.stateid
-	WHERE n.id=? ',array($id));
-if (!$result)
-	$SESSION->redirect('?m=netnodelist');
-
-
-//$netdevinfo = $LMS->GetNetDev($_GET['id']);
-
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
 
+$result = $LMS->GetNetNode($id);
+
+if (!$result)
+	$SESSION->redirect('?m=netnodelist');
+
+if ($nodeinfo['ownerid']) {
+	$nodeinfo['owner'] = $LMS->getCustomerName( $nodeinfo['ownerid'] );
+}
+
 $SMARTY->assign('nodeinfo', $result);
 $SMARTY->assign('objectid', $result['id']);
 
-$nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=".$id." ORDER BY NAME");
+$attachmenttype = 'netnodeid';
+$attachmentresourceid = $id;
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'attachments.php');
+
+$nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name", array($id));
 $SMARTY->assign('netdevlist', $nlist);
 
+$queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
+	'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => null, 'netnodeids' => $id));
+$total = $queue['total'];
+unset($queue['total']);
+unset($queue['state']);
+unset($queue['order']);
+unset($queue['direction']);
+unset($queue['owner']);
+unset($queue['removed']);
+unset($queue['priority']);
+unset($queue['deadline']);
+unset($queue['service']);
+unset($queue['type']);
+unset($queue['unread']);
+unset($queue['rights']);
 
+$SMARTY->assign('queue', $queue);
 
+$start = 0;
+$pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $total);
+$SMARTY->assign('start', $start);
+$SMARTY->assign('pagelimit', $pagelimit);
+
+$SMARTY->assign('netnodeinfo_sortable_order', $SESSION->get_persistent_setting('netnodeinfo-sortable-order'));
 $SMARTY->display('netnode/netnodeinfo.html');
 
 ?>

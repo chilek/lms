@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
@@ -80,7 +80,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['paymentedit'].elements['payment[name]'].focus();
+$(function() {
+	$('form[name="paymentedit"] [name="payment[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

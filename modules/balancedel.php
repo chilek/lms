@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,20 +24,28 @@
  *  $Id$
  */
 
-if(!empty($_GET['id']))
-{
+if (!empty($_GET['id']))
 	$LMS->DelBalance($_GET['id']);
-}
-elseif(sizeof($_POST['marks']))
-{
-	foreach($_POST['marks'] as $markid => $junk)
-		if ($junk)
+elseif (count($_POST['marks'])) {
+	$ids = array();
+	$docitems = array();
+	foreach ($_POST['marks'] as $markid => $mark)
+		if ($markid == 'proforma')
+			foreach ($mark as $docid => $items) {
+				$docid = intval($docid);
+				if (!isset($docitems[$docid]))
+					$docitems[$docid] = array();
+				foreach ($items as $item)
+					$docitems[$docid][] = $item;
+			}
+		elseif ($mark)
 			$ids[] = $markid;
 	sort($ids);
-	foreach($ids as $idx => $cashid)
-	{
+	foreach ($ids as $cashid)
 		$LMS->DelBalance($cashid);
-	}
+	foreach ($docitems as $docid => $items)
+		foreach ($items as $itemid)
+			$LMS->InvoiceContentDelete($docid, $itemid);
 }
 
 header('Location: ?'.$SESSION->get('backto'));

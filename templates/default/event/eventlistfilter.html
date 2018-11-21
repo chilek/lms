@@ -1,0 +1,76 @@
+{block name=eventlistfilter}
+	<TR>
+		<TD colspan="6" class="text-center nobr no-print">
+			<A href="?m=eventlist&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
+			{section name=days loop=$days.day}
+				{if !$days.dow[days]}<span class="light">{/if}
+				<A href="?m=eventlist&day={$days.day[days]}&month={$filter.month}&year={$filter.year}">&nbsp;{if $days.sel[days]}
+				<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if}
+				</A>{if !$days.dow[days]}</span>{/if}
+			{/section}
+			<A href="?m=eventlist&day=1&month={if $filter.month == 12}1{else}{math equation="x+1" x=$filter.month}{/if}&amp;year={if $filter.month == 12}{math equation="x+1" x=$filter.year}{else}{$filter.year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="6" class="nobr no-print">
+			<div class="lms-ui-filter-container">
+				<div class="lms-ui-filter-definition">
+					<FORM method="POST" action="?m=eventlist" name="filter">
+						<INPUT type="submit" class="hiddenbtn"> <INPUT type="HIDDEN" name="m" value="eventlist">
+						<span class="bold">{trans("Filter:")} </span>
+						{trans("Type:")}
+						<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
+							{foreach $_EVENTTYPES as $id => $label}
+								<OPTION value="{$id}"{if is_array($filter.type) && in_array($id, $filter.type)} selected{/if}>{$label}</OPTION>
+							{/foreach}
+						</SELECT>
+						{trans("User:")}
+						<label>
+							{trans("AND")}
+							<input type="hidden" name="userand" value="0">
+							<input type="checkbox" name="userand" value="1" onchange="document.filter.submit();"{if isset($filter.userand) && $filter.userand} checked{/if}>
+						</label>
+						<SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
+							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if} data-exclusive>
+								<span class="brown">- {trans("unassigned")} -</span></OPTION>
+							{foreach $userlist as $user}
+								<OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.name|truncate:40:"...":true}</OPTION>
+							{/foreach}
+						</SELECT>
+						{trans("Privacy:")}
+						<SELECT name="privacy" onchange="document.filter.submit();">
+							<OPTION value="0"{if $filter.privacy == "0"} selected{/if}>{trans("- all -")}</OPTION>
+							<OPTION value="1"{if $filter.privacy == "1"} selected{/if}>{trans("public")}</OPTION>
+							<OPTION value="2"{if $filter.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
+						</SELECT>
+						{trans("Customer:")}
+						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
+						{button label="Today" onclick="location.href='?m=eventlist&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}';"}
+						{trans("Month:")}
+						<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
+							{section name=month loop=13 start=1}
+								<OPTION value="{$smarty.section.month.index}"{if $smarty.section.month.index == $filter.month} selected{/if}>{$temp_date|replace:"m":$smarty.section.month.index|date_format:"%B"}</OPTION>
+							{/section}
+						</SELECT>
+						{trans("Year:")}
+						<SELECT name="year" onchange="document.filter.submit();">
+							{assign var=start value=$period.fromdate|default:$date|date_format:"%Y"}
+							{assign var=end value=$period.todate|default:$date|date_format:"%Y"}
+							{math assign=end equation="max(x, y)" x=$end y=$smarty.now|date_format:"%Y"}
+							{section name=year loop=$end+1 start=$start}
+								<OPTION value="{$smarty.section.year.index}"{if $smarty.section.year.index == $filter.year} selected{/if}>{$smarty.section.year.index}</option>
+							{/section}
+						</SELECT>
+						{trans("Status:")}
+						<SELECT name="closed" onchange="document.filter.submit();">
+							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
+							<OPTION value="0"{if $filter.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
+							<OPTION value="1"{if $filter.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
+						</SELECT>
+					</FORM>
+				</div>
+				{persistent_filter}
+			</div>
+		</TD>
+	</TR>
+{/block}

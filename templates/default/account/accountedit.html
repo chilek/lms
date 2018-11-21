@@ -1,8 +1,7 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
 	function update_homedir()
@@ -25,7 +24,7 @@
 			<B>{trans("Login:")}</B>
 		</TD>
 		<TD width="98%">
-			<input type="text" name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
+			<input type="text" name="account[login]" value="{$account.login}" required {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
 		</TD>
 	</TR>
     </THEAD>
@@ -98,9 +97,7 @@
 					<B>{trans("Expiration date:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<div class="calendar">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
-					</div>
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
 				    </TD>
 			    	</TR>
 				<TR>
@@ -111,7 +108,7 @@
 					<B>{trans("Forward e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
+					<input type="email" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
 				    </TD>
 				</TR>
 				<TR>
@@ -122,7 +119,7 @@
 					<B>{trans("BCC e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
+					<input type="email" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
 				    </TD>
 				</TR>
 			    </TABLE>
@@ -138,26 +135,17 @@
 				    </TD>
 				    <TD width="98%">
 					    <table width="100%">
-						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_shell" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> <label for="type_shell">{trans("shell")}</label></td>
-							    <td>&nbsp;<input type="text" size="5" maxlendth="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
-						    </tr>
-						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_mail" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> <label for="type_mail">{trans("mail")}</label></td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account quota in MB" trigger="quota_mail"}></td>
-						    </tr>
-						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_www" name="account[type][www]" value="4" {if ($account.type & 4) == 4} CHECKED{/if}> <label for="type_www">{trans("www")}</label></td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[www]" value="{$quota.www}" {tip text="Enter account quota in MB" trigger="quota_www"}></td>
-						    </tr>
-						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_ftp" name="account[type][ftp]" value="8" {if ($account.type & 8) == 8} CHECKED{/if}> <label for="type_ftp">{trans("ftp")}</label></td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account quota in MB" trigger="quota_ftp"}></td>
-						    </tr>
-						    <tr>
-							    <td width="1%" nowrap><INPUT type="checkbox" id="type_sql" name="account[type][sql]" value="16" {if ($account.type & 16) == 16} CHECKED{/if}> <label for="type_sql">{trans("sql")}</label></td>
-							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[sql]" value="{$quota.sql}" {tip text="Enter account quota in MB" trigger="quota_sql"}></td>
-						    </tr>
+							{foreach $_ACCOUNTTYPES as $typeidx => $type}
+							<tr>
+								<td style="width: 1%;" class="nobr">
+									<INPUT type="checkbox" id="type_{$typeidx}" name="account[type][{$typeidx}]" value="{$typeidx}" {if ($account.type & $typeidx) == $typeidx} checked{/if}>
+									<label for="type_{$typeidx}">{$type.label}</label>
+								</td>
+								<td>
+									&nbsp;<input type="text" size="5" maxlendth="10" name="quota[{$typeidx}]" value="{$quota[$typeidx]}" {tip text="Enter account quota in MB" trigger="quota[$typeidx]"}>
+								</td>
+							</tr>
+							{/foreach}
 					    </table>
 				    </TD>
 				</TR>
@@ -186,7 +174,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['account'].elements['account[login]'].focus();
+$(function() {
+	$('form[name="account"] [name="account[login]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

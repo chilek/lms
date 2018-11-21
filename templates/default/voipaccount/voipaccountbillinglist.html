@@ -1,0 +1,318 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+
+{* check DIRECTION *}
+{assign var="direction_check" value="{if $listdata.direction == "desc"}asc{else}desc{/if}"}
+
+{* check ORDER is set *}
+{function order_check category=''}
+	{if $listdata.direction == "asc" && $listdata.order == $category},desc{/if}
+{/function}
+
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+
+<style>
+	.billing-table tr td,th {
+		padding-right: 15px;
+	}
+
+	.billing-table tr td:last-child, th:last-child {
+		padding-right: 0px;
+	}
+</style>
+
+<table class="lmsbox billing-table lms-ui-background-cycle">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 96%;">
+        <col style="width: 1%;" span="7">
+        {assign var="number_of_table_columns" value="11"}
+    </colgroup>
+    <thead>
+        <tr {tip text="Click on column name to change sorting order"}>
+            <th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=begintime{order_check category="begintime"}">{trans("Begin time:<!voip>")}</a>
+                {if $listdata.order == "begintime"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+
+            <th colspan="2" nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=caller_name{order_check category="caller_name"}">{trans("Customer:")}</a>
+                {if $listdata.order == "caller_name"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+
+				<a href="?m=voipaccountbillinglist&amp;o=callee_name{order_check category="callee_name"}">{trans("Customer:")}</a>
+                {if $listdata.order == "callee_name"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+            <th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=caller{order_check category="caller"}">{trans("Caller:")}</a>
+                {if $listdata.order == "caller"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+            <th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=callee{order_check category="callee"}">{trans("Callee:")}</a>
+                {if $listdata.order == "callee"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=callbegintime{order_check category="callbegintime"}">{trans("Call begin time:")}</a>
+                {if $listdata.order == "callbegintime"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=callanswertime{order_check category="callanswertime"}">{trans("Call answer time:")}</a>
+                {if $listdata.order == "callanswertime"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=type{order_check category="type"}">{trans("Connection type:")}</a>
+                {if $listdata.order == "type"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=status{order_check category="status"}">{trans("Status:")}</a>
+                {if $listdata.order == "status"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=price{order_check category="price"}">{trans("Price:")}</a>
+                {if $listdata.order == "price"}
+					<img src="img/{$direction_check}_order.gif" alt="">
+                {/if}
+            </th>
+
+            <th align="right" class="nobr">
+                {t a=$total}Total: $a{/t}
+            </th>
+        </tr>
+		<tr VALIGN="MIDDLE">
+			<td colspan="{$number_of_table_columns}">
+				<FORM method="get" action="?m={$layout.module}" name="choosefilter" id="choosefilter">
+					<INPUT type="hidden" NAME="m" VALUE="voipaccountbillinglist">
+					<span class="bold">{trans("Filter:")}</span>
+
+					{trans("Customer:")}
+					<SELECT SIZE="1" NAME="fvoipaccid">
+					<OPTION VALUE="">{trans("- all -")}</OPTION>
+					{foreach from=$voipaccounts item=vacc}
+						<OPTION VALUE="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} SELECTED{/if}>{$vacc.owner} ({$vacc.login})</OPTION>
+					{/foreach}
+					</SELECT>
+
+					{trans("Period")} {trans("from")}&nbsp;
+					<INPUT
+						TYPE="text"
+						NAME="frangefrom"
+						SIZE="10"
+						MAXLENGTH="20"
+						VALUE="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
+						{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+
+					{trans("to")}&nbsp;
+					<INPUT
+						TYPE="text"
+						NAME="frangeto"
+						SIZE="10"
+						MAXLENGTH="20"
+						VALUE="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
+						{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+
+					{trans("Connection type:")}
+					<SELECT SIZE="1" NAME="ftype">
+						<OPTION VALUE="">{trans("- all -")}</OPTION>
+						<OPTION VALUE="{CALL_INCOMING}" {if $listdata.ftype == $smarty.const.CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
+						<OPTION VALUE="{CALL_OUTGOING}" {if $listdata.ftype == $smarty.const.CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
+					</SELECT>
+
+					{trans("Status:")}
+					<SELECT SIZE="1" NAME="fstatus">
+						<OPTION VALUE="">{trans("- all -")}</OPTION>
+						<OPTION VALUE="{CALL_ANSWERED}" {if $listdata.fstatus == $smarty.const.CALL_ANSWERED} SELECTED{/if}>{trans("answered")}</OPTION>
+						<OPTION VALUE="{CALL_NO_ANSWER}" {if $listdata.fstatus == $smarty.const.CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
+						<OPTION VALUE="{CALL_BUSY}" {if $listdata.fstatus == $smarty.const.CALL_BUSY} SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
+						<OPTION VALUE="{CALL_SERVER_FAILED}" {if $listdata.fstatus == $smarty.const.CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
+					</SELECT>
+
+					<A HREF="#" onclick="document.forms['choosefilter'].submit();">&raquo;&raquo;&raquo;</A>
+				</FORM>
+			</td>
+		</tr>
+        {if $pagination->getTotal() != 0}
+		<TR>
+			<TD class="lms-ui-pagination" colspan="{$number_of_table_columns}">
+				{include file="pagination.html"}
+			</TD>
+		</TR>
+		{/if}
+    </thead>
+    <tbody>
+        {section name=i loop=$billings start=(($page-1)*$pagelimit) max=$pagelimit}
+			<tr class="highlight">
+
+				<td nowrap>
+					{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}
+				</td>
+
+				<td nowrap>
+					{if !empty($billings[i].callerownerid)}
+						<a href="?m=customerinfo&id={$billings[i].callerownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$billings[i].callerownerid}">
+							{$billings[i].caller_lastname|lower|ucfirst} {$billings[i].caller_name|ucfirst}
+						</a>
+					{else}
+						{trans("Customer from outside")}
+					{/if}
+				</td>
+
+				<td nowrap>
+					{trans("to")}
+
+					{if !empty($billings[i].calleeownerid)}
+						<a href="?m=customerinfo&id={$billings[i].calleeownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$billings[i].calleeownerid}">
+							{$billings[i].callee_lastname|lower|ucfirst} {$billings[i].callee_name|ucfirst}
+						</a>
+					{else}
+						{trans("customer from outside")}
+					{/if}
+				</td>
+
+				<td>
+					{if !empty($billings[i].callerownerid)}
+						<a href="?m=voipaccountinfo&amp;id={$billings[i].callervoipaccountid}">{$billings[i].caller}</a>
+					{else}
+						{$billings[i].caller}
+					{/if}
+				</td>
+
+				<td>
+					{if !empty($billings[i].calleeownerid)}
+						<a href="?m=voipaccountinfo&amp;id={$billings[i].calleevoipaccountid}">{$billings[i].callee}</a>
+					{else}
+						{$billings[i].callee}
+					{/if}
+				</td>
+
+				<td>
+					{$min_tmp = intval($billings[i].callbegintime / 60)}
+					{$sec_tmp = $billings[i].callbegintime % 60}
+
+					{if $min_tmp}{$min_tmp}min{/if}
+					{if $sec_tmp}{$sec_tmp}s{/if}
+				</td>
+
+				<td>
+					{$min_tmp = intval($billings[i].callanswertime / 60)}
+					{$sec_tmp = $billings[i].callanswertime % 60}
+
+					{if $min_tmp}{$min_tmp}min{/if}
+					{if $sec_tmp}{$sec_tmp}s{/if}
+				</td>
+
+				<td>
+					{if $billings[i].type == $smarty.const.CALL_OUTGOING}
+						{trans("outgoing")}
+					{elseif $billings[i].type == $smarty.const.CALL_INCOMING}
+						{trans("incoming")}
+					{/if}
+				</td>
+
+				<td nowrap>
+					{if $billings[i].status == $smarty.const.CALL_BUSY}
+						{trans("busy<!voip>")}
+					{elseif $billings[i].status == $smarty.const.CALL_ANSWERED}
+						{trans("answered")}
+					{elseif $billings[i].status == $smarty.const.CALL_NO_ANSWER}
+						{trans("no answer")}
+					{elseif $billings[i].status == $smarty.const.CALL_SERVER_FAILED}
+						{trans("server error")}
+					{/if}
+				</td>
+
+				<td nowrap>
+					{$billings[i].price|money_format}
+				</td>
+
+				<td align="right" class="nobr">
+					{if $billings[i].callanswertime && ($billings[i].caller_flags || $billings[i].callee_flags)}
+						<a href="?m=voipcallrecording&id={$billings[i].id}&download=1"><img src="img/save.gif"></a>
+						{documentview id="{$billings[i].id}"
+						              type="audio/mp3"
+						              name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
+	                                  url="?m=voipcallrecording&id={$billings[i].id}"
+	                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
+					{/if}
+					<a href="?m=voipaccountbillinginfo&amp;id={$billings[i].id}">
+						<img src="img/info.gif" alt="{trans("Info")}" title="{trans("Details")}">
+					</a>
+				</td>
+			</tr>
+        {sectionelse}
+			<tr>
+				<td class="empty-table" colspan="{$number_of_table_columns}">
+					<p>{trans("No CDR records found in database.")}</p>
+				</td>
+			</tr>
+        {/section}
+    </tbody>
+    <tfoot>
+        {if $pagination->getTotal() != 0}
+		<TR>
+			<TD class="lms-ui-pagination" colspan="{$number_of_table_columns}">
+				{include file="pagination.html"}
+			</TD>
+		</TR>
+		{/if}
+
+		{$sum = 0}
+		{$call_time = 0}
+		{$talk_time = 0}
+
+		{foreach $billings as $b}
+			{$sum = $sum + $b.price}
+			{$call_time = $call_time + $b.callbegintime}
+			{$call_talk = $call_talk + $b.callanswertime}
+		{/foreach}
+
+        <tr>
+            <td class="text-right bold" colspan="{$number_of_table_columns-6}">
+                {trans("Page total:")|lower}<br>
+                {trans("all")}:
+            </td>
+            <td>
+                {if $call_time / 86400 >= 1}{floor($call_time / 86400)}d {/if}{gmdate("H:i:s", $call_time % 86400)}<br>
+                {if $stats.totaltime / 86400 >= 1}{floor($stats.totaltime / 86400)}d {/if}{gmdate("H:i:s", $stats.totaltime % 86400)}
+            </td>
+
+            <td>
+                {if $call_talk / 86400 >= 1}{floor($call_talk / 86400)}d {/if}{gmdate("H:i:s", $call_talk % 86400)}<br>
+                {if $stats.billedtime / 86400 >= 1}{floor($stats.billedtime / 86400)}d {/if}{gmdate("H:i:s", $stats.billedtime % 86400)}
+            </td>
+            <td colspan="3" class="text-right">
+                {$sum|money_format}<br>
+                {$stats.price|money_format}
+            </td>
+            <td class="bold text-center">
+                {if $total}{$total}{else}0{/if}<br>
+                {intval($stats.cnt)}
+            </td>
+        </tr>
+    </tfoot>
+</table>
+{/block}

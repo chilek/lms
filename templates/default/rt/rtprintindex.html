@@ -1,9 +1,8 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <FORM method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&amp;type=ticketslist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -29,12 +28,14 @@
 						<span class="bold">{trans("Period:")} </span>
 					</TD>
 					<TD class="nobr" colspan="8">
-                                                <div class="calendar nobr">
-                                                <label for="datefrom">{trans("From:")}</label>
-                                                <input type="text" size="10" name="datefrom" id="datefrom" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-                                                <label for="dateto">{trans("To:")}</label>
-                                                <input type="text" size="10" name="dateto" id="dateto" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
-                                                </div>
+                                                <label>
+                                                	{trans("From:")}
+                                                	<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                </label>
+                                                <label>
+                                                	{trans("To:")}
+                                                	<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                </label>
                                         </TD>
 				</TR>
 				<TR>
@@ -82,8 +83,8 @@
 						<SELECT size="1" name="status" {tip text="You can select status to limit results"}>
 							<OPTION value="">- {trans("all")} -</OPTION>
 							<OPTION value="-1">{trans("not resolved")}</OPTION>
-							{foreach from=$_RT_STATES item=item key=key}
-							<OPTION value="{$key}">{$item}</OPTION>
+							{foreach $_RT_STATES as $key => $item}
+							<OPTION value="{$key}">{$item.label}</OPTION>
 							{/foreach}
 						</SELECT>
 					</TD>
@@ -99,30 +100,50 @@
 					<TD width="10%" nowrap>
 					</TD>
 				</TR>
+				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+				<TR>
+					<TD style="width: 1%;">
+						<IMG src="img/dead.gif" alt="">
+					</TD>
+					<TD style="width: 1%;">
+						<B>{trans("Removed:")}</B>
+					</TD>
+					<TD style="width: 1%;">
+						<SELECT size="1" name="removed" {tip text="You can select status to limit results"}>
+							<OPTION value="">- {trans("all")} -</OPTION>
+							<OPTION value="-1">{trans("Not removed")}</OPTION>
+							<OPTION value="1">{trans("Removed")}</OPTION>
+						</SELECT>
+					</TD>
+
+				</TR>
+				{/if}
 				<TR>
 					<TD width="1%" COLSPAN="2" NOWRAP>
 						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
 					</TD>
 					<TD width="1%">
 						<TABLE>
-						{foreach from=$categories item=category}
+							<TBODY class="lms-ui-multi-check">
+							{foreach $categories as $category}
 							<TR>
 								<TD width="1%" align="center">
-									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat1{$category.id}" value="1" CHECKED>
+									<INPUT type="checkbox" name="categories[{$category.id}]" class="lms-ui-multi-check" value="1" CHECKED>
 								</TD>
 								<TD width="1%">
 									<label for="cat1{$category.id}">{$category.name}</label>
 								</TD>
 							</TR>
-						{/foreach}
+							{/foreach}
 							<TR>
 								<TD width="1%" align="center" class="ftop">
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('ticketslist', this, ['extended', 'contacts'])" VALUE="1" CHECKED>
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox-1" class="lms-ui-multi-check-all" VALUE="1" CHECKED>
 								</TD>
 								<TD width="1%" class="ftop">
-									<label for="allbox">{trans("Check All")}</label>
+									<label for="allbox-1">{trans("Check All")}</label>
 								</TD>
 							</TR>
+							</TBODY>
 						</TABLE>
 					</TD>
 				</TR>
@@ -134,7 +155,7 @@
 			<INPUT TYPE="checkbox" NAME="extended" VALUE="1" id="extended"><label for="extended">{trans("extended format")}</label>&nbsp;
 			<INPUT TYPE="checkbox" NAME="contacts" VALUE="1" id="contacts" CHECKED><label for="contacts">{trans("include contact info")}</label>
 			&nbsp; &nbsp; &nbsp;
-			<A href="javascript:document.ticketslist.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.ticketslist.submit();"><IMG src="img/print.gif" alt="" hspace="2"> {trans("Print")}</A>
 		</TD>
 	</TR>
     </TBODY>
@@ -165,12 +186,14 @@
 						<span class="bold">{trans("Period:")} </span>
 					</TD>
 					<TD class="nobr" colspan="8">
-                                                <div class="calendar nobr">
-                                                <label for="datefrom">{trans("From:")}</label>
-                                                <input type="text" size="10" name="datefrom" id="datefrom" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-                                                <label for="dateto">{trans("To:")}</label>
-                                                <input type="text" size="10" name="dateto" id="dateto" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
-                                                </div>
+                                                <label>
+                                                	{trans("From:")}
+                                                	<input type="text" size="10" name="datefrom" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                </label>
+                                                <label
+                                                	>{trans("To:")}
+                                                	<input type="text" size="10" name="dateto" value="" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                </label>
                                         </TD>
 				</TR>
 				<TR>
@@ -195,30 +218,50 @@
 						<B>{t a="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" b="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $a times in last $b days{/t}</B>
 					</TD>
 				</TR>
+				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+				<TR>
+					<TD style="width: 1%;">
+						<IMG src="img/dead.gif" alt="">
+					</TD>
+					<TD style="width: 1%;">
+						<B>{trans("Removed:")}</B>
+					</TD>
+					<TD style="width: 1%;">
+						<SELECT size="1" name="removed" {tip text="You can select status to limit results"}>
+							<OPTION value="">- {trans("all")} -</OPTION>
+							<OPTION value="-1">{trans("Not removed")}</OPTION>
+							<OPTION value="1">{trans("Removed")}</OPTION>
+						</SELECT>
+					</TD>
+
+				</TR>
+				{/if}
 				<TR>
 					<TD width="1%" COLSPAN="2" NOWRAP>
 						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
 					</TD>
 					<TD width="1%">
 						<TABLE>
-						{foreach from=$categories item=category}
+							<tbody class="lms-ui-multi-check">
+							{foreach $categories as $category}
 							<TR>
 								<TD width="1%" align="center">
-									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat2{$category.id}" value="1" CHECKED>
+									<INPUT type="checkbox" name="categories[{$category.id}]" class="lms-ui-multi-check" value="1" CHECKED>
 								</TD>
 								<TD width="1%">
 									<label for="cat2{$category.id}">{$category.name}</label>
 								</TD>
 							</TR>
-						{/foreach}
+							{/foreach}
 							<TR>
 								<TD width="1%" align="center" class="ftop">
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('stats', this)" VALUE="1" CHECKED>
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox-2" class="lms-ui-multi-check-all" VALUE="1" CHECKED>
 								</TD>
 								<TD width="1%"  class="ftop">
-									<label for="allbox">{trans("Check All")}</label>
+									<label for="allbox-2">{trans("Check All")}</label>
 								</TD>
 							</TR>
+							</tbody>
 						</TABLE>
 					</TD>
 				</TR>
@@ -227,7 +270,7 @@
 	</TR>
 	<TR>
 		<TD width="100%" colspan="2" align="right">
-			<A href="javascript:document.stats.submit();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
+			<A href="javascript:document.stats.submit();"><IMG src="img/print.gif" alt="" hspace="2"> {trans("Print")}</A>
 		</TD>
 	</TR>
     </TBODY>

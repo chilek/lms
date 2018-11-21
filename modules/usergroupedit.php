@@ -50,6 +50,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('users', $users);
-$SMARTY->assign('userscount', sizeof($users));
+$SMARTY->assign('userscount', count($users));
 $SMARTY->assign('usergroups',$LMS->UsergroupGetAll());
 $SMARTY->display('user/usergroupedit.html');

@@ -1,8 +1,8 @@
 {if !ConfigHelper::checkPrivilege('hide_summaries')}
-<table class="lmsbox">
+<table class="lmsbox" id="lms-ui-welcome-box-customers">
     <colgroup>
-        <col style="width: 50%;"/>
-        <col style="width: 50%;"/>
+        <col style="width: 50%;">
+        <col style="width: 50%;">
     </colgroup>
     <thead>
         <tr>
@@ -25,16 +25,28 @@
         {/foreach}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a><br>
-                {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-                <a href="?m=customerlist&amp;s=52">{trans("Total Dues:")}</a>
-                {/if}
+                <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a>
             </td>
             <td class="nobr">
-                {$customerstats.total}<br>
-                {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+                {$customerstats.total}
+            </td>
+        </tr>
+        {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+        <tr>
+            <td class="text-right bold">
+                <a href="?m=customerlist&amp;s=52">{trans("Total Dues:")}</a>
+            </td>
+            <td>
                 {$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
-                {/if}
+            </td>
+        </tr>
+        {/if}
+        <tr>
+            <td class="text-right bold">
+                <a href="?m=documentlist&amp;s=0">{trans("Documents waiting for approval")}:</a>
+            </td>
+            <td>
+                {$documentsnotapproved}
             </td>
         </tr>
 	{if $customerschanges}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,12 +29,14 @@ if(! $LMS->TicketExists($_GET['id']))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-if(! $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']))
+if(! $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $_GET['id']))
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
 	die;
 }
+
+$LMS->MarkTicketAsRead($_GET['id']);
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
 
@@ -58,6 +60,9 @@ $layout['pagetitle'] = trans('Ticket No. $a',sprintf("%06d",$ticket['ticketid'])
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
+$SMARTY->assign('messages', isset($_GET['messages']) ? 1 : 0);
+$SMARTY->assign('notes', isset($_GET['notes']) ? 1 : 0);
+$SMARTY->assign('history', isset($_GET['history']) ? 1 : 0);
 $SMARTY->display('rt/' . ConfigHelper::getConfig('phpui.ticket_template_file'));
 
 ?>

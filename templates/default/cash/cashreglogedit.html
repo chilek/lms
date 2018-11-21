@@ -1,8 +1,7 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="reglog" ACTION="?m=cashreglogedit&id={$reglog.id}">
 <INPUT type="submit" class="hiddenbtn">
@@ -25,9 +24,7 @@
 	    </TD>
 	    <TD width="1%"><B>{trans("Time:")}</B></TD>
 	    <TD width="98%">
-		<div class="calendar-time">
-		<INPUT TYPE="TEXT" NAME="reglog[time]" VALUE="{if $reglog.time}{$reglog.time}{/if}" SIZE="16" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="time"}>
-		</div>
+		<INPUT TYPE="TEXT" NAME="reglog[time]" VALUE="{if $reglog.time}{$reglog.time}{/if}" SIZE="16" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="time"}>
 	    </TD>
 	</TR>
 	<TR>

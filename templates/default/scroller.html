@@ -1,6 +1,6 @@
 {if ConfigHelper::checkConfig('phpui.short_pagescroller')}
     <B>{trans("Page:")}
-    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{/if}
+    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{/if}
     {math assign=lastpage equation="ceil(x/y)" x=$listdata.total y=$pagelimit}
     {if $page == $lastpage}{math assign=scroller_start equation="max(0,x-3)*y" x=$page y=$pagelimit}
     {elseif $page > 1 && $page < $lastpage}{math assign=scroller_start equation="max(0,x-2)*y" x=$page y=$pagelimit}{/if}
@@ -9,15 +9,15 @@
 	{if $page == $cnt}
             [{$cnt}]
         {else}
-            <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$cnt}">{$cnt}</A>
+            <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$cnt}">{$cnt}</A>
         {/if}
     {/section}
     ... 
     {if $lastpage != $page}
-        <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$lastpage}">[{$lastpage}]</A>
+        <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$lastpage}">[{$lastpage}]</A>
     {/if}
     {if $page < $lastpage}
-        <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>
+        <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>
     {/if}
     </B>
     {math equation="x + 1" x=$start assign=startx}
@@ -43,15 +43,15 @@
     {/if}
 {else}
     <B>{trans("Page:")}
-    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+    {if $page > 1}<A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
     {section name=pcnt loop=$loop step=$pagelimit}
 	{if $page == $smarty.section.pcnt.rownum}
             [{$smarty.section.pcnt.rownum}]
         {else}
-            <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{if $listdata.state}&s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$smarty.section.pcnt.rownum}">{$smarty.section.pcnt.rownum}</A>
+            <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}&id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={$smarty.section.pcnt.rownum}">{$smarty.section.pcnt.rownum}</A>
         {/if}
     {/section}
-    {if $page < $smarty.section.pcnt.rownum} <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}&id={$listdata.id}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}&s={$listdata.state}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else} &raquo;&raquo;&raquo;{/if}
+    {if $page < $smarty.section.pcnt.rownum} <A HREF="?m={$layout.module}{$adlink}{if $listdata.id}{if is_array($listdata.id)}&id[]={implode('&id[]=', $listdata.id)}{else}id={$listdata.id}{/if}{/if}{if $listdata.customer}&c={$listdata.customer}{/if}{if $listdata.type}&t={$listdata.type}{/if}{if $listdata.state}{if is_array($listdata.state)}&s[]={implode('&s[]=', $listdata.state)}{else}s={$listdata.state}{/if}{/if}{if $listdata.kind}&amp;k={$listdata.kind}{/if}{if $listdata.order}&amp;o={$listdata.order},{$listdata.direction}{/if}&amp;page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else} &raquo;&raquo;&raquo;{/if}
     </B> 
     {math equation="x + 1" x=$start assign=startx}
     {if $start + $pagelimit > $listdata.total}{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}{/if}

@@ -30,14 +30,18 @@ class Session {
 	private $passwd;
 	private $ip;
 	private $db;
+	private $pin_allowed_characters;
 	public $islogged = false;
 	public $error;
+
+	public $_content = array();     // session content array
 
 	public function __construct(&$DB, $timeout = 600) {
 		global $LMS;
 
 		session_start();
 		$this->db = &$DB;
+		$this->pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
 		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
 		if (isset($_GET['override']))
@@ -48,6 +52,9 @@ class Session {
 			$remindform = $_POST['remindform'];
 
 		if (isset($remindform)) {
+			if (ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey') && !$this->ValidateRecaptchaResponse())
+				return;
+
 			$ten = preg_replace('/-/', '', $remindform['ten']);
 			$params = array($ten, $ten);
 			switch ($remindform['type']) {
@@ -70,7 +77,7 @@ class Session {
 				default:
 					return;
 			}
-			$customer = $this->db->GetRow("SELECT c.id, pin FROM customers c $join WHERE (REPLACE(ten, '-', '') = ? OR ssn = ?)"
+			$customer = $this->db->GetRow("SELECT c.id, pin FROM customers c $join WHERE c.deleted = 0 AND (REPLACE(ten, '-', '') = ? OR ssn = ?)"
 				. $where, $params);
 			if (!$customer) {
 				$this->error = trans('Credential reminder couldn\'t be sent!');
@@ -104,7 +111,12 @@ class Session {
 			$this->id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : 0;
 		}
 
-		$authdata = $this->VerifyPassword();
+		$authdata = null;
+		if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
+			if ($this->ValidateRecaptchaResponse())
+				$authdata = $this->VerifyPassword();
+		} else
+			$authdata = $this->VerifyPassword();
 
 		if ($authdata != NULL) {
 			$authinfo = $this->GetCustomerAuthInfo($authdata['id']);
@@ -173,6 +185,38 @@ class Session {
 		}
 	}
 
+	private function ValidateRecaptchaResponse() {
+		if (!isset($_POST['g-recaptcha-response']))
+			return false;
+
+		if (!function_exists('curl_init'))
+			die('PHP cURL exension is not installed!');
+
+		$ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+
+		$post_fields = array(
+			'secret' => urlencode(ConfigHelper::getConfig('userpanel.google_recaptcha_secret')),
+			'response' => urlencode($_POST['g-recaptcha-response']),
+			'ip' => $this->ip,
+		);
+
+		curl_setopt_array($ch, array(
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => http_build_query($post_fields),
+		));
+
+		$res = curl_exec($ch);
+		if ($res !== false && ($res = json_decode($res, true)) !== null && $res['success']) {
+			curl_close($ch);
+			return true;
+		}
+
+		curl_close($ch);
+
+		return false;
+	}
+
 	public function _postinit() {
 		return TRUE;
 	}
@@ -196,9 +240,8 @@ class Session {
 		}
 	}
 
-	private function GetCustomerIDByPhoneAndPIN()
-	{
-		if(!preg_match('/^[0-9]+$/', $this->passwd))
+	private function GetCustomerIDByPhoneAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
@@ -214,9 +257,8 @@ class Session {
 		return $authinfo;
 	}
 
-	private function GetCustomerIDByIDAndPIN()
-	{
-		if(!preg_match('/^[0-9]+$/', $this->passwd) || !preg_match('/^[0-9]+$/', $this->login))
+	private function GetCustomerIDByIDAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd) || !preg_match('/^[0-9]+$/', $this->login))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT id FROM customers
@@ -231,9 +273,8 @@ class Session {
 		return $authinfo;
 	}
 
-	private function GetCustomerIDByDocumentAndPIN()
-	{
-		if(!preg_match('/^[0-9]+$/', $this->passwd))
+	private function GetCustomerIDByDocumentAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c
@@ -250,9 +291,8 @@ class Session {
 		return $authinfo;
 	}
 
-	private function GetCustomerIDByEmailAndPIN()
-	{
-		if (!preg_match('/^[0-9]+$/', $this->passwd))
+	private function GetCustomerIDByEmailAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
@@ -264,6 +304,23 @@ class Session {
 
 		$authinfo['passwd'] = $this->db->GetOne('SELECT pin FROM customers
 			WHERE pin = ? AND id = ?', array($this->passwd, $authinfo['id']));
+
+		return $authinfo;
+	}
+
+	private function GetCustomerIDByNodeNameAndPassword() {
+		if (!preg_match('/^[_a-z0-9-.]+$/i', $this->passwd) || !preg_match('/^[_a-z0-9-.]+$/i', $this->login))
+			return null;
+
+		$authinfo['id'] = $this->db->GetOne('SELECT ownerid FROM nodes
+			WHERE name = ?', array($this->login));
+
+		if (empty($authinfo['id']))
+			return null;
+
+		$authinfo['passwd'] = $this->db->GetOne('SELECT pin FROM customers c
+			JOIN nodes n ON c.id = n.ownerid
+			WHERE n.name = ? AND n.passwd = ?', array($this->login, $this->passwd));
 
 		return $authinfo;
 	}
@@ -306,6 +363,9 @@ class Session {
 				break;
 			case 4:
 				$authinfo = $this->GetCustomerIDByEmailAndPIN();
+				break;
+			case 5:
+				$authinfo = $this->GetCustomerIDByNodeNameAndPassword();
 				break;
 		}
 

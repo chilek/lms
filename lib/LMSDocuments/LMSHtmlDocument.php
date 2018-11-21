@@ -41,8 +41,8 @@ class LMSHtmlDocument extends LMSDocument {
 	}
 
 	private function PrepareFullContents() {
-		$this->smarty->assign('css', file(ConfigHelper::getConfig('directories.sys_dir', '', true)
-			. DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'style_print.css'));
+		$this->smarty->assign('css', file(SYS_DIR . DIRECTORY_SEPARATOR
+			. 'img' . DIRECTORY_SEPARATOR . 'style_print.css'));
 		$this->contents = $this->smarty->fetch($this->header_file) . $this->contents
 			. $this->smarty->fetch('clearfooter.html');
 	}

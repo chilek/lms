@@ -67,8 +67,8 @@ $this->Execute("ALTER TABLE netdevices ADD COLUMN status tinyint DEFAULT '0'");
 $this->Execute("ALTER TABLE nodes ADD COLUMN invprojectid int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE nodes ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$this->Execute("DROP VIEW vnodes");
-$this->Execute("DROP VIEW vmacs");
+$this->Execute("DROP VIEW IF EXISTS vnodes");
+$this->Execute("DROP VIEW IF EXISTS vmacs");
 $this->Execute("CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n

@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
@@ -15,7 +15,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="payment[name]" VALUE="{$payment.name}" {tip text="Enter standing payment name" trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="payment[name]" VALUE="{$payment.name}" required {tip text="Enter standing payment name" trigger="name" bold=1}>
 		</TD>
 	</TR>
     </THEAD>
@@ -28,7 +28,7 @@
 			<B>{trans("Creditor:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
+			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" required {tip text="Enter creditor name" trigger="creditor"}>
 		</TD>
 	</TR>
 	<TR>
@@ -80,7 +80,9 @@
 </TABLE></FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['paymentadd'].elements['payment[name]'].focus();
+$(function() {
+	$('form[name="paymentadd"] [name="payment[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

@@ -1,317 +1,461 @@
 <!--// $Id$ //-->
-<script type="text/javascript" src="img/netnodehelper.js"></script>
-<FORM NAME="editnode" ID="editnode" METHOD="POST" ACTION="?m=nodeedit&amp;id={$nodeinfo.id}">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$nodeinfo.id}">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/node.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
-			<span class="bold">({$nodeinfo.id|string_format:"%04d"})</span>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD style="width: 100%;" COLSPAN="3" class="container">
-			<TABLE style="width: 100%;" CELLPADDING="0">
-				<TR>
-					<TD style="width: 50%; vertical-align: top;">
-						<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
-		</TD>
-		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="nodeeditnetid" {tip text="Choose network" trigger="netid"}>
-				<OPTION VALUE="0">{trans("- automatic selection -")}</OPTION>
-				{foreach $networks as $net}
-				<OPTION VALUE="{$net.id}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
-				{/foreach}
-			</SELECT>
-			<label><input type="checkbox" name="nodeedit[wholenetwork]" VALUE="1" onchange="change_wholenetwork()"{if $nodeinfo.wholenetwork} checked{/if}>&nbsp;{trans("the whole network")}</label>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr, document.editnode.nodeeditnetid, {$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub, null, {if $nodeinfo.netpubid}{$nodeinfo.netpubid}{else}0{/if});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<TABLE style="width: 100%;" cellpadding="1" cellspacing="0">
-				{foreach from=$nodeinfo.macs item=item key=key}
-				<TR ID="mac{$key}">
-					<TD style="width: 100%;"><INPUT TYPE="TEXT" NAME="nodeedit[macs][{$key}]" VALUE="{$item}" {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.elements['nodeedit[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A></TD>
-				</TR>
-				{/foreach}
-			</TABLE>
-			<INPUT TYPE="HIDDEN" ID="macscount" VALUE="{$item@total}">
-			<A href="javascript: newmac()">{trans("Add MAC address")} &raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeedit[passwd]" VALUE="{$nodeinfo.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%; vertical-align: top;">
-			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<INPUT TYPE="TEXT" SIZE="40" VALUE="{$nodeinfo.location}" id="location" NAME="nodeedit[location]"  {tip text="Enter location (optional)" trigger="location"}>
-			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('nodeedit', 'editnode', document.forms['editnode'].elements['nodeedit[location_city]'].value,  document.forms['editnode'].elements['nodeedit[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-			<BR>
-			<INPUT type="hidden" name="nodeedit[location_city]" value="{$nodeinfo.location_city}">
-			<INPUT type="hidden" name="nodeedit[location_street]" value="{$nodeinfo.location_street}">
-			<INPUT type="hidden" name="nodeedit[location_house]" value="{$nodeinfo.location_house}">
-			<INPUT type="hidden" name="nodeedit[location_flat]" value="{$nodeinfo.location_flat}">
-			<INPUT TYPE="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
-		</TD>
-	</TR>
-{if $netdevices}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/netdev.gif" ALT="{trans("Net devices:")}">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);" style="max-width:250px;">
-				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</OPTION>
-				{section name="netdev" loop=$netdevices}
-				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</OPTION>
-				{/section}
-			</SELECT>
-			<a href="javascript: void(0);" onClick="return netdevfrommapchoosewin(document.editnode.elements['nodeedit[netdev]']);" {tip text="Click to select network device from map"}>&raquo;&raquo;&raquo;</A>
-			<INPUT type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
-			<BR>
-			<SELECT NAME="nodeedit[linktype]" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
-				{foreach from=$_LINKTYPES item=item key=key}
-				<OPTION value="{$key}"{if $key==$nodeinfo.linktype} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
-			<SELECT NAME="nodeedit[radiosector]" id="radiosector" {tip trigger="radiosector" text="Select radio sector"}{if $nodeinfo.linktype != 1} style="display: none;"{/if}>
-				<OPTION value="0">- {trans("none")} -</OPTION>
-				{foreach $nodeinfo.radiosectors as $radiosector}
-				<OPTION value="{$radiosector.id}"{if $radiosector.id == $nodeinfo.linkradiosector} selected{/if}>{$radiosector.name}</OPTION>
-				{/foreach}
-			</SELECT>
-			<SELECT NAME="nodeedit[linktechnology]" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)">
-				<OPTION value="0">{trans("- unknown -")}</OPTION>
-				{foreach $_LINKTECHNOLOGIES[$nodeinfo.linktype] as $linktechnologyidx => $linktechnology}
-				<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodeinfo.linktechnology} selected{/if}>{$linktechnology}</OPTION>
-				{/foreach}
-			</SELECT>
-			<SELECT NAME="nodeedit[linkspeed]" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
-				{foreach from=$_LINKSPEEDS item=item key=key}
-				<OPTION value="{$key}"{if $key==$nodeinfo.linkspeed} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-{/if}
-	<TR>
-		<TD WIDTH="2%" NOWRAP >
-			<IMG SRC="img/money.gif" ALT="{trans("Investment project:")}">
-		</TD>
-		<TD WIDTH="98%">
-			<SELECT NAME="nodeedit[invprojectid]" ID="NNproject" VALUE="{$nodeinfo.invprojectid}" {tip text="Select project"} onchange="setNNProject();">
-				<OPTION value="-2" {if ($nodeinfo.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
-				<OPTION value="-1" {if ($nodeinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
-				<OPTION value="1" {if ($nodeinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
-				{section name=project loop=$NNprojects}
-				<OPTION VALUE="{$NNprojects[project].id}" {if ($nodeinfo.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
-				{/section}
-			</SELECT>
-			<INPUT TYPE="TEXT" NAME="nodeedit[projectname]" VALUE="{$nodeinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname"  />
-			 
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
-		</TD>
-		<TD style="width: 99%;" class="nobr" colspan="2">
-			{customerlist form="editnode" customers=$customers selected=$nodeinfo.ownerid selectname="nodeedit[customerid]" inputname="nodeedit[ownerid]" firstoption="" selecttip="Assign node to customer"}
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/options.gif" ALT="">
-		</TD>
-		<TD style="width: 98%; white-space: nowrap;" COLSPAN="2">
-			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
-			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="nodeedit[halfduplex]" VALUE="1" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
-		</TD>
-		<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/netdev.gif" ALT="">
-		</TD>
-		<TD style="width: 98%;" class="nobr" COLSPAN="2">
-			{foreach $_SESSIONTYPES as $idx => $sessiontype}
-			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="nodeedit[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}"{tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
-			{/foreach}
-		</TD>
-		</TR>
-	</TR>
-					</TABLE>
-				</TD>
-				<TD style="width: 50%; vertical-align: top;">
-					<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS longitude:")}</span>
-		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
-			<INPUT ID="longitude" TYPE="text" NAME="nodeedit[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
-			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
-		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS latitude:")}</span>
-		</TD>
-		<TD style="width; 98%; white-space: nowrap;">
-			<INPUT ID="latitude" TYPE="text" NAME="nodeedit[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
-			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-			<label for="info_label">{trans("visual editor")}</label><br>
-			<TEXTAREA NAME="nodeedit[info]" id="info" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodeinfo.info}</TEXTAREA>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[access]" {tip text="Select node status" trigger="access"}>
-				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{trans("disconnected<!singular>")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" ALT="">
-		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[warning]" {tip text="Set notice for node"}>
-				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>{trans("enabled")}</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>{trans("disabled")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/users.gif" ALT="">
-		</TD>
-		<TD style="width: 1%;">
-			<span class="bold">{trans("Created:")}<BR>
-			{trans("Modified:")}</span>
-		</TD>
-		<TD style="width: 98%;">
-			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
-			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
-		</TD>
-	</TR>
 
+<style>
 
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%; text-align: right;" COLSPAN="3">
-			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=nodeinfo&amp;id={$nodeinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
-</FORM>
-<SCRIPT type="text/javascript">
-<!--
-	document.forms['editnode'].elements['nodeedit[name]'].focus();
+	.tab-beautify td { padding: 3px; }
+	.tab-beautify tr td:nth-child(2) {
+		font-weight: bold;
+		white-space: nowrap;
+	}
 
-	function GenPasswd()
-	{
-		if(! confirm('{trans("Are you sure, you want to generate new password?")}'))
+</style>
+
+{include file="google-maps.html"}
+<FORM name="editnode" ID="editnode" METHOD="POST" ACTION="?m=nodeedit&amp;id={$nodeinfo.id}">
+<input type="submit" class="hiddenbtn">
+<input type="hidden" name="nodeedit[id]" value="{$nodeinfo.id}">
+
+<table class="lmsbox">
+    <thead>
+		<tr>
+			<td style="width: 1%;">
+				<img src="img/node.gif" alt="">
+			</td>
+			<td style="width: 99%;" COLSPAN="2">
+				<input type="text" name="nodeedit[name]" value="{$nodeinfo.name}" maxlength="32" size="30" required {tip text="Enter node name" trigger="name" bold=1}>
+				<span class="bold">({$nodeinfo.id|string_format:"%04d"})</span>
+			</td>
+		</tr>
+    </thead>
+    <tbody>
+		<tr>
+			<td style="width: 100%;" colspan="3" class="container">
+				<table style="width: 100%;" cellpadding="0">
+					<tr>
+						<td width="50%" class="tab-beautify valign-top">
+							<table style="width: 100%;" cellpadding="3">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+
+								<tr>
+									<td>
+										<img src="img/network.gif" alt="">
+									</td>
+									<td>
+										{trans("Network:")}
+									</td>
+									<td>
+										<select size="1" name="nodeedit[netid]" {tip text="Choose network" trigger="netid"}>
+											<option value="0">{trans("- automatic selection -")}</option>
+											{foreach $networks as $net}
+												<option value="{$net.id}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
+											{/foreach}
+										</select>
+										<label><input type="checkbox" name="nodeedit[wholenetwork]" value="1" onchange="change_wholenetwork()"{if $nodeinfo.wholenetwork} checked{/if}>&nbsp;{trans("the whole network")}</label>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/ip.gif" alt="">
+									</td>
+									<td>
+										{trans("IP address:")}
+									</td>
+									<td>
+										<input type="text" name="nodeedit[ipaddr]" value="{$nodeinfo.ipaddr}" required {tip text="Enter IP address" trigger="ipaddr"}>
+										<a href="javascript: void(0);" onClick="return ipchoosewin({
+												ipelem: document.editnode['nodeedit[ipaddr]'],
+												ip: document.editnode['nodeedit[ipaddr]'].value,
+												netelem: document.editnode['nodeedit[netid]'],
+												netid: document.editnode['nodeedit[netid]'].value
+											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+										<br>
+										<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
+									</td>
+								</tr>
+								<script type="text/javascript">
+								<!--
+									$(function() {
+										$('#selectfirstfreeaddress').click(function() {
+											var netid = $('[name="nodeedit[netid]"]').val();
+											if (netid == 0)
+												return;
+											xajax_getFirstFreeAddress(netid, $('[name="nodeedit[ipaddr]"]').uniqueId().attr('id'));
+										});
+									});
+								//-->
+								</script>
+
+								{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
+								<tr>
+									<td>
+										<img src="img/ip_pub.gif" alt="">
+									</td>
+									<td>
+										{trans("Pub. IP address:")}
+									</td>
+									<td>
+										<input type="hidden" name="nodeedit[pubnetid]" value="{if $nodeinfo.pubnetid}{$nodeinfo.pubnetid}{else}0{/if}">
+										<input type="text" name="nodeedit[ipaddr_pub]" {if $nodeinfo.ipaddr_pub != "0.0.0.0"}value="{$nodeinfo.ipaddr_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
+										<a href="javascript: void(0);" onClick="return ipchoosewin({
+												ipelem: document.editnode['nodeedit[ipaddr_pub]'],
+												ip: document.editnode['nodeedit[ipaddr_pub]'].value,
+												netelem: document.editnode['nodeedit[pubnetid]'],
+												netid: document.editnode['nodeedit[pubnetid]'].value,
+												privnetid: document.editnode['nodeedit[netid]'].value
+											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+									</td>
+								</tr>
+								{/if}
+
+								<tr>
+									<td>
+										<img src="img/mac.gif" alt="">
+									</td>
+									<td>
+										{trans("MAC address:")}
+									</td>
+									<td class="lms-ui-mac-address-selection nobr">
+										{mac_address_selection form="nodeedit" macs=$nodeinfo.macs}
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/passwd.gif" alt="">
+									</td>
+									<td>
+										{trans("Password:")}
+									</td>
+									<td>
+										<input type="text" name="nodeedit[passwd]" value="{$nodeinfo.passwd}" id="passwordcontainer" {tip text="Enter password (optional)" trigger="passwd"}>
+										<a href="#" id="genpasswd"  {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</a>
+									</td>
+								</tr>
+
+								{if $netdevices}
+								<tr>
+									<td>
+										<img src="img/netdev.gif" alt="">
+									</td>
+									<td>
+										{trans("Net devices:")}
+									</td>
+									<td>
+				                        <a href="javascript: void(0);" onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
+										<select size="1" name="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);" style="max-width:250px;">
+											<option value="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</option>
+											{section name="netdev" loop=$netdevices}
+											<option value="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} selected{/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</option>
+											{/section}
+										</select>
+
+										<a href="javascript: void(0);" onClick="return netdevfrommapchoosewin(document.editnode.elements['nodeedit[netdev]']);" {tip text="Click to select network device from map"}>&raquo;&raquo;&raquo;</A>
+										<input type="text" name="nodeedit[port]" value="{if $nodeinfo.port}{$nodeinfo.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
+										<br>
+
+										<select name="nodeedit[linktype]" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
+											{foreach from=$_LINKTYPES item=item key=key}
+											<option value="{$key}"{if $key==$nodeinfo.linktype} selected{/if}>{$item}</option>
+											{/foreach}
+										</select>
+
+										<select name="nodeedit[radiosector]" id="radiosector" {tip trigger="radiosector" text="Select radio sector"}{if $nodeinfo.linktype != 1} style="display: none;"{/if}>
+											<option value="0">- {trans("none")} -</option>
+											{foreach $nodeinfo.radiosectors as $radiosector}
+											<option value="{$radiosector.id}"{if $radiosector.id == $nodeinfo.linkradiosector} selected{/if}>{$radiosector.name}</option>
+											{/foreach}
+										</select>
+
+										<select name="nodeedit[linktechnology]" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)">
+											<option value="0">{trans("- unknown -")}</option>
+											{foreach $_LINKTECHNOLOGIES[$nodeinfo.linktype] as $linktechnologyidx => $linktechnology}
+											<option value="{$linktechnologyidx}"{if $linktechnologyidx == $nodeinfo.linktechnology} selected{/if}>{$linktechnology}</option>
+											{/foreach}
+										</select>
+
+										<select name="nodeedit[linkspeed]" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
+											{foreach from=$_LINKSPEEDS item=item key=key}
+											<option value="{$key}"{if $key==$nodeinfo.linkspeed} selected{/if}>{$item}</option>
+											{/foreach}
+										</select>
+									</td>
+								</tr>
+								{/if}
+
+								<tr>
+									<td>
+										<img src="img/money.gif" alt="">
+									</td>
+									<td>
+										{trans("Investment project:")}
+									</td>
+									<td>
+										<select name="nodeedit[invprojectid]" ID="project" value="{$nodeinfo.invprojectid}" {tip text="Select project"}>
+											<option value="-2" {if ($nodeinfo.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</option>
+											<option value="-1" {if ($nodeinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</option>
+											<option value="1" {if ($nodeinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</option>
+											{foreach $NNprojects as $project}
+											<option value="{$project.id}"{if ($nodeinfo.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+											{/foreach}
+										</select>
+										<input type="text" name="nodeedit[projectname]" value="{$nodeinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="projectname">
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/customer.gif" alt="">
+									</td>
+									<td>
+										{trans("Customer:")}
+									</td>
+									<td class="nobr">
+										{customerlist
+											form        = "editnode"
+											customers   = $customers
+											selected    = $nodeinfo.ownerid
+											selectname  = "nodeedit[customerid]"
+											select_id   = "customerid_select"
+											inputname   = "nodeedit[ownerid]"
+											input_id    = "customerid_input"
+											firstoption = ""
+											selecttip   = "Assign node to customer"
+											customOnChange = "customer_change();"
+										}
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/home.gif" alt="">
+									</td>
+									<td>
+										{trans("Location:")}
+									</td>
+									<td class="nobr">
+										<select id="customer_addresses" name="nodeedit[address_id]" {tip trigger="address_id"}></select>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/options.gif" alt="">
+									</td>
+									<td>
+										{trans("Options:")}
+									</td>
+									<td class="nobr">
+										<label>
+											<input type="checkbox" name="nodeedit[chkmac]" value="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
+											{trans("MAC checking")}
+										</label>
+
+										<label>
+											<input type="checkbox" name="nodeedit[halfduplex]" value="1" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}>
+											{trans("Half duplex")}
+										</label>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/netdev.gif" alt="">
+									</td>
+									<td>
+										{trans("Type:")}
+									</td>
+									<td class="nobr">
+										{foreach $_SESSIONTYPES as $idx => $sessiontype}
+											<label>
+												<input type="checkbox" name="nodeedit[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if $nodeinfo.authtype & $idx} checked{/if}>
+												{$sessiontype.label}
+											</label><br>
+										{/foreach}
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td width="50%" class="valign-top">
+							<table width="100%" class="tab-beautify">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 1%;">
+									<col style="width: 98%;">
+								</colgroup>
+
+								<tr>
+						            <td>
+						                <img src="img/network.gif" alt="">
+						            </td>
+						            <td colspan="2" class="font-normal">
+						                <span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
+						            </td>
+						        </tr>
+
+						        <tr>
+									<td>
+										<img src="img/home.gif" alt="{trans("GPS coordinates:")}">
+									</td>
+									<td>
+										<span class="bold">{trans("GPS longitude:")}</span>
+									</td>
+									<td class="nobr">
+										<input type="text" id="longitude" name="nodeedit[longitude]" value="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
+										<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/home.gif" alt="{trans("GPS coordinates:")}">
+									</td>
+									<td>
+										<span class="bold">{trans("GPS latitude:")}</span>
+									</td>
+									<td class="nobr">
+										<input type="text" id="latitude" name="nodeedit[latitude]" value="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
+										<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/info1.gif" alt="{trans("Description:")}">
+									</td>
+									<td colspan="2">
+										<textarea name="nodeedit[info]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($nodeinfo.wysiwyg.info)} data-wysiwyg="{$nodeinfo.wysiwyg.info}"{/if}>{$nodeinfo.info}</textarea>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/{if !$nodeinfo.access}no{/if}access.gif" alt="" id="statusico">
+									</td>
+									<td>
+										{trans("Status:")}
+									</td>
+									<td>
+										<select size="1" name="nodeedit[access]" id="status" {tip text="Select node status" trigger="access"}>
+											<option value="1"{if $nodeinfo.access} selected{/if}>{trans("connected<!singular>")}</option>
+											<option value="0"{if ! $nodeinfo.access} selected{/if}>{trans("disconnected<!singular>")}</option>
+										</select>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/warning{if !$nodeinfo.warning}off{else}on{/if}.gif" alt="" id="noticesico">
+									</td>
+									<td>
+									   {trans("Notices:")}
+									</td>
+									<td>
+										<select size="1" name="nodeedit[warning]" {tip text="Set notice for node"} id="notices">
+											<option value="1"{if $nodeinfo.warning} selected{/if}>{trans("enabled<!node>")}</option>
+											<option value="0"{if ! $nodeinfo.warning} selected{/if}>{trans("disabled<!node>")}</option>
+										</select>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/users.gif" alt="">
+									</td>
+									<td>
+										{trans("Created:")}<br>
+										{trans("Modified:")}
+									</td>
+									<td>
+										{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
+										{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+									</td>
+								</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td width="100%" class="text-right" COLSPAN="3">
+			<a href="javascript:document.editnode.submit();" ACCESSKEY="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=nodeinfo&amp;id={$nodeinfo.id}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		</td>
+	</tr>
+    </tbody>
+</table>
+</form>
+
+<script>
+
+	$(function() {
+		$('form[name="editnode"] [name="nodeedit[name]"]').focus();
+
+		$('#project').change(function() {
+			if ($(this).val() == -1) {
+				$('#projectname').show();
+			} else {
+				$('#projectname').hide();
+			}
+		});
+	});
+
+	// ---------------------
+	//  NOTICE ICON UPDATE
+	// ---------------------
+	noticeIcoUpdate();
+
+	$( '#notices' ).change( function() {
+		noticeIcoUpdate();
+	});
+
+	function noticeIcoUpdate() {
+		if ( $('#notices').val() == 1 ) {
+			$( '#noticesico' ).attr('src', 'img/warningon.gif');
+		} else {
+			$( '#noticesico' ).attr('src', 'img/warningoff.gif');
+		}
+	}
+
+	// ---------------------
+	//  STATUS ICON UPDATE
+	// ---------------------
+	statusIcoUpdate();
+
+	$( '#status' ).change( function() {
+		statusIcoUpdate();
+	});
+
+	function statusIcoUpdate() {
+		if ( $('#status').val() == 1 ) {
+			$( '#statusico' ).attr('src', 'img/access.gif');
+		} else {
+			$( '#statusico' ).attr('src', 'img/noaccess.gif');
+		}
+	}
+
+	// ---------------------
+	//  GENERATE RANDOM PASSWORD
+	// ---------------------
+	$( '#genpasswd' ).click( function() {
+		if ($('#passwordcontainer').val().length > 0 && !confirm('{trans("Are you sure, you want to generate new password?")}')) {
 			return;
-
-		var passwd = new Array();
-		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
-		if (length > 32) length = 32;
-
-		for (var i=0; i<length; i++)
-		{
-			n = Math.floor(Math.random() * items.length);
-			passwd[i] = items.substring(n, n+1);
 		}
 
-		document.forms['editnode'].elements['nodeedit[passwd]'].value = passwd.join("");
-	}
+		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
 
-	function newmac()
-	{
-		var macscountelem = document.getElementById('macscount');
-		var nr = macscountelem.value;
-		var lastmacelem = document.getElementById('mac' + (nr - 1));
-		var newrow = lastmacelem.parentNode.insertRow(lastmacelem.rowIndex + 1);
-		newrow.id = 'mac' + nr;
-		var newcell = newrow.insertCell(0);
-		newcell.style.width = '100%';
-		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="nodeedit[macs][' + nr + ']" VALUE=""'
-			+ ' onmouseover="popup(\'{trans("Enter MAC address")}\')" onmouseout="pophide()">'
-			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.elements[\'nodeedit[macs][' + nr + ']\']);"'
-			+ ' onmouseover="popup(\'{trans("Click to select MAC from the list")}\')" onmouseout="pophide()">&nbsp;&raquo;&raquo;&raquo;</A>';
-		macscountelem.value = parseInt(nr) + 1;
-	}
+		if (length > 32)
+			length = 32;
 
-	function reset_customer()
-	{
-		var val;
-		if (val = document.forms['editnode'].elements['nodeedit[ownerid]'].value)
-			document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
-	}
+		$( '#passwordcontainer' ).val( generate_random_string(length) );
+
+		event.preventDefault();
+	});
 
 	function change_netdevice(id) {
 		if (xjx.$('linktype').value == 1) {
@@ -327,8 +471,10 @@
 		var wholenetwork = document.forms['editnode'].elements['nodeedit[wholenetwork]'];
 		var display = wholenetwork.checked ? 'none' : 'table-row';
 
-		document.getElementsByName("nodeeditipaddr")[0].parentNode.parentNode.style.display = display;
-		document.getElementsByName("nodeeditipaddrpub")[0].parentNode.parentNode.style.display = display;
+		$('[name="nodeedit[ipaddr]"]').get(0).parentNode.parentNode.style.display = display;
+		var ipaddr_pub = $('[name="nodeedit[ipaddr_pub]"]');
+		if (ipaddr_pub.length)
+			ipaddr_pub[0].parentNode.parentNode.style.display = display;
 	}
 	change_wholenetwork();
 
@@ -401,13 +547,34 @@
 
 	xajax_getRadioSectors({$nodeinfo.netdev}, {$nodeinfo.linktechnology});
 
-	check_teryt('location', true);
+    /*
+     * \brief Update address location update. Require google API key.
+     */
+	$( '#set_gps' ).click( function() {
+		if ($('#customer_addresses').val()) {
+			xajax_get_gps_coordinates({
+					address_id: $('#customer_addresses').val()
+				}, 'latitude', 'longitude');
+		}
+	});
 
-	tinymce_init('{$_ui_language}');
-	{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
-	toggle_visual_editor('info');
-	{/if}
-	setNNProject();
-//-->
-</SCRIPT>
+    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
 
+    /*!
+     * \brief Update addresses list on customer input change.
+     */
+    function customer_change() {
+        getCustomerAddresses( $("#customerid_input").val(), function(addresses) {
+            customer_addresses.setAddressList(addresses);
+        });
+    }
+
+    getCustomerAddresses( {intval($nodeinfo.ownerid)}, function(addresses) {
+        customer_addresses.setAddressList( addresses );
+        {if $nodeinfo.address_id && $nodeinfo.ownerid}
+        $( '#customer_addresses' ).val( {$nodeinfo.address_id} );
+        {/if}
+        customer_addresses.init();
+    });
+
+</script>

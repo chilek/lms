@@ -15,7 +15,7 @@
 
 //SkipAIO
 
-$objLanguageManager =& xajaxLanguageManager::getInstance();
+$objLanguageManager = xajaxLanguageManager::getInstance();
 $objLanguageManager->register('nl', array(
 	'LOGHDR:01' => '** xajax Foutmelding logboek - ',
 	'LOGHDR:02' => " **\n",

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,8 +31,8 @@ if ($action == 'tariffdel' && ($tariffid = intval($_GET['tid']))) {
 	$promotionid = intval($_GET['id']);
 
 	$args = array(
-		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariffid,
-		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $promotionid
+		SYSLOG::RES_TARIFF => $tariffid,
+		SYSLOG::RES_PROMO => $promotionid
 	);
 	if ($SYSLOG) {
 		$assigns = $DB->GetAll('SELECT id, tariffid, promotionschemaid
@@ -41,15 +41,11 @@ if ($action == 'tariffdel' && ($tariffid = intval($_GET['tid']))) {
 				WHERE promotionid = ?)', array_values($args));
 		if (!empty($assigns)) {
 			foreach ($assigns as $assign) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]] = $assign['id'];
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA]] = $assign['promotionschemaid'];
-				$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_DELETE,
-					$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+				$args[SYSLOG::RES_PROMOASSIGN] = $assign['id'];
+				$args[SYSLOG::RES_PROMOSCHEMA] = $assign['promotionschemaid'];
+				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
 			}
-			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]]);
+			unset($args[SYSLOG::RES_PROMOASSIGN]);
 		}
 	}
 
@@ -76,24 +72,52 @@ if ($promotion) {
 		$error['name'] = trans('Specified name is in use!');
 	}
 
+	if (empty($promotion['datefrom']))
+		$promotion['from'] = 0;
+	else
+	{
+		$from = date_to_timestamp($promotion['datefrom']);
+		if(empty($from))
+			$error['datefrom'] = trans('Incorrect effective start time!');
+	}
+
+        if (empty($promotion['dateto']))
+                $promotion['to'] = 0;
+        else
+        {
+		$to = date_to_timestamp($promotion['dateto']);
+		if(empty($to))
+			$error['dateto'] = trans('Incorrect effective start time!');
+        }
+
+	if ($promotion['to'] != 0 && $promotion['from'] != 0 && $to < $from)
+		$error['dateto'] = trans('Incorrect date range!');
+
 	if (!$error) {
 		$args = array(
 			'name' => $promotion['name'],
 			'description' => $promotion['description'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $promotion['id']
+			'datefrom' => $promotion['from'],
+			'dateto' => $promotion['to'],
+			SYSLOG::RES_PROMO => $promotion['id']
 		);
-		$DB->Execute('UPDATE promotions SET name = ?, description = ?
+		$DB->Execute('UPDATE promotions SET name = ?, description = ?, datefrom = ?, dateto = ?
 			WHERE id = ?', array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_PROMO, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+			$SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=promotioninfo&id=' . $promotion['id']);
 	}
 } else {
 	$promotion = $DB->GetRow('SELECT * FROM promotions WHERE id = ?',
 		array(intval($_GET['id'])));
+
+	if ($promotion['datefrom'])
+		$promotion['datefrom'] = date('Y/m/d', $promotion['datefrom']);
+
+	if ($promotion['dateto'])
+		$promotion['dateto'] = date('Y/m/d', $promotion['dateto']);
 }
 
 $layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);

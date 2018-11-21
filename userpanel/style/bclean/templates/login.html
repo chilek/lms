@@ -4,9 +4,36 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>{trans('Virtual Customer Service')}</title>
+	<title>{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</title>
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-	<!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" integrity="sha384-XXXXXXXX" crossorigin="anonymous"> -->
+        <link type="text/css" rel="stylesheet" href="{stylefile}">
+        {include file="jquery.html" language=$_ui_language}
+        {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
+        {if $google_recaptcha_sitekey}
+        <script>
+			function recaptchaOnLoad() {
+				grecaptcha.render('login-recaptcha', {
+					'sitekey' : '{$google_recaptcha_sitekey}',
+					'callback': function() {
+						$('[name="loginform[submit]"]').removeClass('disabled').prop('disabled', false);
+					},
+					'expired-callback': function() {
+						$('[name="loginform[submit]"]').addClass('disabled').prop('disabled', true);
+					}
+				});
+				grecaptcha.render('remind-recaptcha', {
+					'sitekey' : '{$google_recaptcha_sitekey}',
+					'callback': function() {
+						$('[name="remindform[submit]"]').removeClass('disabled').prop('disabled', false);
+					},
+					'expired-callback': function() {
+						$('[name="remindform[submit]"]').addClass('disabled').prop('disabled', true);
+                    }
+				});
+			}
+        </script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit" async defer></script>
+        {/if}
         <style>
             .form-signin {
                 max-width: 400px;
@@ -54,28 +81,41 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="form-signin text-center">
-                        {$page_header}<br/>
-                        <small class="text-muted">{trans('Virtual Customer Service')}</small>
+						{if $company_logo}
+							<img src="{$company_logo}">
+						{/if}
+						{if $page_header}
+							<br><small class="text-muted">{$page_header}</small>
+						{/if}
+						{if !$company_logo && !$page_header}
+							<br><small class="text-muted">{trans('Virtual Customer Service')}</small>
+						{/if}
                     </h2>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
+                    {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         {if $error}<div class="alert alert-danger">{$error}</div>{/if}
                         <fieldset class="form-group">
-                            <label for="inputLogin">{$_USERPANEL_ID_TYPES[ConfigHelper::getConfig('userpanel.auth_type', 1)].label}</label>
-                            <input type="text" name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
+                            <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
+                            <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
                         </fieldset>
                         <fieldset class="form-group">
-                            <label for="inputPassword">{trans('PIN:')}</label>
+                            <label for="inputPassword">{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}</label>
                             <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
                         </fieldset>
-                        <button class="btn btn-lg btn-primary btn-block" name="loginform[submit]" type="submit">{trans('Login')}</button>
+                        {if $google_recaptcha_sitekey}
+                        <div id="login-recaptcha" class="g-recaptcha"></div>
+                        {/if}
+                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
                         <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
                     </form>
                     <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
                         <input type="hidden" name="remindform[type]" id="remindType" value="1">
+						{$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
+						{if !empty($sms_service)}
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <a id="remindMail" class="nav-link active" onclick="javascript:show_email_phone('email');">{trans('E-mail')}</a>
@@ -85,6 +125,7 @@
                             </li>
                         </ul>
                         <hr/>
+						{/if}
                         <fieldset id="email" class="form-group">
                             <label>{trans('E-Mail:')} <input type="text" name="remindform[email]" class="form-control"></label>
                         </fieldset>
@@ -94,43 +135,46 @@
                         <fieldset class="form-group">
                             <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
                         </fieldset>
-                        <button class="btn btn-lg btn-primary btn-block" type="submit" name="remindform[submit]" value="{trans('Remind')}">{trans('Remind')}</button>
+                        {if $google_recaptcha_sitekey}
+                        <div id="remind-recaptcha" class="g-recaptcha"></div>
+                        {/if}
+                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
                         <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                     </form>
                 </div>
-            </div>                    
+            </div>
         </div> <!-- /container -->
         <script>
-            function switch_form(type) {
-                if (type == 'login') {
-                    document.getElementById('login').style.display = '';
-                    document.getElementById('remind').style.display = 'none';
-                } else {
-                    document.getElementById('login').style.display = 'none';
-                    document.getElementById('remind').style.display = '';
-                }
-            }
+			function switch_form(type) {
+				if (type == 'login') {
+					document.getElementById('login').style.display = '';
+					document.getElementById('remind').style.display = 'none';
+				} else {
+					document.getElementById('login').style.display = 'none';
+					document.getElementById('remind').style.display = '';
+				}
+			}
 
-            function show_email_phone(type) {
-                if (type == 'email') {
-                    var remindMail = document.getElementById("remindMail");
-                    remindMail.classList.add("active");
-                    var remindPhone = document.getElementById("remindPhone");
-                    remindPhone.classList.remove("active");
-                    document.getElementById('email').style.display = '';
-                    document.getElementById('phone').style.display = 'none';
-                    document.getElementById('remindType').value = '1';
-                } else {
-                    var remindPhone = document.getElementById("remindPhone");
-                    remindPhone.classList.add("active");
-                    var remindMail = document.getElementById("remindMail");
-                    remindMail.classList.remove("active");
-                    document.getElementById('email').style.display = 'none';
-                    document.getElementById('phone').style.display = '';
-                    document.getElementById('remindType').value = '2';
-                }
-            }
-            document.forms['login'].elements['loginform[login]'].focus();
+			function show_email_phone(type) {
+				if (type == 'email') {
+					var remindMail = document.getElementById("remindMail");
+					remindMail.classList.add("active");
+					var remindPhone = document.getElementById("remindPhone");
+					remindPhone.classList.remove("active");
+					document.getElementById('email').style.display = '';
+					document.getElementById('phone').style.display = 'none';
+					document.getElementById('remindType').value = '1';
+				} else {
+					var remindPhone = document.getElementById("remindPhone");
+					remindPhone.classList.add("active");
+					var remindMail = document.getElementById("remindMail");
+					remindMail.classList.remove("active");
+					document.getElementById('email').style.display = 'none';
+					document.getElementById('phone').style.display = '';
+					document.getElementById('remindType').value = '2';
+				}
+			}
+			document.forms['login'].elements['loginform[login]'].focus();
         </script>
     </body>
 </html>

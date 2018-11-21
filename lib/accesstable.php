@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  */
 
 // modules with access for everyone
-$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|quicksearch|calendar)$';
+$global_access_regexp = '^(welcome|copyrights|logout|chpasswd|quicksearch|calendar|persistentsetting|zipcode|indicators)$';
 
 $access_table = array(
 	'full_access' => array(
@@ -34,7 +34,7 @@ $access_table = array(
 	),
 	'read_only' => array(
 		'label' => trans('read only (excluding helpdesk)'),
-		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
+		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|customeraddresses|customerassignmenthelper|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
 	),
 	'node_connections' => array(
 		'label' => trans('nodes connection/disconnection'),
@@ -42,7 +42,10 @@ $access_table = array(
 	),
 	'finances_management' => array(
 		'label' => trans('finances management'),
-		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$',
+		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform)$',
+	),
+	'published_document_modification' => array(
+		'label' => trans('published document modification'),
 	),
 	'reload' => array(
 		'label' => trans('configuration reload'),
@@ -50,11 +53,11 @@ $access_table = array(
 	),
 	'customer_management' => array(
 		'label' => trans('customers management'),
-		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|documentgen|documentview|nodewarn|choosenode)$',
+		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|customertransferform|customeraddresses|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi)$',
 	),
 	'node_management' => array(
 		'label' => trans('nodes management'),
-		'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords)|ping|sessionlist)$',
+		'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords|netdevice)|ping|sessionlist)$',
 	),
 	'traffic_stats' => array(
 		'label' => trans('traffic stats'),
@@ -70,7 +73,11 @@ $access_table = array(
 	),
 	'helpdesk_operation' => array(
 		'label' => trans('Helpdesk (RT) operation'),
-		'allow_regexp' => '^(rtsearch|rtattachmentview|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
+		'allow_regexp' => '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
+	),
+	'helpdesk_advanced_operation' => array(
+			'label' => trans('Helpdesk (RT) advanced operation'),
+			'allow_regexp' => '^(rtremove|rtrestore)$',
 	),
 	'hosting_management' => array(
 		'label' => trans('hosting management'),
@@ -78,11 +85,12 @@ $access_table = array(
 	),
 	'configuration' => array(
 		'label' => trans('configuration'),
-		'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load))|((promotion|promotionschema)(list|edit|add|del|set|info)))$',
+		'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone)))$',
 	),
 	'network_management' => array(
 		'label' => trans('networks and devices management'),
-		'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdev|netdevmodel)|ewxnodelist|ewxdevlist|chooselocation|ping|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties)$',
+		'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdevfornetnode|netdevmodel)|ewxnodelist|ewxdevlist|chooselocation|ping'
+			. '|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties|netusage|attachments)$',
 	),
 	'timetable_management' => array(
 		'label' => trans('timetable management'),
@@ -117,7 +125,7 @@ $access_table = array(
 	),
 	'voip_account_management' => array(
 		'label' => trans('voip accounts management'),
-		'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit))$',
+		'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit|rules))$',
 	),
 	'userpanel_management' => array(
 		'label' => trans('Userpanel management'),

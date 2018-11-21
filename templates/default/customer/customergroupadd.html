@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -17,7 +17,7 @@
 			{trans("Name:")}
 		</TD>
 		<TD style="width: 98%">
-			<INPUT type="text" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" {tip trigger="name" bold=1}>
+			<INPUT type="text" name="customergroupadd[name]" value="{$customergroupadd.name}" size="50" required {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	</THEAD>
@@ -44,7 +44,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['customergroupadd'].elements['customergroupadd[name]'].focus();
+$(function() {
+	$('form[name="customergroupadd"] [name="customergroupadd[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

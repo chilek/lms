@@ -96,6 +96,6 @@ $fortunes[] = "The bigger they are, the harder they hit.";
 $fortunes[] = "When somebody drops something, everyone will kick it around instead of picking it up.";
 
 mt_srand ((double) microtime()* 100000000);
-$layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
+$layout[fortune] = $fortunes[mt_rand(0,count($fortunes)-1)];
 
 ?>

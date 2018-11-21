@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,18 +23,30 @@
  *
  *  $Id$
  */
+
 $id = intval($_GET['id']);
 
-if (!$DB->GetOne('SELECT * FROM netnodes WHERE id=?',array($id)))
+if ($api) {
+	if (!$LMS->NetNodeExists($id))
+		die;
+} elseif (!$LMS->NetNodeExists($id))
 	$SESSION->redirect('?m=netnodelist');
 
 $DB->BeginTrans();
 
-$DB->Execute("DELETE FROM netnodes WHERE id=?",array($id));
-$LMS->CleanupInvprojects();
+$result = $LMS->NetNodeDelete($id);
+
+$LMS->CleanupProjects();
 
 $DB->CommitTrans();
 
-header('Location: ?m=netnodelist');
-		
+if ($api) {
+	if ($result) {
+		header('Content-Type: application/json');
+		echo json_encode(array('id' => $id));
+	}
+	die;
+} else
+	$SESSION->redirect('?m=netnodelist');
+
 ?>

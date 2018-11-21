@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Promotions List');
 
-$promolist = $DB->GetAll('SELECT p.id, p.name, p.description, disabled,
+$promolist = $DB->GetAll('SELECT p.id, p.name, p.description, p.datefrom, p.dateto, disabled,
 			(SELECT COUNT(*) FROM promotionschemas
 				WHERE p.id = promotionid) AS scs,
 			(SELECT COUNT(DISTINCT a.tariffid)
@@ -37,7 +37,7 @@ $promolist = $DB->GetAll('SELECT p.id, p.name, p.description, disabled,
 		FROM promotions p
 		ORDER BY p.name');
 
-$listdata['total'] = count($promolist);
+$listdata['total'] = empty($promolist) ? 0 : count($promolist);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

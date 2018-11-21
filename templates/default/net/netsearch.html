@@ -1,0 +1,197 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="search" ID="netsearch" METHOD="POST" ACTION="?m=netsearch&amp;search=1">
+<INPUT TYPE="submit" CLASS="hiddenbtn">
+<TABLE CLASS="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="3">
+			<B>{trans("Find IP networks matching the following search criteria:")}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/network.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Network name:")}</B>
+		<TD WIDTH="98%">
+			<INPUT ID="networkname" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[network_name]" VALUE="" {tip text="Enter network name or it's fragment"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Network address:")}</B>
+		<TD WIDTH="98%">
+			<INPUT ID="networkaddress" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[network_address]" VALUE="" {tip text="Enter IP address or it's fragment"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/dhcp.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("DHCP range:")}</B>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="search[dhcp]" VALUE="" {tip text="DHCP range:"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/cmp.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Network size:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="search[size]" VALUE="" {tip text="Network address count"}>
+			<select size="1" name="search[size_compare_char]" {tip text="Compare method" trigger="hostid"}>
+				<option value="=">{trans("equal to")}</option>
+				<option value="<>">{trans("not equal to")}</option>
+				<option value=">">{trans("greater than")}</option>
+				<option value="<">{trans("less than")}</option>
+				<option value=">=">{trans("greater than or equal to")}</option>
+				<option value="<=">{trans("less than or equal to")}</option>
+			</select>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/mac.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Interface:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="netinterface" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[interface]" VALUE="" {tip text="Enter network interface (optional)"}>
+			<INPUT TYPE="text" SIZE="5" NAME="search[vlanid]" MAXLENGTH="4" {tip text="Enter vlan ID (optional)"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/gateway.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Gateway:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="netgateway" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[gateway]" VALUE="" {tip text="Enter gateway address (optional)"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/dns.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("DNS Server:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="netdns" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[dns]" VALUE="" {tip text="Enter address or name of DNS server (optional)"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/wins.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("WINS:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="netwins" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[wins]" VALUE="" {tip text="Enter WINS address (optional)"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/node.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Domain:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="netdomain" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[domain]" VALUE="" {tip text="Enter network domain (optional)"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/host.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Host:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		<INPUT ID="nethost" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[host]" VALUE="" {tip text="Enter host name (optional)"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/desc.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Description:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="netdesc" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[description]" VALUE="" {tip text="Enter additional information"}>
+		</TD>
+	</TR>
+	
+	<TR CLASS="space_row">
+		<TD WIDTH="1%">
+			<IMG SRC="img/info.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Additional settings:")}</B>
+		</TD>
+		<TD WIDTH="98%"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%"></TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Qualification operator:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT CLASS="radio light" TYPE="radio" ID="operator0" value="AND" name="search[operatorType]"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
+			<INPUT CLASS="radio light" TYPE="radio" ID="operator1" value="OR" name="search[operatorType]"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%"></TD>
+		<TD WIDTH="1%" NOWRAP>
+			<LABEL for="allowlike"><B>{trans("Partial matches")}</B></LABEL>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT ID="allowlike" TYPE="checkbox" NAME="search[compareType]" VALUE="LIKE" CHECKED>
+		</TD>
+	</TR>
+	
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="javascript:document.search.submit();" ACCESSKEY="s">{trans("Search")} <IMG SRC="img/search.gif" alt=""></A>
+			<A HREF="?m=netlist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>	
+    </TBODY>
+</TABLE>
+
+</FORM>
+<SCRIPT TYPE="text/javascript">
+<!--
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('networkname'),'?m=netsearch&ajax=1&mode=name&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('networkaddress'),'?m=netsearch&ajax=1&mode=inet_ntoa(address)&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netinterface'),'?m=netsearch&ajax=1&mode=interface&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netgateway'),'?m=netsearch&ajax=1&mode=gateway&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netdns'),'?m=netsearch&ajax=1&mode=dns&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netwins'),'?m=netsearch&ajax=1&mode=wins&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netdomain'),'?m=netsearch&ajax=1&mode=domain&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('nethost'),'?m=netsearch&ajax=1&mode=host&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netdesc'),'?m=netsearch&ajax=1&mode=notes&what=',0);
+//-->
+</SCRIPT>
+{/block}

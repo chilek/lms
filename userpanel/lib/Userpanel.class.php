@@ -28,10 +28,14 @@ class USERPANEL {
 	private $DB;
 	private $SESSION;
 	public $MODULES = array();
+	private $module_order = null;
 
 	public function __construct(&$DB, &$SESSION) { // ustawia zmienne klasy
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
+		$module_order = ConfigHelper::getConfig('userpanel.module_order', '', true);
+		if (strlen($module_order))
+			$this->module_order = array_flip(explode(',', $module_order));
 	}
 
 	public function _postinit() {
@@ -39,6 +43,8 @@ class USERPANEL {
 	}
 
 	public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = NULL) {
+		if (isset($this->module_order[$module]))
+			$prio = $this->module_order[$module];
 		if ($name != '') {
 			$this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description, 'selected' => false, 'module' => $module, 'submenu' => $submenu);
 			if (!function_exists('cmp')) {

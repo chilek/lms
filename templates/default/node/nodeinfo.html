@@ -1,10 +1,10 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
+<div id="nodeinfo-sortable" class="lms-ui-sortable-persistent">
 {block name="nodeinfobox"}
 	{include file="node/nodeinfobox.html"}
 {/block}
@@ -37,6 +37,9 @@
 {block name="customervoipaccountsbox"}
 	{include file="customer/customervoipaccountsbox.html"}
 {/block}
+{block name="customerdevices"}
+    {include file="customer/customerdevices.html"}
+{/block}
 {block name="customerdocuments"}
 	{include file="customer/customerdocuments.html" limit=10}
 {/block}
@@ -55,4 +58,10 @@
 {block name="customerbalancebox"}
 	{include file="customer/customerbalancebox.html" limit=-10}
 {/block}
+</div>
+<script type="text/javascript">
+<!--
+	restoreSortable('nodeinfo-sortable', '{$nodeinfo_sortable_order}');
+//-->
+</script>
 {/block}

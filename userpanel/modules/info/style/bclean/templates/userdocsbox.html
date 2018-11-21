@@ -1,41 +1,58 @@
 {box title="Your documents"}
 <div class="table-responsive">
-<table class="table table-bordered table-hover">
-    {if $documents}
-    <tr class="bg-primary">
-        <th>{trans("Number:")}</th>
-        <th>{trans("Type:")}</th>
-        <th>{trans("Created:")}</th>
-        <th>{trans("Period:")}</th>
-        <th>&nbsp;</th>
-    </tr>
-    {/if}
-    {foreach from=$documents item=doc}
-    <tr class="{if !$doc.closed}text-muted{/if}">
-        <td><b>{number number=$doc.number template=$doc.template time=$doc.cdate}</b></td>
-        <td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
-        <td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
-        <td>
-            {if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
-            {if $doc.fromdate}{$doc.fromdate|date_format:"%d.%m.%Y"}{/if}
-            {if $doc.todate} - {$doc.todate|date_format:"%d.%m.%Y"}{else}{if $doc.fromdate} - {/if}{trans("indefinitely")}{/if}
-            {/if}
-        </td>
-        <td>
-            {if $doc.closed}
-            <a href="?m=info&amp;f=docview&amp;id={$doc.docid}" target="_blank">{trans("View")}</a>
-            {else}
-            {trans("not approved")}
-            {/if}
-        </td>
-    </tr>
-    {foreachelse}
-    <tr>
-        <td colspan="5">
-            {trans("No such documents on your account.")}
-        </td>
-    </tr>
-    {/foreach}
-</table>
+	<table class="table table-hover table-bordered table-striped table-condensed">
+		{if $documents}
+			<tr class="bg-primary text-white">
+				<th>{trans("Number:")}</th>
+				<th>{trans("Type:")}</th>
+				<th>{trans("Created:")}</th>
+				<th>{trans("Period:")}</th>
+				<th>&nbsp;</th>
+			</tr>
+		{/if}
+		{foreach $documents as $doc}
+			<tr class="{if !$doc.closed}text-muted{/if}">
+				<td><b>{number number=$doc.number template=$doc.template time=$doc.cdate}</b></td>
+				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
+				<td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
+				<td>
+					{if ($doc.type == $smarty.const.DOC_CONTRACT) || ($doc.type == $smarty.const.DOC_ANNEX)}
+						{if $doc.fromdate}
+							{$doc.fromdate|date_format:"%d.%m.%Y"}
+						{/if}
+						{if $doc.todate}
+							- {$doc.todate|date_format:"%d.%m.%Y"}
+						{else}
+							{if $doc.fromdate}
+								-
+							{/if}
+							{trans("indefinitely")}
+						{/if}
+					{/if}
+				</td>
+				<td>
+					{if $doc.closed}
+						{foreach $doc.attachments as $docattach}
+							<a href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
+								{if $docattach.main}
+									<span class="tag tag-primary">{trans("View")}</span><br>
+								{else}
+									<span class="tag tag-info">{$docattach.filename}</span>
+								{/if}
+							</a>
+						{/foreach}
+					{else}
+						{trans("not approved")}
+					{/if}
+				</td>
+			</tr>
+		{foreachelse}
+			<tr>
+				<td colspan="5">
+					{trans("No such documents on your account.")}
+				</td>
+			</tr>
+		{/foreach}
+	</table>
 </div>
 {/box}

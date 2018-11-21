@@ -1,76 +1,172 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 99%;" class="hand" onclick="showOrHide('docpanel');">
-			<IMG src="img/docum.gif" alt="">
-			<span class="bold">{trans("Customer's Documents:")}</span> ({t a=$limit}last $a documents{/t})
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			<A href="?m=documentadd&amp;cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
-			<A href="?m=documentlist&amp;c={$customerinfo.id}">{trans("All Documents")} &raquo;</A>&nbsp;
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="docpanel" style="display: none;">
-		<TD style="width: 100%;" colspan="2">
-			<TABLE class="lmsbox-inner">
-				<THEAD>
-				<TR>
-					<TD style="width: 1%;" class="bold nobr">{trans("Number:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Created:")}</TD>
-					<TD style="width: 1%;" class="bold nobr">{trans("Type:")}</TD>
-					<TD style="width: 95%;" class="nobr">{trans("Title:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Period:")}</TD>
-					<TD style="width: 1%;" class="nobr"></TD>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{cycle values="light,lucid" print=false name=doc}
-				{foreach from=$documents item=doc}
-				<TR class="highlight {cycle name=doc}{if $doc.closed} blend{/if}"  >
-					<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
-						{number number=$doc.number template=$doc.template time=$doc.cdate}
-					</TD>
-					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.cdate|date_format:"%Y/%m/%d"}</TD>
-					<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</TD>
-					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
-					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
-						{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
-						{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
-					</TD>
-					<TD class="text-right nobr">
-						{assign var=type value=$doc.type}
-						<a href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><img src="img/save.gif" alt="[ {trans("Save")} ]" title="[ {trans("Save")} ]"></a>
-						{if ! $doc.closed && ($docrights.$type.rights & 4)}
-						<a href="?m=documentedit&amp;id={$doc.docid}&amp;action=confirm"><img src="img/confirm.gif" alt="[ {trans("Confirm")} ]" title="[ {trans("Confirm")} ]"></a>
-						{/if}
-						{if ($docrights.$type.rights & 16)}
-						<a onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')" href="?m=documentdel&amp;id={$doc.docid}" {tip text="Remove document"}><img src="img/delete.gif" alt="[ {trans("Delete")} ]"></a>
-						{/if}
-						{if ($docrights.$type.rights & 8)}
-						<a href="?m=documentedit&amp;id={$doc.docid}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
-						{/if}
-						<a href="?m=documentview&amp;id={$doc.docid}" rel="external"><img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></a>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="6">
-						<p>{trans("That customer hasn't got any documents.")}</p>
-					</TD>
-				</TR>
-				{/foreach}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('docpanel') == '1')
-		document.getElementById('docpanel').style.display = '';
-//-->
-</SCRIPT>
+
+{css}
+{js}
+
+<form method="POST" name="customerdocuments" id="customerdocuments-form">
+</form>
+
+{tab_container id="customerdocuments"}
+
+	{tab_header content_id="docpanel"}
+		{tab_header_cell icon="lms-ui-icon-document"}
+			<strong>{trans("Customer's Documents:")}</strong> ({t a=$limit}last $a documents{/t})
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="?m=documentadd&cid={$customerinfo.id}">{trans("New Document")} &raquo;</A>
+			<A href="?m=documentlist&c={$customerinfo.id}">{trans("All Documents")} &raquo;</A>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="docpanel"}
+
+		{tab_table}
+
+			{if $documents}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-6">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column number">
+								<strong>{trans("Number:")}</strong>
+							</div>
+							<div class="lms-ui-tab-table-column creation-date">
+								{trans("Creation date<!document>")} / {trans("Confirmation date<!document>")}:
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column created-by">
+								{trans("Created by<!document>")} / {trans("Confirmed by<!document>")}:
+							</div>
+							<div class="lms-ui-tab-table-column type">
+								<strong>{trans("Type:")}</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column title">
+							{trans("Title:")}
+						</div>
+						<div class="lms-ui-tab-table-column period">
+							{trans("Period:")}
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $documents as $doc}
+			<div class="lms-ui-tab-table-row{if $doc.closed} blend{/if}">
+
+				<div class="lms-ui-tab-table-wrapper col-6">
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column number" onclick="window.open('?m=documentview&id={$doc.docid}');">
+								<strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong>
+							</div>
+							<div class="lms-ui-tab-table-column creation-date" onclick="window.open('?m=documentview&id={$doc.docid}');">
+								{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column created-by" onclick="window.open('?m=documentview&id={$doc.docid}');">
+								{$doc.username}{if $doc.cusername} / {$doc.cusername}{/if}
+							</div>
+							<div class="lms-ui-tab-table-column type" onclick="window.open('?m=documentview&id={$doc.docid}');">
+								<strong>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column title" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							{$doc.title|truncate:40:"...":true}
+						</div>
+						<div class="lms-ui-tab-table-column period" onclick="window.open('?m=documentview&id={$doc.docid}');">
+							{if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
+							{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					{if $customerinfo.senddocuments}
+						{button type="link" class="documentsend" icon="mail" href="?m=documentsend&id={$doc.docid}"
+							tip="Document send"}
+					{/if}
+					{assign var=type value=$doc.type}
+						{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
+					{if ! $doc.closed && ($docrights.$type.rights & 4)}
+						{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
+					{/if}
+					{if ($docrights.$type.rights & 16)}
+						{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')"
+							href="?m=documentdel&id={$doc.docid}" tip="Remove document"}
+					{/if}
+					{if ($docrights.$type.rights & 8)}
+						{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
+					{/if}
+					{$docattach = $doc.attachments[0]}
+					{if $docattach.main || count($doc.attachments) == 1}
+						{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+						url="?m=documentview&id={$doc.docid}" external=true
+						text="<i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
+					{/if}
+					{if count($doc.attachments) > 1}
+						<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+							<img src="img/asc_order.gif">
+						</a>
+					{/if}
+					<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" form="customerdocuments-form" class="lms-ui-multi-check" VALUE="{$doc.docid}">
+					<div id="allattachments-{$doc.docid}" style="display: none;">
+						{foreach $doc.attachments as $docattach}
+							{if $docattach@first && $docattach.main}{continue}{/if}
+							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+							url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
+							text="{$docattach.filename} <i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
+							<br>
+						{/foreach}
+					</div>
+				</div>
+
+			</div>
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer hasn't got any documents.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+{if !empty($documents) && count($documents)}
+		{tab_button_panel}
+			{tab_buttons}
+				<button type="button" class="lms-ui-button lms-ui-button-mail" onclick="return confirm('{trans("Are you sure, you want to send documents to customer?")}')">
+					<i></i> {trans("Send documents")}
+				</button>
+				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_docs();">
+					<i></i> {trans("Print")}
+				</button>
+				<button type="button" class="lms-ui-button lms-ui-button-confirm" onclick="javascript:mark_docs();">
+					<i></i> {trans("Confirm")}
+				</button>
+				<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delete_docs();">
+					<i></i> {trans("Delete")}
+				</button>
+			{/tab_buttons}
+			{tab_buttons}
+				<label>
+					{trans("Check All")}
+					<INPUT TYPE="checkbox" class="lms-ui-multi-check-all" VALUE="1">
+				</label>
+			{/tab_buttons}
+		{/tab_button_panel}
+{/if}
+
+	{/tab_contents}
+{/tab_container}

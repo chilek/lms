@@ -302,7 +302,10 @@ foreach my $key (keys %iftable)
 my $iptid = 0;
 my %htbid;
 
-my $dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil FROM assignments, customers, tariffs WHERE customers.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY customerid");
+my $dbq = $dbase->prepare("SELECT customerid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil
+	FROM assignments a, customers, tariffs
+	WHERE customers.id = customerid AND deleted = 0 AND tariffid = tariffs.id AND a.datefrom <= $utsfmt AND (a.dateto > $utsfmt OR a.dateto = 0)
+	GROUP BY customerid");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {

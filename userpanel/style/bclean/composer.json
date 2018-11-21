@@ -12,8 +12,7 @@
         "email": "lukasz@alfa-system.pl"
     },
     "require": {
-        "twbs/bootstrap": "@alpha",
-        "components/jquery": "^2.1",
+        "twbs/bootstrap": "4.1.1",
         "bordercloud/tether": "^1.1"
     },
     "license": "MIT"

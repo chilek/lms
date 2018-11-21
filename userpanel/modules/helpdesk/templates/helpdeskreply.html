@@ -6,6 +6,7 @@
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
 {box title="Message"}
 <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
+<input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
 <table width="100%" cellpadding="3" class="light">
 	<tr class="light">
 		<td width="1%">
@@ -42,7 +43,7 @@
 	</tr>
 	<tr class="light">
 		<td width="100%" colspan="3" align="right">
-			<a href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")} {img src="save.gif" alt="[ Submit ]"}</a>
+			<a href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")} {img src="save.gif" alt="Submit"}</a>
 		</td>
 	</tr>
 </table>

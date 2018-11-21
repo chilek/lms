@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,50 +24,8 @@
  *  $Id$
  */
 
-function smarty_function_tip($params, $template)
-{
-	$result = '';
-
-	if (array_key_exists('dynpopup', $params) && $popup = $params['dynpopup']) {
-		if(is_array($params))
-			foreach($params as $paramid => $paramval)
-				$popup = str_replace('$'.$paramid, $paramval, $popup);
-
-		$text = " onmouseover=\"popup('$popup',1," . (array_key_exists('sticky', $params) && $params['sticky'] ? 1 : 0) . ",30,15)\" onmouseout=\"pophide()\"";
-		return $text;
-	} else if (array_key_exists('popup', $params) && $popup = $params['popup']) {
-		if(is_array($params))
-			foreach($params as $paramid => $paramval)
-				$popup = str_replace('$'.$paramid, $paramval, $popup);
-
-		$text = " onclick=\"popup('$popup',1," . (array_key_exists('sticky', $params) && $params['sticky'] ? 1 : 0) . ",10,10)\" onmouseout=\"pophide();\"";
-		return $text;
-	} else {
-		$tmpl = $template->getTemplateVars('error');
-		if (array_key_exists('trigger', $params) && $tmpl[$params['trigger']]) {
-			$error = str_replace("'", '\\\'', $tmpl[$params['trigger']]);
-			$error = str_replace('"', '&quot;', $error);
-			$error = str_replace("\r", '', $error);
-			$error = str_replace("\n", '<BR>', $error);
-
-			$result = ' onmouseover="popup(\'<b><font color=red>'.$error.'</font></b>\')" onmouseout="pophide()" ';
-			$result .= $params['bold'] ? 'CLASS="alert bold" ' : ' CLASS="alert" ';
-		} elseif ($params['text'] != '') {
-			$text = $params['text'];
-			unset($params['text']);
-			$text = trans(array_merge((array)$text, $params));
-
-			$text = str_replace('\'', '\\\'', $text);
-			$text = str_replace('"', '&quot;', $text);
-			$text = str_replace("\r", '', $text);
-			$text = str_replace("\n", '<BR>', $text);
-
-			$result .= 'onmouseover="popup(\''.$text.'\')" onmouseout="pophide()" ';
-			$result .= array_key_exists('bold', $params) && $params['bold'] ? 'CLASS="bold" ' : '';
-		}
-
-		return $result;
-	}
+function smarty_function_tip($params, $template) {
+	return Utils::tip($params, $template);
 }
 
 ?>

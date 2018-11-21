@@ -1,8 +1,9 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
+<H3>{trans("Promotion:")} {$schema['promotionname']}</H3>
 <FORM method="post" name="schemaedit" action="?m=promotionschemaedit&amp;id={$schema.id}">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">

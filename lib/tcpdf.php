@@ -30,6 +30,10 @@
  *  This reduces execution time by ~30-50%
  */
 
+if (!defined('LIB_DIR')) {
+	define('LIB_DIR', dirname(__FILE__));
+}
+
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
 class LMSTCPDF extends TCPDF {
@@ -525,21 +529,28 @@ class LMSTCPDF extends TCPDF {
 		$this->cell_margin = $prev_cell_margin;
 		return $rs;
 	}
-        
-        private function UTF8ToLatin2($str, $isunicode = true)
-        {
+
+	private function UTF8ToLatin2($str, $isunicode = true)
+	{
 		/* convert UTF-8 to ISO-8859-2 */
 		if (!$isunicode) {
 			return $str;
 		}
 
 		if (function_exists('mb_convert_encoding')) {
-                        return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
-                } else {
-                        return iconv("UTF-8", "ISO-8859-2", $str);
-                }
-        }
-        
+			return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
+		} else {
+			return iconv("UTF-8", "ISO-8859-2", $str);
+		}
+	}
+
+	public function SetFont($family, $style = '', $size = null, $fontfile = '', $subset = 'default', $out = true)
+	{
+		if (in_array($family, array('arial', 'tahoma', 'verdana'))) {
+			$fontfile = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . $family . $style . '.php';
+		}
+		parent::SetFont($family, $style, $size, $fontfile, $subset, $out);
+	}
 }
 
 ?>

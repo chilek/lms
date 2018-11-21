@@ -1,69 +1,146 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR>
-		<TD style="width: 99%;" class="hand" onclick="showOrHide('nodesessionpanel');">
-			<IMG src="img/calendar.gif" alt="">
-			<span class="bold"><A name="nodesessions">{trans("Node Sessions:")}</A></span> {t a=ConfigHelper::getConfig('phpui.nodesession_limit', 10)}(last $a sessions){/t}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
+
+{css}
+
+{tab_container id="nodesessions"}
+
+	{tab_header content_id="nodesessionpanel"}
+		{tab_header_cell icon="lms-ui-icon-nodesession"}
+			<strong>{if isset($nodeipdata.id)}{trans("Network Device Sessions For Selected IP Address:")}{else}{trans("Node Sessions:")}{/if}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
 			<a href="?m=nodesessionlist&nodeid={$nodeinfo.id}">{trans("All sessions")} &raquo;</a>
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="nodesessionpanel" style="display:none;">
-		<TD WIDTH="100%" class="fall" colspan="2">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
-				<TR class="dark">
-					<TD class="fleftu bold nobr" style="width: 11%;">{trans("IP Address:")}</TD>
-					<TD class="fbt nobr" style="width: 11%;">{trans("MAC:")}</TD>
-					<TD class="fbt nobr" style="width: 11%;">{trans("Type:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Started:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Finished:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Time Duration:")}</TD>
-					<TD class="fbt bold nobr" style="width: 11%;">{trans("Terminate Cause:")}</TD>
-					<TD class="fbt nobr" style="width: 11%;">{trans("Downloaded:")}</TD>
-					<TD class="frightu nobr" style="width: 12%;">{trans("Uploaded:")}</TD>
-				</TR>
-				{section loop=$nodesessions name=session}
-				{cycle name=sessionclass values="light,lucid" print=false}
-				<TR class="{cycle name=sessionclass}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-					<TD class="bold nobr">{$nodesessions[session].ipaddr}</TD>
-					<TD class="nobr">{$nodesessions[session].mac}</TD>
-					<TD class="nobr">
-						{$unknowntype=1}{$firsttype=1}
-						{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}
-						{if ($nodesessions[session].type & $sessiontypeid) == $sessiontypeid}
-						{if !$firsttype}, {/if}{$sessiontype.label}
-						{$firsttype=0}
-						{$unknowntype=0}
-						{/if}
-						{/foreach}
-						{if $unknowntype}-{/if}
-					</TD>
-					<TD class="nobr"><span class="bold">{$nodesessions[session].start|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].start|date_format:"%H:%M:%S"}</TD>
-					<TD class="nobr"><span class="bold">{$nodesessions[session].stop|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].stop|date_format:"%H:%M:%S"}</TD>
-					<TD class="bold nobr">{$nodesessions[session].duration}</TD>
-					<TD class="nobr">{$nodesessions[session].terminatecause}</TD>
-					<TD class="nobr">{$nodesessions[session].download}</TD>
-					<TD class="nobr">{$nodesessions[session].upload}</TD>
-				</TR>
-				{sectionelse}
-				<TR>
-					<TD colspan="9" class="empty-table">
-						<p>{trans("That are no sessions for this node.")}</p>
-					</TD>
-				</TR>
-				{/section}
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-	if (getCookie('nodesessionpanel')=='1')
-		document.getElementById('nodesessionpanel').style.display = '';
-//-->
-</SCRIPT>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="nodesessionpanel"}
+
+		{tab_table}
+
+			{if $nodesessions}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-9">
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-column ip">
+							<strong>{trans("IP Address:")}</strong>
+						</div>
+						<div class="lms-ui-tab-table-column mac">
+							{trans("MAC:")}
+						</div>
+						<div class="lms-ui-tab-table-column type">
+							{trans("Type:")}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-6">
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column started">
+									<strong>{trans("Started:")}</strong>
+								</div>
+								<div class="lms-ui-tab-table-column finished">
+									<strong>{trans("Finished:")}</strong>
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column duration">
+									<strong>{trans("Time Duration:")}</strong>
+								</div>
+								<div class="lms-ui-tab-table-column cause">
+									<strong>{trans("Terminate Cause:")}</strong>
+								</div>
+							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column downloaded">
+								{trans("Downloaded:")}
+							</div>
+							<div class="lms-ui-tab-table-column uploaded">
+								{trans("Uploaded:")}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $nodesessions as $nodesession}
+			<div class="lms-ui-tab-table-row">
+				<div class="lms-ui-tab-table-wrapper col-9">
+					<div class="lms-ui-tab-table-wrapper col-3">
+						<div class="lms-ui-tab-table-column ip">
+							<strong>{$nodesession.ipaddr}</strong>
+						</div>
+						<div class="lms-ui-tab-table-column mac">
+							{$nodesession.mac}
+						</div>
+						<div class="lms-ui-tab-table-column type">
+							{$unknowntype=1}{$firsttype=1}
+							{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}
+								{if ($nodesession.type & $sessiontypeid) == $sessiontypeid}
+									{if !$firsttype}, {/if}{$sessiontype.label}
+									{$firsttype=0}
+									{$unknowntype=0}
+								{/if}
+							{/foreach}
+							{if $unknowntype}-{/if}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-6">
+						<div class="lms-ui-tab-table-wrapper col-4">
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column started">
+									<strong>
+										{$nodesession.start|date_format:"%Y.%m.%d"}
+									</strong>
+									{$nodesession.start|date_format:"%H:%M:%S"}
+								</div>
+								<div class="lms-ui-tab-table-column finished">
+									<strong>
+										{$nodesession.stop|date_format:"%Y.%m.%d"}
+									</strong>
+									{$nodesession.stop|date_format:"%H:%M:%S"}
+								</div>
+							</div>
+							<div class="lms-ui-tab-table-wrapper col-2">
+								<div class="lms-ui-tab-table-column duration">
+									<strong>{$nodesession.duration}</strong>
+								</div>
+								<div class="lms-ui-tab-table-column cause">
+									<strong>{$nodesession.terminatecause|default:"-"}</strong>
+								</div>
+							</div>
+						</div>
+
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column downloaded">
+								{$nodesession.download}
+							</div>
+							<div class="lms-ui-tab-table-column uploaded">
+								{$nodesession.upload}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That are no sessions for this node.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}

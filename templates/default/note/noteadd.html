@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -10,7 +10,6 @@ window.open('?m=note&id={$newnoteid}');
 //-->
 </SCRIPT>
 {/if}
-{include file="calendar_js.html"}
 <script type="text/javascript">
 <!--
 	function saveheader()
@@ -32,7 +31,7 @@ window.open('?m=note&id={$newnoteid}');
 
 	function printnote()
 	{
-		document.additem.action="?m=noteadd&amp;action=save&print=1";
+		document.additem.action="?m=noteadd&action=save&print=1";
 		document.additem.submit();
 	}
 //-->
@@ -71,9 +70,7 @@ window.open('?m=note&id={$newnoteid}');
 			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<div class="calendar">
-			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			</div>
+			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $note.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
 			{/if}
@@ -122,7 +119,8 @@ window.open('?m=note&id={$newnoteid}');
                 </TD>
                 <TD WIDTH="99%">
                         <B>{$customer.customername}</B>
-                        &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
+                        &nbsp;&raquo;&nbsp; {if $customer.postoffice && $customer.postoffice != $customer.city && $customer.street}{$customer.city}, {/if}{$customer.address},
+                        	{$customer.zip} {if $customer.postoffice}{$customer.postoffice}{else}{$customer.city}{/if}
                         &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
                 </TD>
         </TR>
@@ -223,7 +221,9 @@ window.open('?m=note&id={$newnoteid}');
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['setcustomer'].elements['note[number]'].focus();
+$(function() {
+	$('form[name="setcustomer"] [name="note[number]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

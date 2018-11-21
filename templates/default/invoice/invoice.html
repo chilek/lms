@@ -3,13 +3,21 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="98%" CLASS="hdf" VALIGN="TOP">
-			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}
+			{number number=$invoice.number template=$invoice.template time=$invoice.cdate customerid=$invoice.customerid assign=number}
 			{if $invoice.invoice}
-			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate assign=number_ref}
+			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate customerid=$invoice.invoice.customerid assign=number_ref}
 			    <B>{t a=$number}Credit Note No. $a{/t}</B><BR>
 			    <B class="mdf">{t a=$number_ref}for Invoice No. $a{/t}</B><BR>
+			{elseif $invoice.doctype == $smarty.const.DOC_INVOICE_PRO}
+			    <B>{t a=$number}Pro Forma Invoice No. $a{/t}</B><BR>
 			{else}
 			    <B>{t a=$number}Invoice No. $a{/t}</B><BR>
+			{/if}
+			{if $invoice.cancelled}
+			<B>{trans("CANCELLED")}</B><BR>
+			{/if}
+			{if $invoice.dontpublish}
+			<B>{trans("NO ACCOUNTANT DOCUMENT")}</B><BR>
 			{/if}
 			<!--<B>{*$type*}</B>//-->
 			{if $duplicate}
@@ -18,15 +26,15 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">
 			{trans("Draw-up date:")}<BR>
-			{trans("Sale date:")}<BR>
+			{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}{trans("Sale date:")}<BR>{/if}
 			{trans("Deadline:")}<BR>
-			{trans("Payment type:")}
+			{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}{trans("Payment type:")}{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
 			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $invoice.division_cplace != ""}, {$invoice.division_cplace}{/if}<BR>
-			{$invoice.sdate|date_format:"%Y/%m/%d"}<BR>
+			{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}$invoice.sdate|date_format:"%Y/%m/%d"}<BR>{/if}
 			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
-			{$invoice.paytypename}
+			{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}{$invoice.paytypename}{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -38,8 +46,7 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="66%" VALIGN="TOP">
-			<B>{trans("Seller:")}</B><BR>
-			<BR>
+			<div class="address-header">{trans("Seller:")}</div>
 			{$invoice.division_header|replace:"\n":"<BR>"}<BR>
 			{if ConfigHelper::checkConfig('invoices.show_all_accounts') && !empty($invoice.bankaccounts)}
 			{trans("Bank accounts:")}<br>{format_bankaccount(bankaccount($invoice.customerid, $invoice.account))}<br>
@@ -49,14 +56,21 @@
 			{else}
 			{trans("Bank account:")} {format_bankaccount(bankaccount($invoice.customerid, $invoice.account))}
 			{/if}
+
 			<BR><BR>
-			<B>{trans("Purchaser:")}</B><BR>
-			<BR>
+
+			<div class="address-header">{trans("Purchaser:")}</div>
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
 			{if $invoice.ten != ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif $invoice.ssn != ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
+
 			<BR>
+
+			{if $invoice.recipient_address_id}
+				<div class="address-header">{trans("Recipient:")}</div>
+				{document_address name=$invoice.rec_name address=$invoice.rec_address street=$invoice.rec_street zip=$invoice.rec_zip postoffice=$invoice.rec_postoffice city=$invoice.rec_city}
+			{/if}
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
 			<BR>
@@ -64,9 +78,8 @@
 			<BR>
 			<B>
 			{if $invoice.post_name || $invoice.post_address}
-    			{if $invoice.post_name}{$invoice.post_name}{else}{$invoice.name}{/if}<BR>
-    			{$invoice.post_address}<BR>
-	    		{$invoice.post_zip} {$invoice.post_city}
+				{if $invoice.post_name}{$name=$invoice.post_name}{else}{$name=$invoice.name}{/if}
+				{document_address name=$name address=$invoice.post_address street=$invoice.post_street zip=$invoice.post_zip postoffice=$invoice.post_postoffice city=$invoice.post_city}
 			{else}
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
@@ -140,7 +153,7 @@
 		{$item.content}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
-		{$item.count|string_format:"%.2f"}
+		{$item.count|string_format:"%.3f"}
 	</TD>
 	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
@@ -229,7 +242,7 @@
 		{$item.content}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
-		{$item.count|string_format:"%.2f"}
+		{$item.count|string_format:"%.3f"}
 	</TD>
 	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
@@ -350,16 +363,18 @@
 			{/if}
 		</TD>
 	</TR>
+	{if !ConfigHelper::checkConfig('invoices.hide_in_words')}
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
 			{trans("In words:")}
 			{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
 			{else}
-				{t a=$invoice.value|string_format:"%d"|to_words b=$invoice.valuep|to_words}$a dollars $b cents{/t}
+				{moneyf_in_words($invoice.value)}
 			{/if}
 		</TD>
 	</TR>
+	{/if}
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
 			&nbsp;
@@ -375,6 +390,16 @@
 			<BR>
 		</TD>
 	</TR>
+{if $invoice.comment}
+        <TR>
+                <TD WIDTH="100%" COLSPAN="2">
+                        <B>{trans("Comment:")}</B><BR>
+			<BLOCKQUOTE>
+			{$invoice.comment}
+			</BLOCKQUOTE>
+		</TD>
+        </TR>
+{/if}
 </TABLE>
 </TD>
 </TR>
@@ -399,7 +424,7 @@
 {if $invoice.customerpin}
 	<BR><BR>
 	<B>{trans("Customer ID:")} {$invoice.customerid|string_format:"%04d"}</B><BR>
-	PIN: <CODE>{$invoice.customerpin|string_format:"%04d"}</CODE>
+	PIN: <CODE>{if strlen($invoice.customerpin) < 4}{$invoice.customerpin|string_format:"%04d"}{else}{$invoice.customerpin}{/if}</CODE>
 	<BR><BR>
 {/if}
 

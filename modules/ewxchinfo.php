@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,7 +48,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if ($channel['id']) {
     $channel['devices'] = $DB->GetAll('SELECT id, name, location,
-        (SELECT COUNT(*) FROM vnodes WHERE netdev = netdevices.id AND ownerid > 0) AS nodes
+        (SELECT COUNT(*) FROM vnodes WHERE netdev = netdevices.id AND ownerid IS NOT NULL) AS nodes
 	    FROM netdevices
     	WHERE channelid = ? ORDER BY name', array($channel['id']));
 
@@ -58,11 +58,11 @@ if ($channel['id']) {
 } else {
     // default channel
     $channel['devices'] = $DB->GetAll('SELECT id, name, location,
-        (SELECT COUNT(*) FROM vnodes WHERE netdev = netdevices.id AND ownerid > 0) AS nodes
+        (SELECT COUNT(*) FROM vnodes WHERE netdev = netdevices.id AND ownerid IS NOT NULL) AS nodes
 	    FROM netdevices WHERE id IN (
             SELECT netdev
             FROM vnodes
-            WHERE netdev > 0 AND id IN (
+            WHERE netdev IS NOT NULL AND id IN (
                 SELECT nodeid
                 FROM ewx_stm_nodes
                 WHERE channelid IN (SELECT id FROM ewx_stm_channels

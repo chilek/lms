@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <script type="text/javascript">
@@ -57,7 +57,7 @@
                     <img src="img/phone.gif" width="16" alt=""> {trans("Phone number:")}
                 </td>
                 <td>
-                    <input type="text" name="search[phone]" {tip text="Enter phone number or it's fragment"}>
+                    <input type="tel" name="search[phone]" {tip text="Enter phone number or it's fragment"}>
                 </td>
             </tr>
             <tr>
@@ -66,9 +66,9 @@
                 </td>
                 <td>
                     <input class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}>
-                    <label for="operator0">{trans("AND")}</label>
+                    <label for="operator0">{trans("and")}</label>
                     <input class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}>
-                    <label for="operator1">{trans("OR")}</label>
+                    <label for="operator1">{trans("or")}</label>
                 </td>
             </tr>
             <tr>
@@ -86,7 +86,9 @@
 </form>
 <script type="text/javascript">
 <!--
-    document.forms['voipaccountsearch'].elements['search[login]'].focus();
+	$(function() {
+		$('form[name="voipaccountsearch"] [name="search[login]"]').focus();
+	});
 //-->
 </script>
 {/block}

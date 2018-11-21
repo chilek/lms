@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,15 +24,17 @@
  *  $Id$
  */
 
-$numberplanlist = $LMS->GetNumberPlans(DOC_CNOTE);
-
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 if (isset($_GET['id']) && $action == 'init')
 {
-	if ($DB->GetOne('SELECT id FROM documents WHERE reference = ?', array($_GET['id'])))
+	if ($LMS->isDocumentReferenced($_GET['id']))
 		$SESSION->redirect('?m=invoicelist');
+
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
+
+	if (!empty($invoice['cancelled']))
+		$SESSION->redirect('?m=invoicelist');
 
 	$taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
@@ -45,7 +47,7 @@ if (isset($_GET['id']) && $action == 'init')
 		$nitem['discount']	= str_replace(',', '.', $item['pdiscount']);
 		$nitem['pdiscount']	= str_replace(',', '.', $item['pdiscount']);
 		$nitem['vdiscount']	= str_replace(',', '.', $item['vdiscount']);
-		$nitem['jm']		= str_replace(',', '.', $item['content']);
+		$nitem['content']		= str_replace(',', '.', $item['content']);
 		$nitem['valuenetto']	= str_replace(',', '.', $item['basevalue']);
 		$nitem['valuebrutto']	= str_replace(',', '.', $item['value']);
 		$nitem['s_valuenetto']	= str_replace(',', '.', $item['totalbase']);
@@ -55,11 +57,22 @@ if (isset($_GET['id']) && $action == 'init')
 		$nitem['itemid']	= $item['itemid'];
 		$invoicecontents[$nitem['itemid']] = $nitem;
 	}
+	$invoice['content'] = $invoicecontents;
 
-	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
+	if (empty($invoice['divisionid']))
+		$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
+			WHERE doctype = ? AND isdefault = 1',
+			array(DOC_CNOTE));
+	else
+		$cnote['numberplanid'] = $DB->GetOne('SELECT p.id FROM numberplans p
+			JOIN numberplanassignments a ON a.planid = p.id
+			WHERE doctype = ? AND a.divisionid = ? AND isdefault = 1',
+			array(DOC_CNOTE, $invoice['divisionid']));
+
 	$currtime = time();
 	$cnote['cdate'] = $currtime;
-	$cnote['sdate'] = $currtime;
+	//$cnote['sdate'] = $currtime;
+	$cnote['sdate'] = $invoice['sdate'];
 	$cnote['reason'] = '';
 	$cnote['paytype'] = $invoice['paytype'];
 
@@ -70,6 +83,7 @@ if (isset($_GET['id']) && $action == 'init')
 		$cnote['paytime'] = 0;
 	else
 		$cnote['paytime'] = floor(($deadline - $cnote['cdate']) / 86400);
+	$cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
 
 	$cnote['use_current_division'] = true;
 
@@ -84,9 +98,19 @@ $SESSION->restore('invoice', $invoice);
 $SESSION->restore('cnote', $cnote);
 $SESSION->restore('cnoteerror', $error);
 
+$numberplanlist = $LMS->GetNumberPlans(array(
+	'doctype' => DOC_CNOTE,
+	'customerid' => $invoice['customerid'],
+));
+
 $taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
-$ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+$ntempl = docnumber(array(
+	'number' => $invoice['number'],
+	'template' => $invoice['template'],
+	'cdate' => $invoice['cdate'],
+	'customerid' => $invoice['customerid'],
+));
 $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
 switch($action)
@@ -111,11 +135,6 @@ switch($action)
 		if($cnote = $_POST['cnote'])
 			foreach($cnote as $key => $val)
 				$cnote[$key] = $val;
-
-		$cnote['paytime'] = sprintf('%d', $cnote['paytime']);
-
-		if($cnote['paytime'] < 0)
-			$cnote['paytime'] = 14;
 
 		$currtime = time();
 
@@ -160,12 +179,32 @@ switch($action)
 		else
 			$cnote['cdate'] = $currtime;
 
+		if ($cnote['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
+			if (checkdate($dmonth, $dday, $dyear))
+				$cnote['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
+			else {
+				$error['deadline'] = trans('Incorrect date format!');
+				$cnote['deadline'] = $currtime;
+				break;
+			}
+		} else
+			$cnote['deadline'] = $currtime;
+
+		if ($cnote['deadline'] < $cnote['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
 		if($cnote['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $cnote['number']))
-			        $error['number'] = trans('Credit note number must be integer!');
-			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
-			        $error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
+				$error['number'] = trans('Credit note number must be integer!');
+			elseif($LMS->DocumentExists(array(
+					'number' => $cnote['number'],
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+				)))
+				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 		}
 
 		// finally check if selected customer can use selected numberplan
@@ -185,13 +224,15 @@ switch($action)
 			break;
 
 		$SESSION->restore('invoiceid', $invoice['id']);
+
+		$invoicecontents = $invoice['content'];
 		$newcontents = r_trim($_POST);
 
 		foreach ($contents as $item) {
 			$idx = $item['itemid'];
 			$contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
 			$contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
-			$contents[$idx]['jm'] = isset($newcontents['jm'][$idx]) ? $newcontents['jm'][$idx] : $item['jm'];
+			$contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
 			$contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
 
 			$contents[$idx]['discount'] = str_replace(',', '.', isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount']);
@@ -211,80 +252,134 @@ switch($action)
 			$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] != '' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
 			$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
 			$contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
-			$contents[$idx]['count'] = f_round($contents[$idx]['count']);
+			$contents[$idx]['count'] = f_round($contents[$idx]['count'], 3);
 			$contents[$idx]['pdiscount'] = f_round($contents[$idx]['pdiscount']);
 			$contents[$idx]['vdiscount'] = f_round($contents[$idx]['vdiscount']);
 			$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 
 			if ($contents[$idx]['valuenetto'] != $item['valuenetto'])
 				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
+			elseif (f_round($contents[$idx]['valuebrutto']) == f_round($item['valuebrutto']))
+				$contents[$idx]['valuebrutto'] = $item['valuebrutto'];
 
-			if (isset($item['deleted']) && $item['deleted']) {
+			if ((isset($item['deleted']) && $item['deleted']) || empty($contents[$idx]['count'])) {
+				$contents[$idx]['valuebrutto'] = f_round(-1 * $invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count']);
+				$contents[$idx]['cash'] = f_round($invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
+				$contents[$idx]['count'] = f_round(-1 * $invoicecontents[$idx]['count'], 3);
+			} elseif ($contents[$idx]['count'] != $item['count']
+				|| $contents[$idx]['valuebrutto'] != $item['valuebrutto']) {
+				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
+				$contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
+				if (empty($contents[$idx]['count']))
+					$contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
+				elseif (empty($contents[$idx]['valuebrutto']))
+					$contents[$idx]['cash'] = f_round(-1 * $invoicecontents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
+				else
+					$contents[$idx]['cash'] = f_round(-1 * $invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
+			} else {
+				$contents[$idx]['cash'] = 0;
 				$contents[$idx]['valuebrutto'] = 0;
-				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'],2);
 				$contents[$idx]['count'] = 0;
 			}
-			elseif ($contents[$idx]['count'] != $item['count']
-				|| $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
-				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'] - $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
-
-			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
-			$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
+			$contents[$idx]['cash'] = str_replace(',', '.', $contents[$idx]['cash']);
+			$contents[$idx]['valuebrutto'] = str_replace(',', '.', $contents[$idx]['valuebrutto']);
+			$contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
 		}
 
+		$cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
+
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'numberplans', 'divisions'));
+		$DB->LockTables(array('documents', 'numberplans', 'divisions', 'vdivisions'));
 
 		if(!isset($cnote['number']) || !$cnote['number'])
-			$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
+			$cnote['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_CNOTE,
+				'planid' => $cnote['numberplanid'],
+				'cdate' => $cnote['cdate'],
+				'customerid' => $invoice['customerid'],
+			));
 		else {
 			if (!preg_match('/^[0-9]+$/', $cnote['number']))
 				$error['number'] = trans('Credit note number must be integer!');
-			elseif ($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
+			elseif ($LMS->DocumentExists(array(
+					'number' => $cnote['number'],
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+					'customerid' => $invoice['customerid'],
+				)))
 				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 
 			if ($error)
-				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
+				$cnote['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+					'customerid' => $invoice['customerid'],
+				));
 		}
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace 
-						FROM divisions WHERE id = ?',
+						FROM vdivisions WHERE id = ?',
 						array(!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid']));
 
 		if ($cnote['numberplanid'])
-			$fullnumber = docnumber($cnote['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
-				$cnote['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $cnote['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
+				'cdate' => $cnote['cdate'],
+				'customerid' => $invoice['customerid'],
+			));
 		else
 			$fullnumber = null;
 
+		if ( !empty($invoice['recipient_address_id']) ) {
+			$invoice['recipient_address_id'] = $LMS->CopyAddress($invoice['recipient_address_id']);
+		} else {
+			$invoice['recipient_address_id'] = null;
+		}
+
+		if (empty($invoice['post_address_id'])) {
+			$invoice['post_address_id'] = null;
+		} else {
+			$invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
+		}
+
+		$use_current_customer_data = isset($cnote['use_current_customer_data']);
+		if ($use_current_customer_data)
+			$customer = $LMS->GetCustomer($invoice['customerid'], true);
+
 		$args = array(
 			'number' => $cnote['number'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
+			SYSLOG::RES_NUMPLAN => !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null,
 			'type' => DOC_CNOTE,
 			'cdate' => $cnote['cdate'],
 			'sdate' => $cnote['sdate'],
 			'paytime' => $cnote['paytime'],
 			'paytype' => $cnote['paytype'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $invoice['customerid'],
-			'name' => $invoice['name'],
-			'address' => $invoice['address'],
-			'ten' => $invoice['ten'],
-			'ssn' => $invoice['ssn'],
-			'zip' => $invoice['zip'],
-			'city' => $invoice['city'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['countryid'],
+			SYSLOG::RES_USER => Auth::GetCurrentUser(),
+			SYSLOG::RES_CUST => $invoice['customerid'],
+			'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
+			'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+				? $customer['postoffice'] . ', ' : '') . $customer['address']) : $invoice['address'],
+			'ten' => $use_current_customer_data ? $customer['ten'] : $invoice['ten'],
+			'ssn' => $use_current_customer_data ? $customer['ssn'] : $invoice['ssn'],
+			'zip' => $use_current_customer_data ? $customer['zip'] : $invoice['zip'],
+			'city' => $use_current_customer_data ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+				: $invoice['city'],
+			SYSLOG::RES_COUNTRY => $use_current_customer_data ? (empty($customer['countryid']) ? null : $customer['countryid'])
+				: (empty($invoice['countryid']) ? null : $invoice['countryid']),
 			'reference' => $invoice['id'],
 			'reason' => $cnote['reason'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'],
+			SYSLOG::RES_DIV => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']
+				: (!empty($invoice['divisionid']) ? $invoice['divisionid'] : null),
 			'div_name' => $division['name'] ? $division['name'] : '',
 			'div_shortname' => $division['shortname'] ? $division['shortname'] : '',
 			'div_address' => $division['address'] ? $division['address'] : '',
 			'div_city' => $division['city'] ? $division['city'] : '',
 			'div_zip' => $division['zip'] ? $division['zip'] : '',
-			'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $division['countryid'] ? $division['countryid'] : 0,
+			'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => !empty($division['countryid']) ? $division['countryid'] : null,
 			'div_ten' => $division['ten'] ? $division['ten'] : '',
 			'div_regon' => $division['regon'] ? $division['regon'] : '',
 			'div_account' => $division['account'] ? $division['account'] : '',
@@ -293,24 +388,25 @@ switch($action)
 			'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
 			'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
 			'fullnumber' => $fullnumber,
+			'recipient_address_id' => $invoice['recipient_address_id'],
+			'post_address_id' => $invoice['post_address_id'],
 		);
 		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
+				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+				recipient_address_id, post_address_id)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
 			array($cnote['number'], $cnote['cdate'], DOC_CNOTE));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $id;
-			unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], 'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+			$args[SYSLOG::RES_DOC] = $id;
+			unset($args[SYSLOG::RES_USER]);
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args,
+				array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_DIV)));
 		}
 
 		$DB->UnLockTables();
@@ -323,47 +419,43 @@ switch($action)
 			$item['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
 
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
+				SYSLOG::RES_DOC => $id,
 				'itemid' => $idx,
 				'value' => $item['valuebrutto'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+				SYSLOG::RES_TAX => $item['taxid'],
 				'prodid' => $item['prodid'],
-				'content' => $item['jm'],
+				'content' => $item['content'],
 				'count' => $item['count'],
 				'pdiscount' => $item['pdiscount'],
 				'vdiscount' => $item['vdiscount'],
 				'description' => $item['name'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+				SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
 			);
 			$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $invoice['customerid'];
-				$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				$args[SYSLOG::RES_CUST] = $invoice['customerid'];
+				$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 			}
 
-			if (isset($item['cash']) && $item['cash'] != 0) {
+			if (isset($item['cash'])) {
 				$args = array(
 					'time' => $cnote['cdate'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+					SYSLOG::RES_USER => Auth::GetCurrentUser(),
 					'value' => str_replace(',','.',$item['cash']),
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $invoice['customerid'],
+					SYSLOG::RES_TAX => $item['taxid'],
+					SYSLOG::RES_CUST => $invoice['customerid'],
 					'comment' => $item['name'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
+					SYSLOG::RES_DOC => $id,
 					'itemid' => $idx,
 				);
 				$DB->Execute('INSERT INTO cash (time, userid, value, taxid, customerid, comment, docid, itemid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH]] = $DB->GetLastInsertID('cash');
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					unset($args[SYSLOG::RES_USER]);
+					$args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
 				}
 			}
 		}
@@ -400,8 +492,9 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
 $SMARTY->assign('invoice', $invoice);
+$SMARTY->assign('refdoc', $invoice);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('numberplanlist', $numberplanlist);
-$SMARTY->display('invoice/invoicenote.html');
+$SMARTY->display('invoice/invoicenotemodify.html');
 
 ?>

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,37 +27,81 @@
 /**
  * LMSFinanceManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
+    public function GetPromotionNameBySchemaID($id)
+    {
+        return $this->db->GetOne('SELECT p.name FROM promotionschemas AS s
+		LEFT JOIN promotions AS p ON s.promotionid = p.id WHERE s.id = ?', array($id));
+    }
+    public function GetPromotionNameByID($id)
+    {
+        return $this->db->GetOne('SELECT name FROM promotions WHERE id=?', array($id));
+    }
 
     public function GetCustomerTariffsValue($id)
     {
         return $this->db->GetOne('SELECT SUM(tariffs.value)
-		    FROM assignments, tariffs
-			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0
-			    AND datefrom <= ?NOW? AND (dateto > ?NOW? OR dateto = 0)', array($id));
+		    FROM assignments a, tariffs
+			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0 AND commited = 1
+			    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)', array($id));
     }
 
-    public function GetCustomerAssignments($id, $show_expired = false)
+	public function GetCustomerAssignmentValue($id) {
+		$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
+
+		return $this->db->GetOne('SELECT SUM((CASE a.suspended
+			WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+			ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+			* (CASE t.period
+			WHEN ' . MONTHLY . ' THEN 1
+			WHEN ' . YEARLY . ' THEN 1/12.0
+			WHEN ' . HALFYEARLY . ' THEN 1/6.0
+			WHEN ' . QUARTERLY . ' THEN 1/3.0
+			ELSE (CASE a.period
+				WHEN ' . MONTHLY . ' THEN 1
+				WHEN ' . YEARLY . ' THEN 1/12.0
+				WHEN ' . HALFYEARLY . ' THEN 1/6.0
+				WHEN ' . QUARTERLY . ' THEN 1/3.0
+				ELSE 0 END)
+			END))
+		    FROM assignments a
+		    LEFT JOIN tariffs t ON t.id = a.tariffid
+		    LEFT JOIN liabilities l ON l.id = a.liabilityid
+			WHERE customerid = ? AND suspended = 0 AND commited = 1 AND a.period <> ' . DISPOSABLE . '
+				AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)', array($id));
+	}
+
+	public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true)
     {
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
-        if ($assignments = $this->db->GetAll('SELECT a.id AS id, a.tariffid,
-			a.customerid, a.period, a.at, a.suspended, a.invoice, a.settlement,
-			a.datefrom, a.dateto, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
-			t.uprate, t.upceil, t.downceil, t.downrate,
-			(CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
-			(CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name
-			FROM assignments a
-			LEFT JOIN tariffs t ON (a.tariffid = t.id)
-			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
-			WHERE a.customerid=? '
-                . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0)
-			    AND (a.at >= ' . $now . ' OR a.at < 531)' : '')
-                . ' ORDER BY a.datefrom, t.name, value', array($id))) {
+        $assignments = $this->db->GetAll('SELECT
+                                            a.id AS id, a.tariffid, a.customerid, a.period,
+                                            a.at, a.suspended, a.invoice, a.settlement,
+                                            a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
+                                            a.attribute, a.liabilityid, a.separatedocument,
+                                            t.uprate, t.upceil,
+                                            t.downceil, t.downrate, t.type AS tarifftype,
+                                            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
+                                            (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
+                                            d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
+                                            d.fullnumber,
+                                            (CASE WHEN (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531) THEN 0 ELSE 1 END) AS expired,
+                                            commited
+                                          FROM
+                                            assignments a
+                                            LEFT JOIN tariffs t     ON (a.tariffid = t.id)
+                                            LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+                                            LEFT JOIN documents d ON d.id = a.docid
+                                            LEFT JOIN numberplans np ON np.id = d.numberplanid
+                                          WHERE a.customerid=? ' . ($show_approved ? 'AND a.commited = 1 ' : '')
+                                            . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531)' : '') . '
+                                          ORDER BY
+                                            a.datefrom, t.name, value', array($id));
+
+        if ($assignments) {
             foreach ($assignments as $idx => $row) {
                 switch ($row['period']) {
                     case DISPOSABLE:
@@ -94,11 +138,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         break;
                 }
 
+				$row['docnumber'] = docnumber(array(
+					'number' => $row['docnumber'],
+					'template' => $row['numtemplate'],
+					'cdate' => $row['cdate'],
+					'customerid' => $id,
+				));
+
                 $assignments[$idx] = $row;
 
                 // assigned nodes
-                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vnodes.name, vnodes.id FROM nodeassignments, vnodes
-						    WHERE nodeid = vnodes.id AND assignmentid = ?', array($row['id']));
+                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vn.name, vn.id, vn.location, nd.name as netdev_name,
+                                                                   nd.ownerid as netdev_ownerid
+                                                                 FROM
+                                                                   nodeassignments, vnodes vn
+                                                                   LEFT JOIN netdevices nd ON vn.netdev = nd.id
+                                                                 WHERE
+                                                                   nodeid = vn.id AND
+                                                                   assignmentid = ?', array($row['id']));
+
+                $assignments[$idx]['phones'] = $this->db->GetAllByKey('SELECT vn.phone
+                                                                       FROM
+                                                                         voip_number_assignments vna
+                                                                         LEFT JOIN voip_numbers vn ON vna.number_id = vn.id
+                                                                       WHERE
+                                                                         assignment_id = ?', 'phone', array($row['id']));
 
                 $assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
 
@@ -128,9 +192,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function DeleteAssignment($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
-        $this->db->BeginTrans();
-
         if ($this->syslog) {
             $custid = $this->db->GetOne('SELECT customerid FROM assignments WHERE id=?', array($id));
 
@@ -138,12 +199,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if (!empty($nodeassigns))
                 foreach ($nodeassigns as $nodeassign) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id
+                        SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                        SYSLOG::RES_CUST => $custid,
+                        SYSLOG::RES_NODE => $nodeassign['nodeid'],
+                        SYSLOG::RES_ASSIGN => $id
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                 }
 
             $assign = $this->db->GetRow('SELECT tariffid, liabilityid FROM assignments WHERE id=?', array($id));
@@ -151,59 +212,66 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $tid = $assign['tariffid'];
             if ($lid) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid
+                    SYSLOG::RES_LIAB => $lid,
+                    SYSLOG::RES_CUST => $custid
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_DELETE, $args);
             }
         }
         $this->db->Execute('DELETE FROM liabilities WHERE id=(SELECT liabilityid FROM assignments WHERE id=?)', array($id));
         $this->db->Execute('DELETE FROM assignments WHERE id=?', array($id));
         if ($this->syslog) {
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tid,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid
+                SYSLOG::RES_TARIFF => $tid,
+                SYSLOG::RES_LIAB => $lid,
+                SYSLOG::RES_ASSIGN => $id,
+                SYSLOG::RES_CUST => $custid
             );
-            $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_DELETE, $args);
         }
-
-        $this->db->CommitTrans();
     }
 
     public function AddAssignment($data)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $result = array();
+
+		$commited = (!isset($data['commited']) || $data['commited'] ? 1 : 0);
 
         // Create assignments according to promotion schema
         if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
+
             $data['tariffid'] = $data['promotiontariffid'];
-            $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata,
-                    t.name, t.value, t.period, t.id, t.prodid, t.taxid,
-                    s.continuation, s.ctariffid
-                    FROM promotionassignments a
-                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
-                    JOIN tariffs t ON (t.id = a.tariffid)
-                    WHERE a.promotionschemaid = ? AND a.tariffid = ?', array($data['schemaid'], $data['promotiontariffid']));
+            $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.value, t.period,
+                                         	t.id, t.prodid, t.taxid, s.continuation, s.ctariffid
+					                     FROM
+					                     	promotionassignments a
+						                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
+						                    JOIN tariffs t ON (t.id = a.tariffid)
+					                     WHERE a.promotionschemaid = ? AND a.tariffid = ?', array($data['schemaid'], $data['promotiontariffid']));
+
             $data_schema = explode(';', $tariff['sdata']);
             $data_tariff = explode(';', $tariff['data']);
-            $datefrom = $data['datefrom'];
-            $cday = date('d', $datefrom);
+            $datefrom    = $data['datefrom'];
+            $cday        = date('d', $datefrom);
 
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
+
                 // Activation
                 if (!$idx) {
+
                     // if activation value specified, create disposable liability
                     if (f_round($value)) {
-                        $start_day = date('d', $data['datefrom']);
+                        $start_day   = date('d', $data['datefrom']);
                         $start_month = date('n', $data['datefrom']);
-                        $start_year = date('Y', $data['datefrom']);
+                        $start_year  = date('Y', $data['datefrom']);
+
                         // payday is before the start of the period
                         // set activation payday to next month's payday
-                        if ($start_day > $data['at']) {
+                        if (ConfigHelper::checkConfig('phpui.promotion_activation_at_next_day')) {
+                            $_datefrom = $data['datefrom'];
+                            $datefrom = time() + 86400;
+                        } elseif ($start_day > $data['at']) {
                             $_datefrom = $data['datefrom'];
                             $datefrom = mktime(0, 0, 0, $start_month + 1, $data['at'], $start_year);
                         }
@@ -211,132 +279,229 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args = array(
                             'name' => trans('Activation payment'),
                             'value' => str_replace(',', '.', $value),
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($tariff['taxid']),
+                            SYSLOG::RES_TAX => intval($tariff['taxid']),
                             'prodid' => $tariff['prodid']
                         );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-							VALUES (?, ?, ?, ?)', array_values($args));
+                        $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid) VALUES (?, ?, ?, ?)', array_values($args));
+
                         $lid = $this->db->GetLastInsertID('liabilities');
 
                         if ($this->syslog) {
-                            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $lid;
-                            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $data['customerid'];
-                            $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                            $args[SYSLOG::RES_LIAB] = $lid;
+                            $args[SYSLOG::RES_CUST] = $data['customerid'];
+                            $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
                         }
 
                         $tariffid = 0;
-                        $period = DISPOSABLE;
-                        $at = $datefrom;
+                        $period   = DISPOSABLE;
+                        $at       = $datefrom;
                     } else {
                         continue;
                     }
                 }
+
                 // promotion period
                 else {
                     $lid = 0;
+
                     if (!$period)
                         $period = $data['period'];
-                    $datefrom = $_datefrom ? $_datefrom : $datefrom;
+
+                    $datefrom  = !empty($_datefrom) ? $_datefrom : $datefrom;
                     $_datefrom = 0;
-                    $at = $this->CalcAt($period, $datefrom);
-                    $length = $data_schema[$idx - 1];
-                    $month = date('n', $datefrom);
-                    $year = date('Y', $datefrom);
-                    // assume $data['at'] == 1, set last day of the specified month
-                    $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
-                    $cday = 0;
+                    $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && !empty($data['at'])
+                                               ? $data['at'] : $this->CalcAt($period, $datefrom));
+                    $length    = $data_schema[$idx - 1];
+                    $month     = date('n', $datefrom);
+                    $year      = date('Y', $datefrom);
 
                     // Find tariff with specified name+value+period...
                     $tariffid = null;
                     if ($tariff['period'] !== null) {
-                        $tariffid = $this->db->GetOne('
-                            SELECT id FROM tariffs
-                            WHERE name = ? AND value = ? AND period = ?
-                            LIMIT 1',
-                            array(
-                                $tariff['name'],
-                                str_replace(',', '.', $value),
-                                $tariff['period'],
-                            )
-                        );
+
+                        $tariffid = $this->db->GetOne('SELECT id FROM tariffs
+                        							   WHERE
+                        							   		name   = ? AND
+                        							   		value  = ? AND
+                        							   		period = ?
+                        							   LIMIT 1',
+							                           array( $tariff['name'],
+                                                              empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
+                                                              $tariff['period'] ) );
+
                     } else {
                         $tariffid = $this->db->GetOne('
                             SELECT id FROM tariffs
                             WHERE name = ? AND value = ? AND period IS NULL
-                            LIMIT 1', 
+                            LIMIT 1',
                             array(
                                 $tariff['name'],
-                                str_replace(',', '.', $value),
+                                empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
                             )
                         );
                     }
 
                     // ... if not found clone tariff
                     if (!$tariffid) {
-                        $args = $this->db->GetRow('SELECT name, value, period,
-							taxid AS ' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] . ', type, upceil, downceil, uprate, downrate,
-							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
-							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
-							FROM tariffs WHERE id = ?', array($tariff['id']));
+                        $args = $this->db->GetRow('SELECT
+                        							  name, value, period, taxid, type,
+                        							  upceil, downceil, uprate, downrate,
+                                                  	  up_burst_time, up_burst_threshold, up_burst_limit, 
+                                                  	  down_burst_time, down_burst_threshold, down_burst_limit, 
+                                                  	  prodid, plimit, climit, dlimit,
+                                                  	  upceil_n, downceil_n, uprate_n, downrate_n,
+                                                  	  up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+                                                  	  down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+                                                  	  domain_limit, alias_limit, sh_limit,
+                                                  	  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
+                                                  	  quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype
+												   FROM
+												   	  tariffs WHERE id = ?', array($tariff['id']));
+
                         $args = array_merge($args, array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]],
-                            'name' => $tariff['name'],
-                            'value' => str_replace(',', '.', $value),
-                            'period' => $tariff['period']
-                        ));
+								                          'name' => $tariff['name'],
+								                          'value' => str_replace(',', '.', $value),
+								                          'period' => $tariff['period'] ));
+
+						$args[SYSLOG::RES_TAX] = $args['taxid'];
                         unset($args['taxid']);
-                        $this->db->Execute('INSERT INTO tariffs (name, value, period,
-							taxid, type, upceil, downceil, uprate, downrate,
-							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
-							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit)
-							VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
+                        $this->db->Execute('INSERT INTO tariffs
+                        					   (name, value, period, type,
+                        					   upceil, downceil, uprate, downrate,
+											   up_burst_time, up_burst_threshold, up_burst_limit, 
+											   down_burst_time, down_burst_threshold, down_burst_limit, 
+                        					   prodid, plimit, climit, dlimit,
+                        					   upceil_n, downceil_n, uprate_n, downrate_n,
+											   up_burst_time_n, up_burst_threshold_n, up_burst_limit_n, 
+											   down_burst_time_n, down_burst_threshold_n, down_burst_limit_n, 
+				   							   domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+											   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
+											   authtype, taxid)
+							                VALUES
+							                   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+							                   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
                         $tariffid = $this->db->GetLastInsertId('tariffs');
+
                         if ($this->syslog) {
-                            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $tariffid;
-                            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                            $args[SYSLOG::RES_TARIFF] = $tariffid;
+                            $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
                         }
                     }
+
+					// current period settlement support
+					if (isset($data['settlement']) && $data['settlement'] == 2 && $idx == 1 && $period == MONTHLY) {
+						$val = $value;
+						if ($tariff['period'] && $period != DISPOSABLE
+							&& $tariff['period'] != $period) {
+							if ($tariff['period'] == YEARLY)
+								$val = $val / 12.0;
+							elseif ($tariff['period'] == HALFYEARLY)
+								$val = $val / 6.0;
+							elseif ($tariff['period'] == QUARTERLY)
+								$val = $val / 3.0;
+
+							if ($period == YEARLY)
+								$val = $val * 12.0;
+							elseif ($period == HALFYEARLY)
+								$val = $val * 6.0;
+							elseif ($period == QUARTERLY)
+								$val = $val * 3.0;
+							elseif ($period == WEEKLY)
+								$val = $val / 4.0;
+							elseif ($period == DAILY)
+								$val = $val / 30.0;
+						}
+						$discounted_val = $val;
+
+						list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
+						$nextat = mktime(0, 0, 0, $month + 1, $data['at'], $year);
+						$diffdays = sprintf("%d", ($nextat - $data['datefrom'] - 86400) / 86400);
+						if ($diffdays > 0) {
+							list ($y, $m, $d) = explode('/', date('Y/m/d', $nextat));
+							$month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+							$v = 0;
+							while ($diffdays) {
+								if ($d - $diffdays <= 0) {
+									$v += ($d - 1) * $discounted_val / $month_days;
+									$diffdays -= ($d - 1);
+								} else {
+									$v += $diffdays * $discounted_val / $month_days;
+									$diffdays = 0;
+								}
+								$date = mktime(0, 0, 0, $m, 0, $y);
+								$month_days = strftime("%d", $date);
+								$d = $month_days + 1;
+								$m = strftime("%m", $date);
+								$y = strftime("%Y", $date);
+							}
+							$partial_dateto = $nextat - 1;
+							$partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
+							$partial_at = $dom + 1;
+
+							$args = array(
+								SYSLOG::RES_TARIFF  => $tariffid,
+								SYSLOG::RES_CUST    => $data['customerid'],
+								'period'            => $period,
+								'at'                => $partial_at,
+								'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+								'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+								'settlement'        => 0,
+								SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+								'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+								'datefrom'          => $datefrom,
+								'dateto'            => $partial_dateto,
+								'pdiscount'         => 0,
+								'vdiscount'         => $partial_vdiscount,
+								'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+								SYSLOG::RES_LIAB    => null,
+								'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+								'docid'				=> empty($data['docid']) ? null : $data['docid'],
+								'commited'			=> $commited,
+							);
+
+							$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+							$this->insertNodeAssignments($data);
+							$this->insertPhoneAssignments($data);
+
+							$datefrom = $partial_dateto + 1;
+						}
+					}
+
+                    // assume $data['at'] == 1, set last day of the specified month
+                    $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
+                    $cday   = 0;
                 }
 
                 // Create assignment
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariffid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
-                    'period' => $period,
-                    'at' => $at,
-                    'invoice' => !empty($data['invoice']) ? 1 : 0,
-                    'settlement' => !empty($data['settlement']) ? 1 : 0,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                    'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                    'datefrom' => $idx ? $datefrom : 0,
-                    'dateto' => $idx ? $dateto : 0,
-                    'pdiscount' => 0,
-                    'vdiscount' => 0,
-                    'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
+                    SYSLOG::RES_TARIFF  => empty($tariffid) ? null : $tariffid,
+                    SYSLOG::RES_CUST    => $data['customerid'],
+                    'period'            => $period,
+                    'at'                => $at,
+                    'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+                    'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+                    'settlement'        => isset($data['settlement']) && $data['settlement'] == 1 && $idx == 1 ? 1 : 0,
+                    SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+                    'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+                    'datefrom'          => $idx ? $datefrom : 0,
+                    'dateto'            => $idx ? $dateto : 0,
+                    'pdiscount'         => 0,
+                    'vdiscount'         => 0,
+                    'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+                    SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
+                    'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+                    'docid'				=> empty($data['docid']) ? null : $data['docid'],
+                    'commited'			=> $commited,
                 );
 
-                $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
 
-                $id = $this->db->GetLastInsertID('assignments');
+				$this->insertNodeAssignments($data);
+				$this->insertPhoneAssignments($data);
 
-                if ($this->syslog) {
-                    $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
-                    $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
-                }
-
-                $result[] = $id;
                 if ($idx) {
                     $datefrom = $dateto + 1;
                 }
@@ -344,6 +509,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             // add "after promotion" tariff(s)
             if ($tariff['continuation'] || !$data_schema[0]) {
+
                 $tariffs[] = $tariff['id'];
                 if ($tariff['ctariffid'] && $data_schema[0] != 0) {
                     $tariffs[] = $tariff['ctariffid'];
@@ -352,186 +518,791 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // Create assignments
                 foreach ($tariffs as $t) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $t,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
-                        'period' => $data['period'],
-                        'at' => $this->CalcAt($data['period'], $datefrom),
-                        'invoice' => !empty($data['invoice']) ? 1 : 0,
-                        'settlement' => !empty($data['settlement']) ? 1 : 0,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                        'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                        'datefrom' => $datefrom,
-                        'dateto' => 0,
-                        'pdiscount' => 0,
-                        'vdiscount' => 0,
-                         'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => 0,
+                        SYSLOG::RES_TARIFF  => $t,
+                        SYSLOG::RES_CUST    => $data['customerid'],
+                        'period'            => $data['period'],
+                        'at'                => (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && !empty($data['at'])
+                                                       ? $data['at'] : $this->CalcAt($data['period'], $datefrom)),
+                        'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+                        'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+                        'settlement'        => 0,
+                        SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+                        'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+                        'datefrom'          => $datefrom,
+                        'dateto'            => 0,
+                        'pdiscount'         => 0,
+                        'vdiscount'         => 0,
+                        'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+                        SYSLOG::RES_LIAB    => null,
+                        'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+						'docid'				=> empty($data['docid']) ? null : $data['docid'],
+                        'commited'			=> $commited,
                     );
 
-                    $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                    $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
 
-                    $id = $this->db->GetLastInsertID('assignments');
-
-                    if ($this->syslog) {
-                        $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
-                        $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
-                    }
-
-                    $result[] = $id;
-                }
+					$this->insertNodeAssignments($data);
+					$this->insertPhoneAssignments($data);
+				}
             }
-        }
-        // Create one assignment record
-        else {
+        } else {
+			// creates assignment record for partial period
+			if (isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
+				if (empty($data['tariffid']))
+					$val = $data['value'];
+				else {
+					$tariff = $this->db->GetRow('SELECT value, period FROM tariffs WHERE id = ?', array($data['tariffid']));
+					$val = $tariff['value'];
+					if ($tariff['period'] && $data['period'] != DISPOSABLE
+						&& $tariff['period'] != $data['period']) {
+						if ($tariff['period'] == YEARLY)
+							$val = $val / 12.0;
+						elseif ($tariff['period'] == HALFYEARLY)
+							$val = $val / 6.0;
+						elseif ($tariff['period'] == QUARTERLY)
+							$val = $val / 3.0;
+
+						if ($data['period'] == YEARLY)
+							$val = $val * 12.0;
+						elseif ($data['period'] == HALFYEARLY)
+							$val = $val * 6.0;
+						elseif ($data['period'] == QUARTERLY)
+							$val = $val * 3.0;
+						elseif ($data['period'] == WEEKLY)
+							$val = $val / 4.0;
+						elseif ($data['period'] == DAILY)
+							$val = $val / 30.0;
+					}
+				}
+				$discounted_val = $val;
+
+				if (!empty($data['pdiscount']))
+					$discounted_val = ((100 - $data['pdiscount']) * $val) / 100;
+				elseif (!empty($data['vdiscount']))
+					$discounted_val -= $data['vdiscount'];
+
+				list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
+				$nextat = mktime(0, 0, 0, $month + 1, $data['at'], $year);
+				$diffdays = sprintf("%d", ($nextat - $data['datefrom'] - 86400) / 86400);
+				if ($diffdays > 0) {
+					list ($y, $m, $d) = explode('/', date('Y/m/d', $nextat));
+					$month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
+					$value = 0;
+					while ($diffdays) {
+						if ($d - $diffdays <= 0) {
+							$value += ($d - 1) * $discounted_val / $month_days;
+							$diffdays -= ($d - 1);
+						} else {
+							$value += $diffdays * $discounted_val / $month_days;
+							$diffdays = 0;
+						}
+						$date = mktime(0, 0, 0, $m, 0, $y);
+						$month_days = strftime("%d", $date);
+						$d = $month_days + 1;
+						$m = strftime("%m", $date);
+						$y = strftime("%Y", $date);
+					}
+					$partial_dateto = $nextat - 1;
+					$partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
+					$partial_at = $dom + 1;
+
+					if (!empty($data['value'])) {
+						$args = array(
+							'name' => $data['name'],
+							'value' => str_replace(',', '.', $data['value']),
+							SYSLOG::RES_TAX => intval($data['taxid']),
+							'prodid' => $data['prodid']
+						);
+						$this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
+					    VALUES (?, ?, ?, ?)', array_values($args));
+						$lid = $this->db->GetLastInsertID('liabilities');
+						if ($this->syslog) {
+							$args[SYSLOG::RES_LIAB] = $lid;
+							$args[SYSLOG::RES_CUST] = $data['customerid'];
+							$this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
+						}
+					}
+
+					$args = array(
+						SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
+						SYSLOG::RES_CUST    => $data['customerid'],
+						'period'            => $data['period'],
+						'at'                => $partial_at,
+						'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+						'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+						'settlement'        => 0,
+						SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+						'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+						'datefrom'          => $data['datefrom'],
+						'dateto'            => $partial_dateto,
+						'pdiscount'         => 0,
+						'vdiscount'         => $partial_vdiscount,
+						'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+						SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+						'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+						'docid'				=> empty($data['docid']) ? null : $data['docid'],
+						'commited'			=> $commited,
+					);
+
+					$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+					$this->insertNodeAssignments($data);
+					$this->insertPhoneAssignments($data);
+
+					$data['datefrom'] = $partial_dateto + 1;
+				}
+			}
+
+			// creates one assignment record
             if (!empty($data['value'])) {
                 $args = array(
                     'name' => $data['name'],
                     'value' => str_replace(',', '.', $data['value']),
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($data['taxid']),
+                    SYSLOG::RES_TAX => intval($data['taxid']),
                     'prodid' => $data['prodid']
                 );
                 $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
 					    VALUES (?, ?, ?, ?)', array_values($args));
                 $lid = $this->db->GetLastInsertID('liabilities');
                 if ($this->syslog) {
-                    $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $lid;
-                    $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $data['customerid'];
-                    $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                    $args[SYSLOG::RES_LIAB] = $lid;
+                    $args[SYSLOG::RES_CUST] = $data['customerid'];
+                    $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
                 }
             }
 
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => intval($data['tariffid']),
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
-                'period' => $data['period'],
-                'at' => $data['at'],
-                'invoice' => !empty($data['invoice']) ? 1 : 0,
-                'settlement' => !empty($data['settlement']) ? 1 : 0,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                'datefrom' => $data['datefrom'],
-                'dateto' => $data['dateto'],
-                'pdiscount' => str_replace(',', '.', $data['pdiscount']),
-                'vdiscount' => str_replace(',', '.', $data['vdiscount']),
-                 'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => isset($lid) ? $lid : 0,
+                SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
+                SYSLOG::RES_CUST    => $data['customerid'],
+                'period'            => $data['period'],
+                'at'                => $data['at'],
+                'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+                'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+                'settlement'        => !isset($data['settlement']) || $data['settlement'] != 1 ? 0 : 1,
+                SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+                'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+                'datefrom'          => $data['datefrom'],
+                'dateto'            => $data['dateto'],
+                'pdiscount'         => str_replace(',', '.', $data['pdiscount']),
+                'vdiscount'         => str_replace(',', '.', $data['vdiscount']),
+                'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+                SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+                'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+				'docid'				=> empty($data['docid']) ? null : $data['docid'],
+                'commited'			=> $commited,
             );
-            $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-            $id = $this->db->GetLastInsertID('assignments');
+            $result[] = $data['assignmentid'] = $this->insertAssignment($args);
 
-            if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
-            }
-
-            $result[] = $id;
-        }
-
-        if (!empty($result) && count($result = array_filter($result))) {
-            if (!empty($data['nodes'])) {
-                // Use multi-value INSERT query
-                $values = array();
-                foreach ((array) $data['nodes'] as $nodeid)
-                    foreach ($result as $aid)
-                        $values[] = sprintf('(%d, %d)', $nodeid, $aid);
-
-                $this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
-					VALUES ' . implode(', ', $values));
-                if ($this->syslog) {
-                    $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($aid));
-                    foreach ($nodeassigns as $nodeassign) {
-                        $args = array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $aid
-                        );
-                        $this->syslog->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
-                    }
-                }
-            }
+            $this->insertNodeAssignments($data);
+			$this->insertPhoneAssignments($data);
         }
 
         return $result;
     }
 
-    public function SuspendAssignment($id, $suspend = TRUE)
-    {
-        global $SYSLOG_RESOURCE_KEYS;
+    /*
+     * Helper method who insert assignment.
+     *
+     * \param  array $args array with parameters for SQL query
+     * \return int   last inserted id
+     */
+    private function insertAssignment($args) {
+    	$this->db->Execute('INSERT INTO assignments
+    							(tariffid, customerid, period, at, invoice, separatedocument, settlement, numberplanid,
+    							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
+    							docid, commited)
+					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					        array_values($args));
+
+        $id = $this->db->GetLastInsertID('assignments');
+
+        if ($this->syslog) {
+            $args[SYSLOG::RES_ASSIGN] = $id;
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
+        }
+
+        return $id;
+    }
+
+	private function insertNodeAssignments($args) {
+		if (!empty($args['nodes'])) {
+			// Use multi-value INSERT query
+			$values = array();
+			foreach ($args['nodes'] as $nodeid)
+				$values[] = sprintf('(%d, %d)', $nodeid, $args['assignmentid']);
+
+			$this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
+				VALUES ' . implode(', ', $values));
+			if ($this->syslog) {
+				$nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($args['assignmentid']));
+				foreach ($nodeassigns as $nodeassign) {
+					$args = array(
+						SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+						SYSLOG::RES_CUST => $args['customerid'],
+						SYSLOG::RES_NODE => $nodeassign['nodeid'],
+						SYSLOG::RES_ASSIGN => $args['assignmentid'],
+					);
+					$this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
+				}
+			}
+		}
+	}
+
+	private function insertPhoneAssignments($args) {
+		if (!empty($args['phones'])) {
+			// Use multi-value INSERT query
+			$values = array();
+			foreach ($args['phones'] as $numberid)
+				$values[] = sprintf('(%d, %d)', $numberid, $args['assignmentid']);
+
+			$this->db->Execute('INSERT INTO voip_number_assignments (number_id, assignment_id)
+				VALUES ' . implode(', ', $values));
+		}
+	}
+
+	public function ValidateAssignment($data) {
+		$error = null;
+		$result = array();
+
+		$a = $data;
+
+		foreach ($a as $key => $val) {
+			if (!is_array($val))
+				$a[$key] = trim($val);
+		}
+
+		$period = sprintf('%d',$a['period']);
+
+		switch ($period) {
+			case DAILY:
+				$at = 0;
+				break;
+
+			case WEEKLY:
+				$at = sprintf('%d',$a['at']);
+
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
+					$at = strftime('%u', time());
+
+				if ($at < 1 || $at > 7)
+					$error['at'] = trans('Incorrect day of week (1-7)!');
+				break;
+
+			case MONTHLY:
+				$at = sprintf('%d',$a['at']);
+
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
+					$at = date('j', time());
+
+				if (!ConfigHelper::checkConfig('phpui.use_current_payday')
+					&& ConfigHelper::getConfig('phpui.default_monthly_payday') > 0 && $at == 0)
+					$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
+
+				$a['at'] = $at;
+
+				if ($at > 28 || $at < 1)
+					$error['at'] = trans('Incorrect day of month (1-28)!');
+				break;
+
+			case QUARTERLY:
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d.'/'.$m;
+				} elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				} else {
+					list($d,$m) = explode('/',$a['at']);
+				}
+
+				if (!$error) {
+					if ($d>30 || $d<1 || ($d>28 && $m==2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
+
+					if ($m>3 || $m<1)
+						$error['at'] = trans('Incorrect month number (max.3)!');
+
+					$at = ($m-1) * 100 + $d;
+				}
+				break;
+
+			case HALFYEARLY:
+				if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				elseif (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d.'/'.$m;
+				} else {
+					list($d,$m) = explode('/',$a['at']);
+				}
+
+				if (!$error) {
+					if ($d>30 || $d<1 || ($d>28 && $m==2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
+
+					if ($m>6 || $m<1)
+						$error['at'] = trans('Incorrect month number (max.6)!');
+
+					$at = ($m-1) * 100 + $d;
+				}
+			break;
+
+			case YEARLY:
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d.'/'.$m;
+				} elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				} else {
+					list($d,$m) = explode('/',$a['at']);
+				}
+
+				if (!$error) {
+					if ($d>30 || $d<1 || ($d>28 && $m==2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
+
+					if ($m>12 || $m<1)
+						$error['at'] = trans('Incorrect month number');
+
+					$ttime = mktime(12, 0, 0, $m, $d, 1990);
+					$at = date('z',$ttime) + 1;
+				}
+				break;
+
+			default: // DISPOSABLE
+				$period = DISPOSABLE;
+
+                $at = date_to_timestamp($a['at']);
+                if(empty($at)) {
+                    $error['at'] = trans('Incorrect date!');
+                } elseif ($at < mktime(0, 0, 0)) {
+                    $error['at'] = trans('Date could not be set in past!');
+                }
+                break;
+		}
+
+		if (isset($a['datefrom'])) {
+			if ($a['datefrom'] == '') {
+				$from = 0;
+			} elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$a['datefrom'])) {
+				list($y, $m, $d) = explode('/', $a['datefrom']);
+
+				if (checkdate($m, $d, $y))
+					$from = mktime(0, 0, 0, $m, $d, $y);
+				else
+					$error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			} else
+				$error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+		}
+
+		if (isset($a['dateto'])) {
+			if ($a['dateto'] == '') {
+				$to = 0;
+			} elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
+				list($y, $m, $d) = explode('/', $a['dateto']);
+
+				if (checkdate($m, $d, $y))
+					$to = mktime(23, 59, 59, $m, $d, $y);
+				else
+					$error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			} else
+				$error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+		}
+
+		if (isset($from) && isset($to)) {
+			if ($to < $from && $to != 0 && $from != 0)
+				$error['dateto'] = trans('Start date can\'t be greater than end date!');
+		}
+
+		$a['discount'] = str_replace(',', '.', $a['discount']);
+		$a['pdiscount'] = 0;
+		$a['vdiscount'] = 0;
+		if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $a['discount'])) {
+			$a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
+			$a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
+		}
+		if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99)
+			$error['discount'] = trans('Wrong discount value!');
+
+		if (intval($a['tariffid']) <= 0)
+			switch ($a['tariffid']) {
+				// suspending
+				case -1:
+					$a['tariffid']  = null;
+					$a['discount']  = 0;
+					$a['pdiscount'] = 0;
+					$a['vdiscount'] = 0;
+					$a['value']     = 0;
+
+					unset($a['schemaid'], $a['stariffid'], $a['invoice'], $a['settlement'], $error['at']);
+					$at = 0;
+				break;
+
+				// promotion schema
+				case -2:
+					$schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
+					if (count($a['stariffid'][$schemaid]) == 1) {
+						$a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
+					} else {
+						$a['promotiontariffid'] = $a['stariffid'][$schemaid];
+					}
+
+					$a['value']     = 0;
+					$a['discount']  = 0;
+					$a['pdiscount'] = 0;
+					$a['vdiscount'] = 0;
+					// @TODO: handle other period/at values
+					$a['period'] = MONTHLY; // dont know why, remove if you are sure
+					$a['at'] = 1;
+				break;
+
+				// tariffless
+				default:
+					if (!$a['name'])
+						$error['name'] = trans('Liability name is required!');
+
+					if (!$a['value'])
+						$error['value'] = trans('Liability value is required!');
+					elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
+						$error['value'] = trans('Incorrect value!');
+					elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
+						$error['value'] = trans('Value less than discount are not allowed!');
+						$error['discount'] = trans('Value less than discount are not allowed!');
+					}
+
+					unset($a['schemaid'], $a['stariffid']);
+			}
+		else {
+			if ($a['discount_type'] == 2 && $a['discount']
+				&& $this->db->GetOne('SELECT value FROM tariffs WHERE id = ?', array($a['tariffid'])) - $a['discount'] < 0) {
+				$error['value'] = trans('Value less than discount are not allowed!');
+				$error['discount'] = trans('Value less than discount are not allowed!');
+			}
+
+			unset($a['schemaid'], $a['stariffid']);
+		}
+
+		if (isset($error['dateto']))
+			$error['todate'] = $error['dateto'];
+		if (isset($error['datefrom']))
+			$error['fromdate'] = $error['datefrom'];
+
+		$result['error'] = $error;
+		$result['a'] = $a;
+		$result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid'));
+
+		return $result;
+	}
+
+	public function UpdateExistingAssignments($data) {
+		$refid = isset($data['reference']) && isset($data['existing_assignments']['reference_document_limit'])
+			? $data['reference'] : null;
+		$assignment_type = isset($data['existing_assignments']['assignment_type_limit'])
+			? $data['existing_assignments']['assignment_type_limit'] : null;
+
+		switch ($data['existing_assignments']['operation']) {
+			case EXISTINGASSIGNMENT_DELETE:
+			case EXISTINGASSIGNMENT_SUSPEND:
+				$args = array(
+					'customerid' => $data['customerid'],
+				);
+				if ($assignment_type)
+					$args['tarifftype'] = $assignment_type;
+				if ($refid)
+					$args['refid'] = $refid;
+				$aids = $this->db->GetCol('SELECT a.id FROM assignments a'
+					. (isset($assignment_type) ? ' JOIN tariffs t ON t.id = a.tariffid' : '')
+					. ' WHERE commited = 1 AND customerid = ?'
+					. (isset($refid) ? ' AND docid = ?' : '')
+					. (isset($assignment_type) ? ' AND t.type = ?' : ''),
+					array_values($args));
+				if (!empty($aids))
+					foreach ($aids as $aid)
+						if ($data['existing_assignments']['operation'] == EXISTINGASSIGNMENT_DELETE)
+							$this->DeleteAssignment($aid);
+						else
+							$this->SuspendAssignment($aid);
+				break;
+			case EXISTINGASSIGNMENT_CUT:
+				$args = array(
+					'customerid' => $data['customerid'],
+				);
+				if ($assignment_type)
+					$args['tarifftype'] = $assignment_type;
+				if ($refid)
+					$args['refid'] = $refid;
+				if (empty($data['datefrom'])) {
+					list ($year, $month, $day) = explode('/', date('Y/m/d'));
+					$args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+				} else
+					$args['datefrom'] = $data['datefrom'];
+				$args['at'] = $args['datefrom'];
+
+				// delete assignments which start in future
+				$aids = $this->db->GetCol('SELECT a.id FROM assignments a'
+					. (isset($assignment_type) ? ' JOIN tariffs t ON t.id = a.tariffid' : '')
+					. ' WHERE commited = 1 AND customerid = ?'
+					. (isset($assignment_type) ? ' AND t.type = ?' : '')
+					. (isset($refid) ? ' AND docid = ?' : '') . ' AND (a.datefrom >= ? OR at >= ?)',
+					array_values($args));
+				if (!empty($aids))
+					foreach ($aids as $aid)
+						$this->DeleteAssignment($aid);
+				unset($args['at']);
+				$args['dateto'] = $args['datefrom'];
+				$args['at'] = $args['datefrom'];
+
+				// cut assignment period end date to datefrom
+				$aids = $this->db->GetCol('SELECT a.id FROM assignments a'
+					. (isset($assignment_type) ? ' JOIN tariffs t ON t.id = a.tariffid' : '')
+					. ' WHERE commited = 1 AND customerid = ?'
+					. (isset($assignment_type) ? ' AND t.type = ?' : '')
+					. (isset($refid) ? ' AND docid = ?' : '') . ' AND a.datefrom <= ? AND (a.dateto = 0 OR a.dateto > ?) AND at < ?',
+					array_values($args));
+				if (!empty($aids))
+					foreach ($aids as $aid)
+						$this->db->Execute('UPDATE assignments SET dateto = ? WHERE id = ?',
+							array($args['datefrom'] - 1, $aid));
+
+				break;
+		}
+	}
+
+	public function SuspendAssignment($id, $suspend = TRUE) {
         if ($this->syslog) {
             $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $assign['customerid'],
+                SYSLOG::RES_ASSIGN => $assign['id'],
+                SYSLOG::RES_TARIFF => $assign['tariffid'],
+                SYSLOG::RES_LIAB => $assign['liabilityid'],
+                SYSLOG::RES_CUST => $assign['customerid'],
                 'suspend' => ($suspend ? 1 : 0)
             );
-            $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
         }
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
-    public function AddInvoice($invoice)
-    {
-        global $SYSLOG_RESOURCE_KEYS;
+	public function GetInvoiceList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed', 'page') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($order))
+			$order = '';
+		if (!isset($proforma))
+			$proforma = 0;
+		if (!isset($count))
+			$count = false;
 
+		if($order=='')
+			$order='id,asc';
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'id':
+				$sqlord = ' ORDER BY d.id';
+				break;
+			case 'cdate':
+				$sqlord = ' ORDER BY d.cdate';
+				break;
+			case 'number':
+				$sqlord = ' ORDER BY d.number';
+				break;
+			case 'value':
+				$sqlord = ' ORDER BY value';
+				break;
+			case 'count':
+				$sqlord = ' ORDER BY count';
+				break;
+			case 'name':
+				$sqlord = ' ORDER BY d.name';
+				break;
+		}
+
+		$where = '';
+
+		if($search!='' && $cat)
+		{
+			switch($cat)
+			{
+				case 'number':
+					$where = ' AND d.number = '.intval($search);
+					break;
+				case 'cdate':
+					$where = ' AND d.cdate >= '.intval($search).' AND d.cdate < '.(intval($search)+86400);
+					break;
+				case 'month':
+					$last = mktime(23,59,59, date('n', $search) + 1, 0, date('Y', $search));
+					$where = ' AND d.cdate >= '.intval($search).' AND d.cdate <= '.$last;
+					break;
+				case 'ten':
+					$where = ' AND d.ten = ' . $this->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND d.customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND UPPER(d.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'address':
+					$where = ' AND UPPER(d.address) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'value':
+					$having = ' HAVING CASE WHEN d.reference IS NULL THEN
+							SUM(a.value*a.count)
+						ELSE
+							SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+						END = '.str_replace(',','.',f_round($search)).' ';
+					break;
+			}
+		}
+
+		if($hideclosed)
+			$where .= ' AND d.closed = 0';
+
+		if (!empty($group))
+			$group = Utils::filterIntegers($group);
+
+		if ($count) {
+			return $this->db->GetOne('SELECT COUNT(id) FROM (SELECT d.id
+				FROM documents d
+				JOIN invoicecontents a ON (a.docid = d.id)
+				LEFT JOIN documents d2 ON d2.reference = d.id
+				LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+				LEFT JOIN countries ON (countries.id = d.countryid)
+				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+				LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+					) e ON (e.customerid = d.customerid)
+				WHERE e.customerid IS NULL AND '
+				. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
+					: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
+					AND customerid = d.customerid)' : '')
+				. ' GROUP BY d.id '
+				. (isset($having) ? $having : '') . ') a');
+		}
+
+		$invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,
+			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
+			CASE WHEN d.reference IS NULL THEN
+				SUM(a.value*a.count)
+			ELSE
+				SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
+			END AS value,
+			COUNT(a.docid) AS count,
+			i.sendinvoices,
+			(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
+			FROM documents d
+			JOIN invoicecontents a ON (a.docid = d.id)
+			LEFT JOIN documents d2 ON d2.reference = d.id
+			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+			LEFT JOIN countries ON (countries.id = d.countryid)
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+			SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customers c
+				JOIN customercontacts cc ON cc.customerid = c.id
+				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+			) i ON i.customerid = d.customerid
+			LEFT JOIN (
+			SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL AND '
+			. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
+				: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
+			.$where
+			.(!empty($group) ?
+				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+			SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
+						AND customerid = d.customerid)' : '')
+			.' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
+			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
+			. (isset($having) ? $having : '')
+			.$sqlord.' '.$direction
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''));
+
+		$invoicelist['order'] = $order;
+		$invoicelist['direction'] = $direction;
+
+		return $invoicelist;
+	}
+
+	public function AddInvoice($invoice)
+    {
         $currtime = time();
         $cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : $currtime;
         $sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
         $number = $invoice['invoice']['number'];
         $type = $invoice['invoice']['type'];
         if ($invoice['invoice']['numberplanid'])
-            $fullnumber = docnumber($number, $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])), $cdate);
+            $fullnumber = docnumber(array(
+            	'number' => $number,
+            	'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])),
+            	'cdate' => $cdate,
+            ));
         else
             $fullnumber = null;
 
         $division = $this->db->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM divisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
+				account, inv_header, inv_footer, inv_author, inv_cplace
+				FROM vdivisions WHERE id = ?', array($invoice['customer']['divisionid']));
+
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		if ($invoice['invoice']['recipient_address_id'] > 0) {
+			$invoice['invoice']['recipient_address_id'] = $location_manager->CopyAddress( $invoice['invoice']['recipient_address_id'] );
+		} else {
+			$invoice['invoice']['recipient_address_id'] = null;
+		}
+
+		$post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id'], POSTAL_ADDRESS);
+
+		if (empty($post_address_id)) {
+			$invoice['invoice']['post_address_id'] = null;
+		} else {
+			$invoice['invoice']['post_address_id'] = $location_manager->CopyAddress( $post_address_id );
+		}
 
         $args = array(
             'number' => $number,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
+            SYSLOG::RES_NUMPLAN => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : null,
             'type' => $type,
             'cdate' => $cdate,
             'sdate' => $sdate,
             'paytime' => $invoice['invoice']['paytime'],
             'paytype' => $invoice['invoice']['paytype'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->auth->id,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $invoice['customer']['id'],
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            SYSLOG::RES_CUST => $invoice['customer']['id'],
             'customername' => $invoice['customer']['customername'],
-            'address' => $invoice['customer']['address'],
+            'address' => ($invoice['customer']['postoffice'] && $invoice['customer']['postoffice'] != $invoice['customer']['city'] && $invoice['customer']['street']
+                ? $invoice['customer']['city'] . ', ' : '') . $invoice['customer']['address'],
             'ten' => $invoice['customer']['ten'],
             'ssn' => $invoice['customer']['ssn'],
             'zip' => $invoice['customer']['zip'],
-            'city' => $invoice['customer']['city'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['customer']['countryid'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $invoice['customer']['divisionid'],
+            'city' => $invoice['customer']['postoffice'] ? $invoice['customer']['postoffice'] : $invoice['customer']['city'],
+            SYSLOG::RES_COUNTRY => $invoice['customer']['countryid'] ? $invoice['customer']['countryid'] : null,
+            SYSLOG::RES_DIV => $invoice['customer']['divisionid'],
             'div_name' => ($division['name'] ? $division['name'] : ''),
             'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
             'div_address' => ($division['address'] ? $division['address'] : ''),
             'div_city' => ($division['city'] ? $division['city'] : ''),
             'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
             'div_ten' => ($division['ten'] ? $division['ten'] : ''),
             'div_regon' => ($division['regon'] ? $division['regon'] : ''),
             'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -540,21 +1311,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
+            'comment' => $invoice['invoice']['comment'],
+            'recipient_address_id' => $invoice['invoice']['recipient_address_id'],
+			'post_address_id' => $invoice['invoice']['post_address_id'],
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
-			cdate, sdate, paytime, paytype, userid, customerid, name, address, 
+			cdate, sdate, paytime, paytype, userid, customerid, name, address,
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+			comment, recipient_address_id, post_address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
-            unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $iid;
-            $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], 'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+            unset($args[SYSLOG::RES_USER]);
+            $args[SYSLOG::RES_DOC] = $iid;
+            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args,
+            	array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
         }
 
         $itemid = 0;
@@ -565,39 +1339,39 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $item['discount'] = str_replace(',', '.', $item['discount']);
             $item['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
             $item['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
-            $item['taxid'] = isset($item['taxid']) ? $item['taxid'] : 0;
+            $item['taxid'] = isset($item['taxid']) ? $item['taxid'] : null;
 
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+                SYSLOG::RES_DOC => $iid,
                 'itemid' => $itemid,
                 'value' => $item['valuebrutto'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+                SYSLOG::RES_TAX => $item['taxid'],
                 'prodid' => $item['prodid'],
                 'content' => $item['jm'],
                 'count' => $item['count'],
                 'pdiscount' => $item['pdiscount'],
                 'vdiscount' => $item['vdiscount'],
                 'description' => $item['name'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+                SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
             );
             $this->db->Execute('INSERT INTO invoicecontents (docid, itemid,
-				value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid) 
+				value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $invoice['customer']['id'];
-                $this->syslog->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+                $args[SYSLOG::RES_CUST] = $invoice['customer']['id'];
+                $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
             }
 
-            $this->AddBalance(array(
-                'time' => $cdate,
-                'value' => $item['valuebrutto'] * $item['count'] * -1,
-                'taxid' => $item['taxid'],
-                'customerid' => $invoice['customer']['id'],
-                'comment' => $item['name'],
-                'docid' => $iid,
-                'itemid' => $itemid
-            ));
+			if ($type != DOC_INVOICE_PRO || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment'))
+				$this->AddBalance(array(
+					'time' => $cdate,
+					'value' => $item['valuebrutto'] * $item['count'] * -1,
+					'taxid' => $item['taxid'],
+					'customerid' => $invoice['customer']['id'],
+					'comment' => $item['name'],
+					'docid' => $iid,
+					'itemid' => $itemid
+				));
         }
 
         return $iid;
@@ -605,34 +1379,37 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function InvoiceDelete($invoiceid)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $this->db->BeginTrans();
         if ($this->syslog) {
             $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id = ?', array($invoiceid));
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                SYSLOG::RES_DOC => $invoiceid,
+                SYSLOG::RES_CUST => $customerid,
             );
-            $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
             $cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid = ?', array($invoiceid));
             foreach ($cashids as $cashid) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $itemids = $this->db->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($invoiceid));
             foreach ($itemids as $itemid) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                     'itemid' => $itemid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+                $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
             }
-        }
+		}
+
+		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$document_manager->DeleteDocumentAddresses($invoiceid);
+
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
         $this->db->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
         $this->db->Execute('DELETE FROM cash WHERE docid = ?', array($invoiceid));
@@ -641,18 +1418,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($itemid) {
             $this->db->BeginTrans();
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents
 					JOIN invoicecontents ON docid = id WHERE id = ?', array($invoiceid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                     'itemid' => $itemid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+                $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM invoicecontents WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
 
@@ -661,21 +1437,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
                 if ($this->syslog) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DOC => $invoiceid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 }
             }
 
             if ($this->syslog) {
                 $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
             $this->db->CommitTrans();
@@ -687,28 +1463,42 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $PAYTYPES, $LMS;
 
-        if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
+        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
-				d.closed, d.reference, d.reason, d.divisionid,
-				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
+				d.closed, d.cancelled, d.published, d.comment AS comment, d.reference, d.reason, d.divisionid,
+				(SELECT name FROM vusers WHERE id = d.userid) AS user, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
-				d.div_city AS division_city, d.div_countryid AS division_countryid, 
+				d.div_city AS division_city, d.div_countryid AS division_countryid,
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
+				d.recipient_address_id, d.post_address_id,
+				a.city as rec_city, a.zip as rec_zip, a.postoffice AS rec_postoffice,
+				a.name as rec_name, a.address AS rec_address,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
-				c.post_street, c.post_building, c.post_apartment,
-				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+				cp.name AS post_country
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE))) {
+				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
+				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
+				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
 
-			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
+        	$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
 				WHERE customerid = ? AND (type & ?) = ?',
 				array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
 					CONTACT_BANKACCOUNT | CONTACT_INVOICES));
@@ -732,14 +1522,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
             }
 
-            if ($result['content'] = $this->db->GetAll('SELECT invoicecontents.value AS value, 
-						itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, 
-						prodid, content, count, invoicecontents.description AS description, 
-						tariffid, itemid, pdiscount, vdiscount 
-						FROM invoicecontents 
-						LEFT JOIN taxes ON taxid = taxes.id 
-						WHERE docid=? 
-						ORDER BY itemid', array($invoiceid))
+            if ($result['content'] = $this->db->GetAllByKey('SELECT invoicecontents.value AS value,
+						itemid, taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
+								CASE WHEN taxes.taxed = 0 THEN -1 ELSE taxes.value END
+							) END) AS taxvalue, taxes.label AS taxlabel,
+						prodid, content, count, invoicecontents.description AS description,
+						tariffid, itemid, pdiscount, vdiscount
+						FROM invoicecontents
+						LEFT JOIN taxes ON taxid = taxes.id
+						WHERE docid=?
+						ORDER BY itemid', 'itemid', array($invoiceid))
             )
                 foreach ($result['content'] as $idx => $row) {
                     if (isset($result['invoice'])) {
@@ -747,22 +1539,30 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['count'] += $result['invoice']['content'][$idx]['count'];
                     }
 
-                    $result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100), 2);
+					if ($row['taxvalue'] < 0) {
+						$rounded_taxvalue = round($row['taxvalue']);
+						$taxvalue = 0;
+					} else
+						$taxvalue = $rounded_taxvalue = $row['taxvalue'];
+					if (isset($result['invoice']) && empty($row['count']))
+						$result['content'][$idx]['basevalue'] = $result['invoice']['content'][$idx]['basevalue'];
+					else
+	                    $result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $taxvalue) * 100), 2);
                     $result['content'][$idx]['total'] = round($row['value'] * $row['count'], 2);
-                    $result['content'][$idx]['totalbase'] = round($result['content'][$idx]['total'] / (100 + $row['taxvalue']) * 100, 2);
+                    $result['content'][$idx]['totalbase'] = round($result['content'][$idx]['total'] / (100 + $taxvalue) * 100, 2);
                     $result['content'][$idx]['totaltax'] = round($result['content'][$idx]['total'] - $result['content'][$idx]['totalbase'], 2);
                     $result['content'][$idx]['value'] = $row['value'];
                     $result['content'][$idx]['count'] = $row['count'];
 
-                    if (isset($result['taxest'][$row['taxvalue']])) {
-                        $result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
-                        $result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
-                        $result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+                    if (isset($result['taxest'][$rounded_taxvalue])) {
+                        $result['taxest'][$rounded_taxvalue]['base'] += $result['content'][$idx]['totalbase'];
+                        $result['taxest'][$rounded_taxvalue]['total'] += $result['content'][$idx]['total'];
+                        $result['taxest'][$rounded_taxvalue]['tax'] += $result['content'][$idx]['totaltax'];
                     } else {
-                        $result['taxest'][$row['taxvalue']]['base'] = $result['content'][$idx]['totalbase'];
-                        $result['taxest'][$row['taxvalue']]['total'] = $result['content'][$idx]['total'];
-                        $result['taxest'][$row['taxvalue']]['tax'] = $result['content'][$idx]['totaltax'];
-                        $result['taxest'][$row['taxvalue']]['taxlabel'] = $row['taxlabel'];
+                        $result['taxest'][$rounded_taxvalue]['base'] = $result['content'][$idx]['totalbase'];
+                        $result['taxest'][$rounded_taxvalue]['total'] = $result['content'][$idx]['total'];
+                        $result['taxest'][$rounded_taxvalue]['tax'] = $result['content'][$idx]['totaltax'];
+                        $result['taxest'][$rounded_taxvalue]['taxlabel'] = $row['taxlabel'];
                     }
 
                     $result['totalbase'] += $result['content'][$idx]['totalbase'];
@@ -770,7 +1570,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['total'] += $result['content'][$idx]['total'];
 
                     // for backward compatybility
-                    $result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
+                    $result['taxest'][$rounded_taxvalue]['taxvalue'] = $taxvalue;
                     $result['content'][$idx]['pkwiu'] = $row['prodid'];
 
                     $result['pdiscount'] += $row['pdiscount'];
@@ -821,26 +1621,170 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             return FALSE;
     }
 
-    public function GetNoteContent($id)
+	public function GetNoteList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($order))
+			$order = '';
+		if (!isset($count))
+			$count = false;
+
+		if($order=='')
+			$order='id,asc';
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'id':
+				$sqlord = ' ORDER BY d.id';
+				break;
+			case 'cdate':
+				$sqlord = ' ORDER BY d.cdate';
+				break;
+			case 'number':
+				$sqlord = ' ORDER BY number';
+				break;
+			case 'value':
+				$sqlord = ' ORDER BY value';
+				break;
+			case 'count':
+				$sqlord = ' ORDER BY count';
+				break;
+			case 'name':
+				$sqlord = ' ORDER BY name';
+				break;
+		}
+
+		$where = '';
+
+		if($search!='' && $cat)
+		{
+			switch($cat)
+			{
+				case 'number':
+					$where = ' AND number = '.intval($search);
+					break;
+				case 'cdate':
+					$where = ' AND cdate >= '.intval($search).' AND cdate < '.(intval($search)+86400);
+					break;
+				case 'month':
+					$last = mktime(23,59,59, date('n',$search) + 1, 0, date('Y', $search));
+					$where = ' AND cdate >= '.intval($search).' AND cdate <= '.$last;
+					break;
+				case 'ten':
+					$where = ' AND ten = ' . $this->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND d.customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND UPPER(d.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'address':
+					$where = ' AND UPPER(address) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+					break;
+				case 'value':
+					$having = ' HAVING SUM(n.value) = '.str_replace(',','.',f_round($search)).' ';
+					break;
+			}
+		}
+
+		if($hideclosed)
+			$where .= ' AND closed = 0';
+
+		if ($count) {
+			return $this->db->GetOne('SELECT COUNT(*) FROM (SELECT d.id
+			FROM documents d
+			JOIN debitnotecontents n ON (n.docid = d.id)
+			LEFT JOIN countries c ON (c.id = d.countryid)
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL AND type = '.DOC_DNOTE
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+						SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+						AND customerid = d.customerid)' : '')
+				.' GROUP BY d.id, number, cdate, d.customerid,
+			d.name, address, zip, city, d.template, closed, published, c.name '
+				.(isset($having) ? $having : '') . ') a');
+		}
+
+		$result = $this->db->GetAll('SELECT d.id AS id, number, cdate, d.template, closed, published, cancelled,
+			d.customerid, d.name, address, zip, city, c.name AS country,
+			SUM(n.value) AS value, COUNT(n.docid) AS count
+			FROM documents d
+			JOIN debitnotecontents n ON (n.docid = d.id)
+			LEFT JOIN countries c ON (c.id = d.countryid)
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL AND type = '.DOC_DNOTE
+			.$where
+			.(!empty($group) ?
+				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+			            AND customerid = d.customerid)' : '')
+			.' GROUP BY d.id, number, cdate, d.customerid,
+			d.name, address, zip, city, d.template, closed, published, c.name '
+			.(isset($having) ? $having : '')
+			.$sqlord.' '.$direction
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''));
+
+		if (empty($result))
+			$result = array();
+
+		$result['order'] = $order;
+		$result['direction'] = $direction;
+
+		return $result;
+	}
+
+	public function GetNoteContent($id)
     {
+		global $LMS;
+
         if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
-				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.divisionid, d.paytime, 
-				(SELECT name FROM users WHERE id = d.userid) AS user, n.template,
+				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.published, d.divisionid, d.paytime,
+				(SELECT name FROM vusers WHERE id = d.userid) AS user, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
-				d.div_city AS division_city, d.div_countryid AS division_countryid, 
+				d.div_city AS division_city, d.div_countryid AS division_countryid,
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
+				d.post_address_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
-				c.post_street, c.post_building, c.post_apartment,
-				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+				cp.name AS post_country
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				LEFT JOIN vaddresses a2 ON a2.id = d.post_address_id
+				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
 
 			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
@@ -861,9 +1805,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             if ($result['content'] = $this->db->GetAll('SELECT
-				value, itemid, description 
-				FROM debitnotecontents 
-				WHERE docid=? 
+				value, itemid, description
+				FROM debitnotecontents
+				WHERE docid=?
 				ORDER BY itemid', array($id))
             )
                 foreach ($result['content'] as $idx => $row) {
@@ -900,53 +1844,70 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function TariffAdd($tariff)
     {
-        global $SYSLOG_RESOURCE_KEYS;
+		global $ACCOUNTTYPES;
+
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
             'value' => $tariff['value'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
+            SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
+            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
+            'datefrom' => $tariff['from'] ? $tariff['from'] : 0,
+            'dateto' => $tariff['to'] ? $tariff['to'] : 0,
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
             'upceil' => $tariff['upceil'],
+            'up_burst_time' => $tariff['up_burst_time'],
+			'up_burst_threshold' => $tariff['up_burst_threshold'],
+			'up_burst_limit' => $tariff['up_burst_limit'],
             'downceil' => $tariff['downceil'],
+			'down_burst_time' => $tariff['down_burst_time'],
+			'down_burst_threshold' => $tariff['down_burst_threshold'],
+			'down_burst_limit' => $tariff['down_burst_limit'],
             'climit' => $tariff['climit'],
             'plimit' => $tariff['plimit'],
             'uprate_n' => $tariff['uprate_n'],
             'downrate_n' => $tariff['downrate_n'],
             'upceil_n' => $tariff['upceil_n'],
+			'up_burst_time_n' => $tariff['up_burst_time_n'],
+			'up_burst_threshold_n' => $tariff['up_burst_threshold_n'],
+			'up_burst_limit_n' => $tariff['up_burst_limit_n'],
             'downceil_n' => $tariff['downceil_n'],
+			'down_burst_time_n' => $tariff['down_burst_time_n'],
+			'down_burst_threshold_n' => $tariff['down_burst_threshold_n'],
+			'down_burst_limit_n' => $tariff['down_burst_limit_n'],
             'climit_n' => $tariff['climit_n'],
             'plimit_n' => $tariff['plimit_n'],
             'dlimit' => $tariff['dlimit'],
             'type' => $tariff['type'],
-            'sh_limit' => $tariff['sh_limit'],
-            'www_limit' => $tariff['www_limit'],
-            'mail_limit' => $tariff['mail_limit'],
-            'sql_limit' => $tariff['sql_limit'],
-            'ftp_limit' => $tariff['ftp_limit'],
-            'quota_sh_limit' => $tariff['quota_sh_limit'],
-            'quota_www_limit' => $tariff['quota_www_limit'],
-            'quota_mail_limit' => $tariff['quota_mail_limit'],
-            'quota_sql_limit' => $tariff['quota_sql_limit'],
-            'quota_ftp_limit' => $tariff['quota_ftp_limit'],
             'domain_limit' => $tariff['domain_limit'],
             'alias_limit' => $tariff['alias_limit'],
+			'authtype' => $tariff['authtype'],
         );
+        $args2 = array();
+        foreach ($ACCOUNTTYPES as $typeidx => $type) {
+            $args2[$type['alias'] . '_limit'] = $tariff[$type['alias'] . '_limit'];
+            $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
+        }
         $result = $this->db->Execute('INSERT INTO tariffs (name, description, value,
-				period, taxid, prodid, uprate, downrate, upceil, downceil, climit,
-				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
-				plimit_n, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
-				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
-				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
+				period, taxid, numberplanid, datefrom, dateto, prodid, uprate, downrate,
+				upceil, up_burst_time, up_burst_threshold, up_burst_limit,
+				downceil, down_burst_time, down_burst_threshold, down_burst_limit,
+				climit, plimit, uprate_n, downrate_n,
+				upceil_n, up_burst_time_n, up_burst_threshold_n, up_burst_limit_n,
+				downceil_n, down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
+				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, '
+				. implode(', ', array_keys($args2)) . ')
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+					?,?,?,?,?,?,?,?,?,?,?,?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
+				array_values(array_merge($args, $args2)));
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                $args[SYSLOG::RES_TARIFF] = $id;
+                $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         } else
@@ -955,73 +1916,94 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function TariffUpdate($tariff)
     {
-        global $SYSLOG_RESOURCE_KEYS;
+		global $ACCOUNTTYPES;
+
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
             'value' => $tariff['value'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
+            SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
+            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
+            'datefrom' => $tariff['from'],
+            'dateto' => $tariff['to'],
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
             'upceil' => $tariff['upceil'],
+            'up_burst_time' => $tariff['up_burst_time'],
+			'up_burst_threshold' => $tariff['up_burst_threshold'],
+			'up_burst_limit' => $tariff['up_burst_limit'],
             'downceil' => $tariff['downceil'],
+			'down_burst_time' => $tariff['down_burst_time'],
+			'down_burst_threshold' => $tariff['down_burst_threshold'],
+			'down_burst_limit' => $tariff['down_burst_limit'],
             'climit' => $tariff['climit'],
             'plimit' => $tariff['plimit'],
             'uprate_n' => $tariff['uprate_n'],
             'downrate_n' => $tariff['downrate_n'],
             'upceil_n' => $tariff['upceil_n'],
+			'up_burst_time_n' => $tariff['up_burst_time_n'],
+			'up_burst_threshold_n' => $tariff['up_burst_threshold_n'],
+			'up_burst_limit_n' => $tariff['up_burst_limit_n'],
             'downceil_n' => $tariff['downceil_n'],
+			'down_burst_time_n' => $tariff['down_burst_time_n'],
+			'down_burst_threshold_n' => $tariff['down_burst_threshold_n'],
+			'down_burst_limit_n' => $tariff['down_burst_limit_n'],
             'climit_n' => $tariff['climit_n'],
             'plimit_n' => $tariff['plimit_n'],
             'dlimit' => $tariff['dlimit'],
-            'sh_limit' => $tariff['sh_limit'],
-            'www_limit' => $tariff['www_limit'],
-            'mail_limit' => $tariff['mail_limit'],
-            'sql_limit' => $tariff['sql_limit'],
-            'ftp_limit' => $tariff['ftp_limit'],
-            'quota_sh_limit' => $tariff['quota_sh_limit'],
-            'quota_www_limit' => $tariff['quota_www_limit'],
-            'quota_mail_limit' => $tariff['quota_mail_limit'],
-            'quota_sql_limit' => $tariff['quota_sql_limit'],
-            'quota_ftp_limit' => $tariff['quota_ftp_limit'],
             'domain_limit' => $tariff['domain_limit'],
             'alias_limit' => $tariff['alias_limit'],
             'type' => $tariff['type'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariff['id']
+            'voip_tariff_id' => (!empty($tariff['voip_pricelist'])) ? $tariff['voip_pricelist'] : NULL,
+            'voip_tariff_rule_id' => (!empty($tariff['voip_tariffrule'])) ? $tariff['voip_tariffrule'] : NULL,
+			'authtype' => $tariff['authtype'],
         );
-        $res = $this->db->Execute('UPDATE tariffs SET name=?, description=?, value=?,
-				period=?, taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
-				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?,
-				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
-				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
-				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?,
-				domain_limit=?, alias_limit=?, type=? WHERE id=?', array_values($args));
+        $args2 = array();
+        foreach ($ACCOUNTTYPES as $typeidx => $type) {
+            $args2[$type['alias'] . '_limit'] = $tariff[$type['alias'] . '_limit'];
+            $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
+        }
+        $fields = array_keys($args2);
+        $args = array_merge($args, $args2);
+        $args[SYSLOG::RES_TARIFF] = $tariff['id'];
+        $res = $this->db->Execute('UPDATE tariffs SET name = ?, description = ?, value = ?,
+            period = ?, taxid = ?, numberplanid = ?, datefrom = ?, dateto = ?, prodid = ?,
+            uprate = ?, downrate = ?,
+            upceil = ?, up_burst_time = ?, up_burst_threshold = ?, up_burst_limit = ?,
+            downceil = ?, down_burst_time = ?, down_burst_threshold = ?, down_burst_limit = ?,
+            climit = ?, plimit = ?,
+            uprate_n = ?, downrate_n = ?,
+            upceil_n = ?, up_burst_time_n = ?, up_burst_threshold_n = ?, up_burst_limit_n = ?,
+            downceil_n = ?, down_burst_time_n = ?, down_burst_threshold_n = ?, down_burst_limit_n = ?,
+            climit_n = ?, plimit_n = ?,
+            dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, 
+            authtype = ?, '
+            . implode(' = ?, ', $fields) . ' = ? WHERE id=?', array_values($args));
         if ($res && $this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+            $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);
         return $res;
     }
 
     public function TariffDelete($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog)
             $assigns = $this->db->GetAll('SELECT promotionid, a.id, promotionschemaid FROM promotionassignments a
 				JOIN promotionschemas s ON s.id = a.promotionschemaid
 				WHERE a.tariffid = ?', array($id));
         $res = $this->db->Execute('DELETE FROM tariffs WHERE id=?', array($id));
         if ($res && $this->syslog) {
-            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+            $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_DELETE, array(SYSLOG::RES_TARIFF => $id));
             if (!empty($assigns))
                 foreach ($assigns as $assign) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN] => $assign['id'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $assign['promotionschemaid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $assign['promotionid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $id
+                        SYSLOG::RES_PROMOASSIGN => $assign['id'],
+                        SYSLOG::RES_PROMOSCHEMA => $assign['promotionschemaid'],
+                        SYSLOG::RES_PROMO => $assign['promotionid'],
+                        SYSLOG::RES_TARIFF => $id
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
                 }
         }
         return $res;
@@ -1044,7 +2026,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . ($network ? ', COUNT(vnodes.id) AS nodescount ' : '')
                 . 'FROM assignments, customerview c '
                 . ($network ? 'LEFT JOIN vnodes ON (c.id = vnodes.ownerid) ' : '')
-                . 'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
+                . 'WHERE c.id = customerid AND commited = 1 AND deleted = 0 AND tariffid = ? '
                 . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
                         . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                 . 'GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
@@ -1065,14 +2047,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
-			WHERE t.id = ? AND (
+			WHERE t.id = ? AND a.commited = 1 AND (
 			            a.suspended = 1
 			            OR a.datefrom > ?NOW?
 			            OR (a.dateto <= ?NOW? AND a.dateto != 0)
 			            OR EXISTS (
 			                    SELECT 1 FROM assignments b
 					    WHERE b.customerid = a.customerid
-						    AND liabilityid = 0 AND tariffid = 0
+						    AND liabilityid IS NULL AND tariffid IS NULL
 						    AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 				    )
 			)', array($id));
@@ -1093,10 +2075,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				 END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
-			WHERE tariffid = ?', array($id));
+			WHERE tariffid = ? AND commited = 1', array($id));
 
         // count of all customers with that tariff
-        $result['customerscount'] = sizeof($result['customers']);
+        $result['customerscount'] = empty($result['customers']) ? 0 : count($result['customers']);
         // count of all assignments
         $result['count'] = $all['count'];
         // count of 'active' assignments
@@ -1108,15 +2090,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $result;
     }
 
-    public function GetTariffs()
+    public function GetTariffs($forced_id = null)
     {
-        return $this->db->GetAll('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
-				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
-				taxes.label AS tax, t.period
+        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid, t.authtype,
+				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
+				prodid, downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
+				taxes.label AS tax, t.period, t.type AS tarifftype, ' . $this->db->GroupConcat('ta.tarifftagid') . ' AS tags
 				FROM tariffs t
+				LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
 				LEFT JOIN taxes ON t.taxid = taxes.id
-				WHERE t.disabled = 0
-				ORDER BY t.name, t.value DESC');
+				WHERE t.disabled = 0' . (empty($forced_id) ? '' : ' OR t.id = ' . intval($forced_id)) . '
+				GROUP BY t.id, t.name, t.value, uprate, taxid, t.authtype, datefrom, dateto, prodid, downrate, upceil, downceil, climit, plimit,
+					taxes.value, taxes.label, t.period, t.type
+				ORDER BY t.name, t.value DESC', 'id');
     }
 
     public function TariffSet($id)
@@ -1132,18 +2118,52 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return ($this->db->GetOne('SELECT id FROM tariffs WHERE id=?', array($id)) ? TRUE : FALSE);
     }
 
+	public function ReceiptDelete($docid) {
+		$this->db->BeginTrans();
+		if ($this->syslog) {
+			$customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
+			$itemids = $this->db->GetCol('SELECT itemid FROM receiptcontents WHERE docid=?', array($docid));
+			foreach ($itemids as $itemid) {
+				$args = array(
+					SYSLOG::RES_DOC => $docid,
+					SYSLOG::RES_CUST => $customerid,
+					'itemid' => $itemid,
+				);
+				$this->syslog->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
+			}
+			$args = array(
+				SYSLOG::RES_DOC => $docid,
+				SYSLOG::RES_CUST => $customerid,
+			);
+			$this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
+			$cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid=?', array($docid));
+			foreach ($cashids as $itemid) {
+				$args = array(
+					SYSLOG::RES_CASH => $itemid,
+					SYSLOG::RES_DOC => $docid,
+					SYSLOG::RES_CUST => $customerid,
+				);
+				$this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+			}
+		}
+		$this->db->Execute('DELETE FROM receiptcontents WHERE docid=?', array($docid));
+		$this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
+		$this->db->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
+		$this->db->CommitTrans();
+	}
+
     public function ReceiptContentDelete($docid, $itemid = 0)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($itemid) {
+        	$this->db->BeginTrans();
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                     'itemid' => $itemid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+                $this->syslog->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM receiptcontents WHERE docid=? AND itemid=?', array($docid, $itemid));
 
@@ -1151,69 +2171,81 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // if that was the last item of invoice contents
                 if ($this->syslog) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 }
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
             }
             if ($this->syslog) {
                 $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
-        } else {
-            if ($this->syslog) {
-                $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
-                $itemids = $this->db->GetCol('SELECT itemid FROM receiptcontents WHERE docid=?', array($docid));
-                foreach ($itemids as $itemid) {
-                    $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-                        'itemid' => $itemid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
-                }
-                $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-                );
-                $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
-                $cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid=?', array($docid));
-                foreach ($cashids as $itemid) {
-                    $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $itemid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
-                }
-            }
-            $this->db->Execute('DELETE FROM receiptcontents WHERE docid=?', array($docid));
-            $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
-            $this->db->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
-        }
+            $this->db->CommitTrans();
+        } else
+        	$this->ReceiptDelete($docid);
     }
 
-    public function DebitNoteContentDelete($docid, $itemid = 0)
+	public function DebitNoteDelete($noteid) {
+		$this->db->BeginTrans();
+		if ($this->syslog) {
+			$customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id = ?', array($noteid));
+			$args = array(
+				SYSLOG::RES_DOC => $noteid,
+				SYSLOG::RES_CUST => $customerid,
+			);
+			$this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
+			$dnoteitems = $this->db->GetCol('SELECT id FROM debitnotecontents WHERE docid = ?',
+				array($noteid));
+			foreach ($dnoteitems as $item) {
+				$args = array(
+					SYSLOG::RES_DNOTECONT => $item,
+					SYSLOG::RES_DOC => $noteid,
+					SYSLOG::RES_CUST => $customerid,
+				);
+				$this->syslog->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
+			}
+			$cashitems = $this->db->GetCol('SELECT id FROM cash WHERE docid = ?', array($noteid));
+			foreach ($cashitems as $item) {
+				$args = array(
+					SYSLOG::RES_CASH => $item,
+					SYSLOG::RES_DOC => $noteid,
+					SYSLOG::RES_CUST => $customerid,
+				);
+				$this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+			}
+		}
+
+		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$document_manager->DeleteDocumentAddresses($noteid);
+
+		$this->db->Execute('DELETE FROM documents WHERE id = ?', array($noteid));
+		$this->db->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($noteid));
+		$this->db->Execute('DELETE FROM cash WHERE docid = ?', array($noteid));
+		$this->db->CommitTrans();
+
+	}
+
+	public function DebitNoteContentDelete($docid, $itemid = 0)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($itemid) {
+        	$this->db->BeginTrans();
             if ($this->syslog) {
                 list ($dnotecontid, $customerid) = array_values($this->db->GetRow('SELECT dn.id, customerid FROM debitnotecontents dn
 					JOIN documents d ON d.id = dn.docid WHERE docid=? AND itemid=?', array($docid, $itemid)));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $dnotecontid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DNOTECONT => $dnotecontid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM debitnotecontents WHERE docid=? AND itemid=?', array($docid, $itemid));
 
@@ -1221,98 +2253,218 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // if that was the last item of debit note contents
                 if ($this->syslog) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 }
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
             }
             if ($this->syslog) {
                 $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
-        } else {
-            if ($this->syslog) {
-                $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
-                $dnotecontids = $this->db->GetCol('SELECT id FROM debitnotecontents WHERE docid=?', array($docid));
-                foreach ($dnotecontids as $itemid) {
-                    $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $itemid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
-                }
-                $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-                );
-                $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
-                $cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid=?', array($docid));
-                foreach ($cashids as $itemid) {
-                    $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $itemid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
-                    );
-                    $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
-                }
-            }
-            $this->db->Execute('DELETE FROM debitnotecontents WHERE docid=?', array($docid));
-            $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
-            $this->db->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
-        }
+            $this->db->CommitTrans();
+        } else
+        	$this->DebitNoteDelete($docid);
     }
 
-    public function AddBalance($addbalance)
+	public function GetBalanceList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat', 'group', 'exclude') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($count))
+			$count = false;
+
+		$where = '';
+
+		if($search && $cat)
+		{
+			switch($cat)
+			{
+				case 'value':
+					$val = intval($search) > 0 ? intval($search) : intval($search)*-1;
+					$where = ' AND ABS(cash.value) = '.$val;
+					break;
+				case 'number':
+					$where = ' AND documents.number = '.intval($search);
+					break;
+				case 'cdate':
+					$where = ' AND cash.time >= '.intval($search).' AND cash.time < '.(intval($search)+86400);
+					break;
+				case 'ten':
+					$where = ' AND c.ten = ' . $this->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND cash.customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND ' . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' ?LIKE? ' . $this->db->Escape("%$search%");
+					break;
+				case 'address':
+					$where = ' AND c.address ?LIKE? ' . $this->db->Escape("%$search%");
+					break;
+				case 'comment':
+					$where = ' AND cash.comment ?LIKE? ' . $this->db->Escape("%$search%");
+					break;
+				case 'cashimport':
+					$where = ' AND cash.importid IN (SELECT i.id FROM cashimport i JOIN sourcefiles f ON f.id = i.sourcefileid WHERE f.name = ' . $this->db->Escape("$search") . ')';
+					break;
+			}
+		}
+		elseif($cat)
+		{
+			switch($cat)
+			{
+				case 'documented': $where = ' AND cash.docid IS NOT NULL'; break;
+				case 'notdocumented': $where = ' AND cash.docid IS NULL'; break;
+			}
+		}
+
+		if($from)
+			$where .= ' AND cash.time >= '.intval($from);
+		if($to)
+			$where .= ' AND cash.time <= '.intval($to);
+
+		if ($count) {
+			$summary = $this->db->GetRow('SELECT COUNT(cash.id) AS total,
+					SUM(CASE WHEN cash.customerid IS NOT NULL AND cash.type = 0 THEN -value ELSE 0 END) AS liability,
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN value ELSE 0 END) AS income, 
+					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -value ELSE 0 END) AS expense 
+				FROM cash
+				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN (
+					SELECT DISTINCT a.customerid
+					FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = cash.customerid)
+				WHERE e.customerid IS NULL'
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					AND customerid = cash.customerid)' : ''));
+			if (empty($summary))
+				return array('total' => 0, 'liability' => 0, 'income' => 0, 'expense' => 0, 'after' => 0);
+
+			return $summary;
+		}
+
+		if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
+				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
+				documents.type AS doctype, documents.closed AS closed,
+				documents.published, '
+			 . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
+				FROM cash
+				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN (
+					SELECT DISTINCT a.customerid
+					FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = cash.customerid)
+				WHERE e.customerid IS NULL'
+			.$where
+			.(!empty($group) ?
+				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					AND customerid = cash.customerid)' : '')
+			.' ORDER BY time, cash.id'
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''))) {
+			$userlist = $this->db->GetAllByKey('SELECT id, name FROM vusers','id');
+
+			$after = $this->db->GetOne('SELECT SUM(value) FROM (
+				SELECT (CASE WHEN cash.customerid IS NULL OR cash.type <> 0 THEN value ELSE 0 END) AS value
+				FROM cash
+				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN documents ON (documents.id = docid)
+				LEFT JOIN (
+					SELECT DISTINCT a.customerid
+					FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user()
+				) e ON (e.customerid = cash.customerid)
+				WHERE e.customerid IS NULL'
+				.$where
+				.(!empty($group) ?
+					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
+					SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
+					AND customerid = cash.customerid)' : '')
+				.' ORDER BY time, cash.id '
+				. (isset($offset) ? ' LIMIT ' . $offset : '')
+				. ') a'
+			);
+
+			foreach ($balancelist as &$row) {
+				$row['user'] = isset($userlist[$row['userid']]['name']) ? $userlist[$row['userid']]['name'] : '';
+				$row['before'] = $after;
+
+				if ($row['customerid'] && $row['type'] == 0) {
+					// customer covenant
+					$row['after'] = $row['before'];
+					$row['covenant'] = true;
+				} else {
+					$row['after'] = $row['before'] + $row['value'];
+				}
+
+				$after = $row['after'];
+			}
+			unset($row);
+
+			return $balancelist;
+		}
+	}
+
+	public function AddBalance($addbalance)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($addbalance['userid']) ? $addbalance['userid'] : $this->auth->id,
+            SYSLOG::RES_USER => isset($addbalance['userid']) && !empty($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
             'type' => isset($addbalance['type']) ? $addbalance['type'] : 0,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $addbalance['customerid'],
+            SYSLOG::RES_TAX => isset($addbalance['taxid']) && !empty($addbalance['taxid']) ? $addbalance['taxid'] : null,
+            SYSLOG::RES_CUST => $addbalance['customerid'],
             'comment' => $addbalance['comment'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => isset($addbalance['docid']) ? $addbalance['docid'] : 0,
+            SYSLOG::RES_DOC => isset($addbalance['docid']) && !empty($addbalance['docid']) ? $addbalance['docid'] : null,
             'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => !empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,
+            SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
+            SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, type, taxid,
 			customerid, comment, docid, itemid, importid, sourceid)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         if ($res && $this->syslog) {
-            unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH]] = $this->db->GetLastInsertID('cash');
-            $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]));
+            unset($args[SYSLOG::RES_USER]);
+            $args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
+            $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
         }
         return $res;
     }
 
     public function DelBalance($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
-
-        $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid
+        $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid,
+						(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
+					LEFT JOIN documents d2 ON d2.reference = documents.id
 					WHERE cash.id = ?', array($id));
 
-        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_CNOTE)
-            $this->InvoiceContentDelete($row['docid'], $row['itemid']);
-        elseif ($row['doctype'] == DOC_RECEIPT)
+        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO || $row['doctype'] == DOC_CNOTE) {
+			if (!$row['referenced'])
+        		$this->InvoiceContentDelete($row['docid'], $row['itemid']);
+		} elseif ($row['doctype'] == DOC_RECEIPT)
             $this->ReceiptContentDelete($row['docid'], $row['itemid']);
         elseif ($row['doctype'] == DOC_DNOTE)
             $this->DebitNoteContentDelete($row['docid'], $row['itemid']);
@@ -1320,25 +2472,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
             if ($this->syslog) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $id,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $row['customerid'],
+                    SYSLOG::RES_CASH => $id,
+                    SYSLOG::RES_CUST => $row['customerid'],
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             if ($row['importid']) {
                 if ($this->syslog) {
                     $cashimport = $this->db->GetRow('SELECT customerid, sourceid, sourcefileid FROM cashimport WHERE id = ?', array($row['importid']));
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $row['importid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cashimport['customerid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $cashimport['sourceid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $cashimport['sourcefileid'],
+                        SYSLOG::RES_CASHIMPORT => $row['importid'],
+                        SYSLOG::RES_CUST => $cashimport['customerid'],
+                        SYSLOG::RES_CASHSOURCE => $cashimport['sourceid'],
+                        SYSLOG::RES_SOURCEFILE => $cashimport['sourcefileid'],
                         'closed' => 0,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+                    $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
                 }
                 $this->db->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
             }
@@ -1373,7 +2522,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $paymentlist[$idx] = $row;
             }
 
-        $paymentlist['total'] = sizeof($paymentlist);
+        $paymentlist['total'] = empty($paymentlist) ? 0 : count($paymentlist);
 
         return $paymentlist;
     }
@@ -1422,7 +2571,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function PaymentAdd($paymentdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $paymentdata['name'],
             'creditor' => $paymentdata['creditor'],
@@ -1435,8 +2583,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			VALUES (?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('payments');
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]));
+                $args[SYSLOG::RES_PAYMENT] = $id;
+                $this->syslog->AddMessage(SYSLOG::RES_PAYMENT, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         } else
@@ -1445,17 +2593,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function PaymentDelete($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog) {
-            $args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT] => $id);
-            $this->syslog->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+            $args = array(SYSLOG::RES_PAYMENT => $id);
+            $this->syslog->AddMessage(SYSLOG::RES_PAYMENT, SYSLOG::OPER_DELETE, $args);
         }
         return $this->db->Execute('DELETE FROM payments WHERE id=?', array($id));
     }
 
     public function PaymentUpdate($paymentdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $paymentdata['name'],
             'creditor' => $paymentdata['creditor'],
@@ -1463,48 +2609,58 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'value' => $paymentdata['value'],
             'period' => $paymentdata['period'],
             'at' => $paymentdata['at'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT] => $paymentdata['id'],
+            SYSLOG::RES_PAYMENT => $paymentdata['id'],
         );
         $res = $this->db->Execute('UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?', array_values($args));
         if ($res && $this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]));
+            $this->syslog->AddMessage(SYSLOG::RES_PAYMENT, SYSLOG::OPER_UPDATE, $args);
         return $res;
     }
 
-    public function GetHostingLimits($customerid)
-    {
-        $result = array('alias_limit' => 0,
-            'domain_limit' => 0,
-            'sh_limit' => 0,
-            'www_limit' => 0,
-            'ftp_limit' => 0,
-            'mail_limit' => 0,
-            'sql_limit' => 0,
-            'quota_sh_limit' => 0,
-            'quota_www_limit' => 0,
-            'quota_ftp_limit' => 0,
-            'quota_mail_limit' => 0,
-            'quota_sql_limit' => 0,
-        );
+	public function GetHostingLimits($customerid) {
+		global $ACCOUNTTYPES;
 
-        if ($limits = $this->db->GetAll('SELECT alias_limit, domain_limit, sh_limit,
-			www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
+		$result = array(
+			'alias_limit' => 0,
+			'domain_limit' => 0,
+			'count' => array(),
+			'quota' => array(),
+		);
+		foreach ($ACCOUNTTYPES as $typeidx => $type) {
+			$result['count'][$typeidx] = 0;
+			$result['quota'][$typeidx] = 0;
+		}
+
+		if ($limits = $this->db->GetAll('SELECT alias_limit, domain_limit,
+			sh_limit, www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
 			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
-	                FROM tariffs WHERE id IN (SELECT tariffid FROM assignments
-				WHERE customerid = ? AND tariffid != 0
+			FROM tariffs WHERE type <> ? AND type <> ? AND type <> ? AND id IN (SELECT tariffid FROM assignments
+			WHERE customerid = ? AND tariffid IS NOT NULL
+				AND commited = 1
 				AND (dateto > ?NOW? OR dateto = 0)
-				AND (datefrom < ?NOW? OR datefrom = 0))', array($customerid))) {
-            foreach ($limits as $row)
-                foreach ($row as $idx => $val)
-                    if ($val === NULL || $result[$idx] === NULL) {
-                        $result[$idx] = NULL; // no limit
-                    } else {
-                        $result[$idx] += $val;
-                    }
-        }
+				AND (datefrom < ?NOW? OR datefrom = 0))', array(SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV, $customerid))) {
+			foreach ($limits as $row) {
+				foreach ($row as $idx => $val)
+					if ($idx == 'alias_limit' || $idx == 'domain_limit')
+						if ($val === NULL || $result[$idx] === NULL)
+							$result[$idx] = NULL; // no limit
+						else
+							$result[$idx] += $val;
+				foreach ($ACCOUNTTYPES as $typeidx => $type) {
+					if ($row[$type['alias'] . '_limit'] === null || $result['count'][$typeidx] === null)
+						$result['count'][$typeidx] = null;
+					else
+						$result['count'][$typeidx] += $row[$type['alias'] . '_limit'];
+					if ($row['quota_' . $type['alias'] . '_limit'] === null || $result['quota'][$typeidx] === null)
+						$result['quota'][$typeidx] = null;
+					else
+						$result['quota'][$typeidx] += $row['quota_' . $type['alias'] . '_limit'];
+				}
+			}
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
     public function GetTaxes($from = NULL, $to = NULL)
     {
@@ -1516,7 +2672,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			    AND (validto = 0 OR validto >= ?)
 			ORDER BY value', 'id', array($from, $to));
     }
-    
+
     public function CalcAt($period, $date)
     {
         $m = date('n', $date);
@@ -1545,4 +2701,544 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
     }
 
+	public function isDocumentPublished($id) {
+		return $this->db->GetOne('SELECT published FROM documents WHERE id = ?', array($id)) == 1;
+	}
+
+	public function isDocumentReferenced($id) {
+		return $this->db->GetOne('SELECT id FROM documents WHERE reference = ?', array($id)) > 0;
+
+	}
+
+	public function GetReceiptList(array $params) {
+		extract($params);
+		foreach (array('search', 'cat') as $var)
+			if (!isset($$var))
+				$$var = null;
+		if (!isset($order))
+			$order = '';
+		foreach (array('from', 'to', 'advances') as $var)
+			if (!isset($$var))
+				$$var = 0;
+		if (!isset($count))
+			$count = false;
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+
+		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+
+		switch($order)
+		{
+			case 'number':
+				$sqlord = " ORDER BY documents.number $direction";
+				break;
+			case 'name':
+				$sqlord = " ORDER BY documents.name $direction, documents.cdate";
+				break;
+			case 'user':
+				$sqlord = " ORDER BY vusers.rname $direction, documents.cdate";
+				break;
+			case 'cdate':
+			default:
+				$sqlord = " ORDER BY documents.cdate $direction, number";
+				break;
+		}
+
+		$where = ''; $having = '';
+
+		if($search && $cat)
+		{
+			switch($cat)
+			{
+				case 'value':
+					$having = ' HAVING SUM(value) = ' . $this->db->Escape(str_replace(',','.', $search));
+					break;
+				case 'number':
+					$where = ' AND number = '.intval($search);
+					break;
+				case 'ten':
+					$where = ' AND ten = ' . $this->db->Escape($search);
+					break;
+				case 'customerid':
+					$where = ' AND customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND documents.name ?LIKE? ' . $this->db->Escape('%' . $search . '%');
+					break;
+				case 'address':
+					$where = ' AND address ?LIKE? ' . $this->db->Escape('%' . $search . '%');
+					break;
+			}
+		}
+
+		if($from)
+			$where .= ' AND cdate >= '.intval($from);
+		if($to)
+			$where .= ' AND cdate <= '.intval($to);
+
+		if($advances)
+			$where = ' AND closed = 0';
+
+		if ($count) {
+			$summary = $this->db->GetRow(
+				'SELECT COUNT(documents.id) AS total,
+					SUM(d.income) AS totalincome,
+					SUM(d.expense) AS totalexpense
+				FROM documents
+				LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+				LEFT JOIN vusers ON (userid = vusers.id)
+				JOIN (
+					SELECT documents.id AS id,
+						(CASE WHEN SUM(value) > 0 THEN SUM(value) ELSE 0 END) AS income,
+						(CASE WHEN SUM(value) < 0 THEN -SUM(value) ELSE 0 END) AS expense 
+					FROM documents
+					JOIN receiptcontents ON documents.id = docid AND type = ?
+					WHERE regid = ?
+					GROUP BY documents.id '
+					. $having . '
+				) d ON d.id = documents.id
+				WHERE documents.type = ?'
+				.$where,
+				array(DOC_RECEIPT, $registry, DOC_RECEIPT));
+			if (empty($summary))
+				return array('total' => 0, 'totalincome' => 0, 'totalexpense' => 0);
+			return $summary;
+		}
+
+		if ($list = $this->db->GetAll(
+			'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid,
+			documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
+			MIN(description) AS title, COUNT(*) AS posnumber, vusers.rname AS user
+			FROM documents
+			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+			LEFT JOIN vusers ON (userid = vusers.id)
+			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
+			WHERE regid = ?'
+			.$where
+			.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, numberplans.template, vusers.rname, extnumber, closed '
+			.$having
+			.($sqlord != '' ? $sqlord : '')
+			. (isset($limit) ? ' LIMIT ' . $limit : '')
+			. (isset($offset) ? ' OFFSET ' . $offset : ''),
+			array(DOC_RECEIPT, $registry))) {
+			foreach ($list as $idx => $row) {
+				$list[$idx]['number'] = docnumber(array(
+					'number' => $row['number'],
+					'template' => $row['template'],
+					'cdate' => $row['cdate'],
+					'ext_num' => $row['extnumber'],
+					'customerid' => $row['customerid'],
+				));
+				$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
+
+				// don't retrive descriptions of all items to not decrease speed
+				// but we want to know that there is something hidden ;)
+				if($row['posnumber'] > 1) $list[$idx]['title'] .= ' ...';
+			}
+
+			$list['order'] = $order;
+			$list['direction'] = $direction;
+
+			return $list;
+		}
+
+		return null;
+	}
+
+	public function AddReceipt(array $receipt) {
+		$this->db->BeginTrans();
+		$this->db->LockTables(array('documents', 'numberplans'));
+
+		$SYSLOG = SYSLOG::getInstance();
+		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$error = array();
+
+		$customer = isset($receipt['customer']) ? $receipt['customer'] : null;
+		$contents = $receipt['contents'];
+
+		if (!$receipt['number'])
+			$receipt['number'] = $document_manager->GetNewDocumentNumber(array(
+				'doctype' => DOC_RECEIPT,
+				'planid' => $receipt['numberplanid'],
+				'cdate' => $receipt['cdate'],
+				'customerid' => $customer ? $customer['id'] : null,
+			));
+		else {
+			if (!preg_match('/^[0-9]+$/', $receipt['number']))
+				$error['number'] = trans('Receipt number must be integer!');
+			elseif ($document_manager->DocumentExists(array(
+				'number' => $receipt['number'],
+				'doctype' => DOC_RECEIPT,
+				'planid' => $receipt['numberplanid'],
+				'cdate' => $receipt['cdate'],
+				'customerid' => $customer ? $customer['id'] : null,
+			)))
+				$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
+
+			if($error)
+				$receipt['number'] = $document_manager->GetNewDocumentNumber(array(
+					'doctype' => DOC_RECEIPT,
+					'planid' => $receipt['numberplanid'],
+					'cdate' => $receipt['cdate'],
+					'customerid' => $customer ? $customer['id'] : null,
+				));
+		}
+
+		$division = $this->db->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace
+				FROM vdivisions WHERE id = ?', array($receipt['customer']['divisionid']));
+
+		$fullnumber = docnumber(array(
+			'number' => $receipt['number'],
+			'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+			'cdate' => $receipt['cdate'],
+			'customerid' => $customer ? $customer['id'] : null,
+		));
+
+		$args = array(
+			'type' => DOC_RECEIPT,
+			'number' => $receipt['number'],
+			'extnumber' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
+			SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
+			'cdate' => $receipt['cdate'],
+			SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
+			SYSLOG::RES_USER => Auth::GetCurrentUser(),
+			'name' => $customer ? $customer['customername'] :
+				($receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name']),
+			'address' => $customer ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+					? $customer['city'] . ', ' : '') . $customer['address']) : '',
+			'zip' => $customer ? $customer['zip'] : '',
+			'city' => $customer ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city']) : '',
+			SYSLOG::RES_COUNTRY => $receipt['customer']['countryid'] ? $receipt['customer']['countryid'] : null,
+			SYSLOG::RES_DIV => $receipt['customer']['divisionid'],
+			'div_name' => ($division['name'] ? $division['name'] : ''),
+			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
+			'div_address' => ($division['address'] ? $division['address'] : ''),
+			'div_city' => ($division['city'] ? $division['city'] : ''),
+			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
+			'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
+			'div_ten' => ($division['ten'] ? $division['ten'] : ''),
+			'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+			'div_account' => ($division['account'] ? $division['account'] : ''),
+			'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
+			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
+			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
+			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+			'closed' => $customer || $receipt['o_type'] != 'advance' ? 1 : 0,
+			'fullnumber' => $fullnumber,
+		);
+		$this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid,
+			name, address, zip, city, countryid, 
+			divisionid, div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace,
+			closed, fullnumber)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+		$this->db->UnLockTables();
+
+		$rid = $this->db->GetLastInsertId('documents');
+
+		if ($SYSLOG) {
+			$args[SYSLOG::RES_DOC] = $rid;
+			unset($args[SYSLOG::RES_USER]);
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args);
+		}
+
+		$iid = 0;
+		foreach ($contents as $item) {
+			$iid++;
+
+			if ($receipt['type'] == 'in')
+				$value = str_replace(',', '.', $item['value']);
+			else
+				$value = str_replace(',', '.', $item['value'] * -1);
+
+			$args = array(
+				SYSLOG::RES_DOC => $rid,
+				'itemid' =>  $iid,
+				'value' => $value,
+				'description' => $item['description'],
+				SYSLOG::RES_CASHREG => $receipt['regid'],
+			);
+			$this->db->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
+					VALUES(?, ?, ?, ?, ?)', array_values($args));
+			if ($SYSLOG)
+				$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_ADD, $args);
+
+			$args = array(
+				'time' => $receipt['cdate'],
+				'type' => 1,
+				SYSLOG::RES_DOC => $rid,
+				'itemid' => $iid,
+				'value' => $value,
+				'comment' => $item['description'],
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
+				SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
+			);
+			$this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
+						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			if ($SYSLOG) {
+				$args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
+				unset($args[SYSLOG::RES_USER]);
+				$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
+			}
+
+			if (isset($item['docid'])) {
+				$this->db->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
+				if ($SYSLOG) {
+					list ($customerid, $numplanid) = array_values($this->db->GetRow('SELECT customerid, numberplanid
+							FROM documents WHERE id = ?', array($item['docid'])));
+					$args = array(
+						SYSLOG::RES_DOC => $item['docid'],
+						SYSLOG::RES_NUMPLAN => $numplanid,
+						SYSLOG::RES_CUST => $customerid,
+						'closed' => 1,
+					);
+					$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+				}
+			}
+			if (isset($item['references']))
+				foreach ($item['references'] as $ref) {
+					$this->db->Execute('UPDATE documents SET closed=1 WHERE id=?', array($ref));
+					if ($SYSLOG) {
+						list ($customerid, $numplanid) = array_values($this->db->GetRow('SELECT customerid, numberplanid
+								FROM documents WHERE id = ?', array($ref)));
+						$args = array(
+							SYSLOG::RES_DOC => $ref,
+							SYSLOG::RES_NUMPLAN => $numplanid,
+							SYSLOG::RES_CUST => $customerid,
+							'closed' => 1,
+						);
+						$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+					}
+				}
+		}
+
+		$this->db->CommitTrans();
+
+		return empty($error) ? $rid : $error;
+	}
+
+	public function GetCashRegistries($cid = null) {
+		$userid = Auth::GetCurrentUser();
+
+		if (empty($cid)) {
+			$select = '';
+			$join = '';
+			$where = '';
+		} else {
+			$divisionid = $this->db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cid));
+			$select = ', np.isdefault';
+			$join = ' JOIN numberplanassignments npa ON npa.planid = in_numberplanid
+				JOIN numberplans np ON np.id = in_numberplanid ';
+			$where = ' AND npa.divisionid = ' . intval($divisionid);
+		}
+
+		$result = $this->db->GetAllByKey('SELECT r.id, name,
+				in_numberplanid, out_numberplanid' . $select . '
+			FROM cashregs r
+			JOIN cashrights cr ON regid = r.id
+			' . $join . '
+			WHERE rights > 1 AND userid = ? ' . $where . '
+			ORDER BY name', 'id', array($userid));
+		return $result;
+	}
+
+	public function GetOpenedLiabilities($customerid) {
+		static $document_descriptions = array(
+			DOC_INVOICE => 'Invoice No. $a',
+			DOC_CNOTE => 'Credit Note No. $a',
+			DOC_DNOTE => 'Debit Note No. $a',
+		);
+
+		$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		$result = array();
+
+		$liabilities = $this->db->GetAll('(
+				SELECT NULL AS docid, comment, time AS cdate, NULL AS doctype, NULL AS number, NULL AS template,
+					0 AS reference, value
+				FROM cash
+				WHERE docid IS NULL AND customerid = ? AND cash.type = 0
+			) UNION (
+				SELECT cash.docid, NULL AS comment, d.cdate, d.type AS doctype, d.number, np.template,
+					(CASE WHEN dr.id IS NOT NULL THEN 1 ELSE 0 END) AS reference,
+					SUM(cash.value + (CASE WHEN cashr.value IS NULL THEN 0 ELSE cashr.value END)) AS value
+				FROM cash
+				JOIN documents d ON d.id = cash.docid
+				LEFT JOIN numberplans np ON np.id = d.numberplanid
+				LEFT JOIN documents dr ON dr.reference = d.id
+				LEFT JOIN cash cashr ON cashr.docid = dr.id
+				WHERE cash.customerid = ? AND d.reference IS NULL AND d.type IN (?, ?)
+				GROUP BY cash.docid, d.cdate, d.type, d.number, np.template, dr.id
+			) ORDER BY cdate DESC',
+			array($customerid, $customerid, DOC_INVOICE, DOC_DNOTE));
+
+		if (empty($liabilities))
+			return $result;
+
+		$balance = $customer_manager->GetCustomerBalance($customerid, time());
+
+		foreach ($liabilities as $liability) {
+			if (!empty($liability['docid']))
+				$liability['comment'] = trans($document_descriptions[$liability['doctype']], docnumber(array(
+					'number' => $liability['number'],
+					'template' => $liability['template'],
+					'cdate' => $liability['cdate'],
+					'customerid' => $customerid,
+				)));
+			$liability['references'] = array();
+
+			// get cnotes values if those values decreases invoice value
+			if ($cnotes = $this->db->GetAll('SELECT d.id, cdate, number, np.template
+					FROM documents d
+					LEFT JOIN numberplans np ON np.id = d.numberplanid
+					WHERE d.reference = ?', array($liability['docid']))) {
+				$liability['comment'] .= ' (';
+				foreach ($cnotes as $cidx => $cnote) {
+					$liability['comment'] .= docnumber(array(
+						'number' => $cnote['number'],
+						'template' => $cnote['template'],
+						'cdate' => $cnote['cdate'],
+						'customerid' => $customerid,
+					));
+					$liability['references'][] = $cnote['id'];
+					if ($cidx < count($cnotes)-1)
+						$liability['comment'] .= ', ';
+				}
+				$liability['comment'] .= ')';
+			}
+
+			if ($balance - $liability['value'] <= 0)
+				$result[] = $liability;
+			elseif ($balance < 0) {
+				$liability['value'] = $balance;
+				$result[] = $liability;
+				break;
+			}
+			$balance -= $liability['value'];
+			$balance = round($balance, 2);
+			if ($balance >= 0)
+				break;
+		}
+
+		return array_reverse($result);
+	}
+
+	public function GetPromotions() {
+		$promotions = $this->db->GetAllByKey('SELECT id, name,
+				(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
+			FROM promotions WHERE disabled <> 1', 'id');
+
+		if (empty($promotions))
+			return array();
+
+		foreach ($promotions as $promotionid => &$promotion)
+			$promotion['schemas'] = array();
+		unset($promotion);
+
+		$promotion_schemas = $this->db->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name, s.id,
+			(SELECT ' . $this->db->GroupConcat('tariffid', ',') . '
+				FROM promotionassignments WHERE promotionschemaid = s.id
+			) AS tariffs
+			FROM promotions p
+			JOIN promotionschemas s ON (p.id = s.promotionid)
+			WHERE p.disabled <> 1 AND s.disabled <> 1
+				AND EXISTS (SELECT 1 FROM promotionassignments
+				WHERE promotionschemaid = s.id LIMIT 1)
+			ORDER BY p.name, s.name');
+
+		if (empty($promotion_schemas))
+			return array();
+		else
+			foreach ($promotion_schemas as $promotion_schema)
+				$promotions[$promotion_schema['promotionid']]['schemas'][$promotion_schema['id']] =
+					array(
+						'id' => $promotion_schema['id'],
+						'name' => $promotion_schema['name'],
+						'tariffs' => $promotion_schema['tariffs'],
+						'items' => array(),
+					);
+
+		$promotion_schema_assignments = $this->db->GetAll('SELECT
+				p.id AS promotion_id, ps.id AS schema_id,
+				t.name as tariff_name, pa.optional,
+				(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 't.id') . ' ELSE label END) AS label,
+				t.id as tariffid, t.type AS tarifftype, t.value, t.authtype
+			FROM promotions p
+				LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
+				LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
+				LEFT JOIN tariffs t ON pa.tariffid = t.id
+			ORDER BY pa.orderid');
+
+		if (empty($promotion_schema_assignments))
+			return array();
+		else {
+			$single_labels = $this->db->GetAll('SELECT promotionschemaid AS schemaid,
+					label, COUNT(*) AS cnt
+				FROM promotionassignments
+				WHERE label IS NOT NULL
+				GROUP BY promotionschemaid, label');
+			if (empty($single_labels))
+				$single_labels = array();
+			$selection_labels = $this->db->GetAll('SELECT promotionschemaid AS schemaid,
+					(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 'tariffid') . ' ELSE label END) AS label,
+					1 AS cnt
+				FROM promotionassignments
+				WHERE label IS NULL');
+			if (empty($selection_labels))
+				$selection_labels = array();
+			$labels = array_merge($single_labels, $selection_labels);
+
+			$promotion_schema_selections = array();
+			if (!empty($labels)) {
+				foreach ($labels as &$label) {
+					if (preg_match('/^unlabeled_(?<tariffid>[0-9]+)$/', $label['label'], $m))
+						$label['label'] = trans('<!tariffselection>unlabeled_$a', $m['tariffid']);
+					$promotion_schema_selections[$label['schemaid']][$label['label']] = $label['cnt'];
+				}
+				unset($label);
+			}
+
+			foreach ($promotion_schema_assignments as $assign) {
+				$pid = $assign['promotion_id'];
+
+				if (empty($promotions[$pid]['valid']))
+					continue;
+
+				$sid = $assign['schema_id'];
+
+				if (!isset($promotions[$pid]['schemas'][$sid]))
+					continue;
+
+				$promotion_schema_item = array(
+					'tariffid' => $assign['tariffid'],
+					'tariff'   => $assign['tariff_name'],
+					'value'    => $assign['value'],
+					'optional' => $assign['optional'],
+					'authtype' => $assign['authtype'],
+					'type' => $assign['tarifftype'],
+				);
+
+				if (preg_match('/^unlabeled_(?<tariffid>[0-9]+)$/', $assign['label'], $m))
+					$label = trans('<!tariffselection>unlabeled_$a', $m['tariffid']);
+				else
+					$label = $assign['label'];
+
+				if ($promotion_schema_selections[$sid][$label] > 1) {
+					if (!isset($promotions[$pid]['schemas'][$sid]['items'][$label]['selection']))
+						$promotions[$pid]['schemas'][$sid]['items'][$label]['selection'] = array(
+							'items' => array(),
+						);
+					$promotions[$pid]['schemas'][$sid]['items'][$label]['selection']['required'] =
+						empty($assign['optional']);
+
+					$promotions[$pid]['schemas'][$sid]['items'][$label]['selection']['items'][] =
+						$promotion_schema_item;
+				} else
+					$promotions[$pid]['schemas'][$sid]['items'][$label]['single'] = $promotion_schema_item;
+			}
+		}
+
+		return $promotions;
+	}
 }

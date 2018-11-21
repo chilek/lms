@@ -1,0 +1,152 @@
+<DIV ID="pool-edit-dialog" CLASS="lms-ui-dialog" TITLE="{trans("Edit")}">
+    <STYLE>
+        ol.dialog-box {
+            list-style: none;
+            padding-left: 0;
+        }
+        ol.dialog-box li {
+            padding-bottom: 5px;
+        }
+        ol.dialog-box textarea {
+            width: 98%;
+            resize: vertical;
+        }
+        ol.dialog-box select {
+            padding: 2px;
+        }
+    </STYLE>
+
+    <FORM ACTION="?m={$layout.module}" METHOD="POST">
+        <INPUT TYPE="hidden" ID="edit-pool-id" NAME="poolid">
+
+        <OL CLASS="dialog-box">
+            <LI>
+                {trans("Name:")}<BR>
+                <INPUT TYPE="text" ID="edit-name" NAME="name" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+            </LI>
+            <LI>
+                {trans("First number:")}<BR>
+                <INPUT TYPE="number" ID="edit-poolstart" NAME="poolstart" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+            </Li>
+            <LI>
+                {trans("Last number:")}<BR>
+                <INPUT TYPE="number" ID="edit-poolend" NAME="poolend" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+            </LI>
+            <LI>
+                {trans("Status:")}<BR>
+                <SELECT ID="edit-status" NAME="status" CLASS="lms-ui-dialog-input">
+                    <OPTION VALUE="0">{trans('active<!voip>')}</OPTION>
+                    <OPTION VALUE="1">{trans('inactive')}</OPTION>
+                </SELECT>
+            </LI>
+            <LI>
+                {trans("Pool type:")}<BR>
+                <SELECT ID="edit-pooltype" NAME="pooltype" CLASS="lms-ui-dialog-input">
+                    {foreach $pooltypes as $k=>$v}
+                    <option value="{$k}">{$v}</option>
+                    {/foreach}
+                </SELECT>
+            </LI>
+            <LI>
+                {trans("Description:")}<BR>
+                <TEXTAREA ID="edit-description" NAME="description" CLASS="text ui-croner lms-ui-dialog-input" ROWS="7" {tip text="Enter notes (optional)"}></TEXTAREA>
+            </LI>
+        </OL>
+
+        <INPUT TYPE="submit" style="position:absolute; top:-1000px">
+    </FORM>
+</DIV>
+
+<SCRIPT TYPE="text/javascript">
+<!--
+
+var pool_edit_dialog;
+
+$( function() {
+
+    pool_edit_dialog = new LmsUiDialog('pool-edit-dialog');
+    pool_edit_dialog.setButtons([ { text: "{trans("Save")}"  , click: function() { $(this).find("form").submit(); } },
+                                  { text: "{trans("Cancel")}", click: function() { $(this).dialog( "close" );   } } ]);
+
+    pool_edit_dialog.handler.find( "form" ).on( "submit", function( event ) {
+
+        $(pool_edit_dialog.handler).find("*")
+                                  .removeClass("ui-state-error")
+                                  .removeAttr("title");
+
+        $.ajax({
+            method: "POST",
+            url: "?m=voippoolnumberlist&action=edit",
+            data: $(this).serialize(),
+            beforeSend: function() {
+                pool_edit_dialog.disableButtons();
+            }
+        })
+        .done(function(data) {
+            var response = JSON.parse(data);
+
+            if (response['id'] == undefined) {
+                if (response['poolend'] != undefined)
+                    $("#edit-poolend").addClass("ui-state-error").prop('title', response['poolend']);
+
+                if (response['poolstart'] != undefined)
+                    $("#edit-poolstart").addClass("ui-state-error").prop('title', response['poolstart']);
+
+                if (response['name'] != undefined)
+                    $("#edit-name").addClass("ui-state-error").prop('title', response['name']);
+            } else {
+                var table = $("#poolnumbers").DataTable();
+                var size  = 3;
+                var row   = table.row('tr[data-pool-id=' + response['id'] + ']');
+
+                if ($("#edit-status").val() == 1 && !row.to$().hasClass( "blend" )) {
+                    var add_class = "blend";
+                    var rem_class = "";
+                    var bulb      = '{$bulb_off}';
+                } else if ($("#edit-status").val() == 0) {
+                    var add_class = "";
+                    var rem_class = "blend";
+                    var bulb      = '{$bulb_on}';
+                }
+
+                $("#poolnumbers").find('tr[data-pool-id=' + response['id'] + ']').find("td[data-role=type]").attr("data-typeid", response['typeid']);
+
+                row.data([$("#edit-name").val(), $("#edit-description").val(), $("#edit-pooltype option:selected").text(), $("#edit-poolstart").val(), $("#edit-poolend").val(), size, 0, size, bulb + ' {$edit_ico} {$delete_ico}'])
+                   .draw()
+                   .nodes()
+                   .to$()
+                   .addClass( add_class )
+                   .removeClass( rem_class )
+                   .attr("data-pool-id", response['id'])
+                   .effect("highlight",{},2000);
+
+                pool_edit_dialog.close();
+                pool_edit_dialog.formReset();
+
+                $(pool_edit_dialog.handler).find("*")
+                                           .removeClass("ui-state-error")
+                                           .removeAttr("title");
+            }
+            pool_edit_dialog.enableButtons();
+        });
+
+        event.preventDefault();
+    });
+
+    $('body').on("click", ".edit-pool", function() {
+        var row = $(this).closest("tr");
+
+        var poolid = $(row).attr("data-pool-id");
+
+        $("#edit-pool-id")  .val( poolid );
+        $("#edit-name")     .val( $(row).find("td[data-role=name]").text() );
+        $("#edit-poolstart").val( $(row).find("td[data-role=pstart]").text() );
+        $("#edit-poolend")  .val( $(row).find("td[data-role=pend]").text() );
+        $("#edit-pooltype") .val( $(row).find("td[data-role=type]").attr('data-typeid') );
+        $("#edit-status")   .val( $(row).hasClass("blend") ? 1 : 0 );
+
+        pool_edit_dialog.open();
+    });
+});
+//-->
+</SCRIPT>

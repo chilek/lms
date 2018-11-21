@@ -28,7 +28,7 @@ $divisionlist = $DB->GetAll('SELECT d.id, d.name, d.shortname, d.status,
 	(SELECT COUNT(*) FROM customers WHERE divisionid = d.id) AS cnt 
 	FROM divisions d ORDER BY d.shortname');
 
-$listdata['total'] = sizeof($divisionlist);
+$listdata['total'] = empty($divisionlist) ? 0 : count($divisionlist);
 
 if ($SESSION->is_set('cdlp') && !isset($_GET['page']))
 	$SESSION->restore('cdlp', $_GET['page']);

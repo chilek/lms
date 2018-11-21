@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 {if !$receipt.last}<div style="page-break-after: always;">{/if}
-{if !$type || $type == "original"}
+{if in_array("original", $type)}
 <div>
 <table width="100%">
 	<tr><td>
@@ -10,6 +10,10 @@
 			{$receipt.d_name}<br>
 			{$receipt.d_address}<br>
 			{$receipt.d_zip} {$receipt.d_city}
+			{if !empty($receipt.countryid) && !empty($receipt.d_countryid)
+				&& $receipt.countryid != $receipt.d_countryid}
+			<br>{$receipt.d_country}
+			{/if}
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
 			{if $receipt.type == "out"}
@@ -39,7 +43,18 @@
 				<td width="1%" valign="top" nowrap>
 					{if $receipt.type == "out"}{trans("To whom:")}{else}{trans("From who:")}{/if}
 				</td>
-				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
+				<td width="99%" class="sdr">
+					<b>
+						{$receipt.name}
+						{if $receipt.address}
+						<br>{$receipt.zip} {$receipt.city}, {$receipt.address}
+						{/if}
+						{if !empty($receipt.countryid) && !empty($receipt.d_countryid)
+						&& $receipt.countryid != $receipt.d_countryid}
+						<br>{$receipt.country}
+						{/if}
+					</b>
+				</td>
 			    </tr>
 			</table>
 		</td>
@@ -82,7 +97,7 @@
 					{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
 					{else}
-						{t a=$receipt.total|string_format:"%d"|to_words b=$receipt.totalg|to_words}$a dollars $b cents{/t}
+						{moneyf_in_words($receipt.total)}
 					{/if}</b>
 				</td>
 			    </tr>
@@ -143,9 +158,9 @@
 	<tr><td style="border-top-width: 1pt; border-top-style: dashed;"></td></tr>
 </table>
 </div>
-{if !$type || $type == "copy"}<br><br>{/if}
+{if in_array("copy", $type)}<br><br>{/if}
 {/if}
-{if !$type || $type == "copy"}
+{if in_array("copy", $type)}
 <div>
 <table width="100%">
 	<tr><td>
@@ -155,6 +170,10 @@
 			{$receipt.d_name}<br>
 			{$receipt.d_address}<br>
 			{$receipt.d_zip} {$receipt.d_city}
+			{if !empty($receipt.countryid) && !empty($receipt.d_countryid)
+			&& $receipt.countryid != $receipt.d_countryid}
+			<br>{$receipt.d_country}
+			{/if}
 		</td>
 		<td colspan="2" width="34%" class="headgrey hdf" align="center" nowrap>
 			{if $receipt.type == "out"}
@@ -182,8 +201,20 @@
 			<table width="100%">
 			    <tr>
 				<td width="1%" valign="top" nowrap>
-					{if $receipt.type == "out"}{trans("To whom:")}{else}{trans("From who:")}{/if}</td>
-				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
+					{if $receipt.type == "out"}{trans("To whom:")}{else}{trans("From who:")}{/if}
+				</td>
+				<td width="99%" class="sdr">
+					<b>
+						{$receipt.name}
+						{if $receipt.address}
+						<br>{$receipt.zip} {$receipt.city}, {$receipt.address}
+						{/if}
+						{if !empty($receipt.countryid) && !empty($receipt.d_countryid)
+						&& $receipt.countryid != $receipt.d_countryid}
+						<br>{$receipt.country}
+						{/if}
+					</b>
+				</td>
 			    </tr>
 			</table>
 		</td>
@@ -224,7 +255,7 @@
 					{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
 					{else}
-						{t a=$receipt.total|string_format:"%d"|to_words b=$receipt.totalg|to_words}$a dollars $b cents{/t}
+						{moneyf_in_words($receipt.total)}
 					{/if}</b>
 				</td>
 			    </tr>

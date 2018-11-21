@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
+
 // Invoiceless liabilities: Zobowiazania/obciazenia na ktore nie zostala wystawiona faktura
 function GetCustomerCovenants($customerid)
 {
@@ -36,11 +38,9 @@ function GetCustomerCovenants($customerid)
 			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net
 			FROM cash c
 			LEFT JOIN taxes ON (c.taxid = taxes.id)
-			WHERE c.customerid = ? AND c.docid = 0 AND c.value < 0
+			WHERE c.customerid = ? AND c.docid IS NULL AND c.value < 0
 			ORDER BY time', array($customerid));
 }
-
-$layout['pagetitle'] = trans('New Invoice');
 
 $taxeslist = $LMS->GetTaxes();
 
@@ -49,9 +49,22 @@ $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoicenewerror', $error);
 
+$layout['pagetitle'] = !empty($invoice) && $invoice['proforma'] ? trans('New Pro Forma Invoice') : trans('New Invoice');
+
 $itemdata = r_trim($_POST);
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
+
+function changeContents($contents, $newcontents) {
+	$result = array();
+
+	foreach ($newcontents as $posuid => &$newposition)
+		if (isset($contents[$posuid]))
+			$result[] = $contents[$posuid];
+	unset($newposition);
+
+	return $result;
+}
 
 switch($action)
 {
@@ -66,27 +79,49 @@ switch($action)
 		$currtime = time();
 		$invoice['cdate'] = $currtime;
 		$invoice['sdate'] = $currtime;
-		$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
 //		$invoice['paytype'] = ConfigHelper::getConfig('invoices.paytype');
+
+		$invoice['proforma'] = isset($_GET['proforma']) ? 1 : 0;
 
 		if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
 		{
 			$customer = $LMS->GetCustomer($_GET['customerid'], true);
+			$invoice['customerid'] = $_GET['customerid'];
 
 			$invoice['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
 				JOIN numberplanassignments a ON (n.id = a.planid)
 				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
-				array(DOC_INVOICE, $customer['divisionid']));
+				array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $customer['divisionid']));
 		}
 
-		if(empty($invoice['numberplanid']))
+		if (isset($customer) && $customer['paytime'] != -1)
+			$paytime = $customer['paytime'];
+		elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+			WHERE id = ?', array($customer['divisionid']))) === NULL)
+			$paytime = ConfigHelper::getConfig('invoices.paytime');
+		$invoice['deadline'] = $currtime + $paytime * 86400;
+
+		if (empty($invoice['numberplanid']))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
-				WHERE doctype = ? AND isdefault = 1', array(DOC_INVOICE));
+				WHERE doctype = ? AND isdefault = 1', array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE));
 	break;
 
 	case 'additem':
+	case 'savepos':
 
 		unset($error);
+
+		$itemdata = r_trim($_POST);
+		$contents = changeContents($contents, $itemdata['invoice-contents']);
+
+		if ($action == 'savepos') {
+			if (!isset($_GET['posuid']) || !isset($contents[$_GET['posuid']]))
+				die;
+			$posuid = $_GET['posuid'];
+			$itemdata = $itemdata['invoice-contents'][$posuid];
+		}
+
+		unset($itemdata['invoice-contents']);
 
 		$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
 		$itemdata['pdiscount'] = 0;
@@ -101,8 +136,9 @@ switch($action)
 		if ($error)
 			break;
 
-		foreach(array('count', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
+		foreach (array('pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = f_round($itemdata[$key]);
+		$itemdata['count'] = f_round($itemdata['count'], 3);
 
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
@@ -123,13 +159,16 @@ switch($action)
 			// str_replace->f_round here is needed because of bug in some PHP versions
 			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] /  ($taxvalue / 100 + 1));
 			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
-			$itemdata['count'] = f_round($itemdata['count']);
+			$itemdata['count'] = f_round($itemdata['count'], 3);
 			$itemdata['discount'] = f_round($itemdata['discount']);
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
 			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
 			$itemdata['tax'] = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['label'] : '';
-			$itemdata['posuid'] = (string) getmicrotime();
-			$contents[] = $itemdata;
+
+			if ($action == 'savepos')
+				$contents[$posuid] = $itemdata;
+			else
+				$contents[] = $itemdata;
 		}
 	break;
 
@@ -149,14 +188,13 @@ switch($action)
 				$itemdata['discount'] = 0;
 				$itemdata['pdiscount'] = 0;
 				$itemdata['vdiscount'] = 0;
-				$itemdata['count'] = f_round($_POST['l_count'][$id]);
+				$itemdata['count'] = f_round($_POST['l_count'][$id], 3);
 				$itemdata['valuebrutto'] = f_round((-$cash['value'])/$itemdata['count']);
 				$itemdata['s_valuebrutto'] = f_round(-$cash['value']);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) / 100 + 1), 2);
 				$itemdata['s_valuenetto'] = round($itemdata['s_valuebrutto'] / ((isset($taxeslist[$itemdata['taxid']]) ? $taxeslist[$itemdata['taxid']]['value'] : 0) / 100 + 1), 2);
 				$itemdata['prodid'] = $_POST['l_prodid'][$id];
 				$itemdata['jm'] = $_POST['l_jm'][$id];
-				$itemdata['posuid'] = (string) (getmicrotime()+$id);
 				$itemdata['tariffid'] = 0;
 				$contents[] = $itemdata;
 			}
@@ -164,13 +202,15 @@ switch($action)
 	break;
 
 	case 'deletepos':
-		if(sizeof($contents))
-			foreach($contents as $idx => $row)
-				if($row['posuid'] == $_GET['posuid']) 
-					unset($contents[$idx]);
+		if (isset($contents[$_GET['posuid']]))
+			unset($contents[$_GET['posuid']]);
+
+		$contents = changeContents($contents, $_POST['invoice-contents']);
 	break;
 
 	case 'setcustomer':
+
+		$customer_paytime = $customer['paytime'];
 
 		unset($invoice); 
 		unset($customer);
@@ -221,7 +261,7 @@ switch($action)
 		if($invoice['cdate'] && !isset($invoice['cdatewarning']))
 		{
 			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?', 
-					array(DOC_INVOICE, $invoice['numberplanid']));
+					array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid']));
 
 			if($invoice['cdate'] < $maxdate)
 			{
@@ -233,23 +273,46 @@ switch($action)
 		elseif(!$invoice['cdate'])
 			$invoice['cdate'] = $currtime;
 
+		if ($invoice['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+			if (checkdate($dmonth, $dday, $dyear)) {
+				$invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
+				$dcurrmonth = $dmonth;
+			} else {
+				$error['deadline'] = trans('Incorrect date format!');
+				$invoice['deadline'] = $currtime;
+				break;
+			}
+		} else {
+			if ($customer_paytime != -1)
+				$paytime = $customer_paytime;
+			elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+				WHERE id = ?', array($customer['divisionid']))) === NULL)
+				$paytime = ConfigHelper::getConfig('invoices.paytime');
+			$invoice['deadline'] = $invoice['cdate'] + $paytime * 86400;
+		}
+
+		if ($invoice['deadline'] < $invoice['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
+		$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+
 		if($invoice['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+					'customerid' => $cid
+				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
-		}
-
-		if(empty($invoice['paytime_default']) && !preg_match('/^[0-9]+$/', $invoice['paytime']))
-		{
-			$error['paytime'] = trans('Integer value required!');
 		}
 
 		if(!isset($error))
 		{
-    		$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
-
 			if($LMS->CustomerExists($cid))
 				$customer = $LMS->GetCustomer($cid, true);
 
@@ -271,17 +334,22 @@ switch($action)
 
 		unset($error);
 
-		// set paytime
-		if(!empty($invoice['paytime_default']))
-		{
-			if($customer['paytime'] != -1)
-				$invoice['paytime'] = $customer['paytime'];
-			elseif(($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
-				WHERE id = ?', array($customer['divisionid']))) !== NULL)
-				$invoice['paytime'] = $paytime;
-			else
-				$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
-		}
+		$contents = changeContents($contents, $_POST['invoice-contents']);
+
+		if ($invoice['deadline']) {
+			$deadline = intval($invoice['deadline']);
+			$cdate = intval($invoice['cdate']);
+			if ($deadline < $cdate)
+				break;
+			$invoice['paytime'] = round(($deadline - $cdate) / 86400);
+		} elseif ($customer['paytime'] != -1)
+			$invoice['paytime'] = $customer['paytime'];
+		elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+			WHERE id = ?', array($customer['divisionid']))) !== NULL)
+			$invoice['paytime'] = $paytime;
+		else
+			$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
+
 		// set paytype
 		if(empty($invoice['paytype']))
 		{
@@ -300,23 +368,41 @@ switch($action)
 			break;
 
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
+		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions'));
 
 		if(!$invoice['number'])
-			$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+				'planid' => $invoice['numberplanid'],
+				'cdate' => $invoice['cdate'],
+				'customerid' => $customer['id'],
+				'comment' => $invoice['comment'],
+			));
 		else {
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
+					'comment' => $invoice['comment'],
+				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 
 			if($error) {
-				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+				$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, 
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
+				));
 				$error = null;
 			}
 		}
 
-		$invoice['type'] = DOC_INVOICE;
+		$invoice['type'] = $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE;
 
 		$hook_data = array(
 			'customer' => $customer,
@@ -342,11 +428,10 @@ switch($action)
 			if ($SYSLOG)
 				foreach ($ids as $cashid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $cashid,
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 			$DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
 		}
@@ -364,7 +449,10 @@ switch($action)
 				'original' => !empty($_GET['original']) ? 1 : 0,
 				'copy' => !empty($_GET['copy']) ? 1 : 0));
 
-		$SESSION->redirect('?m=invoicenew&action=init');
+		if (isset($_POST['reuse']) || isset($_GET['print']))
+			$SESSION->redirect('?m=invoicenew&action=init');
+		else
+			$SESSION->redirect('?' . $SESSION->get('backto'));
 	break;
 }
 
@@ -415,7 +503,18 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, date('Y/m', $invoice['cdate'])));
+
+$args = array(
+	'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+	'cdate' => date('Y/m', $invoice['cdate']),
+);
+if (isset($customer)) {
+	$args['customerid'] = $customer['id'];
+	$args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customer['id']));
+} else
+	$args['customerid'] = null;
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoice/invoicenew.html');
 

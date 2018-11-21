@@ -1,0 +1,53 @@
+<DIV ID="pool-remove-dialog" CLASS="lms-ui-dialog" TITLE="{trans("Delete")}">
+    {trans("Are you sure that you want to remove")} <I><SPAN ID="pool-name"></SPAN></I> ?
+
+    <DIV ID="dialog-remove-pool-message" STYLE="padding-top: 5px;"></DIV>
+    <INPUT TYPE="submit" style="position:absolute; top:-1000px">
+</DIV>
+
+
+<SCRIPT TYPE="text/javascript">
+<!--
+
+var pool_remove_dialog;
+
+$( function() {
+    pool_remove_dialog = new LmsUiDialog('pool-remove-dialog');
+    pool_remove_dialog.setButtons([ { text: "{trans("Delete")}", click: deletePool },
+                                    { text: "{trans("Cancel")}", click: function() { $( this ).dialog( "close" ); } } ]);
+
+    $('body').on("click", ".delete-pool", function() {
+        var poolid = $(this).closest("tr").attr("data-pool-id");
+        var name   = $("tr[data-pool-id="+poolid+"] td:first").text();
+
+        $("#pool-name").text(name);
+        pool_remove_dialog.handler.data("poolid", poolid).dialog("open");
+    });
+
+    function deletePool() {
+        $.ajax({
+            method: "POST",
+            url: "?m=voippoolnumberlist&action=remove",
+            data: { poolid: $(this).data("poolid") },
+            beforeSend: function() {
+                $("button[type=button]").blur();
+                pool_remove_dialog.disableButtons();
+            }
+        })
+        .done(function(data) {
+            if (data) {
+                $("#dialog-remove-pool-message").text( JSON.parse(data("poolid")) );
+            } else {
+                $("#poolnumbers").DataTable()
+                                 .row("tr[data-pool-id=" + (pool_remove_dialog.handler.data("poolid")) + "]")
+                                 .remove()
+                                 .draw( false );
+                pool_remove_dialog.close();
+            }
+
+            pool_remove_dialog.enableButtons();
+        });
+    }
+});
+//-->
+</SCRIPT>

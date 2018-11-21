@@ -1,10 +1,10 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
+
 	function setWarnings(on)
 	{
 		if (on == 1)
@@ -20,19 +20,29 @@
 		document.setwarnings.submit();
 	}
 
-	function customerGroup(add)
-	{
-		if (add == 1)
-		{
-			document.setwarnings.action = '?m=customergroup&oper=addtogroup';
+	function changeCustomerGroups(oper) {
+		var action = null;
+
+		switch (oper) {
+			case 1:
+				action = '?m=customergroup&oper=addtogroups';
+				break;
+			case 0:
+				action = '?m=customergroup&oper=removefromgroups';
+				break;
+			case 2:
+				action = '?m=customergroup&oper=changegroups';
+				break;
 		}
-		else
-		{
-			document.setwarnings.action = '?m=customergroup&oper=removefromgroup';
+
+		if (action === null) {
+			return false;
 		}
+
+		document.setwarnings.action = action;
 		document.setwarnings.submit();
 	}
--->
+
 </SCRIPT>
 <FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
 <TABLE class="lmsbox">
@@ -56,7 +66,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR class="ftop">
-		<TD class="pagination" COLSPAN="4">
+		<TD class="lms-ui-pagination" COLSPAN="4">
 			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
 			<INPUT type="hidden" id="warnon" name="setwarnings[warnon]" value="0">
 			<INPUT type="hidden" id="warnoff" name="setwarnings[warnoff]" value="0">
@@ -72,13 +82,13 @@
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
-			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&id=$a'}><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<span class="red">{trans("deleted customer")}</span>){/if}</A><BR>
-			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
+			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<span class="red">{trans("deleted customer")}</span>){/if}</A><BR>
+			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD valign="top" align="right" NOWRAP>
 			({$customerlist[customerlist].id|string_format:"%04d"})<BR>
 			{if $customerlist[customerlist].account}
-				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$a'}></A>
+				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" class="lms-ui-tooltip-nodelist" data-resourceid="{$customerlist[customerlist].id}"></A>
 			{/if}
 		</TD>
 		<TD class="text-right valign-top nobr">
@@ -88,16 +98,16 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if $customerlist[customerlist].balance < 0}
-				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {trans("Account")} ]" title="[ {trans("Account")} ]"></A>
+				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
 			{/if}
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodeac == 1}
-						<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
+						<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
 					{else}
 						{if $customerlist[customerlist].nodeac == 2}
-							<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
-						{else}<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="[ {trans("Connect All")} ]" title="[ {trans("Connect All")} ]"></A>
+							<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
+						{else}<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="{trans("Connect All")}" title="{trans("Connect All")}"></A>
 						{/if}
 					{/if}
 				{/if}
@@ -105,22 +115,22 @@
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodewarn == 1}
-						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
+						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
 					{else}
 						{if $customerlist[customerlist].nodewarn == 2}
-							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
-						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="[ {trans("Enable notices for all")} ]" title="[ {trans("Enable notices for all")} ]"></A>
+							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
+						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="{trans("Enable notices for all")}" title="{trans("Enable notices for all")}"></A>
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 			{if $listdata.state == 50}
-			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[ {trans("Recover")} ]"></A>
+			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
 			{else}
-			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			{/if} 
-			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -134,7 +144,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR class="ftop">
-		<TD class="pagination" COLSPAN="4">
+		<TD class="lms-ui-pagination" COLSPAN="4">
 			{include file="scroller.html" loop=$customerlist adlink="&search=1"}
 		</TD>
 	</TR>
@@ -146,11 +156,20 @@
 	</TR>
 	<TR class="ftop">
 		<TD width="100%" align="left" COLSPAN="4" nowrap>
-			<IMG SRC="img/group.gif"> <A HREF="javascript:customerGroup(1);">{trans("Add")}</A> / <A HREF="javascript:customerGroup(0);">{trans("Remove Group")}</A>:
-			<SELECT SIZE="1" NAME="setwarnings[customergroup]">
-				{section name=customergroups loop=$customergroups}
-				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
-				{/section}
+			<IMG SRC="img/group.gif"> <A HREF="javascript:changeCustomerGroups(1);">{trans("Add")}</A>
+			/
+			<A HREF="javascript:changeCustomerGroups(0);">{trans("Remove")}</A>
+			/
+			<A HREF="javascript:changeCustomerGroups(2);">{trans("Change Groups")}</A>:
+			{if is_array($listdata.customergroup)}
+				{$groups=array_flip($listdata.customergroup)}
+			{else}
+				{$groups=array()}
+			{/if}
+			<SELECT SIZE="1" class="lms-ui-multiselect" NAME="setwarnings[customergroup][]" multiple>
+				{foreach $customergroups as $customergroup}
+				<OPTION value="{$customergroup.id}"{if isset($groups[$customergroup.id])} selected{/if}>{$customergroup.name|truncate:50:"...":true}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

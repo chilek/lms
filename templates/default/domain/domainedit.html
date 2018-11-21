@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -16,7 +16,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%">
-			<input name="domain[name]" value="{$domain.name}" size="30" readonly="readonly" {tip text="Enter domain name" trigger="name" bold="1"}>
+			<input name="domain[name]" value="{$domain.name}" size="30" readonly="readonly" required {tip text="Enter domain name" trigger="name" bold="1"}>
 		</TD>
 	</TR>
     </THEAD>
@@ -89,7 +89,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['domain'].elements['domain[name]'].focus();
+$(function() {
+	$('form[name="domain"] [name="domain[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

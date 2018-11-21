@@ -161,7 +161,7 @@ $Mail::Sender::SITE_HEADERS = "X-Mailer: lms-reminder v.$_version";
 my $date = mktime(0, 0, 0, int strftime("%d",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
 my $day = strftime("%x", 0, 0, 0, int strftime("%d",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
 
-my $dbq = $dbase->prepare("SELECT id, name, email FROM users WHERE deleted = 0 AND email != ''");
+my $dbq = $dbase->prepare("SELECT id, name, email FROM vusers WHERE deleted = 0 AND email != '' AND ntype & 1 = 1");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -170,17 +170,17 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $recipient = $row->{'email'};
 	
 	my $dbqi = $dbase->prepare("SELECT DISTINCT title, description, begintime, endtime,
-			customerid, UPPER(lastname) AS lastname, customers.name AS name, address, city, zip,
-			(SELECT contact FROM customercontacts 
-				WHERE customerid = events.customerid AND (customercontacts.type & 7 > 0)
+			customerid, UPPER(lastname) AS lastname, c.name AS name, address, city, zip,
+			(SELECT contact FROM customercontacts cc
+				WHERE customerid = e.customerid AND (cc.type & 7 > 0)
 				ORDER BY contact LIMIT 1) AS phone 
-			FROM events 
-			LEFT JOIN customeraddressview ON (customers.id = customerid)
-			LEFT JOIN eventassignments ON (events.id = eventid)
-			WHERE date=$date AND
-			((private=1 AND events.userid=$row->{'id'}) OR
-			(private=0 AND eventassignments.userid=$row->{'id'}) OR
-			(private=0 AND eventassignments.userid IS NULL))
+			FROM events e
+			LEFT JOIN customeraddressview c ON (c.id = customerid)
+			LEFT JOIN eventassignments ea ON (e.id = ea.eventid)
+			WHERE date = $date AND
+				((private = 1 AND e.userid = $row->{'id'}) OR
+				(private = 0 AND ea.userid = $row->{'id'}) OR
+				(private = 0 AND ea.userid IS NULL))
 			ORDER BY begintime");
 	$dbqi->execute();
  	while (my $rowi = $dbqi->fetchrow_hashref())

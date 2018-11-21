@@ -1,0 +1,1 @@
+#nodelockspanel .days{width:7em}#nodelockspanel .from{width:5em}#nodelockspanel .to{width:5em}#nodelockspanel .buttons{width:3em}@media all and (max-width:768px){#nodelockspanel .col-3{flex-direction:column!important;width:10em!important}#nodelockspanel .col-3 div{flex-grow:0!important;width:100%!important}}

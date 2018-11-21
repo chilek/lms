@@ -1,0 +1,118 @@
+<!--// $Id$ //-->
+
+{css}
+
+{tab_container id="customerdevices"}
+
+	{tab_header content_id="devicespanel"}
+		{tab_header_cell icon="lms-ui-icon-netdev"}
+			<strong>{t a=$customerdevices|@count|default:"0"}Network Devices ($a):{/t}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="?m=netdevadd&customerid={$customerinfo.id}">{trans("New device")} &raquo;</A>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="devicespanel"}
+
+		{tab_table}
+
+			{if $customerdevices}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-6">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							{trans("Name:")}
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{trans("Description:")}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column id">
+								{trans("ID:")}
+							</div>
+							<div class="lms-ui-tab-table-column sn">
+								{trans("Serial number:")}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column ip">
+								{trans("IP address:")}
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{trans("MAC address:")}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					&nbsp;
+				</div>
+			</div>
+			{/if}
+
+			{foreach $customerdevices as $customerdevice}
+			{$customer_netdev_id = $customerdevice.id}
+			<div class="lms-ui-tab-table-row" data-target-url="?m=netdevinfo&id={$customerdevice.id}">
+				<div class="lms-ui-tab-table-wrapper col-6">
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column name">
+							<i class="lms-ui-icon-netdev"></i>
+							<strong>{$customerdevice.name}</strong>
+							{if $customerdevice.location}<BR>
+								{$customerdevice.location|truncate:60:"...":true}
+							{/if}
+						</div>
+						<div class="lms-ui-tab-table-column description">
+							{$customerdevice.description|default:"-"}
+						</div>
+					</div>
+
+					<div class="lms-ui-tab-table-wrapper col-4">
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column id">
+								({$customerdevice.id|string_format:"%04d"})
+							</div>
+							<div class="lms-ui-tab-table-column sn">
+								{$customerdevice.serialnumber|default:"-"}
+							</div>
+						</div>
+						<div class="lms-ui-tab-table-wrapper col-2">
+							<div class="lms-ui-tab-table-column ip">
+								{foreach $customerdevice.ips as $v}
+									{$v.ip}
+									(<a href="?m=netdevinfo&id={$customer_netdev_id}&ip={$v.id}">{$v.name}</a>)
+									<br>
+								{foreachelse}
+									&mdash;
+								{/foreach}
+							</div>
+							<div class="lms-ui-tab-table-column mac">
+								{foreach $customerdevice.ips as $v}
+									{$v.mac}<br>
+								{foreachelse}
+									&mdash;
+								{/foreach}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					{button type="link" icon="edit" href="?m=netdevedit&id={$customerdevice.id}" tip="Edit"}
+				</div>
+			</div>
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer hasn't got any assigned network devices.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}

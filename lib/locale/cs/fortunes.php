@@ -247,6 +247,6 @@ $fortunes[] = "Z wikipedie česká přísloví přepsal roku 2012 Jan Šritter";
 
 
 mt_srand ((double) microtime()* 100000000);
-$layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
+$layout[fortune] = $fortunes[mt_rand(0,count($fortunes)-1)];
 
 ?>

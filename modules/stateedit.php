@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ $name = $state['name'];
 
 $stateedit = isset($_POST['stateedit']) ? $_POST['stateedit'] : NULL;
 
-if(sizeof($stateedit)) 
+if(count($stateedit))
 {
 	$stateedit['name'] = trim($stateedit['name']);
 	$stateedit['description'] = trim($stateedit['description']);
@@ -43,13 +43,12 @@ if(sizeof($stateedit))
 		$args = array(
 			'name' => $stateedit['name'],
 			'description' => $stateedit['description'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE] => $stateedit['id']
+			SYSLOG::RES_STATE => $stateedit['id']
 		);
 		$DB->Execute('UPDATE states SET name=?, description=? WHERE id=?', array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_STATE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE]));
+			$SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=statelist');
 	}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -135,10 +135,10 @@ if(isset($_POST['mailing']))
 		
 		$emails = GetEmails($mailing['group'], $mailing['network'], $mailing['customergroup']);
 		
-		$SMARTY->assign('recipcount', sizeof($emails));
+		$SMARTY->assign('recipcount', count($emails));
 		$SMARTY->display($_LMSDIR.'/modules/mailing/templates/mailingsend.html');
 		
-		if(sizeof($emails))
+		if(count($emails))
 		{
 			$files = NULL;
 			if (isset($file))
@@ -186,7 +186,7 @@ if(isset($_POST['mailing']))
 				
 				$headers['To'] = '<'.$row['email'].'>';
 				
-				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$a of $b ($c): $d &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.1f%%',round((100/sizeof($emails))*($key+1),1)), $row['customername'], $row['email']);
+				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$a of $b ($c): $d &lt;$4&gt;', ($key+1), count($emails), sprintf('%02.1f%%',round((100/count($emails))*($key+1),1)), $row['customername'], $row['email']);
 				echo '<font color=red> '.$LMS->SendMail($row['email'], $headers, $body, $files)."</font><BR>\n";
 			}
 		}
@@ -202,6 +202,6 @@ if(isset($_POST['mailing']))
 $SMARTY->assign('error', $error);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
+$SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
 
 ?>

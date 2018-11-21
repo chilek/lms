@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,25 +27,22 @@
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {
-	$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $id);
+	$args = array(SYSLOG::RES_PROMO => $id);
 	if ($SYSLOG) {
-		$SYSLOG->AddMessage(SYSLOG_RES_PROMO, SYSLOG_OPER_DELETE,
-			$args, array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_DELETE, $args);
 		$schemas = $DB->GetAll('SELECT id, ctariffid FROM promotionschemas
 			WHERE promotionid = ?', array_values($args));
 		if (!empty($schemas))
 			foreach ($schemas as $schema) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA]] = $schema['id'];
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $schema['ctariffid'];
-				$SYSLOG->AddMessage(SYSLOG_RES_PROMOSCHEMA, SYSLOG_OPER_DELETE, $args,
-					array_keys($args));
+				$args[SYSLOG::RES_PROMOSCHEMA] = $schema['id'];
+				$args[SYSLOG::RES_TARIFF] = $schema['ctariffid'];
+				$SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
 				$assigns = $DB->GetCol('SELECT id FROM promotionassignments
 					WHERE promotionschemaid = ?', array($schema['id']));
 				if (!empty($assigns))
 					foreach ($assigns as $assign) {
-						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]] = $assign;
-						$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_DELETE, $args,
-							array_keys($args));
+						$args[SYSLOG::RES_PROMOASSIGN] = $assign;
+						$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
 					}
 			}
 	}

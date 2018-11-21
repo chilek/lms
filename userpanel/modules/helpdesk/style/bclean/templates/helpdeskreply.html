@@ -1,89 +1,41 @@
 {include file="header.html"}
+<h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
     {box title="Message"}
     <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
+	<input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
     <div class="table-responsive">
-    <table class="table table-bordered">
-        <tr>
-            <th>
-                {trans("Subject:")}
-            </th>
-            <td>
-                <input type="text" class="form-control" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter message subject" trigger="subject"} />
-            </td>
-        </tr>
-        <tr>
-            <th>
-                {trans("Body:")}
-            </th>
-            <td>
-                <textarea class="form-control" name="helpdesk[body]" {userpaneltip text="Enter message content" trigger="body"}>{$helpdesk.body}</textarea>
-            </td>
-        </tr>
-        <tr>
-            <th>
-                {trans("Attachments:")}
-            </th>
-            <td>
-                <input type="file" class="form-control" name="files[]" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <a class="btn btn-primary" href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
-            </td>
-        </tr>
-    </table>
-    </div>
-    {/box}
-    <br />
-    {box title=$title}
-    <div class="table-responsive">
-    <table class="table table-bordered table-danger table-striped">
-        {foreach from=$ticket.messages item=message}
-        <tr>
-            <td>
-                {$message.createtime|date_format:"%Y/%m/%d<br/>%H:%M"}
-            </td>
-            <td>
-                {trans("From:")}<br/>{trans("Subject:")}
-            </td>
-            <td>
-                {if $message.customerid}
-                {$message.customername}
-                {elseif $message.userid}
-                {$message.username}
-                {elseif $message.mailfrom}
-                {$message.mailfrom|escape}
-                {else}
-                {$ticket.requestor|escape}
-                {if $ticket.requestoremail}
-                &lt;{$ticket.requestoremail|escape}&gt;
-                {/if}
-                {/if}
-                <br />
-                {$message.subject|escape}
-            </td>
-            <td>
-                {if $message.attachments}
-                {foreach $message.attachments as $attachment}
-                {if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename}</a>
-                {/foreach}
-                {/if}
-            </td>
-            <td>
-                {if $ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets')}
-                <a class="btn btn-primary" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
-                {else}&nbsp;{/if}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                {$message.body|escape|replace:"\n":"<br/>"}
-            </td>
-        </tr>
-        {/foreach}
-    </table>
+		<table class="table table-bordered">
+			<tr>
+				<th>
+					{trans("Subject:")}
+				</th>
+				<td>
+					<input type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip class="form-control" text="Enter message subject" trigger="subject"} />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					{trans("Body:")}
+				</th>
+				<td>
+					<textarea name="helpdesk[body]" {userpaneltip class="form-control" text="Enter message content" trigger="body"}>{$helpdesk.body}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					{trans("Attachments:")}
+				</th>
+				<td>
+					<input type="file" name="files[]" {userpaneltip class="form-control" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<a class="btn btn-primary" href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
+				</td>
+			</tr>
+		</table>
     </div>
     {/box}
 </form>

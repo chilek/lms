@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -15,7 +15,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="nodegroupadd[name]" VALUE="{$nodegroupadd.name}" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodegroupadd[name]" VALUE="{$nodegroupadd.name}" required {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
     </THEAD>
@@ -42,7 +42,9 @@
 </TABLE></FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['nodegroupadd'].elements['nodegroupadd[name]'].focus();
+$(function() {
+	$('form[name="nodegroupadd"] [name="nodegroupadd[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

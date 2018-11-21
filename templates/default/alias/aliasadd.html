@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <SCRIPT type="text/javascript">
@@ -47,7 +47,7 @@ function togglelogin()
 			<B>{trans("Login:")}</B>
 		</TD>
 		<TD width="98%">
-			<INPUT type="text" name="alias[login]" id="login" value="{$alias.login}" {tip text="Enter alias name" trigger="login"} size="20" {if $alias.domainalias}disabled{/if}>
+			<INPUT type="text" name="alias[login]" id="login" value="{$alias.login}" required {tip text="Enter alias name" trigger="login"} size="20" {if $alias.domainalias}disabled{/if}>
 			<INPUT type="checkbox" name="alias[domainalias]" id="domainalias" value="" onchange="togglelogin()" {if $alias.domainalias}checked{/if}><label for="domainalias">{trans("domain alias")}</label>
 		</TD>
 	</TR>
@@ -118,7 +118,9 @@ function togglelogin()
 </FORM>
 <SCRIPT type="text/javascript">
 <!--//
-document.forms['aliasadd'].elements['alias[login]'].focus();
+$(function() {
+	$('form[name="aliasadd"] [name="alias[login]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

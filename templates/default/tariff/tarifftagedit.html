@@ -1,0 +1,57 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+    <h1>{$layout.pagetitle}</h1>
+    <table class="lmsbox">
+        <form method="post" name="tedit" action="?m=tarifftagedit&id={$tarifftag.id}">
+            <input type="submit" class="hiddenbtn">
+            <thead>
+                <tr>
+                    <td width="1%" nowrap><b>{trans("Name:")}</b></td>
+                    <td width="99%">
+                        <input type="text" value="{$tarifftag.name}" name="tarifftag[name]" size="40" required {tip trigger="name" bold=1}>
+                        <b>&nbsp;({$tarifftag.id|string_format:"%04d"})</b>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="1%"><b>{trans("Description:")}</b></td>
+                    <td width="99%">
+                        <textarea rows="5" cols="50" name="tarifftag[description]" {tip text="Enter additional information (optional)"}>{$tarifftag.description}</textarea>
+                    </td>
+                </tr>
+        </form>
+        <tr>
+            <td width="100%" colspan="2" align="right">
+                {if count($tarifftags) > 1 && $tarifftag.count}
+                    <form name="tmove" method="get" action="">
+                        <input type="hidden" name="is_sure" value="1">
+                        <input type="hidden" name="m" value="tarifftagmove">
+                        <input type="hidden" name="from" value="{$tarifftag.id}">
+                        <a href="javascript:document.tmove.submit();" onclick="return confirm('{trans("Are you sure, you want to move tariffs to selected tag?")}')">{trans("Move tariffs to tag")}:</a>
+                        <select size="1" name="to" {tip text="Select tag to which you want to move tariffs"}>
+                            {foreach from=$tarifftags item=item}
+                                {if $item.id != $tarifftag.id}
+                                    <option value="{$item.id}">{$item.name}</option>
+                                {/if}
+                            {/foreach}
+                        </select>
+                    </form>
+                {/if}
+                &nbsp;
+                <a href="javascript:document.tedit.submit();" accesskey="S">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+                <a href="?m=tarifftaginfo&id={$tarifftag.id}">{trans("Cancel")} <img src="img/cancel.gif" ALT=""></a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+<!--
+	$(function() {
+		$('form[name="tedit"] [name="tarifftag[name]"]').focus();
+	});
+//-->
+</script>
+{include file="tariff/tarifftagassignments.html"}
+{/block}

@@ -111,7 +111,7 @@ function refresh($params)
 	$objResponse->assign('received', 'value', $received);
 	$objResponse->assign('total', 'innerHTML', trans('Total: $a% ($b/$c)', 
 		($transmitted ? round(($received / $transmitted) * 100) : 0), $received, $transmitted));
-	$objResponse->assign('times', 'value', json_encode($times));
+	$objResponse->assign('times', 'value', urlencode(json_encode($times)));
 	$objResponse->call('ping_reply');
 
 	return $objResponse;
@@ -145,7 +145,7 @@ if (isset($_GET['ip']) && check_ip($_GET['ip']))
 	    $SESSION->restore('ping_type', $type);
 
     if (!$type) {
-        $type = 1;
+        $type = ConfigHelper::getConfig('phpui.ping_type');
     }
 
     $SESSION->save('ping_type', $type);

@@ -1,17 +1,17 @@
 {if !ConfigHelper::checkPrivilege('hide_sysinfo')}
-<table class="lmsbox">
+<table class="lmsbox" id="lms-ui-welcome-box-about-lms">
     <colgroup>
-        <col style="width: 50%;"/>
-        <col style="width: 50%;"/>
+        <col style="width: 50%;">
+        <col style="width: 50%;">
     </colgroup>
-    <thead>
-        <tr>
+    <thead >
+        <tr onclick="showOrHide('welcome_sysinfo_about_lms-{$layout.module}');">
             <td class="text-center bold nobr" colspan="2">
                 <img src="img/logo-ico.gif" alt=""> {trans("About LMS:")}
             </td>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="welcome_sysinfo_about_lms-{$layout.module}" style="display:none;">
         <tr>
             <td class="text-right bold">
                 <a href="http://www.lms.org.pl" rel="external">{trans("LMS version:")}</a>
@@ -70,4 +70,9 @@
 	{/foreach}
     </tbody>
 </table>
+<script type="text/javascript">
+if (getCookie('welcome_sysinfo_about_lms-{$layout.module}') == '1'){
+    document.getElementById('welcome_sysinfo_about_lms-{$layout.module}').style.display = '';
+}
+</script>
 {/if}

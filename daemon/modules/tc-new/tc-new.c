@@ -167,7 +167,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		"JOIN customers c ON (a.customerid = c.id) "
 		"%night_debtors"
 		"WHERE "
-			"(a.datefrom <= %NOW% OR a.datefrom = 0) "
+			"a.datefrom <= %NOW% "
 			"AND (a.dateto >= %NOW% OR a.dateto = 0) "
 			"AND n.access = 1 "
 			"AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0) "

@@ -57,7 +57,7 @@ interface LMSNodeManagerInterface
 
     public function GetNode($id);
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL);
+    public function GetNodeList(array $params = array());
 
     public function NodeSet($id, $access = -1);
 
@@ -76,6 +76,12 @@ interface LMSNodeManagerInterface
     public function NodeExists($id);
 
     public function NodeStats();
-    
+
     public function SetNodeLinkType($node, $link = NULL);
+
+    public function updateNodeField($nodeid, $field, $value);
+
+    public function GetUniqueNodeLocations($customerid);
+
+	public function GetNodeLocations($customerid, $address_id = null);
 }

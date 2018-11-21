@@ -6,27 +6,38 @@
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=helpdesk&f=submit_setup" id="helpdesksetup">
 	<TABLE WIDTH="100%">
-	    <TR>
-		<TD WIDTH="1%" NOWRAP>
-		    {trans("Queues:")}
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-		    <SELECT NAME="queues[]" multiple id="queues" size="20" {tip text="Helpdesk queues for tickets requested in Userpanel"}>
-			    {*<OPTION value="" SELECTED>{trans("- select queues -")}</OPTION>*}
-			    {foreach $queuelist as $queue}
-			    <OPTION value="{$queue.id}"{if in_array($queue.id, $queues)} SELECTED{/if}>{$queue.name}</OPTION>
-			    {/foreach}
-		    </SELECT> 
-    		</TD>
-	    </TR>
-	    <TR>
-		<TD WIDTH="1%" NOWRAP>
-			<label for="tickets_from_selected_queues">{trans("Show tickets from selected queues only:")}</label>
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<INPUT type="checkbox" name="tickets_from_selected_queues" id="tickets_from_selected_queues" value="1" {if $tickets_from_selected_queues}CHECKED{/if}>
-    		</TD>
-	    </TR>
+		<TR>
+			<TD style="width: 1%;" class="nobr">
+				{trans("Queues:")}
+			</TD>
+			<TD style="width: 99%;" class="nobr">
+				<SELECT NAME="queues[]" multiple id="queues" size="20" {tip text="Helpdesk queues for tickets requested in Userpanel" class="lms-ui-multiselect"}>
+					{foreach $queuelist as $queue}
+					<OPTION value="{$queue.id}"{if in_array($queue.id, $queues)} SELECTED{/if}>{$queue.name}</OPTION>
+					{/foreach}
+				</SELECT>
+			</TD>
+		</TR>
+		<TR>
+			<TD class="nobr">
+				<label for="tickets_from_selected_queues">{trans("Show tickets from selected queues only:")}</label>
+			</TD>
+			<TD class="nobr">
+				<INPUT type="checkbox" name="tickets_from_selected_queues" id="tickets_from_selected_queues" value="1" {if $tickets_from_selected_queues}CHECKED{/if}>
+			</TD>
+		</TR>
+		<TR>
+			<TD style="width: 1%;" class="nobr">
+				{trans("Visible ticket sources:")}
+			</TD>
+			<TD style="width: 99%;" class="nobr">
+				<SELECT NAME="sources[]" multiple id="sources" size="20" {tip text="Helpdesk visible ticket sources in Userpanel" class="lms-ui-multiselect"}>
+					{foreach $_RT_SOURCES as $sourceidx => $source}
+					<OPTION value="{$sourceidx}"{if in_array($sourceidx, $sources)} selected{/if}>{$source}</OPTION>
+					{/foreach}
+				</SELECT>
+			</TD>
+		</TR>
 	    <TR>
 		<TD WIDTH="1%" NOWRAP>
 			<label for="allow_message_add_to_closed_tickets">{trans("Allow message add to closed tickets:")}</label>
@@ -75,6 +86,14 @@
 			{/foreach}
     		</TD>
 	    </TR>
+		<TR>
+			<TD width="1%" style="vertical-align: top;" nowrap>
+				{trans("Allow to reopen tickets newer than:")}
+			</TD>
+			<TD width="99%" nowrap>
+				<input type="text" name="allow_reopen_tickets_newer_than" value="{$allow_reopen_tickets_newer_than}"> {trans("[s]")}
+			</TD>
+		</TR>
 	</TABLE>
 	</FORM>
 	<p align="right">

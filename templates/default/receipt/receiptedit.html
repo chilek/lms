@@ -1,9 +1,8 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
 	function savereceipt(print)
@@ -40,6 +39,7 @@
 	}
 //-->
 </SCRIPT>
+{$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
@@ -82,10 +82,8 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Settlement date:")}</B>
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<div class="calendar">
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			</div>
+		<TD style="width: 99%;" class="nobr">
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
@@ -155,7 +153,7 @@
                 </TD>
 		<TD WIDTH="98%" align="right">
                         {if $customer.groups}<span class="red bold">
-			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
+			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < count($customer.groups)}, {/if}{/foreach})
 			</span>{/if}
 		</TD>
         </TR>
@@ -294,8 +292,14 @@
 	</TR>
 	<TR>
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
-			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
+			<label>
+				<INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}>
+				{trans("original")}
+			</label>
+			<label>
+				<INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{trans("copy")}
+			</label>
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
@@ -321,7 +325,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['setcustomer'].elements['receipt[cdate]'].focus();
+$(function() {
+	$('form[name="setcustomer"] [name="receipt[number]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

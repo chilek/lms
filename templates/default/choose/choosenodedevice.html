@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <meta name="GENERATOR" content="LMS {$layout.lmsv}">
+        <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+        <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+        <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="js/common.js"></script>
+        {if $js}
+        <script type="text/javascript">
+            {$js}
+        </script>
+        {/if}
+    </head>
+    {if ! $part}
+        <frameset name="all" frameborder="0" framespacing="0" ROWS="36,*">
+            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenodedevice&p=top">
+            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenodedevice&p=main">
+        </frameset>
+    {/if}
+    {if $part eq "top"}
+    <body class="lms-ui-popup">
+        <form name="search" method="post" action="?m=choosenodedevice&p=main" target="main">
+            <input type="submit" class="hiddenbtn">
+            <table cellpadding="5" width="100%">
+                <tr>
+                    <td class="fall dark" align="center" nowrap>
+                        <img src="img/node.gif" alt="">
+                        <input type="text" name="searchnodedev" value="{$searchnodedev}" size="20" onkeyup="document.search.submit();">
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script type="text/javascript">
+            document.search.searchnodedev.focus();
+        </script>
+    </body>
+    {/if}
+    {if $part eq "main"}
+    <body class="lms-ui-popup">
+		{$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
+        <table cellpadding="3" width="100%">
+            {if $netdevices}
+                <tr class="dark" style="border-right: 1px solid black;">
+                    <td nowrap="" class="fleftu"><b>{trans('Node:')}</b></td>
+                    <td nowrap="" class="fbt">{trans('Customer:')}</td>
+                    <td nowrap="" class="fbt">{trans('Address:')}</td>
+                </tr>
+            {/if}
+            {cycle values="light,lucid" print=false}
+            {foreach from=$netdevices item=netdevice}
+                <tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="font-weight: bold;">
+						{if $netdevice.lastonline}
+							{if ($smarty.now-$netdevice.lastonline) > $lastonline_limit}
+							<img src="img/node_off.gif" alt="">
+							{else}
+							<img src="img/node_on.gif" alt="">
+							{/if}
+						{else}
+							<img src="img/node_unk.gif" alt="">
+						{/if}
+						{$netdevice.name} ({$netdevice.ipaddr}) {if $netdevice.ipaddr_pub != 0}({$netdevice.ipaddr_pub}){/if}
+					</td>
+                    <td>{$netdevice.customername} {$netdevice.lastname}</td>
+					<td>{$netdevice.street} {$netdevice.building}{if $netdevice.apartment}/{$netdevice.apartment}{/if}</td>
+                </tr>
+            {foreachelse}
+                <tr>
+                    <td colspan="5" align="center">
+                        <p>&nbsp;</p>
+                        <p><b>
+                        {if $searchnodedev}
+                                {trans('No such nodes matching search criteria.')}
+                        {else}
+                                {trans('Enter node name.')}
+                        {/if}
+                        </b></p>
+                        <p>&nbsp;</p>
+                    </td>
+                </tr>
+            {/foreach}
+        </table>
+    </body>
+    {/if}
+</html>

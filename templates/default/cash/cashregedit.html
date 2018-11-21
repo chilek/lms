@@ -1,142 +1,157 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="registry" ACTION="?m=cashregedit&id={$registry.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-	    <TD width="1%">
-		<IMG src="img/queue.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Name:")}</B></TD>
-	    <TD width="98%">
-		<INPUT TYPE="TEXT" NAME="registry[name]" VALUE="{$registry.name}" SIZE="40" {tip text="Enter name" trigger="name" bold=1}>
-	    </TD>
+		<TD>
+			<IMG src="img/queue.gif" ALT="">
+		</TD>
+		<TD class="bold">{trans("Name:")}</TD>
+		<TD>
+			<INPUT TYPE="TEXT" NAME="registry[name]" VALUE="{$registry.name}" SIZE="40" {tip text="Enter name" trigger="name" bold=1}>
+		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-	    <TD width="1%">
-		<IMG src="img/id.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Cash-in receipt numbering plan:")}</B></TD>
-	    <TD width="98%">
-	    	    <SELECT name="registry[in_numberplanid]" {tip text="Select numbering plan"}>
-			    <OPTION value="0"{if ! $registry.in_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</OPTION>
-	    		    {foreach item=plan from=$numberplanlist}
-	        	    {assign var=period value=$plan.period}
-			    <OPTION value="{$plan.id}"{if $plan.id==$registry.in_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
-			    {/foreach}
-		    </SELECT>
-	    </TD>
+		<TD>
+			<IMG src="img/id.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">{trans("Cash-in receipt numbering plan:")}</TD>
+		<TD>
+			<SELECT name="registry[in_numberplanid]" {tip text="Select numbering plan"}>
+				<OPTION value="0"{if ! $registry.in_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</OPTION>
+				{foreach item=plan from=$numberplanlist}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$registry.in_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
 	</TR>
 	<TR>
-	    <TD width="1%">
-		<IMG src="img/id.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Cash-out receipt numbering plan:")}</B></TD>
-	    <TD width="98%">
-	    	    <SELECT name="registry[out_numberplanid]" {tip text="Select numbering plan"}>
-			    <OPTION value="0"{if ! $registry.out_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</OPTION>
-	    		    {foreach item=plan from=$numberplanlist}
-	        	    {assign var=period value=$plan.period}
-			    <OPTION value="{$plan.id}"{if $plan.id==$registry.out_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
-			    {/foreach}
-		    </SELECT>
-	    </TD>
+		<TD>
+			<IMG src="img/id.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">{trans("Cash-out receipt numbering plan:")}</TD>
+		<TD>
+			<SELECT name="registry[out_numberplanid]" {tip text="Select numbering plan"}>
+				<OPTION value="0"{if ! $registry.out_numberplanid} SELECTED{/if}>{trans("- select numbering plan -")}</OPTION>
+				{foreach item=plan from=$numberplanlist}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$registry.out_numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
 	</TR>
 	<TR>
-	    <TD width="1%">
-		<IMG src="img/info1.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Description")}:</B></TD>
-	    <TD width="98%">
-		<TEXTAREA NAME="registry[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$registry.description}</TEXTAREA>
-	    </TD>
+		<TD>
+			<IMG src="img/info1.gif" ALT="">
+		</TD>
+		<TD class="bold">{trans("Description")}:</TD>
+		<TD>
+			<TEXTAREA NAME="registry[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$registry.description}</TEXTAREA>
+		</TD>
 	</TR>
 	<TR>
-	    <TD width="1%">
-		<IMG src="img/wait.gif" ALT="">
-	    </TD>
-	    <TD width="1%" nowrap><B>{trans("Disabled summary:")}</B></TD>
-	    <TD width="98%">
-		    <INPUT type="checkbox" name="registry[disabled]" value="1" {if $registry.disabled} checked{/if}>
-	    </TD>
+		<TD>
+			<IMG src="img/wait.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">{trans("Disabled summary:")}</TD>
+		<TD>
+			<INPUT type="checkbox" name="registry[disabled]" value="1"{if $registry.disabled} checked{/if}>
+		</TD>
 	</TR>
 	<TR>
-	    <TD width="1%">
-		<IMG src="img/users.gif" ALT="">
-	    </TD>
-	    <TD width="1%"><B>{trans("Permissions:")}</B></TD>
-	    <TD width="98%">
-		    <TABLE class="lmsbox">
-                        <THEAD>
-			<TR>
-			    <TD width="93%"><B>{trans("User")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Read")}</B></TD>
-			    <TD width="5%" align="center" colspan="5" nowrap><B>{trans("Write (+R)")}</B></TD>
-			    <TD width="1%" align="center" nowrap><B>{trans("Advanced (+R)")}</B></TD>
-			</TR>
-			<TR>
-			    <TD width="93%"></TD>
-			    <TD width="1%" align="center" nowrap></TD>
-			    <TD width="1%" align="center">{trans("customer")}</TD>
-			    <TD width="1%" align="center" nowrap>{trans("ass. move")}</TD>
-			    <TD width="1%" align="center">{trans("advance")}</TD>
-			    <TD width="1%" align="center">{trans("other")}</TD>
-			    <TD width="1%" align="center">{trans("mod.")}</TD>
-			    <TD width="1%" align="center" nowrap></TD>
-			</TR>
-                        </THEAD>
-                        <TBODY>
-			{cycle values="light,lucid" print=false}
-			{foreach from=$registry.rights item=right}
-			<TR class="highlight {cycle}"  >
-			    <TD width="93%">
-				<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
-				<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
-			    </TD>
-			    <TD width="1%" align="center">
-				    <INPUT type="checkbox" name="registry[users][{$right.id}][1]" value="1" {if ($right.rights & 1)==1}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][2]" value="2" {if ($right.rights & 2)==2}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][4]" value="4" {if ($right.rights & 4)==4}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][8]" value="8" {if ($right.rights & 8)==8}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][16]" value="16" {if ($right.rights & 16)==16}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center" nowrap="nowrap">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][32]" value="32" {if ($right.rights & 32)==32}CHECKED{/if}>
-			    </TD>
-			    <TD width="1%" align="center">
-			    	    <INPUT type="checkbox" name="registry[users][{$right.id}][256]" value="256" {if ($right.rights & 256)==256}CHECKED{/if}>
-			    </TD>
-			</TR>
-			{/foreach}
-			<TR>
-			    <TD width="93%"></TD>
-			    <TD width="7%" colspan="7"></TD>
-			</TR>
-                        </TBODY>
-		</TABLE>			
-	    </TD>
+		<TD>
+			<IMG src="img/users.gif" ALT="">
+		</TD>
+		<TD class="bold">{trans("Permissions:")}</TD>
+		<TD>
+			<TABLE class="lmsbox">
+				<COLGROUP>
+					<COL style="width: 93%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<THEAD>
+				<TR>
+					<TD class="bold">{trans("User")}</TD>
+					<TD class="text-center bold nobr">{trans("Read")}</TD>
+					<TD colspan="5" class="text-center bold nobr">{trans("Write (+R)")}</TD>
+					<TD class="text-center bold nobr">{trans("Advanced (+R)")}</TD>
+				</TR>
+				<TR>
+					<TD></TD>
+					<TD class="text-center nobr"></TD>
+					<TD class="text-center">{trans("customer")}</TD>
+					<TD class="text-center nobr">{trans("ass. move")}</TD>
+					<TD class="text-center">{trans("advance")}</TD>
+					<TD class="text-center">{trans("other")}</TD>
+					<TD class="text-center">{trans("mod.")}</TD>
+					<TD class="text-center nobr"></TD>
+				</TR>
+				</THEAD>
+				<TBODY>
+				{cycle values="light,lucid" print=false}
+				{foreach from=$registry.rights item=right}
+				<TR class="highlight {cycle} lms-ui-row-all-check">
+					<TD>
+						<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
+						<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
+					</TD>
+					<TD class="text-center">
+						<INPUT type="checkbox" name="registry[users][{$right.id}][1]" value="1"{if ($right.rights & 1)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="registry[users][{$right.id}][2]" value="2"{if ($right.rights & 2)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="registry[users][{$right.id}][4]" value="4"{if ($right.rights & 4)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="registry[users][{$right.id}][8]" value="8"{if ($right.rights & 8)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="registry[users][{$right.id}][16]" value="16"{if ($right.rights & 16)} checked{/if}>
+					</TD>
+					<TD class="text-center nobr">
+						<INPUT type="checkbox" name="registry[users][{$right.id}][32]" value="32"{if ($right.rights & 32)} checked{/if}>
+					</TD>
+					<TD class="text-center">
+						<INPUT type="checkbox" name="registry[users][{$right.id}][256]" value="256"{if ($right.rights & 256)} checked{/if}>
+					</TD>
+				</TR>
+				{/foreach}
+				<TR>
+					<TD></TD>
+					<TD colspan="7"></TD>
+				</TR>
+				</TBODY>
+			</TABLE>
+		</TD>
 	</TR>
 	<TR>
-	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.registry.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=cashreglist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-	    </TD>
+		<TD COLSPAN="3" class="buttons">
+			<A HREF="javascript:document.registry.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="?m=cashreglist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
 	</TR>
-    </TBODY>
+	</TBODY>
 </TABLE></FORM></P>
 <SCRIPT type="text/javascript">
 <!--

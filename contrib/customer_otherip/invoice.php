@@ -46,12 +46,16 @@ if ($invoice_type == 'pdf') {
 
 $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+$docnumber = docnumber(array(
+	'number' => $invoice['number'],
+	'template' => $invoice['template'],
+	'cdate' => $invoice['cdate'],
+));
 $layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
 $invoice['last'] = true;
 $invoice['type'] = trans('ORIGINAL');
 
-$document->DrawInvoice($invoice);
+$document->Draw($invoice);
 
 if (!is_null($attachment_name)) {
 	$attachment_name = str_replace('%number', $docnumber, $attachment_name);

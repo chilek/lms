@@ -29,9 +29,8 @@ $id = intval($_GET['id']);
 if ($id && $_GET['is_sure'] == '1') {
 	$DB->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
 	if ($SYSLOG) {
-		$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $id);
-		$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_DELETE,
-			$args, array_keys($args));
+		$args = array(SYSLOG::RES_UICONF => $id);
+		$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
 	}
 }
 

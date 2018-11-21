@@ -1,45 +1,19 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+{$xajax}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $newinvoice}
-<SCRIPT type="text/javascript">
-<!--
-window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}&copy={$newinvoice.copy}');
-//-->
+<SCRIPT>
+
+    window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}&copy={$newinvoice.copy}');
+
 </SCRIPT>
 {/if}
-{include file="calendar_js.html"}
-<script type="text/javascript">
-<!--
-	function setItem(index)
-	{
-		var e = document.additem;
-		{foreach from=$tariffs item=tariff}
-		if (index == {$tariff.id})
-		{
-			e.name.value = '{$tariff.name|escape}';
-			e.taxid.value = '{$tariff.taxid}';
-			e.valuebrutto.value = '{$tariff.value}';
-			e.prodid.value = '{$tariff.prodid}';
-			e.tariffid.value = '{$tariff.id}';
-			e.count.value = 1;
-			return;
-		}
-		{/foreach}
-		if (index == 0)
-		{
-			e.name.value = '';
-			e.valuebrutto.value = '';
-			e.prodid.value = '';
-			e.tariffid.value = '';
-			e.count.value = 1
-		}
-	}
+<script>
 
-	function saveheader()
-	{
+    function saveheader() {
 		if (document.setcustomer.customer)
 			if (document.setcustomer.customer.value != 0)
 				document.setcustomer.customerid.value = document.setcustomer.customer.value;
@@ -47,119 +21,80 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		document.setcustomer.submit();
 	}
 
-	function setPayTime(type)
-	{
-		var list = document.setcustomer.elements['invoice[paytime_default]'];
-		list[0].checked = type ? true : false;
-		list[1].checked = type ? false : true;
-		document.getElementById('paytime').style.visibility = type ? 'hidden' : 'visible';
+	function GetNumberPlans() {
+		xajax_GetNumberPlans('{$invoice.proforma}', {
+			number: $('form[name="setcustomer"] [name="invoice[number]"]').val(),
+			cdate: $('form[name="setcustomer"] [name="invoice[cdate]"]').attr('data-cdate'),
+			numberplanid: $('form[name="setcustomer"] [name="invoice[numberplanid]"]').val(),
+		}, $('form[name="setcustomer"] [name="customerid"]').val());
 	}
 
-	function printinvoice()
-	{
-		var add = "";
-		if (document.additem.original.checked)
-			add += "&original=1";
-		if (document.additem.copy.checked)
-			add += "&copy=1";
-
-		document.additem.action="?m=invoicenew&action=save&print=1" + add;
-		document.additem.submit();
-	}
-
-	function deadline_calendar(elem)
-	{
-		var ts = get_cdate(), deadline = parseInt(elem.value);
-
-		// add paytime days to settlement date
-		ts.setDate(ts.getDate()+(deadline || 0));
-		// display calendar
-		cal3.popup(cal3.gen_date(ts));
-	}
-
-	function get_cdate()
-	{
-		var ts = document.setcustomer.elements['invoice[cdate]'].value;
-
-		if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
-			ts = '{$smarty.now|date_format:"%Y/%m/%d"}';
-
-		return cal3.prs_date(ts);
-	}
-//-->
 </script>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+{if isset($customer.id)}
+{$customerid = $customer.id}
+{else}
+{$customerid = $invoice.customerid}
+{/if}
 <FORM name="setcustomer" method="POST" action="?m=invoicenew&amp;action=setcustomer">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
+<input type="hidden" name="invoice[proforma]" value="{$invoice.proforma}">
 <TABLE class="lmsbox">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 99%;">
+	</colgroup>
 	<THEAD>
 	<TR>
-		<TD style="width: 100%;" class="bold" colspan="2">
+		<th scope="col" colspan="2">
 			{trans("Main Information:")}
-		</TD>
+		</th>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Invoice number:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
-			<INPUT type="text" name="invoice[number]" value="{$invoice.number}" size="12" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			{if $numberplanlist}
-			<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplanlist}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-			{/foreach}
-			</SELECT>
-			{else}
-				<INPUT type="hidden" name="invoice[numberplanid]" value="0">
-			{/if}
+		<TD class="nobr" id="invoicenumberplans">
+			{include file="invoice/invoicenumberplans.html" invoice=$invoice}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Settlement date:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
-			<div class="calendar">
-			<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			</div>
+		<TD class="nobr">
+			<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $invoice.cdatewarning}
 			<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
 			{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Sale date:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
-			<div class="calendar">
-			<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
-			</div>
+		<TD class="nobr">
+			<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Deadline:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
-			<INPUT type="radio" name="invoice[paytime_default]" value="1" id="type1" onchange="setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><label for="type1">{trans("default")}</label>
-			<INPUT type="radio" name="invoice[paytime_default]" value="0" id="type0" onchange="setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><label for="type0">{trans("other")}</label>
-			<INPUT type="text" name="invoice[paytime]" value="{$invoice.paytime}" size="5" ID="paytime" onclick="deadline_calendar(this)"
-			{if !isset($invoice.paytime_default) || $invoice.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
+		<TD class="nobr">
+			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Payment type:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD class="nobr">
 			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
 				<OPTION value=""{if !$invoice.paytype} selected{/if}>- {trans("default")} -</OPTION>
 				{foreach from=$_PAYTYPES item=item key=key}
@@ -169,285 +104,122 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Customer:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
-			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
-			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid"}
-			{/if}
+		<TD class="nobr">
+			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans();customer_change();" select_id="ownerid_select" input_id="ownerid_input"}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold">{trans("Recipient address:")}</td>
+		<td>
+			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
+		</td>
+	</tr>
+	<tr>
+		<td class="bold">{trans("Comment:")}</td>
+		<td>
+			<TEXTAREA NAME="invoice[comment]" ROWS="4" COLS="50" {tip text="Enter invoice comment"}>{$invoice.comment}</TEXTAREA>
+		</td>
+	</tr>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="2">
+		<TD class="text-right" colspan="2">
 			<A href="javascript:saveheader();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 </FORM>
-{if $customer}
-<BR>
-<TABLE class="lmsbox">
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
-		</TD>
-		<TD style="width: 99%;">
-			<span class="bold">{$customer.customername}</span>
-			&nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
-			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
-		</TD>
-	</TR>
-</TABLE>
-{/if}
-<BR>
+
 {if $covenantlist}
 	<FORM name="additemlist" method="POST" action="?m=invoicenew&amp;action=additemlist">
-<table class="lmsbox">
-	<TR>
-		<TD colspan="9">
-			<TABLE class="lmsbox">
-				<THEAD>
-				<TR>
-					<TD class="bold">
+		<TABLE class="lmsbox">
+			<colgroup>
+				<col style="width: 1%;">
+				<col style="width: 92%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+				<col style="width: 1%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<th colspan="9">
 						<IMG src="img/money.gif" alt="">
 						{trans("Invoiceless liabilities:")}
-					</TD>
-				</TR>
-				</THEAD>
-				<TBODY>
+					</th>
+				</tr>
 				<TR>
-					<TD style="width: 100%;">
-						<TABLE cellpadding="5" cellspacing="0" width="100%">
-							<TR>
-								<TD style="width: 1%;">{trans("Date:")}</TD>
-								<TD style="width: 92%;">{trans("Name of product, commodity or service:")}</TD>
-								<TD style="width: 1%;" class="text-right nobr">{trans("Product ID:")}</TD>
-								<TD style="width: 1%;" class="text-right">{trans("Amount:")}</TD>
-								<TD style="width: 1%;" class="text-right">{trans("Unit:")}</TD>
-								<TD style="width: 1%;" class="text-right nobr">{trans("Net Value:")}</TD>
-								<TD style="width: 1%;" class="text-right nobr">{trans("Tax:")}</TD>
-								<TD style="width: 1%;" class="text-right nobr">{trans("Gross Value:")}</TD>
-								<TD style="width: 1%;">&nbsp;</TD>
-							</TR>
-							{cycle values="light,lucid" print=false}
-							{section name=covenantlist loop=$covenantlist}
-							<TR class="highlight {cycle}"  >
-								<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
-								<TD>{$covenantlist[covenantlist].comment}</TD>
-								<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></TD>
-								<TD class="text-right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
-								<TD class="text-right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}" size="3"></TD>
-								<TD class="text-right nobr">{$covenantlist[covenantlist].net|money_format}</TD>
-								<TD class="text-right nobr">{$covenantlist[covenantlist].tax}</TD>
-								<TD class="text-right nobr">{$covenantlist[covenantlist].value|money_format}</TD>
-								<TD class="text-right">
-									<INPUT TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].cashid}">
-								</TD>
-							</TR>
-							{/section}
-							<TR>
-								<TD colspan="2" class="nobr">
-									<INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox"">{trans("Check All")}</label>
-								</TD>
-								<TD class="text-right nobr" colspan="7">
-									<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
-								</TD>
-							</TR>
-						</TABLE>
+					<th scope="col">{trans("Date:")}</th>
+					<th scope="col">{trans("Name of product, commodity or service:")}</th>
+					<th scope="col" class="text-right nobr">{trans("Product ID:")}</th>
+					<th scope="col" class="text-right">{trans("Amount:")}</th>
+					<th scope="col" class="text-right">{trans("Unit:")}</th>
+					<th scope="col" class="text-right nobr">{trans("Net Value:")}</th>
+					<th scope="col" class="text-right nobr">{trans("Tax:")}</th>
+					<th scope="col" class="text-right nobr">{trans("Gross Value:")}</th>
+					<th scope="col">&nbsp;</th>
+				</TR>
+			</thead>
+			{cycle values="light,lucid" print=false}
+			{section name=covenantlist loop=$covenantlist}
+				<TR class="highlight {cycle}">
+					<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
+					<TD>{$covenantlist[covenantlist].comment}</TD>
+					<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></TD>
+					<TD class="text-right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
+					<TD class="text-right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}" size="3"></TD>
+					<TD class="text-right nobr">{$covenantlist[covenantlist].net|money_format}</TD>
+					<TD class="text-right nobr">{$covenantlist[covenantlist].tax}</TD>
+					<TD class="text-right nobr">{$covenantlist[covenantlist].value|money_format}</TD>
+					<TD class="text-right">
+						<INPUT TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].cashid}">
 					</TD>
 				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-</table>
-</FORM>
+			{/section}
+			<TR>
+				<TD colspan="2" class="nobr">
+					<INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
+				</TD>
+				<TD class="text-right nobr" colspan="7">
+					<A href="javascript:document.contentslist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
+				</TD>
+			</TR>
+		</TABLE>
+	</FORM>
 {/if}
 
-<FORM method="post" action="?m=invoicenew&amp;action=additem" name="additem" id="additem">
-<table class="lmsbox">
-    <thead>
-	<TR>
-		<TD style="width: 1%;" class="bold">
-			{trans("No.")}
-		</TD>
-		<TD style="width: 93%;">
-			{trans("Name of product, commodity or service:")}
-		</TD>
-		<TD style="width: 1%;" class="nobr">
-			{trans("Product ID:")}
-		</TD>
-		<TD style="width: 1%;" class="text-right">
-			{trans("Amount:")}<BR>
-			{trans("Unit:")}
-		</TD>
-		<TD style="width: 1%;" class="text-right">
-			{trans("Discount:")}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{trans("Net Price:")}<BR>
-			{trans("Net Value:")}
-		</TD>
-		<TD style="width: 1%;" class="text-right">
-			{trans("Tax:")}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{trans("Gross Price:")}<BR>
-			{trans("Gross Value:")}
-		</TD>
-		<TD style="width: 1%;">
-			&nbsp;
-		</TD>
-	</TR>
-	</THEAD>
-	<TFOOT>
-	<TR>
-		<TD style="width: 1%;" class="bold nobr">
-			<INPUT type="submit" class="hiddenbtn">
-			<INPUT type="hidden" name="tariffid" value="0">
-			{count($contents) + 1}.
-		</TD>
-		<TD style="width: 92%;" class="nobr">
-			{block name="invoicenew-tariff-selection"}
-			<INPUT type="text" name="name" size="40" style="width:300px" id="name" {tip text="Enter description or select tariff from the list"}><BR>
-			<SELECT size="1" name="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
-				<OPTION value="0">-</OPTION>
-				{foreach from=$tariffs item=tariff}
-				<OPTION value="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
-				{/foreach}
-			</SELECT>{*&nbsp;<A href="javascript:setItem(document.additem.ttariffid.value)">{trans("Select")}</A>*}
-			{/block}
-		</TD>
-		<TD>
-			<INPUT type="text" name="prodid" size="6">
-		</TD>
-		<TD>
-			<INPUT type="text" name="count" size="3" value="1">
-			<INPUT type="text" name="jm" size="3" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
-		</TD>
-		<TD class="text-right">
-			<INPUT type="text" name="discount" size="6" {tip text="Enter discount percentage or amount"}>
-			<SELECT name="discount_type">
-				{foreach from=$_DISCOUNTTYPES item=item key=key}
-					<OPTION value="{$key}">{$item}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-		<TD class="text-right nobr">
-			<INPUT type="text" name="valuenetto" size="6" {tip text="Enter unitary value without discount"}>
-		</TD>
-		<TD class="text-right nobr">
-			<SELECT size="1" name="taxid" {tip text="Select Tax rate"}>
-			{foreach item=tax from=$taxeslist}
-				<OPTION value="{$tax.id}"{if $tax.value == $default_taxrate} selected{/if}>{$tax.label}</OPTION>
-			{/foreach}
-			</SELECT>
-		</TD>
-		<TD class="text-right nobr">
-			<INPUT type="text" name="valuebrutto" size="6" {tip text="Enter unitary value without discount"}>
-		</TD>
-		<TD>
-			<A href="javascript:document.additem.submit(); "><IMG src="img/save.gif" alt="" {tip text="Add item"}></A>
-		</TD>
-	</TR>
-	<TR>
-		<TD colspan="9" class="text-right">
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
-			<A href="?m=invoicelist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-			<A href="?m=invoicenew&amp;action=init">{trans("Clear Contents")} <IMG src="img/delete.gif" alt=""></A> 
-			{if !$customer}
-			<A href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{elseif !$contents}
-			<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{else}
-			<A href="?m=invoicenew&amp;action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A href="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{/if}
-		</TD>
-	</TR>
-</tfoot>
-</table>
-</FORM>
+{include file="invoice/invoicecontents.html"}
 
-<table class="lmsbox">
-	{cycle values="light,lucid" print=false}
-	{foreach from=$contents item=item}
-	<TR class="highlight {cycle}">
-		<TD style="width: 1%;" class="bold">
-			{counter}.
-		</TD>
-		<TD style="width: 92%;">
-			{$item.name}
-		</TD>
-		<TD style="width: 1%;" class="nobr">
-			{$item.prodid}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{$item.count|string_format:"%.2f"}<BR>
-			{$item.jm}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{$item.valuenetto|money_format}<BR>
-			{$item.s_valuenetto|money_format}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{$item.tax}
-		</TD>
-		<TD style="width: 1%;" class="text-right">
-			{$item.valuebrutto|money_format}<BR>
-			{$item.s_valuebrutto|money_format}
-		</TD>
-		<TD style="width: 1%;" class="nobr">
-			<A href="?m=invoicenew&amp;action=deletepos&posuid={$item.posuid}"><IMG src="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>
-	</TR>
-	{foreachelse}
-	<TR>
-		<TD colspan="9" class="empty-table">
-			<P>{trans("Invoice have no items. Use form below for items addition.")}</P>
-		</TD>
-	</TR>
-	{/foreach}
-	{if $contents}
-	<TR>
-		<TD colspan="5" width="96%" class="text-right bold">
-			{trans("Total:")}
-		</TD>
-		<TD style="width: 1%;" class="text-right bold nobr">
-			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
-		</TD>
-		<TD style="width: 1%;">
-			&nbsp;
-		</TD>
-		<TD style="width: 1%;" class="text-right bold nobr">
-			{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
-		</TD>
-		<TD style="width: 1%;">
-			&nbsp;
-		</TD>
-	</TR>
-	{/if}
-</TABLE>
-<SCRIPT type="text/javascript">
-<!--
-deadline_callback = function(val) {
-	var ts = get_cdate(), deadline = cal3.prs_date(val);
-	deadline = parseInt((deadline - ts) / 86400000);
-	document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
-}
-var cal3 = new calendar(deadline_callback);
-cal3.time_comp = false;
-document.forms['setcustomer'].elements['invoice[number]'].focus();
-//-->
+<SCRIPT>
+
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
+	/*!
+	 * \brief Update customer addresses list on select change.
+	 * Using when big_networks is set as false.
+	 */
+	function customer_change() {
+		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
+			customer_addresses.setAddressList( addresses );
+		});
+	}
+
+	$(function() {
+		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
+
+		getCustomerAddresses( {intval($invoice.customerid)}, function(addresses) {
+			customer_addresses.setAddressList( addresses );
+			{if $invoice.customerid && $invoice.recipient_address_id }
+			$( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
+			{/if}
+			customer_addresses.init();
+		});
+	});
+
 </SCRIPT>
 {/block}

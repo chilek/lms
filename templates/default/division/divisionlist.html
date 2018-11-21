@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -14,7 +14,7 @@
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="5">
+		<TD class="lms-ui-pagination" COLSPAN="5">
 			{include file="scroller.html" loop=$divisionlist}
 		</TD>
 	</TR>
@@ -37,9 +37,10 @@
 			{$divisionlist[list].cnt|default:0}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}&amp;changestatus=1"><IMG src="img/wait.gif" alt="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]" title="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]"></A>
-			<A href="?m=divisiondel&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}&amp;changestatus=1"><IMG src="img/wait.gif" alt="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}" title="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}"></A>
+			<A href="?m=divisiondel&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=divisionclone&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to clone division \'$a\'?{/t}')"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -53,7 +54,7 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="5">
+		<TD class="lms-ui-pagination" COLSPAN="5">
 			{include file="scroller.html" loop=$divisionlist}
 		</TD>
 	</TR>

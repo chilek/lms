@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,10 +45,10 @@ if($LMS->TariffExists($from) && $LMS->TariffExists($to) && $_GET['is_sure'] == 1
 					WHERE id=? AND tariffid=?', array($to, $id, $from));
 			if ($SYSLOG) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $to
+					SYSLOG::RES_ASSIGN => $id,
+					SYSLOG::RES_TARIFF => $to
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args, array_keys($args));
+				$SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
 			}
 		}
 	}

@@ -26,9 +26,8 @@
 
 $id = intval($_GET['id']);
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id) {
-	$DB->Execute('DELETE FROM invprojects WHERE id=?', array($id));
-}
+if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id)
+	$LMS->DeleteProject($id);
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
 

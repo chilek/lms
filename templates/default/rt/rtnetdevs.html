@@ -1,0 +1,6 @@
+<SELECT name="{$form}[netdevid]" id="netdevid" {tip text="Select network device (optional)" trigger="netdevid"}>
+    <OPTION value="">{trans("- none -")}</OPTION>
+    {foreach $netdevlist as $netdev}
+    <OPTION value="{$netdev.id}"{if $netdev.id == $ticket.netdevid} selected{/if}>{$netdev.name} ({$netdev.id})</OPTION>
+    {/foreach}
+</SELECT>

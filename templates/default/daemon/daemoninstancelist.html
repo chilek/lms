@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
@@ -63,11 +63,11 @@
 			{$instance.description}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A HREF="?m=daemoninstanceview&amp;id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse Configuration")} ]" title="[ {trans("Browse Configuration")} ]"></A>
-			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}&amp;statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
-			<A HREF="?m=daemoninstanceadd&amp;id={$instance.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
-			<A HREF="?m=daemoninstancedel&amp;id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=daemoninstanceview&amp;id={$instance.id}"><IMG SRC="img/view.gif" alt="{trans("Browse Configuration")}" title="{trans("Browse Configuration")}"></A>
+			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}&amp;statuschange=1"><IMG SRC="img/wait.gif" alt="{if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
+			<A HREF="?m=daemoninstanceadd&amp;id={$instance.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+			<A HREF="?m=daemoninstancedel&amp;id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}

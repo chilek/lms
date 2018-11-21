@@ -1,17 +1,17 @@
 {if !ConfigHelper::checkPrivilege('hide_sysinfo')}
-<table class="lmsbox">
+<table class="lmsbox" id="lms-ui-welcome-box-about-system">
     <colgroup>
-        <col style="width: 50%;"/>
-        <col style="width: 50%;"/>
+        <col style="width: 50%;">
+        <col style="width: 50%;">
     </colgroup>
     <thead>
-        <tr>
+        <tr onclick="showOrHide('welcome_sysinfo_about_system-{$layout.module}');">
             <td class="text-center bold nobr" colspan="2">
                 <img src="img/info1.gif" alt=""> {trans("About system:")}
             </td>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="welcome_sysinfo_about_system-{$layout.module}" style="display:none;">
         <tr>
             <td class="text-right bold">
                 {trans("Hostname:")}
@@ -54,4 +54,9 @@
         </tr>
     </tbody>
 </table>
+<script type="text/javascript">
+if (getCookie('welcome_sysinfo_about_system-{$layout.module}') == '1'){
+    document.getElementById('welcome_sysinfo_about_system-{$layout.module}').style.display = '';
+}
+</script>
 {/if}

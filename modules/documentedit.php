@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,31 +24,35 @@
  *  $Id$
  */
 
-if(isset($_GET['action']) && $_GET['action'] == 'confirm')
-{
-	if(!empty($_POST['marks']))
-	{
-	        foreach($_POST['marks'] as $id => $mark)
-			$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
-				AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
-					AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-				array($mark, $AUTH->id));
-	}
+$userid = Auth::GetCurrentUser();
+
+if (isset($_GET['action']) && $_GET['action'] == 'confirm') {
+	if (!empty($_POST['marks']))
+		$ids = $_POST['marks'];
 	else
-		$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
-			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
-				AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-			array($_GET['id'], $AUTH->id));
+		$ids = array($_GET['id']);
+
+	$LMS->CommitDocuments($ids);
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
-	cdate, numberplanid, title, fromdate, todate, description, divisionid
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
+
+$document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, numberplans.template,
+	cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
 	FROM documents
+	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
 	LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-	WHERE documents.id = ?', array($_GET['id']));
+	WHERE documents.id = ? AND r.userid = ? AND (r.rights & 8) = 8', array($_GET['id'], $userid));
+if (empty($document)) {
+	$SMARTY->display('noaccess.html');
+	die;
+}
+
+$document['attachments'] = $DB->GetAllByKey('SELECT *, 0 AS deleted FROM documentattachments
+	WHERE docid = ? AND main = 0', 'id', array($_GET['id']));
 
 if(isset($_POST['document']))
 {
@@ -71,7 +75,11 @@ if(isset($_POST['document']))
 	{
 		if($document['numberplanid'] != $documentedit['numberplanid'])
 		{
-			$tmp = $LMS->GetNewDocumentNumber($documentedit['type'], $documentedit['numberplanid']);
+			$tmp = $LMS->GetNewDocumentNumber(array(
+				'doctype' => $documentedit['type'],
+				'planid' => $documentedit['numberplanid'],
+				'customerid' => $document['customerid'],
+			));
 			$documentedit['number'] = $tmp ? $tmp : 1;
 		}
 		else
@@ -81,7 +89,11 @@ if(isset($_POST['document']))
     		$error['number'] = trans('Document number must be an integer!');
 	elseif($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid'])
 	{
-		if($LMS->DocumentExists($documentedit['number'], $documentedit['type'], $documentedit['numberplanid']))
+		if($LMS->DocumentExists(array(
+				'number' => $documentedit['number'],
+				'doctype' => $documentedit['type'],
+				'planid' => $documentedit['numberplanid'],
+			)))
 			$error['number'] = trans('Document with specified number exists!');
 	}
 
@@ -110,83 +122,73 @@ if(isset($_POST['document']))
 	if($documentedit['fromdate'] > $documentedit['todate'] && $documentedit['todate']!=0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-/*	if($filename = $_FILES['file']['name'])
-	{
-		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
-		{
-			$file = $_FILES['file']['tmp_name'];
-			$documentedit['md5sum'] = md5_file($file);
-			$documentedit['contenttype'] = $_FILES['file']['type'];
-			$documentedit['filename'] = $filename;
-		}
-		else // upload errors
-			switch($_FILES['file']['error'])
-			{
-				case 1:
-				case 2: $error['file'] = trans('File is too large.'); break;
-				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-				case 4: $error['file'] = trans('Path to file was not specified.'); break;
-				default: $error['file'] = trans('Problem during file upload.'); break;
-			}
-	}
-	elseif($documentedit['template'])
-	{
-		include(DOC_DIR.'/templates/'.$documentedit['template'].'/info.php');
-		if(file_exists(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
-			require_once(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
-		else
-			require_once(DOC_DIR.'/templates/default/engine.php');
-
-		if($output)
-		{
-			$file = DOC_DIR.'/tmp.file';
-			$fh = fopen($file, 'w');
-			fwrite($fh, $output);
-			fclose($fh);
-
-			$documentedit['md5sum'] = md5_file($file);
-			$documentedit['contenttype'] = $engine['content_type'];
-			$documentedit['filename'] = $engine['output'];
-		}
-		else
-			$error['template'] = trans('Problem during file generation!');
-	}
-	else
-		$error['file'] = trans('You must to specify file for upload or select document template!');
-
-	if(!$error)
-	{
-		$path = DOC_DIR.'/'.substr($documentedit['md5sum'],0,2);
-		@mkdir($path, 0700);
-		$newfile = $path.'/'.$documentedit['md5sum'];
-		if(!file_exists($newfile))
-		{
-			if(!@rename($file, $newfile))
-				$error['file'] = trans('Can\'t save file in "$a" directory!', $path);
-		}
-		else
-			$error['file'] = trans('Specified file exists in database!');
-	}
-*/
 	$documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
 
-	if(!$error)
-	{
+	$result = handle_file_uploads('attachments', $error);
+	extract($result);
+	$SMARTY->assign('fileupload', $fileupload);
+
+	$files = array();
+	if (!$error && !empty($attachments))
+		foreach ($attachments as $attachment) {
+			$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+			$attachment['md5sum'] = md5_file($attachment['tmpname']);
+			$files[] = $attachment;
+		}
+
+	if (!$error) {
+		foreach ($files as &$file) {
+			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
+			$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
+
+			// If we have a file with specified md5sum, we assume
+			// it's here because of some error. We can replace it with
+			// the new document file
+			// why? document attachment can be shared between different documents.
+			// we should rather use the other message digest in such case!
+			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
+				&& (filesize($file['newfile']) != filesize($file['tmpname'])
+					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname']))) {
+				$error['files'] = trans('Specified file exists in database!');
+				break;
+			}
+		}
+		unset($file);
+		if (!$error) {
+			foreach ($files as $file) {
+				@mkdir($file['path'], 0700);
+				if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
+					$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
+					break;
+				}
+			}
+			if (!empty($tmppath))
+				rrmdir($tmppath);
+		}
+	}
+
+	if (!$error) {
 		$DB->BeginTrans();
 
-		$fullnumber = docnumber($documentedit['number'],
-			$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($documentedit['numberplanid'])),
-			$document['cdate']);
+		$fullnumber = docnumber(array(
+			'number' => $documentedit['number'],
+			'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($documentedit['numberplanid'])),
+			'cdate' => $document['cdate'],
+			'customerid' => $document['customerid'],
+		));
 
-		$DB->Execute('UPDATE documents SET type=?, closed=?, number=?, numberplanid=?, fullnumber=?
+		$DB->Execute('UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
 				array(	$documentedit['type'],
 					$documentedit['closed'],
+					$documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
+					$documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
 					$documentedit['number'],
-					$documentedit['numberplanid'],
+					empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
 					$fullnumber,
 					$documentedit['id'],
 					));
+
 		$DB->Execute('UPDATE documentcontents SET title=?, fromdate=?, todate=?, description=?
 				WHERE docid=?',
 				array(	$documentedit['title'],
@@ -195,6 +197,25 @@ if(isset($_POST['document']))
 					$documentedit['description'],
 					$documentedit['id']
 					));
+
+		foreach ($documentedit['attachments'] as $attachmentid => $attachment)
+			if ($attachment['deleted']) {
+				$md5sum = $document['attachments'][$attachmentid]['md5sum'];
+				if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array($md5sum)) <= 1)
+					@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
+				$DB->Execute('DELETE FROM documentattachments WHERE id = ?', array($attachmentid));
+			}
+
+		foreach ($files as $file)
+			if (!$DB->GetOne('SELECT id FROM documentattachments WHERE docid = ? AND md5sum = ?',
+				array($documentedit['id'], $file['md5sum'])))
+				$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+					VALUES (?, ?, ?, ?, ?)', array($documentedit['id'],
+						$file['name'],
+						$file['type'],
+						$file['md5sum'],
+						0,
+				));
 
 		$DB->CommitTrans();
 
@@ -210,6 +231,9 @@ if(isset($_POST['document']))
 		$document['numberplanid'] = $documentedit['numberplanid'];
 		$document['fromdate'] = $oldfdate;
 		$document['todate'] = $oldtdate;
+		foreach ($document['attachments'] as $attachmentid => &$attachment)
+			$attachment['deleted'] = $documentedit['attachments'][$attachmentid]['deleted'];
+		unset($attachment);
 	}
 }
 else
@@ -221,30 +245,20 @@ else
 }
 
 $rights = $DB->GetCol('SELECT doctype FROM docrights
-	WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
+	WHERE userid = ? AND (rights & 2) = 2', array($userid));
 
 if(!$rights || !$DB->GetOne('SELECT 1 FROM docrights
 	WHERE userid = ? AND doctype = ? AND (rights & 8) = 8',
-	array($AUTH->id, $document['type'])))
+	array($userid, $document['type'])))
 {
         $SMARTY->display('noaccess.html');
         die;
 }
 
-$allnumberplans = array();
-$numberplans = array();
-
-if($templist = $LMS->GetNumberPlans())
-        foreach($templist as $item)
-	        if($item['doctype']<0)
-			$allnumberplans[] = $item;
-
-if(isset($document['numberplanid']))
-{
-        foreach($allnumberplans as $plan)
-                if($plan['doctype'] == $document['numberplanid'])
-                        $numberplans[] = $plan;
-}
+$numberplans = GetDocumentNumberPlans($document['type'], $document['customerid']);
+if (empty($numberplans))
+	$numberplans = array();
+$SMARTY->assign('numberplans', $numberplans);
 
 /*
 if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
@@ -262,12 +276,15 @@ if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 if($docengines) ksort($docengines);
 */
 
-$layout['pagetitle'] = trans('Edit Document: $a', docnumber($document['number'], $document['template'], $document['cdate']));
+$layout['pagetitle'] = trans('Edit Document: $a', docnumber(array(
+	'number' => $document['number'],
+	'template' => $document['template'],
+	'cdate' => $document['cdate'],
+	'customerid' => $document['customerid'],
+)));
 
 //$SMARTY->assign('docengines', $docengines);
-$SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('docrights', $rights);
-$SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('document', $document);
 $SMARTY->display('document/documentedit.html');

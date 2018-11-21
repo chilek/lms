@@ -1,13 +1,13 @@
 {if !ConfigHelper::checkPrivilege('hide_links')}
-<table class="lmsbox">
+<table class="lmsbox" id="lms-ui-welcome-box-links">
     <thead>
-        <tr>
+        <tr onclick="showOrHide('welcome_links-{$layout.module}');">
             <td class="text-center bold">
                 <img src="img/tip.gif" alt=""> {trans("Useful Links:")}
             </td>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="welcome_links-{$layout.module}" style="display:none;">
         <tr>
             <td class="text-center bold">
                 <a href="http://www.lms.org.pl" rel="external">{trans("LMS Project Homepage")}</a><br>
@@ -20,4 +20,9 @@
         </tr>
     </tbody>
 </table>
+<script type="text/javascript">
+if (getCookie('welcome_links-{$layout.module}') == '1'){
+    document.getElementById('welcome_links-{$layout.module}').style.display = '';
+}
+</script>
 {/if}

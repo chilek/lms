@@ -139,7 +139,7 @@ if (!empty($nodesessions))
 $pagelimit = ConfigHelper::getConfig('phpui.nodesession_pagelimit', 100);
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
 
-$listdata['total'] = count($nodesessions);
+$listdata['total'] = empty($nodesessions) ? 0 : count($nodesessions);
 
 if (($page - 1) * $pagelimit > $listdata['total'])
 	$page = 1;

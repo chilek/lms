@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -52,28 +52,27 @@ if(isset($_POST['registry']))
 		$args = array(
 			'name' => $registry['name'],
 			'description' => $registry['description'],
-			'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['in_numberplanid'],
-			'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $registry['out_numberplanid'],
+			'in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['in_numberplanid']) ? null : $registry['in_numberplanid'],
+			'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN) => empty($registry['out_numberplanid']) ? null : $registry['out_numberplanid'],
 			'disabled' => isset($registry['disabled']) ? 1 : 0,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $registry['id'],
+			SYSLOG::RES_CASHREG => $registry['id'],
 		);
 		$DB->Execute('UPDATE cashregs SET name=?, description=?, in_numberplanid=?, out_numberplanid=?, disabled=?
 			WHERE id=?', array_values($args));
 
 		if ($SYSLOG) {
-			$SYSLOG->AddMessage(SYSLOG_RES_CASHREG, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
-					'in_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-					'out_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			$SYSLOG->AddMessage(SYSLOG::RES_CASHREG, SYSLOG::OPER_UPDATE, $args,
+				array('in_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN),
+					'out_' . SYSLOG::getResourceKey(SYSLOG::RES_NUMPLAN)));
 			$cashrights = $DB->GetAll('SELECT id, userid FROM cashrights WHERE regid = ?', array($registry['id']));
 			if (!empty($cashrights))
 				foreach ($cashrights as $cashright) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT] => $cashright['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $registry['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $cashright['userid'],
+						SYSLOG::RES_CASHRIGHT => $cashright['id'],
+						SYSLOG::RES_CASHREG => $registry['id'],
+						SYSLOG::RES_USER => $cashright['userid'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASHRIGHT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASHRIGHT, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 
@@ -82,18 +81,15 @@ if(isset($_POST['registry']))
 			foreach ($registry['rights'] as $right)
 				if ($right['rights']) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $id,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $right['id'],
+						SYSLOG::RES_CASHREG => $id,
+						SYSLOG::RES_USER => $right['id'],
 						'rights' => $right['rights'],
 					);
 					$DB->Execute('INSERT INTO cashrights (regid, userid, rights) VALUES(?, ?, ?)',
 						array_values($args));
 					if ($SYSLOG) {
-						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT]] = $DB->GetLastInsertID('cashrights');
-						$SYSLOG->AddMessage(SYSLOG_RES_CASHRIGHT, SYSLOG_OPER_ADD, $args,
-							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHRIGHT],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+						$args[SYSLOG::RES_CASHRIGHT] = $DB->GetLastInsertID('cashrights');
+						$SYSLOG->AddMessage(SYSLOG::RES_CASHRIGHT, SYSLOG::OPER_ADD, $args);
 					}
 				}
 
@@ -104,7 +100,7 @@ if(isset($_POST['registry']))
 	$registry = $DB->GetRow('SELECT id, name, description, in_numberplanid, out_numberplanid, disabled
 			FROM cashregs WHERE id=?', array($id));
 
-	$users = $DB->GetAll('SELECT id, name FROM users WHERE deleted=0');
+	$users = $DB->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
 	foreach($users as $user)
 	{
     		$user['rights'] = $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($user['id'], $id));
@@ -117,7 +113,9 @@ $layout['pagetitle'] = trans('Edit Cash Registry: $a', $registry['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('registry', $registry);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_RECEIPT,
+)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('cash/cashregedit.html');
 

@@ -27,15 +27,15 @@
 $SESSION->restore('ilm', $ilm);
 $SESSION->remove('ilm');
 
-if(sizeof($_POST['marks']))
+if(count($_POST['marks']))
 	foreach($_POST['marks'] as $id => $mark)
 		$ilm[$id] = $mark;
 
-if(sizeof($ilm))
+if(count($ilm))
 	foreach($ilm as $mark)
 		$ids[] = $mark;
 
-if(sizeof($ids))
+if(count($ids))
 {
 	foreach($ids as $invoiceid)
 	{
@@ -43,7 +43,7 @@ if(sizeof($ids))
 			WHERE id = ?', array($invoiceid)));
 		// add payment
 		if (ConfigHelper::checkConfig('phpui.invoice_check_payment') && $cid && !$closed) {
-			$value = $DB->GetOne('SELECT CASE reference WHEN 0 THEN SUM(a.value*a.count)
+			$value = $DB->GetOne('SELECT CASE WHEN reference IS NULL THEN SUM(a.value*a.count)
 				ELSE SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count) END
 				FROM documents d
 				JOIN invoicecontents a ON (a.docid = d.id)
@@ -62,12 +62,11 @@ if(sizeof($ids))
 
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cid,
+				SYSLOG::RES_DOC => $invoiceid,
+				SYSLOG::RES_CUST => $cid,
 				'closed' => intval(!$closed),
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
 		}
 		$DB->Execute('UPDATE documents SET closed = 
 			(CASE closed WHEN 0 THEN 1 ELSE 0 END)

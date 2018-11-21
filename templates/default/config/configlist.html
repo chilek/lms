@@ -1,20 +1,29 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
+<style>
+	table#configlist-datatable tr td p {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+</style>
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE class="lmsbox">
+<TABLE id="configlist-datatable" {if empty($configlist)}class="lmsbox"{else}class="lmsbox lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle" data-order='[[ 1, "asc" ]]' data-page-length="{$pagelimit}" data-state-save="true"{if !empty($section)} data-search-columns='[ { "search": "{$section}" }, null, null, null, null ]'{/if} style="display: none;"{/if}>
     <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 97%;">
-        <COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 97%;">
+		<COL style="width: 1%;">
     </COLGROUP>
     <THEAD>
 	<TR>
-		<TH scope="col">
-                        <SPAN class="nobr"><IMG src="img/settings.gif" alt=""><A href="?m=configlist&amp;o=var{if $listdata.direction == "asc" && $listdata.order == "var"},desc{/if}"> <span class="bold">{trans("Name:")}</span></A> {if $listdata.order == "var"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
-                        <SPAN class="nobr"><IMG src="img/empty.gif" alt="" width="16" height="16"><A href="?m=configlist&amp;o=section{if $listdata.direction == "asc" && $listdata.order == "section"},desc{/if}"> {trans("Section:")}</A> {if $listdata.order == "section"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		<TH scope="col" class="nobr" data-searchable="true" data-select-value="true">
+			<IMG src="img/empty.gif" alt="" width="16" height="16"> {trans("Section:")}
+		</TH>
+		<TH scope="col" class="bold nobr">
+			<IMG src="img/settings.gif" alt=""> {trans("Name:")}
 		</TH>
 		<TH scope="col" class="text-center">
 			{trans("Value:")}
@@ -22,87 +31,61 @@
 		<TH scope="col" class="text-center">
 			{trans("Comment:")}
 		</TH>
-		<TH scope="col" class="text-right">
-                        <SPAN class="nobr"><A href="?m=configadd{if $listdata.section}&amp;section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A></SPAN>
+		<TH scope="col" class="text-right nobr" data-searchable="false" data-sortable="false">
+			<A class="configadd">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TH>
 	</TR>
-	<TR>
-		<TD colspan="4">
-			<FORM method="GET" action="?m=configlist" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="configlist">
-				<INPUT type="HIDDEN" name="page" value="1">
-				<SPAN class="bold">{trans("Filter:")} </SPAN> {trans("Section:")}
-				<SELECT size="1" name="s" OnChange="document.filter.submit();">
-					<OPTION value=""{if !$listdata.section} SELECTED{/if}>{trans("- all -")}</OPTION>
-					{foreach $sections as $section}
-					<OPTION value="{$section}"{if $listdata.section == $section} selected{/if}>{$section}</OPTION>
-					{/foreach}
-				</SELECT>
-				{trans("Option")}:
-				<INPUT type="text" name="n" value="{$listdata.search}" size="15" {tip text="Enter option name"}>
-				&nbsp;<A href="javascript: document.filter.submit();">&raquo;&raquo;&raquo;</A>
-			</FORM>
-		</TD>
-	</TR>
-	{if $listdata.total != 0}
-	<TR>
-		<TD class="pagination" COLSPAN="4">
-			{include file="scroller.html" loop=$configlist}
-		</TD>
-	</TR>
-	{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=configlist loop=$configlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if $configlist[configlist].disabled} blend{/if}">
-		<TD OnClick="return self.location.href='?m=configedit&amp;id={$configlist[configlist].id}';">
-			<SPAN class="nobr bold"><IMG src="img/settings.gif" alt=""> {$configlist[configlist].var}</SPAN><BR>
-                        <SPAN class="nobr"><IMG src="img/empty.gif" alt="" width="16" height="16"> [{$configlist[configlist].section}]</SPAN>
+	{foreach $configlist as $config}
+	<TR class="{if $config.disabled} blend{/if}">
+		<TD OnClick="return self.location.href='?m=configedit&id={$config.id}';" class="nobr">
+			{$config.section}
 		</TD>
-		<TD class="text-right" OnClick="return self.location.href='?m=configedit&amp;id={$configlist[configlist].id}';">
-			{$configlist[configlist].value|escape}
+		<TD OnClick="return self.location.href='?m=configedit&id={$config.id}';" class="bold nobr">
+			{$config.var}
 		</TD>
-		<TD OnClick="return self.location.href='?m=configedit&amp;id={$configlist[configlist].id}';">
-			{$configlist[configlist].description|truncate:400:"..."}
-			{if $configlist[configlist].usercomment != ''}<BR><SPAN class="bold">{trans("Comment:")}</SPAN> {$configlist[configlist].usercomment|truncate:1000:"..."}{/if}
+		<TD class="text-right" OnClick="return self.location.href='?m=configedit&id={$config.id}';">
+			{$config.value|escape}
 		</TD>
-		<TD class="text-right">
-                        <SPAN class="nobr">
-			<A href="?m=configedit&amp;id={$configlist[configlist].id}&amp;statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $configlist[configlist].disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
-			<A href="?m=configdel&amp;id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t a=$configlist[configlist].var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=configedit&amp;id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-                        </SPAN>
+		<TD OnClick="return self.location.href='?m=configedit&id={$config.id}';">
+			{$config.description|truncate:5000:"..."}
+			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"..."}</p>{/if}
+		</TD>
+		<TD class="text-right nobr">
+			<A href="?m=configedit&id={$config.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
+			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=configedit&id={$config.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
-		<TD colspan="4" class="empty-table">
-		    <p>
-			    {if $listdata.search}
-			        {trans("No configuration options in database.")}
-			    {else}
-			        {trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
-			    {/if}
-		    </p>
+		<TD colspan="5" class="empty-table">
+			<p>
+				{trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
+			</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
     <TFOOT>
-	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="4">
-			{include file="scroller.html" loop=$configlist}
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-		<TD colspan="4" class="text-right">
-			<A href="?m=configadd{if $listdata.section}&amp;section={$listdata.section}{/if}">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
+		<TD colspan="5" class="text-right bold">
+			<A class="configadd">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TFOOT>
 </TABLE>
+<script type="text/javascript">
+<!--
+	$('.configadd').click(function() {
+		var select = $('thead tr select', $(this).closest('table'));
+		href = '?m=configadd';
+		if (select.prop('selectedIndex')) {
+			href += '&section=' + select.val();
+		}
+		window.location.href = href;
+	});
+//-->
+</script>
 {/block}

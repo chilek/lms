@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -72,10 +72,13 @@ else
 	$state = $_POST['s'];
 $SESSION->save('csls', $state);
 
-if(!isset($_POST['n']))
+if (!isset($_POST['n']))
 	$SESSION->restore('csln', $network);
 else
-	$network = $_POST['n'];
+	if ($_POST['n'] == 'all')
+		$network = array();
+	else
+		$network = Utils::filterIntegers($_POST['n']);
 $SESSION->save('csln', $network);
 
 if(!isset($_POST['g']))
@@ -105,8 +108,9 @@ $SESSION->save('csld', $division);
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
-	$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division"));
-	
+	$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search",
+		"time", "sqlskey", "nodegroup", "division", "balance", "balance_relation"));
+
 	$listdata['total'] = $customerlist['total'];
 	$listdata['direction'] = $customerlist['direction'];
 	$listdata['order'] = $customerlist['order'];
@@ -114,7 +118,7 @@ if(isset($_GET['search']))
 	$listdata['over'] = $customerlist['over'];
 	$listdata['state'] = $state;
 	$listdata['network'] = $network;
-	$listdata['customergroup'] = $customergroup;
+	$listdata['customergroup'] = empty($customergroup) ? array() : array($customergroup);
 	$listdata['nodegroup'] = $nodegroup;
 	$listdata['division'] = $division;
 
@@ -143,6 +147,10 @@ if(isset($_GET['search']))
 	if (isset($_GET['print']))
 		$SMARTY->display('print/printcustomerlist.html');
 	elseif (isset($_GET['export'])) {
+		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, (' . $DB->GroupConcat('contact') . ') AS phone
+			FROM customercontacts WHERE contact <> \'\' AND type & ? > 0 GROUP BY customerid',
+				'customerid', array(CONTACT_MOBILE | CONTACT_LANDLINE | CONTACT_LINE)));
+
 		$filename = 'customers-' . date('YmdHis') . '.csv';
 		header('Content-Type: text/plain; charset=utf-8');
 		header('Content-Disposition: attachment; filename=' . $filename);
@@ -158,15 +166,15 @@ if(isset($_GET['search']))
 else
 {
 	$layout['pagetitle'] = trans('Customer Search');
-	
+
 	$SESSION->remove('cslp');
-	
+
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 	$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 	$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
-	$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
+	$SMARTY->assign('divisions', $LMS->GetDivisions());
 	$SMARTY->assign('k', $sqlskey);
 	$SMARTY->display('customer/customersearch.html');
 }

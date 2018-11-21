@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
@@ -12,6 +12,12 @@
 {/block}
 {block name=netdevipbox}
 	{include file="netdev/netdevipbox.html"}
+{/block}
+{block name=netdevnodesessionbox}
+	{include file="node/nodesessions.html"}
+{/block}
+{block name=netdevmanagementurl}
+	{include file="managementurl/managementurls.html"}
 {/block}
 {block name=netdevconnbox}
 	{include file="netdev/netdevconnbox.html"}

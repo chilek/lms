@@ -27,7 +27,7 @@
 function smarty_function_size($params, $template)
 {
 	$array = $params['of'];
-	return sizeof($array);
+	return count($array);
 }
 
 ?>

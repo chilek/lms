@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -81,10 +81,10 @@ if(isset($_POST['domainadd']))
 		$DB->BeginTrans();
 	
 		$DB->Execute('INSERT INTO domains (name, ownerid, type, master, description, mxbackup) VALUES (?,?,?,?,?,?)',
-				array($domainadd['name'], 
-					$domainadd['ownerid'], 
-					$domainadd['type'], 
-					$domainadd['master'], 
+				array($domainadd['name'],
+					empty($domainadd['ownerid']) ? null : $domainadd['ownerid'],
+					$domainadd['type'],
+					$domainadd['master'],
 					$domainadd['description'],
 					empty($domainadd['mxbackup']) ? 0 : 1));
 

@@ -100,6 +100,6 @@ $fortunes[] = "Buzerácie, čo sa sem píšu sú priamo úmerné s tým, kolko d
 $fortunes[] = "Pekný deň Vám praje pavel3.";
 
 mt_srand ((double) microtime()* 100000000);
-$layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
+$layout[fortune] = $fortunes[mt_rand(0,count($fortunes)-1)];
 
 ?>

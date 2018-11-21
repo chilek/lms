@@ -26,8 +26,17 @@
 
 $attachment_name = ConfigHelper::getConfig('notes.attachment_name');
 $note_type = ConfigHelper::getConfig('notes.type');
+$dontpublish = isset($_GET['dontpublish']);
 
-$document = new LMSHtmlDebitNote($SMARTY);
+if ($note_type == 'pdf') {
+	$template = ConfigHelper::getConfig('notes.template_file', 'standard');
+	if ($template == 'standard')
+		$classname = 'LMSTcpdfDebitNote';
+	else
+		$classname = 'LMS' . ucwords($template) . 'DebitNote';
+	$document = new $classname(trans('Debit Notes'));
+} else
+	$document = new LMSHtmlDebitNote($SMARTY);
 
 if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);
@@ -36,7 +45,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if (!empty($_POST['marks']))
 		foreach($_POST['marks'] as $id => $mark)
 			$ilm[$id] = $mark;
-	if (sizeof($ilm))
+	if (count($ilm))
 		foreach($ilm as $mark)
 			$ids[] = intval($mark);
 
@@ -55,13 +64,18 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 	sort($ids);
 
-	$count = sizeof($ids);
+	$count = count($ids);
 	$i = 0;
 	foreach($ids as $idx => $noteid) {
 		$note = $LMS->GetNoteContent($noteid);
 		if ($count == 1)
-			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $note['number'],
+				'template' => $note['template'],
+				'cdate' => $note['cdate'],
+			));
 
+		$note['dontpublish'] = $dontpublish;
 		$i++;
 		if ($i == $count)
 			$note['last'] = true;
@@ -93,22 +107,34 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		die;
 	}
 
-	$count = sizeof($ids);
+	$count = count($ids);
 	$i = 0;
 
 	foreach ($ids as $idx => $noteid) {
 		$note = $LMS->GetNoteContent($noteid);
 		if ($count == 1)
-			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $note['number'],
+				'template' => $note['template'],
+				'cdate' => $note['cdate'],
+			));
 
+		$note['dontpublish'] = $dontpublish;
 		$note['division_header'] = str_replace('%bankaccount',
 			format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
 		$document->Draw($note);
 	}
 } elseif ($note = $LMS->GetNoteContent($_GET['id'])) {
-	$docnumber = $number = docnumber($note['number'], $note['template'], $note['cdate']);
+	$ids = array($_GET['id']);
+
+	$docnumber = $number = docnumber(array(
+		'number' => $note['number'],
+		'template' => $note['template'],
+		'cdate' => $note['cdate'],
+	));
 	$layout['pagetitle'] = trans('Debit Note No. $a', $number);
 
+	$note['dontpublish'] = $dontpublish;
 	$note['last'] = TRUE;
 	$note['division_header'] = str_replace('%bankaccount',
 		format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
@@ -123,5 +149,8 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 	$attachment_name = 'invoices.' . ($note_type == 'pdf' ? 'pdf' : 'html');
 
 $document->WriteToBrowser($attachment_name);
+
+if (!$dontpublish && isset($ids) && !empty($ids))
+	$DB->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
 
 ?>

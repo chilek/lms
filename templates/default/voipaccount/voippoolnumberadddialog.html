@@ -1,0 +1,138 @@
+<DIV ID="pool-add-dialog" CLASS="lms-ui-dialog" TITLE="{trans("Add pool")}">
+    <STYLE>
+        ol.dialog-box {
+            list-style: none;
+            padding-left: 0;
+        }
+        ol.dialog-box li {
+            padding-bottom: 5px;
+        }
+        ol.dialog-box textarea {
+            width: 98%;
+            resize: vertical;
+        }
+        ol.dialog-box select {
+            padding: 2px;
+        }
+    </STYLE>
+
+    <FORM ACTION="?m={$layout.module}" METHOD="POST">
+        <OL CLASS="dialog-box">
+            <LI>
+                {trans("Name:")}<BR>
+                <INPUT TYPE="text" ID="name" NAME="name"  CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+            </LI>
+            <LI>
+                {trans("First number:")}<BR>
+                <INPUT TYPE="number" ID="poolstart" NAME="poolstart" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+            </Li>
+            <LI>
+                {trans("Last number:")}<BR>
+                <INPUT TYPE="number" ID="poolend" NAME="poolend" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+            </LI>
+            <LI>
+                {trans("Status:")}<BR>
+                <SELECT ID="status" NAME="status" CLASS="lms-ui-dialog-input">
+                    <OPTION VALUE="0">{trans('active<!voip>')}</OPTION>
+                    <OPTION VALUE="1">{trans('inactive')}</OPTION>
+                </SELECT>
+            </LI>
+            <LI>
+                {trans("Pool type:")}<BR>
+                <SELECT ID="pooltype" NAME="pooltype" CLASS="lms-ui-dialog-input">
+                    {foreach $pooltypes as $k=>$v}
+                    <option value="{$k}">{$v}</option>
+                    {/foreach}
+                </SELECT>
+            </LI>
+            <LI>
+                {trans("Description:")}<BR>
+                <TEXTAREA ID="description" NAME="description" CLASS="text ui-croner lms-ui-dialog-input" ROWS="7" {tip text="Enter notes (optional)"}></TEXTAREA>
+            </LI>
+        </OL>
+
+        <INPUT TYPE="submit" style="position:absolute; top:-1000px">
+    </FORM>
+</DIV>
+
+<SCRIPT TYPE="text/javascript">
+<!--
+
+var pool_add_dialog;
+
+$( function() {
+    pool_add_dialog = new LmsUiDialog('pool-add-dialog');
+    pool_add_dialog.setOpener( "pool-add-dialog-show-btn" );
+    pool_add_dialog.setButtons([{ text: "{trans("Add")}"   , click: function() { $(this).find("form").submit(); } },
+                                { text: "{trans("Cancel")}", click: function() { $( this ).dialog( "close" ); } } ]);
+
+    pool_add_dialog.handler.find( "form" ).on( "submit", function( event ) {
+
+        $(pool_add_dialog.handler).find("*")
+                                  .removeClass("ui-state-error")
+                                  .removeAttr("title");
+
+        $.ajax({
+            method: "POST",
+            url: "?m=voippoolnumberlist&action=add",
+            data: $(this).serialize(),
+            beforeSend: function() {
+                pool_add_dialog.disableButtons();
+            }
+        })
+        .done(function(data) {
+            var response = JSON.parse(data);
+
+            if (response['id'] == undefined) {
+                if (response['poolend'] != undefined)
+                    $("#poolend").addClass("ui-state-error").prop('title', response['poolend']);
+
+                if (response['poolstart'] != undefined)
+                    $("#poolstart").addClass("ui-state-error").prop('title', response['poolstart']);
+
+                if (response['name'] != undefined)
+                    $("#name").addClass("ui-state-error").prop('title', response['name']);
+
+                if (response['pooltype'] != undefined)
+                    $("#pooltype").addClass("ui-state-error").prop('title', response['pooltype']);
+            } else {
+                var table = $("#poolnumbers").DataTable();
+                var appended_class = "";
+                var bulb  = '{$bulb_on}';
+
+                if ($("#status").val() == 1) {
+                    appended_class = "blend";
+                    bulb = '{$bulb_off}';
+                }
+
+                var t = table.row.add([$("#name").val(), $("#description").val(), response['type'], $("#poolstart").val(), $("#poolend").val(), response['size'],
+                                       response['phones_used'], response['phones_unused'], bulb + ' {$edit_ico} {$delete_ico}'])
+                         .draw()
+                         .nodes()
+                         .to$()
+                         .addClass(appended_class)
+                         .attr("data-pool-id", response['id'])
+                         .effect("highlight",{},3000);
+
+                $(t).find('td:eq(0)').attr('data-role', 'name');
+                $(t).find('td:eq(1)').attr('data-role', 'desc');
+                $(t).find('td:eq(3)').attr('data-role', 'pstart');
+                $(t).find('td:eq(4)').attr('data-role', 'pend');
+                $(t).find('td:eq(8)').addClass( "nobr" );
+
+                pool_add_dialog.close();
+                pool_add_dialog.formReset();
+
+                $(pool_add_dialog.handler).find("*")
+                                          .removeClass("ui-state-error")
+                                          .removeAttr("title");
+            }
+
+            pool_add_dialog.enableButtons();
+        });
+
+        event.preventDefault();
+    });
+});
+//-->
+</SCRIPT>

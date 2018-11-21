@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,9 +27,28 @@
 /**
  * LMSEventManagerInterface
  * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSEventManagerInterface
 {
+	public function EventAdd($event);
+
+	public function EventUpdate($event);
+
+	public function EventDelete($id);
+
+	public function GetEvent($id);
+
+    public function GetEventList(array $params);
+
     public function EventSearch($search, $order = 'date,asc', $simple = false);
+
+    public function GetCustomerIdByTicketId($id);
+
+	public function EventOverlaps(array $params);
+
+    public function AssignUserToEvent($id, $userid);
+
+    public function UnassignUserFromEvent($id, $userid);
+
+	public function MoveEvent($id, $delta);
 }

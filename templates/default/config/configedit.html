@@ -1,8 +1,7 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<script type="text/javascript" src="img/tinymce3/tiny_mce.js"></script>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=configedit&id={$config.id}" name="config">
 <INPUT type="submit" class="hiddenbtn">
@@ -35,11 +34,7 @@
 			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%">
-			<label>
-				<input type="checkbox" name="richtext" onclick="javascript:toggle_visual_editor('value');"{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT} checked{/if}>
-				{trans("visual editor")}
-			</label><br>
-			<TEXTAREA rows="5" cols="50" name="config[value]" id="value" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
+			<TEXTAREA rows="5" cols="50" name="config[value]" {tip class="lms-ui-wysiwyg-editor" text="Enter option value" trigger="value"} data-wysiwyg="{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT || isset($config.wysiwyg.value)}true{else}false{/if}">{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -93,13 +88,15 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['config'].elements['config[var]'].focus();
+	$(function() {
+		$('form[name="config"] [name="config[var]"]').focus();
 
-	tinymce_init('{$_ui_language}');
-
-	{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT}
-		toggle_visual_editor('value');
-	{/if}
+		$('[name="config[type]"]').change(function(e) {
+			$('[name="config[value]"]').trigger('lms:visual_editor_change_required', {
+				ifShow: $(this).val() == '{$smarty.const.CONFIG_TYPE_RICHTEXT}'
+			});
+		});
+	});
 //-->
 </SCRIPT>
 {/block}

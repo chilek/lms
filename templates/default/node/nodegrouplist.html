@@ -1,75 +1,108 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM name="tmove" method="POST" action="">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 97%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
 	<THEAD>
 	<TR>
-		<TD style="width: 97%;">
+		<TD>
 			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{trans("Name:")}</span><BR>
 			<IMG src="img/info1.gif" alt="">&nbsp;{trans("Description:")}
 		</TD>
-		<TD style="width: 1%;" class="text-right">
+		<TD class="text-right">
 			{trans("ID:")}
 		</TD>
-		<TD style="width: 1%;" class="text-right">
+		<TD class="text-right">
 			{trans("Members:")}
 		</TD>
-		<TD style="width: 1%;" class="text-right bold nobr">
+		<TD class="text-right bold nobr">
 			{t a=$listdata.total|default:"0"}Total: $a{/t}
 		</TD>
 	</TR>
 	</THEAD>
 	<TFOOT>
 	<TR>
-		<TD colspan="2" style="width: 98%;" class="text-right bold">
+		<TD colspan="2" class="text-right bold">
 			<IMG src="img/info2.gif" alt="">&nbsp;{trans("Total:")}
 		</TD>
-		<TD style="width: 1%;" class="text-right bold nobr">
+		<TD class="text-right bold nobr">
 			{$listdata.nodestotal|default:"0"}
 		</TD>
-		<TD style="width: 1%;">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
 	</TFOOT>
-	<TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=nodegroups loop=$nodegrouplist}
-	<TR class="highlight {cycle}"  >
-		<TD style="width: 97%;" onClick="return self.location.href='?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}';">
-			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{$nodegrouplist[nodegroups].name}</span><BR>
-			{if $nodegrouplist[nodegroups].description}<IMG src="img/info1.gif" alt="">&nbsp;{$nodegrouplist[nodegroups].description}{/if}
+	<TBODY id="nodegrouplist">
+	{foreach $nodegrouplist as $nodegroup}
+	<TR class="highlight" data-nodegroup-id="{$nodegroup.id}">
+		<TD onClick="return self.location.href='?m=nodegroupinfo&id={$nodegroup.id}';">
+			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{$nodegroup.name}</span><BR>
+			{if $nodegroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$nodegroup.description}{/if}
 		</TD>
-		<TD style="width: 1%;" class="text-right" onClick="return self.location.href='?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}';">
-			({$nodegrouplist[nodegroups].id|string_format:"%04d"})
+		<TD class="text-right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegroup.id}';">
+			({$nodegroup.id|string_format:"%04d"})
 		</TD>
-		<TD style="width: 1%;" class="text-right" onClick="return self.location.href='?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}';">
-			{$nodegrouplist[nodegroups].nodescount}
+		<TD style="width: 1%;" class="text-right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegroup.id}';">
+			{$nodegroup.nodescount}
 		</TD>
 		<TD style="width: 1%;" class="text-right nobr">
-			{if $nodegrouplist[nodegroups].nodescount}<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
-			{else}<A href="?m=nodegroupdel&amp;id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
-			{/if}<IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=nodegroupedit&amp;id={$nodegrouplist[nodegroups].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A href="?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			<INPUT class="radio light" type="radio" name="from" id="from{$nodegrouplist[nodegroups].id}" value="{$nodegrouplist[nodegroups].id}"{if $selectednodegroupid==$nodegrouplist[nodegroups].id} checked{/if}>
-			<INPUT class="radio light" type="radio" name="to" id="to{$nodegrouplist[nodegroups].id}" value="{$nodegrouplist[nodegroups].id}" onClick="javascript:document.tmove.submit();">
+			{if $nodegroup.nodescount}<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
+			{else}<A href="?m=nodegroupdel&id={$nodegroup.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			{/if}<IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=nodegroupedit&id={$nodegroup.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=nodegroupinfo&id={$nodegroup.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<TD colspan="4" class="empty-table">
 			<p>{trans("There are no such groups in database.")}</p>
 		</TD>
 	</TR>
-	{/section}
+	{/foreach}
 	</TBODY>
+	<script type="text/javascript">
+	<!--
+		$(function() {
+			$('#nodegrouplist').sortable({
+				items: "> tr[data-nodegroup-id]",
+				opacity: 0.9,
+				axis: "y",
+				placeholder: "light",
+				update: function(event, ui) {
+					var nodegroupids = [];
+					ui.item.parent().children('tr[data-nodegroup-id]').each(function(index, value) {
+						nodegroupids.push($(this).attr('data-nodegroup-id'));
+					});
+					$.ajax('?m=nodegrouplist', {
+						method: "POST",
+						data: {
+							nodegroupids: nodegroupids
+						},
+						dataType: "json",
+						success: function(data, textStatus, qXHR) {
+							if (data.result === undefined || data.result != 'OK') {
+								$('#nodegrouplist').sortable('cancel');
+								alert('{trans("LMS: operation failed!")}');
+							}
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							$('#nodegrouplist').sortable('cancel');
+							alert('{trans("AJAX: Invalid result - status:")}' + textStatus + '!');
+						}
+					});
+				}
+			});
+		});
+	//-->
+	</script>
 </TABLE>
-</FORM>
 {/block}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -79,7 +79,7 @@ class lms_smspasswords_plugin
 					$retries--;
 					if (empty($retries)) {
 						$phone = $LMS->DB->GetOne('SELECT phone FROM users WHERE id = ?',
-							array($LMS->AUTH->id));
+							array(Auth::GetCurrentUser()));
 						$this->send_new_password($phone);
 						$vars['abort'] = true;
 						return $vars;
@@ -93,8 +93,8 @@ class lms_smspasswords_plugin
 				return $vars;
 			}
 			$phone = $LMS->DB->GetOne('SELECT phone FROM users WHERE id = ?',
-				array($LMS->AUTH->id));
-			$rights = $LMS->GetUserRights($LMS->AUTH->id);
+				array(Auth::GetCurrentUser()));
+			$rights = $LMS->GetUserRights(Auth::GetCurrentUser());
 			if (empty($phone) || !array_search(250, $rights)) {
 				$SESSION->save('session_smsauthenticated', true);
 				$vars['abort'] = false;

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,37 +46,31 @@ if($userinfo)
 	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $id)
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
 
-	if($userinfo['name'] == '')
-		$error['name'] = trans('You have to enter first and lastname!');
+	if ($userinfo['firstname'] == '')
+		$error['firstname'] = trans('You have to enter first and lastname!');
+	if ($userinfo['lastname'] == '')
+		$error['lastname'] = trans('You have to enter first and lastname!');
 
 	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
-	if($userinfo['accessfrom'] == '')
-		$accessfrom = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$userinfo['accessfrom']))
+	if(!empty($userinfo['accessfrom']))
 	{
-		list($y, $m, $d) = explode('/', $userinfo['accessfrom']);
-		if(checkdate($m, $d, $y))
-			$accessfrom = mktime(0, 0, 0, $m, $d, $y);
-		else
+		$accessfrom=date_to_timestamp($userinfo['accessfrom']);
+		if(empty($accessfrom))
 			$error['accessfrom'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessfrom'] = trans('Incorrect charging time!');
+		$accessfrom = 0;
 
-	if($userinfo['accessto'] == '')
-		$accessto = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $userinfo['accessto']))
+	if(!empty($userinfo['accessto']))
 	{
-		list($y, $m, $d) = explode('/', $userinfo['accessto']);
-		if(checkdate($m, $d, $y))
-			$accessto = mktime(23, 59, 59, $m, $d, $y);
-		else
+		$accessto=date_to_timestamp($userinfo['accessto']);
+		if(empty($accessto))
 			$error['accessto'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessto'] = trans('Incorrect charging time!');
+		$accessto = 0;
 
 	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
 		$error['accessto'] = trans('Incorrect date range!');
@@ -85,7 +79,7 @@ if($userinfo)
 	$userinfo['rights'] = implode(',', $rights);
 
 	if (!empty($userinfo['ntype']))
-		$userinfo['ntype'] = array_sum(array_map('intval', $userinfo['ntype']));
+		$userinfo['ntype'] = array_sum(Utils::filterIntegers($userinfo['ntype']));
 
 	if (!$error) {
 		$userinfo['accessfrom'] = $accessfrom;
@@ -98,12 +92,11 @@ if($userinfo)
 			if (!empty($groups))
 				foreach ($groups as $group) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] => $group['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $group['customergroupid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+						SYSLOG::RES_EXCLGROUP => $group['id'],
+						SYSLOG::RES_CUSTGROUP => $group['customergroupid'],
+						SYSLOG::RES_USER => $userinfo['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
@@ -113,13 +106,12 @@ if($userinfo)
 						VALUES(?, ?)', array($idx, $userinfo['id']));
 				if ($SYSLOG) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] =>
+						SYSLOG::RES_EXCLGROUP =>
 							$DB->GetLastInsertID('excludedgroups'),
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $idx,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+						SYSLOG::RES_CUSTGROUP => $idx,
+						SYSLOG::RES_USER => $userinfo['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_ADD, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -152,7 +144,7 @@ foreach($LMS->GetUserInfo($id) as $key => $value)
 		$userinfo[$key] = $value;
 
 if(!isset($userinfo['selected']))
-	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name 
+	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name
 		FROM customergroups g, excludedgroups
 	        WHERE customergroupid = g.id AND userid = ?
 		ORDER BY name', 'id', array($userinfo['id']));

@@ -55,7 +55,7 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 			.'    INET_NTOA(ipaddr) LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR INET_NTOA(ipaddr_pub) LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR UPPER(mac) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
-			.' OR UPPER(location) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
+			.' OR UPPER(vnodes.location) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(vnodes.name) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
 
 	$SMARTY->assign('searchnode', $search);

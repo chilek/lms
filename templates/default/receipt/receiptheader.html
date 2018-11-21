@@ -8,6 +8,6 @@
 <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
 <style type="text/css"><!--
 {foreach from=$css item=line}{$line}{/foreach}
-//--></style>
+--></style>
 </head>
 <body{if preg_match('/receipt/i', ConfigHelper::getConfig('phpui.printer_window'))} onload="window.print()"{/if}>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+$userlist = $LMS->getUserList();
+unset($userlist['total']);
 
 if(isset($_POST['queue']))
 {
@@ -46,14 +48,38 @@ if(isset($_POST['queue']))
 		foreach($queue['users'] as $key => $value)
 			$queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
 
+	if ($queue['newticketsubject'] && !$queue['newticketbody'])
+		$error['newticketbody'] = trans('New ticket body should not be empty if you set new ticket subject!');
+	elseif (!$queue['newticketsubject'] && $queue['newticketbody'])
+		$error['newticketsubject'] = trans('New ticket subject should not be empty if you set new ticket body!');
+
+	if ($queue['newmessagesubject'] && !$queue['newmessagebody'])
+		$error['newmessagebody'] = trans('New message body should not be empty if you set new message subject!');
+	elseif (!$queue['newmessagesubject'] && $queue['newmessagebody'])
+		$error['newmessagesubject'] = trans('New message subject should not be empty if you set new message body!');
+
+	if ($queue['resolveticketsubject'] && !$queue['resolveticketbody'])
+		$error['resolveticketbody'] = trans('Resolve ticket body should not be empty if you set resolve ticket subject!');
+	elseif (!$queue['resolveticketsubject'] && $queue['resolveticketbody'])
+		$error['resolveticketsubject'] = trans('Resolve ticket subject should not be empty if you set resolve ticket body!');
+
+	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+	if (isset($queue['categories'])) {
+		foreach ($categories as &$category)
+			if (isset($queue['categories'][$category['id']]))
+				$category['checked'] = 1;
+		unset($category);
+	}
+
 	if (!$error) {
 		$DB->Execute('INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, verifierid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(trim($queue['name']), $queue['email'], $queue['description'],
 					$queue['newticketsubject'], $queue['newticketbody'],
 					$queue['newmessagesubject'], $queue['newmessagebody'],
-					$queue['resolveticketsubject'], $queue['resolveticketbody']));
+					$queue['resolveticketsubject'], $queue['resolveticketbody'],
+					!empty($queue['verifierid']) ? $queue['verifierid'] : NULL ));
 
 		$id = $DB->GetLastInsertId('rtqueues');
 
@@ -63,9 +89,15 @@ if(isset($_POST['queue']))
 					$DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)', 
 						array($id, $right['id'], $right['rights']));
 
+		foreach ($categories as $category)
+			if ($category['checked'])
+				$DB->Execute('INSERT INTO rtqueuecategories (queueid, categoryid) VALUES (?, ?)',
+					array($id, $category['id']));
+
 		$SESSION->redirect('?m=rtqueueinfo&id='.$id);
 	}
-}
+} else
+	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 
 $users = $LMS->GetUserNames();
 
@@ -81,6 +113,8 @@ $layout['pagetitle'] = trans('New Queue');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
+$SMARTY->assign('categories', $categories);
+$SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueueadd.html');
 

@@ -1,38 +1,44 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-sortable" id="customeractions">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
-	<TR>
-		<TD width="99%" class="hand" align="left" nowrap="nowrap" onclick="showOrHide('customeractions');">
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="customeractionpanel">
+		<TD class="bold">
 			<IMG src="img/options.gif" alt="">
-			<B>{trans("Actions:")}</B>
+			{trans("Actions:")}
 		</TD>
-		<TD width="1%" align="right" nowrap>
+		<TD class="text-right nobr">
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
-	<TR id="customeractions" style="display:none;">
-		<TD width="100%" class="container" colspan="2">
+	<TR id="customeractionpanel" style="display:none;">
+		<TD class="container" colspan="2">
 		    <FORM method="GET" name="cutoffstopaction" action="?m=customercutoffstop">
 			<INPUT type="hidden" name="m" value="customercutoffstop">
 			<INPUT type="hidden" name="customerid" value="{$customerinfo.id}">
 			<TABLE class="lmsbox-inner">
-                            <TBODY>
+				<tbody>
 				<TR>
 					<TD width="1%">
 					    <IMG src="img/options.gif" alt="">
 					</TD>
 					<TD style="width: 98%;">
 						{trans("Cutoff suspending:")}
-						<div class="calendar">
-						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
-						</div>
+						<label>
+							<input type="checkbox" name="cutoffstopindefinitely" value="1" onchange="$('#cutoffstop').css('display', this.checked ? 'none' : '');"{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)} checked{/if}>
+							{trans("indefinitely")}
+						</label>&nbsp;
+						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip class="calendar" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 					</TD>
-					<TD width="1%" NOWRAP align="RIGHT">
+					<TD width="1%" class="nobr text-right">
 						<A href="javascript:document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
 					</TD>
 				</TR>
-			    <tbody>
+				</tbody>
 			</table>
 		    </FORM>
 		    <FORM method="POST" name="warningaction" action="?m=customerwarn">
@@ -49,7 +55,7 @@
 					    <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onchange="switchbox('warnon');"><label for="warnon">{trans("Enable")}</label>
 					    <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onchange="switchbox('warnoff');"><label for="warnoff">{trans("Disable")}</label>
 					</TD>
-					<TD width="1%" NOWRAP align="RIGHT">
+					<TD width="1%" class="nobr text-right">
 						<A href="javascript:document.warningaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
 					</TD>
 				</TR>
@@ -62,8 +68,8 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-if (getCookie('customeractions') == '1')
-	document.getElementById('customeractions').style.display = '';
+if (getCookie('customeractionpanel') == '1')
+	document.getElementById('customeractionpanel').style.display = '';
 
 function switchbox(id) {
 	var elem = document.getElementById(id);

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -101,7 +101,7 @@ try {
 }
 
 // Initialize templates engine (must be before locale settings)
-$SMARTY = new Smarty;
+$SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
@@ -118,12 +118,8 @@ define('SMARTY_VERSION', $ver_chunks[0]);
 // add LMS's custom plugins directory
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
-
-
 // Redirect to SSL
-
-$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
-
+$_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
 if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 {
      header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -133,24 +129,16 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 $_TIMEOUT = ConfigHelper::getConfig('phpui.timeout');
 
 // Include required files (including sequence is important)
-
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 $AUTH = NULL;
-$AUTH = NULL;
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
-	$SYSLOG = new SYSLOG($DB);
-} else {
-	$SYSLOG = null;
-}
-if ($SYSLOG){
-	$SYSLOG->SetAuth($AUTH);
-        $SYSLOG->NewTransaction('userpanel');
-}
+$SYSLOG = SYSLOG::getInstance();
+if ($SYSLOG)
+	$SYSLOG->NewTransaction('userpanel');
+
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
@@ -164,6 +152,7 @@ $LMS = new ULMS($DB, $AUTH, $SYSLOG);
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+$SMARTY->setPluginManager($plugin_manager);
 
 // Load plugin files and register hook callbacks
 $plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
@@ -227,6 +216,7 @@ $layout['dberrors'] =& $DB->GetErrors();
 $SMARTY->assignByRef('modules', $USERPANEL->MODULES);
 $SMARTY->assignByRef('layout', $layout);
 $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
+$SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo'));
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
@@ -273,6 +263,8 @@ if($SESSION->islogged)
 		if (function_exists('module_'.$function)) 
 		{
 		    $to_execute = 'module_'.$function;
+			$layout['userpanel_module'] = $module;
+			$layout['userpanel_function'] = $function;
 		    $to_execute();
 		} else {
     		    $layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);

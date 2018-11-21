@@ -1,0 +1,256 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+{$xajax}
+{include file="google-maps.html"}
+<H1>{$layout.pagetitle}</H1>
+
+<style>
+
+	#netnode.lms-ui-box-container .lms-ui-box-row-label {
+		width: 12em;
+	}
+	#netnode.lms-ui-box-container .lms-ui-box-row-field.ownership {
+		flex-direction: column !important;
+	}
+
+</style>
+
+<FORM NAME="netnode" METHOD="POST" ACTION="?m={$layout.module}">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="id" value="{$netnode.id}">
+
+{box_container id="netnode"}
+	{box_header icon="img/netnode.png" label="Name:"}
+		<INPUT TYPE="TEXT" NAME="netnode[name]" VALUE="{$netnode.name}" MAXLENGTH="32" required {tip trigger="name" text="Enter node name" bold=1}>
+	{/box_header}
+
+	{box_contents}
+		{box_panel}
+
+{if $divisions}
+			{box_row icon="img/division.gif" label="Division:"}
+				<SELECT NAME="netnode[divisionid]"   {tip text="Select division"} >
+					{foreach $divisions as $division}
+					<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if}>{$division.shortname}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+{/if}
+
+			{box_row icon="img/producer.gif" label="Type:"}
+				<SELECT NAME="netnode[type]"   {tip text="Enter node type"} >
+					{foreach $_NETELEMENTTYPES as $idx => $type}
+					<OPTION VALUE="{$idx}"{if $netnode.type == $idx} selected{/if}>{$type}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/producer.gif" label="Status:"}
+				<SELECT NAME="netnode[status]"  {tip text="Enter node status"} >
+					{foreach $_NETELEMENTSTATUSES as $idx => $status}
+					<OPTION VALUE="{$idx}"{if $netnode.status == $idx} selected{/if}>{$status}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row icon="img/producer.gif" label="Project:"}
+				<input type="hidden" name="netnode[project]" id="project-value">
+				<input type="hidden" name="netnode[projectid]" id="projectid-value">
+				<select id="project" data-value="{$netdev.project}" data-alt-field="#projectid-value" data-alt-invalid-field="#project-value" {tip class="lms-ui-combobox" text="Select project for this node"} trigger="project">
+					<option value="0" {if !$netdev.invprojectid} selected{/if}>- {trans("none")} -</option>
+					{foreach $NNprojects as $project}
+						<option value="{$project.id}" {if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+					{/foreach}
+				</select>
+			{/box_row}
+
+			{box_row icon="img/producer.gif" label="Ownership:"}
+				<SELECT NAME="netnode[ownership]" id="ownership" VALUE="{$netnode.ownership}" {tip text="Select ownership for this node"}>
+					{foreach $_NETELEMENTOWNERSHIPS as $idx => $ownership}
+					<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
+					{/foreach}
+				</SELECT>
+			{/box_row}
+
+			{box_row id="ownername" icon="img/division.gif" label="Owner identifier:"}
+				<INPUT TYPE="TEXT" NAME="netnode[coowner]" size="30" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner name"}>
+			{/box_row}
+
+			{box_row id="customer" icon="img/customer.gif" label="Owner:"}
+				{if isset($nodenode.id)}
+					{customerlist form="netnode" customers=$customers selected=$customer.id selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+				{else}
+					{customerlist form="netnode" customers=$customers selected=$netnode.ownerid selectname="customer" inputname="netnode[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+				{/if}
+			{/box_row}
+
+			{box_row id="location_select" icon="img/home.gif" label="Location:"}
+				<select id="customer_addresses" name="netdev[address_id]" {tip trigger="address_id"}></select>
+			{/box_row}
+
+			{box_row id="location_box" icon="img/home.gif" label="Location:"}
+				{location_box
+					prefix               = "netnode"
+					address_id           = "{$netnode.address_id}"
+					location_name        = "{$netnode.location_name}"
+					location_state_name  = "{$netnode.location_state_name}"
+					location_state       = "{$netnode.location_state}"
+					location_city_name   = "{$netnode.location_city_name}"
+					location_city        = "{$netnode.location_city}"
+					location_postoffice  = "{$netnode.location_postoffice}"
+					location_street_name = "{$netnode.location_street_name}"
+					location_street      = "{$netnode.location_street}"
+					location_house       = "{$netnode.location_house}"
+					location_flat        = "{$netnode.location_flat}"
+					location_zip         = "{$netnode.location_zip}"
+					location_country_id  = "{$netnode.location_country}"
+					teryt                = "{$netnode.teryt}"
+				}
+			{/box_row}
+
+		{/box_panel}
+		{box_panel}
+
+			{box_row}
+				<img src="img/network.gif" alt="">
+				<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
+			{/box_row}
+
+			{box_row icon="img/home.gif" label="GPS longitude:"}
+				<INPUT id="longitude" TYPE="text" NAME="netnode[longitude]" VALUE="{$netnode.longitude}"
+						{tip text="Enter node longitude (optional)" trigger="longitude"}>
+				<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"
+						{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			{/box_row}
+
+			{box_row icon="img/home.gif" label="GPS latitude:"}
+				<INPUT id="latitude" TYPE="text" NAME="netnode[latitude]" VALUE="{$netnode.latitude}"
+						{tip text="Enter node latitude (optional)" trigger="latitude"}>
+				<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.netnode.elements['netnode[longitude]'], document.netnode.elements['netnode[latitude]']);"
+						{tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
+			{/box_row}
+
+			{box_row icon="img/producer.gif" label="Sharing surface"}
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[uip]" VALUE="1"
+						{tip text="Możliwość udostępniania innym podmiotom powierzchni w obiekcie, w którym znajduje się węzeł"}
+						{if ($netnode['uip']==1)} checked{/if}>
+					{trans("Yes")}
+				</label>
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[uip]" VALUE="0"{if ($netnode['uip']==0)} checked{/if}>
+					{trans("No")}
+				</label>
+			{/box_row}
+
+			{box_row icon="img/producer.gif" label="Antennas installation"}
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[miar]" VALUE="1"
+							{tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"}
+							{if ($netnode['miar']==1)} checked{/if}>
+					{trans("Yes")}
+				</label>
+				<label>
+					<INPUT TYPE="radio" NAME="netnode[miar]" VALUE="0" {if ($netnode['miar']==0)} checked{/if}>
+					{trans("No")}
+				</label>
+			{/box_row}
+
+			{box_row icon="img/note.gif" label="Note"}
+				<TEXTAREA id="info" TYPE="TEXT" NAME="netnode[info]" VALUE="{$netnode.info}" {tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info}</TEXTAREA>
+			{/box_row}
+
+			{box_row icon="img/calendar.gif" label="Last inspection:"}
+				<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar unix" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar" trigger="lastinspectiontime"}>
+			{/box_row}
+
+			{box_row icon="img/phone.gif" label="Administrative contact:"}
+				<INPUT type="text" name="netnode[admcontact]" maxlenght="10" VALUE="{$netnode.admcontact}">
+			{/box_row}
+
+		{/box_panel}
+	{/box_contents}
+
+	{box_buttons}
+		{button type="submit" icon="save" onclick="javascript:document.netnode.submit();"
+			accesskey="s" label="Submit"}
+		{button icon="cancel" onclick="location.href='?m=netnodeinfo&id={$netnode.id}';" label="Cancel"}
+	{/box_buttons}
+{/box_container}
+
+<script>
+
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+	$('[name="netnode[name]"]').focus();
+
+	$('#ownership').change(function() {
+		var show_selectors = [];
+		var hide_selectors = [];
+		var customerid = $('#ownerid_input').val();
+		if ([ '1', '2' ].indexOf($(this).val()) != -1) {
+			show_selectors = [ '#ownername', '#customer' ];
+			if (customerid == 'undefined' || customerid == 0) {
+				show_selectors.push('#location_box');
+				hide_selectors.push('#location_select');
+			} else {
+				hide_selectors.push('#location_box');
+				show_selectors.push('#location_select');
+			}
+		} else {
+			hide_selectors = [ '#ownername', '#customer', '#location_select' ];
+			show_selectors = [ '#location_box' ];
+		}
+		$(show_selectors.join(',')).show();
+		$(hide_selectors.join(',')).hide();
+	}).change();
+
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
+	function customerChanged() {
+		$('#ownership').change();
+
+		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
+			customer_addresses.setAddressList( addresses );
+		});
+	};
+
+	getCustomerAddresses( {intval($netnode.ownerid)}, function(addresses) {
+		customer_addresses.setAddressList( addresses );
+		{if $netdev.address_id && $netdev.ownerid}
+		$( '#customer_addresses' ).val( {$netdev.address_id} );
+		{/if}
+			customer_addresses.init();
+			customer_addresses.refresh();
+		});
+
+	/*
+	 * \brief Update address location update. Require google API key.
+	 */
+	$( '#set_gps' ).click( function() {
+		var box    = $( '.lmsui-address-box' ).first();
+
+		var state  = box.find( "input[data-address='state']"  ).val();
+		var zip    = box.find( "input[data-address='zip']"    ).val();
+		var city   = box.find( "input[data-address='city']"   ).val();
+		var street = box.find( "input[data-address='street']" ).val();
+		var house  = box.find( "input[data-address='house']"  ).val();
+		var flat   = box.find( "input[data-address='flat']"   ).val();
+
+		var location = location_str({
+			city: city,
+			street: street,
+			house: house,
+			flat: flat,
+			zip: zip,
+			state: state
+		});
+
+		if ( location.length > 0 ) {
+			setAddressLocation( location, "#latitude", "#longitude" );
+		}
+	});
+
+</script>
+{/block}

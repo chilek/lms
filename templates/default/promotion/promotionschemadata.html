@@ -12,8 +12,8 @@
 	{assign value=$schema.periods|@count var=periodcnt}
 	<TR id="promotionschemadata" style="display: none;">
 		<TD style="width: 100%;">
-			<FORM method="post" name="tariffs" action="?m=promotionschemaedit&amp;id={$schema.id}&amp;action=tariff">
-			<TABLE class="lmsbox-inner">
+			<FORM method="post" name="tariffs" action="?m=promotionschemaedit&id={$schema.id}&action=tariff">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle" id="schematariffs">
 				<THEAD>
 				<TR>
 					<TD style="width: {math equation="96-x" x=$periodcnt}%;" class="bold nobr">
@@ -22,7 +22,7 @@
 					</TD>
 					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("Optional")}:</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("Selection list")}:</TD>
+					<TD style="width: 1%;" class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
 					{foreach from=$schema.periods item=period}
 					<TD style="width: 1%;" class="text-right nobr">{$period}:</TD>
 					{/foreach}
@@ -30,17 +30,16 @@
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle values="light,lucid" print=false name=tariffs}
 				{foreach from=$schema.tariffs item=tariff}
-				<TR id="row{$tariff.id}" class="highlight {cycle name=tariffs}">
+				<TR id="row{$tariff.id}" class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD style="valign-top">
-						<A href="?m=tariffinfo&amp;id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+						<img src="img/money.gif" class="drag-icon">&nbsp;<A href="?m=tariffinfo&amp;id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
 					</TD>
 					<TD class="text-right valign-top bold nobr">
 						{$tariff.value|string_format:"%.2f"}
 					</TD>
 					<TD class="text-right valign-top nobr">
-						<SPAN id="tariffopt{$tariff.id}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
+						<SPAN id="tariffopt{$tariff.id}" class="tariffopt" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
 						{if $tariff.optional}{trans("yes")}{else}{trans("no")}{/if}
 						</SPAN>
 						{if $error && $formdata.aid == $tariff.id}
@@ -48,22 +47,27 @@
 						{/if}
 					</TD>
 					<TD class="text-right valign-top nobr">
-						<SPAN id="tariffsel{$tariff.id}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
-						{if $tariff.selectionid}{$tariff.selectionid}{/if}
+						<SPAN id="tariffsel{$tariff.id}" class="tariffsel" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
+						{if $tariff.label}{$tariff.label}{/if}
 						</SPAN>
 						{if $error && $formdata.aid == $tariff.id}
+						<span id="tariffselection">
 						<SELECT name="form[tariffsel]" id="tariffsel" {tip text="Choose selection list" trigger="tariffsel"}>
-							<OPTION value="0" {if !$formdata.tariffsel}selected{/if}>{trans("- none -")}</OPTION>
-							{foreach array(1,2,3,4,5,6,7,8,9) as $selid}
+							<OPTION value="0" {if !$formdata.tariffsel}selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
+							<OPTION value="-1" {if $formdata.tariffsel == -1}selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
+							{foreach $schema.selections as $selid}
 							<OPTION value="{$selid}"{if $selid == $formdata.tariffsel} selected{/if}>{$selid}</OPTION>
 							{/foreach}
 						</SELECT>
+						<br>
+						<input type="text" size="15" name="form[tariffnewsel]" id="tariffnewsel"{if $formdata.tariffsel != -1} style="display: none;"{/if} {tip text="<!promotionassignment>Enter new label" trigger="tariffnewsel"}
+						</span>
 						{/if}
 					</TD>
 					{foreach from=$schema.periods item=period key=key}
 					<TD class="text-right valign-top nobr">
-						<SPAN id="tariffval{$tariff.id}_{$key}"{if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
-						{if $tariff.data.value.$key != 'NULL'}{$tariff.data.value.$key|string_format:"%.2f"}{/if}						
+						<SPAN id="tariffval{$tariff.id}_{$key}" class="tariffval" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
+						{if $tariff.data.value.$key != 'NULL'}{$tariff.data.value.$key|string_format:"%.2f"}{/if}
 						{if $tariff.data.period.$key}{assign var=pkey value=$tariff.data.period.$key}({$_PERIODS.$pkey}){/if}
 						</SPAN>
 						{if $error && $formdata.aid == $tariff.id}
@@ -84,10 +88,10 @@
 					</TD>
 					{/foreach}
 					<TD class="nobr">
-						<A id="del{$tariff.id}" href="?m=promotionschemaedit&amp;action=tariffdel&amp;id={$schema.id}&amp;aid={$tariff.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this assignment?")}');"><IMG src="img/delete.gif" alt="[ {trans("Delete assignment")} ]" title="[ {trans("Delete assignment")} ]"></A>
-						<A id="edit{$tariff.id}" href="javascript:edit_tariff({$tariff.id})"><IMG src="img/edit.gif" alt="[ {trans("Edit assignment")} ]" title="[ {trans("Edit assignment")} ]"></A>
-						<A id="cancel{$tariff.id}" href="javascript:cancel_tariff({$tariff.id})" style="display:none"><IMG src="img/cancel.gif" alt="[ {trans("Cancel")} ]" title="[ {trans("Cancel")} ]"></A>
-						<A id="save{$tariff.id}" href="javascript:save_tariff({$tariff.id})" style="display:none"><IMG src="img/save.gif" alt="[ {trans("Save")} ]" title="[ {trans("Save")} ]"></A>
+						<A id="del{$tariff.id}" href="?m=promotionschemaedit&amp;action=tariffdel&amp;id={$schema.id}&amp;aid={$tariff.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this assignment?")}');"><IMG src="img/delete.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}"></A>
+						<A id="edit{$tariff.id}" href="javascript:edit_tariff({$tariff.id})"><IMG src="img/edit.gif" alt="{trans("Edit assignment")}" title="{trans("Edit assignment")}"></A>
+						<A id="cancel{$tariff.id}" href="javascript:cancel_tariff({$tariff.id})" style="display:none"><IMG src="img/cancel.gif" alt="{trans("Cancel")}" title="{trans("Cancel")}"></A>
+						<A id="save{$tariff.id}" href="javascript:save_tariff({$tariff.id})" style="display:none"><IMG src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></A>
 					</TD>
 				</TR>
 				{foreachelse}
@@ -97,7 +101,9 @@
 					</TD>
 				</TR>
 				{/foreach}
+				</TBODY>
 				{if $tariffs}
+				<TFOOT>
 				<TR>
 					<TD colspan="2" class="ftop valign-top">
 						<SELECT name="form[tariffid]" {tip text="Select subscription" trigger="tariffid"}>
@@ -113,11 +119,14 @@
 					</TD>
 					<TD class="ftop text-right valign-top nobr">
 						<SELECT name="form[sel]" {tip text="Choose selection list" trigger="sel"}>
-							<OPTION value="0" {if !$formdata.sel}selected{/if}>{trans("- none -")}</OPTION>
-							{foreach array(1,2,3,4,5,6,7,8,9) as $selid}
+							<OPTION value="0" {if !$formdata.sel}selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
+							<OPTION value="-1" {if $formdata.sel == -1}selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
+							{foreach $schema.selections as $selid}
 							<OPTION value="{$selid}"{if $selid == $formdata.sel} selected{/if}>{$selid}</OPTION>
 							{/foreach}
 						</SELECT>
+						<br>
+						<input type="text" size="15" name="form[newsel]" id="newsel" style="display: none;" {tip text="<!promotionassignment>Enter new label" trigger="newsel"}
 					</TD>
 					{foreach from=$schema.periods item=period key=key}
 					<TD class="ftop text-right valign-top nobr">
@@ -137,11 +146,11 @@
 					</TD>
 					{/foreach}
 					<TD class="ftop text-right valign-top">
-						<A href="javascript:document.tariffs.submit()"><IMG src="img/save.gif" alt="[ {trans("Add assignment")} ]" title="[ {trans("Add assignment")} ]"></A>
+						<A href="javascript:document.tariffs.submit()"><IMG src="img/save.gif" alt="{trans("Add assignment")}" title="{trans("Add assignment")}"></A>
 					</TD>
 				</TR>
 				{/if}
-				</TBODY>
+				</TFOOT>
 			</TABLE>
 			</FORM>
 		</TD>
@@ -161,7 +170,7 @@ function edit_tariff(id) {
 	}
 
 	var tr = document.getElementById('row'+id),
-		tds = tr.getElementsByTagName('SPAN'),
+		tds = $(tr).find('span.tariffval,span.tariffopt,span.tariffsel'),
 		i, j, n, v, period, input, sel, opt, pn,
 		periods = { {strip}
 			"-":0
@@ -173,12 +182,13 @@ function edit_tariff(id) {
 	edited_row = id;
 
 	k = 0;
-	for (i=0; i<tds.length; i++) {
-		pn = tds[i].parentNode;
-		v  = tds[i].innerHTML.replace(/^\s+/, '').replace(/\s+$/, '');
 
-		if (/^tariffval[0-9]+_/.test(tds[i].id)) {
-			n  = tds[i].id.replace(/^tariffval[0-9]+_/, '');
+	tds.each(function() {
+		pn = $(this).parent();
+		v  = this.innerHTML.replace(/^\s+/, '').replace(/\s+$/, '');
+
+		if (/^tariffval[0-9]+_/.test(this.id)) {
+			n  = this.id.replace(/^tariffval[0-9]+_/, '');
 
 			if (v.match(/^([0-9,.+-]+)\s+\(([^)]+)\)/)) {
 				v = RegExp.$1;
@@ -186,64 +196,44 @@ function edit_tariff(id) {
 			} else
 				period = 0;
 
-			input = document.createElement('INPUT');
-			input.setAttribute('type', 'text');
-			input.setAttribute('size', '8');
-			input.name = 'form[tariffval' + n + ']';
-			input.id = 'tariffval' + n;
-			input.value = v;
-			pn.appendChild(input);
+			$(pn).append('<input type="text" size="8" name="form[tariffval' + n + ']" id="tariffval' + n + '" value="' + v + '">');
 			// move cursor to activation field
 			if (!k) {
-				input.focus(); input.select();
+				$('#tariffval' + n).focus();
 			// add period selector
 			} else {
-				sel = document.createElement('BR');
-				pn.appendChild(sel);
-				sel = document.createElement('SELECT');
-				sel.name = 'form[tariffperiod' + n + ']';
-				sel.id = 'tariffperiod' + n;
-
+				innerHTML = '<BR><SELECT name="form[tariffperiod' + n + ']" id="tariffperiod' + n + '">';
 				for (j in periods) {
-					opt = document.createElement('OPTION');
-					opt.value = periods[j];
-					opt.innerHTML = j;
-					sel.appendChild(opt);
+					innerHTML += '<OPTION value="' + periods[j] + '"' + (period == periods[j] ? ' selected' : '') + '>' + j + '</OPTION>';
 				}
-				sel.value = period;
-				pn.appendChild(sel);
+				innerHTML += '</SELECT>';
+				$(pn).append(innerHTML);
 			}
 			k++;
-		} else if (/^tariffopt[0-9]+$/.test(tds[i].id)) {
-			input = document.createElement('INPUT');
-			input.setAttribute('type', 'checkbox');
-			if (v == '{trans("yes")}')
-				input.setAttribute('checked', '');
-			input.name = 'form[tariffopt]';
-			input.id = 'tariffopt';
-			input.value = '1';
-			pn.appendChild(input);
-		} else if (/^tariffsel[0-9]+$/.test(tds[i].id)) {
-			sel = document.createElement('SELECT');
-			sel.name = 'form[tariffsel]';
-			sel.id = 'tariffsel';
-
-			opt = document.createElement('OPTION');
-			opt.value = 0;
-			opt.innerHTML = '{trans("- none -")}';
-			sel.appendChild(opt);
-			for (j = 1; j < 10; j++) {
-				opt = document.createElement('OPTION');
-				opt.value = j;
-				opt.innerHTML = j;
-				sel.appendChild(opt);
-			}
-			if (parseInt(v) != NaN)
-				sel.value = parseInt(v);
-			pn.appendChild(sel);
+		} else if (/^tariffopt[0-9]+$/.test(this.id)) {
+			$(pn).append('<INPUT type="checkbox" name="form[tariffopt]" id="tariffopt" value="1"'
+				+ (v == '{trans("yes")}' ? ' checked' : '') + '>');
+		} else if (/^tariffsel[0-9]+$/.test(this.id)) {
+			$(pn).append('<span id="tariffselection">'
+				+ '<SELECT name="form[tariffsel]" id="tariffsel">'
+				+ '<OPTION value="0">{trans("<!promotionassignment>- none -")}</OPTION>'
+				+ '<OPTION value="-1">{trans("<!promotionassignment>- new -")}</OPTION>'
+				{foreach $schema.selections as $selid}
+				+ '<OPTION value="{$selid}"' + (v == '{$selid}' ? ' selected' : '') + '>{$selid}</OPTION>'
+				{/foreach}
+				+ '</SELECT><br>'
+				+ '<input type="text" size="15" name="form[tariffnewsel]" id="tariffnewsel" style="display: none;" {tip text="<!promotionassignment>Enter new label" trigger="tariffnewsel"}>'
+				+ '</span>');
+			$('#tariffsel').change(function() {
+				if ($(this).val() == '-1') {
+					$('#tariffnewsel').show();
+				} else {
+					$('#tariffnewsel').hide();
+				}
+			});
 		}
-		tds[i].style.display = 'none';
-	}
+		$(this).hide();
+	});
 
 	document.getElementById('cancel' + id).style.display = '';
 	document.getElementById('save' + id).style.display = '';
@@ -277,8 +267,7 @@ function cancel_tariff(id) {
 			v = document.getElementById('tariffopt');
 			v.parentNode.removeChild(v);
 		} else if (/^tariffsel[0-9]+$/.test(tds[i].id)) {
-			v = document.getElementById('tariffsel');
-			v.parentNode.removeChild(v);
+			$('#tariffselection').remove();
 		}
 	}
 
@@ -288,11 +277,51 @@ function cancel_tariff(id) {
 	document.getElementById('del' + id).style.display = '';
 }
 
+$('[name="form[sel]"]').change(function() {
+	if ($(this).val() == '-1')
+		$('#newsel').show();
+	else
+		$('#newsel').hide();
+});
+
 {if $error && $formdata.aid}
 document.getElementById('cancel{$formdata.aid}').style.display = '';
 document.getElementById('save{$formdata.aid}').style.display = '';
 document.getElementById('edit{$formdata.aid}').style.display = 'none';
 document.getElementById('del{$formdata.aid}').style.display = 'none';
 {/if}
+
+$(function () {
+	$('#schematariffs').sortable({
+		items: 'tbody > tr.schematariff',
+		handle: 'img.drag-icon',
+		opacity: 0.9,
+		axis: 'y',
+		placeholder: 'light',
+		update: function (event, ui) {
+			var assignments = [];
+			ui.item.parent().children('tr[data-assignment]').each(function (index, value) {
+				assignments.push($(this).attr('data-assignment'));
+			});
+			$.ajax('?m=promotionschemaedit&id={$schema.id}&action=tariff-reorder', {
+				method: "POST",
+				data: {
+					assignments: assignments
+				},
+				dataType: "json",
+				success: function (data, textStatus, qXHR) {
+					if (data.result === undefined || data.result != 'OK') {
+						$('#userpanel-modules').sortable('cancel');
+						alert('{trans("LMS: operation failed!")}');
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					$('#schematariffs').sortable('cancel');
+					alert('{trans("AJAX: Invalid result - status:")}' + textStatus + '!');
+				}
+			});
+		}
+	});
+});
 //-->
 </SCRIPT>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,15 +31,16 @@ $template = $numberplan['template'];
 
 $numberplanedit = isset($_POST['numberplanedit']) ? $_POST['numberplanedit'] : NULL;
 
-if(sizeof($numberplanedit)) 
+if(count($numberplanedit)) 
 {
 	$numberplanedit['template'] = trim($numberplanedit['template']);
 	$numberplanedit['id'] = $numberplan['id'];
 
 	if($numberplanedit['template'] == '')
 		$error['template'] = trans('Number template is required!');
-	elseif(!preg_match('/%[1-9]{0,1}N/', $numberplanedit['template']))
-		$error['template'] = trans('Template must consist "%N" specifier!');
+	elseif (!preg_match('/%[1-9]{0,1}N/', $numberplanedit['template'])
+		&& !preg_match('/%[1-9]{0,1}C/', $numberplanedit['template']))
+		$error['template'] = trans('Template must contain "%N" or "%C" specifier!');
 
 	if(!isset($numberplanedit['isdefault']))
 		$numberplanedit['isdefault'] = 0;
@@ -71,25 +72,23 @@ if(sizeof($numberplanedit))
 			'doctype' => $numberplanedit['doctype'],
 			'period' => $numberplanedit['period'],
 			'isdefault' => $numberplanedit['isdefault'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $numberplanedit['id']
+			SYSLOG::RES_NUMPLAN => $numberplanedit['id']
 		);
 		$DB->Execute('UPDATE numberplans SET template=?, doctype=?, period=?, isdefault=? WHERE id=?',
 				array_values($args));
 
 		if ($SYSLOG) {
-			$SYSLOG->AddMessage(SYSLOG_RES_NUMPLAN, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_UPDATE, $args);
 			$assigns = $DB->GetAll('SELECT * FROM numberplanassignments WHERE planid = ?',
 				array($numberplanedit['id']));
 			if (!empty($assigns))
 				foreach ($assigns as $assign) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $assign['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $assign['planid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $assign['divisionid']
+						SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
+						SYSLOG::RES_NUMPLAN => $assign['planid'],
+						SYSLOG::RES_DIV => $assign['divisionid']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_DELETE,
-						$args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 
@@ -102,12 +101,11 @@ if(sizeof($numberplanedit))
 				if ($SYSLOG) {
 					$id = $DB->GetLastInsertID('numberplanassignments');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $id,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $numberplanedit['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => intval($idx)
+						SYSLOG::RES_NUMPLANASSIGN => $id,
+						SYSLOG::RES_NUMPLAN => $numberplanedit['id'],
+						SYSLOG::RES_DIV => intval($idx)
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_ADD,
-						$args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
 				}
 			}
 

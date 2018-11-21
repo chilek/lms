@@ -1,5 +1,5 @@
-{extends file="layout-without-footer.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{extends file="header.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -11,7 +11,7 @@
         <TR>
         	<TD CLASS="fall superlight"><PRE>{$message.body}</PRE></TD>
 	</TR>
-</TABLE>				
+</TABLE>
 {if $recipcount}
 <BR><B>{trans("Sending messages to:")}</B><BR>
 {/if}

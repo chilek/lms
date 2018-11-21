@@ -33,7 +33,10 @@ $CONTACT_EMAIL = 8;
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE customercontacts CHANGE phone contact varchar(255) NOT NULL DEFAULT ''");
-$this->Execute("UPDATE customercontacts SET type = ? WHERE type IS NULL OR type = 0", array($CONTACT_LANDLINE));
+$this->Execute("UPDATE customercontacts SET type = type | ? WHERE type = 0 OR type = ?",
+	array($CONTACT_LANDLINE, $CONTACT_FAX));
+$this->Execute("UPDATE customercontacts SET type = ? WHERE type IS NULL",
+	array($CONTACT_LANDLINE));
 
 $customers = $this->GetAll("SELECT id, email FROM customers WHERE email <> ''");
 if (!empty($customers)) {
@@ -44,8 +47,8 @@ if (!empty($customers)) {
 		$this->Execute("INSERT INTO customercontacts (customerid, contact, type) VALUES " . implode(',', $records));
 }
 
-$this->Execute("DROP VIEW customersview");
-$this->Execute("DROP VIEW contractorview");
+$this->Execute("DROP VIEW IF EXISTS customersview");
+$this->Execute("DROP VIEW IF EXISTS contractorview");
 $this->Execute("ALTER TABLE customers DROP COLUMN email");
 $this->Execute("CREATE VIEW customersview AS
 	SELECT c.* FROM customers c

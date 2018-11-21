@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,8 +44,9 @@ switch($type) {
 	default:
 		$layout['pagetitle'] = trans('Reports');
 
-		$SMARTY->assign('invprojects', $DB->GetAll('SELECT id, name FROM invprojects WHERE type <> ?', array(INV_PROJECT_SYSTEM)));
-		$SMARTY->assign('printmenu', 'netdev');
+		$SMARTY->assign('invprojects', $LMS->GetProjects());
+		$SMARTY->assign('printmenu'  , 'netdev');
+		$SMARTY->assign('linktypes'  , $LINKTYPES);
 		$SMARTY->display('print/printindex.html');
 	break;
 }

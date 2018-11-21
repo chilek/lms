@@ -69,7 +69,7 @@ function GetAliasList($order='login,asc', $search, $customer='', $domain='')
 			.$where
             		.($sqlord != '' ? $sqlord : ''));
 	
-	$list['total'] = sizeof($list);
+	$list['total'] = count($list);
 	$list['order'] = $order;
 	$list['direction'] = $direction;
 	$list['customer'] = $customer;
@@ -93,7 +93,7 @@ $SESSION->save('also', $o);
 
 if(isset($_GET['u']))
 	$u = $_GET['u'];
-elseif(sizeof($search))
+elseif(count($search))
 	$u = isset($search['ownerid']) ? $search['ownerid'] : '';
 else
 	$SESSION->restore('alsu', $u);
@@ -101,7 +101,7 @@ $SESSION->save('alsu', $u);
 
 if(isset($_GET['d']))
 	$d = $_GET['d'];
-elseif(sizeof($search))
+elseif(count($search))
 	$d = 0;
 else
 	$SESSION->restore('alsd', $d);
@@ -110,9 +110,9 @@ $SESSION->save('alsd', $d);
 if ($SESSION->is_set('alsp') && !isset($_GET['page']) && !isset($search))
 	$SESSION->restore('alsp', $_GET['page']);
 
-if(sizeof($search) || isset($_GET['s']))
+if(count($search) || isset($_GET['s']))
 {
-	$search = sizeof($search) ? $search : $SESSION->get('aliassearch');
+	$search = count($search) ? $search : $SESSION->get('aliassearch');
 
 	if(!$error)
 	{

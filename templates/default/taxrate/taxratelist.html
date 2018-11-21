@@ -1,30 +1,43 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 93%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="94%" NOWRAP>
+		<TD class="nobr">
 			<IMG src="img/tax.gif" alt=""> <A href="?m=taxratelist&amp;o=label{if $listdata.direction == "asc" && $listdata.order == "label"},desc{/if}"><B>{trans("Label:")}</B></A> {if $listdata.order == "label"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" align="center" NOWRAP>
+		<TD class="nobr">
 			<IMG src="img/empty.gif" alt="" height="16"><A href="?m=taxratelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" NOWRAP>
+		<TD class="nobr">
 			<IMG src="img/empty.gif" alt=""> <A href="?m=taxratelist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" NOWRAP>{trans("Taxing:")}</TD>
-		<TD width="1%" NOWRAP>{trans("Binds from date:")}</TD>
-		<TD width="1%" NOWRAP>{trans("Binds to date:")}</TD>
-		<TD width="1%" NOWRAP>
+		<TD class="nobr">
+			{trans("Reverse charge:")}
+		</TD>
+		<TD class="nobr">{trans("Taxing:")}</TD>
+		<TD class="nobr">{trans("Binds from date:")}</TD>
+		<TD class="nobr">{trans("Binds to date:")}</TD>
+		<TD class="nobr">
 			<a href="?m=taxrateadd">{trans("Add tax rate")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="7">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="scroller.html" loop=$taxratelist}
 		</TD>
 	</TR>
@@ -34,32 +47,35 @@
 	{cycle values="light,lucid" print=false}
 	{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}"  >
-		<TD NOWRAP onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
+		<TD class="nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
 			<IMG src="img/tax.gif" alt=""><B> {$taxratelist[taxratelist].label}</B>
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
+		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
 			({$taxratelist[taxratelist].id|string_format:"%04d"})
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
+		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
 			{$taxratelist[taxratelist].value|string_format:"%.2f"} %
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
+		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
+			{if $taxratelist[taxratelist].reversecharge}+{/if}
+		</TD>
+		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
 			{if $taxratelist[taxratelist].taxed}+{/if}
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
+		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
 			{if $taxratelist[taxratelist].validfrom}{$taxratelist[taxratelist].validfrom|date_format:"%x"}{/if}
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
+		<TD class="text-center nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
 			{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
 		</TD>
-		<TD align="right" NOWRAP>
-			<A href="?m=taxratedel&amp;id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t a=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+		<TD class="text-right nobr">
+			<A href="?m=taxratedel&amp;id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t a=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="7" class="empty-table">
+		<TD colspan="8" class="empty-table">
 			<p>{trans("No such tax rates in database.")}</p>
 		</TD>
 	</TR>
@@ -68,13 +84,13 @@
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" COLSPAN="7">
+		<TD class="lms-ui-pagination" COLSPAN="8">
 			{include file="scroller.html" loop=$taxratelist}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD colspan="7" align="right">
+		<TD colspan="8" class="text-right">
 			<a href="?m=taxrateadd">{trans("Add tax rate")} <img src="img/save.gif" alt=""></a>
 		</TD>
 	</TR>

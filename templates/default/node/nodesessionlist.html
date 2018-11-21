@@ -1,7 +1,6 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
-{include file="calendar_js.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <script type="text/javascript">
@@ -64,14 +63,10 @@
 							</label>
 						</td>
 						<td style="width: 1%;" class="nobr">
-							<div class="calendar-time">
-							{trans("Started:")} <INPUT type="text" name="datefrom" size="20" maxlength="20" value="{$datefrom}" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
-							</div>
+							{trans("Started:")} <INPUT type="text" name="datefrom" size="20" maxlength="20" value="{$datefrom}" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 						</td>
 						<td style="width: 1%;" class="nobr">
-							<div class="calendar-time">
-							{trans("Finished:")} <INPUT type="text" name="dateto" size="20" maxlength="20" value="{$dateto}" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
-							</div>
+							{trans("Finished:")} <INPUT type="text" name="dateto" size="20" maxlength="20" value="{$dateto}" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 						</td>
 						<td style="width: 95%;" class="nobr">
 							<a href="javascript:filter();">&raquo;&raquo;&raquo;</a>
@@ -94,7 +89,7 @@
 		</tr>
 		{if $listdata.total != 0}
 		<TR>
-			<TD class="pagination" COLSPAN="10">
+			<TD class="lms-ui-pagination" COLSPAN="10">
 				{include file="scroller.html" loop=$nodesessions scrollerno=1}
 			</TD>
 		</TR>
@@ -103,7 +98,7 @@
 	<tfoot>
 		{if $listdata.total != 0}
 		<TR>
-			<TD class="pagination" COLSPAN="10">
+			<TD class="lms-ui-pagination" COLSPAN="10">
 				{include file="scroller.html" loop=$nodesessions scrollerno=2}
 			</TD>
 		</TR>
@@ -116,7 +111,7 @@
 		<tr class="{cycle}">
 			<td class="fleft bold nobr">
 				{if $session.nodeid}<a href="?m=nodeinfo&id={$session.nodeid}">{/if}
-				{long2ip($session.ipaddr)}
+				{long_ip($session.ipaddr)}
 				{if $session.nodeid}</a>{/if}
 			</td>
 			<td class="nobr">

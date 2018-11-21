@@ -5,8 +5,9 @@
 <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
 <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
 <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle} :{/if}::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="img/common.js"></script>
+{include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/common.js"></script>
 {if $js}<script type="text/javascript">
 <!--
 	{$js}
@@ -20,16 +21,16 @@
 </frameset>
 {/if}
 {if $part == "top"}
-<body>
+<body class="lms-ui-popup">
 <form name="search" method="post" action="?m=choosecustomer&p=main" target="main">
 <input type="submit" class="hiddenbtn">
 <table cellpadding="5" width="100%">
 	<tr>
 		<td class="fall dark" align="center" nowrap>
 			<img src="img/customer.gif" alt="">
-			<input type="text" name="searchcustomer" value="{$searchcustomer}" size="20" onkeyup="document.search.submit();">&nbsp;&nbsp;
+			<input type="text" class="lms-ui-deferred-submit" name="searchcustomer" value="{$searchcustomer}" size="20">
 			<img src="img/node.gif" alt="">
-			<input type="text" name="searchnode" value="{$searchnode}" size="20" onkeyup="document.search.submit();">
+			<input type="text" class="lms-ui-deferred-submit" name="searchnode" value="{$searchnode}" size="20">
 		</td>
 	</tr>
 </table>
@@ -42,7 +43,7 @@ document.search.searchcustomer.focus();
 </body>
 {/if}
 {if $part == "main"}
-<body>
+<body class="lms-ui-popup">
 <table cellpadding="3" width="100%">
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist}

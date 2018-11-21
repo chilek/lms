@@ -1,5 +1,5 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
@@ -36,7 +36,7 @@
 								</TD>
 								<TD style="width: 1%;" class="bold">{trans("E-mail:")}</TD>
 								<TD style="width: 98%;">
-									<INPUT TYPE="TEXT" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
+									<INPUT TYPE="email" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 								</TD>
 							</TR>
 							<TR>
@@ -49,74 +49,65 @@
 								</TD>
 							</TR>
 							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/verifier.png" alt="">
+								</TD>
+								<TD style="width: 1%;" class="bold">{trans("<!rt>Verifier:")}</TD>
+								<TD style="width: 99%;">
+                                    <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
+                                        <OPTION value="">- {trans("select user")} -</OPTION>
+										{foreach $userlist as $user}
+										<OPTION value="{$user.id}" {if $user.id == $queue.verifier.id} selected{/if}>{$user.name}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+							</TR>
+							<TR>
 								<TD style="width: 1%;">
 									<IMG src="img/users.gif" ALT="">
 								</TD style="width: 1%;">
 								<TD class="bold">{trans("Privileges:")}</TD>
 								<TD style="width: 98%;">
 									<TABLE width="50%" class="lmsbox">
+										<COLGROUP>
+											<COL style="width: {100-count($_RT_RIGHTS)}%">
+											{foreach $_RT_RIGHTS as $label}
+											<COL style="width: 1%;">
+											{/foreach}
+										</COLGROUP>
 										<THEAD>
 											<TR>
-												<TD style="width: 46%;" class="bold nobr">{trans("User")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Read")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Write (+R)")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Delete (+R)")}</TD>
-												<TD style="width: 1%;" class="text-center bold nobr">{trans("Notice (+R)")}</TD>
+												<TD class="bold nobr">{trans("User")}</TD>
+												{foreach $_RT_RIGHTS as $label}
+												<TD class="text-center bold nobr">{$label}</TD>
+												{/foreach}
 											</TR>
+										</THEAD>
+										<TBODY>
 											{cycle values="light,lucid" print=false}
 											{foreach from=$queue.rights item=right}
-											<TR class="highlight {cycle}">
-												<TD style="width: 46%;">
+											<TR class="highlight {cycle} lms-ui-row-all-check">
+												<TD>
 													<A href="?m=userinfo&id={$right.id}" class="nobr">{$right.name}</A>
 													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][1]" value="1" {if $right.rights > 0}CHECKED{/if}>
+												{foreach $_RT_RIGHTS as $rightvalue => $label}
+												<TD class="text-center">
+													<INPUT type="checkbox" name="queue[users][{$right.id}][{$rightvalue}]" value="{$rightvalue}"{if ($right.rights & $rightvalue) == $rightvalue} checked{/if}>
 												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][2]" value="2" {if ($right.rights & 2) == 2}CHECKED{/if}>
-												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][4]" value="4" {if ($right.rights & 4) == 4}CHECKED{/if}>
-												</TD>
-												<TD style="width: 1%;" class="text-center">
-													<INPUT type="checkbox" name="queue[users][{$right.id}][8]" value="8" {if ($right.rights & 8) == 8}CHECKED{/if}>
-												</TD>
+												{/foreach}
 											</TR>
 											{/foreach}
-                                                                                        <TR class="highlight {cycle}">
-                                                                                                <TD style="width: 96%;" class="nobr text-right">
-                                                                                                        <label for="allbox">{trans("Check All")}</label>
-                                                                                                </TD>
-                                                                                                <TD style="width: 1%;" class="text-center">
-                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[1]" id="allbox[1]" onchange="CheckAll('queue', this, ['allbox[2]', 'allbox[4]', 'allbox[8]',
-                                                                                                        {foreach from=$queue.rights item=right}
-                                                                                                                'queue[users][{$right.id}][2]', 'queue[users][{$right.id}][4]', 'queue[users][{$right.id}][8]',
-                                                                                                        {/foreach}
-                                                                                                        ])">
-                                                                                                </TD>
-                                                                                                <TD style="width: 1%;" class="text-center">
-                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[2]" id="allbox[2]" onchange="CheckAll('queue', this, ['allbox[1]', 'allbox[4]', 'allbox[8]',
-                                                                                                        {foreach from=$queue.rights item=right}
-                                                                                                                'queue[users][{$right.id}][1]', 'queue[users][{$right.id}][4]', 'queue[users][{$right.id}][8]',
-                                                                                                        {/foreach}
-                                                                                                        ])">
-                                                                                                </TD>
-                                                                                                <TD style="width: 1%;" class="text-center">
-                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[4]" id="allbox[4]" onchange="CheckAll('queue', this, ['allbox[1]', 'allbox[2]', 'allbox[8]',
-                                                                                                        {foreach from=$queue.rights item=right}
-                                                                                                                'queue[users][{$right.id}][1]', 'queue[users][{$right.id}][2]', 'queue[users][{$right.id}][8]',
-                                                                                                        {/foreach}
-                                                                                                        ])">
-                                                                                                </TD>
-                                                                                                <TD style="width: 1%;" class="text-center">
-                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[8]" id="allbox[8]" onchange="CheckAll('queue', this, ['allbox[1]', 'allbox[2]', 'allbox[4]',
-                                                                                                        {foreach from=$queue.rights item=right}
-                                                                                                                'queue[users][{$right.id}][1]', 'queue[users][{$right.id}][2]', 'queue[users][{$right.id}][4]',
-                                                                                                        {/foreach}
-                                                                                                        ])">
-                                                                                                </TD>
-                                                                                        </TR>
+											<TR class="highlight {cycle}">
+												<TD class="nobr text-right">
+													{trans("Check All")}
+												</TD>
+												{foreach $_RT_RIGHTS as $rightvalue => $label}
+												<TD class="text-center">
+													<INPUT TYPE="checkbox" NAME="allbox[{$rightvalue}]" data-value="{$rightvalue}">
+												</TD>
+												{/foreach}
+											</TR>
 										</TBODY>
 									</TABLE>
 								</TD>
@@ -193,17 +184,65 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD>
+			<table width="100%">
+				<tr>
+					<td>
+						<FIELDSET>
+							<LEGEND><img src="img/queue.gif" alt="">&nbsp;<span class="bold">{trans("Default categories")}</span>
+								<label>
+									({trans("Check All")}
+									<input type="checkbox" id="checkall">)
+								</label>
+							</LEGEND>
+							<table width="100%">
+								<tr>
+									<td>
+										{foreach $categories as $category}
+										<label>
+											<input class="categorycheckbox" type="checkbox" name="queue[categories][{$category.id}]" value="1"{if isset($category.checked)} checked{/if}>
+											{$category.name}
+										</label>
+										{/foreach}
+									</td>
+								</tr>
+							</table>
+						</FIELDSET>
+					</td>
+				</tr>
+			</table>
+		</TD>
+	</TR>
+	<TR>
 		<TD style="width: 100%;" class="text-right">
-			<A HREF="javascript:document.queue.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
-			<A HREF="?m=rtqueuelist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
+			<A HREF="javascript:document.queue.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+			<A HREF="?m=rtqueuelist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE></FORM></P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['queue'].elements['queue[name]'].focus();
+$(function() {
+	$('form[name="queue"] [name="queue[name]"]').focus();
+
+	for (var i = 0; i < {count($_RT_RIGHTS)}; i++) {
+		$('input:checkbox[name="allbox[' + Math.pow(2, i) + ']"]').click(function() {
+			$('input:checkbox[name*="queue[users]"][value="' + $(this).attr('data-value') + '"]').prop('checked', this.checked);
+		});
+	}
+
+	$('#checkall').click(function() {
+		$('input.categorycheckbox').prop('checked', $(this).prop('checked'));
+	});
+
+	var categorycheckbox = $('input.categorycheckbox');
+	$('#checkall').prop('checked', categorycheckbox.length == categorycheckbox.filter(':checked').length);
+	categorycheckbox.click(function() {
+		$('#checkall').prop('checked', categorycheckbox.length == categorycheckbox.filter(':checked').length);
+	});
+});
 //-->
 </SCRIPT>
 {/block}

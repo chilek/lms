@@ -1,0 +1,134 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2018 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+#customerassignmentpanel {
+	.lms-ui-tab-table .footer .liability {
+		text-align: right;
+	}
+	.lms-ui-tab-button-panel {
+		border-top: 0;
+		height: 0.1em;
+		.lms-ui-tab-buttons:nth-child(2) {
+			position: relative;
+			top: -0.8em;
+		}
+	}
+
+	.liability {
+		width: 25em;
+	}
+	.value {
+		width: 8em;
+	}
+	.discount {
+		width: 8em;
+	}
+	.accounting {
+		width: 10em;
+	}
+	.downceil {
+		width: 8em;
+	}
+	.upceil {
+		width: 8em;
+	}
+	.options {
+		width: 5em;
+	}
+	.period {
+		width: 14em;
+	}
+	.buttons {
+		width: 4em;
+	}
+
+	@media all and (max-width: 1500px) {
+		.col-4:first-child {
+			.liability {
+				width: 20em;
+			}
+			.col-2 {
+				flex-direction: column !important;
+				width: 8em !important;
+				div {
+					flex-grow: 0 !important;
+					width: 100% !important;
+				}
+			}
+			.accounting {
+				width: 8em;
+			}
+		}
+		.col-4:nth-child(2) {
+			.col-2:first-child {
+				flex-direction: column !important;
+				width: 8em !important;
+				div {
+					flex-grow: 0 !important;
+					width: 100% !important;
+				}
+			}
+			.col-2:nth-child(2) {
+				flex-direction: column !important;
+				width: 14em !important;
+				div {
+					flex-grow: 0 !important;
+					width: 100% !important;
+				}
+			}
+		}
+	}
+	@media all and (max-width: 1100px) {
+		.col-4:first-child {
+			flex-direction: column !important;
+			width: 15em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+		.col-4:nth-child(2) {
+			flex-direction: column !important;
+			width: 11em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+	@media all and (max-width: 768px) {
+		.lms-ui-tab-table .footer .liability {
+			text-align: left;
+		}
+
+		.col-8 {
+			flex-direction: column !important;
+			width: 17em !important;
+			div {
+				flex-grow: 0 !important;
+				width: 100% !important;
+			}
+		}
+	}
+}

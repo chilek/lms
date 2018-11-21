@@ -1,66 +1,72 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD style="width: 100%; text-align: left; white-space: nowrap;" class="hand" >
-		<table style="width:100%;"> 
-			<tr>
-			<td style="width:50%;text-align:left;" class="bold" onClick="showOrHide('devicenodes');">
-				<IMG SRC="img/node.gif" ALT="">{t a=$netdevlist|@count}Assigned net devices ($a):{/t}</td>
-			<td style="width:50%;text-align:right;">
-				<a href="#" onclick="popup('?m=choosenetdev&id={$objectid}',1,1,-50,-40);autoiframe_setsize('autoiframe',500,290);return false;">
-					<IMG SRC="img/netdev.gif" ALT=""> {trans("Add devices to node")}</a></td>
-		</table>
+<TABLE class="lmsbox lms-ui-sortable" id="netnodedevices">
+    <COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicenodepanel">
+		<TD class="bold nobr">
+			<IMG SRC="img/node.gif" ALT="">{t a=$netdevlist|@count}Assigned net devices ($a):{/t}</td>
 		</TD>
+		<td class="text-right nobr">
+			<a href="#" onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')">
+				<IMG SRC="img/netdev.gif" ALT=""> {trans("Add devices to node")}
+			</a>
+		</td>
 	</TR>
     </THEAD>
     <TBODY>
-	<TR id="devicenodes" style="display:none;">
-		<TD style="width: 100%;">
-			<TABLE class="lmsbox-inner">
-                            <THEAD>
-				<TR>
-					<TD style="width: 97%; white-space: nowrap;">
+	<TR id="devicenodepanel" style="display:none;">
+		<TD colspan="2">
+			<TABLE class="lmsbox-inner lms-ui-background-cycle">
+				<COLGROUP>
+					<COL style="width: 97%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<THEAD>
+				<TR class="lms-ui-header-panel">
+					<TD class="nobr">
 						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
 						<img src="img/producer.gif" ALT=""> {trans("Manufacturer:")}/{trans("Model:")}/{trans("Location:")}
 					</TD>
-					<TD style="width: 1%; text-align: right; white-space: nowrap;">
+					<TD class="text-right nobr">
 						{trans("ID:")}
 					</TD>
-					<TD style="width: 1%; white-space: nowrap;">
+					<TD class="nobr">
 						<img src="img/serialnumber.gif"> {trans("Serial number:")}
 					</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TD>&nbsp;</TD>
 				</TR>
-                            </THEAD>
-                            <TBODY>
-				{cycle values="light,lucid" print=false}
+				</THEAD>
+				<TBODY>
 				{section name=netdevlist loop=$netdevlist start=$start}
-				<tr class="highlight {cycle}"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" >
-					<td width="95%" style="vertical-align: top;" class="nobr">
-						<img src="img/netdev.gif" alt=""><b>{$netdevlist[netdevlist].name}</b><br/>
-							<img src="img/producer.gif" alt="">{$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
-			 		</td>
+				<tr class="highlight"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" >
+					<td class="valign-top nobr">
+						<img src="img/netdev.gif" alt=""> <b>{$netdevlist[netdevlist].name}</b><br>
+							<img src="img/producer.gif" alt=""> {$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
+					</td>
 					<td>
-					 	{$netdevlist[netdevlist].id|string_format:"%04d"}
+						{$netdevlist[netdevlist].id|string_format:"%04d"}
 					</td>
 					<td>
 						{$netdevlist[netdevlist].serialnumber}
 					</td>
 					<td class="nobr">
-						<A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif"  alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-						<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+						<A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif"  alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+						<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 					</td>
 				</tr>
 				{sectionelse}
 				<TR>
-					<TD colspan="4" style="text-align: center;">
-						<b>{trans("No assigned devices.")}</b>
+					<TD colspan="4" class="empty-table">
+						<p>{trans("No assigned devices.")}</p>
 					</TD>
 				</TR>
 				{/section}
-				
-                            </TBODY>
+				</TBODY>
 			</TABLE>
 		</TD>
 	</TR>
@@ -93,7 +99,8 @@ function change_nodelinktype(linktype) {
 	}
 }
 
-if (getCookie('devicenodes') == '1')
-	document.getElementById('devicenodes').style.display = '';
+if (getCookie('devicenodepanel') == '1') {
+	$('#devicenodepanel').show();
+}
 //-->
 </SCRIPT>

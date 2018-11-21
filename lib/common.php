@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -113,6 +113,13 @@ function hostname()
 	return $hostname;
 }
 
+function long_ip($ip) {
+	$ip = (float) $ip;
+	if ($ip > PHP_INT_MAX)
+		$ip = $ip - 2 - ((float) PHP_INT_MAX) * 2;
+	return long2ip($ip);
+}
+
 function ip_long($sip)
 {
 	if(check_ip($sip)){
@@ -131,7 +138,7 @@ function check_ipv6($ip)
 {
         // fast exit for localhost
 	if (strlen($ip) < 3)
-	        return $IP == '::';
+	        return $ip == '::';
 	
 	// Check if part is in IPv4 format
 	if (strpos($ip, '.')) {
@@ -181,6 +188,14 @@ function check_mask($mask)
 	}
 }
 
+/*!
+ * \brief Returns network broadcast address by IP and mask.
+ *
+ * \param  string  $ip   IP address 192.168.0.0, 10.0.0.4, etc.
+ * \param  string  $mask Network mask 255.255.255.000, etc.
+ * \return longint       Network broadcast address
+ * \return false         Incorrect IP or Mask
+ */
 function getbraddr($ip,$mask)
 {
 	if(check_ip($ip) && check_mask($mask))
@@ -194,6 +209,14 @@ function getbraddr($ip,$mask)
 		return false;
 }
 
+/*!
+ * \brief Returns network address by IP and mask.
+ *
+ * \param  string  $ip   IP address 192.168.0.0, 10.0.0.4, etc.
+ * \param  string  $mask Network mask 255.255.255.000, etc.
+ * \return longint       Network IP
+ * \return false         Incorrect IP or Mask
+ */
 function getnetaddr($ip,$mask)
 {
 	if(check_ip($ip) && check_mask($mask))
@@ -207,17 +230,10 @@ function getnetaddr($ip,$mask)
 		return false;
 }
 
-function prefix2mask($prefix)
-{
-	if($prefix>=0&&$prefix<=32)
-	{	
-		$out = '';
-		for($ti=0;$ti<$prefix;$ti++)
-			$out .= '1';
-		for($ti=$prefix;$ti<32;$ti++)
-			$out .= '0';
-		return long2ip(bindec($out));
-	}
+function prefix2mask($prefix) {
+	$prefix = intval($prefix);
+	if ($prefix >= 0 && $prefix <= 32)
+		return long2ip(-1 << (32 - $prefix));
 	else
 		return false;
 }
@@ -343,6 +359,7 @@ function writesyslog($message,$type)
 
 	switch(PHP_OS)
 	{
+		case 'FreeBSD':
 		case 'OpenBSD':
 		case 'Linux':
 			$access = date('Y/m/d H:i:s');
@@ -368,7 +385,7 @@ function rmkdir($dir)
 		$dir = getcwd() . DIRECTORY_SEPARATOR . $dir;
 	$directories = explode(DIRECTORY_SEPARATOR, $dir);
 	$makedirs = 0;
-	for($i=1;$i<sizeof($directories);$i++)
+	for($i=1;$i<count($directories);$i++)
 	{
 		$cdir = '';
 		for($j=1;$j<$i+1;$j++)
@@ -449,33 +466,11 @@ function check_email( $email )
 	)
 		return FALSE;
 
-	$email_charset = 'qwertyuiopasdfghjklzxcvbnm1234567890@-._';
-	$i = 0;
-	while ( $i < $length )
-	{
-		$char = $email[$i++];
-		if ( stristr( $email_charset, $char ) === false )
-			return FALSE;
-	}
-
-	return TRUE;
+	return preg_match('/^[a-z0-9\-._+]+@[a-z0-9\-.]+$/i', $email) > 0;
 }
 
 function get_producer($mac) {
-	$mac = strtoupper(str_replace(':', '-', substr($mac, 0, 8)));
-
-	if (!$mac)
-		return '';
-
-	$maclines = @file(LIB_DIR . DIRECTORY_SEPARATOR . 'ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-	if (!empty($maclines))
-		foreach ($maclines as $line) {
-			list ($prefix, $producer) = explode(':', $line);
-			if ($mac == $prefix)
-				return $producer;
-		}
-
-	return '';
+	return EtherCodes::GetProducer($mac);
 }
 
 function setunits($data)  // for traffic data
@@ -529,6 +524,11 @@ function moneyf($value)
 	return sprintf($LANGDEFS[$_language]['money_format'], $value);
 }
 
+function moneyf_in_words($value) {
+	global $LANGDEFS, $_language;
+	return sprintf($LANGDEFS[$_language]['money_format_in_words'], to_words(floor($value)), to_words(round(($value - floor($value)) * 100)));
+}
+
 if (!function_exists('bcmod'))
 {
     function bcmod( $x, $y )
@@ -547,36 +547,54 @@ if (!function_exists('bcmod'))
     }
 }
 
-function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
-{
+function docnumber($number = null, $template = null, $cdate = null, $ext_num = '') {
+	if (is_array($number)) {
+		unset($template, $cdate, $ext_num);
+		extract($number);
+		if (!isset($number))
+			$number = null;
+		if (!isset($template))
+			$template = null;
+		if (!isset($cdate))
+			$cdate = null;
+		if (!isset($ext_num))
+			$ext_num = '';
+		if (!isset($customerid))
+			$customerid = null;
+	}
+
 	$number = $number ? $number : 1;
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
-	$time = $time ? $time : time();
-	
+	$cdate = $cdate ? $cdate : time();
+
+	// customer id support
+	if (empty($customerid))
+		$result = preg_replace('/%\\d*C/', trans('customer ID'), $template);
+	else {
+		$result = preg_replace_callback('/%(\\d*)C/',
+			function ($m) use ($customerid) {
+				return sprintf('%0' . $m[1] . 'd', $customerid);
+			}, $template);
+	}
+
 	// extended number part
-	$result = str_replace('%I', $ext_num, $template);
+	$result = str_replace('%I', $ext_num, $result);
 
 	// main document number
-	// code for php < 5.3
-/*
-	$result = preg_replace_callback('/%(\\d*)N/',
-		create_function('$m', "return sprintf(\"%0\$m[1]d\", $number);"),
-		$result);
-*/
 	$result = preg_replace_callback('/%(\\d*)N/',
 		function ($m) use ($number) {
 			return sprintf('%0' . $m[1] . 'd', $number);
 		}, $result);
 
 	// time conversion specifiers
-	return strftime($result, $time);
+	return strftime($result, $cdate);
 }
 
 // our finance round
-function f_round($value)
+function f_round($value, $precision = 2)
 {
 	$value = str_replace(',','.', $value);
-	$value = round ( (float) $value, 2);
+	$value = round ( (float) $value, $precision);
 	return $value;
 }
 
@@ -631,7 +649,9 @@ function qp_encode($string) {
 
 	$encoded = preg_replace_callback(
 		'/([\x2C\x3F\x80-\xFF])/',
-		create_function('$m', 'return "=".sprintf("%02X", ord($m[1]));'),
+		function($m) {
+			return '=' . sprintf("%02X", ord($m[1]));
+		},
 		$string);
 
 	// replace spaces with _
@@ -669,6 +689,36 @@ function clear_utf($str)
 		$r .= $ch1=='?' ? $ch2 : $ch1;
 	}
 	return $r;
+}
+
+function mazovia_to_utf8($text) {
+	static $mazovia_regexp = array(
+		'/\x86/', // ą
+		'/\x92/', // ł
+		'/\x9e/', // ś
+		'/\x8d/', // ć
+		'/\xa4/', // ń
+		'/\xa6/', // ź
+		'/\x91/', // ę
+		'/\xa2/', // ó
+		'/\xa7/', // ż
+		'/\x8f/', // Ą
+		'/\x9c/', // Ł
+		'/\x98/', // Ś
+		'/\x95/', // Ć
+		'/\xa5/', // Ń
+		'/\xa0/', // Ź
+		'/\x90/', // Ę
+		'/\xa3/', // Ó
+		'/\xa1/', // Ż
+	);
+
+	static $utf8_codes = array(
+		'ą', 'ł', 'ś', 'ć', 'ń', 'ź', 'ę', 'ó', 'ż',
+		'Ą', 'Ł', 'Ś', 'Ć', 'Ń', 'Ź', 'Ę', 'Ó', 'Ż',
+	);
+
+	return preg_replace($mazovia_regexp, $utf8_codes, $text);
 }
 
 function lastonline_date($timestamp)
@@ -722,13 +772,30 @@ function location_str($data)
 
     if ($data['street_name']) {
         $street = $data['street_type'] .' '. $data['street_name'];
-        $location .= ($location ? ', ' : '') . $street;
+        $location .= ($location ? ',' : '') . $street;
     }
 
     if ($h)
         $location .= ' ' . $h;
 
-    return $location;
+    return htmlentities($location, ENT_COMPAT, 'UTF-8', false);
+}
+
+function document_address($data) {
+	$lines = array();
+
+	if ($data['name'])
+		$lines[] = $data['name'];
+
+	if ($data['postoffice'] && $data['postoffice'] != $data['city']) {
+		$lines[] = ($data['street'] ? $data['city'] . ', ' : '') . $data['address'];
+		$lines[] .= $data['zip'] . ' ' . $data['postoffice'];
+	} else {
+		$lines[] = $data['address'];
+		$lines[] = $data['zip'] . ' ' . $data['city'];
+	}
+
+	return $lines;
 }
 
 function set_timer($label = 0)
@@ -773,7 +840,7 @@ function register_plugin($handle, $plugin)
         $PLUGINS[$handle][] = $plugin;
 }
 
-function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false)
+function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $dest = 'I', $copy=false, $md5sum = '')
 {
 	global $layout, $DB;
 
@@ -781,7 +848,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		if (!is_array($margins))
 			$margins = array(5, 10, 5, 10); /* default */
 
-	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
+	$html2pdf = new LMSHTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
 	/* disable font subsetting to improve performance */
 	$html2pdf->pdf->setFontSubsetting(false);
 
@@ -801,11 +868,6 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		$html2pdf->pdf->SetTitle($title);
 
 	$html2pdf->pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
-	$html2pdf->AddFont('arial', '', 'arial.php');
-	$html2pdf->AddFont('arial', 'B', 'arialb.php');
-	$html2pdf->AddFont('arial', 'I', 'ariali.php');
-	$html2pdf->AddFont('arial', 'BI', 'arialbi.php');
-	$html2pdf->AddFont('times', '', 'times.php');
 
 	/* if tidy extension is loaded we repair html content */
 	if (extension_loaded('tidy')) {
@@ -877,16 +939,33 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		}
 	}
 
-	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
+	$password = ConfigHelper::getConfig('phpui.document_password', '', true);
+	if (!empty($password))
+		$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', $password, '1');
 
-	if ($save) {
-		if (function_exists('mb_convert_encoding'))
-			$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
-		else
-			$filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
-		$html2pdf->Output($filename.'.pdf', 'D');
-	} else {
-		$html2pdf->Output();
+	// cache pdf file
+	if ($md5sum)
+		$html2pdf->Output(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum.'.pdf', 'F');
+
+	if ($dest === true)
+		$dest = 'D';
+	elseif ($dest === false)
+		$dest = 'I';
+
+	switch ($dest) {
+		case 'D':
+			if (function_exists('mb_convert_encoding'))
+				$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+			else
+				$filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
+			$html2pdf->Output($filename.'.pdf', 'D');
+			break;
+		case 'S':
+			return $html2pdf->Output('', 'S');
+			break;
+		default:
+			$html2pdf->Output();
+			break;
 	}
 }
 
@@ -909,6 +988,25 @@ function access_denied() {
 
 function check_date($date) {
 	return preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $date);
+}
+
+function date_to_timestamp($date) {
+	if (!preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2})$/', $date, $m)
+		|| !checkdate($m['month'], $m['day'], $m['year']))
+		return null;
+	return mktime(0, 0, 0, $m['month'], $m['day'], $m['year']);
+}
+
+function datetime_to_timestamp($datetime, $midnight = false) {
+	if (!preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2})\s+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})(?::(?<second>[0-9]{2}))?$/', $datetime, $m)
+		|| !checkdate($m['month'], $m['day'], $m['year']) || $m['hour'] > 23 || $m['minute'] > 59 || (isset($m['second']) && $m['second'] > 59))
+		return null;
+	if (!isset($m['second']))
+		$m['second'] = 0;
+	if ($midnight)
+		return mktime(0, 0, 0, $m['month'], $m['day'], $m['year']);
+	else
+		return mktime($m['hour'], $m['minute'], $m['second'], $m['month'], $m['day'], $m['year']);
 }
 
 function getdir($pwd = './', $pattern = '^.*$') {
@@ -959,6 +1057,238 @@ function iban_check_account($country, $length, $account) {
 		$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
 	}
 	return sprintf('%02d', 98 - bcmod($numericaccount, 97)) == substr($account, 0, 2);
+}
+
+function generate_random_string($length = 10, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+	srand();
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++)
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	return $randomString;
+}
+
+function validate_random_string($string, $min_size, $max_size, $characters) {
+	if (strlen($string) < $min_size || strlen($string) > $max_size)
+		return false;
+	for ($i = 0; $i < strlen($characters); $i++)
+		$string = str_replace($characters[$i], '', $string);
+	return !strlen($string);
+}
+
+function trans()
+{
+	global $_LANG;
+
+	$args = func_get_args();
+	$content = array_shift($args);
+
+	if (is_array($content)) {
+		$args = array_values($content);
+		$content = array_shift($args);
+	}
+
+	if (isset($_LANG[$content]))
+		$content = trim($_LANG[$content]);
+
+	for ($i = 1, $len = count($args); $i <= $len; $i++) {
+		$content = str_replace('$'.chr(97+$i-1), $args[$i-1], $content);
+	}
+
+	$content = preg_replace('/<![^>]+>/', '', $content);
+	return $content;
+}
+        
+function check_url($url) {
+	$components = parse_url($url);
+	if ($components === false)
+		return false;
+	if (!isset($components['host']) || !isset($components['scheme']))
+		return false;
+	return true;
+}
+
+function handle_file_uploads($elemid, &$error) {
+	$tmpdir = $tmppath = '';
+	$fileupload = array();
+	if (isset($_POST['fileupload'])) {
+		$fileupload = $_POST['fileupload'];
+		$tmpdir = $fileupload[$elemid . '-tmpdir'];
+		if (empty($tmpdir)) {
+			$tmpdir = uniqid('lms-fileupload-');
+			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+			if (isset($_FILES[$elemid]) && !empty($_FILES[$elemid]['tmp_name'][0])
+				&& (is_dir($tmppath) || !@mkdir($tmppath)))
+				$tmpdir = '';
+		} elseif (preg_match('/^lms-fileupload-[0-9a-f]+$/', $tmpdir)) {
+			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+			if (!file_exists($tmppath))
+				@mkdir($tmppath);
+		} else
+			$tmpdir = '';
+
+		if (isset($_GET['ajax'])) {
+			$files = array();
+			if (isset($_FILES[$elemid]))
+				foreach ($_FILES[$elemid]['name'] as $fileidx => $filename) {
+					if (preg_match('/(\/\.\.|^\.\.$|\.\.\/|\/)/', $filename))
+						continue;
+					if (!empty($filename)) {
+						if (is_uploaded_file($_FILES[$elemid]['tmp_name'][$fileidx]) && $_FILES[$elemid]['size'][$fileidx]) {
+							$files[] = array(
+								'name' => $filename,
+								'tmp_name' => $_FILES[$elemid]['tmp_name'][$fileidx],
+								'type' => $_FILES[$elemid]['type'][$fileidx],
+								'size' => $_FILES[$elemid]['size'][$fileidx],
+							);
+						} else { // upload errors
+							if (isset($error[$elemid]))
+								$error[$elemid] .= "\n";
+							else
+								$error[$elemid] = '';
+							switch ($_FILES[$elemid]['error'][$fileidx]) {
+								case UPLOAD_ERR_INI_SIZE:
+								case UPLOAD_ERR_FORM_SIZE:
+									$error[$elemid] .= trans('File is too large: $a', $filename);
+									break;
+								case UPLOAD_ERR_PARTIAL:
+									$error[$elemid] .= trans('File upload has finished prematurely: $a', $filename);
+									break;
+								case UPLOAD_ERR_NO_FILE:
+									$error[$elemid] .= trans('Path to file was not specified: $a', $filename);
+									break;
+								case UPLOAD_ERR_NO_TMP_DIR:
+									$error[$elemid] .= trans('No temporary directory for file: $a', $filename);
+									break;
+								case UPLOAD_ERR_CANT_WRITE:
+									$error[$elemid] .= trans('Unable to write file: $a', $filename);
+									break;
+								case UPLOAD_ERR_EXTENSION:
+									$error[$elemid] .= trans('File upload has finished unexpectedly: $a', $filename);
+									break;
+								default:
+									$error[$elemid] .= trans('Problem during file upload: $a', $filename);
+									break;
+							}
+						}
+					}
+				}
+
+			if ($error && isset($error[$elemid]))
+				$result = array(
+					'error' => $error[$elemid],
+				);
+			else {
+				$errors = array();
+				if (isset($fileupload) && !empty($tmpdir)) {
+					$files2 = array();
+					foreach ($files as &$file) {
+						unset($file2);
+						if (isset($fileupload[$elemid]))
+							foreach ($fileupload[$elemid] as &$file2)
+								if ($file['name'] == $file2['name'])
+									continue 2;
+						if (!file_exists($tmppath . DIRECTORY_SEPARATOR . $file['name'])) {
+							if (!@move_uploaded_file($file['tmp_name'], $tmppath . DIRECTORY_SEPARATOR . $file['name']))
+								$errors[] = trans('Unable to write file: $a', $file['name']);
+							unset($file['tmp_name']);
+						}
+						$files2[] = $file;
+					}
+					unset($file);
+					$files = $files2;
+					unset($files2, $file2);
+				}
+				if (!empty($errors))
+					$result = array(
+						'error' => implode('<br>', $errors),
+					);
+				else
+					$result = array(
+						'error' => '',
+						'tmpdir' => $tmpdir,
+						'files' => $files,
+					);
+			}
+			header('Content-type: application/json');
+			print json_encode($result);
+			die;
+		} elseif (isset($fileupload[$elemid])) {
+			foreach ($fileupload[$elemid] as &$file) {
+				list ($size, $unit) = setunits($file['size']);
+				$file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+			}
+			unset($file);
+			$$elemid = $fileupload[$elemid];
+		}
+	}
+	return compact('fileupload', 'tmppath', $elemid);
+}
+
+function check_gg($im) {
+	return preg_match('/^[0-9]{0,32}$/', $im);
+}
+
+function check_skype($im) {
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
+}
+
+function check_yahoo($im) {
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
+}
+
+function check_facebook($im) {
+	return preg_match('/^[.a-z0-9]{5,}$/i', $im);
+}
+
+/*!
+ * \brief Recursive trim function.
+ *
+ * \param $data mixed
+ */
+function trim_rec( $data ) {
+
+    if ( is_array($data) ) {
+        foreach ($data as $k => $v) {
+            if ( is_array($data[$k]) ) {
+                $data[$k] = trim_rec($data[$k]);
+            } else {
+                $data[$k] = trim($data[$k]);
+            }
+        }
+
+        return $data;
+    } else {
+        return trim($data);
+    }
+}
+
+/*!
+ * \brief Google Maps Geocode service function
+ *
+ * \param $location string location formatted human-friendly
+ * \return mixed Result in associative array or null on error
+ */
+
+function geocode($location) {
+	$api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true);
+	$address = urlencode($location);
+	$link = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&sensor=false"
+		. (empty($api_key) ? '' : '&key=' . $api_key);
+	if (($res = @file_get_contents($link)) === false)
+		return null;
+	$page = json_decode($res, true);
+	$latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
+	$longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
+	$status = $page["status"];
+	$accuracy = $page["results"][0]["geometry"]["location_type"];
+	return array(
+		'status' => $status,
+		'accuracy' => $accuracy,
+		'latitude' => $latitude,
+		'longitude' => $longitude,
+		'raw-result' => $page,
+	);
 }
 
 ?>

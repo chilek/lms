@@ -1,75 +1,77 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <FORM method="POST" action="?m=eventsearch" name="event" id="event">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width:1%">
+		<COL style="width:1%">
+		<COL style="width:98%">
+	<COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="100%" colspan="3">
-			<B>{trans("Find events matching the following search criteria:")}</B>
+		<TD colspan="3" class="bold">
+			{trans("Find events matching the following search criteria:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Title:")}</B>
+		<TD class="bold">
+			{trans("Title:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/time.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Date:")}</B>
+		<TD class="bold">
+			{trans("Date:")}
 		</TD>
-		<TD width="98%">
-			<div class="calendar">
-			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			</div>
+		<TD>
+			{trans("From:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[datefrom]" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("To:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[dateto]" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}</B>
+		<TD class="bold">
+			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="event[description]" size="50" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
-			<IMG src="img/info.gif" alt="">
+		<TD>
+			<IMG src="img/note.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Note:")}</B>
+		<TD class="bold">
+			{trans("Note:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="event[note]" size="50" {tip text="Enter note"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/desc.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Type:")}</B>
+		<TD>
+			{trans("Type:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<SELECT name="event[type]" size="1">
 				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
 				{foreach from=$_EVENTTYPES key=key item=type}
@@ -78,48 +80,75 @@
 			</SELECT>
 		</TD>
 	</TR>
-{*	<TR>
-		<TD width="1%">
+	<TR>
+		<TD>
+			<IMG src="img/desc.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Status:")}
+		</TD>
+		<TD>
+			<SELECT name="event[closed]" size="1">
+				<OPTION value="" SELECTED>{trans("- all -")}</OPTION>
+				<OPTION value="0">{trans("opened<!plural:event>")}</OPTION>
+				<OPTION value="1">{trans("closed<!plural:event>")}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+{*
+	<TR>
+		<TD>
 			<IMG src="img/access.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Status:")}</B>
+		<TD class="bold">
+			{trans("Status:")}
 		</TD>
-		<TD width="98%" nowrap>
+		<TD nowrap>
 			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {trans("private")}
 		</TD>
 	</TR>
-*}	<TR>
-		<TD width="1%">
+*}
+	<TR>
+		<TD>
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Customer:")}</B>
+		<TD class="bold">
+			{trans("Customer:")}
 		</TD>
-		<TD width="98%" nowrap>
+		<TD class="nobr">
 			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%" valign="top">
+		<TD valign="top" class="bold">
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%" valign="top">
-			<B>{trans("User:")}</B>
+		<TD valign="top" class="bold">
+			{trans("User:")}
 		</TD>
-		<TD width="98%" nowrap>
-			<SELECT name="event[userid][]" id="userid" multiple>
-				{*<OPTION value="">{trans("- select user -")}</OPTION>*}
-				{section name=userlist loop=$userlist}
-				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
-				{/section}
+		<TD class="multiselect nobr">
+			<SELECT name="event[userid][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}" data-shorten-to-default-value="false">
+				{foreach $userlist as $user}
+				<OPTION value="{$user.id}">{$user.name}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
+        <TR>
+                <TD>
+                        <IMG src="img/ticket.gif" alt="">
+                </TD>
+                <TD class="bold nobr">
+                        {trans("Ticket ID:")}
+                </TD>
+                <TD class="nobr">
+			<INPUT type="text" name="event[ticketid]" ROWS="1" COLS="10">
+                </TD>
+        </TR>
 	<TR>
 		<TD align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{trans("Search")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Search")}</A>
+			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 		</TD>
 	</TR>
     </TBODY>
@@ -127,8 +156,9 @@
 </form>
 <SCRIPT type="text/javascript">
 <!--
-multiselect('event', 'userid', '{trans("- select user -")}');
-document.forms['event'].elements['event[title]'].focus();
+	$(function() {
+		$('form[name="event"] [name="event[title]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

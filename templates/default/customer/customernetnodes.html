@@ -1,0 +1,75 @@
+<!--// $Id$ //-->
+
+{css}
+
+{tab_container id="customernetnodes"}
+
+	{tab_header content_id="netnodepanel"}
+		{tab_header_cell icon="lms-ui-icon-netnode"}
+			<strong>{t a=$customernetnodes|@count|default:"0"}Network Nodes ($a):{/t}</strong>
+		{/tab_header_cell}
+		{tab_header_cell}
+			<A href="?m=netnodeadd&customerid={$customerinfo.id}">{trans("New network node")} &raquo;</A>
+		{/tab_header_cell}
+	{/tab_header}
+
+	{tab_contents id="netnodepanel"}
+
+		{tab_table}
+
+			{if $customernetnodes}
+			<div class="lms-ui-tab-table-row header">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-column name">
+						{trans("Name:")}
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column type">
+							{trans("Type:")}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							{trans("ID:")}
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+				</div>
+			</div>
+			{/if}
+
+			{foreach $customernetnodes as $customernetnode}
+			{$customer_netnode_id = $customernetnode.id}
+			<div class="lms-ui-tab-table-row" data-target-url="?m=netnodeinfo&id={$customernetnode.id}">
+				<div class="lms-ui-tab-table-wrapper col-3">
+					<div class="lms-ui-tab-table-column name" class="lms-ui-button-netnode">
+						<i></i> <strong>{$customernetnode.name}</strong>
+						{if $customernetnode.location}
+							<BR>{$customernetnode.location|truncate:60:"...":true}
+						{/if}
+					</div>
+					<div class="lms-ui-tab-table-wrapper col-2">
+						<div class="lms-ui-tab-table-column type">
+							{$_NETELEMENTTYPES[$customernetnode.type]}
+						</div>
+						<div class="lms-ui-tab-table-column id">
+							({$customernetnode.id|string_format:"%04d"})
+						</div>
+					</div>
+				</div>
+
+				<div class="lms-ui-tab-table-column buttons">
+					{button type="link" icon="edit" href="?m=netnodeedit&id={$customernetnode.id}" tip="Edit"}
+				</div>
+			</div>
+
+			{foreachelse}
+			<div class="lms-ui-tab-empty-table">
+				{trans("That customer hasn't got any assigned network nodes.")}
+			</div>
+			{/foreach}
+
+		{/tab_table}
+
+	{/tab_contents}
+{/tab_container}

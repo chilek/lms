@@ -65,7 +65,7 @@ function GetDomainList($order='name,asc', $search, $customer='')
 			.$where
 			.($sqlord != '' ? $sqlord : ''));
 	
-	$list['total'] = sizeof($list);
+	$list['total'] = count($list);
 	$list['order'] = $order;
 	$list['direction'] = $direction;
 	$list['customer'] = $customer;
@@ -88,7 +88,7 @@ $SESSION->save('dso', $o);
 
 if(isset($_GET['c']))
 	$c = $_GET['c'];
-elseif(sizeof($search))
+elseif(count($search))
 	$c = isset($search['customerid']) ? $search['customerid'] : '';
 else
 	$SESSION->restore('dsc', $c);
@@ -97,9 +97,9 @@ $SESSION->save('dsc', $c);
 if ($SESSION->is_set('dsp') && !isset($_GET['page']) && !isset($search))
 	$SESSION->restore('dsp', $_GET['page']);
 
-if(sizeof($search) || isset($_GET['s']))
+if(count($search) || isset($_GET['s']))
 {
-	$search = sizeof($search) ? $search : $SESSION->get('domainsearch');
+	$search = count($search) ? $search : $SESSION->get('domainsearch');
 
 	if(!$error)
 	{

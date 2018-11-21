@@ -1,52 +1,56 @@
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
+{$count = 0}
 <div class="table-responsive">
-<table class="table table-bordered table-striped">
-    <tr class="bg-primary">
-        <th>Taryfa</th>
-	<th>Abonament</th>
-        <th>{trans("Discount:")}</th>
-        <th>{trans("Accounting day:")}</th>
-        <th>Prędkość pobierania</th>
-	<th>Prędkość wysyłania</th>
-        <th>{trans("Invoice:")}</th>
-        <th>{trans("Period:")}</th>
-    </tr>
-    {foreach from=$assignments item=assignment}
-    {if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
-    <tr>
-	<td>{$assignment.name}</td>
-	<td>{$assignment.value|money_format}</td>
-	<td>{if $assignment.discount > 0}{$assignment.discount}%{/if}</td>
-	<td>{$assignment.payday}</td>
-	    <td>{math equation="x / 1024" x=$assignment.downceil} Mb/s</td>
-	    <td>{math equation="x / 1024" x=$assignment.upceil} Mb/s</td>
-	<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
-	<td>
-	    {if $assignment.datefrom}{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
-	    {if $assignment.dateto}{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}{/if}
-	</td>
-    </tr>
-        {assign var="sum_dl" value="`$sum_dl+$assignment.real_downceil`"}
-        {assign var="sum_up" value="`$sum_up+$assignment.real_upceil`"}
-    {/if}
-    {foreachelse}
-    <tr>
-	<td colspan="8">
-	    {trans("You haven't got any assigned subscriptions.")}
-	</td>
-    </tr>
-    {/foreach}
-    <tr class="bg-primary">
-	<td>{trans("Total:")}</td>
-	<td>{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</td>
-	<td>({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
-	<td>&nbsp;</td>
-	    <td>{math equation="d / 1024" d=$sum_dl} Mb/s</td>
-	    <td>{math equation="u / 1024" u=$sum_up} Mb/s</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-    </tr>
-</table>
+	<table class="table table-bordered table-striped table-condensed">
+		<tr class="bg-primary text-white">
+			<th>{trans("Tariff")}</th>
+			<th>{trans("Subscription")}</th>
+			<th>{trans("Discount:")}</th>
+			<th>{trans("Accounting day:")}</th>
+			<th>{trans("Download speed")}</th>
+			<th>{trans("Upload speed")}</th>
+			<th>{trans("Invoice")}</th>
+			<th>{trans("Period")}</th>
+		</tr>
+		{foreach $assignments as $assignment}
+			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
+				<tr>
+					<td>{$assignment.name}</td>
+					<td>{$assignment.value|money_format}</td>
+					<td>{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
+					<td>{$assignment.payday}</td>
+					<td>{math equation="x / 1024" x=$assignment.downceil} Mb/s</td>
+					<td>{math equation="x / 1024" x=$assignment.upceil} Mb/s</td>
+					<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
+					<td>
+						{if $assignment.datefrom}{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
+						{if $assignment.dateto}{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}{/if}
+					</td>
+				</tr>
+				{$count = $count +1}
+				{assign var="sum_dl" value="`$sum_dl+$assignment.real_downceil`"}
+				{assign var="sum_up" value="`$sum_up+$assignment.real_upceil`"}
+			{/if}
+		{foreachelse}
+			<tr>
+				<td colspan="8">
+					{trans("You haven't got any assigned subscriptions.")}
+				</td>
+			</tr>
+		{/foreach}
+		{if $count > 1}
+			<tr class="bg-primary text-white">
+				<td>{trans("Total:")}</td>
+				<td>{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</td>
+				<td>({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
+				<td>&nbsp;</td>
+				<td>{math equation="d / 1024" d=$sum_dl} Mb/s</td>
+				<td>{math equation="u / 1024" u=$sum_up} Mb/s</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		{/if}
+	</table>
 </div>
 {/box}

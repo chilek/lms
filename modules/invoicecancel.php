@@ -1,54 +1,75 @@
 <?php
-/**
- * @author Maciej_Wawryk
+
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2017 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
  */
 
 $id = intval($_GET['id']);
 
 if($id && $_GET['is_sure'] == '1') {
-    if(isset($_GET['recover'])) {
-	$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
-	$document = $DB->GetRow('SELECT customerid, cdate FROM documents WHERE id = ?', array($id));
-	$invoices = $DB->GetAll('SELECT * FROM invoicecontents WHERE docid = ?', array($id));
-	$itemid = 1;
-	foreach ($invoices as $invoice) {
-	    $LMS->AddBalance(array(
-		'time' => $document['cdate'],
-		'value' => $invoice['value'] * $invoice['count'] * -1,
-		'taxid' => $invoice['taxid'],
-		'customerid' => $document['customerid'],
-		'comment' => $invoice['description'],
-		'docid' => $id,
-		'itemid' => $itemid
-	    ));
-	    $itemid += 1;
+	if (isset($_GET['recover'])) {
+		$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
+
+		$invoice = $LMS->GetInvoiceContent($id);
+
+		foreach ($invoice['content'] as $idx => $content) {
+			if ($invoice['doctype'] == DOC_CNOTE)
+				$value = $content['total'] - $invoice['invoice']['content'][$idx]['total'];
+			else
+				$value = $content['total'];
+			$LMS->AddBalance(array(
+				'time' => $invoice['cdate'],
+				'value' => $value * -1,
+				'taxid' => $content['taxid'],
+				'customerid' => $invoice['customerid'],
+				'comment' => $content['description'],
+				'docid' => $id,
+				'itemid' => $content['itemid'],
+			));
+		}
+		if ($SYSLOG) {
+			$args = array(
+				SYSLOG::RES_DOC => $document['id'],
+				SYSLOG::RES_CUST => $document['customerid'],
+				SYSLOG::RES_USER => Auth::GetCurrentUser()
+			);
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+		}
+	} else {
+		if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
+			return;
+		$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
+		$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
+		$document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
+		if ($SYSLOG) {
+			$args = array(
+				SYSLOG::RES_DOC => $document['id'],
+				SYSLOG::RES_CUST => $document['customerid'],
+				SYSLOG::RES_USER => Auth::GetCurrentUser()
+			);
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+		}
 	}
-	if ($SYSLOG) {
-		$args = array(
-		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $document['id'],
-		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $document['customerid'],
-		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id
-		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args, 
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] , $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER])
-		);
-	}
-    } 
-    else {
-	$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
-	$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
-	$document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
-	if ($SYSLOG) {
-		$args = array(
-		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $document['id'],
-		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $document['customerid'],
-		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id
-		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args, 
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] , $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER])
-		);
-	}
-    }
 }
 
 $SESSION->redirect('?m=invoicelist');

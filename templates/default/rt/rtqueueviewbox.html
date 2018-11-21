@@ -1,0 +1,114 @@
+{block name=rtbox}
+{foreach $queue as $ticket}
+<TR class="{if $ticket.state == $smarty.const.RT_RESOLVED}blend {/if}highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}" data-target-url="?m=rtticketview&id={$ticket.id}">
+	<TD class="text-center">
+		{if $ticket.unread}
+		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i></a>
+		{elseif $ticket.messageid}
+		<a href="?m=rtticketview&id={$ticket.id}&highlight[pattern]={$filter.body.pattern}{if isset($filter.body.regexp)}&highlight[regexp]={$filter.body.regexp}{/if}#rtmessage-{$ticket.messageid}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}priority{else}search{/if}"></i></a>
+		{/if}
+	</TD>
+	<TD class="text-center" style="background:transparent; color:{$_RT_STATES[$ticket.state].color};">
+		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
+			{$_RT_STATES[$ticket.state].label}<br>{if $ticket.priority != 0}<span {if $ticket.state != $smarty.const.RT_RESOLVED}style="color:black"{/if}>{$_RT_PRIORITIES[$ticket.priority]}</span>{/if}
+		</span>
+	</TD>
+	<TD class="nobr">
+		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
+			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
+		<span>{if is_array($filter.ids) && count($filter.ids) != 1}{$ticket.name}{/if}</span>
+		<br>
+		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+	</TD>
+	<TD class="text-center">
+		<span>{$_SERVICETYPES[$ticket.service]}</span>
+		<span><br>{$_RT_TYPES[$ticket.type].label}</span>
+	</TD>
+	<TD class="nobr valign-middle">
+		<span class="bold">{$ticket.subject|escape|truncate:"100":"..."|default:"&nbsp;"}</span>
+		{foreach $ticket.categories as $ticketcategory}
+		<span {if $ticketcategory.style != ''} style="{$ticketcategory.style}"{else} style="{$_CATEGORY_DEFAULT_STYLE}"{/if}>{$ticketcategory.name}</span>
+		{/foreach}
+		{if $ticket.customerid}
+			<br>
+			<A href="?m=customerinfo&id={$ticket.customerid}">{$ticket.requestor|escape|truncate:"60":"..."}</A>
+		{/if}
+		{if $ticket.requestor_userid}
+		<br>
+		<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
+		{elseif $ticket.requestor_name || $ticket.requestor_mail || $ticket.requestor_phone}
+			<br>
+			{$ticket.requestor|escape}
+			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
+			{if $ticket.requestor_mail}<BR>
+			<A href="mailto:{$ticket.requestor_mail}""> &lt;{$ticket.requestor_mail}&gt;</A>
+			{/if}
+		{/if}
+	</TD>
+	<TD class="nobr valign-middle">
+		{if $ticket.netnodeid}
+			<a href="?m=netnodeinfo&id={$ticket.netnodeid}"><i class="lms-ui-icon-content lms-ui-icon-netnode"></i>{$ticket.netnode_name}</a>
+		{/if}
+		{if $ticket.netdevid && $ticket.netnodeid }<br>{/if}
+		{if $ticket.netdevid}
+			<a href="?m=netdevinfo&id={$ticket.netdevid}"><i class="lms-ui-icon-content lms-ui-icon-netdevice"></i>{$ticket.netdev_name}</a>
+		{/if}
+		{if $ticket.netdevid || $ticket.netnodeid }<br>{/if}
+		{if $ticket.address_id}
+			{$ticket.vacity} {$ticket.street} {$ticket.house}
+			{if $ticket.flat}/{$ticket.flat}{/if}
+		{else}
+			{$ticket.address}<br>{$ticket.city}
+		{/if}
+	</TD>
+	<TD class="nobr text-center">
+		{if $ticket.deadline}
+			{if $ticket.deadline_diff < 0}
+				<span class="lms-ui-important-box" {tip text="{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}"}>{trans("<!rt>Expired")}</span>
+			{else}
+				{$ticket.deadline_days} {trans("days")} {$ticket.deadline_hours} {trans("<!rt>hours")}
+			{/if}
+
+		{else}-
+		{/if}
+	</TD>
+	<TD class="nobr">
+		{if $ticket.ownername}{$ticket.ownername|truncate:25:"...":true}{else}-{/if}<br>
+		{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
+	</TD>
+	<TD class="text-center nobr">
+		{if $ticket.eventcountopened}<A href="?m=eventsearch&ticketid={$ticket.id}">{$ticket.eventcountopened} </A>{else}- {/if}/
+		{if $ticket.eventcountclosed}<A href="?m=eventsearch&ticketid={$ticket.id}"> {$ticket.eventcountclosed}</A>{else} -{/if}
+	</TD>
+	<TD class="lms-ui-buttons nobr text-right">
+		{if $ticket.state != $smarty.const.RT_RESOLVED}
+			{if !$ticket.unread}
+			<a href="?m=rtticketedit&id={$ticket.id}&action=unread"><img src="img/ticket-unread.png" alt="" title="{trans("Mark as unread")}"></a>
+			{else}
+			<a href="?m=rtticketedit&id={$ticket.id}&action=read"><img src="img/ticket-read.png" alt="" title="{trans("Mark as read")}"></a>
+			{/if}
+		{/if}
+		{if $ticket.state != $smarty.const.RT_RESOLVED}<a href="?m=eventadd&ticketid={$ticket.id}"><img src="img/event-add.png"></a>{/if}
+		{if !$ticket.ownerid}<A href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"><img src="img/users.gif" alt="" title="{trans("Assign to me")}"></A>{/if}
+		<A href="?m=rtticketprint&id={$ticket.id}" target="_BLANK"><img src="img/print.gif" alt="" title="{trans("Print")}"></A>
+		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+		<A href="?m=rtrestore&id={$ticket.id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}"></A>
+		<A href="?m=rtremove&id={$ticket.id}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"></A>
+		{else}
+		<A href="?m=rtticketdel&id={$ticket.id}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete")}"></A>
+		{/if}
+		<A href="?m=rtticketedit&id={$ticket.id}"><img src="img/edit.gif" alt="" title="{trans("Edit")}"> </A>
+		<A href="?m=rtnoteadd&ticketid={$ticket.id}"><img src="img/note.gif" alt="" title="{trans("New Note")}"> </A>
+		<A href="?m=rtmessageadd&ticketid={$ticket.id}"><img src="img/forward.gif" alt="" title="{trans("New Message")}"> </A>
+		<A href="?m=rtticketview&id={$ticket.id}"><img src="img/info.gif" alt="" title="{trans("Info")}"> </A>
+		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
+	</TD>
+</TR>
+{foreachelse}
+<TR>
+	<TD COLSPAN="11" class="empty-table">
+		<p>{trans("This queue is empty.")}</p>
+	</TD>
+</TR>
+{/foreach}
+{/block}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,14 +26,13 @@
 
 /*
  * types of account:
- *    shell = 1 (0000000000000001)
- *    mail = 2, (0000000000000010)
- *    www = 4,  (0000000000000100)
- *    ftp = 8	(0000000000001000)
- *    sql = 16	(0000000000010000)
+ *    shell = 1  (0000000000000001)
+ *    mail = 2   (0000000000000010)
+ *    www = 4    (0000000000000100)
+ *    ftp = 8    (0000000000001000)
+ *    sql = 16   (0000000000010000)
+ *    cloud = 32 (0000000000100000)
  */
-
-$types = array(1 => 'sh', 2 => 'mail', 4 => 'www', 8 => 'ftp', 16 => 'sql');
 
 if(isset($_POST['account']))
 {
@@ -82,87 +81,72 @@ if(isset($_POST['account']))
 	if($account['passwd1'] == '')
 		$error['passwd'] = trans('Empty passwords are not allowed!');
 	
-	if($account['expdate'] == '')
-		$account['expdate'] = 0;
-	else
-	{
-		$date = explode('/',$account['expdate']);
-		if(!checkdate($date[1],$date[2],$date[0]))
-			$error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-		elseif(!$error)
-			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
-	}
+        if($account['expdate'] == '')
+                $account['expdate'] = 0;
+        else
+        {
+                $date = date_to_timestamp($account['expdate']);
+                if (empty($date))
+                        $error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+                else
+                        $account['expdate'] = $date;
+        }
 
 	if($account['domainid'] && $account['ownerid'])
-		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
+		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid IS NULL OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
 			$error['domainid'] = trans('Selected domain has other owner!');
 
-	foreach($types as $idx => $name)
-		if(!preg_match('/^[0-9]+$/', $quota[$name]))
-	                $error['quota_'.$name] = trans('Integer value expected!');
-
+	foreach ($ACCOUNTTYPES as $idx => $type)
+		if (!preg_match('/^[0-9]+$/', $quota[$idx]))
+			$error['quota[' . $idx . ']'] = trans('Integer value expected!');
 
 	// finally lets check limits
-	if($account['ownerid'])
-        {
-                $limits = $LMS->GetHostingLimits($account['ownerid']);
-		
-		foreach($types as $idx => $name)
-		{
+	if ($account['ownerid']) {
+		$limits = $LMS->GetHostingLimits($account['ownerid']);
+
+		foreach ($ACCOUNTTYPES as $idx => $type) {
 			// quota limit
-			$limitidx = 'quota_'.$name.'_limit';
-			if(!isset($error['quota_'.$name]) && $limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
-			{
-				if($quota[$name] > $limits[$limitidx])
-				{
-					$error['quota_'.$name] = trans('Exceeded \'$a\' account quota limit of selected customer ($b)!',
-						$name, $limits[$limitidx]);
+			if (!isset($error['quota[' . $idx . ']']) && $limits['quota'][$idx] !== NULL && ($account['type'] & $idx) == $idx) {
+				if ($quota[$idx] > $limits['quota'][$idx]) {
+					$error['quota[' . $idx . ']'] = trans('Exceeded \'$a\' account quota limit of selected customer ($b)!',
+						$type['label'], $limits['quota'][$idx]);
 				}
 			}
-			
-			// count limit
-			$limitidx = $name.'_limit';
-			if($limits[$limitidx] !== NULL && ($account['type'] & $idx) == $idx)
-			{
-	    			if($limits[$limitidx] > 0)
-		            		$cnt = $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?
-						AND (type & ?) = ?', array($account['ownerid'], $idx, $idx));
 
-			        if(!$error && ($limits[$limitidx] == 0 || $limits[$limitidx] <= $cnt))
-				{
-    		                	$error['ownerid'] = trans('Exceeded \'$a\' accounts limit of selected customer ($b)!', 
-							$name, $limits[$limitidx]);
+			// count limit
+			if ($limits['count'][$idx] !== NULL && ($account['type'] & $idx) == $idx) {
+				if ($limits['count'][$idx] > 0)
+					$cnt = $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?
+						AND (type & ?) > 0', array($account['ownerid'], $idx));
+
+				if (!$error && ($limits['count'][$idx] == 0 || $limits['count'][$idx] <= $cnt)) {
+					$error['ownerid'] = trans('Exceeded \'$a\' accounts limit of selected customer ($b)!', 
+						$type['label'], $limits['count'][$idx]);
 				}
 			}
 		}
 	}
 
-	if(!$error)
-	{
+	if (!$error) {
 		$DB->BeginTrans();
-		
-		$DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, 
-				type, realname, quota_sh, quota_mail, quota_www, quota_ftp, quota_sql,
-				mail_forward, mail_bcc, description) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				array(	$account['ownerid'],
-					$account['login'],
-					crypt($account['passwd1']),
-					$account['home'],
-					$account['expdate'],
-					$account['domainid'],
-					$account['type'],
-					$account['realname'],
-					$quota['sh'],
-					$quota['mail'],
-					$quota['www'],
-					$quota['ftp'],
-					$quota['sql'],
-					$account['mail_forward'],
-					$account['mail_bcc'],
-					$account['description'],
-					));
 
+		$args = array(
+			'ownerid' => empty($account['ownerid']) ? null : $account['ownerid'],
+			'login' => $account['login'],
+			'password' => crypt($account['passwd1']),
+			'home' => $account['home'],
+			'expdate' => $account['expdate'],
+			'domainid' => $account['domainid'],
+			'type' => $account['type'],
+			'realname' => $account['realname'],
+			'mail_forward' => $account['mail_forward'],
+			'mail_bcc' => $account['mail_bcc'],
+			'description' => $account['description'],
+		);
+		foreach ($ACCOUNTTYPES as $typeidx => $type)
+			$args['quota_' . $type['alias']] = $quota[$typeidx];
+		$DB->Execute('INSERT INTO passwd (' . implode(',', array_keys($args)) . ')
+				VALUES (' . implode(',', array_fill(0, count($args), '?')) . ')', array_values($args));
 		$id = $DB->GetLastInsertId('passwd');
 
 		$DB->Execute('UPDATE passwd SET uid = id + 2000 WHERE id = ?', array($id));
@@ -193,20 +177,17 @@ else
 	{
 		$account['domainid'] = intval($_GET['did']);
 	}
-	
-	if(!empty($_GET['cid']))
-	{
+
+	if (!empty($_GET['cid'])) {
 		$account['ownerid'] = intval($_GET['cid']);
 		$limits = $LMS->GetHostingLimits($account['ownerid']);
 
-		foreach($types as $idx => $name)
-			$quota[$name] = intval($limits['quota_'.$name.'_limit']);
-	}
-	else
-	{
-		foreach($types as $idx => $name) {
-                        $quota[$name] = intval(ConfigHelper::getConfig('phpui.quota_'.$name, 0));
-                }
+		foreach ($ACCOUNTTYPES as $idx => $type)
+			$quota[$idx] = intval($limits['quota'][$idx]);
+	} else {
+		foreach ($ACCOUNTTYPES as $idx => $type) {
+			$quota[$idx] = intval(ConfigHelper::getConfig('phpui.quota_' . $type['alias'], 0));
+		}
 	}
 
 	$account_type = ConfigHelper::getConfig('phpui.account_type');

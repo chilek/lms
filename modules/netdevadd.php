@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,140 +24,170 @@
  *  $Id$
  */
 
-if(isset($_POST['netdev']))
-{
-	$netdevdata = $_POST['netdev'];
+if ($api) {
+	if (!isset($_POST['in']))
+		die;
+	$netdev = json_decode(base64_decode($_POST['in']), true);
+} else {
+	$LMS->InitXajax();
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+	$SMARTY->assign('xajax', $LMS->RunXajax());
 
-	if($netdevdata['ports'] == '')
-		$netdevdata['ports'] = 0;
-	else
-		$netdevdata['ports'] = intval($netdevdata['ports']);
+	if (isset($_POST['netdev']))
+		$netdev = $_POST['netdev'];
+}
 
-	if(empty($netdevdata['clients']))
-		$netdevdata['clients'] = 0;
-	else
-		$netdevdata['clients'] = intval($netdevdata['clients']);
+if (isset($netdev)) {
+	$netdev['ports']   = ($netdev['ports'] == '')    ? 0 : intval($netdev['ports']);
+	$netdev['clients'] = (empty($netdev['clients'])) ? 0 : intval($netdev['clients']);
+	$netdev['ownerid'] = (empty($netdev['ownerid'])) ? 0 : intval($netdev['ownerid']);
 
-	if($netdevdata['name'] == '')
+	if ($netdev['name'] == '')
 		$error['name'] = trans('Device name is required!');
-	elseif (strlen($netdevdata['name']) > 60)
+	elseif (strlen($netdev['name']) > 60)
 		$error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
 
-	$netdevdata['purchasetime'] = 0;
-	if($netdevdata['purchasedate'] != '') 
-	{
-		// date format 'yyyy/mm/dd'
-		if(!preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $netdevdata['purchasedate']))
-		{
-			$error['purchasedate'] = trans('Invalid date format!');
-		}
+	$netdev['purchasetime'] = intval($netdev['purchasetime']);
+	if ($netdev['purchasetime'] && time() < $netdev['purchasetime'])
+		$error['purchasetime'] = trans('Date from the future not allowed!');
+
+    if (!empty($netdev['ownerid']) && !$LMS->customerExists($netdev['ownerid']))
+        $error['ownerid'] = trans('Customer doesn\'t exist!');
+
+	if ($netdev['guaranteeperiod'] != 0 && !$netdev['purchasetime']) {
+		$error['purchasetime'] = trans('Purchase date cannot be empty when guarantee period is set!');
+	}
+
+	if (!strlen($netdev['projectid']) && !empty($netdev['project'])) {
+		$project = $LMS->GetProjectByName($netdev['project']);
+		if (empty($project))
+			$netdev['projectid'] = -1;
 		else
-		{
-			$date = explode('/', $netdevdata['purchasedate']);
-			if(checkdate($date[1], $date[2], (int)$date[0]))
-			{
-				$tmpdate = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-                        	if(mktime(0,0,0) < $tmpdate)
-			                $error['purchasedate'] = trans('Date from the future not allowed!');
-				else
-				        $netdevdata['purchasetime'] = $tmpdate;
-			}
-			else
-				$error['purchasedate'] = trans('Invalid date format!');
-		}
+			$netdev['projectid'] = $project['id'];
 	}
 
-	if($netdevdata['guaranteeperiod'] != 0 && $netdevdata['purchasetime'] == NULL)
-	{
-		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
+	if (isset($netdev['terc']) && isset($netdev['simc']) && isset($netdev['ulic'])) {
+		$teryt = $LMS->TerytToLocation($netdev['terc'], $netdev['simc'], $netdev['ulic']);
+		$netdev['teryt'] = 1;
+		$netdev['location_state'] = $teryt['location_state'];
+		$netdev['location_state_name'] = $teryt['location_state_name'];
+		$netdev['location_city'] = $teryt['location_city'];
+		$netdev['location_city_name'] = $teryt['location_city_name'];
+		$netdev['location_street'] = $teryt['location_street'];
+		$netdev['location_street_name'] = $teryt['location_street_name'];
 	}
 
+	$hook_data = $LMS->executeHook('netdevadd_validation_before_submit',
+		array(
+			'netdevdata' => $netdev,
+			'error' => $error,
+		)
+	);
+	$netdev = $hook_data['netdevdata'];
+	$error = $hook_data['error'];
 
-	if ($netdevdata['invprojectid'] == '-1') { // nowy projekt
-		if (!strlen(trim($netdevdata['projectname']))) {
-		 $error['projectname'] = trans('Project name is required');
-		}
-		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
-			array($netdevdata['projectname'], INV_PROJECT_SYSTEM));
-		if (sizeof($l)>0) {
-			$error['projectname'] = trans('Project with that name already exists');
-		}
-	}
+	if (!$error) {
+		if ($netdev['guaranteeperiod'] == -1)
+			$netdev['guaranteeperiod'] = NULL;
 
-    if(!$error)
-    {
-		if($netdevdata['guaranteeperiod'] == -1)
-			$netdevdata['guaranteeperiod'] = NULL;
+		if (!isset($netdev['shortname'])) $netdev['shortname'] = '';
+        if (!isset($netdev['secret'])) $netdev['secret'] = '';
+        if (!isset($netdev['community'])) $netdev['community'] = '';
+        if (!isset($netdev['nastype'])) $netdev['nastype'] = 0;
 
-		if(!isset($netdevdata['shortname'])) $netdevdata['shortname'] = '';
-        if(!isset($netdevdata['secret'])) $netdevdata['secret'] = '';
-        if(!isset($netdevdata['community'])) $netdevdata['community'] = '';
-        if(!isset($netdevdata['nastype'])) $netdevdata['nastype'] = 0;
+        // if network device owner is set then get customer address
+        // else get fields from location dialog box
+        if ( empty($netdev['ownerid']) ) {
+            $netdev['address_id'] = null;
+        } else {
+            $netdev['location_name']        = null;
+            $netdev['location_state_name']  = null;
+            $netdev['location_state']       = null;
+            $netdev['location_city_name']   = null;
+            $netdev['location_city']        = null;
+            $netdev['location_street_name'] = null;
+            $netdev['location_street']      = null;
+            $netdev['location_house']       = null;
+            $netdev['location_flat']        = null;
+            $netdev['location_zip']         = null;
+            $netdev['location_country_id']  = null;
+        }
 
-        if (empty($netdevdata['teryt'])) {
-            $netdevdata['location_city'] = null;
-            $netdevdata['location_street'] = null;
-            $netdevdata['location_house'] = null;
-            $netdevdata['location_flat'] = null;
-	}
-	$ipi = $netdevdata['invprojectid'];
-	if ($ipi == '-1') {
-		$DB->BeginTrans();
-		$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-			array($netdevdata['projectname'], INV_PROJECT_REGULAR));
-		$ipi = $DB->GetLastInsertID('invprojects');
-		$DB->CommitTrans();
-	} 
-	if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0)
-		$netdevdata['invprojectid'] = intval($ipi);
-	else
-		$netdevdata['invprojectid'] = NULL;
-	if ($netdevdata['netnodeid']=="-1") {
-		$netdevdata['netnodeid']=NULL;
-	}
-	else {
-		/* dziedziczenie lokalizacji */
-		$dev = $DB->GetRow("SELECT * FROM netnodes WHERE id = ?", array($netdevdata['netnodeid']));
-		if ($dev) {
-			if (!strlen($netdevdata['location'])) {
-				$netdevdata['location'] = $dev['location'];
-				$netdevdata['location_city'] = $dev['location_city'];
-				$netdevdata['location_street'] = $dev['location_street'];
-				$netdevdata['location_house'] = $dev['location_house'];
-				$netdevdata['location_flat'] = $dev['location_flat'];
-			}
-			if (!strlen($netdevdata['longitude']) || !strlen($netdevdata['longitude'])) {
-				$netdevdata['longitude'] = $dev['longitude'];
-				$netdevdata['latitude'] = $dev['latitude'];
+		if ($netdev['projectid'] == -1)
+			$netdev['projectid'] = $LMS->AddProject($netdev);
+		elseif (empty($netdev['projectid']))
+			$netdev['projectid'] = null;
+
+		if ($netdev['netnodeid']=="-1") {
+			$netdev['netnodeid'] = NULL;
+		} else {
+			// heirdom localization
+			$dev = $DB->GetRow("SELECT address_id, longitude, latitude FROM netnodes WHERE id = ?", array($netdev['netnodeid']));
+			if ($dev) {
+				if ( empty($netdev['address_id']) && empty($netdev['location_city']) && empty($netdev['location_street']) ) {
+					$netdev['address_id'] = $dev['address_id'];
+				}
+				if (!strlen($netdev['longitude']) || !strlen($netdev['longitude'])) {
+					$netdev['longitude'] = $dev['longitude'];
+					$netdev['latitude']  = $dev['latitude'];
+				}
 			}
 		}
-	}
 
-		$netdevid = $LMS->NetDevAdd($netdevdata);
+		$netdevid = $LMS->NetDevAdd($netdev);
+
+		$netdev['id'] = $netdevid;
+		$hook_data = $LMS->executeHook('netdevadd_after_update',
+			array(
+				'netdevdata' => $netdev,
+			)
+		);
+
+		if ($api) {
+			if ($netdevid) {
+				header('Content-Type: application/json');
+				echo json_encode(array('id' => $netdevid));
+			}
+			die;
+		}
 
 		$SESSION->redirect('?m=netdevinfo&id='.$netdevid);
-    }
+    } elseif ($api) {
+		header('Content-Type: application/json');
+		echo json_encode($error);
+		die;
+	}
 
 	$SMARTY->assign('error', $error);
-	$SMARTY->assign('netdev', $netdevdata);
+	$SMARTY->assign('netdev', $netdev);
 } elseif (isset($_GET['id'])) {
-	$netdevdata = $LMS->GetNetDev($_GET['id']);
-	$netdevdata['name'] = trans('$a (clone)', $netdevdata['name']);
-	$netdevdata['teryt'] = !empty($netdevdata['location_city']) && !empty($netdevdata['location_street']);
-	$SMARTY->assign('netdev', $netdevdata);
+	$netdev = $LMS->GetNetDev($_GET['id']);
+	$netdev['name'] = trans('$a (clone)', $netdev['name']);
+	$netdev['teryt'] = !empty($netdev['location_city']) && !empty($netdev['location_street']);
+	$SMARTY->assign('netdev', $netdev);
+} else {
+	if (isset($_GET['customerid'])) {
+		$netdev['ownerid'] = intval($_GET['customerid']);
+		if (!$netdev['ownerid'])
+			$netdev['ownerid'] = '';
+	}
+	$SMARTY->assign('netdev', $netdev);
 }
 
 $layout['pagetitle'] = trans('New Device');
 
-$SMARTY->assign('nastype', $LMS->GetNAStypes());
+$SMARTY->assign('nastypes', $LMS->GetNAStypes());
 
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name", array(INV_PROJECT_SYSTEM));
-$SMARTY->assign('NNprojects',$nprojects);
-$netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
-$SMARTY->assign('NNnodes',$netnodes);
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
+$SMARTY->assign('NNnodes', $LMS->GetNetNodes());
+$SMARTY->assign('producers', $LMS->GetProducers());
+$SMARTY->assign('models', $LMS->GetModels());
 
 if (ConfigHelper::checkConfig('phpui.ewx_support'))
 	$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
+
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+    $SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->display('netdev/netdevadd.html');
 

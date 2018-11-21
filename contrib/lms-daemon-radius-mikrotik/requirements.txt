@@ -1,0 +1,8 @@
+ConfigParser
+mysql-connector==2.1.6
+daemon
+pidfile
+python-daemon
+python-memcached
+psycopg2
+ssh2-python

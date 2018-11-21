@@ -1,21 +1,186 @@
 {block name="quicksearchcontents"}
-<img src="img/customer.gif" alt="">
-<input class="blend" type="text" id="customerinput" name="qs[customer]" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
-&nbsp;<img src="img/node.gif" alt="">
-<input class="blend" type="text" id="nodeinput" name="qs[node]" value="" size="15" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
-&nbsp;<img src="img/ticket.gif" alt="">
-<input class="blend" type="text" id="rtinput" name="qs[ticket]" value="" size="15" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
-&nbsp;<img src="img/account.gif" alt="">
-<input class="blend" type="text" id="accountinput" name="qs[account]" value="" size="15" {tip text="Enter account or alias name and press Enter"}>
-&nbsp;<img src="img/docum.gif" alt="">
-<input class="blend" type="text" id="documentinput" name="qs[document]" value="" size="15" {tip text="Enter document number and press Enter"}>
-<script type="text/javascript">
-<!--
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('customerinput'), '?m=quicksearch&ajax=1&mode=customer&what=', 1);
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('nodeinput'), '?m=quicksearch&ajax=1&mode=node&what=', 1);
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('rtinput'), '?m=quicksearch&ajax=1&mode=ticket&what=', 1);
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('accountinput'), '?m=quicksearch&ajax=1&mode=account&what=', 1);
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('documentinput'), '?m=quicksearch&ajax=1&mode=document&what=', 1);
-//-->
-</script>
+
+<div id="qs-customer" class="lms-ui-quick-search-field" data-mode="customer" data-label="{trans("<!qs>customer")}" data-keyboard-shortcut="ctrl+1">
+    <i class="lms-ui-quick-search-icon lms-ui-icon-customer" {tip text="Click here to select which customer properties should be used during search"}></i>
+    <select id="qs-customer-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which customer properties should be used during search")}">
+        <option value="id"{if !isset($qs_properties.customer) || isset($qs_properties.customer.id)} selected{/if}>{trans("<!qs>customer id")}</option>
+        <option value="name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.name)} selected{/if}>{trans("<!qs>customer name")}</option>
+        <option value="address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.address)} selected{/if}>{trans("<!qs>address")}</option>
+        <option value="post_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_name)} selected{/if}>{trans("<!qs>post name")}</option>
+        <option value="post_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.post_address)} selected{/if}>{trans("<!qs>post address")}</option>
+        <option value="location_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
+        <option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("<!qs>email")}</option>
+    </select>
+    <input type="text" name="qs[customer]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-phone" class="lms-ui-quick-search-field" data-mode="phone" data-label="{trans("<!qs>phone")}" data-keyboard-shortcut="ctrl+2">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-phone" {tip text="Enter phone number and press Enter"}></i>
+    <input type="text" name="qs[phone]" value="" size="15" {tip text="Enter phone number and press Enter" class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-node" class="lms-ui-quick-search-field" data-mode="node" data-label="{trans("<!qs>node")}" data-keyboard-shortcut="ctrl+3">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-node" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}></i>
+    <select id="qs-node-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which node properties should be used during search")}">
+        <option value="id"{if !isset($qs_properties.node) || isset($qs_properties.node.id)} selected{/if}>{trans("<!qs>node id")}</option>
+        <option value="name"{if !isset($qs_properties.node) || isset($qs_properties.node.name)} selected{/if}>{trans("<!qs>node name")}</option>
+        <option value="ip"{if !isset($qs_properties.node) || isset($qs_properties.node.ip)} selected{/if}>{trans("<!qs>ip address")}</option>
+        <option value="public_ip"{if !isset($qs_properties.node) || isset($qs_properties.node.public_ip)} selected{/if}>{trans("<!qs>public ip address")}</option>
+        <option value="mac"{if !isset($qs_properties.node) || isset($qs_properties.node.mac)} selected{/if}>{trans("<!qs>mac address")}</option>
+    </select>
+    <input type="text" name="qs[node]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-network" class="lms-ui-quick-search-field" data-mode="network" data-label="{trans("<!qs>network")}" data-keyboard-shortcut="ctrl+4">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-ipnetwork" {tip text="Enter network ID, name or IP address and press Enter"}></i>
+    <input type="text" name="qs[network]" value="" size="15" {tip text="Enter network ID, name or IP address and press Enter" class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-netnode" class="lms-ui-quick-search-field" data-mode="netnode" data-label="{trans("<!qs>network node")}" data-keyboard-shortcut="ctrl+5">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-netnode" {tip text="Enter netnode ID or name and press Enter"}></i>
+    <input type="text" name="qs[netnode]" value="" size="15" {tip text="Enter netnode ID or name and press Enter" class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-netdev" class="lms-ui-quick-search-field" data-mode="netdevice" data-label="{trans("<!qs>network device")}" data-keyboard-shortcut="ctrl+6">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-netdev" {tip text="Enter device ID, name or serial number and press Enter"}></i>
+    <select id="qs-netdev-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which network device properties should be used during search")}">
+        <option value="id"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.id)} selected{/if}>{trans("<!qs>device id")}</option>
+        <option value="name"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.name)} selected{/if}>{trans("<!qs>device name")}</option>
+        <option value="serial"{if !isset($qs_properties.netdevice) || isset($qs_properties.netdevice.serial)} selected{/if}>{trans("<!qs>device serial number")}</option>
+    </select>
+    <input type="text" name="qs[netdevice]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-wireless" class="lms-ui-quick-search-field" data-mode="wireless" data-label="{trans("<!qs>wireless")}" data-keyboard-shortcut="ctrl+7">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-wireless" {tip text="Enter wireless SSID and press Enter"}></i>
+    <input type="text" name="qs[wireless]" value="" size="15" {tip text="Enter wireless SSID and press Enter" class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-ticket" class="lms-ui-quick-search-field" data-mode="ticket" data-label="{trans("<!qs>ticket")}" data-keyboard-shortcut="ctrl+8">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-helpdesk" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}></i>
+    <select id="qs-ticket-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which ticket properties should be used during search")}">
+        <option value="id"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.id)} selected{/if}>{trans("<!qs>ticket id")}</option>
+        <option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
+        <option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
+        <option value="customername"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.customername)} selected{/if}>{trans("<!qs>customer name")}</option>
+    </select>
+    <input type="text" name="qs[ticket]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-account" class="lms-ui-quick-search-field" data-mode="account" data-label="{trans("<!qs>account")}" data-keyboard-shortcut="ctrl+9">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-hosting" {tip text="Enter account or alias name and press Enter"}></i>
+    <input type="text" name="qs[account]" value="" size="15" {tip text="Enter account or alias name and press Enter" class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-docum" class="lms-ui-quick-search-field" data-mode="document" data-label="{trans("<!qs>document")}" data-keyboard-shortcut="ctrl+y">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-document" {tip text="Enter document number and press Enter"}></i>
+    <input type="text" name="qs[document]" value="" size="15" {tip text="Enter document number and press Enter" class="blend lms-ui-quick-search-input"}>
+</div>
+
+<div id="qs-customerext" class="lms-ui-quick-search-field" data-mode="customerext" data-label="{trans("<!qs>customer external id")}" data-keyboard-shortcut="ctrl+e">
+	<i class="lms-ui-quick-search-icon lms-ui-icon-externalid" {tip text="Enter external customer ID fragment and press Enter"}></i>
+    <input type="text" name="qs[customerext]" value="" size="15" {tip text="Enter external customer ID fragment and press Enter" class="blend lms-ui-quick-search-input"}>
+</div>
+
 {/block}
+
+<select id="qs-selector" name="qs-selector[]" class="lms-ui-quick-search-selector lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select which quick search fields should be visible")}">
+
+</select>
+
+<script>
+    function bindKeyboardShortcuts() {
+		$('.lms-ui-quick-search-field[data-keyboard-shortcut]').each(function () {
+			var mode = $(this).attr('data-mode');
+			var shortcut = $(this).attr('data-keyboard-shortcut');
+			var input = $(this).find('input');
+
+			Mousetrap.unbind(shortcut);
+
+			if (Object.keys(qs_fields).length && !qs_fields.hasOwnProperty(mode)) {
+				return;
+			}
+
+			Mousetrap.bindGlobal(shortcut, function (e) {
+				e.preventDefault();
+				input.click();
+			});
+		});
+	}
+
+	var qs_data = {
+		"qs-properties": {}
+	};
+	{foreach $qs_properties as $mode => $properties}
+	qs_data["qs-properties"]["{$mode}"] = "{implode(',', array_keys($properties))}";
+	{/foreach}
+
+    var qs_fields = {};
+    {foreach $qs_fields as $field => $dummy}
+    qs_fields["{$field}"] = true;
+    {/foreach}
+
+    $('#qs-selector').each(function() {
+        var selector = $(this);
+		var field_count = Object.keys(qs_fields).length;
+    	$('.lms-ui-quick-search-field[data-mode]').each(function() {
+    		var mode = $(this).attr('data-mode');
+    		if (field_count && !qs_fields.hasOwnProperty(mode))
+    			$(this).hide();
+            selector.append('<option value="' + mode + '"' + (!field_count || qs_fields.hasOwnProperty(mode) ? ' selected' : '') +
+                '>' + $(this).attr('data-label') + '</option>');
+    	});
+    	new multiselect({
+            id: $(this).attr('id'),
+            defaultValue: null,
+            button: $('<i class="fas fa-angle-down"></i>'),
+            type: 'tiny'
+        });
+    	$('#qs-selector').change(function() {
+			qs_fields = {};
+            $('#qs-selector-layer input:checked').each(function () {
+				qs_fields[$(this).val()] = true;
+			});
+			$('.lms-ui-quick-search-field').hide();
+			$.each(qs_fields, function(key, value) {
+				$('.lms-ui-quick-search-field[data-mode="' + key + '"]').show();
+			});
+
+			bindKeyboardShortcuts();
+
+            qs_data["qs-fields"] = Object.keys(qs_fields).join(',');
+			$.ajax({
+				method: "POST",
+				url: '?m=persistentsetting',
+				data: qs_data
+			});
+    	});
+	});
+
+    $('select.lms-ui-quicksearch-property-selection').each(function(k) {
+        var id = $(this).attr('id');
+        var mode = $(this).closest('.lms-ui-quick-search-field').attr('data-mode');
+        new multiselect({
+			id: id,
+			defaultValue: null,
+			button: $(this).siblings('i'),
+			type: 'tiny'
+		});
+		$('#' + id).change(function() {
+			var properties = [];
+			var id = $(this).attr('id');
+
+			$('#' + id + '-layer input:checked').each(function () {
+				properties.push($(this).val());
+			});
+			qs_data["qs-properties"][mode] = properties.join(',');
+            $.ajax({
+				method: "POST",
+				url: '?m=persistentsetting',
+				data: qs_data
+			});
+		});
+	});
+
+    bindKeyboardShortcuts();
+</script>

@@ -1,12 +1,11 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="get" action="?m=netdevlist" name="choosefilter">
 <INPUT type="hidden" NAME="m" VALUE="netdevlist">
-<INPUT type="hidden" NAME="page" VALUE="1">
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="96%">
@@ -14,13 +13,16 @@
 			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
 			<A href="?m=netdevlist&amp;o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="nobr alift-left valign-top">
-			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
+		<td width="1%" class="nobr valign-top">
+			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">
+				{trans("Location:")}
+			</A>
+			{if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</td>
 		<TD width="1%" class="nobr align-left valign-top">
 			<A href="?m=netdevlist&amp;o=netnode{if $listdata.direction == "asc" && $listdata.order == "netnode"},desc{/if}">{trans("Network node:")}</A> {if $listdata.order == "netnode"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" align="right" valign="top">
+		<TD width="1%" class="text-right valign-top">
 			<A href="?m=netdevlist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
@@ -28,9 +30,9 @@
 			(<A href="?m=netdevlist&amp;o=takenports{if $listdata.direction == "asc" && $listdata.order == "takenports"},desc{/if}">{trans("Ports used:")}</A>{if $listdata.order == "takenports"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})<BR>
 			<IMG src="img/serialnumber.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=serialnumber{if $listdata.direction == "asc" && $listdata.order == "serialnumber"},desc{/if}">{trans("Serial number:")}</A> {if $listdata.order == "serialnumber"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" align="right" nowrap>
-			<B>{trans("Total:")} {$listdata.total|default:"0"}</B>
-		</TD>
+		<td width="1%" class="text-right nobr bold">
+			{trans("Total:")} {$listdata.total|default:"0"}
+		</td>
 	</TR>
 	<TR>
 		<TD colspan="6" class="nobr">
@@ -41,17 +43,18 @@
 				{foreach $_NETELEMENTSTATUSES as $idx => $status}
 					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
 				{/foreach}
+				<OPTION value="100"{if $listdata.status == 100} selected{/if}>{trans("TERRIT not specified")}</OPTION>
 			</SELECT>
 			{trans("Project:")}
 			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
 				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
-				{section name=project loop=$NNprojects}
-				<OPTION VALUE="{$NNprojects[project].id}" {if ($listdata.invprojectid == $NNprojects[project].id ) } SELECTED {/if} >{$NNprojects[project].name}</OPTION>
-				{/section}
+				{foreach $NNprojects as $project}
+				<OPTION VALUE="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
+				{/foreach}
 			</SELECT>
 			{trans("Network node:")}
-			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
+			<SELECT NAME="n" ONCHANGE="document.choosefilter.submit();" {tip class="lms-ui-advanced-select" text="Select network node (optional)" trigger="netnodeid"}>
 				<OPTION VALUE="-1"{if $listdata.netnode == -1} selected{/if}>- {trans("all")} -</OPTION>
 				<OPTION VALUE="-2"{if $listdata.netnode == -2} selected{/if}>- {trans("none")} -</OPTION>
 				{foreach $netnodes as $netnode}
@@ -76,66 +79,90 @@
 			</SELECT>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="6">
-			{include file="scroller.html" loop=$netdevlist}
+		<TD class="lms-ui-pagination" COLSPAN="6">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=netdevlist loop=$netdevlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}">
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" VALIGN="TOP">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
-			<IMG src="img/producer.gif" ALT=""> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}
+	{foreach $netdevlist as $netdev}
+	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
+		<TD class="valign-top">
+			<IMG src="img/netdev.gif" ALT=""> <a href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"><B>{$netdev.name}</B></A><BR>
+			{if $netdev.producer}
+				<IMG src="img/producer.gif" ALT="">
+				{$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
+			{else}
+				<br>
+			{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
-			{if $netdevlist[netdevlist].location}{$netdevlist[netdevlist].location} {if $netdevlist[netdevlist].borough_name} ({$netdevlist[netdevlist].state_name} / {$netdevlist[netdevlist].district_name} / {$_BOROUGHTYPES[$netdevlist[netdevlist].borough_type]} {$netdevlist[netdevlist].borough_name}){/if}{/if}
+		<TD class="nobr valign-top">
+			{if $netdev.location}
+				{$netdev.location}
+				{if $netdev.borough_name}
+					<div class="blend">
+						({$netdev.state_name} / {$netdev.district_name} / {$_BOROUGHTYPES[$netdev.borough_type]} {$netdev.borough_name})
+					</div>
+				{/if}
+			{elseif $netdev.netnodeid && $netnodes[$netdev.netnodeid].location}
+				{$netnodeid=$netdev.netnodeid}
+				{$netnodes[$netnodeid].location} {trans("(from network node)")}
+				{if $netnodes[$netnodeid].location_borough_name}
+					<div class="blend">
+						({$netnodes[$netnodeid].location_state_name} / {$netnodes[$netnodeid].location_district_name} / {$_BOROUGHTYPES[$netnodes[$netnodeid].location_borough_type]} {$netnodes[$netnodeid].location_borough_name})
+					</div>
+				{/if}
+
+			{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
-			{if $netdevlist[netdevlist].netnode}<a href="?m=netnodeinfo&amp;id={$netdevlist[netdevlist].netnodeid}">{$netdevlist[netdevlist].netnode}</a>{/if}
+		<TD class="nobr valign-top">
+			{if $netdev.netnode}<IMG src="img/netnode.png" alt=""><a href="?m=netnodeinfo&amp;id={$netdev.netnodeid}"> {$netdev.netnode}</a>{/if}
+			{if $netdev.customerid}<IMG src="img/customer.png" alt=""><a href="?m=customerinfo&amp;id={$netdev.customerid}"> {$netdev.customerid}</a>{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" align="right" VALIGN="TOP">
-			({$netdevlist[netdevlist].id|string_format:"%04d"})
+		<TD class="text-right valign-top">
+			({$netdev.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" NOWRAP>
-			<IMG src="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})<BR>
-			<IMG src="img/serialnumber.gif" ALT=""> {$netdevlist[netdevlist].serialnumber}
+		<TD class="nobr">
+			<IMG src="img/port.gif" ALT=""> {$netdev.ports} ({$netdev.takenports})<BR>
+			<IMG src="img/serialnumber.gif" ALT=""> {$netdev.serialnumber}
 		</TD>
-		<TD align="right" class="nobr">
-			<a href="?m=netdevdel&amp;id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<a href="?m=netdevedit&amp;id={$netdevlist[netdevlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<a href="?m=netdevadd&amp;id={$netdevlist[netdevlist].id}"><IMG src="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
-			<a href="?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+		<TD class="lms-ui-buttons text-right nobr">
+			{foreach $netdev.customlinks as $link}
+			<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
+			{if isset($link.extra)}{$link.extra}{/if}
+			{/foreach}
+			<a href="?m=netdevdel&amp;id={$netdev.id}" onClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a href="?m=netdevedit&amp;id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<a href="?m=netdevadd&amp;id={$netdev.id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+			<a href="?m=netdevinfo&amp;id={$netdev.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
-	{if $netdevlist[netdevlist.index_next].ownerid == $netdevlist[netdevlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
-	{sectionelse}
+	{if $netdevlist[netdevlist.index_next].ownerid == $netdev.ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
+	{foreachelse}
 	<TR>
 		<TD colspan="6" class="empty-table">
 			<p>{trans("There are no devices in your database.")}</p>
 		</TD>
 	</TR>
-	{/section}
-	{if $listdata.total != 0}
+	{/foreach}
+    </TBODY>
+	<TFOOT>
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="6">
-			{include file="scroller.html" loop=$netdevlist}
+		<TD class="lms-ui-pagination" COLSPAN="6">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD COLSPAN="5" ALIGN="right">
-			<B>
-				{trans("Total:")} {$listdata.total|default:"0"}
-			</B>
-		</TD>
-		<TD COLSPAN="1"></TD>
+		<td colspan="6" class="text-right bold">
+			{trans("Total:")} {$listdata.total|default:"0"}
+		</td>
 	</TR>
-    </TBODY>
+	</TFOOT>
 </TABLE>
 </FORM>
 {/block}

@@ -1,46 +1,57 @@
 {extends file="layout.html"}
-{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+{$xajax}
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="search" action="?m=rtsearch">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="100%" colspan="2" NOWRAP>
-			<B>{trans("Display tickets matching the following criteria:")}:</B>
+		<TD class="bold nobr" colspan="2">
+			{trans("Display tickets matching the following criteria:")}:
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/ticket.gif" alt="">
-			<B>{trans("Subject:")}</B>
+			{trans("Subject:")}
 		</TD>
-		<TD WIDTH="99%">
-			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
+		<TD>
+			<INPUT type="search" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<IMG src="img/customer.gif" alt="">
-			<B>{trans("Submitter:")}</B>
+		<TD class="bold nobr">
+			<IMG src="img/mail.gif" alt="">
+			{trans("Body:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
+			<INPUT type="search" size="50" name="search[body][pattern]" value="{$search.body.pattern}" {tip text="Enter body fragment"}>
+			<label>
+				<input type="checkbox" name="search[body][regexp]" value="1"{if isset($search.body.regexp)} checked{/if}>
+				{trans("treat as regular expression")}
+			</label>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/customer.gif" alt="">
+			{trans("Requestor:")}
+		</TD>
+		<TD>
 			<TABLE width="100%" cellpadding="1">
-			    <TR>
+				<TR>
 			    	<TD width="100%" colspan="2" class="nobr">
-				    <SELECT size="1" name="search[customerid]" {tip text="select customer from list or enter his data if is not a customer"} onChange="document.forms['search'].elements['search[custid]'].value=document.forms['search'].elements['search[customerid]'].value">
-					<OPTION value="0">{trans("- all customers -")}</OPTION>
-					{foreach from=$customerlist item=item}
-					    <OPTION value="{$item.id}" {if $item.id == $search.customerid}SELECTED{/if}>{$item.customername} ({$item.id|string_format:"%04d"})</OPTION>
-					{/foreach}
-				    </SELECT>
-				    {trans("or Customer ID:")}
-				    <INPUT TYPE="TEXT" NAME="search[custid]" VALUE="{$search.custid}" SIZE="5" onChange="document.forms['search'].elements['search[customerid]'].value=document.forms['search'].elements['search[custid]'].value" {tip trigger="custid"}>
-				</TD>
+						{customerlist form="search" customers=$customerlist selected=$search.customerid selectname="search[customerid]" inputname="search[custid]" firstoption="- all customers -" selecttip="select customer from list or enter his data if is not a customer" inputtip="select customer from list or enter his data if is not a customer"}
+					</TD>
 			    </TR>
 			    <TR>
 				<TD width="1%" NOWRAP>{trans("First/last or Company name:")}</TD>
@@ -48,61 +59,99 @@
 			    </TR>
 			    <TR>
 				<TD width="1%">{trans("E-mail:")}</TD>
-				<TD width="99%"><INPUT type="text" name="search[email]" value="{$search.email}" {tip text="Select customer from list or enter his data if is not a customer"}></TD>
+				<TD width="99%"><INPUT type="email" name="search[email]" value="{$search.email}" {tip text="Select customer from list or enter his data if is not a customer"}></TD>
 			    </TR>
 			</TABLE>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/users.gif" alt="">
-			<B>{trans("Owner:")}</B>
+			{trans("Owner:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
 				<OPTION value="0">{trans("- all owners -")}</OPTION>
-				{foreach from=$userlist item=item}
-			        <OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.name}</OPTION>
+				{foreach $userlist as $item}
+				<OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/queue.gif" alt="">
-			<B>{trans("Queue:")}</B>
+			{trans("Queue:")}
 		</TD>
-		<TD WIDTH="99%">
-			<SELECT size="1" name="search[queue]" {tip text="Select queue" trigger="queue"}>
-				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
-			{foreach from=$queuelist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $search.queue}SELECTED{/if}>{$item.name}</OPTION>
+		<TD>
+			<SELECT size="1" name="search[queue][]" {tip text="Select queue" class="lms-ui-multiselect" trigger="queue"} multiple data-default-value="{trans("- all -")}">
+				{foreach $queuelist as $item}
+				<OPTION value="{$item.id}" {if is_array($search.queue) && in_array($item.id, $search.queue)}SELECTED{/if}>{$item.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/dead.gif" alt="">
+			{trans("Status:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
+				<OPTION value="" {if $search.state==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+				<OPTION value="-1" {if $search.state=="-1"}SELECTED{/if}>{trans("not resolved")}</OPTION>
+			{foreach $_RT_STATES as $idx => $s}
+				<OPTION value="{$idx}" {if is_array($queuedata.state) && in_array($idx, $queuedata.state)} SELECTED{/if}>{$s.label}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/service-type.png" alt="">
+			{trans("Service:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[service]" {tip text="Select ticket service" }>
+				<OPTION value="" {if $search.state==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+				{foreach $_SERVICETYPES as $key => $ts}
+				<OPTION value="{$key}" {if is_array($queuedata.service) && in_array($key, $queuedata.service)} SELECTED{/if}>{$ts}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/ticket-type.png" alt="">
+			{trans("Ticket type:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[type]" {tip text="Select ticket type" }>
+				<OPTION value="" {if $search.type==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+				{foreach $_RT_TYPES as $key => $tt}
+				<OPTION value="{$key}" {if is_array($queuedata.type) && in_array($key, $queuedata.type)} SELECTED{/if}>{$tt.label}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/report.gif" alt="">
+			{trans("Priority:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[priority]" {tip text="Select ticket priority"}>
+				<OPTION value="" {if $search.priority==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+			{foreach $_RT_PRIORITIES as $idx => $priority}
+				<OPTION value="{$idx}" {if is_array($queuedata.priority) && in_array($idx, $queuedata.priority)} SELECTED{/if}>{$priority}</OPTION>
 			{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<IMG src="img/dead.gif" alt="">
-			<B>{trans("Status:")}</B>
-		</TD>
-		<TD WIDTH="99%">
-			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
-				<OPTION value="" {if $search.state==""}SELECTED{/if}>{trans("- all -")}</OPTION>
-				<OPTION value="-1" {if $search.state=="-1"}SELECTED{/if}>{trans("not resolved")}</OPTION>
-				<OPTION value="0" {if $search.state=="0"}SELECTED{/if}>{trans("new")}</OPTION>
-				<OPTION value="1" {if $search.state=="1"}SELECTED{/if}>{trans("opened")}</OPTION>
-				<OPTION value="2" {if $search.state=="2"}SELECTED{/if}>{trans("resolved")}</OPTION>
-				<OPTION value="3" {if $search.state=="3"}SELECTED{/if}>{trans("dead")}</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/time.gif" alt="">
-			<B>{trans("Min. Uptime")}</B>
+			{trans("Min. Uptime")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT SIZE="1" name="search[uptime]" {tip text="Select ticket uptime"}>
 				<OPTION value="" {if $search.uptime==""}SELECTED{/if}>{trans("- all -")}</OPTION>
 				<OPTION value="604800" {if $search.uptime=="604800"}SELECTED{/if}>{trans("7 days")}</OPTION>
@@ -112,20 +161,72 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" style="vertical-align:top" NOWRAP>
+		<TD class="bold nobr valign-top">
 			<IMG src="img/queue.gif" alt="">
-			<B>{trans("Categories:")}</B>
+			{trans("Categories:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{foreach from=$categories item=category}
-				<INPUT type="checkbox" name="search[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
-				<label for="cat{$category.id}">{$category.name}</label><BR />
+		<TD class="nobr">
+			{foreach $categories as $category}
+			<label>
+				<INPUT type="checkbox" name="search[categories][{$category.id}]" value="1"{if $category.checked > 0} checked{/if}>
+				{$category.name}
+			</label>
+			{if !$category@last}<br>{/if}
 			{/foreach}
 		</TD>
 	</TR>
+	{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
 	<TR>
-		<TD WIDTH="100%" colspan="2" align="right">
-			<A href="javascript:document.search.submit();" accesskey="s">{trans("Search")}</a><IMG src="img/search.gif" alt="">
+		<TD class="bold nobr">
+			<IMG src="img/dead.gif" alt="">
+			{trans("Removed:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[removed]" {tip text="Select ticket status"}>
+				<OPTION value="" {if $search.remove==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+				<OPTION value="-1" {if $search.remove=="-1"}SELECTED{/if}>{trans("Not removed")}</OPTION>
+				<OPTION value="1" {if $search.remove=="1"}SELECTED{/if}>{trans("Removed")}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+        <TD class="bold nobr"><img src="img/netnode.png" alt=""> {trans("Network node:")}</TD>
+		<TD class="nobr">
+			<SELECT name="search[netnodeid]" {tip text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
+				<OPTION value="">{trans("- none -")}</OPTION>
+				{foreach $netnodelist as $idx=>$n}
+					<OPTION value="{$idx}"> {$n.name} ({$n.id})</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+        <TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Device:")}</TD>
+		<TD class="nobr" id="rtnetdevs">
+			{include file="rt/rtnetdevs.html" form="search"}
+		</TD>
+	</TR>
+        <TR>
+		<TD class="bold nobr"><img src="img/verifier.png" alt=""> {trans("Verifier:")}</TD>
+		<TD>
+                        <SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
+                                <OPTION value="0">{trans("- all owners -")}</OPTION>
+                                {foreach $userlist as $item}
+                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.name}</OPTION>
+                                {/foreach}
+                        </SELECT>
+		</TD>
+        </TR>
+        <TR>
+		<TD class="bold nobr"><img src="img/calendar.gif" alt=""> {trans("Deadline expired:")}</TD>
+		<TD>
+			<INPUT TYPE="checkbox" NAME="search[expired]" VALUE="1" {tip text="Check if ticket is expired" trigger="expired"}>
+		</TD>
+        </TR>
+	<TR>
+		<TD class="buttons" colspan="2">
+			<A href="javascript:document.search.submit();" accesskey="s"><IMG src="img/search.gif" alt=""> {trans("Search")}</A>
 		</TD>
 	</TR>
     </TBODY>
@@ -133,7 +234,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['search'].elements['search[subject]'].focus();
+	$(function() {
+		$('form[name="search"] [name="search[subject]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}
