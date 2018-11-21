@@ -68,10 +68,10 @@ $listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
-if ($doctype == 'invoices')
-	$taxescount = 0;
-else
+if (in_array(DOC_DNOTE, $doctypes))
 	$taxescount = -1;
+else
+	$taxescount = 0;
 
 if(!empty($_POST['group']))
 {
@@ -129,10 +129,23 @@ switch ($_POST['sorttype']) {
 		$wherecol = 'd.cdate';
 }
 
-if (in_array($_POST['doctype'], array('invoices', 'notes')))
-	$doctype = $_POST['doctype'];
-else
-	$doctype = 'invoices';
+$doctypes = array();
+if (!empty($_POST['doctype']) && is_array($_POST['doctype'])) {
+	foreach ($_POST['doctype'] as $doctype)
+		switch ($doctype) {
+			case 'invoices':
+				$doctypes[] = DOC_INVOICE;
+				break;
+			case 'cnotes':
+				$doctypes[] = DOC_CNOTE;
+				break;
+			case 'dnotes':
+				$doctypes[] = DOC_DNOTE;
+				break;
+		}
+}
+if (empty($doctypes))
+	$doctypes = array(DOC_INVOICE, DOC_CNOTE);
 
 if (!empty($_POST['numberplanid'])) {
 	if (is_array($_POST['numberplanid'])) {
@@ -145,23 +158,17 @@ if (!empty($_POST['numberplanid'])) {
 // we can't simply get documents with SUM(value*count)
 // because we need here incoices-like round-off
 
-// get documents items numeric values for calculations
-if ($doctype == 'invoices')
-	$args = array(DOC_INVOICE, DOC_CNOTE);
-else
-	$args = array(DOC_DNOTE, DOC_DNOTE);
-$args[] = $unixfrom;
-$args[] = $unixto;
+$args = array($doctypes, $unixfrom, $unixto);
 
-$items = $DB->GetAll('SELECT c.docid, c.itemid,' . ($doctype == 'invoices' ? ' c.taxid, c.count,' : '1 AS count,') . ' c.value,
+$items = $DB->GetAll('SELECT c.docid, c.itemid,' . (in_array(DOC_DNOTE, $doctypes) ? '1 AS count,' : ' c.taxid, c.count,') . ' c.value,
 	d.number, d.cdate, d.sdate, d.paytime, d.customerid, d.reference,
 	d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
 	    FROM documents d
-		' . ($doctype == 'invoices' ? 'LEFT JOIN invoicecontents c ON c.docid = d.id'
-			: 'LEFT JOIN debitnotecontents c ON c.docid = d.id') . '
+		' . (in_array(DOC_DNOTE, $doctypes) ? 'LEFT JOIN debitnotecontents c ON c.docid = d.id'
+			: 'LEFT JOIN invoicecontents c ON c.docid = d.id') . '
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id' .
 	    ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
-	    . ' WHERE cancelled = 0 AND (d.type = ? OR d.type = ?) AND (' . $wherecol . ' BETWEEN ? AND ?) '
+	    . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
 	    .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
 	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')

@@ -4176,4 +4176,6 @@ $_LANG['Network interface type:'] = 'Typ interfejsu sieciowego:';
 
 $_LANG['(no password)'] = '(brak hasła)';
 
+$_LANG['credit notes'] = 'faktury korygujące';
+
 ?>

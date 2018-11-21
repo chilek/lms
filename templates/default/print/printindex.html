@@ -576,9 +576,10 @@
 									{trans("Type:")}
 								</TD>
 								<TD colspan="2">
-									<SELECT name="doctype" {tip text="Select document type"}>
+									<SELECT name="doctype[]" {tip class="lms-ui-multiselect" text="Select document type"} multiple data-default-value="{trans("- all -")}">
 										<OPTION value="invoices">{trans("invoices")}</OPTION>
-										<OPTION value="notes">{trans("debit notes")}</OPTION>
+										<OPTION value="cnotes">{trans("credit notes")}</OPTION>
+										<OPTION value="dnotes" data-exclusive>{trans("debit notes")}</OPTION>
 									</SELECT>
 								</TD>
 					        </TR>
