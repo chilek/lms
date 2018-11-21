@@ -171,6 +171,8 @@ version ?.??.?? (????-??-??):
   - improvement: lms-sendinvoices.php: sendinvoices.limit can be percentage value [chilan]
   - improvement: lms-sendinvoices.php: sendinvoices.interval or --interval parameter allow to specify
     delay in milliseconds between subsequent posts [chilan]
+  - improvement: sale report: allow select document type from within invoices, credit notes,
+    debit notes [chilan]
 
 version 1.11.23 (2018-03-21):
 
