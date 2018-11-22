@@ -133,8 +133,8 @@
 </FORM>
 
 {if $covenantlist}
-	<FORM name="additemlist" method="POST" action="?m=invoicenew&amp;action=additemlist">
-		<TABLE class="lmsbox">
+	<FORM name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
+		<TABLE class="lmsbox lms-ui-background-cycle">
 			<colgroup>
 				<col style="width: 1%;">
 				<col style="width: 92%;">
@@ -181,12 +181,12 @@
 					</TD>
 				</TR>
 			{/section}
-			<TR>
+			<TR class="lms-ui-button-panel">
 				<TD colspan="2" class="nobr">
 					<INPUT type="checkbox" name="allbox" id="allbox" onchange="CheckAll('additemlist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				</TD>
 				<TD class="text-right nobr" colspan="7">
-					<A href="javascript:document.contentslist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
+					<A href="javascript:document.additemlist.submit();">{trans("Add items")} <IMG src="img/save.gif" alt=""></A>
 				</TD>
 			</TR>
 		</TABLE>
