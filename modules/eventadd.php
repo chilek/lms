@@ -32,7 +32,7 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 if (isset($_GET['ticketid']) && !empty($_GET['ticketid']))
 	$eventticketid = intval($_GET['ticketid']);
 
-if (isset($_POST['helpdesk']) && isset($_POST['ticket']))
+if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket']))
 	$ticket = $_POST['ticket'];
 
 $userlist = $LMS->GetUserList();
