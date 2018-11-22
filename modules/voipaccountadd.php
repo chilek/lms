@@ -155,9 +155,9 @@ if (isset($_POST['voipaccountdata'])) {
 
 		$voipaccountid = $LMS->VoipAccountAdd($voipaccountdata);
 		if($voipaccountid)    $hook_data = $plugin_manager->executeHook(
-+                       'voipaccountadd_after_submit',
-+ 			array('voipaccountdata'=>$voipaccountdata, 'error'=>$error, 'voipaccountid'=>$voipaccountid)
-+                   ); 
+                       'voipaccountadd_after_submit',
+ 			array('voipaccountdata'=>$voipaccountdata, 'error'=>$error, 'voipaccountid'=>$voipaccountid)
+                   ); 
 
 		if (!isset($voipaccountdata['reuse'])) {
 			$SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountid);
