@@ -45,7 +45,8 @@ function update_solution($id,$title,$body)
 function add_solution($refid,$title,$body)
 {
     global $DB;
-    $DB->Execute('INSERT INTO up_help (reference, title, body) VALUES (?, ?, ?)',array($refid,$title,$body));
+    $DB->Execute('INSERT INTO up_help (reference, title, body) VALUES (?, ?, ?)',
+        array(empty($refid) ? null : $refid, $title, $body));
 }
 
 function delete_solution($id)
