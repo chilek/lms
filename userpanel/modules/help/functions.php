@@ -58,7 +58,10 @@ function delete_solution($id)
 function get_questions($id)
 {
     global $DB;
-    return $DB->GetAll('SELECT id,title FROM up_help WHERE reference = ?',array($id));
+    if (empty($id))
+        return $DB->GetAll('SELECT id,title FROM up_help WHERE reference IS NULL');
+    else
+        return $DB->GetAll('SELECT id,title FROM up_help WHERE reference = ?',array($id));
 }
 
 function are_questions($id)
