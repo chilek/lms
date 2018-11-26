@@ -127,6 +127,12 @@ if(isset($_POST['event']))
 				trans('At least requestor name, mail or phone should be filled!');
 	}
 
+	if(!empty($ticket['deadline'])) {
+		$dtime = datetime_to_timestamp($ticket['deadline']);
+		if($dtime < time())
+			$error['deadline'] = trans('Ticket deadline could not be set in past');
+	}
+
 	if (!$error) {
 		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
 		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
@@ -149,6 +155,11 @@ if(isset($_POST['event']))
 				$ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
 				$ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
 			}
+
+			if (empty($ticket['deadline']))
+				$ticket['deadline'] = null;
+			else
+				$ticket['deadline'] = $dtime;
 
 			$event['ticketid'] = $LMS->TicketAdd($ticket);
 
@@ -244,7 +255,7 @@ if(isset($_POST['event']))
 				$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 				$LMS->NotifyUsers(array(
-					'queue' => $queuedata['name'],
+					'queue' => $ticket['queue'],
 					'mail_headers' => $headers,
 					'mail_body' => $body,
 					'sms_body' => $sms_body,
