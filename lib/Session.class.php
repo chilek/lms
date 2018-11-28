@@ -168,7 +168,7 @@ class Session {
 			if (($row['mtime'] < $row['tt'] - $this->timeout) && ($row['atime'] < $row['tt'] - $this->timeout))
 				$this->_destroySession();
 			else {
-				if (!isset($_POST['xjxfun']))
+				if (!isset($_POST['xjxfun']) && !isset($_GET['ajax']))
 					$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
 				$this->_content = unserialize($row['content']);
 				$this->restore_user_settings(true);
