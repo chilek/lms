@@ -173,6 +173,7 @@ version ?.??.?? (????-??-??):
     delay in milliseconds between subsequent posts [chilan]
   - improvement: sale report: allow select document type from within invoices, credit notes,
     debit notes [chilan]
+  - improvement: allow to search customers by different assignment states [chilan]
 
 version 1.11.23 (2018-03-21):
 
