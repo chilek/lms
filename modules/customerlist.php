@@ -63,8 +63,8 @@ if ($api) {
 	if (isset($_GET['d']))
 		$filter['division'] = $_GET['d'];
 
-	if (isset($_GET['assigments']))
-		$filter['assignments'] = $_GET['assigments'];
+	if (isset($_GET['assignments']))
+		$filter['assignments'] = $_GET['assignments'];
 
 	if (isset($_GET['page']))
 		$filter['page'] = intval($_GET['page']);
@@ -81,6 +81,10 @@ if ($api) {
 	$filter['total'] = intval($summary['total']);
 	$filter['limit'] = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
 	$filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
+	if ($filter['total'] && $filter['total'] < $filter['offset']) {
+		$filter['page'] = 1;
+		$filter['offset'] = 0;
+	}
 	$filter['count'] = false;
 	$customerlist = $LMS->GetCustomerList($filter);
 }

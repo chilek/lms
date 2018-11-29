@@ -268,6 +268,23 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/money.gif" alt=""> {trans("Assignments:")}
+		</TD>
+		<TD style="width: 99%;">
+			<select size="1" name="search[assignments]">
+				<option value="0">{trans('- all -')}</option>
+				<option value="7">{trans('expire in $a days', 7)}</option>
+				<option value="14">{trans('expire in $a days', 14)}</option>
+				<option value="30">{trans('expire in $a days', 30)}</option>
+				<option value="-1">{trans('without end date')}</option>
+				<option value="-2">{trans('active')}</option>
+				<option value="-3">{trans('active, with invoice')}</option>
+				<option value="-4">{trans('suspended')}</option>
+			</select>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
 		</TD>
 		<TD style="width: 99%;">

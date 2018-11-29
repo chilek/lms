@@ -540,34 +540,36 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				break;
         }
 
-        if (!isset($as))
-        	if (isset($assignments))
-        		$as = $assignments;
-        	else
-        		$as = null;
+		if (isset($assignments))
+			$as = $assignments;
+		elseif (isset($search['assignments'])) {
+			$as = $search['assignments'];
+			unset($search['assignments']);
+		} else
+			$as = null;
 
         switch($as){
             case 7: case 14: case 30:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
 		    .'a.suspended = 0 AND a.commited = 1 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
 		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
                 break;
             case -1:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
                 break;
             case -2:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 '
 			.'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             case -3:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND a.commited = 1 '
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND a.commited = 1 '
 			.'AND (a.dateto = 0 OR a.dateto > ?NOW?) AND ((a.at + 86400) > ?NOW? or a.period != 0)';
                 break;
             case -4:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
+                $assignment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
                 break;
             default:
-                $assigment = NULL;
+                $assignment = NULL;
                 break;
         }
 
@@ -843,7 +845,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				. ($contracts == 1 ? ($contracts_expiration_type == 'documents' ?
 						' AND d.customerid IS NULL' :
 						' AND ass.customerid IS NULL') : '')
-                . ($assigment ? ' AND c.id IN ('.$assigment.')' : '')
+                . ($assignment ? ' AND c.id IN ('.$assignment.')' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
                 . ($network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
                 		AND (netid' . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '

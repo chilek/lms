@@ -118,8 +118,8 @@
 				<input type="hidden" name="ng" value="">
 			{/if}
 
-			{trans("Assigments:")}
-			<select size="1" name="assigments" onchange="document.choosefilter.submit();" {if $filter.assignments}class="active"{/if}>
+			{trans("Assignments:")}
+			<select size="1" name="assignments" onchange="document.choosefilter.submit();" {if $filter.assignments}class="active"{/if}>
 				<option value="0" {if $filter.assignments eq '0'} selected {/if}>{trans('- all -')}</option>
 				<option value="7" {if $filter.assignments eq '7'} selected {/if}>{trans('expire in $a days', 7)}</option>
 				<option value="14" {if $filter.assignments eq '14'} selected {/if}>{trans('expire in $a days', 14)}</option>
