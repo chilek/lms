@@ -174,7 +174,8 @@ version ?.??.?? (????-??-??):
   - improvement: sale report: allow select document type from within invoices, credit notes,
     debit notes [chilan]
   - improvement: allow to search customers by different assignment states [chilan]
-  - improvement: allow to search customers which have tariff with set end date [chilan]
+  - improvement: allow to search customers which have tariff with end date fulfilling
+    some common criterions [chilan]
 
 version 1.11.23 (2018-03-21):
 
