@@ -419,8 +419,11 @@ class SYSLOG {
 
 	public function DecodeTransaction(&$tran) {
 		$tran['messages'] = $this->DB->GetAll('SELECT id, resource, operation FROM logmessages lm
-			WHERE lm.transactionid = ? ORDER BY lm.id LIMIT 11',
+			WHERE lm.transactionid = ? ORDER BY lm.id',
 			array($tran['id']));
+		// PHP code is much faster then LIMIT 11 sql clause
+		$tran['messages'] = array_slice($tran['messages'], 0, 11);
+
 		if (!empty($tran['messages']))
 			foreach ($tran['messages'] as $idx => $tr) {
 				$msg = &$tran['messages'][$idx];
