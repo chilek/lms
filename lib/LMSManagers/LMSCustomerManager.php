@@ -581,9 +581,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $over = 0;
         $below = 0;
 
-		$withenddate = isset($search['withenddate']);
-		if ($withenddate)
+		if (isset($search['withenddate'])) {
+			$withenddate = intval($search['withenddate']);
 			unset($search['withenddate']);
+		} else
+			$withenddate = -1;
 
         if (count($search))
             foreach ($search as $key => $value) {
@@ -682,7 +684,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $searchargs[] = 'EXISTS (SELECT 1 FROM assignments a
 							WHERE a.customerid = c.id
 							AND a.datefrom <= ?NOW?
-							AND (a.dateto >= ?NOW?' . ($withenddate ? '' : ' OR a.dateto = 0') . ')
+							' . ($withenddate == 1 ? 'AND a.dateto > ?NOW?' :
+								($withenddate == 0 ? 'AND a.dateto = 0' :
+									'AND (a.dateto > ?NOW? OR a.dateto = 0)')) . '
 							AND (tariffid IN (' . $value . ')))';
                             break;
 						case 'addresstype':

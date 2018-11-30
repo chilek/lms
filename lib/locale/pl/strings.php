@@ -3638,6 +3638,8 @@ $_LANG['suspended'] = 'zawieszone';
 $_LANG['active, with invoice'] = 'aktywne, z fakturą';
 $_LANG['without end date'] = 'bez daty zakończenia';
 $_LANG['with end date'] = 'z datą zakończenia';
+$_LANG['with end date:'] = 'z datą zakończenia:';
+$_LANG['<!enddate>- any -'] = '- dowolną -';
 $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 
 $_LANG['TERRIT not specified'] = 'Bez TERYT-u';

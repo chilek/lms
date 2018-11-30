@@ -251,10 +251,12 @@
 				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
-			<label>
-				<input type="checkbox" name="search[withenddate]" value="1">
-				{trans("with end date")}
-			</label>
+			&nbsp;{trans("with end date:")}
+			<select name="search[withenddate]">
+				<option value="-1">{trans("<!enddate>- any -")}</option>
+				<option value="1">{trans("yes")}</option>
+				<option value="0">{trans("no")}</option>
+			</select>
 		</TD>
 	</TR>
 	<TR>
