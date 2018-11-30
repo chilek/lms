@@ -142,7 +142,11 @@
                             <TR>
                                 <TD><IMG SRC="img/customers.gif" ALT=""></TD>
                                 <TD>{trans("Number of customers:")}</TD>
-                                <TD>{$tariff.customerscount|default:0} ({$tariff.count|default:0},{$tariff.activecount|default:0})</TD>
+                                <TD>
+                                    <span title="<span class=&quot;bold&quot;</span>{trans("Customer count")}">{$tariff.customerscount|default:0}</span>
+                                    (<span title="<span class=&quot;bold&quot;</span>{trans("Assignment count")}">{$tariff.count|default:0}</span>,
+                                    <span title="<span class=&quot;bold&quot;>{trans("Active assignment count")}</span>">{$tariff.activecount|default:0}</span>)
+                                </TD>
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/values.gif" ALT=""></TD>
