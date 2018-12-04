@@ -98,7 +98,8 @@ switch ( strtolower($_GET['action']) ) {
             ));
 
             if (strlen($location)) {
-                $addr[$k]['location'] = $location;
+                $addr[$k]['location'] = (empty($v['location_name']) ? '' : $v['location_name'] . ', ')
+                    . (empty($v['location_zip']) ? '' : $v['location_zip'] . ' ') . $location;
             } else {
                 $addr[$k]['location'] = trans('undefined');
             }
