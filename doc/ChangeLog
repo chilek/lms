@@ -176,6 +176,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to search customers by different assignment states [chilan]
   - improvement: allow to search customers which have tariff with end date fulfilling
     some common criterions [chilan]
+  - improvement: bash/curl script for fetching emails from imap server to LMS RT [interduo]
 
 version 1.11.23 (2018-03-21):
 
