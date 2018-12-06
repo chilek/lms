@@ -584,7 +584,7 @@ foreach ($assigns as $assign) {
 				$itemid = 0;
 				$numbers[$assign['invoice']][$plan]++;
 
-				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, postoffice, ssn, ten, countryid, divisionid, paytime 
+				$customer = $DB->GetRow("SELECT lastname, name, address, street, city, zip, postoffice, ssn, ten, countryid, divisionid, paytime
 						FROM customeraddressview WHERE id = $cid");
 
 				if (!isset($divisions[$customer['divisionid']]))
