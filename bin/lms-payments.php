@@ -354,6 +354,22 @@ if ($check_invoices) {
 		array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
 }
 
+// solid payments
+$assigns = $DB->GetAll("SELECT * FROM payments WHERE value <> 0
+			AND (period = ? OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?))",
+	array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday));
+if (!empty($assigns))
+	foreach ($assigns as $assign) {
+		$DB->Execute("INSERT INTO cash (time, type, value, customerid, comment) 
+			VALUES (?, 1, ? * -1, 0, ?)",
+			array($currtime, $assign['value'], $assign['name']."/".$assign['creditor']));
+		if (!$quiet) print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
+	}
+
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount,
@@ -798,23 +814,6 @@ foreach ($assigns as $assign) {
 		}
 	}
 }
-
-// solid payments
-$assigns = $DB->GetAll("SELECT * FROM payments WHERE value <> 0
-			AND (period = ? OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?))",
-	array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday));
-if (!empty($assigns))
-	foreach($assigns as $assign)
-	{
-		$DB->Execute("INSERT INTO cash (time, type, value, customerid, comment) 
-			VALUES (?, 1, ? * -1, 0, ?)",
-			array($currtime, $assign['value'], $assign['name']."/".$assign['creditor']));
-		if (!$quiet) print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
-	}
 
 // delete old assignments
 $DB->Execute("DELETE FROM liabilities WHERE id IN (
