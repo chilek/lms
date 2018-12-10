@@ -77,12 +77,12 @@ if(isset($_POST['queue']))
 		$DB->Execute('UPDATE rtqueues SET name=?, email=?, description=?,
 				newticketsubject=?, newticketbody=?,
 				newmessagesubject=?, newmessagebody=?,
-				resolveticketsubject=?, resolveticketbody=?, verifierid=? WHERE id=?',
+				resolveticketsubject=?, resolveticketbody=?, verifierticketsubject=?, verifierticketbody=?, verifierid=? WHERE id=?',
 				array(trim($queue['name']),
 					$queue['email'], $queue['description'],
 					$queue['newticketsubject'], $queue['newticketbody'],
 					$queue['newmessagesubject'], $queue['newmessagebody'],
-					$queue['resolveticketsubject'], $queue['resolveticketbody'],
+					$queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'], $queue['verifierticketbody'],
 					!empty($queue['verifierid']) ? $queue['verifierid'] : NULL,
 					$queue['id']));
 

@@ -12,7 +12,7 @@
 			<TABLE width="100%" cellpadding="1">
 				<TR>
 					<TD style="width: 1%;">
-						<IMG src="img/queue.gif" ALT="">
+						<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
 					</TD>
 					<TD style="width: 1%;" class="bold">{trans("Name:")}</TD>
 					<TD style="width: 98%;">
@@ -32,7 +32,7 @@
 						<TABLE width="100%" cellpadding="3">
 							<TR>
 								<TD style="width: 1%;">
-									<IMG src="img/mail.gif" ALT="">
+									<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
 								</TD>
 								<TD style="width: 1%;" class="bold">{trans("E-mail:")}</TD>
 								<TD style="width: 98%;">
@@ -41,7 +41,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;">
-									<IMG src="img/info1.gif" ALT="">
+									<i class="lms-ui-icon-content lms-ui-icon-description"></i>
 								</TD>
 								<TD style="width: 1%;" class="bold">{trans("Description:")}</TD>
 								<TD style="width: 98%;">
@@ -50,7 +50,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
-									<IMG src="img/verifier.png" alt="">
+									<i class="lms-ui-icon-content lms-ui-icon-verifier"></i>
 								</TD>
 								<TD style="width: 1%;" class="bold">{trans("<!rt>Verifier:")}</TD>
 								<TD style="width: 99%;">
@@ -64,7 +64,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;">
-									<IMG src="img/users.gif" ALT="">
+									<i class="lms-ui-icon-content lms-ui-icon-user"></i>
 								</TD style="width: 1%;">
 								<TD class="bold">{trans("Privileges:")}</TD>
 								<TD style="width: 98%;">
@@ -177,6 +177,26 @@
 									<TEXTAREA name="queue[resolveticketbody]" cols="60" rows="10" {tip text="Body of mail which is sent to customer when the ticket is resolved" trigger="resolveticketbody"}>{$queue.resolveticketbody}</TEXTAREA>
 								</TD>
 							</TR>
+							<TR>
+								<TD style="width: 100%;" class="bold valign-top nobr">
+									{trans("Ticket verifier notification subject:")}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 100%;" class="valign-top">
+									<INPUT type="text" name="queue[verifierticketsubject]" value="{$queue.verifierticketsubject}" size="60" {tip text="Subject of mail which is sent to verifier when the ticket is transfered to him" trigger="verifierticketsubject"}>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 100%;" class="bold valign-top nobr">
+									{trans("Ticket verifier notification body:")}
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 100%;" class="valign-top">
+									<TEXTAREA name="queue[verifierticketbody]" cols="60" rows="10" {tip text="Body of mail which is sent to verifier when the ticket is transfered to him" trigger="verifierticketbody"}>{$queue.verifierticketbody}</TEXTAREA>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
@@ -189,7 +209,7 @@
 				<tr>
 					<td>
 						<FIELDSET>
-							<LEGEND><img src="img/queue.gif" alt="">&nbsp;<span class="bold">{trans("Default categories")}</span>
+							<LEGEND><i class="lms-ui-icon-content lms-ui-icon-queue"></i><span class="bold">{trans("Default categories")}</span>
 								<label>
 									({trans("Check All")}
 									<input type="checkbox" id="checkall">)
