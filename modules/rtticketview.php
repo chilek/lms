@@ -126,6 +126,7 @@ if (isset($_GET['highlight'])) {
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('relatedticketscontent', $relatedticketscontent);
+
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);
 $SMARTY->display('rt/rtticketview.html');

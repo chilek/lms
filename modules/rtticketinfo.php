@@ -31,8 +31,6 @@ if(! $LMS->TicketExists($id))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
-
 $rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id);
 $catrights = $LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), 0, $id);
 if(!$rights || !$catrights)
@@ -45,7 +43,7 @@ if(!$rights || !$catrights)
 //$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $ticket = $LMS->GetTicketContents($id);
-
+$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
 $ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
 		    WHERE ticketid = ?
 		    ORDER BY createtime DESC LIMIT 1', 
