@@ -14,12 +14,17 @@
 	<TR>
 		<TD class="nobr">
 			<TABLE cellpadding="1">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 98%;">
+				</COLGROUP>
 				<TR>
-					<TD style="width: 1%;">
+					<TD>
 						<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
 					</TD>
-					<TD style="width: 1%;" class="bold">{trans("Name:")}</TD>
-					<TD style="width: 98%;">
+					<TD class="bold">{trans("Name:")}</TD>
+					<TD>
 						<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter name" trigger="name" bold=1}>
 					</TD>
 				</TR>
