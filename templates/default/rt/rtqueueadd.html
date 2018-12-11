@@ -6,10 +6,15 @@
 <FORM METHOD="POST" NAME="queue" ACTION="?m=rtqueueadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 33%">
+		<COL style="width: 33%">
+		<COL style="width: 34%">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD style="width: 100%;" class="nobr">
-			<TABLE width="100%" cellpadding="1">
+		<TD class="nobr">
+			<TABLE cellpadding="1">
 				<TR>
 					<TD style="width: 1%;">
 						<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
@@ -25,11 +30,11 @@
     </THEAD>
     <TBODY>
 	<TR>
-		<TD style="width: 100%;" class="container">
-			<TABLE width="100%" cellpadding="1">
+		<TD class="container">
+			<TABLE cellpadding="1">
 				<TR>
 					<TD style="width: 40%;" class="valign-top">
-						<TABLE width="100%" cellpadding="3">
+						<TABLE cellpadding="3">
 							<TR>
 								<TD style="width: 1%;">
 									<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
@@ -53,7 +58,7 @@
                                     <i class="lms-ui-icon-content lms-ui-icon-verifier"></i>
                                 </TD>
 								<TD style="width: 1%;" class="bold">{trans("<!rt>Verifier:")}</TD>
-                                <TD style="width: 99%;">
+                                <TD style="width: 98%;">
                                     <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
                                         <OPTION value="">- {trans("select user")} -</OPTION>
                                         {foreach $userlist as $user}
@@ -116,84 +121,84 @@
 					</TD>
 					<TD style="width: 10%;"></TD>
 					<TD style="width: 50%;" class="valign-top">
-						<TABLE width="100%" cellpadding="3">
+						<TABLE cellpadding="3">
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("New ticket customer notification subject:")}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
+								<TD class="valign-top">
 									<INPUT type="text" name="queue[newticketsubject]" value="{$queue.newticketsubject}" size="60" {tip text="Subject of mail which is sent to customer when new ticket is created" trigger="newticketsubject"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("New ticket customer notification body:")}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
-									<TEXTAREA name="queue[newticketbody]" cols="60" rows="10" {tip text="Body of mail which is sent to customer when new ticket is created" trigger="newticketbody"}>{$queue.newticketbody}</TEXTAREA>
+								<TD class="valign-top">
+									<TEXTAREA name="queue[newticketbody]" cols="63" rows="10" {tip text="Body of mail which is sent to customer when new ticket is created" trigger="newticketbody"}>{$queue.newticketbody}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("New message customer notification subject:")}
 								</TD>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
+								<TD class="valign-top">
 									<INPUT type="text" name="queue[newmessagesubject]" value="{$queue.newmessagesubject}" size="60" {tip text="Subject of mail which is sent to customer when new message is added" trigger="newmessagesubject"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("New message customer notification body:")}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
-									<TEXTAREA name="queue[newmessagebody]" cols="60" rows="10" {tip text="Body of mail which is sent to customer when new message is added" trigger="newmessagebody"}>{$queue.newmessagebody}</TEXTAREA>
+								<TD class="valign-top">
+									<TEXTAREA name="queue[newmessagebody]" cols="63" rows="10" {tip text="Body of mail which is sent to customer when new message is added" trigger="newmessagebody"}>{$queue.newmessagebody}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("Resolve ticket customer notification subject:")}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
+								<TD class="valign-top">
 									<INPUT type="text" name="queue[resolveticketsubject]" value="{$queue.resolveticketsubject}" size="60" {tip text="Subject of mail which is sent to customer when the ticket is resolved" trigger="resolveticketsubject"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("Resolve ticket customer notification body:")}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
-									<TEXTAREA name="queue[resolveticketbody]" cols="60" rows="10" {tip text="Body of mail which is sent to customer when the ticket is resolved" trigger="resolveticketbody"}>{$queue.resolveticketbody}</TEXTAREA>
+								<TD class="valign-top">
+									<TEXTAREA name="queue[resolveticketbody]" cols="63" rows="10" {tip text="Body of mail which is sent to customer when the ticket is resolved" trigger="resolveticketbody"}>{$queue.resolveticketbody}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("Ticket verifier notification subject:")}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
+								<TD class="valign-top">
 									<INPUT type="text" name="queue[verifierticketsubject]" value="{$queue.verifierticketsubject}" size="60" {tip text="Subject of mail which is sent to verifier when the ticket is transfered to him" trigger="verifierticketsubject"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="bold valign-top nobr">
+								<TD class="bold valign-top nobr">
 									{trans("Ticket verifier notification body:")}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="valign-top">
-									<TEXTAREA name="queue[verifierticketbody]" cols="60" rows="10" {tip text="Body of mail which is sent to verifier when the ticket is transfered to him" trigger="verifierticketbody"}>{$queue.verifierticketbody}</TEXTAREA>
+								<TD class="valign-top">
+									<TEXTAREA name="queue[verifierticketbody]" cols="63" rows="10" {tip text="Body of mail which is sent to verifier when the ticket is transfered to him" trigger="verifierticketbody"}>{$queue.verifierticketbody}</TEXTAREA>
 								</TD>
 							</TR>
 						</TABLE>
@@ -204,7 +209,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<table width="100%">
+			<table>
 				<tr>
 					<td>
 						<FIELDSET>
@@ -214,7 +219,7 @@
 									<input type="checkbox" id="checkall">)
 								</label>
 							</LEGEND>
-							<table width="100%">
+							<table>
 								<tr>
 									<td>
 										{foreach $categories as $category}
@@ -233,7 +238,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right">
+		<TD class="text-right">
 			<A HREF="javascript:document.queue.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
 			<A HREF="?m=rtqueuelist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 		</TD>
