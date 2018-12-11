@@ -104,10 +104,10 @@ switch ($action) {
 
 			$DB->BeginTrans();
 
-			$DB->Execute('UPDATE netdevices SET ownerid = ?, address_id = ?, latitude = ?, longitude = ?
-				WHERE id = ?', array($dev1['ownerid'], $dev1['address_id'], $dev1['latitude'], $dev1['longitude'], $dev2['id']));
-			$DB->Execute('UPDATE netdevices SET ownerid = ?, address_id = ?, latitude = ?, longitude = ?
-				WHERE id = ?', array($dev2['ownerid'], $dev2['address_id'], $dev2['latitude'], $dev2['longitude'], $dev1['id']));
+			$DB->Execute('UPDATE netdevices SET netnodeid = ?, ownerid = ?, address_id = ?, latitude = ?, longitude = ?
+				WHERE id = ?', array($dev1['netnodeid'], $dev1['ownerid'], $dev1['address_id'], $dev1['latitude'], $dev1['longitude'], $dev2['id']));
+			$DB->Execute('UPDATE netdevices SET netnodeid = ?, ownerid = ?, address_id = ?, latitude = ?, longitude = ?
+				WHERE id = ?', array($dev2['netnodeid'], $dev2['ownerid'], $dev2['address_id'], $dev2['latitude'], $dev2['longitude'], $dev1['id']));
 
 			if ($SYSLOG) {
 				$args = array(
