@@ -1779,6 +1779,10 @@ class LMS
 		$manager = $this->getHelpdeskManager();
 		return $manager->CheckTicketAccess($ticketid);
 	}
+    public function GetRelatedTicketIds($ticketid) {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetRelatedTicketIds($ticketid);
+    }
 
 	/*
 	 *  LMS-UI configuration

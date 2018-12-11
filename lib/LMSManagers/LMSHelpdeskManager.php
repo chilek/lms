@@ -1503,4 +1503,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LIMIT 1',
 			array($userid, $ticketid, $userid, $ticketid));
 	}
+
+    public function GetRelatedTicketIds($ticketid) {
+        return $this->db->GetAll('SELECT id FROM rttickets WHERE parentid = ?', array($ticketid));
+    }
 }

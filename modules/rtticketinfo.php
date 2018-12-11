@@ -31,6 +31,8 @@ if(! $LMS->TicketExists($id))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
+$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
+
 $rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id);
 $catrights = $LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), 0, $id);
 if(!$rights || !$catrights)

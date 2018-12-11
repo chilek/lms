@@ -1,0 +1,52 @@
+<!-- $Id$ -->
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+		<TR class="hand lmsbox-titlebar" data-lmsbox-content="relationpanel-{$layout.module}">
+			<TD class="bold">
+				<i class="lms-ui-icon-helpdesk"></i> {trans("Related tickets:")}
+			</TD>
+			<TD></TD>
+		</TR>
+	</THEAD>
+	<TBODY>
+		<TR id="relationpanel-{$layout.module}" style="display: none;">
+			<TD colspan="2">
+				<table class="lmsbox{if !$relatedtickets}-inner{/if} lms-ui-background-cycle">
+					<COLGROUP>
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 50%;">
+					    <COL style="width: 45%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					    <COL style="width: 1%;">
+					</COLGROUP>
+					{include file="rt/rtheader.html"}
+					<TBODY>
+					{foreach $relatedticketscontent as $ticket}
+						{include file="rt/rtqueueviewboxrow.html"}
+					{foreachelse}
+					<TR>
+						<TD COLSPAN="11" class="empty-table">
+							<p>{trans("There is no related tickets.")}</p>
+						</TD>
+					</TR>
+					{/foreach}
+					</TBODY>
+				</table>
+			</TD>
+		</TR>
+	</TBODY>
+</TABLE>
+
+<SCRIPT type="text/javascript">
+	if (getCookie('relationpanel-{$layout.module}') == '1')
+		document.getElementById('relationpanel-{$layout.module}').style.display = '';
+</SCRIPT>
