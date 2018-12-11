@@ -71,8 +71,13 @@ switch ($action) {
 				(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
 				FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-				(SELECT linktype AS type, linkradiosector AS srcradiosector, NULL AS dstradiosector,
-				linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
+				(SELECT linktype AS type,
+					id,
+					linkspeed AS speed, linktechnology AS technology,
+					port AS srcport,
+					NULL AS dstport,
+					linkradiosector AS srcradiosector,
+					NULL AS dstradiosector
 				FROM nodes WHERE netdev = ? AND ownerid IS NOT NULL)
 			ORDER BY srcport', array($dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'],
 					$dev1['id'], $dev1['id'], $dev1['id']));
@@ -86,18 +91,23 @@ switch ($action) {
 				(CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS dstradiosector
 				FROM netlinks WHERE src = ? OR dst = ?)
 			UNION
-				(SELECT linktype AS type, linkradiosector AS srcradiosector, NULL AS dstradiosector,
-					linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
-					FROM nodes WHERE netdev = ? AND ownerid IS NOT NULL)
+				(SELECT linktype AS type,
+					id,
+					linkspeed AS speed, linktechnology AS technology,
+					port AS srcport,
+					NULL AS dstport,
+					linkradiosector AS srcradiosector,
+					NULL AS dstradiosector
+				FROM nodes WHERE netdev = ? AND ownerid IS NOT NULL)
 			ORDER BY srcport', array($dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'],
 					$dev2['id'], $dev2['id'], $dev2['id']));
 
 			$DB->BeginTrans();
 
-			$DB->Execute('UPDATE netdevices SET location = ?, latitude = ?, longitude = ?
-				WHERE id = ?', array($dev1['location'], $dev1['latitude'], $dev1['longitude'], $dev2['id']));
-			$DB->Execute('UPDATE netdevices SET location = ?, latitude = ?, longitude = ?
-				WHERE id = ?', array($dev2['location'], $dev2['latitude'], $dev2['longitude'], $dev1['id']));
+			$DB->Execute('UPDATE netdevices SET ownerid = ?, address_id = ?, latitude = ?, longitude = ?
+				WHERE id = ?', array($dev1['ownerid'], $dev1['address_id'], $dev1['latitude'], $dev1['longitude'], $dev2['id']));
+			$DB->Execute('UPDATE netdevices SET ownerid = ?, address_id = ?, latitude = ?, longitude = ?
+				WHERE id = ?', array($dev2['ownerid'], $dev2['address_id'], $dev2['latitude'], $dev2['longitude'], $dev1['id']));
 
 			if ($SYSLOG) {
 				$args = array(
