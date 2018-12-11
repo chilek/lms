@@ -31,33 +31,43 @@
 	<TR>
 		<TD class="container">
 			<TABLE cellpadding="1">
+				<COLGROUP>
+					<COL style="width: 40%">
+					<COL style="width: 10%">
+					<COL style="width: 50%">
+				</COLGROUP>
 				<TR>
-					<TD style="width: 40%;" class="valign-top">
+					<TD class="valign-top">
 						<TABLE cellpadding="3">
+							<COLGROUP>
+								<COL style="width: 1px;">
+								<COL style="width: 1px;">
+								<COL style="width: 98px;">
+							</COLGROUP>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
 								</TD>
-								<TD style="width: 1%;" class="bold">{trans("E-mail")}:</TD>
-								<TD style="width: 98%;">
+								<TD class="bold">{trans("E-mail")}:</TD>
+								<TD>
 									<INPUT TYPE="email" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<i class="lms-ui-icon-content lms-ui-icon-description"></i>
 								</TD>
-								<TD style="width: 1%;" class="bold">{trans("Description")}:</TD>
-								<TD style="width: 98%;">
+								<TD class="bold">{trans("Description")}:</TD>
+								<TD>
 									<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional information (optional)"}>{$queue.description}</TEXTAREA>
 								</TD>
 							</TR>
                             <TR>
-                                <TD style="width: 1%;" class="bold nobr">
+                                <TD class="bold nobr">
                                     <i class="lms-ui-icon-content lms-ui-icon-verifier"></i>
                                 </TD>
-								<TD style="width: 1%;" class="bold">{trans("<!rt>Verifier:")}</TD>
-                                <TD style="width: 98%;">
+								<TD class="bold">{trans("<!rt>Verifier:")}</TD>
+                                <TD>
                                     <SELECT size="1" name="queue[verifierid]" {tip text="Select user" trigger="verifierid"}>
                                         <OPTION value="">- {trans("select user")} -</OPTION>
                                         {foreach $userlist as $user}
@@ -67,11 +77,11 @@
                                 </TD>
                             </TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<i class="lms-ui-icon-content lms-ui-icon-user"></i>
 								</TD>
-								<TD style="width: 1%;" class="bold">{trans("Permissions:")}</TD>
-								<TD style="width: 98%;">
+								<TD class="bold">{trans("Permissions:")}</TD>
+								<TD>
 									<TABLE class="lmsbox">
 										<COLGROUP>
 											<COL style="width: {100-count($_RT_RIGHTS)}%;">
@@ -118,8 +128,8 @@
 							</TR>
 						</TABLE>
 					</TD>
-					<TD style="width: 10%;"></TD>
-					<TD style="width: 50%;" class="valign-top">
+					<TD></TD>
+					<TD class="valign-top">
 						<TABLE cellpadding="3">
 							<TR>
 								<TD class="bold valign-top nobr">
