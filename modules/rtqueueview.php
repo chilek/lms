@@ -250,10 +250,15 @@ unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
-if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {
-	$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
-	$SESSION->redirect(str_replace('&assign','',"$_SERVER[REQUEST_URI]"));
-}
+if (isset($_GET['action']))
+	switch ($_GET['action']) {
+		case 'assign':
+			if (!empty($_GET['ticketid'])) {
+				$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
+				$SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI']));
+			}
+			break;
+	}
 
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);
