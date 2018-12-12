@@ -159,7 +159,7 @@ if (is_array($filter['state'])) {
 		$filter['state'] = Utils::filterIntegers($filter['state']);
 } elseif ($filter['state'] < 0)
 	$filter['state'] = intval($filter['state']);
-else
+elseif (isset($filter['state']))
 	$filter['state'] = array(intval($filter['state']));
 
 // priority
