@@ -302,6 +302,16 @@
 								</TD>
 							</TR>
 							{/if}
+							{if $ticket.parentid}
+							<TR>
+								<TD>
+									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Parent ticket ID:")}
+								</TD>
+								<TD>
+									{$ticket.parentid}</A>
+								</TD>
+							</TR>
+							{/if}
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
