@@ -56,8 +56,7 @@ if ($id && !isset($_POST['ticket'])) {
                 $SESSION->redirect('?m=rtqueueview');
                 break;
 			case 'unlink':
-				$unlink = null;
-				$LMS->TicketChange($id, array('parentid' => $unlink));
+				$LMS->TicketChange($id, array('parentid' => null));
 				$backto = $SESSION->get('backto');
 				if (empty($backto))
 					$SESSION->redirect('?m=rtqueuelist');
