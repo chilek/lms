@@ -33,6 +33,7 @@
 					</THEAD>
 					<TBODY>
 					{foreach $relatedticketscontent as $ticket}
+						{$ticket.id = $ticket.ticketid}
 						{include file="rt/rtqueueviewboxrow.html"}
 					{foreachelse}
 					<TR>
