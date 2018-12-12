@@ -24,7 +24,10 @@
  *  $Id$
  */
 
-$_LANG['There is no related tickets.'] = 'Brak powiązanych zgłoszeń.';
+$_LANG['Ticket parentid has been set to $a.'] = 'Zgłoszenie zostało powiązane ze zgłoszeniem-rodzicem $a';
+$_LANG['Parent ticket ID:'] = 'ID zgłoszenia-rodzica';
+$_LANG['Enter ID of parent ticket'] = 'Wpisz ID zgłoszenia-rodzica';
+$_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Verified'] = 'Weryfikowany';
 $_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało przekazane do weryfikatora.';

@@ -309,7 +309,7 @@
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-									<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><br>
+									<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><i class="lms-ui-icon-content lms-ui-icon-signout"></i><A href="?m=rtticketedit&amp;id={$i.id}&amp;action=unlink"> {trans("Unlink")}</A><br>
 									{/foreach}
 								</TD>
 							</TR>

@@ -55,6 +55,15 @@ if ($id && !isset($_POST['ticket'])) {
                 $LMS->MarkTicketAsUnread($id);
                 $SESSION->redirect('?m=rtqueueview');
                 break;
+			case 'unlink':
+				$unlink = null;
+				$LMS->TicketChange($id, array('parentid' => $unlink));
+				$backto = $SESSION->get('backto');
+				if (empty($backto))
+					$SESSION->redirect('?m=rtqueuelist');
+				else
+					$SESSION->redirect('?' . $backto);
+				break;
             case 'resolve':
                 $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 

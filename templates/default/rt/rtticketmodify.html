@@ -223,6 +223,10 @@
 				</SELECT>
 			{/box_row}
 
+			{box_row icon="lms-ui-icon-reload" label="Parent ticket ID:"}
+				<INPUT TYPE="TEXT" NAME="ticket[parentid]" VALUE="{$ticket.parentid}" SIZE="10" {tip text="Enter ID of parent ticket"} trigger="parentid">
+			{/box_row}
+
 		{/box_panel}
 	{/box_contents}
 
