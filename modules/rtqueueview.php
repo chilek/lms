@@ -258,6 +258,14 @@ if (isset($_GET['action']))
 				$SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI']));
 			}
 			break;
+                case 'unlink':
+                        $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
+                        $backto = $SESSION->get('backto');
+                        if (empty($backto))
+                                $SESSION->redirect('?m=rtqueuelist');
+                        else
+                                $SESSION->redirect('?' . $backto);
+                        break;
 	}
 
 $SMARTY->assign('pagination', $pagination);
