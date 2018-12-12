@@ -159,7 +159,7 @@ if (is_array($filter['state'])) {
 		$filter['state'] = Utils::filterIntegers($filter['state']);
 } elseif ($filter['state'] < 0)
 	$filter['state'] = intval($filter['state']);
-else
+elseif (isset($filter['state']))
 	$filter['state'] = array(intval($filter['state']));
 
 // priority
@@ -250,22 +250,15 @@ unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
-if (!empty($_GET['action']) && !empty($_GET['ticketid'])) {
+if (isset($_GET['action']))
 	switch ($_GET['action']) {
 		case 'assign':
-			$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
-			$SESSION->redirect(str_replace('&action=assign', '', "$_SERVER[REQUEST_URI]"));
-			break;
-		case 'unlink':
-			$LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
-			$backto = $SESSION->get('backto');
-			if (empty($backto))
-				$SESSION->redirect('?m=rtqueuelist');
-			else
-				$SESSION->redirect('?' . $backto);
+			if (!empty($_GET['ticketid'])) {
+				$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
+				$SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI']));
+			}
 			break;
 	}
-}
 
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);
