@@ -828,7 +828,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			isset($ticket['service']) && !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
 			isset($ticket['type']) && !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
 			isset($ticket['invprojectid']) && !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
-			isset($ticket['parentid']) && !empty($ticket['parentid']) ? $ticket['parentid'] : null,
+            empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
 		));
 
 		$id = $this->db->GetLastInsertID('rttickets');
@@ -996,7 +996,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, t.state, subject, customerid, requestor, source, priority,
 				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid, t.invprojectid, 
 				n.name AS node_name, n.location AS node_location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime, t.deadline,
-				t.service, t.type, t.parentid
+                t.service, t.type, t.parentid
 			FROM rttickets t
 			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
 			LEFT JOIN vaddresses va ON va.id = t.address_id
@@ -1008,7 +1008,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			)
 			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, source, priority, t.address_id, t.nodeid, va.location,
 				t.nodeid, t.invprojectid, n.name, n.location, t.netnodeid, t.netdevid, t.verifierid, t.verifier_rtime,
-				t.deadline, t.service, t.type, t.parentid',
+                t.deadline, t.service, t.type, t.parentid',
 			array($ticketid, Auth::GetCurrentUser()));
 
         $type = 0;
