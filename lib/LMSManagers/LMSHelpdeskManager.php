@@ -804,8 +804,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 	public function TicketAdd($ticket, $files = NULL) {
 		$this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
-			requestor_userid, subject, state, owner, createtime, cause, creatorid, source, priority, address_id, nodeid, netnodeid, netdevid, verifierid, deadline, service, type, invprojectid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
+			requestor_userid, subject, state, owner, createtime, cause, creatorid, source, priority, address_id, nodeid,
+			netnodeid, netdevid, verifierid, deadline, service, type, invprojectid, parentid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
 			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			$ticket['requestor'],
 			$ticket['requestor_mail'],
@@ -827,6 +828,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			isset($ticket['service']) && !empty($ticket['service']) ? $ticket['service'] : SERVICE_OTHER,
 			isset($ticket['type']) && !empty($ticket['type']) ? $ticket['type'] : RT_TYPE_OTHER,
 			isset($ticket['invprojectid']) && !empty($ticket['invprojectid']) ? $ticket['invprojectid'] : null,
+			isset($ticket['parentid']) && !empty($ticket['parentid']) ? $ticket['parentid'] : null,
 		));
 
 		$id = $this->db->GetLastInsertID('rttickets');
@@ -1103,9 +1105,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else
             $props['type'] = $ticket['type'];
 
-        if($ticket['parentid'] != $props['parentid'] && isset($props['parentid'])) {
+        if($ticket['parentid'] != $props['parentid']) {
             $notes[] = trans('Ticket parentid has been set to $a.', $props['parentid']);
-            $parentid = $parentid | RTMESSAGE_PARENT_CHANGE;
+            $type = $type | RTMESSAGE_PARENT_CHANGE;
         } else
             $props['parentid'] = $ticket['parentid'];
 
