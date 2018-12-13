@@ -25,7 +25,8 @@
  */
 
 $_LANG['Ticket parentid has been set to $a.'] = 'Zgłoszenie zostało powiązane ze zgłoszeniem-rodzicem $a';
-$_LANG['Parent ticket ID:'] = 'ID zgłoszenia-rodzica';
+$_LANG['Unlink'] = 'Odwiąż';
+$_LANG['Parent ticket:'] = 'Rodzic';
 $_LANG['Enter ID of parent ticket'] = 'Wpisz ID zgłoszenia-rodzica';
 $_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
 $_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';

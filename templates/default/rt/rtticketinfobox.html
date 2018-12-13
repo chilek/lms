@@ -304,11 +304,11 @@
 							{/if}
 							{if $ticket.parentid}
 							<TR>
-								<TD>
-									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Parent ticket ID:")}
+								<TD class="bold">
+									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Parent ticket:")}
 								</TD>
 								<TD>
-									{$ticket.parentid}</A>
+									<A href="?m=rtticketview&amp;id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A>
 								</TD>
 							</TR>
 							{/if}
