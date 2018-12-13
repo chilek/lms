@@ -27,11 +27,11 @@
 $_LANG['Verified'] = 'Weryfikowany';
 $_LANG['Ticket has been transferred to verifier'] = 'Zgłoszenie zostało przekazane do weryfikatora';
 $_LANG['Ticket verifier notification subject:'] = 'Temat listu z powiadomieniem dla weryfikatora:';
-$_LANG['Subject of mail which is sent to verifier when the ticket is transfered to him'] = 'Temat listu z powiadomieniem, który zostanie wysłany do weryfikatora gdy zgłoszenie zostanie mu przekazane';
+$_LANG['Subject of mail which is sent to verifier when the ticket is transfered to him'] = 'Temat listu z powiadomieniem, który zostanie wysłany do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
 $_LANG['Ticket verifier notification body:'] = 'Treść listu z powiadomieniem dla weryfikatora:';
-$_LANG['Body of mail which is sent to verifier when the ticket is transfered to him'] = 'Treść listu z powiadomieniem, który zostanie wysłany do weryfikatora gdy zgłoszenie zostanie mu przekazane';
-$_LANG['Verifier ticket subject should not be empty if you set verifier ticket body!'] = 'Temat listu z powiadomieniem dla weryfikatora nie może być pusty gdy treść jest uzupełniona!';
-$_LANG['Verifier ticket body should not be empty if you set verifier ticket subject!'] = 'Treść listu z powiadomieniem dla weryfikatora nie może być pusta gdy temat jest uzupełniony!';
+$_LANG['Body of mail which is sent to verifier when the ticket is transfered to him'] = 'Treść listu z powiadomieniem, który zostanie wysłany do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
+$_LANG['Verifier ticket subject should not be empty if you set verifier ticket body!'] = 'Temat listu z powiadomieniem dla weryfikatora nie może być pusty, gdy treść jest uzupełniona!';
+$_LANG['Verifier ticket body should not be empty if you set verifier ticket subject!'] = 'Treść listu z powiadomieniem dla weryfikatora nie może być pusta, gdy temat jest uzupełniony!';
 $_LANG['Transfer ticket to verifier'] = 'Przekaż zgłoszenie do weryfikatora';
 $_LANG['Reuse'] = 'Ponownie';
 $_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
