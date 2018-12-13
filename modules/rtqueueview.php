@@ -27,24 +27,30 @@
 $LMS->CleanupTicketLastView();
 
 // queue id's
-if (isset($_GET['id']) && $_GET['id'] != 'all') {
-	if (is_array($_GET['id']))
-		$filter['ids'] = Utils::filterIntegers($_GET['id']);
-	elseif (intval($_GET['id']))
-		$filter['ids'] = Utils::filterIntegers(array($_GET['id']));
-	if (!isset($filter['ids']) || empty($filter['ids']))
-		$SESSION->redirect('?m=rtqueuelist');
-	if (isset($filter['ids']))
-		$filter['ids'] = array_filter($filter['ids'], array($LMS, 'QueueExists'));
+if (isset($_GET['id'])) {
+	if ($_GET['id'] == 'all') {
+		$filter['ids'] = null;
+	} else {
+		if (is_array($_GET['id']))
+			$filter['ids'] = Utils::filterIntegers($_GET['id']);
+		elseif (intval($_GET['id']))
+			$filter['ids'] = Utils::filterIntegers(array($_GET['id']));
+		if (!isset($filter['ids']) || empty($filter['ids']))
+			$SESSION->redirect('?m=rtqueuelist');
+		if (isset($filter['ids']))
+			$filter['ids'] = array_filter($filter['ids'], array($LMS, 'QueueExists'));
+	}
+} else {
+	if (!empty($filter['ids'])) {
+		foreach ($filter['ids'] as $queueidx => $queueid)
+			if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queueid))
+				unset($filter['ids'][$queueidx]);
+		if (empty($filter['ids']))
+			access_denied();
+	}
 }
 
-if (!empty($filter['ids'])) {
-	foreach ($filter['ids'] as $queueidx => $queueid)
-		if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queueid))
-			unset($filter['ids'][$queueidx]);
-	if (empty($filter['ids']))
-		access_denied();
-} else {
+if (empty($filter['ids'])) {
 	$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array(Auth::GetCurrentUser()));
 
 	if (!$queues)
@@ -52,6 +58,8 @@ if (!empty($filter['ids'])) {
 
 	if (count($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
 		$filter['ids'] = $queues;
+	else
+		$filter['ids'] = null;
 }
 
 // category id's
@@ -159,7 +167,7 @@ if (is_array($filter['state'])) {
 		$filter['state'] = Utils::filterIntegers($filter['state']);
 } elseif ($filter['state'] < 0)
 	$filter['state'] = intval($filter['state']);
-else
+elseif (isset($filter['state']))
 	$filter['state'] = array(intval($filter['state']));
 
 // priority
@@ -250,10 +258,15 @@ unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
-if (isset($_GET['assign']) && !empty($_GET['ticketid'])) {
-	$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
-	$SESSION->redirect(str_replace('&assign','',"$_SERVER[REQUEST_URI]"));
-}
+if (isset($_GET['action']))
+	switch ($_GET['action']) {
+		case 'assign':
+			if (!empty($_GET['ticketid'])) {
+				$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
+				$SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI']));
+			}
+			break;
+	}
 
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);

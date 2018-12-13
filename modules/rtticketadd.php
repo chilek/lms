@@ -34,8 +34,6 @@ $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
 $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 
-$ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
-
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (!$categories) {
 	$SMARTY->display('noaccess.html');
@@ -286,10 +284,12 @@ if(isset($_POST['ticket']))
 	if (!$queue && !empty($queuelist)) {
 		$firstqueue = reset($queuelist);
 		$queue = $firstqueue['id'];
+		$ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
 		if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody'])
 			$ticket['customernotify'] = 1;
 	} elseif ($queue) {
 		$queuedata = $LMS->GetQueue($queue);
+		$ticket['verifierid'] = empty($queuedata['verifier']) ? 0 : $queuedata['verifier']['id'];
 		if ($queuedata['newticketsubject'] && $queuedata['newticketbody'])
 			$ticket['customernotify'] = 1;
 	}
