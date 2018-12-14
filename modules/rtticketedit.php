@@ -186,6 +186,8 @@ $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 
+$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
+
 if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];

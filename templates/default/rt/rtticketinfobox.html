@@ -308,18 +308,18 @@
 									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Parent ticket:")}
 								</TD>
 								<TD>
-									<A href="?m=rtticketview&amp;id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A><A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=unlink"> {trans("Unlink")}</A>
+									<A href="?m=rtticketview&amp;id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A>
 								</TD>
 							</TR>
 							{/if}
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Related tickets:")}<A href="?m=rtticketedit&amp;id={$ticket.parentid}&amp;action=unlink">{trans("Unlink")}</A>
+									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Related tickets:")}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-									<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><i class="lms-ui-icon-content lms-ui-icon-signout"></i><A href="?m=rtticketedit&amp;id={$i.id}&amp;action=unlink"> {trans("Unlink")}</A><br>
+										<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><i class="lms-ui-icon-content lms-ui-icon-signout"></i><br>
 									{/foreach}
 								</TD>
 							</TR>
