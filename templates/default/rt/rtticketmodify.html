@@ -227,7 +227,15 @@
 				<input type="TEXT" name="ticket[parentid]" value="{$ticket.parentid}" {tip text="Enter ID of parent ticket" trigger="parentid"}>
 			{/box_row}
 
-		{/box_panel}
+			{if $ticket.relatedtickets}
+			{box_row icon="lms-ui-icon-reload" label="Related tickets:"}
+				{foreach $ticket.relatedtickets as $i}
+					<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><A href="?m=rtticketedit&amp;id={$i.id}&amp;action=unlink">{trans("Unlink")}</A>
+				{/foreach}
+			{/box_row}
+			{/if}
+
+{/box_panel}
 	{/box_contents}
 
 	{if $layout.module != 'eventadd'}

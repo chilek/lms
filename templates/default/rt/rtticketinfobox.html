@@ -315,11 +315,11 @@
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Related tickets:")}<A href="?m=rtticketedit&amp;id={$ticket.parentid}&amp;action=unlink">{trans("Unlink")}</A>
+									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Related tickets:")}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
-									<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><i class="lms-ui-icon-content lms-ui-icon-signout"></i><A href="?m=rtticketedit&amp;id={$i.id}&amp;action=unlink"> {trans("Unlink")}</A><br>
+									<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><br>
 									{/foreach}
 								</TD>
 							</TR>

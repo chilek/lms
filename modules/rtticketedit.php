@@ -186,6 +186,8 @@ $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 
+$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
+
 if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];
@@ -194,7 +196,7 @@ if(isset($_POST['ticket']))
 
 	if(!empty($ticketedit['parentid']))
 	{
-		$ticketexist = $LMS->TicketExists($ticketedit.parentid);
+		$ticketexist = $LMS->TicketExists($ticketedit['parentid']);
 		if(empty($ticketexist))
 		{
 			$error['parentid'] = trans("Ticket does not exists");
