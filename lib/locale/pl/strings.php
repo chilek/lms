@@ -25,6 +25,7 @@
  */
 
 $_LANG['Are you sure, you want to unlink this ticket $a?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie $a?';
+$_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można przyczepić zgłoszenia z powodu pętli powiązań!';
 $_LANG['Ticket parentid has been set to $a.'] = 'Zgłoszenie zostało powiązane ze zgłoszeniem(rodzicem) $a';
 $_LANG['Ticket does not exists'] = 'Zgłoszenie nie istnieje';
 $_LANG['Unlink'] = 'Odwiąż';

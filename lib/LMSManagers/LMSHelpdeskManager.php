@@ -1518,4 +1518,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetRelatedTicketIds($ticketid) {
         return $this->db->GetAll('SELECT id FROM rttickets WHERE parentid = ?', array($ticketid));
     }
+    
+    public function GetTicketParentID($ticketid) {
+	    if(empty($ticketid))
+	        return $this->db->GetOne('SELECT parentid FROM rttickets WHERE id = ?', array($ticketid));
+	    else
+	        return null;
+    }
+
+    public function IsTicketLoop($ticketid, $parentid) {
+        global $LMS;
+
+        if ($ticketid == $parentid)
+            return 1;
+        if (empty($parentid))
+            return null;
+        $parentid = $LMS->GetTicketParentID($parentid);
+        $LMS->IsTicketLoop($ticketid,$parentid);
+        }
 }

@@ -203,6 +203,11 @@ if(isset($_POST['ticket']))
 			$error['parentid'] = trans("Ticket does not exists");
 		};
 	};
+	if(!empty($ticketedit['parentid']))
+	{
+		if($LMS->IsTicketLoop($ticket['ticketid'], $ticketedit['parentid']))
+			$error['parentid'] = trans("Cannot link ticket because of related ticket loop!");
+	}
 
 	if(!empty($ticketedit['verifierid']))
 	{
