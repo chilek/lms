@@ -194,7 +194,8 @@ if(isset($_POST['ticket']))
 
 	if(!empty($ticketedit['parentid']))
 	{
-		$ticketexist = $LMS->TicketExists($ticketedit.parentid);
+		$ticketedit['parentid'] = intval($ticketedit['parentid']);
+		$ticketexist = $LMS->TicketExists($ticketedit['parentid']);
 		if(empty($ticketexist))
 		{
 			$error['parentid'] = trans("Ticket does not exists");
