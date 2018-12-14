@@ -192,6 +192,15 @@ if(isset($_POST['ticket']))
 	$ticketedit['ticketid'] = $ticket['ticketid'];
 	$dtime = datetime_to_timestamp($ticketedit['deadline']);
 
+	if(!empty($ticketedit['parentid']))
+	{
+		$ticketexist = $LMS->TicketExists($ticketedit.parentid);
+		if(empty($ticketexist))
+		{
+			$error['parentid'] = trans("Ticket does not exists");
+		};
+	};
+
 	if(!empty($ticketedit['verifierid']))
 	{
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
@@ -385,6 +394,7 @@ if(isset($_POST['ticket']))
 	$ticket['requestor_name'] = $ticketedit['requestor_name'];
 	$ticket['requestor_mail'] = $ticketedit['requestor_mail'];
 	$ticket['requestor_phone'] = $ticketedit['requestor_phone'];
+	$ticket['parentid'] = $ticketedit['parentid'];
 } else
 	$ticketedit['categories'] = $ticket['categories'];
 
