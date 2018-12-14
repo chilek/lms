@@ -25,8 +25,8 @@
  */
 
 $_LANG['Are you sure, you want to unlink this ticket $a?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie $a?';
-$_LANG['Ticket parentid has been set to $a.'] = 'Zgłoszenie zostało powiązane ze zgłoszeniem nadrzędnym $a';
-$_LANG['Ticket does not exists'] = 'Zgłoszenie nie istnieje';
+$_LANG['Ticket parent ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zostało ustawione na $a.';
+$_LANG['Ticket does not exist'] = 'Zgłoszenie nie istnieje';
 $_LANG['Unlink'] = 'Odwiąż';
 $_LANG['Parent ticket:'] = 'Zgłoszenie nadrzędne:';
 $_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia narzędnego';
