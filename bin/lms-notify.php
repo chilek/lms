@@ -712,14 +712,14 @@ if (empty($types) || in_array('debtors', $types)) {
 			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
-		WHERE c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?",
+		WHERE c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?",
 		array(
 			DOC_CNOTE, $days, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days,
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-			$limit));
+			CSTATUS_DISCONNECTED, $limit));
 
 	if (!empty($customers)) {
 		$notifications['debtors']['customers'] = array();
