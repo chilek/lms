@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$_LANG['Ticket parentid has been set to $a.'] = 'Zgłoszenie zostało powiązane ze zgłoszeniem-rodzicem $a';
+$_LANG['Ticket parentid has been set to $a.'] = 'Zgłoszenie zostało powiązane ze zgłoszeniem(rodzicem) $a';
 $_LANG['Ticket does not exists'] = 'Zgłoszenie nie istnieje';
 $_LANG['Unlink'] = 'Odwiąż';
 $_LANG['Parent ticket:'] = 'Rodzic';
