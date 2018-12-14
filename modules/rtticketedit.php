@@ -57,12 +57,7 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
 			case 'unlink':
 				$LMS->TicketChange($id, array('parentid' => null));
-				$backto = $SESSION->get('backto');
-				if (empty($backto))
-					$SESSION->redirect('?m=rtqueuelist');
-				else
-					$SESSION->redirect('?' . $backto);
-				break;
+				$SESSION->redirect('?m=rtticketedit&id=' . $id);
             case 'resolve':
                 $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 
@@ -196,12 +191,18 @@ if(isset($_POST['ticket']))
 
 	if(!empty($ticketedit['parentid']))
 	{
+		$ticketedit['parentid'] = intval($ticketedit['parentid']);
 		$ticketexist = $LMS->TicketExists($ticketedit['parentid']);
 		if(empty($ticketexist))
 		{
-			$error['parentid'] = trans("Ticket does not exists");
+			$error['parentid'] = trans("Ticket does not exist");
 		};
 	};
+	if(!empty($ticketedit['parentid']))
+	{
+		if($LMS->IsTicketLoop($ticket['ticketid'], $ticketedit['parentid']))
+			$error['parentid'] = trans("Cannot link ticket because of related ticket loop!");
+	}
 
 	if(!empty($ticketedit['verifierid']))
 	{

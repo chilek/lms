@@ -120,4 +120,8 @@ interface LMSHelpdeskManagerInterface
 	public function CheckTicketAccess($ticketid);
 
     public function GetRelatedTicketIds($ticketid);
+
+    public function GetTicketParentID($ticketid);
+
+    public function IsTicketLoop($ticketid, $parentid);
 }

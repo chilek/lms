@@ -230,7 +230,7 @@
 			{if $ticket.relatedtickets}
 			{box_row icon="lms-ui-icon-reload" label="Related tickets:"}
 				{foreach $ticket.relatedtickets as $i}
-					<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><A href="?m=rtticketedit&amp;id={$i.id}&amp;action=unlink">{trans("Unlink")}</A>
+					<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><A href="?m=rtticketedit&amp;id={$i.id}&amp;action=unlink" onClick="return confirmLink(this, '{t a=$i.id|string_format:"%06d"}Are you sure, you want to unlink this ticket $a?{/t}')">{trans("Unlink")}</A>
 				{/foreach}
 			{/box_row}
 			{/if}

@@ -1784,6 +1784,16 @@ class LMS
         return $manager->GetRelatedTicketIds($ticketid);
     }
 
+    public function GetTicketParentID($ticketid) {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetTicketParentID($ticketid);
+    }
+
+    public function IsTicketLoop($ticketid, $parentid) {
+        $manager = $this->getHelpdeskManager();
+        return $manager->IsTicketLoop($ticketid, $parentid);
+    }
+
 	/*
 	 *  LMS-UI configuration
 	 */
