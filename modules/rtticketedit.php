@@ -57,12 +57,7 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
 			case 'unlink':
 				$LMS->TicketChange($id, array('parentid' => null));
-				$backto = $SESSION->get('backto');
-				if (empty($backto))
-					$SESSION->redirect('?m=rtqueuelist');
-				else
-					$SESSION->redirect('?' . $backto);
-				break;
+				$SESSION->redirect('?m=rtticketedit&id=' . $id);
             case 'resolve':
                 $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 
