@@ -1520,7 +1520,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     }
     
     public function GetTicketParentID($ticketid) {
-	    if(empty($ticketid))
+	    if(!empty($ticketid))
 	        return $this->db->GetOne('SELECT parentid FROM rttickets WHERE id = ?', array($ticketid));
 	    else
 	        return null;
@@ -1528,7 +1528,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function IsTicketLoop($ticketid, $parentid) {
         if ($ticketid == $parentid)
-            return 1;
+            return true;
         if (empty($parentid))
             return null;
         $parentid = $this->GetTicketParentID($parentid);
