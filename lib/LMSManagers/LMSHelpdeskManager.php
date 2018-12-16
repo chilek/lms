@@ -1527,13 +1527,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     }
 
     public function IsTicketLoop($ticketid, $parentid) {
-        global $LMS;
-
         if ($ticketid == $parentid)
             return 1;
         if (empty($parentid))
             return null;
-        $parentid = $LMS->GetTicketParentID($parentid);
-        $LMS->IsTicketLoop($ticketid,$parentid);
+        $parentid = $this->GetTicketParentID($parentid);
+        $this->IsTicketLoop($ticketid,$parentid);
         }
 }
