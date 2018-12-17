@@ -19,13 +19,13 @@
     <THEAD>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/queue.gif" ALT="">
+			<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Queue")}:
 		</TD>
 		<TD>
-			<IMG src="img/info1.gif" ALT="">
+			<i class="lms-ui-icon-content lms-ui-icon-description"></i>
 			{trans("Description")}:
 		</TD>
 		<TD class="text-right nobr bold">
@@ -74,12 +74,12 @@
 	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
-			<img src="img/ring-red.png" alt="">
+			<i class="lms-ui-icon-content lms-ui-icon-critical"></i>
 		{else}
 			{if $queue.unread}
-				<img src="img/ticket-unread.png" alt="">
+				<i class="lms-ui-icon-content lms-ui-icon-unread"></i>
 			{else}
-				<IMG src="img/queue.gif" ALT="">
+				<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
 			{/if}
 		{/if}
 		</TD>
@@ -88,7 +88,7 @@
 		</TD>
 		<TD>
 			{if $queue.description}
-				<IMG src="img/info1.gif" ALT=""> {$queue.description}
+				<i class="lms-ui-icon-content lms-ui-icon-description"></i>{$queue.description}
 			{/if}
 		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
@@ -134,7 +134,7 @@
         <TFOOT>
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" class="text-right bold">
-			<IMG src="img/info2.gif" ALT="">
+			<i class="lms-ui-icon-content lms-ui-icon-count"></i>
 			{trans("Total:")}
 		</TD>
 		<TD class="text-center bold">
