@@ -38,6 +38,7 @@
 				{/if}
 				<TBODY>
 				{foreach $assignedevents as $event}
+					{$day=$event.date}
 					{include file="event/eventlistboxrow.html" overdue=1}
 				{foreachelse}
 					<TR>
