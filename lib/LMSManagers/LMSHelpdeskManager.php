@@ -1532,7 +1532,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if (empty($parentid))
             return false;
         $parentid = $this->GetTicketParentID($parentid);
-        $test = $this->IsTicketLoop($ticketid,$parentid);
-        return $test;
+        return $this->IsTicketLoop($ticketid,$parentid);
         }
 }
