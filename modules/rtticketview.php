@@ -33,6 +33,14 @@ if (!$LMS->CheckTicketAccess($id))
 	access_denied();
 
 $ticket = $LMS->GetTicketContents($id);
+$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
+
+if(!empty($ticket['relatedtickets']))
+	foreach($ticket['relatedtickets'] as $rid)
+	{
+		$relatedticketscontent[] = $LMS->GetTicketContents($rid);
+	}
+
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
@@ -117,6 +125,7 @@ if (isset($_GET['highlight'])) {
 }
 
 $SMARTY->assign('ticket', $ticket);
+$SMARTY->assign('relatedticketscontent', $relatedticketscontent);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);

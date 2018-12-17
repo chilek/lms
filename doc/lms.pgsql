@@ -1713,6 +1713,8 @@ CREATE TABLE rttickets (
   deadline integer DEFAULT NULL,
   service integer DEFAULT NULL,
   type integer DEFAULT NULL,
+  parentid integer DEFAULT NULL
+        CONSTRAINT rttickets_parentid_fkey REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
   invprojectid integer DEFAULT NULL
         CONSTRAINT rttickets_invprojectid_fkey REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
   PRIMARY KEY (id)
@@ -3470,6 +3472,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018121200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2018121300');
 
 COMMIT;

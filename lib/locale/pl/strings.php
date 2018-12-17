@@ -24,6 +24,15 @@
  *  $Id$
  */
 
+$_LANG['Are you sure, you want to unlink this ticket $a?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie $a?';
+$_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można powiązać zgłoszenia z powodu pętli powiązań!';
+$_LANG['Ticket parent ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zostało ustawione na $a.';
+$_LANG['Ticket does not exist'] = 'Zgłoszenie nie istnieje';
+$_LANG['Unlink'] = 'Odwiąż';
+$_LANG['Parent ticket:'] = 'Zgłoszenie nadrzędne:';
+$_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia narzędnego';
+$_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
+$_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Verified'] = 'Weryfikowany';
 $_LANG['Ticket has been transferred to verifier'] = 'Zgłoszenie zostało przekazane do weryfikatora';
 $_LANG['Ticket verifier notification subject:'] = 'Temat listu z powiadomieniem dla weryfikatora:';

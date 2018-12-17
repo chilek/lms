@@ -55,6 +55,9 @@ if ($id && !isset($_POST['ticket'])) {
                 $LMS->MarkTicketAsUnread($id);
                 $SESSION->redirect('?m=rtqueueview');
                 break;
+			case 'unlink':
+				$LMS->TicketChange($id, array('parentid' => null));
+				$SESSION->redirect('?m=rtticketedit&id=' . $id);
             case 'resolve':
                 $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 
@@ -178,11 +181,26 @@ $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 
+$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
+
 if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];
 	$ticketedit['ticketid'] = $ticket['ticketid'];
 	$dtime = datetime_to_timestamp($ticketedit['deadline']);
+
+	if(!empty($ticketedit['parentid']))
+	{
+		if(!$LMS->TicketExists($ticketedit['parentid']))
+		{
+			$error['parentid'] = trans("Ticket does not exist");
+		};
+	};
+	if(!empty($ticketedit['parentid']))
+	{
+		if($LMS->IsTicketLoop($ticket['ticketid'], $ticketedit['parentid']))
+			$error['parentid'] = trans("Cannot link ticket because of related ticket loop!");
+	}
 
 	if(!empty($ticketedit['verifierid']))
 	{
@@ -261,6 +279,7 @@ if(isset($_POST['ticket']))
 			'requestor' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_name']) ? '' : $ticketedit['requestor_name'],
 			'requestor_mail' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_mail']) ? null : $ticketedit['requestor_mail'],
 			'requestor_phone' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
+			'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
@@ -376,6 +395,7 @@ if(isset($_POST['ticket']))
 	$ticket['requestor_name'] = $ticketedit['requestor_name'];
 	$ticket['requestor_mail'] = $ticketedit['requestor_mail'];
 	$ticket['requestor_phone'] = $ticketedit['requestor_phone'];
+	$ticket['parentid'] = $ticketedit['parentid'];
 } else
 	$ticketedit['categories'] = $ticket['categories'];
 

@@ -43,7 +43,7 @@ if(!$rights || !$catrights)
 //$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $ticket = $LMS->GetTicketContents($id);
-
+$ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
 $ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
 		    WHERE ticketid = ?
 		    ORDER BY createtime DESC LIMIT 1', 
