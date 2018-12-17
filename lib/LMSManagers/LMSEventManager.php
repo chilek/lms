@@ -266,7 +266,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 					WHERE userid = vusers.id AND eventid = ? ',
                     array($row['id']));
                 $endtime = $row['endtime'];
-                if ($row['enddate'] && $row['enddate'] - $row['date']) {
+                if ($row['enddate'] && ($row['enddate'] - $row['date'])) {
                     $days = round(($row['enddate'] - $row['date']) / 86400);
                     $row['enddate'] = $row['date'] + 86400;
                     //$row['endtime'] = 0;
