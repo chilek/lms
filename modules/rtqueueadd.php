@@ -63,6 +63,11 @@ if(isset($_POST['queue']))
 	elseif (!$queue['resolveticketsubject'] && $queue['resolveticketbody'])
 		$error['resolveticketsubject'] = trans('Resolve ticket subject should not be empty if you set resolve ticket body!');
 
+	if ($queue['verifierticketsubject'] && !$queue['verifierticketbody'])
+		$error['verifierticketbody'] = trans('Verifier ticket body should not be empty if you set verifier ticket subject!');
+	elseif (!$queue['verifierticketsubject'] && $queue['verifierticketbody'])
+		$error['verifierticketsubject'] = trans('Verifier ticket subject should not be empty if you set verifier ticket body!');
+
 	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 	if (isset($queue['categories'])) {
 		foreach ($categories as &$category)
@@ -73,13 +78,13 @@ if(isset($_POST['queue']))
 
 	if (!$error) {
 		$DB->Execute('INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
-				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, verifierid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, verifierticketsubject, verifierticketbody, verifierid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(trim($queue['name']), $queue['email'], $queue['description'],
 					$queue['newticketsubject'], $queue['newticketbody'],
 					$queue['newmessagesubject'], $queue['newmessagebody'],
-					$queue['resolveticketsubject'], $queue['resolveticketbody'],
-					!empty($queue['verifierid']) ? $queue['verifierid'] : NULL ));
+					$queue['resolveticketsubject'], $queue['resolveticketbody'], $queue['verifierticketsubject'],
+					$queue['verifierticketbody'], !empty($queue['verifierid']) ? $queue['verifierid'] : NULL ));
 
 		$id = $DB->GetLastInsertId('rtqueues');
 

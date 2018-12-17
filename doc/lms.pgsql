@@ -1659,6 +1659,8 @@ CREATE TABLE rtqueues (
   newmessagebody text NOT NULL DEFAULT '',
   resolveticketsubject varchar(255) NOT NULL DEFAULT '',
   resolveticketbody text NOT NULL DEFAULT '',
+  verifierticketsubject varchar(255) NOT NULL DEFAULT '',
+  verifierticketbody text NOT NULL DEFAULT '',
   deleted smallint	DEFAULT 0 NOT NULL,
   deltime integer	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT NULL
