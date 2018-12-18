@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['title'] = trans('Message Template List');
+$layout['pagetitle'] = trans('Message Template List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
