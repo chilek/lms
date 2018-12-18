@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -83,7 +83,8 @@ switch ($mode) {
 		{
 			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address,
 				post_name, post_full_address AS post_address, deleted,
-			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername, va.address AS location_address,
+			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername,
+			    va.name AS location_name, va.address AS location_address,
 			    c.status
 				FROM customerview c
 				LEFT JOIN customer_addresses ca ON ca.customer_id = c.id AND ca.type IN (?, ?)
@@ -94,6 +95,7 @@ switch ($mode) {
 					. (empty($properties) || isset($properties['address']) ? " OR LOWER(full_address) ?LIKE? LOWER($sql_search)" : '')
 					. (empty($properties) || isset($properties['post_name']) ? " OR LOWER(post_name) ?LIKE? LOWER($sql_search)" : '')
 					. (empty($properties) || isset($properties['post_address']) ? " OR LOWER(post_full_address) ?LIKE? LOWER($sql_search)" : '')
+					. (empty($properties) || isset($properties['location_name']) ? " OR LOWER(va.name) ?LIKE? LOWER($sql_search)" : '')
 					. (empty($properties) || isset($properties['location_address']) ? " OR LOWER(va.address) ?LIKE? LOWER($sql_search)" : '')
 					. (empty($properties) || isset($properties['email']) ? " OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)" : '') . "
 				ORDER by deleted, customername, cc.contact, full_address
@@ -138,6 +140,8 @@ switch ($mode) {
 						$description = trans('Name:') . ' ' . $row['post_name'];
 					} else if ((empty($properties) || isset($properties['post_address'])) && preg_match("~$search~i", $row['post_address'])) {
 						$description = trans('Address:') . ' ' . $row['post_address'];
+					} else if ((empty($properties) || isset($properties['location_name'])) && preg_match("~$search~i", $row['location_name'])) {
+						$description = trans('Name:') . ' ' . $row['location_name'];
 					} else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location_address'])) {
 						$description = trans('Address:') . ' ' . $row['location_address'];
 					} else if ((empty($properties) || isset($properties['email'])) && preg_match("~$search~i", $row['email'])) {

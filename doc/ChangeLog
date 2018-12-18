@@ -178,6 +178,7 @@ version ?.??.?? (????-??-??):
     some common criterions [chilan]
   - improvement: bash/curl script for fetching emails from imap server to LMS RT [interduo]
   - enhancement: related tickets introduced [interduo]
+  - improvement: search customer by his location name is possible [chilan]
 
 version 1.11.23 (2018-03-21):
 
