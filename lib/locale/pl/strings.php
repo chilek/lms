@@ -4197,4 +4197,11 @@ $_LANG['(no password)'] = '(brak hasła)';
 
 $_LANG['credit notes'] = 'faktury korygujące';
 
+$_LANG['Message Templates'] = 'Szablony wiadomości';
+$_LANG['Message Template List'] = 'Lista szablonów wiadomości';
+$_LANG['Message template list'] = 'Lista szablonów wiadomości';
+$_LANG['No message templates in database.'] = 'Brak szablonów wiadomości w bazie danych.';
+$_LANG['Are you sure, you want to delete that message template?'] = 'Jesteś pewien, że chcesz usunąć ten szablon wiadomości?';
+$_LANG['Are you sure, you want to delete all selected message templates?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane szablony wiadomości?';
+
 ?>

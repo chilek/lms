@@ -87,10 +87,16 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         return $res;
     }
 
-    public function GetMessageTemplates($type)
+	public function DeleteMessageTemplates(array $ids) {
+		return $this->db->Execute('DELETE FROM templates WHERE id IN ?',
+			array($ids));
+	}
+
+	public function GetMessageTemplates($type = 0)
     {
-        return $this->db->GetAll('SELECT id, name FROM templates
-			WHERE type = ? ORDER BY name', array(intval($type)));
+        return $this->db->GetAll('SELECT id, type, name, subject, message FROM templates
+			' . (empty($type) ? '' : ' WHERE type = ' . intval($type)) . '
+			ORDER BY name');
     }
 
 	public function GetMessageList(array $params) {
@@ -230,5 +236,4 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
 		return $result;
 	}
-
 }

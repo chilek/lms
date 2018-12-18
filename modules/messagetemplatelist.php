@@ -1,9 +1,9 @@
 <?php
 
-/*
- *  LMS version 1.11-git
+/**
+ * LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,21 +24,10 @@
  *  $Id$
  */
 
-/**
- * LMSMessageManagerInterface
- * 
- */
-interface LMSMessageManagerInterface
-{
-    public function GetMessages($customerid, $limit = NULL);
-    
-    public function AddMessageTemplate($type, $name, $subject, $message);
-    
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $message);
+$layout['title'] = trans('Message Template List');
 
-	public function DeleteMessageTemplates(array $ids);
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-    public function GetMessageTemplates($type = 0);
+$SMARTY->assign('templates', $LMS->GetMessageTemplates());
 
-	public function GetMessageList(array $params);
-}
+$SMARTY->display('message/messagetemplatelist.html');

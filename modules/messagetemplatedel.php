@@ -1,9 +1,9 @@
 <?php
 
 /*
- *  LMS version 1.11-git
+ * LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,21 +24,15 @@
  *  $Id$
  */
 
-/**
- * LMSMessageManagerInterface
- * 
- */
-interface LMSMessageManagerInterface
-{
-    public function GetMessages($customerid, $limit = NULL);
-    
-    public function AddMessageTemplate($type, $name, $subject, $message);
-    
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $message);
+if ($_GET['is_sure'] == '1')
+	if (isset($_GET['id']))
+		$LMS->DeleteMessageTemplates(array($_GET['id']));
+	elseif (isset($_POST['marks'])) {
+		$ids = Utils::filterIntegers($_POST['marks']);
+		if (!empty($ids))
+			$LMS->DeleteMessageTemplates($ids);
+	}
 
-	public function DeleteMessageTemplates(array $ids);
+$SESSION->redirect('?' . $SESSION->get('backto'));
 
-    public function GetMessageTemplates($type = 0);
-
-	public function GetMessageList(array $params);
-}
+?>

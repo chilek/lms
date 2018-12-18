@@ -2937,7 +2937,12 @@ class LMS
         return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $message);
     }
 
-    public function GetMessageTemplates($type)
+	public function DeleteMessageTemplates(array $ids) {
+		$manager = $this->getMessageManager();
+		return $manager->DeleteMessageTemplates($ids);
+	}
+
+	public function GetMessageTemplates($type = 0)
     {
         $manager = $this->getMessageManager();
         return $manager->GetMessageTemplates($type);

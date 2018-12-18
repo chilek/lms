@@ -1,0 +1,100 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<form method="post" action="?m=messagetemplatedel" name="messagetemplates" id="messagetemplates">
+</form>
+
+<TABLE class="lmsbox lms-ui-background-cycle">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 96%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+		<TR>
+			<TD class="nobr">
+				{trans("Type:")}
+			</TD>
+			<TD class="nobr">
+				{trans("Name:")}
+			</TD>
+			<TD class="nobr">
+				{trans("Subject:")}
+			</TD>
+			<TD class="nobr">
+				{trans("Message:")}
+			</TD>
+			<TD>
+				&nbsp;
+			</TD>
+		</TR>
+	</THEAD>
+	<TBODY class="lms-ui-multi-check">
+		{foreach $templates as $template}
+		<TR>
+			<TD class="nobr">
+				{if $template.type == $smarty.const.TMPL_MAIL}
+					<img src="img/email.gif" alt="email">
+				{elseif $template.type == $smarty.const.TMPL_WWW}
+					<img src="img/network.gif" alt="www">
+				{elseif $template.type == $smarty.const.TMPL_USERPANEL || $template.type == $smarty.const.TMPL_USERPANEL_URGENT}
+					<img src="img/cms.gif" alt="userpanel">
+				{elseif $template.type == $smarty.const.TMPL_WARNING}
+					<img src="img/warningon.gif" alt="warning">
+				{else}
+					<img src="img/sms.gif" alt="sms">
+				{/if}
+			</TD>
+			<TD class="nobr">
+				{$template.name}
+			</TD>
+			<TD class="nobr">
+				{$template.subject}
+			</TD>
+			<TD>
+				{$template.message|truncate:5000:"..."}
+			</TD>
+			<TD class="text-right nobr">
+				<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message template?")}')"
+						href="?m=messagetemplatedel&id={$template.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+				<input type="checkbox" name="marks[{$template.id}]" value="{$template.id}" class="lms-ui-multi-check" form="messagetemplates">
+			</TD>
+		</TR>
+		{foreachelse}
+		<TR>
+			<TD colspan="5" class="empty-table">
+				<p>{trans("No message templates in database.")}</p>
+			</TD>
+		</TR>
+		{/foreach}
+	</TBODY>
+	<TFOOT>
+		<TD colspan="3" class="nobr">
+		</TD>
+		<TD colspan="2" class="text-right nobr">
+			<a id="delete-message-templates">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
+			<label>
+				{trans("Check All")}
+				<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
+			</label>
+		</TD>
+	</TFOOT>
+</TABLE>
+<script>
+
+	$(function() {
+		$('#delete-message-templates').click(function() {
+			if (!$(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length
+				|| !confirm('{trans("Are you sure, you want to delete all selected message templates?")}'))
+				return false;
+			$('form#messagetemplates').attr('action', '?m=messagetemplatedel&is_sure=1').submit();
+		});
+	});
+
+</script>
+{/block}

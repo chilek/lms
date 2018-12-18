@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -65,7 +65,7 @@ $access_table = array(
 	),
 	'messaging' => array(
 		'label' => trans('messaging (email, sms)'),
-		'allow_regexp' => '^message(add|del|list|info)$',
+		'allow_regexp' => '^message(add|del|list|info|template(del|list))$',
 	),
 	'helpdesk_administration' => array(
 		'label' => trans('Helpdesk (RT) administration'),

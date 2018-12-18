@@ -582,6 +582,12 @@ $menu = array(
 					'tip' => trans('Allows you to send messages to customers'),
 					'prio' => 20,
 				),
+				array(
+					'name' => trans('Message Templates'),
+					'link' => '?m=messagetemplatelist',
+					'tip' => trans('Message template list'),
+					'prio' => 30,
+				)
 			),
 		),
 
