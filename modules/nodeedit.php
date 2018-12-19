@@ -206,6 +206,9 @@ if (isset($_POST['nodeedit'])) {
 	if (!$nodeedit['ownerid']) {
 		$error['nodeedit[customerid]'] = trans('Customer not selected!');
 		$error['nodeedit[ownerid]']    = trans('Customer not selected!');
+	} else if (! $LMS->CustomerExists($nodeedit['ownerid'])) {
+		$error['nodeedit[customerid]'] = trans('Inexistent owner selected!');
+		$error['nodeedit[ownerid]'] = trans('Inexistent owner selected!');
 	} else if ($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) != CSTATUS_CONNECTED)
 		$error['access'] = trans('Node owner is not connected!');
 
