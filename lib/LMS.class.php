@@ -2034,7 +2034,10 @@ class LMS
 				$buf = "\nThis is a multi-part message in MIME format.\n\n";
 				$buf .= '--' . $boundary . "\n";
 				$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
-				$buf .= $body . "\n";
+				if ($headers['X-LMS-Format'] == 'html')
+					$buf .= preg_replace('/\r?\n/', '', $body) . "\n";
+				else
+					$buf .= $body . "\n";
 				if ($files)
 					foreach ($files as $chunk) {
 						$buf .= '--' . $boundary . "\n";
@@ -2149,7 +2152,7 @@ class LMS
 			if ($headers['X-LMS-Format'] == 'html') {
 				$this->mail_object->isHTML(true);
 				$this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
-				$this->mail_object->msgHTML($body);
+				$this->mail_object->msgHTML(preg_replace('/\r?\n/', '<br>', $body));
 			} else {
 				$this->mail_object->isHTML(false);
 				$this->mail_object->Body = $body;
