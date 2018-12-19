@@ -154,10 +154,10 @@ if (isset($_POST['nodedata']))
     if (!$nodedata['ownerid']) {
         $error['nodedata[customerid]'] = trans('Customer not selected!');
         $error['nodedata[ownerid]']    = trans('Customer not selected!');
-	} else if (! $LMS->CustomerExists($nodedata['ownerid']))
-		$error['ownerid'] = trans('You have to select owner!');
-	else
-	{
+	} else if (! $LMS->CustomerExists($nodedata['ownerid'])) {
+		$error['nodedata[customerid]'] = trans('Inexistent owner selected!');
+		$error['nodedata[ownerid]'] = trans('Inexistent owner selected!');
+	} else {
 		$status = $LMS->GetCustomerStatus($nodedata['ownerid']);
 		if ($status == CSTATUS_INTERESTED) // unknown (interested)
 			$error['ownerid'] = trans('Selected customer is not connected!');
@@ -313,7 +313,7 @@ if (empty($nodedata['macs']))
 
 $layout['pagetitle'] = trans('New Node');
 
-if ($customerid = $nodedata['ownerid']) {
+if (!empty($nodedata['ownerid']) && $LMS->CustomerExists($nodedata['ownerid']) && ($customerid = $nodedata['ownerid'])) {
 	include(MODULES_DIR.'/customer.inc.php');
 }
 else

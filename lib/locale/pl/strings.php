@@ -4207,4 +4207,6 @@ $_LANG['<!message>userpanel'] = 'panel abonencki';
 $_LANG['<!message>userpanel (urgent)'] = 'panel abonencki (pilne)';
 $_LANG['<!message>warning'] = 'ostrzeżenie';
 
+$_LANG['Inexistent owner selected!'] = 'Wybrano nieistniejącego właściciela!';
+
 ?>
