@@ -25,7 +25,7 @@
  */
 
 $nodedata['access']   = 1;
-$nodedata['ownerid']  = 0;
+$nodedata['ownerid']  = null;
 $nodedata['authtype'] = 0;
 
 if (isset($_GET['ownerid']))
