@@ -583,7 +583,7 @@ $menu = array(
 					'prio' => 20,
 				),
 				array(
-					'name' => trans('Message Templates'),
+					'name' => trans('<!message>Templates'),
 					'link' => '?m=messagetemplatelist',
 					'tip' => trans('Message template list'),
 					'prio' => 30,

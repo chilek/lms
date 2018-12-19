@@ -4197,7 +4197,7 @@ $_LANG['(no password)'] = '(brak hasła)';
 
 $_LANG['credit notes'] = 'faktury korygujące';
 
-$_LANG['Message Templates'] = 'Szablony wiadomości';
+$_LANG['<!message>Templates'] = 'Szablony';
 $_LANG['Message Template List'] = 'Lista szablonów wiadomości';
 $_LANG['Message template list'] = 'Lista szablonów wiadomości';
 $_LANG['No message templates in database.'] = 'Brak szablonów wiadomości w bazie danych.';

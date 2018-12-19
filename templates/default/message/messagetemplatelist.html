@@ -57,7 +57,7 @@
 				{$template.subject}
 			</TD>
 			<TD>
-				{$template.message|truncate:5000:"..."}
+				{$template.message|truncate:5000:"..."|replace:"\n":"<BR>"}
 			</TD>
 			<TD class="text-right nobr">
 				<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message template?")}')"
