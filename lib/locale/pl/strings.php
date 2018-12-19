@@ -4203,5 +4203,8 @@ $_LANG['Message template list'] = 'Lista szablonów wiadomości';
 $_LANG['No message templates in database.'] = 'Brak szablonów wiadomości w bazie danych.';
 $_LANG['Are you sure, you want to delete that message template?'] = 'Jesteś pewien, że chcesz usunąć ten szablon wiadomości?';
 $_LANG['Are you sure, you want to delete all selected message templates?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane szablony wiadomości?';
+$_LANG['<!message>userpanel'] = 'panel abonencki';
+$_LANG['<!message>userpanel (urgent)'] = 'panel abonencki (pilne)';
+$_LANG['<!message>warning'] = 'ostrzeżenie';
 
 ?>

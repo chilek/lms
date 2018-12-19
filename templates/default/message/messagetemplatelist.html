@@ -7,6 +7,10 @@
 <form method="post" action="?m=messagetemplatedel" name="messagetemplates" id="messagetemplates">
 </form>
 
+<form method="get" name="filter" id="filter">
+	<input type="hidden" name="m" value="{$layout.module}">
+</form>
+
 <TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -32,6 +36,26 @@
 			<TD>
 				&nbsp;
 			</TD>
+		</TR>
+		<TR>
+			<td colspan="5">
+				<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
+				<select name="type" form="filter" onchange="javascript:document.filter.submit();">
+					<option value="0">{trans("- all -")}</option>
+					<option value="{$smarty.const.TMPL_MAIL}"
+							{if $type == $smarty.const.TMPL_MAIL} selected{/if}>{trans("mail")}</option>
+					<option value="{$smarty.const.TMPL_SMS}"
+							{if $type == $smarty.const.TMPL_SMS} selected{/if}>{trans("sms")}</option>
+					<option value="{$smarty.const.TMPL_WWW}"
+							{if $type == $smarty.const.TMPL_WWW} selected{/if}>{trans("www")}</option>
+					<option value="{$smarty.const.TMPL_USERPANEL}"
+							{if $type == $smarty.const.TMPL_USERPANEL} selected{/if}>{trans("<!message>userpanel")}</option>
+					<option value="{$smarty.const.TMPL_USERPANEL_URGENT}"
+							{if $type == $smarty.const.TMPL_USERPANEL_URGENT} selected{/if}>{trans("<!message>userpanel (urgent)")}</option>
+					<option value="{$smarty.const.TMPL_WARNING}"
+							{if $type == $smarty.const.TMPL_WARNING} selected{/if}>{trans("<!message>warning")}</option>
+				</select>
+			</td>
 		</TR>
 	</THEAD>
 	<TBODY class="lms-ui-multi-check">

@@ -24,10 +24,17 @@
  *  $Id$
  */
 
+if (isset($_GET['type']))
+	$type = $_GET['type'];
+else
+	$SESSION->restore('mtlt', $type);
+$SESSION->save('mtlt', $type);
+
 $layout['pagetitle'] = trans('Message Template List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('templates', $LMS->GetMessageTemplates());
+$SMARTY->assign('type', $type);
+$SMARTY->assign('templates', $LMS->GetMessageTemplates($type));
 
 $SMARTY->display('message/messagetemplatelist.html');
