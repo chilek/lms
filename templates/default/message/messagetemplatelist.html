@@ -98,15 +98,17 @@
 		{/foreach}
 	</TBODY>
 	<TFOOT>
-		<TD colspan="3" class="nobr">
-		</TD>
-		<TD colspan="2" class="text-right nobr">
-			<a id="delete-message-templates">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
-			<label>
-				{trans("Check All")}
-				<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
-			</label>
-		</TD>
+		<TR class="lms-ui-button-panel">
+			<TD colspan="3" class="nobr">
+			</TD>
+			<TD colspan="2" class="text-right nobr">
+				<a id="delete-message-templates">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
+				<label>
+					{trans("Check All")}
+					<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
+				</label>
+			</TD>
+		</TR>
 	</TFOOT>
 </TABLE>
 <script>
