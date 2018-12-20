@@ -19,7 +19,7 @@
 	<FORM ACTION="?m={$layout.module}" METHOD="POST">
 		<OL CLASS="dialog-box">
 			<LI>
-				{trans("Status:")}<BR>
+				{trans("Type:")}<BR>
 				<SELECT id="template-type" NAME="template[type]" CLASS="lms-ui-dialog-input">
 					{foreach $_MESSAGETEMPLATES as $template_type => $template}
 					<OPTION value="{$template_type}">{$template.label}</OPTION>
