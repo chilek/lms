@@ -179,7 +179,7 @@ version ?.??.?? (????-??-??):
   - improvement: bash/curl script for fetching emails from imap server to LMS RT [interduo]
   - enhancement: related tickets introduced [interduo]
   - improvement: search customer by his location name is possible [chilan]
-  - enhancement: simple management of message templates added [chilan]
+  - enhancement: separate management of message templates added [chilan]
 
 version 1.11.23 (2018-03-21):
 

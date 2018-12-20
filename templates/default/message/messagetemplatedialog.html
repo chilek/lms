@@ -1,0 +1,150 @@
+<DIV ID="{$operation}-template-dialog" CLASS="lms-ui-dialog" TITLE="{if $operation == "edit"}{trans("Edit message template")}{else}{trans("Add message template")}{/if}">
+	<STYLE>
+		ol.dialog-box {
+			list-style: none;
+			padding-left: 0;
+		}
+		ol.dialog-box li {
+			padding-bottom: 5px;
+		}
+		ol.dialog-box textarea {
+			width: 98%;
+			resize: vertical;
+		}
+		ol.dialog-box select {
+			padding: 2px;
+		}
+	</STYLE>
+
+	<FORM ACTION="?m={$layout.module}" METHOD="POST">
+		{if $operation == 'edit'}
+		<INPUT TYPE="hidden" id="{$operation}-template-id" NAME="template[id]">
+		{/if}
+
+		<OL CLASS="dialog-box">
+			<LI>
+				{trans("Type:")}<BR>
+				<SELECT id="{$operation}-template-type" NAME="template[type]" CLASS="lms-ui-dialog-input">
+					{foreach $_MESSAGETEMPLATES as $template_type => $template}
+					<OPTION value="{$template_type}">{$template.label}</OPTION>
+					{/foreach}
+				</SELECT>
+			</LI>
+			<LI>
+				{trans("Name:")}<BR>
+				<INPUT TYPE="text" ID="{$operation}-template-name" NAME="template[name]"  CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+			</LI>
+			<LI>
+				{trans("Subject:")}<BR>
+				<INPUT TYPE="text" ID="{$operation}-template-subject" NAME="template[subject]" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+			</Li>
+			<LI id="{$operation}-html-message">
+				{trans("Message:")}<BR>
+				<TEXTAREA id="{$operation}-template-html-body" cols="80" rows="20" name="template[html-body]" CLASS="lms-ui-wysiwyg-editor text ui-corner lms-ui-dialog-input"></TEXTAREA>
+			</LI>
+			<LI id="{$operation}-text-message">
+				{trans("Message:")}<BR>
+				<TEXTAREA id="{$operation}-template-text-body" cols="80" rows="20" name="template[text-body]" CLASS="text ui-corner lms-ui-dialog-input"></TEXTAREA>
+			</LI>
+		</OL>
+
+		<INPUT TYPE="submit" style="position:absolute; top:-1000px">
+	</FORM>
+</DIV>
+
+<SCRIPT>
+
+	var {$operation}_template_dialog;
+
+	{if $operation == 'edit'}
+	function open_edit_dialog(td) {
+		var row = $(td).closest("tr");
+
+		var template_id = $(row).attr("data-template-id");
+
+		$("#{$operation}-template-id").val( template_id );
+		$("#{$operation}-template-type").val( $(row).find("[data-template-type]").attr('data-template-type') );
+		$("#{$operation}-template-name").val( $(row).find("[data-template-name]").attr('data-template-name') );
+		$("#{$operation}-template-subject").val( $(row).find("[data-template-subject]").attr('data-template-subject') );
+		var body = $(row).find(".data-template-message");
+		$("#{$operation}-template-html-body").html( body.html() );
+		tinymce.get('{$operation}-template-html-body').setContent( body.html());
+		$("#{$operation}-template-text-body").text( body.text() );
+
+		{$operation}_template_dialog.open();
+
+		$('#{$operation}-template-type').change();
+	}
+	{/if}
+
+	$( function() {
+		$('#{$operation}-template-type').change(function() {
+			if (parseInt($(this).val()) == {$smarty.const.TMPL_SMS}) {
+				$('#{$operation}-html-message').hide();
+				$('#{$operation}-text-message').show();
+			} else {
+				$('#{$operation}-html-message').show();
+				$('#{$operation}-text-message').hide();
+			}
+		}).change();
+
+		{$operation}_template_dialog = new LmsUiDialog('{$operation}-template-dialog');
+		{$operation}_template_dialog.handler.dialog('option', 'resizable', true);
+		{if $operation == 'add'}
+		{$operation}_template_dialog.setOpener( ".{$operation}-template-dialog-btn" );
+		{/if}
+		{$operation}_template_dialog.setButtons([
+			{
+				text: "{if $operation == "edit"}{trans("Save")}{else}{trans("Add")}{/if}",
+				click: function() {
+					$(this).find("form").submit();
+				}
+			},
+			{
+				text: "{trans("Cancel")}",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		]);
+
+		{$operation}_template_dialog.handler.find( "form" ).on( "submit", function( event ) {
+
+			$({$operation}_template_dialog.handler).find("*")
+				.removeClass("ui-state-error")
+				.removeAttr("title");
+
+			$('#{$operation}-template-html-body').html(tinymce.get('{$operation}-template-html-body').getContent());
+
+			$.ajax({
+				method: "POST",
+				url: "?m=messagetemplatelist&action={$operation}",
+				data: $(this).serialize(),
+				beforeSend: function() {
+					{$operation}_template_dialog.disableButtons();
+				}
+			})
+				.done(function(data) {
+					var response = JSON.parse(data);
+
+					if (response.hasOwnProperty('error')) {
+						$.each(response.error, function (index, value) {
+							$('#' + index).addClass("ui-state-error").prop('title', value);
+							if (index == '{$operation}-template-html-body') {
+								$('#' + index).siblings('.mce-tinymce').addClass('ui-state-error');
+							}
+						});
+					} else {
+						{$operation}_template_dialog.close();
+						window.location.replace('?m=messagetemplatelist');
+						return;
+					}
+
+					{$operation}_template_dialog.enableButtons();
+				});
+
+			event.preventDefault();
+		});
+	});
+
+</SCRIPT>

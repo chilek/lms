@@ -4207,6 +4207,7 @@ $_LANG['<!message>userpanel'] = 'panel abonencki';
 $_LANG['<!message>userpanel (urgent)'] = 'panel abonencki (pilne)';
 $_LANG['<!message>warning'] = 'ostrzeżenie';
 $_LANG['Add message template'] = 'Dodaj szablon wiadomości';
+$_LANG['Edit message template'] = 'Edytuj szablon wiadomości';
 $_LANG['Empty message template name!'] = 'Pusta nazwa szablonu wiadomości!';
 $_LANG['Empty message template subject!'] = 'Pusty temat szablonu wiadomości!';
 $_LANG['Empty message template body!'] = 'Pusta treść szablonu wiadomości!';

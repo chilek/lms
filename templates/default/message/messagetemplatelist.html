@@ -52,20 +52,23 @@
 	</THEAD>
 	<TBODY class="lms-ui-multi-check">
 		{foreach $templates as $template}
-		<TR class="highlight">
-			<TD class="nobr text-center">
+		<TR class="highlight" data-template-id="{$template.id}">
+			<TD class="nobr text-center" data-template-type="{$template.type}">
 				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEAMPLTES[$template.type].label}"></i>
 			</TD>
-			<TD class="nobr">
+			<TD class="nobr" data-template-name="{$template.name}">
 				{$template.name}
 			</TD>
-			<TD class="nobr">
+			<TD class="nobr" data-template-subject="{$template.subject}">
 				{$template.subject}
 			</TD>
 			<TD>
 				{$template.message|truncate:5000:"..."|replace:"\n":"<BR>"}
+				<div style="display: none;" class="data-template-message">{$template.message}</div>
 			</TD>
 			<TD class="text-right nobr">
+				{button type="link" class="edit-template-dialog-btn" icon="edit" tip="Edit"
+					onclick="javascript:open_edit_dialog(this);"}
 				{button type="link" href="?m=messagetemplatedel&id={$template.id}" icon="delete" tip="Delete"
 					onclick="return confirmLink(this, '{t}Are you sure, you want to delete that message template?{/t}')"}
 				<input type="checkbox" name="marks[{$template.id}]" value="{$template.id}" class="lms-ui-multi-check" form="messagetemplates">
@@ -82,7 +85,7 @@
 	<TFOOT>
 		<TR class="lms-ui-button-panel">
 			<TD colspan="3" class="nobr">
-				{button icon="add" id="template-add-dialog-show-btn" tip="Add" label="Add"}
+				{button icon="add" class="add-template-dialog-btn" tip="Add" label="Add"}
 			</TD>
 			<TD colspan="2" class="text-right nobr">
 				{button icon="delete" id="delete-message-templates" tip="Delete" label="Delete"}
@@ -95,7 +98,8 @@
 	</TFOOT>
 </TABLE>
 
-{include file='message/messagetemplateadddialog.html'}
+{include file='message/messagetemplatedialog.html' operation="add"}
+{include file='message/messagetemplatedialog.html' operation="edit"}
 
 <script>
 

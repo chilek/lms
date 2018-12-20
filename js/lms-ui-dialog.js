@@ -64,13 +64,10 @@ function LmsUiDialog( id ) {
  *
  * \param id button id
  */
-LmsUiDialog.prototype.setOpener = function( id ) {
+LmsUiDialog.prototype.setOpener = function( selector ) {
     var dialog = this;
 
-    $("#" + id).button().on("click", function() {
-        // blur button after click
-        $(this).blur();
-
+    $( selector ).button().on("click", function() {
         // show dialog
         dialog.open();
     });
