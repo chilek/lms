@@ -2339,15 +2339,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value > 0 THEN value ELSE 0 END) AS income, 
 					SUM(CASE WHEN (cash.customerid IS NULL OR cash.type <> 0) AND value < 0 THEN -value ELSE 0 END) AS expense 
 				FROM cash
-				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN customerview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid)
-				LEFT JOIN (
-					SELECT DISTINCT a.customerid
-					FROM customerassignments a
-					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user()
-				) e ON (e.customerid = cash.customerid)
-				WHERE e.customerid IS NULL'
+				WHERE 1=1 '
 				.$where
 				.(!empty($group) ?
 					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
@@ -2365,15 +2359,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				documents.published, '
 			 . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
 				FROM cash
-				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN customerview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid)
-				LEFT JOIN (
-					SELECT DISTINCT a.customerid
-					FROM customerassignments a
-					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user()
-				) e ON (e.customerid = cash.customerid)
-				WHERE e.customerid IS NULL'
+				WHERE 1=1 '
 			.$where
 			.(!empty($group) ?
 				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
@@ -2387,15 +2375,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			$after = $this->db->GetOne('SELECT SUM(value) FROM (
 				SELECT (CASE WHEN cash.customerid IS NULL OR cash.type <> 0 THEN value ELSE 0 END) AS value
 				FROM cash
-				LEFT JOIN customers c ON (cash.customerid = c.id)
+				LEFT JOIN customerview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid)
-				LEFT JOIN (
-					SELECT DISTINCT a.customerid
-					FROM customerassignments a
-					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-					WHERE e.userid = lms_current_user()
-				) e ON (e.customerid = cash.customerid)
-				WHERE e.customerid IS NULL'
+				WHERE 1=1 '
 				.$where
 				.(!empty($group) ?
 					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
