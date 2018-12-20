@@ -113,14 +113,23 @@ function mt940Parser($file){
 					$wplaty_parser[$i][$pole[1]]=trim($pole[2]);
                                 }
 				switch ($pole[1]) {
-   				case '61':
-   					$wplaty_parser[$i]['value']=str_replace(",", ".", trim(substr($pole[2],11,strpos($pole[2],'NOTREF')-11)));
-   					$wplaty_parser[$i]['date']=trim('20'.substr($pole[2],0,2).'-'.substr($pole[2],2,2).'-'.substr($pole[2],4,2));
-   				break;
-					case '25':
-						$wplaty_parser[$i]['customerid']=(int)trim(substr($pole[2],14,26));
-						$wplaty_parser[$i]['customer']=trim($pole[2]);
-  					break;
+                                    case '61':
+                                        //kwota wplaty
+                                        $wplaty_parser[$i]['value']=str_replace(",", ".", trim(substr($pole[2],11,strpos($pole[2],'NOTREF')-11)));
+                                        //data zlecenia wplaty. Wyhaszowane poniewaz bierzemy date zaksiegowania (pola 62M i 62F)
+					//$wplaty_parser[$i]['date']=trim('20'.substr($pole[2],0,2).'-'.substr($pole[2],2,2).'-'.substr($pole[2],4,2));
+                                    break;
+                                    case '62M':
+                                    case '62F':
+                                        //data zaksiegowania wplaty
+                                        $wplaty_parser[$i]['date']=trim('20'.substr($pole[2],1,2).'-'.substr($pole[2],3,2).'-'.substr($pole[2],5,2));
+                                    break;
+                                    case '25':
+                                        //id klienta
+                                        $wplaty_parser[$i]['customerid']=(int)trim(substr($pole[2],14,26));
+                                        $wplaty_parser[$i]['customer']=trim($pole[2]);
+                                    break;
+
   				}
 			}
 		}
