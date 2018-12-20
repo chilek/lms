@@ -56,23 +56,21 @@
 
 	var {$operation}_template_dialog;
 
-	function open_{$operation}_dialog(td) {
+	function open_{$operation}_dialog(template_id) {
 		var editor = tinymce.get('{$operation}-template-html-body');
 
-		{if $operation == 'edit'}
-		var row = $(td).closest("tr");
+		if (template_id) {
+			var row = $('[data-template-id=' + template_id + ']');
 
-		var template_id = $(row).attr("data-template-id");
-
-		$("#{$operation}-template-id").val( template_id );
-		$("#{$operation}-template-type").val( $(row).find("[data-template-type]").attr('data-template-type') );
-		$("#{$operation}-template-name").val( $(row).find("[data-template-name]").attr('data-template-name') );
-		$("#{$operation}-template-subject").val( $(row).find("[data-template-subject]").attr('data-template-subject') );
-		var body = $(row).find(".data-template-message");
-		$("#{$operation}-template-html-body").html( body.html() );
-		editor.setContent( body.html());
-		$("#{$operation}-template-text-body").text( body.text() );
-		{/if}
+			$("#{$operation}-template-id").val(template_id);
+			$("#{$operation}-template-type").val($(row).find("[data-template-type]").attr('data-template-type'));
+			$("#{$operation}-template-name").val($(row).find("[data-template-name]").attr('data-template-name'));
+			$("#{$operation}-template-subject").val($(row).find("[data-template-subject]").attr('data-template-subject'));
+			var body = $(row).find(".data-template-message");
+			$("#{$operation}-template-html-body").html(body.html());
+			editor.setContent(body.html());
+			$("#{$operation}-template-text-body").text(body.text());
+		}
 
 		{$operation}_template_dialog.open();
 

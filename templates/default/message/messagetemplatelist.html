@@ -11,7 +11,7 @@
 	<input type="hidden" name="m" value="{$layout.module}">
 </form>
 
-<TABLE class="lmsbox lms-ui-background-cycle">
+<TABLE class="lmsbox lms-ui-background-cycle" id="message-templates">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -68,7 +68,7 @@
 			</TD>
 			<TD class="text-right nobr">
 				{button type="link" class="edit-template-dialog-btn" icon="edit" tip="Edit"
-					onclick="javascript:open_edit_dialog(this);"}
+					onclick="javascript:open_edit_dialog({$template.id});"}
 				{button type="link" href="?m=messagetemplatedel&id={$template.id}" icon="delete" tip="Delete"
 					onclick="return confirmLink(this, '{t}Are you sure, you want to delete that message template?{/t}')"}
 				<input type="checkbox" name="marks[{$template.id}]" value="{$template.id}" class="lms-ui-multi-check" form="messagetemplates">
