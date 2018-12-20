@@ -57,6 +57,8 @@
 	var {$operation}_template_dialog;
 
 	function open_{$operation}_dialog(td) {
+		var editor = tinymce.get('{$operation}-template-html-body');
+
 		{if $operation == 'edit'}
 		var row = $(td).closest("tr");
 
@@ -68,13 +70,15 @@
 		$("#{$operation}-template-subject").val( $(row).find("[data-template-subject]").attr('data-template-subject') );
 		var body = $(row).find(".data-template-message");
 		$("#{$operation}-template-html-body").html( body.html() );
-		tinymce.get('{$operation}-template-html-body').setContent( body.html());
+		editor.setContent( body.html());
 		$("#{$operation}-template-text-body").text( body.text() );
 		{/if}
 
 		{$operation}_template_dialog.open();
 
 		$('#{$operation}-template-type').change();
+
+		$('#{$operation}-template-dialog [name="template[wysiwyg][html-body]"]:checkbox').prop('checked', !editor.isHidden());
 	}
 
 	$( function() {
