@@ -82,11 +82,10 @@
 	<TFOOT>
 		<TR class="lms-ui-button-panel">
 			<TD colspan="3" class="nobr">
+				{button icon="add" id="template-add-dialog-show-btn" tip="Add" label="Add"}
 			</TD>
 			<TD colspan="2" class="text-right nobr">
-				<button type="button" class="lms-ui-button lms-ui-button-delete" id="delete-message-templates">
-					<i></i> {trans("Delete")}
-				</button>
+				{button icon="delete" id="delete-message-templates" tip="Delete" label="Delete"}
 				<label>
 					{trans("Check All")}
 					<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
@@ -95,6 +94,9 @@
 		</TR>
 	</TFOOT>
 </TABLE>
+
+{include file='message/messagetemplateadddialog.html'}
+
 <script>
 
 	$(function() {

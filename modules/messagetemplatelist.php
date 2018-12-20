@@ -24,6 +24,35 @@
  *  $Id$
  */
 
+if (isset($_GET['action'])) {
+	switch ($_GET['action']) {
+		case 'add':
+			$p = array_map('trim', $_POST['template']);
+
+			if (!strlen($p['name']))
+				$error['template-name'] = trans('Empty message template name!');
+			if (!strlen($p['subject']))
+				$error['template-subject'] = trans('Empty message template subject!');
+
+			if ($p['type'] == TMPL_SMS)
+				$body_type = 'text';
+			else
+				$body_type = 'html';
+			if (!strlen($p[$body_type . '-body']))
+				$error['template-' . $body_type . '-body'] = trans('Empty message template body!');
+
+			if ($error)
+				die(json_encode(array('error' => $error)));
+			else {
+				$id = $LMS->AddMessageTemplate($p['type'], $p['name'], $p['subject'], $p[$body_type . '-body']);
+				die(json_encode(array('id' => $id)));
+			}
+
+			break;
+	}
+	die;
+}
+
 if (isset($_GET['type']))
 	$type = $_GET['type'];
 else

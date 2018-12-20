@@ -26,6 +26,7 @@
  * \brief Pseudo class for fast create dialog boxes.
  */
 function LmsUiDialog( id ) {
+    var that = this;
 
     // dialog body id
     this.dialog_body_id = "#" + id;
@@ -51,6 +52,9 @@ function LmsUiDialog( id ) {
                            jQuery('.ui-widget-overlay').bind('click',function(){
                                $( "#" + id ).dialog('close');
                            })
+                       },
+                       close: function() {
+                           that.formReset();
                        }
                    });
 }

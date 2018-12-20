@@ -1,0 +1,111 @@
+<DIV ID="template-add-dialog" CLASS="lms-ui-dialog" TITLE="{trans("Add message template")}">
+	<STYLE>
+		ol.dialog-box {
+			list-style: none;
+			padding-left: 0;
+		}
+		ol.dialog-box li {
+			padding-bottom: 5px;
+		}
+		ol.dialog-box textarea {
+			width: 98%;
+			resize: vertical;
+		}
+		ol.dialog-box select {
+			padding: 2px;
+		}
+	</STYLE>
+
+	<FORM ACTION="?m={$layout.module}" METHOD="POST">
+		<OL CLASS="dialog-box">
+			<LI>
+				{trans("Status:")}<BR>
+				<SELECT id="template-type" NAME="template[type]" CLASS="lms-ui-dialog-input">
+					{foreach $_MESSAGETEMPLATES as $template_type => $template}
+					<OPTION value="{$template_type}">{$template.label}</OPTION>
+					{/foreach}
+				</SELECT>
+			</LI>
+			<LI>
+				{trans("Name:")}<BR>
+				<INPUT TYPE="text" ID="template-name" NAME="template[name]"  CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+			</LI>
+			<LI>
+				{trans("Subject:")}<BR>
+				<INPUT TYPE="text" ID="template-subject" NAME="template[subject]" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+			</Li>
+			<LI id="html-message">
+				{trans("Message:")}<BR>
+				<TEXTAREA id="template-html-body" cols="80" rows="20" name="template[html-body]" CLASS="lms-ui-wysiwyg-editor text ui-corner lms-ui-dialog-input"></TEXTAREA>
+			</LI>
+			<LI id="text-message">
+				{trans("Message:")}<BR>
+				<TEXTAREA id="template-text-body" cols="80" rows="20" name="template[text-body]" CLASS="text ui-corner lms-ui-dialog-input"></TEXTAREA>
+			</LI>
+		</OL>
+
+		<INPUT TYPE="submit" style="position:absolute; top:-1000px">
+	</FORM>
+</DIV>
+
+<SCRIPT>
+
+	var template_add_dialog;
+
+	$( function() {
+		$('#template-type').change(function() {
+			if (parseInt($(this).val()) == {$smarty.const.TMPL_SMS}) {
+				$('#html-message').hide();
+				$('#text-message').show();
+			} else {
+				$('#html-message').show();
+				$('#text-message').hide();
+			}
+		}).change();
+
+		template_add_dialog = new LmsUiDialog('template-add-dialog');
+		template_add_dialog.handler.dialog('option', 'resizable', true);
+		template_add_dialog.setOpener( "template-add-dialog-show-btn" );
+		template_add_dialog.setButtons([{ text: "{trans("Add")}"   , click: function() { $(this).find("form").submit(); } },
+			{ text: "{trans("Cancel")}", click: function() { $( this ).dialog( "close" ); } } ]);
+
+		template_add_dialog.handler.find( "form" ).on( "submit", function( event ) {
+
+			$(template_add_dialog.handler).find("*")
+				.removeClass("ui-state-error")
+				.removeAttr("title");
+
+			$('#template-html-body').html(tinymce.get('template-html-body').getContent());
+
+			$.ajax({
+				method: "POST",
+				url: "?m=messagetemplatelist&action=add",
+				data: $(this).serialize(),
+				beforeSend: function() {
+					template_add_dialog.disableButtons();
+				}
+			})
+				.done(function(data) {
+					var response = JSON.parse(data);
+
+					if (response.hasOwnProperty('error')) {
+						$.each(response.error, function (index, value) {
+							$('#' + index).addClass("ui-state-error").prop('title', value);
+							if (index == 'template-html-body') {
+								$('#' + index).siblings('.mce-tinymce').addClass('ui-state-error');
+							}
+						});
+					} else {
+						template_add_dialog.close();
+						window.location.replace('?m=messagetemplatelist');
+						return;
+					}
+
+					template_add_dialog.enableButtons();
+				});
+
+			event.preventDefault();
+		});
+	});
+
+</SCRIPT>
