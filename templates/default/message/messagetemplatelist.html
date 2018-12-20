@@ -42,18 +42,10 @@
 				<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
 				<select name="type" form="filter" onchange="javascript:document.filter.submit();">
 					<option value="0">{trans("- all -")}</option>
-					<option value="{$smarty.const.TMPL_MAIL}"
-							{if $type == $smarty.const.TMPL_MAIL} selected{/if}>{trans("mail")}</option>
-					<option value="{$smarty.const.TMPL_SMS}"
-							{if $type == $smarty.const.TMPL_SMS} selected{/if}>{trans("sms")}</option>
-					<option value="{$smarty.const.TMPL_WWW}"
-							{if $type == $smarty.const.TMPL_WWW} selected{/if}>{trans("www")}</option>
-					<option value="{$smarty.const.TMPL_USERPANEL}"
-							{if $type == $smarty.const.TMPL_USERPANEL} selected{/if}>{trans("<!message>userpanel")}</option>
-					<option value="{$smarty.const.TMPL_USERPANEL_URGENT}"
-							{if $type == $smarty.const.TMPL_USERPANEL_URGENT} selected{/if}>{trans("<!message>userpanel (urgent)")}</option>
-					<option value="{$smarty.const.TMPL_WARNING}"
-							{if $type == $smarty.const.TMPL_WARNING} selected{/if}>{trans("<!message>warning")}</option>
+					{foreach $_MESSAGETEMPLATES as $template_type => $template}
+					<option value="{$template_type}"
+							{if $type == $template_type} selected{/if}>{$template.label}</option>
+					{/foreach}
 				</select>
 			</td>
 		</TR>
@@ -61,18 +53,8 @@
 	<TBODY class="lms-ui-multi-check">
 		{foreach $templates as $template}
 		<TR class="highlight">
-			<TD class="nobr">
-				{if $template.type == $smarty.const.TMPL_MAIL}
-					<img src="img/email.gif" alt="email">
-				{elseif $template.type == $smarty.const.TMPL_WWW}
-					<img src="img/network.gif" alt="www">
-				{elseif $template.type == $smarty.const.TMPL_USERPANEL || $template.type == $smarty.const.TMPL_USERPANEL_URGENT}
-					<img src="img/cms.gif" alt="userpanel">
-				{elseif $template.type == $smarty.const.TMPL_WARNING}
-					<img src="img/warningon.gif" alt="warning">
-				{else}
-					<img src="img/sms.gif" alt="sms">
-				{/if}
+			<TD class="nobr text-center">
+				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEAMPLTES[$template.type].label}"></i>
 			</TD>
 			<TD class="nobr">
 				{$template.name}

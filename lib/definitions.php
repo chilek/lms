@@ -394,6 +394,33 @@ define('TMPL_WWW', 4);
 define('TMPL_USERPANEL', 5);
 define('TMPL_USERPANEL_URGENT', 6);
 
+$MESSAGETEMPLATES = array(
+	TMPL_WARNING => array(
+		'class' => 'lms-ui-icon-warning',
+		'label' => trans('<!message>warning'),
+	),
+	TMPL_MAIL => array(
+		'class' => 'lms-ui-icon-mail',
+		'label' => trans('mail'),
+	),
+	TMPL_SMS => array(
+		'class' => 'lms-ui-icon-sms',
+		'label' => trans('sms'),
+	),
+	TMPL_WWW => array(
+		'class' => 'lms-ui-icon-www',
+		'label' => trans('www'),
+	),
+	TMPL_USERPANEL => array(
+		'class' => 'lms-ui-icon-userpanel',
+		'label' => trans('<!message>userpanel'),
+	),
+	TMPL_USERPANEL_URGENT => array(
+		'class' => 'lms-ui-icon-userpanel',
+		'label' => trans('<!message>userpanel (urgent)'),
+	),
+);
+
 // Account types
 define('ACCOUNT_SHELL', 1);
 define('ACCOUNT_MAIL', 2);
@@ -898,6 +925,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETWORK_INTERFACE_TYPES',$NETWORK_INTERFACE_TYPES);
 	$SMARTY->assign('_CTYPES',$CTYPES);
 	$SMARTY->assign('_CSTATUSES', $CSTATUSES);
+	$SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
 	$SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
 	$SMARTY->assign('_PERIODS', $PERIODS);
