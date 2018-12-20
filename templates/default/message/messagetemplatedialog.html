@@ -56,8 +56,8 @@
 
 	var {$operation}_template_dialog;
 
-	{if $operation == 'edit'}
-	function open_edit_dialog(td) {
+	function open_{$operation}_dialog(td) {
+		{if $operation == 'edit'}
 		var row = $(td).closest("tr");
 
 		var template_id = $(row).attr("data-template-id");
@@ -70,12 +70,12 @@
 		$("#{$operation}-template-html-body").html( body.html() );
 		tinymce.get('{$operation}-template-html-body').setContent( body.html());
 		$("#{$operation}-template-text-body").text( body.text() );
+		{/if}
 
 		{$operation}_template_dialog.open();
 
 		$('#{$operation}-template-type').change();
 	}
-	{/if}
 
 	$( function() {
 		$('#{$operation}-template-type').change(function() {
@@ -90,9 +90,6 @@
 
 		{$operation}_template_dialog = new LmsUiDialog('{$operation}-template-dialog');
 		{$operation}_template_dialog.handler.dialog('option', 'resizable', true);
-		{if $operation == 'add'}
-		{$operation}_template_dialog.setOpener( ".{$operation}-template-dialog-btn" );
-		{/if}
 		{$operation}_template_dialog.setButtons([
 			{
 				text: "{if $operation == "edit"}{trans("Save")}{else}{trans("Add")}{/if}",
