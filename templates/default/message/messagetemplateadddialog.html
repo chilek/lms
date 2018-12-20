@@ -66,8 +66,20 @@
 		template_add_dialog = new LmsUiDialog('template-add-dialog');
 		template_add_dialog.handler.dialog('option', 'resizable', true);
 		template_add_dialog.setOpener( "template-add-dialog-show-btn" );
-		template_add_dialog.setButtons([{ text: "{trans("Add")}"   , click: function() { $(this).find("form").submit(); } },
-			{ text: "{trans("Cancel")}", click: function() { $( this ).dialog( "close" ); } } ]);
+		template_add_dialog.setButtons([
+			{
+				text: "{trans("Add")}",
+				click: function() {
+					$(this).find("form").submit();
+				}
+			},
+			{
+				text: "{trans("Cancel")}",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		]);
 
 		template_add_dialog.handler.find( "form" ).on( "submit", function( event ) {
 

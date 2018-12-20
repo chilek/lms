@@ -123,6 +123,9 @@ LmsUiDialog.prototype.enableButtons = function() {
  * \param buttons json array with buttons
  */
 LmsUiDialog.prototype.setButtons = function( buttons ) {
+    $.each(buttons, function(index, button) {
+       button.class = 'lms-ui-button';
+    });
     $(this.handler).dialog('option', 'buttons', buttons);
 }
 
