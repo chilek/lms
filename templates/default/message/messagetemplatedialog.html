@@ -32,11 +32,11 @@
 			</LI>
 			<LI>
 				{trans("Name:")}<BR>
-				<INPUT TYPE="text" ID="{$operation}-template-name" NAME="template[name]"  CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+				<INPUT TYPE="text" ID="{$operation}-template-name" size="26" NAME="template[name]"  CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
 			</LI>
 			<LI>
 				{trans("Subject:")}<BR>
-				<INPUT TYPE="text" ID="{$operation}-template-subject" NAME="template[subject]" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+				<INPUT TYPE="text" ID="{$operation}-template-subject" size="26" NAME="template[subject]" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
 			</Li>
 			<LI id="{$operation}-html-message">
 				{trans("Message:")}<BR>
@@ -68,7 +68,9 @@
 			$("#{$operation}-template-subject").val($(row).find("[data-template-subject]").attr('data-template-subject'));
 			var body = $(row).find(".data-template-message");
 			$("#{$operation}-template-html-body").html(body.html());
-			editor.setContent(body.html());
+			if (editor) {
+				editor.setContent(body.html());
+			}
 			$("#{$operation}-template-text-body").text(body.text());
 		}
 
@@ -76,7 +78,7 @@
 
 		$('#{$operation}-template-type').change();
 
-		$('#{$operation}-template-dialog [name="template[wysiwyg][html-body]"]:checkbox').prop('checked', !editor.isHidden());
+		$('#{$operation}-template-dialog [name="template[wysiwyg][html-body]"]:checkbox').prop('checked', editor && !editor.isHidden());
 	}
 
 	$( function() {
