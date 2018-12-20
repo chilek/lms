@@ -84,8 +84,8 @@
 				{$template.message|truncate:5000:"..."|replace:"\n":"<BR>"}
 			</TD>
 			<TD class="text-right nobr">
-				<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message template?")}')"
-						href="?m=messagetemplatedel&id={$template.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+				{button type="link" href="?m=messagetemplatedel&id={$template.id}" icon="delete" tip="Delete"
+					onclick="return confirmLink(this, '{t}Are you sure, you want to delete that message template?{/t}')"}
 				<input type="checkbox" name="marks[{$template.id}]" value="{$template.id}" class="lms-ui-multi-check" form="messagetemplates">
 			</TD>
 		</TR>
@@ -102,7 +102,9 @@
 			<TD colspan="3" class="nobr">
 			</TD>
 			<TD colspan="2" class="text-right nobr">
-				<a id="delete-message-templates">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
+				<button type="button" class="lms-ui-button lms-ui-button-delete" id="delete-message-templates">
+					<i></i> {trans("Delete")}
+				</button>
 				<label>
 					{trans("Check All")}
 					<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
