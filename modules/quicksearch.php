@@ -268,11 +268,14 @@ switch ($mode) {
 					else
 						$action = '?m=customerinfo&id=' . $row['id'];
 					$name = truncate_str($row['customername'], 50);
-					$name_class = $row['deleted'] ? 'blend' : '';
-					if (isset($row['number']))
+					if (isset($row['number'])) {
 						$description = trans('VoIP number:') . ' ' . $row['number'];
-					else
+						$name_class = 'lms-ui-suggestion-phone';
+					} else {
 						$description = trans('Phone:') . ' ' . $row['phone'];
+						$name_class = 'lms-ui-suggestion-customer-status-connected';
+					}
+					$name_class .= $row['deleted'] ? ' blend' : '';
 
 					$description_class = '';
 					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
