@@ -180,6 +180,8 @@ version ?.??.?? (????-??-??):
   - enhancement: related tickets introduced [interduo]
   - improvement: search customer by his location name is possible [chilan]
   - enhancement: separate management of message templates added [chilan]
+  - enhancement: phone quick search can look up numbers in customer contact numbers
+    or voip account numbers  [chilan]
 
 version 1.11.23 (2018-03-21):
 
