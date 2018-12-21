@@ -4214,4 +4214,9 @@ $_LANG['Empty message template body!'] = 'Pusta treść szablonu wiadomości!';
 
 $_LANG['Inexistent owner selected!'] = 'Wybrano nieistniejącego właściciela!';
 
+$_LANG['Click here to select how phone numbers should be searched'] = 'Kliknij tutaj, aby wybrać w jaki sposób są wyszukiwane numery telefonów';
+$_LANG['<!qs>customer phone number'] = 'numer telefonu klienta';
+$_LANG['<!qs>voip account number'] = 'numer konta VoIP';
+$_LANG['VoIP number:'] = 'Numer VoIP:';
+
 ?>

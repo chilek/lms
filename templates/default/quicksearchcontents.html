@@ -17,6 +17,10 @@
 
 <div id="qs-phone" class="lms-ui-quick-search-field" data-mode="phone" data-label="{trans("<!qs>phone")}" data-keyboard-shortcut="ctrl+2">
 	<i class="lms-ui-quick-search-icon lms-ui-icon-phone" {tip text="Enter phone number and press Enter"}></i>
+	<select id="qs-phone-properties" class="lms-ui-quicksearch-property-selection lms-ui-multiselect-selection-group" multiple title="{trans("Click here to select how phone numbers should be searched")}">
+		<option value="contact"{if !isset($qs_properties.phone) || isset($qs_properties.phone.contact)} selected{/if}>{trans("<!qs>customer phone number")}</option>
+		<option value="account"{if !isset($qs_properties.phone) || isset($qs_properties.phone.account)} selected{/if}>{trans("<!qs>voip account number")}</option>
+	</select>
     <input type="text" name="qs[phone]" value="" size="15" {tip text="Enter phone number and press Enter" class="blend lms-ui-quick-search-input"}>
 </div>
 

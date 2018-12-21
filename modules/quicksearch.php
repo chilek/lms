@@ -235,22 +235,45 @@ switch ($mode) {
 	case 'phone':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS phone, full_address AS address,
+			$where = array();
+			if (empty($properties) || isset($properties['contact']))
+				$where[] = "REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? $sql_search";
+			if (empty($properties) || isset($properties['account']))
+				$where[] = "vn.phone ?LIKE? $sql_search" ;
+
+			$candidates = $DB->GetAll("SELECT c.id, "
+					. (empty($properties) || isset($properties['contact']) ? "cc.contact AS phone, " : '')
+					. (empty($properties) || isset($properties['account']) ? "vn.phone AS number, va.id AS voipaccountid, " : '')
+					. "full_address AS address,
 				post_name, post_full_address AS post_address, deleted,
 			    " . $DB->Concat('UPPER(lastname)', "' '", 'c.name') . " AS customername
-				FROM customerview c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)
-				WHERE REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? $sql_search
-				ORDER by deleted, customername, cc.contact, full_address
+				FROM customerview c "
+				. (empty($properties) || isset($properties['contact']) ?
+					"LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)" : '')
+				. (empty($properties) || isset($properties['account']) ?
+					"LEFT JOIN voipaccounts va ON va.ownerid = c.id
+					LEFT JOIN voip_numbers vn ON vn.voip_account_id = va.id" : '')
+				. " WHERE 1=1" . (empty($where) ? '' : ' AND (' . implode(' OR ', $where) . ')')
+				. " ORDER by deleted, customername, "
+				. (empty($properties) || isset($properties['contact']) ? "cc.contact, " : '')
+				. (empty($properties) || isset($properties['account']) ? "vn.phone, " : '')
+				. "full_address
 				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$result = array();
 			if ($candidates)
 				foreach ($candidates as $idx => $row) {
-					$action = '?m=customerinfo&id='.$row['id'];
+					if (isset($row['number']))
+						$action = '?m=voipaccountinfo&id=' . $row['voipaccountid'];
+					else
+						$action = '?m=customerinfo&id=' . $row['id'];
 					$name = truncate_str($row['customername'], 50);
 					$name_class = $row['deleted'] ? 'blend' : '';
-					$description = trans('Phone:') . ' ' . $row['phone'];
+					if (isset($row['number']))
+						$description = trans('VoIP number:') . ' ' . $row['number'];
+					else
+						$description = trans('Phone:') . ' ' . $row['phone'];
+
 					$description_class = '';
 					$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
 				}
