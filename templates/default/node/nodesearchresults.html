@@ -17,8 +17,8 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD>
-			<img src="img/node.gif" ALT=""> <A href="?m=nodesearch&search&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><span class="bold">{trans("Name:")}</span></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<img src="img/customer.gif" ALT=""> <A href="?m=nodesearch&search&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order == "owner"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<i class="lms-ui-icon-node"></i><A href="?m=nodesearch&search&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><span class="bold">{trans("Name:")}</span></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<i class="lms-ui-icon-customer"></i><A href="?m=nodesearch&search&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order == "owner"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-right valign-top nobr">
 			<img src="img/empty.gif" ALT="" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -58,7 +58,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<span class="bold">{$nodelist[nodelist].name}</span></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
+			<i class="lms-ui-icon-customer"></i><A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
 		</TD>
 		<TD class="valign-top nobr">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>

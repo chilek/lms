@@ -153,7 +153,7 @@
 {if $message.customerid}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/customer.gif" alt=""> 
+			<i class="lms-ui-icon-customer"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Recipient:")}
@@ -324,7 +324,7 @@
 	{if $message.phones}
 	<TR id="customerphones"{if $message.type != $smarty.const.MSG_SMS} style="display: none;"{/if}>
 		<TD>
-			<IMG src="img/phone.gif" alt=""> 
+			<i class="lms-ui-icon-phone"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Phone:")}
@@ -354,7 +354,7 @@
 	</TR>
 	<TR ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/users.gif" alt=""> 
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold">
 			{trans("Sender:")}
@@ -367,7 +367,7 @@
 	{if $users}
 	<TR ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/users.gif" alt=""> 
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold">
 			{trans("Users:")}
@@ -395,7 +395,7 @@
 {/if}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/mail.gif" alt=""> 
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold">
 			{trans("Subject:")}
@@ -465,7 +465,7 @@
 	</TR>
 	<TR id="attachment"{if $message.type > $smarty.const.MSG_MAIL} style="display: none"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/attach.gif" alt="">
+			<i class="lms-ui-icon-attach"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Attachments:")}

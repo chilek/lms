@@ -14,7 +14,7 @@
 	<TR>
 		<TD scope="col" class="nobr">
 			<IMG src="img/group.gif" alt=""> {trans("Name:")}<BR>
-			<span class="lighter"><IMG src="img/info1.gif" alt=""> {trans("Description:")}</span>
+			<span class="lighter"><i class="lms-ui-icon-description"></i>{trans("Description:")}</span>
 		</TD>
 		<TD scope="col" class="text-right lighter">
 			{trans("ID:")}
@@ -30,7 +30,7 @@
 	<TFOOT>
 	<TR>
 		<TD colspan="4" class="text-right bold nobr">
-			<IMG src="img/info2.gif" alt=""> {trans("Total:")}
+			<i class="lms-ui-icon-count"></i>{trans("Total:")}
 			{$listdata.totalcount|default:"0"}
 		</TD>
 	</TR>
@@ -40,7 +40,7 @@
 	<TR class="highlight" data-target-url="?m=customergroupinfo&id={$customergroup.id}">
 		<TD>
 			<IMG src="img/group.gif" alt="">&nbsp;<span class="bold">{$customergroup.name}</span><BR>
-			{if $customergroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergroup.description}{/if}
+			{if $customergroup.description}<i class="lms-ui-icon-description"></i>{$customergroup.description}{/if}
 		</TD>
 		<TD class="text-right">
 			({$customergroup.id|string_format:"%04d"})

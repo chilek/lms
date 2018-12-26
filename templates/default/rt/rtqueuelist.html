@@ -19,13 +19,13 @@
     <THEAD>
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+			<i class="lms-ui-icon-queue"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Queue")}:
 		</TD>
 		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-description"></i>
+			<i class="lms-ui-icon-description"></i>
 			{trans("Description")}:
 		</TD>
 		<TD class="text-right nobr bold">
@@ -74,12 +74,12 @@
 	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
-			<i class="lms-ui-icon-content lms-ui-icon-critical"></i>
+			<i class="lms-ui-icon-critical"></i>
 		{else}
 			{if $queue.unread}
-				<i class="lms-ui-icon-content lms-ui-icon-unread"></i>
+				<i class="lms-ui-icon-unread"></i>
 			{else}
-				<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+				<i class="lms-ui-icon-queue"></i>
 			{/if}
 		{/if}
 		</TD>
@@ -88,7 +88,7 @@
 		</TD>
 		<TD>
 			{if $queue.description}
-				<i class="lms-ui-icon-content lms-ui-icon-description"></i>{$queue.description}
+				<i class="lms-ui-icon-description"></i>{$queue.description}
 			{/if}
 		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
@@ -134,7 +134,7 @@
         <TFOOT>
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" class="text-right bold">
-			<i class="lms-ui-icon-content lms-ui-icon-count"></i>
+			<i class="lms-ui-icon-count"></i>
 			{trans("Total:")}
 		</TD>
 		<TD class="text-center bold">

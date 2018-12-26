@@ -57,12 +57,12 @@
 	<TR>
 		<TD class="bold nobr"><IMG src="img/wins.gif" alt=""> {trans("WINS server:")}</TD>
 		<TD><INPUT type="text" size="23" name="netadd[wins]" value="{$netadd.wins}" {tip text="Enter WINS address (optional)" trigger="wins"}></TD>
-		<TD class="bold nobr"><IMG src="img/node.gif" alt=""> {trans("Domain:")}</TD>
+		<TD class="bold nobr"><i class="lms-ui-icon-node"></i>{trans("Domain:")}</TD>
 		<TD><INPUT type="text" size="23" name="netadd[domain]" value="{$netadd.domain}" {tip text="Enter network domain (optional)" trigger="domain"}></TD>
 	</TR>
 	<tr>
 		<TD class="bold nobr">
-			<img src="img/customer.gif" alt=""> {trans("Customer:")}
+			<i class="lms-ui-icon-customer"></i>{trans("Customer:")}
 		</td>
 		<TD colspan="3">
 			{customerlist form="netadd" customers=$customers selected=$netadd.ownerid selectname="netadd[customerid]" inputname="netadd[ownerid]" selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
@@ -85,7 +85,7 @@
 		</TD>
 	</TR>
 	<tr>
-		<TD class="bold nobr"><img src="img/host.gif" alt="">{trans("Host:")}</td>
+		<TD class="bold nobr"><i class="lms-ui-icon-hosting"></i>{trans("Host:")}</td>
 		<td colspan="3">
 			{* if only one host was created then select him *}
 			{if count($hostlist) == 1}
@@ -102,7 +102,7 @@
 	</tr>
 	<TR>
 		<TD class="bold nobr">
-			<img src="img/node.gif" alt=""> {trans("SNAT IP:")}
+			<i class="lms-ui-icon-node"></i>{trans("SNAT IP:")}
 		</TD>
 		<TD colspan="3">
 			<INPUT type="text" name="netadd[snat]" value="{$netadd.snat}" {tip text="Enter network snat address(optional)" trigger="snat"}>
@@ -110,7 +110,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG SRC="img/netdev.gif" ALT=""> {trans("Type:")}
+			<i class="lms-ui-icon-netdevice"></i>{trans("Type:")}
 		</TD>
 		<TD class="nobr" colspan="3">
 			{foreach $_SESSIONTYPES as $idx => $sessiontype}
@@ -131,7 +131,7 @@
 				<TBODY>
 				<TR>
 					<TD class="nobr">
-						<IMG src="img/info1.gif" alt="">
+						<i class="lms-ui-icon-description"></i>
 					</TD>
 					<TD>
 						<TEXTAREA name="netadd[notes]" cols="50" rows="5" {tip text="Enter notes (optional)"}>{$netadd.notes}</TEXTAREA>

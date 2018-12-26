@@ -11,7 +11,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold">
-			<IMG src="img/pass.gif" alt=""> {trans("Login:")}
+			<i class="lms-ui-icon-login"></i>{trans("Login:")}
 		</TD>
 		<TD style="width: 99%;">
 			<INPUT type="text" name="useradd[login]" value="{$useradd.login}" required {tip text="Enter user login" trigger="login" bold=1}>
@@ -21,7 +21,7 @@
 	<TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("First name:")}
+			<i class="lms-ui-icon-user"></i>{trans("First name:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="useradd[firstname]" value="{$useradd.firstname}" size="40" required {tip text="Enter user first name" trigger="firstname"}>
@@ -29,7 +29,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("Last name:")}
+			<i class="lms-ui-icon-user"></i>{trans("Last name:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="useradd[lastname]" value="{$useradd.lastname}" size="40" required {tip text="Enter user last name" trigger="lastname"}>
@@ -37,7 +37,7 @@
 	</TR>
 	<TR>
 		<TD class="bold">
-			<IMG src="img/info.gif" alt=""> {trans("Position:")}
+			<i class="lms-ui-icon-description"></i>{trans("Position:")}
 		</TD>
 		<TD>
 			<INPUT type="text" name="useradd[position]" value="{$useradd.position}" size="40" {tip text="Enter user position (optional)" trigger="position"}>
@@ -45,7 +45,7 @@
 	</TR>
 	<TR>
 		<TD class="bold">
-			<IMG src="img/mail.gif" alt=""> {trans("E-mail:")}
+			<i class="lms-ui-icon-mail"></i>{trans("E-mail:")}
 		</TD>
 		<TD>
 			<INPUT type="email" name="useradd[email]" value="{$useradd.email}" size="40" {tip text="Enter e-mail address (optional)" trigger="email"}>
@@ -53,7 +53,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/sms.gif" alt=""> {trans("Phone:")}
+            <i class="lms-ui-icon-phone"></i>{trans("Phone:")}
 		</TD>
 		<TD>
 			<INPUT type="tel" name="useradd[phone]" value="{$useradd.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
@@ -61,7 +61,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/options.gif" alt=""> {trans("Notification:")}
+            <i class="lms-ui-icon-notification"></i>{trans("Notification:")}
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="useradd[ntype][]" value="{$smarty.const.MSG_MAIL}" id="ntypemail"{if ($useradd.ntype & $smarty.const.MSG_MAIL)} checked{/if}><label for="ntypemail">{trans("email")}</label>
@@ -79,7 +79,7 @@
 	</tr>
 	<tr>
 		<td class="bold nobr">
-			<img src="img/calendar.gif" alt=""> {trans("Account active:")}
+			<i class="lms-ui-icon-timetable"></i>{trans("Account active:")}
 		</td>
 		<td class="nobr">
 			{trans('from')}:<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
@@ -88,7 +88,7 @@
 	</tr>
 	<TR>
 		<TD class="bold">
-			<IMG src="img/pass.gif" alt=""> {trans("Password:")}
+			<i class="lms-ui-icon-password"></i>{trans("Password:")}
 		</TD>
 		<TD>
 			<INPUT type="password" name="useradd[password]" required {tip text="Enter password" trigger="password"}>
@@ -96,7 +96,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/pass.gif" alt=""> {trans("Repeat password:")}
+            <i class="lms-ui-icon-password"></i>{trans("Repeat password:")}
 		</TD>
 		<TD>
 			<INPUT type="password" name="useradd[confirm]" required {tip text="Confirm password" trigger="password"}>
@@ -112,7 +112,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/passwd.gif" alt=""> {trans("Password expiration:")}
+			<i class="lms-ui-icon-password"></i>{trans("Password expiration:")}
 		</TD>
 		<TD class="nobr">
 			<SELECT name="useradd[passwdexpiration]" {tip text="Select password expiration period" trigger="passwdexpiration"}>
@@ -124,7 +124,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/pass.gif" alt=""> {trans("Access rights:")}
+			<i class="lms-ui-icon-permissions"></i>{trans("Access rights:")}
 		</TD>
 		<TD class="nobr">
 			<table style="width: 100%;">

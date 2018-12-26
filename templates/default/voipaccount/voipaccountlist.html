@@ -22,7 +22,7 @@
                 {/if}
 		/ {trans("Location:")}
                 <br>
-                <img src="img/customer.gif" alt="">
+                <i class="lms-ui-icon-customer"></i>
                 <a href="?m=voipaccountlist&amp;o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</a>
                 {if $listdata.order == "owner"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
@@ -88,7 +88,7 @@
                 <strong>{$voipaccountlist[voipaccountlist].login}</strong>
 		{if $voipaccountlist[voipaccountlist].location} / {$voipaccountlist[voipaccountlist].location}{if $voipaccountlist[voipaccountlist].borough_name} ({$voipaccountlist[voipaccountlist].state_name} / {$voipaccountlist[voipaccountlist].district_name} / {$_BOROUGHTYPES[$voipaccountlist[voipaccountlist].borough_type]} {$voipaccountlist[voipaccountlist].borough_name}){/if}{/if}
 		<br>
-                <img src="img/customer.gif" alt="">&nbsp;
+                <i class="lms-ui-icon-customer"></i>
                 <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">
                     {$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
                 </a>

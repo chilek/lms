@@ -3,7 +3,7 @@
     <THEAD>
 	<TR>
 		<TD COLSPAN="3">
-			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Computers found:")}</B>
+			<i class="lms-ui-icon-node"></i><B>{trans("Computers found:")}</B>
 		</TD>
 	</TR>
     </THEAD>
@@ -12,7 +12,7 @@
 	{section name=n loop=$nodes}
 	<TR class="highlight {cycle}"  >
 		<TD WIDTH="99%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
-			<IMG SRC="img/node.gif" ALT=""> <B>{$nodes[n].name}</B>
+			<i class="lms-ui-icon-node"></i><B>{$nodes[n].name}</B>
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=nodeadd&preip={$nodes[n].ipaddr}&premac={$nodes[n].mac}&prename={$nodes[n].name}{if $customerinfo}&ownerid={$customerinfo.id}{/if}';">
 			{$nodes[n].ipaddr}

@@ -9,7 +9,7 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="96%">
-			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<i class="lms-ui-icon-netdevice"></i><A href="?m=netdevlist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
 			<A href="?m=netdevlist&amp;o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
@@ -91,7 +91,7 @@
 	{foreach $netdevlist as $netdev}
 	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
 		<TD class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""> <a href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"><B>{$netdev.name}</B></A><BR>
+			<i class="lms-ui-icon-netdevice"></i><a href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"><B>{$netdev.name}</B></A><BR>
 			{if $netdev.producer}
 				<IMG src="img/producer.gif" ALT="">
 				{$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
@@ -119,8 +119,8 @@
 			{/if}
 		</TD>
 		<TD class="nobr valign-top">
-			{if $netdev.netnode}<IMG src="img/netnode.png" alt=""><a href="?m=netnodeinfo&amp;id={$netdev.netnodeid}"> {$netdev.netnode}</a>{/if}
-			{if $netdev.customerid}<IMG src="img/customer.png" alt=""><a href="?m=customerinfo&amp;id={$netdev.customerid}"> {$netdev.customerid}</a>{/if}
+			{if $netdev.netnode}<i class="lms-ui-icon-netnode"></i><a href="?m=netnodeinfo&amp;id={$netdev.netnodeid}">{$netdev.netnode}</a>{/if}
+			{if $netdev.customerid}<i class="lms-ui-icon-customer"></i><a href="?m=customerinfo&amp;id={$netdev.customerid}">{$netdev.customerid}</a>{/if}
 		</TD>
 		<TD class="text-right valign-top">
 			({$netdev.id|string_format:"%04d"})

@@ -33,7 +33,7 @@
 	<THEAD>
 	<TR>
 		<TD scope="col" class="nobr">
-			<IMG src="img/time.gif" alt=""> {trans("Creation time:")}
+			<i class="lms-ui-icon-time"></i>{trans("Creation time:")}
 		</TD>
 		<TD scope="col" class="text-right nobr">
 			<IMG src="img/plain.gif" alt=""> {trans("Size:")}
@@ -48,7 +48,7 @@
 	{section name=dblist loop=$dblist.time}
 	<TR class="highlight {cycle}{if $dblist.dbv[dblist] != $layout.dbschversion} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
-			<IMG src="img/time.gif" alt=""> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
+			<i class="lms-ui-icon-time"></i>{$dblist.time[dblist]|date_format:"%x %X (%A)"}
 		</TD>
 		<TD class="text-right nobr" onClick="return self.location.href='?m=dbview&amp;db={$dblist.name[dblist]}&amp;file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}';">
 			{if $dblist.type[dblist]=="gz"}

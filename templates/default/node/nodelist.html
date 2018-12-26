@@ -22,8 +22,8 @@
 	{block name="nodelist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col">
-			<SPAN class="nobr"><img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $filter.direction == "asc" && $filter.order == "name"},desc{/if}">{trans("Name:")}</A>{if $filter.order == "name"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
-			<SPAN class="nobr lighter"><img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $filter.direction == "asc" && $filter.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "owner"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+			<SPAN class="nobr"><i class="lms-ui-icon-node"></i><A href="?m=nodelist&amp;o=name{if $filter.direction == "asc" && $filter.order == "name"},desc{/if}">{trans("Name:")}</A>{if $filter.order == "name"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
+			<SPAN class="nobr lighter"><i class="lms-ui-icon-customer"></i><A href="?m=nodelist&amp;o=owner{if $filter.direction == "asc" && $filter.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "owner"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
 		</td>
 		<td scope="col">
 		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $filter.direction == "asc" && $filter.order == "location"},desc{/if}">{trans("Location:")}</A>{if $filter.order == "location"} <IMG SRC="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
@@ -164,7 +164,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$node.info}>
 			{/if}
 			{$node.name}</A></span><BR>
-			<span class="nobr{if ! $node.access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
+			<span class="nobr{if ! $node.access} blend{/if}"><i class="lms-ui-icon-customer"></i><A href="?m=customerinfo&amp;id={$node.ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$node.ownerid}">{$node.owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
 		</TD>
 		<TD class="nobr">
 		{$node.location}{if $node.borough_name}<br><span class="blend">({$node.state_name} / {$node.district_name} / {$_BOROUGHTYPES[$node.borough_type]} {$node.borough_name})</span>{/if}

@@ -93,14 +93,14 @@
 			<table width="100%">
 
 			    <tr>
-				<td width="1%"><img src="img/netdev.gif" alt=""></td>
+				<td width="1%"><i class="lms-ui-icon-netdevice"></i></td>
 				<td width="99%"><b>{$netdevlist[netdevlist].name}</b></td>
 				<td width="1%"><img src="img/producer.gif" alt=""></td>
 				<td width="99%" class="nobr">{$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model}</td>
 			    </tr>
 			    {if $netdevlist[netdevlist].location}
 			    <tr>
-				<td width="1%"><img src="img/home.gif" alt=""></td>
+				<td width="1%"><i class="lms-ui-icon-location"></i></td>
 				<td width="99%" class="nobr">{$netdevlist[netdevlist].location|truncate:60:"...":true}</td>
 			    </tr>
 			    {/if}

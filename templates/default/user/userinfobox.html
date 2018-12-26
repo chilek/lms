@@ -8,7 +8,7 @@
 	</TR>
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft">
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("First name:")}
@@ -19,7 +19,7 @@
 	</TR>
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft">
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Last name:")}
@@ -31,7 +31,7 @@
 {if $userinfo.position}
 	<TR class="light">
 		<TD style="width: 1%" class="fleft nobr">
-			<IMG src="img/info.gif" alt="">
+			<i class="lms-ui-icon-description"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold">{trans("Position:")}</TD>
 		<TD style="width: 98%;" class="fright">
@@ -42,7 +42,7 @@
 {if $userinfo.email}
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/mail.gif" alt="">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
 		<TD style="width: 1%;" class="bold">{trans("E-mail:")}</TD>
 		<TD style="width: 98%;" class="fright">
@@ -82,7 +82,7 @@
 {if $userinfo.accessfrom || $userinfo.accessto}
 	<tr class="light">
 		<td style="width: 1%;" class="fleft nobr">
-			<img src="img/calendar.gif" alt="">
+			<i class="lms-ui-icon-timetable"></i>
 		</td>
 		<td style="width: 1%;" class="bold">{trans("Account active:")}</td>
 		<td style="width: 98%;" class="fright">
@@ -182,7 +182,7 @@
 			<A href="?m=useredit&amp;id={$userinfo.id}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
 			<A href="?m=userdel&amp;id={$userinfo.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			<A href="?m=userpasswd&amp;id={$userinfo.id}">{trans("Change password")} <IMG src="img/keys.gif" alt=""> </A>
-			<a href="?m=userlist">{trans("User list")} <img src="img/users.gif" alt=""></a>
+			<a href="?m=userlist">{trans("User list")} <i class="lms-ui-icon-user"></i></a>
 		</TD>
 	</TR>
 </TABLE>

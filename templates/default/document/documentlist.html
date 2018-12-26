@@ -48,7 +48,7 @@
 		if (elem.is(':visible'))
 			toggle.html('<img src="img/desc_order.gif">');
 		else
-			toggle.html('<img src="img/asc_order.gif">');
+			toggle.html('<i class="lms-ui-icon-ascending"></i>');
 	}
 
 	function applyFilter() {
@@ -232,7 +232,7 @@
 			{/if}
 			{if count($doc.attachments) > 1}
 			<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-				<img src="img/asc_order.gif">
+				<i class="lms-ui-icon-ascending"></i>
 			</a>
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}" class="lms-ui-multi-check"{if $marks.$docid} checked{/if}>
@@ -270,7 +270,7 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="nobr">
-						<A href="javascript:send_documents();" OnClick="return confirm('{trans("Are you sure, you want to send documents to customers?")}')">{trans("Send documents")} <IMG src="img/mail.gif" alt=""></A>&nbsp;
+						<A href="javascript:send_documents();" OnClick="return confirm('{trans("Are you sure, you want to send documents to customers?")}')">{trans("Send documents")} <i class="lms-ui-icon-mail"></i></A>&nbsp;
 						<A HREF="javascript:print_docs();">{trans("Print")} <IMG SRC="img/print.gif" ALT="{trans("Print")}"></A>&nbsp;
 						<A HREF="javascript:mark_docs();">{trans("Confirm")} <IMG SRC="img/confirm.gif" ALT="{trans("Confirm")}"></A>&nbsp;
 						<A HREF="javascript:delete_docs();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>

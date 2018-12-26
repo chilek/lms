@@ -25,7 +25,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Date:")}
@@ -37,9 +37,9 @@
 	<TR>
 		<TD class="nobr">
 		        {if $message.userid}
-				<IMG src="img/users.gif" alt="">
+				<i class="lms-ui-icon-user"></i>
 			{else}
-				<IMG src="img/customer.gif" alt="">
+				<i class="lms-ui-icon-customer"></i>
 			{/if}
 		</TD>
 		<TD class="nobr bold">
@@ -62,7 +62,7 @@
 	{if $message.headers}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Headers:")}
@@ -75,7 +75,7 @@
 	{if $message.messageid}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
 		<TD class="nobr bold">
 			Message-Id:
@@ -88,7 +88,7 @@
 	{if $message.replyto}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
 		<TD class="nobr bold">
 			Reply-To:
@@ -101,7 +101,7 @@
 	{if $message.inreplyto}
 	<TR>
 		<TD>
-			<IMG src="img/mail.gif" alt="">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
 		<TD class="nobr">
 			In-Reply-To:
@@ -125,7 +125,7 @@
 	{if $message.attachments}
 	<TR>
 		<TD>
-			<IMG src="img/attach.gif" alt="">
+			<i class="lms-ui-icon-attach"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Attachments:")}

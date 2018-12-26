@@ -81,12 +81,12 @@
 		{tab_button_panel}
 			{tab_buttons}
 				<button type="button" class="lms-ui-button lms-ui-button-delete" id="delete-groups">
-					<i></i> {trans("Delete")}
+					<i></i>{trans("Delete")}
 				</button>
 {if !empty($othercustomergroups)}
 				<button type="button" class="lms-ui-button lms-ui-button-add" id="add-groups"
 						{tip text="Add customer to groups"}>
-					<i></i> {trans("Add")}
+					<i></i>{trans("Add")}
 				</button>
 				<SELECT NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"}
 						form="customergroupassignment" multiple>

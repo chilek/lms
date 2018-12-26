@@ -117,11 +117,11 @@
 			<input type="checkbox" class="box {cycle print=false}{cycle}" name="nd{$netdevlist[netdevlist].id}" id="nd{$netdevlist[netdevlist].id}" value="{$netdevlist[netdevlist].id}">
 		</td>
 		<td class="text-left nobr" onclick="document.getElementById('nd{$netdevlist[netdevlist].id}').checked=!document.getElementById('nd{$netdevlist[netdevlist].id}').checked">
-			<img src="img/netdev.gif" alt="">
+			<i class="lms-ui-icon-netdevice"></i>
 			<span class="bold">{$netdevlist[netdevlist].name}</span>
 			{if $netdevlist[netdevlist].location}
 			<br>
-			<img src="img/home.gif" alt="">
+			<i class="lms-ui-icon-location"></i>
 			{$netdevlist[netdevlist].location|truncate:60:"...":true}
 			{/if}
 		</td>

@@ -22,7 +22,7 @@
                         <A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TH>
 		<TH scope="col" class="text-right lighter nobr">
-                        <IMG src="img/account.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=dest{if $listdata.direction == "asc" && $listdata.order == "dest"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order == "dest"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+                        <i class="lms-ui-icon-login"></i><A href="?m={$layout.module}{$suffix}&o=dest{if $listdata.direction == "asc" && $listdata.order == "dest"},desc{/if}">{trans("Destination:")}</A> {if $listdata.order == "dest"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TH>
 		<TH scope="col" class="nobr">
                         {t a=$listdata.total}Total: $a{/t}
@@ -75,7 +75,7 @@
 			({$aliaslist[aliaslist].id|string_format:"%04d"})
 		</TD>
 		<TD onclick="return self.location.href='?m=aliasinfo&id={$aliaslist[aliaslist].id}';">
-			{if $aliaslist[aliaslist].accounts}<IMG src="img/account.gif" alt="">{$aliaslist[aliaslist].accounts|replace:",":"<BR><IMG src=\"img/account.gif\" alt=\"\">"}{/if}<BR>
+			{if $aliaslist[aliaslist].accounts}<i class="lms-ui-icon-login"></i>{$aliaslist[aliaslist].accounts|replace:",":"<BR><IMG src=\"img/account.gif\" alt=\"\">"}{/if}<BR>
 			{if $aliaslist[aliaslist].forwards}<IMG src="img/forward.gif" alt="">{$aliaslist[aliaslist].forwards|replace:",":"<BR><IMG src=\"img/forward.gif\" alt=\"\">"}{/if}
 		</TD>
 		<TD class="text-right">
@@ -105,7 +105,7 @@
     <TFOOT>
 	<TR>
 		<TD colspan="2" class="text-right nobr">
-                        <IMG SRC="img/info2.gif" alt=""> {t a=$listdata.total}Total: $a{/t}
+                        <i class="lms-ui-icon-count"></i>{t a=$listdata.total}Total: $a{/t}
 		</TD>
 		<TD colspan="2" class="text-right nobr">
                         <A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{trans("New Alias")} <IMG src="img/save.gif" alt=""></A>

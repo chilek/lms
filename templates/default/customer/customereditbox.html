@@ -83,7 +83,7 @@
 	{if $divisions}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/division.gif" alt="">
+			<i class="lms-ui-icon-division"></i>
 		</TD>
 		<TD style="width: 99%;" class="nobr">
 			<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
@@ -381,7 +381,7 @@
 						{block name="customereditbox-rightcolumn"}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/info1.gif" alt="">
+			<i class="lms-ui-icon-description"></i>
 		</TD>
 		<TD style="width: 99%;">
 			<TEXTAREA name="customerdata[info]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}>{$customerinfo.info|escape}</TEXTAREA>
@@ -397,7 +397,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/note.gif" alt="">
+			<i class="lms-ui-icon-note"></i>
 		</TD>
 		<TD style="width: 99%;">
 			<TEXTAREA name="customerdata[notes]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}>{$customerinfo.notes|escape}</TEXTAREA>
@@ -405,7 +405,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/money.gif" alt="">
+			<i class="lms-ui-icon-money"></i>
 		</TD>
 		<TD style="width: 99%;">
 			<span class="bold">{trans("Balance:")}</span>
@@ -414,7 +414,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD style="width: 99%;">
 			<span class="bold">{trans("Created:")}</span> {$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>

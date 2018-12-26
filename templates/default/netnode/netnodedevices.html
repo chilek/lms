@@ -7,11 +7,11 @@
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicenodepanel">
 		<TD class="bold nobr">
-			<IMG SRC="img/node.gif" ALT="">{t a=$netdevlist|@count}Assigned net devices ($a):{/t}</td>
+			<i class="lms-ui-icon-node"></i>{t a=$netdevlist|@count}Assigned net devices ($a):{/t}</td>
 		</TD>
 		<td class="text-right nobr">
 			<a href="#" onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')">
-				<IMG SRC="img/netdev.gif" ALT=""> {trans("Add devices to node")}
+				<i class="lms-ui-icon-netdevice"></i>{trans("Add devices to node")}
 			</a>
 		</td>
 	</TR>
@@ -29,7 +29,7 @@
 				<THEAD>
 				<TR class="lms-ui-header-panel">
 					<TD class="nobr">
-						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
+						<i class="lms-ui-icon-node"></i><span class="bold">{trans("Name:")}</span><BR>
 						<img src="img/producer.gif" ALT=""> {trans("Manufacturer:")}/{trans("Model:")}/{trans("Location:")}
 					</TD>
 					<TD class="text-right nobr">
@@ -45,7 +45,7 @@
 				{section name=netdevlist loop=$netdevlist start=$start}
 				<tr class="highlight"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" >
 					<td class="valign-top nobr">
-						<img src="img/netdev.gif" alt=""> <b>{$netdevlist[netdevlist].name}</b><br>
+						<i class="lms-ui-icon-netdevice"></i><b>{$netdevlist[netdevlist].name}</b><br>
 							<img src="img/producer.gif" alt=""> {$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
 					</td>
 					<td>

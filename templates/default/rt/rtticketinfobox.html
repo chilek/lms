@@ -45,36 +45,40 @@
 			<TABLE width="100%" cellpadding="0">
 				<TR>
 					<TD style="width: 50%;">
-						<TABLE>
+						<TABLE class="lmsbox-innerbox">
+							<COLGROUP>
+								<COL style="width:1%">
+								<COL style="width:99%">
+							</COLGROUP>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-subject"></i>{trans("Subject:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-subject"></i>{trans("Subject:")}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD class="nobr">
 									{$ticket.subject|escape|truncate:50:"...":true}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-service"></i>{trans("Service type:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-service"></i>{trans("Service type:")}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD class="nobr">
                                     {$_SERVICETYPES[$ticket.service]}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-type"></i>{trans("Ticket type:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-type"></i>{trans("Ticket type:")}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD class="nobr">
                                     {$_RT_TYPES[$ticket.type].label}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-customer"></i>{trans("Customer:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-customer"></i>{trans("Customer:")}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD class="lms-ui-box-cell nobr">
 									{if $ticket.customerid}
 									<A href="?m=customerinfo&amp;id={$ticket.customerid}">{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})</A>
 									{if $ticket.requestor}<BR>{$ticket.requestor}{/if}
@@ -96,10 +100,10 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-requestor"></i>{trans("Requestor:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-requestor"></i>{trans("Requestor:")}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD class="lms-ui-box-cell nobr">
 									{if $ticket.requestor_userid}
 										<A href="?m=userinfo&id={$ticket.requestor_userid}">{$ticket.requestor_username}</A>
 									{else}
@@ -114,36 +118,36 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("Create time:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-timetable"></i>{trans("Create time:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 								</TD>
 							</TR>
 							{if $ticket.creatorid}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-user"></i>{trans("Created by:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-user"></i>{trans("Created by:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									<A href="?m=userinfo&amp;id={$ticket.creatorid}">{$ticket.creator}</a>
 								</TD>
 							</TR>
 							{/if}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-uptime"></i>{trans("Uptime:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-uptime"></i>{trans("Uptime:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{$ticket.uptime}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="valign-top bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-categories"></i>{trans("Categories:")}
+								<TD class="lms-ui-box-cell valign-top bold nobr">
+									<i class="lms-ui-icon-categories"></i>{trans("Categories:")}
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD class="nobr">
 									{foreach from=$categories item=category}
 									{if $category.checked > 0}
 									<A href="?m=rtcategoryinfo&amp;id={$category.id}">{$category.name}</A><BR>
@@ -155,11 +159,15 @@
 					</TD>
 					<TD style="width: 50%;" class="valign-top">
 						<TABLE>
+							<COLGROUP>
+								<COL style="width:1%">
+								<COL style="width:99%">
+							</COLGROUP>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-owner"></i>{trans("Owner:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-owner"></i>{trans("Owner:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{if $ticket.owner}
 									<A href="?m=userinfo&id={$ticket.owner}">{$ticket.ownername}</A>
 									{else}
@@ -168,10 +176,10 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-verifier"></i>{trans("Verifier:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-verifier"></i>{trans("Verifier:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{if $ticket.verifierid}
 									<A href="?m=userinfo&id={$ticket.verifierid}">{$ticket.verifier_username}</A>
 									{else}
@@ -180,10 +188,10 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{trans("<!rt>Deadline:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-timetable"></i>{trans("<!rt>Deadline:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{if $ticket.deadline}
 										{$ticket.deadline|date_format:"%Y/%m/%d %H:%M:%S"}
 									{else}
@@ -192,26 +200,26 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-queue"></i>{trans("Queue:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-queue"></i>{trans("Queue:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									<A href="?m=rtqueueview&amp;id={$ticket.queueid}">{$ticket.queuename}</A>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-status"></i>{trans("Status:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-status"></i>{trans("Status:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{$_RT_STATES[$ticket.state].label}
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-cause"></i>{trans("Cause:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-cause"></i>{trans("Cause:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{if $ticket.cause==2}{trans("company's side")}
 									{elseif $ticket.cause==1}{trans("customer's side")}
 									{else}{trans("unknown/other")}{/if}
@@ -219,41 +227,41 @@
 							</TR>
 							{if $ticket.deleted == 1 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-user"></i>{trans("Remover:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-user"></i>{trans("Remover:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									<A href="?m=userinfo&id={$ticket.deluserid}">{$ticket.delusername|escape}</A>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-remove"></i>{trans("Remove date:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-remove"></i>{trans("Remove date:")}
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{$ticket.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
 								</TD>
 							</TR>
 							{/if}
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-source"></i>{trans("Ticket source:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-source"></i>{trans("Ticket source:")}
 								</TD>
 								<TD>
 									{$_RT_SOURCES[$ticket.source]}
 								</TD>
 							</TR>
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-priority"></i>{trans("Priority:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-priority"></i>{trans("Priority:")}
 								</TD>
 								<TD>
 									<span style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$_RT_PRIORITIES[$ticket.priority]}</span>
 								</TD>
 							{if $ticket.address_id}
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-location"></i>{trans("Location:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-location"></i>{trans("Location:")}
 								</TD>
 								<TD>
 									{$ticket.location}
@@ -262,8 +270,8 @@
 							{/if}
 							{if $ticket.nodeid}
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-node"></i>{trans("Node:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-node"></i>{trans("Node:")}
 								</TD>
 								<TD>
 									<a href="?m=nodeinfo&id={$ticket.nodeid}">
@@ -274,8 +282,8 @@
 							{/if}
 							{if $ticket.netnodeid}
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-netnode"></i>{trans("Network Device Node:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-netnode"></i>{trans("Network Device Node:")}
 								</TD>
 								<TD>
 									<A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name}</A>
@@ -284,8 +292,8 @@
 							{/if}
 							{if $ticket.netdevid}
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-netdev"></i>{trans("Device:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-netdev"></i>{trans("Device:")}
 								</TD>
 								<TD>
 									<A href="?m=netdevinfo&id={$ticket.netdevid}">{$ticket.netdev_name}</A>
@@ -294,8 +302,8 @@
 							{/if}
 							{if $ticket.invprojectid}
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-money"></i>{trans("Investment project:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-money"></i>{trans("Investment project:")}
 								</TD>
 								<TD>
 									{$ticket.invproject_name}</A>
@@ -304,8 +312,8 @@
 							{/if}
 							{if $ticket.parentid}
 							<TR>
-								<TD class="bold">
-									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Parent ticket:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-reload"></i>{trans("Parent ticket:")}
 								</TD>
 								<TD>
 									<A href="?m=rtticketview&amp;id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A>
@@ -314,8 +322,8 @@
 							{/if}
 							{if $ticket.relatedtickets}
 							<TR>
-								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Related tickets:")}
+								<TD class="lms-ui-box-cell bold nobr">
+									<i class="lms-ui-icon-reload"></i>{trans("Related tickets:")}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
@@ -347,14 +355,14 @@
 			<A id="print-anchor" href="?m=rtticketprint&id={$ticket.ticketid}"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
 			<br>
 			{if $ticket.owner != $layout.logid}
-			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=assign"><IMG src="img/users.gif" alt=""> {trans("Assign to me")}</A>
+			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=assign"><i class="lms-ui-icon-user"></i>{trans("Assign to me")}</A>
 			{/if}
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
 				{if (ConfigHelper::checkConfig('phpui.helpdesk_block_ticket_close_with_open_events')) && !empty($ticket['openeventcount'])}
 				<span class="blend"><i class="lms-ui-icon-status-resolved"></i>{trans("Ticket have open assigned events!")}</A></span>
 				{else}
 					{if empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser() && $ticket['verifierid']}
-					<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=verify"><i class="lms-ui-icon-verifier"></i> {trans("Transfer ticket to verifier")}</A>
+					<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;action=verify"><i class="lms-ui-icon-verifier"></i>{trans("Transfer ticket to verifier")}</A>
 					{else}
 						{if !empty($ticket['verifier_rtime']) && $ticket['verifierid'] != Auth::GetCurrentUser()}
 						<i class="lms-ui-icon-verifier"></i><span style="color: {$_RT_STATES[$smarty.const.RT_VERIFIED].color}"> {trans("Ticket has been transferred to verifier")}</span>
@@ -381,14 +389,14 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="dark bold nobr">
-			<i class="lms-ui-icon-helpdesk"></i> {trans("Requests causes (last year):")}
+			<i class="lms-ui-icon-helpdesk"></i>{trans("Requests causes (last year):")}
 		</TD>
 		<TD style="width: 99%;" class="dark">
 			{trans("company's side")}: <span class="bold">{$stats.2.num|default:0}</span>,
 			{trans("customer's side")}: <span class="bold">{$stats.1.num|default:0}</span>,
 			{trans("unknown/other<!plural>")}: <span class="bold">{$stats.0.num|default:0}</span>,
 			{trans("all")}: <span class="bold">{$stats.0.num+$stats.1.num+$stats.2.num}</span>,
-			<A HREF="?m=rtsearch&amp;id={$customerinfo.id}"><i class="lms-ui-icon-subject"></i> {trans("Show tickets")}</A>
+			<A HREF="?m=rtsearch&amp;id={$customerinfo.id}"><i class="lms-ui-icon-subject"></i>{trans("Show tickets")}</A>
 		</TD>
 	</TR>
 	</TBODY>
@@ -400,13 +408,13 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="dark bold nobr">
-			<i class="lms-ui-icon-customer"></i> {trans("Customer:")}
+			<i class="lms-ui-icon-customer"></i>{trans("Customer:")}
 		</TD>
 		<TD style="width: 1%;" class="dark nobr">
 			<span class="bold"><A href="?m=customerinfo&amp;id={$ticket.customerid}">{$customerinfo.customername}</A></span>
-			<i class="lms-ui-icon-next"></i> {$customerinfo.address} &nbsp; {$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.phone}<i class="lms-ui-icon-next"></i> {$customerinfo.phone}{/if}
-			<i class="lms-ui-icon-next"></i> {if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
+			<i class="lms-ui-icon-next"></i>{$customerinfo.address} &nbsp; {$customerinfo.zip} {$customerinfo.city}
+			{if $customerinfo.phone}<i class="lms-ui-icon-next"></i>{$customerinfo.phone}{/if}
+			<i class="lms-ui-icon-next"></i>{if $customerinfo.balance < 0}<span class="red">{/if}{$customerinfo.balance|money_format}{if $customerinfo.balance < 0}</span>{/if}
 		</TD>
 		<TD style="width: 98%;" class="dark text-right red bold">
 			{if $customerinfo.groups}

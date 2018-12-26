@@ -16,22 +16,22 @@
     <THEAD>
         <TR>
                 <TH scope="col">
-			<SPAN class="nobr"><IMG src="img/users.gif" alt=""> {trans("Login:")}</SPAN>
+			<SPAN class="nobr"><i class="lms-ui-icon-login"></i>{trans("Login:")}</SPAN>
 		</TH>
 		<TH scope="col">
-			<SPAN class="nobr"><IMG src="img/info2.gif" alt=""> {trans("First/last name")}</SPAN>
+			<SPAN class="nobr"><i class="lms-ui-icon-user"></i>{trans("First/last name")}</SPAN>
 		</TH>
 		<TH scope="col">
-			<SPAN class="nobr"><IMG src="img/phone.gif" alt=""> {trans("Phone")}</SPAN>
+			<SPAN class="nobr"><i class="lms-ui-icon-phone"></i>{trans("Phone")}</SPAN>
 		</TH>
 		<TH scope="col">
-                        <SPAN class="nobr"><img src="img/calendar.gif" alt=""> {trans("Active from:")}</SPAN>
+                        <SPAN class="nobr"><i class="lms-ui-icon-timetable"></i>{trans("Active from:")}</SPAN>
 		</TH>
 		<TH scope="col">
-                        <SPAN class="nobr"><img src="img/calendar.gif" alt=""> {trans("Active to:")}</SPAN>
+                        <SPAN class="nobr"><i class="lms-ui-icon-timetable"></i>{trans("Active to:")}</SPAN>
 		</TH>
 		<TH scope="col">
-                        <SPAN class="nobr"><IMG src="img/time.gif" alt=""> {trans("Last login:")}</SPAN>
+                        <SPAN class="nobr"><i class="lms-ui-icon-time"></i>{trans("Last login:")}</SPAN>
 		</TH>
 		<TH scope="col">
 			<SPAN class="nobr">{trans("Total:")} {$userslist.total}</SPAN>
@@ -44,22 +44,22 @@
 	{if $user.id}
 	<TR class="highlight{if !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}">
 		<TD class="nobr">
-			<IMG src="img/users.gif" alt=""> {$user.login}
+			<i class="lms-ui-icon-login"></i>{$user.login}
 		</TD>
 		<TD class="nobr">
-			<IMG src="img/info2.gif" alt=""> {$user.name}
+			<i class="lms-ui-icon-user"></i>{$user.name}
 		</TD>
 		<TD class="nobr">
-			<IMG src="img/phone.gif" alt=""> {if $user.phone}{$user.phone}{else} - {/if}
+			<i class="lms-ui-icon-phone"></i>{if $user.phone}{$user.phone}{else} - {/if}
 		</TD>
 		<td class="nobr">
-			<img src="img/calendar.gif" alt=""> {$user.accessfrom}
+			<i class="lms-ui-icon-timetable"></i>{$user.accessfrom}
 		</td>
 		<td class="nobr">
-			<img src="img/calendar.gif" alt=""> {$user.accessto}
+			<i class="lms-ui-icon-timetable"></i>{$user.accessto}
 		</td>
 		<TD class="nobr">
-			<IMG src="img/time.gif" alt=""> {$user.lastlogin}
+			<i class="lms-ui-icon-time"></i>{$user.lastlogin}
 			{$user.lastloginip} {if $user.lastloginip != $user.lastloginhost}({$user.lastloginhost}){/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">

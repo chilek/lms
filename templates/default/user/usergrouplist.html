@@ -16,7 +16,7 @@
 	    <tr>
 		<td scope="col" class="nobr">
 		    <img src="img/group.gif" alt=""> {trans("Name:")}<br>
-		    <span class="lighter"><img src="img/info1.gif" alt=""> {trans("Description:")}</span>
+		    <span class="lighter"><i class="lms-ui-icon-description"></i>{trans("Description:")}</span>
 		</td>
 		<td scope="col" class="text-right lighter">{trans("ID:")}</td>
 		<td scope="col" class="text-right lighter">{trans("Members:")}</td>
@@ -25,7 +25,7 @@
 	</thead>
 	<tfoot>
 	    <tr>
-		<td colspan="2" class="text-right bold nobr"><img src="img/info2.gif" alt=""> {trans("Total:")}</td>
+		<td colspan="2" class="text-right bold nobr"><i class="lms-ui-icon-count"></i>{trans("Total:")}</td>
 		<td class="text-right bold">{$listdata.totalcount|default:"0"}</td>
 		<td>&nbsp;</td>
 	    </tr>
@@ -35,7 +35,7 @@
 		<tr class="highlight" data-target-url="?m=usergroupinfo&id={$usergroup.id}">
 		    <td>
 				<img src="img/group.gif" alt="">&nbsp;<span class="bold">{$usergroup.name}</span><br>
-				{if $usergroup.description}<img src="img/info1.gif" alt="">&nbsp;{$usergroup.description}{/if}
+				{if $usergroup.description}<i class="lms-ui-icon-description"></i>{$usergroup.description}{/if}
 		    </td>
 		    <td class="text-right">
 				({$usergroup.id|string_format:"%04d"})

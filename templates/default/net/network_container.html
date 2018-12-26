@@ -36,11 +36,11 @@
                 {if isset($used_ips[$i])}
                     {if $used_ips[$i]['netdev_name']}
                         <a href="?m=netdevinfo&id={$used_ips[$i]['id']}" class="blend">
-                            <img src="img/netdev.gif" alt=""> {$used_ips[$i]['netdev_name']}
+                            <i class="lms-ui-icon-netdevice"></i>{$used_ips[$i]['netdev_name']}
                         </a>
                     {else}
                         <a href="?m=nodeinfo&id={$used_ips[$i]['id']}" class="blend">
-                            <img src="img/node.gif" alt=""> {$used_ips[$i]['name']}
+                            <i class="lms-ui-icon-node"></i>{$used_ips[$i]['name']}
                         </a>
                     {/if}
                 {else}

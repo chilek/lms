@@ -3,7 +3,7 @@
     <THEAD>
 	<TR{if $devicepanel} class="hand" onClick="showOrHide('devicepanel');"{/if}>
 		<TD WIDTH="1%">
-			<IMG SRC="img/netnode.png" ALT="">
+			<i class="lms-ui-icon-netnode"></i>
 		</TD>
 		<TD WIDTH="99%" class="nobr bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</TD>
 	</TR>
@@ -18,7 +18,7 @@
        	{if $nodeinfo.division}
         <TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/division.gif" ALT="">
+			<i class="lms-ui-icon-division"></i>
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("Division:")}</TD>
 		<TD WIDTH="98%">
@@ -58,7 +58,7 @@
 	{if $nodeinfo.location}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("Location:")}</TD>
 		<TD WIDTH="98%">
@@ -70,7 +70,7 @@
 	{if $nodeinfo.longitude || $nodeinfo.latitude}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">{trans("GPS longitude:")}</TD>
 		<TD WIDTH="98%">
@@ -80,7 +80,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD WIDTH="1%" class="nobr bold">
 			{trans("GPS latitude:")}
@@ -110,7 +110,7 @@
 	{if $nodeinfo.ownerid != null}
 	<tr>
 		<td>
-			<img src="img/customer.gif" alt="">
+			<i class="lms-ui-icon-customer"></i>
 		</td>
 		<td class="bold">
 			{trans("Owner:")}
@@ -138,25 +138,25 @@
 	</TR>
 	{if $nodeinfo.info}
 	<TR>
-		<TD WIDTH="1%"><IMG SRC="img/note.gif" ALT=""></TD>
+		<TD WIDTH="1%"><i class="lms-ui-icon-note"></i></TD>
 		<TD width="1%" class="bold">{trans('Note')}</TD>
 		<TD width="98%">{$nodeinfo.info}</TD>
 	</TR>
 	{/if}
         <TR>
-                <TD WIDTH="1%"><IMG SRC="img/users.gif" ALT=""></TD>
+                <TD WIDTH="1%"><i class="lms-ui-icon-user"></i></TD>
                 <TD width="1%" class="bold">{trans('Created:')}</TD>
                 <TD width="98%">{$nodeinfo.createtime|date_format:"%Y/%m/%d (%A)"}</TD>
         </TR>
         <TR>
-                <TD WIDTH="1%"><IMG SRC="img/calendar.gif" ALT=""></TD>
+                <TD WIDTH="1%"><i class="lms-ui-icon-timetable"></i></TD>
                 <TD width="1%" class="bold">{trans('Last inspection:')}</TD>
                 <TD width="98%">
 					{if $nodeinfo.lastinspectiontime}{$nodeinfo.lastinspectiontime|date_format:"%Y/%m/%d (%A)"}{else}-{/if}
 				</TD>
         </TR>
         <TR>
-                <TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>
+                <TD WIDTH="1%"><i class="lms-ui-icon-phone"></i></TD>
                 <TD width="1%" class="bold">{trans('Administrative contact:')}</TD>
                 <TD width="98%">{$nodeinfo.admcontact}</TD>
         </TR>

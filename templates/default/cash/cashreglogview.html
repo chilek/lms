@@ -7,7 +7,7 @@
     <THEAD>
 	<TR>
 		<TD width="1%" NOWRAP>
-			<IMG src="img/time.gif" alt=""><A href="?m=cashreglogview&o=time{if $listdata.direction == "asc" && $listdata.order == "time"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "time"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<i class="lms-ui-icon-time"></i><A href="?m=cashreglogview&o=time{if $listdata.direction == "asc" && $listdata.order == "time"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "time"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" align="right" NOWRAP>
 			<A href="?m=cashreglogview&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Real state:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -38,7 +38,7 @@
 	{section name=cashreglog loop=$cashreglog start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if ($cashreglog[cashreglog].validfrom !=0 && $cashreglog[cashreglog].validfrom > $smarty.now) || ($cashreglog[cashreglog].validto !=0 && $cashreglog[cashreglog].validto < $smarty.now)} blend{/if}"  >
 		<TD NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
-			<IMG src="img/time.gif" alt=""> {$cashreglog[cashreglog].time|date_format:"%x %H:%M"}
+			<i class="lms-ui-icon-time"></i>{$cashreglog[cashreglog].time|date_format:"%x %H:%M"}
 		</TD>
 		<TD align="right" NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
 			{$cashreglog[cashreglog].value|money_format}

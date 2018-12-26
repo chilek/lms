@@ -120,7 +120,7 @@
 			{/if}
 		</TD>
 		<TD class="bold nobr">
-			<img src="img/node.gif" alt=""> {trans("Domain:")}
+			<i class="lms-ui-icon-node"></i>{trans("Domain:")}
 		</TD>
 		<TD>
 			{if $unlockedit}
@@ -133,7 +133,7 @@
 	{if $network.ownerid || $unlockedit}
 	<tr>
 		<TD class="bold nobr">
-			<img src="img/customer.gif" alt=""> {trans("Customer:")}
+			<i class="lms-ui-icon-customer"></i>{trans("Customer:")}
 		</td>
 		<TD colspan="3">
 			{if $unlockedit}
@@ -169,7 +169,7 @@
 	{if $network.hostid || $unlockedit}
 	<tr> 
 		<TD class="bold nobr">
-			<img src="img/host.gif" alt=""> {trans("Host:")}
+			<i class="lms-ui-icon-hosting"></i>{trans("Host:")}
 		</td>
 		<TD colspan="3">
 			{if $unlockedit}
@@ -187,7 +187,7 @@
 	{/if}
 	<TR>
 		<TD class="bold nobr">
-			<img src="img/node.gif" alt=""> {trans("SNAT IP:")}
+			<i class="lms-ui-icon-node"></i>{trans("SNAT IP:")}
 		</TD>
 		<TD colspan="3">
 			{if $unlockedit}
@@ -200,7 +200,7 @@
 	{if $network.authtype || $unlockedit}
 	<TR>
 		<TD class="bold nobr">
-			<IMG SRC="img/netdev.gif" ALT=""> {trans("Type:")}
+			<i class="lms-ui-icon-netdevice"></i>{trans("Type:")}
 		</TD>
 		<TD colspan="3" class="nobr">
 			{$first = true}
@@ -229,7 +229,7 @@
 				<TBODY>
 				<TR>
 					<TD class="nobr">
-						<IMG src="img/info1.gif" alt="">
+						<i class="lms-ui-icon-description"></i>
 					</TD>
 					<TD>
 						{if $unlockedit}

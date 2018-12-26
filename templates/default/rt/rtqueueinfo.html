@@ -4,39 +4,32 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="1%;">
-		<COL style="1%;">
-		<COL style="98%;">
-	</COLGROUP>
     <THEAD>
 	<TR>
-	    <TD>
-		<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+	    <TD width="1%">
+		<i class="lms-ui-icon-queue"></i>
 	    </TD>
-	    <TD class="bold" colspan="2">{$queue.name} ({$queue.id|string_format:"%04d"})</TD>
+	    <TD width="99%" colspan="2"><B>{$queue.name} ({$queue.id|string_format:"%04d"})</B></TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{if $queue.email}
 	<TR>
-	    <TD>
-		<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+	    <TD width="1%">
+		<i class="lms-ui-icon-mail"></i>
 	    </TD>
-	    <TD class="bold">{trans("E-mail:")}</TD>
-	    <TD>{$queue.email}</TD>
+	    <TD width="1%"><B>{trans("E-mail:")}</B></TD>
+	    <TD width="98%">{$queue.email}</TD>
 	</TR>
 	{/if}
 	{if $queue.description}
 	<TR>
-	    <TD>
-			<i class="lms-ui-icon-content lms-ui-icon-description"></i>
+	    <TD width="1%">
+		<i class="lms-ui-icon-description"></i>
 	    </TD>
-	    <TD class="bold">
-			{trans("Description:")}
-		</TD>
-	    <TD>
-		<TABLE cellpadding="5">
+	    <TD width="1%"><B>{trans("Description:")}</B></TD>
+	    <TD width="98%">
+		<TABLE width="100%" cellpadding="5">
 		    <TR>
 			<TD class="fall superlight">
 			    {$queue.description|replace:"\n":"<BR>"}
@@ -47,11 +40,11 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-verifier"></i>
+		<TD width="1%">
+			<i class="lms-ui-icon-verifier"></i>
 		</TD>
-		<TD class="bold">{trans("<!rt>Verifier:")}</TD>
-		<TD>
+		<TD width="1%"><B>{trans("<!rt>Verifier:")}</B></TD>
+		<TD width="98%">
 		{if $queue.verifierid}
 			<a href="?m=userinfo&id={$queue.verifier.id}">{$queue.verifier.name}</a>
 		{else}
@@ -60,11 +53,11 @@
 		</TD>
 	</TR>
 	<TR>
-	    <TD>
-			<i class="lms-ui-icon-content lms-ui-icon-user"></i>
+	    <TD width="1%">
+		<i class="lms-ui-icon-user"></i>
 	    </TD>
-	    <TD class="bold">{trans("Privileges:")}</TD>
-	    <TD>
+	    <TD width="1%"><B>{trans("Privileges:")}</B></TD>
+	    <TD width="98%">
 		    <TABLE class="lmsbox">
 				<COLGROUP>
 					<COL style="width: {100-count($_RT_RIGHTS)}%;">
@@ -104,7 +97,7 @@
 	{if !empty($queue.categories)}
 	<TR>
 		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-queue"></i>
+			<i class="lms-ui-icon-queue"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Default categories:")}
@@ -118,22 +111,22 @@
 	{/if}
 	{if $queue.newticketsubject}
 	<TR>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+		<TD style="width: 1%;">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
-		<TD class="bold nobr">{trans("New ticket customer notification subject:")}</TD>
-		<TD>
+		<TD style="width: 1%;" class="bold nobr">{trans("New ticket customer notification subject:")}</TD>
+		<TD style="width: 98%;">
 			{$queue.newticketsubject|replace:"\n":"<BR>"}
 		</TD>
 	</TR>
 	{/if}
 	{if $queue.newticketbody}
 	<TR>
-		<TD>
+		<TD style="width: 1%;">
 			<IMG src="img/edit.gif" ALT="">
 		</TD>
-		<TD class="bold nobr">{trans("New ticket customer notification body:")}</TD>
-		<TD>
+		<TD style="width: 1%;" class="bold nobr">{trans("New ticket customer notification body:")}</TD>
+		<TD style="width: 98%;">
 			<TABLE width="100%" cellpadding="5">
 				<TR>
 					<TD class="fall superlight">
@@ -146,23 +139,23 @@
 	{/if}
 	{if $queue.newmessagesubject}
 	<TR>
-		<TD>
-			<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+		<TD style="width: 1%;">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
-		<TD class="bold nobr">{trans("New message customer notification subject:")}</TD>
-		<TD>
+		<TD style="width: 1%;" class="bold nobr">{trans("New message customer notification subject:")}</TD>
+		<TD style="width: 98%;">
 			{$queue.newmessagesubject|replace:"\n":"<BR>"}
 		</TD>
 	</TR>
 	{/if}
 	{if $queue.newmessagebody}
 	<TR>
-		<TD>
+		<TD style="width: 1%;">
 			<IMG src="img/edit.gif" ALT="">
 		</TD>
-		<TD class="bold nobr">{trans("New message customer notification body:")}</TD>
-		<TD>
-			<TABLE cellpadding="5">
+		<TD style="width: 1%;" class="bold nobr">{trans("New message customer notification body:")}</TD>
+		<TD style="width: 98%;">
+			<TABLE width="100%" cellpadding="5">
 				<TR>
 					<TD class="fall superlight">
 						{$queue.newmessagebody|replace:"\n":"<BR>"}
@@ -175,22 +168,22 @@
 	{if $queue.resolveticketsubject}
 	<TR>
 		<TD style="width: 1%;">
-			<i class="lms-ui-icon-content lms-ui-icon-mail"></i>
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
-		<TD class="bold nobr">{trans("Resolve ticket customer notification subject:")}</TD>
-		<TD>
+		<TD style="width: 1%;" class="bold nobr">{trans("Resolve ticket customer notification subject:")}</TD>
+		<TD style="width: 98%;">
 			{$queue.resolveticketsubject|replace:"\n":"<BR>"}
 		</TD>
 	</TR>
 	{/if}
 	{if $queue.resolveticketbody}
 	<TR>
-		<TD>
+		<TD style="width: 1%;">
 			<IMG src="img/edit.gif" ALT="">
 		</TD>
-		<TD class="bold nobr">{trans("Resolve ticket customer notification body:")}</TD>
-		<TD>
-			<TABLE cellpadding="5">
+		<TD style="width: 1%;" class="bold nobr">{trans("Resolve ticket customer notification body:")}</TD>
+		<TD style="width: 98%;">
+			<TABLE width="100%" cellpadding="5">
 				<TR>
 					<TD class="fall superlight">
 						{$queue.resolveticketbody|replace:"\n":"<BR>"}
@@ -200,42 +193,8 @@
 		</TD>
 	</TR>
 	{/if}
-	{if $queue.verifierticketsubject}
 	<TR>
-		<TD>
-			<IMG src="img/edit.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">{trans("Ticket verifier notification subject:")}</TD>
-		<TD>
-			<TABLE cellpadding="5">
-				<TR>
-					<TD class="fall superlight">
-						{$queue.verifierticketsubject|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	{/if}
-	{if $queue.verifierticketbody}
-	<TR>
-		<TD>
-			<IMG src="img/edit.gif" ALT="">
-		</TD>
-		<TD class="bold nobr">{trans("Ticket verifier notification body:")}</TD>
-		<TD>
-			<TABLE cellpadding="5">
-				<TR>
-					<TD class="fall superlight">
-						{$queue.verifierticketbody|replace:"\n":"<BR>"}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	{/if}
-	<TR>
-	    <TD COLSPAN="3" style="text-right">
+	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
 	        <A HREF="?m=rtqueueview&id={$queue.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
 	    	<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
 		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}

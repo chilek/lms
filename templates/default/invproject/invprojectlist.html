@@ -8,7 +8,7 @@
 	<TR>
 		<TD WIDTH="1%" nowrap>{trans("ID:")}</TD>
 		{if $divisions}
-		<TD WIDTH="1%" nowrap><img src="img/division.gif" alt=""></TD>
+		<TD WIDTH="1%" nowrap><i class="lms-ui-icon-division"></i></TD>
 		<TD WIDTH="1%" nowrap><B>{trans("Division:")}</B></TD>
 		{/if}
 		<TD WIDTH="94%" nowrap><B>{trans("Name:")}</B></TD>
@@ -32,7 +32,7 @@
 			({$invproject.id|string_format:"%04d"})
 		</TD>
 		{if $divisions}
-		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap><img src="img/division.gif" alt=""></TD>
+		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap><i class="lms-ui-icon-division"></i></TD>
 		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
 			{foreach from=$divisions item=division}
 			{if $division.id==$invproject.divisionid}<B>{$division.shortname}</B>{/if}

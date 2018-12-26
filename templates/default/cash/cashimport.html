@@ -59,7 +59,7 @@
 	{foreach from=$divisions item=division}{if $division.list}
 	<TR class="dark">
 		<TD colspan="4" class="bold">
-			<IMG src="img/division.gif" alt=""> {$division.name}
+			<i class="lms-ui-icon-division"></i>{$division.name}
 		</TD>
 		<TD colspan="3" class="text-right">
 			<A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
@@ -186,7 +186,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/attach.gif" alt="">
+			<i class="lms-ui-icon-attach"></i>
 			{trans("Import file:")}
 		</TD>
 		<TD class="nobr">
@@ -222,7 +222,7 @@
     <THEAD>
 	<TR>
 		<TD class="bold">
-			<IMG src="img/attach.gif" alt="">
+			<i class="lms-ui-icon-attach"></i>
 			{trans("Packages:")}
 		</TD>
 	</TR>

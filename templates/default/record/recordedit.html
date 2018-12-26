@@ -35,7 +35,7 @@
     <TBODY>
 	<TR>
                 <TD width="1%">
-	                <IMG src="img/time.gif" alt="">
+	                <i class="lms-ui-icon-time"></i>
 	        </TD>
 	        <TD width="1%" nowrap>
 		        {trans("TTL")}:
@@ -90,7 +90,7 @@
 		<TD width="98%"><input type="text" value="{$record.host|escape}" name="record[host]" size="30" {tip text="Enter host name" trigger="host"}> .{$record.domainname}.</TD>
 	</TR>
 	<TR id="desc" style="display: none">
-                <TD width="1%"><IMG src="img/info.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-description"></i></TD>
 	        <TD width="1%" nowrap>{trans("Description:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.desc|escape}" name="record[desc]" size="60" {tip text="Enter description" trigger="desc"}></TD>
 	</TR>
@@ -100,7 +100,7 @@
 		<TD width="98%"><input type="text" size="5" value="{$record.prio|escape}" name="record[prio]" {tip text="Enter record priority" trigger="prio"}></TD>
 	</TD>
 	<TR id="email" style="display: none">
-                <TD width="1%"><IMG src="img/mail.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-mail"></i></TD>
 	        <TD width="1%" nowrap>{trans("E-mail address:")}</TD>
 		<TD width="98%"><input type="email" value="{$record.email|escape}" name="record[email]" size="40" {tip text="Enter e-mail address" trigger="email"}></TD>
 	</TD>
@@ -110,22 +110,22 @@
 		<TD width="98%"><input type="text" value="{$record.serial|escape}" name="record[serial]" size="10" {tip text="Enter zone serial number" trigger="serial"}></TD>
 	</TD>
 	<TR id="refresh" style="display: none">
-                <TD width="1%"><IMG src="img/time.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-time"></i></TD>
 	        <TD width="1%" nowrap>{trans("Refresh interval:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.refresh|escape}" name="record[refresh]" size="10" {tip text="Enter zone refresh interval" trigger="refresh"}></TD>
 	</TD>
 	<TR id="retry" style="display: none">
-                <TD width="1%"><IMG src="img/time.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-time"></i></TD>
 	        <TD width="1%" nowrap>{trans("Retry interval:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.retry|escape}" name="record[retry]" size="10" {tip text="Enter zone retry interval" trigger="retry"}></TD>
 	</TD>
 	<TR id="expiry" style="display: none">
-                <TD width="1%"><IMG src="img/time.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-time"></i></TD>
 	        <TD width="1%" nowrap>{trans("Expire time:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.expire|escape}" name="record[expire]" size="10" {tip text="Enter zone expiration time" trigger="expire"}></TD>
 	</TD>
 	<TR id="minttl" style="display: none">
-                <TD width="1%"><IMG src="img/time.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-time"></i></TD>
 	        <TD width="1%" nowrap>{trans("Default TTL:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.minttl|escape}" name="record[minttl]" size="10" {tip text="Enter default TTL value" trigger="minttl"}></TD>
 	</TD>
@@ -154,17 +154,17 @@
 		<TD width="98%"><input type="text" value="{$record.fingerprint|escape}" name="record[fingerprint]" size="80" {tip text="Enter public key fingerprint" trigger="fingerprint"}></TD>
 	</TR>
 	<TR id="content" style="display: none">
-                <TD width="1%"><IMG src="img/info.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-description"></i></TD>
 	        <TD width="1%" nowrap>{trans("Content:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.content|escape}" name="record[content]" size="80" {tip text="Enter record contents" trigger="content"}></TD>
 	</TR>
 	<TR id="cpu" style="display: none">
-                <TD width="1%"><IMG src="img/node.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-node"></i></TD>
 	        <TD width="1%" nowrap>{trans("CPU Type:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.cpu|escape}" name="record[cpu]" size="40" {tip text="Enter CPU type" trigger="cpu"}></TD>
 	</TR>
 	<TR id="os" style="display: none">
-                <TD width="1%"><IMG src="img/node.gif" alt=""></TD>
+                <TD width="1%"><i class="lms-ui-icon-node"></i></TD>
 	        <TD width="1%" nowrap>{trans("Operating System Type:")}</TD>
 		<TD width="98%"><input type="text" value="{$record.os|escape}" name="record[os]" size="40" {tip text="Enter operating system type" trigger="os"}></TD>
 	</TR>

@@ -20,7 +20,7 @@
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
                 <br>
-                <img src="img/customer.gif" alt=""> 
+                <i class="lms-ui-icon-customer"></i>
                 <a href="?m=voipaccountsearch&search&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Owner:")}</a> 
                 {if $listdata.order == "owner"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
@@ -58,7 +58,7 @@
                 <a class="bold" name="{$voipaccountlist[voipaccountlist].id}">
                     <img src="img/voip.gif" alt=""> {$voipaccountlist[voipaccountlist].login}
                 </a><br>
-                <img src="img/customer.gif" alt="">&nbsp;<a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">{$voipaccountlist[voipaccountlist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</a>
+                <i class="lms-ui-icon-customer"></i><a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">{$voipaccountlist[voipaccountlist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</a>
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';">
                 ({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})

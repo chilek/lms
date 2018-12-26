@@ -15,7 +15,7 @@
     <THEAD>
 	<TR>
 		<TH scope="col" class="nobr">
-                        <IMG src="img/queue.gif" ALT=""> {trans("Name:")}
+                        <i class="lms-ui-icon-queue"></i>{trans("Name:")}
 		</TH>
 		<TH scope="col" class="nobr lighter">
                         {trans("ID:")}
@@ -41,7 +41,7 @@
 	{foreach $reglist as $reg}
 	<TR class="highlight {if $reg.disabled} blend{/if}" data-target-url="?m=receiptlist&regid={$reg.id}">
 		<TD class="nobr bold">
-			<IMG src="img/queue.gif" ALT=""> {$reg.name}
+			<i class="lms-ui-icon-queue"></i>{$reg.name}
 		</TD>
 		<TD class="text-right">
 			({$reg.id|string_format:"%04d"})
@@ -79,7 +79,7 @@
 	<TR>
 		<TD COLSPAN="2" class="text-right bold nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			<IMG src="img/info2.gif" ALT=""> {trans("Total:")}
+			<i class="lms-ui-icon-count"></i>{trans("Total:")}
 			{/if}
 		</TD>
 		<TD class="text-right bold nobr">

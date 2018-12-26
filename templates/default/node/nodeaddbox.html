@@ -169,7 +169,7 @@
 	</TR>
 	<tr>
 		<td style="width: 1%;">
-			<img src="img/customer.gif" alt="{trans("Customer:")}">
+			<i class="lms-ui-icon-customer" {tip text=trans("Customer:")}></i>
 		</td>
 		<td style="width: 99%;" class="nobr">
 			{customerlist
@@ -207,7 +207,7 @@
 		</TD>
 		<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/netdev.gif" ALT="">
+			<i class="lms-ui-icon-netdevice"></i>
 		</TD>
 		<TD style="width: 99%;" class="nobr">
 			{foreach $_SESSIONTYPES as $idx => $sessiontype}
@@ -256,7 +256,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
+			<i class="lms-ui-icon-description"></i>
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<TEXTAREA NAME="nodedata[info]" class="lms-ui-wysiwyg-editor" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}{if isset($nodedata.wysiwyg.info)} data-wysiwyg="{$nodedata.wysiwyg.info}"{/if}>{$nodedata.info}</TEXTAREA>

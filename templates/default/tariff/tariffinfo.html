@@ -73,7 +73,7 @@
     <THEAD>
     <TR>
         <TD COLSPAN="2">
-            <IMG SRC="img/money.gif" ALT=""> <B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
+            <i class="lms-ui-icon-money"></i><B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
         </TD>
     </TR>
     </THEAD>
@@ -102,14 +102,14 @@
                                 <TD>{$tariff.tax}</TD>
                             </TR>
                             <TR>
-                                <TD><IMG SRC="img/money.gif" ALT=""></TD>
+                                <TD><i class="lms-ui-icon-money"></i></TD>
                                 <TD>{trans("Type:")}</TD>
                                 <TD>{$_SERVICETYPES[$tariff.type]}</TD>
                             </TR>
 
                             {if isset($tariff.numberplan)}
                             <TR>
-                                <TD><IMG SRC="img/money.gif" ALT=""></TD>
+                                <TD><i class="lms-ui-icon-money"></i></TD>
                                 <TD>{trans("Numbering Plan:")}</TD>
                                 <TD>{$tariff.numberplan.template} ({$_NUM_PERIODS[$tariff.numberplan.period]})</TD>
                             </TR>
@@ -117,7 +117,7 @@
 
 							{if $tariff.datefrom || $tariff.dateto}
 							<TR>
-								<TD><img src="img/calendar.gif" alt=""></td>
+								<TD><i class="lms-ui-icon-timetable"></i></td>
 								<td>{trans("Period:")}</td>
 								<td>
 									{if $tariff.datefrom}
@@ -177,7 +177,7 @@
 
                             {if $tariff.description}
                             <TR>
-                                <TD><IMG SRC="img/info1.gif" ALT=""></TD>
+                                <TD><i class="lms-ui-icon-description"></i></TD>
                                 <TD>{trans("Description:")}
                                 <TD CLASS="fall superlight line-break">
                                     {$tariff.description|replace:"\n":"<BR>"}
@@ -280,7 +280,7 @@
             <TABLE CLASS="tariff_tab bold-first">
                 <TR>
                     <TD ROWSPAN="100%">
-                        <IMG SRC="img/account.gif" ALT="">
+                        <i class="lms-ui-icon-login"></i>
                     </TD>
                 </TR>
                 <TR>
@@ -387,7 +387,7 @@
                 <TR>
                     {section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
                      <TD WIDTH="33%" class="highlight {cycle}" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
-                        <IMG SRC="img/customer.gif" ALT="">
+                        <i class="lms-ui-icon-customer"></i>
                         <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}">
                             ({$tariff.customers[l2].id|string_format:"%04d"})
                             {$tariff.customers[l2].customername|truncate:50:" ..."}

@@ -2,7 +2,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/customer.gif" ALT="">
+			<i class="lms-ui-icon-customer"></i>
 		</TD>
 		<TD WIDTH="99%">
 			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span COLOR="RED">({trans("deleted customer")})</span>{/if}</B>
@@ -20,7 +20,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%" >
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{if $customerinfo.postoffice && $customerinfo.postoffice != $customerinfo.city && $customerinfo.street}{$customerinfo.city}, {/if}{$customerinfo.address}<BR>
@@ -45,7 +45,7 @@
 {foreach $customerinfo.contacts as $item}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/phone.gif" ALT="">
+			<i class="lms-ui-icon-phone"></i>
 		</TD>
 		<TD style="width: 99%;" class="nobr">
 		    {$item.phone}
@@ -57,7 +57,7 @@
 {if !empty($customerinfo.emails)}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/mail.gif" ALT="">
+			<i class="lms-ui-icon-mail"></i>
 		</TD>
 		<TD style="width: 99%;" class="nobr">
 			{foreach $customerinfo.emails as $email}
@@ -151,7 +151,7 @@
 {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
+			<i class="lms-ui-icon-money"></i>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<B>{trans("Balance:")}</B>

@@ -12,7 +12,7 @@
     <THEAD>
 	<TR>
 		<TD>
-			<IMG src="img/calendar.gif" alt="">
+			<i class="lms-ui-icon-timetable"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Title:")}
@@ -25,7 +25,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Begin time:")}
@@ -38,7 +38,7 @@
 	{if $event.begintime != $event.endtime || $event.enddate > $event.date}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("End time:")}
@@ -57,7 +57,7 @@
 {if $event.description}
 	<TR>
 		<TD>
-			<IMG src="img/info.gif" alt="">
+			<i class="lms-ui-icon-description"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Description:")}
@@ -75,7 +75,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG src="img/desc.gif" alt="">
+			<i class="lms-ui-icon-description"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Type:")}
@@ -97,7 +97,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Created by:")}
@@ -109,7 +109,7 @@
 {if $event.creationdate != 0}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Creation time:")}
@@ -122,7 +122,7 @@
 {if $event.moduserid != 0}
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD class="bold nobr">
 			<B>{trans("Last modified by:")}</B>
@@ -135,7 +135,7 @@
 {if $event.moddate != 0}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Last modification time:")}
@@ -148,7 +148,7 @@
 {if $event.closeduserid != 0}
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD class="bold nobr">
 			<B>{trans("Closed by")}:</B>
@@ -161,7 +161,7 @@
 {if $event.closeddate != 0}
 	<TR>
 		<TD>
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Closed time")}:
@@ -173,7 +173,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG src="img/customer.gif" alt="">
+			<i class="lms-ui-icon-customer"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Customer:")}
@@ -184,7 +184,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/home.gif" alt="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Location:")}
@@ -196,7 +196,7 @@
 	{if !empty($event.nodeid)}
 	<TR>
 		<TD>
-			<IMG src="img/node.gif" alt="">
+			<i class="lms-ui-icon-node"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Node:")}
@@ -209,7 +209,7 @@
 {if $event.note}
 	<TR>
 		<TD>
-			<IMG src="img/note.gif" alt="">
+			<i class="lms-ui-icon-note"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Note:")}
@@ -228,7 +228,7 @@
 {if $event.userlist}
 	<TR>
 		<TD>
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD class="bold">
 			{trans("Users:")}

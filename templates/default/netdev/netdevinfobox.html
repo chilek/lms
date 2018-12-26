@@ -7,7 +7,7 @@
 	<THEAD>
 	<TR{if $devicepanel} class="hand lmsbox-titlebar" data-lmsbox-content="devicepanel"{/if}>
 		<TD>
-			<IMG SRC="img/netdev.gif" ALT="">
+			<i class="lms-ui-icon-netdevice"></i>
 		</TD>
 		<TD class="bold">
 			{$netdev.name} ({$netdev.id|string_format:"%04d"})
@@ -23,7 +23,7 @@
 						<TABLE WIDTH="100%" CELLPADDING="3">
 							{if $netdev.ownerid != null}
 							<tr>
-								<td><img src="img/customer.gif" alt=""></td>
+								<td><i class="lms-ui-icon-customer"></i></td>
 								<td class="bold">{trans("Owner:")}</td>
 								<td><a href="?m=customerinfo&id={$netdev.ownerid}">{$netdev.owner}</a></td>
 							</tr>
@@ -103,7 +103,7 @@
 	{if $netdev.location || ($netdev.netnodeid && $netdev.netnode.location)}
 	<TR>
 		<TD>
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD class="bold nobr">
 			{trans("Location:")}
@@ -121,7 +121,7 @@
 	{if $netdev.longitude || $netdev.latitude || ($netdev.netnodeid && ($netdev.netnode.longitude || $netdev.netnode.latitude))}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("GPS longitude:")}</B>
@@ -138,7 +138,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
+			<i class="lms-ui-icon-location"></i>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("GPS latitude:")}</B>
@@ -212,7 +212,7 @@
 		<TD WIDTH="98%">
 			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
 				<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$netdev.secret}">
-					<i></i> {trans("Copy")}
+					<i></i>{trans("Copy")}
 				</button>
 			{else}
 				{$netdev.secret}
@@ -254,7 +254,7 @@
 	{if $netdev.purchasetime}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/calendar.gif" ALT="">
+			<i class="lms-ui-icon-timetable"></i>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 		        <B>{trans("Purchase date:")}</B>
@@ -286,7 +286,7 @@
         {if $netdev.description}
         <TR>
                 <TD WIDTH="1%">
-                        <IMG SRC="img/desc.gif" ALT="">
+                        <i class="lms-ui-icon-description"></i>
                 </TD>
                 <TD WIDTH="99%" COLSPAN="2">
                         <TABLE WIDTH="100%" CELLPADDING="5">
@@ -301,7 +301,7 @@
         {/if}
 	<TR>
 		<td>
-			<img src="img/money.gif" alt="">
+			<i class="lms-ui-icon-money"></i>
 		</td>
 		<TD class="nobr bold">
 			{trans("Investment project:")}
@@ -314,7 +314,7 @@
 	{if $netdev.netnodeid}
 	<TR>
 		<td>
-			<img src="img/netdev.gif" alt="">
+			<i class="lms-ui-icon-netdevice"></i>
 		</td>
 		<TD class="nobr bold">
 			{trans("Network node:")}

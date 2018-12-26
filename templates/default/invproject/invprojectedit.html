@@ -9,7 +9,7 @@
     <THEAD>
 	<TR>
 		{if $divisions}
-		<TD width="1%"><img src="img/division.gif" alt=""></TD>
+		<TD width="1%"><i class="lms-ui-icon-division"></i></TD>
 		<TD width="1%">{trans("Division:")}</TD>
 		<TD style="width: 1%;">
                 	<SELECT size="1" name="invprojectedit[divisionid]" {tip text="Select division" trigger="divisionid"}>
@@ -19,7 +19,7 @@
                         </SELECT>
                 </TD>
 		{/if}
-		<TD width="1%"><img src="img/money.gif" alt=""></TD>
+		<TD width="1%"><i class="lms-ui-icon-money"></i></TD>
 		<TD width="1%"><B>{trans("Name:")}</B></TD>
 		<TD width="96%"><INPUT type="text" size="40" name="invprojectedit[name]" value="{$invprojectedit.name}" {tip text="Enter investment project name" trigger="name" bold=1}></TD>
 	</TR>

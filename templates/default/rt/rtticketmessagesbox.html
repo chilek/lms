@@ -4,7 +4,7 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
-			<i class="lms-ui-icon-message"></i> <B>{trans("Ticket History")}</B>
+			<i class="lms-ui-icon-message"></i><B>{trans("Ticket History")}</B>
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			{if $ticket.state != $smarty.const.RT_RESOLVED}
@@ -61,7 +61,7 @@
 								{/if}
 							{/if}
 							{if $message.phonefrom}
-							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><img src="img/phone.gif"> {$message.phonefrom}</A>
+							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><i class="lms-ui-icon-phone"></i>{$message.phonefrom}</A>
 							{/if}
 						<BR>
 						{$message.subject|escape}

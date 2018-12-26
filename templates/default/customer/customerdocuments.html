@@ -119,7 +119,7 @@
 					{/if}
 					{if count($doc.attachments) > 1}
 						<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-							<img src="img/asc_order.gif">
+							<i class="lms-ui-icon-ascending"></i>
 						</a>
 					{/if}
 					<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" form="customerdocuments-form" class="lms-ui-multi-check" VALUE="{$doc.docid}">
@@ -147,16 +147,16 @@
 		{tab_button_panel}
 			{tab_buttons}
 				<button type="button" class="lms-ui-button lms-ui-button-mail" onclick="return confirm('{trans("Are you sure, you want to send documents to customer?")}')">
-					<i></i> {trans("Send documents")}
+					<i></i>{trans("Send documents")}
 				</button>
 				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_docs();">
-					<i></i> {trans("Print")}
+					<i></i>{trans("Print")}
 				</button>
 				<button type="button" class="lms-ui-button lms-ui-button-confirm" onclick="javascript:mark_docs();">
-					<i></i> {trans("Confirm")}
+					<i></i>{trans("Confirm")}
 				</button>
 				<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delete_docs();">
-					<i></i> {trans("Delete")}
+					<i></i>{trans("Delete")}
 				</button>
 			{/tab_buttons}
 			{tab_buttons}

@@ -6,7 +6,7 @@
 	<THEAD>
 	<TR>
 		<TD class="bold" colspan="2">
-			<IMG src="img/ticket.gif" alt="">
+			<i class="lms-ui-icon-ticket"></i>
 			{t a=$ticket.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
@@ -15,7 +15,7 @@
 	{if $ticket.creatorid}
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 			{trans("Created by:")}
 		</TD>
 		<TD>
@@ -26,7 +26,7 @@
 	{if $ticket.invprojectid}
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/money.gif" alt="">
+			<i class="lms-ui-icon-money"></i>
 			{trans("Investment project:")}
 		</TD>
 		<TD>
@@ -36,7 +36,7 @@
 	{/if}
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 			{trans("Uptime:")}
 		</TD>
 		<TD>
@@ -45,7 +45,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/desc.gif" alt="">
+			<i class="lms-ui-icon-description"></i>
 			{trans("Cause:")}
 		</TD>
 		<TD>
@@ -66,7 +66,7 @@
 	{if $ticket.relatedtickets}
 	<TR>
 		<TD class="bold nobr">
-			<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Related tickets:")}
+			<i class="lms-ui-icon-reload"></i>{trans("Related tickets:")}
 		</TD>
 		<TD>
 			{foreach $ticket.relatedtickets as $i}
@@ -78,7 +78,7 @@
 	{if $ticket.message}
 	<TR>
 		<TD class="bold">
-			<IMG src="img/info.gif" alt="">
+			<i class="lms-ui-icon-description"></i>
 			{trans("Body:")}
 		</TD>
 		<TD>

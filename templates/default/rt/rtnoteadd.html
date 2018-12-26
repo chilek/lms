@@ -16,7 +16,7 @@
     <THEAD>
 	<TR>
 		<TD colspan="2" class="bold nobr">
-			<IMG src="img/ticket.gif" alt="">
+			<i class="lms-ui-icon-ticket"></i>
 			{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
@@ -24,7 +24,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/note.gif" alt="">
+			<i class="lms-ui-icon-note"></i>
 			{trans("Note content:")}
 		</TD>
 		<TD>
@@ -33,7 +33,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			<IMG src="img/attach.gif" alt="">
+			<i class="lms-ui-icon-attach"></i>
 			{trans("Attachments:")}
 		</TD>
 		<TD>
@@ -57,7 +57,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt=""> <label for="notify">{trans("Notify users:")}</label>
+			<i class="lms-ui-icon-mail"></i><label for="notify">{trans("Notify users:")}</label>
 		</TD>
 		<TD>
 			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
@@ -81,7 +81,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/desc.gif" alt=""> {trans("Cause:")}
+			<i class="lms-ui-icon-cause"></i>{trans("Cause:")}
 		</TD>
 		<TD>
 			<SELECT SIZE="1" name="note[cause]" {tip text="Select ticket cause" trigger="cause"}>
@@ -118,7 +118,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/queue.gif" alt=""> {trans("Queue:")}
+			<i class="lms-ui-icon-queue"></i>{trans("Queue:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"}>
@@ -130,7 +130,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("Owner:")}
+			<i class="lms-ui-icon-user"></i>{trans("Owner:")}
 		</TD>
 		<TD>
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
@@ -147,7 +147,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/verifier.png" alt="">
+			<i class="lms-ui-icon-verifier"></i>
 			{trans("Verifier:")}
 		</TD>
 		<TD>
@@ -165,7 +165,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/calendar.gif" alt="">
+			<i class="lms-ui-icon-timetable"></i>
 			{trans("<!rt>Deadline:")}
 		</TD>
 		<TD>

@@ -17,7 +17,7 @@
                     <IMG src="img/empty.gif" alt="" height="16"><A href="?m={$layout.module}{$suffix}&amp;o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
                 </TD>
 		<TD width="1%" NOWRAP>
-			<IMG src="img/customer.gif" alt=""> <A href="?m={$layout.module}{$suffix}&amp;o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<i class="lms-ui-icon-customer"></i><A href="?m={$layout.module}{$suffix}&amp;o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A> {if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
 		    <IMG src="img/empty.gif" alt="" height="16">
@@ -87,7 +87,7 @@
                 </TD>		
 		<TD align="left" NOWRAP onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
 			{if $domainlist[domainlist].ownerid}
-			<IMG src="img/customer.gif" alt=""> 
+			<i class="lms-ui-icon-customer"></i>
 			<A href="?m=customerinfo&amp;id={$domainlist[domainlist].ownerid}">{$domainlist[domainlist].customername|truncate:45:"...":true} ({$domainlist[domainlist].ownerid|string_format:"%04d"})</A>
 			{/if}
 		</TD>

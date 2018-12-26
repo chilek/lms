@@ -7,7 +7,7 @@
     <THEAD>
 	<TR{if $customerpanel} class="hand lmsbox-titlebar" data-lmsbox-content="customerpanel"{/if}>
 		<TD class="bold{if !$customerpanel} fleftu{/if}">
-			<IMG SRC="img/customer.gif" ALT="">
+			<i class="lms-ui-icon-customer"></i>
 			{if $customerpanel}{trans("Owner:")}{/if}
 			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}
 		</TD>
@@ -35,7 +35,7 @@
 {if $customerinfo.division}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG src="img/division.gif" alt="">
+			<i class="lms-ui-icon-division"></i>
 		</TD>
 		<TD WIDTH="99%">
 			{$customerinfo.division}
@@ -127,7 +127,7 @@
 		<TD WIDTH="99%">
 			{if ConfigHelper::checkConfig('phpui.protect_passwords')}
 				<button class="lms-ui-button-clipboard lms-ui-button" data-clipboard-text="{$customerinfo.pin}">
-					<i></i> {trans("Copy")}
+					<i></i>{trans("Copy")}
 				</button>
 			{else}
 				{$customerinfo.pin}
@@ -303,7 +303,7 @@
 	{if $customerinfo.info}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/info1.gif" ALT="">
+			<i class="lms-ui-icon-description"></i>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
@@ -335,7 +335,7 @@
 	{if $customerinfo.notes}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/note.gif" ALT="">
+			<i class="lms-ui-icon-note"></i>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
@@ -351,7 +351,7 @@
 	{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/money.gif" ALT="">
+			<i class="lms-ui-icon-money"></i>
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Balance:")}</B>
@@ -403,7 +403,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/users.gif" ALT="">
+			<i class="lms-ui-icon-user"></i>
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Created:")}<BR>

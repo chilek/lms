@@ -19,7 +19,7 @@
     <thead>
 		<tr>
 			<td style="width: 1%;">
-				<img src="img/node.gif" alt="">
+				<i class="lms-ui-icon-node"></i>
 			</td>
 			<td style="width: 99%;" COLSPAN="2">
 				<input type="text" name="nodeedit[name]" value="{$nodeinfo.name}" maxlength="32" size="30" required {tip text="Enter node name" trigger="name" bold=1}>
@@ -140,7 +140,7 @@
 								{if $netdevices}
 								<tr>
 									<td>
-										<img src="img/netdev.gif" alt="">
+										<i class="lms-ui-icon-netdevice"></i>
 									</td>
 									<td>
 										{trans("Net devices:")}
@@ -189,7 +189,7 @@
 
 								<tr>
 									<td>
-										<img src="img/money.gif" alt="">
+										<i class="lms-ui-icon-money"></i>
 									</td>
 									<td>
 										{trans("Investment project:")}
@@ -209,7 +209,7 @@
 
 								<tr>
 									<td>
-										<img src="img/customer.gif" alt="">
+										<i class="lms-ui-icon-customer"></i>
 									</td>
 									<td>
 										{trans("Customer:")}
@@ -233,7 +233,7 @@
 
 								<tr>
 									<td>
-										<img src="img/home.gif" alt="">
+										<i class="lms-ui-icon-location"></i>
 									</td>
 									<td>
 										{trans("Location:")}
@@ -265,7 +265,7 @@
 
 								<tr>
 									<td>
-										<img src="img/netdev.gif" alt="">
+										<i class="lms-ui-icon-netdevice"></i>
 									</td>
 									<td>
 										{trans("Type:")}
@@ -326,7 +326,7 @@
 
 								<tr>
 									<td>
-										<img src="img/info1.gif" alt="{trans("Description:")}">
+										<i class="lms-ui-icon-description"></i>
 									</td>
 									<td colspan="2">
 										<textarea name="nodeedit[info]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($nodeinfo.wysiwyg.info)} data-wysiwyg="{$nodeinfo.wysiwyg.info}"{/if}>{$nodeinfo.info}</textarea>
@@ -365,7 +365,7 @@
 
 								<tr>
 									<td>
-										<img src="img/users.gif" alt="">
+										<i class="lms-ui-icon-user"></i>
 									</td>
 									<td>
 										{trans("Created:")}<br>

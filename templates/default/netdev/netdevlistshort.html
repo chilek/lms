@@ -2,7 +2,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/netdev.gif" alt="">
+			<i class="lms-ui-icon-netdevice"></i>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 		    {if $layout.module == 'ewxdevlist'}
@@ -18,7 +18,7 @@
 	{section name=devices loop=$devices}
 	<TR class="highlight {cycle}"  >
 	    <TD onClick="parent.location.href='?m=netdevinfo&id={$devices[devices].id}';">
-            <IMG src="img/netdev.gif" ALT=""><BR>
+            <i class="lms-ui-icon-netdevice"></i><BR>
             <IMG src="img/producer.gif" ALT="">
 	    </TD>
 		<TD onClick="parent.location.href='?m=netdevinfo&id={$devices[devices].id}';" NOWRAP>

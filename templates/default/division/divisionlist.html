@@ -6,7 +6,7 @@
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
-		<TD width="1%" NOWRAP><IMG src="img/division.gif" alt=""> <B>{trans("Name:")}</B></TD>
+		<TD width="1%" NOWRAP><i class="lms-ui-icon-division"></i><B>{trans("Name:")}</B></TD>
 		<TD width="1%" align="right" NOWRAP>{trans("ID:")}</TD>
 		<TD width="96%" align="left" NOWRAP>{trans("Long name:")}</TD>
 		<TD width="1%" align="right" NOWRAP>{trans("Customers:")}</TD>
@@ -25,7 +25,7 @@
 	{section name=list loop=$divisionlist}
 	<TR class="highlight {cycle}{if $divisionlist[list].status} blend{/if}"  >
 		<TD NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
-			<IMG src="img/division.gif" alt=""> <B>{$divisionlist[list].shortname}</B>
+			<i class="lms-ui-icon-division"></i><B>{$divisionlist[list].shortname}</B>
 		</TD>
 		<TD align="right" NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
 			({$divisionlist[list].id|string_format:"%04d"})

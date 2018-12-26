@@ -21,7 +21,7 @@
     <TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/ticket.gif" alt="">
+			<i class="lms-ui-icon-ticket"></i>
 			{trans("Subject:")}
 		</TD>
 		<TD>
@@ -30,7 +30,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/mail.gif" alt="">
+			<i class="lms-ui-icon-mail"></i>
 			{trans("Body:")}
 		</TD>
 		<TD>
@@ -43,7 +43,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/customer.gif" alt="">
+			<i class="lms-ui-icon-customer"></i>
 			{trans("Requestor:")}
 		</TD>
 		<TD>
@@ -66,7 +66,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt="">
+			<i class="lms-ui-icon-user"></i>
 			{trans("Owner:")}
 		</TD>
 		<TD>
@@ -80,7 +80,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/queue.gif" alt="">
+			<i class="lms-ui-icon-queue"></i>
 			{trans("Queue:")}
 		</TD>
 		<TD>
@@ -107,7 +107,7 @@
 		</TD>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/service-type.png" alt="">
+			<i class="lms-ui-icon-service"></i>
 			{trans("Service:")}
 		</TD>
 		<TD>
@@ -120,7 +120,7 @@
 		</TD>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/ticket-type.png" alt="">
+			<i class="lms-ui-icon-type"></i>
 			{trans("Ticket type:")}
 		</TD>
 		<TD>
@@ -148,7 +148,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/time.gif" alt="">
+			<i class="lms-ui-icon-time"></i>
 			{trans("Min. Uptime")}
 		</TD>
 		<TD>
@@ -162,7 +162,7 @@
 	</TR>
 	<TR>
 		<TD class="bold nobr valign-top">
-			<IMG src="img/queue.gif" alt="">
+			<i class="lms-ui-icon-queue"></i>
 			{trans("Categories:")}
 		</TD>
 		<TD class="nobr">
@@ -191,7 +191,7 @@
 	</TR>
 	{/if}
 	<TR>
-        <TD class="bold nobr"><img src="img/netnode.png" alt=""> {trans("Network node:")}</TD>
+        <TD class="bold nobr"><i class="lms-ui-icon-netnode"></i>{trans("Network node:")}</TD>
 		<TD class="nobr">
 			<SELECT name="search[netnodeid]" {tip text="Select network node (optional)" trigger="netnodeid"} onchange="xajax_netnode_changed($(this).val(), $('#netdevid').val())">
 				<OPTION value="">{trans("- none -")}</OPTION>
@@ -202,13 +202,13 @@
 		</TD>
 	</TR>
 	<TR>
-        <TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Device:")}</TD>
+        <TD class="bold nobr"><i class="lms-ui-icon-netdevice"></i>{trans("Device:")}</TD>
 		<TD class="nobr" id="rtnetdevs">
 			{include file="rt/rtnetdevs.html" form="search"}
 		</TD>
 	</TR>
         <TR>
-		<TD class="bold nobr"><img src="img/verifier.png" alt=""> {trans("Verifier:")}</TD>
+		<TD class="bold nobr"><i class="lms-ui-icon-verifier"></i>{trans("Verifier:")}</TD>
 		<TD>
                         <SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
                                 <OPTION value="0">{trans("- all owners -")}</OPTION>
@@ -219,7 +219,7 @@
 		</TD>
         </TR>
         <TR>
-		<TD class="bold nobr"><img src="img/calendar.gif" alt=""> {trans("Deadline expired:")}</TD>
+		<TD class="bold nobr"><i class="lms-ui-icon-timetable"></i>{trans("Deadline expired:")}</TD>
 		<TD>
 			<INPUT TYPE="checkbox" NAME="search[expired]" VALUE="1" {tip text="Check if ticket is expired" trigger="expired"}>
 		</TD>

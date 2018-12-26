@@ -14,7 +14,7 @@
 	<TR>
 		<TD>
 			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{trans("Name:")}</span><BR>
-			<IMG src="img/info1.gif" alt="">&nbsp;{trans("Description:")}
+			<i class="lms-ui-icon-description"></i>{trans("Description:")}
 		</TD>
 		<TD class="text-right">
 			{trans("ID:")}
@@ -30,7 +30,7 @@
 	<TFOOT>
 	<TR>
 		<TD colspan="2" class="text-right bold">
-			<IMG src="img/info2.gif" alt="">&nbsp;{trans("Total:")}
+			<i class="lms-ui-icon-count"></i>{trans("Total:")}
 		</TD>
 		<TD class="text-right bold nobr">
 			{$listdata.nodestotal|default:"0"}
@@ -45,7 +45,7 @@
 	<TR class="highlight" data-nodegroup-id="{$nodegroup.id}">
 		<TD onClick="return self.location.href='?m=nodegroupinfo&id={$nodegroup.id}';">
 			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{$nodegroup.name}</span><BR>
-			{if $nodegroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$nodegroup.description}{/if}
+			{if $nodegroup.description}<i class="lms-ui-icon-description"></i>{$nodegroup.description}{/if}
 		</TD>
 		<TD class="text-right" onClick="return self.location.href='?m=nodegroupinfo&id={$nodegroup.id}';">
 			({$nodegroup.id|string_format:"%04d"})

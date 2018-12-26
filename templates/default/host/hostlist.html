@@ -7,7 +7,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
-			<img src="img/host.gif" alt=""><B>{trans("Name:")}</B>
+			<i class="lms-ui-icon-hosting"></i><B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			{trans("ID:")}
@@ -28,7 +28,7 @@
 	{foreach from=$hostlist item=host}
 	<TR class="highlight {cycle}"  >
 		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';" nowrap>
-			<IMG src="img/host.gif" alt="">
+			<i class="lms-ui-icon-hosting"></i>
 			<B>{$host.name}</B>
 		</TD>
 		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';">
