@@ -1,6 +1,6 @@
 {block name="eventlistboxrow"}
 <TR class="highlight event-single{if $event.closed} blend{/if}" data-event-id="{$event.id}">
-    <TD style="min-width: 90px; {if !$event.closed}{if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}{/if}" class="text-center bold event-single-sortable-handler">
+    <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold event-single-sortable-handler">
     	{$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a>{/if}
     </TD>
     <TD class="text-left nobr bold event-single-sortable-handler" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
