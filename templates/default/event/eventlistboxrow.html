@@ -3,7 +3,7 @@
     <TD style="min-width: 90px; {if !$event.closed}{if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}{/if}" class="text-center bold event-single-sortable-handler">
     	{$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a>{/if}
     </TD>
-    <TD class="text-left nobr bold" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
+    <TD class="text-left nobr bold event-single-sortable-handler" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
         {if $event.endtime == 86400}
             {trans("whole day")}
         {else}
@@ -23,12 +23,12 @@
 		<br><a href="?m=userinfo&amp;id={$user.id}" style="font-weight: normal">{$user.name|truncate:"25":"...":true}</a>
         {/foreach}
     </TD>
-    <TD onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
+    <TD class="event-single-sortable-handler" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
         <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i><span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
         {if $event.description != ''}<br><i class="lms-ui-icon-description"></i>{$event.description}{/if}
         {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i>{$event.note}</span>{/if}
     </TD>
-    <TD class="nobr" colspan="2">
+    <TD class="nobr event-single-sortable-handler" colspan="2">
         {if $event.netnode_name}
         <i class="lms-ui-icon-netnode"></i><a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
             {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i>{$event.netnode_location}{/if}
