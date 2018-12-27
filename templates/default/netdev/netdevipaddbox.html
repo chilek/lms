@@ -31,7 +31,7 @@
 			<B>{trans("Network:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<SELECT NAME="ipadd[netid]" {tip text="Choose network" trigger="netid"}>
+			<SELECT NAME="ipadd[netid]" {tip text="Choose network" trigger="netid" class="lms-ui-combobox"}>
 				<OPTION value="0">{trans("- automatic selection -")}</OPTION>
 				{foreach $networks as $net}
 				<OPTION VALUE="{$net.id}" {if $net.id == $nodeipdata.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
