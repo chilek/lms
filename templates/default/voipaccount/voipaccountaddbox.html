@@ -133,7 +133,15 @@
                     {trans("Customer:")}
                 </td>
                 <td>
-                    {customerlist form="voipaccountadd" customers=$customers selected=$voipaccountdata.ownerid selectname="voipaccountdata[customerid]" inputname="voipaccountdata[ownerid]" selecttip="Assign voip account to customer" customOnChange="change_customer();"}
+                    {customerlist
+                        form="voipaccountadd"
+                        customers=$customers
+                        selected=$voipaccountdata.ownerid
+                        selectname="voipaccountdata[customerid]"
+                        inputname="voipaccountdata[ownerid]"
+                        selecttip="Assign voip account to customer"
+                        customOnChange="change_customer();"
+                        required=true}
                 </td>
             </tr>
             {/block}

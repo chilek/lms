@@ -56,7 +56,7 @@ switch ($_GET['action']) {
 }
 
 $voipaccountdata['access'] = 1;
-$voipaccountdata['ownerid'] = 0;
+$voipaccountdata['ownerid'] = null;
 
 if (isset($_GET['ownerid'])) {
 	if ($LMS->CustomerExists($_GET['ownerid']) == true) {
@@ -121,21 +121,29 @@ if (isset($_POST['voipaccountdata'])) {
 	if ($voipaccountdata['cost_limit'] < 0)
 		$error['cost_limit'] = trans('Cost limit must be positive!');
 
-	if (!$LMS->CustomerExists($voipaccountdata['ownerid']))
-		$error['customer'] = trans('You have to select owner!');
-	else {
+	if (!$voipaccountdata['ownerid']) {
+		$error['voipaccountdata[customerid]'] = trans('Customer not selected!');
+		$error['voipaccountdata[ownerid]'] = trans('Customer not selected!');
+	} elseif (!$LMS->CustomerExists($voipaccountdata['ownerid'])) {
+		$error['voipaccountdata[customerid]'] = trans('Inexistent owner selected!');
+		$error['voipaccountdata[ownerid]'] = trans('Inexistent owner selected!');
+	} else {
 		$status = $LMS->GetCustomerStatus($voipaccountdata['ownerid']);
-		if ($status == 1) // unknown (interested)
-			$error['customer'] = trans('Selected customer is not connected!');
-		elseif ($status == 2) // awaiting
-			$error['customer'] = trans('Voip account owner is not connected!');
+		if ($status == CSTATUS_INTERESTED) { // unknown (interested)
+			$error['voipaccountdata[customerid]'] = trans('Selected customer is not connected!');
+			$error['voipaccountdata[ownerid]'] = trans('Selected customer is not connected!');
+		} elseif ($status == CSTATUS_WAITING) { // awaiting
+			$error['voipaccountdata[customerid]'] = trans('Voip account owner is not connected!');
+			$error['voipaccountdata[ownerid]'] = trans('Selected customer is not connected!');
+		}
 	}
 
-    // check if selected address belongs to customer
-    if ( $voipaccountdata['address_id'] != -1 && !$LMS->checkCustomerAddress($voipaccountdata['address_id'], $voipaccountdata['ownerid']) ) {
-        $error['address_id'] = trans('Selected address was not assigned to customer.');
-        $voipaccountdata['address_id'] = null;
-    }
+	if (!isset($error['voipaccountdata[ownerid]']))
+		// check if selected address belongs to customer
+		if ( $voipaccountdata['address_id'] != -1 && !$LMS->checkCustomerAddress($voipaccountdata['address_id'], $voipaccountdata['ownerid']) ) {
+			$error['address_id'] = trans('Selected address was not assigned to customer.');
+			$voipaccountdata['address_id'] = null;
+		}
 
     $hook_data = $plugin_manager->executeHook(
         'voipaccountadd_before_submit',
@@ -176,7 +184,7 @@ $layout['pagetitle'] = trans('New Voip Account');
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
-if ($customerid = $voipaccountdata['ownerid']) {
+if (!empty($voipaccountdata['ownerid']) && $LMS->CustomerExists($voipaccountdata['ownerid']) && ($customerid = $voipaccountdata['ownerid'])) {
 	include(MODULES_DIR.'/customer.inc.php');
 }
 
