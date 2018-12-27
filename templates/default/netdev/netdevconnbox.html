@@ -9,7 +9,7 @@
 
 	{tab_header content_id="devicedevices"}
 		{tab_header_cell icon="lms-ui-icon-netdev"}
-			<strong>{t a=$netdevlist|@count}Connected devices ($a):{/t}</strong>
+			<strong>{if empty($netdevlist)}{$netdevlist=array()}{/if}{t a=$netdevlist|@count}Connected devices ($a):{/t}</strong>
 		{/tab_header_cell}
 	{/tab_header}
 

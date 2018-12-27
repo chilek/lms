@@ -9,7 +9,7 @@
 
 	{tab_header content_id="devicenodes"}
 		{tab_header_cell icon="lms-ui-icon-node"}
-			<strong>{t a=$netcomplist|@count}Connected nodes ($a):{/t}</strong>
+			<strong>{if empty($netcomplist)}{$netcomplist=array()}{/if}{t a=$netcomplist|@count}Connected nodes ($a):{/t}</strong>
 		{/tab_header_cell}
 	{/tab_header}
 

@@ -6,7 +6,7 @@
 
 	{tab_header content_id="deviceips"}
 		{tab_header_cell icon="lms-ui-icon-ipnetwork"}
-			<strong>{t a=$netdevips|@count}IP addresses ($a):{/t}</strong>
+			<strong>{if empty($netdevips)}{$netdevips=array()}{/if}{t a=$netdevips|@count}IP addresses ($a):{/t}</strong>
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A HREF="?m=netdevedit&action=addip&id={$netdev.id}">{trans("New address")} &raquo;</A>
