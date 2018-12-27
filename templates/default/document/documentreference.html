@@ -6,7 +6,7 @@
     {trans("Reference document:")}
 </TD>
 <TD class="nobr">
-    <SELECT name="document[reference]" {tip text="Select reference document" trigger="reference"}>
+    <SELECT name="document[reference]" class="lms-ui-combobox" {tip text="Select reference document" trigger="reference"}>
         <OPTION value=""{if !$document.reference} selected{/if}>{trans("- none -")}</OPTION>
         {foreach $references as $doc}
         {number number=$doc.number template=$doc.template time=$doc.cdate customerid=$cid assign="number"}
