@@ -722,7 +722,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 	}
 
 	public function SendDocuments($docs, $type, $params) {
-		global $LMS;
+		global $LMS, $DOCTYPES;
 
 		extract($params);
 
@@ -749,9 +749,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			$body = $mail_body;
 			$subject = $mail_subject;
 
-			$body = preg_replace('/%document/', $document['title'], $body);
-			$body = str_replace('\n', "\n", $body);
+			$body = preg_replace('/%document/', $document['fullnumber'], $body);
+			$body = preg_replace('/%cdate-y/', strftime("%Y", $document['cdate']), $body);
+			$body = preg_replace('/%cdate-m/', strftime("%m", $document['cdate']), $body);
+			$body = preg_replace('/%cdate-d/', strftime("%d", $document['cdate']), $body);
+			$body = preg_replace('/%type/', $DOCTYPES[$document['type']], $body);
 			$body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
+			$body = str_replace('\n', "\n", $body);
+
 			$subject = preg_replace('/%document/', $document['title'], $subject);
 
 			$doc['name'] = '"' . $doc['name'] . '"';
