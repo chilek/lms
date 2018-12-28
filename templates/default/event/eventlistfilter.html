@@ -46,21 +46,7 @@
 						{trans("Customer:")}
 						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
 						{button label="Today" onclick="location.href='?m=eventlist&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}';"}
-						{trans("Month:")}
-						<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
-							{section name=month loop=13 start=1}
-								<OPTION value="{$smarty.section.month.index}"{if $smarty.section.month.index == $filter.month} selected{/if}>{$temp_date|replace:"m":$smarty.section.month.index|date_format:"%B"}</OPTION>
-							{/section}
-						</SELECT>
-						{trans("Year:")}
-						<SELECT name="year" onchange="document.filter.submit();">
-							{assign var=start value=$period.fromdate|default:$date|date_format:"%Y"}
-							{assign var=end value=$period.todate|default:$date|date_format:"%Y"}
-							{math assign=end equation="max(x, y)" x=$end y=$smarty.now|date_format:"%Y"}
-							{section name=year loop=$end+1 start=$start}
-								<OPTION value="{$smarty.section.year.index}"{if $smarty.section.year.index == $filter.year} selected{/if}>{$smarty.section.year.index}</option>
-							{/section}
-						</SELECT>
+						<input type="text" name="date" class="calendar" value="{if $filter.year}{$filter.year}/{$filter.month}/{$filter.day}{/if}" onchange="document.filter.submit();">
 						{trans("Status:")}
 						<SELECT name="closed" onchange="document.filter.submit();">
 							<OPTION value="" {if $filter.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
