@@ -39,8 +39,64 @@ if ($id && !isset($_POST['ticket'])) {
     if (isset($action)) {
         switch ($action) {
             case 'verify':
-                ///wyślij maila do weryfikatora
                 $LMS->TicketChange($id, array('state' => RT_VERIFIED, 'verifier_rtime' => time()));
+                $queue = $LMS->GetQueueByTicketId($id);
+                $ticket = $LMS->GetTicketContents($id);
+                $user = $ticket['verifierid'];
+                if ($ticket['customerid']) {
+                    $info = $LMS->GetCustomer($ticket['customerid'], true);
+
+                    $emails = array_map(function ($contact) {
+                        return $contact['fullname'];
+                    }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
+                    $phones = array_map(function ($contact) {
+                        return $contact['fullname'];
+                    }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                }
+
+                $mailfname = '';
+
+                $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+                if (!empty($helpdesk_sender_name)) {
+                    if ($helpdesk_sender_name == 'queue')
+                        $mailfname = $queue['name'];
+                    elseif ($helpdesk_sender_name == 'user')
+                        $mailfname = $user['name'];
+
+                    $mailfname = '"' . $mailfname . '"';
+                }
+
+                $mailfrom = $LMS->DetermineSenderEmail($user['email'], $queue['email'], $ticket['requestor_mail']);
+
+                $from = $mailfname . ' <' . $mailfrom . '>';
+
+                if ($state == RT_VERIFIED) {
+                    if (!empty($queue['verifierticketsubject']) && !empty($queue['verifierticketbody'])) {
+                        if (!empty($ticket['customerid'])) {
+                            if (!empty($emails)) {
+                                $ticketid = sprintf("%06d", $id);
+                                $custmail_subject = $queue['verifierticketsubject'];
+                                $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                                $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
+                                $custmail_body = $queue['verifierticketbody'];
+                                $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                                $custmail_body = str_replace('%cid', $info['id'], $custmail_body);
+                                $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                                $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                                $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+                                $custmail_headers = array(
+                                    'From' => $from,
+                                    'Reply-To' => $from,
+                                    'Subject' => $custmail_subject,
+                                );
+                                foreach (explode(',', $info['emails']) as $email) {
+                                    $custmail_headers['To'] = '<' . $email . '>';
+                                    $LMS->SendMail($email, $custmail_headers, $custmail_body);
+                                }
+                            }
+                        }
+                    }
+
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'assign':
