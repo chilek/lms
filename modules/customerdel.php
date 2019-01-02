@@ -43,10 +43,19 @@ else {
 	} else {
 		header("Location: ?" . $SESSION->get('backto'));
 		$body = '<P>' . trans($permanent ? 'Customer $a has been permanently removed.' : 'Customer $a has been removed.', $LMS->GetCustomerName($_GET['id'])) . '</P>';
+
+		$LMS->executeHook(
+			'customerdel_before_submit', array(
+				'id' => $_GET['id'],
+				'permanent' => $permanent,
+			)
+		);
+
 		if ($permanent)
 			$LMS->DeleteCustomerPermanent($_GET['id']);
 		else
 			$LMS->DeleteCustomer($_GET['id']);
+
 		$LMS->executeHook(
 			'customerdel_after_submit', array(
 				'id' => $_GET['id'],
