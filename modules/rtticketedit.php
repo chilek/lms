@@ -40,6 +40,7 @@ if ($id && !isset($_POST['ticket'])) {
         switch ($action) {
             case 'verify':
                 $LMS->TicketChange($id, array('state' => RT_VERIFIED, 'verifier_rtime' => time()));
+
                 $queue = $LMS->GetQueueByTicketId($id);
                 $ticket = $LMS->GetTicketContents($id);
                 $user = $ticket['verifierid'];
@@ -70,8 +71,7 @@ if ($id && !isset($_POST['ticket'])) {
 
                 $from = $mailfname . ' <' . $mailfrom . '>';
 
-                if ($state == RT_VERIFIED) {
-                    if (!empty($queue['verifierticketsubject']) && !empty($queue['verifierticketbody'])) {
+                if (!empty($queue['verifierticketsubject']) && !empty($queue['verifierticketbody'])) {
                         if (!empty($ticket['customerid'])) {
                             if (!empty($emails)) {
                                 $ticketid = sprintf("%06d", $id);
