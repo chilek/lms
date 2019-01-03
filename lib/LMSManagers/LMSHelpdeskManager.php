@@ -1308,6 +1308,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		// send email
 		$args['type'] = MSG_MAIL;
+
+		if ($params['verifierid']) {
+                    $verifier_email = $this->db->GetCol('SELECT email FROM users WHERE users.id = ?', $verifierid);
+                    $params['mail_headers']['To'] = '<' . $verifier_email . '>';
+                    $LMS->SendMail($email, $params['mail_headers'], $params['mail_body']);
+         } else {
 		if ($recipients = $this->db->GetCol('SELECT DISTINCT email
 			FROM users, rtrights
 			WHERE users.id=userid AND queueid = ? AND email != \'\'
@@ -1332,9 +1338,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$LMS->SendMail($email, $params['mail_headers'], $params['mail_body']);
 			}
 		}
+		}
 
 		// send sms
 		$args['type'] = MSG_SMS;
+		if ($params['verifierid']) {
+			$verifier_phone = $this->db->GetCol('SELECT phone FROM users WHERE users.id = ?', $verifierid);
+			$params['mail_headers']['To'] = '<' . $verifier_phone . '>';
+			$LMS->SendMail($email, $params['mail_headers'], $params['mail_body']);
+		} else {
 		if (!empty($sms_service) && ($recipients = $this->db->GetCol('SELECT DISTINCT phone
 			FROM users, rtrights
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
@@ -1357,6 +1369,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			foreach ($recipients as $phone)
 				$LMS->SendSMS($phone, $params['sms_body']);
 		}
+	}
 	}
 
 	public function CleanupTicketLastView() {

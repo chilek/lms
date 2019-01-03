@@ -43,7 +43,8 @@ if ($id && !isset($_POST['ticket'])) {
 
                 $queue = $LMS->GetQueueByTicketId($id);
                 $ticket = $LMS->GetTicketContents($id);
-                $user = $ticket['verifierid'];
+                $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+
                 if ($ticket['customerid']) {
                     $info = $LMS->GetCustomer($ticket['customerid'], true);
 
@@ -125,6 +126,7 @@ if ($id && !isset($_POST['ticket'])) {
                     $params = array(
                         'id' => $id,
                         'queue' => $queue['name'],
+                        'verifierid' => $ticket['verifierid'],
                         'customerid' => $ticket['customerid'],
                         'status' => $ticket['status'],
                         'categories' => $ticket['categorynames'],
@@ -141,14 +143,13 @@ if ($id && !isset($_POST['ticket'])) {
                     $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
                     $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
-                    //przerób to żeby powiadamiała weryfikatora lub utwórz nową
                     $LMS->NotifyUsers(array(
                         'queue' => $ticket['queue'],
+                        'verifierid' => $ticket['verifierid'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
                         'sms_body' => $sms_body,
                     ));
-                    //przerób to żeby powiadamiała weryfikatora lub utwórz nową
                 }
 
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
@@ -168,6 +169,7 @@ if ($id && !isset($_POST['ticket'])) {
 			case 'unlink':
 				$LMS->TicketChange($id, array('parentid' => null));
 				$SESSION->redirect('?m=rtticketedit&id=' . $id);
+				break;
             case 'resolve':
                 $LMS->TicketChange($id, array('state' => RT_RESOLVED));
 

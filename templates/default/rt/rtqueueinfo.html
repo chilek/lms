@@ -235,7 +235,7 @@
 	</TR>
 	{/if}
 	<TR>
-	    <TD COLSPAN="3" style="text-right">
+	    <TD COLSPAN="3" class="text-right">
 	        <A HREF="?m=rtqueueview&id={$queue.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
 	    	<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
 		{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
