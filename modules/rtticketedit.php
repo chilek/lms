@@ -88,7 +88,7 @@ if ($id && !isset($_POST['ticket'])) {
                         'type' => $ticket['type'],
                     );
                     $headers['Subject'] = $LMS->ReplaceNotificationSymbols($queue['verifierticketsubject'], $params);
-                    $body = $LMS->ReplaceNotificationSymbols($queue['verifierticketsubject'], $params);
+                    $body = $LMS->ReplaceNotificationSymbols($queue['verifierticketbody'], $params);
                     $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
                     $LMS->NotifyUsers(array(
