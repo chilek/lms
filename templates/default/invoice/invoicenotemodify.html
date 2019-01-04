@@ -19,6 +19,10 @@
 		$('form[name="setheader"] [name="cnote[number]"]').focus();
 	});
 
+	$(document).on('change', '[name="cnote[numberplanid]"]', function() {
+		$('[name="cnote[number]"]').val('');
+	});
+
 </script>
 <FORM NAME="setheader" METHOD="POST" ACTION="?m={$layout.module}&action=setheader">
 <INPUT type="submit" class="hiddenbtn">

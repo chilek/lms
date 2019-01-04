@@ -22,6 +22,10 @@
 		}, $('form[name="setcustomer"] [name=customerid]').val());
 	}
 
+	$(document).on('change', '[name="invoice[numberplanid]"]', function() {
+		$('[name="invoice[number]"]').val('');
+	});
+
 </script>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
