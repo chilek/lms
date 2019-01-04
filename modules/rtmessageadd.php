@@ -95,9 +95,11 @@ if (isset($_POST['message'])) {
 					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
 				);
 
-		foreach ($files as &$file)
-			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-		unset($file);
+		if (!empty($files)) {
+			foreach ($files as &$file)
+				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+			unset($file);
+		}
 
 		foreach ($tickets as $ticketid) {
 			$queue = $LMS->GetQueueByTicketId($ticketid);
