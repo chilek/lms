@@ -3,8 +3,8 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<script type="text/javascript">
-<!--
+<script>
+
 	function saveheader()
 	{
 		if (document.setcustomer.customer)
@@ -19,7 +19,11 @@
 		document.additem.action = '?m=noteedit&action=save&print=1';
 		document.additem.submit();
 	}
-//-->
+
+	$(document).on('change', '[name="note[numberplanid]"]', function() {
+		$('[name="note[number]"]').val('');
+	});
+
 </script>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
