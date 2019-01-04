@@ -72,56 +72,8 @@ if ($id && !isset($_POST['ticket'])) {
 
                 $from = $mailfname . ' <' . $mailfrom . '>';
 
-                if (!empty($queue['verifierticketsubject']) && !empty($queue['verifierticketbody'])) {
-                        if (!empty($ticket['customerid'])) {
-                            if (!empty($emails)) {
-                                $ticketid = sprintf("%06d", $id);
-                                $custmail_subject = $queue['verifierticketsubject'];
-                                $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
-                                $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
-                                $custmail_body = $queue['verifierticketbody'];
-                                $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
-                                $custmail_body = str_replace('%cid', $info['id'], $custmail_body);
-                                $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-                                $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-                                $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
-                                $custmail_headers = array(
-                                    'From' => $from,
-                                    'Reply-To' => $from,
-                                    'Subject' => $custmail_subject,
-                                );
-                                foreach (explode(',', $info['emails']) as $email) {
-                                    $custmail_headers['To'] = '<' . $email . '>';
-                                    $LMS->SendMail($email, $custmail_headers, $custmail_body);
-                                }
-                            }
-                        }
-                    }
-
-                $ticket_state_change_notify = ConfigHelper::checkConfig('phpui.ticket_state_change_notify');
-                if ($ticket_state_change_notify) {
-                    $headers['From'] = $from;
-                    $headers['Reply-To'] = $headers['From'];
-
-                    if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-                        if ($ticket['customerid']) {
-                            $params = array(
-                                'id' => $id,
-                                'customerid' => $ticket['customerid'],
-                                'customer' => $info,
-                                'emails' => $emails,
-                                'phones' => $phones,
-                            );
-                            $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-                            $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
-                        } else {
-                            $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticket['requestor'];
-                            $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticket['requestor'];
-                        }
-                    }
-
-                    $message = end($ticket['messages']);
-                    $message['body'] = str_replace('<br>', "\n", $message['body']);
+				$headers['From'] = $from;
+				$headers['Reply-To'] = $headers['From'];
 
                     $params = array(
                         'id' => $id,
@@ -134,24 +86,18 @@ if ($id && !isset($_POST['ticket'])) {
                         'deadline' => $ticket['deadline'],
                         'service' => $ticket['service'],
                         'type' => $ticket['type'],
-                        'subject' => $ticket['subject'],
-                        'body' => $message['body'],
                     );
-                    $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
-                    $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
-                    $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
-                    $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+                    $headers['Subject'] = $LMS->ReplaceNotificationSymbols($queue['verifierticketsubject'], $params);
+                    $body = $LMS->ReplaceNotificationSymbols($queue['verifierticketbody'], $params);
                     $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
                     $LMS->NotifyUsers(array(
                         'queue' => $ticket['queue'],
-                        'verifierid' => $ticket['verifierid'],
+                        'verifierid' => $params['verifierid'],
                         'mail_headers' => $headers,
                         'mail_body' => $body,
                         'sms_body' => $sms_body,
                     ));
-                }
-
                 $SESSION->redirect('?m=rtticketview&id=' . $id);
                 break;
             case 'assign':

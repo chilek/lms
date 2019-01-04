@@ -1310,9 +1310,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$args['type'] = MSG_MAIL;
 
 		if ($params['verifierid']) {
-                    $verifier_email = $this->db->GetCol('SELECT email FROM users WHERE users.id = ?', $verifierid);
-                    $params['mail_headers']['To'] = '<' . $verifier_email . '>';
-                    $LMS->SendMail($email, $params['mail_headers'], $params['mail_body']);
+            $verifier_email = $this->db->GetOne('SELECT email FROM users WHERE users.id = ?', array($params['verifierid']));
+            $params['mail_headers']['To'] = '<' . $verifier_email . '>';
+            $LMS->SendMail($verifier_email, $params['mail_headers'], $params['mail_body']);
          } else {
 		if ($recipients = $this->db->GetCol('SELECT DISTINCT email
 			FROM users, rtrights
@@ -1344,8 +1344,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$args['type'] = MSG_SMS;
 		if ($params['verifierid']) {
 			$verifier_phone = $this->db->GetCol('SELECT phone FROM users WHERE users.id = ?', $verifierid);
-			$params['mail_headers']['To'] = '<' . $verifier_phone . '>';
-			$LMS->SendMail($email, $params['mail_headers'], $params['mail_body']);
+            $LMS->SendSMS($verifier_phone, $params['sms_body']);
 		} else {
 		if (!empty($sms_service) && ($recipients = $this->db->GetCol('SELECT DISTINCT phone
 			FROM users, rtrights
