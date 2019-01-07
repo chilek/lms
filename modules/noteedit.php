@@ -51,6 +51,7 @@ if(isset($_GET['id']) && $action=='edit')
 	$note['oldcdate'] = $note['cdate'];
 	$note['oldnumber'] = $note['number'];
 	$note['oldnumberplanid'] = $note['numberplanid'];
+	$note['oldcustomerid'] = $note['customerid'];
 
 	$SESSION->save('notecustomer', $LMS->GetCustomer($note['customerid'], true));
 	$SESSION->save('note', $note);
@@ -101,6 +102,7 @@ switch($action)
 		$oldcdate = $note['oldcdate'];
 		$oldnumber = $note['oldnumber'];
 		$oldnumberplanid = $note['oldnumberplanid'];
+		$oldcustomerid = $note['oldcustomerid'];
 
 		unset($note); 
 		unset($customer);
@@ -114,6 +116,7 @@ switch($action)
 		$note['oldcdate'] = $oldcdate;
 		$note['oldnumber'] = $oldnumber;
 		$note['oldnumberplanid'] = $oldnumberplanid;
+		$note['oldcustomerid'] = $oldcustomerid;
 
 		$note['paytime'] = sprintf('%d', $note['paytime']);
 
@@ -146,6 +149,7 @@ switch($action)
 			if (!preg_match('/^[0-9]+$/', $note['number']))
 				$error['number'] = trans('Debit note number must be integer!');
 			elseif (($note['oldcdate'] != $note['cdate'] || $note['oldnumber'] != $note['number']
+					|| ($note['oldnumber'] == $note['number'] && $note['oldcustomerid'] != $note['customerid'])
 					|| $note['oldnumberplanid'] != $note['numberplanid']) && ($docid = $LMS->DocumentExists(array(
 					'number' => $note['number'],
 					'doctype' => DOC_DNOTE,
@@ -181,6 +185,7 @@ switch($action)
 				if (!preg_match('/^[0-9]+$/', $note['number']))
 					$error['number'] = trans('Debit note number must be integer!');
 				elseif (($note['cdate'] != $note['oldcdate'] || $note['number'] != $note['oldnumber']
+					|| ($note['oldnumber'] == $note['number'] && $note['oldcustomerid'] != $note['customerid'])
 					|| $note['numberplanid'] != $note['oldnumberplanid']) && $docid = $LMS->DocumentExists(array(
 					'number' => $note['number'],
 					'doctype' => DOC_DNOTE,

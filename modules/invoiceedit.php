@@ -72,6 +72,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init' || $action == 
 	$invoice['olddeadline'] = $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
 	$invoice['oldnumber'] = $invoice['number'];
 	$invoice['oldnumberplanid'] = $invoice['numberplanid'];
+	$invoice['oldcustomerid'] = $invoice['customerid'];
 	$invoice['oldcomment'] = $invoice['comment'];
 
 	if ($invoice['proforma'] == 'convert') {
@@ -219,6 +220,7 @@ switch($action)
 		$oldsdate = $invoice['oldsdate'];
 		$oldnumber = $invoice['oldnumber'];
 		$oldnumberplanid = $invoice['oldnumberplanid'];
+		$oldcustomerid = $invoice['oldcustomerid'];
 		$oldcomment = $invoice['oldcomment'];
 		$closed   = $invoice['closed'];
 		$divisionid = $invoice['divisionid'];
@@ -243,6 +245,7 @@ switch($action)
 		$invoice['oldsdate'] = $oldsdate;
 		$invoice['oldnumber'] = $oldnumber;
 		$invoice['oldnumberplanid'] = $oldnumberplanid;
+		$invoice['oldcustomerid'] = $oldcustomerid;
 		$invoice['oldcomment'] = $oldcomment;
 		$invoice['divisionid'] = $divisionid;
 		$invoice['name'] = $name;
@@ -318,6 +321,7 @@ switch($action)
 			if (!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
 			elseif (($invoice['oldcdate'] != $invoice['cdate'] || $invoice['oldnumber'] != $invoice['number']
+				||	($invoice['oldnumber'] == $invoice['number'] && $invoice['oldcustomerid'] != $invoice['customerid'])
 				|| $invoice['oldnumberplanid'] != $invoice['numberplanid']) && ($docid = $LMS->DocumentExists(array(
 					'number' => $invoice['number'],
 					'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
@@ -401,6 +405,7 @@ switch($action)
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
 			elseif (($invoice['cdate'] != $invoice['oldcdate'] || $invoice['number'] != $invoice['oldnumber']
+				||	($invoice['oldnumber'] == $invoice['number'] && $invoice['oldcustomerid'] != $invoice['customerid'])
 				|| $invoice['numberplanid'] != $invoice['oldnumberplanid']) && ($docid = $LMS->DocumentExists(array(
 					'number' => $invoice['number'],
 					'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,

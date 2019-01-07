@@ -85,6 +85,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 	$cnote['olddeadline'] = $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
 	$cnote['oldnumber'] = $cnote['number'];
 	$cnote['oldnumberplanid'] = $cnote['numberplanid'];
+	$cnote['oldcustomerid'] = $cnote['customerid'];
 
 	$SESSION->save('cnote', $cnote);
 	$SESSION->save('cnoteid', $cnote['id']);
@@ -121,6 +122,7 @@ switch ($action) {
 		$oldcdate = $cnote['oldcdate'];
 		$oldnumber = $cnote['oldnumber'];
 		$oldnumberplanid = $cnote['oldnumberplanid'];
+		$oldcustomerid = $cnote['oldcustomerid'];
 
 		$oldcnote = $cnote;
 		$cnote = null;
@@ -133,6 +135,8 @@ switch ($action) {
 		$cnote['oldcdate'] = $oldcdate;
 		$cnote['oldnumber'] = $oldnumber;
 		$cnote['oldnumberplanid'] = $oldnumberplanid;
+		$cnote['oldcustomerid'] = $oldcustomerid;
+
 		$invoice = $oldcnote['invoice'];
 
 		$SESSION->restore('cnoteid', $cnote['id']);
@@ -185,6 +189,7 @@ switch ($action) {
 			if (!preg_match('/^[0-9]+$/', $cnote['number']))
 				$error['number'] = trans('Credit note number must be integer!');
 			elseif (($cnote['oldcdate'] != $cnote['cdate'] || $cnote['oldnumber'] != $cnote['number']
+					|| ($cnote['oldnumber'] == $cnote['number'] && $cnote['oldcustomerid'] != $cnote['customerid'])
 					|| $cnote['oldnumberplanid'] != $cnote['numberplanid']) && ($docid = $LMS->DocumentExists(array(
 					'number' => $cnote['number'],
 					'doctype' => DOC_CNOTE,
@@ -293,6 +298,7 @@ switch ($action) {
 			if (!preg_match('/^[0-9]+$/', $cnote['number']))
 				$error['number'] = trans('Credit note number must be integer!');
 			elseif (($cnote['cdate'] != $cnote['oldcdate'] || $cnote['number'] != $cnote['oldnumber']
+				|| ($cnote['oldnumber'] == $cnote['number'] && $cnote['oldcustomerid'] != $cnote['customerid'])
 				|| $cnote['numberplanid'] != $cnote['oldnumberplanid']) && ($docid = $LMS->DocumentExists(array(
 					'number' => $cnote['number'],
 					'doctype' => DOC_CNOTE,
