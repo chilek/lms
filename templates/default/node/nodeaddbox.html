@@ -346,17 +346,21 @@
 	}
 
 	function radio_sectors_received(radiosectors) {
-		var rselem = xjx.$('radiosector');
-		var options = rselem.options;
-
+		var options = xjx.$('radiosector').options;
+		var oldvalue = options[xjx.$('radiosector').selectedIndex].value;
 		while (options.length)
 			options.remove(0);
 		options.add(new Option('- {trans("none")} -', 0));
-		for (i = 0; i < radiosectors.length; i++)
-			options.add(new Option(radiosectors[i].name, radiosectors[i].id));
-
+		if (radiosectors !== null) {
+			radiosectors.forEach(function(elem) {
+				var option = new Option(elem.name, elem.id);
+				if (elem.id == oldvalue)
+					option.selected = true;
+				options.add(option);
+			});
+		}
 		xjx.$('linktype').disabled = false;
-		rselem.disabled = false;
+		xjx.$('radiosector').disabled = false;
 		xjx.$('linktechnology').disabled = false;
 		xjx.$('linkspeed').disabled = false;
 	}
