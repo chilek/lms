@@ -1718,7 +1718,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				.(isset($having) ? $having : '') . ') a');
 		}
 
-		$result = $this->db->GetAll('SELECT d.id AS id, number, cdate, d.template, closed, published, cancelled,
+		$result = $this->db->GetAll('SELECT d.id AS id, number, cdate, numberplans.template, closed, published, cancelled,
 			d.customerid, d.name, address, zip, city, c.name AS country,
 			SUM(n.value) AS value, COUNT(n.docid) AS count
 			FROM documents d
@@ -1737,7 +1737,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
 			            AND customerid = d.customerid)' : '')
 			.' GROUP BY d.id, number, cdate, d.customerid,
-			d.name, address, zip, city, d.template, closed, published, c.name '
+			d.name, address, zip, city, numberplans.template, closed, published, c.name '
 			.(isset($having) ? $having : '')
 			.$sqlord.' '.$direction
 			. (isset($limit) ? ' LIMIT ' . $limit : '')
