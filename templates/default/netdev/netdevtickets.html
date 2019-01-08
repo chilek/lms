@@ -7,7 +7,7 @@
 			{trans("Assigned tickets:")} ({count($queue)})
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=rtticketadd&netdevid={$queue_netdevid}"><IMG src="img/save.gif" alt="{trans("Add new")}"> {trans("Add new")}</A>
+			<A href="?m=rtticketadd&netdevid={$queue_netdevid}{if isset($netdev.netnode.id)}&netnodeid={$netdev.netnode.id}{/if}"><IMG src="img/save.gif" alt="{trans("Add new")}"> {trans("Add new")}</A>
 		</TD>
 	</TR>
     </THEAD>
