@@ -818,10 +818,12 @@ foreach ($assigns as $assign) {
 // delete old assignments
 $DB->Execute("DELETE FROM liabilities WHERE id IN (
 	SELECT liabilityid FROM assignments
-	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30
-		AND liabilityid IS NOT NULL)");
+		WHERE ((dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30)
+				OR (period = ? AND at < $today - 86400 * 30))
+			AND liabilityid IS NOT NULL)", array(DISPOSABLE));
 $DB->Execute("DELETE FROM assignments
-	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30");
+	WHERE (dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30)
+		OR (period = ? AND at < $today - 86400 * 30)", array(DISPOSABLE));
 
 // clear voip tariff rule states
 $DB->Execute("DELETE FROM voip_rule_states");
