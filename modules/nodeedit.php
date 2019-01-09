@@ -158,7 +158,7 @@ if (isset($_POST['nodeedit'])) {
 
 	if ($nodeedit['name'] == '')
 		$error['name'] = trans('Node name is required!');
-	elseif (!preg_match('/^[_a-z0-9-.]+$/i', $nodeedit['name']))
+	elseif (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $nodeedit['name']))
 		$error['name'] = trans('Specified name contains forbidden characters!');
 	elseif (strlen($nodeedit['name']) > 32)
 		$error['name'] = trans('Node name is too long (max.32 characters)!');
