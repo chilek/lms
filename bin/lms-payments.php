@@ -160,7 +160,7 @@ $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage
 $unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 $check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
 $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
-$delete_old_assignments_after = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after', 30 * 86400));
+$delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after_days', 30));
 
 function localtime2() {
 	global $fakedate;
@@ -816,18 +816,18 @@ foreach ($assigns as $assign) {
 	}
 }
 
-if ($delete_old_assignments_after) {
+if ($delete_old_assignments_after_days) {
 	// delete old assignments
 	$DB->Execute("DELETE FROM liabilities WHERE id IN (
 		SELECT liabilityid FROM assignments
-			WHERE ((dateto <> 0 AND dateto < $today - ?
-					OR (period = ? AND at < $today - ?))
+			WHERE ((dateto <> 0 AND dateto < $today - ? * 86400
+					OR (period = ? AND at < $today - ? * 86400))
 				AND liabilityid IS NOT NULL)",
-		array($delete_old_assignments_after, DISPOSABLE, $delete_old_assignments_after));
+		array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days));
 	$DB->Execute("DELETE FROM assignments
-		WHERE (dateto <> 0 AND dateto < $today - ?)
-			OR (period = ? AND at < $today - ?)",
-		array($delete_old_assignments_after, DISPOSABLE, $delete_old_assignments_after));
+		WHERE (dateto <> 0 AND dateto < $today - ? * 86400)
+			OR (period = ? AND at < $today - ? * 86400)",
+		array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days));
 }
 
 // clear voip tariff rule states
