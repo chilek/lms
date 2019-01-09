@@ -183,7 +183,7 @@ version ?.??.?? (????-??-??):
   - enhancement: phone quick search can look up numbers in customer contact numbers
     or voip account numbers  [chilan]
   - enhancement: payments.delete_old_assignments_after configuration variable controls time
-    after which old assignments are deleted - 30 * 86400 by default [chilan]
+    after which old assignments are deleted - 30 days by default [chilan]
 
 version 1.11.23 (2018-03-21):
 
