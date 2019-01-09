@@ -184,6 +184,8 @@ version ?.??.?? (????-??-??):
     or voip account numbers  [chilan]
   - enhancement: payments.delete_old_assignments_after configuration variable controls time
     after which old assignments are deleted - 30 days by default [chilan]
+  - improvement: phpui.node_name_regexp configuration variable defines regular expression
+    to which node name should match - default: ^[_a-z0-9-.]+$ [chilan]
 
 version 1.11.23 (2018-03-21):
 
