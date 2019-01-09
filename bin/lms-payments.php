@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -56,7 +56,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2019 LMS Developers
 
 EOF;
 	exit(0);
@@ -65,7 +65,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2019 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -81,7 +81,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2019 LMS Developers
 
 EOF;
 }
@@ -160,6 +160,7 @@ $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage
 $unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 $check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
 $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
+$delete_old_assignments_after = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after', 30 * 86400));
 
 function localtime2() {
 	global $fakedate;
@@ -815,15 +816,19 @@ foreach ($assigns as $assign) {
 	}
 }
 
-// delete old assignments
-$DB->Execute("DELETE FROM liabilities WHERE id IN (
-	SELECT liabilityid FROM assignments
-		WHERE ((dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30)
-				OR (period = ? AND at < $today - 86400 * 30))
-			AND liabilityid IS NOT NULL)", array(DISPOSABLE));
-$DB->Execute("DELETE FROM assignments
-	WHERE (dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30)
-		OR (period = ? AND at < $today - 86400 * 30)", array(DISPOSABLE));
+if ($delete_old_assignments_after) {
+	// delete old assignments
+	$DB->Execute("DELETE FROM liabilities WHERE id IN (
+		SELECT liabilityid FROM assignments
+			WHERE ((dateto <> 0 AND dateto < $today - ?
+					OR (period = ? AND at < $today - ?))
+				AND liabilityid IS NOT NULL)",
+		array($delete_old_assignments_after, DISPOSABLE, $delete_old_assignments_after));
+	$DB->Execute("DELETE FROM assignments
+		WHERE (dateto <> 0 AND dateto < $today - ?)
+			OR (period = ? AND at < $today - ?)",
+		array($delete_old_assignments_after, DISPOSABLE, $delete_old_assignments_after));
+}
 
 // clear voip tariff rule states
 $DB->Execute("DELETE FROM voip_rule_states");
