@@ -22,8 +22,8 @@
 		<td class="nobr" align="right">{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
 		<td class="nobr">{$assignment.payday}</td>
 		{if $show_speeds}
-			<td class="nobr" align="right">{$assignment.downrate|default:"-"}({$assignment.downceil|default:"-"}) kbit/s</td>
-			<td class="nobr" align="right">{$assignment.uprate|default:"-"}({$assignment.upceil|default:"-"}) kbit/s</td>
+			<td class="nobr" align="right">{$assignment.downrate|default:"-"} ({$assignment.downceil|default:"-"}) kbit/s</td>
+			<td class="nobr" align="right">{$assignment.uprate|default:"-"} ({$assignment.upceil|default:"-"}) kbit/s</td>
 		{/if}
 		<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 		<td>
@@ -47,8 +47,8 @@
 		<td class="nobr" align="right">({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
 		<td>&nbsp;</td>
 		{if $show_speeds}
-			<td class="nobr" align="right">{sum array=$assignments column="real_downrate" default="-"}({sum array=$assignments column="real_downceil" default="-"}) kbit/s</td>
-			<td class="nobr" align="right">{sum array=$assignments column="real_uprate" default="-"}({sum array=$assignments column="real_upceil" default="-"}) kbit/s</td>
+			<td class="nobr" align="right">{sum array=$assignments column="real_downrate" default="-"} ({sum array=$assignments column="real_downceil" default="-"}) kbit/s</td>
+			<td class="nobr" align="right">{sum array=$assignments column="real_uprate" default="-"} ({sum array=$assignments column="real_upceil" default="-"}) kbit/s</td>
 		{/if}
 		<td>&nbsp;</td>
 		<td class="nobr" align="right">&nbsp;</td>
