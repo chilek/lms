@@ -107,14 +107,12 @@
 			{trans("Type:")}
 		</TD>
 		<TD>
-			<div style="max-width: 35em;">
-				<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" class="lms-ui-combobox" {tip text="Select document type" trigger="type"}>
-					<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
-					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
-					<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
-					{/if}{/foreach}
-				</SELECT>
-			</div>
+			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" class="lms-ui-advanced-select" {tip text="Select document type" trigger="type"}>
+				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
+				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
+				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
+				{/if}{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR id="templates" style="display:{if $document.type<0}table-row{else}none{/if}">
