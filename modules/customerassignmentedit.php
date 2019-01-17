@@ -466,8 +466,6 @@ else
 	$a['phones'] = $DB->GetCol('SELECT number_id FROM voip_number_assignments WHERE assignment_id=?', array($a['id']));
 }
 
-$expired = isset($_GET['expired']) ? $_GET['expired'] : false;
-
 $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -497,9 +495,8 @@ $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('tariffs'            , $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist'          , $LMS->GetTaxes());
-$SMARTY->assign('expired'            , $expired);
 $SMARTY->assign('assignment'         , $a);
-$SMARTY->assign('assignments'        , $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('assignments'        , $LMS->GetCustomerAssignments($customer['id'], true, false));
 $SMARTY->assign('customerinfo', $customer);
 $SMARTY->display('customer/customerassignmentsedit.html');
 

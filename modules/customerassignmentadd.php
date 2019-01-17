@@ -118,8 +118,6 @@ else
 		$a['at'] = $default_assignment_at;
 }
 
-$expired = isset($_GET['expired']) ? $_GET['expired'] : false;
-
 $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -150,8 +148,7 @@ $SMARTY->assign('assignment'          , $a);
 
 $SMARTY->assign('tariffs'             , $LMS->GetTariffs());
 $SMARTY->assign('taxeslist'           , $LMS->GetTaxes());
-$SMARTY->assign('expired'             , $expired);
-$SMARTY->assign('assignments'         , $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('assignments'         , $LMS->GetCustomerAssignments($customer['id'], true, false));
 $SMARTY->assign('customerinfo'        , $customer);
 
 $SMARTY->display('customer/customerassignmentsedit.html');
