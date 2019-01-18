@@ -71,9 +71,25 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<TR>
-					<TD></TD>
-					<TD colspan="5"></TD>
+				<TR class="highlight {cycle}">
+					<TD class="nobr text-right">
+						{trans("Check All")}
+					</TD>
+					<TD class="text-center">
+						<INPUT TYPE="checkbox" NAME="allbox[1]" data-value="1">
+					</TD>
+					<TD class="text-center">
+						<INPUT TYPE="checkbox" NAME="allbox[2]" data-value="2">
+					</TD>
+					<TD class="text-center">
+						<INPUT TYPE="checkbox" NAME="allbox[4]" data-value="4">
+					</TD>
+					<TD class="text-center">
+						<INPUT TYPE="checkbox" NAME="allbox[8]" data-value="8">
+					</TD>
+					<TD class="text-center">
+						<INPUT TYPE="checkbox" NAME="allbox[16]" data-value="16">
+					</TD>
 				</TR>
 				</TBODY>
 		</TABLE>
@@ -87,4 +103,13 @@
 	</TR>
     </TBODY>
 </TABLE>
+<script>
+
+	$(function() {
+		$('input:checkbox[name^="allbox"]').click(function () {
+			$('input:checkbox[name^="rights"][value="' + $(this).attr('data-value') + '"]').prop('checked', this.checked);
+		});
+	});
+
+</script>
 {/block}
