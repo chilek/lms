@@ -187,6 +187,7 @@ version ?.??.?? (????-??-??):
   - improvement: phpui.node_name_regexp configuration variable defines regular expression
     to which node name should match - default: ^[_a-z0-9-.]+$ [chilan]
   - improvement: allow to check all users for given document right with single click [chilan]
+  - "improvement: allow to aggregate documents on customer balance list [chilan]
 
 version 1.11.23 (2018-03-21):
 
