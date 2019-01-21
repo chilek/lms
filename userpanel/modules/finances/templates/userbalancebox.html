@@ -58,7 +58,10 @@
 			<table width="100%" cellpadding="0" cellspacing="0">
 			    <tr>
 				<td width="50%">
-				{img src="print.gif" alt="Print"} <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+					{img src="print.gif" alt="Print"} <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+					{img src="group.gif" alt="Aggregate documents"} <a href="?m=finances&aggregate_documents={if $aggregate_documents}0{else}1{/if}">
+						{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if}
+					</a>
 				</td>
 				<td width="50%" align="right">
 				<label for="allbox">{trans("Check all")}</label><input style="vertical-align: middle" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />

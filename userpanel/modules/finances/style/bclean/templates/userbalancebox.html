@@ -76,7 +76,12 @@
 				{if !$disable_invoices}
 					<tfoot>
 						<tr>
-							<td colspan="5">&nbsp;</td>
+							<td colspan="5">
+								<button type="submit" class="btn btn-primary" formaction="?m=finances&aggregate_documents={if $aggregate_documents}0{else}1{/if}#userbalancebox"
+									formtarget="_self">
+									{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if}
+								</button>
+							</td>
 							<td>
 								<label>
 									{trans("Check all")}

@@ -36,6 +36,7 @@ if (defined('USERPANEL_SETUPMODE'))
 	$SMARTY->assign('show_tariffname', ConfigHelper::getConfig('userpanel.show_tariffname'));
 	$SMARTY->assign('show_speeds', ConfigHelper::getConfig('userpanel.show_speeds'));
 	$SMARTY->assign('show_last_years', ConfigHelper::getConfig('userpanel.show_last_years'));
+	$SMARTY->assign('aggregate_documents', ConfigHelper::checkConfig('userpanel.aggregate_documents'));
 	$SMARTY->display('module:finances:setup.html');
     }
 
@@ -70,6 +71,11 @@ if (defined('USERPANEL_SETUPMODE'))
 	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 		array(str_replace(',', '.', floatval(str_replace(',', '.', $_POST['show_last_years']))),
 			'userpanel', 'show_last_years'));
+	if ($_POST['aggregate_documents']) {
+		$DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'aggregate_documents\'');
+	} else {
+		$DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'aggregate_documents\'');
+	}
 
 	header('Location: ?m=userpanel&module=finances');
     }

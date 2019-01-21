@@ -1,7 +1,7 @@
 {include file="header.html"}
 <ul class="nav nav-tabs mb-1" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link active" data-toggle="tab" href="#balance" role="tab">{trans("Balance")}</a>
+		<a class="nav-link" data-toggle="tab" href="#balance" role="tab">{trans("Balance")}</a>
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" data-toggle="tab" href="#userassignments" role="tab">{trans("Your subscriptions")}</a>
@@ -11,7 +11,7 @@
 	</li>
 </ul>
 <div class="tab-content">
-	<div class="tab-pane active" id="balance" role="tabpanel">
+	<div class="tab-pane" id="balance" role="tabpanel">
 		{include file="module:balance.html"}
 	</div>
 	<div class="tab-pane" id="userassignments" role="tabpanel">
@@ -21,4 +21,14 @@
 		{include file="module:userbalancebox.html"}
 	</div>
 </div>
+<script>
+
+	var panel = '#balance';
+	if (location.hash.length) {
+		panel = location.hash;
+	}
+	$('[role="tab"][href="' + panel + '"]').addClass('active');
+	$(panel + '[role="tabpanel"]').addClass('active');
+
+</script>
 {include file="footer.html"}

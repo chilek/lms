@@ -73,6 +73,17 @@
 							<input type="text" class="box light" name="show_last_years" id="show_last_years" value="{$show_last_years}">
 						</td>
 					</tr>
+					<tr>
+						<td class="nobr">
+							<label for="aggregate_documents">
+								{trans("Aggregate documents")}
+							</label>
+						</td>
+						<td>
+							<input type="checkbox" class="box light" name="aggregate_documents" id="aggregate_documents"
+									value="1"{if $aggregate_documents} checked{/if}>
+						</td>
+					</tr>
 				</table>
 				<p align="right">
 					<A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
