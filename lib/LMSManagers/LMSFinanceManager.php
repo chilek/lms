@@ -3223,4 +3223,47 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 		return $promotions;
 	}
+
+	public function AggregateDocuments($list) {
+		// aggreate trade documents to single row
+		$docidx = null;
+		$trade_doc_types = array_flip(array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO));
+		$comments = array(
+			DOC_INVOICE => 'Invoice No. $a',
+			DOC_CNOTE => 'Credit Note No. $a',
+			DOC_DNOTE => 'Debit Note No. $a',
+			DOC_INVOICE_PRO => 'Pro-forma Invoice No. $a',
+		);
+		$list2 = array();
+
+		foreach ($list['list'] as $idx => &$row) {
+			if (!empty($row['docid']) && isset($trade_doc_types[$row['doctype']])) {
+				if (!isset($docid) || $row['docid'] != $docid) {
+					$docid = $row['docid'];
+					$list2[] = $list['list'][$idx];
+					$docidx = count($list2) - 1;
+				} else {
+					$list2[$docidx]['value'] += $row['value'];
+				}
+			} else {
+				unset($docid);
+				$list2[] = $list['list'][$idx];
+			}
+		}
+		unset($row);
+
+		foreach ($list2 as &$row)
+			if (!empty($row['docid']) && isset($trade_doc_types[$row['doctype']]))
+				$row['comment'] = trans($comments[$row['doctype']], docnumber(array(
+					'number' => $row['number'],
+					'template' => $row['template'],
+					'cdate' => $row['cdate'],
+					'customerid' => $list['customerid'],
+				)));
+		unset($row);
+
+		$list['list'] = $list2;
+
+		return $list;
+	}
 }

@@ -564,10 +564,10 @@ class LMS
         return $manager->getCustomerBalance($id, $totime);
     }
 
-    public function GetCustomerBalanceList($id, $totime = null, $direction = 'ASC')
+    public function GetCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerBalanceList($id, $totime, $direction);
+        return $manager->getCustomerBalanceList($id, $totime, $direction, $aggregate_documents);
     }
 
 	public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC') {
@@ -2802,6 +2802,11 @@ class LMS
 	public function GetPromotions() {
 		$manager = $this->getFinanceManager();
 		return $manager->GetPromotions();
+	}
+
+	public function AggregateDocuments($list) {
+		$manager = $this->getFinanceManager();
+		return $manager->AggregateDocuments($list);
 	}
 
 	/**

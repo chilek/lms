@@ -34,14 +34,13 @@ if ($layout['module'] != 'customeredit') {
     $SMARTY->assignByRef('customerinfo', $customerinfo);
 }
 
-$expired              = !empty($_GET['expired']) ? true : false;
+$aggregate_documents = isset($_GET['aggregate_documents']) && !empty($_GET['aggregate_documents']);
 $commited             = !empty($_GET['commited']) ? true : false;
 $allevents            = isset($_GET['allevents']) && !empty($_GET['allevents']);
-//$assignments          = $LMS->GetCustomerAssignments($customerid, !empty($expired) ? $expired : NULL);
 $assignments          = $LMS->GetCustomerAssignments($customerid, true, false);
 $customergroups       = $LMS->CustomergroupGetForCustomer($customerid);
 $othercustomergroups  = $LMS->GetGroupNamesWithoutCustomer($customerid);
-$balancelist          = $LMS->GetCustomerBalanceList($customerid);
+$balancelist          = $LMS->GetCustomerBalanceList($customerid, null, 'ASC', $aggregate_documents);
 $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
 $documents            = $LMS->GetDocuments($customerid, 10);
 $taxeslist            = $LMS->GetTaxes();
@@ -127,7 +126,8 @@ if ($receipt = $SESSION->get('receiptprint')) {
 }
 
 $SMARTY->assign(array(
-	'expired' => $expired,
+	'id' => $customerinfo['id'],
+	'aggregate_documents' => $aggregate_documents,
 	'commited' => $commited,
 	'allevents' => $allevents,
 	'time' => $SESSION->get('addbt'),

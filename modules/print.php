@@ -59,6 +59,8 @@ switch($type)
 
 		$id = intval($_POST['customer']);
 
+		$aggregate_documents = isset($_POST['aggregate_documents']) && !empty($_POST['aggregate_documents']);
+
 		$layout['pagetitle'] = trans('Customer $a Balance Sheet ($b to $c)',$LMS->GetCustomerName($id), ($from ? $from : ''), $to);
 
 		$list['balance'] = 0;
@@ -68,11 +70,14 @@ switch($type)
 		$list['summary'] = 0;
 		$list['customerid'] = $id;
 
-		if($tslist = $DB->GetAll('SELECT c.id AS id, time, type, c.value AS value,
-				    taxes.label AS taxlabel, customerid, comment, name AS username
+		if($tslist = $DB->GetAll('SELECT c.id AS id, time, c.type, c.value AS value,
+				    taxes.label AS taxlabel, c.customerid, c.comment, vusers.name AS username,
+				    c.docid, d.number, d.cdate, d.type AS doctype, numberplans.template
 				    FROM cash c
+				    LEFT JOIN documents d ON d.id = c.docid
+				    LEFT JOIN numberplans ON numberplans.id = d.numberplanid
 				    LEFT JOIN taxes ON (c.taxid = taxes.id)
-				    LEFT JOIN vusers ON (vusers.id = userid)
+				    LEFT JOIN vusers ON (vusers.id = c.userid)
 				    WHERE c.customerid = ?
 					    AND NOT EXISTS (
 				                    SELECT 1 FROM customerassignments a
@@ -81,6 +86,12 @@ switch($type)
 				    ORDER BY time', array($id, $id))
 		)
 		{
+
+			if ($aggregate_documents) {
+				$tslist = $LMS->AggregateDocuments(array('customerid' => $id, 'list' => $tslist));
+				$tslist = $tslist['list'];
+			}
+
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;

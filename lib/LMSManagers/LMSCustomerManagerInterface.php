@@ -52,7 +52,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerBalance($id, $totime = null);
 
-    public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC');
+    public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false);
 
 	public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
 

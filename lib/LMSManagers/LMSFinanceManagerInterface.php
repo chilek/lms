@@ -125,4 +125,6 @@ interface LMSFinanceManagerInterface
 	public function GetOpenedLiabilities($customerid);
 
 	public function GetPromotions();
+
+	public function AggregateDocuments($list);
 }

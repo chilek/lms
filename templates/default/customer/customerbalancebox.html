@@ -23,6 +23,9 @@
 			{/if}
 		{/tab_header_cell}
 		{tab_header_cell}
+			<A href="?m={$layout.module}&aggregate_documents={if $aggregate_documents}0{else}1{/if}&id={$id}">
+				{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if} &raquo;
+			</A>
 			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
 				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>

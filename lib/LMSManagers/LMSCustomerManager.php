@@ -27,8 +27,6 @@
 /**
  * LMSCustomerManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterface
 {
@@ -213,7 +211,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $direction Order
      * @return array Balance list
      */
-    public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC')
+    public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false)
     {
         ($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
 
@@ -225,10 +223,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, cash.importid,
-                (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
+                (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced,
+                documents.cdate, documents.number, numberplans.template
             FROM cash
             LEFT JOIN vusers ON vusers.id = cash.userid
             LEFT JOIN documents ON documents.id = docid
+            LEFT JOIN numberplans ON numberplans.id = documents.numberplanid
             LEFT JOIN documents d2 ON d2.reference = documents.id
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
@@ -239,9 +239,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             		ic.description AS comment, d.id AS docid, vusers.name AS username,
             		d.type AS doctype, d.closed AS closed,
             		d.published, NULL AS importid,
-            		0 AS referenced
+            		0 AS referenced,
+            		d.cdate, d.number, numberplans.template
             	FROM documents d
             	JOIN invoicecontents ic ON ic.docid = d.id
+            	JOIN numberplans ON numberplans.id = d.numberplanid
             	LEFT JOIN vusers ON vusers.id = d.userid
             	WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
             	. ' d.customerid = ? AND d.type = ?'
@@ -250,20 +252,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             array($id, $id, DOC_INVOICE_PRO)
         );
 
+		$result['customerid'] = $id;
+
         if (!empty($result['list'])) {
             $result['balance'] = 0;
             $result['total'] = 0;
 
-            foreach ($result['list'] as &$row) {
-                $row['customlinks'] = array();
+			if ($aggregate_documents) {
+				$finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
+				$result = $finance_manager->AggregateDocuments($result);
+			}
+
+			foreach ($result['list'] as $idx => &$row) {
+				$row['customlinks'] = array();
 				if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment'))
 					$row['after'] = $result['balance'];
 				else {
 					$row['after'] = round($result['balance'] + $row['value'], 2);
 					$result['balance'] += $row['value'];
 				}
-                $row['date'] = date('Y/m/d H:i', $row['time']);
-            }
+				$row['date'] = date('Y/m/d H:i', $row['time']);
+			}
 
             $result['total'] = count($result['list']);
         }
@@ -273,7 +282,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 			WHERE c.id = ? AND invoicenotice = 1 AND cc.type & ? = ?
 			LIMIT 1', array($id, CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES)) > 0);
 
-		$result['customerid'] = $id;
         return $result;
     }
 

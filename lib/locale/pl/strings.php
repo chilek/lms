@@ -4220,4 +4220,9 @@ $_LANG['<!qs>customer phone number'] = 'numer telefonu klienta';
 $_LANG['<!qs>voip account number'] = 'numer konta VoIP';
 $_LANG['VoIP number:'] = 'Numer VoIP:';
 
+$_LANG['Pro-forma Invoice No. $a'] = 'Faktura pro-forma nr $a';
+
+$_LANG['Aggregate documents'] = 'Agreguj dokumenty';
+$_LANG['Don\'t aggregate documents'] = 'Nie agreguj dokumentów';
+
 ?>
