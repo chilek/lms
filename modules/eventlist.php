@@ -99,7 +99,7 @@ if (!isset($filter['day']))
 	$filter['day'] = date('j');
 
 if (!isset($filter['month']))
-	$filter['month'] = date('n');
+	$filter['month'] = date('m');
 
 if (!isset($filter['year']))
 	$filter['year'] = date('Y');
