@@ -34,7 +34,10 @@ $id = $_GET['id'];
 
 $layout['pagetitle'] = trans('Customer Balance: $a', '<A HREF="?m=customerinfo&id='.$_GET['id'].'">'.$customername.'</A>');
 
-$aggregate_documents = isset($_GET['aggregate_documents']) && !empty($_GET['aggregate_documents']);
+if (isset($_GET['aggregate_documents']))
+	$aggregate_documents = !empty($_GET['aggregate_documents']);
+else
+	$aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
 
 $SMARTY->assign('aggregate_documents', $aggregate_documents);
 $SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id'], null, false, $aggregate_documents));

@@ -34,7 +34,11 @@ if ($layout['module'] != 'customeredit') {
     $SMARTY->assignByRef('customerinfo', $customerinfo);
 }
 
-$aggregate_documents = isset($_GET['aggregate_documents']) && !empty($_GET['aggregate_documents']);
+if (isset($_GET['aggregate_documents']))
+	$aggregate_documents = !empty($_GET['aggregate_documents']);
+else
+	$aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
+
 $commited             = !empty($_GET['commited']) ? true : false;
 $allevents            = isset($_GET['allevents']) && !empty($_GET['allevents']);
 $assignments          = $LMS->GetCustomerAssignments($customerid, true, false);

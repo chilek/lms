@@ -21,11 +21,14 @@
 			{if $limit}
 				{$n=$limit*-1}
 			{/if}
+			&nbsp;&nbsp;&nbsp;
+			<label id="aggregate_document_label">
+				{trans("Aggregate documents")}
+				<input type="checkbox" name="aggregate_documents" value="1"
+						{if $aggregate_documents} checked{/if}>
+			</label>
 		{/tab_header_cell}
 		{tab_header_cell}
-			<A href="?m={$layout.module}&aggregate_documents={if $aggregate_documents}0{else}1{/if}&id={$id}">
-				{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if} &raquo;
-			</A>
 			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
 			<SELECT name="newtransferform" onchange="javascript:new_transfer_form_type_changed()" form="addbalance-form">
 				<OPTION value="{LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("<!transferform>assignments")}</OPTION>
@@ -410,6 +413,16 @@
 				$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' +
 					$('[name="newtransferform"]').val() + '&value=' + $('[name="newtransferformcustomvalue"]').val());
 			}, 1);
+		});
+
+		// don't allow to trigger click event on title bar
+		$('#aggregate_document_label').click(function(e) {
+			e.stopPropagation();
+		});
+
+		$('[name="aggregate_documents"]:checkbox').click(function() {
+			location.href = '?m={$layout.module}&id={$id}&aggregate_documents=' +
+				($(this).prop('checked') ? '1' : '0');
 		});
 	});
 

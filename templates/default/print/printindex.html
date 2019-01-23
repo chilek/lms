@@ -435,7 +435,7 @@
 					<TD style="width: 99%;" colspan="4">
 						<label>
 							{trans("Aggregate documents")}
-							<input type="checkbox" name="aggregate_documents" value="1">
+							<input type="checkbox" name="aggregate_documents" value="1"{if ConfigHelper::checkConfig('phpui.aggregate_documents')} checked{/if}>
 						</label>
 					</TD>
 				</TR>
