@@ -35,12 +35,22 @@
 		</TD>
 		<TD class="nobr">
 			{if $ticket.customerid}
-				{$ticket.customername|escape}
+			{$ticket.customername|escape} ({$ticket.customerid|string_format:"%04d"})
+			{if $ticket.requestor}<BR>{$ticket.requestor}{/if}
+			{if $ticket.requestor_phone}<BR>{$ticket.requestor_phone}{/if}
+			{if $ticket.requestor_mail}<BR>{$ticket.requestor_mail}{/if}
 			{else}
-				{$ticket.requestor|escape} 
-			{/if}
-			{if $ticket.requestoremail && !$ticket.customerid}
-				{$ticket.requestoremail}
+				{if $ticket.requestor_userid}
+				{$ticket.requestor_username}
+				{else}
+					{$ticket.requestor}
+					{if $ticket.requestor_mail}
+					<br>{$ticket.requestor_mail}
+					{/if}
+					{if $ticket.requestor_phone}
+					<br>{$ticket.requestor_phone}
+					{/if}
+				{/if}
 			{/if}
 		</TD>
 	</TR>
