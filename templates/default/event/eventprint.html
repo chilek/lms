@@ -48,9 +48,9 @@
 	{foreach item=event from=$eventlist}
 	<TR class="{cycle}"{if $event.closed==1} style="color: lightgray;"{/if}>
 		<TD class="text-center nobr">
-			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+			{($date + $event.begintime)|date_format:"%H:%M"}
 			{if $event.begintime != $event.endtime}
-			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+				- {($date + $event.endtime)|date_format:"%H:%M"}
 			{/if}
 		</TD>
 		<TD class="text-center">
