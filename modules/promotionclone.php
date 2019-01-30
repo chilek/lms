@@ -39,8 +39,8 @@ if($schemas) foreach ($schemas as $schema) {
         $schema['continuation'], $schema['ctariffid']
     ));
     $schemaid = $DB->GetLastInsertID('promotionschemas');
-    $DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid, data)
-        SELECT ?, tariffid, data
+    $DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid, data, optional, label, orderid)
+        SELECT ?, tariffid, data, optional, label, orderid
         FROM promotionassignments WHERE promotionschemaid = ?', array($schemaid, $schema['id']));
 }
 
