@@ -403,13 +403,24 @@ $(function() {
 			scombobox.scombobox('val', $(this).attr('data-id-value'));
 		}
 	});
-	// dynamicaly insert hidden input element with name as original select element
-	// the purpose is simple: we want to submit custom value to server
 	if ($('.scombobox').length) {
+		// dynamicaly insert hidden input element with name as original select element
+		// the purpose is simple: we want to submit custom value to server
 		$('.scombobox').scombobox('change', function (e) {
 			var scomboboxelem = $(this).closest('.scombobox');
 			var name = scomboboxelem.find('select').attr('name');
 			$(this).attr('name', name);
+		}, 'lms-ui');
+		// hide tooltip after combo box activation because it can interfere with dropdown list
+		$('.scombobox').scombobox('click', function(e) {
+			if ($(this).is('[data-tooltip]')) {
+				$(this).removeAttr('data-tooltip').tooltip('disable');
+			}
+		}, 'lms-ui');
+		$('.scombobox').scombobox('keypress', function(e) {
+			if ($(this).is('[data-tooltip]')) {
+				$(this).removeAttr('data-tooltip').tooltip('disable');
+			}
 		}, 'lms-ui');
 	}
 
