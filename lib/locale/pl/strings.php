@@ -433,6 +433,7 @@ $_LANG['connected<!plural>'] = 'podłączeni';
 $_LANG['connected<!singular>'] = 'podłączony';
 $_LANG['Connected:'] = 'Podłączeni:';
 $_LANG['List of Connected Customers $a$b'] = 'Lista podłączonych klientów $a$b';
+$_LANG['List of Debt Collection Customers $a$b'] = 'Lista windykowanych klientów $a$b';
 $_LANG['Connected devices ($a):'] = 'Podłączone urządzenia ($a):';
 $_LANG['Connected nodes ($a):'] = 'Podłączone komputery ($a):';
 $_LANG['Connected<!nodes>:'] = 'Podłączone:';
