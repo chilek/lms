@@ -36,8 +36,8 @@ if($schema) {
     ));
     $schemaid = $DB->GetLastInsertID('promotionschemas');
     $DB->Execute('
-        INSERT INTO promotionassignments (promotionschemaid, tariffid, data)
-        SELECT ?, tariffid, data
+        INSERT INTO promotionassignments (promotionschemaid, tariffid, data, optional, label, orderid)
+        SELECT ?, tariffid, data, optional, label, orderid
         FROM promotionassignments WHERE promotionschemaid = ?', array($schemaid, $schema['id']));
 	$SESSION->redirect('?m=promotioninfo&id=' . $schema['promotionid']);
 }
