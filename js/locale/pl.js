@@ -23,8 +23,24 @@
  *  $Id$
  */
 
+$_LANG['Are you sure, you want to unlink this ticket $a?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie $a?';
+$_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można powiązać zgłoszenia z powodu pętli powiązań!';
+$_LANG['Ticket parent ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zostało ustawione na $a.';
+$_LANG['Ticket does not exist'] = 'Zgłoszenie nie istnieje';
+$_LANG['Unlink'] = 'Odwiąż';
+$_LANG['Parent ticket:'] = 'Zgłoszenie nadrzędne:';
+$_LANG['Enter ID of parent ticket'] = 'Wprowadź ID zgłoszenia narzędnego';
+$_LANG['There is no related tickets'] = 'Brak powiązanych zgłoszeń';
+$_LANG['Related tickets:'] = 'Powiązane zgłoszenia:';
 $_LANG['Verified'] = 'Weryfikowany';
+$_LANG['Ticket has been transferred to verifier'] = 'Zgłoszenie zostało przekazane do weryfikatora';
 $_LANG['Ticket has been transferred to verifier.'] = 'Zgłoszenie zostało przekazane do weryfikatora.';
+$_LANG['Ticket verifier notification subject:'] = 'Temat listu z powiadomieniem dla weryfikatora:';
+$_LANG['Subject of mail which is sent to verifier when the ticket is transfered to him'] = 'Temat listu z powiadomieniem, który zostanie wysłany do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
+$_LANG['Ticket verifier notification body:'] = 'Treść listu z powiadomieniem dla weryfikatora:';
+$_LANG['Body of mail which is sent to verifier when the ticket is transfered to him'] = 'Treść listu z powiadomieniem, który zostanie wysłany do weryfikatora, gdy zgłoszenie zostanie mu przekazane';
+$_LANG['Verifier ticket subject should not be empty if you set verifier ticket body!'] = 'Temat listu z powiadomieniem dla weryfikatora nie może być pusty, gdy treść jest uzupełniona!';
+$_LANG['Verifier ticket body should not be empty if you set verifier ticket subject!'] = 'Treść listu z powiadomieniem dla weryfikatora nie może być pusta, gdy temat jest uzupełniony!';
 $_LANG['Transfer ticket to verifier'] = 'Przekaż zgłoszenie do weryfikatora';
 $_LANG['Reuse'] = 'Ponownie';
 $_LANG['Enter encryption key'] = 'Wprowadź klucz szyfrowania';
@@ -1908,7 +1924,7 @@ $_LANG['greater than or equal to'] = 'większe równe';
 $_LANG['less than or equal to'] = 'mniejsze równe';
 $_LANG['duplicate'] = 'duplikat';
 $_LANG['DUPLICATE'] = 'DUPLIKAT';
-$_LANG['Duplicate draw-up date:'] = 'Data wyst. duplikatu:';
+$_LANG['DUPLICATE, draw-up date:'] = 'DUPLIKAT, data wystawienia:';
 $_LANG['If true on invoice (html) will be printed history of financial operations on customer account. Default: not set.'] = 'Określa czy na fakturze (html) drukować listę operacji finansowych na koncie klienta. Domyślnie: nie ustawiona.';
 $_LANG['Number of Records on customer balance list on invoice. Specify last x records. Default: 10.'] = 'Liczba rekordów na liście operacji finansowych na fakturze. Domyślnie: 10.';
 $_LANG['Expense:'] = 'Rozchód:';
@@ -2229,7 +2245,7 @@ $_LANG['Remove assignment'] = 'Usuń powiązanie';
 $_LANG['Select group to attribute to node'] = 'Wybierz grupę, aby przypisać ją do komputera';
 $_LANG['Select groups to attribute to node'] = 'Wybierz grupy, aby przypisać je do komputera';
 $_LANG['That node is not a member of any group.'] = 'Ten komputer nie należy do żadnej grupy.';
-$_LANG['Remove Group'] = 'Usuń grupę';
+$_LANG['Change Groups'] = 'Zmień grupy';
 $_LANG['Node\'s Groups ($a):'] = 'Grupy komputera ($a):';
 $_LANG['Are you sure, you want to delete that group?'] = 'Jesteś pewien, że chcesz usunąć tę grupę?';
 $_LANG['Are you sure, you want to move members to selected group?'] = 'Czy jesteś pewien, że chcesz przenieść członków do wybranej grupy?';
@@ -3632,10 +3648,13 @@ $_LANG['Unit name on invoice, default: "pcs."'] = 'Jednostka na fakturze, domyś
 $_LANG['opened<!plural:event>'] = 'otwarte';
 $_LANG['closed<!plural:event>'] = 'zamknięte';
 
-$_LANG['Assigments:'] = 'Zobowiązania:';
+$_LANG['Assignments:'] = 'Zobowiązania:';
 $_LANG['suspended'] = 'zawieszone';
 $_LANG['active, with invoice'] = 'aktywne, z fakturą';
 $_LANG['without end date'] = 'bez daty zakończenia';
+$_LANG['with end date'] = 'z datą zakończenia';
+$_LANG['with end date:'] = 'z datą zakończenia:';
+$_LANG['<!enddate>- any -'] = '- dowolną -';
 $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 
 $_LANG['TERRIT not specified'] = 'Bez TERYT-u';
@@ -3875,6 +3894,7 @@ $_LANG['Helpdesk assignment:'] = 'Przypisanie do Helpdesk:';
 $_LANG['This event is not assigned to any helpdesk request.'] = 'Zdarzenie nie jest przypisane do żadnego zgłoszenia w helpdesk.';
 $_LANG['Request not assigned to any customer.'] = 'Zgłoszenie nie jest przypisane do żadnego klienta.';
 $_LANG['Request not assigned to any customer location.'] = 'Zgłoszenie nie jest przypisane do żadnej lokalizacji klienta.';
+$_LANG['Request not assigned to any node.'] = 'Zgłoszenie nie jest przypisane do żadnego komputera.';
 
 $_LANG['Result:'] = 'Wynik:';
 
@@ -3972,7 +3992,7 @@ $_LANG['PPPoE login and password'] = 'Login i hasło PPPoE';
 
 $_LANG['Customer has not checked \\\'electronic invoice\\\' consent and you are trying to mark this mail contact for invoice sending!'] = 'Klient nie ma zaznaczonej zgody na \\\'faktury elektroniczne\\\', podczas gdy próbujesz oznaczyć mail kontaktowy do wysyłki faktur!';
 
-$_LANG['Add new event to request:'] = 'Przypisanie nowego zdarzenia do zgłoszenia:';
+$_LANG['Add new event to request #$a'] = 'Przypisanie nowego zdarzenia do zgłoszenia #$a';
 $_LANG['document type:'] = 'typ dokumentu:';
 
 $_LANG['No address has been selected!'] = 'Nie wybrano adresu!';
@@ -4084,6 +4104,7 @@ $_LANG['<!qs>customer name'] = 'nazwa klienta';
 $_LANG['<!qs>address'] = 'adres';
 $_LANG['<!qs>post name'] = 'nazwa korespondencyjna';
 $_LANG['<!qs>post address'] = 'adres korespondencyjny';
+$_LANG['<!qs>location name'] = 'nazwa lokalizacji';
 $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'email';
 
@@ -4164,4 +4185,42 @@ $_LANG['Select category change type'] = 'Wybierz rodzaj zmian kategorii';
 $_LANG['- replace -'] = '- zastąp -';
 $_LANG['- append -'] = '- dołącz -';
 $_LANG['- remove -'] = '- usuń -';
+
+$_LANG['Enable accounting of selected liability'] = 'Włącz naliczanie wybranych zobowiązań';
+$_LANG['Disable accounting of selected liability'] = 'Wyłącz naliczanie wybranych zobowiązań';
+
+$_LANG['Ticket id should not be empty!'] = 'Identyfikator zgłoszenia nie powinien być pusty!';
+
+$_LANG['Network interface type:'] = 'Typ interfejsu sieciowego:';
+
+$_LANG['(no password)'] = '(brak hasła)';
+
+$_LANG['credit notes'] = 'faktury korygujące';
+
+$_LANG['<!message>Templates'] = 'Szablony';
+$_LANG['Message Template List'] = 'Lista szablonów wiadomości';
+$_LANG['Message template list'] = 'Lista szablonów wiadomości';
+$_LANG['No message templates in database.'] = 'Brak szablonów wiadomości w bazie danych.';
+$_LANG['Are you sure, you want to delete that message template?'] = 'Jesteś pewien, że chcesz usunąć ten szablon wiadomości?';
+$_LANG['Are you sure, you want to delete all selected message templates?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane szablony wiadomości?';
+$_LANG['<!message>userpanel'] = 'panel abonencki';
+$_LANG['<!message>userpanel (urgent)'] = 'panel abonencki (pilne)';
+$_LANG['<!message>warning'] = 'ostrzeżenie';
+$_LANG['Add message template'] = 'Dodaj szablon wiadomości';
+$_LANG['Edit message template'] = 'Edytuj szablon wiadomości';
+$_LANG['Empty message template name!'] = 'Pusta nazwa szablonu wiadomości!';
+$_LANG['Empty message template subject!'] = 'Pusty temat szablonu wiadomości!';
+$_LANG['Empty message template body!'] = 'Pusta treść szablonu wiadomości!';
+
+$_LANG['Inexistent owner selected!'] = 'Wybrano nieistniejącego właściciela!';
+
+$_LANG['Click here to select how phone numbers should be searched'] = 'Kliknij tutaj, aby wybrać w jaki sposób są wyszukiwane numery telefonów';
+$_LANG['<!qs>customer phone number'] = 'numer telefonu klienta';
+$_LANG['<!qs>voip account number'] = 'numer konta VoIP';
+$_LANG['VoIP number:'] = 'Numer VoIP:';
+
+$_LANG['Pro-forma Invoice No. $a'] = 'Faktura pro-forma nr $a';
+
+$_LANG['Aggregate documents'] = 'Agreguj dokumenty';
+$_LANG['Don\'t aggregate documents'] = 'Nie agreguj dokumentów';
 

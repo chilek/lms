@@ -1,10 +1,12 @@
 #!/bin/bash
 
-if [ ! -d ../img/locale ]; then
-	mkdir -p ../img/locale
+cwd=$(dirname $(readlink -f $0))
+
+if [ ! -d ${cwd}/../js/locale ]; then
+	mkdir -p ${cwd}/../js/locale
 fi
 
-for file in $(find ../lib/locale -type f -name 'strings.php'); do
+for file in $(find ${cwd}/../lib/locale -type f -name 'strings.php'); do
 	lang=$(echo ${file} |gawk -F'/' '{print $(NF-1);}')
-	grep -v '\(^<\|>$\)' $file >../img/locale/${lang}.js
+	grep -v '\(^<\|>$\)' $file >${cwd}/../js/locale/${lang}.js
 done
