@@ -1,8 +1,9 @@
 <?php
+
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,9 +23,7 @@
  *
  *  $Id$
  */
-/**
- * @author Maciej_Wawryk
- */
+
 $id = ($_GET['id']);
 $DB->Execute('INSERT INTO promotions (name, description, disabled)
 	SELECT ' . $DB->Concat('name',"' (".trans('copy').")'"). ', description, disabled
@@ -32,7 +31,7 @@ $DB->Execute('INSERT INTO promotions (name, description, disabled)
 $newid = $DB->GetLastInsertID('promotions');
 $schemas = $DB->GetAll('SELECT * FROM promotionschemas WHERE promotionid = ?', array($id));
 if($schemas) foreach ($schemas as $schema) {
-    $DB->Execute('INSERT INTO promotionschemas (name, description, data, promotionid, disabled, continuation, ctariffid) VALUES (?, ?, ?, ?, ?, ?, ?)
+    $DB->Execute('INSERT INTO promotionschemas (name, description, data, promotionid, disabled) VALUES (?, ?, ?, ?, ?)
     ', array(
         $schema['name'], $schema['description'],
         $schema['data'], $newid, $schema['disabled'],
