@@ -1,8 +1,9 @@
 <?php
+
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -22,17 +23,14 @@
  *
  *  $Id$
  */
-/**
- * @author Maciej_Wawryk
- */
+
 $id = intval($_GET['id']);
 $schema = $DB->GetRow('SELECT * FROM promotionschemas WHERE id = ?', array($id));
 if($schema) {
-    $DB->Execute('INSERT INTO promotionschemas (name, description, data, promotionid, disabled, continuation, ctariffid)
-        VALUES (?, ?, ?, ?, ?, ?, ?)', array(
+    $DB->Execute('INSERT INTO promotionschemas (name, description, data, promotionid, disabled)
+        VALUES (?, ?, ?, ?, ?)', array(
             $schema['name'].' ('.trans('copy').')' , $schema['description'],
             $schema['data'], $schema['promotionid'], $schema['disabled'],
-            $schema['continuation'], $schema['ctariffid']
     ));
     $schemaid = $DB->GetLastInsertID('promotionschemas');
     $DB->Execute('
