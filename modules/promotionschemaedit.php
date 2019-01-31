@@ -205,9 +205,6 @@ if (isset($_POST['schema'])) {
 		array($schema['name'], $oldschema['promotionid'], $schema['id'])))
 		$error['name'] = trans('Specified name is in use!');
 
-	if (empty($schema['continuation']) && !empty($schema['ctariffid']))
-		$error['ctariffid'] = trans('Additional subscription is useless when contract prolongation is not set!');
-
 	if (!$error) {
 		$data = array();
 		foreach ($schema['periods'] as $period)
@@ -222,12 +219,9 @@ if (isset($_POST['schema'])) {
 			'name' => $schema['name'],
 			'description' => $schema['description'],
 			'data' => implode(';', $data),
-			'continuation' => !empty($schema['continuation']) ? 1 : 0,
-			SYSLOG::RES_TARIFF => !empty($schema['ctariffid']) ? $schema['ctariffid'] : null,
 			SYSLOG::RES_PROMOSCHEMA => $schema['id']
 		);
-		$DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?,
-			continuation = ?, ctariffid = ?
+		$DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?
 			WHERE id = ?', array_values($args));
 
 		if ($SYSLOG) {
@@ -243,10 +237,11 @@ if (isset($_POST['schema'])) {
 			WHERE a.promotionschemaid = ?', array($schema['id']));
 
 		if (!empty($tariffs)) {
-			$data_cnt = count($data)+1; // +1 for activation item
+			$data_cnt = count($data) + 2; // +1 for activation item, +1 for continuation item
 			foreach ($tariffs as $tariff) {
 				$tdata = explode(';', $tariff['data']);
 				$tdata_cnt = count($tdata);
+				$last_data = array_pop($tdata);
 				// nothing's changed
 				if ($tdata_cnt == $data_cnt)
 					continue;
@@ -257,6 +252,8 @@ if (isset($_POST['schema'])) {
 				// removed periods
 				else
 					$tdata = array_slice($tdata, 0, $data_cnt);
+
+				$tdata[] = $last_data;
 
 				$args = array(
 					'data' => implode(';', $tdata),
@@ -290,7 +287,6 @@ $layout['pagetitle'] = trans('Schema Edit: $a', $oldschema['name']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('schema', $schema);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->display('promotion/promotionschemaedit.html');
 
 ?>

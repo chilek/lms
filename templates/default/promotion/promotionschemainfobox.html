@@ -21,28 +21,6 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/options.gif" alt="">
-		</TD>
-		<TD style="width: 99%;" colspan="2">
-			<TABLE class="lmsbox-inner">
-				<TBODY>
-				<TR>
-					<TD style="width: 1%;" class="nobr">{trans("Contract prolongation after promotion period:")}</TD>
-					<TD style="width: 99%;" class="nobr">{if $schema.continuation}{trans("yes")}{else}{trans("no")}{/if}</TD>
-				</TR>
-				<TR>
-					<TD class="nobr">{trans("Additional subscription after promotion period:")}</TD>
-					<TD class="nobr">
-						{if $schema.tariff}<A href="?m=tariffinfo&amp;id={$schema.ctariffid}">{$schema.tariff} ({$schema.value|string_format:"%.2f"})</A>
-						{else}{trans("none")}{/if}
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
 			<A href="?m=promotionschemaset&amp;id={$schema.id}&amp;access={$schema.disabled}"><IMG src="img/{if $schema.disabled}no{/if}access.gif" alt=""></A>
 		</TD>
 		<TD style="width: 99%;" class="nobr" colspan="2">

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,11 +25,9 @@
  */
 
 
-$schema = $DB->GetRow('SELECT s.*, p.id AS pid, p.name AS promotion,
-    t.name AS tariff, t.value
+$schema = $DB->GetRow('SELECT s.*, p.id AS pid, p.name AS promotion
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
-    LEFT JOIN tariffs t ON (t.id = s.ctariffid)
     WHERE s.id = ?',
     array(intval($_GET['id'])));
 
@@ -58,6 +56,7 @@ foreach ($schema['data'] as $idx => $data) {
     }
     $schema['periods'][] = $period;
 }
+$schema['periods'][] = trans('Months $a-', $mon);
 
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 

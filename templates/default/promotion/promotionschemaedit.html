@@ -47,37 +47,6 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/options.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">
-			{trans("Options:")}
-		</TD>
-		<TD style="width: 98%;">
-			<TABLE width="100%">
-				<TR>
-					<TD style="width: 1%;" class="nobr">{trans("Contract prolongation after promotion period:")}</TD>
-					<TD style="width: 99%;">
-						<INPUT type="checkbox" name="schema[continuation]" value="1"{if $schema.continuation} checked{/if}>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="nobr">{trans("Additional subscription after promotion period:")}</TD>
-					<TD>
-						<SELECT name="schema[ctariffid]" {tip text="Select subscription" trigger="ctariffid"}>
-							<OPTION value="0"{if !$schema.ctariffid} selected{/if}>- {trans("none")} -</OPTION>
-							{foreach from=$tariffs item=t}
-							<OPTION value="{$t.id}"{if $t.id == $schema.ctariffid} selected{/if}>
-							{$t.name|truncate:40:"...":true} ({$t.value|money_format}{if $t.upceil || $t.downceil}, {$t.downceil}/{$t.upceil} kbit/s{/if})
-							</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
 			<IMG src="img/info1.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold">

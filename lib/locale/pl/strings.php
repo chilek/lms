@@ -2860,6 +2860,7 @@ $_LANG['Enter subscription value for specified period'] = 'Wprowadź kwotę abon
 $_LANG['List of promotions'] = 'Lista promocji';
 $_LANG['Months $a-$b'] = 'M-ce $a-$b';
 $_LANG['Month $a'] = 'M-c $a';
+$_LANG['Months $a-'] = 'M-ce $a-';
 $_LANG['New Promotion'] = 'Nowa promocja';
 $_LANG['New Schema'] = 'Nowy schemat';
 $_LANG['Periods:'] = 'Okresy:';

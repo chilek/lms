@@ -1527,9 +1527,7 @@ CREATE TABLE promotionschemas (
     ctariffid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY promotionid (promotionid, name),
-    INDEX ctariffid (ctariffid),
-    FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (ctariffid) REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3470,4 +3468,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019012100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019013100');

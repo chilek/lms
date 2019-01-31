@@ -42,9 +42,6 @@ if ($schema) {
 		WHERE name = ? AND promotionid = ?', array($schema['name'], $schema['promotionid'])))
 		$error['name'] = trans('Specified name is in use!');
 
-	if (empty($schema['continuation']) && !empty($schema['ctariffid']))
-		$error['ctariffid'] = trans('Additional subscription is useless when contract prolongation is not set!');
-
 	if (!$error) {
 		$data = array();
 		foreach ($schema['periods'] as $period)
@@ -59,12 +56,10 @@ if ($schema) {
 			'name' => $schema['name'],
 			'description' => $schema['description'],
 			'data' => $data,
-			'continuation' => !empty($schema['continuation']) ? 1 : 0,
-			SYSLOG::RES_TARIFF => !empty($schema['ctariffid']) ? $schema['ctariffid'] : null
 		);
 		$DB->Execute('INSERT INTO promotionschemas (promotionid, name,
-			description, data, continuation, ctariffid)
-			VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
+			description, data)
+			VALUES (?, ?, ?, ?)', array_values($args));
 
 		$sid = $DB->GetLastInsertId('promotionschemas');
 
@@ -106,7 +101,6 @@ if ($schema) {
 } else {
 	$schema['promotionid'] = $_GET['id'];
 	$schema['promotionname'] = $LMS->GetPromotionNameByID($schema['promotionid']);
-	$schema['continuation'] = 1;
 	$schema['periods'] = array(0);
 }
 
@@ -116,7 +110,6 @@ $layout['pagetitle'] = trans('New Schema');
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('schema', $schema);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->display('promotion/promotionschemaadd.html');
 
 ?>
