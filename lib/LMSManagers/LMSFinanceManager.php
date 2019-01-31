@@ -242,7 +242,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             $data['tariffid'] = $data['promotiontariffid'];
             $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.value, t.period,
-                                         	t.id, t.prodid, t.taxid, s.continuation, s.ctariffid
+                                         	t.id, t.prodid, t.taxid
 					                     FROM
 					                     	promotionassignments a
 						                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
@@ -493,7 +493,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
 						'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
 						'datefrom' => $idx ? $datefrom : 0,
-						'dateto' => $idx ? $dateto : 0,
+						'dateto' => $idx && ($idx < count($data_tariff) - 1) ? $dateto : 0,
 						'pdiscount' => 0,
 						'vdiscount' => 0,
 						'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
@@ -514,44 +514,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
 
-            // add "after promotion" tariff(s)
-            if ($tariff['continuation'] || !$data_schema[0]) {
-
-                $tariffs[] = $tariff['id'];
-                if ($tariff['ctariffid'] && $data_schema[0] != 0) {
-                    $tariffs[] = $tariff['ctariffid'];
-                }
-
-                // Create assignments
-                foreach ($tariffs as $t) {
-                    $args = array(
-                        SYSLOG::RES_TARIFF  => $t,
-                        SYSLOG::RES_CUST    => $data['customerid'],
-                        'period'            => $data['period'],
-                        'at'                => (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && !empty($data['at'])
-                                                       ? $data['at'] : $this->CalcAt($data['period'], $datefrom)),
-                        'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
-                        'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
-                        'settlement'        => 0,
-                        SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                        'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                        'datefrom'          => $datefrom,
-                        'dateto'            => 0,
-                        'pdiscount'         => 0,
-                        'vdiscount'         => 0,
-                        'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                        SYSLOG::RES_LIAB    => null,
-                        'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
-						'docid'				=> empty($data['docid']) ? null : $data['docid'],
-                        'commited'			=> $commited,
-                    );
-
-                    $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
-
-					$this->insertNodeAssignments($data);
-					$this->insertPhoneAssignments($data);
-				}
-            }
         } else {
 			// creates assignment record for partial period
 			if (isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
