@@ -819,10 +819,11 @@ foreach ($assigns as $assign) {
 if ($delete_old_assignments_after_days) {
 	// delete old assignments
 	$DB->Execute("DELETE FROM liabilities WHERE id IN (
-		SELECT liabilityid FROM assignments
-			WHERE ((dateto <> 0 AND dateto < $today - ? * 86400
-					OR (period = ? AND at < $today - ? * 86400))
-				AND liabilityid IS NOT NULL)",
+			SELECT liabilityid FROM assignments
+				WHERE ((dateto <> 0 AND dateto < $today - ? * 86400
+						OR (period = ? AND at < $today - ? * 86400))
+					AND liabilityid IS NOT NULL)
+		)",
 		array($delete_old_assignments_after_days, DISPOSABLE, $delete_old_assignments_after_days));
 	$DB->Execute("DELETE FROM assignments
 		WHERE (dateto <> 0 AND dateto < $today - ? * 86400)
