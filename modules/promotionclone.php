@@ -35,7 +35,6 @@ if($schemas) foreach ($schemas as $schema) {
     ', array(
         $schema['name'], $schema['description'],
         $schema['data'], $newid, $schema['disabled'],
-        $schema['continuation'], $schema['ctariffid']
     ));
     $schemaid = $DB->GetLastInsertID('promotionschemas');
     $DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid, data, optional, label, orderid)

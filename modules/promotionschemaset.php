@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,10 +34,9 @@ if ($id) {
 	$DB->Execute('UPDATE promotionschemas SET disabled = ? WHERE id = ?',
 		array_values($args));
 	if ($SYSLOG) {
-		$schema = $DB->GetRow('SELECT promotionid, ctariffid
+		$promotionid = $DB->GetOne('SELECT promotionid
 			FROM promotionschemas WHERE id = ?', array($id));
-		$args[SYSLOG::RES_PROMO] = $schema['promotionid'];
-		$args[SYSLOG::RES_TARIFF] = $schema['ctariffid'];
+		$args[SYSLOG::RES_PROMO] = $promotionid;
 		$SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_UPDATE, $args);
 	}
 }

@@ -30,15 +30,14 @@ if ($id && $_GET['is_sure'] == '1') {
 	$args = array(SYSLOG::RES_PROMO => $id);
 	if ($SYSLOG) {
 		$SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_DELETE, $args);
-		$schemas = $DB->GetAll('SELECT id, ctariffid FROM promotionschemas
+		$schemas = $DB->GetCol('SELECT id FROM promotionschemas
 			WHERE promotionid = ?', array_values($args));
 		if (!empty($schemas))
-			foreach ($schemas as $schema) {
-				$args[SYSLOG::RES_PROMOSCHEMA] = $schema['id'];
-				$args[SYSLOG::RES_TARIFF] = $schema['ctariffid'];
+			foreach ($schemas as $schemaid) {
+				$args[SYSLOG::RES_PROMOSCHEMA] = $schemaid;
 				$SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
 				$assigns = $DB->GetCol('SELECT id FROM promotionassignments
-					WHERE promotionschemaid = ?', array($schema['id']));
+					WHERE promotionschemaid = ?', array($schemaid));
 				if (!empty($assigns))
 					foreach ($assigns as $assign) {
 						$args[SYSLOG::RES_PROMOASSIGN] = $assign;

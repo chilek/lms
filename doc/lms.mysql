@@ -1523,8 +1523,6 @@ CREATE TABLE promotionschemas (
     data text           DEFAULT NULL,
     promotionid int(11) DEFAULT NULL,
     disabled tinyint(1) DEFAULT '0' NOT NULL,
-    continuation tinyint(1) DEFAULT NULL,
-    ctariffid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY promotionid (promotionid, name),
     FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE

@@ -37,8 +37,8 @@ $tariff['promotions'] = $DB->GetAll('SELECT DISTINCT p.name, p.id
     FROM promotionassignments a
     JOIN promotionschemas s ON (s.id = a.promotionschemaid)
     JOIN promotions p ON (p.id = s.promotionid)
-    WHERE a.tariffid = ? OR s.ctariffid = ?
-    ORDER BY p.name', array($tariff['id'], $tariff['id']));
+    WHERE a.tariffid = ?
+    ORDER BY p.name', array($tariff['id']));
 
 if (!empty($tariff['numberplanid']))
 	$tariff['numberplan'] = $DB->GetRow('SELECT template, period FROM numberplans WHERE id = ?', array($tariff['numberplanid']));

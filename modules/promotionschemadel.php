@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,11 +30,9 @@ $promotionid = $DB->GetOne('SELECT promotionid FROM promotionschemas
 
 if ($_GET['is_sure'] == '1') {
 	if ($SYSLOG) {
-		$ctariffid = $DB->GetOne('SELECT ctariffid FROM promotionschemas WHERE id = ?', array($id));
 		$args = array(
 			SYSLOG::RES_PROMOSCHEMA => $id,
 			SYSLOG::RES_PROMO => $promotionid,
-			SYSLOG::RES_TARIFF => $ctariffid
 		);
 		$SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
 		$assigns = $DB->GetAll('SELECT id, tariffid FROM promotionassignments WHERE promotionschemaid = ?',
