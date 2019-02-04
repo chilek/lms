@@ -160,7 +160,7 @@
 									{trans("Attribute:")}
 								</TD>
 								<TD>
-									<INPUT type="text" name="{$variable_prefix}[attribute]" value="{if $variables.attribute}{$variables.attribute}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
+									<INPUT type="text" name="{$variable_prefix}[attribute]" value="{if $variables.attribute}{htmlspecialchars($variables.attribute)}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
 								</TD>
 							</TR>
 
