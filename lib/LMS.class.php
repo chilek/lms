@@ -3826,7 +3826,10 @@ class LMS
 			$doc['dnote_filename'] = $dnote_filename;
 			$doc['which'] = $which;
 
-			$document = $this->GetFinancialDocument($doc, $SMARTY);
+			if (!$no_attachments) {
+				$document = $this->GetFinancialDocument($doc, $SMARTY);
+				$filename = $document['filename'];
+			}
 
 			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
 			$invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
@@ -3848,7 +3851,6 @@ class LMS
 			$body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
 			$body = str_replace('\n', "\n", $body);
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
-			$filename = $document['filename'];
 			$doc['name'] = '"' . $doc['name'] . '"';
 
 			$body = preg_replace('/%bankaccount/',
@@ -3921,18 +3923,21 @@ class LMS
 
 			if (!$test) {
 				$files = array();
-				$files[] = array(
-					'content_type' => $doc['doctype'] == DOC_DNOTE ? $dnote_ftype : $invoice_ftype,
-					'filename' => $filename,
-					'data' => $document['data'],
-				);
 
-				if ($extrafile) {
+				if (!$no_attachments) {
 					$files[] = array(
-						'content_type' => mime_content_type($extrafile),
-						'filename' => basename($extrafile),
-						'data' => file_get_contents($extrafile)
+						'content_type' => $doc['doctype'] == DOC_DNOTE ? $dnote_ftype : $invoice_ftype,
+						'filename' => $filename,
+						'data' => $document['data'],
 					);
+
+					if ($extrafile) {
+						$files[] = array(
+							'content_type' => mime_content_type($extrafile),
+							'filename' => basename($extrafile),
+							'data' => file_get_contents($extrafile)
+						);
+					}
 				}
 
 				$headers = array(

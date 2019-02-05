@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,6 +38,7 @@ $parameters = array(
 	'e:' => 'extra-file:',
 	'b' => 'backup',
 	'o:' => 'output-directory:',
+	'n' => 'no-attachment',
 );
 
 foreach ($parameters as $key => $val) {
@@ -55,7 +56,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2019 LMS Developers
 
 EOF;
 	exit(0);
@@ -64,7 +65,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2019 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -77,6 +78,7 @@ lms-sendinvoices.php
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 -b, --backup                    make financial document file backup
 -o, --output-directory=/path    output directory for document backup
+-n, --no-attachments            dont attach documents
 
 EOF;
 	exit(0);
@@ -86,7 +88,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-sendinvoices.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2019 LMS Developers
 
 EOF;
 }
@@ -152,10 +154,12 @@ try {
 	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
+$no_attachments = isset($options['no-attachments']);
+
 $invoice_filetype = ConfigHelper::getConfig('invoices.type', '');
 $dnote_filetype = ConfigHelper::getConfig('notes.type', '');
 
-if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
+if ((!$no_attachments || $backup) && ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf')) {
 	// Initialize templates engine (must be before locale settings)
 	$SMARTY = new LMSSmarty;
 
@@ -182,7 +186,7 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
-if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
+if ((!$no_attachments || $backup) && ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf')) {
 	// Set some template and layout variables
 
 	$SMARTY->setTemplateDir(null);
@@ -313,7 +317,7 @@ $LMS->lang = $_language;
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
-if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
+if ((!$no_attachments || $backup) && ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf')) {
 	$plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 	$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
@@ -381,6 +385,7 @@ if (!empty($docs)) {
 		$LMS->SendInvoices($docs, 'backend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype' , 'invoice_filename', 'dnote_filename', 'debug_email',
 			'mail_body', 'mail_subject', 'mail_format', 'currtime', 'sender_email', 'sender_name', 'extrafile',
 			'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message', 'interval',
+			'no_attachments',
 			'smtp_options'));
 }
 
