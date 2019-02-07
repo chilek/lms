@@ -23,8 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute('ALTER TABLE events ALTER COLUMN begintime TYPE integer');
-$this->Execute('ALTER TABLE events ALTER COLUMN endtime TYPE integer');
+$this->Execute('ALTER TABLE events ALTER COLUMN begintime TYPE int(11)');
+$this->Execute('ALTER TABLE events ALTER COLUMN endtime TYPE int(11)');
 
 $events = $this->GetAll('SELECT id, begintime, endtime FROM events');
 if (!empty($events))
