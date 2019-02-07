@@ -243,8 +243,10 @@ if (isset($_POST['nodedata']))
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
 
 		$ipi = $nodedata['invprojectid'];
-		if ($ipi == '-1')
+		if ($ipi == '-1') {
+			$nodedata['project'] = $nodedata['projectname'];
 			$ipi = $LMS->AddProject($nodedata);
+		}
 
 		if ($nodedata['invprojectid'] == '-1' || intval($ipi)>0)
 			$nodedata['invprojectid'] = intval($ipi);

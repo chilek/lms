@@ -62,13 +62,6 @@ if (isset($netnodedata)) {
 			$netnodedata['projectid'] = $project['id'];
 	}
 
-	if ($netnodedata['invprojectid'] == '-1') { // new investment project
-		if (!strlen(trim($netnodedata['projectname'])))
-			$error['projectname'] = trans('Project name is required');
-		if ($LMS->ProjectByNameExists($netnodedata['projectname']))
-			$error['projectname'] = trans('Project with that name already exists');
-	}
-
 	if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
 		$error['location_zip'] = trans('Incorrect ZIP code!');
 	}

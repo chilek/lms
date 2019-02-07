@@ -28,17 +28,17 @@ if(!empty($_POST['invprojectadd']))
 {
 	$invproject = $_POST['invprojectadd'];
 			
-	if($invproject['name']=='')
+	if($invproject['project']=='')
 	{
 		$SESSION->redirect('?m=invprojectadd');
 	}
 
-	if ($LMS->ProjectByNameExists($invproject['name']))
-		$error['name'] = trans('Investment project with specified name already exists!');
+	if ($LMS->ProjectByNameExists($invproject['project']))
+		$error['project'] = trans('Investment project with specified name already exists!');
 		
 	if (!$error) {
 		$LMS->AddProject(array(
-			'projectname' => $invproject['name'],
+			'project' => $invproject['project'],
 			'divisionid' => $invproject['divisionid'],
 		));
 

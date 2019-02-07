@@ -238,8 +238,10 @@ if (isset($_POST['nodeedit'])) {
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
 		$ipi = $nodeedit['invprojectid'];
-		if ($ipi == '-1')
+		if ($ipi == '-1') {
+			$nodeedit['project'] = $nodeedit['projectname'];
 			$ipi = $LMS->AddProject($nodeedit);
+		}
 		if ($nodeedit['invprojectid'] == '-1' || intval($ipi)>0) {
 			$nodeedit['invprojectid'] = intval($ipi);
 		} else {
