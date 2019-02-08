@@ -56,6 +56,15 @@ if (!empty($schemas))
 		}
 
 $this->Execute("ALTER TABLE promotionschemas DROP COLUMN continuation");
+
+if ($this->ResourceExists('promotionschemas_ibfk_1', LMSDB::RESOURCE_TYPE_CONSTRAINT))
+	$this->Execute("ALTER TABLE promotionschemas DROP FOREIGN KEY promotionschemas_ibfk_1");
+if ($this->ResourceExists('promotionschemas_ibfk_2', LMSDB::RESOURCE_TYPE_CONSTRAINT))
+	$this->Execute("ALTER TABLE promotionschemas DROP FOREIGN KEY promotionschemas_ibfk_2");
+
+$this->Execute("ALTER TABLE promotionschemas ADD CONSTRAINT promotionschemas_promotionid_fkey
+	FOREIGN KEY (promotionid) REFERENCES promotions (id) ON DELETE CASCADE ON UPDATE CASCADE");
+
 $this->Execute("ALTER TABLE promotionschemas DROP COLUMN ctariffid");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019013100', 'dbversion'));
