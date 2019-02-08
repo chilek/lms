@@ -32,7 +32,7 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
 			{$invoice.cdate|date_format:"%Y/%m/%d"}{if $invoice.division_cplace != ""}, {$invoice.division_cplace}{/if}<BR>
-			{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}$invoice.sdate|date_format:"%Y/%m/%d"}<BR>{/if}
+			{if !ConfigHelper::checkConfig('invoices.hide_sale_date')}{$invoice.sdate|date_format:"%Y/%m/%d"}<BR>{/if}
 			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
 			{if !ConfigHelper::checkConfig('invoices.hide_payment_type')}{$invoice.paytypename}{/if}
 		</TD>
