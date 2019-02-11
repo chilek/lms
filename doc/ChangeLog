@@ -190,6 +190,9 @@ version ?.??.?? (????-??-??):
   - improvement: allow to aggregate documents on customer balance list [chilan]
   - enhancement: added after promotion period support [chilan]
   - improvement: lms-sendinvoices.php --no-attachments parameter support [chilan]
+  - improvement: phpui.helpdesk_additional_user_permission_checks ('false' by default)
+    configuration variable controls if additional ticket properties are checked to verify if user
+    has access to ticket even if ticket queue is not accessible for user [chilan]
 
 version 1.11.23 (2018-03-21):
 
