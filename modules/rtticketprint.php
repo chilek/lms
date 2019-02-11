@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,12 +29,8 @@ if(! $LMS->TicketExists($_GET['id']))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-if(! $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $_GET['id']))
-{
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
-}
+if (!$LMS->CheckTicketAccess($_GET['id']))
+	access_denied();
 
 $LMS->MarkTicketAsRead($_GET['id']);
 

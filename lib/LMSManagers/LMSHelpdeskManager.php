@@ -1533,7 +1533,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
 
 		if ($user_permission_checks)
-			return $this->db->GetOne('SELECT (CASE WHEN r.rights IS NULL THEN ' . (RT_RIGHT_READ | RT_RIGHT_WRITE) . ' ELSE r.rights END) FROM rttickets t
+			return $this->db->GetOne('SELECT (CASE WHEN r.rights IS NULL THEN '
+					. (RT_RIGHT_READ | RT_RIGHT_WRITE | RT_RIGHT_DELETE) . ' ELSE r.rights END) FROM rttickets t
 				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 				WHERE t.id = ? AND (t.owner = ? OR t.verifierid = ?)
 					AND EXISTS (

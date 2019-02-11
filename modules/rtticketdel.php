@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,14 +26,9 @@
 
 $ticket = intval($_GET['id']);
 $taction = ($_GET['taction']);
-$queue = $DB->GetOne('SELECT queueid FROM rttickets WHERE id = ?', array($ticket));
-$right = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue);
 
-if ($right & RT_RIGHT_DELETE != RT_RIGHT_DELETE) {
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
-}
+if (!($LMS->CheckTicketAccess($ticket) & RT_RIGHT_DELETE))
+	access_denied();
 
 if ($taction == 'delete') {
 	$del = 1;
