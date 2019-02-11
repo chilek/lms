@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -280,6 +280,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		$userid = Auth::GetCurrentUser();
 
+		$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+
 		if ($count) {
 			return $this->db->GetOne('SELECT COUNT(DISTINCT t.id)
 				FROM rttickets t
@@ -301,11 +303,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					GROUP BY m4.ticketid
 				) m3 ON m3.ticketid = t.id
 				WHERE 1=1 '
-				. ($rights ? ' AND t.queueid IN (
+				. ($rights ? ' AND (t.queueid IN (
 						SELECT q.id FROM rtqueues q
 						JOIN rtrights r ON r.queueid = q.id
 						WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' =  ' . $rights . '
-					) AND tc.categoryid IN (
+					)'. ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . '' : '')
+					. ') AND tc.categoryid IN (
 						SELECT categoryid
 						FROM rtcategoryusers WHERE userid = ' . $userid
 					. ')' : '')
@@ -380,11 +383,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				GROUP BY m4.ticketid
 			) m3 ON m3.ticketid = t.id
 			WHERE 1=1 '
-			. ($rights ? ' AND t.queueid IN (
+			. ($rights ? ' AND (t.queueid IN (
 					SELECT q.id FROM rtqueues q
 					JOIN rtrights r ON r.queueid = q.id
 					WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' = ' . $rights . '
-				) AND tc.categoryid IN (
+				)' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . '' : '')
+				. ') AND tc.categoryid IN (
 					SELECT categoryid
 					FROM rtcategoryusers
 					WHERE userid = ' . $userid
@@ -696,7 +700,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved,
-				    COUNT(CASE WHEN t.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < maxcreatetime) THEN 1 ELSE 0 END) AS unread
+				    COUNT(CASE WHEN t.state <> ' . RT_RESOLVED . ' AND (lv.ticketid IS NULL OR lv.vdate < maxcreatetime) THEN 1 END) AS unread
 				    FROM rtcategories c
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid
@@ -706,10 +710,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    	SELECT ticketid, MAX(createtime) AS maxcreatetime FROM rtmessages
 				    	GROUP BY ticketid
 				    ) m ON m.ticketid = t.id
-				    WHERE c.id IN (' . implode(',', $catids) . ') AND r.rights > 0
+				    WHERE c.id IN (' . implode(',', $catids) . ') AND (r.rights > 0 OR t.owner = ? OR t.verifierid = ?)
 				    GROUP BY c.id, c.name
 				    ORDER BY c.name',
-			array($userid, $userid));
+			array($userid, $userid, $userid, $userid));
     }
 
     public function GetQueueByTicketId($id)
@@ -1515,16 +1519,28 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	public function CheckTicketAccess($ticketid) {
 		$userid = Auth::GetCurrentUser();
 
-		return $this->db->GetOne('SELECT rights FROM rtrights r
-			JOIN rttickets t ON t.queueid = r.queueid
-			WHERE r.userid = ? AND t.id = ?
-				AND EXISTS (
-					SELECT tc.categoryid FROM rtticketcategories tc
-					JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
-					WHERE tc.ticketid = ?
-				)
-			LIMIT 1',
-			array($userid, $ticketid, $userid, $ticketid));
+		$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+
+		if ($user_permission_checks)
+			return $this->db->GetOne('SELECT (CASE WHEN r.rights IS NULL THEN ' . (RT_RIGHT_READ | RT_RIGHT_WRITE) . ' ELSE r.rights END) FROM rttickets t
+				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
+				WHERE t.id = ? AND (t.owner = ? OR t.verifierid = ?)
+					AND EXISTS (
+						SELECT tc.categoryid FROM rtticketcategories tc
+						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
+						WHERE tc.ticketid = ?
+					)',
+				array($userid, $ticketid, $userid, $userid, $userid, $ticketid));
+		else
+			return $this->db->GetOne('SELECT rights FROM rtrights r
+				JOIN rttickets t ON t.queueid = r.queueid
+				WHERE r.userid = ? AND t.id = ?
+					AND EXISTS (
+						SELECT tc.categoryid FROM rtticketcategories tc
+						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
+						WHERE tc.ticketid = ?
+					)',
+				array($userid, $ticketid, $userid, $ticketid));
 	}
 
     public function GetRelatedTicketIds($ticketid) {
