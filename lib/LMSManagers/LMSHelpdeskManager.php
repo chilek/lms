@@ -1536,7 +1536,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			return $this->db->GetOne('SELECT (CASE WHEN r.rights IS NULL THEN '
 					. (RT_RIGHT_READ | RT_RIGHT_WRITE | RT_RIGHT_DELETE) . ' ELSE r.rights END) FROM rttickets t
 				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
-				WHERE t.id = ? AND (t.owner = ? OR t.verifierid = ?)
+				WHERE t.id = ? AND (r.rights IS NOT NULL OR t.owner = ? OR t.verifierid = ?)
 					AND EXISTS (
 						SELECT tc.categoryid FROM rtticketcategories tc
 						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
