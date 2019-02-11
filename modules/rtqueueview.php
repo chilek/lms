@@ -201,8 +201,6 @@ elseif (!isset($filter['unread']))
 
 if (isset($_GET['rights']))
 	$filter['rights'] = $_GET['rights'];
-else
-	$filter['rights'] = RT_RIGHT_READ;
 
 if (isset($_GET['page']))
 	$filter['page'] = intval($_GET['page']);

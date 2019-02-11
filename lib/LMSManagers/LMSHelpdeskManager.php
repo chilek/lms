@@ -282,6 +282,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
 
+		$qids = null;
+		if (!empty($ids)) {
+			$qids = $ids;
+			if (!is_array($ids) && $ids != 0)
+				$qids = array($ids);
+		}
+
 		if ($count) {
 			return $this->db->GetOne('SELECT COUNT(DISTINCT t.id)
 				FROM rttickets t
@@ -312,7 +319,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						SELECT categoryid
 						FROM rtcategoryusers WHERE userid = ' . $userid
 					. ')' : '')
-				. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
+				. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
+						. ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
+					: ($user_permission_checks ? ' AND (t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
 				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 				. $unreadfilter
 				. $statefilter
@@ -393,7 +402,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					FROM rtcategoryusers
 					WHERE userid = ' . $userid
 				. ')' : '')
-			. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
+			. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
+					. ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
+				: ($user_permission_checks ? ' AND (t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
 			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 			. $unreadfilter
 			. $statefilter
