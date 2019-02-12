@@ -289,6 +289,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$qids = array($ids);
 		}
 
+		$all_queues = false;
+		if ($qids) {
+			$queues = $this->db->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($userid));
+			if ($queues && count($queues) == count($qids))
+				$all_queues = true;
+		}
+
 		if ($count) {
 			return $this->db->GetOne('SELECT COUNT(DISTINCT t.id)
 				FROM rttickets t
@@ -320,8 +327,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						FROM rtcategoryusers WHERE userid = ' . $userid
 					. ')' : '')
 				. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
-						. ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
-					: ($user_permission_checks ? ' AND (t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
+							. ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
+					: ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
 				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 				. $unreadfilter
 				. $statefilter
@@ -403,8 +410,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					WHERE userid = ' . $userid
 				. ')' : '')
 			. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
-					. ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
-				: ($user_permission_checks ? ' AND (t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
+					. ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
+				: ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
 			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 			. $unreadfilter
 			. $statefilter
