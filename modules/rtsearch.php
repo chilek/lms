@@ -105,11 +105,14 @@ function RTSearch($search, $order='createtime,desc')
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').'))';
 	if (isset($search['queue'])) {
 		if (is_array($search['queue']))
-			$where[] = 'queueid IN (' . implode(',', $search['queue']) . ')';
+			$where_queue = '(queueid IN (' . implode(',', $search['queue']) . ')';
 		elseif (empty($search['queue']))
 			return null;
 		else
-			$where[] = 'queueid = '.intval($search['queue']);
+			$where_queue = '(queueid = '.intval($search['queue']);
+		$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+		$userid = Auth::GetCurrentUser();
+		$where[] = $where_queue . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')';
 	}
 	if(isset($search['catids']))
 		$where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
