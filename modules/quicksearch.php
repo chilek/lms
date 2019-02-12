@@ -512,13 +512,15 @@ switch ($mode) {
 			$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 			foreach($categories as $category)
 				$catids[] = $category['id'];
+
 			$userid = Auth::GetCurrentUser();
+			$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, t.state, c.name, c.lastname
 				FROM rttickets t
 				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & ? > 0
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customerview c on (t.customerid = c.id)
-				WHERE (r.rights IS NOT NULL OR t.owner = ? OR t.verifierid = ?) 
+				WHERE (r.rights IS NOT NULL" . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ")
 					AND ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
 					." AND (" . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/',$search) ? 't.id = ' . $search : '1=0') : '1=0')
 					. (empty($properties) || isset($properties['subject']) ? " OR LOWER(t.subject) ?LIKE? LOWER($sql_search)" : '')
@@ -528,7 +530,7 @@ switch ($mode) {
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
 					LIMIT ?",
 					array(
-						$userid, RT_RIGHT_READ, $userid, $userid,
+						$userid, RT_RIGHT_READ,
 						intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
 					));
 
