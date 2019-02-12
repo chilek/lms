@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -512,12 +512,14 @@ switch ($mode) {
 			$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 			foreach($categories as $category)
 				$catids[] = $category['id'];
+			$userid = Auth::GetCurrentUser();
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, t.state, c.name, c.lastname
 				FROM rttickets t
-				JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & " . RT_RIGHT_READ . " > 0
+				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ? AND r.rights & ? > 0
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
 				LEFT JOIN customerview c on (t.customerid = c.id)
-				WHERE ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
+				WHERE (r.rights IS NOT NULL OR t.owner = ? OR t.verifierid = ?) 
+					AND ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
 					." AND (" . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/',$search) ? 't.id = ' . $search : '1=0') : '1=0')
 					. (empty($properties) || isset($properties['subject']) ? " OR LOWER(t.subject) ?LIKE? LOWER($sql_search)" : '')
 					. (empty($properties) || isset($properties['requestor']) ? " OR LOWER(t.requestor) ?LIKE? LOWER($sql_search)" : '')
@@ -526,7 +528,7 @@ switch ($mode) {
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
 					LIMIT ?",
 					array(
-						Auth::GetCurrentUser(),
+						$userid, RT_RIGHT_READ, $userid, $userid,
 						intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15)),
 					));
 
