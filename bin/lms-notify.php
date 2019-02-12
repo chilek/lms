@@ -765,12 +765,36 @@ if (empty($types) || in_array('debtors', $types)) {
 // Invoices (not payed) up to $reminder_days days before deadline (cdate + paytime)
 if (empty($types) || in_array('reminder', $types)) {
 	$days = $notifications['reminder']['days'];
+	$limit = $notifications['reminder']['limit'];
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
 		d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
-		COALESCE(ca.balance, 0) AS balance, v.value
+		b2.balance AS balance, b.balance AS totalbalance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
 		LEFT JOIN divisions ON divisions.id = c.divisionid
+		LEFT JOIN (
+			SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
+		) b ON b.customerid = c.id
+		LEFT JOIN (
+			SELECT cash.customerid, SUM(value) AS balance FROM cash
+			LEFT JOIN customers ON customers.id = cash.customerid
+			LEFT JOIN divisions ON divisions.id = customers.divisionid
+			LEFT JOIN documents d ON d.id = cash.docid
+			LEFT JOIN (
+				SELECT SUM(value) AS totalvalue, docid FROM cash
+				JOIN documents ON documents.id = cash.docid
+				WHERE documents.type = ?
+				GROUP BY docid
+			) tv ON tv.docid = cash.docid
+			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+				OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
+					(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) + ?) * 86400 < $currtime)))
+				OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
+					OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
+					OR (((d.type = ? AND tv.totalvalue < 0)
+						OR d.type IN (?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
+			GROUP BY cash.customerid
+		) b2 ON b2.customerid = c.id
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
 			WHERE (type & ?) = ?
@@ -787,28 +811,16 @@ if (empty($types) || in_array('reminder', $types)) {
 			GROUP BY docid
 		) v ON (v.docid = d.id)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		LEFT JOIN (
-			SELECT SUM(value) AS balance, cash.customerid
-			FROM cash
-			LEFT JOIN documents ON documents.id = cash.docid
-			JOIN customers c ON c.id = cash.customerid
-			LEFT JOIN divisions ON divisions.id = c.divisionid
-			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $dayend)
-				OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
-				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $dayend)))
-				OR (cash.docid IS NOT NULL AND ((documents.type IN (?, ?) AND cash.time < $dayend)
-					OR (documents.type IN (?, ?) AND ((documents.cdate / 86400) + documents.paytime - ?) * 86400 < $dayend)))
-			GROUP BY cash.customerid
-		) ca ON (ca.customerid = d.customerid)
-		WHERE d.type = 1 AND d.closed = 0 AND ca.balance < 0
+		WHERE d.type = ? AND d.closed = 0 AND b2.balance < ?
 			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 >= $daystart
 			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $dayend",
 		array(
+			DOC_CNOTE, $days, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days,
 			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-			$days, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $days, $days));
+			DOC_INVOICE, $limit, $days, $days));
 	if (!empty($documents)) {
 		$notifications['reminder']['customers'] = array();
 		foreach ($documents as $row) {
