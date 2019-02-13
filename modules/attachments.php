@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,6 +42,18 @@ switch ($attachmenttype) {
 
 if (isset($_GET['attachmentaction'])) {
 	switch ($_GET['attachmentaction']) {
+		case 'updatecontainer':
+			header('Content-Type: application/json');
+			if ($LMS->UpdateFileContainer(array(
+					'id' => $_GET['id'],
+					'description' => $_POST['description'],
+				)))
+				die('[]');
+			else
+				die(json_encode(array(
+					'error' => trans('Cannot update file container description!'),
+				)));
+			break;
 		case 'deletecontainer':
 			$LMS->DeleteFileContainer($_GET['id']);
 			break;

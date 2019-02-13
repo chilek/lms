@@ -6,6 +6,11 @@
 <form name="upload" method="post" action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}" id="upload-form">
 </form>
 
+<form name="filecontainer-form" method="POST"
+        action="?m=attachments&type={$attachmenttype}&resourceid={$attachmentresourceid}&attachmentaction=updatecontainer"
+        id="filecontainer-form">
+</form>
+
 {tab_container id="attachmentbox-{$attachmenttype}"}
     {tab_header content_id="attachmentpanel-{$attachmenttype}"}
         {tab_header_cell icon="lms-ui-icon-fileupload"}
@@ -38,7 +43,7 @@
             {/if}
 
             {foreach $filecontainers as $container}
-            <div class="lms-ui-tab-table-row">
+            <div class="lms-ui-tab-table-row" data-id="{$container.id}">
                 <div class="lms-ui-tab-table-wrapper col-3">
                     <div class="lms-ui-tab-table-wrapper date-creator col-2">
                         <div class="lms-ui-tab-table-column date">
@@ -49,11 +54,19 @@
                         </div>
                     </div>
                     <div class="lms-ui-tab-table-column description">
-                        {$container.description|default:"---"}
+                        <span class="container-view">
+                            {$container.description|default:"---"}
+                        </span>
+                        <span class="container-modify">
+                            <input type="text" value="{$container.description}">
+                        </span>
                     </div>
                 </div>
 
                 <div class="lms-ui-tab-table-column buttons">
+                    {button type="link" href="#" class="container-edit" icon="edit"}
+                    {button type="link" href="#" class="container-save" icon="save"}
+                    {button type="link" href="#" class="container-cancel" icon="cancel"}
                     {button type="link" href="?m=attachments&attachmentaction=downloadzippedcontainer&type={$attachmenttype}&id={$container.id}"
                     icon="fileupload" tip="Download file container as zip archive"}
                     {button type="link" href="?m=attachments&attachmentaction=deletecontainer&type={$attachmenttype}&id={$container.id}"

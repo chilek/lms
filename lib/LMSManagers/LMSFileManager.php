@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -144,6 +144,19 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface {
 			if (!file_exists($name) && !@rename($file['name'], $name))
 				die(trans('Can\'t save file in "$a" directory!', $path));
 		}
+	}
+
+	/**
+	 * @param array $params
+	 * 		id - integer - container id
+	 * 		description - string - container description
+	 */
+	public function UpdateFileContainer(array $params) {
+		if (!isset($params['id']) || !preg_match('/^[0-9]+$/', $params['id']))
+			return null;
+
+		return $this->db->Execute('UPDATE filecontainers SET description = ? WHERE id = ?',
+			array($params['description'], $params['id']));
 	}
 
 	protected function DeleteFileByMD5SUM($md5sum) {

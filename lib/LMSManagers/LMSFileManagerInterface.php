@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,6 +32,8 @@ interface LMSFileManagerInterface {
 	public function GetZippedFileContainer($id);
 
 	public function AddFileContainer(array $params);
+
+	public function UpdateFileContainer(array $params);
 
 	public function DeleteFileContainer($id);
 

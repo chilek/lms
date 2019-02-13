@@ -3715,6 +3715,11 @@ class LMS
 		return $manager->AddFileContainer($params);
 	}
 
+	public function UpdateFileContainer(array $params) {
+		$manager = $this->getFileManager();
+		return $manager->UpdateFileContainer($params);
+	}
+
 	public function DeleteFileContainer($id) {
 		$manager = $this->getFileManager();
 		return $manager->DeleteFileContainer($id);
