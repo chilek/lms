@@ -50,6 +50,7 @@ $(function() {
 	});
 
 	$('.container-cancel').click(function() {
+		var row = $(this).closest('.lms-ui-tab-table-row');
 		row.find('.container-view,.container-edit').show();
 		row.find('.container-modify,.container-save,.container-cancel').hide();
 		var description = row.find('.container-modify > input');
