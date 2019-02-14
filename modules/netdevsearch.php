@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,10 @@
  *  $Id$
  */
 
-function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
-{
-	global $DB;
+function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND') {
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -35,7 +36,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
         switch($order)
         {
 		case 'id':
-		        $sqlord = ' ORDER BY id';
+		        $sqlord = ' ORDER BY d.id';
 		break;
 		case 'producer':
 		        $sqlord = ' ORDER BY producer';
@@ -53,10 +54,13 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 		        $sqlord = ' ORDER BY serialnumber';
 		break;
 		case 'location':
-		        $sqlord = ' ORDER BY location';
+		        $sqlord = ' ORDER BY d.location';
+		break;
+		case 'netnode':
+				$sqlord = ' ORDER BY nn.name';
 		break;
 		default:
-		        $sqlord = ' ORDER BY name';
+		        $sqlord = ' ORDER BY d.name';
 		break;
 	}
 
@@ -99,14 +103,47 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
                 $searchargs = ' WHERE ('.implode(' '.$sqlskey.' ',$searchargs).')';
 
 	$netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, a.location, d.description, d.producer,
-					d.model, d.serialnumber, d.ports,
+					d.model, d.serialnumber, d.ports, p.name AS project,
 					(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
-					+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports
+					+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports,
+					d.netnodeid, nn.name AS netnode,
+					lb.name AS borough_name, lb.type AS borough_type, lb.ident AS borough_ident,
+					ld.name AS district_name, ld.ident AS district_ident,
+					ls.name AS state_name, ls.ident AS state_ident,
+					a.state as location_state_name, a.state_id as location_state,
+					a.zip as location_zip, a.country_id as location_country,
+					a.city as location_city_name, a.city_id as location_city,
+					lc.ident AS city_ident,
+					a.street AS location_street_name, a.street_id as location_street,
+					lst.ident AS street_ident,
+					a.house as location_house, a.flat as location_flat, a.location
 				FROM netdevices d
-					LEFT JOIN vaddresses a ON d.address_id = a.id'
+				LEFT JOIN vaddresses a ON d.address_id = a.id
+				LEFT JOIN invprojects p         ON p.id = d.invprojectid
+				LEFT JOIN netnodes nn            ON nn.id = d.netnodeid
+				LEFT JOIN location_streets lst  ON lst.id = a.street_id
+				LEFT JOIN location_cities lc    ON lc.id = a.city_id
+				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+				LEFT JOIN location_districts ld ON ld.id = lb.districtid
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid'
 				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid IS NULL)' : '')
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
+
+	if ($netdevlist) {
+		foreach ($netdevlist as &$netdev) {
+			$netdev['customlinks'] = array();
+			if (!$netdev['location'] && $netdev['ownerid']) {
+				$netdev['location'] = $LMS->getAddressForCustomerStuff($netdev['ownerid']);
+			}
+			$netdev['terc'] = empty($netdev['state_ident']) ? null
+				: $netdev['state_ident'] . $netdev['district_ident']
+				. $netdev['borough_ident'] . $netdev['borough_type'];
+			$netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
+			$netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
+		}
+		unset($netdev);
+	}
 
 	$netdevlist['total'] = count($netdevlist);
 	$netdevlist['order'] = $order;
