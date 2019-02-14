@@ -113,7 +113,12 @@ function init_datepickers(selector) {
 		beforeShow: function (input, inst) {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('disable');
-				$(this).data('tooltip', input);
+				$(this).data('input-tooltip', input);
+			}
+			var icon = $(input).next().find('[data-tooltip]');
+			if (icon.length) {
+				icon.tooltip('disable');
+				$(this).data('icon-tooltip', icon);
 			}
 			setTimeout(function () {
 				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary ' +
@@ -174,8 +179,11 @@ function init_datepickers(selector) {
 			}, 1);
 		},
 		onClose: function (dateText, inst) {
-			if ($(this).data('tooltip') !== undefined) {
+			if ($(this).data('input-tooltip') !== undefined) {
 				$(this).tooltip('enable');
+			}
+			if ($(this).data('icon-tooltip') !== undefined) {
+				$(this).data('icon-tooltip').tooltip('enable');
 			}
 		}
 	}
@@ -241,10 +249,18 @@ $(function() {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('disable');
 			}
+			var icon = $(input).next();
+			if (icon.is('[data-tooltip]')) {
+				icon.tooltip('disable');
+			}
 		},
 		onClose: function (current_time, input) {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('enable');
+			}
+			var icon = $(input).next();
+			if (icon.is('[data-tooltip]')) {
+				icon.tooltip('enable');
 			}
 		},
 		openOnFocus: false
