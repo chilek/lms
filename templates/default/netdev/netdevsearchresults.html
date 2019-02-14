@@ -50,7 +50,7 @@
 	{$netdev=$netdevlist[netdevlist]}
 	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
 		<TD class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdev.id}"><B>{$netdev.name}</B></A><BR>
+			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdev.id}" title="{$netdev.description|replace:"\n":"<br>"|default:"---"}"><B>{$netdev.name}</B></A><BR>
 			<IMG src="img/producer.gif" ALT=""> {$netdev.producer} {if $netdev.model}/ {$netdev.model}{/if}
 		</TD>
 		<TD class="valign-top nobr">
