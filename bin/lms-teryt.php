@@ -1296,7 +1296,7 @@ if ( isset($options['merge']) ) {
 		if (!$quiet)
 			echo 'found' . PHP_EOL;
 
-		$DB->Execute("UPDATE addresses SET city_id = ?, street_id = ?, street_name = ? WHERE id = ?",
+		$DB->Execute("UPDATE addresses SET city_id = ?, street_id = ?, street = ? WHERE id = ?",
 			array($idents['cityid'], $idents['streetid'], $idents['streetname'], $a['id']));
 
 		$updated++;
