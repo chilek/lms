@@ -271,7 +271,7 @@ function getNamesWithSubcities($subcities, $street_id) {
 			array($subcities['cityid'])),
 		'street' => $DB->GetOne("SELECT (CASE WHEN t.id IS NULL THEN " . $street_name_sql . " ELSE "
 			. $DB->Concat('t.name', "' '", $street_name_sql) . " END) AS street
-			JOIN location_streets s ON s.cityid = c.id
+			FROM location_streets s
 			JOIN location_street_types t ON t.id = s.typeid
 			WHERE s.cityid IN (" . $subcities['cities'] . ")
 				AND s.id = ?",
