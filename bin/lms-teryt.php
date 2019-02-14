@@ -1251,12 +1251,27 @@ if ( isset($options['merge']) ) {
 		echo 'Merging TERYT with LMS database...' . PHP_EOL;
     $updated = 0;
 
-	$addresses = $DB->GetAll("SELECT a.id, a.city, a.street
-		FROM addresses a
-		LEFT JOIN documents d ON (d.recipient_address_id = a.id OR d.post_address_id = a.id)
-		WHERE a.city IS NOT NULL
-			AND d.id IS NULL
-			AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))");
+	$addresses = $DB->GetAll("
+		(
+			SELECT a.id, a.city, a.street
+			FROM addresses a
+			JOIN customer_addresses ca ON ca.address_id = a.id
+			WHERE a.city IS NOT NULL
+				AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
+		) UNION (
+			SELECT a.id, a.city, a.street
+			FROM addresses a
+			JOIN netdevices nd ON nd.address_id = a.id
+			WHERE a.city IS NOT NULL
+				AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
+		) UNION (
+			SELECT a.id, a.city, a.street
+			FROM addresses a
+			JOIN netnodes nn ON nn.address_id = a.id
+			WHERE a.city IS NOT NULL
+				AND (a.city_id IS NULL OR (a.street IS NOT NULL AND a.street_id IS NULL))
+		)
+	");
 
     if ( !$addresses ) {
         $addresses = array();
@@ -1318,10 +1333,24 @@ if ( isset($options['reverse']) ) {
 		echo 'Reverse TERYT identifiers to textual representation with LMS database...' . PHP_EOL;
 	$updated = 0;
 
-	$addresses = $DB->GetAll("SELECT a.id, a.city_id, a.street_id
-		FROM addresses a
-		JOIN customer_addresses ca ON ca.address_id = a.id
-		WHERE a.city_id IS NOT NULL");
+	$addresses = $DB->GetAll("
+		(
+			SELECT a.id, a.city_id, a.street_id
+			FROM addresses a
+			JOIN customer_addresses ca ON ca.address_id = a.id
+			WHERE a.city_id IS NOT NULL
+		) UNION (
+			SELECT a.id, a.city_id, a.street_id
+			FROM addresses a
+			JOIN netdevices nd ON nd.address_id = a.id
+			WHERE a.city_id IS NOT NULL
+		) UNION (
+			SELECT a.id, a.city_id, a.street_id
+			FROM addresses a
+			JOIN netnodes nn ON nn.address_id = a.id
+			WHERE a.city_id IS NOT NULL
+		)
+	");
 
 	if ( !$addresses ) {
 		$addresses = array();
