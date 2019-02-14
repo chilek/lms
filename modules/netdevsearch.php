@@ -54,7 +54,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND') {
 		        $sqlord = ' ORDER BY serialnumber';
 		break;
 		case 'location':
-		        $sqlord = ' ORDER BY d.location';
+		        $sqlord = ' ORDER BY a.location';
 		break;
 		case 'netnode':
 				$sqlord = ' ORDER BY nn.name';
