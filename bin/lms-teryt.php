@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,6 +40,7 @@ $parameters = array(
     'b'  => 'buildings',
     'o'  => 'only-unique-city-matches',
 	'e'  => 'explicit-node-locations',
+	'r'  => 'reverse',
 );
 
 foreach ($parameters as $key => $val) {
@@ -57,7 +58,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2019 LMS Developers
 
 EOF;
     exit(0);
@@ -66,7 +67,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2019 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini alternate config file (default: /etc/lms/lms.ini);
 -h, --help                         print this help and exit;
@@ -80,6 +81,7 @@ lms-teryt.php
 -l, --list                         state names or ids which will be taken into account
 -o, --only-unique-city-matches     update TERYT location only if city matches uniquely
 -e, --explicit-node-locations      set explicit TERYT locations for nodes
+-r, --reverse                      reverse TERYT identifiers to textual representation
 
 EOF;
     exit(0);
@@ -89,7 +91,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2018 LMS Developers
+(C) 2001-2019 LMS Developers
 
 EOF;
 }
@@ -256,6 +258,29 @@ function getIdents( $city = null, $street = null, $only_unique_city_matches = fa
 			return array();
 	} else
 		return array();
+}
+
+function getNames($city_id, $street_id) {
+	$DB = LMSDB::getInstance();
+
+	if (empty($street_id))
+		return $DB->GetRow("SELECT c.name AS city, NULL AS street
+			FROM location_cities c
+			WHERE c.id = ?
+			LIMIT 1",
+			array($city_id));
+	else {
+		$street_name_sql = "(CASE WHEN s.name2 IS NULL THEN s.name ELSE "
+			. $DB->Concat('s.name2', "' '", 's.name') . " END)";
+		return $DB->GetRow("SELECT c.name AS city,
+				(CASE WHEN t.id IS NULL THEN " . $street_name_sql . " ELSE "
+					. $DB->Concat('t.name', "' '", $street_name_sql) . " END) AS street
+			FROM location_cities c
+			JOIN location_streets s ON s.cityid = c.id
+			LEFT JOIN location_street_types t ON t.id = s.typeid
+			WHERE c.id = ? AND s.id = ?",
+			array($city_id, $street_id));
+	}
 }
 
 function GetDefaultCustomerTerytAddress($customerid) {
@@ -1280,6 +1305,58 @@ if ( isset($options['merge']) ) {
 	if (!$quiet)
 		echo 'Matched TERYT addresses: ' . $updated . PHP_EOL;
     unset( $addresses, $updated, $location_cache );
+}
+
+//==============================================================================
+// Reverse TERYT identifiers to textual representation with LMS database.
+//
+// -r --reverse
+//==============================================================================
+
+if ( isset($options['reverse']) ) {
+	if (!$quiet)
+		echo 'Reverse TERYT identifiers to textual representation with LMS database...' . PHP_EOL;
+	$updated = 0;
+
+	$addresses = $DB->GetAll("SELECT a.id, a.city_id, a.street_id
+		FROM addresses a
+		JOIN customer_addresses ca ON ca.address_id = a.id
+		WHERE a.city_id IS NOT NULL");
+
+	if ( !$addresses ) {
+		$addresses = array();
+	}
+
+	$location_cache = array();
+
+	foreach ( $addresses as $a ) {
+		$city_id = $a['city_id'];
+		$street_id = empty($a['street_id']) ? '-' : $a['street_id'];
+
+		if (!$quiet)
+			printf("City ID: '%s', Street ID: '%s' ", $city_id, $street_id);
+
+		$key = $city_id . ':' . $street_id;
+
+		if ( isset($location_cache[$key]) ) {
+			$names = $location_cache[$key];
+		} else {
+			$names = getNames($city_id, $street_id == '-' ? null : $street_id);
+			$location_cache[$key] = $names;
+		}
+
+		if (!$quiet)
+			printf("=> City '%s', Street: '%s'" . PHP_EOL, $names['city'], empty($names['street']) ? '-' : $names['street']);
+
+		$DB->Execute("UPDATE addresses SET city = ?, street = ? WHERE id = ?",
+			array($names['city'], $names['street'], $a['id']));
+
+		$updated++;
+	}
+
+	if (!$quiet)
+		echo 'Reversed TERYT identifiers: ' . $updated . PHP_EOL;
+	unset( $addresses, $updated, $location_cache );
 }
 
 //==============================================================================
