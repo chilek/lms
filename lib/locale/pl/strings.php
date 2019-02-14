@@ -4228,4 +4228,6 @@ $_LANG['Pro-forma Invoice No. $a'] = 'Faktura pro-forma nr $a';
 $_LANG['Aggregate documents'] = 'Agreguj dokumenty';
 $_LANG['Don\'t aggregate documents'] = 'Nie agreguj dokumentów';
 
+$_LANG['- no description -'] = '- brak opisu -';
+
 ?>

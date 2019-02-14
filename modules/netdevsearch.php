@@ -131,6 +131,12 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND') {
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
 	if ($netdevlist) {
+		$filecontainers = $DB->GetAllByKey('SELECT fc.netdevid, '
+				. $DB->GroupConcat("CASE WHEN fc.description = '' THEN '---' ELSE fc.description END") . ' AS descriptions
+			FROM filecontainers fc
+			WHERE fc.netdevid IS NOT NULL
+			GROUP BY fc.netdevid', 'netdevid');
+
 		foreach ($netdevlist as &$netdev) {
 			$netdev['customlinks'] = array();
 			if (!$netdev['location'] && $netdev['ownerid']) {
@@ -141,6 +147,9 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND') {
 				. $netdev['borough_ident'] . $netdev['borough_type'];
 			$netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
 			$netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
+			$netdev['filecontainers'] = isset($filecontainers[$netdev['id']])
+				? explode(',', $filecontainers[$netdev['id']]['descriptions'])
+				: array();
 		}
 		unset($netdev);
 	}
