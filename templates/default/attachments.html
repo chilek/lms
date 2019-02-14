@@ -64,14 +64,14 @@
                 </div>
 
                 <div class="lms-ui-tab-table-column buttons">
-                    {button type="link" href="#" class="container-edit" icon="edit"}
-                    {button type="link" href="#" class="container-save" icon="save"}
-                    {button type="link" href="#" class="container-cancel" icon="cancel"}
+                    {button type="link" href="#" class="container-edit" icon="edit" tip="Edit"}
+                    {button type="link" href="#" class="container-save" icon="save" tip="Save"}
+                    {button type="link" href="#" class="container-cancel" icon="cancel" tip="Cancel"}
                     {button type="link" href="?m=attachments&attachmentaction=downloadzippedcontainer&type={$attachmenttype}&id={$container.id}"
-                    icon="fileupload" tip="Download file container as zip archive"}
+                        icon="fileupload" tip="Download file container as zip archive"}
                     {button type="link" href="?m=attachments&attachmentaction=deletecontainer&type={$attachmenttype}&id={$container.id}"
-                    onclick="return confirm('{trans("Are you sure you want to delete this file container?")}')"
-                    icon="delete" tip="Delete file container"}
+                        onclick="return confirm('{trans("Are you sure you want to delete this file container?")}')"
+                        icon="delete" tip="Delete file container"}
                     <a href="#" class="toggle-file-list" data-container-id="{$container.id}" title="{trans("Show file list")}">
                         <img src="img/asc_order.gif">
                     </a>
