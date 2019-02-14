@@ -193,6 +193,7 @@ version ?.??.?? (????-??-??):
   - improvement: phpui.helpdesk_additional_user_permission_checks ('false' by default)
     configuration variable controls if additional ticket properties are checked to verify if user
     has access to ticket even if ticket queue is not accessible for user [chilan]
+  - improvement: lms-teryt.php: allow to reverse TERYT identifiers to textual representation [chilan]
 
 version 1.11.23 (2018-03-21):
 
