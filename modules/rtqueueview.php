@@ -220,6 +220,10 @@ $filter['total'] = intval($LMS->GetQueueContents($filter));
 
 $filter['limit'] = intval(ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $filter['total']));
 $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
+if ($filter['offset'] > $filter['total']) {
+	$filter['page'] = 1;
+	$filter['offset'] = 0;
+}
 $filter['count'] = false;
 
 $queue = $LMS->GetQueueContents($filter);
