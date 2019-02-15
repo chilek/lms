@@ -101,7 +101,7 @@ function RTSearch($search, $order='createtime,desc') {
 			.' OR ('.time().'-t.createtime > '.intval($search['uptime']).' AND resolvetime = 0))';
 	if(!empty($search['name']))
 		$where[] = '(UPPER(requestor) ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').') OR '
-			.$DB->Concat('UPPER(customers.lastname)',"' '",'UPPER(customers.name)').' ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').'))';
+			.$DB->Concat('UPPER(c.lastname)',"' '",'UPPER(c.name)').' ?LIKE? UPPER('.$DB->Escape('%'.$search['name'].'%').'))';
 	if (isset($search['queue'])) {
 		if (is_array($search['queue']))
 			$where_queue = '(queueid IN (' . implode(',', $search['queue']) . ')';
@@ -147,8 +147,7 @@ function RTSearch($search, $order='createtime,desc') {
         if(!empty($search['type']))
                 $where[] = 't.type = '.intval($search['type']);
 
-	if (!empty($search['address']) || !empty($search['zip']) || !empty($search['city'])) {
-		$join[] = 'JOIN vaddresses va ON va.id = t.address_id';
+	if (!empty($search['address']) || !empty($search['zip']) || !empty($search['city']))
 		$where[] = '('
 			. (empty($search['address']) ? '1=1' : 'UPPER(va.address) ?LIKE? UPPER(' . $DB->Escape('%' . $search['address'] . '%') . ')')
 			. ' AND '
@@ -156,7 +155,6 @@ function RTSearch($search, $order='createtime,desc') {
 			. ' AND '
 			. (empty($search['city']) ? '1=1' : 'UPPER(va.city) ?LIKE? UPPER(' . $DB->Escape('%' . $search['city'] . '%') . ')')
 			. ')';
-	}
 
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
@@ -170,12 +168,14 @@ function RTSearch($search, $order='createtime,desc') {
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
 			LEFT JOIN vusers ON (t.owner = vusers.id)
 			LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
-			LEFT JOIN customers ON (t.customerid = customers.id)'
+			LEFT JOIN customeraddressview c ON c.id = t.customerid
+			LEFT JOIN vaddresses va ON va.id = t.address_id'
 			.(isset($where) ? $where : ''));
 
 	$result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, t.service, t.type,
+		t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city,
 		vusers.name AS ownername, rtqueues.name as name, CASE WHEN t.customerid IS NULL THEN t.requestor ELSE '
-		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
+		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').'
 		END AS requestor, t.requestor AS req, t.createtime,
 		(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
 		t.priority, t.verifierid, t.deadline, m3.messageid, COUNT(m2.id) AS delcount
@@ -187,10 +187,13 @@ function RTSearch($search, $order='createtime,desc') {
 		LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
 		LEFT JOIN vusers ON (t.owner = vusers.id)
 		LEFT JOIN vusers AS e ON (t.verifierid = vusers.id)
-		LEFT JOIN customers ON (t.customerid = customers.id)'
+		LEFT JOIN customeraddressview c ON c.id = t.customerid
+		LEFT JOIN vaddresses va ON va.id = t.address_id'
 		.(isset($where) ? $where : '')
-		. ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type, vusers.name, rtqueues.name,
-			t.requestor, customers.lastname, customers.name, t.createtime, m.lastmodified, t.deleted, t.deltime, t.priority,
+		. ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type,
+			va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
+			vusers.name, rtqueues.name,
+			t.requestor, c.lastname, c.name, t.createtime, m.lastmodified, t.deleted, t.deltime, t.priority,
 			t.verifierid, t.deadline, m3.messageid '
 		. ($sqlord !='' ? $sqlord . ' ' . $direction : '')
 		. (isset($search['limit']) ? ' LIMIT ' . $search['limit'] : '')
