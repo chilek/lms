@@ -73,15 +73,18 @@ if (!empty($assignments))
 			}
 
 $customernetworks     = $LMS->GetCustomerNetworks($customerid, 10);
+
+$userid = Auth::GetCurrentUser();
+$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
 $customerstats = array(
-		'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
+	'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets t
-		JOIN rtrights r ON r.queueid = t.queueid
-		WHERE r.userid = ?'
-			. (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0': '')
-			. (' AND customerid = ?'), array(RT_RESOLVED, Auth::GetCurrentUser(), $customerid)),
-		'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
-		'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
+		LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
+		WHERE (r.queueid IS NOT NULL' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
+		. (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0': '')
+		. ' AND customerid = ' . intval($customerid), array(RT_RESOLVED, $userid)),
+	'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
+	'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
 
 $customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
