@@ -88,9 +88,9 @@ function RTSearch($search, $order='createtime,desc') {
 	if (isset($search['state']) && strlen($search['state']))
 	{
 		if($search['state'] == '-1')
-			$where[] = 'state != '.RT_RESOLVED;
+			$where[] = 't.state != '.RT_RESOLVED;
 		else
-			$where[] = 'state = '.intval($search['state']);
+			$where[] = 't.state = '.intval($search['state']);
 	}
 	if(!empty($search['priority']))
 		$where[] = 'priority = '.intval($search['priority']);
