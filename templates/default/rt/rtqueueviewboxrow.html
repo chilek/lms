@@ -54,8 +54,7 @@
 		{/if}
 		{if $ticket.netdevid || $ticket.netnodeid }<br>{/if}
 		{if $ticket.address_id}
-			{$ticket.vacity} {$ticket.street} {$ticket.house}
-			{if $ticket.flat}/{$ticket.flat}{/if}
+			{$ticket.vacity}, {$ticket.street} {$ticket.house}{if $ticket.flat}/{$ticket.flat}{/if}
 		{else}
 			{$ticket.address}<br>{$ticket.city}
 		{/if}
