@@ -332,7 +332,7 @@ switch($action)
 		if (empty($contents) || empty($customer))
 			break;
 
-		unset($error);
+		$error = array();
 
 		$contents = changeContents($contents, $_POST['invoice-contents']);
 
@@ -364,7 +364,16 @@ switch($action)
 		        $error['paytype'] = trans('Default payment type not defined!');
 		}
 
-		if ($error)
+		$hook_data = array(
+			'customer' => $customer,
+			'contents' => $contents,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenew_save_validation', $hook_data);
+		if (isset($hook_data['error']) && is_array($hook_data['error']))
+			$error = array_merge($error, $hook_data['error']);
+
+		if (!empty($error))
 			break;
 
 		$DB->BeginTrans();
