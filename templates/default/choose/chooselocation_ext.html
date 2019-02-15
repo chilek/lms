@@ -229,9 +229,17 @@ function submit_location() {
     // SET STREET
     var street_option = $('option:selected', street);
     if (street_option.val()) {
-    	location_box.find( "input[data-address='street']"        ).val( street_option.attr('data-street-type')
-			+ (typeof(street_option.attr('data-street-name-2')) !== 'undefined' ? ' ' + street_option.attr('data-street-name-2') : '')
-			+ ' ' + street_option.attr('data-street-name-1') );
+    	var street_parts = [];
+    	street_parts.push(street_option.attr('data-street-type'));
+		if (typeof(street_option.attr('data-street-name-2')) !== 'undefined') {
+			street_parts.push(street_option.attr('data-street-name-2'));
+		}
+		street_parts.push(street_option.attr('data-street-name-1'));
+		if (street_parts[0].match(/^rynek$/i) &&
+			(street_parts[1].match(/^rynek/i) || (street_parts.length == 3 && street_parts[2].match(/^rynek/i)))) {
+			street_parts.shift();
+		}
+    	location_box.find( "input[data-address='street']"        ).val( street_parts.join(' ') );
         location_box.find( "input[data-address='street-hidden']" ).val( street_option.val() );
     } else {
         location_box.find( "input[data-address='street']"        ).val( '' );

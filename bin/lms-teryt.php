@@ -1405,6 +1405,9 @@ if ( isset($options['reverse']) ) {
 		if (!$quiet)
 			printf("=> City '%s', Street: '%s'" . PHP_EOL, $names['city'], empty($names['street']) ? '-' : $names['street']);
 
+		if (preg_match('/^rynek\s+rynek/i', $names['street']))
+			$names['street'] = preg_replace('/^rynek\s+/i', '', $names['street']);
+
 		$DB->Execute("UPDATE addresses SET city = ?, street = ? WHERE id = ?",
 			array($names['city'], $names['street'], $a['id']));
 
