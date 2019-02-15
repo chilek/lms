@@ -221,7 +221,7 @@ $layout['pagetitle'] = trans('Ticket Search');
 
 if (isset($_POST['search']))
 	$search = $_POST['search'];
-elseif (isset($_GET['page']))
+elseif (isset($_GET['page']) || isset($_GET['o']))
 	$SESSION->restore('rtsearch', $search);
 
 if (isset($_GET['id']))
@@ -257,8 +257,7 @@ $SESSION->save('rto', $o);
 if ($SESSION->is_set('rtp') && !isset($_GET['page']) && !isset($search))
 	$SESSION->restore('rtp', $_GET['page']);
 
-if(isset($search) || isset($_GET['page']))
-{
+if (isset($search)) {
 	if(!isset($search['queue']) || $search['queue'] == 0)
 	{
 		// if user hasn't got rights for all queues...
