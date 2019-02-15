@@ -491,7 +491,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	/**
 	 * @param array $params associative array of parameters described below:
 	 *		stats - if true queue stats should be obtained (default: true),
-	 * 		only_accessible - if true only queus with access permissions are listed (default: true),
+	 * 		only_accessible - if true only queues with access permissions are listed (default: true),
 	 * 		deleted - if true deleted queues will be obtained (default: true)
 	 */
 	public function GetQueueList(array $params) {
@@ -593,8 +593,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
     	$stats = null;
 
-    	if ($result = $this->db->GetAll('SELECT state, COUNT(state) AS scount
-			FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC', array($id))) {
+		$userid = Auth::GetCurrentUser();
+    	$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+
+    	if ($result = $this->db->GetAll('SELECT t.state, COUNT(t.state) AS scount
+			FROM rttickets t
+			' . ($user_permission_checks ? 'LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ' . $userid . ' AND r.rights <> 0' : '') . '
+			WHERE t.queueid = ?' . ($user_permission_checks ? ' AND (r.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : '')
+			. ' GROUP BY t.state
+			ORDER BY t.state ASC',
+			array($id))) {
 			foreach ($result as $row)
 				$stats[$row['state']] = $row['scount'];
 			foreach (array('new', 'open', 'resolved', 'dead') as $idx => $value)
@@ -612,8 +620,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					GROUP BY ticketid
 				) lm ON lm.ticketid = t.id
 				LEFT JOIN rtticketlastview lv ON lv.ticketid = t.id AND lv.userid = ?
-				WHERE queueid = ?', array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
-				Auth::GetCurrentUser(), $id));
+				' . ($user_permission_checks ? 'LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ' . $userid . ' AND r.rights <> 0' : '') . '
+				WHERE t.queueid = ?' . ($user_permission_checks ? ' AND (r.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''),
+				array(RT_RESOLVED, RT_PRIORITY_CRITICAL, RT_RESOLVED, RT_RESOLVED,
+					Auth::GetCurrentUser(), $id));
 			if (!empty($result))
 				$stats = array_merge($stats, $result);
 		}
