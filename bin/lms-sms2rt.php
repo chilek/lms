@@ -293,7 +293,7 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 				);
 				foreach ($emails as $email) {
 					$custmail_headers['To'] = '<' . $email . '>';
-					$LMS->SendMail($email, $custmail_headers, $custmail_body);
+					$LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
 				}
 			}
 		} elseif ($helpdesk_customerinfo) {

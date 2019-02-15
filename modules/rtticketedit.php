@@ -170,7 +170,7 @@ if ($id && !isset($_POST['ticket'])) {
                                 );
                                 foreach (explode(',', $info['emails']) as $email) {
                                     $custmail_headers['To'] = '<' . $email . '>';
-                                    $LMS->SendMail($email, $custmail_headers, $custmail_body);
+                                    $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
                                 }
                             }
                         }

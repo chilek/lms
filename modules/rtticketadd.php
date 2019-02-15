@@ -233,7 +233,7 @@ if(isset($_POST['ticket']))
 					);
 					foreach ($emails as $email) {
 						$custmail_headers['To'] = '<' . $info['email'] . '>';
-						$LMS->SendMail($email, $custmail_headers, $custmail_body);
+						$LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
 					}
 				}
 

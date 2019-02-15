@@ -117,6 +117,24 @@ class ConfigHelper
         trigger_error('Incorrect option value: '.$value);
     }
 
+	public static function configExists($name) {
+		list ($section_name, $variable_name) = explode('.', $name, 2);
+
+		if (empty($variable_name)) {
+			return false;
+		}
+
+		if (!LMSConfig::getConfig()->hasSection($section_name)) {
+			return false;
+		}
+
+		if (!LMSConfig::getConfig()->getSection($section_name)->hasVariable($variable_name)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Determines if user has got access privilege
 	 * 

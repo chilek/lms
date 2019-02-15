@@ -1794,9 +1794,14 @@ class LMS
         return $manager->IsTicketLoop($ticketid, $parentid);
     }
 
-	/*
-	 *  LMS-UI configuration
-	 */
+	public function GetRTSmtpOptions() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetRTSmtpOptions();
+	}
+
+		/*
+		 *  LMS-UI configuration
+		 */
 
     public function GetConfigOptionId($var, $section)
     {
@@ -2082,7 +2087,9 @@ class LMS
 					$this->mail_object->SMTPAuth = true;
 					$this->mail_object->AuthType = $auth_type;
 				}
-				$this->mail_object->SMTPSecure = ConfigHelper::getConfig('mail.smtp_secure', '', true);
+				$this->mail_object->SMTPSecure = (!isset($smtp_options['secure'])
+					? ConfigHelper::getConfig('mail.smtp_secure', '', true)
+					: $smtp_options['secure']);
 				if ($this->mail_object->SMTPSecure == 'false') {
 					$this->mail_object->SMTPSecure = '';
 					$this->mail_object->SMTPAutoTLS = false;

@@ -1334,7 +1334,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if ($params['verifierid']) {
             $verifier_email = $this->db->GetOne('SELECT email FROM users WHERE users.id = ?', array($params['verifierid']));
             $params['mail_headers']['To'] = '<' . $verifier_email . '>';
-            $LMS->SendMail($verifier_email, $params['mail_headers'], $params['mail_body']);
+            $LMS->SendMail($verifier_email, $params['mail_headers'], $params['mail_body'], null, null, $this->GetRTSmtpOptions());
          } else {
 		if ($recipients = $this->db->GetCol('SELECT DISTINCT email
 			FROM users, rtrights
@@ -1357,7 +1357,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 			foreach ($recipients as $email) {
 				$params['mail_headers']['To'] = '<' . $email . '>';
-				$LMS->SendMail($email, $params['mail_headers'], $params['mail_body']);
+				$LMS->SendMail($email, $params['mail_headers'], $params['mail_body'], null, null, $this->GetRTSmtpOptions());
 			}
 		}
 		}
@@ -1581,4 +1581,34 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $parentid = $this->GetTicketParentID($parentid);
         return $this->IsTicketLoop($ticketid,$parentid);
         }
+
+	public function GetRTSmtpOptions() {
+		$options = array();
+
+		$variable_mapping = array(
+			'host' => 'rt.smtp_host',
+			'port' => 'rt.smtp_port',
+			'user' => 'rt.smtp_username',
+			'pass' => 'rt.smtp_password',
+			'auth' => 'rt.smtp_auth_type',
+			'secure' => 'rt.smtp_secure',
+			'ssl_verify_peer' => 'rt.ssl_verify_peer',
+			'ssl_verify_peer_name' => 'rt.ssl_verify_peer_name',
+			'ssl_allow_self_signed' => 'rt.ssl_allow_self_signed',
+		);
+
+		foreach ($variable_mapping as $option_name => $variable_name) {
+			if (!ConfigHelper::configExists($variable_name))
+				continue;
+
+			$variable = ConfigHelper::getConfig($variable_name);
+			if (empty($variable))
+				continue;
+
+			$options[$option_name] = strpos($option_name, 'ssl_') === false ? $variable
+				: ConfigHelper::checkValue($variable);
+		}
+
+		return $options;
+	}
 }

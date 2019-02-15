@@ -124,4 +124,6 @@ interface LMSHelpdeskManagerInterface
     public function GetTicketParentID($ticketid);
 
     public function IsTicketLoop($ticketid, $parentid);
+
+	public function GetRTSmtpOptions();
 }

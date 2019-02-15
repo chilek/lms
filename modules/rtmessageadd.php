@@ -156,7 +156,7 @@ if (isset($_POST['message'])) {
 
 					$body = $message['body'];
 
-					$LMS->SendMail($recipients, $headers, $body, $attachments);
+					$LMS->SendMail($recipients, $headers, $body, $attachments, null, $LMS->GetRTSmtpOptions());
 				} else {
 					if ($message['customerid'] || $message['userid'])
 						$message['mailfrom'] = '';
@@ -212,7 +212,7 @@ if (isset($_POST['message'])) {
 						. $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 						. '?m=rtticketview&id=' . $ticketid . (isset($msgid) ? '#rtmessage-' . $msgid : '');
 
-				$LMS->SendMail($recipients, $headers, $body, $attachments);
+				$LMS->SendMail($recipients, $headers, $body, $attachments, null, $LMS->GetRTSmtpOptions());
 			}
 
 			// setting status and the ticket owner
@@ -334,7 +334,7 @@ if (isset($_POST['message'])) {
 						);
 						foreach ($emails as $email) {
 							$custmail_headers['To'] = '<' . $email . '>';
-							$LMS->SendMail($email, $custmail_headers, $custmail_body);
+							$LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
 						}
 					}
 				} elseif (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {

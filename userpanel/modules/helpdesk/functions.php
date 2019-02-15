@@ -226,7 +226,7 @@ function module_main() {
 						'Reply-To' => $headers['From'],
 						'Subject' => $custmail_subject,
 					);
-					$LMS->SendMail(implode(',', $emails), $custmail_headers, $custmail_body);
+					$LMS->SendMail(implode(',', $emails), $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
 				}
 
 				$params = array(

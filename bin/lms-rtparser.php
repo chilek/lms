@@ -145,26 +145,7 @@ $hostname = gethostname();
 if (empty($hostname))
 	$hostname = 'example.com';
 
-$smtpserver = ConfigHelper::getConfig('rt.smtp_server', 'localhost'); //for backward compatibility
-$smtp_host = ConfigHelper::getConfig('rt.smtp_host', $smtpserver);
-$smtp_port = ConfigHelper::getConfig('rt.smtp_port', null, true);
-$smtp_user = ConfigHelper::getConfig('rt.smtp_user', null, true);
-$smtp_pass = ConfigHelper::getConfig('rt.smtp_pass', null, true);
-$smtp_auth = ConfigHelper::getConfig('rt.smtp_auth', null, true); // 'LOGIN', 'PLAIN', 'CRAM-MD5', 'NTLM'
-$smtp_ssl_verify_peer = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.smtp_ssl_verify_peer', true));
-$smtp_ssl_verify_peer_name = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.smtp_ssl_verify_peer_name', true));
-$smtp_ssl_allow_self_signed = ConfigHelper::checkConfig('rt.smtp_ssl_allow_self_signed');
-
-$smtp_options = array(
-	'host' => $smtp_host,
-	'port' => $smtp_port,
-	'user' => $smtp_user,
-	'pass' => $smtp_pass,
-	'auth' => $smtp_auth,
-	'ssl_verify_peer' => $smtp_ssl_verify_peer,
-	'ssl_verify_peer_name' => $smtp_ssl_verify_peer_name,
-	'ssl_allow_self_signed' => $smtp_ssl_allow_self_signed,
-);
+$smtp_options = $LMS->GetRTSmtpOptions();
 
 $queue = 0;
 if (isset($options['queue']))
@@ -185,7 +166,7 @@ $autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1
 
 $stderr = fopen('php://stderr', 'w');
 
-if ($smtp_auth && !preg_match('/^(LOGIN|PLAIN|CRAM-MD5|NTLM)$/i', $smtp_auth)) {
+if ($smtp_options['auth'] && !preg_match('/^(LOGIN|PLAIN|CRAM-MD5|NTLM)$/i', $smtp_options['auth'])) {
 	fprintf($stderr, "Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 	exit(1);
 }
@@ -565,7 +546,7 @@ if ($notify) {
 			);
 			foreach ($emails as $email) {
 				$custmail_headers['To'] = '<' . $email . '>';
-				$LMS->SendMail($email, $custmail_headers, $custmail_body);
+				$LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
 			}
 		}
 	} elseif ($customerinfo && !empty($fromname)) {
