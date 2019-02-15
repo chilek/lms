@@ -149,14 +149,13 @@ function RTSearch($search, $order='createtime,desc') {
 
 	if (!empty($search['address']) || !empty($search['zip']) || !empty($search['city'])) {
 		$join[] = 'JOIN vaddresses va ON va.id = t.address_id';
-		if (!empty($search['address']))
-			$where[] = '('
-				. (empty($search['address']) ? '1=1' : 'UPPER(va.address) ?LIKE? UPPER(' . $DB->Escape('%' . $search['address'] . '%') . ')')
-				. ' AND '
-				. (empty($search['zip']) ? '1=1' : 'UPPER(va.zip) ?LIKE? UPPER(' . $DB->Escape('%' . $search['zip'] . '%') . ')')
-				. ' AND '
-				. (empty($search['city']) ? '1=1' : 'UPPER(va.city) ?LIKE? UPPER(' . $DB->Escape('%' . $search['city'] . '%') . ')')
-				. ')';
+		$where[] = '('
+			. (empty($search['address']) ? '1=1' : 'UPPER(va.address) ?LIKE? UPPER(' . $DB->Escape('%' . $search['address'] . '%') . ')')
+			. ' AND '
+			. (empty($search['zip']) ? '1=1' : 'UPPER(va.zip) ?LIKE? UPPER(' . $DB->Escape('%' . $search['zip'] . '%') . ')')
+			. ' AND '
+			. (empty($search['city']) ? '1=1' : 'UPPER(va.city) ?LIKE? UPPER(' . $DB->Escape('%' . $search['city'] . '%') . ')')
+			. ')';
 	}
 
 	if(isset($where))
