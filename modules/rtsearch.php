@@ -147,7 +147,7 @@ function RTSearch($search, $order='createtime,desc') {
         if(!empty($search['type']))
                 $where[] = 't.type = '.intval($search['type']);
 
-	if (!empty($search['address']) || !empty($search['zip'] || !empty($search['city']))) {
+	if (!empty($search['address']) || !empty($search['zip']) || !empty($search['city'])) {
 		$join[] = 'JOIN vaddresses va ON va.id = t.address_id';
 		if (!empty($search['address']))
 			$where[] = '('
