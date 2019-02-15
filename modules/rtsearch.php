@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,8 @@
  *  $Id$
  */
 
-function RTSearch($search, $order='createtime,desc')
-{
-	global $DB;
+function RTSearch($search, $order='createtime,desc') {
+	$DB = LMSDB::getInstance();
 
 	if(!$order)
 		$order = 'createtime,desc';
@@ -148,6 +147,18 @@ function RTSearch($search, $order='createtime,desc')
         if(!empty($search['type']))
                 $where[] = 't.type = '.intval($search['type']);
 
+	if (!empty($search['address']) || !empty($search['zip'] || !empty($search['city']))) {
+		$join[] = 'JOIN vaddresses va ON va.id = t.address_id';
+		if (!empty($search['address']))
+			$where[] = '('
+				. (empty($search['address']) ? '1=1' : 'UPPER(va.address) ?LIKE? UPPER(' . $DB->Escape('%' . $search['address'] . '%') . ')')
+				. ' AND '
+				. (empty($search['zip']) ? '1=1' : 'UPPER(va.zip) ?LIKE? UPPER(' . $DB->Escape('%' . $search['zip'] . '%') . ')')
+				. ' AND '
+				. (empty($search['city']) ? '1=1' : 'UPPER(va.city) ?LIKE? UPPER(' . $DB->Escape('%' . $search['city'] . '%') . ')')
+				. ')';
+	}
+
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
 
@@ -223,6 +234,9 @@ if (isset($_GET['state']))
 			'regexp' => false,
 		),
 		'custid' => '0',
+		'address' => '',
+		'zip' => '',
+		'city' => '',
 		'name' => '',
 		'email' => '',
 		'owner' => '0',
