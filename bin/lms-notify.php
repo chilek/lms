@@ -205,13 +205,14 @@ if ($script_service)
 // contracts - contracts which customer assignment max(dateto) is some day before notify
 // debtors - debtors notify
 // reminder - reminder notify
+// income - income notify
 // invoices - new invoice notify
 // notes - new debit note notify
 // warnings - send message to customers with warning flag set for node
 // messages - send message to customers which have awaiting www messages
 // timetable - send event notify to users
 $notifications = array();
-foreach (array('documents', 'contracts', 'debtors', 'reminder', 'invoices', 'notes', 'warnings', 'messages', 'timetable') as $type) {
+foreach (array('documents', 'contracts', 'debtors', 'reminder', 'income', 'invoices', 'notes', 'warnings', 'messages', 'timetable') as $type) {
 	$notifications[$type] = array();
 	$notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
 	$notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message', $type . ' notification');
@@ -850,6 +851,100 @@ if (empty($types) || in_array('reminder', $types)) {
 					foreach ($recipient_phones as $recipient_phone)
 						printf("[sms/reminder] %s (%04d) %s: %s" . PHP_EOL,
 							$row['name'], $row['id'], $row['doc_number'], $recipient_phone);
+			}
+
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					foreach ($recipient_mails as $recipient_mail)
+						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
+							$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $recipient_phone)
+						send_sms($msgid, $row['id'], $recipient_phone, $message);
+				}
+			}
+		}
+	}
+}
+
+// Income as result of customer payment
+if (empty($types) || in_array('income', $types)) {
+	$days = $notifications['income']['days'];
+	$incomes = $DB->GetAll("SELECT c.id, c.pin, cash.value, cash.time AS cdate,
+		m.email, x.phone, divisions.account,
+		" . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
+		b2.balance AS balance, b.balance AS totalbalance
+		FROM cash
+		JOIN customers c ON c.id = cash.customerid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
+		LEFT JOIN (
+			SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
+		) b ON b.customerid = c.id
+		LEFT JOIN (
+			SELECT cash.customerid, SUM(value) AS balance FROM cash
+			LEFT JOIN customers ON customers.id = cash.customerid
+			LEFT JOIN divisions ON divisions.id = customers.divisionid
+			LEFT JOIN documents d ON d.id = cash.docid
+			LEFT JOIN (
+				SELECT SUM(value) AS totalvalue, docid FROM cash
+				JOIN documents ON documents.id = cash.docid
+				WHERE documents.type = ?
+				GROUP BY docid
+			) tv ON tv.docid = cash.docid
+			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+				OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
+					(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END)) * 86400 < $currtime)))
+				OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
+					OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
+					OR (((d.type = ? AND tv.totalvalue < 0)
+						OR d.type IN (?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
+			GROUP BY cash.customerid
+		) b2 ON b2.customerid = c.id
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+			FROM customercontacts
+			WHERE (type & ?) = ?
+			GROUP BY customerid
+		) m ON (m.customerid = c.id)
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & ?) = ?
+			GROUP BY customerid
+		) x ON (x.customerid = c.id)
+		WHERE cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400",
+		array(
+			DOC_CNOTE, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE,
+			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			$days, $days,
+		));
+
+	if (!empty($incomes)) {
+		$notifications['income']['customers'] = array();
+		foreach ($incomes as $row) {
+			$notifications['income']['customers'][] = $row['id'];
+
+			$message = parse_customer_data($notifications['income']['message'], $row);
+			$subject = parse_customer_data($notifications['income']['subject'], $row);
+
+			$recipient_mails = ($debug_email ? explode(',', $debug_email) :
+				(!empty($row['email']) ? explode(',', trim($row['email'])) : null));
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/income] %s (%04d) - %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], moneyf($row['value']), $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $recipient_phone)
+						printf("[sms/income] %s (%04d) - %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], moneyf($row['value']), $recipient_phone);
 			}
 
 			if (!$debug) {
