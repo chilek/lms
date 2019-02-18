@@ -130,15 +130,18 @@ switch($type)
 		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
 		$datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
 		$dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
+		$address  = !empty($_GET['address']) ? $_GET['address'] : $_POST['address'];
+		$zip  = !empty($_GET['zip']) ? $_GET['zip'] : $_POST['zip'];
+		$city  = !empty($_GET['city']) ? $_GET['city'] : $_POST['city'];
 
 		if($queue)
-			$where[] = 'rttickets.queueid = '.$queue;
+			$where[] = 't.queueid = '.$queue;
 		if($customer)
 			$where[] = 'customerid = '.$customer;
 		if($days)
-			$where[] = 'rttickets.createtime < '.mktime(0, 0, 0, date('n'), date('j')-$days);
+			$where[] = 't.createtime < '.mktime(0, 0, 0, date('n'), date('j')-$days);
 		if($subject)
-			$where[] = 'rttickets.subject ?LIKE? '.$DB->Escape("%$subject%");
+			$where[] = 't.subject ?LIKE? '.$DB->Escape("%$subject%");
 		$catids = (is_array($categories) ? array_keys($categories) : NULL);
 		if (!empty($catids))
 			$where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
@@ -148,61 +151,70 @@ switch($type)
 		if($status != '')
 		{
 			if($status == -1)
-				$where[] = 'rttickets.state != '.RT_RESOLVED;
+				$where[] = 't.state != '.RT_RESOLVED;
 			else
-    				$where[] = 'rttickets.state = '.intval($status);
+				$where[] = 't.state = '.intval($status);
 		}
 
 		if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
-			$where[] = 'rttickets.deleted = 0';
-			else
-			{
-				if($removed != '')
-				{
-					if($removed == '-1')
-						$where[] = 'rttickets.deleted = 0';
-						else
-							$where[] = 'rttickets.deleted = 1';
-				}
+			$where[] = 't.deleted = 0';
+		else {
+			if($removed != '') {
+				if($removed == '-1')
+					$where[] = 't.deleted = 0';
+				else
+					$where[] = 't.deleted = 1';
 			}
-		if(!empty($datefrom))
-                {
-                        $datefrom=date_to_timestamp($datefrom);
-                        $where[] = 'rttickets.createtime >= '.$datefrom;
-                }
-		else
+		}
+
+		if (!empty($datefrom)) {
+			$datefrom = date_to_timestamp($datefrom);
+			$where[] = 't.createtime >= ' . $datefrom;
+		} else
 			$datefrom = 0;
 
-                if(!empty($dateto))
-                {
-                        $dateto=date_to_timestamp($dateto);
-                        $where[] = 'rttickets.createtime <= '.$dateto;
-                }
-		else
+		if (!empty($dateto)) {
+			$dateto = date_to_timestamp($dateto);
+			$where[] = 't.createtime <= ' . $dateto;
+		} else
 			$dateto = 0;
 
-		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
+		if (!empty($address) || !empty($zip) || !empty($city))
+			$where[] = '('
+				. (empty($address) ? '1=1' : 'UPPER(va.address) ?LIKE? UPPER(' . $DB->Escape('%' . $address . '%') . ')')
+				. ' AND '
+				. (empty($zip) ? '1=1' : 'UPPER(va.zip) ?LIKE? UPPER(' . $DB->Escape('%' . $zip . '%') . ')')
+				. ' AND '
+				. (empty($city) ? '1=1' : 'UPPER(va.city) ?LIKE? UPPER(' . $DB->Escape('%' . $city . '%') . ')')
+				. ')';
+
+		$list = $DB->GetAllByKey('SELECT t.id, t.createtime, t.customerid, t.subject, t.requestor, '
 			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
-				? ', city, address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
-					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & '. (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE) .' > 0 ) GROUP BY customerid) AS phones,
+				? ', COALESCE(va.city, c.city) AS city, COALESCE(va.address, c.address) AS address,
 					(SELECT ' . $DB->GroupConcat('contact', ',', true) . '
-					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' > 0)
-					GROUP BY customerid) AS emails ' : '')
-			.'FROM rttickets
-			JOIN rtrights r ON r.queueid = rttickets.queueid AND r.rights & ' . RT_RIGHT_READ . ' > 0
-			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
+						FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & '. (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE) .' > 0 )
+						GROUP BY customerid
+					) AS phones,
+					(SELECT ' . $DB->GroupConcat('contact', ',', true) . '
+						FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' > 0)
+						GROUP BY customerid
+					) AS emails ' : '')
+			.'FROM rttickets t
+			JOIN rtrights r ON r.queueid = t.queueid AND r.rights & ' . RT_RIGHT_READ . ' > 0
+			LEFT JOIN rtticketcategories tc ON tc.ticketid = t.id
 			LEFT JOIN customeraddressview c ON (customerid = c.id)
+			LEFT JOIN vaddresses va ON va.id = t.address_id
 			WHERE 1 = 1 '
 			.(isset($where) ? ' AND '.implode(' AND ', $where) : '')
-			.' ORDER BY createtime', 'id');
+			.' ORDER BY t.createtime', 'id');
 
 		if ($list && $extended)
 		{
 			$tickets = implode(',', array_keys($list));
-			if ($content = $DB->GetAll('(SELECT body, ticketid, createtime, rtmessages.type AS note
+			if ($content = $DB->GetAll('SELECT body, ticketid, createtime, rtmessages.type AS note
 				FROM rtmessages
-				WHERE ticketid in ('.$tickets.'))
+				WHERE ticketid in (' . $tickets . ')
 			        ORDER BY createtime'))
 			{
 				foreach ($content as $idx => $row)
