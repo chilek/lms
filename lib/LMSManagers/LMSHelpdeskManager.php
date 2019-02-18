@@ -1598,9 +1598,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$variable_mapping = array(
 			'host' => 'rt.smtp_host',
 			'port' => 'rt.smtp_port',
-			'user' => 'rt.smtp_username',
-			'pass' => 'rt.smtp_password',
-			'auth' => 'rt.smtp_auth_type',
+			'user' => array('rt.smtp_username', 'rt.smtp_user'),
+			'pass' => array('rt.smtp_password', 'rt.smtp_pass'),
+			'auth' => array('rt.smtp_auth_type', 'rt.smtp_auth'),
 			'secure' => 'rt.smtp_secure',
 			'ssl_verify_peer' => 'rt.smtp_ssl_verify_peer',
 			'ssl_verify_peer_name' => 'rt.smtp_ssl_verify_peer_name',
@@ -1608,8 +1608,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		);
 
 		foreach ($variable_mapping as $option_name => $variable_name) {
-			if (!ConfigHelper::configExists($variable_name))
-				continue;
+			if (is_array($variable_name)) {
+				$exists = false;
+				foreach ($variable_name as $vname)
+					if (ConfigHelper::configExists($vname)) {
+						$exists = true;
+						break;
+					}
+				if (!$exists)
+					continue;
+				$variable_name = $vname;
+			} else
+				if (!ConfigHelper::configExists($variable_name))
+					continue;
 
 			$variable = ConfigHelper::getConfig($variable_name);
 			if (empty($variable))
