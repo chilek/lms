@@ -627,7 +627,8 @@ if (empty($types) || in_array('contracts', $types)) {
 		array(CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
 			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
-			CONTACT_MOBILE | CONTACT_NOTIFICATIONS));
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			$days, $days));
 
 	if (!empty($customers)) {
 		$notifications['contracts']['customers'] = array();
