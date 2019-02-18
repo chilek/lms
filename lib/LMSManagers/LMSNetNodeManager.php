@@ -212,7 +212,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		if (array_key_exists('admcontact', $netnodedata))
 			$args['admcontact'] = empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'];
 		if (array_key_exists('lastinspectiontime', $netnodedata))
-			$args['lastinspectiontime'] = $netnodedata['lastinspectiontime'];
+			$args['lastinspectiontime'] = empty($netnodedata['lastinspectiontime']) ? null : $netnodedata['lastinspectiontime'];
 		if (array_key_exists('ownerid', $netnodedata))
 			$args['ownerid'] = empty($netnodedata['ownerid']) || empty($netnodedata['ownership']) ? null : $netnodedata['ownerid'];
 
