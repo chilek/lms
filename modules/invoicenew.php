@@ -109,7 +109,7 @@ switch($action)
 	case 'additem':
 	case 'savepos':
 
-		unset($error);
+		$error = array();
 
 		$itemdata = r_trim($_POST);
 		$contents = changeContents($contents, $itemdata['invoice-contents']);
@@ -133,7 +133,17 @@ switch($action)
 		if ($itemdata['pdiscount'] < 0 || $itemdata['pdiscount'] > 99.9 || $itemdata['vdiscount'] < 0)
 			$error['discount'] = trans('Wrong discount value!');
 
-		if ($error)
+		$hook_data = array(
+			'customer' => $customer,
+			'contents' => $contents,
+			'itemdata' => $itemdata,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenew_savepos_validation', $hook_data);
+		if (isset($hook_data['error']) && is_array($hook_data['error']))
+			$error = array_merge($error, $hook_data['error']);
+
+		if (!empty($error))
 			break;
 
 		foreach (array('pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
