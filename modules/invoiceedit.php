@@ -448,6 +448,14 @@ switch($action)
 			}
 		}
 
+		$hook_data = array(
+			'contents' => $contents,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoiceedit_save_before_submit', $hook_data);
+		$contents = $hook_data['contents'];
+		$invoice = $hook_data['invoice'];
+
 		$args = array(
 			'cdate' => $cdate,
 			'sdate' => $sdate,
@@ -585,13 +593,20 @@ switch($action)
 				array($invoice['customerid'], $iid));
 		}
 
+		$hook_data = array(
+			'contents' => $contents,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoiceedit_save_after_submit', $hook_data);
+
 		$DB->UnLockTables();
 		$DB->CommitTrans();
 
 		if (isset($_GET['print']))
-			$SESSION->save('invoiceprint', array('invoice' => $invoice['id'],
+			$SESSION->save('invoiceprint', array(
+				'invoice' => $invoice['id'],
 				'original' => !empty($_GET['original']) ? 1 : 0,
-			'copy' => !empty($_GET['copy']) ? 1 : 0,
+				'copy' => !empty($_GET['copy']) ? 1 : 0,
 				'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
 
 		$SESSION->redirect('?m=invoicelist' . (isset($invoice['proforma']) && $invoice['proforma'] == 'edit' ? '&proforma=1' : ''));
