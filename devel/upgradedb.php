@@ -140,7 +140,7 @@ try {
 }
 
 if (isset($options['update-order'])) {
-	$facitilies = explode(',', $options['update-order']);
+	$facilities = explode(',', $options['update-order']);
 	foreach ($facilities as $facility)
 		if (!in_array($facility, array('core', 'plugins')))
 			die('Unsupported system facility: ' . $facility . PHP_EOL);
