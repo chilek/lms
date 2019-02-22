@@ -197,6 +197,7 @@ version ?.??.?? (????-??-??):
   - improvement: show network device description and file containers in network device tooltip [chilan]
   - enhancement: implemented separated smtp settings support for helpdesk/rt [chilan]
   - enhancement: lms-notify.php: added customer 'income' notify type [chilan]
+  - enhancement: allow to search nodes by lastonline date [chilan]
 
 version 1.11.23 (2018-03-21):
 
