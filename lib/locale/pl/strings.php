@@ -4230,4 +4230,8 @@ $_LANG['Don\'t aggregate documents'] = 'Nie agreguj dokumentów';
 
 $_LANG['- no description -'] = '- brak opisu -';
 
+$_LANG['Last online earlier than:'] = 'Ostatnio widziane wcześniej niż:';
+$_LANG['Last online later than:'] = 'Ostatnio widziane później niż:';
+$_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD GG:MM (puste pole oznacza ignorowanie daty) lub kliknij żeby wybrać datę z kalendarza';
+
 ?>
