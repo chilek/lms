@@ -177,6 +177,8 @@ switch($action)
 		if (!empty($error))
 			break;
 
+		$itemdata = $hook_data['itemdata'];
+
 		foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = f_round($itemdata[$key]);
 		$itemdata['count'] = f_round($itemdata['count'], 3);
