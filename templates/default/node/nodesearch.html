@@ -44,7 +44,7 @@
 			<IMG src="img/node.gif" width="16" alt=""> {trans("Node name:")}
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="search[name]" {tip text="Enter node name or it's fragment"}>
+			<INPUT TYPE="text" NAME="search[name]" value="{$nodesearch.name}" {tip text="Enter node name or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
@@ -52,7 +52,7 @@
 			<IMG src="img/mac.gif" width="16" alt=""> {trans("MAC address:")}
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="search[mac]" {tip text="Enter MAC address or it's fragment"}>
+			<INPUT TYPE="text" NAME="search[mac]" value="{$nodesearch.mac}" {tip text="Enter MAC address or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
@@ -60,7 +60,7 @@
 			<IMG src="img/ip.gif" width="16" alt=""> {trans("IP address:")}
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="search[ipaddr]" {tip text="Enter IP address or it's fragment"}>
+			<INPUT TYPE="text" NAME="search[ipaddr]" value="{$nodesearch.ipaddr}" {tip text="Enter IP address or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
@@ -68,7 +68,7 @@
 			<IMG src="img/home.gif" width="16" alt=""> {trans("Location:")}
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="search[location]" {tip text="Enter node location"}>
+			<INPUT TYPE="text" NAME="search[location]" value="{$nodesearch.location}" {tip text="Enter node location"}>
 		</TD>
 	</TR>
 {if !empty($states)}
@@ -80,7 +80,7 @@
 			<select id="state_sel" name="search[state]" onchange="change_selection(this)" {tip text="Select state"} style="width: 20%;">
 				<option value="0"></option>
 				{foreach from=$states item=item}
-				<option value="{$item.id}"{if $item.id == $data.stateid} selected{/if}>{$item.name}</option>
+				<option value="{$item.id}"{if $item.id == $nodesearch.state} selected{/if}>{$item.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -95,7 +95,7 @@
 				<option value="0"></option>
 				{/if}
 				{foreach from=$districts item=item}
-				<option value="{$item.id}"{if $item.id == $data.districtid} selected{/if}>{$item.name}</option>
+				<option value="{$item.id}"{if $item.id == $nodesearch.district} selected{/if}>{$item.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -110,7 +110,7 @@
 				<option value="0"></option>
 				{/if}
 				{foreach from=$boroughs item=item}
-				<option value="{$item.id}"{if $item.id == $data.boroughid} selected{/if}>{$item.name}</option>
+				<option value="{$item.id}"{if $item.id == $nodesearch.borough} selected{/if}>{$item.name}</option>
 				{/foreach}
 			</select>
 		</td>
@@ -121,7 +121,7 @@
 			<IMG src="img/info1.gif" width="16" alt=""> {trans("Description:")}
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="search[info]" {tip text="Enter additional information"}>
+			<INPUT TYPE="text" NAME="search[info]" value="{$nodesearch.info}" {tip text="Enter additional information"}>
 		</TD>
 	</TR>
 	<TR>
@@ -129,7 +129,25 @@
 			<img src="img/netdev.gif"> {trans("Device:")}
 		</td>
 		<td>
-			<input type="text" name="search[netdev]" id="netdev" {tip text="Enter network device name or ip address"}>
+			<input type="text" name="search[netdev]" id="netdev" value="{$nodesearch.netdev}" {tip text="Enter network device name or ip address"}>
+		</td>
+	</TR>
+	<TR>
+		<td class="bold nobr">
+			<img src="img/calendar.gif"> {trans("Last online earlier than:")}
+		</td>
+		<td>
+			<input type="text" name="search[lastonlinebefore]" id="lastonlinebefore" value="{$nodesearch.lastonlinebefore}"
+					{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
+		</td>
+	</TR>
+	<TR>
+		<td class="bold nobr">
+			<img src="img/calendar.gif"> {trans("Last online later than:")}
+		</td>
+		<td>
+			<input type="text" name="search[lastonlineafter]" id="lastonlineafter" value="{$nodesearch.lastonlineafter}"
+					{tip class="calendar-time" text="Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar"}>
 		</td>
 	</TR>
 	<TR>
@@ -137,8 +155,14 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
 		</TD>
 		<TD>
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} checked{/if}><label for="operator0">{trans("and")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} checked{/if}><label for="operator1">{trans("or")}</label>
+			<label>
+				<INPUT class="radio light" type="radio" value="AND" name="k"{if $k!='OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<INPUT class="radio light" type="radio" value="OR" name="k"{if $k=='OR'} checked{/if}>
+				{trans("or")}
+			</label>
 		</TD>
 	</TR>
 	<TR>

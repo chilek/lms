@@ -141,7 +141,7 @@ switch($action)
 		if ($invoice['closed'])
 			break;
 
-		unset($error);
+		$error = array();
 
 		$itemdata = r_trim($_POST);
 		$contents = changeContents($contents, $itemdata['invoice-contents']);
@@ -165,8 +165,19 @@ switch($action)
 		if ($itemdata['pdiscount'] < 0 || $itemdata['pdiscount'] > 99.9 || $itemdata['vdiscount'] < 0)
 			$error['discount'] = trans('Wrong discount value!');
 
-		if ($error)
+		$hook_data = array(
+			'contents' => $contents,
+			'itemdata' => $itemdata,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoiceedit_savepos_validation', $hook_data);
+		if (isset($hook_data['error']) && is_array($hook_data['error']))
+			$error = array_merge($error, $hook_data['error']);
+
+		if (!empty($error))
 			break;
+
+		$itemdata = $hook_data['itemdata'];
 
 		foreach (array('discount', 'pdiscount', 'vdiscount', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = f_round($itemdata[$key]);
@@ -341,10 +352,23 @@ switch($action)
 		if (empty($contents) || empty($invoice['customerid']) || !$LMS->CustomerExists($invoice['customerid']))
 			break;
 
+		$error = array();
+
 		$contents = changeContents($contents, $_POST['invoice-contents']);
 
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = $invoice['doctype'];
+
+		$hook_data = array(
+			'contents' => $contents,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoiceedit_save_validation', $hook_data);
+		if (isset($hook_data['error']) && is_array($hook_data['error']))
+			$error = array_merge($error, $hook_data['error']);
+
+		if (!empty($error))
+			break;
 
 		// updates customer recipient address stored in document
 		$prev_rec_addr = $DB->GetOne('SELECT recipient_address_id FROM documents WHERE id = ?', array($invoice['id']));
@@ -425,6 +449,14 @@ switch($action)
 				$error = null;
 			}
 		}
+
+		$hook_data = array(
+			'contents' => $contents,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoiceedit_save_before_submit', $hook_data);
+		$contents = $hook_data['contents'];
+		$invoice = $hook_data['invoice'];
 
 		$args = array(
 			'cdate' => $cdate,
@@ -563,13 +595,20 @@ switch($action)
 				array($invoice['customerid'], $iid));
 		}
 
+		$hook_data = array(
+			'contents' => $contents,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoiceedit_save_after_submit', $hook_data);
+
 		$DB->UnLockTables();
 		$DB->CommitTrans();
 
 		if (isset($_GET['print']))
-			$SESSION->save('invoiceprint', array('invoice' => $invoice['id'],
+			$SESSION->save('invoiceprint', array(
+				'invoice' => $invoice['id'],
 				'original' => !empty($_GET['original']) ? 1 : 0,
-			'copy' => !empty($_GET['copy']) ? 1 : 0,
+				'copy' => !empty($_GET['copy']) ? 1 : 0,
 				'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
 
 		$SESSION->redirect('?m=invoicelist' . (isset($invoice['proforma']) && $invoice['proforma'] == 'edit' ? '&proforma=1' : ''));
@@ -591,13 +630,10 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('contents', $contents);
 if (isset($invoice['customerid']) && !empty($invoice['customerid']))
 	$customer = $LMS->GetCustomer($invoice['customerid'], true);
 else
 	$customer = null;
-$SMARTY->assign('customer', $customer);
-$SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
 
@@ -610,6 +646,20 @@ if (isset($invoice['customerid']) && !empty($invoice['customerid'])) {
 	$args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($invoice['customerid']));
 }
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+
+$hook_data = array(
+	'customer' => $customer,
+	'contents' => $contents,
+	'invoice' => $invoice,
+);
+$hook_data = $LMS->ExecuteHook('invoiceedit_before_display', $hook_data);
+$customer = $hook_data['customer'];
+$contents = $hook_data['contents'];
+$invoice = $hook_data['invoice'];
+
+$SMARTY->assign('customer', $customer);
+$SMARTY->assign('contents', $contents);
+$SMARTY->assign('invoice', $invoice);
 
 $SMARTY->display('invoice/invoiceedit.html');
 

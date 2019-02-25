@@ -99,11 +99,13 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 
@@ -131,7 +133,6 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -153,7 +154,10 @@ if (array_key_exists('import-file', $options)) {
 	$import_filename = strftime('%Y%m%d%H%M%S.csv');
 }
 
-@include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
+$import_config = ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php');
+if (strpos($import_config, DIRECTORY_SEPARATOR) === false)
+	$import_config = MODULES_DIR . DIRECTORY_SEPARATOR . $import_config;
+@include($import_config);
 if (!isset($patterns) || !is_array($patterns))
 	die(trans("Configuration error. Patterns array not found!") . PHP_EOL);
 
