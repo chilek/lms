@@ -68,6 +68,7 @@
         <option value="subject"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.subject)} selected{/if}>{trans("<!qs>ticket subject")}</option>
         <option value="requestor"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.requestor)} selected{/if}>{trans("<!qs>ticket requestor")}</option>
         <option value="customername"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.customername)} selected{/if}>{trans("<!qs>customer name")}</option>
+		<option value="unresolvedonly"{if !isset($qs_properties.ticket) || isset($qs_properties.ticket.unresolvedonly)} selected{/if}>{trans("<!qs>show unresolved only")}</option>
     </select>
     <input type="text" name="qs[ticket]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
 </div>

@@ -522,7 +522,8 @@ switch ($mode) {
 				LEFT JOIN customerview c on (t.customerid = c.id)
 				WHERE (r.rights IS NOT NULL" . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ")
 					AND ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
-					." AND (" . (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/',$search) ? 't.id = ' . $search : '1=0') : '1=0')
+					. (empty($properties) || isset($properties['unresolvedonly']) ? ' AND t.state <> ' . RT_RESOLVED : '') . " AND ("
+					. (empty($properties) || isset($properties['id']) ? (preg_match('/^[0-9]+$/',$search) ? 't.id = ' . $search : '1=0') : '1=0')
 					. (empty($properties) || isset($properties['subject']) ? " OR LOWER(t.subject) ?LIKE? LOWER($sql_search)" : '')
 					. (empty($properties) || isset($properties['requestor']) ? " OR LOWER(t.requestor) ?LIKE? LOWER($sql_search)" : '')
 					. (empty($properties) || isset($properties['customername']) ? " OR LOWER(c.name) ?LIKE? LOWER($sql_search)

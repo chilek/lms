@@ -4234,4 +4234,6 @@ $_LANG['Last online earlier than:'] = 'Ostatnio widziane wcześniej niż:';
 $_LANG['Last online later than:'] = 'Ostatnio widziane później niż:';
 $_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD GG:MM (puste pole oznacza ignorowanie daty) lub kliknij żeby wybrać datę z kalendarza';
 
+$_LANG['<!qs>show unresolved only'] = 'pokaż tylko nierozwiązane';
+
 ?>
