@@ -319,7 +319,7 @@ if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
 }
 
-$netnodelist = $LMS->GetNetNodeList(array(), 'name');
+$netnodelist = $LMS->GetNetNodeList(array('short' => true), 'name');
 unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
@@ -328,6 +328,7 @@ if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid']))
 	$search = array('netnode' => $ticket['netnodeid']);
 else
 	$search = array();
+$search['short'] = true;
 $netdevlist = $LMS->GetNetDevList('name', $search);
 unset($netdevlist['total']);
 unset($netdevlist['order']);

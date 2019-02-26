@@ -29,6 +29,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 	public function GetNetNodeList($search, $order) {
 		list ($order, $dir) = sscanf($order, '%[^,],%s');
 		($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
+		$short = isset($search['short']) && !empty($search['short']);
 
 		switch ($order) {
 			case 'id':
@@ -80,7 +81,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			}
 		}
 
-		$nlist = $this->db->GetAllByKey('SELECT n.id, n.name, n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
+		$nlist = $this->db->GetAllByKey('SELECT n.id, n.name' . ($short ? ''
+					: ', n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
 				n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
 				lc.ident AS location_city_ident, lst.ident AS location_street_ident,
 				lb.id AS location_borough, lb.name AS location_borough_name, lb.ident AS location_borough_ident,
@@ -90,7 +92,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				addr.location, addr.name as location_name,
 				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
-				addr.house as location_house, addr.flat as location_flat
+				addr.house as location_house, addr.flat as location_flat') . '
 			FROM netnodes n
 				LEFT JOIN divisions d ON d.id = n.divisionid
 				LEFT JOIN vaddresses addr        ON addr.id = n.address_id
@@ -103,7 +105,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			. (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where)) . ' ' . $ostr . ' ' . $dir,
 			'id');
 
-		if ( $nlist ) {
+		if (!$short && $nlist) {
 			foreach ($nlist as &$netnode) {
 				$netnode['terc'] = empty($netnode['location_state_ident']) ? null
 					: $netnode['location_state_ident'] . $netnode['location_district_ident']
