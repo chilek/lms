@@ -16,9 +16,9 @@ P		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align
 <body>
 <h1>{$engine.title} {$document.nr}</h1>
 <h2>{trans("Warning! This is example document (default template). You can create your own template in documents/templates/ directory.")}</h2>
-<p>Zawarta w dniu {$smarty.now|date_format:"%Y-%m-%d"} w <s>Miasto</s> pomiędzy 
-<s>Naszą firmą</s> z siedzibą w <s>Siedziba</s> wpisanym do rejestru KRS pod 
-numerem <s>Numer</s>, NIP <s>Nip</s> zwanym dalej Usługodawcą reprezentowanym 
+<p>Zawarta w dniu {$smarty.now|date_format:"%Y-%m-%d"} w <s>Miasto</s> pomiędzy
+<s>{$division.name}</s> z siedzibą w <s>{$division.address}</s> wpisanym do rejestru KRS pod
+numerem <s>{$division.rbe}</s>, NIP <s>{$division.nip}</s> zwanym dalej Usługodawcą reprezentowanym
 przez: {$layout.logname} a: </p>
 <TABLE BORDER="0">
     <TR>

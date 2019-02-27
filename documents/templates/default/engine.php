@@ -30,6 +30,8 @@ $customerinfo = $LMS->GetCustomer($cid);
 $assignments = $LMS->GetCustomerAssignments($cid);
 $customernodes = $LMS->GetCustomerNodes($cid);
 $tariffs = $LMS->GetTariffs();
+$divisionid = $LMS->GetCustomerDivision($cid);
+$division = $LMS->GetDivision($divisionid);
 
 unset($customernodes['total']);
 
@@ -70,6 +72,7 @@ $SMARTY->assign(
 			'customeraccounts' => $customeraccounts,
 			'document' => $document,
 			'engine' => $engine,
+			'division' => $division,
 		     )
 		);
 
