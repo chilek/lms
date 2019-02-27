@@ -235,21 +235,16 @@ function BodyVars(&$body, $data)
 	if (strpos($body, '%bankaccount') !== false)
 		$body = str_replace('%bankaccount', format_bankaccount(bankaccount($data['id'])), $body);
 
-	if(!(strpos($body, '%last_10_in_a_table') === FALSE))
-	{
-		$last10 = '';
-		if($last10_array = $LMS->DB->GetAll('SELECT comment, time, value 
-			FROM cash WHERE customerid = ?
-			ORDER BY time DESC LIMIT 10', array($data['id'])))
-		{
-			foreach($last10_array as $r)
-			{
-				$last10 .= date("Y/m/d | ", $r['time']);
-				$last10 .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $r['value']));
-				$last10 .= $r['comment']."\n";
+	if (preg_match('/%last_(?<number>[0-9]+)_in_a_table/', $body, $m)) {
+		$lN = '';
+		$lastN = $LMS->GetCustomerShortBalanceList($data['id'], $m['number']);
+		if (!empty($lastN))
+			foreach ($lastN as $r) {
+				$lN .= date("Y/m/d | ", $r['time']);
+				$lN .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $r['value']));
+				$lN .= $r['comment']."\n";
 			}
-		}
-		$body = str_replace('%last_10_in_a_table', $last10, $body);
+		$body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
 	}
 
 	$hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(
