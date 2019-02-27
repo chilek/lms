@@ -70,9 +70,11 @@ if(isset($_POST['ticket']))
 	}
 
 	if (empty($ticket['categories']) && (!$allow_empty_categories || empty($ticket['categorywarn']))) {
-		$error['categories'] = trans('You have to select category!');
-		if ($allow_empty_categories)
+		if ($allow_empty_categories) {
 			$ticket['categorywarn'] = 1;
+			$error['categories'] = trans('Category selection is recommended but not required!');
+		} else
+			$error['categories'] = trans('You have to select category!');
 	}
 
 	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2)

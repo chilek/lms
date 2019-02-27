@@ -4236,4 +4236,6 @@ $_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or clic
 
 $_LANG['<!qs>show unresolved only'] = 'pokaż tylko nierozwiązane';
 
+$_LANG['Category selection is recommended but not required!'] = 'Wybór kategorii jest zalecany, ale niewymagany!';
+
 ?>
