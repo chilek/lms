@@ -235,6 +235,7 @@ if ($id && !isset($_POST['ticket'])) {
 }
 
 $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
 
 $ticket = $LMS->GetTicketContents($id);
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
@@ -282,7 +283,7 @@ if(isset($_POST['ticket']))
 		}
 	};
 
-	if (empty($ticketedit['categories']) && (!$allow_empty_categories || empty($ticketedit['categorywarn']))) {
+	if (empty($ticketedit['categories']) && (!$allow_empty_categories || (empty($ticketedit['categorywarn']) && $empty_category_warning))) {
 		if ($allow_empty_categories) {
 			$ticketedit['categorywarn'] = 1;
 			$error['categories'] = trans('Category selection is recommended but not required!');

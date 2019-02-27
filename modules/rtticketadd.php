@@ -42,6 +42,7 @@ if (!$categories) {
 }
 
 $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+$empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
 
 if(isset($_POST['ticket']))
 {
@@ -69,7 +70,7 @@ if(isset($_POST['ticket']))
 		$SESSION->redirect('?m=rtticketadd&id='.$queue);
 	}
 
-	if (empty($ticket['categories']) && (!$allow_empty_categories || empty($ticket['categorywarn']))) {
+	if (empty($ticket['categories']) && (!$allow_empty_categories || (empty($ticket['categorywarn']) && $empty_category_warning))) {
 		if ($allow_empty_categories) {
 			$ticket['categorywarn'] = 1;
 			$error['categories'] = trans('Category selection is recommended but not required!');
