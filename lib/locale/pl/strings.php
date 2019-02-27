@@ -1678,7 +1678,22 @@ $_LANG['Uptime:'] = 'Uptime:';
 $_LANG['URL:'] = 'Adres URL:';
 $_LANG['URL of your homepage:'] = 'Adres twojej strony domowej:';
 $_LANG['USA'] = 'USA';
-$_LANG['Use carriage return for indentation only. LMS will reformat paragraphs and break long lines.'] = 'Używaj klawisza Enter tylko w celu zamknięcia akapitu. LMS sformatuje wiadomość i połamie linie';
+$_LANG['Enter message body.<br><br>'
+	. 'Supported substitutions/variables:<br>'
+	. '<strong>%customer</strong> - customer first name and last name or name,<br>'
+	. '<strong>%balance</strong> - customer balance,<br>'
+	. '<strong>%cid</strong> - customer identifier,<br>'
+	. '<strong>%pin</strong> - customer pin,<br>'
+	. '<strong>%bankaccount</strong> - bank account for payments,<br>'
+	. '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
+	'Wprowadź treść wiadomości.<br><br>'
+	. 'Obsługiwane podstawienia/zmienne:<br>'
+	. '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
+	. '<strong>%balance</strong> - saldo klienta,<br>'
+	. '<strong>%cid</strong> - identyfikator klienta,<br>'
+	. '<strong>%pin</strong> - pin klienta,<br>'
+	. '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
+	. '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';
