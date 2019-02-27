@@ -139,6 +139,7 @@
 									{$ticket.uptime}
 								</TD>
 							</TR>
+							{if !empty($ticket.categories)}
 							<TR>
 								<TD style="width: 1%;" class="valign-top bold nobr">
 									<i class="lms-ui-icon-content lms-ui-icon-categories"></i>{trans("Categories:")}
@@ -151,6 +152,7 @@
 									{/foreach}
 								</TD>
 							</TR>
+							{/if}
 						</TABLE>
 					</TD>
 					<TD style="width: 50%;" class="valign-top">

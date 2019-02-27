@@ -234,6 +234,8 @@ if ($id && !isset($_POST['ticket'])) {
     }
 }
 
+$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+
 $ticket = $LMS->GetTicketContents($id);
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
@@ -280,8 +282,11 @@ if(isset($_POST['ticket']))
 		}
 	};
 
-	if(!count($ticketedit['categories']))
+	if (empty($ticketedit['categories']) && (!$allow_empty_categories || empty($ticketedit['categorywarn']))) {
 		$error['categories'] = trans('You have to select category!');
+		if ($allow_empty_categories)
+			$ticketedit['categorywarn'] = 1;
+	}
 
 	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queue']) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
@@ -454,8 +459,12 @@ if(isset($_POST['ticket']))
 	$ticket['requestor_mail'] = $ticketedit['requestor_mail'];
 	$ticket['requestor_phone'] = $ticketedit['requestor_phone'];
 	$ticket['parentid'] = $ticketedit['parentid'];
-} else
+	$ticket['categorywarn'] = $ticketedit['categorywarn'];
+} else {
 	$ticketedit['categories'] = $ticket['categories'];
+
+	$ticketedit['categorywarn'] = 0;
+}
 
 $ncategories = array();
 foreach ($categories as $category) {

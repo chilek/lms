@@ -41,6 +41,8 @@ if (!$categories) {
 	die;
 }
 
+$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
+
 if(isset($_POST['ticket']))
 {
 	$ticket = $_POST['ticket'];
@@ -67,8 +69,11 @@ if(isset($_POST['ticket']))
 		$SESSION->redirect('?m=rtticketadd&id='.$queue);
 	}
 
-	if(empty($ticket['categories']))
+	if (empty($ticket['categories']) && (!$allow_empty_categories || empty($ticket['categorywarn']))) {
 		$error['categories'] = trans('You have to select category!');
+		if ($allow_empty_categories)
+			$ticket['categorywarn'] = 1;
+	}
 
 	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
@@ -304,6 +309,8 @@ if(isset($_POST['ticket']))
 
 	if (ConfigHelper::checkConfig('phpui.helpdesk_notify'))
 		$ticket['notify'] = TRUE;
+
+	$ticket['categorywarn'] = 0;
 }
 
 $layout['pagetitle'] = trans('New Ticket');
