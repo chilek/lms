@@ -95,6 +95,14 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init' || $action == 
 		));
 	}
 
+	$hook_data = array(
+		'contents' => $invoicecontents,
+		'invoice' => $invoice,
+	);
+	$hook_data = $LMS->ExecuteHook('invoiceedit_init', $hook_data);
+	$invoicecontents = $hook_data['contents'];
+	$invoice = $hook_data['invoice'];
+
 	$SESSION->save('invoicecontents', $invoicecontents);
 	$SESSION->save('invoice', $invoice);
 	$SESSION->save('invoicecustomer', $invoice['customerid']);
