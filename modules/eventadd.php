@@ -133,6 +133,17 @@ if(isset($_POST['event']))
 			$error['deadline'] = trans('Ticket deadline could not be set in past');
 	}
 
+	$hook_data = $LMS->executeHook('eventadd_validation_before_submit',
+		array(
+			'event' => $event,
+			'ticket' => $ticket,
+			'error'   => $error,
+		)
+	);
+	$event = $hook_data['event'];
+	$ticket = $hook_data['ticket'];
+	$error = $hook_data['error'];
+
 	if (!$error) {
 		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
 		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
@@ -268,7 +279,19 @@ if(isset($_POST['event']))
 		$event['enddate'] = $enddate;
 		$event['endtime'] = $endtime;
 
-		$LMS->EventAdd($event);
+		$eventid = $LMS->EventAdd($event);
+
+		$event['id'] = $eventid;
+        $nodedata = $LMS->ExecHook('event_add_after', $event);
+
+		$hook_data = $LMS->executeHook('event_after_submit',
+			array(
+				'event' => $event,
+				'ticket' => $ticket,
+			)
+		);
+		$event = $hook_data['event'];
+		$ticket = $hook_data['ticket'];
 
 		if (!isset($event['reuse'])) {
 			$backto = $SESSION->get('backto');
