@@ -295,25 +295,23 @@ switch($action)
 				$error['cdate'] = trans('Incorrect date format!');
 		}
 
-		if($invoice['sdate'])
-		{
-			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
-			if(checkdate($smonth, $sday, $syear))
-			{
-				$oldsday = date('d', $invoice['oldsdate']);
-				$oldsmonth = date('m', $invoice['oldsdate']);
-				$oldsyear = date('Y', $invoice['oldsdate']);
+		if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
+			if ($invoice['sdate']) {
+				list ($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+				if (checkdate($smonth, $sday, $syear)) {
+					$oldsday = date('d', $invoice['oldsdate']);
+					$oldsmonth = date('m', $invoice['oldsdate']);
+					$oldsyear = date('Y', $invoice['oldsdate']);
 
-				if($oldsday != $sday || $oldsmonth != $smonth || $oldsyear != $syear)
-				{
-					$invoice['sdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $smonth, $sday, $syear);
-				}
-				else // save hour/min/sec value if date is the same
-					$invoice['sdate'] = $invoice['oldsdate'];
+					if ($oldsday != $sday || $oldsmonth != $smonth || $oldsyear != $syear)
+						$invoice['sdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $smonth, $sday, $syear);
+					else // save hour/min/sec value if date is the same
+						$invoice['sdate'] = $invoice['oldsdate'];
+				} else
+					$error['sdate'] = trans('Incorrect date format!');
 			}
-			else
-				$error['sdate'] = trans('Incorrect date format!');
-		}
+		} else
+			$invoice['sdate'] = $invoice['cdate'];
 
 		if ($invoice['deadline']) {
 			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
@@ -366,6 +364,9 @@ switch($action)
 
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = $invoice['doctype'];
+
+		if (!ConfigHelper::checkPrivilege('invoice_sale_date'))
+			$invoice['sdate'] = $invoice['cdate'];
 
 		$hook_data = array(
 			'contents' => $contents,

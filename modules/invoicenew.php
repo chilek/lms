@@ -236,39 +236,33 @@ switch($action)
 
 		$currtime = time();
 
-		if($invoice['sdate'])
-		{
-			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
-			if(checkdate($smonth, $sday, $syear)) 
-			{
-				$invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				$scurrmonth = $smonth;
-			}
-			else
-			{
-				$error['sdate'] = trans('Incorrect date format!');
-				$invoice['sdate'] = $currtime;
-				break;
-			}
-		}
-		else
-			$invoice['sdate'] = $currtime;
-
-		if($invoice['cdate'])
-		{
+		if ($invoice['cdate']) {
 			list($year, $month, $day) = explode('/', $invoice['cdate']);
-			if(checkdate($month, $day, $year)) 
-			{
+			if (checkdate($month, $day, $year)) {
 				$invoice['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
 				$currmonth = $month;
-			}
-			else
-			{
+			} else {
 				$error['cdate'] = trans('Incorrect date format!');
 				$invoice['cdate'] = $currtime;
 				break;
 			}
 		}
+
+		if (ConfigHelper::checkPrivilege('invoice_sale_date'))
+			if ($invoice['sdate']) {
+				list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+				if (checkdate($smonth, $sday, $syear)) {
+					$invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
+					$scurrmonth = $smonth;
+				} else {
+					$error['sdate'] = trans('Incorrect date format!');
+					$invoice['sdate'] = $currtime;
+					break;
+				}
+			} else
+				$invoice['sdate'] = $currtime;
+		else
+			$invoice['sdate'] = $invoice['cdate'];
 
 		if($invoice['cdate'] && !isset($invoice['cdatewarning']))
 		{
@@ -376,7 +370,10 @@ switch($action)
 		        $error['paytype'] = trans('Default payment type not defined!');
 		}
 
-		$hook_data = array(
+		if (!ConfigHelper::checkPrivilege('invoice_sale_date'))
+			$invoice['sdate'] = $invoice['cdate'];
+
+			$hook_data = array(
 			'customer' => $customer,
 			'contents' => $contents,
 			'invoice' => $invoice,

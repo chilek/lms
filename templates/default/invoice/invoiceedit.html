@@ -73,7 +73,13 @@
 			{trans("Sale date:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
+				<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10"
+						placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+			{else}
+				<input type="hidden" name="invoice[sdate]" value="{$invoice.date|date_format:"%Y/%m/%d"}">
+				{$invoice.date|date_format:"%Y/%m/%d"}
+			{/if}
 		</TD>
 	</TR>
 	<TR>

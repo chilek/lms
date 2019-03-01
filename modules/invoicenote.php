@@ -138,46 +138,35 @@ switch($action)
 
 		$currtime = time();
 
-		if($cnote['sdate'])
-		{
-			list($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
-			if(checkdate($smonth, $sday, $syear))
-			{
-				$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
-				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				if($sdate < $invoice['sdate'])
-				{
-					$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
-				}
-			}
-			else
-			{
-				$error['sdate'] = trans('Incorrect date format! Using current date.');
-				$cnote['sdate'] = $currtime;
-			}
-		}
-		else
-			$cnote['sdate'] = $currtime;
-
-		if($cnote['cdate'])
-		{
+		if ($cnote['cdate']) {
 			list($year, $month, $day) = explode('/', $cnote['cdate']);
-			if(checkdate($month, $day, $year))
-			{
+			if (checkdate($month, $day, $year)) {
 				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				if($cnote['cdate'] < $invoice['cdate'])
-				{
+				if ($cnote['cdate'] < $invoice['cdate'])
 					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
-				}
-			}
-			else
-			{
+			} else {
 				$error['cdate'] = trans('Incorrect date format! Using current date.');
 				$cnote['cdate'] = $currtime;
 			}
-		}
-		else
+		} else
 			$cnote['cdate'] = $currtime;
+
+		if (ConfigHelper::checkPrivilege('invoice_sale_date'))
+			if ($cnote['sdate']) {
+				list ($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
+				if (checkdate($smonth, $sday, $syear)) {
+					$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
+					$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
+					if ($sdate < $invoice['sdate'])
+						$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+				} else {
+					$error['sdate'] = trans('Incorrect date format! Using current date.');
+					$cnote['sdate'] = $currtime;
+				}
+			} else
+				$cnote['sdate'] = $currtime;
+		else
+			$cnote['sdate'] = $invoice['sdate'];
 
 		if ($cnote['deadline']) {
 			list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
@@ -224,6 +213,9 @@ switch($action)
 			break;
 
 		$SESSION->restore('invoiceid', $invoice['id']);
+
+		if (!ConfigHelper::checkPrivilege('invoice_sale_date'))
+			$cnote['sdate'] = $invoice['sdate'];
 
 		$invoicecontents = $invoice['content'];
 		$newcontents = r_trim($_POST);
