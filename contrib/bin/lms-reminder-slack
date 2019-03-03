@@ -29,12 +29,8 @@ use Getopt::Long;
 use vars qw($configfile $quiet $debug $help $version);
 use POSIX qw(strftime mktime floor);
 use MIME::QuotedPrint;
-
 use IO::Select;
 use LWP::UserAgent;
-
-
-
 
 my $_version = '1.11-git';
 
@@ -57,7 +53,7 @@ lms-reminder, version $_version
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
--v, --version			print version info and exit;
+-v, --version				print version info and exit;
 -q, --quiet			suppress any output, except errors;
 -d, --debug			show debug data;
 
@@ -103,7 +99,6 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
-
 my $slack_webhook = $ini->val('reminder', 'slack_webhook') || '';
 my $slack_botname = $ini->val('reminder', 'slack_botname') || 'LMS reminder';
 my $slack_channel = $ini->val('reminder', 'slack_channel') || 'lms';
@@ -124,10 +119,10 @@ my $response = $browser->post(
        ],
     );
   
-#$response->content;
 	if($debug) {
 			print $_[0];
 			print "\r\n";
+			print $response->content;
 	}
 }
 
@@ -161,13 +156,14 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $recipient = $row->{'email'};
 	
 	my $dbqi = $dbase->prepare("SELECT DISTINCT title, description, begintime, endtime,
-			customerid, UPPER(lastname) AS lastname, c.name AS name, address, city, zip,
+			customerid, UPPER(lastname) AS lastname, c.name AS name, address, city, zip, vn.location,
 			(SELECT contact FROM customercontacts cc
 				WHERE customerid = e.customerid AND (cc.type & 7 > 0)
 				ORDER BY contact LIMIT 1) AS phone 
 			FROM events e
 			LEFT JOIN customeraddressview c ON (c.id = customerid)
 			LEFT JOIN eventassignments ea ON (e.id = ea.eventid)
+			LEFT JOIN vnodes vn on (vn.id=e.nodeid)
 			WHERE date = $date AND
 				((private = 1 AND e.userid = $row->{'id'}) OR
 				(private = 0 AND ea.userid = $row->{'id'}) OR
@@ -178,9 +174,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	{
 		my $begintime = sprintf("%02d:%02d",floor($rowi->{'begintime'}/100),$rowi->{'begintime'}%100);
 
-
 		$contents .= "**Timetable for today ($day)**".'\n';
-#		$contents .= "----------------------------------------------------------------------------".'\n';
 
 		$contents .= "**Time :\t$begintime";
 		if($rowi->{'endtime'} && $rowi->{'endtime'} != $rowi->{'begintime'})
@@ -192,14 +186,21 @@ while (my $row = $dbq->fetchrow_hashref())
 		
 		$contents .= "**Title:\t$rowi->{'title'}**".'\n';
 
+		if($rowi->{'description'})
+		{
 		$contents .= "Desc.:\t$rowi->{'description'}".'\n';
+		}
 
 		if($rowi->{'customerid'})
 		{
-			$contents .= "Cust.:\t$rowi->{'lastname'} $rowi->{'name'}, $rowi->{'zip'} $rowi->{'city'}, $rowi->{'address'}, $rowi->{'phone'}".'\n';
+			$contents .= "Cust.:\t$rowi->{'lastname'} $rowi->{'name'}, $rowi->{'zip'} $rowi->{'city'}, $rowi->{'address'}, tel. $rowi->{'phone'}".'\n';
 		}
 
-#		$contents .= "----------------------------------------------------------------------------".'\n';
+		if($rowi->{'location'})
+		{
+			$contents .= "Node Location:\t$rowi->{'location'} ".'\n';
+		}
+
 		$counter++;
 	}
 	
