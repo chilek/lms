@@ -868,6 +868,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	public function invoice_qr2pay_code() {
 		$x = $this->backend->GetX();
 		$y = $this->backend->GetY();
+		$this->backend->SetFont('arial', '', 7);
 		$this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
 		$tmp = '|PL|'.bankaccount($this->data['customerid'], $this->data['account']).'|'.str_pad( $this->data['value'] * 100,  6, 0, STR_PAD_LEFT).'|'.$this->data['division_name'].'|' . trans('QR Payment for Internet Invoice no.').' '.$docnumber.'|||';
 		$style['position'] = 'R';
