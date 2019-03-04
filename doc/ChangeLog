@@ -204,6 +204,8 @@ version ?.??.?? (????-??-??):
     assignment generates warning [chilan]
   - enhancement: new user privilege 'invoice_sale_date' controls if user can manipulate
     invoice/invoice-note sale date [chilan]
+  - enhancement: new user privilege 'invoice_consent_date' controls if user can manipulate
+    invoice/invoice-note/note consent date [chilan]
 
 version 1.11.23 (2018-03-21):
 
