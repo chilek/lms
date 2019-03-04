@@ -275,25 +275,26 @@ switch($action)
 		$invoice['city'] = $city;
 		$invoice['countryid'] = $countryid;
 
-		if($invoice['cdate']) // && !$invoice['cdatewarning'])
-		{
-			list($year, $month, $day) = explode('/', $invoice['cdate']);
-			if(checkdate($month, $day, $year))
-			{
-				$oldday = date('d', $invoice['oldcdate']);
-				$oldmonth = date('m', $invoice['oldcdate']);
-				$oldyear = date('Y', $invoice['oldcdate']);
+		$currtime = time();
 
-				if($oldday != $day || $oldmonth != $month || $oldyear != $year)
-				{
-					$invoice['cdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $month, $day, $year);
-				}
-				else // save hour/min/sec value if date is the same
-					$invoice['cdate'] = $invoice['oldcdate'];
+		if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
+			if ($invoice['cdate']) { // && !$invoice['cdatewarning'])
+				list ($year, $month, $day) = explode('/', $invoice['cdate']);
+				if (checkdate($month, $day, $year)) {
+					$oldday = date('d', $invoice['oldcdate']);
+					$oldmonth = date('m', $invoice['oldcdate']);
+					$oldyear = date('Y', $invoice['oldcdate']);
+
+					if ($oldday != $day || $oldmonth != $month || $oldyear != $year)
+						$invoice['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime),
+							$month, $day, $year);
+					else // save hour/min/sec value if date is the same
+						$invoice['cdate'] = $invoice['oldcdate'];
+				} else
+					$error['cdate'] = trans('Incorrect date format!');
 			}
-			else
-				$error['cdate'] = trans('Incorrect date format!');
-		}
+		} else
+			$invoice['cdate'] = $invoice['oldcdate'];
 
 		if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
 			if ($invoice['sdate']) {
@@ -304,7 +305,8 @@ switch($action)
 					$oldsyear = date('Y', $invoice['oldsdate']);
 
 					if ($oldsday != $sday || $oldsmonth != $smonth || $oldsyear != $syear)
-						$invoice['sdate'] = mktime(date('G', time()), date('i', time()), date('s', time()), $smonth, $sday, $syear);
+						$invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime),
+							$smonth, $sday, $syear);
 					else // save hour/min/sec value if date is the same
 						$invoice['sdate'] = $invoice['oldsdate'];
 				} else
@@ -321,7 +323,7 @@ switch($action)
 				$olddyear = date('Y', $invoice['oldddate']);
 
 				if ($olddday != $dday || $olddmonth != $dmonth || $olddyear != $dyear)
-					$invoice['deadline'] = mktime(date('G', time()), date('i', time()), date('s', time()), $dmonth, $dday, $dyear);
+					$invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
 				else // save hour/min/sec value if date is the same
 					$invoice['deadline'] = $invoice['olddeadline'];
 			} else
@@ -364,6 +366,9 @@ switch($action)
 
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = $invoice['doctype'];
+
+		if (!ConfigHelper::checkPrivilege('invoice_consent_date'))
+			$invoice['cdate'] = $invoice['oldcdate'];
 
 		if (!ConfigHelper::checkPrivilege('invoice_sale_date'))
 			$invoice['sdate'] = $invoice['cdate'];

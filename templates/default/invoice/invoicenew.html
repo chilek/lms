@@ -68,9 +68,15 @@
 			{trans("Settlement date:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			{if $invoice.cdatewarning}
-			<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
+			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
+				<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
+						placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+				{if $invoice.cdatewarning}
+					<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
+				{/if}
+			{else}
+				<input type="hidden" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}">
+				{$invoice.cdate|date_format:"%Y/%m/%d"}
 			{/if}
 		</TD>
 	</TR>

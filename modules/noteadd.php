@@ -86,42 +86,42 @@ switch($action)
 		unset($note); 
 		unset($customer);
 		unset($error);
-		
+
+		$currtime = time();
+
 		if($note = $_POST['note'])
 			foreach($note as $key => $val)
 				$note[$key] = $val;
 		
 		$note['customerid'] = $_POST['customerid'];
 
-		if($note['cdate'])
-		{
-			list($year, $month, $day) = explode('/', $note['cdate']);
-			if(checkdate($month, $day, $year)) 
-			{
-				$note['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-				$currmonth = $month;
+		if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
+			if ($note['cdate']) {
+				list ($year, $month, $day) = explode('/', $note['cdate']);
+				if (checkdate($month, $day, $year)) {
+					$note['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime),
+						$month, $day, $year);
+					$currmonth = $month;
+				} else {
+					$error['cdate'] = trans('Incorrect date format!');
+					$note['cdate'] = $currtime;
+					break;
+				}
 			}
-			else
-			{
-				$error['cdate'] = trans('Incorrect date format!');
-				$note['cdate'] = time();
-				break;
-			}
-		}
+		} else
+			$note['cdate'] = $currtime;
 
-		if($note['cdate'] && !isset($note['cdatewarning']))
-		{
+		if (ConfigHelper::checkPrivilege('invoice_consent_date') && $note['cdate'] && !isset($note['cdatewarning'])) {
 			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?', 
 					array(DOC_DNOTE, $note['numberplanid']));
 	
-			if($note['cdate'] < $maxdate)
-			{
-				$error['cdate'] = trans('Last date of debit note settlement is $a. If sure, you want to write note with date of $b, then click "Submit" again.', date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $note['cdate']));
+			if ($note['cdate'] < $maxdate) {
+				$error['cdate'] = trans('Last date of debit note settlement is $a. If sure, you want to write note with date of $b, then click "Submit" again.',
+					date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $note['cdate']));
 				$note['cdatewarning'] = 1;
 			}
-		}
-		elseif(!$note['cdate'])
-			$note['cdate'] = time();
+		} elseif (!$note['cdate'])
+			$note['cdate'] = $currtime;
 
 		if($note['number'])
 		{
@@ -162,6 +162,9 @@ switch($action)
 
 		if($contents && $customer)
 		{
+			if (!ConfigHelper::checkPrivilege('invoice_consent_date'))
+				$note['cdate'] = time();
+
 			$DB->BeginTrans();
 			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions'));
 

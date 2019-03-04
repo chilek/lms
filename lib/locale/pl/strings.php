@@ -4254,5 +4254,6 @@ $_LANG['<!qs>show unresolved only'] = 'pokaż tylko nierozwiązane';
 $_LANG['Category selection is recommended but not required!'] = 'Wybór kategorii jest zalecany, ale niewymagany!';
 
 $_LANG['invoice sale date manipulation'] = 'manipulowanie datą sprzedaży faktur';
+$_LANG['invoice consent date manipulation'] = 'manipulowanie datą wystawienia faktur';
 
 ?>

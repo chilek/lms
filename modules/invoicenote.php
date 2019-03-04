@@ -138,18 +138,21 @@ switch($action)
 
 		$currtime = time();
 
-		if ($cnote['cdate']) {
-			list($year, $month, $day) = explode('/', $cnote['cdate']);
-			if (checkdate($month, $day, $year)) {
-				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				if ($cnote['cdate'] < $invoice['cdate'])
-					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
-			} else {
-				$error['cdate'] = trans('Incorrect date format! Using current date.');
+		if (ConfigHelper::checkPrivilege('invoice_consent_date'))
+			if ($cnote['cdate']) {
+				list ($year, $month, $day) = explode('/', $cnote['cdate']);
+				if (checkdate($month, $day, $year)) {
+					$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
+					if ($cnote['cdate'] < $invoice['cdate'])
+						$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
+				} else {
+					$error['cdate'] = trans('Incorrect date format! Using current date.');
+					$cnote['cdate'] = $currtime;
+				}
+			} else
 				$cnote['cdate'] = $currtime;
-			}
-		} else
-			$cnote['cdate'] = $currtime;
+		else
+			$cnote['cdate'] = $invoice['cdate'];
 
 		if (ConfigHelper::checkPrivilege('invoice_sale_date'))
 			if ($cnote['sdate']) {
@@ -213,6 +216,9 @@ switch($action)
 			break;
 
 		$SESSION->restore('invoiceid', $invoice['id']);
+
+		if (!ConfigHelper::checkPrivilege('invoice_consent_date'))
+			$cnote['cdate'] = $invoice['cdate'];
 
 		if (!ConfigHelper::checkPrivilege('invoice_sale_date'))
 			$cnote['sdate'] = $invoice['sdate'];
