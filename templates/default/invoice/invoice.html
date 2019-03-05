@@ -351,8 +351,8 @@
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2">
-	        {if $invoice.user || $invoice.division_author}
-			{trans("Expositor:")} {if $invoice.user}{$invoice.user}{else}{$invoice.division_author}{/if}
+	        {if !ConfigHelper::checkConfig('invoices.hide_expositor')}
+			{trans("Expositor:")} {if $invoice.user}{$invoice.user}{elseif $invoice.division_author}{$invoice.division_author}{else}{trans("system")}{/if}
         	{/if}
 		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">

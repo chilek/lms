@@ -790,7 +790,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
 		$this->backend->SetFont('arial', '', 8);
 		if (!ConfigHelper::checkConfig('invoices.hide_expositor'))
-			$this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . $expositor . '</b>', 0, 1, 0, true, 'R');
+			$this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . (empty($expositor) ? trans('system') : $expositor) . '</b>', 0, 1, 0, true, 'R');
 	}
 
 	protected function invoice_comment() {
