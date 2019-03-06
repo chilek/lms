@@ -104,6 +104,13 @@ switch($action)
 		if (empty($invoice['numberplanid']))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
 				WHERE doctype = ? AND isdefault = 1', array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE));
+
+		$hook_data = array(
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenew_init', $hook_data);
+		$invoice = $hook_data['invoice'];
+
 	break;
 
 	case 'additem':

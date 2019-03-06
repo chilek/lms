@@ -37,6 +37,7 @@
 {else}
 {$customerid = $invoice.customerid}
 {/if}
+{block name="invoicenew-header"}
 <FORM name="setcustomer" method="POST" action="?m=invoicenew&amp;action=setcustomer">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -143,6 +144,7 @@
     </TBODY>
 </TABLE>
 </FORM>
+{/block}
 
 {if $covenantlist}
 	<FORM name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">
