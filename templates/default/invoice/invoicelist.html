@@ -122,7 +122,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
     <TBODY class="lms-ui-multi-check">
 	{foreach $invoicelist as $invoice}
 	{assign var=invoiceid value=$invoice.id}
-	<TR class="highlight {cycle}{if $invoice.closed} blend {elseif $invoice.cancelled} cancel{/if}">
+	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
