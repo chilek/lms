@@ -105,15 +105,17 @@
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuenetto]" value="{$item.valuenetto}" SIZE="6" {tip text="Enter unitary value without discount"} style="display: none;">
                 <span class="invoice-contents-field-value nobr">
 				{$item.valuenetto|money_format}
+				</span>
 				{if isset($item.valuenetto_custom_contents)}
 					{$item.valuenetto_custom_contents}
 				{/if}
+				<span class="invoice-contents-field-value nobr">
 				<BR>
 				{$item.s_valuenetto|money_format}
+				</span>
 				{if isset($item.s_valuenetto_custom_contents)}
 					{$item.s_valuenetto_custom_contents}
 				{/if}
-			</span>
             </TD>
             <TD class="text-right nobr">
                 <SELECT size="1" class="invoice-contents-field-edit" name="invoice-contents[{$posuid}][taxid]" {tip text="Select Tax rate"} style="display: none;">
@@ -129,15 +131,17 @@
                 <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuebrutto]" SIZE="6" value="{$item.valuebrutto}" {tip text="Enter unitary value without discount"} style="display: none;">
                 <span class="invoice-contents-field-value nobr">
 				{$item.valuebrutto|money_format}
+				</span>
 				{if isset($item.valuebrutto_custom_contents)}
 					{$item.valuebrutto_custom_contents}
 				{/if}
+				<span class="invoice-contents-field-value nobr">
 				<BR>
 				{$item.s_valuebrutto|money_format}
+				</span>
 				{if isset($item.s_valuebrutto_custom_contents)}
 					{$item.s_valuebrutto_custom_contents}
 				{/if}
-			</span>
             </TD>
             <TD class="text-right nobr" class="invoice-contents-buttons">
                 <input type="hidden" class="invoice-contents-posuid" name="invoice-contents[{$posuid}][posuid]" value="{$posuid}">

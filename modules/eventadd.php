@@ -282,9 +282,8 @@ if(isset($_POST['event']))
 		$eventid = $LMS->EventAdd($event);
 
 		$event['id'] = $eventid;
-        $nodedata = $LMS->ExecHook('event_add_after', $event);
 
-		$hook_data = $LMS->executeHook('event_after_submit',
+		$hook_data = $LMS->executeHook('eventadd_after_submit',
 			array(
 				'event' => $event,
 				'ticket' => $ticket,

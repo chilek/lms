@@ -104,6 +104,13 @@ switch($action)
 		if (empty($invoice['numberplanid']))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
 				WHERE doctype = ? AND isdefault = 1', array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE));
+
+		$hook_data = array(
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenew_init', $hook_data);
+		$invoice = $hook_data['invoice'];
+
 	break;
 
 	case 'additem':
@@ -236,54 +243,49 @@ switch($action)
 
 		$currtime = time();
 
-		if($invoice['sdate'])
-		{
-			list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
-			if(checkdate($smonth, $sday, $syear)) 
-			{
-				$invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				$scurrmonth = $smonth;
+		if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
+			if ($invoice['cdate']) {
+				list ($year, $month, $day) = explode('/', $invoice['cdate']);
+				if (checkdate($month, $day, $year)) {
+					$invoice['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime),
+						$month, $day, $year);
+					$currmonth = $month;
+				} else {
+					$error['cdate'] = trans('Incorrect date format!');
+					$invoice['cdate'] = $currtime;
+					break;
+				}
 			}
-			else
-			{
-				$error['sdate'] = trans('Incorrect date format!');
-				$invoice['sdate'] = $currtime;
-				break;
-			}
-		}
-		else
-			$invoice['sdate'] = $currtime;
+		} else
+			$invoice['cdate'] = $currtime;
 
-		if($invoice['cdate'])
-		{
-			list($year, $month, $day) = explode('/', $invoice['cdate']);
-			if(checkdate($month, $day, $year)) 
-			{
-				$invoice['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				$currmonth = $month;
-			}
-			else
-			{
-				$error['cdate'] = trans('Incorrect date format!');
-				$invoice['cdate'] = $currtime;
-				break;
-			}
-		}
+		if (ConfigHelper::checkPrivilege('invoice_consent_date') && $invoice['cdate'] && !isset($invoice['cdatewarning'])) {
+			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?',
+				array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid']));
 
-		if($invoice['cdate'] && !isset($invoice['cdatewarning']))
-		{
-			$maxdate = $DB->GetOne('SELECT MAX(cdate) FROM documents WHERE type = ? AND numberplanid = ?', 
-					array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid']));
-
-			if($invoice['cdate'] < $maxdate)
-			{
+			if ($invoice['cdate'] < $maxdate) {
 				$error['cdate'] = trans('Last date of invoice settlement is $a. If sure, you want to write invoice with date of $b, then click "Submit" again.',
 					date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $invoice['cdate']));
 				$invoice['cdatewarning'] = 1;
 			}
-		}
-		elseif(!$invoice['cdate'])
+		} elseif (!$invoice['cdate'])
 			$invoice['cdate'] = $currtime;
+
+		if (ConfigHelper::checkPrivilege('invoice_sale_date'))
+			if ($invoice['sdate']) {
+				list($syear, $smonth, $sday) = explode('/', $invoice['sdate']);
+				if (checkdate($smonth, $sday, $syear)) {
+					$invoice['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
+					$scurrmonth = $smonth;
+				} else {
+					$error['sdate'] = trans('Incorrect date format!');
+					$invoice['sdate'] = $currtime;
+					break;
+				}
+			} else
+				$invoice['sdate'] = $currtime;
+		else
+			$invoice['sdate'] = $invoice['cdate'];
 
 		if ($invoice['deadline']) {
 			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
@@ -375,6 +377,12 @@ switch($action)
 		    else
 		        $error['paytype'] = trans('Default payment type not defined!');
 		}
+
+		if (!ConfigHelper::checkPrivilege('invoice_consent_date'))
+			$invoice['cdate'] = time();
+
+		if (!ConfigHelper::checkPrivilege('invoice_sale_date'))
+			$invoice['sdate'] = $invoice['cdate'];
 
 		$hook_data = array(
 			'customer' => $customer,

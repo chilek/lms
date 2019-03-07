@@ -913,7 +913,7 @@ if (empty($types) || in_array('income', $types)) {
 			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
-		WHERE cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400",
+		WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400",
 		array(
 			DOC_CNOTE, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE,
 			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,

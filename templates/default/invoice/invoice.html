@@ -48,13 +48,15 @@
 		<TD WIDTH="66%" VALIGN="TOP">
 			<div class="address-header">{trans("Seller:")}</div>
 			{$invoice.division_header|replace:"\n":"<BR>"}<BR>
-			{if ConfigHelper::checkConfig('invoices.show_all_accounts') && !empty($invoice.bankaccounts)}
-			{trans("Bank accounts:")}<br>{format_bankaccount(bankaccount($invoice.customerid, $invoice.account))}<br>
-			{foreach $invoice.bankaccounts as $account}
-			{format_bankaccount($account)}{if !$account@last}<br>{/if}
-			{/foreach}
-			{else}
-			{trans("Bank account:")} {format_bankaccount(bankaccount($invoice.customerid, $invoice.account))}
+			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))}
+				{if ConfigHelper::checkConfig('invoices.show_all_accounts') && !empty($invoice.bankaccounts)}
+					{trans("Bank accounts:")}<br>{format_bankaccount(bankaccount($invoice.customerid, $invoice.account))}<br>
+					{foreach $invoice.bankaccounts as $account}
+						{format_bankaccount($account)}{if !$account@last}<br>{/if}
+					{/foreach}
+				{else}
+					{trans("Bank account:")} {format_bankaccount(bankaccount($invoice.customerid, $invoice.account))}
+				{/if}
 			{/if}
 
 			<BR><BR>
@@ -351,8 +353,8 @@
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2">
-	        {if $invoice.user || $invoice.division_author}
-			{trans("Expositor:")} {if $invoice.user}{$invoice.user}{else}{$invoice.division_author}{/if}
+	        {if !ConfigHelper::checkConfig('invoices.hide_expositor')}
+			{trans("Expositor:")} {if $invoice.user}{$invoice.user}{elseif $invoice.division_author}{$invoice.division_author}{else}{trans("system")}{/if}
         	{/if}
 		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
@@ -421,11 +423,13 @@
 <!-- The Other Page of Invoice customerbalancelist + customerpin -->
 <!-- insert page break here and buy auto-duplex printer :p -->
 
-{if $invoice.customerpin}
-	<BR><BR>
-	<B>{trans("Customer ID:")} {$invoice.customerid|string_format:"%04d"}</B><BR>
-	PIN: <CODE>{if strlen($invoice.customerpin) < 4}{$invoice.customerpin|string_format:"%04d"}{else}{$invoice.customerpin}{/if}</CODE>
-	<BR><BR>
+{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))}
+	{if $invoice.customerpin}
+		<BR><BR>
+		<B>{trans("Customer ID:")} {$invoice.customerid|string_format:"%04d"}</B><BR>
+		PIN: <CODE>{if strlen($invoice.customerpin) < 4}{$invoice.customerpin|string_format:"%04d"}{else}{$invoice.customerpin}{/if}</CODE>
+		<BR><BR>
+	{/if}
 {/if}
 
 {* 

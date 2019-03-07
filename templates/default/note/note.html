@@ -111,12 +111,12 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 <!-- The Other Page of Invoice customerbalancelist + customerpin -->
 <!-- insert page break here and buy auto-duplex printer :p -->
 {if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.customer_credentials', true)))}
-{if $note.customerpin}
-	<BR><BR>
-	<B>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}</B><BR>
-	PIN: <CODE>{$note.customerpin|string_format:"%04d"}</CODE>
-	<BR><BR>
-{/if}
+	{if $note.customerpin}
+		<BR><BR>
+		<B>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}</B><BR>
+		PIN: <CODE>{$note.customerpin|string_format:"%04d"}</CODE>
+		<BR><BR>
+	{/if}
 {/if}
 
 {* 

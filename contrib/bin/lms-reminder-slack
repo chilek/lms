@@ -1,0 +1,218 @@
+#!/usr/bin/perl -Tw
+#
+#  LMS version 1.11-git
+#
+#  Copyright (C) 2001-2019 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $debug $help $version);
+use POSIX qw(strftime mktime floor);
+use MIME::QuotedPrint;
+use IO::Select;
+use LWP::UserAgent;
+
+my $_version = '1.11-git';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--debug|d"		=>	\$debug,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-reminder, version $_version
+(C) 2001-2013 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version				print version info and exit;
+-q, --quiet			suppress any output, except errors;
+-d, --debug			show debug data;
+
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-reminder, version $_version
+(C) 2001-2013 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-reminder-slack, version $_version\n";
+	print STDOUT "(C) 2001-2019 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $slack_webhook = $ini->val('reminder', 'slack_webhook') || '';
+my $slack_botname = $ini->val('reminder', 'slack_botname') || 'LMS reminder';
+my $slack_channel = $ini->val('reminder', 'slack_channel') || 'lms';
+
+
+if(!$slack_webhook)
+{
+	print STDERR "Fatal error: slack_webhook unset! Can't continue, exiting.\n";
+	exit 1;
+}
+
+sub send_to_slack {
+my $browser  = LWP::UserAgent->new;
+my $response = $browser->post(
+        $slack_webhook,
+        [
+            'payload'    =>   '{"username": "'.$slack_botname.'",  "channel": "'.$slack_channel.'", "text": "'.$_[0].'\n"}' ,  
+       ],
+    );
+  
+	if($debug) {
+			print $_[0];
+			print "\r\n";
+			print $response->content;
+	}
+}
+
+my $dbase;
+		
+if($dbtype =~ /mysql/)
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$dbase->do("SET NAMES utf8");
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+
+my $date = mktime(0, 0, 0, int strftime("%d",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
+my $day = strftime("%x", 0, 0, 0, int strftime("%d",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
+
+my $dbq = $dbase->prepare("SELECT id, name, email FROM vusers WHERE deleted = 0 AND email != '' AND ntype & 1 = 1");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+	my $counter = 0;
+	my $contents = '';
+	my $recipient = $row->{'email'};
+	
+	my $dbqi = $dbase->prepare("SELECT DISTINCT title, description, begintime, endtime,
+			customerid, UPPER(lastname) AS lastname, c.name AS name, address, city, zip, vn.location,
+			(SELECT contact FROM customercontacts cc
+				WHERE customerid = e.customerid AND (cc.type & 7 > 0)
+				ORDER BY contact LIMIT 1) AS phone 
+			FROM events e
+			LEFT JOIN customeraddressview c ON (c.id = customerid)
+			LEFT JOIN eventassignments ea ON (e.id = ea.eventid)
+			LEFT JOIN vnodes vn on (vn.id=e.nodeid)
+			WHERE date = $date AND
+				((private = 1 AND e.userid = $row->{'id'}) OR
+				(private = 0 AND ea.userid = $row->{'id'}) OR
+				(private = 0 AND ea.userid IS NULL))
+			ORDER BY begintime");
+	$dbqi->execute();
+ 	while (my $rowi = $dbqi->fetchrow_hashref())
+	{
+		my $begintime = sprintf("%02d:%02d",floor($rowi->{'begintime'}/100),$rowi->{'begintime'}%100);
+
+		$contents .= "**Timetable for today ($day)**".'\n';
+
+		$contents .= "**Time :\t$begintime";
+		if($rowi->{'endtime'} && $rowi->{'endtime'} != $rowi->{'begintime'})
+		{
+			my $endtime = sprintf("%02d:%02d",floor($rowi->{'endtime'}/100),$rowi->{'endtime'}%100);
+			$contents .= " - $endtime";
+		}
+		$contents .= '**\n';
+		
+		$contents .= "**Title:\t$rowi->{'title'}**".'\n';
+
+		if($rowi->{'description'})
+		{
+		$contents .= "Desc.:\t$rowi->{'description'}".'\n';
+		}
+
+		if($rowi->{'customerid'})
+		{
+			$contents .= "Cust.:\t$rowi->{'lastname'} $rowi->{'name'}, $rowi->{'zip'} $rowi->{'city'}, $rowi->{'address'}, tel. $rowi->{'phone'}".'\n';
+		}
+
+		if($rowi->{'location'})
+		{
+			$contents .= "Node Location:\t$rowi->{'location'} ".'\n';
+		}
+
+		$counter++;
+	}
+	
+	if($counter)
+	{
+		if(!$quiet)
+		{
+			print STDOUT "$row->{'name'} ($row->{'id'}) - $counter event(s)\n";
+		}
+		send_to_slack($recipient.'\n'."---".'\n'.  $contents,);
+	}
+}
+
+$dbq->finish();
+$dbase->disconnect();

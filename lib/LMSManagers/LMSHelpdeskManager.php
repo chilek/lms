@@ -281,6 +281,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$userid = Auth::GetCurrentUser();
 
 		$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+		$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 
 		$qids = null;
 		if (!empty($ids)) {
@@ -322,10 +323,18 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						JOIN rtrights r ON r.queueid = q.id
 						WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' =  ' . $rights . '
 					)'. ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . '' : '')
-					. ') AND tc.categoryid IN (
-						SELECT categoryid
-						FROM rtcategoryusers WHERE userid = ' . $userid
-					. ')' : '')
+					. ') AND (tc.categoryid IN (
+								SELECT categoryid
+								FROM rtcategoryusers WHERE userid = ' . $userid . '
+							)'
+						. ($allow_empty_categories
+							? ' OR NOT EXISTS (
+									SELECT 1 FROM rtticketcategories tc2
+									WHERE tc2.ticketid = t.id
+								)'
+							: '')
+						. ')'
+					: '')
 				. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
 							. ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
 					: ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
@@ -404,11 +413,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					JOIN rtrights r ON r.queueid = q.id
 					WHERE r.userid = ' . $userid . ' AND r.rights & ' . $rights . ' = ' . $rights . '
 				)' . ($user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . '' : '')
-				. ') AND tc.categoryid IN (
-					SELECT categoryid
-					FROM rtcategoryusers
-					WHERE userid = ' . $userid
-				. ')' : '')
+				. ') AND (tc.categoryid IN (
+							SELECT categoryid
+							FROM rtcategoryusers
+							WHERE userid = ' . $userid . '
+						)'
+					. ($allow_empty_categories
+						? ' OR NOT EXISTS (
+								SELECT 1 FROM rtticketcategories tc3
+								WHERE tc3.ticketid = t.id
+							)'
+						: '')
+					. ')'
+				: '')
 			. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
 					. ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
 				: ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
@@ -900,9 +917,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $msgid = $this->db->GetLastInsertID('rtmessages');
 		
 
-		foreach (array_keys($ticket['categories']) as $catid)
-			$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
-				VALUES (?, ?)', array($id, $catid));
+		if (!empty($ticket['categories']))
+			foreach (array_keys($ticket['categories']) as $catid)
+				$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
+					VALUES (?, ?)', array($id, $catid));
 
 		$this->SaveTicketMessageAttachments($id, $msgid, $files);
 
@@ -1548,27 +1566,40 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$userid = Auth::GetCurrentUser();
 
 		$user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
+		$allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 
 		if ($user_permission_checks)
 			return $this->db->GetOne('SELECT (CASE WHEN r.rights IS NULL THEN '
 					. (RT_RIGHT_READ | RT_RIGHT_WRITE | RT_RIGHT_DELETE) . ' ELSE r.rights END) FROM rttickets t
 				LEFT JOIN rtrights r ON r.queueid = t.queueid AND r.userid = ?
 				WHERE t.id = ? AND (r.rights IS NOT NULL OR t.owner = ? OR t.verifierid = ?)
-					AND EXISTS (
+					AND (EXISTS (
 						SELECT tc.categoryid FROM rtticketcategories tc
 						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
 						WHERE tc.ticketid = ?
-					)',
+					)' . ($allow_empty_categories
+						? ' OR NOT EXISTS (
+								SELECT tc2.categoryid FROM rtticketcategories tc2
+								WHERE tc2.ticketid = ' . intval($ticketid) . '
+							)'
+						: '')
+					. ')',
 				array($userid, $ticketid, $userid, $userid, $userid, $ticketid));
 		else
 			return $this->db->GetOne('SELECT rights FROM rtrights r
 				JOIN rttickets t ON t.queueid = r.queueid
 				WHERE r.userid = ? AND t.id = ?
-					AND EXISTS (
+					AND (EXISTS (
 						SELECT tc.categoryid FROM rtticketcategories tc
 						JOIN rtcategoryusers u ON u.userid = ? AND u.categoryid = tc.categoryid
 						WHERE tc.ticketid = ?
-					)',
+					)' . ($allow_empty_categories
+						? ' OR NOT EXISTS (
+								SELECT tc2.categoryid FROM rtticketcategories tc2
+								WHERE tc2.ticketid = ' . intval($ticketid) . '
+							)'
+						: '')
+					. ')',
 				array($userid, $ticketid, $userid, $ticketid));
 	}
 

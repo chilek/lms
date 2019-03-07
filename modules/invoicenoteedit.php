@@ -120,6 +120,7 @@ switch ($action) {
 	case 'setheader':
 
 		$oldcdate = $cnote['oldcdate'];
+		$oldsdate = $cnote['oldsdate'];
 		$oldnumber = $cnote['oldnumber'];
 		$oldnumberplanid = $cnote['oldnumberplanid'];
 		$oldcustomerid = $cnote['oldcustomerid'];
@@ -133,6 +134,7 @@ switch ($action) {
 				$cnote[$key] = $val;
 
 		$cnote['oldcdate'] = $oldcdate;
+		$cnote['oldsdate'] = $oldsdate;
 		$cnote['oldnumber'] = $oldnumber;
 		$cnote['oldnumberplanid'] = $oldnumberplanid;
 		$cnote['oldcustomerid'] = $oldcustomerid;
@@ -143,32 +145,38 @@ switch ($action) {
 
 		$currtime = time();
 
-		if ($cnote['sdate']) {
-			list ($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
-			if (checkdate($smonth, $sday, $syear)) {
-				$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
-				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
-				if ($sdate < $invoice['sdate'])
-					$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
-			} else {
-				$error['sdate'] = trans('Incorrect date format! Using current date.');
-				$cnote['sdate'] = $currtime;
-			}
-		} else
-			$cnote['sdate'] = $currtime;
-
-		if ($cnote['cdate']) {
-			list ($year, $month, $day) = explode('/', $cnote['cdate']);
-			if (checkdate($month, $day, $year)) {
-				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
-				if($cnote['cdate'] < $invoice['cdate'])
-					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
-			} else {
-				$error['cdate'] = trans('Incorrect date format! Using current date.');
+		if (ConfigHelper::checkPrivilege('invoice_consent_date'))
+			if ($cnote['cdate']) {
+				list ($year, $month, $day) = explode('/', $cnote['cdate']);
+				if (checkdate($month, $day, $year)) {
+					$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
+					if($cnote['cdate'] < $invoice['cdate'])
+						$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
+				} else {
+					$error['cdate'] = trans('Incorrect date format! Using current date.');
+					$cnote['cdate'] = $currtime;
+				}
+			} else
 				$cnote['cdate'] = $currtime;
-			}
-		} else
-			$cnote['cdate'] = $currtime;
+		else
+			$cnote['cdate'] = $cnote['oldcdate'];
+
+		if (ConfigHelper::checkPrivilege('invoice_sale_date'))
+			if ($cnote['sdate']) {
+				list ($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
+				if (checkdate($smonth, $sday, $syear)) {
+					$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
+					$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
+					if ($sdate < $invoice['sdate'])
+						$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+				} else {
+					$error['sdate'] = trans('Incorrect date format! Using current date.');
+					$cnote['sdate'] = $currtime;
+				}
+			} else
+				$cnote['sdate'] = $currtime;
+		else
+			$cnote['sdate'] = $cnote['oldsdate'];
 
 		if ($cnote['deadline']) {
 			list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
@@ -211,8 +219,17 @@ switch ($action) {
 		$cnote['type'] = DOC_CNOTE;
 
 		$currtime = time();
-		$cdate = $cnote['cdate'] ? $cnote['cdate'] : $currtime;
-		$sdate = $cnote['sdate'] ? $cnote['sdate'] : $currtime;
+
+		if (ConfigHelper::checkPrivilege('invoice_consent_date'))
+			$cdate = $cnote['cdate'] ? $cnote['cdate'] : $currtime;
+		else
+			$cdate = $cnote['oldcdate'];
+
+		if (ConfigHelper::checkPrivilege('invoice_sale_date'))
+			$sdate = $cnote['sdate'] ? $cnote['sdate'] : $currtime;
+		else
+			$sdate = $cnote['oldsdate'];
+
 		$deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
 		$paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 		$iid   = $cnote['id'];

@@ -37,6 +37,7 @@
 {else}
 {$customerid = $invoice.customerid}
 {/if}
+{block name="invoicenew-header"}
 <FORM name="setcustomer" method="POST" action="?m=invoicenew&amp;action=setcustomer">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -68,9 +69,15 @@
 			{trans("Settlement date:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			{if $invoice.cdatewarning}
-			<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
+			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
+				<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
+						placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+				{if $invoice.cdatewarning}
+					<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
+				{/if}
+			{else}
+				<input type="hidden" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}">
+				{$invoice.cdate|date_format:"%Y/%m/%d"}
 			{/if}
 		</TD>
 	</TR>
@@ -79,7 +86,13 @@
 			{trans("Sale date:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
+				<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12"
+						placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+			{else}
+				<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}">
+				{$invoice.sdate|date_format:"%Y/%m/%d"}
+			{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -131,6 +144,7 @@
     </TBODY>
 </TABLE>
 </FORM>
+{/block}
 
 {if $covenantlist}
 	<FORM name="additemlist" method="POST" action="?m=invoicenew&action=additemlist">

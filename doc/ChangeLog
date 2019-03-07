@@ -198,6 +198,14 @@ version ?.??.?? (????-??-??):
   - enhancement: implemented separated smtp settings support for helpdesk/rt [chilan]
   - enhancement: lms-notify.php: added customer 'income' notify type [chilan]
   - enhancement: allow to search nodes by lastonline date [chilan]
+  - improvement: phpui.helpdesk_allow_empty_categories controls if helpdesk ticket category assignments
+    are required [chilan]
+  - improvement: phpui.helpdesk_empty_category_warning controls if helpdesk empty ticket category
+    assignment generates warning [chilan]
+  - enhancement: new user privilege 'invoice_sale_date' controls if user can manipulate
+    invoice/invoice-note sale date [chilan]
+  - enhancement: new user privilege 'invoice_consent_date' controls if user can manipulate
+    invoice/invoice-note/note consent date [chilan]
 
 version 1.11.23 (2018-03-21):
 

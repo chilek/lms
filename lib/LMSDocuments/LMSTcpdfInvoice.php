@@ -790,7 +790,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
 		$this->backend->SetFont('arial', '', 8);
 		if (!ConfigHelper::checkConfig('invoices.hide_expositor'))
-			$this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . $expositor . '</b>', 0, 1, 0, true, 'R');
+			$this->backend->writeHTMLCell(0, 0, '', '', trans('Expositor:') . ' <b>' . (empty($expositor) ? trans('system') : $expositor) . '</b>', 0, 1, 0, true, 'R');
 	}
 
 	protected function invoice_comment() {
@@ -864,16 +864,25 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->SetXY($x, $y);
 		}
 	}
-	
+
 	public function invoice_qr2pay_code() {
 		$x = $this->backend->GetX();
 		$y = $this->backend->GetY();
+
+		$docnumber = docnumber(array(
+			'number' => $this->data['number'],
+			'template' => $this->data['template'],
+			'cdate' => $this->data['cdate'],
+			'customerid' => $this->data['customerid'],
+		));
+
+		$this->backend->SetFont('arial', '', 7);
 		$this->backend->writeHTMLCell(150, 0, '', '', trans("&nbsp; <BR> Scan and Pay <BR> You can make a transfer simply and quickly using your phone. <BR> To make a transfer, please scan QRcode on you smartphone in your bank's application."), 0, 1, 0, true, 'R');
 		$tmp = '|PL|'.bankaccount($this->data['customerid'], $this->data['account']).'|'.str_pad( $this->data['value'] * 100,  6, 0, STR_PAD_LEFT).'|'.$this->data['division_name'].'|' . trans('QR Payment for Internet Invoice no.').' '.$docnumber.'|||';
 		$style['position'] = 'R';
 		$this->backend->write2DBarcode($tmp, 'QRCODE,M', $x, $y,30,30,$style);
-		unset($tmp);	
-	}				
+		unset($tmp);
+	}
 
 	public function invoice_body_standard() {
 		$this->invoice_cancelled();

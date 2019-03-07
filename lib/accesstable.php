@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -43,6 +43,12 @@ $access_table = array(
 	'finances_management' => array(
 		'label' => trans('finances management'),
 		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info|send))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel|customertransferform)$',
+	),
+	'invoice_consent_date' => array(
+		'label' => trans('invoice consent date manipulation'),
+	),
+	'invoice_sale_date' => array(
+		'label' => trans('invoice sale date manipulation'),
 	),
 	'published_document_modification' => array(
 		'label' => trans('published document modification'),

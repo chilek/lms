@@ -502,6 +502,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			$limit = $search['limit'];
 		else
 			$limit = null;
+		$short = isset($search['short']) && !empty($search['short']);
 
 		list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -597,7 +598,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : ''));
 		}
 
-		$netdevlist = $this->db->GetAll('SELECT d.id, d.name,
+		$netdevlist = $this->db->GetAll('SELECT d.id, d.name' . ($short ? '' : ',
 				d.description, d.producer, d.model, d.serialnumber, d.ports, d.ownerid,
 				d.invprojectid, p.name AS project, d.status,
 				(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid IS NOT NULL)
@@ -612,7 +613,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				lc.ident AS city_ident,
 				addr.street AS location_street_name, addr.street_id as location_street,
 				lst.ident AS street_ident,
-				addr.house as location_house, addr.flat as location_flat, addr.location
+				addr.house as location_house, addr.flat as location_flat, addr.location') . '
 			FROM netdevices d
 				LEFT JOIN vaddresses addr       ON d.address_id = addr.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
@@ -627,7 +628,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				. (isset($limit) ? ' LIMIT ' . $limit : '')
 				. (isset($offset) ? ' OFFSET ' . $offset : ''));
 
-		if ($netdevlist) {
+		if (!$short && $netdevlist) {
 			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 
 			$filecontainers = $this->db->GetAllByKey('SELECT fc.netdevid, '

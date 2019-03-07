@@ -123,25 +123,27 @@ switch($action)
 		if ($note['paytime'] < 0)
 			$note['paytime'] = 14;
 
-		if($note['cdate']) // && !$note['cdatewarning'])
-		{
-			list($year, $month, $day) = explode('/',$note['cdate']);
-			if(checkdate($month, $day, $year))
+		$currtime = time();
+
+		if (ConfigHelper::checkPrivilege('invoice_consent_date')) {
+			if ($note['cdate']) // && !$note['cdatewarning'])
 			{
-				$oldday = date('d', $note['oldcdate']);
-				$oldmonth = date('m', $note['oldcdate']);
-			        $oldyear = date('Y', $note['oldcdate']);
-				
-				if($oldday != $day || $oldmonth != $month || $oldyear != $year)
-				{
-					$note['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-				}
-				else // save hour/min/sec value if date is the same
-					$note['cdate'] = $note['oldcdate'];
+				list($year, $month, $day) = explode('/', $note['cdate']);
+				if (checkdate($month, $day, $year)) {
+					$oldday = date('d', $note['oldcdate']);
+					$oldmonth = date('m', $note['oldcdate']);
+					$oldyear = date('Y', $note['oldcdate']);
+
+					if ($oldday != $day || $oldmonth != $month || $oldyear != $year) {
+						$note['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime),
+							$month, $day, $year);
+					} else // save hour/min/sec value if date is the same
+						$note['cdate'] = $note['oldcdate'];
+				} else
+					$error['cdate'] = trans('Incorrect date format!');
 			}
-			else
-				$error['cdate'] = trans('Incorrect date format!');
-		}
+		} else
+			$note['cdate'] = $note['oldcdate'];
 
 		$note['customerid'] = $_POST['customerid'];
 
@@ -167,8 +169,10 @@ switch($action)
 
 	case 'save':
 
-		if($contents && $customer)
-		{
+		if ($contents && $customer) {
+			if (!ConfigHelper::checkPrivilege('invoice_consent_date'))
+				$note['cdate'] = $note['oldcdate'];
+
 			$SESSION->restore('noteid', $note['id']);
 
 			$DB->BeginTrans();

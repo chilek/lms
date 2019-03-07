@@ -68,6 +68,8 @@ if (isset($_GET['catid'])) {
 		$filter['catids'] = Utils::filterIntegers($_GET['catid']);
 	elseif (intval($_GET['catid']))
 		$filter['catids'] = Utils::filterIntegers(array($_GET['catid']));
+	elseif ($_GET['catid'] == 'all')
+		$filter['catids'] = 0;
 }
 
 if (!empty($filter['catids'])) {
@@ -76,7 +78,8 @@ if (!empty($filter['catids'])) {
 			unset($filter['catids'][$catidx]);
 	if (empty($filter['catids']))
 		access_denied();
-} else {
+}
+/*else {
 	$categories = $DB->GetCol('SELECT categoryid FROM rtcategoryusers WHERE userid=?', array(Auth::GetCurrentUser()));
 	$all_cat = $DB->GetOne('SELECT COUNT(*) FROM rtcategories');
 
@@ -85,7 +88,7 @@ if (!empty($filter['catids'])) {
 
 	if (count($categories) != $all_cat)
 		$filter['catids'] = $categories;
-}
+}*/
 
 // sort order
 if (isset($_GET['o']))

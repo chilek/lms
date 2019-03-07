@@ -63,10 +63,15 @@
 			{trans("Settlement date:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT TYPE="TEXT" NAME="cnote[cdate]" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
-					placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			{if $cnote.cdatewarning}
-				<INPUT TYPE="HIDDEN" NAME="cnote[cdatewarning]" VALUE="1">
+			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
+				<INPUT TYPE="TEXT" NAME="cnote[cdate]" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
+						placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+				{if $cnote.cdatewarning}
+					<INPUT TYPE="HIDDEN" NAME="cnote[cdatewarning]" VALUE="1">
+				{/if}
+			{else}
+				<INPUT TYPE="hidden" NAME="cnote[cdate]" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}">
+				{$cnote.cdate|date_format:"%Y/%m/%d"}
 			{/if}
 		</TD>
 	</TR>
@@ -75,8 +80,13 @@
 			{trans("Sale date:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT TYPE="TEXT" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}" SIZE="10"
-					placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
+				<INPUT TYPE="TEXT" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}" SIZE="10"
+						placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+			{else}
+				<INPUT TYPE="hidden" NAME="cnote[sdate]" VALUE="{$cnote.sdate|date_format:"%Y/%m/%d"}">
+				{$cnote.sdate|date_format:"%Y/%m/%d"}
+			{/if}
 		</TD>
 	</TR>
 	<TR>
