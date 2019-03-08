@@ -84,7 +84,11 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		$nlist = $this->db->GetAllByKey('SELECT n.id, n.name' . ($short ? ''
 					: ', n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
 				n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
-				lc.ident AS location_city_ident, lst.ident AS location_street_ident,
+				lc.ident AS location_city_ident,
+				lc.ident AS location_city_ident,
+				(CASE WHEN lst.ident IS NULL
+					THEN (CASE WHEN addr.street = \'\' THEN \'99999\' ELSE \'99998\' END)
+					ELSE lst.ident END) AS location_street_ident,
 				lb.id AS location_borough, lb.name AS location_borough_name, lb.ident AS location_borough_ident,
 				lb.type AS location_borough_type,
 				ld.id AS location_district, ld.name AS location_district_name, ld.ident AS location_district_ident,
