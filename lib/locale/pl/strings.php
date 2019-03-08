@@ -4256,4 +4256,6 @@ $_LANG['Category selection is recommended but not required!'] = 'Wybór kategori
 $_LANG['invoice sale date manipulation'] = 'manipulowanie datą sprzedaży faktur';
 $_LANG['invoice consent date manipulation'] = 'manipulowanie datą wystawienia faktur';
 
+$_LANG['Network name'] = 'Nazwa sieci';
+
 ?>
