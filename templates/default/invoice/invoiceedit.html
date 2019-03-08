@@ -29,7 +29,7 @@
 </script>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoiceedit&action=setcustomer">
+<FORM NAME="setcustomer" id="setcustomer" METHOD="POST" ACTION="?m=invoiceedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="HIDDEN" name="invoice[template]" value="{$invoice.template}">
 <input type="hidden" name="invoice[doctype]" value="{$invoice.doctype}">
