@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,11 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($LMS->isDocumentReferenced($_GET['id']))
 		return;
 
-	$LMS->InvoiceDelete($id);
+	$hook_data = $LMS->executeHook('invoicedel_before_delete', array(
+		'id' => $id,
+	));
+	if (isset($hook_data['continue']) && !empty($hook_data['continue']))
+		$LMS->InvoiceDelete($id);
 }
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);
