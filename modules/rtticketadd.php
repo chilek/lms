@@ -117,6 +117,7 @@ if(isset($_POST['ticket']))
 	$hook_data = $LMS->executeHook('ticketadd_validation_before_submit',
 		array(
 			'ticket' => $ticket,
+			'error' => $error,
 		)
 	);
 	$ticket = $hook_data['ticket'];
