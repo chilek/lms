@@ -114,6 +114,15 @@ if(isset($_POST['ticket']))
 				trans('At least requestor name, mail or phone should be filled!');
 	}
 
+	$hook_data = $LMS->executeHook('ticketadd_validation_before_submit',
+		array(
+			'ticket' => $ticket,
+			'error' => $error,
+		)
+	);
+	$ticket = $hook_data['ticket'];
+	$error = $hook_data['error'];
+
 	if (!$error) {
 		if (!$ticket['customerid']) {
 			if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '')
@@ -168,6 +177,12 @@ if(isset($_POST['ticket']))
 		}
 		$id = $LMS->TicketAdd($ticket, $files);
 
+		$hook_data = $LMS->executeHook('ticketadd_after_submit',
+			array(
+				'ticket' => $ticket,
+			)
+		);
+		$ticket = $hook_data['ticket'];
 		// deletes uploaded files
 		if (!empty($files) && !empty($tmppath))
 			rrmdir($tmppath);
