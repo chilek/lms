@@ -80,12 +80,8 @@ function update_nodes(data) {
 	$.each(data, function (k, v) {
 		options += '<option value="' + v.id + '"' + (data.length == 1 ? ' selected' : '') + '>' + v.name + ': ' + v.location + '</option>';
 	});
-	$('#nodes').html(options);
-	if (data.length) {
-		$('#node-row').show();
-	} else {
-		$('#node-row').hide();
-	}
+	$('.node-list').html(options);
+	$('.node-row').toggle(data.length > 0);
 }
 
 var customer_addresses = new LmsUiIconSelectMenu("#customer_addresses", {

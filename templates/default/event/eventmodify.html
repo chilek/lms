@@ -87,9 +87,10 @@
 						{/if}
 					{/box_row}
 
-					{box_row icon="img/node.gif" label="Node:" visible=!empty($nodes)}
+					{$visibility=!empty($nodes)}
+					{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
 						{if !isset($event.ticketid)}
-							<select id="nodes" name="event[nodeid]" {tip text="Select node"}>
+							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
 								<option value="">{trans("- none -")}</option>
 								{foreach $nodes as $node}
 									<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
