@@ -189,15 +189,8 @@
 {/if}
 
 			{$visibility=(!empty($nodes) && $layout.module != 'eventadd')}
-			{if $layout.module == 'eventadd'}
-				{$classNodeRow=""}
-				{$classNodeList=""}
-			{else}
-				{$classNodeRow="node-row"}
-				{$classNodeList="node-list"}
-			{/if}
-			{box_row class=$classNodeRow icon="img/node.gif" label="Node:" visible=$visibility}
-				<select class="{$classNodeList}" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
+			{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
+				<select class="node-list" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
 					<option value="">{trans("- none -")}</option>
 					{if !empty($nodes)}
 						{foreach $nodes as $node}
