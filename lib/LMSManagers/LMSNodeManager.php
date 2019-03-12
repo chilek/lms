@@ -442,7 +442,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				lb.type AS borough_type,
 				ld.name AS district_name, ld.ident AS district_ident,
 				ls.name AS state_name, ls.ident AS state_ident,
-				lst.ident AS street_ident,
+				(CASE WHEN lst.ident IS NULL
+					THEN (CASE WHEN c.street = \'\' THEN \'99999\' ELSE \'99998\' END)
+					ELSE lst.ident END) AS street_ident,
 				n.location_house, n.location_flat ';
 		}
 		$sql .= 'FROM vnodes n 
