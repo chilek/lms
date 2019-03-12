@@ -3256,6 +3256,7 @@ $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szab
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
 $_LANG['Assign to me'] = 'Przypisz do mnie';
+$_LANG['assign to me'] = 'przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
 $_LANG['Ticket\'s state:'] = 'Stan zgłoszenia:';
 $_LANG['Ticket\'s source has been changed from $a to $b.'] = 'Źródło zgłoszenia zostało zmienione z $a na $b.';

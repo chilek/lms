@@ -1,15 +1,5 @@
-<style>
-
-	#ticket.lms-ui-box-container .lms-ui-box-row-label {
-		width: 12em;
-	}
-
-	#requestor.lms-ui-box-row-field {
-		flex-direction: column !important;
-		align-items: flex-start !important;
-	}
-
-</style>
+{js}
+{css}
 
 {box_container id="ticket"}
 	{box_header multi_row=true}
@@ -123,6 +113,10 @@
 						{/if}
 					{/foreach}
 				</SELECT>
+				<label>
+					{trans("assign to me")}
+					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
+				</label>
 			{/box_row}
 
 			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
@@ -249,15 +243,3 @@
 	{/box_buttons}
 	{/if}
 {/box_container}
-
-<script>
-
-	$('[name="ticket[requestor_userid]').change(function() {
-		if ($(this).val() == '0') {
-			$('.indicated-person').show();
-		} else {
-			$('.indicated-person').hide();
-		}
-	}).change();
-
-</script>

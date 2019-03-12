@@ -8,16 +8,7 @@
 	{else}
 		<H1>{t a=$event.ticketid}Add new event to request #$a{/t}</H1>
 	{/if}
-	<style>
-		#event.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
-			width: 12em;
-		}
-
-		#event.lms-ui-box-container .lms-ui-box-row-field.multiselect {
-			flex-direction: column !important;
-			align-items: flex-start !important;
-		}
-	</style>
+	{css}
 	<P class="text-center">
 	<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
 		<INPUT type="hidden" name="event[id]" value="{$event.id}">
