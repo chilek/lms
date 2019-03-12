@@ -1,5 +1,14 @@
-{js}
-{css}
+<style>
+
+	#ticket.lms-ui-box-container .lms-ui-box-row-label {
+		width:12em;
+	}
+	#requestor.lms-ui-box-row-field {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+	}
+
+</style>
 
 {box_container id="ticket"}
 	{box_header multi_row=true}
@@ -243,3 +252,5 @@
 	{/box_buttons}
 	{/if}
 {/box_container}
+
+<script src="js/templates/rt/rtticketmodify.js"></script>

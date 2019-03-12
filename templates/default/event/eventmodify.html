@@ -8,7 +8,18 @@
 	{else}
 		<H1>{t a=$event.ticketid}Add new event to request #$a{/t}</H1>
 	{/if}
-	{css}
+	<script src="js/templates/event/eventmodify.js"></script>
+	<style>
+
+		#event.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+			width:12em;
+		}
+		#event.lms-ui-box-container .lms-ui-box-row-field.multiselect {
+			flex-direction: column !important;
+			align-items: flex-start !important;
+		}
+
+	</style>
 	<P class="text-center">
 	<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
 		<INPUT type="hidden" name="event[id]" value="{$event.id}">
@@ -146,12 +157,6 @@
 		{include file="rt/rtticketmodify.html"}
         </div>
 	</form>
-	<script src="js/rtticketmodify.js"></script>
-	<script>
-
-		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
-
-	</script>
 	<script type="text/javascript" src="js/lms-ui-event-time-slider.js"></script>
 	<SCRIPT>
 
@@ -216,6 +221,8 @@
 
 			customer_addresses.init();
 		});
+
+		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
 
 	</SCRIPT>
 {/block}
