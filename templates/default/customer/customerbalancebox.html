@@ -106,8 +106,8 @@
 					<TD>{$item.comment}</TD>
 					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
-						<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
-						{if isset($link.extra)}{$link.extra}{/if}
+							<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
+							{if isset($link.extra)}{$link.extra}{/if}
 						{/foreach}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
@@ -144,6 +144,10 @@
 										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
+								{if !$item.referenced}
+									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+										tip="Revise"}
+								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"

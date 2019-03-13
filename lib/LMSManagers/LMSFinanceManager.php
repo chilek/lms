@@ -1124,11 +1124,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					$where = ' AND UPPER(d.address) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
 					break;
 				case 'value':
-					$having = ' HAVING CASE WHEN d.reference IS NULL THEN
-							SUM(a.value*a.count)
-						ELSE
-							SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
-						END = '.str_replace(',','.',f_round($search)).' ';
+					$having = ' HAVING -SUM(cash.value) = '.str_replace(',','.',f_round($search)).' ';
 					break;
 			}
 		}
@@ -1144,7 +1140,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				FROM documents d
 				JOIN invoicecontents a ON (a.docid = d.id)
 				LEFT JOIN documents d2 ON d2.reference = d.id
-				LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
+				LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = a.itemid
 				LEFT JOIN countries ON (countries.id = d.countryid)
 				LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 				LEFT JOIN (
@@ -1166,16 +1162,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 		$invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,
 			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
-			CASE WHEN d.reference IS NULL THEN
-				SUM(a.value*a.count)
-			ELSE
-				SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
-			END AS value,
+			-SUM(cash.value) AS value,
 			COUNT(a.docid) AS count,
 			i.sendinvoices,
 			(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
 			FROM documents d
 			JOIN invoicecontents a ON (a.docid = d.id)
+			LEFT JOIN cash ON cash.docid = d.id AND a.itemid = cash.itemid
 			LEFT JOIN documents d2 ON d2.reference = d.id
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
@@ -1547,7 +1540,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
 
             $result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
-            $result['value'] = $result['total'] - (isset($result['invoice']) ? $result['invoice']['value'] : 0);
+            $result['value'] = $result['total'] - (isset($result['invoice']) ? $result['invoice']['total'] : 0);
 
             if ($result['value'] < 0) {
                 $result['value'] = abs($result['value']);
