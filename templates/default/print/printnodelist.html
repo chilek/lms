@@ -26,6 +26,7 @@
 		</TD>
 		<TD WIDTH="75" ALIGN="CENTER" CLASS="head">
 			{trans("IP address")}
+			<br>({trans("Network name")})
 		</TD>
 		<TD WIDTH="75" ALIGN="CENTER" CLASS="head">
 			{trans("MAC address")}
@@ -51,6 +52,7 @@
 		</TD>
 		<TD ALIGN="CENTER">
 			{$nodelist[nodelist].ip}
+			<br>({$nodelist[nodelist].netname})
 		</TD>
 		<TD ALIGN="CENTER">
 			{$nodelist[nodelist].mac|replace:",":"<BR>"}

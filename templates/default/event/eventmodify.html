@@ -9,14 +9,15 @@
 		<H1>{t a=$event.ticketid}Add new event to request #$a{/t}</H1>
 	{/if}
 	<style>
-		#event.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
-			width: 12em;
-		}
 
+		#event.lms-ui-box-container .lms-ui-box-contents .lms-ui-box-panel .lms-ui-box-row .lms-ui-box-row-label {
+			width:12em;
+		}
 		#event.lms-ui-box-container .lms-ui-box-row-field.multiselect {
 			flex-direction: column !important;
 			align-items: flex-start !important;
 		}
+
 	</style>
 	<P class="text-center">
 	<FORM method="POST" action="?m={$layout.module}" name="event" id="event">
@@ -86,9 +87,10 @@
 						{/if}
 					{/box_row}
 
-					{box_row icon="img/node.gif" label="Node:" visible=!empty($nodes)}
+					{$visibility=!empty($nodes)}
+					{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
 						{if !isset($event.ticketid)}
-							<select id="nodes" name="event[nodeid]" {tip text="Select node"}>
+							<select class="node-list" name="event[nodeid]" {tip text="Select node"}>
 								<option value="">{trans("- none -")}</option>
 								{foreach $nodes as $node}
 									<option value="{$node.id}"{if $node.id == $event.nodeid || count($nodes) == 1} selected{/if}>{$node.name}: {$node.location}</option>
@@ -106,13 +108,21 @@
 								<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
 								{/if}
 							{/foreach}
-						</SELECT> <br> <label>
+						</SELECT>
+						<br>
+						<label>
+							<input type="radio" name="event[usergroup]" id="usergroup_me" value="-1" onChange="xajax_getUsersForGroup(-1)"{if $event.usergroup == -1} checked{/if}>
+							{trans("assign to me")}<br>
+						</label>
+						<label>
 							<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
-							{trans("All users")}<br> </label>
+							{trans("All users")}<br>
+						</label>
 						{foreach $usergroups as $group}
 							<label>
 								<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" value="{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
-								{$group.name}<br> </label>
+								{$group.name}<br>
+							</label>
 						{/foreach}
 					{/box_row}
 
@@ -155,12 +165,6 @@
 		{include file="rt/rtticketmodify.html"}
         </div>
 	</form>
-	<script src="js/rtticketmodify.js"></script>
-	<script>
-
-		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
-
-	</script>
 	<script type="text/javascript" src="js/lms-ui-event-time-slider.js"></script>
 	<SCRIPT>
 
@@ -225,6 +229,8 @@
 
 			customer_addresses.init();
 		});
+
+		initCustomerSelection('{$event.customerid}', '{$ticket.address_id}');
 
 	</SCRIPT>
 {/block}

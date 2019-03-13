@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-if (!empty($_GET['id']))
-	$LMS->DelBalance($_GET['id']);
-elseif (count($_POST['marks'])) {
-	$ids = array();
-	$docitems = array();
+$ids = array();
+$docitems = array();
+if (!empty($_GET['id']) && intval($_GET['id']))
+	$ids = array($_GET['id']);
+elseif (count($_POST['marks']))
 	foreach ($_POST['marks'] as $markid => $mark)
 		if ($markid == 'proforma')
 			foreach ($mark as $docid => $items) {
@@ -40,14 +40,24 @@ elseif (count($_POST['marks'])) {
 			}
 		elseif ($mark)
 			$ids[] = $markid;
-	sort($ids);
+
+$hook_data = $LMS->executeHook('balancedel_before_delete', array(
+	'ids' => $ids,
+	'docitems' => $docitems,
+));
+$ids = $hook_data['ids'];
+$docitems = $hook_data['docitems'];
+
+sort($ids);
+if (!empty($ds))
 	foreach ($ids as $cashid)
 		$LMS->DelBalance($cashid);
+
+if (!empty($docitems))
 	foreach ($docitems as $docid => $items)
 		foreach ($items as $itemid)
 			$LMS->InvoiceContentDelete($docid, $itemid);
-}
 
-header('Location: ?'.$SESSION->get('backto'));
+$SESSION->redirect('?' . $SESSION->get('backto'));
 
 ?>

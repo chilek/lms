@@ -1,9 +1,8 @@
 <style>
 
 	#ticket.lms-ui-box-container .lms-ui-box-row-label {
-		width: 12em;
+		width:12em;
 	}
-
 	#requestor.lms-ui-box-row-field {
 		flex-direction: column !important;
 		align-items: flex-start !important;
@@ -123,6 +122,10 @@
 						{/if}
 					{/foreach}
 				</SELECT>
+				<label>
+					{trans("assign to me")}
+					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
+				</label>
 			{/box_row}
 
 			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
@@ -186,8 +189,8 @@
 {/if}
 
 			{$visibility=(!empty($nodes) && $layout.module != 'eventadd')}
-			{box_row id="node-row" icon="img/node.gif" label="Node:" visibility=$visibility}
-				<select id="nodes" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
+			{box_row class="node-row" icon="img/node.gif" label="Node:" visible=$visibility}
+				<select class="node-list" name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
 					<option value="">{trans("- none -")}</option>
 					{if !empty($nodes)}
 						{foreach $nodes as $node}
@@ -250,14 +253,4 @@
 	{/if}
 {/box_container}
 
-<script>
-
-	$('[name="ticket[requestor_userid]').change(function() {
-		if ($(this).val() == '0') {
-			$('.indicated-person').show();
-		} else {
-			$('.indicated-person').hide();
-		}
-	}).change();
-
-</script>
+<script src="js/templates/rt/rtticketmodify.js"></script>

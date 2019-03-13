@@ -44,7 +44,7 @@ if(isset($_POST['event']))
 
 	if (!isset($event['usergroup']))
 		$event['usergroup'] = 0;
-	$SESSION->save('eventgid', $event['usergroup']);
+//	$SESSION->save('eventgid', $event['usergroup']);
 
 	if ($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
@@ -399,7 +399,8 @@ if (!isset($_GET['ticketid']))
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 
 if (!isset($event['usergroup']))
-	$SESSION->restore('eventgid', $event['usergroup']);
+	$event['usergroup'] = -2;
+	//$SESSION->restore('eventgid', $event['usergroup']);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());

@@ -65,7 +65,7 @@ if(isset($_POST['event']))
 
 	if (!isset($event['usergroup']))
 		$event['usergroup'] = 0;
-	$SESSION->save('eventgid', $event['usergroup']);
+	//$SESSION->save('eventgid', $event['usergroup']);
 
 	if($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
@@ -169,7 +169,8 @@ if (isset($event['customerid']) || intval($event['customerid']))
 		isset($event['address_id']) && intval($event['address_id']) > 0 ? $event['address_id'] : null));
 
 if (!isset($event['usergroup']))
-	$SESSION->restore('eventgid', $event['usergroup']);
+	$event['usergroup'] = -2;
+	//$SESSION->restore('eventgid', $event['usergroup']);
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 if (!ConfigHelper::checkConfig('phpui.big_networks'))

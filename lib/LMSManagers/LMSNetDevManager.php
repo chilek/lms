@@ -612,7 +612,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.city as location_city_name, addr.city_id as location_city,
 				lc.ident AS city_ident,
 				addr.street AS location_street_name, addr.street_id as location_street,
-				lst.ident AS street_ident,
+				(CASE WHEN lst.ident IS NULL
+					THEN (CASE WHEN addr.street = \'\' THEN \'99999\' ELSE \'99998\' END)
+					ELSE lst.ident END) AS street_ident,
 				addr.house as location_house, addr.flat as location_flat, addr.location') . '
 			FROM netdevices d
 				LEFT JOIN vaddresses addr       ON d.address_id = addr.id
