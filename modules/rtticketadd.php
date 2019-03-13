@@ -364,6 +364,15 @@ unset($invprojectlist['total']);
 unset($invprojectlist['order']);
 unset($invprojectlist['direction']);
 
+$hook_data = $LMS->executeHook(
+    'ticketadd_before_display',
+    array(
+        'ticket' => $ticket,
+        'smarty' => $SMARTY
+    )
+);
+$ticket = $hook_data['ticket'];
+
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $queuelist);
