@@ -49,12 +49,15 @@ if (isset($_GET['id']) && $action == 'init')
 		$nitem['vdiscount']	= str_replace(',', '.', $item['vdiscount']);
 		$nitem['content']		= str_replace(',', '.', $item['content']);
 		$nitem['valuenetto']	= str_replace(',', '.', $item['basevalue']);
-		$nitem['valuebrutto']	= str_replace(',', '.', $item['value']);
+		// if position count is 0 (deleted position) then count value brutto based on value netto and tax value
+		$nitem['valuebrutto']	= str_replace(',', '.',
+			empty($item['count']) ? round(($item['basevalue'] * ($item['taxvalue'] + 100)) / 100, 2) : $item['value']);
 		$nitem['s_valuenetto']	= str_replace(',', '.', $item['totalbase']);
 		$nitem['s_valuebrutto']	= str_replace(',', '.', $item['total']);
 		$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : 0;
 		$nitem['taxid']		= $item['taxid'];
 		$nitem['itemid']	= $item['itemid'];
+		$nitem['deleted'] = empty($item['total']);
 		$invoicecontents[$nitem['itemid']] = $nitem;
 	}
 	$invoice['content'] = $invoicecontents;
@@ -266,10 +269,17 @@ switch($action)
 				$contents[$idx]['count'] = f_round(-1 * $invoicecontents[$idx]['count'], 3);
 			} elseif ($contents[$idx]['count'] != $item['count']
 				|| $contents[$idx]['valuebrutto'] != $item['valuebrutto']) {
-				$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
+
+				// determine new brutto value only if invoice position is NOT recovered/restored
+				if (!empty($invoicecontents[$idx]['count']) || empty($contents[$idx]['count']))
+					$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
+
 				$contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
 				if (empty($contents[$idx]['count']))
 					$contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
+				elseif (empty($invoicecontents[$idx]['count']) && !empty($contents[$idx]['count']))
+					// cash value for recovered/restored invoice position
+					$contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'], 2);
 				elseif (empty($contents[$idx]['valuebrutto']))
 					$contents[$idx]['cash'] = f_round(-1 * $invoicecontents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
 				else
