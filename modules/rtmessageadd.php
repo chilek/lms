@@ -83,6 +83,15 @@ if (isset($_POST['message'])) {
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
 
+	$hook_data = $LMS->executeHook('rtmessageadd_validation_before_submit',
+		array(
+			'message' => $message,
+			'error' => $error,
+		)
+	);
+	$message = $hook_data['message'];
+	$error = $hook_data['error'];
+
 	if (!$error) {
 		$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
@@ -214,6 +223,14 @@ if (isset($_POST['message'])) {
 
 				$LMS->SendMail($recipients, $headers, $body, $attachments, null, $LMS->GetRTSmtpOptions());
 			}
+
+			$hook_data = $LMS->executeHook('rtmessageadd_after_submit',
+				array(
+					'msgid' => $msgid,
+					'message' => $message,
+				)
+			);
+			$message = $hook_data['message'];
 
 			// setting status and the ticket owner
 			if (isset($message['resolve']))
@@ -473,6 +490,15 @@ foreach ($categories as $category) {
 	$ncategories[] = $category;
 }
 $categories = $ncategories;
+
+$hook_data = $LMS->executeHook(
+    'rtmessageadd_before_display',
+    array(
+        'message' => $message,
+        'smarty' => $SMARTY
+    )
+);
+$message = $hook_data['message'];
 
 if (!is_array($message['ticketid'])) {
 	$ticket = $LMS->GetTicketContents($message['ticketid']);

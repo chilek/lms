@@ -51,11 +51,11 @@
 				<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
 			{/box_row}
 {/if}
-
+			{block name="rtmessageadd-content"}
 			{box_row icon="img/edit.gif" label="Content:"}
 				<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
 			{/box_row}
-
+			{/block}
 			{box_row icon="img/attach.gif" label="Attachments:"}
 				{fileupload id="files" fileupload=$fileupload form="message-form"}
 			{/box_row}

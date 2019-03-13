@@ -179,6 +179,7 @@ if(isset($_POST['ticket']))
 
 		$hook_data = $LMS->executeHook('ticketadd_after_submit',
 			array(
+				'id' => $id,
 				'ticket' => $ticket,
 			)
 		);
@@ -363,6 +364,15 @@ $invprojectlist = $LMS->GetProjects('name', array());
 unset($invprojectlist['total']);
 unset($invprojectlist['order']);
 unset($invprojectlist['direction']);
+
+$hook_data = $LMS->executeHook(
+    'ticketadd_before_display',
+    array(
+        'ticket' => $ticket,
+        'smarty' => $SMARTY
+    )
+);
+$ticket = $hook_data['ticket'];
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
