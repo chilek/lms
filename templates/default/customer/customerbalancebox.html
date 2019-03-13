@@ -180,7 +180,7 @@
 								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
 									href="?m=invoice&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="Credit note"}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{if $item.published}
 										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
 									{else}
