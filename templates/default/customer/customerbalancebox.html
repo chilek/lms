@@ -168,6 +168,10 @@
 										resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
+								{if !$item.referenced}
+									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
+									tip="Revise"}
+								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
