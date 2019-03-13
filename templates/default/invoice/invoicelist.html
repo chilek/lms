@@ -167,7 +167,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{/if}
 			{if !$invoice.closed}
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
-					{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
+					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 						<A onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 					{/if}
 				{/if}
@@ -181,14 +181,14 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 							<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 						{/if}
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
-						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
+						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 							<A HREF="?m=invoicenoteedit&id={$invoice.id}&action=edit"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 						{/if}
 					{/if}
 				{/if}
 			{/if}
 			{if !$invoice.cancelled}
-				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					<a onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
 				{/if}
 			{elseif $invoice.cancelled}
