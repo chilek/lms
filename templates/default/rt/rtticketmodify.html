@@ -33,7 +33,7 @@
 
 	{box_contents}
 		{box_panel}
-
+			{block name="rtticketmodify-leftcolumn"}
 			{if $layout.module != 'eventadd'}
 			{box_row icon="img/customer.gif" label="Customer:"}
 				{$customer_selector='[name=&quot;ticket[custid]&quot;]'}
@@ -107,10 +107,10 @@
 			{box_row icon="img/mail.gif" label="Notify users:" labelid="notify"}
 				<INPUT type="checkbox" name="ticket[notify]" id="notify" value="1"{if $ticket.notify} CHECKED{/if}>
 			{/box_row}
-
+			{/block}
 		{/box_panel}
 		{box_panel}
-
+			{block name="rtticketmodify-rightcolumn"}
 			{box_row icon="img/users.gif" label="Owner:"}
 				<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
 					<OPTION value="0">- {trans("select user")} -</OPTION>
@@ -240,7 +240,7 @@
 				{/foreach}
 			{/box_row}
 			{/if}
-
+			{/block}
 {/box_panel}
 	{/box_contents}
 
