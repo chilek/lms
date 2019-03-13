@@ -179,6 +179,7 @@ if(isset($_POST['ticket']))
 
 		$hook_data = $LMS->executeHook('ticketadd_after_submit',
 			array(
+				'id' => $id,
 				'ticket' => $ticket,
 			)
 		);
