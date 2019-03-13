@@ -318,6 +318,17 @@ if(isset($_POST['ticket']))
 				trans('At least requestor name, mail or phone should be filled!');
 	}
 
+	$hook_data = $LMS->executeHook(
+		'ticketedit_validation_before_submit', 
+		 array(
+				'ticketedit' => $ticketedit,
+	            'error' => $error
+	          )
+	     );
+
+	$ticketedit = $hook_data['ticketedit'];
+	$error = $hook_data['error'];
+
 	if(!$error)
 	{
 		// setting status and the ticket owner
@@ -348,6 +359,14 @@ if(isset($_POST['ticket']))
 			'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
+
+	    $hook_data = $LMS->executeHook(
+	    	'ticketedit_after_submit',
+	        	array(
+	            		'ticketedit' => $ticketedit,
+	                 )
+	            );
+	   $ticketedit = $hook_data['ticketedit'];
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
 		$newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
@@ -515,6 +534,15 @@ $netdevlist = $LMS->GetNetDevList('name', $search);
 unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
+
+$hook_data = $LMS->executeHook(
+    'ticketedit_before_display', 
+    array(
+        'ticket' => $ticket,
+        'smarty' => $SMARTY
+    )
+);
+$ticket = $hook_data['ticket'];
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('customerid', $ticket['customerid']);
