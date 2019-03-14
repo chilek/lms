@@ -1642,7 +1642,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			if (is_array($variable_name)) {
 				$exists = false;
 				foreach ($variable_name as $vname)
-					if (ConfigHelper::configExists($vname)) {
+					if (ConfigHelper::variableExists($vname)) {
 						$exists = true;
 						break;
 					}
@@ -1650,7 +1650,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					continue;
 				$variable_name = $vname;
 			} else
-				if (!ConfigHelper::configExists($variable_name))
+				if (!ConfigHelper::variableExists($variable_name))
 					continue;
 
 			$variable = ConfigHelper::getConfig($variable_name);
