@@ -143,68 +143,68 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		</TD>
 		<TD class="text-right nobr">
 			{foreach $invoice.customlinks as $link}
-			<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
+				<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}
-			<A href="?m=invoiceedit&id={$invoice.id}&action=convert&proforma=1"><IMG src="img/reload.gif" alt="{trans("Convert to invoice")}" title="{trans("Convert to invoice")}"></A>
+				<A href="?m=invoiceedit&id={$invoice.id}&action=convert&proforma=1"><IMG src="img/reload.gif" alt="{trans("Convert to invoice")}" title="{trans("Convert to invoice")}"></A>
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-			<A href="?m=invoicesend&id={$invoice.id}" target="_blank" OnClick="return confirmLink(this, '{t a=$invoice.name|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="{trans("Send invoice")}" title="{trans("Send invoice")}"></A>
+				<A href="?m=invoicesend&id={$invoice.id}" target="_blank" OnClick="return confirmLink(this, '{t a=$invoice.name|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="{trans("Send invoice")}" title="{trans("Send invoice")}"></A>
 			{/if}
-			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
-				{if $invoice.type == $smarty.const.DOC_INVOICE}
-				{if !$invoice.referenced && !$invoice.cancelled}
-				<A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="{trans("Revise")}" title="{trans("Revise")}"></A>
-				{/if}
-				{if !$invoice.closed && !$invoice.referenced}
-				{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to remove invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-				{/if}
-				{/if}
+			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
+				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
+					{if !$invoice.referenced && !$invoice.cancelled}
+						<A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="{trans("Revise")}" title="{trans("Revise")}"></A>
+					{/if}
+					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced}
+						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
+							<A onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to remove invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+						{/if}
+					{/if}
 				{else}
-				<A onclick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove pro forma invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+					<A onclick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove pro forma invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 				{/if}
 			{/if}
 			{if !$invoice.closed}
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
-				{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-				{/if}
+					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+						<A onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+					{/if}
 				{/if}
 				{if !$invoice.cancelled}
-				{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-				{if $invoice.type == $smarty.const.DOC_INVOICE}
-				{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-				{/if}
-				{else}
-				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-				{/if}
-				{elseif $invoice.type == $smarty.const.DOC_CNOTE}
-				{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A HREF="?m=invoicenoteedit&id={$invoice.id}&action=edit"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-				{/if}
-				{/if}
+					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
+						{if $invoice.type == $smarty.const.DOC_INVOICE}
+							{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+								<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+							{/if}
+						{else}
+							<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+						{/if}
+					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
+						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+							<A HREF="?m=invoicenoteedit&id={$invoice.id}&action=edit"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+						{/if}
+					{/if}
 				{/if}
 			{/if}
 			{if !$invoice.cancelled}
-				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-				<a onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
+				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+					<a onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
 				{/if}
 			{elseif $invoice.cancelled}
 				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type ==  $smarty.const.DOC_INVOICE_PRO}
-			{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-			<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
-			{/if}
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
+				{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+					<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
+				{/if}
+				<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
-			{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-			<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
-			{/if}
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
+				{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
+					<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
+				{/if}
+				<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="lms-ui-multi-check"{if $marks.$invoiceid} checked{/if}>
 		</TD>

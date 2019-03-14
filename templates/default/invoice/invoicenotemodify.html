@@ -270,9 +270,9 @@
 				{if $refdoc.closed}
 					{$item.valuebrutto|money_format}
 				{elseif $item.deleted}
-					<INPUT TYPE="hidden" VALUE="{$item.valuebrutto}" NAME="valuebrutto[{$itemid}]">{$item.valuebrutto|money_format}
+					<INPUT TYPE="hidden" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" NAME="valuebrutto[{$itemid}]">{if !empty($item.valuebrutto)}{$item.valuebrutto|money_format}{/if}
 				{else}
-					<INPUT TYPE="text" VALUE="{$item.valuebrutto|string_format:"%.2f"}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
+					<INPUT TYPE="text" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
 				{/if}
 			</TD>
 			<TD class="nobr">

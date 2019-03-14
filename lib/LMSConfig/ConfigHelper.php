@@ -117,7 +117,7 @@ class ConfigHelper
         trigger_error('Incorrect option value: '.$value);
     }
 
-	public static function configExists($name) {
+	public static function variableExists($name) {
 		list ($section_name, $variable_name) = explode('.', $name, 2);
 
 		if (empty($variable_name)) {
