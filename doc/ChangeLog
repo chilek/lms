@@ -211,6 +211,9 @@ version ?.??.?? (????-??-??):
   - enhancement: helpdesk: file attachments are sent during user notifications [chilan]
   - improvement: smarty {date_period_preset} function generates shortcut button panel for
     instant changing date period [chilan]
+  - enhancement: phpui.helpdesk_notification_attachments controls if attachments are appended to sent
+    user notifications ('false' by default) [chilan]
+  - helpdesk user notification %attachments substitution support [chilan]
 
 version 1.11.23 (2018-03-21):
 
