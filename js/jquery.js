@@ -244,17 +244,35 @@ $(function() {
 		var from = $(this).attr('data-from');
 		var to = $(this).attr('data-to');
 		var period = $(this).attr('data-period');
+		var fromdate, todate;
+		var fromvalue = $(from).val();
+		var tovalue = $(from).val();
 
-		var fromdate = new Date(),
+		if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+			fromdate = new Date(fromvalue.replace(/\//g, '-'));
+		} else {
+			fromdate = new Date();
+		}
+		if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+			todate = new Date(tovalue.replace(/\//g, '-'));
+		} else {
 			todate = new Date();
+		}
 
 		if (period == 'previous-month' || typeof(period) === 'undefined') {
 			fromdate.setDate(0);
 			fromdate.setDate(1);
 			todate.setDate(0);
 		} else if (period == 'current-month') {
+			fromdate = new Date();
+			todate = new Date();
 			fromdate.setDate(1);
 			todate.setMonth(todate.getMonth() + 1);
+			todate.setDate(0);
+		} else if (period == 'next-month') {
+			fromdate.setMonth(fromdate.getMonth() + 1);
+			fromdate.setDate(1);
+			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
 		}
 

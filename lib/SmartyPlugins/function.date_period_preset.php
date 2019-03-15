@@ -32,7 +32,7 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
 		return;
 
 	if (!isset($periods))
-		$periods = array('previous-month', 'current-month');
+		$periods = array('previous-month', 'current-month', 'next-month');
 	elseif (!is_array($periods))
 		$periods = preg_split('/\s*[ ,|]\s*/', $periods);
 
@@ -43,6 +43,10 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
 			case 'current-month':
 				$label = trans('current month');
 				$icon = 'lms-ui-icon-back';
+				break;
+			case 'next-month':
+				$label = trans('next month');
+				$icon = 'lms-ui-icon-next';
 				break;
 			case 'previous-month':
 			default:
