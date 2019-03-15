@@ -721,6 +721,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $this->db->GetOne('SELECT id FROM rtcategories WHERE name=?', array($category));
     }
 
+    public function GetCategoryName($id)
+    {
+        return $this->db->GetOne('SELECT name FROM rtcategories WHERE id=?', array($id));
+    }
+
     public function GetUserCategories($userid = NULL)
     {
         return $this->db->GetAll('SELECT c.id, name
