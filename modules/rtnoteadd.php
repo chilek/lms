@@ -78,12 +78,12 @@ elseif(isset($_POST['note']))
 		$attachments = null;
 		if (!empty($files)) {
 			foreach ($files as &$file) {
-				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
 				$attachments[] = array(
 					'content_type' => $file['type'],
 					'filename' => $file['name'],
 					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
 				);
+				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
 			}
 			unset($file);
 		}
@@ -178,6 +178,7 @@ elseif(isset($_POST['note']))
 				'deadline' => $ticketdata['deadline'],
 				'subject' => $ticketdata['subject'],
 				'body' => $note['body'],
+				'attachments' => &$attachments,
 			);
 
 			$headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
@@ -196,7 +197,7 @@ elseif(isset($_POST['note']))
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
-				'attachments' => $attachments,
+				'attachments' => &$attachments,
 			));
 		}
 

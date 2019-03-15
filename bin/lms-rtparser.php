@@ -569,6 +569,7 @@ if ($notify) {
 		'categories' => $ticket['categorynames'],
 		'subject' => $mh_subject,
 		'body' => $mail_body,
+		'attachments' => &$attachments,
 		'url' => $lms_url,
 	);
 	$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
@@ -582,7 +583,7 @@ if ($notify) {
 		'mail_headers' => $headers,
 		'mail_body' => $body,
 		'sms_body' => $sms_body,
-		'attachments' => $attachments,
+		'attachments' => &$attachments,
 	));
 }
 

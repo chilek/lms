@@ -388,6 +388,7 @@ function module_main() {
 				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
+				'attachments' => &$attachments,
 			);
 
 			// try to use LMS url from userpanel configuration
@@ -406,7 +407,7 @@ function module_main() {
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
-				'attachments' => $attachments,
+				'attachments' => &$attachments,
 			));
 
 			header('Location: ?m=helpdesk&op=view&id='.$ticket['id']);
