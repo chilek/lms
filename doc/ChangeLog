@@ -209,6 +209,7 @@ version ?.??.?? (????-??-??):
   - enhancement: implemented credit note 'chains' (we can correct one credit note issuing another
     credit note) [chilan]
   - enhancement: helpdesk: file attachments are sent during user notifications [chilan]
+  - improvement: shortcut button for previous month period selection [chilan]
 
 version 1.11.23 (2018-03-21):
 
