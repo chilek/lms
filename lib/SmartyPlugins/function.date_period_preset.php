@@ -27,19 +27,34 @@
 function smarty_function_date_period_preset(array $params, Smarty_Internal_Template $template) {
 	$from_selector = isset($params['from']) ? $params['from'] : null;
 	$to_selector = isset($params['to']) ? $params['to'] : null;
-	$period = isset($params['period']) ? $params['period'] : null;
-	if (!isset($period))
-		$period = 'previous-month';
+	$periods = isset($params['periods']) ? $params['periods'] : null;
 	if (!isset($from_selector) || !isset($to_selector))
 		return;
 
-	switch ($period) {
-		case 'previous-month':
-		default:
-			$label = trans('previous month');
-			break;
+	if (!isset($periods))
+		$periods = array('previous-month', 'current-month');
+	elseif (!is_array($periods))
+		$periods = preg_split('/\s*[ ,|]\s*/', $periods);
+
+	$result = '';
+
+	foreach ($periods as $period) {
+		switch ($period) {
+			case 'current-month':
+				$label = trans('current month');
+				$icon = 'lms-ui-icon-back';
+				break;
+			case 'previous-month':
+			default:
+				$label = trans('previous month');
+				$icon = 'lms-ui-icon-previous';
+				break;
+		}
+		$result .= '<button type="button" class="lms-ui-button ' . $icon . ' lms-ui-button-date-period" data-from="'
+			. htmlspecialchars($from_selector) . '" data-to="'
+			. htmlspecialchars($to_selector) . '" data-period="' . $period . '" title="' . $label . '">'
+			. '<i></i></button>';
 	}
-	return '<button type="button" class="lms-ui-button lms-ui-button-date-period" data-from="'
-		. htmlspecialchars($from_selector) . '" data-to="'
-		. htmlspecialchars($to_selector) . '" period="' . $period . '">' . $label . '</button>';
+
+	return $result;
 }

@@ -252,6 +252,10 @@ $(function() {
 			fromdate.setDate(0);
 			fromdate.setDate(1);
 			todate.setDate(0);
+		} else if (period == 'current-month') {
+			fromdate.setDate(1);
+			todate.setMonth(todate.getMonth() + 1);
+			todate.setDate(0);
 		}
 
 		$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
