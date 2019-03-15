@@ -1367,7 +1367,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if ($params['verifierid']) {
             $verifier_email = $this->db->GetOne('SELECT email FROM users WHERE users.id = ?', array($params['verifierid']));
             $params['mail_headers']['To'] = '<' . $verifier_email . '>';
-            $LMS->SendMail($verifier_email, $params['mail_headers'], $params['mail_body'], null, null, $this->GetRTSmtpOptions());
+            $LMS->SendMail($verifier_email, $params['mail_headers'], $params['mail_body'],
+				isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
+				null, $this->GetRTSmtpOptions());
          } else {
 		if ($recipients = $this->db->GetCol('SELECT DISTINCT email
 			FROM users, rtrights
@@ -1390,7 +1392,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 			foreach ($recipients as $email) {
 				$params['mail_headers']['To'] = '<' . $email . '>';
-				$LMS->SendMail($email, $params['mail_headers'], $params['mail_body'], null, null, $this->GetRTSmtpOptions());
+				$LMS->SendMail($email, $params['mail_headers'], $params['mail_body'],
+					isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
+					null, $this->GetRTSmtpOptions());
 			}
 		}
 		}

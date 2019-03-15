@@ -211,6 +211,7 @@ $mh_subject = isset($headers['subject']) ? iconv_mime_decode($headers['subject']
 if (!strlen($mh_subject))
 	$mh_subject = trans('(no subject)');
 $mh_references = iconv_mime_decode($headers['references']);
+$files = array();
 $attachments = array();
 
 $mail_headers = substr($buffer, $partdata['starting-pos'], $partdata['starting-pos-body'] - $partdata['starting-pos'] - 1);
@@ -284,13 +285,18 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
 			$file_name = isset($partdata['content-name']) ? $partdata['content-name'] :
 				(isset($partdata['disposition-filename']) ? $partdata['disposition-filename'] : '');
 			if (!$file_name) {
-				unset($file_conntent);
+				unset($file_content);
 				continue;
 			}
-			$attachments[] = array(
+			$files[] = array(
 				'name' => $file_name,
 				'type' => $partdata['content-type'],
-				'content' => $file_content,
+				'content' => &$file_content,
+			);
+			$attachments[] = array(
+				'content_type' => $partdata['content-type'],
+				'filename' => $file_name,
+				'data' => &$file_content,
 			);
 			unset($file_content);
 		}
@@ -421,7 +427,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
 		'messageid' => $mh_msgid,
 		'headers' => $mail_headers,
 		'body' => $mail_body,
-		'categories' => $cats), $attachments);
+		'categories' => $cats), $files);
 
 	if ($autoreply) {
 		$ticketid = sprintf("%06d", $ticket_id);
@@ -468,7 +474,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
 			'headers' => $mail_headers,
 			'body' => $mail_body,
 			'inreplyto' => $inreplytoid,
-		), $attachments);
+		), $files);
 
 	if ($auto_open)
 		$DB->Execute("UPDATE rttickets SET state = ? WHERE id = ? AND state > ?",
@@ -576,6 +582,7 @@ if ($notify) {
 		'mail_headers' => $headers,
 		'mail_body' => $body,
 		'sms_body' => $sms_body,
+		'attachments' => $attachments,
 	));
 }
 

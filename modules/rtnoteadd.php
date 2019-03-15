@@ -75,9 +75,16 @@ elseif(isset($_POST['note']))
 	{
 		$messageid = '<msg.' . $ticket['queueid'] . '.' . $note['ticketid'] . '.'  . time() . '@rtsystem.' . gethostname() . '>';
 
+		$attachments = null;
 		if (!empty($files)) {
-			foreach ($files as &$file)
+			foreach ($files as &$file) {
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+				$attachments[] = array(
+					'content_type' => $file['type'],
+					'filename' => $file['name'],
+					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
+				);
+			}
 			unset($file);
 		}
 		$msgid = $LMS->TicketMessageAdd(array(
@@ -189,6 +196,7 @@ elseif(isset($_POST['note']))
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
+				'attachments' => $attachments,
 			));
 		}
 

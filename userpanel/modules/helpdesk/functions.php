@@ -88,8 +88,10 @@ function module_main() {
 
 	$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
+	$files = array();
+	$attachments = array();
+
 	if (isset($_FILES['files'])) {
-		$files = array();
 		foreach ($_FILES['files']['name'] as $fileidx => $filename)
 			if (!empty($filename)) {
 				if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
@@ -104,7 +106,12 @@ function module_main() {
 						'name' => $filename,
 						'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
 						'type' => $_FILES['files']['type'][$fileidx],
-						'contents' => $filecontents,
+						'contents' => &$filecontents,
+					);
+					$attachments[] = array(
+						'content_type' => $_FILES['files']['type'][$fileidx],
+						'filename' => $filename,
+						'data' => &$filecontents,
 					);
 				} else { // upload errors
 					if (isset($error['files']))
@@ -255,6 +262,7 @@ function module_main() {
 					'mail_headers' => $headers,
 					'mail_body' => $body,
 					'sms_body' => $sms_body,
+					'attachments' => $attachments,
 				));
 			}
 
@@ -398,6 +406,7 @@ function module_main() {
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
+				'attachments' => $attachments,
 			));
 
 			header('Location: ?m=helpdesk&op=view&id='.$ticket['id']);

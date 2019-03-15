@@ -96,17 +96,16 @@ if (isset($_POST['message'])) {
 		$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
 		$attachments = NULL;
-		if (!empty($files))
-			foreach ($files as $file)
+
+		if (!empty($files)) {
+			foreach ($files as &$file) {
+				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
 				$attachments[] = array(
 					'content_type' => $file['type'],
 					'filename' => $file['name'],
 					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
 				);
-
-		if (!empty($files)) {
-			foreach ($files as &$file)
-				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+			}
 			unset($file);
 		}
 
@@ -383,6 +382,7 @@ if (isset($_POST['message'])) {
 					'mail_headers' => $headers,
 					'mail_body' => $body,
 					'sms_body' => $sms_body,
+					'attachments' => $attachments,
 				));
 			}
 		}

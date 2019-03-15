@@ -170,9 +170,17 @@ if(isset($_POST['ticket']))
         if (empty($ticket['service']))
             $ticket['service'] = null;
 
+		$attachments = null;
+
 		if (!empty($files)) {
-			foreach ($files as &$file)
+			foreach ($files as &$file) {
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+				$attachments[] = array(
+					'content_type' => $file['type'],
+					'filename' => $file['name'],
+					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
+				);
+			}
 			unset($file);
 		}
 		$id = $LMS->TicketAdd($ticket, $files);
@@ -291,6 +299,7 @@ if(isset($_POST['ticket']))
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
+				'attachments' => $attachments,
 			));
 		}
 
