@@ -305,7 +305,8 @@ $teryt_cities = $DB->GetAllByKey("
 			SELECT pna.cityid, pna.streetid, " . $DB->GroupConcat('pna.zip', ',', true) . " AS zip FROM pna
 			WHERE pna.streetid IS NULL
 			GROUP BY pna.cityid, pna.streetid HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
-		) p ON p.cityid = lc.id", 'cityid');
+		) p ON p.cityid = lc.id
+		JOIN addresses a ON a.city_id = lc.id", 'cityid');
 
 $teryt_streets = $DB->GetAllByKey("SELECT lst.cityid, lst.id AS streetid,
 		tu.cecha AS address_cecha,
@@ -317,7 +318,8 @@ $teryt_streets = $DB->GetAllByKey("SELECT lst.cityid, lst.id AS streetid,
 	LEFT JOIN (
 		SELECT pna.cityid, pna.streetid, " . $DB->GroupConcat('pna.zip', ',', true) . " AS zip FROM pna
 		GROUP BY pna.cityid, pna.streetid HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
-	) p ON p.cityid = lst.cityid AND p.streetid = lst.id", 'streetid');
+	) p ON p.cityid = lst.cityid AND p.streetid = lst.id
+	JOIN addresses a ON a.street_id = lst.id", 'streetid');
 
 $truenetnodes = $DB->GetAllByKey("SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
 		nn.uip, nn.miar, nn.longitude, nn.latitude,
@@ -1517,28 +1519,6 @@ if ( $max_range > 0 ) {
     $bottom = str_replace(',', '.', $bottom);
     $left   = str_replace(',', '.', $left);
 
-    $buildings = $DB->GetAll('
-        SELECT lc.name as city, building_num as house, longitude as "0", latitude as "1",
-            ' . $DB->Concat('lst.name', "' '", 'CASE WHEN ls.name2 is NOT NULL THEN '
-                . $DB->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END') . ' AS street,
-            ls.ident as street_ident, lc.ident as city_ident, lbor.name as borough, ldist.name as district,
-            lsta.name as state, lsta.ident as state_ident, ldist.ident as district_ident, lbor.ident as borough_ident,
-            lbor.type as borough_type
-        FROM location_buildings lb
-            LEFT JOIN location_streets ls       ON lb.street_id = ls.id
-            LEFT JOIN location_street_types lst ON lst.id = ls.typeid
-            LEFT JOIN location_cities lc        ON lc.id = lb.city_id
-            LEFT JOIN location_boroughs lbor    ON lc.boroughid = lbor.id
-            LEFT JOIN location_districts ldist  ON lbor.districtid = ldist.id
-            LEFT JOIN location_states lsta      ON lsta.id = ldist.stateid
-        WHERE
-            longitude > ? AND longitude < ? AND
-            latitude  > ? AND latitude  < ?
-        ORDER BY
-            ls.name',
-        array($left, $right, $top, $bottom)
-    );
-
     // LMS doesn't contain priorities for link types
     // if it contains then fix code below
     $linktype_priorities = array(
@@ -1557,78 +1537,106 @@ if ( $max_range > 0 ) {
     ksort($link_orderlist);
     // ---
 
-    $kd = new Kd_tree();
+    $kds = array();
 
-    foreach ( $link_orderlist as $link ) {
-        $kd->clear();
+	foreach ( $link_orderlist as $link ) {
+		$kds[$link['type']] = new Kd_tree();
+		$kds[$link['type']]->clear();
 
-        foreach ($netnodes as $k=>$netnode) {
-            if ( isset($netnode['tech'][$link['type']]) && !empty($netnode['accessports'])) {
-                $kd->insert( array(floatval($netnode['longitude']), floatval($netnode['latitude']), 'netnode'=>$k) );
-            }
-        }
+		foreach ($netnodes as $k=>$netnode) {
+			if ( isset($netnode['tech'][$link['type']]) && !empty($netnode['accessports'])) {
+				$kds[$link['type']]->insert( array(floatval($netnode['longitude']), floatval($netnode['latitude']), 'netnode'=>$k) );
+			}
+		}
+	}
 
-        if ( $buildings ) {
-            foreach ( $buildings as $k=>$b ) {
-				if ( empty($b['street_ident'])) {
-					$b['street']       = "BRAK ULICY";
-					$b['street_ident'] = "99999";
-				}
-				if (isset($teryt_netranges[sprintf('%02d%02d%02d%s_%07d_%05d_%s', $b['state_ident'],
+	$offset = 0;
+	$limit = 50000;
+
+	while (($buildings = $DB->GetAll('
+        SELECT lc.name as city, building_num as house, longitude as "0", latitude as "1",
+            ' . $DB->Concat('lst.name', "' '", 'CASE WHEN ls.name2 is NOT NULL THEN '
+                . $DB->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END') . ' AS street,
+            ls.ident as street_ident, lc.ident as city_ident, lbor.name as borough, ldist.name as district,
+            lsta.name as state, lsta.ident as state_ident, ldist.ident as district_ident, lbor.ident as borough_ident,
+            lbor.type as borough_type
+        FROM location_buildings lb
+            LEFT JOIN location_streets ls       ON lb.street_id = ls.id
+            LEFT JOIN location_street_types lst ON lst.id = ls.typeid
+            LEFT JOIN location_cities lc        ON lc.id = lb.city_id
+            LEFT JOIN location_boroughs lbor    ON lc.boroughid = lbor.id
+            LEFT JOIN location_districts ldist  ON lbor.districtid = ldist.id
+            LEFT JOIN location_states lsta      ON lsta.id = ldist.stateid
+        WHERE
+            longitude > ? AND longitude < ? AND
+            latitude  > ? AND latitude  < ?
+        ORDER BY
+            ls.name, lb.id
+        LIMIT ' . $limit . '
+        OFFSET ' . $offset,
+        array($left, $right, $top, $bottom))) != null && count($buildings)) {
+
+		$offset += count($buildings);
+
+		foreach ($buildings as $k => $b) {
+			if (empty($b['street_ident'])) {
+				$b['street'] = "BRAK ULICY";
+				$b['street_ident'] = "99999";
+			}
+			if (isset($teryt_netranges[sprintf('%02d%02d%02d%s_%07d_%05d_%s', $b['state_ident'],
 					$b['district_ident'], $b['borough_ident'], $b['borough_type'],
 					$b['city_ident'], $b['street_ident'], $b['house'])]))
-					continue;
+				continue;
 
-                $closest_p = $kd->findNN( $b );
+			$key = strtolower($b['city'] . '|' . $b['street'] . '|' . $b['house']);
 
-                $dist = getGPSdistance( $closest_p[0], $closest_p[1], $b[0], $b[1] );
-                $key  = strtolower( $b['city'] . '|' . $b['street'] . '|' . $b['house'] );
+			foreach ($link_orderlist as $link) {
+				$closest_p = $kds[$link['type']]->findNN($b);
+				$dist = getGPSdistance($closest_p[0], $closest_p[1], $b[0], $b[1]);
 
-                if ( $dist < $link['range'] && !isset($customers[$key]) ) {
-                    $node = $netnodes[ $closest_p['netnode'] ];
+				if ($dist < $link['range'] && !isset($customers[$key])) {
+					$node = $netnodes[$closest_p['netnode']];
 
-                    foreach ( $node['linkmaxspeed'][$link['type']] as $tech=>$max_speed ) {
-                        $data = array(
-                            'zas_id'                 => $netbuildingid,
-                            'zas_ownership'          => 'Własna',
-                            'zas_leasetype'          => '',
-                            'zas_foreignerid'        => '',
-                            'zas_nodeid'             => $node['id'],
-                            'zas_state'              => $b['state'],
-                            'zas_district'           => $b['district'],
-                            'zas_borough'            => $b['borough'],
-                            'zas_terc'               => sprintf("%02d%02d%02d%s", $b['state_ident'], $b['district_ident'], $b['borough_ident'], $b['borough_type']),
-                            'zas_city'               => $b['city'],
-                            'zas_simc'               => sprintf("%07d", $b['city_ident']),
-                            'zas_street'             => $b['street'],
-                            'zas_ulic'               => sprintf("%05d", $b['street_ident']),
-                            'zas_house'              => $b['house'],
-                            'zas_zip'                => $node['location_zip'],
-                            'zas_latitude'           => $b[1],
-                            'zas_longitude'          => $b[0],
-                            'zas_tech'               => $linktypes[$link['type']]['technologia'],
-                            'zas_ltech'              => $LINKTECHNOLOGIES[$link['type']][$tech],
-                            'zas_phonepots'          => 'Nie',
-                            'zas_phonevoip'          => 'Nie',
-                            'zas_phonemobile'        => 'Nie',
-                            'zas_internetstationary' => 'Tak',
-                            'zas_internetmobile'     => 'Nie',
-                            'zas_tv'                 => isset($node['tv_avible']) ? 'Tak' : 'Nie',
-                            'zas_other'              => '',
-                            'zas_stationarymaxspeed' => parseNetworkSpeed($max_speed),
-                            'zas_mobilemaxspeed'     => 0,
-                            'zas_invproject'         => '',
-                            'zas_invstatus'          => ''
-                        );
+					foreach ($node['linkmaxspeed'][$link['type']] as $tech => $max_speed) {
+						$data = array(
+							'zas_id' => $netbuildingid,
+							'zas_ownership' => 'Własna',
+							'zas_leasetype' => '',
+							'zas_foreignerid' => '',
+							'zas_nodeid' => $node['id'],
+							'zas_state' => $b['state'],
+							'zas_district' => $b['district'],
+							'zas_borough' => $b['borough'],
+							'zas_terc' => sprintf("%02d%02d%02d%s", $b['state_ident'], $b['district_ident'], $b['borough_ident'], $b['borough_type']),
+							'zas_city' => $b['city'],
+							'zas_simc' => sprintf("%07d", $b['city_ident']),
+							'zas_street' => $b['street'],
+							'zas_ulic' => sprintf("%05d", $b['street_ident']),
+							'zas_house' => $b['house'],
+							'zas_zip' => $node['location_zip'],
+							'zas_latitude' => $b[1],
+							'zas_longitude' => $b[0],
+							'zas_tech' => $linktypes[$link['type']]['technologia'],
+							'zas_ltech' => $LINKTECHNOLOGIES[$link['type']][$tech],
+							'zas_phonepots' => 'Nie',
+							'zas_phonevoip' => 'Nie',
+							'zas_phonemobile' => 'Nie',
+							'zas_internetstationary' => 'Tak',
+							'zas_internetmobile' => 'Nie',
+							'zas_tv' => isset($node['tv_avible']) ? 'Tak' : 'Nie',
+							'zas_other' => '',
+							'zas_stationarymaxspeed' => parseNetworkSpeed($max_speed),
+							'zas_mobilemaxspeed' => 0,
+							'zas_invproject' => '',
+							'zas_invstatus' => ''
+						);
 
-                        $buffer .= 'ZS,' . to_csv($data) . EOL;
-                        $netbuildingid++;
-                    }
-
-                    unset($buildings[$k]);
-                }
-            }
-        }
+						$buffer .= 'ZS,' . to_csv($data) . EOL;
+						$netbuildingid++;
+					}
+				}
+			}
+		}
     }
 }
 
