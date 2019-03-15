@@ -65,6 +65,8 @@ interface LMSHelpdeskManagerInterface
 
     public function GetCategoryIdByName($category);
 
+	public function GetCategoryName($id);
+
     public function GetUserCategories($userid = NULL);
 
     public function RTStats();
