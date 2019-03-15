@@ -240,6 +240,24 @@ $(function() {
 
 	init_datepickers('div.calendar input,input.calendar');
 
+	$('.lms-ui-button-date-period').click(function() {
+		var from = $(this).attr('data-from');
+		var to = $(this).attr('data-to');
+		var period = $(this).attr('data-period');
+
+		var fromdate = new Date(),
+			todate = new Date();
+
+		if (period == 'previous-month' || typeof(period) === 'undefined') {
+			fromdate.setDate(0);
+			fromdate.setDate(1);
+			todate.setDate(0);
+		}
+
+		$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
+		$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+	});
+
 	$.datetimepicker.setLocale(lmsSettings.language);
 	var datetimepickeroptions = {
 		step: 30,

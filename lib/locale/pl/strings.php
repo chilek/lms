@@ -4260,4 +4260,6 @@ $_LANG['invoice consent date manipulation'] = 'manipulowanie datą wystawienia f
 
 $_LANG['Network name'] = 'Nazwa sieci';
 
+$_LANG['previous month'] = 'poprzedni miesiąc';
+
 ?>
