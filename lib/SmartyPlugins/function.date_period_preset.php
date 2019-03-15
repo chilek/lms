@@ -53,7 +53,7 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
 		$result .= '<button type="button" class="lms-ui-button ' . $icon . ' lms-ui-button-date-period" data-from="'
 			. htmlspecialchars($from_selector) . '" data-to="'
 			. htmlspecialchars($to_selector) . '" data-period="' . $period . '" title="' . $label . '">'
-			. '<i></i></button>';
+			. '<i></i></button>&nbsp;';
 	}
 
 	return $result;
