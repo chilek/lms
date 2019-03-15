@@ -156,7 +156,7 @@ if (!empty($_POST['numberplanid'])) {
 }
 
 // we can't simply get documents with SUM(value*count)
-// because we need here incoices-like round-off
+// because we need here invoices-like round-off
 
 $args = array($doctypes, $unixfrom, $unixto);
 
@@ -165,7 +165,8 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid,' . (in_array(DOC_DNOTE, $doctype
 	d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
 	    FROM documents d
 		' . (in_array(DOC_DNOTE, $doctypes) ? 'LEFT JOIN debitnotecontents c ON c.docid = d.id'
-			: 'LEFT JOIN invoicecontents c ON c.docid = d.id') . '
+			: 'LEFT JOIN invoicecontents c ON c.docid = d.id
+				LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = c.itemid') . '
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id' .
 	    ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
 	    . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
@@ -209,44 +210,14 @@ if ($items) {
 		if(!isset($invoicelist[$idx]['tax'])) $invoicelist[$idx]['tax'] = 0;
 		if(!isset($invoicelist[$idx]['brutto'])) $invoicelist[$idx]['brutto'] = 0;
 
-		if($row['reference'])
-		{
-			// I think we can simply do query here instead of building
-			// big sql join in $items query, we've got so many credit notes?
-			$item = $DB->GetRow('SELECT taxid, value, count
-						FROM invoicecontents
-						WHERE docid=? AND itemid=?',
-						array($row['reference'], $row['itemid']));
-
-			$row['value'] += $item['value'];
-			$row['count'] += $item['count'];
-
-			set_taxes($item['taxid']);
-
-			$refitemsum = $item['value'] * $item['count'];
-			$refitemval = round($refitemsum / ($taxes[$item['taxid']]['value']+100) * 100, 2);
-			$refitemtax = $refitemsum - $refitemval;
-
-			$invoicelist[$idx][$item['taxid']]['tax'] -= $refitemtax;
-			$invoicelist[$idx][$item['taxid']]['val'] -= $refitemval;
-			$invoicelist[$idx]['tax'] -= $refitemtax;
-			$invoicelist[$idx]['brutto'] -= $refitemsum;
-
-			$listdata[$item['taxid']]['tax'] -= $refitemtax;
-			$listdata[$item['taxid']]['val'] -= $refitemval;
-			$listdata['tax'] -= $refitemtax;
-			$listdata['brutto'] -= $refitemsum;
-		}
-
-		$sum = $row['value'] * $row['count'];
-		$val = ($sum / ($taxes[$taxid]['value'] + 100)) * 100;
-		$tax = round($sum - $val, 2);
+		$val = ($row['value'] / ($taxes[$taxid]['value'] + 100)) * 100;
+		$tax = round($row['value'] - $val, 2);
 		$val = round($val, 2);
 
 		$invoicelist[$idx][$taxid]['tax'] += $tax;
 		$invoicelist[$idx][$taxid]['val'] += $val;
 		$invoicelist[$idx]['tax'] += $tax;
-		$invoicelist[$idx]['brutto'] += $sum;
+		$invoicelist[$idx]['brutto'] += $row['value'];
 
 		if(!isset($listdata[$taxid]))
 		{
@@ -257,7 +228,7 @@ if ($items) {
 		$listdata[$taxid]['tax'] += $tax;
 		$listdata[$taxid]['val'] += $val;
 		$listdata['tax'] += $tax;
-		$listdata['brutto'] += $sum;
+		$listdata['brutto'] += $row['value'];
 	}
 
 	// get used tax rates for building report table

@@ -206,6 +206,8 @@ version ?.??.?? (????-??-??):
     invoice/invoice-note sale date [chilan]
   - enhancement: new user privilege 'invoice_consent_date' controls if user can manipulate
     invoice/invoice-note/note consent date [chilan]
+  - enhancement: implemented credit note 'chains' (we can correct one credit note issuing another
+    credit note) [chilan]
 
 version 1.11.23 (2018-03-21):
 

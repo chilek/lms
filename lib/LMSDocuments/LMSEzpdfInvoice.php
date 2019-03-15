@@ -227,7 +227,11 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				'cdate' => $this->data['invoice']['cdate'],
 				'customerid' => $this->data['customerid'],
 			));
-			$y = $y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('for Invoice No. $a',$tmp) . '</b>');
+			if ($this->data['invoice']['doctype'] == DOC_CNOTE)
+				$y = $y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('for Credit Note No. $a',$tmp) . '</b>');
+			else
+				$y = $y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('for Invoice No. $a',$tmp) . '</b>');
+
 			$y -= 5;
 		}
 

@@ -49,7 +49,7 @@ $ids = $hook_data['ids'];
 $docitems = $hook_data['docitems'];
 
 sort($ids);
-if (!empty($ds))
+if (!empty($ids))
 	foreach ($ids as $cashid)
 		$LMS->DelBalance($cashid);
 
