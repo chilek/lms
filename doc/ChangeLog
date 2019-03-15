@@ -208,6 +208,7 @@ version ?.??.?? (????-??-??):
     invoice/invoice-note/note consent date [chilan]
   - enhancement: implemented credit note 'chains' (we can correct one credit note issuing another
     credit note) [chilan]
+  - enhancement: helpdesk: file attachments are sent during user notifications [chilan]
 
 version 1.11.23 (2018-03-21):
 
