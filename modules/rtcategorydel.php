@@ -34,7 +34,7 @@ else
 {
 	if($_GET['is_sure'] != 1)
 	{
-		$body = '<P>'.trans('Do you want to remove category called $a ?',$LMS->GetCategoryName($_GET['id'])).'</P>'; 
+		$body = '<P>'.trans('Do you want to remove category called $a?', $LMS->GetCategoryName($_GET['id'])) .'</P>'; 
 		$body .= '<P><A HREF="?m=rtcategorydel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
 		$body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';
 	}
