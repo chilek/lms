@@ -1579,7 +1579,8 @@ if ( $max_range > 0 ) {
         OFFSET ' . $offset,
         array($left, $right, $top, $bottom))) != null && count($buildings)) {
 
-		$offset += count($buildings);
+		$building_count = count($buildings);
+		$offset += $building_count;
 
 		foreach ($buildings as $k => $b) {
 			if (empty($b['street_ident'])) {
@@ -1639,6 +1640,8 @@ if ( $max_range > 0 ) {
 					}
 				}
 			}
+		if ($building_count < $limit)
+			break;
 		}
     }
 }
