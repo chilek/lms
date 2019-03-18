@@ -54,16 +54,14 @@ if(isset($_POST['ticket']))
 	$SMARTY->assign('fileupload', $fileupload);
 
 	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-		&& !empty($ticket['verifierid']) && ($ticket['verifierid'] == $ticket['owner'])) {
-		$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
-		$error['owner'] = trans("Ticket verifier could not be the same as owner");
+		&& !empty($ticket['verifierid']) && $ticket['verifierid'] == $ticket['owner']) {
+		$error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
+		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
 	};
 
-	if(!empty($ticket['deadline'])) {
-		$dtime = datetime_to_timestamp($ticket['deadline']);
-		if($dtime < time())
-			$error['deadline'] = trans("Ticket deadline could not be set in past");
-	}
+	$deadline = datetime_to_timestamp($ticket['deadline']);
+	if ($deadline && $deadline < time())
+		$error['deadline'] = trans('Ticket deadline could not be set in past!');
 
 	if($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid'])
 	{
