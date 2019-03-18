@@ -65,6 +65,12 @@ elseif(isset($_POST['note']))
 		$SESSION->redirect('?m=rtqueuelist');
 	}
 
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
+		&& $note['verifierid'] == $note['owner']) {
+		$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
+		$error['owner'] = trans("Ticket verifier could not be the same as owner");
+	}
+
 	$LMS->MarkTicketAsRead($note['ticketid']);
 
 	$result = handle_file_uploads('files', $error);

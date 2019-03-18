@@ -1311,6 +1311,7 @@ $_LANG['Password Change'] = 'Zmiana hasła';
 $_LANG['Password Change for Account: $a'] = 'Zmiana hasła dla konta: $a';
 $_LANG['Password Change for User $a'] = 'Zmiana hasła dla użytkownika $a';
 $_LANG['User $a has been set as verifier to ticket.'] = 'Użytkownik $a został przypisany jako werfikator zgłoszenia.';
+$_LANG['Verifier has been removed from ticket.'] = 'Weryfikator został usunięty ze zgłoszenia.';
 $_LANG['Password is too long (max.32 characters)!'] = 'Hasło jest za długie (max.32 znaki)!';
 $_LANG['Passwords does not match!'] = 'Hasła nie pasują do siebie!';
 $_LANG['Path to file was not specified: $a'] = 'Ścieżka do pliku nie została określona: $a';

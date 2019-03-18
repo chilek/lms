@@ -1138,11 +1138,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }else
             $props['netdevid'] = $ticket['netdevid'];
 
-        if($ticket['verifierid'] != $props['verifierid'] && isset($props['verifierid'])) {
-            $notes[] = trans('User $a has been set as verifier to ticket.', $LMS->GetUserName($props['verifierid']));
-            $type = $type | RTMESSAGE_VERIFIER_CHANGE;
-        } else
-            $props['verifierid'] = $ticket['verifierid'];
+		if (array_key_exists('verifierid', $props)) {
+			if (isset($props['verifierid']) && $ticket['verifierid'] != $props['verifierid']) {
+				$notes[] = trans('User $a has been set as verifier to ticket.', $LMS->GetUserName($props['verifierid']));
+				$type = $type | RTMESSAGE_VERIFIER_CHANGE;
+			} elseif (!isset($props['verifierid']) && !empty($ticket['verifierid'])) {
+				$notes[] = trans('Verifier has been removed from ticket.');
+				$type = $type | RTMESSAGE_VERIFIER_CHANGE;
+			} else
+				$props['verifierid'] = $ticket['verifierid'];
+		} else
+			$props['verifierid'] = $ticket['verifierid'];
 
         if($ticket['verifier_rtime'] != $props['verifier_rtime'] && isset($props['verifier_rtime'])) {
             $notes[] = trans('Ticket has been transferred to verifier.');

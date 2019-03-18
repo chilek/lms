@@ -79,6 +79,12 @@ if (isset($_POST['message'])) {
 			$error['deadline'] = trans("Ticket deadline could not be set in past");
 	}
 
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
+		&& $message['verifierid'] == $message['owner']) {
+		$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
+		$error['owner'] = trans("Ticket verifier could not be the same as owner");
+	}
+
 	$result = handle_file_uploads('files', $error);
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
