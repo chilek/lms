@@ -66,7 +66,7 @@ elseif(isset($_POST['note']))
 	}
 
 	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-		&& $note['verifierid'] == $note['owner']) {
+		&& !empty($note['verifierid']) && $note['verifierid'] == $note['owner']) {
 		$error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
 		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
 	}
@@ -74,7 +74,7 @@ elseif(isset($_POST['note']))
 	$deadline = datetime_to_timestamp($note['deadline']);
 	if ($deadline != $ticketdata['deadline']) {
 		if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
-			&& !empty($note['verifierid']) && $note['verifierid'] != Auth::GetCurrentUser()) {
+			&& $note['verifierid'] != Auth::GetCurrentUser()) {
 			$error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
 			$note['deadline'] = $ticketdata['deadline'];
 		}
