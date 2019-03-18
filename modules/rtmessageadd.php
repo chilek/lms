@@ -261,7 +261,7 @@ if (isset($_POST['message'])) {
 					'source' => $message['source'],
 					'priority' => $message['priority'],
 					'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
-					'deadline' => $message['deadline'],
+					'deadline' => empty($message['deadline']) ? null : $message['deadline'],
 				);
 
 			if ($message['category_change']) {
