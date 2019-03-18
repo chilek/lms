@@ -214,6 +214,8 @@ version ?.??.?? (????-??-??):
   - enhancement: phpui.helpdesk_notification_attachments controls if attachments are appended to sent
     user notifications ('false' by default) [chilan]
   - helpdesk user notification %attachments substitution support [chilan]
+  - improvement: allow to determine ticket id using regular expression match on mail
+    subject - rt.subject_ticket_regexp_match with 'RT#(?<ticketid>[0-9]{6,})' default value [chilan]
 
 version 1.11.23 (2018-03-21):
 
