@@ -1158,7 +1158,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		if (array_key_exists('deadline', $props)) {
 			if (isset($props['deadline']) && $ticket['deadline'] != $props['deadline']) {
-				$notes[] = trans('Ticket deadline has been set to $a.', $props['deadline']);
+				$notes[] = trans('Ticket deadline has been set to $a.', strftime('%Y/%m/%d %H:%M', $props['deadline']));
 				$type = $type | RTMESSAGE_DEADLINE_CHANGE;
 			} elseif (!isset($props['deadline']) && !empty($ticket['deadline'])) {
 				$notes[] = trans('Ticket deadline has been removed.');
