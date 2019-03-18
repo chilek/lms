@@ -72,13 +72,13 @@ if (isset($_POST['message'])) {
 		$error['body'] = trans('Message body not specified!');
 
 	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-		&& $message['verifierid'] == $message['owner']) {
+		&& !empty($message['verifierid']) && $message['verifierid'] == $message['owner']) {
 		$error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
 		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
 	}
 
 	$deadline = datetime_to_timestamp($message['deadline']);
-	if ($message['state'] != RT_RESOLVED && $message['deadline'] && ($deadline = datetime_to_timestamp($message['deadline']))) {
+	if ($deadline == $deadline) {
 		if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
 			&& $message['verifierid'] != Auth::GetCurrentUser()) {
 			$error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
