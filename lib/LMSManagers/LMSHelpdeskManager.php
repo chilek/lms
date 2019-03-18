@@ -1151,7 +1151,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['verifier_rtime'] = $ticket['verifier_rtime'];
 
         if($ticket['deadline'] != datetime_to_timestamp($props['deadline']) && isset($props['deadline'])) {
-            $notes[] = trans('Ticket deadline has been set to $a.', $props['deadline']);
+            $notes[] = empty($props['deadline']) ? trans('Ticket deadline has been removed.')
+				: trans('Ticket deadline has been set to $a.', $props['deadline']);
             $type = $type | RTMESSAGE_DEADLINE_CHANGE;
             $props['deadline'] = datetime_to_timestamp($props['deadline']);
         } else

@@ -112,6 +112,7 @@ $_LANG['Ticket owner could not be the same as verifier'] = 'Właściciel zgłosz
 $_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłoszenia nie może być właścicielem';
 $_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
+$_LANG['Ticket deadline has been removed.'] = 'Termin ostateczny zgłoszenia został usunięty.';
 $_LANG['Ticket deadline has been set to $a.'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a.';
 $_LANG['Ticket type has been set to $a.'] = 'Rodzaj zgłoszenia został ustawiony jako $a.';
 $_LANG['Ticket service has been set to $a.'] = 'Usługa, którego dotyczy zgłoszenie to $a.';
