@@ -163,6 +163,7 @@ $autoreply_name = ConfigHelper::getConfig('rt.mail_from_name', '', true);
 $autoreply_subject = ConfigHelper::getConfig('rt.autoreply_subject', "[RT#%tid] Receipt of request '%subject'");
 $autoreply_body = ConfigHelper::getConfig('rt.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1'));
+$subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', 'RT#(?<ticketid>[0-9]{6,})');
 
 $stderr = fopen('php://stderr', 'w');
 
@@ -348,7 +349,7 @@ if ($lastref) {
 }
 
 // check email subject
-if (!$prev_tid && preg_match('/RT#(?<ticketid>[0-9]{6,})/', $mh_subject, $matches)) {
+if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches)) {
 	$prev_tid = sprintf('%d', $matches['ticketid']);
 	if (!$DB->GetOne("SELECT id FROM rttickets WHERE id = ?", array($prev_tid)))
 		$prev_tid = 0;
