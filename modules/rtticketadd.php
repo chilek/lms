@@ -154,13 +154,8 @@ if(isset($_POST['ticket']))
 			$ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
 		}
 
-		if (empty($ticket['verifierid']))
-			$ticket['verifierid'] = null;
-
-		if (empty($ticket['deadline']))
-			$ticket['deadline'] = null;
-		else
-			$ticket['deadline'] = $dtime;
+		$ticket['verifierid'] = empty($ticket['verifierid']) ? null : $ticket['verifierid'];
+		$ticket['deadline'] = empty($ticket['deadline']) ? null : $deadline;
 
         if (empty($ticket['type']))
             $ticket['type'] = null;

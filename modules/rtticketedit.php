@@ -339,7 +339,7 @@ if(isset($_POST['ticket']))
 			'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
 			'verifierid' => empty($ticketedit['verifierid']) ? null : $ticketedit['verifierid'],
             'verifier_rtime' => empty($ticketedit['verifier_rtime']) ? null : $ticketedit['verifier_rtime'],
-			'deadline' => empty($ticketedit['deadline']) ? null : $ticketedit['deadline'],
+			'deadline' => empty($ticketedit['deadline']) ? null : $deadline,
 			'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
 			'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
 			'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
@@ -427,6 +427,7 @@ if(isset($_POST['ticket']))
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+				'deadline' => $ticketdata['deadline'],
 				'subject' => $ticket['subject'],
 				'body' => $message['body'],
 			);

@@ -1157,10 +1157,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['verifier_rtime'] = $ticket['verifier_rtime'];
 
 		if (array_key_exists('deadline', $props)) {
-			if (isset($props['deadline']) && $ticket['deadline'] != datetime_to_timestamp($props['deadline'])) {
+			if (isset($props['deadline']) && $ticket['deadline'] != $props['deadline']) {
 				$notes[] = trans('Ticket deadline has been set to $a.', $props['deadline']);
 				$type = $type | RTMESSAGE_DEADLINE_CHANGE;
-				$props['deadline'] = datetime_to_timestamp($props['deadline']);
 			} elseif (!isset($props['deadline']) && !empty($ticket['deadline'])) {
 				$notes[] = trans('Ticket deadline has been removed.');
 				$type = $type | RTMESSAGE_DEADLINE_CHANGE;
@@ -1335,7 +1334,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$text = str_replace('%subject', $params['subject'], $text);
 		$text = str_replace('%body', $params['body'], $text);
 		$text = str_replace('%priority', $params['priority'], $text);
-		$text = (isset($params['deadline']) && !empty($params['deadline'])) ? str_replace('%deadline', $params['deadline'], $text) : str_replace('%deadline', '-', $text);
+		$text = (isset($params['deadline']) && !empty($params['deadline']))
+			? str_replace('%deadline', strftime('%Y/%m/%d %H:%M', $params['deadline']), $text)
+			: str_replace('%deadline', '-', $text);
 		$text = str_replace('%service', $params['service'], $text);
 		$text = str_replace('%type', $params['type'], $text);
         $text = str_replace('%invproject', $params['invprojectid'], $text);

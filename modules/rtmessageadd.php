@@ -259,7 +259,7 @@ if (isset($_POST['message'])) {
 				if ($message['verifierid'] != -1)
 					$props['verifierid'] = empty($message['verifierid']) ? null : $message['verifierid'];
 				if ($message['deadline'])
-					$props['deadline'] = empty($message['deadline']) ? null : $message['deadline'];
+					$props['deadline'] = empty($message['deadline']) ? null : $deadline;
 			} else
 				$props = array(
 					'queueid' => $message['queueid'],
@@ -269,7 +269,7 @@ if (isset($_POST['message'])) {
 					'source' => $message['source'],
 					'priority' => $message['priority'],
 					'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
-					'deadline' => empty($message['deadline']) ? null : $message['deadline'],
+					'deadline' => empty($message['deadline']) ? null : $deadline,
 				);
 
 			if ($message['category_change']) {
