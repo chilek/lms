@@ -259,7 +259,7 @@ if (isset($_POST['message'])) {
 				if ($message['verifierid'] != -1)
 					$props['verifierid'] = empty($message['verifierid']) ? null : $message['verifierid'];
 				if ($message['deadline'])
-					$props['deadline'] = $message['deadline'];
+					$props['deadline'] = empty($message['deadline']) ? null : $message['deadline'];
 			} else
 				$props = array(
 					'queueid' => $message['queueid'],
