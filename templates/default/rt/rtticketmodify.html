@@ -1,8 +1,13 @@
 <style>
 
 	#ticket.lms-ui-box-container .lms-ui-box-row-label {
-		width:12em;
+		min-width: 12em;
 	}
+
+	#ticket.lms-ui-box-container .lms-ui-box-row.categories .lms-ui-box-row-field {
+		flex-wrap: wrap;
+	}
+
 	#requestor.lms-ui-box-row-field {
 		flex-direction: column !important;
 		align-items: flex-start !important;
@@ -92,7 +97,7 @@
 			{/box_row}
 {/if}
 
-			{box_row icon="img/queue.gif" label="Categories:"}
+			{box_row icon="img/queue.gif" label="Categories:" class="categories"}
 				{if ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories')}
 				<input type="hidden" name="ticket[categorywarn]" value="{$ticket.categorywarn}">
 				{/if}

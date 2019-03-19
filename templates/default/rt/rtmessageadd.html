@@ -15,8 +15,12 @@
 		width: 8em;
 	}
 
+	#properties.lms-ui-box-container .lms-ui-box-row.categories .lms-ui-box-row-field {
+		flex-wrap: wrap;
+	}
+
 	#properties.lms-ui-box-container .lms-ui-box-row-label {
-		width: 14em;
+		min-width: 14em;
 	}
 
 </style>
@@ -200,7 +204,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row id="categories" icon="img/queue.gif" label="Categories:"}
+			{box_row id="categories" icon="img/queue.gif" label="Categories:" class="categories"}
 				{foreach $categories as $category}
 					<label class="nobr">
 						<INPUT type="checkbox" name="message[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>
