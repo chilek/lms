@@ -5,4 +5,26 @@
 <H1>{$layout.pagetitle|escape}</H1>
 {include file="rt/rtticketinfobox.html"}
 {include file="rt/rtticketmessagesbox.html"}
+
+<br>
+<table class="lmsbox">
+	<TFOOT>
+	<TR>
+		<TD style="width: 100%;" class="navigation" colspan="3">
+			{if $ticket.prev_ticketid != NULL}
+				<A href="?m=rtticketview&id={$ticket.prev_ticketid}"><i class="lms-ui-icon-previous"></i>&nbsp;{trans("Previous ticket")}</A>
+			{else}
+				<i class="lms-ui-icon-previous"></i>&nbsp;{trans("Previous ticket")}
+			{/if}
+			&nbsp;&nbsp;&nbsp;
+			{if $ticket.next_ticketid != NULL}
+				<A href="?m=rtticketview&id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;<i class="lms-ui-icon-next"></i></A>
+			{else}
+				{trans("Next ticket")}&nbsp;<i class="lms-ui-icon-next"></i>
+			{/if}
+		</TD>
+	</TR>
+	</TFOOT>
+</table>
+
 {/block}
