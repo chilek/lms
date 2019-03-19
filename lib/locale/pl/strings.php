@@ -4265,4 +4265,6 @@ $_LANG['Network name'] = 'Nazwa sieci';
 $_LANG['previous month'] = 'poprzedni miesiąc';
 $_LANG['next month'] = 'następny miesiąc';
 
+$_LANG['<!rt>- none -'] = '- brak -';
+
 ?>

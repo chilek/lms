@@ -238,6 +238,7 @@ $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_
 $empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
 
 $ticket = $LMS->GetTicketContents($id);
+$ticket['oldverifierid'] = $ticket['verifierid'];
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
