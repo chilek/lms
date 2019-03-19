@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+check_file_uploads();
+
 if (isset($_GET['ticketid'])) {
 	$note['ticketid'] = intval($_GET['ticketid']);
 

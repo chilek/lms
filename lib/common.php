@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1106,6 +1106,17 @@ function check_url($url) {
 	if (!isset($components['host']) || !isset($components['scheme']))
 		return false;
 	return true;
+}
+
+function check_file_uploads() {
+	if (isset($_GET['fileupload']) && !isset($_POST['fileupload'])) {
+		$result = array(
+			'error' => trans('General file upload error - files are too large probably!'),
+		);
+		header('Content-type: application/json');
+		print json_encode($result);
+		die;
+	}
 }
 
 function handle_file_uploads($elemid, &$error) {

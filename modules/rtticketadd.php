@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+
+check_file_uploads();
 
 $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');

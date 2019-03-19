@@ -4267,4 +4267,6 @@ $_LANG['next month'] = 'następny miesiąc';
 
 $_LANG['<!rt>- none -'] = '- brak -';
 
+$_LANG['General file upload error - files are too large probably!'] = 'Ogólny błąd przesyłania pliku - prawdopobnie pliki mają zbyt duży rozmiar!';
+
 ?>

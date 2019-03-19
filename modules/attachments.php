@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+check_file_uploads();
+
 if (isset($_GET['type']))
 	$attachmenttype = $_GET['type'];
 if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype))

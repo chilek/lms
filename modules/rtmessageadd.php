@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+check_file_uploads();
+
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();

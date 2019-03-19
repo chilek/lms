@@ -33,7 +33,7 @@ function lmsFileUpload(elemid, formid) {
 		var action = form.attr("action");
 		if (action === undefined)
 			action = document.location;
-		action += "&ajax=1";
+		action += "&ajax=1&fileupload=1";
 		$("#" + elemid + "-progress-dialog").dialog("open");
 		xhr = $.ajax(action, {
 			type: "POST",
