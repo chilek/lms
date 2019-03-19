@@ -88,7 +88,7 @@ $_LANG['<!rt>Other'] = 'Inna';
 $_LANG['Other'] = 'Inny';
 $_LANG['Offer'] = 'Oferta';
 $_LANG['Fault'] = 'Usterka';
-$_LANG['If verifier is set then he\'s the only person who can change deadline'] = 'Jeśli weryfikator jest ustawiony, jest on jedyną osobą, która może zmienić termin ostateczny';
+$_LANG['If verifier is set then he\'s the only person who can change deadline!'] = 'Jeśli weryfikator jest ustawiony, jest on jedyną osobą, która może zmienić termin ostateczny!';
 $_LANG['Instalation'] = 'Instalacja';
 $_LANG['Deinstalation'] = 'Demontaż';
 $_LANG['Modification'] = 'Modyfikacja';
@@ -107,11 +107,12 @@ $_LANG['<!rt>Owned expired tickets'] = 'Moje przeterminowane zgłoszenia (właś
 $_LANG['<!rt>Verifier expired tickets'] = 'Moje przeterminowane zgłoszenia (weryfikator)';
 $_LANG['<!rt>Without deadline'] = 'Bez terminu ostatecznego';
 $_LANG['<!rt>With deadline'] = 'Z terminem ostatecznym';
-$_LANG['Ticket deadline could not be set in past'] = 'Termin ostateczny nie może być datą minioną';
-$_LANG['Ticket owner could not be the same as verifier'] = 'Właściciel zgłoszenia nie może być weryfikatorem';
-$_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłoszenia nie może być właścicielem';
+$_LANG['Ticket deadline could not be set in past!'] = 'Termin ostateczny nie może być datą minioną!';
+$_LANG['Ticket owner could not be the same as verifier!'] = 'Właściciel zgłoszenia nie może być weryfikatorem!';
+$_LANG['Ticket verifier could not be the same as owner!'] = 'Weryfikator zgłoszenia nie może być właścicielem!';
 $_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
+$_LANG['Ticket deadline has been removed.'] = 'Termin ostateczny zgłoszenia został usunięty.';
 $_LANG['Ticket deadline has been set to $a.'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a.';
 $_LANG['Ticket type has been set to $a.'] = 'Rodzaj zgłoszenia został ustawiony jako $a.';
 $_LANG['Ticket service has been set to $a.'] = 'Usługa, którego dotyczy zgłoszenie to $a.';
@@ -1310,6 +1311,7 @@ $_LANG['Password Change'] = 'Zmiana hasła';
 $_LANG['Password Change for Account: $a'] = 'Zmiana hasła dla konta: $a';
 $_LANG['Password Change for User $a'] = 'Zmiana hasła dla użytkownika $a';
 $_LANG['User $a has been set as verifier to ticket.'] = 'Użytkownik $a został przypisany jako werfikator zgłoszenia.';
+$_LANG['Verifier has been removed from ticket.'] = 'Weryfikator został usunięty ze zgłoszenia.';
 $_LANG['Password is too long (max.32 characters)!'] = 'Hasło jest za długie (max.32 znaki)!';
 $_LANG['Passwords does not match!'] = 'Hasła nie pasują do siebie!';
 $_LANG['Path to file was not specified: $a'] = 'Ścieżka do pliku nie została określona: $a';
@@ -4259,5 +4261,12 @@ $_LANG['invoice sale date manipulation'] = 'manipulowanie datą sprzedaży faktu
 $_LANG['invoice consent date manipulation'] = 'manipulowanie datą wystawienia faktur';
 
 $_LANG['Network name'] = 'Nazwa sieci';
+
+$_LANG['previous month'] = 'poprzedni miesiąc';
+$_LANG['next month'] = 'następny miesiąc';
+
+$_LANG['<!rt>- none -'] = '- brak -';
+
+$_LANG['General file upload error - files are too large probably!'] = 'Ogólny błąd przesyłania pliku - prawdopobnie pliki mają zbyt duży rozmiar!';
 
 ?>

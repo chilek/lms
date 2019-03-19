@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+
+check_file_uploads();
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
@@ -71,12 +73,20 @@ if (isset($_POST['message'])) {
 	if($message['body'] == '')
 		$error['body'] = trans('Message body not specified!');
 
-	if ($message['state'] != RT_RESOLVED && $message['deadline'] && ($deadline = datetime_to_timestamp($message['deadline']))) {
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
+		&& !empty($message['verifierid']) && $message['verifierid'] == $message['owner']) {
+		$error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
+		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
+	}
+
+	$deadline = datetime_to_timestamp($message['deadline']);
+	if ($deadline == $deadline) {
 		if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
-			&& $message['verifierid'] != Auth::GetCurrentUser())
-			$error['deadline'] = trans("If verifier is set then he's the only person who can change deadline");
-		if ($deadline < time())
-			$error['deadline'] = trans("Ticket deadline could not be set in past");
+			&& !empty($message['verifierid']) && $message['verifierid'] != Auth::GetCurrentUser()) {
+			$error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
+		}
+		if ($deadline && $deadline < time())
+			$error['deadline'] = trans('Ticket deadline could not be set in past!');
 	}
 
 	$result = handle_file_uploads('files', $error);
@@ -96,17 +106,16 @@ if (isset($_POST['message'])) {
 		$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
 		$attachments = NULL;
-		if (!empty($files))
-			foreach ($files as $file)
+
+		if (!empty($files)) {
+			foreach ($files as &$file) {
 				$attachments[] = array(
 					'content_type' => $file['type'],
 					'filename' => $file['name'],
 					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
 				);
-
-		if (!empty($files)) {
-			foreach ($files as &$file)
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+			}
 			unset($file);
 		}
 
@@ -252,7 +261,7 @@ if (isset($_POST['message'])) {
 				if ($message['verifierid'] != -1)
 					$props['verifierid'] = empty($message['verifierid']) ? null : $message['verifierid'];
 				if ($message['deadline'])
-					$props['deadline'] = $message['deadline'];
+					$props['deadline'] = empty($message['deadline']) ? null : $deadline;
 			} else
 				$props = array(
 					'queueid' => $message['queueid'],
@@ -262,7 +271,7 @@ if (isset($_POST['message'])) {
 					'source' => $message['source'],
 					'priority' => $message['priority'],
 					'verifierid' => empty($message['verifierid']) ? null : $message['verifierid'],
-					'deadline' => $message['deadline'],
+					'deadline' => empty($message['deadline']) ? null : $deadline,
 				);
 
 			if ($message['category_change']) {
@@ -370,6 +379,7 @@ if (isset($_POST['message'])) {
 					'deadline' => $ticketdata['deadline'],
 					'subject' => $message['subject'],
 					'body' => $message['body'],
+					'attachments' => &$attachments,
 				);
 				$headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
 				$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
@@ -383,6 +393,7 @@ if (isset($_POST['message'])) {
 					'mail_headers' => $headers,
 					'mail_body' => $body,
 					'sms_body' => $sms_body,
+					'attachments' => &$attachments,
 				));
 			}
 		}

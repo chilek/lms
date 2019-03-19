@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,8 @@
  *
  *  $Id$
  */
+
+check_file_uploads();
 
 $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
@@ -54,16 +56,14 @@ if(isset($_POST['ticket']))
 	$SMARTY->assign('fileupload', $fileupload);
 
 	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-		&& !empty($ticket['verifierid']) && ($ticket['verifierid'] == $ticket['owner'])) {
-		$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
-		$error['owner'] = trans("Ticket verifier could not be the same as owner");
+		&& !empty($ticket['verifierid']) && $ticket['verifierid'] == $ticket['owner']) {
+		$error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
+		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
 	};
 
-	if(!empty($ticket['deadline'])) {
-		$dtime = datetime_to_timestamp($ticket['deadline']);
-		if($dtime < time())
-			$error['deadline'] = trans("Ticket deadline could not be set in past");
-	}
+	$deadline = datetime_to_timestamp($ticket['deadline']);
+	if ($deadline && $deadline < time())
+		$error['deadline'] = trans('Ticket deadline could not be set in past!');
 
 	if($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid'])
 	{
@@ -156,13 +156,8 @@ if(isset($_POST['ticket']))
 			$ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
 		}
 
-		if (empty($ticket['verifierid']))
-			$ticket['verifierid'] = null;
-
-		if (empty($ticket['deadline']))
-			$ticket['deadline'] = null;
-		else
-			$ticket['deadline'] = $dtime;
+		$ticket['verifierid'] = empty($ticket['verifierid']) ? null : $ticket['verifierid'];
+		$ticket['deadline'] = empty($ticket['deadline']) ? null : $deadline;
 
         if (empty($ticket['type']))
             $ticket['type'] = null;
@@ -170,9 +165,17 @@ if(isset($_POST['ticket']))
         if (empty($ticket['service']))
             $ticket['service'] = null;
 
+		$attachments = null;
+
 		if (!empty($files)) {
-			foreach ($files as &$file)
+			foreach ($files as &$file) {
+				$attachments[] = array(
+					'content_type' => $file['type'],
+					'filename' => $file['name'],
+					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
+				);
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+			}
 			unset($file);
 		}
 		$id = $LMS->TicketAdd($ticket, $files);
@@ -278,6 +281,7 @@ if(isset($_POST['ticket']))
 				'type' => $ticketdata['type'],
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
+				'attachments' => &$attachments,
 			);
 			$headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
@@ -291,6 +295,7 @@ if(isset($_POST['ticket']))
 				'mail_headers' => $headers,
 				'mail_body' => $body,
 				'sms_body' => $sms_body,
+				'attachments' => &$attachments,
 			));
 		}
 

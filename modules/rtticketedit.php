@@ -238,6 +238,7 @@ $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_
 $empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
 
 $ticket = $LMS->GetTicketContents($id);
+$ticket['oldverifierid'] = $ticket['verifierid'];
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
@@ -248,40 +249,31 @@ if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];
 	$ticketedit['ticketid'] = $ticket['ticketid'];
-	$dtime = datetime_to_timestamp($ticketedit['deadline']);
 
-	if(!empty($ticketedit['parentid']))
-	{
-		if(!$LMS->TicketExists($ticketedit['parentid']))
-		{
+	if (!empty($ticketedit['parentid']))
+		if (!$LMS->TicketExists($ticketedit['parentid']))
 			$error['parentid'] = trans("Ticket does not exist");
-		};
-	};
-	if(!empty($ticketedit['parentid']))
-	{
-		if($LMS->IsTicketLoop($ticket['ticketid'], $ticketedit['parentid']))
+
+	if (!empty($ticketedit['parentid']))
+		if ($LMS->IsTicketLoop($ticket['ticketid'], $ticketedit['parentid']))
 			$error['parentid'] = trans("Cannot link ticket because of related ticket loop!");
+
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
+		&& !empty($ticketedit['verifierid']) && $ticketedit['verifierid'] == $ticketedit['owner']) {
+		$error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
+		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
 	}
 
-	if(!empty($ticketedit['verifierid']))
-	{
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-			&& $ticketedit['verifierid'] == $ticketedit['owner']) {
-			$error['verifierid'] = trans("Ticket owner could not be the same as verifier");
-			$error['owner'] = trans("Ticket verifier could not be the same as owner");
-		};
-	};
-	if (!empty($dtime)) {
-		if ($dtime != $ticket['deadline']) {
-			if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
-				&& $ticket['verifierid'] != Auth::GetCurrentUser() && isset($ticket['verifierid'])) {
-                $error['deadline'] = trans("If verifier is set then he's the only person who can change deadline");
-                $ticketedit['deadline'] = $ticket['deadline'];
-            }
-			if ($dtime < time())
-				$error['deadline'] = trans("Ticket deadline could not be set in past");
+	$deadline = datetime_to_timestamp($ticketedit['deadline']);
+	if ($deadline != $ticket['deadline']) {
+		if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+			&& !empty($ticket['verifierid']) && $ticket['verifierid'] != Auth::GetCurrentUser()) {
+			$error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
+			$ticketedit['deadline'] = $ticket['deadline'];
 		}
-	};
+		if ($deadline && $deadline < time())
+			$error['deadline'] = trans('Ticket deadline could not be set in past!');
+	}
 
 	if (empty($ticketedit['categories']) && (!$allow_empty_categories || (empty($ticketedit['categorywarn']) && $empty_category_warning))) {
 		if ($allow_empty_categories) {
@@ -348,7 +340,7 @@ if(isset($_POST['ticket']))
 			'netdevid' => empty($ticketedit['netdevid']) ? null : $ticketedit['netdevid'],
 			'verifierid' => empty($ticketedit['verifierid']) ? null : $ticketedit['verifierid'],
             'verifier_rtime' => empty($ticketedit['verifier_rtime']) ? null : $ticketedit['verifier_rtime'],
-			'deadline' => empty($ticketedit['deadline']) ? null : $ticketedit['deadline'],
+			'deadline' => empty($ticketedit['deadline']) ? null : $deadline,
 			'service' => empty($ticketedit['service']) ? null : $ticketedit['service'],
 			'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
 			'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
@@ -436,6 +428,7 @@ if(isset($_POST['ticket']))
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
 				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+				'deadline' => $ticketdata['deadline'],
 				'subject' => $ticket['subject'],
 				'body' => $message['body'],
 			);

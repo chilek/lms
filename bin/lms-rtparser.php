@@ -163,6 +163,7 @@ $autoreply_name = ConfigHelper::getConfig('rt.mail_from_name', '', true);
 $autoreply_subject = ConfigHelper::getConfig('rt.autoreply_subject', "[RT#%tid] Receipt of request '%subject'");
 $autoreply_body = ConfigHelper::getConfig('rt.autoreply_body', '', true);
 $autoreply = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.autoreply', '1'));
+$subject_ticket_regexp_match = ConfigHelper::getConfig('rt.subject_ticket_regexp_match', 'RT#(?<ticketid>[0-9]{6,})');
 
 $stderr = fopen('php://stderr', 'w');
 
@@ -211,6 +212,7 @@ $mh_subject = isset($headers['subject']) ? iconv_mime_decode($headers['subject']
 if (!strlen($mh_subject))
 	$mh_subject = trans('(no subject)');
 $mh_references = iconv_mime_decode($headers['references']);
+$files = array();
 $attachments = array();
 
 $mail_headers = substr($buffer, $partdata['starting-pos'], $partdata['starting-pos-body'] - $partdata['starting-pos'] - 1);
@@ -284,13 +286,18 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
 			$file_name = isset($partdata['content-name']) ? $partdata['content-name'] :
 				(isset($partdata['disposition-filename']) ? $partdata['disposition-filename'] : '');
 			if (!$file_name) {
-				unset($file_conntent);
+				unset($file_content);
 				continue;
 			}
-			$attachments[] = array(
+			$files[] = array(
 				'name' => $file_name,
 				'type' => $partdata['content-type'],
-				'content' => $file_content,
+				'content' => &$file_content,
+			);
+			$attachments[] = array(
+				'content_type' => $partdata['content-type'],
+				'filename' => $file_name,
+				'data' => &$file_content,
 			);
 			unset($file_content);
 		}
@@ -342,7 +349,7 @@ if ($lastref) {
 }
 
 // check email subject
-if (!$prev_tid && preg_match('/RT#(?<ticketid>[0-9]{6,})/', $mh_subject, $matches)) {
+if (!$prev_tid && preg_match('/' . $subject_ticket_regexp_match . '/', $mh_subject, $matches)) {
 	$prev_tid = sprintf('%d', $matches['ticketid']);
 	if (!$DB->GetOne("SELECT id FROM rttickets WHERE id = ?", array($prev_tid)))
 		$prev_tid = 0;
@@ -421,7 +428,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
 		'messageid' => $mh_msgid,
 		'headers' => $mail_headers,
 		'body' => $mail_body,
-		'categories' => $cats), $attachments);
+		'categories' => $cats), $files);
 
 	if ($autoreply) {
 		$ticketid = sprintf("%06d", $ticket_id);
@@ -468,7 +475,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
 			'headers' => $mail_headers,
 			'body' => $mail_body,
 			'inreplyto' => $inreplytoid,
-		), $attachments);
+		), $files);
 
 	if ($auto_open)
 		$DB->Execute("UPDATE rttickets SET state = ? WHERE id = ? AND state > ?",
@@ -563,6 +570,7 @@ if ($notify) {
 		'categories' => $ticket['categorynames'],
 		'subject' => $mh_subject,
 		'body' => $mail_body,
+		'attachments' => &$attachments,
 		'url' => $lms_url,
 	);
 	$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
@@ -576,6 +584,7 @@ if ($notify) {
 		'mail_headers' => $headers,
 		'mail_body' => $body,
 		'sms_body' => $sms_body,
+		'attachments' => &$attachments,
 	));
 }
 

@@ -240,6 +240,46 @@ $(function() {
 
 	init_datepickers('div.calendar input,input.calendar');
 
+	$('.lms-ui-button-date-period').click(function() {
+		var from = $(this).attr('data-from');
+		var to = $(this).attr('data-to');
+		var period = $(this).attr('data-period');
+		var fromdate, todate;
+		var fromvalue = $(from).val();
+		var tovalue = $(from).val();
+
+		if (fromvalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+			fromdate = new Date(fromvalue.replace(/\//g, '-'));
+		} else {
+			fromdate = new Date();
+		}
+		if (tovalue.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/)) {
+			todate = new Date(tovalue.replace(/\//g, '-'));
+		} else {
+			todate = new Date();
+		}
+
+		if (period == 'previous-month' || typeof(period) === 'undefined') {
+			fromdate.setDate(0);
+			fromdate.setDate(1);
+			todate.setDate(0);
+		} else if (period == 'current-month') {
+			fromdate = new Date();
+			todate = new Date();
+			fromdate.setDate(1);
+			todate.setMonth(todate.getMonth() + 1);
+			todate.setDate(0);
+		} else if (period == 'next-month') {
+			fromdate.setMonth(fromdate.getMonth() + 1);
+			fromdate.setDate(1);
+			todate.setMonth(fromdate.getMonth() + 1);
+			todate.setDate(0);
+		}
+
+		$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
+		$(to).val(sprintf("%04d/%02d/%02d", todate.getFullYear(), todate.getMonth() + 1, todate.getDate()));
+	});
+
 	$.datetimepicker.setLocale(lmsSettings.language);
 	var datetimepickeroptions = {
 		step: 30,

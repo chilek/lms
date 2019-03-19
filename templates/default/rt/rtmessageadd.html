@@ -15,8 +15,12 @@
 		width: 8em;
 	}
 
+	#properties.lms-ui-box-container .lms-ui-box-row.categories .lms-ui-box-row-field {
+		flex-wrap: wrap;
+	}
+
 	#properties.lms-ui-box-container .lms-ui-box-row-label {
-		width: 14em;
+		min-width: 14em;
 	}
 
 </style>
@@ -161,24 +165,34 @@
 {/if}
 
 			{box_row icon="img/verifier.png" label="Verifier:"}
-				<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
-					<OPTION value="0">- {trans("select user")} -</OPTION>
-					{if $group_action}
-					<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
-					{/if}
-					{foreach $userlist as $user}
-					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
-						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
-						|| $user.id == $message.verifierid}
-					<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.name}</OPTION>
-					{/if}
-					{/foreach}
-				</SELECT>
+				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
+					<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
+						<OPTION value="0">- {trans("select user")} -</OPTION>
+						{if $group_action}
+							<option value="-1"{if $message.verifierid == -1} selected{/if}>{trans("- no changes -")}</option>
+						{/if}
+						{foreach $userlist as $user}
+							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+								|| $user.id == $message.verifierid}
+							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.name}</OPTION>
+							{/if}
+						{/foreach}
+					</SELECT>
+				{else}
+					<input type="hidden" name="message[verifierid]" value="{$ticket.verifierid}">
+					<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>
+				{/if}
 			{/box_row}
 
 			{box_row icon="img/calendar.gif" label="<!rt>Deadline:"}
-				<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
-					SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+				{if $group_action || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
+					<INPUT TYPE="TEXT" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
+							SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+				{else}
+					<INPUT TYPE="hidden" NAME="message[deadline]" VALUE="{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}">
+					<span title="{trans("Only verifier can change this")}">{if $message.deadline}{$message.deadline|date_format:"%Y/%m/%d %H:%M"}{else}{trans("<!rt>- none -")}{/if}</span>
+				{/if}
 			{/box_row}
 
 			{box_row icon="img/queue.gif" label="Category changes:"}
@@ -190,7 +204,7 @@
 				</SELECT>
 			{/box_row}
 
-			{box_row id="categories" icon="img/queue.gif" label="Categories:"}
+			{box_row id="categories" icon="img/queue.gif" label="Categories:" class="categories"}
 				{foreach $categories as $category}
 					<label class="nobr">
 						<INPUT type="checkbox" name="message[categories][{$category.id}]" value="1" {if $category.checked > 0}checked{/if} {tip trigger="categories"}>

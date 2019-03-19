@@ -1,8 +1,13 @@
 <style>
 
 	#ticket.lms-ui-box-container .lms-ui-box-row-label {
-		width:12em;
+		min-width: 12em;
 	}
+
+	#ticket.lms-ui-box-container .lms-ui-box-row.categories .lms-ui-box-row-field {
+		flex-wrap: wrap;
+	}
+
 	#requestor.lms-ui-box-row-field {
 		flex-direction: column !important;
 		align-items: flex-start !important;
@@ -92,7 +97,7 @@
 			{/box_row}
 {/if}
 
-			{box_row icon="img/queue.gif" label="Categories:"}
+			{box_row icon="img/queue.gif" label="Categories:" class="categories"}
 				{if ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories')}
 				<input type="hidden" name="ticket[categorywarn]" value="{$ticket.categorywarn}">
 				{/if}
@@ -129,15 +134,32 @@
 			{/box_row}
 
 			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
-				{if $layout.module != 'rtticketedit' || (!$ticket.verifierid || $ticket.verifier_username == $layout.logname)}
-					{include file="rt/rtverifiers.html" form="ticket2"}
+				{if $layout.module != 'rtticketedit' || !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
+					<SELECT size="1" name="ticket[verifierid]" {tip text="Select user" trigger="verifierid"}>
+						<OPTION value="">- {trans("select user")} -</OPTION>
+						{foreach $userlist as $user}
+							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
+							|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
+							|| $user.id == $ticket.verifierid}
+								<OPTION value="{$user.id}"{if $user.id == $ticket.verifierid} selected{/if}{if !$user.access} class="blend"{/if}>{$user.name}</OPTION>
+							{/if}
+						{/foreach}
+					</SELECT>
 				{else}
-					<span {tip text="{trans("Only verifier can change this")}"}>{$ticket.verifier_username}</span>
+					<input type="hidden" name="ticket[verifierid]" value="{$ticket.oldverifierid}">
+					<span title="{trans("Only verifier can change this")}">{$ticket.verifier_username}</span>
 				{/if}
 			{/box_row}
 
 			{box_row icon="img/calendar.gif" label="<!rt>Deadline:"}
-				<INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+				{if $layout.module != 'rtticketedit' || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
+					|| !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
+					<INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="20"
+						{tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+				{else}
+					<INPUT TYPE="hidden" NAME="ticket[deadline]" VALUE="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}">
+					<span title="{trans("Only verifier can change this")}">{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{else}{trans("<!rt>- none -")}{/if}</span>
+				{/if}
 			{/box_row}
 
 			{box_row icon="img/dead.gif" label="Status:"}

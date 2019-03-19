@@ -160,7 +160,7 @@ if (!empty($_POST['numberplanid'])) {
 
 $args = array($doctypes, $unixfrom, $unixto);
 
-$items = $DB->GetAll('SELECT c.docid, c.itemid,' . (in_array(DOC_DNOTE, $doctypes) ? '1 AS count,' : ' c.taxid, c.count,') . ' c.value,
+$items = $DB->GetAll('SELECT c.docid, c.itemid,' . (in_array(DOC_DNOTE, $doctypes) ? '1 AS count,' : ' c.taxid, c.count,') . ' -cash.value AS value,
 	d.number, d.cdate, d.sdate, d.paytime, d.customerid, d.reference,
 	d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
 	    FROM documents d
