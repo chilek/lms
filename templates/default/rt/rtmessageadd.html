@@ -103,9 +103,10 @@
 					<OPTION value="{$stateidx}"{if $message.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 					{/foreach}
 				</SELECT>
+				&nbsp;
 				<label>
-					<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
 					{trans("resolve ticket")}
+					<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
 				</label>
 			{/box_row}
 
@@ -161,6 +162,11 @@
 					{/if}
 					{/foreach}
 				</SELECT>
+				&nbsp;
+				<label>
+					{trans("assign to me")}
+					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
+				</label>
 			{/box_row}
 {/if}
 
@@ -247,6 +253,14 @@
 		}
 		{/if}
 
+		$('[name="message[category_change]"]').change(function() {
+			if (parseInt($(this).val())) {
+				$('#categories').show();
+			} else {
+				$('#categories').hide();
+			}
+		}).change();
+
 		$('#resolve').change(function() {
 			var stateelem = $('#state');
 			if ($(this).prop('checked')) {
@@ -264,13 +278,18 @@
 			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
 		});
 
-		$('[name="message[category_change]"]').change(function() {
-			if (parseInt($(this).val())) {
-				$('#categories').show();
+		$('[name="message[owner]"]').change(function() {
+			$('#assign-to-me').prop('checked', false);
+		});
+
+		$('#assign-to-me').change(function() {
+			var select = $('[name="message[owner]"]');
+			if ($(this).prop('checked')) {
+				select.val($(this).attr('data-old-userid', select.val()).attr('data-userid'));
 			} else {
-				$('#categories').hide();
+				select.val($(this).attr('data-old-userid'));
 			}
-		}).change();
+		});
 	});
 
 </SCRIPT>
