@@ -31,17 +31,14 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
+$ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : '';
 $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
 $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-if (!$categories) {
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
-}
+if (!$categories)
+	access_denied();
 
 $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 $empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
