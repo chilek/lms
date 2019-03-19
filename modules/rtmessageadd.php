@@ -80,10 +80,11 @@ if (isset($_POST['message'])) {
 	}
 
 	$deadline = datetime_to_timestamp($message['deadline']);
-	if ($deadline == $deadline) {
+	if (!$group_reply && $deadline != $ticket['deadline']) {
 		if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
 			&& !empty($message['verifierid']) && $message['verifierid'] != Auth::GetCurrentUser()) {
 			$error['deadline'] = trans('If verifier is set then he\'s the only person who can change deadline!');
+			$message['deadline'] = $ticket['deadline'];
 		}
 		if ($deadline && $deadline < time())
 			$error['deadline'] = trans('Ticket deadline could not be set in past!');

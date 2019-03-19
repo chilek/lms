@@ -127,6 +127,7 @@
 						{/if}
 					{/foreach}
 				</SELECT>
+				&nbsp;
 				<label>
 					{trans("assign to me")}
 					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
@@ -163,11 +164,16 @@
 			{/box_row}
 
 			{box_row icon="img/dead.gif" label="Status:"}
-				<SELECT name="ticket[state]" {tip text="Select status" trigger="state"}>
+				<SELECT name="ticket[state]" id="state" {tip text="Select status" trigger="state"}>
 					{foreach $_RT_STATES as $stateidx => $state}
 					<OPTION value="{$stateidx}"{if $ticket.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 					{/foreach}
 				</SELECT>
+				&nbsp;
+				<label>
+					{trans("resolve ticket")}
+					<INPUT type="checkbox" name="ticket[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
+				</label>
 			{/box_row}
 
 			{box_row icon="img/queue.gif" label="Queue:"}
@@ -276,3 +282,25 @@
 {/box_container}
 
 <script src="js/templates/rt/rtticketmodify.js"></script>
+<script>
+
+	$(function() {
+		$('#resolve').change(function() {
+			var stateelem = $('#state');
+			if ($(this).prop('checked')) {
+				$(this).data('prev-state', stateelem.val());
+				stateelem.val({$smarty.const.RT_RESOLVED});
+			} else {
+				var prev_state = $(this).data('prev-state');
+				if (prev_state) {
+					stateelem.val(prev_state);
+				}
+			}
+		});
+
+		$('#state').change(function() {
+			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
+		});
+	});
+
+</script>

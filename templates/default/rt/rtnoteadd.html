@@ -73,9 +73,10 @@
 				<OPTION value="{$stateidx}"{if $note.state == $stateidx} selected{/if}>{$state.label}</OPTION>
 				{/foreach}
 			</SELECT>
+			&nbsp;
 			<label>
-				<INPUT type="checkbox" name="note[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($note.resolve) || $note.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
 				{trans("resolve ticket")}
+				<INPUT type="checkbox" name="note[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($note.resolve) || $note.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
 			</label>
 		</TD>
 	</TR>
@@ -143,6 +144,11 @@
 				{/if}
 				{/foreach}
 			</SELECT>
+			&nbsp;
+			<label>
+				{trans("assign to me")}
+				<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
+			</label>
 		</TD>
 	</TR>
 	<TR>
@@ -189,29 +195,41 @@
 
 {include file="rt/rtticketmessagesbox.html"}
 
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="note"] [name="note[body]"]').focus();
+<SCRIPT>
 
-	$('#resolve').change(function() {
-		var stateelem = $('#state');
-		if ($(this).prop('checked')) {
-			$(this).data('prev-state', stateelem.val());
-			stateelem.val({$smarty.const.RT_RESOLVED});
-		} else {
-			var prev_state = $(this).data('prev-state');
-			if (prev_state) {
-				stateelem.val(prev_state);
+	$(function() {
+		$('form[name="note"] [name="note[body]"]').focus();
+
+		$('#resolve').change(function() {
+			var stateelem = $('#state');
+			if ($(this).prop('checked')) {
+				$(this).data('prev-state', stateelem.val());
+				stateelem.val({$smarty.const.RT_RESOLVED});
+			} else {
+				var prev_state = $(this).data('prev-state');
+				if (prev_state) {
+					stateelem.val(prev_state);
+				}
 			}
-		}
+		});
+
+		$('#state').change(function() {
+			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
+		});
+
+		$('[name="note[owner]"]').change(function() {
+			$('#assign-to-me').prop('checked', false);
+		});
+
+		$('#assign-to-me').change(function() {
+			var select = $('[name="note[owner]"]');
+			if ($(this).prop('checked')) {
+				select.val($(this).attr('data-old-userid', select.val()).attr('data-userid'));
+			} else {
+				select.val($(this).attr('data-old-userid'));
+			}
+		});
 	});
 
-	$('#state').change(function() {
-		$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
-	});
-
-});
-//-->
 </SCRIPT>
 {/block}
