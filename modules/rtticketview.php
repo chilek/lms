@@ -74,10 +74,8 @@ if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customeri
 	$SMARTY->assign('allnodegroups', $allnodegroups);
 }
 
-foreach($categories as $category)
-	$catids[] = $category['id'];
-$iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc', 'state' => -1, 'priority' => 0,
-	'owner' => -1, 'catids' => $catids));
+$iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc',
+	'state' => -1, 'priority' => null, 'owner' => -1, 'catids' => null));
 
 if (!empty($iteration['total'])) {
 	foreach ($iteration as $idx => $element)
