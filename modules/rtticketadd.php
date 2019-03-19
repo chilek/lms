@@ -31,7 +31,7 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : '';
+$ticket['customerid'] = isset($_GET['customerid']) && intval($_GET['customerid']) ? intval($_GET['customerid']) : '';
 $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
 $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
