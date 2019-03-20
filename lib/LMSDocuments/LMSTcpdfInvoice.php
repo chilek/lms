@@ -783,7 +783,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 					$this->backend->SetTextColorArray(array(255, 0, 0));
 			$this->backend->writeHTMLCell(0, 0, '', 17, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
 			if ($this->use_alert_color)
-					$this->backend->SetTextColorArray();
+					$this->backend->SetTextColor();
 		}
 		if (!ConfigHelper::checkConfig('invoices.hide_payment_type'))
 			$this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
@@ -938,7 +938,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->setSignatureAppearance(13, 10, 50, 20);
 		}
 		if (!$this->data['disable_protection'])
-			$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
+			$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', 1);
 	}
 
 	public function invoice_body_ft0100() {
@@ -1003,7 +1003,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->setSignatureAppearance(13, 10, 50, 20);
 		}
 		if (!$this->data['disable_protection'])
-			$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
+			$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', 1);
 	}
 }
 
