@@ -76,5 +76,6 @@ $_LANG['Allow to reopen tickets newer than:'] = 'Pozwól na ponowne otwieranie z
 
 $_LANG['Maximum total file size: $a'] = 'Maksymalny całkowity rozmiar plików: $a';
 $_LANG['Maximum single file size: $a'] = 'Maksymalny rozmiar pojedynczego pliku: $a';
+$_LANG['(unlimited)'] = '(nieograniczony)';
 
 ?>
