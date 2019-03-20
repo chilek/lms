@@ -420,6 +420,28 @@ function module_main() {
 		}
 	}
 
+	$unit_multipliers = array(
+		'K' => 1024,
+		'M' => 1024 * 1024,
+		'G' => 1024 * 1024 * 1024,
+		'T' => 1024 * 1024 * 1024 * 1024,
+	);
+	foreach (array('post_max_size', 'upload_max_filesize') as $var) {
+		preg_match('/^(?<number>[0-9]+)(?<unit>[kKmMgGtT]?)$/', ini_get($var), $m);
+		$unit_multiplier = isset($m['unit']) ? $unit_multipliers[strtoupper($m['unit'])] : 1;
+		if ($var == 'post_max_size')
+			$unit_multiplier *= 1/1.33;
+		if (empty($m['number'])) {
+			$val['bytes'] = 0;
+			$val['text'] = trans('(unlimited)');
+		} else {
+			$val['bytes'] = round($m['number'] * $unit_multiplier);
+			$res = setunits($val['bytes']);
+			$val['text'] = round($res[0]) . ' ' . $res[1];
+		}
+		$SMARTY->assign($var, $val);
+	}
+
 	if (isset($_GET['op']) && $_GET['op'] == 'view') {
 		if ($LMS->TicketExists($_GET['id'])) {
 			$ticket = $LMS->GetTicketContents($_GET['id']);
@@ -472,26 +494,6 @@ function module_main() {
 				die;
 			}
 		}
-	}
-
-	$unit_multipliers = array(
-		'K' => 1024,
-		'M' => 1024 * 1024,
-		'G' => 1024 * 1024 * 1024,
-		'T' => 1024 * 1024 * 1024 * 1024,
-	);
-	foreach (array('post_max_size', 'upload_max_filesize') as $var) {
-		preg_match('/^(?<number>[0-9]+)(?<unit>[kKmMgGtT]?)$/', ini_get($var), $m);
-		$unit_multiplier = isset($m['unit']) ? $unit_multipliers[strtoupper($m['unit'])] : 1;
-		if ($var == 'post_max_size')
-			$unit_multiplier *= 1/1.33;
-		if (empty($m['number']))
-			$val = trans('(unlimited)');
-		else {
-			$res = setunits(round($m['number'] * $unit_multiplier));
-			$val = round($res[0]) . ' ' . $res[1];
-		}
-		$SMARTY->assign($var, $val);
 	}
 
 	$helpdesklist = $LMS->GetCustomerTickets($SESSION->id);

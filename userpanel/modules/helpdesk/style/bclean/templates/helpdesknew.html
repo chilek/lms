@@ -34,28 +34,73 @@
 					<div class="form-group">
 						<label for="attachments">{trans("Attachments:")}</label>
 						<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+						<div id="file-status" class="alert" style="display: none;"></div>
+						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
+						{t a=$post_max_size.text}Maximum total file size: $a{/t}
 						<br>
-						{t a=$post_max_size}Maximum total file size: $a{/t}
-						<br>
-						{t a=$upload_max_filesize}Maximum single file size: $a{/t}
+						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
+						{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
 					</div>
 
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
-				<a class="btn btn-danger" formnovalidate href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
+				<a class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("Submit")}</a>
 				<input type="hidden" name="wyslane" value="1">
 			</div>
 		</div>
 	</div>
 </div>
-{if $error}
-<script type="text/javascript">
-<!--
-$(function() {
-	$('#newrequest').modal('show');
-})
-//-->
+<script>
+
+	$(function() {
+		{if $error}
+		$('#newrequest').modal('show');
+		{/if}
+
+		function check_file_sizes() {
+			var attachments = $('#attachments').get(0);
+			$('#file-status').hide().text();
+			if (attachments.files.length) {
+				var error = '';
+				var post_max_size = parseInt($('#post_max_size').val());
+				var upload_max_filesize = parseInt($('#upload_max_filesize').val());
+				var total_size = 0;
+				$.each(attachments.files, function (index, file) {
+					if (upload_max_filesize && file.size > upload_max_filesize) {
+						error = '{trans("One from files is too large!")}';
+					}
+					total_size += file.size;
+				});
+				if (post_max_size && total_size > post_max_size) {
+					error = '{trans("Total file size is too large!")}';
+				}
+				if (error.length) {
+					$('#file-status').text(error).show();
+					return false;
+				}
+			}
+			return true;
+		}
+
+		$('#attachments').change(function() {
+			check_file_sizes();
+		});
+
+		$('#newrequest .submit-button').click(function() {
+			if (check_file_sizes()) {
+				document.helpdesk.submit();
+			}
+		});
+	});
+
 </script>
-{/if}
+
+<style>
+
+	#file-status {
+		margin-bottom: 0;
+	}
+
+</style>

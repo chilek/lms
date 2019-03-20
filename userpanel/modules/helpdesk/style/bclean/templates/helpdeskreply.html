@@ -1,6 +1,6 @@
 {include file="header.html"}
 <h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
-<form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
+<form method="post" id="newmessage" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
     {box title="Message"}
     <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
 	<input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
@@ -27,16 +27,72 @@
 					{trans("Attachments:")}
 				</th>
 				<td>
-					<input type="file" name="files[]" {userpaneltip class="form-control" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+					<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+					<div id="file-status" class="alert" style="display: none;"></div>
+					<br>
+					<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
+					{t a=$post_max_size.text}Maximum total file size: $a{/t}
+					<br>
+					<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
+					{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
-					<a class="btn btn-primary" href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
+					<a class="btn btn-primary submit-button" accesskey="S">{trans("Submit")}</a>
 				</td>
 			</tr>
 		</table>
     </div>
     {/box}
 </form>
+<script>
+
+	$(function() {
+		function check_file_sizes() {
+			var attachments = $('#attachments').get(0);
+			$('#file-status').hide().text();
+			if (attachments.files.length) {
+				var error = '';
+				var post_max_size = parseInt($('#post_max_size').val());
+				var upload_max_filesize = parseInt($('#upload_max_filesize').val());
+				var total_size = 0;
+				$.each(attachments.files, function (index, file) {
+					if (upload_max_filesize && file.size > upload_max_filesize) {
+						error = '{trans("One from files is too large!")}';
+					}
+					total_size += file.size;
+				});
+				if (post_max_size && total_size > post_max_size) {
+					error = '{trans("Total file size is too large!")}';
+				}
+				if (error.length) {
+					$('#file-status').text(error).show();
+					return false;
+				}
+			}
+		}
+
+		$('#attachments').change(function() {
+			check_file_sizes();
+		});
+
+		$('#newmessage .submit-button').click(function() {
+			if (check_file_sizes()) {
+				document.helpdesk.submit();
+			}
+		});
+	});
+
+</script>
+
+<style>
+
+	#file-status {
+		margin-top: 1em;
+		margin-bottom: 0;
+	}
+
+</style>
+
 {include file="footer.html"}
