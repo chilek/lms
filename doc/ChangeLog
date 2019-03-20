@@ -216,6 +216,8 @@ version ?.??.?? (????-??-??):
   - helpdesk user notification %attachments substitution support [chilan]
   - improvement: allow to determine ticket id using regular expression match on mail
     subject - rt.subject_ticket_regexp_match with 'RT#(?<ticketid>[0-9]{6,})' default value [chilan]
+  - improvement: invoices.protection_password (unset by default) set owner password
+    for pdf invoices; it also required to enable pdf protection [chilan]
 
 version 1.11.23 (2018-03-21):
 
