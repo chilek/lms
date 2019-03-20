@@ -1002,8 +1002,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$this->invoice_footnote(30, $top, 530, 10);
 		$page = $this->backend->ezStopPageNumbers(1, 1, $page);
 
-		if (!$this->data['disable_protection'])
-			$this->backend->setEncryption('', 'PASSWORD_CHANGEME', array('modify', 'copy', 'fill', 'extract', 'assemble'), 2);
+		if (!$this->data['disable_protection'] && $this->data['protection_password'])
+			$this->backend->setEncryption('', $this->data['protection_password'],
+				array('modify', 'copy', 'fill', 'extract', 'assemble'), 2);
 	}
 
 	public function invoice_body_ft0100() {
@@ -1041,8 +1042,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		}
 		$page = $this->backend->ezStopPageNumbers(1,1,$page);
 
-		if (!$this->data['disable_protection'])
-			$this->backend->setEncryption('', 'PASSWORD_CHANGEME', array('modify', 'copy', 'fill', 'extract', 'assemble'), 2);
+		if (!$this->data['disable_protection'] && $this->data['protection_password'])
+			$this->backend->setEncryption('', $this->data['protection_password'],
+				array('modify', 'copy', 'fill', 'extract', 'assemble'), 2);
 	}
 }
 
