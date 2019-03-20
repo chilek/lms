@@ -34,6 +34,10 @@
 					<div class="form-group">
 						<label for="attachments">{trans("Attachments:")}</label>
 						<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+						<br>
+						{t a=$post_max_size}Maximum total file size: $a{/t}
+						<br>
+						{t a=$upload_max_filesize}Maximum single file size: $a{/t}
 					</div>
 
 				</form>

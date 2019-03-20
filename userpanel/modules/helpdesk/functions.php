@@ -474,6 +474,21 @@ function module_main() {
 		}
 	}
 
+	$unit_multipliers = array(
+		'K' => 1024,
+		'M' => 1024 * 1024,
+		'G' => 1024 * 1024 * 1024,
+		'T' => 1024 * 1024 * 1024 * 1024,
+	);
+	foreach (array('post_max_size', 'upload_max_filesize') as $ini_name) {
+		preg_match('/^(?<number>[0-9]+)(?<unit>[kKmMgGtT]?)$/', ini_get($ini_name), $m);
+		$unit_multiplier = isset($m['unit']) ? $unit_multipliers[strtoupper($m['unit'])] : 1;
+		if ($ini_name == 'post_max_size')
+			$unit_multiplier *= 1/1.33;
+		$res = setunits(round($m['number'] * $unit_multiplier));
+		$SMARTY->assign($ini_name, round($res[0]) . ' ' . $res[1]);
+	}
+
 	$helpdesklist = $LMS->GetCustomerTickets($SESSION->id);
 
 	$queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN ('

@@ -48,6 +48,10 @@
 		</td>
 		<td>
 			<input type="file" name="files[]" size="55" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+			<br>
+			{t a=$post_max_size}Maximum total file size: $a{/t}
+			<br>
+			{t a=$upload_max_filesize}Maximum single file size: $a{/t}
 		</td>
 	</tr>
 	<tr class="light">
