@@ -219,6 +219,8 @@ version ?.??.?? (????-??-??):
   - improvement: invoices.protection_password (unset by default) set owner password
     for pdf invoices; it also required to enable pdf protection [chilan]
   - improvement: userpanel: helpdesk: user friendly file size upload limitation [chilan]
+  - enhancement: userpanel/info: allow to auto-hide customer document box if customer
+    hasn't got any documents [chilan]
 
 version 1.11.23 (2018-03-21):
 
