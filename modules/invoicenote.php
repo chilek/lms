@@ -90,6 +90,14 @@ if (isset($_GET['id']) && $action == 'init')
 
 	$cnote['use_current_division'] = true;
 
+	$hook_data = array(
+		'invoice' => $invoice,
+		'cnote' => $cnote,
+	);
+	$hook_data = $LMS->ExecuteHook('invoicenote_init', $hook_data);
+	$invoice = $hook_data['invoice'];
+	$cnote = $hook_data['cnote'];
+
 	$SESSION->save('cnote', $cnote);
 	$SESSION->save('invoice', $invoice);
 	$SESSION->save('invoiceid', $invoice['id']);
@@ -218,6 +226,8 @@ switch($action)
 		if (empty($contents) || empty($cnote))
 			break;
 
+		$error = array();
+
 		$SESSION->restore('invoiceid', $invoice['id']);
 
 		if (!ConfigHelper::checkPrivilege('invoice_consent_date'))
@@ -295,6 +305,17 @@ switch($action)
 		}
 
 		$cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
+
+		$hook_data = array(
+			'invoice' => $invoice,
+			'contents' => $contents,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenote_save_validation', $hook_data);
+		if (isset($hook_data['error']) && is_array($hook_data['error']))
+			$error = array_merge($error, $hook_data['error']);
+
+		if (!empty($error))
+			break;
 
 		$DB->BeginTrans();
 		$DB->LockTables(array('documents', 'numberplans', 'divisions', 'vdivisions'));
@@ -468,6 +489,12 @@ switch($action)
 			}
 		}
 
+		$hook_data = array(
+			'invoice' => $invoice,
+			'contents' => $contents,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenote_save_after_submit', $hook_data);
+
 		$DB->CommitTrans();
 
 		$SESSION->remove('invoice');
@@ -495,6 +522,14 @@ if ($action != '')
 	// redirect, to not prevent from invoice break with the refresh
 	$SESSION->redirect('?m=invoicenote');
 }
+
+$hook_data = array(
+	'contents' => $contents,
+	'invoice' => $invoice,
+);
+$hook_data = $LMS->ExecuteHook('invoicenote_before_display', $hook_data);
+$contents = $hook_data['contents'];
+$invoice = $hook_data['invoice'];
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
