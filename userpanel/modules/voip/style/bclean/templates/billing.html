@@ -159,7 +159,7 @@
 	</DIV>
 	<DIV ID="tab-settings">
 		<div class="form-group form-inline">
-			{if count($user_accounts) > 1}
+			{if is_array($user_accounts) && count($user_accounts) > 1}
 				<select id="account-select" class="form-control">
 					<option value="0">{trans("Select account")}</option>
 					{foreach $user_accounts as $acc}
