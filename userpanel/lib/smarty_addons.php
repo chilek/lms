@@ -93,7 +93,11 @@ function _smarty_function_userpaneltip($params, $template)
 	} else
 		$class = '';
 
-	if (ConfigHelper::getConfig('userpanel.hint') == 'classic') {
+	if (ConfigHelper::getConfig('userpanel.style') == 'bclean') {
+		$result = ' class="' . (empty($class) ? '' : $class)
+			. (isset($params['trigger']) && isset($tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+			. '" ';
+	} elseif (ConfigHelper::getConfig('userpanel.hint') == 'classic') {
 		if (isset($params['trigger']) && isset($tpl[$params['trigger']]))
 			$result = ' onmouseover="return overlib(\'<b><font color=red>' . $error . '</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
 		elseif ($params['text'] != '')
