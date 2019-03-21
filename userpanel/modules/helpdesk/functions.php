@@ -418,7 +418,8 @@ function module_main() {
 			$SMARTY->assign('helpdesk', $helpdesk);
 			$_GET['op'] = 'message';
 		}
-	}
+	} else
+		$SMARTY->assign('helpdesk', array());
 
 	$unit_multipliers = array(
 		'K' => 1024,
