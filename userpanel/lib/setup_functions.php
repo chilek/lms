@@ -67,7 +67,7 @@ function module_setup()
 function module_submit_setup()
 {
     global $DB, $LMS;
-	if (empty($_POST)) {
+	if (!isset($_POST['hint'])) {
 		module_setup();
 		return;
 	}
