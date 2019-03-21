@@ -79,6 +79,7 @@ if (isset($_POST['message'])) {
 		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
 	}
 
+	// TODO: verifierid/deadline validation for group reply
 	$deadline = datetime_to_timestamp($message['deadline']);
 	if (!$group_reply && $deadline != $ticket['deadline']) {
 		if (!ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')

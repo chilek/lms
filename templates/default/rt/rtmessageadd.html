@@ -105,8 +105,8 @@
 				</SELECT>
 				&nbsp;
 				<label>
-					{trans("resolve ticket")}
 					<INPUT type="checkbox" name="message[resolve]" id="resolve" value="{$smarty.const.RT_RESOLVED}"{if isset($message.resolve) || $message.state == $smarty.const.RT_RESOLVED} CHECKED{/if}{tip trigger="resolve"}>
+					{trans("resolve ticket")}
 				</label>
 			{/box_row}
 
@@ -164,8 +164,8 @@
 				</SELECT>
 				&nbsp;
 				<label>
-					{trans("assign to me")}
 					<input type="checkbox" id="assign-to-me" data-userid="{$layout.logid}">
+					{trans("assign to me")}
 				</label>
 			{/box_row}
 {/if}

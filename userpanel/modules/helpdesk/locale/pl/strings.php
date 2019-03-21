@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -73,5 +73,11 @@ $_LANG['Visible ticket sources:'] = 'Źródła widocznych zgłoszeń:';
 $_LANG['Helpdesk visible ticket sources in Userpanel'] = 'Widoczne źródła zgłoszeń Helpdesku w Userpanelu';
 
 $_LANG['Allow to reopen tickets newer than:'] = 'Pozwól na ponowne otwieranie zgłoszeń nowszych niż:';
+
+$_LANG['Maximum total file size: $a'] = 'Maksymalny całkowity rozmiar plików: $a';
+$_LANG['Maximum single file size: $a'] = 'Maksymalny rozmiar pojedynczego pliku: $a';
+$_LANG['(unlimited)'] = '(nieograniczony)';
+$_LANG['One from files is too large!'] = 'Zbyt duży rozmiar jednego z plików!';
+$_LANG['Total file size is too large!'] = 'Zbyt duży całkowity rozmiar plików!';
 
 ?>

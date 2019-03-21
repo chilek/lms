@@ -244,7 +244,7 @@ if($SESSION->islogged)
 	}
 
 	// Userpanel popup for urgent notice
-	$res = $LMS->ExecHook('userpanel_module_call_before', array('module' => $USERPANEL->MODULES['notices']));
+	$res = $LMS->ExecHook('userpanel_module_call_before');
 
 	$LMS->executeHook('userpanel_' . $module . '_on_load');
 

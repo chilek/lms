@@ -1,12 +1,14 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <table width="100%" cellpadding="10">
-{if !$usernodes.total && ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
+{if !is_array($usernodes) || !count($usernodes) || ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 	<tr>
 		<td valign="top" width="100%">
 			{include file="module:userinfobox.html"}
+			{if (is_array($documents) && count($documents)) || !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
 			<br />
 			{include file="module:userdocsbox.html"}
+			{/if}
 		</td>
 	</tr>
 	{if ConfigHelper::getConfig('userpanel.data_consent_text') && !$userinfo.consentdate}
@@ -20,8 +22,10 @@
 	<tr>
 		<td valign="top" width="50%">
 			{include file="module:userinfobox.html"}
+			{if (is_array($documents) && count($documents)) || !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
 			<br />
 			{include file="module:userdocsbox.html"}
+			{/if}
 		</td>
 		<td valign="top" width="50%">
 			{if ConfigHelper::getConfig('userpanel.data_consent_text') && !$userinfo.consentdate}

@@ -535,6 +535,7 @@ if(defined('USERPANEL_SETUPMODE'))
 		global $SMARTY, $LMS;
 
 		$SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
+		$SMARTY->assign('hide_documentbox', ConfigHelper::getConfig('userpanel.hide_documentbox'));
 		$SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
 		$SMARTY->assign('show_confirmed_documents_only', ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'));
 		$SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
@@ -555,6 +556,8 @@ if(defined('USERPANEL_SETUPMODE'))
 
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 			array(isset($_POST['hide_nodesbox']) ? 1 : 0, 'userpanel', 'hide_nodesbox'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array(isset($_POST['hide_documentbox']) ? 1 : 0, 'userpanel', 'hide_documentbox'));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 			array($_POST['consent_text'], 'userpanel', 'data_consent_text'));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

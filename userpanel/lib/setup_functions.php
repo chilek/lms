@@ -24,6 +24,13 @@
  *  $Id$
  */
 
+function userpanel_style_change() {
+	$files = getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates_c', '^.*\.html\.php$');
+	if (!empty($files))
+		foreach ($files as $file)
+			unlink(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates_c' . DIRECTORY_SEPARATOR . $file);
+}
+
 function module_setup()
 {
     global $SMARTY, $DB, $USERPANEL, $layout, $LMS;
@@ -60,7 +67,7 @@ function module_setup()
 function module_submit_setup()
 {
     global $DB, $LMS;
-	if (empty($_POST)) {
+	if (!isset($_POST['hint'])) {
 		module_setup();
 		return;
 	}
@@ -70,9 +77,11 @@ function module_submit_setup()
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'hint', ?)", array($_POST['hint']));
 
-    if($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'style'"))
-        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'style'", array($_POST['style']));
-    else
+    if ($oldstyle = $DB->GetOne("SELECT value FROM uiconfig WHERE section = 'userpanel' AND var = 'style'")) {
+		$DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'style'", array($_POST['style']));
+		if ($oldstyle != $_POST['style'])
+			userpanel_style_change();
+    } else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'style', ?)", array($_POST['style']));
 
     if($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'hide_nodes_modules'"))

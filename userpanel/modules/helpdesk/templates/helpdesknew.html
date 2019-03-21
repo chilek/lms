@@ -1,7 +1,7 @@
 <!--// $Id$ //-->
 <form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
 {box title="New Request"}
-<table width="100%" cellpadding="3" class="light">
+<table id="newrequest" width="100%" cellpadding="3" class="light">
 	<tr class="light">
 		<td width="1%">
 			{img src="queue.gif" alt=""}
@@ -47,15 +47,70 @@
 			<b>{trans("Attachments:")}</b>
 		</td>
 		<td>
-			<input type="file" name="files[]" size="55" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+			<input type="file" name="files[]" id="attachments" size="55" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+			<div id="file-status" style="display: none;"></div>
+			<br>
+			<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
+			{t a=$post_max_size.text}Maximum total file size: $a{/t}
+			<br>
+			<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
+			{t a=$upload_max_filesize.text}Maximum single file size: $a{/t}
 		</td>
 	</tr>
 	<tr class="light">
 		<td width="100%" colspan="3" align="right">
-			<a href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")} {img src="save.gif" alt="Submit"}</a>
+			<a class="submit-button" accesskey="S">{trans("Submit")} {img src="save.gif" alt="Submit"}</a>
 		</td>
 	</tr>
 </table>
 {/box}
 </form>
+<script>
 
+	$(function() {
+		function check_file_sizes() {
+			var attachments = $('#attachments').get(0);
+			$('#file-status').hide().text();
+			if (attachments.files.length) {
+				var error = '';
+				var post_max_size = parseInt($('#post_max_size').val());
+				var upload_max_filesize = parseInt($('#upload_max_filesize').val());
+				var total_size = 0;
+				$.each(attachments.files, function (index, file) {
+					if (upload_max_filesize && file.size > upload_max_filesize) {
+						error = '{trans("One from files is too large!")}';
+					}
+					total_size += file.size;
+				});
+				if (post_max_size && total_size > post_max_size) {
+					error = '{trans("Total file size is too large!")}';
+				}
+				if (error.length) {
+					$('#file-status').text(error).show();
+					return false;
+				}
+			}
+			return true;
+		}
+
+		$('#attachments').change(function() {
+			check_file_sizes();
+		});
+
+		$('#newrequest .submit-button').click(function() {
+			if (check_file_sizes()) {
+				document.helpdesk.submit();
+			}
+		});
+	});
+
+</script>
+
+<style>
+
+	#file-status {
+		margin-top: 1em;
+		color: red;
+	}
+
+</style>
