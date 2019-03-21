@@ -1652,7 +1652,7 @@ $processed_netlinks = array();
 $netlinks = array();
 if ($netdevices)
 	foreach ($netdevices as $netdevice) {
-		$ndnetlinks = $DB->GetAll("SELECT src, dst, type, speed, nl.technology,
+		$ndnetlinks = $DB->GetAll("SELECT src, dst, nl.type, speed, nl.technology,
 			(CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
 				ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
 			(CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
