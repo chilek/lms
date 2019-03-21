@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2017 LMS Developers
+ *  Copyright (C); 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,106 +25,107 @@
  */
 
 /**
- * LMSFinanceManagerInterface
- *
+ * LMSHelpdeskManagerInterface
+ * 
  */
-interface LMSFinanceManagerInterface
+interface LMSHelpdeskManagerInterface
 {
-    public function GetPromotionNameBySchemaID($id);
 
-    public function GetPromotionNameByID($id);
+    public function GetQueue($id);
 
-    public function GetCustomerTariffsValue($id);
+	public function GetQueueContents(array $params);
 
-    public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true);
+    public function GetUserRightsRT($user, $queue, $ticket = NULL);
 
-    public function DeleteAssignment($id);
+	public function GetQueueList(array $params);
 
-    public function AddAssignment($data);
+    public function GetQueueNames();
 
-	public function ValidateAssignment($data);
+    public function QueueExists($id);
 
-	public function UpdateExistingAssignments($data);
+    public function GetQueueIdByName($queue);
 
-	public function SuspendAssignment($id, $suspend = TRUE);
+    public function GetQueueVerifier($id);
 
-	public function GetInvoiceList(array $params);
+    public function GetQueueName($id);
 
-    public function AddInvoice($invoice);
+    public function GetQueueEmail($id);
 
-    public function InvoiceDelete($invoiceid);
+    public function GetQueueStats($id);
 
-    public function InvoiceContentDelete($invoiceid, $itemid = 0);
+    public function GetCategory($id);
 
-    public function GetInvoiceContent($invoiceid);
+    public function GetUserRightsToCategory($user, $category, $ticket = NULL);
 
-	public function GetNoteList(array $params);
+    public function GetCategoryList($stats = true);
 
-	public function GetNoteContent($id);
+    public function GetCategoryStats($id);
 
-    public function TariffAdd($tariff);
+    public function CategoryExists($id);
 
-    public function TariffUpdate($tariff);
+    public function GetCategoryIdByName($category);
 
-    public function TariffDelete($id);
+    public function GetCategoryName($id);
 
-    public function GetTariff($id, $network = NULL);
+    public function GetUserCategories($userid = NULL);
 
-    public function GetTariffs($forced_id = null);
+    public function RTStats();
 
-    public function TariffSet($id);
+    public function GetQueueByTicketId($id);
 
-    public function TariffExists($id);
+    public function GetEventsByTicketId($id);
 
-	public function ReceiptDelete($docid);
+    public function GetQueueNameByTicketId($id);
 
-	public function ReceiptContentDelete($docid, $itemid = 0);
+    public function TicketExists($id);
 
-	public function DebitNoteDelete($noteid);
+//	public function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false);
 
-	public function DebitNoteContentDelete($docid, $itemid = 0);
+	public function TicketMessageAdd($message, $files = null);
 
-	public function GetBalanceList(array $params);
+    public function TicketAdd($ticket, $files = NULL);
 
-	public function AddBalance($addbalance);
+	public function GetLastMessageID();
 
-    public function DelBalance($id);
+    public function GetTicketContents($id);
 
-    public function GetPaymentList();
+    public function GetMessage($id);
 
-    public function GetPayment($id);
+    public function GetFirstMessage($ticketid);
 
-    public function GetPaymentName($id);
+    public function GetLastMessage($ticketid);
 
-    public function GetPaymentIDByName($name);
+    public function TicketChange($ticketid, array $props);
 
-    public function PaymentExists($id);
+	public function GetQueueCategories($queueid);
 
-    public function PaymentAdd($paymentdata);
+	public function ReplaceNotificationSymbols($text, array $params);
 
-    public function PaymentDelete($id);
+	public function ReplaceNotificationCustomerSymbols($text, array $params);
 
-    public function PaymentUpdate($paymentdata);
-    
-    public function GetHostingLimits($customerid);
-    
-    public function GetTaxes($from = NULL, $to = NULL);
-    
-    public function CalcAt($period, $date);
+	public function NotifyUsers(array $params);
 
-	public function isDocumentPublished($id);
+	public function CleanupTicketLastView();
 
-	public function isDocumentReferenced($id);
+	public function MarkQueueAsRead($queueid);
 
-	public function GetReceiptList(array $params);
+	public function MarkTicketAsRead($ticketid);
 
-	public function AddReceipt(array $receipt);
+	public function MarkTicketAsUnread($ticketid);
 
-	public function GetCashRegistries($cid = null);
+	public function GetIndicatorStats();
 
-	public function GetOpenedLiabilities($customerid);
+	public function DetermineSenderEmail($queue_email, $ticket_email, $user_email, $forced_order = null);
 
-	public function GetPromotions();
+	public function GetTicketPhoneFrom($ticketid);
 
-	public function AggregateDocuments($list);
+	public function CheckTicketAccess($ticketid);
+
+    public function GetRelatedTicketIds($ticketid);
+
+    public function GetTicketParentID($ticketid);
+
+    public function IsTicketLoop($ticketid, $parentid);
+
+	public function GetRTSmtpOptions();
 }
