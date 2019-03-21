@@ -252,6 +252,9 @@
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$itemid}]" SIZE="6">
 				{/if}
+				{if isset($item.valuenetto_custom_contents)}
+					{$item.valuenetto_custom_contents}
+				{/if}
 			</TD>
 			<TD class="text-right nobr">
 				{if $refdoc.closed}
@@ -273,6 +276,9 @@
 					<INPUT TYPE="hidden" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto}{/if}" NAME="valuebrutto[{$itemid}]">{if !empty($item.valuebrutto)}{$item.valuebrutto|money_format}{/if}
 				{else}
 					<INPUT TYPE="text" VALUE="{if !empty($item.valuebrutto)}{$item.valuebrutto|string_format:"%.2f"}{/if}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
+				{/if}
+				{if isset($item.valuebrutto_custom_contents)}
+					{$item.valuebrutto_custom_contents}
 				{/if}
 			</TD>
 			<TD class="nobr">
