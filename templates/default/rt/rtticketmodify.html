@@ -84,10 +84,11 @@
 			{/box_row}
 
 {if $layout.module == 'rtticketadd'}
+			{block name="rtticketadd-content"}
 			{box_row icon="img/mail.gif" label="Content:"}
 				<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
 			{/box_row}
-
+			{/block}
 			{box_row icon="img/note.gif" label="Note:"}
 				<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
 			{/box_row}
