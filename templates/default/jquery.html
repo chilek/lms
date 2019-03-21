@@ -46,7 +46,7 @@
 
 	$( function() {
 		var lmsErrors = {
-			{if $error}
+			{if isset($error) && is_array($error)}
 			{foreach $error as $k=>$v}
 				"{$k|replace:'"':'\"'}":"{$v|replace:'"':'\"'}",
 			{/foreach}
