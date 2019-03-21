@@ -137,7 +137,7 @@ function module_main() {
 		$ticket['subject'] = strip_tags($ticket['subject']);
 		$ticket['body'] = strip_tags($ticket['body']);
 
-		if (!$ticket['queue'] || !$ticket['categories']) {
+		if (!$ticket['queue']) {
 			header('Location: ?m=helpdesk');
 			die;
 		}
