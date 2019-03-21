@@ -1640,9 +1640,9 @@ if ( $max_range > 0 ) {
 					}
 				}
 			}
+		}
 		if ($building_count < $limit)
 			break;
-		}
     }
 }
 
