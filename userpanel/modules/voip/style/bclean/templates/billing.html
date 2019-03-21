@@ -1,14 +1,14 @@
 {include file="header.html"}
-<div id="tabs">
-	<ul class="nav nav-tabs">
-		<li class="nav-item">
-			<a class="nav-link" href="#tab-billings">{trans("Billings")}</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" href="#tab-settings">{trans("Settings")}</a>
-		</li>
-	</ul>
-	<DIV ID="tab-billings">
+<ul class="nav nav-tabs mb-1" role="tablist">
+	<li class="nav-item">
+		<a class="nav-link" data-toggle="tab" href="#tab-billings">{trans("Billings")}</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-toggle="tab" href="#tab-settings">{trans("Settings")}</a>
+	</li>
+</ul>
+<div class="tab-content">
+	<div class="tab-pane active" id="tab-billings" role="tab-panel">
 		<FORM METHOD="GET" ACTION="?m=voip" class="form-inline">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="voip">
 			<div class="form-group">
@@ -157,7 +157,7 @@
 		{/if}
 		{/box}
 	</DIV>
-	<DIV ID="tab-settings">
+	<div class="tab-pane" id="tab-settings" role="tabpanel">
 		<div class="form-group form-inline">
 			{if is_array($user_accounts) && count($user_accounts) > 1}
 				<select id="account-select" class="form-control">
@@ -170,13 +170,21 @@
 			<button type="button" id="save-settings" class="btn btn-danger">{trans("Save")}</button>
 		</div>
 		<div class="form-group">
-			<span class="font-weight-bold" data-toggle="tooltip" data-placement="top" title="{trans("You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab.")}">{trans("Call recording")}:</span>
-			<label class="form-check-inline">
-				<input type="radio" class="form-control" name="callrecording" id="callrecordyes" value="1" checked> {trans("yes")}
-			</label>
-			<label class="form-check-inline">
-				<input type="radio" class="form-control" name="callrecording" id="callrecordno" value="0"> {trans("no")}
-			</label>
+			<div class="custom-control custom-control-inline" title="{trans("You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab.")}">
+				{trans("Call recording")}:
+			</div>
+			<div class="custom-control custom-radio custom-control-inline">
+				<input class="custom-control-input" type="radio" name="callrecording" id="callrecordyes" value="1" checked>
+				<label class="custom-control-label" for="callrecordyes">
+					{trans("yes")}
+				</label>
+			</div>
+			<div class="custom-control custom-radio custom-control-inline">
+				<input class="custom-control-input" type="radio" name="callrecording" id="callrecordno" value="0">
+				<label class="custom-control-label" for="callrecordno">
+					{trans("no")}
+				</label>
+			</div>
 		</div>
 		{if is_array($user_accounts) && count($user_accounts) > 1}
 			<span class="font-weight-bold" data-toggle="tooltip" data-placement="top" title="{trans("Change indexes for phones assigned to your account.")}">{trans("Assigned phones")}:</span>
@@ -184,7 +192,7 @@
 				<ol id="phones-sortable" class="userpanel-phones-sortable"></ol>
 			</ul>
 		{/if}
-	</DIV>
+	</div>
 </div>
 {if $user_accounts}
 <script>
