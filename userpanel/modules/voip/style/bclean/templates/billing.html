@@ -178,7 +178,7 @@
 				<input type="radio" class="form-control" name="callrecording" id="callrecordno" value="0"> {trans("no")}
 			</label>
 		</div>
-		{if count($user_accounts) > 1}
+		{if is_array($user_accounts) && count($user_accounts) > 1}
 			<span class="font-weight-bold" data-toggle="tooltip" data-placement="top" title="{trans("Change indexes for phones assigned to your account.")}">{trans("Assigned phones")}:</span>
 			<ul id="customer-phones">
 				<ol id="phones-sortable" class="userpanel-phones-sortable"></ol>
