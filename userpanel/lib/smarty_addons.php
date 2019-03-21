@@ -75,10 +75,12 @@ function _smarty_function_userpaneltip($params, $template)
     $text = trans(array_merge(array($params['text']), $params));
 
     $tpl = $template->getTemplateVars('error');
-    $error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
-    $error = str_replace('"', '&quot;', $error);
-    $error = str_replace("\r", '', $error);
-    $error = str_replace("\n", '<BR>', $error);
+	if (isset($params['trigger']) && isset($tpl[$params['trigger']])) {
+		$error = str_replace("'", '\\\'', $tpl[$params['trigger']]);
+		$error = str_replace('"', '&quot;', $error);
+		$error = str_replace("\r", '', $error);
+		$error = str_replace("\n", '<BR>', $error);
+	}
 
     $text = str_replace('\'', '\\\'', $text);
     $text = str_replace('"', '&quot;', $text);
@@ -92,22 +94,22 @@ function _smarty_function_userpaneltip($params, $template)
 		$class = '';
 
 	if (ConfigHelper::getConfig('userpanel.hint') == 'classic') {
-		if ($tpl[$params['trigger']])
+		if (isset($params['trigger']) && isset($tpl[$params['trigger']]))
 			$result = ' onmouseover="return overlib(\'<b><font color=red>' . $error . '</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
 		elseif ($params['text'] != '')
 			$result = 'onmouseover="return overlib(\'' . $text . '\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
 		$result .= ' class="' . (empty($class) ? '' : $class)
-			. ($tpl[$params['trigger']] ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+			. (isset($params['trigger']) && isset($tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
 			. '" ';
 	} elseif (ConfigHelper::getConfig('userpanel.hint') == 'none') {
 		$result = "";
 	} else {
-		if ($tpl[$params['trigger']])
+		if (isset($params['trigger']) && isset($tpl[$params['trigger']]))
 			$result = "onmouseover=\"javascript:displayhint('<font style=&quot;color: red&quot;>" . $error . "</font>')\" onmouseout=\"javascript:hidehint()\" ";
 		else
 			$result = "onmouseover=\"javascript:displayhint('" . $text . "')\" onmouseout=\"javascript:hidehint()\" ";
 		$result .= ' class="' . (empty($class) ? '' : $class)
-			. ($tpl[$params['trigger']] ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+			. (isset($params['trigger']) && isset($tpl[$params['trigger']]) ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
 			. '" ';
 	}
 
