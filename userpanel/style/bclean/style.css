@@ -67,3 +67,7 @@ div.form-group.row > label.col-form-label {
     pointer-events: none;
     cursor: default;
 }
+
+nav.navbar {
+    margin-bottom: 0.3em;
+}
