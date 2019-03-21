@@ -16,6 +16,14 @@
 		</TR>
 		<TR>
 			<TD WIDTH="1%" NOWRAP>
+				<label for="hide_documentbox">{trans("Hide customer document box:")}</label>
+			</TD>
+			<TD WIDTH="99%" NOWRAP>
+				<INPUT type="checkbox" NAME="hide_documentbox" ID="hide_documentbox" value="1"{if $hide_documentbox} checked{/if} {tip text="Don't show customer document box if he hasn't any documents"}>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH="1%" NOWRAP>
 				<label for="show_confirmed_documents_only">{trans("Show confirmed documents only:")}</label>
 			</TD>
 			<TD WIDTH="99%" NOWRAP>
