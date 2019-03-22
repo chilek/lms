@@ -10,23 +10,31 @@
 		margin-left: 0.3em;
 	}
 
+	.custom-control-label.valign-fix {
+		vertical-align: top;
+	}
+
+	#checkall-checkbox {
+		margin-bottom: 0.4em;
+	}
+
 </style>
 <div class="row">
     <div class="col-md-12">
         <form name="invoices" action="?m=finances&amp;f=invoice" method="POST" target="_blank">
 			<div class="table-responsive">
-				<table class="table table-striped table-sm table-bordered table-hover">
-					<tr class="bg-secondary text-white">
-						<td class="p-2">{trans("Date")}</td>
-						<td class="p-2">{trans("Commitment")}</td>
-						<td class="p-2">{trans("Payment")}</td>
-						<td class="p-2">{trans("Balance")}</td>
-						<td class="p-2">{trans("Transfer title")} / {trans("Invoice title")}</td>
+  				<table class="table table-striped table-sm table-bordered table-hover">
+            <tr class="bg-secondary text-white">
+						  <td class="p-2">{trans("Date")}</td>
+						  <td class="p-2">{trans("Commitment")}</td>
+						  <td class="p-2">{trans("Payment")}</td>
+						  <td class="p-2">{trans("Balance")}</td>
+						  <td class="p-2">{trans("Transfer title")} / {trans("Invoice title")}</td>
 							{if !$disable_invoices}
 							<td></td>
 							{/if}
-						<td class="p-2">{trans("Check")}</td>
-					</tr>
+						  <td class="p-2">{trans("Check")}</td>
+					  </tr>
 					{$ldate = ConfigHelper::getConfig('userpanel.show_last_years', 5)}
 					{if $ldate}
 						{$ldate = ($smarty.now - $ldate * 366 * 86400)}
@@ -61,7 +69,7 @@
 							</td>
 							<td>{$item.comment}</td>
 							{if !$disable_invoices}
-								<td class="text-center">
+							<td class="text-center">
 									{foreach $item.customlinks as $link}
 										<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>{if isset($link.icon)}{img src="`$link.icon`" alt="`$link.label`" text=$link.tip}{else}{$link.label}{/if}</a>
 									{if isset($link.extra)}{$link.extra}{/if}
@@ -75,6 +83,14 @@
 								{/if}
 							</td>
 							<td class="text-center">
+								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
+									<div class="custom-control custom-checkbox custom-control-inline check-invoice">
+										<input class="custom-control-input" type="checkbox" id="inv-{$item.docid}" name="inv[{$item.docid}]" value="1" />
+										<label class="custom-control-label valign-fix" for="inv-{$item.docid}"></label>
+									</div>
+								{/if}
+							</td>
+							<td class="text-center">
 								{if $item.doctype==1 || $item.doctype==3}
 									<input type="checkbox" name="inv[{$item.docid}]" value="1"/>
 								{/if}
@@ -84,13 +100,13 @@
 						{/if}
 					{sectionelse}
 						<tr>
-							<td colspan="7">
+							<td colspan="{if $disabled_invoices}5{else}7{/if}">
 								{trans("No such transactions on your account.")}
 							</td>
 						</tr>
 					{/section}
 					</tbody>
-				{if !$disable_invoices}
+				{if !$disable_invoices && !empty($balancelist.list)}
 					<tfoot>
 					{if $balancelist.list|count gt 0}
 						<tr>
@@ -100,13 +116,12 @@
 									{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if}
 								</button>
 							</td>
-							<td></td>
-							<td>
-								<a class="btn btn-primary btn-sm" id="print-all" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
-								<div class="custom-control custom-checkbox">
+							<td colspan="2" class="text-center">
+								<div class="custom-control custom-checkbox" id="checkall-checkbox">
 									<input class="custom-control-input" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
 									<label class="custom-control-label" for="allbox">{trans("Check all")}</label>
 								</div>
+								<a class="btn btn-primary btn-sm" id="print-all" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
 							</td>
 						</tr>
 					{/if}
