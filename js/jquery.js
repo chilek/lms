@@ -534,7 +534,7 @@ $(function() {
 			var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
 			$(this).dialog('option', 'position', elem.hasClass('documentview-audio') ?
 				{ my: 'center', at: 'center', of: window } : { my: 'top', at: 'top', of: window })
-				.dialog('option', 'width', '70%');
+				.dialog('option', { width: 'auto' });
 			$('.ui-widget-overlay').bind('click', function() {
 				$(this).siblings('.ui-dialog').find('.ui-dialog-content')
 					.dialog('close');
