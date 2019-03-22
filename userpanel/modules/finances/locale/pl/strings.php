@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Financial transactions history:'] = 'Historia operacji finansowych:';
 $_LANG['$a dollars $b cents'] = '$a zł $b gr';
 $_LANG['Accounting day'] = 'Dzień naliczania';
 $_LANG['Admin:'] = 'Administrator:';
@@ -93,6 +94,7 @@ $_LANG['Your subscriptions'] = 'Twoje taryfy';
 $_LANG['monthly ($a)'] = 'miesięcznie ($a)';
 $_LANG['Reason:'] = 'Powód:';
 $_LANG['Check all'] = 'Zaznacz wszystkie';
+$_LANG['Check'] = 'Zaznacz';
 $_LANG['Print selected'] = 'Drukuj zaznaczone';
 $_LANG['Current balance:'] = 'Bieżące saldo:';
 $_LANG['Download speed'] = 'Prędkość pobierania';

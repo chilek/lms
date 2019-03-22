@@ -1,26 +1,29 @@
 {box title="Request history"}
+<button type="button" class="btn btn-danger mb-3" data-toggle="modal" data-target="#newrequest" accesskey="N">{trans("New Request")}</button>
+<h5><strong>{trans("Request history")}:</strong></h5>
 <div class="table-responsive">
-	<table class="table table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
-			<th>{trans("Number:")}</th>
-			<th>{trans("Subject:")}</th>
+	<table class="table table-sm table-bordered table-striped table-condensed">
+		<tr class="bg-secondary text-white">
+			<td class="p-2">{trans("Number:")}</td>
+			<td class="p-2">{trans("Subject:")}</td>
 		</tr>
 		{section name=helpdesklist loop=$helpdesklist start=$limit}
 			<tr {userpaneltip text="Click icon on the left to see request details"}>
-				<td>{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
+				<td class="font-weight-bold">
+					<a class="font-weight-bold nav-link" href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
+					{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
+					</a>
 				<td>
 					{if $helpdesklist[helpdesklist].state == 0}
-						<span class="badge badge-primary">{trans("new")}</span>
+						<span class="badge badge-danger">{trans("new")}</span>
 					{elseif $helpdesklist[helpdesklist].state == 1}
-						<span class="badge badge-info">{trans("open")}</span>
+						<span class="badge badge-warning">{trans("open")}</span>
 					{elseif $helpdesklist[helpdesklist].state == 2}
 						<span class="badge badge-success">{trans("resolved")}</span>
 					{else}
 						<span class="badge badge-default">{trans("dead")}</span>
 					{/if}
-					<a class="font-weight-bold" href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
 						{$helpdesklist[helpdesklist].subject|escape}
-					</a>
 					<br>
 					<small class="text-muted">{trans("Date:")} {$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"} &nbsp; {trans("Last modified:")} {$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</small>
 				</td>

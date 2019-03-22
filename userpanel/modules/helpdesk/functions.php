@@ -148,7 +148,8 @@ function module_main() {
 		}
 
 		if ($ticket['subject'] == '')
-			$error['subject'] = trans('Ticket must have its title!');
+			///$error['subject'] = trans('Ticket must have its title!');
+			$ticket['subject'] = 'Bez tematu';
 
 		if ($ticket['body'] == '')
 			$error['body'] = trans('Ticket must have its body!');
@@ -453,8 +454,14 @@ function module_main() {
 			$sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
 			if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
 				&& in_array($ticket['source'], $sources)) {
-				$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+				if (count($queues)==1) {
+					$SMARTY->assign('title', trans('Request No. $a',
+					sprintf('%06d', $ticket['ticketid'])));
+				}
+				else {
+					$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
 					sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+				}
 
 				$SMARTY->assign('ticket', $ticket);
 				$SMARTY->display('module:helpdeskview.html');
@@ -486,9 +493,14 @@ function module_main() {
 				$helpdesk['references'] = implode(' ', $reply['references']);
 			}
 			$SMARTY->assign('helpdesk', $helpdesk);
-
-			$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+			if (count($queues)==1) {
+                                        $SMARTY->assign('title', trans('Request No. $a',
+                                        sprintf('%06d', $ticket['ticketid'])));
+			}
+			else {
+				$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
 				sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+			}
 			if ($ticket['customerid'] == $SESSION->id) {
 				$SMARTY->assign('ticket', $ticket);
 				$SMARTY->display('module:helpdeskreply.html');

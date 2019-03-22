@@ -1,13 +1,13 @@
 {box title="Your documents"}
 <div class="table-responsive">
-	<table class="table table-hover table-bordered table-striped table-condensed">
+	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
 		{if $documents}
-			<tr class="bg-primary text-white">
-				<th>{trans("Number:")}</th>
-				<th>{trans("Type:")}</th>
-				<th>{trans("Created:")}</th>
-				<th>{trans("Period:")}</th>
-				<th>&nbsp;</th>
+			<tr class="bg-secondary text-white">
+				<td class="p-2">{trans("Number:")}</td>
+				<td class="p-2">{trans("Type:")}</td>
+				<td class="p-2">{trans("Created:")}</td>
+				<td class="p-2">{trans("Period:")}</td>
+				<td>&nbsp;</td>
 			</tr>
 		{/if}
 		{foreach $documents as $doc}

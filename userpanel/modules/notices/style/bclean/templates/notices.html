@@ -36,12 +36,12 @@
 {box title="Notice to you"}
 {if $notice}
 	<div class="table-responsive">
-		<table class="table table-bordered table-condensed table-striped">
-			<tr class="bg-primary text-white">
-				<th>{trans("Date:")}</th>
-				<th>{trans("Status:")}</th>
-				<th>{trans("Subject:")}</th>
-				<th>{trans("Read status:")}</th>
+		<table class="table table-sm table-hover table-bordered table-condensed table-striped">
+			<tr class="bg-secondary text-white">
+				<td class="p-2">{trans("Date:")}</td>
+				<td class="p-2">{trans("Status:")}</td>
+				<td class="p-2">{trans("Subject:")}</td>
+				<td class="p-2">{trans("Read status:")}</td>
 			</tr>
 			{foreach $notice as $items}
 				<tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
@@ -52,7 +52,7 @@
 				</tr>
 				<tr id="{$items.id}" style="display:none;">
 					<td colspan="4" >
-						<h3>{trans("Body:")}</h3>
+						<h5>{trans("Body:")}</h5>
 						{$items.body}<br /><br />
 						{if $items.status !=2}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
 				</tr>

@@ -87,7 +87,7 @@ $_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokument
 $_LANG['Company data'] = 'Dane firmy';
 $_LANG['Personal data'] = 'Dane osobowe';
 $_LANG['Company name'] = 'Nazwa firmy';
-$_LANG['Information about the subscriber'] = 'Informacje o abonencie';
+$_LANG['Information about the subscriber'] = 'Informacje o Abonencie';
 
 $_LANG['building'] = 'budynek';
 $_LANG['apartment'] = 'lokal';

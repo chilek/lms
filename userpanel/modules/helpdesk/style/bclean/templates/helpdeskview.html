@@ -6,14 +6,14 @@
 	}
 
 </style>
-<h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
+<h5><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h5>
 {$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
 {foreach $ticket.messages as $message}
-	<div class="card">
+	<div class="card mb-2">
 		<div class="card-header">
-			<h4 class="card-title">
+			<h6 class="card-title">
 				<strong>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</strong>
-			</h4>
+			</h6>
 			<h6 class="card-subtitle text-muted">
 				{trans("Subject:")} <strong>{$message.subject|escape}</strong>
 			</h6>
@@ -21,8 +21,8 @@
 		<div class="card-block">
 			<div class="card-block">
 				<blockquote class="blockquote">
-					<p class="mb-0">{$message.body|escape|replace:"\n":"<br/>"}</p>
-					<footer class="blockquote-footer">{trans("From")}:
+					<p class="mb-3 mt-1 ml-4">{$message.body|escape|replace:"\n":"<br/>"}</p>
+					<footer class="blockquote-footer ml-2">{trans("From")}:
 						<strong>
 							{if $message.customerid}
 								{$message.customername}
@@ -39,24 +39,27 @@
 						</strong>
 					</footer>
 				</blockquote>
-
+			</div>
+			<div class="card-footer">
 				{if $message.attachments}
+				<div>
 					<strong>{trans("Attachments:")}</strong>
 					<ul class="list-inline">
 						{foreach $message.attachments as $attachment}
 							{if !$attachment@first}
 							{/if}
 							<li class="list-inline-item">
-								<a class="btn btn-secondary btn-sm" href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename}</a>
+								<a class="btn btn-info btn-sm" href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename}</a>
 							</li>
 						{/foreach}
 					</ul>
+				</div>
+				{/if}
+				{if ($ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
+				&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
+				<a class="btn btn-success" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Answer")}</a>
 				{/if}
 
-				{if ($ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets'))
-					&& (!$allow_reopen_tickets_newer_than || $smarty.now - $allow_reopen_tickets_newer_than <= $ticket.lastmod)}
-					<a class="btn btn-success" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
-				{/if}
 			</div>
 		</div>
 	</div>

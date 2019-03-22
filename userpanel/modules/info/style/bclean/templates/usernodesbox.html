@@ -1,10 +1,10 @@
 {box title="Your computers"}
 <div class="table-responsive">
-	<table class="table table-hover table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
-			<th>Opis urządzenia:</th>
-			<th>MAC adres</th>
-			<th>Publiczne IP:</th>
+	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+		<tr class="bg-secondary text-white">
+			<td class="p-2">Opis urządzenia:</td>
+			<td class="p-2">MAC adres</td>
+			<td class="p-2">Publiczne IP:</td>
 		</tr>
 		{section name=usernodes loop=$usernodes}
 			{if $usernodes[usernodes].id}

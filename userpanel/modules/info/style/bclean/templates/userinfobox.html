@@ -154,8 +154,7 @@
 			{if $userinfo.accounts}<BR />{/if}
 			{foreach $userinfo.accounts as $account}
 				{format_bankaccount($account.account)|replace:" ":"&nbsp;"}{if !$account@last}<BR />{/if}
-			{/foreach}
-
+			{/foreach}<BR />
 		</li>
 	{/if}
 </ul>

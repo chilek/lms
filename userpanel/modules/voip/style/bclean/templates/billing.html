@@ -1,10 +1,10 @@
 {include file="header.html"}
 <ul class="nav nav-tabs mb-1" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link" data-toggle="tab" href="#tab-billings">{trans("Billings")}</a>
+		<a class="nav-link active" data-toggle="tab" href="#tab-billings" role="tab">{trans("Billings")}</a>
 	</li>
 	<li class="nav-item">
-		<a class="nav-link" data-toggle="tab" href="#tab-settings">{trans("Settings")}</a>
+		<a class="nav-link" data-toggle="tab" href="#tab-settings" role="tab">{trans("Settings")}</a>
 	</li>
 </ul>
 <div class="tab-content">
@@ -12,7 +12,7 @@
 		<FORM METHOD="GET" ACTION="?m=voip" class="form-inline">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="voip">
 			<div class="form-group">
-				<label for="phonelabel">
+				<label for="phonelabel" class="m-2">
 					{if count($customer_phone_list) > 1}
 						{trans("My phones:")}
 					{else}
@@ -35,16 +35,18 @@
 				{/if}
 			</div>
 			<div class="form-group">
-				<label for="exampleInputName2">
+				<label for="exampleInputName2" class="m-2">
 					{trans("Date range:")}
 				</label>
+				<label>
 				{trans("from")}
-				<INPUT TYPE="text" NAME="date_from" CLASS="calendar form-control" VALUE="{if isset($params.frangefrom)}{$params.frangefrom}{/if}">
-				{trans("to")}
-				<INPUT TYPE="text" NAME="date_to" CLASS="calendar form-control" VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
+				</label>
+				<INPUT TYPE="text" NAME="date_from" CLASS="calendar form-control m-1" VALUE="{if isset($params.frangefrom)}{$params.frangefrom}{/if}">
+				<label class="ml-2">{trans("to")}</label>
+				<INPUT TYPE="text" NAME="date_to" CLASS="calendar form-control m-1" VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
 			</div>
 			<div class="form-group">
-				<label for="exampleInputName2">
+				<label for="exampleInputName2" class="m-2">
 					{trans("Connection type:")}
 				</label>
 				<SELECT NAME="ftype" CLASS="form-control">
@@ -54,7 +56,7 @@
 				</SELECT>
 			</div>
 			<div class="form-group">
-				<label for="exampleInputName2">
+				<label for="exampleInputName2" class="m-2">
 					{trans("Status:")}
 				</label>
 				<SELECT NAME="fstatus" CLASS="form-control">
@@ -65,7 +67,7 @@
 					<OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
 				</SELECT>
 			</div>
-			<INPUT TYPE="submit" CLASS="btn btn-danger" VALUE="{trans("Search")} &raquo;">
+			<INPUT TYPE="submit" CLASS="btn btn-danger m-2" VALUE="{trans("Search")} &raquo;">
 		</FORM>
 		<table class="table table-sm table-condensed">
 			<TR>
@@ -81,7 +83,7 @@
 		</table>
 		{box title="Billing list"}
 		{if $billings}
-			<TABLE CLASS="table table-sm table-condensed">
+			<TABLE CLASS="table table-striped table-sm table-condensed">
 				<thead>
 					<TR>
 						<th>{trans("Begin time:<!voip>")}</th>
@@ -158,9 +160,9 @@
 		{/box}
 	</DIV>
 	<div class="tab-pane" id="tab-settings" role="tabpanel">
-		<div class="form-group form-inline">
+		<div class="mt-2 form-group form-inline">
 			{if is_array($user_accounts) && count($user_accounts) > 1}
-				<select id="account-select" class="form-control">
+				<select id="account-select" class="form-control mr-2">
 					<option value="0">{trans("Select account")}</option>
 					{foreach $user_accounts as $acc}
 						<option value="{$acc.id}">{$acc.login}</option>

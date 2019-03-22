@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Your subscriptions'] = 'Aktywne taryfy';
 $_LANG['Access denied!'] = 'Brak dostępu!';
 $_LANG['and'] = 'i';
 $_LANG['Cancel'] = 'Anuluj';

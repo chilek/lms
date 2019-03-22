@@ -2,35 +2,20 @@
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
 {$count = 0}
 <div class="table-responsive">
-	<table class="table table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
-			<th>{trans("Tariff")}</th>
-			<th>{trans("Subscription")}</th>
-			<th>{trans("Discount:")}</th>
-			<th>{trans("Accounting day:")}</th>
-			{if $show_speeds}
-			<th>{trans("Downrate (ceil):")}</th>
-			<th>{trans("Uprate (ceil):")}</th>
-			{/if}
-			<th>{trans("Invoice")}</th>
-			<th>{trans("Period")}</th>
+	<table class="table table-sm table-bordered table-striped table-condensed">
+		<tr class="bg-secondary text-white">
+			<td class="p-2">{trans("Tariff")}</td>
+			<td class="p-2">{trans("Subscription")}</td>
 		</tr>
 		{foreach $assignments as $assignment}
-			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
+		{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom)) && $assignment.value != 0 }
 				<tr>
 					<td>{$assignment.name}</td>
-					<td>{$assignment.value|money_format}</td>
-					<td>{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
-					<td>{$assignment.payday}</td>
+					<td class="text-right">{($assignment.value - $assignment.vdiscount - $assignment.value * $assignment.pdiscount/100)|money_format}</td>
 					{if $show_speeds}
 					<td>{$assignment.downrate|default:"-"} ({$assignment.downceil|default:"-"}) kbit/s</td>
 					<td>{$assignment.uprate|default:"-"} ({$assignment.upceil|default:"-"}) kbit/s</td>
 					{/if}
-					<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
-					<td>
-						{if $assignment.datefrom}{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
-						{if $assignment.dateto}{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}{/if}
-					</td>
 				</tr>
 				{$count = $count +1}
 			{/if}
@@ -42,17 +27,13 @@
 			</tr>
 		{/foreach}
 		{if $count > 1}
-			<tr class="bg-primary text-white">
+			<tr class="bg-info text-white">
 				<td>{trans("Total:")}</td>
-				<td>{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</td>
-				<td>({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
-				<td>&nbsp;</td>
+				<td class="text-right">{sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format}</td>
 				{if $show_speeds}
 				<td>{sum array=$assignments column="real_downrate" default="-"} ({sum array=$assignments column="real_downceil" default="-"}) kbit/s
 				<td>{sum array=$assignments column="real_uprate" default="-"} ({sum array=$assignments column="real_upceil" default="-"}) kbit/s</td>
 				{/if}
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
 			</tr>
 		{/if}
 	</table>
