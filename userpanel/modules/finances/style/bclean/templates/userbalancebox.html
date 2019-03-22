@@ -1,5 +1,16 @@
 {box title="Your balance"}
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
+<style>
+
+	#print-all {
+		margin-bottom: 0.3em;
+	}
+
+	.check-invoice {
+		margin-left: 0.3em;
+	}
+
+</style>
 <div class="row">
     <div class="col-md-12">
         <form name="invoices" action="?m=finances&amp;f=invoice" method="POST" target="_blank">
@@ -56,8 +67,14 @@
 										<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>{if isset($link.icon)}{img src="`$link.icon`" alt="`$link.label`" text=$link.tip}{else}{$link.label}{/if}</a>
 									{if isset($link.extra)}{$link.extra}{/if}
 								{/foreach}
-								{if $item.doctype==1 || $item.doctype==3}
-									<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" target="_blank">{trans("Print")}</a> <input type="checkbox" name="inv[{$item.docid}]" value="1" />
+								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
+									<a class="btn btn-primary btn-sm" href="?m=finances&f=invoice&id={$item.docid}" role="button" target="_blank">
+										{trans("Print")}
+									</a>
+									<div class="custom-control custom-checkbox custom-control-inline check-invoice">
+										<input class="custom-control-input" type="checkbox" id="inv-{$item.docid}" name="inv[{$item.docid}]" value="1" />
+										<label class="custom-control-label" for="inv-{$item.docid}">{trans("check")}</label>
+									</div>
 								{else}
 									&nbsp;
 								{/if}
@@ -83,12 +100,11 @@
 								</button>
 							</td>
 							<td>
-								<label>
-									{trans("Check all")}
-									<input type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
-								</label>
-								<br>
-								<a class="btn btn-primary btn-sm" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+								<a class="btn btn-primary btn-sm" id="print-all" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+								<div class="custom-control custom-checkbox">
+									<input class="custom-control-input" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
+									<label class="custom-control-label" for="allbox">{trans("Check all")}</label>
+								</div>
 							</td>
 						</tr>
 					</tfoot>
