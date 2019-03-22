@@ -48,21 +48,21 @@
 						{$item=$balancelist.list[balancelist]}
 						{if $item.time > $ldate}
 						<tr {if $item.value > 0} class="table-success"{else} class="table-danger"{/if}>
-							<td>{$item.date|date_format:"%Y-%m-%d"}</td>
+							<td class="text-right text-nowrap">{$item.date|date_format:"%Y-%m-%d"}</td>
 							{if $item.value > 0}
 								<td></td>
-								<td class="text-success font-weight-bold">
+								<td class="text-right text-nowrap text-success font-weight-bold">
 									{if $item.value > 0 && $item.type != 4}+{/if}
 									{$item.value|money_format}
 								</td>
 							{else}
-								<td class="text-danger font-weight-bold">
+								<td class="text-right text-nowrap text-danger font-weight-bold">
 									{if $item.type == 4}-{/if}
 									{$item.value|money_format}
 								</td>
 								<td></td>
 							{/if}
-							<td>
+							<td class="text-right text-nowrap">
 								{if $item.after < 0}
 									<strong>{$item.after|money_format}</strong>
 								{else}
