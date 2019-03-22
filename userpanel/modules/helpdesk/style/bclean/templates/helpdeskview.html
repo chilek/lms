@@ -1,4 +1,11 @@
 {include file="header.html"}
+<style>
+
+	.card > .card-block {
+		margin: 0.4em;
+	}
+
+</style>
 <h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
 {$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
 {foreach $ticket.messages as $message}
