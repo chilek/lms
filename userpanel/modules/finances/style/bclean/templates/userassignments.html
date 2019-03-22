@@ -19,14 +19,14 @@
 			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
 				<tr>
 					<td>{$assignment.name}</td>
-					<td>{$assignment.value|money_format}</td>
-					<td>{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
-					<td>{$assignment.payday}</td>
+					<td class="text-right text-nowrap">{$assignment.value|money_format}</td>
+					<td class="text-right text-nowrap">{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
+					<td class="text-right">{$assignment.payday}</td>
 					{if $show_speeds}
 					<td>{$assignment.downrate|default:"-"} ({$assignment.downceil|default:"-"}) kbit/s</td>
 					<td>{$assignment.uprate|default:"-"} ({$assignment.upceil|default:"-"}) kbit/s</td>
 					{/if}
-					<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
+					<td class="text-center">{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 					<td>
 						{if $assignment.datefrom}{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $assignment.dateto}{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}{/if}
