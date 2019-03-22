@@ -12,6 +12,9 @@
 			</div>
 			<div class="modal-body">
 				<form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
+					{if count($queues) == 1}
+						<input type="hidden" name="helpdesk[queue]" value="{$queues[0].id}">
+					{else}
 					<div class="form-group">
 						<label for="queue">{trans("Queue:")}</label>
 						<select name="helpdesk[queue]" id="queue" {userpaneltip class="form-control" text="Select queue" trigger="queue"}>
@@ -20,7 +23,7 @@
 							{/foreach}
 						</select>
 					</div>
-
+					{/if}
 					<div class="form-group">
 						<label for="subject">{trans("Subject:")}</label>
 						<input type="text" name="helpdesk[subject]" id="subject" value="{$helpdesk.subject}" {userpaneltip class="form-control" text="Enter request subject" trigger="subject"} placeholder="{trans("Enter request subject")}" required />
