@@ -154,8 +154,8 @@ function to_wgs84($coord, $ifLongitude = true) {
 }
 */
 
-define(EOL, "\r\n");
-define(ZIP_CODE, '15-950');
+define('EOL', "\r\n");
+define('ZIP_CODE', '15-950');
 
 if (isset($_POST['sheets']) && is_array($_POST['sheets']))
 	$sheets = array_keys($_POST['sheets']);
