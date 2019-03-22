@@ -10,6 +10,14 @@
 		margin-left: 0.3em;
 	}
 
+	.custom-control-label.valign-fix {
+		vertical-align: top;
+	}
+
+	#checkall-checkbox {
+		margin-bottom: 0.4em;
+	}
+
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -23,9 +31,10 @@
 							<th>{trans("Payment")}</th>
 							<th>{trans("Balance")}</th>
 							<th>{trans("Transfer title")} / {trans("Invoice title")}</th>
-								{if !$disable_invoices}
-								<th></th>
-								{/if}
+							{if !$disable_invoices}
+							<th></th>
+							<th class="text-center">{trans("Check")}</th>
+							{/if}
 						</tr>
 					</thead>
 					{$ldate = ConfigHelper::getConfig('userpanel.show_last_years', 5)}
@@ -62,7 +71,7 @@
 							</td>
 							<td>{$item.comment}</td>
 							{if !$disable_invoices}
-								<td>
+							<td class="text-center">
 									{foreach $item.customlinks as $link}
 										<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>{if isset($link.icon)}{img src="`$link.icon`" alt="`$link.label`" text=$link.tip}{else}{$link.label}{/if}</a>
 									{if isset($link.extra)}{$link.extra}{/if}
@@ -71,12 +80,16 @@
 									<a class="btn btn-primary btn-sm" href="?m=finances&f=invoice&id={$item.docid}" role="button" target="_blank">
 										{trans("Print")}
 									</a>
-									<div class="custom-control custom-checkbox custom-control-inline check-invoice">
-										<input class="custom-control-input" type="checkbox" id="inv-{$item.docid}" name="inv[{$item.docid}]" value="1" />
-										<label class="custom-control-label" for="inv-{$item.docid}">{trans("check")}</label>
-									</div>
 								{else}
 									&nbsp;
+								{/if}
+							</td>
+							<td class="text-center">
+								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
+									<div class="custom-control custom-checkbox custom-control-inline check-invoice">
+										<input class="custom-control-input" type="checkbox" id="inv-{$item.docid}" name="inv[{$item.docid}]" value="1" />
+										<label class="custom-control-label valign-fix" for="inv-{$item.docid}"></label>
+									</div>
 								{/if}
 							</td>
 							{/if}
@@ -84,13 +97,13 @@
 						{/if}
 					{sectionelse}
 						<tr>
-							<td colspan="6">
+							<td colspan="{if $disabled_invoices}5{else}7{/if}">
 								{trans("No such transactions on your account.")}
 							</td>
 						</tr>
 					{/section}
 					</tbody>
-				{if !$disable_invoices}
+				{if !$disable_invoices && !empty($balancelist.list)}
 					<tfoot>
 						<tr>
 							<td colspan="5">
@@ -99,12 +112,12 @@
 									{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if}
 								</button>
 							</td>
-							<td>
-								<a class="btn btn-primary btn-sm" id="print-all" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
-								<div class="custom-control custom-checkbox">
+							<td colspan="2" class="text-center">
+								<div class="custom-control custom-checkbox" id="checkall-checkbox">
 									<input class="custom-control-input" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />
 									<label class="custom-control-label" for="allbox">{trans("Check all")}</label>
 								</div>
+								<a class="btn btn-primary btn-sm" id="print-all" href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
 							</td>
 						</tr>
 					</tfoot>

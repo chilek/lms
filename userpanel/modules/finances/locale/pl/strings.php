@@ -104,6 +104,6 @@ $_LANG['Invoice title'] = 'Tytuł faktury';
 
 $_LANG['Show transactions from last selected years:'] = 'Pokaż transakcje z ostatnich wybranych lat:';
 
-$_LANG['check'] = 'zaznacz';
+$_LANG['Check'] = 'Zaznacz';
 
 ?>
