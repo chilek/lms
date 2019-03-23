@@ -9,15 +9,7 @@
 			<tr {userpaneltip text="Click icon on the left to see request details"}>
 				<td>{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
 				<td>
-					{if $helpdesklist[helpdesklist].state == 0}
-						<span class="badge badge-primary">{trans("new")}</span>
-					{elseif $helpdesklist[helpdesklist].state == 1}
-						<span class="badge badge-info">{trans("open")}</span>
-					{elseif $helpdesklist[helpdesklist].state == 2}
-						<span class="badge badge-success">{trans("resolved")}</span>
-					{else}
-						<span class="badge badge-default">{trans("dead")}</span>
-					{/if}
+					<span class="badge" style="color: white; background-color:{$_RT_STATES[$helpdesklist[helpdesklist].state].color};">{$_RT_STATES[$helpdesklist[helpdesklist].state].label}</span>
 					<a class="font-weight-bold" href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
 						{$helpdesklist[helpdesklist].subject|escape}
 					</a>
