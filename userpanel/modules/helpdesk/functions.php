@@ -148,7 +148,7 @@ function module_main() {
 		}
 
 		if ($ticket['subject'] == '')
-			$error['subject'] = trans('Ticket must have its title!');
+			$ticket['subject'] = trans("No subject");
 
 		if ($ticket['body'] == '')
 			$error['body'] = trans('Ticket must have its body!');

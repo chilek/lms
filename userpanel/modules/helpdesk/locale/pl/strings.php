@@ -37,6 +37,7 @@ $_LANG['Default user:'] = 'Domyślny użytkownik:';
 $_LANG['Details'] = 'Szczegóły';
 $_LANG['Enter request contents'] = 'Wprowadź treść zgłoszenia';
 $_LANG['Enter request subject'] = 'Wprowadź temat zgłoszenia';
+$_LANG['No subject'] = 'Brak tematu';
 $_LANG['From:'] = 'Od:';
 $_LANG['Helpdesk'] = 'Helpdesk';
 $_LANG['Helpdesk queues for tickets requested in Userpanel'] = 'Kolejki Helpdesku dla zgłoszeń z Userpanela';
