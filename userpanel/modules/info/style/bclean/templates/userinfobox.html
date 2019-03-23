@@ -18,7 +18,7 @@
 		{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 				<button id="updatedatabtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateuserinfobox" accesskey="A">
-					{trans("Actualize data")}
+					{trans("Actualize")}
 				</button>
 			{/if}
 		{/if}
@@ -31,7 +31,7 @@
 			<strong>{trans("PIN")}:</strong>******
 			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
 			<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
-				{trans("Update PIN")}
+				{trans("Change")}
 			</button>
 			{/if}
 		</li>
