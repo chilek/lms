@@ -52,6 +52,7 @@ $_LANG['Number:'] = 'Numer:';
 $_LANG['open'] = 'otwarty';
 $_LANG['Request history'] = 'Historia zgłoszeń';
 $_LANG['Request No. $a / Queue: $b'] = 'Zgłoszenie Nr $a / Kolejka: $b';
+$_LANG['Request No. $a'] = 'Zgłoszenie Nr $a';
 $_LANG['resolved'] = 'rozwiązany';
 $_LANG['- select queues -'] = '- wybierz kolejki -';
 $_LANG['- select user -'] = '- wybierz użytkownika -';

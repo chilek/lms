@@ -453,8 +453,13 @@ function module_main() {
 			$sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
 			if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
 				&& in_array($ticket['source'], $sources)) {
-				$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+				if (count($queues)==1) {
+					$SMARTY->assign('title', trans('Request No. $a',
+						sprintf('%06d', $ticket['ticketid'])));
+				} else {
+					$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
 					sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+				}
 
 				$SMARTY->assign('ticket', $ticket);
 				$SMARTY->display('module:helpdeskview.html');
