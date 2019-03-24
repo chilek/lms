@@ -131,8 +131,9 @@
 			</li>
 		{/if}
 		<li class="list-group-item">
-			<strong>{trans("Balance:")}</strong>
-		{if $userinfo.balance < 0}<span class="text-danger"><strong>{$userinfo.balance|money_format}</strong></span>{else}{$userinfo.balance|money_format}{/if}
+			<strong>{trans("Balance:")}
+		{if $userinfo.balance < 0}<span class="text-danger">{$userinfo.balance|money_format}{else}<span class="text-success">{$userinfo.balance|money_format}{/if}</span>
+			</strong>
 	</li>
 	{if $userinfo.bankaccount || $userinfo.accounts}
 		<li class="list-group-item">
