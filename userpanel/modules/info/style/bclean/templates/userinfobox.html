@@ -182,7 +182,7 @@
 							</div>
 						{/if}
 					{else}
-						{trans("Name:")} {$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
+						{trans("Name:")}<br/>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
 					{/if}
 
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
@@ -206,9 +206,9 @@
 							<INPUT class="col-lg-5 form-control" id="city" TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" placeholder="{trans("Enter city name")}">
 						</div>
 					{else}
-						{$userinfo.address}, {$userinfo.zip} {$userinfo.city}
+						{$userinfo.address},<br/> {$userinfo.zip} {$userinfo.city}
 					{/if}
-
+					<br/><br/>
 					{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 
 						{foreach $userinfo.emails as $email}
