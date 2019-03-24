@@ -11,17 +11,17 @@
 {foreach $ticket.messages as $message}
 	<div class="card">
 		<div class="card-header">
-			<h4 class="card-title">
-				<strong>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</strong>
-			</h4>
-			<h6 class="card-subtitle text-muted">
+			<h5 class="card-title">
 				{trans("Subject:")} <strong>{$message.subject|escape}</strong>
+			</h5>
+			<h6 class="card-subtitle text-muted">
+				<strong>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</strong>
 			</h6>
 		</div>
 		<div class="card-block">
 			<div class="card-block">
 				<blockquote class="blockquote">
-					<p class="mb-0">{$message.body|escape|replace:"\n":"<br/>"}</p>
+					<p class="mb-0 p-3">{$message.body|escape|replace:"\n":"<br/>"}</p>
 					<footer class="blockquote-footer">{trans("From")}:
 						<strong>
 							{if $message.customerid}
