@@ -10,7 +10,7 @@
 				<td>{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
 				<td>
 					<span class="badge" style="color: white; background-color:{$_RT_STATES[$helpdesklist[helpdesklist].state].color};">{$_RT_STATES[$helpdesklist[helpdesklist].state].label}</span>
-					<a class="font-weight-bold" href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
+					<a href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}" {if $helpdesklist[helpdesklist].state == 2}style="color:grey"{/if}>
 						{$helpdesklist[helpdesklist].subject|escape}
 					</a>
 					<br>
