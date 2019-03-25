@@ -171,7 +171,10 @@ $networks = preg_split('/(\s+|\s*,\s*)/', $networks, -1, PREG_SPLIT_NO_EMPTY);
 $excluded_networks = ConfigHelper::getConfig('tcnew.excluded_networks', '', true);
 $excluded_networks = preg_split('/(\s+|\s*,\s*)/', $excluded_networks, -1, PREG_SPLIT_NO_EMPTY);
 
-$networks = array_intersect(array_diff($networks, $excluded_networks), $existing_networks);
+if (empty($networks))
+	$networks = array_diff($existing_networks, $excluded_networks);
+else
+	$networks = array_intersect(array_diff($networks, $excluded_networks), $existing_networks);
 
 $networks = $DB->GetAllByKey("SELECT id, name, address, mask, interface FROM networks"
 	. (empty($networks) ? '' : " WHERE UPPER(name) IN ('" . implode("','", array_map('mb_strtoupper', $networks)) . "')"),
