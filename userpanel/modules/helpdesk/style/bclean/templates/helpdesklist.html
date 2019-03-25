@@ -1,18 +1,35 @@
 {box title="Request history"}
+
+<script type="text/javascript">
+	$(document).ready(function($) {
+		$(".table-click").click(function() {
+			window.document.location = $(this).data("href");
+		});
+	});
+</script>
+
+<style>
+	.table-click tr,td {
+		color: black;
+	}
+	.table-click tr :hover, td :hover {
+		cursor: pointer;
+		color: #007bff;
+	}
+</style>
+
 <div class="table-responsive">
 	<table class="table table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
+		<thead class="bg-primary text-white">
 			<th>{trans("Number:")}</th>
 			<th>{trans("Subject:")}</th>
-		</tr>
+		</thead>
 		{section name=helpdesklist loop=$helpdesklist start=$limit}
-			<tr {userpaneltip text="Click icon on the left to see request details"}>
-				<td>{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
+			<tr class="table-click" data-href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
+				<td class="text-center align-middle">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
 				<td>
 					<span class="badge" style="color: white; background-color:{$_RT_STATES[$helpdesklist[helpdesklist].state].color};">{$_RT_STATES[$helpdesklist[helpdesklist].state].label}</span>
-					<a href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}" {if $helpdesklist[helpdesklist].state == 2}style="color:grey"{/if}>
-						{$helpdesklist[helpdesklist].subject|escape}
-					</a>
+					<span {if $helpdesklist[helpdesklist].state == 2}style="color:grey"{/if}>{$helpdesklist[helpdesklist].subject|escape}</span>
 					<br>
 					<small class="text-muted">{trans("Date:")} {$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"} &nbsp; {trans("Last modified:")} {$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</small>
 				</td>

@@ -1,7 +1,22 @@
 {box title="Your balance"}
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
-<style>
 
+<script type="text/javascript">
+	$(document).ready(function($) {
+		$(".table-click").click(function() {
+			window.document.location = $(this).data("href");
+		});
+	});
+</script>
+
+<style>
+	.table-click tr,td {
+		color: black;
+	}
+	.table-click tr :hover, td :hover {
+		cursor: pointer;
+		color: #007bff;
+	}
 	#print-all {
 		margin-bottom: 0.3em;
 	}
@@ -47,7 +62,7 @@
 					{section name=balancelist loop=$balancelist.list step=-1}
 						{$item=$balancelist.list[balancelist]}
 						{if $item.time > $ldate}
-						<tr {if $item.value > 0} class="table-success"{else} class="table-danger"{/if}>
+						<tr {if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}class="table-click" data-href="?m=finances&f=invoice&id={$item.docid}"{/if} {if $item.value > 0} class="table-success"{else} class="table-danger"{/if}>
 							<td class="text-right text-nowrap">{$item.date|date_format:"%Y-%m-%d"}</td>
 							{if $item.value > 0}
 								<td></td>
