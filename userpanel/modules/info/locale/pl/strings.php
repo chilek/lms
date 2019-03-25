@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-$_LANG['Actualize data'] = 'Aktualizuj dane';
+$_LANG['Customer ID'] = 'Nr klienta';
+$_LANG['Login data'] = 'Logowanie';
+$_LANG['Actualize'] = 'Aktualizuj';
 $_LANG['Add computer'] = 'Dodaj komputer';
 $_LANG['Balance:'] = 'Bilans:';
 $_LANG['city'] = 'miasto';
@@ -116,6 +118,7 @@ $_LANG['Enter customer data change rejection mail subject'] = 'Wprowadź temat l
 $_LANG['Rejection mail body:'] = 'Treść listu z odmową:';
 $_LANG['Enter customer data change rejection mail body'] = 'Wprowadź treść listu z odmową zmiany danych klienta';
 
+$_LANG['Change'] = 'Zmień';
 $_LANG['Update PIN'] = 'Zmień PIN';
 $_LANG['PIN Update'] = 'Aktualizacja PIN';
 $_LANG['Current PIN'] = 'Aktualny PIN';
