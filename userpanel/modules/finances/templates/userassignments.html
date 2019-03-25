@@ -22,8 +22,14 @@
 		<td class="nobr" align="right">{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
 		<td class="nobr">{$assignment.payday}</td>
 		{if $show_speeds}
-			<td class="nobr" align="right">{$assignment.downrate|default:"-"} ({$assignment.downceil|default:"-"}) kbit/s</td>
-			<td class="nobr" align="right">{$assignment.uprate|default:"-"} ({$assignment.upceil|default:"-"}) kbit/s</td>
+			<td class="nobr" align="right">
+				{if empty($assignment.downrate)}-{else}{convert_to_units($assignment.downrate)}/s{/if}
+				({if empty($assignment.downceil)}-{else}{convert_to_units($assignment.downceil)}/s{/if})
+			</td>
+			<td class="nobr" align="right">
+				{if empty($assignment.uprate)}-{else}{convert_to_units($assignment.uprate)}/s{/if}
+				({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil)}/s{/if})
+			</td>
 		{/if}
 		<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 		<td>
