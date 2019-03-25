@@ -6,12 +6,12 @@
 	<li class="nav-item">
 		<a class="nav-link active" data-toggle="tab" href="#userinfobox" role="tab">{trans("Information about the subscriber")}</a>
 	</li>
-	{if (is_array($usernodes) && count($usernodes)) || !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
+	{if (is_array($usernodes) && count($usernodes)) && !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 		<li class="nav-item">
 			<a class="nav-link" data-toggle="tab" href="#usernodesbox" role="tab">{trans("Your computers")}</a>
 		</li>
 	{/if}
-	{if (is_array($documents) && count($documents)) || !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
+	{if (is_array($documents) && count($documents)) && !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
 		<li class="nav-item">
 			<a class="nav-link" data-toggle="tab" href="#userdocsbox" role="tab">{trans("Your documents")}</a>
 		</li>
@@ -27,12 +27,12 @@
 	<div class="tab-pane active" id="userinfobox" role="tabpanel">
 		{include file="module:userinfobox.html"}
 	</div>
-	{if (is_array($usernodes) && count($usernodes)) || !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
+	{if (is_array($usernodes) && count($usernodes)) && !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 		<div class="tab-pane" id="usernodesbox" role="tabpanel">
 			{include file="module:usernodesbox.html"}
 		</div>
 	{/if}
-	{if (is_array($documents) && count($documents)) || !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
+	{if (is_array($documents) && count($documents)) && !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
 		<div class="tab-pane" id="userdocsbox" role="tabpanel">
 			{include file="module:userdocsbox.html"}
 		</div>
