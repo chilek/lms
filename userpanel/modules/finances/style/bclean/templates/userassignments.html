@@ -1,5 +1,7 @@
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
+{$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 {$count = 0}
 <div class="table-responsive">
 	<table class="table table-bordered table-striped table-condensed">
@@ -24,12 +26,12 @@
 					<td class="text-right">{$assignment.payday}</td>
 					{if $show_speeds}
 					<td>
-						{if empty($assignment.downrate)}-{else}{convert_to_units($assignment.downrate)}/s{/if}
-						({if empty($assignment.downceil)}-{else}{convert_to_units($assignment.downceil)}/s{/if})
+						{if empty($assignment.downrate)}-{else}{convert_to_units($assignment.downrate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
+						({if empty($assignment.downceil)}-{else}{convert_to_units($assignment.downceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
 					</td>
 					<td>
-						{if empty($assignment.uprate)}-{else}{convert_to_units($assignment.uprate)}/s{/if}
-						({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil)}/s{/if})
+						{if empty($assignment.uprate)}-{else}{convert_to_units($assignment.uprate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
+						({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
 					</td>
 					{/if}
 					<td class="text-center">{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>

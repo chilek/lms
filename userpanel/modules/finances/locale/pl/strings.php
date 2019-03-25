@@ -106,4 +106,9 @@ $_LANG['Show transactions from last selected years:'] = 'Pokaż transakcje z ost
 
 $_LANG['Check'] = 'Zaznacz';
 
+$_LANG['Speed unit type'] = 'Typ jednostki szybkości';
+$_LANG['Speed unit aggregation threshold'] = 'Wyzwalacz agregacji jednostki szybkości';
+$_LANG['<!speed-unit>SI'] = 'SI';
+$_LANG['<!speed-unit>binary'] = 'binarny';
+
 ?>
