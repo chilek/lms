@@ -223,6 +223,7 @@ version ?.??.?? (????-??-??):
     hasn't got any documents [chilan]
   - enhacement: allow to embed images in messages [chilan]
   - improvement: userpanel/finances: tariffs speeds are aggregate to sane units [chilan]
+  - improvement: userpanel/finances: tariff speed units are configurable [chilan]
 
 version 1.11.23 (2018-03-21):
 
