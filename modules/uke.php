@@ -162,13 +162,10 @@ if (isset($_POST['sheets']) && is_array($_POST['sheets']))
 else
 	$sheets = array();
 
-$format = intval($_POST['format']);
-if ($format == 2) {
-	$buffer = '#SIIS wersja 5.28' . EOL;
-	$header = ConfigHelper::getConfig('siis.header', '');
-	if (strlen($header))
-		$buffer .= str_replace("\n", EOL, $header) . EOL;
-}
+$buffer = '#SIIS wersja 5.28' . EOL;
+$header = ConfigHelper::getConfig('siis.header', '');
+if (strlen($header))
+	$buffer .= str_replace("\n", EOL, $header) . EOL;
 
 // prepare old csv key arrays
 $ob_keys = array('ob_id', 'ob_invproject', 'ob_name', 'ob_nip', 'ob_regon', 'ob_rpt', 'ob_state',
@@ -217,13 +214,6 @@ function to_csv($data) {
 	return implode(',', array_values($data));
 }
 
-function to_old_csv($keys, $array) {
-	$result = array();
-	foreach ($keys as $key)
-		$result[] = strpos($array[$key], ',') === FALSE ? $array[$key] : '"' . $array[$key] . '"';
-	return implode(',', $result);
-}
-
 function to_wgs84($coord, $ifLongitude = true) {
 	return str_replace(',', '.', sprintf("%.04f", $coord));
 }
@@ -261,11 +251,9 @@ $projectid = 1;
 $sprojects = '';
 if (!empty($projects))
 	foreach ($projects as $project) {
-		if ($format == 2) { 
-			$res = preg_grep('/^PR,.+,"' . str_replace('/', '\/', $project['name']) . '",/', preg_split('/\r?\n/', $header));
-			if (!empty($res))
-				continue;
-		}
+		$res = preg_grep('/^PR,.+,"' . str_replace('/', '\/', $project['name']) . '",/', preg_split('/\r?\n/', $header));
+		if (!empty($res))
+			continue;
 		$data = array(
 			'proj_id' => $projectid,
 			'proj_name' => $project['name'],
@@ -280,10 +268,7 @@ if (!empty($projects))
 			'proj_range' => '',
 		);
 		if (in_array('proj', $sheets))
-			if ($format == 2)
-				$buffer .= 'PR,' . to_csv($data) . EOL;
-			else
-				$sprojects .= to_old_csv($proj_keys, $data) . EOL;
+			$buffer .= 'PR,' . to_csv($data) . EOL;
 		$projectid++;
 	}
 
@@ -772,10 +757,7 @@ foreach ($foreigners as $name => $foreigner)
 			'ob_invproject' => $project,
 		);
 		if (in_array('po', $sheets))
-			if ($format == 2)
-				$buffer .= 'PO,' . to_csv($data) . EOL;
-			else
-				$sforeigners .= to_old_csv($ob_keys, $data) . EOL;
+			$buffer .= 'PO,' . to_csv($data) . EOL;
 		$foreignerid++;
 	}
 
@@ -854,10 +836,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 		);
 
 		if (in_array('ww', $sheets))
-			if ($format == 2)
-				$buffer .= 'WW,' . to_csv($data) . EOL;
-			else
-				$snetnodes .= to_old_csv($ww_keys, $data) . EOL;
+			$buffer .= 'WW,' . to_csv($data) . EOL;
 	} else {
 		$data = array(
 			'wo_id' => $netnode['id'],
@@ -882,10 +861,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 		);
 
 		if (in_array('wo', $sheets))
-			if ($format == 2)
-				$buffer .= 'WO,' . to_csv($data) . EOL;
-			else
-				$sforeignernetnodes .= to_old_csv($wo_keys, $data) . EOL;
+			$buffer .= 'WO,' . to_csv($data) . EOL;
 	}
 
 	if ($netnode['ownership'] == 2)
@@ -924,10 +900,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 									'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
 								);
 								if (in_array('int', $sheets))
-									if ($format == 2)
-										$buffer .= 'I,' . to_csv($data) . EOL;
-									else
-										$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
+									$buffer .= 'I,' . to_csv($data) . EOL;
 								$netnodes[$netnodename]['backbonenetintid'][$prj][$status][$linktype][$linktechnology][$linkspeed] =
 									$netintid;
 								$netintid++;
@@ -970,10 +943,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 									'int_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
 								);
 								if (in_array('int', $sheets))
-									if ($format == 2)
-										$buffer .= 'I,' . to_csv($data) . EOL;
-									else
-										$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
+									$buffer .= 'I,' . to_csv($data) . EOL;
 								$netintid++;
 							}
 						}
@@ -1032,10 +1002,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 									$data['int_freeports'] = 0;
 								}
 								if (in_array('int', $sheets))
-									if ($format == 2)
-										$buffer .= 'I,' . to_csv($data) . EOL;
-									else
-										$snetinterfaces .= to_old_csv($int_keys, $data) . EOL;
+									$buffer .= 'I,' . to_csv($data) . EOL;
 								if ($linktype == 1) {
 									$radiosectors = $customertypes['radiosectors'];
 									if (empty($radiosectors)) {
@@ -1054,10 +1021,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 											'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
 										);
 										if (in_array('sr', $sheets))
-											if ($format == 2)
-												$buffer .= 'Z,' . to_csv($data) . EOL;
-											else
-												$sradiosectors .= to_old_csv($sr_keys, $data) . EOL;
+											$buffer .= 'Z,' . to_csv($data) . EOL;
 										$radiosectorid++;
 									} else
 										foreach ($radiosectors as $radiosector) {
@@ -1077,10 +1041,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 												'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
 											);
 											if (in_array('sr', $sheets))
-												if ($format == 2)
-													$buffer .= 'Z,' . to_csv($data) . EOL;
-												else
-													$sradiosectors .= to_old_csv($sr_keys, $data) . EOL;
+												$buffer .= 'Z,' . to_csv($data) . EOL;
 											$radiosectorid++;
 										}
 								}
@@ -1367,10 +1328,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					));
 
 					if (in_array('us', $sheets))
-						if ($format == 2)
-							$buffer .= 'U,' . to_csv($us_data) . EOL;
-						else
-							$snetranges .= to_old_csv($us_keys, $us_data) . EOL;
+						$buffer .= 'U,' . to_csv($us_data) . EOL;
 					$netrangeid++;
 				}
 
@@ -1408,10 +1366,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 				$customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
 
 				if (in_array('zas', $sheets))
-					if ($format == 2)
-						$buffer .= 'ZS,' . to_csv($data) . EOL;
-					else
-						$snetbuildings .= to_old_csv($zas_keys, $data) . EOL;
+					$buffer .= 'ZS,' . to_csv($data) . EOL;
 				$netbuildingid++;
 			}
 		}
@@ -1459,10 +1414,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 		$customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
 
 		if (in_array('zas', $sheets))
-			if ($format == 2)
-				$buffer .= 'ZS,' . to_csv($data) . EOL;
-			else
-				$snetbuildings .= to_old_csv($zas_keys, $data) . EOL;
+			$buffer .= 'ZS,' . to_csv($data) . EOL;
 		$netbuildingid++;
 	}
 }
@@ -1709,10 +1661,7 @@ if ($netdevices)
 									'ps_invstatus' => strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '',
 								);
 								if (in_array('ps', $sheets))
-									if ($format == 2)
-										$buffer .= 'PS,' . to_csv($data) . EOL;
-									else
-										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
+									$buffer .= 'PS,' . to_csv($data) . EOL;
 
 								$netconnectionid++;
 								$foreign = true;
@@ -1734,10 +1683,7 @@ if ($netdevices)
 									'ps_invstatus' => strlen($netnodes[$dstnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$dstnetnode]['status']] : '',
 								);
 								if (in_array('ps', $sheets))
-									if ($format == 2)
-										$buffer .= 'PS,' . to_csv($data) . EOL;
-									else
-										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
+									$buffer .= 'PS,' . to_csv($data) . EOL;
 								$netconnectionid++;
 								$foreign = true;
 							}
@@ -1790,10 +1736,7 @@ if ($netdevices)
 									'ps_invstatus' => strlen($netnodes[$netdevnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$netdevnetnode]['status']] : '',
 								);
 								if (in_array('ps', $sheets))
-									if ($format == 2)
-										$buffer .= 'PS,' . to_csv($data) . EOL;
-									else
-										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
+									$buffer .= 'PS,' . to_csv($data) . EOL;
 								$netconnectionid++;
 								$foreign = true;
 							}
@@ -1814,10 +1757,7 @@ if ($netdevices)
 									'ps_invstatus' => strlen($netnodes[$srcnetnode]['invproject']) ? $NETELEMENTSTATUSES[$netnodes[$srcnetnode]['status']] : '',
 								);
 								if (in_array('ps', $sheets))
-									if ($format == 2)
-										$buffer .= 'PS,' . to_csv($data) . EOL;
-									else
-										$snetconnections .= to_old_csv($ps_keys, $data) . EOL;
+									$buffer .= 'PS,' . to_csv($data) . EOL;
 								$netconnectionid++;
 								$foreign = true;
 							}
@@ -1880,10 +1820,7 @@ if ($netlinks)
 					'rl_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
 				);
 				if (in_array('rl', $sheets))
-					if ($format == 2)
-						$buffer .= 'LB,' . to_csv($data) . EOL;
-					else
-						$snetradiolines .= to_old_csv($rl_keys, $data) . EOL;
+					$buffer .= 'LB,' . to_csv($data) . EOL;
 			} else {
 				$data = array(
 					'lp_id' => $netlineid,
@@ -1909,10 +1846,7 @@ if ($netlinks)
 					'lp_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
 				);
 				if (in_array('lp', $sheets))
-					if ($format == 2)
-						$buffer .= 'LK,' . to_csv($data) . EOL;
-					else
-						$snetcablelines .= to_old_csv($lp_keys, $data) . EOL;
+					$buffer .= 'LK,' . to_csv($data) . EOL;
 			}
 			$netlineid++;
 		}
@@ -1941,50 +1875,13 @@ if ($netlinks)
 				'pol_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
 			);
 			if (in_array('pol', $sheets))
-				if ($format == 2)
-					$buffer .= 'P,' . to_csv($data) . EOL;
-				else
-					$snetlinks .= to_old_csv($pol_keys, $data) . EOL;
+				$buffer .= 'P,' . to_csv($data) . EOL;
 			$netlinkid++;
 		}
 
-if ($format == 2) {
-	header('Content-type: text/csv');
-	header('Content-Disposition: attachment; filename="LMS_SIIS.csv"');
-	header('Pragma: public');
-	echo $buffer;
-	die;
-}
-
-// prepare zip archive package containing all generated files
-if (!extension_loaded('zip'))
-	die('<B>Zip extension not loaded! In order to use this extension you must compile PHP with zip support by using the --enable-zip configure option. </B>');
-
-$zip = new ZipArchive();
-$filename = tempnam('/tmp', 'LMS_SIIS_').'.zip';
-if ($zip->open($filename, ZIPARCHIVE::CREATE)) {
-	if (in_array('proj', $sheets)) $zip->addFromString('PROJ.csv', $sprojects);
-	if (in_array('ob', $sheets)) $zip->addFromString('OB.csv', $sforeigners);
-	if (in_array('ww', $sheets)) $zip->addFromString('WW.csv', $snetnodes);
-	if (in_array('wo', $sheets)) $zip->addFromString('WO.csv', $sforeignernetnodes);
-	if (in_array('int', $sheets)) $zip->addFromString('INT.csv', $snetinterfaces);
-	if (in_array('sr', $sheets)) $zip->addFromString('SR.csv', $sradiosectors);
-	if (in_array('ps', $sheets)) $zip->addFromString('PS.csv', $snetconnections);
-	if (in_array('lp', $sheets)) $zip->addFromString('LP.csv', $snetcablelines);
-	if (in_array('rl', $sheets)) $zip->addFromString('RL.csv', $snetradiolines);
-	if (in_array('pol', $sheets)) $zip->addFromString('POL.csv', $snetlinks);
-	if (in_array('zas', $sheets)) $zip->addFromString('ZAS.csv', $snetbuildings);
-	if (in_array('us', $sheets)) $zip->addFromString('US.csv', $snetranges);
-	$zip->close();
-
-	// send zip archive package to web browser
-	header('Content-type: application/zip');
-	header('Content-Disposition: attachment; filename="LMS_SIIS.zip"');
-	header('Pragma: public');
-	readfile($filename);
-
-	// remove already unneeded zip archive package file
-	unlink($filename);
-}
+header('Content-type: text/csv');
+header('Content-Disposition: attachment; filename="LMS_SIIS.csv"');
+header('Pragma: public');
+die($buffer);
 
 ?>
