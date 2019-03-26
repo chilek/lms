@@ -36,7 +36,7 @@
 
 					<div class="form-group">
 						<label for="attachments">{trans("Attachments:")}</label>
-						<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+						<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<div id="file-status" class="alert" style="display: none;"></div>
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
 						{t a=$post_max_size.text}Maximum total file size: $a{/t}
