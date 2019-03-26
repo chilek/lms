@@ -3,7 +3,7 @@
 <script>
 	$(document).ready(function($) {
 		$(".table-click").click(function() {
-			window.document.location = $(this).data("href");
+			window.document.location = $(this).attr("data-href");
 		});
 	});
 </script>
