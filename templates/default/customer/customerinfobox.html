@@ -97,7 +97,7 @@
 	{/foreach}
 
 {foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
-{if !empty($customerinfo[$type|cat:"s"])}
+{if isset($customerinfo[$type|cat:"s"])}
 	<TR>
 		<TD style="width: 1%;"></TD>
 		<TD style="width: 99%;" class="nobr">
