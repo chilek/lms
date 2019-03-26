@@ -16,11 +16,9 @@
 			<a class="nav-link" data-toggle="tab" href="#userdocsbox" role="tab">{trans("Your documents")}</a>
 		</li>
 	{/if}
-	{if ConfigHelper::checkConfig('userpanel.pin_changes')}
-		<li class="nav-item">
-			<a class="nav-link" data-toggle="tab" href="#userloginbox" role="tab">{trans("Login data")}</a>
-		</li>
-	{/if}
+	<li class="nav-item">
+		<a class="nav-link" data-toggle="tab" href="#userloginbox" role="tab">{trans("Login data")}</a>
+	</li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
@@ -37,10 +35,8 @@
 			{include file="module:userdocsbox.html"}
 		</div>
 	{/if}
-	{if ConfigHelper::checkConfig('userpanel.pin_changes')}
-		<div class="tab-pane" id="userloginbox" role="tabpanel">
-			{include file="module:userloginbox.html"}
-		</div>
-	{/if}
+	<div class="tab-pane" id="userloginbox" role="tabpanel">
+		{include file="module:userloginbox.html"}
+	</div>
 </div>
 {include file="footer.html"}

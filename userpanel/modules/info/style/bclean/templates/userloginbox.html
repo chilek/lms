@@ -3,17 +3,17 @@
 <div class="card">
 	<div class="card-header">
 		<strong>{trans("Login data")}</strong>
-		{if ConfigHelper::checkConfig('userpanel.pin_changes')}
 	</div>
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">
 			<strong>{trans("Customer ID")}:</strong>{$userinfo.id|string_format:"%04d"}
 		</li>
 		<li class="list-group-item">
-			<strong>{trans("PIN")}:</strong>****** <button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
-			{trans("Change")}
-		</button>
-
+			<strong>{trans("PIN")}:</strong>******
+			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
+				<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
+					{trans("Change")}
+				</button>
 			{/if}
 		</li>
 	</ul>
