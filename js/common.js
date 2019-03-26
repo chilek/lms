@@ -888,3 +888,23 @@ function autoiframe_correct_size() {
 		$(this).css('width', width).parent().css('width', '');
 	});
 }
+
+function convert_to_units(value, threshold, multiplier) {
+	if (typeof(threshold) == 'undefined') {
+		threshold = 5;
+	}
+	if (typeof(multiplier) == 'undefined') {
+		multiplier = 1000;
+	}
+	var unit_suffix = (multiplier == 1024 ? 'ibit' : 'bit');
+	threshold = parseFloat(threshold);
+	multiplier = parseFloat(multiplier);
+	if (value < multiplier * multiplier * threshold) {
+		return (Math.round(value * 100 / multiplier) / 100) + ' k' + unit_suffix;
+	} else if (value < multiplier * multiplier * multiplier * threshold) {
+		return (Math.round(value * 100 / multiplier / multiplier) / 100) + ' M' + unit_suffix;
+	} else {
+		return (Math.round(value * 100 / multiplier / multiplier / multiplier) / 100) +
+			' G' + unit_suffix;
+	}
+}

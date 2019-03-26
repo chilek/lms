@@ -138,16 +138,16 @@
 			({$tariff.id|string_format:"%04d"})
 		</TD>
 		<TD class="text-right nobr">
-			{if $tariff.downrate}{$tariff.downrate}{else}-{/if}
-			{if $tariff.downrate_n}({$tariff.downrate_n}){/if}<BR>
-			{if $tariff.uprate}{$tariff.uprate}{else}-{/if}
-			{if $tariff.uprate_n}({$tariff.uprate_n}){/if}
+			{if $tariff.downrate}{convert_to_units($tariff.downrate * 1000)}/s{else}-{/if}
+			{if $tariff.downrate_n}({convert_to_units($tariff.downrate_n * 1000)}/s){/if}<BR>
+			{if $tariff.uprate}{convert_to_units($tariff.uprate * 1000)}/s{else}-{/if}
+			{if $tariff.uprate_n}({convert_to_units($tariff.uprate_n * 1000)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $tariff.downceil}{$tariff.downceil}{else}-{/if}
-			{if $tariff.downceil_n}({$tariff.downceil_n}){/if}<BR>
-			{if $tariff.upceil}{$tariff.upceil}{else}-{/if}
-			{if $tariff.upceil_n}({$tariff.upceil_n}){/if}
+			{if $tariff.downceil}{convert_to_units($tariff.downceil * 1000)}/s{else}-{/if}
+			{if $tariff.downceil_n}({convert_to_units($tariff.downceil_n * 1000)}/s){/if}<BR>
+			{if $tariff.upceil}{convert_to_units($tariff.upceil * 1000)}/s{else}-{/if}
+			{if $tariff.upceil_n}({convert_to_units($tariff.upceil_n * 1000)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
 			<B>{$tariff.value|money_format}</B><BR>
