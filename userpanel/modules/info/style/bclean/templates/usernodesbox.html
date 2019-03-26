@@ -1,14 +1,14 @@
 {box title="Your computers"}
 <div class="table-responsive">
-	<table class="table table-hover table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
+	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+		<thead class="bg-secondary text-white font-weight-bold">
 			<th>{trans("Device description")}</th>
 			<th>{trans("MAC address")}</th>
 			<th>{trans("IP address")}</th>
-		</tr>
+		</thead>
 		{section name=usernodes loop=$usernodes}
 			{if $usernodes[usernodes].id}
-				<tr class="{if !$usernodes[usernodes].access}text-muted{/if}">
+				<tr class="align-middle p-2 {if !$usernodes[usernodes].access}text-muted{/if}">
 					<td>{$usernodes[usernodes].name}</td>
 					<td>{$usernodes[usernodes].mac|replace:",":"<br/>"}</td>
 					<td>{$usernodes[usernodes].ip}</td>

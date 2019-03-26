@@ -38,6 +38,7 @@ $_LANG['Date:'] = 'Data:';
 $_LANG['Deadline:'] = 'Termin płatności:';
 $_LANG['Description:'] = 'Opis:';
 $_LANG['Discount:'] = 'Rabat:';
+$_LANG['Discount'] = 'Rabat';
 $_LANG['Downrate (ceil):'] = 'Downrate (ceil):';
 $_LANG['DUPLICATE'] = 'DUPLIKAT';
 $_LANG['Expositor:'] = 'Wystawił:';

@@ -1,4 +1,7 @@
 {box title="Information about the subscriber"}
+
+XXXXXX
+
 {if $error.ssn}<div class="alert alert-danger">{trans("Incorrect Social Security Number!")}{/if}
 	{if $error.ten}<div class="alert alert-danger">{trans("Incorrect Tax Exempt Number!")}{/if}
 	{if $error}{/if}
@@ -8,36 +11,36 @@
 			<table class="table table-hover table-bordered table-striped table-condensed">
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 					<tr>
-						<td>{if $userinfo.type == 0}{trans("First and last name")}{else}{trans("Company name")}{/if}:</td>
+						<td class="font-weight-bold">{if $userinfo.type == 0}{trans("First and last name")}{else}{trans("Company name")}{/if}:</td>
 						<td><INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape}" {userpaneltip class="form-control" text="Enter lastname" trigger="lastname"}></td>
 					</tr>
 					{if $userinfo.type == 0}
 						<tr>
-							<td>{trans("First Name:")}</td>
+							<td class="font-weight-bold">{trans("First Name:")}</td>
 							<td><INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape}" {userpaneltip class="form-control" text="Enter first name" trigger="name"}></td>
 						</tr>
 					{/if}
 				{else}
 					<tr>
-						<td>{trans("Name:")}</td>
+						<td class="font-weight-bold">{trans("Name:")}</td>
 						<td>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</td>
 					</tr>
 				{/if}
 				{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 					{foreach $userinfo.emails as $email}
 						<tr>
-							<td>{trans("E-mail:")}</td>
+							<td class="font-weight-bold">{trans("E-mail:")}</td>
 							<td><INPUT TYPE="email" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" {userpaneltip class="form-control" text="Enter e-mail address"}></td>
 						</tr>
 					{foreachelse}
 						<tr>
-							<td>{trans("E-mail:")}</td>
+							<td class="font-weight-bold">{trans("E-mail:")}</td>
 							<td><INPUT TYPE="email" NAME="userdata[email][0]" VALUE="{$userinfo.email}" {userpaneltip class="form-control" text="Enter e-mail address"}></td>
 						</tr>
 					{/foreach}
 				{else}
 					<tr>
-						<td>{trans("E-mail:")}</td>
+						<td class="font-weight-bold">{trans("E-mail:")}</td>
 						<td>
 							{foreach $userinfo.emails as $email}
 								{$email.email}{if !$email@last}<BR />{/if}
@@ -47,23 +50,23 @@
 				{/if}
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 					<tr>
-						<td>{trans("Street:")}</td>
+						<td class="font-weight-bold">{trans("Street:")}</td>
 						<td><INPUT TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street}" {userpaneltip class="form-control" text="Enter street name" trigger="street"}></td>
 					</tr>
 					<tr>
-						<td>{trans("Building:")}</td>
+						<td class="font-weight-bold">{trans("Building:")}</td>
 						<td>
 							<INPUT TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" {userpaneltip class="form-control" text="Enter building number" trigger="building"}>
-							{trans("Apartment:")}
+							<b>{trans("Apartment:")}</b>
 							<INPUT TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" {userpaneltip class="form-control" text="Enter apartment number" trigger="apartment"}>
 						</td>
 					</tr>
 					<tr>
-						<td>{trans("Zip:")}</td>
+						<td class="font-weight-bold">{trans("Zip:")}</td>
 						<td><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" {userpaneltip class="form-control" text="Enter zip code" trigger="zip"}></td>
 					</tr>
 					<tr>
-						<td>{trans("City:")}</td>
+						<td class="font-weight-bold">{trans("City:")}</td>
 						<td><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" {userpaneltip class="form-control" text="Enter city name" trigger="city"}></td>
 					</tr>
 				{else}
@@ -75,12 +78,12 @@
 				{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 					{foreach $userinfo.contacts as $item}
 						<tr>
-							<td>{trans("Phone:")}</td>
+							<td class="font-weight-bold">{trans("Phone:")}</td>
 							<td><INPUT TYPE="tel" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" {userpaneltip class="form-control" text="Enter phone number"}></td>
 						</tr>
 					{foreachelse}
 						<tr>
-							<td>{trans("Phone:")}</td>
+							<td class="font-weight-bold">{trans("Phone:")}</td>
 							<td><INPUT TYPE="tel" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" {userpaneltip class="form-control" text="Enter phone number"}></td>
 						</tr>
 					{/foreach}
@@ -92,7 +95,7 @@
 
 				{foreach $userinfo.ims as $item}
 					<tr>
-						<td>
+						<td class="font-weight-bold">
 							{if $item.type & $smarty.const.CONTACT_IM_GG}
 								Gadu-Gadu:
 							{elseif $item.type & $smarty.const.CONTACT_IM_YAHOO}
@@ -114,27 +117,25 @@
 				{if $userinfo.type == 0}
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 						<tr>
-							<td>{trans("SSN")}:</td>
+							<td class="font-weight-bold">{trans("SSN")}:</td>
 							<td><INPUT TYPE="number" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}"  {userpaneltip class="form-control" text="Enter social security number" trigger="ssn"}></td>
 						</tr>
 					{else}
 						<tr>
-							<td colspan="2">
-								{$userinfo.ssn}
-							</td>
+							<td class="font-weight-bold">{trans("SSN")}:</td>
+							<td>{$userinfo.ssn}</td>
 						</tr>
 					{/if}
 				{else}
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 						<tr>
-							<td>{trans("TEN")}:</td>
+							<td class="font-weight-bold">{trans("TEN")}:</td>
 							<td><INPUT TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten}" {userpaneltip class="form-control" text="Enter tax exempt number" trigger="ten"}></td>
 						</tr>
 					{else}
 						<tr>
-							<td colspan="2">
-								{$userinfo.ten}
-							</td>
+							<td class="font-weight-bold">{trans("TEN")}:</td>
+							<td>{$userinfo.ten}</td>
 						</tr>
 					{/if}
 				{/if}

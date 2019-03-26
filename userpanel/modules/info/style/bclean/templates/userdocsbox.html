@@ -1,18 +1,18 @@
 {box title="Your documents"}
 <div class="table-responsive">
-	<table class="table table-hover table-bordered table-striped table-condensed">
+	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
 		{if $documents}
-			<tr class="bg-primary text-white">
+			<thead class="bg-secondary text-white font-weight-bold">
 				<th>{trans("Number:")}</th>
 				<th>{trans("Type:")}</th>
 				<th>{trans("Created:")}</th>
 				<th>{trans("Period:")}</th>
 				<th>&nbsp;</th>
-			</tr>
+			</thead>
 		{/if}
 		{foreach $documents as $doc}
-			<tr class="{if !$doc.closed}text-muted{/if}">
-				<td><b>{number number=$doc.number template=$doc.template time=$doc.cdate}</b></td>
+			<tr class="align-middle p-2 {if !$doc.closed}text-muted{/if}">
+				<td>{number number=$doc.number template=$doc.template time=$doc.cdate}</td>
 				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
 				<td>{$doc.cdate|date_format:"%d.%m.%Y"}</td>
 				<td>
