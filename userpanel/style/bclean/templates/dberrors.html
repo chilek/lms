@@ -2,8 +2,8 @@
 <div class="alert alert-danger">
     <ul>
         {foreach from=$layout.dberrors item=dberror}
-        <li><strong>{trans("Query:")}</b> {$dberror.query}</li>
-        <li><strong>{trans("Error:")}</b> {$dberror.error}</li>
+        <li><strong>{trans("Query:")}</strong> {$dberror.query}</li>
+        <li><strong>{trans("Error:")}</strong> {$dberror.error}</li>
         {/foreach}
     </ul>
 </div>

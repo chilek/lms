@@ -2,7 +2,7 @@
 {box title="Balance"}
 <center>
 <h1>{if $userinfo.balance < 0}
-	<div style="color: red; white-space: nowrap;"><strong>{$userinfo.balance|money_format}</b></div>
+	<div style="color: red; white-space: nowrap;"><strong>{$userinfo.balance|money_format}</strong></div>
     {else}
 	<div style="white-space: nowrap;">{$userinfo.balance|money_format}</div>
     {/if}

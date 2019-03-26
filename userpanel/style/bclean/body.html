@@ -28,6 +28,6 @@
 
 {foreach from=$modules item=menuitem}
 	{if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module)}
-	<h5><strong>{$menuitem.name}</b></h5>
+	<h5><strong>{$menuitem.name}</strong></h5>
 	{/if}
 {/foreach}

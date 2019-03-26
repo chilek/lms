@@ -46,7 +46,7 @@
 			{foreach $notice as $items}
 				<tr class="{if $items.status==$smarty.const.MSG_ERROR}text-danger{elseif $items.status==$smarty.const.MSG_SENT}text-muted{/if}" onCLick="ReadNotice('{$items.id}');">
 					<td>{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
-					<td>{if $items.type==6 }<strong>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
+					<td>{if $items.type==6 }<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
 					<td>{$items.subject}</td>
 					<td>{if $items.type==6 && $items.status==1}{trans("Unread")}{elseif $items.type==6 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{elseif $items.type==5 && $items.status==1}{trans("Unread")}{elseif $items.type==5 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}</td>
 				</tr>

@@ -3,17 +3,17 @@
 <table style="width: 100%;" cellpadding="3">
 	{if $documents}
 	<tr class="darkest">
-		<td width="25%" class="nobr"><strong>{trans("Number:")}</b></td>
-		<td width="15%" class="nobr"><strong>{trans("Type:")}</b></td>
-		<td width="20%" class="nobr"><strong>{trans("Created:")}</b></td>
-		<td width="20%" class="nobr"><strong>{trans("Period:")}</b></td>
+		<td width="25%" class="nobr"><strong>{trans("Number:")}</strong></td>
+		<td width="15%" class="nobr"><strong>{trans("Type:")}</strong></td>
+		<td width="20%" class="nobr"><strong>{trans("Created:")}</strong></td>
+		<td width="20%" class="nobr"><strong>{trans("Period:")}</strong></td>
 		<td width="20%" class="nobr">&nbsp;</td>
 	</tr>
 	{/if}
 	{cycle values="light,lucid" print=false name=doc}
 	{foreach from=$documents item=doc}
 	<tr class="{cycle name=doc}{if !$doc.closed} blend{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</b></td>
+		<td class="nobr"><strong>{number number=$doc.number template=$doc.template time=$doc.cdate}</strong></td>
 		<td class="nobr">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
 		<td class="nobr">{$doc.cdate|date_format:"%d.%m.%Y"}</td>
 		<td class="nobr">
@@ -39,7 +39,7 @@
 	<tr>
 		<td align="center" width="100%" colspan="8">
 			<p>&nbsp;</p>
-			<p><strong>{trans("No such documents on your account.")}</b></p>
+			<p><strong>{trans("No such documents on your account.")}</strong></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>

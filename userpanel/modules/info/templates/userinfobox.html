@@ -4,7 +4,7 @@
 {if $fields_changed}
 	<tr>
 		<td width="100%" colspan="3">
-			<CENTER><strong><FONT COLOR="red">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}</FONT></B></CENTER>
+			<CENTER><strong><FONT COLOR="red">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}</FONT></strong></CENTER>
 		</td>
 	</tr>
 {/if}
@@ -18,7 +18,7 @@
 			({if isset($fields_changed.lastname) && $fields_changed.lastname.fieldvalue != $userinfo.lastname}<span class="lms-ui-customer-property-changed">{$fields_changed.lastname.fieldvalue}</span>{else}{$userinfo.lastname}{/if}
 			{if isset($fields_changed.name) && $fields_changed.name.fieldvalue != $userinfo.name}<span class="lms-ui-customer-property-changed">{$fields_changed.name.fieldvalue}</span>{else}{$userinfo.name}{/if})
 			{/if}
-			({$userinfo.id|string_format:"%04d"})</b>
+			({$userinfo.id|string_format:"%04d"})</strong>
 		</td>
 	</tr>
 {if $userinfo.emails}
@@ -87,7 +87,7 @@
 {if $userinfo.ten != ""}
 	<tr>
 		<td width="1%" align="center">
-			<strong>{trans("TEN")}</b>
+			<strong>{trans("TEN")}</strong>
 		</td>
 		<td width="99%" colspan="2">
 			{$userinfo.ten}{if isset($fields_changed.ten)} <span class="lms-ui-customer-property-changed">({$fields_changed.ten.fieldvalue})</span>{/if}
@@ -97,7 +97,7 @@
 {if $userinfo.ssn != ""}
 	<tr>
 		<td width="1%" align="center">
-			<strong>{trans("SSN")}</b>
+			<strong>{trans("SSN")}</strong>
 		</td>
 		<td width="99%" colspan="2">
 			{$userinfo.ssn}{if isset($fields_changed.ssn)} <span class="lms-ui-customer-property-changed">({$fields_changed.ssn.fieldvalue})</span>{/if}
@@ -109,10 +109,10 @@
 			{img src="cash.gif" alt=""}
 		</td>
 		<td width="1%">
-			<strong>{trans("Balance:")}</b>
+			<strong>{trans("Balance:")}</strong>
 		</td>
 		<td width="98%">
-			{if $userinfo.balance < 0}<font color="red"><strong>{$userinfo.balance|money_format}</b></font>{else}{$userinfo.balance|money_format}{/if}
+			{if $userinfo.balance < 0}<font color="red"><strong>{$userinfo.balance|money_format}</strong></font>{else}{$userinfo.balance|money_format}{/if}
 		</td>
 	</tr>
 {if $userinfo.bankaccount || $userinfo.accounts}
@@ -121,7 +121,7 @@
 			{img src="cash.gif" alt=""}
 		</td>
 		<td width="1%">
-			<strong>{trans("Bank accounts:")}</b>
+			<strong>{trans("Bank accounts:")}</strong>
 		</td>
 		<td width="98%">
 			{if $userinfo.bankaccount}

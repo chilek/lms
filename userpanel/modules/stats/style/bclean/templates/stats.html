@@ -16,7 +16,7 @@
 					{section name=download loop=$download.name}
 						<tr>
 							<td>
-								<strong>{$download.name[download]|truncate:32:"..."}</b>
+								<strong>{$download.name[download]|truncate:32:"..."}</strong>
 							</td>
 							<td>
 								{img src="redpx.gif" height="16" width=$download.bar[download] style="border-width: 1pt; border-color: #000000;"} {$download.data[download]|string_format:"%.2f"} {$download.unit[download]} ({$download.avg[download]|string_format:"%.2f"} kbit/s)
@@ -35,7 +35,7 @@
 					{section name=upload loop=$upload.name}
 						<tr>
 							<td>
-								<strong>{$upload.name[upload]|truncate:32:"..."}</b>
+								<strong>{$upload.name[upload]|truncate:32:"..."}</strong>
 							</td>
 							<td>
 								{img src="bluepx.gif" height="16" width=$upload.bar[upload] border="1"} {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]}&nbsp;({$upload.avg[upload]|string_format:"%.2f"}&nbsp;kbit/s)

@@ -13,7 +13,7 @@
 			{img src="helpdesk.gif" alt=""}
 		</td>
 		<td width="1%">
-			<strong>{trans("Subject:")}</b>
+			<strong>{trans("Subject:")}</strong>
 		</td>
 		<td width="98%">
 			<input style="width:99%;" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter message subject" trigger="subject"} />
@@ -24,7 +24,7 @@
 			{img src="help.gif" alt=""}
 		</td>
 		<td width="1%">
-			<strong>{trans("Body:")}</b>
+			<strong>{trans("Body:")}</strong>
 		</td>
 		<td width="98%">
 			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter message content" trigger="body"}>{$helpdesk.body}</textarea>
@@ -35,7 +35,7 @@
 			{img src="attach.gif" alt=""}
 		</td>
 		<td>
-			<strong>{trans("Attachments:")}</b>
+			<strong>{trans("Attachments:")}</strong>
 		</td>
 		<td>
 			<input type="file" name="files[]" id="attachments" size="55" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
@@ -61,10 +61,10 @@
 	{foreach from=$ticket.messages item=message}
         <tr class="darkest">
 		<td width="1%" align="right">
-			<strong>{$message.createtime|date_format:"%Y/%m/%d<br/>%H:%M"}</b>
+			<strong>{$message.createtime|date_format:"%Y/%m/%d<br/>%H:%M"}</strong>
 		</td>
 		<td width="1%" align="right">
-			<strong>{trans("From:")}<br/>{trans("Subject:")}</b>
+			<strong>{trans("From:")}<br/>{trans("Subject:")}</strong>
 		</td>
 		<td width="96%" class="nobr">
 			    {if $message.customerid}
