@@ -4,15 +4,9 @@
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 {$count = 0}
 
-<style>
-	.table-thead {
-		color: white;
-	}
-</style>
-
 <div class="table-responsive">
 	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
-		<thead class="bg-secondary table-thead">
+		<thead class="bg-secondary lms-userpanel-userassignment-head">
 			<th>{trans("Tariff")}</th>
 			<th>{trans("Subscription")}</th>
 			<th>{trans("Discount")}</th>

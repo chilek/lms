@@ -13,9 +13,6 @@
 	.table-click[data-href] td:not(.buttons):hover {
 		cursor: pointer;
 	}
-	.table-thead {
-		color: white;
-	}
 	#print-all {
 		margin-bottom: 0.3em;
 	}
@@ -38,7 +35,7 @@
         <form name="invoices" action="?m=finances&amp;f=invoice" method="POST" target="_blank">
 			<div class="table-responsive">
 				<table class="table table-sm table-hover table-bordered table-striped table-condensed">
-					<thead class="bg-secondary table-thead">
+					<thead class="bg-secondary lms-userpanel-userbalance-head">
 							<th>{trans("Date")}</th>
 							<th>{trans("Commitment")}</th>
 							<th>{trans("Payment")}</th>
