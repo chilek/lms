@@ -2,9 +2,9 @@
 <div class="table-responsive">
 	<table class="table table-hover table-bordered table-striped table-condensed">
 		<tr class="bg-primary text-white">
-			<th>Opis urządzenia:</th>
-			<th>MAC adres</th>
-			<th>Publiczne IP:</th>
+			<th>{trans("Device description")}</th>
+			<th>{trans("MAC address")}</th>
+			<th>{trans("IP address")}</th>
 		</tr>
 		{section name=usernodes loop=$usernodes}
 			{if $usernodes[usernodes].id}

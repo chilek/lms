@@ -139,4 +139,8 @@ $_LANG['First name:'] = 'Imię:';
 $_LANG['Last name:'] = 'Nazwisko:';
 $_LANG['Company name:'] = 'Nazwa firmy:';
 
+$_LANG['Device description'] = 'Opis urządzenia';
+$_LANG['MAC address'] = 'Adres MAC';
+$_LANG['IP address'] = 'Adres IP';
+
 ?>
