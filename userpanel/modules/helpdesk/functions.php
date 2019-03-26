@@ -492,8 +492,14 @@ function module_main() {
 			}
 			$SMARTY->assign('helpdesk', $helpdesk);
 
-			$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
-				sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+			if (count($queues)==1) {
+                        	$SMARTY->assign('title', trans('Request No. $a',
+                                	sprintf('%06d', $ticket['ticketid'])));
+                                } else {
+                                        $SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+                                        sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+                                }
+
 			if ($ticket['customerid'] == $SESSION->id) {
 				$SMARTY->assign('ticket', $ticket);
 				$SMARTY->display('module:helpdeskreply.html');
