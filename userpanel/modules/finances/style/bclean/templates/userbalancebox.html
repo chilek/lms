@@ -3,7 +3,7 @@
 
 <script>
 	$(function() {
-		$(".table-click:not(.buttons)").click(function() {
+		$(".table-click td:not(.buttons)").click(function() {
 			window.document.location = $(this).attr("data-href");
 		});
 	});
