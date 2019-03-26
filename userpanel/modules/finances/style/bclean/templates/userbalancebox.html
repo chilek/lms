@@ -1,7 +1,7 @@
 {box title="Your balance"}
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
 
-<script type="text/javascript">
+<script>
 	$(document).ready(function($) {
 		$(".table-click").click(function() {
 			window.document.location = $(this).data("href");
