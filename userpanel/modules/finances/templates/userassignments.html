@@ -5,7 +5,7 @@
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 <table style="width: 100%;" cellpadding="3">
 	<tr class="darkest">
-		<td width="93%" class="nobr"><b>{trans("Subscription:")}</b></td>
+		<td width="93%" class="nobr"><strong>{trans("Subscription:")}</b></td>
 		<td width="1%" class="nobr" align="right">{trans("Value:")}</td>
 		<td width="1%" class="nobr" align="right">{trans("Discount:")}</td>
 		<td width="1%" class="nobr">{trans("Accounting day:")}</td>
@@ -19,7 +19,7 @@
 	{foreach from=$assignments item=assignment}
 	{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
 	<tr class="dark">
-		<td><b>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</b></td>
+		<td><strong>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</b></td>
 		<td class="nobr" align="right">{$assignment.value|money_format}</td>
 		<td class="nobr" align="right">{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
 		<td class="nobr">{$assignment.payday}</td>
@@ -44,13 +44,13 @@
 	<tr>
 		<td class="text-wrap" width="100%" colspan="{if $show_speeds}8{else}6{/if}">
 			<p>&nbsp;</p>
-			<p><b>{trans("You haven't got any assigned subscriptions.")}</b></p>
+			<p><strong>{trans("You haven't got any assigned subscriptions.")}</b></p>
 			<p>&nbsp;</p>
 		</td>
 	</tr>
 	{/foreach}
 	<tr class="darkest">
-		<td align="right"><b>{trans("Total:")}</b></td>
+		<td align="right"><strong>{trans("Total:")}</b></td>
 		<td class="nobr" align="right">{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</td>
 		<td class="nobr" align="right">({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
 		<td>&nbsp;</td>

@@ -7,10 +7,10 @@
 		<td width="100%" COLSPAN="3">
 {/if}
 {if $error.ssn}
-			<CENTER><B><FONT COLOR="red">{trans("Incorrect Social Security Number!")}</FONT></B></CENTER>
+			<CENTER><strong><FONT COLOR="red">{trans("Incorrect Social Security Number!")}</FONT></B></CENTER>
 {/if}
 {if $error.ten}
-			<CENTER><B><FONT COLOR="red">{trans("Incorrect Tax Exempt Number!")}</FONT></B></CENTER>
+			<CENTER><strong><FONT COLOR="red">{trans("Incorrect Tax Exempt Number!")}</FONT></B></CENTER>
 {/if}
 {if $error}
 		</td>
@@ -32,7 +32,7 @@
 			</TABLE>
 {else}
 		<td width="99%" colspan="2">
-			<b>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
+			<strong>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
 {/if}
 		</td>
 	</tr>
@@ -136,7 +136,7 @@
 {/foreach}
 	<tr>
 		<td width="1%" align="center">
-			<b>{trans("TEN")}</b>
+			<strong>{trans("TEN")}</b>
 		</td>
 		<td width="99%">
 {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
@@ -148,7 +148,7 @@
 	</tr>
 	<tr class="dark">
 		<td width="1%" align="center">
-			<b>{trans("SSN")}</b>
+			<strong>{trans("SSN")}</b>
 		</td>
 		<td width="99%">
 {if $rights.info.edit_addr || $rights.info.edit_addr_ack}

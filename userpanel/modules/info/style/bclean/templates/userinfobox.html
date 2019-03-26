@@ -182,7 +182,7 @@
 							</div>
 						{/if}
 					{else}
-						<b>{trans("Name:")}</b><br/>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
+						<strong>{trans("Name:")}</b><br/>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
 					{/if}
 
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
@@ -223,7 +223,7 @@
 							</div>
 						{/foreach}
 					{else}
-						<b>{trans("E-mail:")}</b>
+						<strong>{trans("E-mail:")}</b>
 						{foreach $userinfo.emails as $email}
 							{$email.email}{if !$email@last}<BR />{/if}
 						{/foreach}
@@ -232,12 +232,12 @@
 					{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 						{foreach $userinfo.contacts as $item}
 							<div class="form-group">
-								<b>{trans("Phone:")}</b>>
+								<strong>{trans("Phone:")}</b>>
 								<INPUT class="form-control" TYPE="tel" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" placeholder="{trans("Enter phone number")}">
 							</div>
 						{foreachelse}
 							<div class="form-group">
-								<b>{trans("Phone:")}</b>
+								<strong>{trans("Phone:")}</b>
 								<INPUT class="form-control" TYPE="tel" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" placeholder="{trans("Enter phone number")}">
 							</div>
 						{/foreach}
@@ -270,20 +270,20 @@
 					{if $userinfo.type == 0}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
-								<b>{trans("SSN")}:</b>
+								<strong>{trans("SSN")}:</b>
 								<INPUT class="form-control" TYPE="number" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}" placeholder="{trans("Enter social security number")}">
 							</div>
 						{else}
-							<b>{trans("SSN")}:</b>{$userinfo.ssn}
+							<strong>{trans("SSN")}:</b>{$userinfo.ssn}
 						{/if}
 					{else}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
-								<b>{trans("TEN")}:</b>
+								<strong>{trans("TEN")}:</b>
 								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten}" placeholder="{trans("Enter tax exempt number")}">
 							</div>
 						{else}
-							<b>{trans("TEN")}:</b> {$userinfo.ten}
+							<strong>{trans("TEN")}:</b> {$userinfo.ten}
 						{/if}
 					{/if}
 				</form>
