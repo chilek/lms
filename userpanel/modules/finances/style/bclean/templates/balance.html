@@ -6,7 +6,7 @@
 			<h4>{trans("Current balance:")}<br/><strong class="text-danger">{$userinfo.balance|money_format}</strong></h4>
             {$custom_content}
 				{if !ConfigHelper::checkConfig('userpanel.disable_transferform')}
-				<br/><a class="btn btn-primary" href="?m=finances&amp;f=transferform" target="_blank">{trans("Click here to print payment form")}</a>
+				<br/><a class="btn btn-primary" href="?m=finances&amp;f=transferform" target="_blank">{trans("Print payment form")}</a>
 			{/if}
         {else}
             <h4>{trans("Current balance:")}<br/><strong class="text-success">{$userinfo.balance|money_format}</strong></h4>
