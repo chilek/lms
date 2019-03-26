@@ -4,7 +4,7 @@
 <script>
 	$(function() {
 		$(".table-click[data-href] td:not(.buttons)").click(function() {
-			window.document.location = $(this).closest('tr').attr("data-href");
+			window.open($(this).closest('tr').attr("data-href"));
 		});
 	});
 </script>
