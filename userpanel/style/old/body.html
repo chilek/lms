@@ -25,7 +25,7 @@
     	    <img src="style/old/{if $menuitem.selected}button_a_l.gif{else}button_b_l.gif{/if}" alt=""/>
 	</td>
         <td style="vertical-align: center; background-image: url(style/old/{if $menuitem.selected}button_a.gif{else}button_b.gif{/if}); background-repeat: repeat-x;" width="1px">
-    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}><b>{$menuitem.name|replace:" ":"&nbsp;"}</b></a>
+    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}><strong>{$menuitem.name|replace:" ":"&nbsp;"}</strong></a>
         </td>
         <td style="vertical-align: top;" width="1px">
     	    <img src="style/old/{if $menuitem.selected}button_a_r.gif{else}button_b_r.gif{/if}" alt=''/>

@@ -298,8 +298,10 @@ CREATE TABLE location_buildings (
 	longitude    numeric(10,6) NULL,
 	updated      smallint DEFAULT 0,
 	PRIMARY KEY (id),
-	FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT location_buildings_city_id_fkey
+		FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT location_buildings_street_id_fkey
+		FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	INDEX location_cityid_index (city_id)
 ) ENGINE=InnoDB;
 
@@ -3136,6 +3138,8 @@ URL: %url
 ('userpanel', 'pin_changes', 'true', '', 0),
 ('userpanel', 'show_last_years', '5', '', 0),
 ('userpanel', 'aggregate_documents', '0', '', 0),
+('userpanel', 'speed_unit_type', '1000', '', 0),
+('userpanel', 'speed_unit_aggregation_threshold', '5', '', 0),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3467,4 +3471,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019032100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019032700');

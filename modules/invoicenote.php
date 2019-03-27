@@ -36,6 +36,10 @@ if (isset($_GET['id']) && $action == 'init')
 	if (!empty($invoice['cancelled']))
 		$SESSION->redirect('?m=invoicelist');
 
+	$SESSION->remove('invoicecontents');
+	$SESSION->remove('cnote');
+	$SESSION->remove('cnoteerror');
+
 	$taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
 	foreach ($invoice['content'] as $item)

@@ -497,8 +497,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
 		$message['body'] = str_replace("\r", '', $message['body']);
 
+		$html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
+
 		if ($message['type'] == MSG_MAIL) {
-			$message['body'] = wordwrap($message['body'], 76, "\n");
+			if (!$html_format)
+				$message['body'] = wordwrap($message['body'], 76, "\n");
 			$dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
 			$mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
 		}
@@ -576,7 +579,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
 			if (isset($message['copytosender']))
 				$headers['Cc'] = $headers['From'];
-			if (!empty($message['wysiwyg']))
+			if ($html_format)
 				$headers['X-LMS-Format'] = 'html';
 			if (!empty($dsn_email)) {
 				$headers['From'] = $dsn_email;

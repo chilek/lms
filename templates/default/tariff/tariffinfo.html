@@ -30,11 +30,11 @@
 </STYLE>
 
 {function bitrate_restrictions}
-    {if $day}{$day} kbit/s{else}{trans("no limits")}{/if}
+    {if $day}{convert_to_units($day * 1000)}/s{else}{trans("no limits")}{/if}
 
     ({trans("night:")}
 
-    {if $night}{$night|default:0} kbit/s{else}{trans("not defined")}{/if})
+    {if $night}{convert_to_units($night * 1000)}/s{else}{trans("not defined")}{/if})
 {/function}
 
 {function restrictions}

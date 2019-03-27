@@ -32,6 +32,10 @@ TEXTAREA.alert:focus {
 
 .text-center	{ text-align: center; }
 
+.lms-userpanel-table-header {
+    color: white;
+}
+
 div.g-recaptcha > div {
     margin: 0 auto 20px;
     display: table;
@@ -66,4 +70,8 @@ div.form-group.row > label.col-form-label {
     background-color: lightgray;
     pointer-events: none;
     cursor: default;
+}
+
+nav.navbar {
+    margin-bottom: 0.3em;
 }

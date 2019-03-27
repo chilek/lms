@@ -1,33 +1,45 @@
 {box title="Request history"}
+
+<script>
+	$(function() {
+		$(".table-click[data-href]").click(function() {
+			window.document.location = $(this).attr("data-href");
+		});
+	});
+</script>
+
+<style>
+	tr.table-click:hover {
+		cursor: pointer;
+	}
+	h5 {
+		margin-top: 10px;
+		margin-bottom: 10px;
+		font-weight: bold;
+	}
+</style>
+<h5>{trans("Request list:")}</h5>
+</style>
+
 <div class="table-responsive">
 	<table class="table table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
+		<thead class="bg-primary lms-userpanel-table-header">
 			<th>{trans("Number:")}</th>
 			<th>{trans("Subject:")}</th>
-		</tr>
+		</thead>
 		{section name=helpdesklist loop=$helpdesklist start=$limit}
-			<tr {userpaneltip text="Click icon on the left to see request details"}>
-				<td>{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
+			<tr class="table-click" data-href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
+				<td class="text-center align-middle">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
 				<td>
-					{if $helpdesklist[helpdesklist].state == 0}
-						<span class="badge badge-primary">{trans("new")}</span>
-					{elseif $helpdesklist[helpdesklist].state == 1}
-						<span class="badge badge-info">{trans("open")}</span>
-					{elseif $helpdesklist[helpdesklist].state == 2}
-						<span class="badge badge-success">{trans("resolved")}</span>
-					{else}
-						<span class="badge badge-default">{trans("dead")}</span>
-					{/if}
-					<a class="font-weight-bold" href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
-						{$helpdesklist[helpdesklist].subject|escape}
-					</a>
+					<span class="badge" style="color: white; background-color:{$_RT_STATES[$helpdesklist[helpdesklist].state].color};">{$_RT_STATES[$helpdesklist[helpdesklist].state].label}</span>
+					<span {if $helpdesklist[helpdesklist].state == 2}style="color:grey"{/if}>{$helpdesklist[helpdesklist].subject|escape}</span>
 					<br>
 					<small class="text-muted">{trans("Date:")} {$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"} &nbsp; {trans("Last modified:")} {$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</small>
 				</td>
 			</tr>
 		{sectionelse}
 			<tr>
-				<td colspan="2">
+				<td colspan="2" class="text-nowrap">
 					{trans("No such requests in database.")}
 				</td>
 			</tr>

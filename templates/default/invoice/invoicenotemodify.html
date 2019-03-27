@@ -207,6 +207,9 @@
 				{else}
 					<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48" style="width: 100%">
 				{/if}
+				{if isset($item.name_custom_contents)}
+					{$item.name_custom_contents}
+				{/if}
 			</TD>
 			<TD class="nobr">
 				{if $refdoc.closed}

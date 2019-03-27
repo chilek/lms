@@ -1,32 +1,41 @@
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
+{$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 {$count = 0}
+
 <div class="table-responsive">
-	<table class="table table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
+	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+		<thead class="bg-secondary lms-userpanel-table-header">
 			<th>{trans("Tariff")}</th>
 			<th>{trans("Subscription")}</th>
-			<th>{trans("Discount:")}</th>
-			<th>{trans("Accounting day:")}</th>
+			<th>{trans("Discount")}</th>
+			<th>{trans("Accounting day")}</th>
 			{if $show_speeds}
 			<th>{trans("Downrate (ceil):")}</th>
 			<th>{trans("Uprate (ceil):")}</th>
 			{/if}
 			<th>{trans("Invoice")}</th>
 			<th>{trans("Period")}</th>
-		</tr>
+		</thead>
 		{foreach $assignments as $assignment}
 			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
 				<tr>
 					<td>{$assignment.name}</td>
-					<td>{$assignment.value|money_format}</td>
-					<td>{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
-					<td>{$assignment.payday}</td>
+					<td class="text-right text-nowrap">{$assignment.value|money_format}</td>
+					<td class="text-right text-nowrap">{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
+					<td class="text-right">{$assignment.payday}</td>
 					{if $show_speeds}
-					<td>{$assignment.downrate|default:"-"} ({$assignment.downceil|default:"-"}) kbit/s</td>
-					<td>{$assignment.uprate|default:"-"} ({$assignment.upceil|default:"-"}) kbit/s</td>
+					<td>
+						{if empty($assignment.downrate)}-{else}{convert_to_units($assignment.downrate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
+						({if empty($assignment.downceil)}-{else}{convert_to_units($assignment.downceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
+					</td>
+					<td>
+						{if empty($assignment.uprate)}-{else}{convert_to_units($assignment.uprate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
+						({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
+					</td>
 					{/if}
-					<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
+					<td class="text-center">{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 					<td>
 						{if $assignment.datefrom}{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $assignment.dateto}{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}{/if}

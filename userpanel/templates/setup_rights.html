@@ -129,7 +129,7 @@
 							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 								<TD class="nobr">{$right.module}</TD>
 								<TD class="nobr">
-									<label for="setrightsrights{$right.id}">{t}{$right.description}{/t}</label>
+									{t}{$right.description}{/t}
 								</TD>
 								<TD>
 									<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrightsrights{$right.id}" VALUE="{$right.id}">

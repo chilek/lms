@@ -2,24 +2,24 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 <TABLE WIDTH="100%" CELLPADDING="3">
-    <TR CLASS="dark"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
+    <TR CLASS="dark"><TD CLASS="fall"><strong>{trans("Module Configuration:")}</strong></TD></TR>
     <TR CLASS="light"><TD CLASS="fall">
 	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=info&f=submit_setup">
 	<TABLE WIDTH="100%">
 		<TR>
 			<TD WIDTH="1%" NOWRAP>
-				<label for="hide_nodesbox">{trans("Hide customer nodes box:")}</label>
+				<label for="hide_nodesbox">{trans("Hide customer nodes box")}</label>
 			</TD>
 			<TD WIDTH="99%" NOWRAP>
-				<INPUT type="checkbox" NAME="hide_nodesbox" ID="hide_nodesbox" value="1"{if $hide_nodesbox} checked{/if} {tip text="Don't show customer nodes box if he hasn't any nodes"}>
+				<INPUT type="checkbox" NAME="hide_nodesbox" ID="hide_nodesbox" value="1"{if $hide_nodesbox} checked{/if} {tip text="Don't show customer nodes"}>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH="1%" NOWRAP>
-				<label for="hide_documentbox">{trans("Hide customer document box:")}</label>
+				<label for="hide_documentbox">{trans("Hide customer document box")}</label>
 			</TD>
 			<TD WIDTH="99%" NOWRAP>
-				<INPUT type="checkbox" NAME="hide_documentbox" ID="hide_documentbox" value="1"{if $hide_documentbox} checked{/if} {tip text="Don't show customer document box if he hasn't any documents"}>
+				<INPUT type="checkbox" NAME="hide_documentbox" ID="hide_documentbox" value="1"{if $hide_documentbox} checked{/if} {tip text="Don't show customer document box"}>
 			</TD>
 		</TR>
 		<TR>

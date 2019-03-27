@@ -173,6 +173,7 @@ function module_rights()
 function module_submit_rights()
 {
     global $DB;
+
     $setrights=$_POST['setrights'];
     if(isset($setrights) && isset($setrights['mcustomerid'])) {
         $newrights=$setrights['rights'];
@@ -198,10 +199,13 @@ function module_submit_rights()
 function module_submit_rights_default()
 {
     global $DB;
-    $rights = isset($_POST['setdefaultrights']) ? $_POST['setdefaultrights'] : array();
-    foreach($DB->GetCol('SELECT id FROM up_rights') as $right)
-        $DB->Execute('UPDATE up_rights SET setdefault = ? WHERE id = ?',
-	        array(isset($rights[$right]) ? 1 : 0, $right));
+
+	if (!isset($_POST['loginform'])) {
+		$rights = isset($_POST['setdefaultrights']) ? $_POST['setdefaultrights'] : array();
+		foreach ($DB->GetCol('SELECT id FROM up_rights') as $right)
+			$DB->Execute('UPDATE up_rights SET setdefault = ? WHERE id = ?',
+				array(isset($rights[$right]) ? 1 : 0, $right));
+	}
     module_rights();
 }
 

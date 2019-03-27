@@ -1,20 +1,28 @@
 {include file="header.html"}
-<h3><a class="btn btn-secondary" href="?m=helpdesk">{trans("Back")}</a> {trans($title)}</h3>
+<style>
+
+	.card > .card-block {
+		margin: 0.4em;
+	}
+
+</style>
+<h3><a class="btn btn-secondary mb-2" href="?m=helpdesk">{trans("Back")}</a></h3>
+<h5><span class="badge" style="color: white; background-color:{$_RT_STATES[$ticket.state].color};">{$_RT_STATES[$ticket.state].label}</span> {trans($title)}</h5>
 {$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'))}
 {foreach $ticket.messages as $message}
 	<div class="card">
 		<div class="card-header">
-			<h4 class="card-title">
-				<strong>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</strong>
-			</h4>
-			<h6 class="card-subtitle text-muted">
+			<h5 class="card-title">
 				{trans("Subject:")} <strong>{$message.subject|escape}</strong>
+			</h5>
+			<h6 class="card-subtitle text-muted">
+				<strong>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</strong>
 			</h6>
 		</div>
 		<div class="card-block">
 			<div class="card-block">
 				<blockquote class="blockquote">
-					<p class="mb-0">{$message.body|escape|replace:"\n":"<br/>"}</p>
+					<p class="mb-0 p-3">{$message.body|escape|replace:"\n":"<br/>"}</p>
 					<footer class="blockquote-footer">{trans("From")}:
 						<strong>
 							{if $message.customerid}

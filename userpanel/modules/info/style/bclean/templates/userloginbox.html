@@ -1,0 +1,74 @@
+<!--// $Id$ //-->
+{box title="Login data"}
+<div class="card">
+	<div class="card-header">
+		<strong>{trans("Login data")}</strong>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<strong>{trans("Customer ID")}:</strong>{$userinfo.id|string_format:"%04d"}
+		</li>
+		<li class="list-group-item">
+			<strong>{trans("PIN")}:</strong>******
+			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
+				<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
+					{trans("Change")}
+				</button>
+			{/if}
+		</li>
+	</ul>
+</div>
+
+{/box}
+
+<div class="modal fade" id="updatepinbox" tabindex="-1" role="dialog" aria-labelledby="updatepinbox" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{trans("PIN Update")}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{if $error.oldpin}
+				<div class="alert alert-danger">{$error.oldpin}</div>
+				{/if}
+				{if $error.pin}
+				<div class="alert alert-danger">{$error.pin}</div>
+				{/if}
+				<form name="userpin" method="post" action="?m=info&f=updatepin">
+					<div class="form-group">
+						<label for="oldpin"><strong>{trans("Current PIN")}:</strong></label>
+						<input id="oldpin" type="password" class="form-control" name="userdata[oldpin]" placeholder="{trans("Enter current PIN")}">
+					</div>
+					<div class="form-group">
+						<label for="pin"><strong>{trans("New PIN")}:</strong></label>
+						<input id="pin" type="password" class="form-control" name="userdata[pin]" placeholder="{trans("Enter new PIN")}">
+					</div>
+					<div class="form-group">
+						<label for="pin2"><strong>{trans("New PIN confirm")}:</strong></label>
+						<input id="pin2" type="password" class="form-control" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-danger" href="javascript:document.userpin.submit()" accesskey="A">{trans("Save")}</a>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(function() {
+		$('[data-toggle="modal"]').click(function() {
+			$($(this).attr('data-target')).find('.alert').remove();
+		});
+
+		{if $error.oldpin || $error.pin || $error.pin2}
+		$('#updatepinbox').modal('show');
+		{elseif isset($error)}
+		$('#updateuserinfobox').modal('show');
+		{/if}
+		});
+</script>

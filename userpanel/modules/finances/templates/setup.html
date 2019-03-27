@@ -65,6 +65,30 @@
 					</tr>
 					<tr>
 						<td class="nobr">
+							<label for="speed_unit_type">
+								{trans("Speed unit type")}
+							</label>
+						</td>
+						<td>
+							<select name="speed_unit_type" id="speed_unit_type">
+								<option value="1000"{if $speed_unit_type == 1000} selected{/if}>{trans("<!speed-unit>SI")}</option>
+								<option value="1024"{if $speed_unit_type == 1024} selected{/if}>{trans("<!speed-unit>binary")}</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
+							<label for="speed_unit_aggregation_threshold">
+								{trans("Speed unit aggregation threshold")}
+							</label>
+						</td>
+						<td>
+							<input type="number" name="speed_unit_aggregation_threshold" id="speed_unit_aggregation_threshold"
+									value="{$speed_unit_aggregation_threshold}">
+						</td>
+					</tr>
+					<tr>
+						<td class="nobr">
 							<label for="show_last_years">
 								{trans("Show transactions from last selected years:")}
 							</label>

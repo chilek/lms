@@ -920,10 +920,18 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			toggleKey: "ctrlKey", // ctrl key removes from selection
 			multipleKey: "shiftKey", // shift key adds to selection
 			onSelect: function(feature) {
-				map.events.triggerEvent('feature_click', {
-					xy: new OpenLayers.LonLat(feature.data.lon, feature.data.lat),
-					feature: true
-				});
+				if (feature.data.hasOwnProperty('lon')) {
+					map.events.triggerEvent('feature_click', {
+						xy: new OpenLayers.LonLat(feature.data.lon, feature.data.lat),
+						feature: true
+					});
+				} else {
+					map.events.triggerEvent('feature_click', {
+						xy: map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy)
+							.transform(map.getProjectionObject(), lmsProjection),
+						feature: true
+					});
+				}
 			}
 		});
 		map.addControl(selectlayer);

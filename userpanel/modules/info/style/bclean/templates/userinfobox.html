@@ -18,23 +18,12 @@
 		{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 				<button id="updatedatabtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateuserinfobox" accesskey="A">
-					{trans("Actualize data")}
+					{trans("Actualize")}
 				</button>
 			{/if}
 		{/if}
 	</div>
 	<ul class="list-group list-group-flush">
-		<li class="list-group-item">
-			<strong>{trans("ID")}:</strong>{$userinfo.id|string_format:"%04d"}
-		</li>
-		<li class="list-group-item">
-			<strong>{trans("PIN")}:</strong>******
-			{if ConfigHelper::checkConfig('userpanel.pin_changes')}
-			<button id="updatepinbtn" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatepinbox" accesskey="P">
-				{trans("Update PIN")}
-			</button>
-			{/if}
-		</li>
 		<li class="list-group-item">
 			<strong>{if $userinfo.type == 0}{trans("Last and first name")}{else}{trans("Company name")}{/if}:</strong><BR />
 			{if isset($fields_changed.lastname) || isset($fields_changed.name)}
@@ -142,8 +131,9 @@
 			</li>
 		{/if}
 		<li class="list-group-item">
-			<strong>{trans("Balance:")}</strong>
-		{if $userinfo.balance < 0}<span class="text-danger"><strong>{$userinfo.balance|money_format}</strong></span>{else}{$userinfo.balance|money_format}{/if}
+			<strong>{trans("Balance:")}
+		{if $userinfo.balance < 0}<span class="text-danger">{$userinfo.balance|money_format}{else}<span class="text-success">{$userinfo.balance|money_format}{/if}</span>
+			</strong>
 	</li>
 	{if $userinfo.bankaccount || $userinfo.accounts}
 		<li class="list-group-item">
@@ -182,67 +172,58 @@
 				<form name="useredit" method="post" action="?m=info&f=updateusersave">
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 						<div class="form-group">
-							<label for="lastname">{if $userinfo.type == 0}{trans("First and last name")}{else}{trans("Company name")}{/if}:</label>
+							<label class="font-weight-bold" for="lastname">{if $userinfo.type == $smarty.const.CTYPES_PRIVATE}{trans("Last name:")}{else}{trans("Company name:")}{/if}</label>
 							<input id="lastname" class="form-control" type="text" name="userdata[lastname]" value="{$userinfo.lastname|escape}" placeholder="{trans("Enter lastname")}">
 						</div>
-						{if $userinfo.type == 0}
+						{if $userinfo.type == $smarty.const.CTYPES_PRIVATE}
 							<div class="form-group">
-								<label for="firstname">{trans("First Name")}:</label>
+								<label class="font-weight-bold" for="firstname">{trans("First name:")}</label>
 								<input id="firstname" class="form-control" type="text" name="userdata[name]" value="{$userinfo.name|escape}" placeholder="{trans("Enter first name")}">
 							</div>
 						{/if}
 					{else}
-						{trans("Name:")} {$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
+						<strong>{trans("Name:")}</strong><br/>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
 					{/if}
 
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
-						<div class="form-group row">
-							<label for="inputEmail3" class="col-xs-2 col-form-label">{trans("Street:")}</label>
-							<div class="col-xs-7">
-								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street}" placeholder="{trans("Enter street name")}">
-							</div>
+						<div class="form-group">
+							<label for="inputEmail3" class="col-form-label">{trans("Street:")}</label>
+							<INPUT class="form-control" TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street}" placeholder="{trans("Enter street name")}">
 						</div>
 						<div class="form-group row">
-							<label for="inputEmail3" class="col-xs-2 col-form-label">{trans("Building:")}</label>
-							<div class="col-xs-2">
-								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" placeholder="{trans("Enter building number")}">
-							</div>
+							<label for="building" class="col-form-label">{trans("Building:")}</label>
+							<INPUT class="col-lg-2 form-control" id="building" TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" placeholder="{trans("Enter building number")}">
 
-							<label for="inputEmail3" class="col-xs-2 col-form-label">{trans("Apartment:")}</label>
-							<div class="col-xs-2">
-								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" placeholder="{trans("Enter apartment number")}">
-							</div>
+							<label for="apartment" class="col-form-label">{trans("Apartment:")}</label>
+							<INPUT class="col-lg-2 form-control" id="apartment" TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" placeholder="{trans("Enter apartment number")}">
 						</div>
 
 						<div class="form-group row">
-							<label for="inputEmail3" class="col-xs-2 col-form-label">{trans("Zip:")}</label>
-							<div class="col-xs-3">
-								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" placeholder="{trans("Enter zip code")}">
-							</div>
-							<label for="inputEmail3" class="col-xs-2 col-form-label">{trans("City:")}</label>
-							<div class="col-xs-5">
-								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" placeholder="{trans("Enter city name")}">
-							</div>
+							<label for="zip" class="col-form-label">{trans("Zip:")}</label>
+							<INPUT class="col-lg-2 form-control" id="zip" TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" placeholder="{trans("Enter zip code")}">
+
+							<label for="city" class="col-form-label">{trans("City:")}</label>
+							<INPUT class="col-lg-5 form-control" id="city" TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" placeholder="{trans("Enter city name")}">
 						</div>
 					{else}
-						{$userinfo.address}, {$userinfo.zip} {$userinfo.city}
+						{$userinfo.address},<br/> {$userinfo.zip} {$userinfo.city}
 					{/if}
-
+					<br/><br/>
 					{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 
 						{foreach $userinfo.emails as $email}
 							<div class="form-group">
-								<label for="email{$email.id}">{trans("E-mail:")}</label>
+								<label for="email{$email.id}" class="font-weight-bold">{trans("E-mail:")}</label>
 								<input id="email{$email.id}" class="form-control" type="email" name="userdata[email][{$email.id}]" value="{$email.email}" placeholder="{trans("Enter e-mail address")}">
 							</div>
 						{foreachelse}
 							<div class="form-group">
-								<label for="email">{trans("E-mail:")}</label>
+								<label for="email" class="font-weight-bold">{trans("E-mail:")}</label>
 								<INPUT id="email" class="form-control" type="email" name="userdata[email][0]" value="{$userinfo.email}" placeholder="{trans("Enter e-mail address")}">
 							</div>
 						{/foreach}
 					{else}
-						{trans("E-mail:")}
+						<strong>{trans("E-mail:")}</strong>
 						{foreach $userinfo.emails as $email}
 							{$email.email}{if !$email@last}<BR />{/if}
 						{/foreach}
@@ -251,12 +232,12 @@
 					{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 						{foreach $userinfo.contacts as $item}
 							<div class="form-group">
-								{trans("Phone:")}
+								<strong>{trans("Phone:")}</strong>
 								<INPUT class="form-control" TYPE="tel" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" placeholder="{trans("Enter phone number")}">
 							</div>
 						{foreachelse}
 							<div class="form-group">
-								{trans("Phone:")}
+								<strong>{trans("Phone:")}</strong>
 								<INPUT class="form-control" TYPE="tel" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" placeholder="{trans("Enter phone number")}">
 							</div>
 						{/foreach}
@@ -267,7 +248,7 @@
 					{/if}
 
 					{foreach $userinfo.ims as $item}
-						<div class="form-group">
+						<div class="font-weight-bold form-group">
 							{if $item.type & $smarty.const.CONTACT_IM_GG}
 								{trans("Gadu-Gadu")}
 							{elseif $item.type & $smarty.const.CONTACT_IM_YAHOO}
@@ -289,82 +270,30 @@
 					{if $userinfo.type == 0}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
-								{trans("SSN")}:
+								<strong>{trans("SSN")}:</strong>
 								<INPUT class="form-control" TYPE="number" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}" placeholder="{trans("Enter social security number")}">
 							</div>
 						{else}
-							{$userinfo.ssn}
+							<strong>{trans("SSN")}:</strong> {$userinfo.ssn}
 						{/if}
 					{else}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
-								{trans("TEN")}:
+								<strong>{trans("TEN")}: </strong>
 								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten}" placeholder="{trans("Enter tax exempt number")}">
 							</div>
 						{else}
-							{$userinfo.ten}
+							<strong>{trans("TEN")}:</strong> {$userinfo.ten}
 						{/if}
 					{/if}
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
 					<a class="btn btn-danger" href="javascript:document.useredit.submit()" accesskey="A">{trans("Save")}</a>
 				{/if}
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="updatepinbox" tabindex="-1" role="dialog" aria-labelledby="updatepinbox" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">{trans("PIN Update")}</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				{if $error.oldpin}
-				<div class="alert alert-danger">{$error.oldpin}</div>
-				{/if}
-				{if $error.pin}
-				<div class="alert alert-danger">{$error.pin}</div>
-				{/if}
-				<form name="userpin" method="post" action="?m=info&f=updatepin">
-					<div class="form-group">
-						<label for="oldpin">{trans("Current PIN")}:</label>
-						<input id="oldpin" type="password" class="form-control" name="userdata[oldpin]" placeholder="{trans("Enter current PIN")}">
-					</div>
-					<div class="form-group">
-						<label for="pin">{trans("New PIN")}:</label>
-						<input id="pin" type="password" class="form-control" name="userdata[pin]" placeholder="{trans("Enter new PIN")}">
-					</div>
-					<div class="form-group">
-						<label for="pin2">{trans("New PIN confirm")}:</label>
-						<input id="pin2" type="password" class="form-control" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}">
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
-				<a class="btn btn-danger" href="javascript:document.userpin.submit()" accesskey="A">{trans("Save")}</a>
 			</div>
 		</div>
 	</div>
 </div>
-<script>
-	$(function() {
-		$('[data-toggle="modal"]').click(function() {
-			$($(this).attr('data-target')).find('.alert').remove();
-		});
-
-		{if $error.oldpin || $error.pin || $error.pin2}
-		$('#updatepinbox').modal('show');
-		{elseif isset($error)}
-		$('#updateuserinfobox').modal('show');
-		{/if}
-	});
-</script>

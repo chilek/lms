@@ -221,6 +221,10 @@ version ?.??.?? (????-??-??):
   - improvement: userpanel: helpdesk: user friendly file size upload limitation [chilan]
   - enhancement: userpanel/info: allow to auto-hide customer document box if customer
     hasn't got any documents [chilan]
+  - enhacement: allow to embed images in messages [chilan]
+  - improvement: userpanel/finances: tariffs speeds are aggregate to sane units [chilan]
+  - improvement: userpanel/finances: tariff speed units are configurable [chilan]
+  - improvement: aggregate tariff speeds to kMG units [chilan]
 
 version 1.11.23 (2018-03-21):
 

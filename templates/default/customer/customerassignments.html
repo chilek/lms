@@ -170,12 +170,12 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column downceil">
 								{if $a.tariffid || $a.liabilityid}
-									{if $a.downceil}{$a.downceil} kbit/s{else}-{/if}
+									{if $a.downceil}{convert_to_units($a.downceil * 1000)}/s{else}-{/if}
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column upceil">
 								{if $a.tariffid || $a.liabilityid}
-									{if $a.upceil}{$a.upceil} kbit/s{else}-{/if}
+									{if $a.upceil}{convert_to_units($a.upceil * 1000)}/s{else}-{/if}
 								{/if}
 							</div>
 						</div>
@@ -370,8 +370,8 @@
 			{/if}
 			});
 
-		$('#total-downceil').html(total_downceil ? total_downceil + ' kbit/s' : '-');
-		$('#total-upceil').html(total_upceil ? total_upceil + ' kbit/s' : '-');
+		$('#total-downceil').html(total_downceil ? convert_to_units(total_downceil * 1000) + '/s' : '-');
+		$('#total-upceil').html(total_upceil ? convert_to_units(total_upceil * 1000) + '/s' : '-');
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		$('#total-value').html(sprintf(money_format, total_value));
 		$('#total-disc-value').html('(' + sprintf(money_format, total_disc_value) + ')');

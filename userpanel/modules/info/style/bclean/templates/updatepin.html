@@ -4,29 +4,39 @@
 {/if}
 <ul class="nav nav-tabs mb-1" role="tablist">
 	<li class="nav-item">
-		<a class="nav-link active" data-toggle="tab" href="#userinfobox" role="tab">{trans("Information about the subscriber")}</a>
+		<a class="nav-link" data-toggle="tab" href="#userinfobox" role="tab">{trans("Information about the subscriber")}</a>
 	</li>
 	{if !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 		<li class="nav-item">
 			<a class="nav-link" data-toggle="tab" href="#usernodesbox" role="tab">{trans("Your computers")}</a>
 		</li>
 	{/if}
+	{if (is_array($documents) && count($documents)) && !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#userdocsbox" role="tab">{trans("Your documents")}</a>
+		</li>
+	{/if}
 	<li class="nav-item">
-		<a class="nav-link" data-toggle="tab" href="#userdocsbox" role="tab">{trans("Your documents")}</a>
+		<a class="nav-link active" data-toggle="tab" href="#userloginbox" role="tab">{trans("Login data")}</a>
 	</li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane active" id="userinfobox" role="tabpanel">
+	<div class="tab-pane" id="userinfobox" role="tabpanel">
 		{include file="module:userinfobox.html"}
 	</div>
-	{if !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
+	{if (is_array($usernodes) && count($usernodes)) && !ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
 		<div class="tab-pane" id="usernodesbox" role="tabpanel">
 			{include file="module:usernodesbox.html"}
 		</div>
 	{/if}
-	<div class="tab-pane" id="userdocsbox" role="tabpanel">
-		{include file="module:userdocsbox.html"}
+	{if (is_array($documents) && count($documents)) && !ConfigHelper::checkConfig('userpanel.hide_documentbox')}
+		<div class="tab-pane" id="userdocsbox" role="tabpanel">
+			{include file="module:userdocsbox.html"}
+		</div>
+	{/if}
+	<div class="tab-pane active" id="userloginbox" role="tabpanel">
+		{include file="module:userloginbox.html"}
 	</div>
 </div>
 {include file="footer.html"}

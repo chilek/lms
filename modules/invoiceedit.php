@@ -46,6 +46,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init' || $action == 
 	$SESSION->remove('invoicecontents');
 	$SESSION->remove('invoice');
 	$SESSION->remove('invoicecustomer');
+	$SESSION->remove('invoiceediterror');
 
 	$invoicecontents = array();
 	foreach ($invoice['content'] as $item) {

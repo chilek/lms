@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-$_LANG['Actualize data'] = 'Aktualizuj dane';
+$_LANG['Customer ID'] = 'Nr klienta';
+$_LANG['Login data'] = 'Logowanie';
+$_LANG['Actualize'] = 'Aktualizuj';
 $_LANG['Add computer'] = 'Dodaj komputer';
 $_LANG['Balance:'] = 'Bilans:';
 $_LANG['city'] = 'miasto';
@@ -69,8 +71,8 @@ $_LANG['Enter Yahoo identifier'] = 'Wprowadź identyfikator Yahoo';
 $_LANG['Enter tax exempt number'] = 'Wprowadź NIP';
 $_LANG['Enter social security number'] = 'Wprowadź PESEL';
 $_LANG['Hide customer nodes box:'] = 'Ukryj okno komputerów klienta:';
-$_LANG['Don\'t show customer nodes box if he hasn\'t any nodes'] = 'Jeśli klient nie posiada komputerów ukrywa całkowicie okno informacji o komputerach';
-$_LANG['Hide customer document box:'] = 'Ukryj okno dokumentów klienta:';
+$_LANG['Don\'t show customer nodes box'] = 'Ukryj okno komputerów klienta';
+$_LANG['Hide customer document box'] = 'Ukryj okno dokumentów klienta';
 $_LANG['Don\'t show customer document box if he hasn\'t any documents'] = 'Jeśli klient nie posiada dokumentów ukrywa całkowicie okno informacji o dokumentach';
 $_LANG['Text of data processing agreement:'] = 'Tekst zgody na przetwarzanie danych:';
 $_LANG['Enter text of agreement for personal data processing'] = 'Wprowadź tekst zgody na przetwarzanie danych osobowych';
@@ -116,6 +118,7 @@ $_LANG['Enter customer data change rejection mail subject'] = 'Wprowadź temat l
 $_LANG['Rejection mail body:'] = 'Treść listu z odmową:';
 $_LANG['Enter customer data change rejection mail body'] = 'Wprowadź treść listu z odmową zmiany danych klienta';
 
+$_LANG['Change'] = 'Zmień';
 $_LANG['Update PIN'] = 'Zmień PIN';
 $_LANG['PIN Update'] = 'Aktualizacja PIN';
 $_LANG['Current PIN'] = 'Aktualny PIN';
@@ -131,5 +134,16 @@ $_LANG['New PIN should be different than old PIN!'] = 'Nowy PIN powinien być in
 $_LANG['PIN should have at least $a, maximum $b characters and contain only \'$c\' characters!'] = 'PIN powinien posiadać co najmniej $a, maksimum $b znaków oraz składać się ze znaków \'$c\'!';
 $_LANG['PIN changes:'] = 'Zmiany kodu PIN:';
 $_LANG['Allow customer to change PIN'] = 'Pozwól klientowi na zmianę kodu PIN';
+
+$_LANG['First name:'] = 'Imię:';
+$_LANG['Last name:'] = 'Nazwisko:';
+$_LANG['Company name:'] = 'Nazwa firmy:';
+$_LANG['Device description'] = 'Opis urządzenia';
+$_LANG['MAC address'] = 'Adres MAC';
+$_LANG['IP address'] = 'Adres IP';
+
+$_LANG['Device description'] = 'Opis urządzenia';
+$_LANG['MAC address'] = 'Adres MAC';
+$_LANG['IP address'] = 'Adres IP';
 
 ?>

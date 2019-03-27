@@ -32,12 +32,13 @@ $_LANG['All your covenants are settled'] = 'Wszystkie Twoje zobowiązania są ro
 $_LANG['Amount:'] = 'Ilość:';
 $_LANG['Balance'] = 'Saldo';
 $_LANG['Cancel'] = 'Anuluj';
-$_LANG['Click here to print payment form'] = 'Kliknij tutaj by wydrukować formularz wpłaty';
+$_LANG['Print payment form'] = 'Wydrukuj formularz wpłaty';
 $_LANG['Customer No.: $a'] = 'Numer klienta: $a';
 $_LANG['Date:'] = 'Data:';
 $_LANG['Deadline:'] = 'Termin płatności:';
 $_LANG['Description:'] = 'Opis:';
 $_LANG['Discount:'] = 'Rabat:';
+$_LANG['Discount'] = 'Rabat';
 $_LANG['Downrate (ceil):'] = 'Downrate (ceil):';
 $_LANG['DUPLICATE'] = 'DUPLIKAT';
 $_LANG['Expositor:'] = 'Wystawił:';
@@ -103,5 +104,12 @@ $_LANG['Transfer title'] = 'Tytuł przelewu';
 $_LANG['Invoice title'] = 'Tytuł faktury';
 
 $_LANG['Show transactions from last selected years:'] = 'Pokaż transakcje z ostatnich wybranych lat:';
+
+$_LANG['Check'] = 'Zaznacz';
+
+$_LANG['Speed unit type'] = 'Typ jednostki szybkości';
+$_LANG['Speed unit aggregation threshold'] = 'Wyzwalacz agregacji jednostki szybkości';
+$_LANG['<!speed-unit>SI'] = 'SI';
+$_LANG['<!speed-unit>binary'] = 'binarny';
 
 ?>

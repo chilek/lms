@@ -498,6 +498,19 @@ function setunits($data)  // for traffic data
 	return array($number, $unit);
 }
 
+function convert_to_units($value, $threshold = 5, $multiplier = 1000) {
+	$unit_suffix = ($multiplier == 1024 ? 'ibit' : 'bit');
+	$threshold = floatval($threshold);
+	$multiplier = floatval($multiplier);
+	if ($value < $multiplier * $multiplier * $threshold)
+		$result = round($value / $multiplier, 2) . ' k' . $unit_suffix;
+	elseif ($value < $multiplier * $multiplier * $multiplier * $threshold)
+		$result = round($value / $multiplier / $multiplier, 2) . ' M' . $unit_suffix;
+	else
+		$result = round($value / $multiplier / $multiplier / $multiplier, 2) . ' G' . $unit_suffix;
+	return str_replace(',', '.', $result);
+}
+
 function r_trim($array)
 {
 	foreach($array as $key => $value)

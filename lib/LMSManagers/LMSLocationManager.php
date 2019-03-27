@@ -410,9 +410,9 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 		if (isset($cityid))
 			// teryt compatible address
 			return $this->db->GetOne('SELECT zip FROM pna
-				WHERE cityid = ? AND parity & ? > 0' . (isset($streetid) ? ' AND streetid = ' . intval($streetid) : '') . '
+				WHERE cityid = ? AND parity & ? > 0' . (isset($streetid) ? ' AND (streetid = ' . intval($streetid) . ' OR streetid IS NULL)' : '') . '
 					AND ' . $from . ' AND ' . $to . '
-					ORDER BY fromnumber DESC, tonumber DESC LIMIT 1', array($cityid, $parity));
+					ORDER BY streetid ASC, fromnumber DESC, tonumber DESC LIMIT 1', array($cityid, $parity));
 		elseif (isset($city)) {
 			// non-teryt address
 

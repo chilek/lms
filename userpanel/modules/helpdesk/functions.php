@@ -137,7 +137,7 @@ function module_main() {
 		$ticket['subject'] = strip_tags($ticket['subject']);
 		$ticket['body'] = strip_tags($ticket['body']);
 
-		if (!$ticket['queue'] || !$ticket['categories']) {
+		if (!$ticket['queue']) {
 			header('Location: ?m=helpdesk');
 			die;
 		}
@@ -148,7 +148,7 @@ function module_main() {
 		}
 
 		if ($ticket['subject'] == '')
-			$error['subject'] = trans('Ticket must have its title!');
+			$ticket['subject'] = trans("No subject");
 
 		if ($ticket['body'] == '')
 			$error['body'] = trans('Ticket must have its body!');
@@ -453,8 +453,13 @@ function module_main() {
 			$sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
 			if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
 				&& in_array($ticket['source'], $sources)) {
-				$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+				if (count($queues)==1) {
+					$SMARTY->assign('title', trans('Request No. $a',
+						sprintf('%06d', $ticket['ticketid'])));
+				} else {
+					$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
 					sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+				}
 
 				$SMARTY->assign('ticket', $ticket);
 				$SMARTY->display('module:helpdeskview.html');
@@ -487,8 +492,14 @@ function module_main() {
 			}
 			$SMARTY->assign('helpdesk', $helpdesk);
 
-			$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
-				sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+			if (count($queues)==1) {
+                        	$SMARTY->assign('title', trans('Request No. $a',
+                                	sprintf('%06d', $ticket['ticketid'])));
+                                } else {
+                                        $SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+                                        sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
+                                }
+
 			if ($ticket['customerid'] == $SESSION->id) {
 				$SMARTY->assign('ticket', $ticket);
 				$SMARTY->display('module:helpdeskreply.html');
