@@ -167,47 +167,6 @@ $header = ConfigHelper::getConfig('siis.header', '');
 if (strlen($header))
 	$buffer .= str_replace("\n", EOL, $header) . EOL;
 
-// prepare old csv key arrays
-$ob_keys = array('ob_id', 'ob_invproject', 'ob_name', 'ob_nip', 'ob_regon', 'ob_rpt', 'ob_state',
-	'ob_district', 'ob_borough', 'ob_terc', 'ob_city', 'ob_simc', 'ob_street', 'ob_ulic', 'ob_house',
-	'ob_zip');
-$proj_keys = array('proj_id', 'proj_name', 'proj_agreementnr', 'proj_title', 'proj_program', 'proj_case',
-	'proj_companyname', 'proj_startdate', 'proj_enddate', 'proj_state', 'proj_range');
-$ww_keys = array('ww_id', 'ww_invproject', 'ww_invstatus', 'ww_id', 'ww_ownership', 'ww_coowner', 'ww_coloc',
-	'ww_state', 'ww_district', 'ww_borough', 'ww_terc', 'ww_city', 'ww_simc',
-	'ww_street', 'ww_ulic', 'ww_house', 'ww_zip', 'ww_latitude', 'ww_longitude', 'ww_objtype',
-	'ww_uip', 'ww_miar', 'ww_eu');
-$wo_keys = array('wo_id', 'wo_invproject', 'wo_id', 'wo_agreement', 'wo_coowner',
-	'wo_state', 'wo_district', 'wo_borough', 'wo_terc', 'wo_city', 'wo_simc',
-	'wo_street', 'wo_ulic', 'wo_house', 'wo_zip', 'wo_latitude', 'wo_longitude', 'wo_objtype');
-$int_keys = array('int_id', 'int_invproject', 'int_invstatus', 'int_id', 'int_wwid', 'int_blayer',
-	'int_dlayer', 'int_alayer', 'int_tech', 'int_bandwidth', 'int_ltech', 'int_maxdown', 'int_maxup',
-	'int_totalports', 'int_usedports', 'int_freeports', 'int_portleasing');
-$sr_keys = array('sr_id', 'sr_invproject', 'sr_invstatus', 'sr_id', 'sr_wwid', 'sr_intid',
-	'sr_license', 'sr_licensenr', 'sr_azimuth', 'sr_width', 'sr_altitude', 'sr_range', 'sr_maxspeed');
-$ps_keys = array('ps_id', 'ps_invproject', 'ps_invstatus', 'ps_id', 'ps_wwid', 'ps_woid', 'ps_intid',
-	'ps_internetusage', 'ps_voiceusage', 'ps_otherusage', 'ps_totalspeed', 'ps_internetspeed');
-$pol_keys = array('pol_id', 'pol_invproject', 'pol_invstatus', 'pol_id', 'pol_owner', 'pol_foreignerid',
-	'pol_wa', 'pol_wb', 'pol_blayer', 'pol_dlayer', 'pol_alayer', 'pol_internetusage', 'pol_voiceusage',
-	'pol_otherusage', 'pol_totalspeed', 'pol_internetspeed');
-$lp_keys = array('lp_id', 'lp_invproject', 'lp_invstatus', 'lp_id', 'lp_owner', 'lp_foreignerid', 'lp_anodetype',
-	'lp_anodeid', 'lp_bnodetype', 'lp_bnodeid', 'lp_tech', 'lp_fibertype', 'lp_fibertotal',
-	'lp_fiberused', 'lp_eu', 'lp_passiveavail', 'lp_passivetype', 'lp_fiberlease', 'lp_fiberleasecount',
-	'lp_bandwidthlease', 'lp_duct', 'lp_length');
-$rl_keys = array('rl_id', 'rl_invproject', 'rl_invstatus', 'rl_id', 'rl_anodeid', 'rl_bnodeid', 'rl_mediumtype',
-	'rl_licencenr', 'rl_bandwidth', 'rl_transmission', 'rl_throughput', 'rl_leaseavail');
-$zas_keys = array('zas_id', 'zas_invproject', 'zas_invstatus', 'zas_id', 'zas_ownership', 'zas_leasetype',
-	'zas_foreignerid', 'zas_nodeid', 'zas_state', 'zas_district', 'zas_borough', 'zas_terc', 'zas_city',
-	'zas_simc', 'zas_street', 'zas_ulic', 'zas_house', 'zas_zip', 'zas_latitude', 'zas_longitude',
-	'zas_tech', 'zas_ltech', 'zas_phonepots', 'zas_phonevoip', 'zas_phonemobile', 'zas_internetstationary',
-	'zas_internetmobile', 'zas_tv', 'zas_other', 'zas_stationarymaxspeed', 'zas_mobilemaxspeed');
-$us_keys = array('us_id', 'us_invproject', 'us_invstatus', 'us_id', 'us_netbuildingid', 'us_phonepots',
-	'us_phonevoip', 'us_phonemobile', 'us_internetstationary', 'us_internetmobile', 'us_tv', 'us_other');
-for ($i = 0; $i < 11; $i++)
-	$us_keys[] = 'us_personal' . $i;
-for ($i = 0; $i < 11; $i++)
-	$us_keys[] = 'us_commercial' . $i;
-
 function to_csv($data) {
 	foreach ($data as $key => $val)
 		$data[$key] = '"' . str_replace('"', '""', $val) . '"';
