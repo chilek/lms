@@ -32,7 +32,7 @@ TEXTAREA.alert:focus {
 
 .text-center	{ text-align: center; }
 
-.lms-userpanel-userassignment-head, .lms-userpanel-userdocuments-head, .lms-userpanel-usernodes-head, .lms-userpanel-userbalance-head, .lms-userpanel-helpdesklist-head {
+.lms-userpanel-table-header {
     color: white;
 }
 
