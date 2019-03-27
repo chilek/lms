@@ -39,15 +39,15 @@
 				{/if}
 				<form name="userpin" method="post" action="?m=info&f=updatepin">
 					<div class="form-group">
-						<label for="oldpin">{trans("Current PIN")}:</label>
+						<label for="oldpin"><strong>{trans("Current PIN")}:</strong></label>
 						<input id="oldpin" type="password" class="form-control" name="userdata[oldpin]" placeholder="{trans("Enter current PIN")}">
 					</div>
 					<div class="form-group">
-						<label for="pin">{trans("New PIN")}:</label>
+						<label for="pin"><strong>{trans("New PIN")}:</strong></label>
 						<input id="pin" type="password" class="form-control" name="userdata[pin]" placeholder="{trans("Enter new PIN")}">
 					</div>
 					<div class="form-group">
-						<label for="pin2">{trans("New PIN confirm")}:</label>
+						<label for="pin2"><strong>{trans("New PIN confirm")}:</strong></label>
 						<input id="pin2" type="password" class="form-control" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}">
 					</div>
 				</form>
