@@ -232,7 +232,7 @@
 					{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 						{foreach $userinfo.contacts as $item}
 							<div class="form-group">
-								<strong>{trans("Phone:")}</strong>>
+								<strong>{trans("Phone:")}</strong>
 								<INPUT class="form-control" TYPE="tel" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" placeholder="{trans("Enter phone number")}">
 							</div>
 						{foreachelse}
@@ -274,12 +274,12 @@
 								<INPUT class="form-control" TYPE="number" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}" placeholder="{trans("Enter social security number")}">
 							</div>
 						{else}
-							<strong>{trans("SSN")}:</strong>{$userinfo.ssn}
+							<strong>{trans("SSN")}:</strong> {$userinfo.ssn}
 						{/if}
 					{else}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
-								<strong>{trans("TEN")}:</strong>
+								<strong>{trans("TEN")}: </strong>
 								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten}" placeholder="{trans("Enter tax exempt number")}">
 							</div>
 						{else}
