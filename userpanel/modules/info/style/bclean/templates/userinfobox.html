@@ -172,17 +172,17 @@
 				<form name="useredit" method="post" action="?m=info&f=updateusersave">
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 						<div class="form-group">
-							<label for="lastname">{if $userinfo.type == $smarty.const.CTYPES_PRIVATE}{trans("Last name:")}{else}{trans("Company name:")}{/if}</label>
+							<label class="font-weight-bold" for="lastname">{if $userinfo.type == $smarty.const.CTYPES_PRIVATE}{trans("Last name:")}{else}{trans("Company name:")}{/if}</label>
 							<input id="lastname" class="form-control" type="text" name="userdata[lastname]" value="{$userinfo.lastname|escape}" placeholder="{trans("Enter lastname")}">
 						</div>
 						{if $userinfo.type == $smarty.const.CTYPES_PRIVATE}
 							<div class="form-group">
-								<label for="firstname">{trans("First name:")}</label>
+								<label class="font-weight-bold" for="firstname">{trans("First name:")}</label>
 								<input id="firstname" class="form-control" type="text" name="userdata[name]" value="{$userinfo.name|escape}" placeholder="{trans("Enter first name")}">
 							</div>
 						{/if}
 					{else}
-						{trans("Name:")}<br/>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
+						<strong>{trans("Name:")}</strong><br/>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})
 					{/if}
 
 					{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
@@ -213,17 +213,17 @@
 
 						{foreach $userinfo.emails as $email}
 							<div class="form-group">
-								<label for="email{$email.id}">{trans("E-mail:")}</label>
+								<label for="email{$email.id}" class="font-weight-bold">{trans("E-mail:")}</label>
 								<input id="email{$email.id}" class="form-control" type="email" name="userdata[email][{$email.id}]" value="{$email.email}" placeholder="{trans("Enter e-mail address")}">
 							</div>
 						{foreachelse}
 							<div class="form-group">
-								<label for="email">{trans("E-mail:")}</label>
+								<label for="email" class="font-weight-bold">{trans("E-mail:")}</label>
 								<INPUT id="email" class="form-control" type="email" name="userdata[email][0]" value="{$userinfo.email}" placeholder="{trans("Enter e-mail address")}">
 							</div>
 						{/foreach}
 					{else}
-						{trans("E-mail:")}
+						<strong>{trans("E-mail:")}</strong>
 						{foreach $userinfo.emails as $email}
 							{$email.email}{if !$email@last}<BR />{/if}
 						{/foreach}
@@ -232,12 +232,12 @@
 					{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 						{foreach $userinfo.contacts as $item}
 							<div class="form-group">
-								{trans("Phone:")}
+								<strong>{trans("Phone:")}</strong>>
 								<INPUT class="form-control" TYPE="tel" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" placeholder="{trans("Enter phone number")}">
 							</div>
 						{foreachelse}
 							<div class="form-group">
-								{trans("Phone:")}
+								<strong>{trans("Phone:")}</strong>
 								<INPUT class="form-control" TYPE="tel" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" placeholder="{trans("Enter phone number")}">
 							</div>
 						{/foreach}
@@ -248,7 +248,7 @@
 					{/if}
 
 					{foreach $userinfo.ims as $item}
-						<div class="form-group">
+						<div class="font-weight-bold form-group">
 							{if $item.type & $smarty.const.CONTACT_IM_GG}
 								{trans("Gadu-Gadu")}
 							{elseif $item.type & $smarty.const.CONTACT_IM_YAHOO}
@@ -270,20 +270,20 @@
 					{if $userinfo.type == 0}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
-								{trans("SSN")}:
+								<strong>{trans("SSN")}:</strong>
 								<INPUT class="form-control" TYPE="number" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}" placeholder="{trans("Enter social security number")}">
 							</div>
 						{else}
-							{$userinfo.ssn}
+							<strong>{trans("SSN")}:</strong>{$userinfo.ssn}
 						{/if}
 					{else}
 						{if $rights.info.edit_addr || $rights.info.edit_addr_ack}
 							<div class="form-group">
-								{trans("TEN")}:
+								<strong>{trans("TEN")}:</strong>
 								<INPUT class="form-control" TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten}" placeholder="{trans("Enter tax exempt number")}">
 							</div>
 						{else}
-							{$userinfo.ten}
+							<strong>{trans("TEN")}:</strong> {$userinfo.ten}
 						{/if}
 					{/if}
 				</form>

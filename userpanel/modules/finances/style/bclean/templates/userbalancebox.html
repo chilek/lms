@@ -34,9 +34,8 @@
     <div class="col-md-12">
         <form name="invoices" action="?m=finances&amp;f=invoice" method="POST" target="_blank">
 			<div class="table-responsive">
-				<table class="table table-bordered table-hover table-condensed">
-					<thead>
-						<tr class="bg-primary text-white">
+				<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+					<thead class="bg-secondary lms-userpanel-table-header">
 							<th>{trans("Date")}</th>
 							<th>{trans("Commitment")}</th>
 							<th>{trans("Payment")}</th>
@@ -46,7 +45,6 @@
 							<th></th>
 							<th class="text-center">{trans("Check")}</th>
 							{/if}
-						</tr>
 					</thead>
 					{$ldate = ConfigHelper::getConfig('userpanel.show_last_years', 5)}
 					{if $ldate}
@@ -58,7 +56,7 @@
 					{section name=balancelist loop=$balancelist.list step=-1}
 						{$item=$balancelist.list[balancelist]}
 						{if $item.time > $ldate}
-						<tr class="table-click {if $item.value > 0}table-success{else}table-danger{/if}" {if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}data-href="?m=finances&f=invoice&id={$item.docid}"{/if}>
+						<tr class="table-click align-middle {if $item.value > 0}table-success{else}table-danger{/if}"{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE} data-href="?m=finances&f=invoice&id={$item.docid}"{/if}>
 							<td class="text-right text-nowrap">{$item.date|date_format:"%Y-%m-%d"}</td>
 							{if $item.value > 0}
 								<td></td>

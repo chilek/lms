@@ -81,5 +81,6 @@ $_LANG['Maximum single file size: $a'] = 'Maksymalny rozmiar pojedynczego pliku:
 $_LANG['(unlimited)'] = '(nieograniczony)';
 $_LANG['One from files is too large!'] = 'Zbyt duży rozmiar jednego z plików!';
 $_LANG['Total file size is too large!'] = 'Zbyt duży całkowity rozmiar plików!';
+$_LANG['Request list:'] = 'Lista zgłoszeń:';
 
 ?>

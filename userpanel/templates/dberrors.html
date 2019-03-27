@@ -5,8 +5,8 @@
 <td width="1%">{img src="warning.png" alt="Error!"}</td>
 <td width="99%">
 {foreach from=$layout.dberrors item=dberror}
-    <b>{trans("Query:")}</b> {$dberror.query}<br>
-    <b>{trans("Error:")}</b> {$dberror.error}<br>
+    <strong>{trans("Query:")}</strong> {$dberror.query}<br>
+    <strong>{trans("Error:")}</strong> {$dberror.error}<br>
 {/foreach}
 </td>
 </tr></table>

@@ -3,20 +3,21 @@
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 {$count = 0}
+
 <div class="table-responsive">
-	<table class="table table-bordered table-striped table-condensed">
-		<tr class="bg-primary text-white">
+	<table class="table table-sm table-hover table-bordered table-striped table-condensed">
+		<thead class="bg-secondary lms-userpanel-table-header">
 			<th>{trans("Tariff")}</th>
 			<th>{trans("Subscription")}</th>
-			<th>{trans("Discount:")}</th>
-			<th>{trans("Accounting day:")}</th>
+			<th>{trans("Discount")}</th>
+			<th>{trans("Accounting day")}</th>
 			{if $show_speeds}
 			<th>{trans("Downrate (ceil):")}</th>
 			<th>{trans("Uprate (ceil):")}</th>
 			{/if}
 			<th>{trans("Invoice")}</th>
 			<th>{trans("Period")}</th>
-		</tr>
+		</thead>
 		{foreach $assignments as $assignment}
 			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
 				<tr>

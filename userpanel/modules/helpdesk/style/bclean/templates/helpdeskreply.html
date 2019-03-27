@@ -5,7 +5,7 @@
     <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
 	<input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
     <div class="table-responsive">
-		<table class="table table-bordered">
+		<table class="table">
 			<tr>
 				<th>
 					{trans("Subject:")}
@@ -41,7 +41,7 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					<a class="btn btn-primary submit-button" accesskey="S">{trans("Submit")}</a>
+					<button type="button" class="btn btn-danger submit-button" accesskey="S">{trans("Submit")}</button>
 				</td>
 			</tr>
 		</table>

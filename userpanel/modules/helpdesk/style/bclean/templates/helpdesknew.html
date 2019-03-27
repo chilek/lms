@@ -16,7 +16,7 @@
 						<input type="hidden" name="helpdesk[queue]" value="{$queues[0].id}">
 					{else}
 					<div class="form-group">
-						<label for="queue">{trans("Queue:")}</label>
+						<label for="queue" class="font-weight-bold">{trans("Queue:")}</label>
 						<select name="helpdesk[queue]" id="queue" {userpaneltip class="form-control" text="Select queue" trigger="queue"}>
 							{foreach $queues as $queue}
 								<option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</option>
@@ -25,17 +25,17 @@
 					</div>
 					{/if}
 					<div class="form-group">
-						<label for="subject">{trans("Subject:")}</label>
+						<label for="subject" class="font-weight-bold">{trans("Subject:")}</label>
 						<input type="text" name="helpdesk[subject]" id="subject" value="{$helpdesk.subject}" {userpaneltip class="form-control" text="Enter request subject" trigger="subject"} placeholder="{trans("Enter request subject")}" required />
 					</div>
 
 					<div class="form-group">
-						<label for="body">{trans("Body:")}</label>
+						<label for="body" class="font-weight-bold">{trans("Body:")}</label>
 						<textarea name="helpdesk[body]" id="body" {userpaneltip class="form-control" text="Enter request contents" trigger="body"} placeholder="{trans("Enter request contents")}" rows="5" cols="40" required>{$helpdesk.body}</textarea>
 					</div>
 
 					<div class="form-group">
-						<label for="attachments">{trans("Attachments:")}</label>
+						<label for="attachments" class="font-weight-bold">{trans("Attachments:")}</label>
 						<input type="file" name="files[]" id="attachments" {userpaneltip class="form-control-file" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 						<input type="hidden" id="post_max_size" value="{$post_max_size.bytes}">
 						<input type="hidden" id="upload_max_filesize" value="{$upload_max_filesize.bytes}">
@@ -51,7 +51,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<a class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("Submit")}</a>
+				<button type="button" class="btn btn-danger submit-button" formnovalidate accesskey="S">{trans("Submit")}</button>
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
 				<input type="hidden" name="wyslane" value="1">
 			</div>
