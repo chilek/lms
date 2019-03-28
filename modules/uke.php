@@ -253,7 +253,10 @@ $teryt_cities = $DB->GetAllByKey("
 			WHERE pna.streetid IS NULL
 			GROUP BY pna.cityid, pna.streetid HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
 		) p ON p.cityid = lc.id
-		JOIN addresses a ON a.city_id = lc.id", 'cityid');
+		JOIN (
+			SELECT DISTINCT city_id FROM addresses
+		) a ON a.city_id = lc.id",
+		'cityid');
 
 $teryt_streets = $DB->GetAllByKey("SELECT lst.cityid, lst.id AS streetid,
 		tu.cecha AS address_cecha,
@@ -266,7 +269,10 @@ $teryt_streets = $DB->GetAllByKey("SELECT lst.cityid, lst.id AS streetid,
 		SELECT pna.cityid, pna.streetid, " . $DB->GroupConcat('pna.zip', ',', true) . " AS zip FROM pna
 		GROUP BY pna.cityid, pna.streetid HAVING " . $DB->GroupConcat('pna.zip', ',', true) . " NOT ?LIKE? '%,%'
 	) p ON p.cityid = lst.cityid AND p.streetid = lst.id
-	JOIN addresses a ON a.street_id = lst.id", 'streetid');
+	JOIN (
+		SELECT DISTINCT street_id FROM addresses
+	) a ON a.street_id = lst.id",
+	'streetid');
 
 $truenetnodes = $DB->GetAllByKey("SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
 		nn.uip, nn.miar, nn.longitude, nn.latitude,
