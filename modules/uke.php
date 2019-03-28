@@ -302,8 +302,10 @@ $netdevices = $DB->GetAllByKey("SELECT nd.id, nd.ownerid, ports,
 	FROM netdevices nd
 	LEFT JOIN netnodes nn ON nn.id = nd.netnodeid
 	LEFT JOIN addresses a ON nd.address_id = a.id
-	WHERE EXISTS (SELECT id FROM netlinks nl WHERE nl.src = nd.id OR nl.dst = nd.id)
-	ORDER BY nd.name", 'id');
+	WHERE " . ($customer_netdevices ? 'nd.ownerid IS NULL AND' : '') . " EXISTS (
+		SELECT id FROM netlinks nl WHERE nl.src = nd.id OR nl.dst = nd.id
+	)
+	ORDER BY nd.id", 'id');
 
 if ($customer_netdevices) {
 	function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks) {
@@ -489,7 +491,7 @@ if ($netdevices)
 			FROM nodes n
 			JOIN customers c ON c.id = n.ownerid
 			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
-			WHERE n.netdev = ? 
+			WHERE n.netdev = ? " . ($customer_netdevices ? 'AND n.ownerid IS NOT NULL' : '') . "
 				AND EXISTS
 					(SELECT na.id FROM nodeassignments na
 						JOIN assignments a ON a.id = na.assignmentid
@@ -1326,6 +1328,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			if (empty($uni_nodes))
 				$uni_nodes = array();
 		}
+		$nodes = array_merge($nodes, $uni_nodes);
 
 		if (empty($nodes))
 			continue;
