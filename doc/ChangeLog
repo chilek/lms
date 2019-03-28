@@ -225,6 +225,7 @@ version ?.??.?? (????-??-??):
   - improvement: userpanel/finances: tariffs speeds are aggregate to sane units [chilan]
   - improvement: userpanel/finances: tariff speed units are configurable [chilan]
   - improvement: aggregate tariff speeds to kMG units [chilan]
+  - enhancement: uke/siis: customer network device support added [chilan]
 
 version 1.11.23 (2018-03-21):
 
