@@ -2032,7 +2032,8 @@ if ($netlinks)
 					'lp_fiberlease' => $netlink['type'] == 2 ? 'Nie' : '',
 					'lp_fiberleasecount' => '',
 					'lp_bandwidthlease' => 'Nie',
-					'lp_duct' => $linktypes[$netlink['type']]['trakt'],
+					'lp_duct' => ($netnodes[$netlink['src']]['type'] == 14 && $netnodes[$netlink['dst']]['type'] == 14
+						? 'napowietrzny' : $linktypes[$netlink['type']]['trakt']),
 					'lp_length' => $netlink['type'] == 2 ? '0.1' : '',
 					'lp_invproject' => $netlink['invproject'],
 					'lp_invstatus' => strlen($netlink['invproject']) ? $NETELEMENTSTATUSES[$netlink['status']] : '',
