@@ -1799,9 +1799,12 @@ if ($netdevices)
 			(CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
 				ELSE (CASE WHEN dstrs.frequency IS NULL THEN srcrs.frequency ELSE dstrs.frequency END) END) AS frequency
 			FROM netlinks nl
+			JOIN netdevices ndsrc ON ndsrc.id = nl.src
+			JOIN netdevices nddst ON nddst.id = nl.dst
 			LEFT JOIN netradiosectors srcrs ON srcrs.id = nl.srcradiosector
 			LEFT JOIN netradiosectors dstrs ON dstrs.id = nl.dstradiosector
-			WHERE src = ? OR dst = ?",
+			WHERE (src = ?" . ($customer_netdevices ? 'AND nddst.ownerid IS NULL' : '') . ")
+				OR (dst = ?" . ($customer_netdevices ? 'AND ndsrc.ownerid IS NULL' : '') . ")",
 			array($netdevice['id'], $netdevice['id'], $netdevice['id'], $netdevice['id']));
 		if ($ndnetlinks)
 			foreach ($ndnetlinks as $netlink) {
