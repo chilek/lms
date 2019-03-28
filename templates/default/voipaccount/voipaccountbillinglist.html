@@ -113,7 +113,7 @@
 					<SELECT SIZE="1" NAME="fvoipaccid">
 					<OPTION VALUE="">{trans("- all -")}</OPTION>
 					{foreach from=$voipaccounts item=vacc}
-						<OPTION VALUE="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} SELECTED{/if}>{$vacc.owner} ({$vacc.login})</OPTION>
+						<OPTION VALUE="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} SELECTED{/if}>{$vacc.owner|truncate:40:"...":true} ({$vacc.login})</OPTION>
 					{/foreach}
 					</SELECT>
 
