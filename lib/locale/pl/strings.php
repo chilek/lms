@@ -3457,8 +3457,7 @@ $_LANG['Producers and models'] = 'Producenci i modele';
 $_LANG['Network device producers and models management'] = 'Zarządzanie producentami i modelami osprzętu sieciowego';
 
 $_LANG['Format type:'] = 'Typ formatu:';
-$_LANG['multi file zip archive (lms legacy format)'] = 'archiwum zip z wieloma plikami (dotychczasowy format)';
-$_LANG['single csv file (uke siis format)'] = 'pojedynczy plik csv (format zgodny ze specyfikacją uke siis)';
+$_LANG['Include customer network device assignments:'] = 'Uwzględniaj powiązania urządzeń z klientami:';
 $_LANG['Exported sheets:'] = 'Eksportowane arkusze:';
 
 $_LANG['cash import file'] = 'plik importu płatności';

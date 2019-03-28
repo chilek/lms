@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,6 +26,10 @@
 
 ini_set('memory_limit', '512M');
 ini_set('max_execution_time', '0');
+
+define('SERVICE_TYPE_INTERNET', defined('SERVICE_INTERNET') ? SERVICE_INTERNET : TARIFF_INTERNET);
+define('SERVICE_TYPE_PHONE', defined('SERVICE_PHONE') ? SERVICE_PHONE : TARIFF_PHONE);
+define('SERVICE_TYPE_TV', defined('SERVICE_TV') ? SERVICE_TV : TARIFF_TV);
 
 $customers = array();
 
@@ -162,6 +166,8 @@ if (isset($_POST['sheets']) && is_array($_POST['sheets']))
 else
 	$sheets = array();
 
+$customer_netdevices = isset($_POST['customernetdevices']);
+
 $buffer = '#SIIS wersja 5.28' . EOL;
 $header = ConfigHelper::getConfig('siis.header', '');
 if (strlen($header))
@@ -274,7 +280,7 @@ $teryt_streets = $DB->GetAllByKey("SELECT lst.cityid, lst.id AS streetid,
 	) a ON a.street_id = lst.id",
 	'streetid');
 
-$truenetnodes = $DB->GetAllByKey("SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
+$real_netnodes = $DB->GetAllByKey("SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
 		nn.uip, nn.miar, nn.longitude, nn.latitude,
 		a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat,
 		a.city as location_city_name, a.street as location_street_name,
@@ -299,10 +305,106 @@ $netdevices = $DB->GetAllByKey("SELECT nd.id, nd.ownerid, ports,
 	WHERE EXISTS (SELECT id FROM netlinks nl WHERE nl.src = nd.id OR nl.dst = nd.id)
 	ORDER BY nd.name", 'id');
 
-if (empty($truenetnodes))
-	$truenetnodes = array();
+if ($customer_netdevices) {
+	function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks) {
+		if (isset($customer_nodes[$customerid . '_' . $netdevid]))
+			$nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
+		else
+			$nodeids = array();
+
+		foreach ($customer_netlinks as &$customer_netlink) {
+			if ($customer_netlink['src'] == $netdevid)
+				$next_netdevid = $customer_netlink['dst'];
+			else if ($customer_netlink['dst'] == $netdevid)
+				$next_netdevid = $customer_netlink['src'];
+			else
+				continue;
+			$nodeids = array_merge($nodeids, find_nodes_for_netdev($customerid, $next_netdevid,
+				$customer_nodes, $customer_netlinks));
+		}
+		unset($customer_netlink);
+
+		return $nodeids;
+	}
+
+	// search for links between operator network devices and customer network devices
+	$uni_links = $DB->GetAllByKey("SELECT nl.id AS netlinkid, nl.type AS type, nl.technology AS technology,
+			nl.speed AS speed, rs.frequency, rs.id AS radiosectorid,
+			c.id AS customerid, c.type AS customertype,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN ndsrc.status ELSE nddst.status END) AS operator_netdevstatus,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN nddst.invprojectid ELSE ndsrc.invprojectid END) AS invprojectid,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.dst END) AS netdevid,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.city_id ELSE asrc.city_id END) AS location_city,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.city ELSE asrc.city END) AS location_city_name,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.street_id ELSE asrc.street_id END) AS location_street,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.street ELSE asrc.street END) AS location_street_name,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.house ELSE asrc.house END) AS location_house,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN adst.zip ELSE asrc.zip END) AS location_zip
+		FROM netlinks nl
+		JOIN netdevices ndsrc ON ndsrc.id = nl.src
+		JOIN addresses asrc ON asrc.id = ndsrc.address_id
+		JOIN netdevices nddst ON nddst.id = nl.dst
+		JOIN addresses adst ON adst.id = nddst.address_id
+		JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
+			OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
+		LEFT JOIN netradiosectors rs ON (ndsrc.ownerid IS NULL AND rs.id = nl.srcradiosector)
+			OR (nddst.ownerid IS NULL AND rs.id = nl.dstradiosector)
+		WHERE (ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
+			OR (nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL)
+		ORDER BY nl.id",
+		'netlinkid');
+	if (!empty($uni_links)) {
+		$customer_netlinks = $DB->GetAllByKey("SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
+			FROM netlinks nl
+			JOIN netdevices ndsrc ON ndsrc.id = nl.src
+			JOIN netdevices nddst ON nddst.id = nl.dst
+			WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
+				AND ndsrc.ownerid = nddst.ownerid",
+			'netlink');
+
+		$customer_nodes = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
+				" . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
+			FROM nodes n
+			LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
+			WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
+				AND EXISTS (
+					SELECT na.id FROM nodeassignments na
+					JOIN assignments a ON a.id = na.assignmentid
+					WHERE na.nodeid = n.id AND a.suspended = 0
+						AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
+						AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+				)
+				AND NOT EXISTS (
+					SELECT id FROM assignments aa
+					WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
+						AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+						AND aa.datefrom < ?NOW?
+						AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+				)
+			GROUP BY customerid_netdev",
+			'customerid_netdev');
+
+		// collect customer node/node-netdev identifiers connected to customer subnetwork
+		foreach ($uni_links as $netlinkid => &$netlink) {
+			$nodes = find_nodes_for_netdev($netlink['customerid'], $netlink['netdevid'],
+				$customer_nodes, $customer_netlinks);
+			if (empty($nodes))
+				unset($uni_links[$netlinkid]);
+			else
+				$netlink['nodes'] = $nodes;
+		}
+		unset($netlink);
+
+		unset($customer_netlinks);
+		unset($customer_nodes);
+	}
+}
+
+if (empty($real_netnodes))
+	$real_netnodes = array();
 else {
-	foreach ($truenetnodes as $k=>$v) {
+	foreach ($real_netnodes as $k=>$v) {
         $tmp = array('city_name'      => $v['location_city_name'],
                      'location_house' => $v['location_house'],
                      'location_flat'  => $v['location_flat'],
@@ -314,11 +416,11 @@ else {
             $location = "";
         }
 
-        $truenetnodes[$k]['location'] = $location;
+        $real_netnodes[$k]['location'] = $location;
     }
 }
 
-//foreach ($truenetnodes as $idx => $netnode)
+//foreach ($real_netnodes as $idx => $netnode)
 //	echo "network node $idx: " . print_r($netnode, true) . '<br>';
 
 // get node gps coordinates which are used for network range gps calculation
@@ -367,7 +469,8 @@ if ($netdevices)
 		$distports = $DB->GetAll("SELECT nl.type, nl.technology, speed,
 				(CASE src WHEN ? THEN (CASE WHEN rssrc.frequency IS NULL THEN rsdst.frequency ELSE rssrc.frequency END)
 					ELSE (CASE WHEN rsdst.frequency IS NULL THEN rssrc.frequency ELSE rsdst.frequency END) END) AS freq,
-				COUNT(nl.id) AS portcount FROM netlinks nl
+				COUNT(nl.id) AS portcount
+			FROM netlinks nl
 			JOIN netdevices ndsrc ON ndsrc.id = nl.src
 			LEFT JOIN netnodes nnsrc ON nnsrc.id = ndsrc.netnodeid
 			LEFT JOIN netradiosectors rssrc ON rssrc.id = nl.srcradiosector
@@ -401,14 +504,64 @@ if ($netdevices)
 			GROUP BY linktype, linktechnology, linkspeed, rs.frequency, c.type
 			ORDER BY c.type", array($netdevice['id']));
 
+		if ($customer_netdevices) {
+			// append uni links to access ports
+			$access_links = $DB->GetAll("SELECT nl.id
+				FROM netlinks nl
+				JOIN netdevices ndsrc ON ndsrc.id = nl.src
+				JOIN netdevices nddst ON nddst.id = nl.dst
+				WHERE (nl.src = ? AND ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
+					OR (nl.dst = ? AND nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL)
+				", array($netdevice['id'], $netdevice['id']));
+			if (!empty($access_links)) {
+				if (empty($accessports))
+					$accessports = array();
+				foreach ($access_links as &$access_link)
+					if (isset($uni_links[$access_link['id']])) {
+						$uni_link = &$uni_links[$access_link['id']];
+						$processed_access_link = false;
+						foreach ($accessports as &$access_port)
+							if ($access_port['type'] == $uni_link['type']
+								&& $access_port['technology'] == $uni_link['technology']
+								&& $access_port['speed'] == $uni_link['speed']
+								&& $access_port['frequency'] == $uni_link['frequency']
+								&& $access_port['customertype'] == $uni_link['customertype']) {
+								$processed_access_link = true;
+								$access_port['portcount']++;
+								if (!empty($uni_link['radiosectorid']))
+									if (empty($access_ports['radiosectors']))
+										$access_port['radiosectors'] = $uni_link['radiosectorid'];
+									else
+										$access_port['radiosectors'] .= ',' . $uni_link['radiosectorid'];
+								if (isset($access_port['uni_links']))
+									$access_port['uni_links'][] = $access_link['id'];
+								else
+									$access_port['uni_links'] = array($access_link['id']);
+							}
+						unset($access_port);
+						if (!$processed_access_link)
+							$accessports[] = array(
+								'type' => $uni_link['type'],
+								'technology' => $uni_link['technology'],
+								'speed' => $uni_link['speed'],
+								'frequency' => $uni_link['frequency'],
+								'radiosectors' => $uni_link['radiosectorid'],
+								'customertype' => $uni_link['customertype'],
+								'uni_links' => array($access_link['id']),
+							);
+					}
+				unset($access_link);
+			}
+		}
+
 		$netdevices[$netdevid]['invproject'] = $netdevice['invproject'] =
 			!strlen($netdevice['invprojectid']) ? '' : $projects[$netdevice['invprojectid']]['name'];
 
 		$projectname = $prj = '';
-		if (array_key_exists($netdevice['netnodeid'], $truenetnodes)) {
-			$netnodename = $truenetnodes[$netdevice['netnodeid']]['name'];
-			if (strlen($truenetnodes[$netdevice['netnodeid']]['invprojectid']))
-				$projectname = $prj = $projects[$truenetnodes[$netdevice['netnodeid']]['invprojectid']]['name'];
+		if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
+			$netnodename = $real_netnodes[$netdevice['netnodeid']]['name'];
+			if (strlen($real_netnodes[$netdevice['netnodeid']]['invprojectid']))
+				$projectname = $prj = $projects[$real_netnodes[$netdevice['netnodeid']]['invprojectid']]['name'];
 		} else {
 			$netnodename = empty($netdevice['location_city']) ? $netdevice['location'] :
 				implode('_', array($netdevice['location_city'], $netdevice['location_street'],
@@ -432,12 +585,14 @@ if ($netdevices)
 			$netnodes[$netnodename]['accessports']           = array();
 			$netnodes[$netnodename]['personalaccessports']   = 0;
 			$netnodes[$netnodename]['commercialaccessports'] = 0;
+			if ($customer_netdevices)
+				$netnodes[$netnodename]['uni_links']             = array();
 
 			$netnodes[$netnodename]['id'] = $netnodeid;
 			$netnodes[$netnodename]['invproject'] = $projectname;
 
-			if (array_key_exists($netdevice['netnodeid'], $truenetnodes)) {
-				$netnode = $truenetnodes[$netdevice['netnodeid']];
+			if (array_key_exists($netdevice['netnodeid'], $real_netnodes)) {
+				$netnode = $real_netnodes[$netdevice['netnodeid']];
 				$netnodes[$netnodename]['location'] = $netnode['location'];
 				$netnodes[$netnodename]['location_city'] = $netnode['location_city'];
 				$netnodes[$netnodename]['location_city_name'] = $netnode['location_city_name'];
@@ -686,6 +841,9 @@ if ($netdevices)
 
 				$netnodes[$netnodename][($customertype ? 'commercialaccessports' : 'personalaccessports')] += $ports['portcount'];
 				$netnodes[$netnodename]['ports'] += $ports['portcount'];
+
+				if ($customer_netdevices && isset($ports['uni_links']))
+					$netnodes[$netnodename]['uni_links'] = array_merge($netnodes[$netnodename]['uni_links'], $ports['uni_links']);
 			}
 
 		$netnodes[$netnodename]['netdevices'][] = $netdevice['id'];
@@ -1020,11 +1178,37 @@ foreach ($netnodes as $netnodename => &$netnode) {
 	$ranges = $DB->GetAll("SELECT n.linktype, n.linktechnology,
 			a.city_id AS location_city, a.city AS location_city_name,
 			a.street_id AS location_street, a.street AS location_street_name,
-			a.house AS location_house, a.zip AS location_zip
+			a.house AS location_house, a.zip AS location_zip, 0 AS from_uni_link
 		FROM nodes n
 		LEFT JOIN addresses a ON n.address_id = a.id
 		WHERE n.ownerid IS NOT NULL AND a.city_id IS NOT NULL AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
 		GROUP BY n.linktype, n.linktechnology, a.street, a.street_id, a.city_id, a.city, a.house, a.zip");
+	if (empty($ranges))
+		$ranges = array();
+
+	if ($customer_netdevices) {
+		// collect ranges from customer uni links
+		$uni_ranges = array();
+		if (isset($netnode['uni_links']) && !empty($netnode['uni_links'])) {
+			foreach ($netnode['uni_links'] as $uni_link_id) {
+				$uni_link = &$uni_links[$uni_link_id];
+				// $uni_link['nodes']
+				$uni_ranges[] = array(
+					'linktype' => $uni_link['type'],
+					'linktechnology' => $uni_link['technology'],
+					'location_city' => $uni_link['location_city'],
+					'location_city_name' => $uni_link['location_city_name'],
+					'location_street' => $uni_link['location_street'],
+					'location_street_name' => $uni_link['location_street_name'],
+					'location_house' => $uni_link['location_house'],
+					'location_zip' => $uni_link['location_zip'],
+					'from_uni_link' => $uni_link_id,
+				);
+			}
+		}
+		$ranges = array_merge($ranges, $uni_ranges);
+	}
+
 	if (empty($ranges))
 		continue;
 
@@ -1080,31 +1264,68 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			$linktechnology = $linktypes[$range['linktype']]['technologia_dostepu'];
 		}
 
-		// get info about computers connected to network node
-		$nodes = $DB->GetAll("SELECT na.nodeid, c.type, n.invprojectid, nd.id AS netdevid, nd.status,"
-			. $DB->GroupConcat("DISTINCT (CASE t.type WHEN ".SERVICE_INTERNET." THEN 'INT'
-				WHEN ".SERVICE_PHONE." THEN 'TEL'
-				WHEN ".SERVICE_TV." THEN 'TV'
-				ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
-			FROM nodeassignments na
-			JOIN nodes n             ON n.id = na.nodeid
-			LEFT JOIN addresses addr ON addr.id = n.address_id
-			JOIN assignments a       ON a.id = na.assignmentid
-			JOIN tariffs t           ON t.id = a.tariffid
-			JOIN customers c ON c.id = n.ownerid
-			LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
-				WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
-					AND aa.datefrom < ?NOW?
-					AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
-				AS allsuspended ON allsuspended.cid = c.id
-			JOIN netdevices nd ON nd.id = n.netdev
-			WHERE n.ownerid IS NOT NULL AND n.netdev IS NOT NULL AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
-				AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
-				AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
-				AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
-				AND allsuspended.total IS NULL
-			GROUP BY na.nodeid, c.type, n.invprojectid, nd.id, nd.status",
-			array($range['linktype'], $range['linktechnology'], $range['location_city'], $range['location_street'], $range['location_house']));
+		$nodes = array();
+		$uni_nodes = array();
+		if (!$customer_netdevices || empty($range['from_uni_link'])) {
+			// get info about computers connected to network node
+			$nodes = $DB->GetAll("SELECT na.nodeid, c.type, n.invprojectid, nd.id AS netdevid, nd.status,"
+				. $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
+					WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
+					WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
+					ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
+				FROM nodeassignments na
+				JOIN nodes n             ON n.id = na.nodeid
+				LEFT JOIN addresses addr ON addr.id = n.address_id
+				JOIN assignments a       ON a.id = na.assignmentid
+				JOIN tariffs t           ON t.id = a.tariffid
+				JOIN customers c ON c.id = n.ownerid
+				LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
+					WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
+						AND aa.datefrom < ?NOW?
+						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
+					AS allsuspended ON allsuspended.cid = c.id
+				JOIN netdevices nd ON nd.id = n.netdev
+				WHERE n.ownerid IS NOT NULL AND n.netdev IS NOT NULL AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
+					AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
+					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+					AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
+					AND allsuspended.total IS NULL
+				GROUP BY na.nodeid, c.type, n.invprojectid, nd.id, nd.status",
+				array($range['linktype'], $range['linktechnology'], $range['location_city'], $range['location_street'], $range['location_house']));
+			if (empty($nodes))
+				$nodes = array();
+		} elseif ($customer_netdevices) {
+			// get info about computers or network devices connected to network node though customer network device
+			$uni_link_id = $range['from_uni_link'];
+			$uni_link = &$uni_links[$uni_link_id];
+			$uni_nodes = $DB->GetAll("SELECT na.nodeid, c.type, "
+				. (empty($uni_link['invprojectid']) ? 'null' : $uni_link['invprojectid']) . " AS invprojectid, "
+				. $uni_link['operator_netdevid'] . " AS netdevid, "
+				. $uni_link['operator_netdevstatus'] . " AS status, "
+				. $DB->GroupConcat("DISTINCT (CASE t.type WHEN " . SERVICE_TYPE_INTERNET . " THEN 'INT'
+					WHEN " . SERVICE_TYPE_PHONE . " THEN 'TEL'
+					WHEN " . SERVICE_TYPE_TV . " THEN 'TV'
+					ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
+				FROM nodeassignments na
+				JOIN nodes n             ON n.id = na.nodeid
+				JOIN assignments a       ON a.id = na.assignmentid
+				JOIN tariffs t           ON t.id = a.tariffid
+				JOIN customers c ON c.id = n.ownerid
+				LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
+					WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
+						AND aa.datefrom < ?NOW?
+						AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
+					AS allsuspended ON allsuspended.cid = c.id
+				JOIN netdevices nd ON nd.id = n.netdev
+				WHERE n.id IN (" . implode(',', $uni_link['nodes']) . ")
+					AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
+					AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+					AND allsuspended.total IS NULL
+				GROUP BY na.nodeid, c.type",
+				array());
+			if (empty($uni_nodes))
+				$uni_nodes = array();
+		}
 
 		if (empty($nodes))
 			continue;
