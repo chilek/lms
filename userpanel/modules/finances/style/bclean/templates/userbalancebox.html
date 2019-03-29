@@ -2,11 +2,19 @@
 {$disable_invoices = ConfigHelper::checkConfig('userpanel.disable_invoices')}
 
 <script>
+
 	$(function() {
 		$(".table-click[data-href] td:not(.buttons)").click(function() {
 			window.open($(this).closest('tr').attr("data-href"));
 		});
+
+		$(".table-click[data-href] td:last-child").click(function(e) {
+			if (!$(e.target).is('.custom-control-label')) {
+				$(this).find(':checkbox').trigger('click');
+			}
+		});
 	});
+
 </script>
 
 <style>
