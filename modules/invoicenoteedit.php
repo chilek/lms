@@ -87,6 +87,14 @@ if (isset($_GET['id']) && $action == 'edit') {
 	$cnote['oldnumberplanid'] = $cnote['numberplanid'];
 	$cnote['oldcustomerid'] = $cnote['customerid'];
 
+	$hook_data = array(
+		'contents' => $cnotecontents,
+		'cnote' => $cnote,
+	);
+	$hook_data = $LMS->ExecuteHook('invoicenoteedit_init', $hook_data);
+	$cnotecontents = $hook_data['contents'];
+	$cnote = $hook_data['cnote'];
+
 	$SESSION->save('cnote', $cnote);
 	$SESSION->save('cnoteid', $cnote['id']);
 }
@@ -215,6 +223,8 @@ switch ($action) {
 		if (empty($contents))
 			break;
 
+		$error = array();
+
 		$SESSION->restore('cnoteid', $cnote['id']);
 		$cnote['type'] = DOC_CNOTE;
 
@@ -293,6 +303,17 @@ switch ($action) {
 			$contents[$idx]['valuebrutto'] = str_replace(',', '.', $contents[$idx]['valuebrutto']);
 			$contents[$idx]['count'] = str_replace(',', '.', $contents[$idx]['count']);
 		}
+
+		$hook_data = array(
+			'contents' => $contents,
+			'cnote' => $cnote,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenoteedit_save_validation', $hook_data);
+		if (isset($hook_data['error']) && is_array($hook_data['error']))
+			$error = array_merge($error, $hook_data['error']);
+
+		if (!empty($error))
+			break;
 
 		$DB->BeginTrans();
 
@@ -484,6 +505,14 @@ $SESSION->save('cnoteediterror', $error);
 if ($action != '') 
 	// redirect needed because we don't want to destroy contents of invoice in order of page refresh
 	$SESSION->redirect('?m=invoicenoteedit');
+
+$hook_data = array(
+	'contents' => $contents,
+	'cnote' => $cnote,
+);
+$hook_data = $LMS->ExecuteHook('invoicenoteedit_before_display', $hook_data);
+$contents = $hook_data['contents'];
+$cnote = $hook_data['cnote'];
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
