@@ -133,7 +133,9 @@ if (!empty($nodesessions))
 		$session['download'] = round($number, 2) . ' ' . $unit;
 		list ($number, $unit) = setunits($session['upload']);
 		$session['upload'] = round($number, 2) . ' ' . $unit;
-		$session['duration'] = $session['stop'] ? uptimef($session['stop'] - $session['start']) : '-';
+		$session['duration'] = $session['stop']
+			? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))
+			: '-';
 	}
 
 $pagelimit = ConfigHelper::getConfig('phpui.nodesession_pagelimit', 100);

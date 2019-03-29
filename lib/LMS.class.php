@@ -2941,7 +2941,9 @@ class LMS
                 $nodesessions[$idx]['download'] = round($number, 2) . ' ' . $unit;
                 list ($number, $unit) = setunits($session['upload']);
                 $nodesessions[$idx]['upload'] = round($number, 2) . ' ' . $unit;
-                $nodesessions[$idx]['duration'] = uptimef($session['stop'] - $session['start']);
+                $nodesessions[$idx]['duration'] = $session['stop']
+					? ($session['stop'] - $session['start'] < 60 ? trans('shorter than minute') : uptimef($session['stop'] - $session['start']))
+					: '-';
             }
         return $nodesessions;
     }
