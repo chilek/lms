@@ -456,7 +456,7 @@ $query = "SELECT
 				GROUP BY va.ownerid, a2.id
 			) voipcost ON voipcost.customerid = a.customerid AND voipcost.assignmentid = a.id
 			LEFT JOIN (
-				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', "', '") . " AS phones
+				SELECT vna2.assignment_id, " . $DB->GroupConcat('vn2.phone', ', ') . " AS phones
 				FROM voip_number_assignments vna2
 				LEFT JOIN voip_numbers vn2 ON vn2.id = vna2.number_id
 				GROUP BY vna2.assignment_id
