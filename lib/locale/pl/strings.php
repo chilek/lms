@@ -4268,4 +4268,6 @@ $_LANG['<!rt>- none -'] = '- brak -';
 
 $_LANG['General file upload error - files are too large probably!'] = 'Ogólny błąd przesyłania pliku - prawdopobnie pliki mają zbyt duży rozmiar!';
 
+$_LANG['Are you sure you want to move event from $a to $b?'] = 'Jesteś pewien, że chcesz przenieść zdarzenie z $a na $b?';
+
 ?>

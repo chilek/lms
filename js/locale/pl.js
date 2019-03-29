@@ -87,7 +87,7 @@ $_LANG['<!rt>Other'] = 'Inna';
 $_LANG['Other'] = 'Inny';
 $_LANG['Offer'] = 'Oferta';
 $_LANG['Fault'] = 'Usterka';
-$_LANG['If verifier is set then he\'s the only person who can change deadline'] = 'Jeśli weryfikator jest ustawiony, jest on jedyną osobą, która może zmienić termin ostateczny';
+$_LANG['If verifier is set then he\'s the only person who can change deadline!'] = 'Jeśli weryfikator jest ustawiony, jest on jedyną osobą, która może zmienić termin ostateczny!';
 $_LANG['Instalation'] = 'Instalacja';
 $_LANG['Deinstalation'] = 'Demontaż';
 $_LANG['Modification'] = 'Modyfikacja';
@@ -106,11 +106,12 @@ $_LANG['<!rt>Owned expired tickets'] = 'Moje przeterminowane zgłoszenia (właś
 $_LANG['<!rt>Verifier expired tickets'] = 'Moje przeterminowane zgłoszenia (weryfikator)';
 $_LANG['<!rt>Without deadline'] = 'Bez terminu ostatecznego';
 $_LANG['<!rt>With deadline'] = 'Z terminem ostatecznym';
-$_LANG['Ticket deadline could not be set in past'] = 'Termin ostateczny nie może być datą minioną';
-$_LANG['Ticket owner could not be the same as verifier'] = 'Właściciel zgłoszenia nie może być weryfikatorem';
-$_LANG['Ticket verifier could not be the same as owner'] = 'Weryfikator zgłoszenia nie może być właścicielem';
+$_LANG['Ticket deadline could not be set in past!'] = 'Termin ostateczny nie może być datą minioną!';
+$_LANG['Ticket owner could not be the same as verifier!'] = 'Właściciel zgłoszenia nie może być weryfikatorem!';
+$_LANG['Ticket verifier could not be the same as owner!'] = 'Weryfikator zgłoszenia nie może być właścicielem!';
 $_LANG['<!rt>Deadline:'] = 'Termin ostateczny:';
 $_LANG['Deadline expired:'] = 'Zgłoszenie z przeterminowanym <br> terminem ostatecznym:';
+$_LANG['Ticket deadline has been removed.'] = 'Termin ostateczny zgłoszenia został usunięty.';
 $_LANG['Ticket deadline has been set to $a.'] = 'Termin ostateczny zgłoszenia został ustawiony jako $a.';
 $_LANG['Ticket type has been set to $a.'] = 'Rodzaj zgłoszenia został ustawiony jako $a.';
 $_LANG['Ticket service has been set to $a.'] = 'Usługa, którego dotyczy zgłoszenie to $a.';
@@ -148,6 +149,12 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
+
+$_LANG['Accounting period'] = 'Okres czasu naliczania dla zobowiązań';
+$_LANG['Terminated contract number:'] = 'Numer rozwiązywanej umowy:';
+$_LANG['Terminated contract date:'] = 'Data rozwiązywanej umowy:';
+$_LANG['billing'] = 'billing';
+
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -432,6 +439,7 @@ $_LANG['connected<!plural>'] = 'podłączeni';
 $_LANG['connected<!singular>'] = 'podłączony';
 $_LANG['Connected:'] = 'Podłączeni:';
 $_LANG['List of Connected Customers $a$b'] = 'Lista podłączonych klientów $a$b';
+$_LANG['List of Debt Collection Customers $a$b'] = 'Lista windykowanych klientów $a$b';
 $_LANG['Connected devices ($a):'] = 'Podłączone urządzenia ($a):';
 $_LANG['Connected nodes ($a):'] = 'Podłączone komputery ($a):';
 $_LANG['Connected<!nodes>:'] = 'Podłączone:';
@@ -1308,6 +1316,7 @@ $_LANG['Password Change'] = 'Zmiana hasła';
 $_LANG['Password Change for Account: $a'] = 'Zmiana hasła dla konta: $a';
 $_LANG['Password Change for User $a'] = 'Zmiana hasła dla użytkownika $a';
 $_LANG['User $a has been set as verifier to ticket.'] = 'Użytkownik $a został przypisany jako werfikator zgłoszenia.';
+$_LANG['Verifier has been removed from ticket.'] = 'Weryfikator został usunięty ze zgłoszenia.';
 $_LANG['Password is too long (max.32 characters)!'] = 'Hasło jest za długie (max.32 znaki)!';
 $_LANG['Passwords does not match!'] = 'Hasła nie pasują do siebie!';
 $_LANG['Path to file was not specified: $a'] = 'Ścieżka do pliku nie została określona: $a';
@@ -1676,7 +1685,22 @@ $_LANG['Uptime:'] = 'Uptime:';
 $_LANG['URL:'] = 'Adres URL:';
 $_LANG['URL of your homepage:'] = 'Adres twojej strony domowej:';
 $_LANG['USA'] = 'USA';
-$_LANG['Use carriage return for indentation only. LMS will reformat paragraphs and break long lines.'] = 'Używaj klawisza Enter tylko w celu zamknięcia akapitu. LMS sformatuje wiadomość i połamie linie';
+$_LANG['Enter message body.<br><br>'
+	+ 'Supported substitutions/variables:<br>'
+	+ '<strong>%customer</strong> - customer first name and last name or name,<br>'
+	+ '<strong>%balance</strong> - customer balance,<br>'
+	+ '<strong>%cid</strong> - customer identifier,<br>'
+	+ '<strong>%pin</strong> - customer pin,<br>'
+	+ '<strong>%bankaccount</strong> - bank account for payments,<br>'
+	+ '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
+	'Wprowadź treść wiadomości.<br><br>'
+	+ 'Obsługiwane podstawienia/zmienne:<br>'
+	+ '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
+	+ '<strong>%balance</strong> - saldo klienta,<br>'
+	+ '<strong>%cid</strong> - identyfikator klienta,<br>'
+	+ '<strong>%pin</strong> - pin klienta,<br>'
+	+ '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
+	+ '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';
@@ -1853,6 +1877,7 @@ $_LANG['Credit note number $a already exists!'] = 'Faktura korygująca numer $a 
 $_LANG['Credit note number must be integer!'] = 'Numer faktury korygującej musi być liczbą całkowitą!';
 $_LANG['Enter credit note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer faktury korygującej. UWAGA! Zmiana tego numeru może być NIEBEZPIECZNA! (pozostaw to pole puste aby uzyskać kolejny numer)';
 $_LANG['for Invoice No. $a'] = 'do Faktury nr $a';
+$_LANG['for Credit Note No. $a'] = 'do Korekty nr $a';
 $_LANG['Recover this item'] = 'Przywróć tę pozycję';
 $_LANG['Recover'] = 'Przywróć';
 $_LANG['Remove this item'] = 'Usuń tę pozycję';
@@ -2858,6 +2883,7 @@ $_LANG['Enter subscription value for specified period'] = 'Wprowadź kwotę abon
 $_LANG['List of promotions'] = 'Lista promocji';
 $_LANG['Months $a-$b'] = 'M-ce $a-$b';
 $_LANG['Month $a'] = 'M-c $a';
+$_LANG['Months $a-'] = 'M-ce $a-';
 $_LANG['New Promotion'] = 'Nowa promocja';
 $_LANG['New Schema'] = 'Nowy schemat';
 $_LANG['Periods:'] = 'Okresy:';
@@ -3238,6 +3264,7 @@ $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szab
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
 $_LANG['Assign to me'] = 'Przypisz do mnie';
+$_LANG['assign to me'] = 'przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
 $_LANG['Ticket\'s state:'] = 'Stan zgłoszenia:';
 $_LANG['Ticket\'s source has been changed from $a to $b.'] = 'Źródło zgłoszenia zostało zmienione z $a na $b.';
@@ -3435,8 +3462,7 @@ $_LANG['Producers and models'] = 'Producenci i modele';
 $_LANG['Network device producers and models management'] = 'Zarządzanie producentami i modelami osprzętu sieciowego';
 
 $_LANG['Format type:'] = 'Typ formatu:';
-$_LANG['multi file zip archive (lms legacy format)'] = 'archiwum zip z wieloma plikami (dotychczasowy format)';
-$_LANG['single csv file (uke siis format)'] = 'pojedynczy plik csv (format zgodny ze specyfikacją uke siis)';
+$_LANG['Include customer network device assignments:'] = 'Uwzględniaj powiązania urządzeń z klientami:';
 $_LANG['Exported sheets:'] = 'Eksportowane arkusze:';
 
 $_LANG['cash import file'] = 'plik importu płatności';
@@ -4088,6 +4114,7 @@ $_LANG['Show file list'] = 'Pokaż listę plików';
 $_LANG['Are you sure you want to delete this file container?'] = 'Jesteś pewien, że chcesz usunąć ten kontener plikowy?';
 $_LANG['Attachments ($a):'] = 'Załączniki ($a):';
 $_LANG['There are no file containers in database.'] = 'Brak kontenerów plików w bazie danych.';
+$_LANG['Cannot update file container description!'] = 'Nie można zaktualizować opisu kontenera plikowego!';
 
 $_LANG['No results match'] = 'Brak dopasowań';
 $_LANG['Select an Option'] = 'Wybierz opcję';
@@ -4223,4 +4250,28 @@ $_LANG['Pro-forma Invoice No. $a'] = 'Faktura pro-forma nr $a';
 
 $_LANG['Aggregate documents'] = 'Agreguj dokumenty';
 $_LANG['Don\'t aggregate documents'] = 'Nie agreguj dokumentów';
+
+$_LANG['- no description -'] = '- brak opisu -';
+
+$_LANG['Last online earlier than:'] = 'Ostatnio widziane wcześniej niż:';
+$_LANG['Last online later than:'] = 'Ostatnio widziane później niż:';
+$_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means ignore) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD GG:MM (puste pole oznacza ignorowanie daty) lub kliknij żeby wybrać datę z kalendarza';
+
+$_LANG['<!qs>show unresolved only'] = 'pokaż tylko nierozwiązane';
+
+$_LANG['Category selection is recommended but not required!'] = 'Wybór kategorii jest zalecany, ale niewymagany!';
+
+$_LANG['invoice sale date manipulation'] = 'manipulowanie datą sprzedaży faktur';
+$_LANG['invoice consent date manipulation'] = 'manipulowanie datą wystawienia faktur';
+
+$_LANG['Network name'] = 'Nazwa sieci';
+
+$_LANG['previous month'] = 'poprzedni miesiąc';
+$_LANG['next month'] = 'następny miesiąc';
+
+$_LANG['<!rt>- none -'] = '- brak -';
+
+$_LANG['General file upload error - files are too large probably!'] = 'Ogólny błąd przesyłania pliku - prawdopobnie pliki mają zbyt duży rozmiar!';
+
+$_LANG['Are you sure you want to move event from $a to $b?'] = 'Jesteś pewien, że chcesz przenieść zdarzenie z $a na $b?';
 
