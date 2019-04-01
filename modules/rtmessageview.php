@@ -52,10 +52,11 @@ if(!isset($_GET['id']))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if (!($LMS->CheckTicketAccess($_GET['id']) & RT_RIGHT_READ))
+$message = $LMS->GetMessage($_GET['id']);
+
+if (!($LMS->CheckTicketAccess($message['ticketid']) & RT_RIGHT_READ))
 	access_denied();
 
-	$message = $LMS->GetMessage($_GET['id']);
 if($message['userid'])
 	$message['username'] = $LMS->GetUserName($message['userid']);
 
