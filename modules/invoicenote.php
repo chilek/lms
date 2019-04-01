@@ -494,6 +494,7 @@ switch($action)
 		}
 
 		$hook_data = array(
+			'cnote' => $cnote,
 			'invoice' => $invoice,
 			'contents' => $contents,
 		);
