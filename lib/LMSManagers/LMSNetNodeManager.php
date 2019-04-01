@@ -54,8 +54,6 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		$where = array();
 		foreach ($search as $key => $value) {
 			$val = intval($value);
-			if (!$val)
-				continue;
 			switch ($key) {
 				case 'type':
 					if ($val != -1)
