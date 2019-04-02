@@ -271,7 +271,7 @@ $(function() {
     /*!
      * \brief Use group of checkboxes as radio button by class.
      */
-    $('body').on('click', '.lmsui-address-box-def-address', function() {
+    $('body').on('click', '.lms-ui-address-box-def-address', function() {
         var state = this.checked;
         var box = getLocationBox(this);
 
@@ -299,7 +299,7 @@ $(function() {
         });
 
         // unmark all checkboxes
-        $( $('.lmsui-address-box-def-address') ).each(function() {
+        $( $('.lms-ui-address-box-def-address') ).each(function() {
             $(this).prop('checked', false);                                   // uncheck all default address checkboxes
         });
 

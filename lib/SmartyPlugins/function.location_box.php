@@ -78,7 +78,7 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '<div class="location-box">';
 
-    echo '<fieldset class="lmsui-address-box" id="' . $LOCATION_ID . '">';
+    echo '<fieldset class="lms-ui-address-box" id="' . $LOCATION_ID . '">';
 
     if ( isset($params['address_id']) && $params['address_id'] != null ) {
         echo '<input type="hidden" value="' . $params['address_id']  . '" name="' . $input_name_address_id . '">';
@@ -210,7 +210,7 @@ function smarty_function_location_box( $params = array(), $template )
         echo '<tr>
                  <td colspan="2">
                      <label>
-                         <input type="checkbox" class="lmsui-address-box-def-address" name="' . $input_name_def_address . '"' . ($params['location_address_type'] == DEFAULT_LOCATION_ADDRESS || isset($params['location_def_address']) ? 'checked' : '') . '>
+                         <input type="checkbox" class="lms-ui-address-box-def-address" name="' . $input_name_def_address . '"' . ($params['location_address_type'] == DEFAULT_LOCATION_ADDRESS || isset($params['location_def_address']) ? 'checked' : '') . '>
                          ' . trans('default location address') . '
                      </label>
                  </td>
@@ -219,7 +219,7 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '<tr>
               <td colspan="2">
-                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lmsui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
+                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lms-ui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
                   <span class="lms-ui-button teryt-address-button">&raquo;&raquo;&raquo;</span>
               </td>
           </tr>';

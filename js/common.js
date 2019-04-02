@@ -146,14 +146,14 @@ if ( typeof $ !== 'undefined' ) {
         // open location dialog window if teryt is checked
         $('body').on('click', '.teryt-address-button', function() {
 
-            var box = $( this ).closest( ".lmsui-address-box" );
+            var box = $( this ).closest( ".lms-ui-address-box" );
 
             // if teryt checkbox is not checked during teryt button click then
             // we check it automatically for user convenience
             if ( ! box.find("input[data-address='teryt-checkbox']").is(':checked') ) {
                 box.find("input[data-address='teryt-checkbox']").prop('checked', true);
                 // simulate click for update input state
-                $( '.lmsui-address-teryt-checkbox' ).trigger( 'change' );
+                $( '.lms-ui-address-teryt-checkbox' ).trigger( 'change' );
             }
 
             var city   = box.find("input[data-address='city-hidden']").val();
@@ -166,8 +166,8 @@ if ( typeof $ !== 'undefined' ) {
         });
 
         // disable and enable inputs after click
-        $('body').on('change', '.lmsui-address-teryt-checkbox', function() {
-            var boxid = $( this ).closest( ".lmsui-address-box" ).attr( 'id' );
+        $('body').on('change', '.lms-ui-address-teryt-checkbox', function() {
+            var boxid = $( this ).closest( ".lms-ui-address-box" ).attr( 'id' );
 
             if ( $( this ).is(':checked') ) {
                 $("#" + boxid + " input[type=text]").prop("readonly", true);
@@ -184,7 +184,7 @@ if ( typeof $ !== 'undefined' ) {
         });
 
         // simulate click for update input state
-        $( '.lmsui-address-teryt-checkbox' ).trigger( 'change' );
+        $( '.lms-ui-address-teryt-checkbox' ).trigger( 'change' );
     });
 }
 
