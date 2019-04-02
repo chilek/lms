@@ -129,7 +129,7 @@ class LMSHtmlTransferForm extends LMSHtmlDocument {
         $posx = 205 + $SHIFT;
 		$this->contents .= '<span style="position: absolute; top: ' . $posx . 'px; '
             . 'left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;">'
-            . $this->data['KWOTA_ZL'] . ' zł ' . $this->data['KWOTA_GR'] . ' gr</span>';
+            . $this->data['KWOTA_X'] . ' gr</span>';
 
         // dane płatnika:
         if (mb_strlen($this->data['USER_OD']) > 27) { // jeżeli nazwa 27 znaki _nie_ wpisujemy w kratki
@@ -239,6 +239,10 @@ class LMSHtmlTransferForm extends LMSHtmlDocument {
 		} else {
 			$this->data['KWOTA_ZL'] = $KWOTA_ZL = floor($KWOTA_NR);
 			$this->data['KWOTA_X'] = $KWOTA_X = moneyf_in_words($KWOTA_ZL + ($KWOTA_GR / 100));
+		}
+		if (mb_strlen($KWOTA_X) > 60) {
+			$this->data['KWOTA_ZL'] = $KWOTA_ZL = to_words(floor($KWOTA_NR), 0, '', 1);
+			$this->data['KWOTA_X'] = $KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100';
 		}
 
 		$barcode = new \Com\Tecnick\Barcode\Barcode();
