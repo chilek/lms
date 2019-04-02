@@ -455,7 +455,7 @@ if(isset($_POST['ticket']))
 	}
 
 	$ticket['subject'] = $ticketedit['subject'];
-	$ticket['queue'] = $ticketedit['queue'];
+	$ticket['queueid'] = $ticketedit['queue'];
 	$ticket['service'] = $ticketedit['service'];
 	$ticket['type'] = $ticketedit['type'];
 	$ticket['state'] = $ticketedit['state'];
