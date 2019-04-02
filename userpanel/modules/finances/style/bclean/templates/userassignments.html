@@ -57,8 +57,18 @@
 				<td>({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
 				<td>&nbsp;</td>
 				{if $show_speeds}
-				<td>{sum array=$assignments column="real_downrate" default="-"} ({sum array=$assignments column="real_downceil" default="-"}) kbit/s
-				<td>{sum array=$assignments column="real_uprate" default="-"} ({sum array=$assignments column="real_upceil" default="-"}) kbit/s</td>
+				<td>
+					{sum array=$assignments column="real_downrate" default="-" assign="real_downrate"}
+					{sum array=$assignments column="real_downceil" default="-" assign="real_downceil"}
+					{if $real_downrate}{convert_to_units($real_downrate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+					({if $real_downceil}{convert_to_units($real_downceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
+				</td>
+				<td>
+					{sum array=$assignments column="real_uprate" default="-" assign="real_uprate"}
+					{sum array=$assignments column="real_upceil" default="-" assign="real_upceil"}
+					{if $real_uprate}{convert_to_units($real_uprate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+					({if $real_upceil}{convert_to_units($real_upceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
+				</td>
 				{/if}
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
