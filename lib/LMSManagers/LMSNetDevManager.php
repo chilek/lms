@@ -686,6 +686,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         return $netdevs;
     }
 
+	public function GetNetDevName($id) {
+    	return $this->db->GetOne('SELECT name FROM netdevices WHERE id = ?', array($id));
+	}
+
     public function GetNotConnectedDevices($id)
     {
         return $this->db->GetAll('SELECT d.id, d.name, d.description,

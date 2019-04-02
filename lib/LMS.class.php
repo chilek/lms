@@ -1372,7 +1372,13 @@ class LMS
         return $manager->GetNetDevNames();
     }
 
-    public function GetNotConnectedDevices($id)
+	public function GetNetDevName($id)
+	{
+		$manager = $this->getNetDevManager();
+		return $manager->GetNetDevName($id);
+	}
+
+	public function GetNotConnectedDevices($id)
     {
         $manager = $this->getNetDevManager();
         return $manager->GetNotConnectedDevices($id);
@@ -1481,6 +1487,11 @@ class LMS
         $manager = $this->getNetNodeManager();
         return $manager->GetNetNode($id);
     }
+
+    public function GetNetNodeName($id) {
+		$manager = $this->getNetNodeManager();
+		return $manager->GetNetNodeName($id);
+	}
 
 	public function GetNetNodes() {
 		$manager = $this->getNetNodeManager();
@@ -3671,6 +3682,11 @@ class LMS
 	public function GetProject($id) {
 		$manager = $this->getProjectManager();
 		return $manager->GetProject($id);
+	}
+
+	public function GetProjectName($id) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjectName($id);
 	}
 
 	public function GetProjectByName($name) {

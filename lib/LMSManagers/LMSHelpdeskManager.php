@@ -1078,8 +1078,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $type = 0;
 		$notes = array();
 
-        if($ticket['owner'] != $props['owner'] && isset($props['owner'])) {
-            $notes[] = trans('Ticket has been assigned to user $a.', $LMS->GetUserName($props['owner']));
+        if($ticket['owner'] != $props['owner']) {
+        	if (isset($props['owner']))
+            	$notes[] = trans('Ticket has been assigned to user $a.', $LMS->GetUserName($props['owner']));
+        	else
+				$notes[] = trans('Ticket has been unassigned from user $a.', $LMS->GetUserName($ticket['owner']));
             $type = $type | RTMESSAGE_OWNER_CHANGE;
         } else
 			   $props['owner'] = $ticket['owner'];
@@ -1120,22 +1123,39 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }else
             $props['subject'] = $ticket['subject'];
 
-        if($ticket['netnodeid'] != $props['netnodeid'] && isset($props['netnodeid'])) {
-            $notes[] = trans('Ticket\'s network node assignments has been changed from $a to $b.', $ticket['netnodeid'], $props['netnodeid']);
+        if ($ticket['netnodeid'] != $props['netnodeid']) {
+			$netnode_manager = new LMSNetNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
+			if (isset($props['netnodeid']))
+            	$notes[] = trans('Ticket\'s network node assignments has been changed from $a to $b.',
+					$netnode_manager->GetNetNodeName($ticket['netnodeid']), $netnode_manager->GetNetNodeName($props['netnodeid']));
+        	else
+				$notes[] = trans('Ticket has been unassigned from network node $a.', $netnode_manager->GetNetNodeName($ticket['netnodeid']));
             $type = $type | RTMESSAGE_NETNODE_CHANGE;
-        }else
+        } else
             $props['netnodeid'] = $ticket['netnodeid'];
 
-        if($ticket['invprojectid'] != $props['invprojectid'] && isset($props['invprojectid'])) {
-            $notes[] = trans('Ticket\'s investment project assignments has been changed from $a to $b.', $ticket['invprojectid'], $props['invprojectid']);
+        if ($ticket['invprojectid'] != $props['invprojectid']) {
+			$project_manager = new LMSProjectManager($this->db, $this->auth, $this->cache, $this->syslog);
+        	if (isset($props['invprojectid']))
+            	$notes[] = trans('Ticket\'s investment project has been changed from $a to $b.',
+					$project_manager->GetProjectName($ticket['invprojectid']), $project_manager->GetProjectName($props['invprojectid']));
+        	else
+				$notes[] = trans('Ticket has been unassigned from investment project $a.',
+					$project_manager->GetProjectName($ticket['invprojectid']));
             $type = $type | RTMESSAGE_INVPROJECT_CHANGE;
-        }else
+        } else
             $props['invprojectid'] = $ticket['invprojectid'];
 
-		if($ticket['netdevid'] != $props['netdevid'] && isset($props['netdevid'])) {
-            $notes[] = trans('Ticket\'s network device assignments has been changed from $a to $b.', $ticket['netdevid'], $props['netdevid']);
+		if ($ticket['netdevid'] != $props['netdevid']) {
+			$netdev_manager = new LMSNetDevManager($this->db, $this->auth, $this->cache, $this->syslog);
+			if (isset($props['netdevid']))
+            	$notes[] = trans('Ticket\'s network device assignments has been changed from $a to $b.',
+					$netdev_manager->GetNetDevName($ticket['netdevid']), $netdev_manager->GetNetDevName($props['netdevid']));
+			else
+				$notes[] = trans('Ticket has been unassigned from network device $a.',
+					$netdev_manager->GetNetDevName($ticket['netdevid']));
             $type = $type | RTMESSAGE_NETDEV_CHANGE;
-        }else
+        } else
             $props['netdevid'] = $ticket['netdevid'];
 
 		if (array_key_exists('verifierid', $props)) {

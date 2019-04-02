@@ -60,6 +60,12 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 			array(INV_PROJECT_SYSTEM, $id));
 	}
 
+	public function GetProjectName($id) {
+		return $this->db->GetOne('SELECT name FROM invprojects
+			WHERE type <> ? AND id = ?',
+			array(INV_PROJECT_SYSTEM, $id));
+	}
+
 	public function GetProjectByName($name) {
 		return $this->db->GetRow('SELECT * FROM invprojects
 			WHERE type <> ? AND name = ?',

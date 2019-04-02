@@ -55,8 +55,10 @@ interface LMSNetDevManagerInterface
     public function GetNotConnectedDevices($id);
     
     public function GetNetDevNames();
-    
-    public function GetNetDevList($order = 'name,asc');
+
+	public function GetNetDevName($id);
+
+	public function GetNetDevList($order = 'name,asc');
     
     public function GetNetDevConnectedNames($id);
     
