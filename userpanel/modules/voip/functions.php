@@ -207,7 +207,8 @@ function module_main() {
             $params['order'] = $order[0];
             $params['direction'] = $order[1];
             $params['o'] = $_GET['o'];
-        }
+        } else
+        	$params['o'] = 'begintime,desc';
 
         $billings = $LMS->getVoipBillings($params);
     }
