@@ -591,7 +591,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 	if(is_array($events))
 		foreach($events as $idx=>$row)
-			$events[$idx]['ul'] = $this->db->GetAll("SELECT vu.name,userid AS ul FROM eventassignments AS e LEFT JOIN vusers vu ON vu.id = e.userid WHERE eventid = $row[id]");
+			$events[$idx]['userlist'] = $this->db->GetAll("SELECT vu.name,userid AS ul FROM eventassignments AS e LEFT JOIN vusers vu ON vu.id = e.userid WHERE eventid = $row[id]");
 
 	return $events;
     }
