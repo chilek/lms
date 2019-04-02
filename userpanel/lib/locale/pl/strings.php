@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Hide customer nodes box'] = 'Ukryj okno komputerów klienta';
 $_LANG['Access denied!'] = 'Brak dostępu!';
 $_LANG['and'] = 'i';
 $_LANG['Cancel'] = 'Anuluj';
