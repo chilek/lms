@@ -21,6 +21,8 @@
 
 {/box}
 
+{$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
+
 <div class="modal fade" id="updatepinbox" tabindex="-1" role="dialog" aria-labelledby="updatepinbox" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -44,11 +46,11 @@
 					</div>
 					<div class="form-group">
 						<label for="pin"><strong>{trans("New PIN")}:</strong></label>
-						<input id="pin" type="password" class="form-control" name="userdata[pin]" placeholder="{trans("Enter new PIN")}">
+						<input id="pin" type="password" class="form-control" name="userdata[pin]" placeholder="{trans("Enter new PIN")}"{if $pin_tip} title="{$pin_tip}"{/if}>
 					</div>
 					<div class="form-group">
 						<label for="pin2"><strong>{trans("New PIN confirm")}:</strong></label>
-						<input id="pin2" type="password" class="form-control" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}">
+						<input id="pin2" type="password" class="form-control" name="userdata[pin2]" placeholder="{trans("Enter new PIN (again)")}"{if $pin_tip} title="{$pin_tip}"{/if}>
 					</div>
 				</form>
 			</div>

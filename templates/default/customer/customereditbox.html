@@ -1,8 +1,11 @@
 <!--// $Id$ //-->
-{if $pin_min_size == $pin_max_size}
-{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}
-{else}
-{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+{$pin_tip = ConfigHelper::getConfig('phpui.pin_restriction_description')}
+{if !$pin_tip}
+	{if $pin_min_size == $pin_max_size}
+		{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}
+	{else}
+		{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+	{/if}
 {/if}
 <script type="text/javascript" src="js/location_box_expandable.js"></script>
 <SCRIPT type="text/javascript">
