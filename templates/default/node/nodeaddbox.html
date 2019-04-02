@@ -37,7 +37,7 @@
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="nodedata[netid]" {tip text="Choose network" trigger="netid"}>
+			<SELECT class="lms-ui-advanced-select" SIZE="1" name="nodedata[netid]" {tip text="Choose network" trigger="netid"}>
 				<OPTION VALUE="0">{trans("- automatic selection -")}</OPTION>
 				{foreach $networks as $net}
 				<OPTION VALUE="{$net.id}" {if $net.id == $nodedata.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
@@ -119,7 +119,7 @@
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;">
                         <a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodeadd.elements['nodedata[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
-			<SELECT SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)" style="max-width:250px;">
+			<SELECT class="lms-ui-advanced-select" SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)" style="max-width:250px;">
 				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{trans("- select device -")}</OPTION>
 				{section name=netdevices loop=$netdevices}
 				<OPTION VALUE="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</OPTION>
