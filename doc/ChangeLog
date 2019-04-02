@@ -227,6 +227,8 @@ version ?.??.?? (????-??-??):
   - improvement: aggregate tariff speeds to kMG units [chilan]
   - enhancement: uke/siis: customer network device support added [chilan]
   - improvement: confirmation dialog after event drag between days in timetable [chilan]
+  - improvement: phpui.pin_restriction_description configuration variable allow to define tooltip
+    contents describing customer pin restrictions (html code usage is possible) [chilan]
 
 version 1.11.23 (2018-03-21):
 
