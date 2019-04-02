@@ -72,7 +72,7 @@
 	<INPUT type="submit" class="hiddenbtn">
 	<tr>
 		<td class="fall light" align="center">
-			<SELECT class="lms-ui-advanced-select" SIZE="1" onchange="parent.location.href='?m=chooseip{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
+			<SELECT SIZE="1" onchange="parent.location.href='?m=chooseip{if $privnetid}&privnetid={$privnetid}{/if}{if $device}&device={$device}{/if}&netid='+document.selectnet.elements['netid'].value" NAME="netid">
 				{foreach $networks as $net}
 				<OPTION VALUE="{$net.id}"{if $net.id == $netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 				{foreachelse}
