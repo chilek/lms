@@ -37,6 +37,7 @@ function module_setup()
     $layout['pagetitle'] = trans('Userpanel Configuration');
     $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header', ''));
     $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo', ''));
+    $SMARTY->assign('shortcut_icon', ConfigHelper::getConfig('userpanel.shortcut_icon', ''));
     $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
     $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
     $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
@@ -114,7 +115,12 @@ function module_submit_setup()
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'company_logo', ?)", array($_POST['company_logo']));
 
-    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_sms_body'"))
+	if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'shortcut_icon'"))
+		$DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'shortcut_icon'", array($_POST['shortcut_icon']));
+	else
+		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'shortcut_icon', ?)", array($_POST['shortcut_icon']));
+
+	if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_sms_body'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_sms_body'", array($_POST['reminder_sms_body']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_sms_body', ?)", array($_POST['reminder_sms_body']));

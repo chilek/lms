@@ -3143,6 +3143,7 @@ URL: %url
 ('userpanel', 'aggregate_documents', '0', '', 0),
 ('userpanel', 'speed_unit_type', '1000', '', 0),
 ('userpanel', 'speed_unit_aggregation_threshold', '5', '', 0),
+('userpanel', 'shortcut_icon', '', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO invprojects (name, type) VALUES ('inherited', 1);
@@ -3474,6 +3475,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019032700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019040300');
 
 COMMIT;
