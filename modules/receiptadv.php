@@ -85,7 +85,7 @@ if(isset($_POST['receipt']))
 
 	if(isset($receipt['cdate']))
 	{
-		$cdate = date_to_timestamp($receipt['cdate']);
+		$cdate = datetime_to_timestamp($receipt['cdate']);
 		if(empty($cdate)) {
 			$error['cdate'] = trans('Incorrect date format!');
 			$receipt['cdate'] = time();
