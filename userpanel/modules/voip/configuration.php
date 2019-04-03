@@ -28,7 +28,7 @@ $USERPANEL->AddModule(trans('Phone'),                                          /
                       'voip',                                                  // Module name - must be the same as directory name
                       trans('View phone billings and listen recorded calls.'), // Tip
                       60,                                                      // Priority
-                      trans('This module is for showing billing list.')        // Description
+                      trans('This module shows billing list.')        // Description
                      );
 
 ?>
