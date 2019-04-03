@@ -3,7 +3,7 @@
 <!--
 	function newcontact(type) {
 		var table = $('table.contacts[data-type="' + type + '"]');
-		var innerHTML = '<tr class="light"><td class="nobr">';
+		var innerHTML = '<tr><td class="nobr">';
 		var nr = $('tr', table).length - 1;
 		if (nr)
 			innerHTML += '<HR>';
@@ -99,7 +99,10 @@
 <script type="text/javascript">
 <!--
 	$('.contacttype-show').click(function() {
-		$(this).parent().hide().siblings('.contacttype-visible').show();
+		var contacts = $(this).parent().hide().siblings('.contacttype-visible').show().find('.contacts');
+		if (!contacts.find('> tbody > tr:not(.newcontact)').length) {
+			newcontact(contacts.attr('data-type'));
+		}
 	});
 	$('.contacttype-hide').click(function() {
 		$(this).closest('fieldset').hide().siblings('.contacttype-hidden').show();
