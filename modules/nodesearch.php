@@ -25,7 +25,6 @@
  */
 
 if (isset($_GET['ajax'])) {
-	header('Content-type: text/plain');
 	$search = urldecode(trim($_GET['what']));
 
 	switch ($_GET['mode']) {
