@@ -83,17 +83,18 @@ if(isset($_POST['receipt']))
 	if($receipt['type'] == 'return')
 		$receipt['cdate'] = $_POST['receiptr']['cdate'];
 
-	if(isset($receipt['cdate']))
-	{
+	// $cdate = 0 means current unix timestamp
+	if (isset($receipt['cdate']) && !empty($receipt['cdate'])) {
 		$cdate = date_to_timestamp($receipt['cdate']);
-		if(empty($cdate)) {
+		if (empty($cdate)) {
 			$error['cdate'] = trans('Incorrect date format!');
-			$receipt['cdate'] = time();
-		} else
-			$receipt['cdate'] = $cdate;
+			$receipt['cdate'] = 0;
+			$cdate = time();
+		}
+	} else {
+		$receipt['cdate'] = 0;
+		$cdate = time();
 	}
-	else
-		$receipt['cdate'] = time();
 
 	$in_plan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id = ?', array($regid));
 
@@ -108,28 +109,28 @@ if(isset($_POST['receipt']))
 		if(!$value)
 			$error['value'] = trans('Value is required!');
 		else
-		{	
+		{
 			$diff = $value + $record['value'];
-			
+
 			if($diff > 0)
 			{
 				$sum = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($regid));
 				if($sum < $diff)
-                            		$error['value'] = trans('There is only $a in registry!', money_format($sum));
+									$error['value'] = trans('There is only $a in registry!', money_format($sum));
 			}
 		}
-		
+
 		if($receipt['in_number'])
 		{
-	    		if(!preg_match('/^[0-9]+$/', $receipt['in_number']))
-	            		$error['in_number'] = trans('Receipt number must be integer!');
+				if(!preg_match('/^[0-9]+$/', $receipt['in_number']))
+						$error['in_number'] = trans('Receipt number must be integer!');
 			elseif($LMS->DocumentExists(array(
 					'number' => $receipt['in_number'],
 					'doctype' => DOC_RECEIPT,
 					'planid' => $in_plan,
-					'cdate' => $receipt['cdate'],
+					'cdate' => $cdate,
 				)))
-		 		$error['in_number'] = trans('Receipt number $a already exists!', $receipt['in_number']);
+				$error['in_number'] = trans('Receipt number $a already exists!', $receipt['in_number']);
 		}
 
 		if($receipt['out_number'])
@@ -140,13 +141,13 @@ if(isset($_POST['receipt']))
 					'number' => $receipt['out_number'],
 					'doctype' => DOC_RECEIPT,
 					'planid' => $record['numberplanid'],
-					'cdate' => $receipt['cdate'],
+					'cdate' => $cdate,
 				)))
 				$error['out_number'] = trans('Receipt number $a already exists!', $receipt['out_number']);
 		}
 	}
 	else
-	{	
+	{
 		if($receipt['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $receipt['number']))
@@ -155,12 +156,12 @@ if(isset($_POST['receipt']))
 					'number' => $receipt['number'],
 					'doctype' => DOC_RECEIPT,
 					'planid' => $in_plan,
-					'cdate' => $receipt['cdate'],
+					'cdate' => $cdate,
 				)))
 				$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
 	}
-	
+
 	if(!$error)
 	{
 		$DB->BeginTrans();
@@ -172,7 +173,7 @@ if(isset($_POST['receipt']))
 				$in_number = $LMS->GetNewDocumentNumber(array(
 					'doctype' => DOC_RECEIPT,
 					'planid' => $in_plan,
-					'cdate' => $receipt['cdate'],
+					'cdate' => $cdate,
 				));
 			else
 				$in_number = $receipt['number'];
@@ -184,7 +185,7 @@ if(isset($_POST['receipt']))
 				$in_number = $LMS->GetNewDocumentNumber(array(
 					'doctype' => DOC_RECEIPT,
 					'planid' => $in_plan,
-					'cdate' => $receipt['cdate'],
+					'cdate' => $cdate,
 				));
 			else
 				$in_number = $receipt['in_number'];
@@ -194,7 +195,7 @@ if(isset($_POST['receipt']))
 		$fullnumber = docnumber(array(
 			'number' => $in_number,
 			'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($in_plan)),
-			'cdate' => $receipt['cdate'],
+			'cdate' => $cdate,
 		));
 
 		// add cash-in receipt 
@@ -204,7 +205,7 @@ if(isset($_POST['receipt']))
 						$in_number,
 						$in_extnumber,
 						$in_plan,
-						$receipt['cdate'],
+						$cdate,
 						Auth::GetCurrentUser(),
 						$record['name'],
 						$fullnumber,
@@ -219,13 +220,13 @@ if(isset($_POST['receipt']))
 				$receipt['out_number'] = $LMS->GetNewDocumentNumber(array(
 					'doctype' => DOC_RECEIPT,
 					'planid' => $record['numberplanid'],
-					'cdate' => $receipt['cdate'],
+					'cdate' => $cdate,
 				));
 
 			$fullnumber = docnumber(array(
 				'number' => $receipt['out_number'],
 				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($record['numberplanid'])),
-				'cdate' => $receipt['cdate'],
+				'cdate' => $cdate,
 			));
 
 			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
@@ -234,7 +235,7 @@ if(isset($_POST['receipt']))
 						$receipt['out_number'],
 						isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
 						$record['numberplanid'],
-						$receipt['cdate'],
+						$cdate,
 						Auth::GetCurrentUser(),
 						$receipt['name'],
 						$fullnumber,
@@ -255,7 +256,7 @@ if(isset($_POST['receipt']))
 
 		$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
 					VALUES(?, 1, ?, 1, ?, ?, ?)',
-					array($receipt['cdate'],
+					array($cdate,
 						$rid,
 						str_replace(',', '.', $record['value'] * -1),
 						trans('Advance return').' - '.$titlenumber,
@@ -274,7 +275,7 @@ if(isset($_POST['receipt']))
 
 			$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
 					VALUES(?, 1, ?, 1, ?, ?, ?)',
-					array($receipt['cdate'],
+					array($cdate,
 						$rid,
 						str_replace(',', '.', $value * -1),
 						$receipt['description'],

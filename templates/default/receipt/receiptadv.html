@@ -59,7 +59,7 @@
 					{trans("Settlement date:")}
 				    </TD>
 				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receiptr[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+					<INPUT TYPE="TEXT" NAME="receiptr[cdate]" VALUE="{if $receipt.cdate}{$receipt.cdate|date_format:"%Y/%m/%d"}{/if}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 					{if $receipt.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="receiptr[cdatewarning]" VALUE="1">
 					{/if}
@@ -101,7 +101,7 @@
 					{trans("Settlement date:")}
 				    </TD>
 				    <TD WIDTH="99%" NOWRAP>
-					<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+					<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{if $receipt.cdate}{$receipt.cdate|date_format:"%Y/%m/%d"}{/if}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 					{if $receipt.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 					{/if}
