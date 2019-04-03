@@ -36,7 +36,11 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="light">
 		<TD width="100%" CLASS="ftopu">
-			<INPUT type="radio" name="receipt[type]" value="return" id="radio_return" onclick="show('tab_return')" checked> <B>{trans("return")}</B><BR>
+			<label>
+				<INPUT type="radio" name="receipt[type]" value="return" id="radio_return" onclick="show('tab_return')" checked>
+				<strong>{trans("return")}</strong>
+			</label>
+			<BR>
 			    <TABLE width="100%" id="tab_return" style="margin-left: 40px;{if isset($receipt.type) && $receipt.type!="return"} display: none;{/if}">
 				<TR>
 				    <TD WIDTH="1%" NOWRAP>
@@ -62,7 +66,11 @@
 				    </TD>
 				</TR>
 			    </TABLE>
-			<INPUT type="radio" name="receipt[type]" value="settle" id="radio_settle" onclick="show('tab_settle')" {if $receipt.type=="settle"} checked{/if}> <B>{trans("settlement")}</B><BR>
+			<label>
+				<INPUT type="radio" name="receipt[type]" value="settle" id="radio_settle" onclick="show('tab_settle')" {if $receipt.type=="settle"} checked{/if}>
+				<strong>{trans("settlement")}</strong>
+			</label>
+			<BR>
 			    <TABLE width="100%" id="tab_settle" style="margin-left: 40px;{if $receipt.type!="settle"} display: none;{/if}">
 				<TR>
 				    <TD WIDTH="1%" NOWRAP>
