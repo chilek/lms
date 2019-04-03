@@ -272,6 +272,23 @@ elseif (!$exists)
 		if (!empty($customerinfo['accounts']))
 			foreach ($customerinfo['accounts'] as &$account)
 				$account['contact'] = format_bankaccount($account['contact']);
+
+		if (empty($customerinfo['emails']))
+			$customerinfo['emails'] = array(
+				0 => array(
+					'contact' => '',
+					'name' => '',
+					'type' => 0
+				)
+			);
+		if (empty($customerinfo['phones']))
+			$customerinfo['phones'] = array(
+				0 => array(
+					'contact' => '',
+					'name' => '',
+					'type' => 0
+				)
+			);
 	}
 }
 
