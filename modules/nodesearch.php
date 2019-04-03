@@ -223,8 +223,10 @@ if (isset($_GET['search'])) {
 	}
 
 	if (!$error) {
-		$nodesearch['lastonlinebefore'] = $lastonlinebefore;
-		$nodesearch['lastonlineafter'] = $lastonlineafter;
+		if (isset($lastonlinebefore))
+			$nodesearch['lastonlinebefore'] = $lastonlinebefore;
+		if (isset($lastonlineafter))
+			$nodesearch['lastonlineafter'] = $lastonlineafter;
 
 		$nodelist = $LMS->GetNodeList(array('order' => $o, 'search' => $nodesearch, 'sqlskey' => $k));
 
@@ -271,6 +273,7 @@ if (isset($_GET['search'])) {
 			$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 			$SMARTY->display('node/nodesearchresults.html');
 		}
+		$SESSION->close();
 		die;
 	} else {
 		$SMARTY->assign('error', $error);
