@@ -163,6 +163,17 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD>
+			<IMG src="img/db.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">
+			<label for="archived">{trans("Archived:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="document[archived]" id="archived" value="1" {if $document.archived} checked{/if}>
+		</TD>
+	</TR>
+	<TR>
 		<TD colspan="3" class="buttons">
 			<A href="javascript: document.documentedit.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="?m=customerinfo&id={$document.customerid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
@@ -175,6 +186,14 @@
 <!--
 	$(function() {
 		$('form[name="documentedit"] [name="document[title]"]').focus();
+
+		$('#closed').click(function() {
+			if ($('#archived').prop('checked') && !$(this).prop('checked')) {
+				$(this).prop('checked', true);
+				alert($t("Cannot undo document confirmation while it is archived!"));
+			}
+			$('#archived').closest('tr').toggle($(this).prop('checked'));
+		});
 	});
 //-->
 </SCRIPT>

@@ -4281,5 +4281,6 @@ $_LANG['Archiving'] = 'Archiwizowanie';
 $_LANG['Archived:'] = 'Zarchiwizowany:';
 $_LANG['Select document archived state'] = 'Wybierz stan archiwizacji dokumentu';
 $_LANG['Are you sure, you want to archive that document?'] = 'Jesteś pewien, że chcesz zarchiwizować ten dokument?';
+$_LANG['Cannot undo document confirmation while it is archived!'] = 'Nie można cofnąć zatwierdzenia dokumentu, gdy jest on zarchiwizowany!';
 
 ?>

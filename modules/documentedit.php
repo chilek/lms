@@ -48,7 +48,7 @@ if (isset($_GET['action'])) {
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
-$document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, numberplans.template,
+$document = $DB->GetRow('SELECT documents.id AS id, closed, archived, type, number, numberplans.template,
 	cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
 	FROM documents
 	JOIN docrights r ON (r.doctype = documents.type)
@@ -132,6 +132,9 @@ if(isset($_POST['document']))
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
 	$documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
+	$documentedit['archived'] = isset($documentedit['archived']) ? 1 : 0;
+	if ($documentedit['archived'] && !$documentedit['closed'])
+		$error['closed'] = trans('Cannot undo document confirmation while it is archived!');
 
 	$result = handle_file_uploads('attachments', $error);
 	extract($result);
@@ -186,10 +189,11 @@ if(isset($_POST['document']))
 			'customerid' => $document['customerid'],
 		));
 
-		$DB->Execute('UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, number=?, numberplanid=?, fullnumber=?
+		$DB->Execute('UPDATE documents SET type=?, closed=?, archived = ?, sdate=?, cuserid=?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
 				array(	$documentedit['type'],
 					$documentedit['closed'],
+					$documentedit['archived'],
 					$documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
 					$documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
 					$documentedit['number'],

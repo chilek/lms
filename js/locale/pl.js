@@ -3266,11 +3266,14 @@ $_LANG['no operation on message template'] = 'brak czynności na szablonie wiado
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['assign to me'] = 'przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
+$_LANG['Ticket has been unassigned from user $a.'] = 'Anulowano przypisane zgłoszenia do użytkownika $a.';
 $_LANG['Ticket\'s state:'] = 'Stan zgłoszenia:';
 $_LANG['Ticket\'s source has been changed from $a to $b.'] = 'Źródło zgłoszenia zostało zmienione z $a na $b.';
 $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
 $_LANG['Ticket\'s network node assignments has been changed from $a to $b.'] = 'Przypisanie węzła sieciowego zostało zmienione z $a na $b.';
+$_LANG['Ticket has been unassigned from network node $a.'] = 'Anulowano przypisanie zgłoszenia do węzła sieciowego $a.';
 $_LANG['Ticket\'s network device assignments has been changed from $a to $b.'] = 'Przypisanie urządzenia sieciowego zostało zmienione z $a na $b.';
+$_LANG['Ticket has been unassigned from network device $a.'] = 'Anulowano przypisanie zgłoszenia do urządzenia sieciowego $a.';
 $_LANG['Ticket\'s location has been changed from $a to $b.'] = 'Lokalizacja zgłoszenia została zmieniona z $a na $b.';
 $_LANG['Ticket\'s node has been changed from $a ($b) to $c ($d).'] = 'Komputer powiązany ze zgłoszeniem został zmieniony z $a ($b) na $c ($d).';
 $_LANG['Ticket\'s priority has been changed from $a to $b.'] = 'Priorytet zgłoszenia został zmieniony z $a na $b.';
@@ -3581,6 +3584,7 @@ $_LANG['technical'] = 'informacje techniczne';
 $_LANG['- use customer location -'] = '- użyj lokalizacji klienta -';
 $_LANG['Ticket\'s state has been changed from $a to $b.'] = 'Status zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Ticket\'s investment project has been changed from $a to $b.'] = 'Projekt inwestycyjny zgłoszenia został zmieniony z $a na $b.';
+$_LANG['Ticket has been unassigned from investment project $a.'] = 'Anulowano przypisanie zgłoszenia do projektu inwestycyjnego $a.';
 $_LANG['Ticket\'s cause has been changed from $a to $b.'] = 'Przyczyna zgłoszenia została zmieniona z $a na $b.';
 $_LANG['Ticket\'s subject has been changed from $a to $b.'] = 'Temat zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Ticket has been moved from customer $a ($b) to customer $c ($d).'] = 'Zgłoszenie zostało przeniesione od klienta $a ($b) do klienta $c ($d).';
@@ -4274,4 +4278,13 @@ $_LANG['<!rt>- none -'] = '- brak -';
 $_LANG['General file upload error - files are too large probably!'] = 'Ogólny błąd przesyłania pliku - prawdopobnie pliki mają zbyt duży rozmiar!';
 
 $_LANG['Are you sure you want to move event from $a to $b?'] = 'Jesteś pewien, że chcesz przenieść zdarzenie z $a na $b?';
+
+$_LANG['shorter than minute'] = 'krócej niż minutę';
+
+$_LANG['Archive'] = 'Archiwizuj';
+$_LANG['Archiving'] = 'Archiwizowanie';
+$_LANG['Archived:'] = 'Zarchiwizowany:';
+$_LANG['Select document archived state'] = 'Wybierz stan archiwizacji dokumentu';
+$_LANG['Are you sure, you want to archive that document?'] = 'Jesteś pewien, że chcesz zarchiwizować ten dokument?';
+$_LANG['Cannot undo document confirmation while it is archived!'] = 'Nie można cofnąć zatwierdzenia dokumentu, gdy jest on zarchiwizowany!';
 
