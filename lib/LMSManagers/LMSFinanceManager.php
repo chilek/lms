@@ -1057,7 +1057,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 	public function GetInvoiceList(array $params) {
 		extract($params);
-		foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed', 'page') as $var)
+		foreach (array('search', 'cat', 'group', 'numberplan', 'exclude', 'hideclosed', 'page') as $var)
 			if (!isset($$var))
 				$$var = null;
 		if (!isset($order))
@@ -1591,7 +1591,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 	public function GetNoteList(array $params) {
 		extract($params);
-		foreach (array('search', 'cat', 'group', 'exclude', 'numberplan', 'hideclosed') as $var)
+		foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed') as $var)
 			if (!isset($$var))
 				$$var = null;
 		if (!isset($order))
