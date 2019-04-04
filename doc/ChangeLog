@@ -231,6 +231,7 @@ version ?.??.?? (????-??-??):
     contents describing customer pin restrictions (html code usage is possible) [chilan]
   - enhancement: userpanel: allow to customize web browser shortcut icon [chilan]
   - enhancement: allow to filter invoice list by number plans [chilan]
+  - enhancement: added support for archiving documents [chilan]
 
 version 1.11.23 (2018-03-21):
 
