@@ -63,6 +63,15 @@ $c="month";
 }
 $SESSION->save('ilc', $c);
 
+if (isset($_POST['numberplanid'])) {
+	if ($_POST['numberplanid'] == 'all')
+		$np = array();
+	else
+		$np = $_POST['numberplanid'];
+} else
+	$SESSION->restore('ilnp', $np);
+$SESSION->save('ilnp', $np);
+
 if (isset($_POST['search']))
 	$h = isset($_POST['hideclosed']);
 elseif (($h = $SESSION->get('ilh')) === NULL)
@@ -94,7 +103,7 @@ elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
 }
 
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-	'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
+	'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
@@ -104,7 +113,7 @@ $page = intval($page);
 $offset = ($page - 1) * $limit;
 
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-	'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset, 'proforma' => $proforma,
+	'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset, 'proforma' => $proforma,
 	'count' => false));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
@@ -113,6 +122,7 @@ $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
+$SESSION->restore('ilnp', $listdata['numberplanid']);
 $SESSION->restore('ilh', $listdata['hideclosed']);
 
 $listdata['total'] = $total;
@@ -139,6 +149,15 @@ $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
+
+if ($proforma)
+	$doctypes = array(DOC_INVOICE_PRO);
+else
+	$doctypes = array(DOC_INVOICE, DOC_CNOTE);
+$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
+	'doctype' => $doctypes,
+)));
+
 $SMARTY->assign('proforma', $proforma);
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoice/invoicelist.html');

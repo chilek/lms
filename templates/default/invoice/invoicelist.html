@@ -99,6 +99,14 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
 					<OPTION value="cnotes"{if $listdata.cat == "cnotes"} SELECTED{/if}>{trans("show only credit notes")}</OPTION>
 				</SELECT>&nbsp;
+				{trans("Plan:")}
+				<input type="hidden" name="numberplanid" value="all">
+				<SELECT name="numberplanid[]" class="lms-ui-multiselect" {tip text="Select numbering plan"} multiple data-default-value="{trans("- all -")}">
+					{foreach $numberplans as $plan}
+						{$period = $plan.period}
+						<OPTION value="{$plan.id}"{if !empty($listdata.numberplanid) && in_array($plan.id, $listdata.numberplanid)} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+					{/foreach}
+				</SELECT>
 				{trans("Group:")}
 				<input type="hidden" name="group" value="all">
 				<SELECT size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">

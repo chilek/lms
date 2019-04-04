@@ -1135,6 +1135,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if (!empty($group))
 			$group = Utils::filterIntegers($group);
 
+		if (!empty($numberplan))
+			$numberplan = Utils::filterIntegers($numberplan);
+
 		if ($count) {
 			return $this->db->GetOne('SELECT COUNT(id) FROM (SELECT d.id
 				FROM documents d
@@ -1156,6 +1159,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
+				. (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
 				. ' GROUP BY d.id '
 				. (isset($having) ? $having : '') . ') a');
 		}
@@ -1191,6 +1195,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 			SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
+			. (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
 			.' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
 			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
 			. (isset($having) ? $having : '')
@@ -1586,7 +1591,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 	public function GetNoteList(array $params) {
 		extract($params);
-		foreach (array('search', 'cat', 'group', 'exclude', 'hideclosed') as $var)
+		foreach (array('search', 'cat', 'group', 'exclude', 'numberplan', 'hideclosed') as $var)
 			if (!isset($$var))
 				$$var = null;
 		if (!isset($order))
