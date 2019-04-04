@@ -52,6 +52,12 @@ function mark_docs() {
 	document.customerdocuments.submit();
 }
 
+function archive_docs() {
+	document.customerdocuments.action="?m=documentedit&action=archive";
+	document.customerdocuments.target="";
+	document.customerdocuments.submit();
+}
+
 function send_documents() {
 	document.customerdocuments.action="?m=documentsend";
 	document.customerdocuments.target="_blank";

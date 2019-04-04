@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -99,9 +99,15 @@ if (!isset($_GET['init'])) {
 		$filter['status'] = $_GET['s'];
 	elseif (!isset($filter['status']))
 		$filter['status'] = -1;
+
+	if (isset($_GET['archived']))
+		$filter['archived'] = $_GET['archived'];
+	elseif (!isset($filter['archived']))
+		$filter['archived'] = -1;
 } else {
 	$filter = array(
 		'status' => -1,
+		'archived' => -1,
 	);
 	$SMARTY->clearAssign('persistent_filter');
 	$SESSION->saveFilter($filter);

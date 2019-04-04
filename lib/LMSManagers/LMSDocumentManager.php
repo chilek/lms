@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -37,7 +37,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return NULL;
 
         if ($list = $this->db->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate,
-			c.description, n.template, d.closed, d.cdate, u.name AS username, d.sdate, u2.name AS cusername,
+			c.description, n.template, d.closed, d.archived, d.cdate, u.name AS username, d.sdate, u2.name AS cusername,
 			d.type AS doctype, d.template AS doctemplate, reference
 			FROM documentcontents c
 			JOIN documents d ON (c.docid = d.id)
@@ -110,6 +110,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		$from = isset($params['from']) ? $params['from'] : 0;
 		$to = isset($params['to']) ? $params['to'] : 0;
 		$status = isset($params['status']) ? $params['status'] : -1;
+		$archived = isset($params['archived']) ? $params['archived'] : -1;
 		$limit = isset($params['limit']) ? $params['limit'] : null;
 		$offset = isset($params['offset']) ? $params['offset'] : null;
 		$count = isset($params['count']) ? $params['count'] : false;
@@ -203,13 +204,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
 					.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
 					.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
-					.($status == -1 ? '' : ' AND d.closed = ' . intval($status)),
+					.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
+					. ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived)),
 				array(Auth::GetCurrentUser()));
 		}
 
 		$list = $this->db->GetAll('SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
 				u.name AS username, u.lastname, fromdate, todate, description, 
-				numberplans.template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
+				numberplans.template, d.closed, d.archived, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
 				u2.lastname AS clastname, d.reference, i.senddocuments
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
@@ -240,6 +242,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
 			.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
 			.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
+			. ($archived == -1 ? '' : ' AND d.archived = ' . intval($archived))
 			.$sqlord
 			. (isset($limit) ? ' LIMIT ' . $limit : '')
 			. (isset($offset) ? ' OFFSET ' . $offset : ''),
@@ -560,7 +563,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				FROM documents d
 				JOIN documentcontents dc ON dc.docid = d.id
 				JOIN docrights r ON r.doctype = d.type
-				WHERE d.closed = 0 AND d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & 4) > 0',
+				WHERE d.closed = 0 AND d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & ' . DOCRIGHT_CONFIRM . ') > 0',
 			'id', array($userid));
 		if (empty($docs))
 			return;
@@ -590,6 +593,30 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
 		$this->db->CommitTrans();
 	}
+
+	public function ArchiveDocuments(array $ids) {
+		$userid = Auth::GetCurrentUser();
+
+		$ids = Utils::filterIntegers($ids);
+		if (empty($ids))
+			return;
+
+		$docs = $this->db->GetCol('SELECT d.id
+				FROM documents d
+				JOIN docrights r ON r.doctype = d.type
+				WHERE d.closed = 1 AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
+					AND r.userid = ? AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0',
+			array($userid));
+		if (empty($docs))
+			return;
+
+		$this->db->BeginTrans();
+
+		$this->db->Execute('UPDATE documents SET archived = 1 WHERE id IN (' . implode(',', $docs) . ')');
+
+		$this->db->CommitTrans();
+	}
+
 
 	public function UpdateDocumentPostAddress($docid, $customerid) {
 		$post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));

@@ -28,68 +28,43 @@
 			{trans("Permissions:")}
 		</TD>
 		<TD>
-			<TABLE class="lmsbox">
+			<TABLE class="lmsbox lms-ui-background-cycle">
 				<COLGROUP>
-					<COL style="width: 95%;">
+					<COL style="width: {math x=100 y=count($_DOCRIGHTS) equation=x-y}%;">
+					{foreach $_DOCRIGHTS as $right}
 					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
+					{/foreach}
 				</COLGROUP>
 				<THEAD>
 				<TR>
 					<TD class="bold">{trans("User")}</TD>
-					<TD class="bold text-center nobr">{trans("Viewing")}</TD>
-					<TD class="bold text-center nobr">{trans("Creating")}</TD>
-					<TD class="bold text-center nobr">{trans("Confirming")}</TD>
-					<TD class="bold text-center nobr">{trans("Editing")}</TD>
-					<TD class="bold text-center nobr">{trans("Deleting")}</TD>
+					{foreach $_DOCRIGHTS as $right}
+					<TD class="bold text-center nobr">{$right}</TD>
+					{/foreach}
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle values="light,lucid" print=false}
-				{foreach from=$documenttype.rights item=right key=key}
-				<TR class="highlight {cycle} lms-ui-row-all-check">
+				{foreach $documenttype.rights as $userid => $userrights}
+				<TR class="highlight lms-ui-row-all-check">
 					<TD>
-						<A href="?m=userinfo&id={$key}">{$right.name}</A>
+						<A href="?m=userinfo&id={$userid}">{$userrights.name}</A>
 					</TD>
-					<TD class="text-center">
-						<INPUT type="checkbox" name="rights[{$key}][1]" value="1"{if ($right.rights & 1)} checked{/if}>
-					</TD>
+					{foreach $_DOCRIGHTS as $right => $label}
 					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="rights[{$key}][2]" value="2"{if ($right.rights & 2)} checked{/if}>
+						<INPUT type="checkbox" name="rights[{$userid}][{$right}]" value="{$right}"{if ($userrights.rights & $right)} checked{/if}>
 					</TD>
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="rights[{$key}][4]" value="4"{if ($right.rights & 4)} checked{/if}>
-					</TD>
-					<TD class="text-center nobr">
-						<INPUT type="checkbox" name="rights[{$key}][8]" value="8"{if ($right.rights & 8)} checked{/if}>
-					</TD>
-					<TD class="text-center">
-						<INPUT type="checkbox" name="rights[{$key}][16]" value="16"{if ($right.rights & 16)} checked{/if}>
-					</TD>
+					{/foreach}
 				</TR>
 				{/foreach}
 				<TR class="highlight {cycle}">
 					<TD class="nobr text-right">
 						{trans("Check All")}
 					</TD>
+					{foreach $_DOCRIGHTS as $right => $label}
 					<TD class="text-center">
-						<INPUT TYPE="checkbox" NAME="allbox[1]" data-value="1">
+						<INPUT TYPE="checkbox" NAME="allbox[{$right}]" data-value="{$right}">
 					</TD>
-					<TD class="text-center">
-						<INPUT TYPE="checkbox" NAME="allbox[2]" data-value="2">
-					</TD>
-					<TD class="text-center">
-						<INPUT TYPE="checkbox" NAME="allbox[4]" data-value="4">
-					</TD>
-					<TD class="text-center">
-						<INPUT TYPE="checkbox" NAME="allbox[8]" data-value="8">
-					</TD>
-					<TD class="text-center">
-						<INPUT TYPE="checkbox" NAME="allbox[16]" data-value="16">
-					</TD>
+					{/foreach}
 				</TR>
 				</TBODY>
 		</TABLE>

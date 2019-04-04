@@ -61,7 +61,7 @@
 			{/if}
 
 			{foreach $documents as $doc}
-			<div class="lms-ui-tab-table-row{if $doc.closed} blend{/if}">
+			<div class="lms-ui-tab-table-row{if $doc.closed} blend{/if}{if $doc.archived} lms-ui-document-archived{/if}">
 
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
@@ -100,15 +100,19 @@
 							tip="Document send"}
 					{/if}
 					{assign var=type value=$doc.type}
-						{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
-					{if ! $doc.closed && ($docrights.$type.rights & 4)}
+					{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
+					{if ! $doc.closed && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM)}
 						{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
 					{/if}
-					{if ($docrights.$type.rights & 16)}
+					{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
+						{button type="link" icon="archive" onclick="return confirmLink(this, '{trans("Are you sure, you want to archive that document?")}')"
+							href="?m=documentedit&id={$doc.docid}&action=archive" tip="Archive"}
+					{/if}
+					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_DELETE)}
 						{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')"
 							href="?m=documentdel&id={$doc.docid}" tip="Remove document"}
 					{/if}
-					{if ($docrights.$type.rights & 8)}
+					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
 						{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
 					{/if}
 					{$docattach = $doc.attachments[0]}
@@ -146,7 +150,8 @@
 {if !empty($documents) && count($documents)}
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button lms-ui-button-mail" onclick="return confirm('{trans("Are you sure, you want to send documents to customer?")}')">
+				<button type="button" class="lms-ui-button lms-ui-button-mail"
+						onclick="if (confirm('{trans("Are you sure, you want to send documents to customer?")}')) send_documents();">
 					<i></i> {trans("Send documents")}
 				</button>
 				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_docs();">
@@ -154,6 +159,9 @@
 				</button>
 				<button type="button" class="lms-ui-button lms-ui-button-confirm" onclick="javascript:mark_docs();">
 					<i></i> {trans("Confirm")}
+				</button>
+				<button type="button" class="lms-ui-button lms-ui-button-archive" onclick="javascript:archive_docs();">
+					<i></i> {trans("Archive")}
 				</button>
 				<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delete_docs();">
 					<i></i> {trans("Delete")}

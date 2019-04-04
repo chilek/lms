@@ -507,6 +507,7 @@ CREATE TABLE documents (
 	post_address_id int(11),
 	template varchar(255) DEFAULT NULL,
 	commitflags tinyint(1) NOT NULL DEFAULT 0,
+	archived tinyint(1) NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -3472,4 +3473,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019040300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019040400');

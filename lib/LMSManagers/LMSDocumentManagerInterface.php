@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -41,6 +41,8 @@ interface LMSDocumentManagerInterface
     public function DocumentExists($properties);
 
 	public function CommitDocuments(array $ids);
+
+	public function ArchiveDocuments(array $ids);
 
 	public function UpdateDocumentPostAddress($docid, $customerid);
 

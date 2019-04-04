@@ -4276,4 +4276,10 @@ $_LANG['Are you sure you want to move event from $a to $b?'] = 'Jesteś pewien, 
 
 $_LANG['shorter than minute'] = 'krócej niż minutę';
 
+$_LANG['Archive'] = 'Archiwizuj';
+$_LANG['Archiving'] = 'Archiwizowanie';
+$_LANG['Archived:'] = 'Zarchiwizowany:';
+$_LANG['Select document archived state'] = 'Wybierz stan archiwizacji dokumentu';
+$_LANG['Are you sure, you want to archive that document?'] = 'Jesteś pewien, że chcesz zarchiwizować ten dokument?';
+
 ?>

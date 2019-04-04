@@ -530,6 +530,22 @@ $DOCTYPES = array(
     DOC_OTHER       =>  trans('other')
 );
 
+define('DOCRIGHT_VIEW', 1);
+define('DOCRIGHT_CREATE', 2);
+define('DOCRIGHT_CONFIRM', 4);
+define('DOCRIGHT_EDIT', 8);
+define('DOCRIGHT_DELETE', 16);
+define('DOCRIGHT_ARCHIVE', 32);
+
+$DOCRIGHTS = array(
+	DOCRIGHT_VIEW => trans('Viewing'),
+	DOCRIGHT_CREATE => trans('Creating'),
+	DOCRIGHT_CONFIRM => trans('Confirming'),
+	DOCRIGHT_EDIT => trans('Editing'),
+	DOCRIGHT_DELETE => trans('Deleting'),
+	DOCRIGHT_ARCHIVE => trans('Archiving'),
+);
+
 // Guarantee periods
 $GUARANTEEPERIODS = array(
     -1 => trans('lifetime'),
@@ -928,6 +944,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
 	$SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
+	$SMARTY->assign('_DOCRIGHTS', $DOCRIGHTS);
 	$SMARTY->assign('_PERIODS', $PERIODS);
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);

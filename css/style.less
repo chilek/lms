@@ -903,6 +903,13 @@ li.lms-ui-suggestion-item {
 	text-decoration: line-through;
 }
 
+.lms-ui-document-archived {
+	& > td:not(:last-child),
+	& .lms-ui-tab-table-column:not(.buttons) {
+		text-decoration: line-through;
+	}
+}
+
 #autosuggest { display: none; z-index: 10000; }
 
 .acl		{ list-style-type: square; }

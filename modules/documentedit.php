@@ -28,13 +28,20 @@ check_file_uploads();
 
 $userid = Auth::GetCurrentUser();
 
-if (isset($_GET['action']) && $_GET['action'] == 'confirm') {
+if (isset($_GET['action'])) {
 	if (!empty($_POST['marks']))
 		$ids = $_POST['marks'];
 	else
 		$ids = array($_GET['id']);
 
-	$LMS->CommitDocuments($ids);
+	switch ($_GET['action']) {
+		case 'confirm':
+			$LMS->CommitDocuments($ids);
+			break;
+		case 'archive':
+			$LMS->ArchiveDocuments($ids);
+			break;
+	}
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
