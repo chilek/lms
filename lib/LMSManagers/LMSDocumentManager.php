@@ -585,8 +585,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		$this->db->BeginTrans();
 
 		foreach ($docs as $docid => $doc) {
-			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?',
-				array($userid, $docid));
+			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1,
+ 				adate = ?, auserid = ? WHERE id=?',
+				array($userid, 0, null, $docid));
 
 			$args = array(
 				'reference' => $doc['reference'],

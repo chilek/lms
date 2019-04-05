@@ -48,8 +48,10 @@ if (isset($_GET['action'])) {
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
-$document = $DB->GetRow('SELECT documents.id AS id, closed, archived, type, number, numberplans.template,
-	cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
+$document = $DB->GetRow('SELECT documents.id AS id, closed,
+		archived, adate, auserid,
+		type, number, numberplans.template,
+		cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
 	FROM documents
 	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
@@ -189,13 +191,16 @@ if(isset($_POST['document']))
 			'customerid' => $document['customerid'],
 		));
 
-		$DB->Execute('UPDATE documents SET type=?, closed=?, archived = ?, sdate=?, cuserid=?, number=?, numberplanid=?, fullnumber=?
+		$DB->Execute('UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?,
+			archived = ?, adate = ?, auserid = ?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
 				array(	$documentedit['type'],
 					$documentedit['closed'],
-					$documentedit['archived'],
 					$documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
 					$documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
+					$documentedit['archived'],
+					$documentedit['archived'] ? ($document['archived'] ? $document['adate'] : time()) : 0,
+					$documentedit['archived'] ? ($document['archived'] ? $document['auserid'] : $userid) : null,
 					$documentedit['number'],
 					empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
 					$fullnumber,
