@@ -162,7 +162,7 @@
 			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
-	<TR>
+	<TR{if !$document.closed} style="display: none;"{/if}>
 		<TD>
 			<IMG src="img/db.gif" ALT="">
 		</TD>
@@ -182,8 +182,8 @@
     </TBODY>
 </TABLE>
 </FORM></P>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
+
 	$(function() {
 		$('form[name="documentedit"] [name="document[title]"]').focus();
 
@@ -195,6 +195,6 @@
 			$('#archived').closest('tr').toggle($(this).prop('checked'));
 		});
 	});
-//-->
+
 </SCRIPT>
 {/block}
