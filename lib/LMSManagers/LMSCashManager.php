@@ -119,7 +119,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				if (preg_match($regexp, $theline, $matches))
 					$id = $matches[1];
 			} else
-				$id = isset($matches[$pattern['pid']]) ? intval($matches[$pattern['pid']]) : NULL;
+				$id = isset($matches[$pattern['pid']]) ? intval(preg_replace('/\s+/', '', $matches[$pattern['pid']])) : NULL;
 
 			// seek invoice number
 			if (!$id && !empty($pattern['invoice_regexp'])) {
