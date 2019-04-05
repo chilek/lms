@@ -508,6 +508,8 @@ CREATE TABLE documents (
 	template varchar(255) DEFAULT NULL,
 	commitflags tinyint(1) NOT NULL DEFAULT 0,
 	archived tinyint(1) NOT NULL DEFAULT 0,
+	auserid int(11) DEFAULT NULL,
+	adate int(11) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -524,6 +526,8 @@ CREATE TABLE documents (
 	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_cuserid_fkey
 	FOREIGN KEY (cuserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_auserid_fkey
+	FOREIGN KEY (auserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_numberplanid_fkey
 	FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_divisionid_fkey
@@ -3473,4 +3477,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019040400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019040500');

@@ -37,13 +37,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return NULL;
 
         if ($list = $this->db->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate,
-			c.description, n.template, d.closed, d.archived, d.cdate, u.name AS username, d.sdate, u2.name AS cusername,
-			d.type AS doctype, d.template AS doctemplate, reference
+				c.description, n.template, d.closed,
+				d.archived, d.adate, u3.name AS ausername
+				d.cdate, u.name AS username, d.sdate, u2.name AS cusername,
+				d.type AS doctype, d.template AS doctemplate, reference
 			FROM documentcontents c
 			JOIN documents d ON (c.docid = d.id)
-			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_VIEW . ') > 0
 			JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
+			LEFT JOIN vusers u3 ON u3.id = d.auserid
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 			WHERE d.customerid = ?
 			ORDER BY cdate', array(Auth::GetCurrentUser(), $customerid))) {
@@ -74,10 +77,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 	 *		customer - document customer (default: null = any): single integer value
 	 * 		numberplan - document numbering plan (default: null = any): single integer value
 	 * 		usertype - document user type (default: creator): supported values:
-	 * 			creator, authorising,
+	 * 			creator, authorising, archiving
 	 * 		userid - document user (default: 0 = any): array() or single integer value
 	 *		periodtype - document selection period type (default: creationdate)
-	 * 			supported values: creationdate, confirmationdate, fromdate, todate
+	 * 			supported values: creationdate, confirmationdate, archivizationdate, fromdate, todate
 	 * 		from - document selection period start (default: 0 = any value): single integer value
 	 * 			int unix timestamp format,
 	 * 		to - document selection period end (default: 0 = any value): singe integer value
@@ -153,6 +156,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			case 'authorising':
 				$userfield = 'd.cuserid';
 				break;
+			case 'archivizator':
+				$userfield = 'd.auserid';
+				break;
 			default:
 				$userfield = 'd.userid';
 		}
@@ -163,6 +169,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				break;
 			case 'confirmationdate':
 				$datefield = 'd.sdate';
+				break;
+			case 'archivizationdate':
+				$datefield = 'd.adate';
 				break;
 			case 'fromdate':
 				$datefield = 'documentcontents.fromdate';
@@ -211,13 +220,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
 		$list = $this->db->GetAll('SELECT documentcontents.docid, d.number, d.type, title, d.cdate,
 				u.name AS username, u.lastname, fromdate, todate, description, 
-				numberplans.template, d.closed, d.archived, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
+				numberplans.template, d.closed,
+				d.archived, d.adate, d.auserid, u3.name AS ausername,
+				d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername,
 				u2.lastname AS clastname, d.reference, i.senddocuments
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
 			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
 			JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
+			LEFT JOIN vusers u3 ON u3.id = d.auserid
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
 				SELECT DISTINCT c.id AS customerid, 1 AS senddocuments FROM customers c
@@ -612,7 +624,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
 		$this->db->BeginTrans();
 
-		$this->db->Execute('UPDATE documents SET archived = 1 WHERE id IN (' . implode(',', $docs) . ')');
+		$this->db->Execute('UPDATE documents SET archived = 1, adate = ?NOW?, auserid = ?
+			WHERE id IN (' . implode(',', $docs) . ')',
+			array(Auth::GetCurrentUser()));
 
 		$this->db->CommitTrans();
 	}

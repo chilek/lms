@@ -125,6 +125,7 @@
 					<SELECT name="usertype" onChange="javascript:applyFilter();">
 						<option value="creator"{if empty($filter.usertype) || $filter.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
 						<option value="authorising"{if $filter.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
+						<option value="archivizator"{if empty($filter.usertype) || $filter.usertype == 'archivizator'} selected{/if}>{trans("archiwizator")}</option>
 					</SELECT>
 
 					<input type="hidden" name="u[]" value="0">
@@ -139,17 +140,22 @@
 					<SELECT name="periodtype" onChange="javascript:applyFilter();">
 						<OPTION value="creationdate"{if empty($filter.periodtype) || $filter.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
 						<OPTION value="confirmationdate"{if $filter.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
+						<OPTION value="archivizationdate"{if $filter.periodtype == 'archivizationdate'} selected{/if}>{trans("archivization date")}</OPTION>
 						<OPTION value="fromdate"{if $filter.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
 						<OPTION value="todate"{if $filter.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
 					</SELECT>
 
 					<span class="nobr">
                         {trans("from")}
-                        <INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        <INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}"
+								onChange="javascript:applyFilter();"
+								{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                     </span>
                     <span class="nobr">
 					    {trans("to")}
-                        <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}"
+								onChange="javascript:applyFilter();"
+								{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                     </span>
 
 					{if !empty($numberplans) && count($numberplans)}
