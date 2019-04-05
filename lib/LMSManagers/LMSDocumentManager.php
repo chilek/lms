@@ -43,7 +43,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				d.type AS doctype, d.template AS doctemplate, reference
 			FROM documentcontents c
 			JOIN documents d ON (c.docid = d.id)
-			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_VIEW . ') > 0
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND r.rights & ' . DOCRIGHT_VIEW . ' > 0)
 			JOIN vusers u ON u.id = d.userid
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN vusers u3 ON u3.id = d.auserid
