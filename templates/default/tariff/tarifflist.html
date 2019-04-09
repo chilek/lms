@@ -101,7 +101,9 @@
 				{/if}
 				{if !empty($tags) && count($tags)}
 					{trans("Tags:")}
-					<SELECT size="5" name="tg[]" class="lms-ui-multiselect lms-ui-multiselect-filter" onchange="document.choosefilter.submit();" {tip text="Select tariff tags"} multiple data-default-value="{trans("- all -")}">
+					<SELECT size="5" name="tg[]" class="lms-ui-multiselect lms-ui-multiselect-filter"
+							onchange="document.choosefilter.submit();" {tip text="Select tariff tags"}
+							multiple data-shorten-to-default-value="false" data-default-value="{trans("- all -")}">
 						{foreach $tags as $tag}
 						<OPTION value="{$tag.id}"{if !empty($listdata.tags) && in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
 						{/foreach}
