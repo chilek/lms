@@ -1055,6 +1055,70 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
+	public function GetFinancialDocument($doc, $SMARTY) {
+		if ($doc['doctype'] == DOC_DNOTE) {
+			$type = ConfigHelper::getConfig('notes.type', '');
+			if ($type == 'pdf')
+				$document = new LMSTcpdfDebitNote(trans('Notes'));
+			else
+				$document = new LMSHtmlDebitNote($SMARTY);
+
+			$filename = $doc['dnote_filename'];
+
+			$data = $this->GetNoteContent($doc['id']);
+		} else {
+			$type = ConfigHelper::getConfig('invoices.type', '');
+			if ($type == 'pdf') {
+				$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+				$pdf_type = ucwords($pdf_type);
+				$classname = 'LMS' . $pdf_type . 'Invoice';
+				$document = new $classname(trans('Invoices'));
+			} else
+				$document = new LMSHtmlInvoice($SMARTY);
+
+			$filename = $doc['invoice_filename'];
+
+			$data = $this->GetInvoiceContent($doc['id']);
+		}
+
+		if ($type == 'pdf')
+			$fext = 'pdf';
+		else
+			$fext = 'html';
+
+		$document_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+		$document_number = docnumber(array(
+			'number' => $doc['number'],
+			'template' => $document_number,
+			'cdate' => $doc['cdate'] + date('Z'),
+			'customerid' => $doc['customerid'],
+		));
+
+		$filename = preg_replace('/%docid/', $doc['id'], $filename);
+		$filename = str_replace('%number', $document_number, $filename);
+		$filename = preg_replace('/[^[:alnum:]_\.]/i', '_', $filename);
+
+		if (!isset($doc['which']) || !count($doc['which']))
+			$which = array(trans('ORIGINAL'));
+		else
+			$which = $doc['which'];
+
+		$idx = 0;
+		foreach ($which as $type) {
+			$data['type'] = $type;
+			$document->Draw($data);
+			$idx++;
+			if ($idx < count($which))
+				$document->NewPage();
+		}
+
+		return array(
+			'filename' => $filename . '.' . $fext,
+			'data' => $document->WriteToString(),
+			'document' => $data,
+		);
+	}
+
 	public function GetInvoiceList(array $params) {
 		extract($params);
 		foreach (array('search', 'cat', 'group', 'numberplan', 'exclude', 'hideclosed', 'page') as $var)
