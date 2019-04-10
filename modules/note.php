@@ -24,8 +24,10 @@
  *  $Id$
  */
 
-use setasign\Fpdi\Tcpdf\Fpdi;
-use setasign\Fpdi\PdfParser\StreamReader;
+/*use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;*/
+
+include(LIB_DIR . DIRECTORY_SEPARATOR . 'FPDI' . DIRECTORY_SEPARATOR . 'VarStream.php');
 
 function try_generate_archive_notes($ids) {
 	global $LMS, $note_type, $document, $classname, $dontpublish;
@@ -45,7 +47,8 @@ function try_generate_archive_notes($ids) {
 		header('Pragma: public');
 
 		if ($note_type == 'pdf') {
-			$pdf = new Fpdi();
+			$pdf = new FPDI();
+//			$pdf = new Fpdi();
 			$pdf->setPrintHeader(false);
 			$pdf->setPrintFooter(false);
 		}
@@ -73,14 +76,20 @@ function try_generate_archive_notes($ids) {
 			}
 
 			if ($note_type == 'pdf') {
-				$pageCount = $pdf->setSourceFile(StreamReader::createByString($file['data']));
+				$pageCount = $pdf->setSourceFile(VarStream::createReference($file['data']));
+				//$pageCount = $pdf->setSourceFile(StreamReader::createByString($file['data']));
 				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
 					// import a page
 					$templateId = $pdf->importPage($pageNo);
 					// get the size of the imported page
 					$size = $pdf->getTemplateSize($templateId);
 
-					$pdf->AddPage($size['orientation'], $size);
+					// create a page (landscape or portrait depending on the imported page size)
+					if ($size['w'] > $size['h'])
+						$pdf->AddPage('L', array($size['w'], $size['h']));
+					else
+						$pdf->AddPage('P', array($size['w'], $size['h']));
+					//$pdf->AddPage($size['orientation'], $size);
 
 					// use the imported page
 					$pdf->useTemplate($templateId);

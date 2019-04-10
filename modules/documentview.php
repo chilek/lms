@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-use setasign\Fpdi\Tcpdf\Fpdi;
-use setasign\Fpdi\PdfParser\StreamReader;
+/*use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;*/
 
 if (!empty($_POST['marks'])) {
 	$marks = array();
@@ -70,7 +70,8 @@ if (!empty($_POST['marks'])) {
 			header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename='.$list[0]['filename']);
 			header('Pragma: public');
 			if ($pdf) {
-				$pdf = new Fpdi();
+				$pdf = new FPDI();
+//				$pdf = new Fpdi();
 				$pdf->setPrintHeader(false);
 				$pdf->setPrintFooter(false);
 			}
@@ -108,7 +109,12 @@ if (!empty($_POST['marks'])) {
 							// get the size of the imported page
 							$size = $pdf->getTemplateSize($templateId);
 
-							$pdf->AddPage($size['orientation'], $size);
+							// create a page (landscape or portrait depending on the imported page size)
+							if ($size['w'] > $size['h'])
+								$pdf->AddPage('L', array($size['w'], $size['h']));
+							else
+								$pdf->AddPage('P', array($size['w'], $size['h']));
+							//$pdf->AddPage($size['orientation'], $size);
 
 							// use the imported page
 							$pdf->useTemplate($templateId);
