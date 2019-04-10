@@ -35,9 +35,9 @@ elseif (isset($_GET['marks']) && isset($_POST['marks'])) {
 	else
 		$ids = $DB->GetCol("SELECT docid FROM cash c
 			JOIN documents d ON d.id = c.docid
-			WHERE d.type IN (?, ?, ?)
+			WHERE d.type IN (?, ?, ?, ?)
 				AND c.id IN (" . implode(',', Utils::filterIntegers(array_values($_POST['marks']))) . ")",
-			array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+			array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
 }
 $ids = Utils::filterIntegers($ids);
 if (empty($ids))
