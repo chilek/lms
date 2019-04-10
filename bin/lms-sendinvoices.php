@@ -395,7 +395,7 @@ if (!empty($docs)) {
 			$result = $LMS->ArchiveFinancialDocument($doc['id']);
 			if (!$quiet && isset($result['ok']))
 				if ($result['ok'])
-					echo "Document " . $result['filename'] . " archived." . PHP_EOL;
+					echo "Document ID: " . $doc['id'] . " archived with name " . $result['filename'] . "." . PHP_EOL;
 				else
 					echo $result['error'] . PHP_EOL;
 		}
