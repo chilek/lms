@@ -131,18 +131,18 @@ window.open('?m=note&amp;id={$note}');
 		</TD>
 		<TD class="text-right nobr">
 			{if !$note.closed}
-				{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A onClick="{if $note.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if};return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" HREF="?m=notedel&id={$note.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-				<A HREF="?m=noteedit&id={$note.id}&action=edit"{if $note.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+				{if !$note.archived && (!$note.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+					<A onClick="{if $note.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if};return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" HREF="?m=notedel&id={$note.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+					<A HREF="?m=noteedit&id={$note.id}&action=edit"{if $note.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 				{/if}
 			{/if}
 
 			{if !$note.cancelled}
-			{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}
-			<a onClick="{if $note.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel debit note \'$a\'?{/t}')" href="?m=notecancel&id={$note.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
-			{/if}
+				{if !$note.archived && (!$note.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+					<a onClick="{if $note.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel debit note \'$a\'?{/t}')" href="?m=notecancel&id={$note.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
+				{/if}
 			{else}
-			<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled debit note \'$a\'?{/t}')" href="?m=notecancel&id={$note.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
+				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled debit note \'$a\'?{/t}')" href="?m=notecancel&id={$note.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
 			{/if}
 
 			{if !$note.cancelled && !$note.archived}
@@ -150,7 +150,7 @@ window.open('?m=note&amp;id={$note}');
 			{/if}
 
 			{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}
-			<A HREF="?m=note&id={$note.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
+				<A HREF="?m=note&id={$note.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
 			{/if}
 			<A HREF="?m=note&id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
 			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if} class="lms-ui-multi-check">

@@ -202,7 +202,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				{/if}
 			{/if}
 			{if !$invoice.cancelled}
-				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					<a onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
 				{/if}
 			{elseif $invoice.cancelled}
