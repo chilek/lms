@@ -31,6 +31,12 @@ if (isset($_GET['id']) && $action == 'edit') {
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkPrivilege('published_document_modification'))
 		return;
 
+	if ($LMS->isDocumentReferenced($_GET['id']))
+		return;
+
+	if ($LMS->isArchiveDocument($_GET['id']))
+		return;
+
 	$cnote = $LMS->GetInvoiceContent($_GET['id']);
 
 	if (!empty($cnote['cancelled']))

@@ -32,7 +32,8 @@ if(isset($_GET['id']) && $action=='edit')
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
-	$note = $LMS->GetNoteContent($_GET['id']);
+	if ($LMS->isArchiveDocument($_GET['id']))
+		return;
 
     $SESSION->remove('notecontents');
     $SESSION->remove('notecustomer');

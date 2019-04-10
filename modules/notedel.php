@@ -30,6 +30,9 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
+	if ($LMS->isArchiveDocument($id))
+		return;
+
 	$LMS->DebitNoteDelete($id);
 }
 

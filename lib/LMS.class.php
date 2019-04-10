@@ -2687,6 +2687,11 @@ class LMS
 		return $manager->DeleteDocumentAddresses($docid);
 	}
 
+	public function isArchiveDocument($id) {
+		$manager = $this->getDocumentManager();
+		return $manager->isArchiveDocument($id);
+	}
+
 	public function AddArchiveDocument($docid, $file) {
 		$manager = $this->getDocumentManager();
 		return $manager->AddArchiveDocument($docid, $file);

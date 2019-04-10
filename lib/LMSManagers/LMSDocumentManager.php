@@ -657,6 +657,10 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($address_id));
 	}
 
+	public function isArchiveDocument($id) {
+		return $this->db->GetOne('SELECT archived FROM documents WHERE id  = ?', array($id));
+	}
+
 	public function AddArchiveDocument($docid, $file) {
 		$error = null;
 		$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);

@@ -30,7 +30,10 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification'))
 		return;
 
-	if ($LMS->isDocumentReferenced($_GET['id']))
+	if ($LMS->isDocumentReferenced($id))
+		return;
+
+	if ($LMS->isArchiveDocument($id))
 		return;
 
 	$hook_data = $LMS->executeHook('invoicedel_before_delete', array(

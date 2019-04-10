@@ -58,6 +58,13 @@ if($id && $_GET['is_sure'] == '1') {
 	} else {
 		if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
 			return;
+
+		if ($LMS->isDocumentReferenced($id))
+			return;
+
+		if ($LMS->isArchiveDocument($id))
+			return;
+
 		$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
 		$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
 		$document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
