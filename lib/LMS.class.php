@@ -2823,7 +2823,7 @@ class LMS
 
 	public function PublishDocuments($ids) {
 		$manager = $this->getFinanceManager();
-		return $manager->PublishedDocuments($ids);
+		return $manager->PublishDocuments($ids);
 	}
 
 	public function isDocumentPublished($id)
