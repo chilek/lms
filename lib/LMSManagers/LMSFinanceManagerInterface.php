@@ -118,6 +118,8 @@ interface LMSFinanceManagerInterface
     
     public function CalcAt($period, $date);
 
+	public function PublishDocuments($ids);
+
 	public function isDocumentPublished($id);
 
 	public function isDocumentReferenced($id);

@@ -805,6 +805,6 @@ if ($jpk) {
 	$document->WriteToBrowser($attachment_name);
 
 if (!$dontpublish && isset($ids) && !empty($ids))
-	$DB->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
+	$LMS->PublishDocuments($ids);
 
 ?>

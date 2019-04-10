@@ -2821,6 +2821,11 @@ class LMS
         return $manager->CalcAt($period, $date);
     }
 
+	public function PublishDocuments($ids) {
+		$manager = $this->getFinanceManager();
+		return $manager->PublishedDocuments($ids);
+	}
+
 	public function isDocumentPublished($id)
 	{
 		$manager = $this->getFinanceManager();
@@ -4003,7 +4008,7 @@ class LMS
 					}
 
 					if ($status == MSG_SENT) {
-						$this->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($doc['id']));
+						$this->PublishDocuments($doc['id']);
 						$published = true;
 					}
 

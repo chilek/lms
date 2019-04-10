@@ -2764,6 +2764,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
     }
 
+	public function PublishDocuments($ids) {
+		if (!is_array($ids))
+			$ids = array($ids);
+		$this->db->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
+	}
+
 	public function isDocumentPublished($id) {
 		return $this->db->GetOne('SELECT published FROM documents WHERE id = ?', array($id)) == 1;
 	}
