@@ -1036,6 +1036,11 @@ class LMS
         return $manager->InvoiceContentDelete($invoiceid, $itemid);
     }
 
+	public function GetFinancialDocumentArchiveStats($ids) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetFinancialDocumentArchiveStats($ids);
+	}
+
 	public function ArchiveFinancialDocument($id) {
 		$manager = $this->getFinanceManager();
 		return $manager->ArchiveFinancialDocument($id);

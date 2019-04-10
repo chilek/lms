@@ -232,7 +232,10 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice {
 			$this->backend->setSignature($cert, $key, 'lms-debitnote', '', 1, $info);
 			$this->backend->setSignatureAppearance(13, 10, 50, 20);
 		}
-		$this->backend->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
+
+		if (!$this->data['disable_protection'] && $this->data['protection_password'])
+			$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'),
+				'', $this->data['protection_password'], 1);
 	}
 }
 

@@ -1055,7 +1055,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
-	public function ArchiveFinancialDocument($id) {
+	public function GetFinancialDocumentArchiveStats($ids) {
+		$archive_stats = $this->db->GetRow('SELECT SUM(CASE WHEN d.archived = 1 THEN 1 ELSE 0 END) AS archive,
+			SUM(CASE WHEN d.archived = 0 THEN 1 ELSE 0 END) AS current,
+			SUM(CASE WHEN a.contenttype = ? THEN 1 ELSE 0 END) AS html,
+			SUM(CASE WHEN a.contenttype = ? THEN 1 ELSE 0 END) AS pdf
+		FROM documents d
+		LEFT JOIN documentattachments a ON a.docid = d.id AND a.main = ?
+		WHERE d.id IN (' . implode(',', $ids) . ')',
+			array('text/html', 'application/pdf', 1));
+
+		if ($archive_stats['html'] > 0 && !$archive_stats['pdf'])
+			$archive_stats['rtype'] = 'html';
+		elseif ($archive_stats['pdf'] > 0 && !$archive_stats['html'])
+			$archive_stats['rtype'] = 'pdf';
+
+		return $archive_stats;
+	}
+    public function ArchiveFinancialDocument($id) {
 		$doc = $this->db->GetRow('SELECT d.id, d.number, d.cdate, d.customerid, d.type AS doctype, n.template
 			FROM documents d
 			LEFT JOIN numberplans n ON n.id = d.numberplanid 
@@ -1918,7 +1935,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
             }
 
-            return $result;
+			$result['disable_protection'] = ConfigHelper::checkConfig('notes.disable_protection');
+			$result['protection_password'] = ConfigHelper::getConfig('notes.protection_password');
+
+			return $result;
         } else
             return FALSE;
     }

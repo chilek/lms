@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;
+
 function invoice_body($document, $invoice) {
 	$document->Draw($invoice);
 	if (!isset($invoice['last']))
@@ -49,6 +52,87 @@ function parse_address($address) {
 	}
 
 	return $m;
+}
+
+function try_generate_archive_invoices($ids) {
+	global $LMS, $invoice_type, $which, $document, $classname, $dontpublish;
+
+	$SMARTY = LMSSmarty::getInstance();
+
+	$archive_stats = $LMS->GetFinancialDocumentArchiveStats($ids);
+
+	if (($invoice_type == 'pdf' && ($archive_stats['html'] > 0 || $archive_stats['rtype'] == 'html'))
+		|| ($invoice_type == 'html' && ($archive_stats['pdf'] > 0 || $archive_stats['rtype'] == 'pdf')))
+		die('Currently you can only print many documents of type text/html or application/pdf!');
+
+	if (!empty($archive_stats) && $archive_stats['archive'] > 0 && !in_array(trans('DUPLICATE'), $which)) {
+		$attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
+		header('Content-Type: application/pdf');
+		header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
+		header('Pragma: public');
+
+		if ($invoice_type == 'pdf') {
+			$pdf = new Fpdi();
+			$pdf->setPrintHeader(false);
+			$pdf->setPrintFooter(false);
+		}
+
+		foreach ($ids as $idx => $invoiceid) {
+			if ($LMS->isArchiveDocument($invoiceid)) {
+				$file = $LMS->GetArchiveDocument($invoiceid);
+			} else {
+				$count = count($which);
+				$i = 0;
+
+				if (!$document)
+					if ($invoice_type == 'pdf')
+						$document = new $classname(trans('Invoices'));
+					else
+						$document = new LMSHtmlInvoice($SMARTY);
+
+				$invoice = $LMS->GetInvoiceContent($invoiceid);
+				$invoice['dontpublish'] = $dontpublish;
+				foreach ($which as $type) {
+					$i++;
+					if ($i == $count)
+						$invoice['last'] = true;
+					$invoice['type'] = $type;
+					invoice_body($document, $invoice);
+				}
+				$file['data'] = $document->WriteToString();
+
+				unset($document);
+				$document = null;
+			}
+
+			if ($invoice_type == 'pdf') {
+				$pageCount = $pdf->setSourceFile(StreamReader::createByString($file['data']));
+				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+					// import a page
+					$templateId = $pdf->importPage($pageNo);
+					// get the size of the imported page
+					$size = $pdf->getTemplateSize($templateId);
+
+					$pdf->AddPage($size['orientation'], $size);
+
+					// use the imported page
+					$pdf->useTemplate($templateId);
+				}
+			} else {
+				echo $file['data'];
+				if ($idx < count($ids) - 1)
+					echo '<div style="page-break-after: always;">&nbsp;</div>';
+			}
+		}
+
+		if ($invoice_type == 'pdf')
+			$pdf->Output();
+
+		if (!$dontpublish && !empty($ids))
+			$LMS->PublishDocuments($ids);
+
+		die;
+	}
 }
 
 switch ( intval($_GET['customertype']) ) {
@@ -110,11 +194,15 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 			array(DOC_INVOICE, DOC_CNOTE));
 	}
 
+	$which = array();
+
 	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
 	if (!empty($_GET['copy'])) $which[] = trans('COPY');
 	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if (!count($which)) $which[] = trans('ORIGINAL');
+
+	try_generate_archive_invoices($ids);
 
 	$count = count($ids) * count($which);
 	$i = 0;
@@ -173,11 +261,37 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		die;
 	}
 
+	$which = array();
+
 	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
 	if (!empty($_GET['copy'])) $which[] = trans('COPY');
 	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
 	if (!count($which)) $which[] = trans('ORIGINAL');
+
+	try_generate_archive_invoices($ids);
+
+	$count = count($ids) * count($which);
+	$i = 0;
+
+	foreach ($ids as $idx => $invoiceid) {
+		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		if (count($ids) == 1)
+			$docnumber = docnumber(array(
+				'number' => $invoice['number'],
+				'template' => $invoice['template'],
+				'cdate' => $invoice['cdate'],
+				'customerid' => $invoice['customerid'],
+			));
+
+		$invoice['dontpublish'] = $dontpublish;
+		foreach ($which as $type) {
+			$i++;
+			if ($i == $count) $invoice['last'] = TRUE;
+			$invoice['type'] = $type;
+			invoice_body($document, $invoice);
+		}
+	}
 
 	$count = count($ids) * count($which);
 	$i = 0;
@@ -744,17 +858,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
 
-	if ($invoice['archived']) {
-		$invoice = $LMS->GetArchiveDocument($_GET['id']);
-		if ($invoice) {
-			header('Content-Type: ' . $invoice['content-type']);
-			header('Content-Disposition: inline; filename=' . $invoice['filename']);
-			echo $invoice['data'];
-		}
-		$SESSION->close();
-		die;
-	}
-
 	$which = array();
 
 	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
@@ -769,6 +872,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 			elseif (trim($t) == 'duplicate') $which[] = trans('DUPLICATE');
 
 		if (!count($which)) $which[] = trans('ORIGINAL');
+	}
+
+	if ($invoice['archived'] && !in_array(trans('DUPLICATE'), $which)) {
+		$invoice = $LMS->GetArchiveDocument($_GET['id']);
+		if ($invoice) {
+			header('Content-Type: ' . $invoice['content-type']);
+			header('Content-Disposition: inline; filename=' . $invoice['filename']);
+			echo $invoice['data'];
+		}
+		$SESSION->close();
+		die;
 	}
 
 	$count = count($which);

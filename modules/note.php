@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,84 @@
  *
  *  $Id$
  */
+
+use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;
+
+function try_generate_archive_notes($ids) {
+	global $LMS, $note_type, $document, $classname, $dontpublish;
+
+	$SMARTY = LMSSmarty::getInstance();
+
+	$archive_stats = $LMS->GetFinancialDocumentArchiveStats($ids);
+
+	if (($note_type == 'pdf' && ($archive_stats['html'] > 0 || $archive_stats['rtype'] == 'html'))
+		|| ($note_type == 'html' && ($archive_stats['pdf'] > 0 || $archive_stats['rtype'] == 'pdf')))
+		die('Currently you can only print many documents of type text/html or application/pdf!');
+
+	if (!empty($archive_stats) && $archive_stats['archive'] > 0) {
+		$attachment_name = 'invoices.' . ($note_type == 'pdf' ? 'pdf' : 'html');
+		header('Content-Type: application/pdf');
+		header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
+		header('Pragma: public');
+
+		if ($note_type == 'pdf') {
+			$pdf = new Fpdi();
+			$pdf->setPrintHeader(false);
+			$pdf->setPrintFooter(false);
+		}
+
+		foreach ($ids as $idx => $noteid) {
+			if ($LMS->isArchiveDocument($noteid)) {
+				$file = $LMS->GetArchiveDocument($noteid);
+			} else {
+				if (!$document)
+					if ($note_type == 'pdf')
+						$document = new $classname(trans('Notes'));
+					else
+						$document = new LMSHtmlDebitNote($SMARTY);
+
+				$note = $LMS->GetNoteContent($noteid);
+				$note['dontpublish'] = $dontpublish;
+				$note['division_header'] = str_replace('%bankaccount',
+					format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
+				$document->Draw($note);
+
+				$file['data'] = $document->WriteToString();
+
+				unset($document);
+				$document = null;
+			}
+
+			if ($note_type == 'pdf') {
+				$pageCount = $pdf->setSourceFile(StreamReader::createByString($file['data']));
+				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+					// import a page
+					$templateId = $pdf->importPage($pageNo);
+					// get the size of the imported page
+					$size = $pdf->getTemplateSize($templateId);
+
+					$pdf->AddPage($size['orientation'], $size);
+
+					// use the imported page
+					$pdf->useTemplate($templateId);
+				}
+			} else {
+				echo $file['data'];
+				if ($idx < count($ids) - 1)
+					echo '<div style="page-break-after: always;">&nbsp;</div>';
+			}
+		}
+
+		if ($note_type == 'pdf')
+			$pdf->Output();
+
+		if (!$dontpublish && !empty($ids))
+			$LMS->PublishDocuments($ids);
+
+		die;
+	}
+}
 
 $attachment_name = ConfigHelper::getConfig('notes.attachment_name');
 $note_type = ConfigHelper::getConfig('notes.type');
@@ -63,6 +141,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$layout['pagetitle'] = trans('Debit Notes');
 
 	sort($ids);
+
+	try_generate_archive_notes($ids);
 
 	$count = count($ids);
 	$i = 0;
@@ -106,6 +186,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		$SESSION->close();
 		die;
 	}
+
+	try_generate_archive_notes($ids);
 
 	$count = count($ids);
 	$i = 0;
@@ -162,6 +244,6 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 $document->WriteToBrowser($attachment_name);
 
 if (!$dontpublish && isset($ids) && !empty($ids))
-	$DB->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
+	$LMS->PublishDocuments($ids);
 
 ?>

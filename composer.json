@@ -75,7 +75,7 @@
         "xdan/datetimepicker": "^2",
         "alexei/sprintf.js": "^1",
         "datatables/datatables": "^1.10",
-        "setasign/fpdi-tcpdf": "^1.6",
+        "setasign/fpdi-tcpdf": "^2",
         "pear/mail": "^1.3",
         "gusapi/gusapi": "^3",
         "erusev/parsedown": "^1",

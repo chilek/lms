@@ -21,6 +21,12 @@ window.open('?m=note&amp;id={$note}');
 		document.page.submit();
 	}
 
+	function archive_dnotes() {
+		document.page.action="?m=notearchive&marks=invoice";
+		document.page.target="";
+		document.page.submit();
+	}
+
 	function prints()
 	{
 		document.page.action="?m=note&print=cached";
@@ -178,6 +184,7 @@ window.open('?m=note&amp;id={$note}');
 				<TR>
 					<TD class="text-left nobr">
 						<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
+						<a href="javascript:archive_dnotes();" OnClick="return confirm('{t}Are you sure, you want to archive selected debit notes?{/t}');">{trans("Archive debit notes")} <img src="img/db.gif" alt=""></a>
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printd.gif" ALT="" ></A>&nbsp;
 					</TD>
 					<TD class="text-right nobr">

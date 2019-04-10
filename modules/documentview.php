@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,9 @@
  *
  *  $Id$
  */
+
+use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\PdfParser\StreamReader;
 
 if (!empty($_POST['marks'])) {
 	$marks = array();
@@ -66,8 +69,11 @@ if (!empty($_POST['marks'])) {
 		if (!$html) {
 			header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename='.$list[0]['filename']);
 			header('Pragma: public');
-			if ($pdf)
-				$pdf = new FPDI();
+			if ($pdf) {
+				$pdf = new Fpdi();
+				$pdf->setPrintHeader(false);
+				$pdf->setPrintFooter(false);
+			}
 		}
 		header('Content-Type: '.$ctype);
 
@@ -102,11 +108,7 @@ if (!empty($_POST['marks'])) {
 							// get the size of the imported page
 							$size = $pdf->getTemplateSize($templateId);
 
-							// create a page (landscape or portrait depending on the imported page size)
-							if ($size['w'] > $size['h'])
-								$pdf->AddPage('L', array($size['w'], $size['h']));
-							else
-								$pdf->AddPage('P', array($size['w'], $size['h']));
+							$pdf->AddPage($size['orientation'], $size);
 
 							// use the imported page
 							$pdf->useTemplate($templateId);
