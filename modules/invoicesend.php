@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,9 +32,6 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 	set_time_limit(0);
 
 	echo '<H1>' . $layout['pagetitle'] . '</H1>';
-
-	$invoice_filetype = ConfigHelper::getConfig('invoices.type', '', true);
-	$dnote_filetype = ConfigHelper::getConfig('notes.type', '', true);
 
 	$smtp_options = array(
 		'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
@@ -83,7 +80,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 	if (empty($docids))
 		echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
 	else {
-		$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template, m.email
+		$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, a.archived, n.template, m.email
 			FROM documents d
 			LEFT JOIN customers c ON c.id = d.customerid
 			JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
@@ -102,7 +99,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 			if (empty($which)) $which[] = trans('ORIGINAL');
 
 			$currtime = time();
-			$LMS->SendInvoices($docs, 'frontend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype',
+			$LMS->SendInvoices($docs, 'frontend', compact('SMARTY',
 				'invoice_filename', 'dnote_filename', 'debug_email',
 				'mail_body', 'mail_subject', 'mail_format', 'currtime', 'sender_email', 'sender_name', 'extrafile',
 				'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',

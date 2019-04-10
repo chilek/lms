@@ -42,6 +42,12 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		document.page.submit();
 	}
 
+	function archive_invoices() {
+		document.page.action="?m=invoicearchive&marks=invoice";
+		document.page.target="";
+		document.page.submit();
+	}
+
 	function filter()
 	{
 		document.page.action="?m=invoicelist{if $proforma}&proforma=1{/if}";
@@ -173,7 +179,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					<A onclick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove pro forma invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 				{/if}
 			{/if}
-			{if !$invoice.closed}
+			{if !$invoice.closed && !$invoice.archived}
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 						<A onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
@@ -202,7 +208,10 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{elseif $invoice.cancelled}
 				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
 			{/if}
-			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type ==  $smarty.const.DOC_INVOICE_PRO}
+			{if !$invoice.cancelled && !$invoice.archived && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
+				<A HREF="?m=invoicearchive&id={$invoice.id}"><IMG src="img/db.gif" alt="{trans("Archive")}" title="{trans("Archive")}"></A>
+			{/if}
+			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
 				{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 					<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
 				{/if}
@@ -242,6 +251,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 						<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
 						{/if}
 						<A HREF="javascript:send_invoices();" OnClick="return confirm('{t}Are you sure, you want to send invoices to customers?{/t}');">{trans("Send invoices")} <IMG SRC="img/mail.gif" ALT=""></A>&nbsp;
+						<a href="javascript:archive_invoices();" OnClick="return confirm('{t}Are you sure, you want to archive selected invoices?{/t}');">{trans("Archive invoices")} <img src="img/db.gif" alt=""></a>
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/print.gif" ALT="" ></A>&nbsp;
 						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
 						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>

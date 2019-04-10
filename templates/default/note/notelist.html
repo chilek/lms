@@ -145,6 +145,10 @@ window.open('?m=note&amp;id={$note}');
 			<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled debit note \'$a\'?{/t}')" href="?m=notecancel&id={$note.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
 			{/if}
 
+			{if !$note.cancelled && !$note.archived}
+				<A HREF="?m=notearchive&id={$note.id}"><IMG src="img/db.gif" alt="{trans("Archive")}" title="{trans("Archive")}"></A>
+			{/if}
+
 			{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}
 			<A HREF="?m=note&id={$note.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="{trans("View")}" title="{trans("View")}"></A>
 			{/if}

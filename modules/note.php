@@ -127,6 +127,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } elseif ($note = $LMS->GetNoteContent($_GET['id'])) {
 	$ids = array($_GET['id']);
 
+	if ($note['archived']) {
+		$note = $LMS->GetArchiveDocument($_GET['id']);
+		if ($note) {
+			header('Content-Type: ' . $invoice['content-type']);
+			header('Content-Disposition: inline; filename=' . $note['filename']);
+			echo $note['data'];
+		}
+		$SESSION->close();
+		die;
+	}
+
 	$docnumber = $number = docnumber(array(
 		'number' => $note['number'],
 		'template' => $note['template'],

@@ -121,9 +121,12 @@
 									tip="Send invoice"}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								{if !$item.referenced}
+								{if !$item.cancelled && !$item.referenced}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
+								{/if}
+								{if !$item.cancelled && !$item.archived}
+									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
@@ -133,7 +136,7 @@
 								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
 									href="?m=invoice&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="Invoice"}
-								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{if $item.published}
 										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
 									{else}
@@ -144,9 +147,8 @@
 										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-								{if !$item.referenced}
-									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
-										tip="Revise"}
+								{if !$item.cancelled && !$item.archived}
+									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
@@ -156,7 +158,7 @@
 								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
 									href="?m=invoice&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								{if !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{if $item.published}
 										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
 									{else}
@@ -168,9 +170,12 @@
 										resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
-								{if !$item.referenced}
+								{if !$item.cancelled && !$item.referenced}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 									tip="Revise"}
+								{/if}
+								{if !$item.cancelled && !$item.archived}
+									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
@@ -180,7 +185,7 @@
 								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
 									href="?m=invoice&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="Credit note"}
-								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
+								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{if $item.published}
 										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
 									{else}
@@ -199,6 +204,9 @@
 									href="?m=receiptedit&id={$item.docid}"
 									resourceid="{$item.docid}" externa=true icon_tip="Cash receipt"}
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
+								{if !$item.cancelled && !$item.archived}
+									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
 										href="?m=note&id={$item.docid}&dontpublish=1"
@@ -231,6 +239,7 @@
 				{button icon="delete" onclick="javascript:delpos();" label="Delete"}
 				{/if}
 				{button icon="mail" class="multiinvoicesend" label="Send invoices"}
+				{button icon="archive" class="multiinvoicearchive" label="Archive"}&nbsp;
 				{trans("Print")}:
 				{button icon="print" label="invoices" onclick="javascript:print_doc('invoice')"}
 				{button icon="cash" label="cash receipt" onclick="javascript:printr();"}
@@ -383,6 +392,12 @@
 		document.addbalance.submit();
 	}
 
+	function archive_invoices() {
+		document.addbalance.action="?m=invoicearchive&marks=cash";
+		document.addbalance.target="";
+		document.addbalance.submit();
+	}
+
 	function show_list()
 	{
 		var type = document.getElementById('showlistselect').value;
@@ -467,6 +482,12 @@
 	$('.multiinvoicesend').click(function() {
 		if (confirm($t("Are you sure, you want to send invoices to customer?"))) {
 			send_invoices();
+		}
+	});
+
+	$('.multiinvoicearchive').click(function() {
+		if (confirm($t("Are you sure, you want to archive selected documents?"))) {
+			archive_invoices();
 		}
 	});
 

@@ -632,7 +632,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		$this->db->CommitTrans();
 	}
 
-
 	public function UpdateDocumentPostAddress($docid, $customerid) {
 		$post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
 		if ($post_addr)
@@ -656,6 +655,71 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		foreach ($addresses as $address_id)
 			if (!empty($address_id))
 				$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($address_id));
+	}
+
+	public function AddArchiveDocument($docid, $file) {
+		$error = null;
+		$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		$file['md5sum'] = md5($file['data']);
+		$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
+		$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
+
+		// If we have a file with specified md5sum, we assume
+		// it's here because of some error. We can replace it with
+		// the new document file
+		// why? document attachment can be shared between different documents.
+		// we should rather use the other message digest in such case!
+		if (($this->DocumentAttachmentExists($file['md5sum'])
+				|| $file_manager->FileExists($file['md5sum']))
+			&& (filesize($file['newfile']) != strlen($file['data'])
+				|| hash_file('sha256', $file['newfile']) != hash('sha256', $file['data']))) {
+			$error = trans('Specified file exists in database!');
+		}
+
+		if (empty($error)) {
+			@mkdir($file['path'], 0700);
+			$fh = fopen($file['newfile'], 'w');
+			if (!empty($fh)) {
+				fwrite($fh, $file['data']);
+				fclose($fh);
+			} else
+				$error = trans('Cannot write new archived document!');
+		}
+
+		if (empty($error)
+			&& !$this->db->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+				VALUES (?, ?, ?, ?, ?)',
+				array($docid, $file['filename'], $file['content-type'], $file['md5sum'], 1)))
+			$error = trans('Cannot create database record for archived document!');
+
+		return $error;
+	}
+
+	public function GetArchiveDocument($docid) {
+		$document = $this->db->GetRow('SELECT d.type AS doctype, filename, contenttype, md5sum
+			FROM documents d
+			JOIN documentattachments a ON a.docid = d.id
+			WHERE docid = ? AND main = ?', array($docid, 1));
+
+		$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2)
+			. DIRECTORY_SEPARATOR . $document['md5sum'];
+		if (!file_exists($filename))
+			return null;
+
+		$finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
+		if ($document['doctype'] == DOC_CNOTE)
+			$data = $finance_manager->GetNoteContent($docid);
+		else
+			$data = $finance_manager->GetInvoiceContent($docid);
+		$data['type'] = trans('ORIGINAL');
+
+		return array(
+			'filename' => $document['filename'],
+			'data' => file_get_contents($filename),
+			'document' => $data,
+			'content-type' => $document['contenttype'],
+		);
 	}
 
 	public function AddDocumentFileAttachments(array $files) {

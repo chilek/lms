@@ -197,22 +197,22 @@
 		<TD class="text-right nobr">
 			{if $balance.docid}
 				{if $balance.doctype==$smarty.const.DOC_INVOICE}
-				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
-				{/if}
-				<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/print.gif" ALT="{trans("Invoice")}"></A>
+					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+						<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+					{/if}
+					<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/print.gif" ALT="{trans("Invoice")}"></A>
 				{elseif $balance.doctype==$smarty.const.DOC_CNOTE}
-				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
-				{/if}
-				<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printn.gif" alt="{trans("Credit note")}"></A>
+					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+						<A HREF="?m=invoice&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+					{/if}
+					<A HREF="?m=invoice&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printn.gif" alt="{trans("Credit note")}"></A>
 				{elseif $balance.doctype==$smarty.const.DOC_RECEIPT}
-				<A HREF="?m=receipt&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printr.gif" alt="{trans("Cash receipt")}"></A>
+					<A HREF="?m=receipt&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printr.gif" alt="{trans("Cash receipt")}"></A>
 				{elseif $balance.doctype==$smarty.const.DOC_DNOTE}
-				{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
-				<A HREF="?m=note&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
-				{/if}
-				<A HREF="?m=note&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printd.gif" alt="{trans("Debit note")}"></A>
+					{if !$balance.published || ConfigHelper::checkPrivilege('published_document_modification')}
+						<A HREF="?m=note&id={$balance.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/view.gif" ALT="{trans("View")}"></A>
+					{/if}
+					<A HREF="?m=note&id={$balance.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balance.docid}" rel="external"><IMG SRC="img/printd.gif" alt="{trans("Debit note")}"></A>
 				{/if}
 			{/if}
 			<INPUT TYPE="checkbox" class="lms-ui-multi-check" NAME="marks[{$balance.id}]" VALUE="{$balance.id}">

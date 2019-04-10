@@ -1036,9 +1036,14 @@ class LMS
         return $manager->InvoiceContentDelete($invoiceid, $itemid);
     }
 
-	public function GetFinancialDocument($doc, $SMARTY) {
+	public function ArchiveFinancialDocument($id) {
 		$manager = $this->getFinanceManager();
-		return $manager->GetFinancialDocument($doc, $SMARTY);
+		return $manager->ArchiveFinancialDocument($id);
+	}
+
+	public function GetFinancialDocument($doc) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetFinancialDocument($doc);
 	}
 
 	public function GetInvoiceContent($invoiceid)
@@ -2682,6 +2687,16 @@ class LMS
 		return $manager->DeleteDocumentAddresses($docid);
 	}
 
+	public function AddArchiveDocument($docid, $file) {
+		$manager = $this->getDocumentManager();
+		return $manager->AddArchiveDocument($docid, $file);
+	}
+
+	public function GetArchiveDocument($docid) {
+		$manager = $this->getDocumentManager();
+		return $manager->GetArchiveDocument($docid);
+	}
+
 	public function AddDocumentFileAttachments(array $files) {
 		$manager = $this->getDocumentManager();
 		return $manager->AddDocumentFileAttachments($files);
@@ -3788,16 +3803,6 @@ class LMS
 		$day = sprintf('%02d', intval(date('d', $currtime)));
 		$year = sprintf('%04d', intval(date('Y', $currtime)));
 
-		if ($invoice_filetype == 'pdf')
-			$invoice_ftype = 'application/pdf';
-		else
-			$invoice_ftype = 'text/html';
-
-		if ($dnote_filetype == 'pdf')
-			$dnote_ftype = 'application/pdf';
-		else
-			$dnote_ftype = 'text/html';
-
 		$from = $sender_email;
 
 		if (!empty($sender_name))
@@ -3809,7 +3814,7 @@ class LMS
 			$doc['which'] = $which;
 
 			if (!$no_attachments) {
-				$document = $this->GetFinancialDocument($doc, $SMARTY);
+				$document = $this->GetFinancialDocument($doc);
 				$filename = $document['filename'];
 			}
 
@@ -3908,7 +3913,7 @@ class LMS
 
 				if (!$no_attachments) {
 					$files[] = array(
-						'content_type' => $doc['doctype'] == DOC_DNOTE ? $dnote_ftype : $invoice_ftype,
+						'content_type' => $document['content-type'],
 						'filename' => $filename,
 						'data' => $document['data'],
 					);
@@ -4005,7 +4010,7 @@ class LMS
 						if ($interval == -1)
 							$delay = mt_rand(500, 5000);
 						else
-							$dalay = intval($interval) * 1000;
+							$delay = intval($interval) * 1000;
 						usleep($delay);
 					}
 				}

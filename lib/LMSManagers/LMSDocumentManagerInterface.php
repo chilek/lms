@@ -48,6 +48,10 @@ interface LMSDocumentManagerInterface
 
 	public function DeleteDocumentAddresses($docid);
 
+	public function AddArchiveDocument($docid, $file);
+
+	public function GetArchiveDocument($docid);
+
 	public function AddDocumentFileAttachments(array $files);
 
 	public function DocumentAttachmentExists($md5sum);

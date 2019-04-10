@@ -4282,9 +4282,16 @@ $_LANG['Are you sure you want to move event from $a to $b?'] = 'Jesteś pewien, 
 $_LANG['shorter than minute'] = 'krócej niż minutę';
 
 $_LANG['Archive'] = 'Archiwizuj';
+$_LANG['Archive invoices'] = 'Archiwizuj faktury';
 $_LANG['Archiving'] = 'Archiwizowanie';
 $_LANG['Archived:'] = 'Zarchiwizowany:';
 $_LANG['Select document archived state'] = 'Wybierz stan archiwizacji dokumentu';
 $_LANG['Are you sure, you want to archive that document?'] = 'Jesteś pewien, że chcesz zarchiwizować ten dokument?';
+$_LANG['Are you sure, you want to archive selected invoices?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane faktury?';
+$_LANG['Are you sure, you want to archive selected documents?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane dokumenty?';
 $_LANG['Cannot undo document confirmation while it is archived!'] = 'Nie można cofnąć zatwierdzenia dokumentu, gdy jest on zarchiwizowany!';
+$_LANG['archivization date'] = 'data archiwizacji';
+$_LANG['archivizator'] = 'archiwizator';
+
+$_LANG['Cannot write new archived document!'] = 'Nie można zapisać nowego dokumentu archiwalnego!';
 

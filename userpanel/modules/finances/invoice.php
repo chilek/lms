@@ -90,6 +90,17 @@ if(!empty($_POST['inv']))
 	if ($invoice['customerid'] != $SESSION->id)
 		die;
 
+	if ($invoice['archived']) {
+		$invoice = $LMS->GetArchiveDocument($_GET['id']);
+		if ($invoice) {
+			header('Content-Type: ' . $invoice['content-type']);
+			header('Content-Disposition: inline; filename=' . $invoice['filename']);
+			echo $invoice['data'];
+		}
+		$SESSION->close();
+		die;
+	}
+
 	$invoice['last'] = TRUE;
 	$invoice['type'] = $type;
 

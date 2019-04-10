@@ -1055,15 +1055,58 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
-	public function GetFinancialDocument($doc, $SMARTY) {
+	public function ArchiveFinancialDocument($id) {
+		$doc = $this->db->GetRow('SELECT d.id, d.number, d.cdate, d.customerid, d.type AS doctype, n.template
+			FROM documents d
+			LEFT JOIN numberplans n ON n.id = d.numberplanid 
+			WHERE d.id = ?', array($id));
+		if (empty($doc))
+			return null;
+
+		$doc['filename'] = ($doc['doctype'] == DOC_DNOTE
+			? ConfigHelper::getConfig('notes.attachment_name', 'dnote_%docid')
+			: ConfigHelper::getConfig('invoices.attachment_name', 'invoice_%docid'));
+
+		$file = $this->GetFinancialDocument($doc);
+
+		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$error = $document_manager->AddArchiveDocument($id, $file);
+
+		if (empty($error))
+			$this->db->Execute('UPDATE documents SET archived = ?, adate = ?NOW?, auserid = ?
+				WHERE id = ?', array(1, Auth::GetCurrentUser(), $id));
+
+		$result = array(
+			'ok' => empty($error),
+		);
+		if (empty($error))
+			$result['filename'] = $file['filename'];
+		else
+			$result['error'] = $error;
+
+		return $result;
+	}
+
+	public function GetFinancialDocument($doc) {
+		if (isset($doc['archived']) && !empty($doc['archived'])) {
+			$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+			return $document_manager->GetArchiveDocument($doc['id']);
+		}
+
+		$smarty = LMSSmarty::getInstance();
+
 		if ($doc['doctype'] == DOC_DNOTE) {
 			$type = ConfigHelper::getConfig('notes.type', '');
-			if ($type == 'pdf')
-				$document = new LMSTcpdfDebitNote(trans('Notes'));
-			else
-				$document = new LMSHtmlDebitNote($SMARTY);
 
-			$filename = $doc['dnote_filename'];
+			if ($type == 'pdf') {
+				$content_type = 'application/pdf';
+				$document = new LMSTcpdfDebitNote(trans('Notes'));
+			} else {
+				$content_type = 'text/html';
+				$document = new LMSHtmlDebitNote($smarty);
+			}
+
+			$filename = isset($doc['filename']) ? $doc['filename'] : $doc['dnote_filename'];
 
 			$data = $this->GetNoteContent($doc['id']);
 		} else {
@@ -1072,11 +1115,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
 				$pdf_type = ucwords($pdf_type);
 				$classname = 'LMS' . $pdf_type . 'Invoice';
+				$content_type = 'application/pdf';
 				$document = new $classname(trans('Invoices'));
-			} else
-				$document = new LMSHtmlInvoice($SMARTY);
+			} else {
+				$content_type = 'text/html';
+				$document = new LMSHtmlInvoice($smarty);
+			}
 
-			$filename = $doc['invoice_filename'];
+			$filename = isset($doc['filename']) ? $doc['filename'] : $doc['invoice_filename'];
 
 			$data = $this->GetInvoiceContent($doc['id']);
 		}
@@ -1116,6 +1162,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			'filename' => $filename . '.' . $fext,
 			'data' => $document->WriteToString(),
 			'document' => $data,
+			'content-type' => $content_type,
 		);
 	}
 
@@ -1229,7 +1276,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		}
 
 		$invoicelist = $this->db->GetAll('SELECT d.id AS id, d.number, d.cdate, d.type,
-			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
+			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed,
+			d.cancelled, d.published, d.archived,
 			-SUM(cash.value) AS value,
 			COUNT(a.docid) AS count,
 			i.sendinvoices,
@@ -1497,7 +1545,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
-				d.closed, d.cancelled, d.published, d.comment AS comment, d.reference, d.reason, d.divisionid,
+				d.closed, d.cancelled, d.published, d.archived, d.comment AS comment, d.reference, d.reason, d.divisionid,
 				(SELECT name FROM vusers WHERE id = d.userid) AS user, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
@@ -1750,7 +1798,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				.(isset($having) ? $having : '') . ') a');
 		}
 
-		$result = $this->db->GetAll('SELECT d.id AS id, number, cdate, numberplans.template, closed, published, cancelled,
+		$result = $this->db->GetAll('SELECT d.id AS id, number, cdate, numberplans.template, closed, published,
+			archived, cancelled,
 			d.customerid, d.name, address, zip, city, c.name AS country,
 			SUM(n.value) AS value, COUNT(n.docid) AS count
 			FROM documents d
@@ -1790,7 +1839,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
-				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.published, d.divisionid, d.paytime,
+				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.published, d.archived, d.divisionid, d.paytime,
 				(SELECT name FROM vusers WHERE id = d.userid) AS user, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
@@ -2388,7 +2437,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
 				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed,
-				documents.published, '
+				documents.published, documents.archived, '
 			 . $this->db->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
 				FROM cash
 				LEFT JOIN customerview c ON (cash.customerid = c.id)

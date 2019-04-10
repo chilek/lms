@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -222,7 +222,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 cash.value AS value, taxes.label AS tax, cash.customerid AS customerid,
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
-                documents.published, cash.importid,
+                documents.published, documents.archived, cash.importid,
                 (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced,
                 documents.cdate, documents.number, numberplans.template
             FROM cash
@@ -238,7 +238,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             		(-ic.value * ic.count) AS value, NULL AS tax, d.customerid,
             		ic.description AS comment, d.id AS docid, vusers.name AS username,
             		d.type AS doctype, d.closed AS closed,
-            		d.published, NULL AS importid,
+            		d.published, 0 AS archived, NULL AS importid,
             		0 AS referenced,
             		d.cdate, d.number, numberplans.template
             	FROM documents d

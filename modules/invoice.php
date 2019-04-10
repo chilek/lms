@@ -744,6 +744,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
 
+	if ($invoice['archived']) {
+		$invoice = $LMS->GetArchiveDocument($_GET['id']);
+		if ($invoice) {
+			header('Content-Type: ' . $invoice['content-type']);
+			header('Content-Disposition: inline; filename=' . $invoice['filename']);
+			echo $invoice['data'];
+		}
+		$SESSION->close();
+		die;
+	}
+
 	$which = array();
 
 	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');

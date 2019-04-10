@@ -37,6 +37,7 @@ $parameters = array(
 	'g:' => 'fakehour:',
 	'e:' => 'extra-file:',
 	'b' => 'backup',
+	'a' => 'archive',
 	'o:' => 'output-directory:',
 	'n' => 'no-attachment',
 );
@@ -77,6 +78,7 @@ lms-sendinvoices.php
 -i, --interval=ms               force delay interval between subsequent posts
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 -b, --backup                    make financial document file backup
+-a, --archive                   archive financial documents in documents directory
 -o, --output-directory=/path    output directory for document backup
 -n, --no-attachments            dont attach documents
 
@@ -103,6 +105,10 @@ if ($backup) {
 		$output_dir = getcwd();
 }
 
+$archive = isset($options['archive']);
+if ($archive && $backup)
+	die("Archive and backup modes cannot be used simultaneously!" . PHP_EOL);
+
 if (array_key_exists('config-file', $options))
 	$CONFIG_FILE = $options['config-file'];
 else
@@ -121,6 +127,7 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
@@ -128,6 +135,7 @@ $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('DOC_DIR', $CONFIG['directories']['doc_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
@@ -156,10 +164,7 @@ try {
 
 $no_attachments = isset($options['no-attachments']);
 
-$invoice_filetype = ConfigHelper::getConfig('invoices.type', '');
-$dnote_filetype = ConfigHelper::getConfig('notes.type', '');
-
-if ((!$no_attachments || $backup) && ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf')) {
+if (!$no_attachments) {
 	// Initialize templates engine (must be before locale settings)
 	$SMARTY = new LMSSmarty;
 
@@ -186,7 +191,7 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
-if ((!$no_attachments || $backup) && ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf')) {
+if (!$no_attachments) {
 	// Set some template and layout variables
 
 	$SMARTY->setTemplateDir(null);
@@ -209,7 +214,7 @@ if ((!$no_attachments || $backup) && ($invoice_filetype != 'pdf' || $dnote_filet
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
 
-if ($backup)
+if ($backup || $archive)
 	$count_limit = 0;
 else {
 	// now it's time for script settings
@@ -280,7 +285,7 @@ $currtime = localtime2($fakedate) + $timeoffset;
 $daystart = (intval($currtime / 86400) * 86400) - $timeoffset;
 $dayend = $daystart + 86399;
 
-if ($backup)
+if ($backup || $archive)
 	$groupnames = '';
 else {
 	// prepare customergroups in sql query
@@ -318,14 +323,14 @@ $LMS->lang = $_language;
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
-if ((!$no_attachments || $backup) && ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf')) {
+if (!$no_attachments) {
 	$plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 	$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
 	$SMARTY->assignByRef('_language', $LMS->lang);
 }
 
-if ($backup)
+if ($backup || $archive)
 	$args = array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
 else {
 	$args = array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
@@ -358,13 +363,14 @@ else {
 	}
 }
 
-$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template" . ($backup ? '' : ', m.email') . "
+$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template" . ($backup || $archive ? '' : ', m.email') . "
 		FROM documents d
 		LEFT JOIN customers c ON c.id = d.customerid"
-		. ($backup ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+		. ($backup || $archive ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
 		. " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup ? '' : " AND c.invoicenotice = 1") . "
+		WHERE c.deleted = 0 AND d.cancelled = 0 AND d.type IN (?, ?, ?, ?)" . ($backup || $archive ? '' : " AND c.invoicenotice = 1")
+			. ($archive ? " AND d.archived = 0" : '') . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number" . (!empty($count_limit) ? " LIMIT $count_limit OFFSET $count_offset" : '');
@@ -375,7 +381,7 @@ if (!empty($docs)) {
 		foreach ($docs as $doc) {
 			$doc['invoice_filename'] = $invoice_filename;
 			$doc['dnote_filename'] = $dnote_filename;
-			$document = $LMS->GetFinancialDocument($doc, $SMARTY);
+			$document = $LMS->GetFinancialDocument($doc);
 			if (!$quiet)
 				echo "Document " . $document['filename'] . " backed up." . PHP_EOL;
 			if (!$test) {
@@ -384,8 +390,17 @@ if (!empty($docs)) {
 				fclose($fh);
 			}
 		}
-	} else
-		$LMS->SendInvoices($docs, 'backend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype' , 'invoice_filename', 'dnote_filename', 'debug_email',
+	} elseif ($archive)
+		foreach ($docs as $doc) {
+			$result = $LMS->ArchiveFinancialDocument($doc['id']);
+			if (!$quiet && isset($result['ok']))
+				if ($result['ok'])
+					echo "Document " . $result['filename'] . " archived." . PHP_EOL;
+				else
+					echo $result['error'] . PHP_EOL;
+		}
+	else
+		$LMS->SendInvoices($docs, 'backend', compact('SMARTY','invoice_filename', 'dnote_filename', 'debug_email',
 			'mail_body', 'mail_subject', 'mail_format', 'currtime', 'sender_email', 'sender_name', 'extrafile',
 			'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message', 'interval',
 			'no_attachments',
