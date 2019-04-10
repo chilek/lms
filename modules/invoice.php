@@ -67,7 +67,7 @@ function try_generate_archive_invoices($ids) {
 
 	if (!empty($archive_stats) && $archive_stats['archive'] > 0 && !in_array(trans('DUPLICATE'), $which)) {
 		$attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
-		header('Content-Type: application/pdf');
+		header('Content-Type: ' . ($invoice_type == 'pdf' ? 'application/pdf' : 'text/html'));
 		header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
 		header('Pragma: public');
 

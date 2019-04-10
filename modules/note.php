@@ -40,7 +40,7 @@ function try_generate_archive_notes($ids) {
 
 	if (!empty($archive_stats) && $archive_stats['archive'] > 0) {
 		$attachment_name = 'invoices.' . ($note_type == 'pdf' ? 'pdf' : 'html');
-		header('Content-Type: application/pdf');
+		header('Content-Type: ' . ($note_type == 'pdf' ? 'application/pdf' : 'text/html'));
 		header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
 		header('Pragma: public');
 
