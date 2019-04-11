@@ -911,7 +911,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	protected function invoice_expositor($x, $y) {
 		$expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
 		if (!ConfigHelper::checkConfig('invoices.hide_expositor'))
-			$y = $y - $this->backend->text_align_left($x,$y,10, trans('Expositor:') . ' ' . (empty($expositor) ? trans('system') : $expositor));
+			$y = $y - $this->backend->text_align_right($x,$y,10, trans('Expositor:') . ' ' . (empty($expositor) ? trans('system') : $expositor));
 		return $y;
 	}
 
@@ -1004,11 +1004,11 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		}
 
 		$return = $this->new_invoice_data(30, $top, 530, 7, 2);
-		$top = $return[1] + 5 - 20;
+		$top = $return[2] + 5 - 40;
 		$this->backend->check_page_length($top);
-		$this->invoice_expositor(30, $top);
+		$this->invoice_expositor(530, $top);
 
-		$top = $return[2] - 20;
+		$top = $return[2] - 0;
 		$this->backend->check_page_length($top);
 		$top = $this->invoice_to_pay(30, $top);
 
@@ -1051,9 +1051,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$top = $this->invoice_comment(470, $top);
 		$this->invoice_footnote(470, $top, 90, 8);
 		$return = $this->new_invoice_data(30, $top, 430, 6, 1);
-		$top = $return[1] + 5;
-		$this->invoice_expositor(30, $top);
-		$top = $return[2] - 10;
+		$top = $return[2] + 5 - 40;
+		$this->invoice_expositor(430, $top);
+		$top = $return[2] - 0;
 		$top = $this->invoice_to_pay(30, $top);
 
 		$top = $this->invoice_balance(30, $top);
