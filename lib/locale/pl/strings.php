@@ -3075,7 +3075,7 @@ $_LANG['Connect to device'] = 'Podłączenie do urządzenia';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność nie została jeszcze zakończona!';
 $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
 
-$_LANG['Your balance on date of invoice issue:'] = 'Saldo w dniu wystawienia faktury:';
+$_LANG['Your balance on date of invoice issue: $a $b'] = 'Saldo w dniu wystawienia faktury: $a $b';
 $_LANG['Balance includes current invoice'] = 'Saldo uwzględnia również bieżącą fakturę.';
 $_LANG['Your balance before invoice issue:'] = 'Saldo przed wystawieniem faktury:';
 

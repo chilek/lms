@@ -770,15 +770,27 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_balance() {
-		global $LMS;
+		$this->backend->SetFont('arial', 'B', 9);
 
-		$this->backend->SetFont('arial', '', 7);
-		$this->backend->writeHTMLCell(0, 0, '', '', trans('Your balance before invoice issue:') . ' ' . moneyf($LMS->GetCustomerBalance($this->data['customerid'], $this->data['cdate'])), 0, 1, 0, true, 'L');
+		$balance = $this->data['customerbalance'];
+		if ($balance > 0)
+			$comment = trans('(excess payment)');
+		elseif ($balance < 0)
+			$comment = trans('(underpayment)');
+		else
+			$comment = '';
+		if ($this->use_alert_color)
+			$this->backend->SetTextColorArray(array(255, 0, 0));
+		$this->backend->writeHTMLCell(0, 0, '', '',
+			trans('Your balance on date of invoice issue: $a $b', moneyf($balance), $comment), 0, 1, 0, true, 'L');
+		if ($this->use_alert_color)
+			$this->backend->SetTextColor();
+		$this->backend->writeHTMLCell(0, 0, '', '', trans('Balance includes current invoice'), 0, 1, 0, true, 'L');
 	}
 
 	protected function invoice_dates() {
 		$this->backend->SetFont('arial', '', 8);
-		if ($paytype != 8) {
+		if ($this->data['paytype'] != 8) {
 			if ($this->use_alert_color)
 					$this->backend->SetTextColorArray(array(255, 0, 0));
 			$this->backend->writeHTMLCell(0, 0, '', 17, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');

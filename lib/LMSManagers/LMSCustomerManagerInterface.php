@@ -50,7 +50,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerNodesAC($id);
 
-    public function getCustomerBalance($id, $totime = null);
+    public function getCustomerBalance($id, $totime = null, $expired = false);
 
     public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false);
 

@@ -186,22 +186,45 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
     }
 
-    /**
-     * Returns customer balance
-     *
-     * @param int $id Customer id
-     * @param int $totime Timestamp
-     * @return int Balance
-     */
-    public function getCustomerBalance($id, $totime = null)
-    {
-        return $this->db->GetOne(
-            'SELECT SUM(value)
-            FROM cash
-            WHERE customerid = ?' . ($totime ? ' AND time < ' . intval($totime) : ''),
-            array($id)
-        );
-    }
+	/**
+	 * Returns customer balance
+	 *
+	 * @param int $id Customer id
+	 * @param int $totime Timestamp
+	 * @param boolean $expired take only expired liabilities into account
+	 * @return int Balance
+	 */
+	public function getCustomerBalance($id, $totime = null, $expired = false) {
+		if ($expired) {
+			$deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
+			if (empty($totime))
+				$totime = time();
+			return $this->db->GetOne('SELECT SUM(value) FROM cash
+				LEFT JOIN documents d ON d.id = cash.docid
+				LEFT JOIN customers c ON c.id = cash.customerid
+				LEFT JOIN divisions ON divisions.id = c.divisionid
+				WHERE c.id = ? AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . $totime . ')
+					OR (cash.type = 0 AND cash.time +
+						(CASE c.paytime WHEN -1
+							THEN
+								(CASE WHEN divisions.inv_paytime IS NULL
+									THEN ' . $deadline . '
+									ELSE divisions.inv_paytime
+								END)
+							ELSE c.paytime
+						END) * 86400 < ' . $totime . ')))
+						OR (cash.docid IS NOT NULL AND ((d.type IN (?, ?) AND cash.time < ' . $totime . '
+							OR (d.type IN (?, ?) AND d.cdate + (d.paytime + 0) * 86400 < ' . $totime . ')))))',
+				array($id, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE));
+
+		} else
+			return $this->db->GetOne(
+				'SELECT SUM(value)
+				FROM cash
+				WHERE customerid = ?' . ($totime ? ' AND time < ' . intval($totime) : ''),
+				array($id)
+			);
+	}
 
     /**
      * Returns customer balance list

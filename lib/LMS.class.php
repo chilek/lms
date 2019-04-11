@@ -558,10 +558,10 @@ class LMS
         return $manager->GetCustomerNetworks($id, $count);
     }
 
-    public function GetCustomerBalance($id, $totime = null)
+    public function GetCustomerBalance($id, $totime = null, $expired = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerBalance($id, $totime);
+        return $manager->getCustomerBalance($id, $totime, $expired);
     }
 
     public function GetCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false)

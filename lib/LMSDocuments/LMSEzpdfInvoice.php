@@ -890,6 +890,24 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		return $y;
 	}
 
+	protected function invoice_balance($x, $y) {
+		$balance = $this->data['customerbalance'];
+		if ($balance > 0)
+			$comment = trans('(excess payment)');
+		elseif ($balance < 0)
+			$comment = trans('(underpayment)');
+		else
+			$comment = '';
+		$y = $y - $this->backend->text_align_left($x, $y, 9,
+				($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
+				. trans('Your balance on date of invoice issue: $a $b', moneyf($balance), $comment)
+				. ($this->use_alert_color ? '</c:color>' : '') . '</b>');
+		$y = $y - $this->backend->text_align_left($x, $y, 9,
+				'<b>' . trans('Balance includes current invoice') . '</b>');
+
+		return $y;
+	}
+
 	protected function invoice_expositor($x, $y) {
 		$expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
 		if (!ConfigHelper::checkConfig('invoices.hide_expositor'))
@@ -994,6 +1012,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$this->backend->check_page_length($top);
 		$top = $this->invoice_to_pay(30, $top);
 
+		$top = $this->invoice_balance(30, $top);
+
 		$top = $top - 20;
 		$this->backend->check_page_length($top);
 		$top = $this->invoice_comment(30, $top);
@@ -1034,7 +1054,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$top = $return[1] + 5;
 		$this->invoice_expositor(30, $top);
 		$top = $return[2] - 10;
-		$this->invoice_to_pay(30, $top);
+		$top = $this->invoice_to_pay(30, $top);
+
+		$top = $this->invoice_balance(30, $top);
+
 		$this->backend->check_page_length($top, 200);
 		if ($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
 			$this->invoice_main_form_fill(187, 3, 0.4);
