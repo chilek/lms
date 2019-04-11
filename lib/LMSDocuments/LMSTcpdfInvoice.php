@@ -893,13 +893,13 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_header_image();
 		$this->invoice_date();
 		$this->invoice_dates();
-		$this->invoice_expositor();
 		$this->invoice_title();
 		$this->invoice_seller();
 		$this->invoice_buyer();
 		$this->invoice_recipient();
 		$this->invoice_data();
 		$this->invoice_to_pay();
+		$this->invoice_expositor();
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance',true)))
 		    $this->invoice_balance();
 		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
@@ -949,13 +949,13 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_header_image();
 		$this->invoice_date();
 		$this->invoice_dates();
-		$this->invoice_expositor();
 		$this->invoice_title();
 		$this->invoice_seller();
 		$this->invoice_buyer();
 		$this->invoice_recipient();
 		$this->invoice_data();
 		$this->invoice_to_pay();
+		$this->invoice_expositor();
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_balance',true)))
 		    $this->invoice_balance();
 		if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate']))
