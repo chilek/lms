@@ -59,7 +59,15 @@ $access_table = array(
 	),
 	'customer_management' => array(
 		'label' => trans('customers management'),
-		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|customertransferform|customeraddresses|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi)$',
+		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|print|search|warn|cutoffstop|group)|documentdel|customertransferform|customeraddresses|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode|gusapi)$',
+	),
+	'customer_removal' => array(
+		'label' => trans('customer removal'),
+		'allow_regexp' => '^customerdel$',
+	),
+	'permanent_customer_removal' => array(
+		'label' => trans('permanent customer removal'),
+		'allow_regexp' => '^customerdel$',
 	),
 	'node_management' => array(
 		'label' => trans('nodes management'),

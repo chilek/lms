@@ -3593,6 +3593,7 @@ $_LANG['with disconnected nodes'] = 'z odłączonymi komputerami';
 $_LANG['Select group to assign to customer'] = 'Wybierz grupę by przypisać do niej klienta';
 $_LANG['If isset "true" when adding new customer select group is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza wybór grupy przypisanej do klienta. Domyślnie wyłączone';
 
+$_LANG['customer removal'] = 'usunięcie klienta';
 $_LANG['permanent customer removal'] = 'trwałe usunięcie klienta';
 $_LANG['Remove permanently'] = 'Usuń trwale';
 $_LANG['Permanent Customer Remove: $a'] = 'Trwałe usunięcie klienta: $a';

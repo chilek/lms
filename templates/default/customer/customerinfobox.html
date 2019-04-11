@@ -437,7 +437,9 @@
 				<A href="?m=domainlist&amp;c={$customerinfo.id}">{trans("Domains")} ({$customerstats['domains']})</A> <IMG src="img/network.gif" alt="{trans("Domains")}">
 				<A href="?m=trafficprint&amp;type=customertraffic&amp;customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="{trans("Stats")}"></A>
 				<A href="?m=customeredit&amp;id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="{trans("Edit")}"></A>
+				{if ConfigHelper::checkPrivilege('customer_removal')}
 				<A href="?m=customerdel&amp;id={$customerinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
+				{/if}
 			{/if}
 			{if $info_link}
 				<A href="?m=customerinfo&amp;id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="{trans("Info")}"></A>
