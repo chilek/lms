@@ -233,6 +233,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to filter invoice list by number plans [chilan]
   - enhancement: added support for archiving documents [chilan]
   - enhancement: support of financial document archivization [chilan]
+  - improvement: new customer removal access privilege added [chilan]
 
 version 1.11.23 (2018-03-21):
 
