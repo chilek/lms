@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -68,6 +68,9 @@ function try_generate_archive_invoices($ids) {
 		die('Currently you can only print many documents of type text/html or application/pdf!');
 
 	if (!empty($archive_stats) && $archive_stats['archive'] > 0 && !in_array(trans('DUPLICATE'), $which)) {
+		if ($archive_stats['rtype'] && $archive_stats['rtype'] != $invoice_type)
+			$invoice_type = $archive_stats['rtype'];
+
 		$attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 		header('Content-Type: ' . ($invoice_type == 'pdf' ? 'application/pdf' : 'text/html'));
 		header('Content-Disposition: attachment; filename="' . $attachment_name . '"');

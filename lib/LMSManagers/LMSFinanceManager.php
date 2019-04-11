@@ -1065,10 +1065,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		WHERE d.id IN (' . implode(',', $ids) . ')',
 			array('text/html', 'application/pdf', 1));
 
-		if ($archive_stats['html'] > 0 && !$archive_stats['pdf'])
-			$archive_stats['rtype'] = 'html';
-		elseif ($archive_stats['pdf'] > 0 && !$archive_stats['html'])
-			$archive_stats['rtype'] = 'pdf';
+		$archive_stats['rtype'] = null;
+		if (!$archive_stats['current'])
+			if ($archive_stats['html'] > 0 && !$archive_stats['pdf'])
+				$archive_stats['rtype'] = 'html';
+			elseif ($archive_stats['pdf'] > 0 && !$archive_stats['html'])
+				$archive_stats['rtype'] = 'pdf';
 
 		return $archive_stats;
 	}

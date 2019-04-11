@@ -41,6 +41,9 @@ function try_generate_archive_notes($ids) {
 		die('Currently you can only print many documents of type text/html or application/pdf!');
 
 	if (!empty($archive_stats) && $archive_stats['archive'] > 0) {
+		if ($archive_stats['rtype'] && $archive_stats['rtype'] != $note_type)
+			$note_type = $archive_stats['rtype'];
+
 		$attachment_name = 'invoices.' . ($note_type == 'pdf' ? 'pdf' : 'html');
 		header('Content-Type: ' . ($note_type == 'pdf' ? 'application/pdf' : 'text/html'));
 		header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
