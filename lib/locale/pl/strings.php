@@ -3045,8 +3045,19 @@ $_LANG['Add new lock'] = 'Dodaj nową blokadę';
 $_LANG['Remove lock'] = 'Usuń blokadę';
 $_LANG['Days:'] = 'Dni:';
 
-$_LANG['UKE report'] = 'Raport do UKE';
+$_LANG['UKE SIIS report'] = 'Raport UKE SIIS';
 $_LANG['Allows you to prepare SIIS v4 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 4 do UKE';
+$_LANG['UKE income report'] = 'Raport przychodów UKE';
+$_LANG['<!uke-income>other'] = 'inna';
+$_LANG['<!uke-income>Link technology'] = 'Technologia łącza';
+$_LANG['<!uke-income>Bussiness customers'] = 'Klienci biznesowi';
+$_LANG['<!uke-income>Bussiness income'] = 'Przychód biznesowy';
+$_LANG['<!uke-income>Private customers'] = 'Klienci prywatni';
+$_LANG['<!uke-income>Private income'] = 'Przychód prywatny';
+$_LANG['<!uke-income>Total customers'] = 'Klienci razem';
+$_LANG['<!uke-income>Total income'] = 'Całkowity przychód';
+$_LANG['<!uke-income>No data.'] = 'Brak danych';
+$_LANG['UKE income report for period $a - $b'] = 'Raport przychodów UKE za okres $a - $b';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';

@@ -30,14 +30,19 @@ if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkCo
 $type = isset($_GET['type']) ? $_GET['type'] : '';
 
 switch($type) {
-	case 'uke': /***********************************************/
+	case 'uke-siis': /***********************************************/
 		if (isset($_POST['invprojects'])) {
 			$invprojects = $_POST['invprojects'];
 			if (!is_array($invprojects))
 				$invprojects = array();
 		} else
 			$invprojects = array();
-		include(MODULES_DIR . '/uke.php');
+		include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukesiis.php');
+		die;
+	break;
+
+	case 'uke-income': /***********************************************/
+		include(MODULES_DIR . DIRECTORY_SEPARATOR . 'ukeincome.php');
 		die;
 	break;
 

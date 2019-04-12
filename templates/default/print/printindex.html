@@ -1369,7 +1369,7 @@
 </FORM>
 {/if}
 {if $printmenu=="netdev"}
-<form method="post" name="printnetdev" id="printnetdev" action="?m=netdevprint&type=uke">
+<form method="post" name="uke-siis" id="uke-siis" action="?m=netdevprint&type=uke-siis">
 <input type="submit" class="hiddenbtn">
 <table class="lmsbox">
     <colgroup>
@@ -1380,38 +1380,11 @@
     <thead>
 	<tr>
 		<th scope="col" colspan="3" class="bold nobr">
-		    <img src="img/netdev.gif" alt=""> {trans("UKE report")}
+		    <img src="img/netdev.gif" alt=""> {trans("UKE SIIS report")}
 		</th>
 	</tr>
     </thead>
     <tbody>
-{*
-		<TD>
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD style="width: 1%;">
-						<IMG src="img/money.gif" alt="">
-					</TD>
-					<TD style="width: 1%;" class="bold nobr">
-						{trans("Investment project:")}
-					</TD>
-					<TD style="width: 98%;">
-						{if $invprojects}
-						<SELECT name="invprojects[]" class="lms-ui-multiselect" {tip text="Select investment projects"} multiple data-default-value="{trans("- all -")}">
-							{foreach $invprojects as $invproject}
-							<OPTION value="{$invproject.id}">{$invproject.name}</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						{trans("all")}
-						<INPUT type="hidden" name="invprojects" value="0">
-						{/if}
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-*}
-
 	<tr>
 		<td>
 			<img src="img/docum.gif" alt="">
@@ -1479,7 +1452,7 @@
 
 	<tr>
 		<td colspan="3" class="buttons">
-			<a href="javascript:document.printnetdev.submit();">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			<a href="javascript:document.forms['uke-siis'].submit();">{trans("Save")} <img src="img/save.gif" alt=""></a>
 		</td>
 	</tr>
     </tbody>
@@ -1503,5 +1476,44 @@
 </script>
 
 </FORM>
+
+<form method="post" name="uke-income" id="uke-income" action="?m=netdevprint&type=uke-income">
+	<input type="submit" class="hiddenbtn">
+	<table class="lmsbox">
+		<colgroup>
+			<col style="width: 1%;">
+			<col style="width: 1%;">
+			<col style="width: 99%;">
+		</colgroup>
+		<thead>
+		<tr>
+			<th scope="col" colspan="3" class="bold nobr">
+				<img src="img/money.gif" alt=""> {trans("UKE income report")}
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<TD>
+				<IMG src="img/calendar.gif" alt="">
+			</TD>
+			<TD>
+				<span class="bold nobr">{trans("Period:")}</span>
+			</TD>
+			<TD class="nobr">
+				{date_period_preset from="#uke-income [name=\"from\"]" to="#uke-income [name=\"to\"]"}
+				{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+				{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+			</TD>
+		</tr>
+		<tr>
+			<td colspan="3" class="buttons">
+				<a href="javascript:document.forms['uke-income'].submit();">{trans("Save")} <img src="img/save.gif" alt=""></a>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</FORM>
+
 {/if}
 {/block}
