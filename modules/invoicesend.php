@@ -80,7 +80,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 	if (empty($docids))
 		echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
 	else {
-		$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, a.archived, n.template, m.email
+		$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email
 			FROM documents d
 			LEFT JOIN customers c ON c.id = d.customerid
 			JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
