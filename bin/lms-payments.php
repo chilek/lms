@@ -345,7 +345,7 @@ if (empty($assignment_linktechnologies))
 // node or customer network devices nodes are connected to operator through customer subnetwork
 // ************
 // get assignments which match to nodes or network device nodes in customer subnetworks
-$node_assignments = $DB->GetAllByKey('SELECT ' . $DB->GroupConcat('na.assignmentid', ',', true) . ' AS assignments,
+$node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignmentid', ',', true) . " AS assignments,
 		na.nodeid
 	FROM nodeassignments na
 	JOIN nodes n ON n.id = na.nodeid
@@ -363,7 +363,7 @@ $node_assignments = $DB->GetAllByKey('SELECT ' . $DB->GroupConcat('na.assignment
 				AND aa.datefrom < ?NOW?
 				AND (aa.dateto > ?NOW? OR aa.dateto = 0)
 		)
-	GROUP BY na.nodeid', 'nodeid');
+	GROUP BY na.nodeid", 'nodeid');
 if (empty($node_assignments))
 	$node_assignments = array();
 else
