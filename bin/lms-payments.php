@@ -337,6 +337,8 @@ $assignment_linktechnologies = $DB->GetAllByKey('SELECT a.id, b.technology, MAX(
 	) b ON b.id = a.id
 	GROUP BY a.id, b.technology
 	ORDER BY a.id', 'id');
+if (empty($assignment_linktechnologies))
+	$assignment_linktechnologies = array();
 
 // prepare customergroups in sql query
 $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca 
