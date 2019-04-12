@@ -234,7 +234,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for mark non-financial documents as archive [chilan]
   - enhancement: support of financial document archivization [chilan]
   - improvement: new customer removal access privilege added [chilan]
-  - enhancement: customer income report separated by link technology (helpfull for UKE income
+  - enhancement: customer income report broken down into link technology (helpfull for UKE income
     reports) [chilan]
 
 version 1.11.23 (2018-03-21):
