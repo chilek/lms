@@ -3056,7 +3056,7 @@ $_LANG['<!uke-income>Private customers'] = 'Klienci prywatni';
 $_LANG['<!uke-income>Private income'] = 'Przychód prywatny';
 $_LANG['<!uke-income>Total customers'] = 'Klienci razem';
 $_LANG['<!uke-income>Total income'] = 'Całkowity przychód';
-$_LANG['<!uke-income>No data.'] = 'Brak danych';
+$_LANG['<!uke-income>No data.'] = 'Brak danych.';
 $_LANG['UKE income report for period $a - $b'] = 'Raport przychodów UKE za okres $a - $b';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
