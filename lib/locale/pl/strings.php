@@ -3364,6 +3364,8 @@ $_LANG['yesterday'] = 'wczoraj';
 $_LANG['current month'] = 'bieżący miesiąc';
 $_LANG['last month'] = 'poprzedni miesiąc';
 $_LANG['current year'] = 'bieżący rok';
+$_LANG['previous year'] = 'poprzedni rok';
+$_LANG['next year'] = 'następny rok';
 $_LANG['Last year'] = 'Ostatni rok';
 $_LANG['last year<!voip>'] = 'poprzedni rok';
 

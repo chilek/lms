@@ -1501,7 +1501,7 @@
 				<span class="bold nobr">{trans("Period:")}</span>
 			</TD>
 			<TD class="nobr">
-				{date_period_preset from="#uke-income [name=\"from\"]" to="#uke-income [name=\"to\"]"}
+				{date_period_preset from="#uke-income [name=\"from\"]" to="#uke-income [name=\"to\"]" periods="previous-year,current-year,next-year"}
 				{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 				{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 			</TD>

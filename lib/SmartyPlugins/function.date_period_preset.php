@@ -44,9 +44,21 @@ function smarty_function_date_period_preset(array $params, Smarty_Internal_Templ
 				$label = trans('current month');
 				$icon = 'lms-ui-icon-back';
 				break;
+			case 'current-year':
+				$label = trans('current year');
+				$icon = 'lms-ui-icon-current-year';
+				break;
 			case 'next-month':
 				$label = trans('next month');
 				$icon = 'lms-ui-icon-next';
+				break;
+			case 'next-year':
+				$label = trans('next year');
+				$icon = 'lms-ui-icon-fast-next';
+				break;
+			case 'previous-year':
+				$label = trans('previous year');
+				$icon = 'lms-ui-icon-fast-previous';
 				break;
 			case 'previous-month':
 			default:

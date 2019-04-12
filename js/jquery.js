@@ -274,6 +274,24 @@ $(function() {
 			fromdate.setDate(1);
 			todate.setMonth(fromdate.getMonth() + 1);
 			todate.setDate(0);
+		} else if (period == 'current-year') {
+			fromdate = new Date();
+			todate = new Date();
+			fromdate.setMonth(0);
+			fromdate.setDate(1);
+			todate.setMonth(11);
+			todate.setDate(31);
+		} else if (period == 'previous-year' || period == 'next-year') {
+			fromdate.setMonth(0);
+			fromdate.setDate(1);
+			if (period == 'previous-year') {
+				fromdate.setFullYear(fromdate.getFullYear() - 1);
+			} else {
+				fromdate.setFullYear(fromdate.getFullYear() + 1);
+			}
+			todate.setMonth(11);
+			todate.setDate(31);
+			todate.setFullYear(fromdate.getFullYear());
 		}
 
 		$(from).val(sprintf("%04d/%02d/%02d", fromdate.getFullYear(), fromdate.getMonth() + 1, fromdate.getDate()));
