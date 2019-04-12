@@ -323,6 +323,21 @@ if (!empty($results))
 		$periods[$row['id']] = ($row['period'] ? $row['period'] : YEARLY);
 	}
 
+// get dominating link technology per customer assignments
+$assignment_linktechnologies = $DB->GetAllByKey('SELECT a.id, b.technology, MAX(b.technologycount) AS technologycount
+	FROM assignments a
+	JOIN (
+		SELECT a.id, n.linktechnology AS technology, COUNT(n.linktechnology) AS technologycount
+		FROM nodeassignments na
+			JOIN assignments a ON a.id = na.assignmentid
+			JOIN tariffs t ON t.id = a.tariffid
+			JOIN nodes n ON n.id = na.nodeid
+		WHERE n.linktechnology > 0
+		GROUP BY a.id, n.linktechnology
+	) b ON b.id = a.id
+	GROUP BY a.id, b.technology
+	ORDER BY a.id', 'id');
+
 // prepare customergroups in sql query
 $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca 
 	WHERE c.id = ca.customerid 
@@ -366,13 +381,13 @@ $assigns = $DB->GetAll("SELECT * FROM payments WHERE value <> 0
 if (!empty($assigns))
 	foreach ($assigns as $assign) {
 		$DB->Execute("INSERT INTO cash (time, type, value, customerid, comment) 
-			VALUES (?, 1, ? * -1, 0, ?)",
-			array($currtime, $assign['value'], $assign['name']."/".$assign['creditor']));
+			VALUES (?, ?, ?, ?, ?)",
+			array($currtime, 1, $assign['value'] * -1, null, $assign['name']."/".$assign['creditor']));
 		if (!$quiet) print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
 	}
 
 // let's go, fetch *ALL* assignments in given day
-$query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
+$query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount,
 		a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
@@ -414,7 +429,7 @@ $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
 
 $query = "SELECT
-			a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
+			a.id, a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
@@ -513,6 +528,8 @@ foreach ($assigns as $assign) {
 
 	$assign['value'] = str_replace(',', '.', floatval($assign['value']));
 	if (empty($assign['value'])) continue;
+
+	$linktechnology = isset($assignment_linktechnologies[$assign['id']]) ? $assignment_linktechnologies[$assign['id']]['technology'] : null;
 
 	if (!$assign['suspended'] && $assign['allsuspended'])
 		$assign['value'] = $assign['value'] * $suspension_percentage / 100;
@@ -707,13 +724,14 @@ foreach ($assigns as $assign) {
 					array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
 					$desc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
 				if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
-                    $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
-                        VALUES ($currtime, $val * -1, ?, $cid, ?, ?, $itemid)",
-                        array($assign['taxid'], $desc, $invoices[$cid]));
+                    $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        array($currtime, $val * -1, $assign['taxid'], $cid, $desc, $invoices[$cid], $itemid, $linktechnology));
 			}
 		} else
-			$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment) 
-				VALUES ($currtime, $val * -1, ?, $cid, ?)", array($assign['taxid'], $desc));
+			$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology) 
+				VALUES (?, ?, ?, ?, ?, ?)",
+				array($currtime, $val * -1, $assign['taxid'], $cid, $desc, $linktechnology));
 
 		if (!$quiet) print "CID:$cid\tVAL:$val\tDESC:$desc" . PHP_EOL;
 
@@ -799,13 +817,14 @@ foreach ($assigns as $assign) {
 							array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
 							$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
 						if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
-	                        $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid)
-	                            VALUES($currtime, $value * -1, ?, $cid, ?, ?, $itemid)",
-	                            array($assign['taxid'], $sdesc, $invoices[$cid]));
+	                        $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology)
+	                            VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+	                            array($currtime, $value * -1, $assign['taxid'], $cid, $sdesc, $invoices[$cid], $itemid, $linktechnology));
 					}
 				} else
-					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment)
-						VALUES ($currtime, $value * -1, ?, $cid, ?)", array($assign['taxid'], $sdesc));
+					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology)
+						VALUES (?, ?, ?, ?, ?, ?)",
+						array($currtime, $value * -1, $assign['taxid'], $cid, $sdesc, $linktechnology));
 
 				if (!$quiet) print "CID:$cid\tVAL:$value\tDESC:$sdesc" . PHP_EOL;
 			}

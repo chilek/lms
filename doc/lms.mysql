@@ -1073,12 +1073,14 @@ CREATE TABLE cash (
   itemid smallint NOT NULL DEFAULT '0',
   importid int(11) DEFAULT NULL,
   sourceid int(11) DEFAULT NULL,
+  linktechnology int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
   INDEX customerid (customerid),
   INDEX docid (docid),
   INDEX time (time),
   INDEX importid (importid),
   INDEX sourceid (sourceid),
+  INDEX cash_linktechnology_idx (linktechnology),
   CONSTRAINT cash_customerid_fkey
   	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT cash_userid_fkey
@@ -3477,4 +3479,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019040500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019041200');

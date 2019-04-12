@@ -961,6 +961,7 @@ CREATE TABLE cash (
 		CONSTRAINT cash_importid_fkey REFERENCES cashimport (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	sourceid integer	DEFAULT NULL
 		CONSTRAINT cash_sourceid_fkey REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	linktechnology integer DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX cash_customerid_idx ON cash (customerid);
@@ -968,6 +969,7 @@ CREATE INDEX cash_docid_idx ON cash (docid);
 CREATE INDEX cash_importid_idx ON cash (importid);
 CREATE INDEX cash_sourceid_idx ON cash (sourceid);
 CREATE INDEX cash_time_idx ON cash (time);
+CREATE INDEX cash_linktechnology_idx ON cash (linktechnology);
 
 /* --------------------------------------------------------
   Structure of table "pna"
@@ -3479,6 +3481,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019040500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019041200');
 
 COMMIT;
