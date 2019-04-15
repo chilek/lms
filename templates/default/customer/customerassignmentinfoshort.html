@@ -40,6 +40,8 @@
 			{trans("invoice")}
 			{elseif $assignment.invoice == $smarty.const.DOC_INVOICE_PRO}
 			{trans("pro forma invoice")}
+			{elseif $assignment.invoice == $smarty.const.DOC_DNOTE}
+			{trans("debit note")}
 			{else}
 			{trans("no")}
 			{/if}

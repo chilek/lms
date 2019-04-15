@@ -342,6 +342,7 @@
 								<OPTION value="0">{trans("without document")}</OPTION>
 								<OPTION value="{$smarty.const.DOC_INVOICE}"{if $variables.invoice == $smarty.const.DOC_INVOICE} selected{/if}>{trans("invoice")}</OPTION>
 								<OPTION value="{$smarty.const.DOC_INVOICE_PRO}"{if $variables.invoice == $smarty.const.DOC_INVOICE_PRO} selected{/if}>{trans("pro forma invoice")}</OPTION>
+								<OPTION value="{$smarty.const.DOC_DNOTE}"{if $variables.invoice == $smarty.const.DOC_DNOTE} selected{/if}>{trans("debit note")}</OPTION>
 							</SELECT>
 						</label>
 						<br>

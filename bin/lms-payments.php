@@ -314,8 +314,8 @@ $plans = array();
 $query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault 
 		FROM numberplans n 
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
-		WHERE doctype IN (?, ?)";
-$results = $DB->GetAll($query, array(DOC_INVOICE, DOC_INVOICE_PRO));
+		WHERE doctype IN (?, ?, ?)";
+$results = $DB->GetAll($query, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_DNOTE));
 if (!empty($results))
 	foreach ($results as $row) {
 		if ($row['isdefault'])
@@ -824,25 +824,41 @@ foreach ($assigns as $assign) {
 				$addresses[$cid] = $assign['recipient_address_id'];
 				$numberplans[$cid] = $plan;
 			}
-			if (($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 
-				WHERE tariffid=? AND value=$val AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-				array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']))) != 0)
-			{
-				$DB->Execute("UPDATE invoicecontents SET count=count+1 
-					WHERE tariffid=? AND docid=? AND value=? AND description=? AND pdiscount=? AND vdiscount=?",
-					array($assign['tariffid'], $invoices[$cid], $assign['value'], $desc, $assign['pdiscount'], $assign['vdiscount']));
-                if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
-                    $DB->Execute("UPDATE cash SET value=value+($val*-1) 
-                        WHERE docid = ? AND itemid = $tmp_itemid", array($invoices[$cid]));
+
+			if ($assign['invoice'] == DOC_DNOTE)
+				$tmp_itemid = 0;
+			else
+				$tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 
+					WHERE tariffid=? AND value=$val AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
+						array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']));
+
+			if ($tmp_itemid != 0) {
+				if ($assign['invoice'] == DOC_DNOTE)
+					$DB->Execute("UPDATE debitnotecontents SET value = value + ? 
+						WHERE docid = ? AND itemid = ?",
+						array($val, $invoices[$cid], $tmp_itemid));
+				else
+					$DB->Execute("UPDATE invoicecontents SET count = count + 1 
+						WHERE docid = ? AND itemid = ?",
+						array($invoices[$cid], $tmp_itemid));
+				if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+					$DB->Execute("UPDATE cash SET value = value + ? 
+						WHERE docid = ? AND itemid = ?",
+						array($val * - 1, $invoices[$cid], $tmp_itemid));
 			} else {
 				$itemid++;
 
-				$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid, 
-					content, count, description, tariffid, itemid, pdiscount, vdiscount) 
-					VALUES (?, $val, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
-					array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
-					$desc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
-				if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+				if ($assign['invoice'] == DOC_DNOTE)
+					$DB->Execute("INSERT INTO debitnotecontents (docid, value, description, itemid) 
+						VALUES (?, ?, ?, ?)",
+						array($invoices[$cid], $val, $desc, $itemid));
+				else
+					$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid, 
+						content, count, description, tariffid, itemid, pdiscount, vdiscount) 
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+						array($invoices[$cid], $val, $assign['taxid'], $assign['prodid'], $unit_name, 1,
+						$desc, empty($assign['tariffid']) ? null : $assign['tariffid'], $itemid, $assign['pdiscount'], $assign['vdiscount']));
+				if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment)
                     $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                         array($currtime, $val * -1, $assign['taxid'], $cid, $desc, $invoices[$cid], $itemid, $linktechnology));
@@ -913,29 +929,37 @@ foreach ($assigns as $assign) {
 				$sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
 				$sdesc = preg_replace("/\%prev_period/", $prev_period, $sdesc);
 
-				if ($assign['invoice'])
-				{
-					if (($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents
-						WHERE tariffid=? AND value=$value AND docid=? AND description=?",
-						array($assign['tariffid'], $invoices[$cid], $sdesc))) != 0)
-					{
-						$DB->Execute("UPDATE invoicecontents SET count=count+1
-							WHERE tariffid=? AND docid=? AND description=?",
-							array($assign['tariffid'], $invoices[$cid], $sdesc));
+				if ($assign['invoice']) {
+					if ($assign['invoice'] == DOC_DNOTE)
+						$tmp_itemid = 0;
+					else
+						$tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents
+						WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
+						array($assign['tariffid'], $value, $invoices[$cid], $sdesc));
 
+					if ($tmp_itemid != 0) {
+						$DB->Execute("UPDATE invoicecontents SET count = count + 1
+							WHERE tariffid = ? AND docid = ? AND description = ?",
+							array($assign['tariffid'], $invoices[$cid], $sdesc));
 						if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
-	                        $DB->Execute("UPDATE cash SET value = value + ($value * -1)
-	                            WHERE docid = ? AND itemid = $tmp_itemid",
-	                            array($invoices[$cid]));
+							$DB->Execute("UPDATE cash SET value = value + ?
+								WHERE docid = ? AND itemid = ?",
+								array($value * -1, $invoices[$cid], $tmp_itemid));
 					} else {
 						$itemid++;
 
-						$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid,
-							content, count, description, tariffid, itemid, pdiscount, vdiscount)
-							VALUES (?, $value, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
-							array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
-							$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
-						if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+						if ($assign['invoice'] == DOC_DNOTE)
+							$DB->Execute("INSERT INTO debitnotecontents (docid, value, description, itemid) 
+								VALUES (?, ?, ?, ?)",
+								array($invoices[$cid], $value, $desc, $itemid));
+						else
+							$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid,
+								content, count, description, tariffid, itemid, pdiscount, vdiscount)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+								array($invoices[$cid], $value, $assign['taxid'], $assign['prodid'], $unit_name, 1,
+								$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'],
+								$itemid, $assign['pdiscount'], $assign['vdiscount']));
+						if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment)
 	                        $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology)
 	                            VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
 	                            array($currtime, $value * -1, $assign['taxid'], $cid, $sdesc, $invoices[$cid], $itemid, $linktechnology));
