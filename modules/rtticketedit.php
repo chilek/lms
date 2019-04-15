@@ -177,8 +177,8 @@ if ($id && !isset($_POST['ticket'])) {
                     }
                 }
 
-                $ticket_state_change_notify = ConfigHelper::checkConfig('phpui.ticket_state_change_notify');
-                if ($ticket_state_change_notify) {
+				$ticket_property_change_notify = ConfigHelper::checkConfig('phpui.ticket_property_change_notify');
+                if ($ticket_property_change_notify) {
                     $headers['From'] = $from;
                     $headers['Reply-To'] = $headers['From'];
 
@@ -360,10 +360,14 @@ if(isset($_POST['ticket']))
 	            );
 	   $ticketedit = $hook_data['ticketedit'];
 
-		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
+		// we notify about new ticket after queue change
 		$newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
-		$ticket_state_change_notify = ConfigHelper::checkConfig('phpui.ticket_state_change_notify');
-		if (($ticket_state_change_notify && $ticket['state'] != $ticketedit['state'])
+		$ticket_property_change_notify = ConfigHelper::checkConfig('phpui.ticket_property_change_notify');
+		if (($ticket_property_change_notify && ($ticket['state'] != $ticketedit['state']
+				|| $ticket['owner'] != $ticketedit['owner']
+				|| $ticket['deadline'] != $ticketedit['deadline']
+				|| $ticket['priority'] != $ticketedit['priority']
+				|| $ticket['parentid'] != $ticketedit['parentid']))
 			|| ($ticket['queueid'] != $ticketedit['queue'] && !empty($newticket_notify))) {
 			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
