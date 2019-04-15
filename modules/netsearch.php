@@ -139,7 +139,7 @@ if (isset($_GET['search'])) {
 	unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
 
 	if ($listdata['total'] == 1)
-		$SESSION->redirect('?m=netsearch&id=' . $netlist[0]['id']);
+		$SESSION->redirect('?m=netinfo&id=' . $netlist[0]['id']);
 	else {
 		if(!isset($_GET['page']))
     		$SESSION->restore('ndlsp', $_GET['page']);
