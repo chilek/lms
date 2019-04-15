@@ -30,7 +30,7 @@
 					{trans("Check All")}
 				</label>
 				{button icon="fas fa-reply-all" class="group-action-run" label="Run group action"}
-				{button icon="add" onclick="location.href = '?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$filter.custid}';"
+				{button icon="add" onclick="location.href = '?m=rtticketadd{if $filter.ids && !is_array($filter.ids)}&id={$filter.ids}{/if}';"
 					label="New Ticket"}
 			</TD>
 		</TR>
