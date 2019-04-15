@@ -142,9 +142,11 @@ if(isset($_POST['event']))
 	if (isset($event['helpdesk'])) {
 		if (empty($event['ticketid']))
 			$error['ticketid'] = trans('Ticket id should not be empty!');
-		else
-			if (!empty($event['ticket']['address_id']) && $event['address_id'])
+		else {
+			$event['ticket'] = $LMS->GetTicketContents($event['ticketid'], true);
+			if (!empty($event['ticket']['address_id']) && $event['address_id'] > 0)
 				$error['address_id'] = trans('Event location selection is not possible as it is assigned to ticket!');
+		}
 	}
 
 	if (!$error) {
