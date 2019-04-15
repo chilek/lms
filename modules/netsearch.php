@@ -145,7 +145,7 @@ if (isset($_GET['search'])) {
     		$SESSION->restore('ndlsp', $_GET['page']);
 
 		$page = (! $_GET['page'] ? 1 : $_GET['page']);
-		$pagelimit = ConfigHelper::getConfig('phpui.netlist_pagelimit', $listdata['total']);
+		$pagelimit = ConfigHelper::getConfig('phpui.networklist_pagelimit', $listdata['total']);
 		$start = ($page - 1) * $pagelimit;
 
 		$SESSION->save('ndlsp', $page);
