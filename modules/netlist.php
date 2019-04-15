@@ -68,6 +68,7 @@ $listdata['total'] = count($netlist);
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netlist',$netlist);
+$SMARTY->assign('search', false);
 $SMARTY->display('net/netlist.html');
 
 ?>

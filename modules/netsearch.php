@@ -26,7 +26,7 @@
 
 if (isset($_GET['ajax'])) {
 	header('Content-type: text/plain');
-	$search = urldecode(trim($_GET['what']));
+	$netsearch = urldecode(trim($_GET['what']));
 
 	switch ($_GET['mode']) {
 		
@@ -43,7 +43,7 @@ if (isset($_GET['ajax'])) {
 												FROM
 													networks
 												WHERE
-													' . $_GET['mode'] . ' != \'\' AND lower(' .$_GET['mode'] . ') ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+													' . $_GET['mode'] . ' != \'\' AND lower(' .$_GET['mode'] . ') ?LIKE? lower(' . $DB->Escape('%' . $netsearch . '%') . ')
 												GROUP BY
 													item
 												ORDER BY
@@ -58,7 +58,7 @@ if (isset($_GET['ajax'])) {
 												FROM
 													networks n left join hosts h on n.hostid = h.id
 												WHERE
-													h.name != \'\' AND lower(h.name) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+													h.name != \'\' AND lower(h.name) ?LIKE? lower(' . $DB->Escape('%' . $netsearch . '%') . ')
 												GROUP BY
 													item
 												ORDER BY
@@ -73,7 +73,7 @@ if (isset($_GET['ajax'])) {
 												FROM
 													networks
 												WHERE
-													dns != \'\' AND lower(dns) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+													dns != \'\' AND lower(dns) ?LIKE? lower(' . $DB->Escape('%' . $netsearch . '%') . ')
 												GROUP BY
 													item
 												ORDER BY
@@ -86,7 +86,7 @@ if (isset($_GET['ajax'])) {
 												FROM
 													networks
 												WHERE
-													dns2 != \'\' AND lower(dns2) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+													dns2 != \'\' AND lower(dns2) ?LIKE? lower(' . $DB->Escape('%' . $netsearch . '%') . ')
 												GROUP BY
 													item
 												ORDER BY
@@ -124,37 +124,58 @@ if (isset($_GET['ajax'])) {
 	exit;
 }
 
-if (isset($_GET['search'])) {
+if (isset($_POST['search']))
+	$netsearch = $_POST['search'];
+
+if (!isset($netsearch))
+	$SESSION->restore('netsearch', $netsearch);
+else
+	$SESSION->save('netsearch', $netsearch);
+
+if (!isset($_GET['searchform']) && !empty($netsearch)) {
 	$layout['pagetitle'] = trans('IP Network Search Results');
 
-	$netlist = $LMS->GetNetworkList($_POST['search']);
+	$netsearch['count'] = true;
+	$count = intval($LMS->GetNetworkList($netsearch));
 
-	$listdata['total'] = $netlist['total'];
-	$listdata['order'] = $netlist['order'];
-	$listdata['direction'] = $netlist['direction'];
-	$listdata['online'] = $netlist['online'];
-	$listdata['assigned'] = $netlist['assigned'];
-	$listdata['size'] = $netlist['size'];
+	$netsearch['count'] = false;
+	if ($count == 1) {
+		$netsearch['offset'] = 0;
+		$netsearch['limit'] = 1;
+	} else {
+		if (isset($_GET['o']))
+			$netsearch['order'] = $_GET['o'];
 
-	unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
-
-	if ($listdata['total'] == 1)
-		$SESSION->redirect('?m=netinfo&id=' . $netlist[0]['id']);
-	else {
 		if(!isset($_GET['page']))
-    		$SESSION->restore('ndlsp', $_GET['page']);
-
-		$page = (! $_GET['page'] ? 1 : $_GET['page']);
-		$pagelimit = ConfigHelper::getConfig('phpui.networklist_pagelimit', $listdata['total']);
-		$start = ($page - 1) * $pagelimit;
+			$SESSION->restore('ndlsp', $_GET['page']);
 
 		$SESSION->save('ndlsp', $page);
+		$page = (! $_GET['page'] ? 1 : intval($_GET['page']));
+		$netsearch['limit'] = intval(ConfigHelper::getConfig('phpui.networklist_pagelimit', $count));
+		$netsearch['offset']= ($page - 1) * $netsearch['limit'];
 
-		$SMARTY->assign('page', $page);
-		$SMARTY->assign('pagelimit', $pagelimit);
-		$SMARTY->assign('start', $start);
+		$SESSION->save('ndlsp', $page);
+	}
+	$netlist = $LMS->GetNetworkList($netsearch);
+
+	if ($count == 1)
+		$SESSION->redirect('?m=netinfo&id=' . $netlist[0]['id']);
+	else {
+		$listdata['order'] = $netlist['order'];
+		$listdata['direction'] = $netlist['direction'];
+		$listdata['online'] = $netlist['online'];
+		$listdata['assigned'] = $netlist['assigned'];
+		$listdata['size'] = $netlist['size'];
+
+		unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
+
+		$pagination = LMSPaginationFactory::getPagination($page, $count, $netsearch['limit'],
+			ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
 		$SMARTY->assign('netlist', $netlist);
 		$SMARTY->assign('listdata', $listdata);
+		$SMARTY->assign('pagination', $pagination);
+		$SMARTY->assign('search', true);
 		$SMARTY->display('net/netlist.html');
 	}
 } else {

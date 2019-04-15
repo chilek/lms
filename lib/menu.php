@@ -330,7 +330,7 @@ $menu = array(
 				),
 				array(
 					'name' => trans('Search'),
-					'link' => '?m=netsearch',
+					'link' => '?m=netsearch&searchform=1',
 					'tip' => trans('Allows you to search for IP address pools'),
 					'prio' => 30,
 				),
