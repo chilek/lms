@@ -936,7 +936,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		return $this->lastmessageid;
 	}
 
-    public function GetTicketContents($id)
+    public function GetTicketContents($id, $short = false)
     {
         global $RT_STATES;
 
@@ -980,20 +980,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				return $elem['name'];
 			}, $ticket['categories']);
 
-        $ticket['messages'] = $this->db->GetAll(
-                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
-				userid, vusers.name AS username, customerid, rtmessages.type, rtmessages.deleted, rtmessages.deltime, rtmessages.deluserid
-				FROM rtmessages
-				LEFT JOIN customers ON (customers.id = customerid)
-				LEFT JOIN vusers ON (vusers.id = userid)
-				WHERE 1=1'
+		if (!$short) {
+			$ticket['messages'] = $this->db->GetAll(
+				'(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
+				. $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
+					userid, vusers.name AS username, customerid, rtmessages.type, rtmessages.deleted, rtmessages.deltime, rtmessages.deluserid
+					FROM rtmessages
+					LEFT JOIN customers ON (customers.id = customerid)
+					LEFT JOIN vusers ON (vusers.id = userid)
+					WHERE 1=1'
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rtmessages.deleted = 0' : '')
 				. (' AND ticketid = ?)')
-				.(' ORDER BY createtime ASC, rtmessages.id'), array($id));
+				. (' ORDER BY createtime ASC, rtmessages.id'), array($id));
 
-        foreach ($ticket['messages'] as $idx => $message)
-            $ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));
+			foreach ($ticket['messages'] as $idx => $message)
+				$ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));
+		}
 
         $ticket['status'] = $RT_STATES[$ticket['state']];
         $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);

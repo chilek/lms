@@ -87,7 +87,7 @@ interface LMSHelpdeskManagerInterface
 
 	public function GetLastMessageID();
 
-    public function GetTicketContents($id);
+    public function GetTicketContents($id, $short = false);
 
     public function GetMessage($id);
 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -49,6 +49,8 @@ if (isset($_GET['action'])) {
 
 if (isset($_GET['id'])) {
 	$event = $LMS->GetEvent($_GET['id']);
+	if (!empty($event['ticketid']))
+		$event['ticket'] = $LMS->GetTicketContents($event['ticketid'], true);
 
 	if (empty($event['enddate']))
 		$event['enddate'] = $event['date'];
@@ -137,8 +139,13 @@ if(isset($_POST['event']))
 	if (!isset($event['customerid']))
 		$event['customerid'] = $event['custid'];
 
-	if (isset($event['helpdesk']) && empty($event['ticketid']))
-		$error['ticketid'] = trans('Ticket id should not be empty!');
+	if (isset($event['helpdesk'])) {
+		if (empty($event['ticketid']))
+			$error['ticketid'] = trans('Ticket id should not be empty!');
+		else
+			if (!empty($event['ticket']['address_id']) && $event['address_id'])
+				$error['address_id'] = trans('Event location selection is not possible as it is assigned to ticket!');
+	}
 
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;

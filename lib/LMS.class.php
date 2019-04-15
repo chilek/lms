@@ -1723,10 +1723,10 @@ class LMS
 		return $manager->GetLastMessageID();
 	}
 
-    public function GetTicketContents($id)
+    public function GetTicketContents($id, $short = false)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetTicketContents($id);
+        return $manager->GetTicketContents($id, $short);
     }
 
     public function TicketChange($ticketid, array $props)
