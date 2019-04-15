@@ -236,6 +236,7 @@ version ?.??.?? (????-??-??):
   - improvement: new customer removal access privilege added [chilan]
   - enhancement: customer income report broken down into link technology (helpfull for UKE income
     reports) [chilan]
+  - enhacement: allow to automatically generate debit notes [chilan]
 
 version 1.11.23 (2018-03-21):
 
