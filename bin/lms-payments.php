@@ -323,140 +323,6 @@ if (!empty($results))
 		$periods[$row['id']] = ($row['period'] ? $row['period'] : YEARLY);
 	}
 
-// get dominating link technology per customer assignments when customer
-// node are directly connected to operator network device
-$assignment_linktechnologies = $DB->GetAllByKey("SELECT a.id, b.technology, MAX(b.technologycount) AS technologycount
-	FROM assignments a
-	JOIN (
-		SELECT a.id, n.linktechnology AS technology, COUNT(n.linktechnology) AS technologycount
-		FROM nodeassignments na
-			JOIN assignments a ON a.id = na.assignmentid
-			JOIN tariffs t ON t.id = a.tariffid
-			JOIN nodes n ON n.id = na.nodeid
-		WHERE n.linktechnology > 0 AND n.ownerid IS NOT NULL
-		GROUP BY a.id, n.linktechnology
-	) b ON b.id = a.id
-	GROUP BY a.id, b.technology
-	ORDER BY a.id", 'id');
-if (empty($assignment_linktechnologies))
-	$assignment_linktechnologies = array();
-
-// get dominating link technology per customer assignments when customer
-// node or customer network devices nodes are connected to operator through customer subnetwork
-// ************
-// get assignments which match to nodes or network device nodes in customer subnetworks
-$node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignmentid', ',', true) . " AS assignments,
-		na.nodeid
-	FROM nodeassignments na
-	JOIN nodes n ON n.id = na.nodeid
-	JOIN assignments a ON a.id = na.assignmentid
-	LEFT JOIN netdevices nd ON nd.id = n.netdev
-	WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
-		OR n.ownerid IS NOT NULL)
-		AND a.suspended = 0
-		AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
-		AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-		AND NOT EXISTS (
-			SELECT id FROM assignments aa
-			WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-				AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-				AND aa.datefrom < ?NOW?
-				AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-		)
-	GROUP BY na.nodeid", 'nodeid');
-if (empty($node_assignments))
-	$node_assignments = array();
-else
-	foreach ($node_assignments as $nodeid => $assignments)
-		$node_assignments[$nodeid] = explode(',', $assignments['assignments']);
-
-// search for links between operator network devices and customer network devices
-$uni_links = $DB->GetAllByKey("SELECT nl.id AS netlinkid, nl.technology AS technology,
-			c.id AS customerid,
-			(CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
-			(CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.dst END) AS netdevid
-		FROM netlinks nl
-		JOIN netdevices ndsrc ON ndsrc.id = nl.src
-		JOIN netdevices nddst ON nddst.id = nl.dst
-		JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
-			OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
-		WHERE nl.technology > 0 AND ((ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
-			OR (nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL))
-		ORDER BY nl.id",
-	'netlinkid');
-if (!empty($uni_links)) {
-	function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks) {
-		if (isset($customer_nodes[$customerid . '_' . $netdevid]))
-			$nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
-		else
-			$nodeids = array();
-
-		foreach ($customer_netlinks as &$customer_netlink) {
-			if ($customer_netlink['src'] == $netdevid)
-				$next_netdevid = $customer_netlink['dst'];
-			else if ($customer_netlink['dst'] == $netdevid)
-				$next_netdevid = $customer_netlink['src'];
-			else
-				continue;
-			$nodeids = array_merge($nodeids, find_nodes_for_netdev($customerid, $next_netdevid,
-				$customer_nodes, $customer_netlinks));
-		}
-		unset($customer_netlink);
-
-		return $nodeids;
-	}
-
-	$customer_netlinks = $DB->GetAllByKey("SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
-			FROM netlinks nl
-			JOIN netdevices ndsrc ON ndsrc.id = nl.src
-			JOIN netdevices nddst ON nddst.id = nl.dst
-			WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
-				AND ndsrc.ownerid = nddst.ownerid",
-		'netlink');
-
-	$customer_nodes = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
-				" . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
-			FROM nodes n
-			LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
-			WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
-				AND EXISTS (
-					SELECT na.id FROM nodeassignments na
-					JOIN assignments a ON a.id = na.assignmentid
-					WHERE na.nodeid = n.id AND a.suspended = 0
-						AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
-						AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
-				)
-				AND NOT EXISTS (
-					SELECT id FROM assignments aa
-					WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
-						AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
-						AND aa.datefrom < ?NOW?
-						AND (aa.dateto > ?NOW? OR aa.dateto = 0)
-				)
-			GROUP BY customerid_netdev",
-		'customerid_netdev');
-
-	// collect customer node/node-netdev identifiers connected to customer subnetwork
-	// and then fill assignment linktechnologies relations
-	foreach ($uni_links as $netlinkid => &$netlink) {
-		$nodes = find_nodes_for_netdev($netlink['customerid'], $netlink['netdevid'],
-			$customer_nodes, $customer_netlinks);
-		if (!empty($nodes))
-			foreach ($nodes as $nodeid)
-				foreach ($node_assignments[$nodeid] as $assignmentid)
-					$assignment_linktechnologies[$assignmentid] = array(
-						'id' => $assignmentid,
-						'technology' => $netlink['technology'],
-						'technologycount' => 1,
-					);
-	}
-	unset($netlink);
-	unset($uni_links);
-
-	unset($customer_netlinks);
-	unset($customer_nodes);
-}
-
 // prepare customergroups in sql query
 $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca 
 	WHERE c.id = ca.customerid 
@@ -624,6 +490,140 @@ if ($billings) {
 
 if (empty($assigns))
 	die;
+
+// get dominating link technology per customer assignments when customer
+// node are directly connected to operator network device
+$assignment_linktechnologies = $DB->GetAllByKey("SELECT a.id, b.technology, MAX(b.technologycount) AS technologycount
+	FROM assignments a
+	JOIN (
+		SELECT a.id, n.linktechnology AS technology, COUNT(n.linktechnology) AS technologycount
+		FROM nodeassignments na
+			JOIN assignments a ON a.id = na.assignmentid
+			JOIN tariffs t ON t.id = a.tariffid
+			JOIN nodes n ON n.id = na.nodeid
+		WHERE n.linktechnology > 0 AND n.ownerid IS NOT NULL
+		GROUP BY a.id, n.linktechnology
+	) b ON b.id = a.id
+	GROUP BY a.id, b.technology
+	ORDER BY a.id", 'id');
+if (empty($assignment_linktechnologies))
+	$assignment_linktechnologies = array();
+
+// get dominating link technology per customer assignments when customer
+// node or customer network devices nodes are connected to operator through customer subnetwork
+// ************
+// get assignments which match to nodes or network device nodes in customer subnetworks
+$node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignmentid', ',', true) . " AS assignments,
+		na.nodeid
+	FROM nodeassignments na
+	JOIN nodes n ON n.id = na.nodeid
+	JOIN assignments a ON a.id = na.assignmentid
+	LEFT JOIN netdevices nd ON nd.id = n.netdev
+	WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
+		OR n.ownerid IS NOT NULL)
+		AND a.suspended = 0
+		AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+		AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+		AND NOT EXISTS (
+			SELECT id FROM assignments aa
+			WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
+				AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+				AND aa.datefrom < ?NOW?
+				AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+		)
+	GROUP BY na.nodeid", 'nodeid');
+if (empty($node_assignments))
+	$node_assignments = array();
+else
+	foreach ($node_assignments as $nodeid => $assignments)
+		$node_assignments[$nodeid] = explode(',', $assignments['assignments']);
+
+// search for links between operator network devices and customer network devices
+$uni_links = $DB->GetAllByKey("SELECT nl.id AS netlinkid, nl.technology AS technology,
+			c.id AS customerid,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN nl.src ELSE nl.dst END) AS operator_netdevid,
+			(CASE WHEN ndsrc.ownerid IS NULL THEN nl.dst ELSE nl.dst END) AS netdevid
+		FROM netlinks nl
+		JOIN netdevices ndsrc ON ndsrc.id = nl.src
+		JOIN netdevices nddst ON nddst.id = nl.dst
+		JOIN customers c ON (ndsrc.ownerid IS NULL AND c.id = nddst.ownerid)
+			OR (nddst.ownerid IS NULL AND c.id = ndsrc.ownerid)
+		WHERE nl.technology > 0 AND ((ndsrc.ownerid IS NULL AND nddst.ownerid IS NOT NULL)
+			OR (nddst.ownerid IS NULL AND ndsrc.ownerid IS NOT NULL))
+		ORDER BY nl.id",
+	'netlinkid');
+if (!empty($uni_links)) {
+	function find_nodes_for_netdev($customerid, $netdevid, &$customer_nodes, &$customer_netlinks) {
+		if (isset($customer_nodes[$customerid . '_' . $netdevid]))
+			$nodeids = explode(',', $customer_nodes[$customerid . '_' . $netdevid]['nodeids']);
+		else
+			$nodeids = array();
+
+		foreach ($customer_netlinks as &$customer_netlink) {
+			if ($customer_netlink['src'] == $netdevid)
+				$next_netdevid = $customer_netlink['dst'];
+			else if ($customer_netlink['dst'] == $netdevid)
+				$next_netdevid = $customer_netlink['src'];
+			else
+				continue;
+			$nodeids = array_merge($nodeids, find_nodes_for_netdev($customerid, $next_netdevid,
+				$customer_nodes, $customer_netlinks));
+		}
+		unset($customer_netlink);
+
+		return $nodeids;
+	}
+
+	$customer_netlinks = $DB->GetAllByKey("SELECT " . $DB->Concat('nl.src', "'_'", 'nl.dst') . " AS netlink
+			FROM netlinks nl
+			JOIN netdevices ndsrc ON ndsrc.id = nl.src
+			JOIN netdevices nddst ON nddst.id = nl.dst
+			WHERE ndsrc.ownerid IS NOT NULL AND nddst.ownerid IS NOT NULL
+				AND ndsrc.ownerid = nddst.ownerid",
+		'netlink');
+
+	$customer_nodes = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('n.id') . " AS nodeids,
+				" . $DB->Concat('CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END', "'_'", 'n.netdev') . " AS customerid_netdev
+			FROM nodes n
+			LEFT JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL AND nd.ownerid IS NOT NULL
+			WHERE n.ownerid IS NOT NULL OR nd.ownerid IS NOT NULL
+				AND EXISTS (
+					SELECT na.id FROM nodeassignments na
+					JOIN assignments a ON a.id = na.assignmentid
+					WHERE na.nodeid = n.id AND a.suspended = 0
+						AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
+						AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+				)
+				AND NOT EXISTS (
+					SELECT id FROM assignments aa
+					WHERE aa.customerid = (CASE WHEN n.ownerid IS NULL THEN nd.ownerid ELSE n.ownerid END)
+						AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
+						AND aa.datefrom < ?NOW?
+						AND (aa.dateto > ?NOW? OR aa.dateto = 0)
+				)
+			GROUP BY customerid_netdev",
+		'customerid_netdev');
+
+	// collect customer node/node-netdev identifiers connected to customer subnetwork
+	// and then fill assignment linktechnologies relations
+	foreach ($uni_links as $netlinkid => &$netlink) {
+		$nodes = find_nodes_for_netdev($netlink['customerid'], $netlink['netdevid'],
+			$customer_nodes, $customer_netlinks);
+		if (!empty($nodes))
+			foreach ($nodes as $nodeid)
+				foreach ($node_assignments[$nodeid] as $assignmentid)
+					$assignment_linktechnologies[$assignmentid] = array(
+						'id' => $assignmentid,
+						'technology' => $netlink['technology'],
+						'technologycount' => 1,
+					);
+	}
+	unset($netlink);
+	unset($uni_links);
+
+	unset($customer_netlinks);
+	unset($customer_nodes);
+}
 
 $suspended = 0;
 $invoices = array();
