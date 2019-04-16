@@ -61,7 +61,7 @@ function GenerateAttachmentHTML($template_dir, $engine, $selected) {
 	return implode('<br>', $output);
 }
 
-function GetPlugin($template, $customer, $JSResponse) {
+function GetPlugin($template, $customer, $update_title, $JSResponse) {
 	global $documents_dirs;
 	
 	$result = '';
@@ -97,7 +97,8 @@ function GetPlugin($template, $customer, $JSResponse) {
 		$JSResponse->script('$("#attachment-row").show()');
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
-	$JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
+	if ($update_title)
+		$JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
 }
 
 function GetDocumentTemplates($rights, $type = NULL) {
@@ -256,7 +257,7 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse) {
 function CustomerChanged($doctype, $doctemplate, $numberplanid, $customerid) {
 	$JSResponse = new XajaxResponse();
 
-	GetPlugin($doctemplate, $customerid, $JSResponse);
+	GetPlugin($doctemplate, $customerid, false, $JSResponse);
 	_GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
 	GetTemplates($doctype, $doctemplate, $JSResponse);
 	GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
@@ -277,7 +278,7 @@ function DocTypeChanged($doctype, $numberplanid, $customerid) {
 function DocTemplateChanged($doctype, $doctemplate, $customerid) {
 	$JSResponse = new XajaxResponse();
 
-	GetPlugin($doctemplate, $customerid, $JSResponse);
+	GetPlugin($doctemplate, $customerid, true, $JSResponse);
 	GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
 
 	return $JSResponse;
