@@ -34,7 +34,7 @@ function try_generate_archive_notes($ids) {
 
 	$SMARTY = LMSSmarty::getInstance();
 
-	$archive_stats = $LMS->GetFinancialDocumentArchiveStats($ids);
+	$archive_stats = $LMS->GetTradeDocumentArchiveStats($ids);
 
 	if (($note_type == 'pdf' && ($archive_stats['html'] > 0 || $archive_stats['rtype'] == 'html'))
 		|| ($note_type == 'html' && ($archive_stats['pdf'] > 0 || $archive_stats['rtype'] == 'pdf')))

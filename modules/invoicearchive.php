@@ -44,6 +44,6 @@ if (empty($ids))
 	$SESSION->redirect($_SERVER['HTTP_REFERER']);
 
 foreach ($ids as $id)
-	$LMS->ArchiveFinancialDocument($id);
+	$LMS->ArchiveTradeDocument($id);
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);

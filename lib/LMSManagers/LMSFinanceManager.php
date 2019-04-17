@@ -1055,7 +1055,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
-	public function GetFinancialDocumentArchiveStats($ids) {
+	public function GetTradeDocumentArchiveStats($ids) {
 		$archive_stats = $this->db->GetRow('SELECT SUM(CASE WHEN d.archived = 1 THEN 1 ELSE 0 END) AS archive,
 			SUM(CASE WHEN d.archived = 0 THEN 1 ELSE 0 END) AS current,
 			SUM(CASE WHEN a.contenttype = ? THEN 1 ELSE 0 END) AS html,
@@ -1074,7 +1074,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 		return $archive_stats;
 	}
-    public function ArchiveFinancialDocument($id) {
+
+	public function DeleteArchiveTradeDocument($id) {
+		$md5sum = $this->db->GetCol('SELECT md5sum FROM documentattachments WHERE docid = ?', array($id));
+		if (!empty($md5sum)) {
+			$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+			if ($document_manager->DocumentAttachmentExists($md5sum) <= 1
+				&& !$file_manager->FileExists($md5sum))
+				@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2)
+					. DIRECTORY_SEPARATOR . $md5sum);
+		}
+
+		$this->db->Execute('DELETE FROM documentattachments WHERE docid = ?', array($id));
+		$this->db->Execute('UPDATE documents SET archived = 0, adate = 0, auserid = NULL
+			WHERE id = ?', array($id));
+	}
+
+	public function ArchiveTradeDocument($id) {
 		$doc = $this->db->GetRow('SELECT d.id, d.number, d.cdate, d.customerid, d.type AS doctype, n.template
 			FROM documents d
 			LEFT JOIN numberplans n ON n.id = d.numberplanid 
@@ -1086,7 +1103,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			? ConfigHelper::getConfig('notes.attachment_name', 'dnote_%docid')
 			: ConfigHelper::getConfig('invoices.attachment_name', 'invoice_%docid'));
 
-		$file = $this->GetFinancialDocument($doc);
+		$file = $this->GetTradeDocument($doc);
 
 		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
 		$error = $document_manager->AddArchiveDocument($id, $file);
@@ -1106,7 +1123,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		return $result;
 	}
 
-	public function GetFinancialDocument($doc) {
+	public function GetTradeDocument($doc) {
 		if (isset($doc['archived']) && !empty($doc['archived'])) {
 			$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
 			return $document_manager->GetArchiveDocument($doc['id']);

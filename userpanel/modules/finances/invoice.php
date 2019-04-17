@@ -37,7 +37,7 @@ function try_generate_archive_invoices($ids) {
 
 	$SMARTY = LMSSmarty::getInstance();
 
-	$archive_stats = $LMS->GetFinancialDocumentArchiveStats($ids);
+	$archive_stats = $LMS->GetTradeDocumentArchiveStats($ids);
 
 	if (($invoice_type == 'pdf' && ($archive_stats['html'] > 0 || $archive_stats['rtype'] == 'html'))
 		|| ($invoice_type == 'html' && ($archive_stats['pdf'] > 0 || $archive_stats['rtype'] == 'pdf')))

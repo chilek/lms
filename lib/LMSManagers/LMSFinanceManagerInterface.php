@@ -48,11 +48,13 @@ interface LMSFinanceManagerInterface
 
 	public function SuspendAssignment($id, $suspend = TRUE);
 
-	public function GetFinancialDocumentArchiveStats($ids);
+	public function GetTradeDocumentArchiveStats($ids);
 
-	public function ArchiveFinancialDocument($doc);
+	public function DeleteArchiveTradeDocument($id);
 
-	public function GetFinancialDocument($doc);
+	public function ArchiveTradeDocument($doc);
+
+	public function GetTradeDocument($doc);
 
 	public function GetInvoiceList(array $params);
 

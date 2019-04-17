@@ -1036,19 +1036,24 @@ class LMS
         return $manager->InvoiceContentDelete($invoiceid, $itemid);
     }
 
-	public function GetFinancialDocumentArchiveStats($ids) {
+	public function GetTradeDocumentArchiveStats($ids) {
 		$manager = $this->getFinanceManager();
-		return $manager->GetFinancialDocumentArchiveStats($ids);
+		return $manager->GetTradeDocumentArchiveStats($ids);
 	}
 
-	public function ArchiveFinancialDocument($id) {
+	public function DeleteArchiveTradeDocument($id) {
 		$manager = $this->getFinanceManager();
-		return $manager->ArchiveFinancialDocument($id);
+		return $manager->DeleteArchiveTradeDocument($id);
 	}
 
-	public function GetFinancialDocument($doc) {
+	public function ArchiveTradeDocument($id) {
 		$manager = $this->getFinanceManager();
-		return $manager->GetFinancialDocument($doc);
+		return $manager->ArchiveTradeDocument($id);
+	}
+
+	public function GetTradeDocument($doc) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetTradeDocument($doc);
 	}
 
 	public function GetInvoiceContent($invoiceid)
@@ -3829,7 +3834,7 @@ class LMS
 			$doc['which'] = $which;
 
 			if (!$no_attachments) {
-				$document = $this->GetFinancialDocument($doc);
+				$document = $this->GetTradeDocument($doc);
 				$filename = $document['filename'];
 			}
 

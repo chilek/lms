@@ -381,7 +381,7 @@ if (!empty($docs)) {
 		foreach ($docs as $doc) {
 			$doc['invoice_filename'] = $invoice_filename;
 			$doc['dnote_filename'] = $dnote_filename;
-			$document = $LMS->GetFinancialDocument($doc);
+			$document = $LMS->GetTradeDocument($doc);
 			if (!$quiet)
 				echo "Document " . $document['filename'] . " backed up." . PHP_EOL;
 			if (!$test) {
@@ -392,7 +392,7 @@ if (!empty($docs)) {
 		}
 	} elseif ($archive)
 		foreach ($docs as $doc) {
-			$result = $LMS->ArchiveFinancialDocument($doc['id']);
+			$result = $LMS->ArchiveTradeDocument($doc['id']);
 			if (!$quiet && isset($result['ok']))
 				if ($result['ok'])
 					echo "Document ID: " . $doc['id'] . " archived with name " . $result['filename'] . "." . PHP_EOL;
