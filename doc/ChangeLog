@@ -237,6 +237,8 @@ version ?.??.?? (????-??-??):
   - enhancement: customer income report broken down into link technology (helpfull for UKE income
     reports) [chilan]
   - enhacement: allow to automatically generate debit notes [chilan]
+  - enhancement: allow to preserve pro forma invoice after its conversion to invoice
+    - phpui.default_preserve_proforma_invoice check/uncheck corresponing checkbox [chilan]
 
 version 1.11.23 (2018-03-21):
 
