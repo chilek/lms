@@ -39,8 +39,11 @@ if ($id && $_GET['is_sure'] == '1') {
 	$hook_data = $LMS->executeHook('invoicedel_before_delete', array(
 		'id' => $id,
 	));
-	if (!isset($hook_data['continue']) || !empty($hook_data['continue']))
+	if (!isset($hook_data['continue']) || !empty($hook_data['continue'])) {
+		$DB->BeginTrans();
 		$LMS->InvoiceDelete($id);
+		$DB->CommitTrans();
+	}
 }
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);

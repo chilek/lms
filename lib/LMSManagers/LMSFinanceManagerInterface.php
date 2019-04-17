@@ -98,6 +98,8 @@ interface LMSFinanceManagerInterface
 
     public function DelBalance($id);
 
+	public function PreserveProforma($docid);
+
     public function GetPaymentList();
 
     public function GetPayment($id);

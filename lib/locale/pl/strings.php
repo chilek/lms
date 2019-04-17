@@ -4307,4 +4307,6 @@ $_LANG['archivizator'] = 'archiwizator';
 
 $_LANG['Cannot write new archived document!'] = 'Nie można zapisać nowego dokumentu archiwalnego!';
 
+$_LANG['Preserve pro forma'] = 'Zachowaj pro formę';
+
 ?>

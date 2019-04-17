@@ -33,7 +33,9 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($LMS->isArchiveDocument($id))
 		return;
 
+	$DB->BeginTrans();
 	$LMS->DebitNoteDelete($id);
+	$DB->CommitTrans();
 }
 
 $SESSION->redirect('?m=notelist');

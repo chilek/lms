@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,7 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if (isset($_GET['id']) && ($action == 'edit' || $action == 'init' || $action == 'convert')) {
+if (isset($_GET['id']) && ($action == 'edit' || $action == 'init')) {
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkPrivilege('published_document_modification'))
 		return;
 
@@ -44,7 +44,7 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init' || $action == 
 	if (!empty($invoice['cancelled']))
 		return;
 
-	$invoice['proforma'] = isset($_GET['proforma']) ? $action : null;
+	$invoice['proforma'] = isset($_GET['proforma']) ? $action : 0;
 
 	$SESSION->remove('invoicecontents');
 	$SESSION->remove('invoice');
@@ -79,26 +79,6 @@ if (isset($_GET['id']) && ($action == 'edit' || $action == 'init' || $action == 
 	$invoice['oldcustomerid'] = $invoice['customerid'];
 	$invoice['oldcomment'] = $invoice['comment'];
 
-	if ($invoice['proforma'] == 'convert') {
-		$currtime = time();
-		$invoice['cdate'] = $currtime;
-		$invoice['sdate'] = $currtime;
-		$invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
-
-		$customer = $LMS->GetCustomer($invoice['customerid'], true);
-		$invoice['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
-			JOIN numberplanassignments a ON (n.id = a.planid)
-			WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
-			array(DOC_INVOICE, $customer['divisionid']));
-
-		$invoice['number'] = $LMS->GetNewDocumentNumber(array(
-			'doctype' => DOC_INVOICE,
-			'planid' => $invoice['numberplanid'],
-			'cdate' => $invoice['cdate'],
-			'customerid' => $invoice['customerid'],
-		));
-	}
-
 	$hook_data = array(
 		'contents' => $invoicecontents,
 		'invoice' => $invoice,
@@ -125,9 +105,7 @@ $ntempl = docnumber(array(
 	'cdate' => $invoice['cdate'],
 	'customerid' => $invoice['customerid'],
 ));
-if (isset($invoice['proforma']) && $invoice['proforma'] == 'convert')
-	$layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $ntempl);
-elseif($invoice['doctype'] == DOC_INVOICE_PRO)
+if($invoice['doctype'] == DOC_INVOICE_PRO)
 	$layout['pagetitle'] = trans('Pro Forma Invoice Edit: $a', $ntempl);
 else
 	$layout['pagetitle'] = trans('Invoice Edit: $a', $ntempl);
@@ -585,8 +563,7 @@ switch($action)
 					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
-				if ($invoice['doctype'] == DOC_INVOICE || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')
-					|| $invoice['proforma'] == 'convert')
+				if ($invoice['doctype'] == DOC_INVOICE || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment'))
 					$LMS->AddBalance(array(
 						'time' => $cdate,
 						'value' => $item['valuebrutto']*$item['count']*-1,

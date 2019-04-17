@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -49,8 +49,6 @@ $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoicenewerror', $error);
 
-$layout['pagetitle'] = !empty($invoice) && $invoice['proforma'] ? trans('New Pro Forma Invoice') : trans('New Invoice');
-
 $itemdata = r_trim($_POST);
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
@@ -71,35 +69,73 @@ switch($action)
 	case 'init':
 
 		unset($invoice);
-		unset($contents);
 		unset($customer);
 		unset($error);
+		$contents = null;
+
+		if (isset($_GET['id'])) {
+			$invoice = $LMS->GetInvoiceContent($_GET['id']);
+
+			$contents = array();
+			foreach ($invoice['content'] as $item) {
+				$contents[] = array(
+					'tariffid' => $item['tariffid'],
+					'name' => $item['description'],
+					'prodid' => $item['prodid'],
+					'count' => str_replace(',' ,'.', $item['count']),
+					'discount' => str_replace(',' ,'.', $item['pdiscount']),
+					'pdiscount' => str_replace(',' ,'.', $item['pdiscount']),
+					'vdiscount' => str_replace(',' ,'.', $item['vdiscount']),
+					'jm' => str_replace(',' ,'.', $item['content']),
+					'valuenetto' => str_replace(',' ,'.', $item['basevalue']),
+					'valuebrutto' => str_replace(',' ,'.', $item['value']),
+					's_valuenetto' => str_replace(',' ,'.', $item['totalbase']),
+					's_valuebrutto' => str_replace(',' ,'.', $item['total']),
+					'tax' => isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '',
+					'taxid' => $item['taxid'],
+				);
+			}
+
+			$customer = $LMS->GetCustomer($invoice['customerid']);
+			$invoice['proformaid'] = $_GET['id'];
+			$invoice['proformanumber'] = docnumber(array(
+				'doctype' => DOC_INVOICE_PRO,
+				'cdate' => $invoice['cdate'],
+				'template' => $invoice['template'],
+				'customerid' => $invoice['customerid'],
+			));
+			$invoice['preserve-proforma'] = ConfigHelper::checkConfig('phpui.default_preserve_proforma_invoice');
+		} else {
+			if (!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid'])) {
+				$customer = $LMS->GetCustomer($_GET['customerid'], true);
+				$invoice['customerid'] = $_GET['customerid'];
+			}
+		}
+		$invoice['numberplanid'] = null;
 
 		// get default invoice's numberplanid and next number
 		$currtime = time();
 		$invoice['cdate'] = $currtime;
 		$invoice['sdate'] = $currtime;
-//		$invoice['paytype'] = ConfigHelper::getConfig('invoices.paytype');
 
 		$invoice['proforma'] = isset($_GET['proforma']) ? 1 : 0;
 
-		if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
-		{
-			$customer = $LMS->GetCustomer($_GET['customerid'], true);
-			$invoice['customerid'] = $_GET['customerid'];
+		if (isset($_GET['id'])) {
+			$invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
+		} else {
+			if (isset($customer) && $customer['paytime'] != -1)
+				$paytime = $customer['paytime'];
+			elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+				WHERE id = ?', array($customer['divisionid']))) === NULL)
+				$paytime = ConfigHelper::getConfig('invoices.paytime');
+			$invoice['deadline'] = $currtime + $paytime * 86400;
+		}
 
+		if (isset($customer))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
 				JOIN numberplanassignments a ON (n.id = a.planid)
 				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
 				array($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $customer['divisionid']));
-		}
-
-		if (isset($customer) && $customer['paytime'] != -1)
-			$paytime = $customer['paytime'];
-		elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
-			WHERE id = ?', array($customer['divisionid']))) === NULL)
-			$paytime = ConfigHelper::getConfig('invoices.paytime');
-		$invoice['deadline'] = $currtime + $paytime * 86400;
 
 		if (empty($invoice['numberplanid']))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
@@ -107,9 +143,11 @@ switch($action)
 
 		$hook_data = array(
 			'invoice' => $invoice,
+			'contents' => $contents,
 		);
 		$hook_data = $LMS->ExecuteHook('invoicenew_init', $hook_data);
 		$invoice = $hook_data['invoice'];
+		$contents = $hook_data['contents'];
 
 	break;
 
@@ -465,6 +503,13 @@ switch($action)
 			$DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
 		}
 
+		if (isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma']))
+			$LMS->PreserveProforma($invoice['proformaid']);
+		else {
+			$LMS->DeleteArchiveTradeDocument($invoice['proformaid']);
+			$LMS->InvoiceDelete($invoice['proformaid']);
+		}
+
 		$DB->UnLockTables();
 		$DB->CommitTrans();
 
@@ -542,6 +587,13 @@ if (isset($customer)) {
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
 
 $SMARTY->assign('taxeslist', $taxeslist);
+
+if (isset($invoice['proformaid']))
+	$layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
+elseif ($invoice['proforma'])
+	$layout['pagetitle'] = trans('New Pro Forma Invoice');
+else
+	$layout['pagetitle'] = trans('New Invoice');
 
 $hook_data = array(
 	'customer' => $customer,

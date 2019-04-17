@@ -1154,9 +1154,14 @@ class LMS
         return $manager->DelBalance($id);
     }
 
-    /*
-     *   Payments
-     */
+	public function PreserveProforma($docid) {
+		$manager = $this->getFinanceManager();
+		return $manager->PreserveProforma($docid);
+	}
+
+	/*
+	 *   Payments
+	 */
 
     public function GetPaymentList()
     {

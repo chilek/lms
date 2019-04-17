@@ -1494,7 +1494,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function InvoiceDelete($invoiceid)
     {
-        $this->db->BeginTrans();
         if ($this->syslog) {
             $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id = ?', array($invoiceid));
             $args = array(
@@ -1526,15 +1525,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		$document_manager->DeleteDocumentAddresses($invoiceid);
 
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
-        $this->db->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
-        $this->db->Execute('DELETE FROM cash WHERE docid = ?', array($invoiceid));
-        $this->db->CommitTrans();
     }
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
     {
+		$this->db->BeginTrans();
         if ($itemid) {
-            $this->db->BeginTrans();
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents
 					JOIN invoicecontents ON docid = id WHERE id = ?', array($invoiceid));
@@ -1558,20 +1554,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 }
             }
-
-            if ($this->syslog) {
-                $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
-                $args = array(
-                    SYSLOG::RES_CASH => $cashid,
-                    SYSLOG::RES_DOC => $invoiceid,
-                    SYSLOG::RES_CUST => $customerid,
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
-            }
-            $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
-            $this->db->CommitTrans();
         } else
             $this->InvoiceDelete($invoiceid);
+		$this->db->CommitTrans();
     }
 
     public function GetInvoiceContent($invoiceid)
@@ -2239,7 +2224,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     }
 
 	public function ReceiptDelete($docid) {
-		$this->db->BeginTrans();
 		if ($this->syslog) {
 			$customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
 			$itemids = $this->db->GetCol('SELECT itemid FROM receiptcontents WHERE docid=?', array($docid));
@@ -2266,16 +2250,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				$this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 			}
 		}
-		$this->db->Execute('DELETE FROM receiptcontents WHERE docid=?', array($docid));
 		$this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
-		$this->db->Execute('DELETE FROM cash WHERE docid = ?', array($docid));
-		$this->db->CommitTrans();
 	}
 
     public function ReceiptContentDelete($docid, $itemid = 0)
     {
+		$this->db->BeginTrans();
         if ($itemid) {
-        	$this->db->BeginTrans();
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
                 $args = array(
@@ -2298,23 +2279,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
             }
-            if ($this->syslog) {
-                $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
-                $args = array(
-                    SYSLOG::RES_CASH => $cashid,
-                    SYSLOG::RES_DOC => $docid,
-                    SYSLOG::RES_CUST => $customerid,
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
-            }
-            $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
-            $this->db->CommitTrans();
         } else
         	$this->ReceiptDelete($docid);
+		$this->db->CommitTrans();
     }
 
 	public function DebitNoteDelete($noteid) {
-		$this->db->BeginTrans();
 		if ($this->syslog) {
 			$customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id = ?', array($noteid));
 			$args = array(
@@ -2347,16 +2317,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		$document_manager->DeleteDocumentAddresses($noteid);
 
 		$this->db->Execute('DELETE FROM documents WHERE id = ?', array($noteid));
-		$this->db->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($noteid));
-		$this->db->Execute('DELETE FROM cash WHERE docid = ?', array($noteid));
-		$this->db->CommitTrans();
-
 	}
 
 	public function DebitNoteContentDelete($docid, $itemid = 0)
     {
+		$this->db->BeginTrans();
         if ($itemid) {
-        	$this->db->BeginTrans();
             if ($this->syslog) {
                 list ($dnotecontid, $customerid) = array_values($this->db->GetRow('SELECT dn.id, customerid FROM debitnotecontents dn
 					JOIN documents d ON d.id = dn.docid WHERE docid=? AND itemid=?', array($docid, $itemid)));
@@ -2380,19 +2346,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
             }
-            if ($this->syslog) {
-                $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
-                $args = array(
-                    SYSLOG::RES_CASH => $cashid,
-                    SYSLOG::RES_DOC => $docid,
-                    SYSLOG::RES_CUST => $customerid,
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
-            }
-            $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
-            $this->db->CommitTrans();
         } else
         	$this->DebitNoteDelete($docid);
+		$this->db->CommitTrans();
     }
 
 	public function GetBalanceList(array $params) {
@@ -2563,40 +2519,73 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					LEFT JOIN documents d2 ON d2.reference = documents.id
 					WHERE cash.id = ?', array($id));
 
-        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO || $row['doctype'] == DOC_CNOTE) {
-			if (!$row['referenced'])
-        		$this->InvoiceContentDelete($row['docid'], $row['itemid']);
-		} elseif ($row['doctype'] == DOC_RECEIPT)
-            $this->ReceiptContentDelete($row['docid'], $row['itemid']);
-        elseif ($row['doctype'] == DOC_DNOTE)
-            $this->DebitNoteContentDelete($row['docid'], $row['itemid']);
-        else {
-            $this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
-            if ($this->syslog) {
-                $args = array(
-                    SYSLOG::RES_CASH => $id,
-                    SYSLOG::RES_CUST => $row['customerid'],
-                );
-                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
-            }
-            if ($row['importid']) {
-                if ($this->syslog) {
-                    $cashimport = $this->db->GetRow('SELECT customerid, sourceid, sourcefileid FROM cashimport WHERE id = ?', array($row['importid']));
-                    $args = array(
-                        SYSLOG::RES_CASHIMPORT => $row['importid'],
-                        SYSLOG::RES_CUST => $cashimport['customerid'],
-                        SYSLOG::RES_CASHSOURCE => $cashimport['sourceid'],
-                        SYSLOG::RES_SOURCEFILE => $cashimport['sourcefileid'],
-                        'closed' => 0,
-                    );
-                    $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
-                }
-                $this->db->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
-            }
-        }
-    }
 
-    public function GetPaymentList()
+		$this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
+		if ($this->syslog) {
+			$args = array(
+				SYSLOG::RES_CASH => $id,
+				SYSLOG::RES_CUST => $row['customerid'],
+			);
+			$this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+		}
+		if ($row['importid']) {
+			if ($this->syslog) {
+				$cashimport = $this->db->GetRow('SELECT customerid, sourceid, sourcefileid FROM cashimport WHERE id = ?', array($row['importid']));
+				$args = array(
+					SYSLOG::RES_CASHIMPORT => $row['importid'],
+					SYSLOG::RES_CUST => $cashimport['customerid'],
+					SYSLOG::RES_CASHSOURCE => $cashimport['sourceid'],
+					SYSLOG::RES_SOURCEFILE => $cashimport['sourcefileid'],
+					'closed' => 0,
+				);
+				$this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
+			}
+			$this->db->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
+		}
+
+		if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO || $row['doctype'] == DOC_CNOTE) {
+			if (!$row['referenced'])
+				$this->InvoiceContentDelete($row['docid'], $row['itemid']);
+		} elseif ($row['doctype'] == DOC_RECEIPT)
+			$this->ReceiptContentDelete($row['docid'], $row['itemid']);
+		elseif ($row['doctype'] == DOC_DNOTE)
+			$this->DebitNoteContentDelete($row['docid'], $row['itemid']);
+	}
+
+	public function PreserveProforma($docid) {
+		$rows = $this->db->GetAll('SELECT cash.id, cash.customerid, cash.importid,
+						i.sourceid, i.sourcefileid
+					FROM cash
+					LEFT JOIN cashimport i ON i.id = cash.importid
+					WHERE cash.docid = ?', array($docid));
+
+		if (!empty($rows))
+			foreach ($rows as $row) {
+				$this->db->Execute('DELETE FROM cash WHERE id = ?', array($row['id']));
+				if ($this->syslog) {
+					$args = array(
+						SYSLOG::RES_CASH => $row['id'],
+						SYSLOG::RES_CUST => $row['customerid'],
+					);
+					$this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+				}
+				if (!empty($row['importid'])) {
+					if ($this->syslog) {
+						$args = array(
+							SYSLOG::RES_CASHIMPORT => $row['importid'],
+							SYSLOG::RES_CUST => $row['customerid'],
+							SYSLOG::RES_CASHSOURCE => $row['sourceid'],
+							SYSLOG::RES_SOURCEFILE => $row['sourcefileid'],
+							'closed' => 0,
+						);
+						$this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
+					}
+					$this->db->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
+				}
+			}
+	}
+
+	public function GetPaymentList()
     {
         if ($paymentlist = $this->db->GetAll('SELECT id, name, creditor, value, period, at, description FROM payments ORDER BY name ASC'))
             foreach ($paymentlist as $idx => $row) {

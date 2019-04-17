@@ -112,7 +112,7 @@
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{button type="link" icon="transform" external=true
-									href="?m=invoiceedit&id={$item.docid}&action=convert&proforma=1"
+									href="?m=invoicenew&id={$item.docid}&action=init"
 									tip="Convert to invoice"}
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE

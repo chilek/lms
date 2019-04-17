@@ -34,7 +34,9 @@ if ($id && $_GET['is_sure'] == '1') {
 		die;
 	}
 
+	$DB->BeginTrans();
 	$LMS->ReceiptDelete($id);
+	$DB->CommitTrans();
 }
 
 $SESSION->redirect('?m=receiptlist');

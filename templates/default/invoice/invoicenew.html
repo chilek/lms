@@ -43,6 +43,8 @@
 <INPUT type="submit" class="hiddenbtn">
 </p>
 <input type="hidden" name="invoice[proforma]" value="{$invoice.proforma}">
+<input type="hidden" name="invoice[proformaid]" value="{$invoice.proformaid}">
+<input type="hidden" name="invoice[proformanumber]" value="{$invoice.proformanumber}">
 <TABLE class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -116,6 +118,19 @@
 			</SELECT>
 		</TD>
 	</TR>
+	{if isset($invoice.proformaid)}
+	<TR>
+		<TD class="bold nobr">
+			<label for="preserve-proforma">
+				{trans("Preserve pro forma")}
+			</label>
+		</TD>
+		<TD class="nobr">
+			<input type="checkbox" id="preserve-proforma" name="invoice[preserve-proforma]" value="1"
+					{if isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma'])} checked{/if}>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD class="bold nobr">
 			{trans("Customer:")}

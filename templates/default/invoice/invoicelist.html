@@ -160,7 +160,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}
-				<A href="?m=invoiceedit&id={$invoice.id}&action=convert&proforma=1"><IMG src="img/reload.gif" alt="{trans("Convert to invoice")}" title="{trans("Convert to invoice")}"></A>
+				<A href="?m=invoicenew&id={$invoice.id}&action=init"><IMG src="img/reload.gif" alt="{trans("Convert to invoice")}" title="{trans("Convert to invoice")}"></A>
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 				<A href="?m=invoicesend&id={$invoice.id}" target="_blank" OnClick="return confirmLink(this, '{t a=$invoice.name|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="{trans("Send invoice")}" title="{trans("Send invoice")}"></A>
