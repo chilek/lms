@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -86,6 +86,12 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC');
     }
+
+	public function getUserNamesIndexedById() {
+		return $this->db->GetAllByKey('SELECT id, name, rname,
+				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
+			FROM vusers WHERE deleted=0 ORDER BY rname ASC', 'id');
+	}
 
     /**
      * Returns users

@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-
 $schema = $DB->GetRow('SELECT s.*, p.id AS pid, p.name AS promotion
     FROM promotionschemas s
     JOIN promotions p ON (p.id = s.promotionid)
@@ -67,13 +66,26 @@ $schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
     WHERE a.promotionschemaid = ?
     ORDER BY a.orderid', array($schema['id']));
 
+$users = $LMS->GetUserNamesIndexedById();
+
 if (!empty($schema['tariffs'])) {
 	$schema['selections'] = array();
 	foreach ($schema['tariffs'] as $idx => $value) {
 		$tmp = explode(';', $value['data']);
 		$data = array();
-		foreach ($tmp as $didx => $d)
-			list($data['value'][$didx], $data['period'][$didx]) = explode(':', $d);
+		foreach ($tmp as $didx => $d) {
+			$cols = explode(':', $d);
+			$data['value'][$didx] = $cols[0];
+			$data['period'][$didx] = (count($cols) > 1 ? $cols[1] : null);
+			$data['users'][$didx] = (count($cols) > 2 && !empty($cols[2]) ? explode(',', $cols[2]) : array());
+
+			if (!empty($data['users'][$didx])) {
+				$user_names = array();
+				foreach ($data['users'][$didx] as $userid)
+					$user_names[] = $users[$userid]['rname'];
+				$data['users_text'][$didx] = implode('<br>', $user_names);
+			}
+		}
 		$schema['tariffs'][$idx]['data'] = $data;
 		if (!empty($value['label']))
 			$schema['selections'][] = $value['label'];
@@ -93,6 +105,7 @@ $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $tariffs);
+$SMARTY->assign('users', $users);
 $SMARTY->assign('schema', $schema);
 $SMARTY->display('promotion/promotionschemainfo.html');
 

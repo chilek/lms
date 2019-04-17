@@ -3050,8 +3050,19 @@ $_LANG['Add new lock'] = 'Dodaj nową blokadę';
 $_LANG['Remove lock'] = 'Usuń blokadę';
 $_LANG['Days:'] = 'Dni:';
 
-$_LANG['UKE report'] = 'Raport do UKE';
+$_LANG['UKE SIIS report'] = 'Raport UKE SIIS';
 $_LANG['Allows you to prepare SIIS v4 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 4 do UKE';
+$_LANG['UKE income report'] = 'Raport przychodów UKE';
+$_LANG['<!uke-income>other'] = 'inna';
+$_LANG['<!uke-income>Link technology'] = 'Technologia łącza';
+$_LANG['<!uke-income>Bussiness customers'] = 'Klienci biznesowi';
+$_LANG['<!uke-income>Bussiness income'] = 'Przychód biznesowy';
+$_LANG['<!uke-income>Private customers'] = 'Klienci prywatni';
+$_LANG['<!uke-income>Private income'] = 'Przychód prywatny';
+$_LANG['<!uke-income>Total customers'] = 'Klienci razem';
+$_LANG['<!uke-income>Total income'] = 'Całkowity przychód';
+$_LANG['<!uke-income>No data.'] = 'Brak danych.';
+$_LANG['UKE income report for period $a - $b'] = 'Raport przychodów UKE za okres $a - $b';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
@@ -3080,7 +3091,7 @@ $_LANG['Connect to device'] = 'Podłączenie do urządzenia';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność nie została jeszcze zakończona!';
 $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
 
-$_LANG['Your balance on date of invoice issue:'] = 'Saldo w dniu wystawienia faktury:';
+$_LANG['Your balance on date of invoice issue: $a $b'] = 'Saldo w dniu wystawienia faktury: $a $b';
 $_LANG['Balance includes current invoice'] = 'Saldo uwzględnia również bieżącą fakturę.';
 $_LANG['Your balance before invoice issue:'] = 'Saldo przed wystawieniem faktury:';
 
@@ -3358,6 +3369,8 @@ $_LANG['yesterday'] = 'wczoraj';
 $_LANG['current month'] = 'bieżący miesiąc';
 $_LANG['last month'] = 'poprzedni miesiąc';
 $_LANG['current year'] = 'bieżący rok';
+$_LANG['previous year'] = 'poprzedni rok';
+$_LANG['next year'] = 'następny rok';
 $_LANG['Last year'] = 'Ostatni rok';
 $_LANG['last year<!voip>'] = 'poprzedni rok';
 
@@ -3598,6 +3611,7 @@ $_LANG['with disconnected nodes'] = 'z odłączonymi komputerami';
 $_LANG['Select group to assign to customer'] = 'Wybierz grupę by przypisać do niej klienta';
 $_LANG['If isset "true" when adding new customer select group is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza wybór grupy przypisanej do klienta. Domyślnie wyłączone';
 
+$_LANG['customer removal'] = 'usunięcie klienta';
 $_LANG['permanent customer removal'] = 'trwałe usunięcie klienta';
 $_LANG['Remove permanently'] = 'Usuń trwale';
 $_LANG['Permanent Customer Remove: $a'] = 'Trwałe usunięcie klienta: $a';
@@ -3919,7 +3933,8 @@ $_LANG['Add new'] = 'Dodaj nowe';
 $_LANG['Close all'] = 'Zamknij wszystkie';
 $_LANG['Assign this event to Helpdesk request'] = 'Przypisz zdarzenie do zgłoszenia w Helpdesk:';
 $_LANG['Assign ticket'] = 'Przypisz zgłoszenie';
-$_LANG['Request not assigned to any event.'] = 'Zgłoszenie nieprzypisane do żadnego zdarzenia.';
+$_LANG['$a (location cannot be changed as it is assigned to ticket)'] = '$a (lokalizacja nie może być zmieniona, gdyż jest przypisana do zgłoszenia)';
+$_LANG['Event location selection is not possible as it is assigned to ticket!'] = 'Niemożliwy wybór lokalizacji zdarzenia, gdyż przypisana jest ona do zgłoszenia!';
 $_LANG['Helpdesk assignment:'] = 'Przypisanie do Helpdesk:';
 $_LANG['This event is not assigned to any helpdesk request.'] = 'Zdarzenie nie jest przypisane do żadnego zgłoszenia w helpdesk.';
 $_LANG['Request not assigned to any customer.'] = 'Zgłoszenie nie jest przypisane do żadnego klienta.';
@@ -4283,15 +4298,21 @@ $_LANG['shorter than minute'] = 'krócej niż minutę';
 
 $_LANG['Archive'] = 'Archiwizuj';
 $_LANG['Archive invoices'] = 'Archiwizuj faktury';
+$_LANG['Archive debit notes'] = 'Archiwizuj noty obciążeniowe';
 $_LANG['Archiving'] = 'Archiwizowanie';
 $_LANG['Archived:'] = 'Zarchiwizowany:';
 $_LANG['Select document archived state'] = 'Wybierz stan archiwizacji dokumentu';
 $_LANG['Are you sure, you want to archive that document?'] = 'Jesteś pewien, że chcesz zarchiwizować ten dokument?';
 $_LANG['Are you sure, you want to archive selected invoices?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane faktury?';
+$_LANG['Are you sure, you want to archive selected debit notes?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane noty obciążeniowe?';
 $_LANG['Are you sure, you want to archive selected documents?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane dokumenty?';
 $_LANG['Cannot undo document confirmation while it is archived!'] = 'Nie można cofnąć zatwierdzenia dokumentu, gdy jest on zarchiwizowany!';
 $_LANG['archivization date'] = 'data archiwizacji';
 $_LANG['archivizator'] = 'archiwizator';
 
 $_LANG['Cannot write new archived document!'] = 'Nie można zapisać nowego dokumentu archiwalnego!';
+
+$_LANG['Preserve pro forma'] = 'Zachowaj pro formę';
+
+$_LANG['modifiable by selected users:<br><strong>$a</strong>'] = 'modyfikowalne przez wybranych użytkowników:<br><strong>$a</strong>';
 

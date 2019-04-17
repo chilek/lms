@@ -94,10 +94,13 @@ function init_multiselects(selector) {
 				defaultValue: $(this).attr('data-default-value'),
 				shortenToDefaultValue: $(this).attr('data-shorten-to-default-value'),
 				type: $(this).attr('data-type'),
+				icon: $(this).attr('data-icon'),
+				button: $(this).attr('data-button'),
 				bottom: lmsSettings.multiSelectPopupOnBottom,
 				separator: $(this).attr('data-separator'),
 				maxVisible: lmsSettings.multiSelectMaxVisible,
-				substMessage: '- $a options selected -'
+				substMessage: '- $a options selected -',
+				tooltipMessage: $(this).attr('data-tooltip-message')
 			});
 		});
 	}

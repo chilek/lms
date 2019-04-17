@@ -15,6 +15,7 @@ function multiselect(options) {
 	var maxVisible = typeof options.maxVisible !== 'undefined' ? parseInt(options.maxVisible) : 0;
 	var substMessage = typeof options.substMessage !== 'undefined' ? options.substMessage
 		: '- $a options selected -';
+	var tooltipMessage = typeof options.tooltipMessage !== 'undefined' ? options.tooltipMessage : '';
 
 	var old_element = $('#' + elemid);
 	var form = (old_element.attr('form') ? $('#' + old_element.attr('form')) : old_element.closest('form'));
@@ -94,7 +95,12 @@ function multiselect(options) {
 			selected.push(def);
 		}
 		var selected_string = selected.join(separator);
-		if (!tiny) {
+		if (tiny) {
+			if (tooltipMessage.length) {
+				new_element.removeAttr('data-tooltip').attr('title', $t(tooltipMessage, selected_string.length ?
+					selected_string : '-'));
+			}
+		} else {
 			if (maxVisible && selected.length > maxVisible) {
 				new_element.html($t(substMessage, selected.length));
 				new_element.attr('title', selected_string);
