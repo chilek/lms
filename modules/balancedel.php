@@ -28,6 +28,7 @@ $ids = array();
 $docitems = array();
 $invoices = array();
 $receipts = array();
+$notes = array();
 if (!empty($_GET['id']) && intval($_GET['id']))
 	$ids = array($_GET['id']);
 elseif (count($_POST['marks']))
@@ -40,6 +41,10 @@ elseif (count($_POST['marks']))
 			case 'receipt':
 				foreach ($mark as $docid => $items)
 					$receipts[] = $docid;
+				break;
+			case 'note':
+				foreach ($mark as $docid => $items)
+					$notes[] = $docid;
 				break;
 			case 'proforma':
 				foreach ($mark as $docid => $items) {
@@ -61,11 +66,13 @@ $hook_data = $LMS->executeHook('balancedel_before_delete', array(
 	'docitems' => $docitems,
 	'invoices' => $invoices,
 	'receipts' => $receipts,
+	'notes' => $notes,
 ));
 $ids = $hook_data['ids'];
 $docitems = $hook_data['docitems'];
 $invoices = $hook_data['invoices'];
 $receipts = $hook_data['receipts'];
+$notes = $hook_data['notes'];
 
 $DB->BeginTrans();
 
@@ -86,6 +93,10 @@ if (!empty($invoices))
 if (!empty($receipts))
 	foreach ($receipts as $receiptid)
 		$LMS->ReceiptDelete($receiptid);
+
+if (!empty($notes))
+	foreach ($notes as $noteid)
+		$LMS->DebitNoteDelete($noteid);
 
 $DB->CommitTrans();
 
