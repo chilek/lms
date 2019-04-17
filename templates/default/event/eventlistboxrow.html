@@ -3,7 +3,7 @@
     <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$event.type])} {$_EVENTSTYLES[$event.type]}{/if}" class="text-center bold event-single-sortable-handler">
     	{$_EVENTTYPES[$event.type]}{if $_EVENTTYPES[$event.type]}<br>{/if}{if $event.ticketid}<a href="?m=rtticketview&id={$event.ticketid}" style="color: black">{$event.ticketid|string_format:"%06d"}</a>{/if}
     </TD>
-    <TD class="text-left nobr bold event-single-sortable-handler" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'">
+    <TD class="text-left nobr bold event-single-sortable-handler" onClick="return self.location.href = '?m=eventinfo&amp;id={$event.id}'" style="min-width:100px">
         {if $event.endtime == 86400}
             {trans("whole day")}
         {else}
