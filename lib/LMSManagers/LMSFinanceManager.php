@@ -1529,7 +1529,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
     {
-		$this->db->BeginTrans();
         if ($itemid) {
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents
@@ -1556,7 +1555,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         } else
             $this->InvoiceDelete($invoiceid);
-		$this->db->CommitTrans();
     }
 
     public function GetInvoiceContent($invoiceid)
@@ -2255,7 +2253,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function ReceiptContentDelete($docid, $itemid = 0)
     {
-		$this->db->BeginTrans();
         if ($itemid) {
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
@@ -2281,7 +2278,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         } else
         	$this->ReceiptDelete($docid);
-		$this->db->CommitTrans();
     }
 
 	public function DebitNoteDelete($noteid) {
@@ -2321,7 +2317,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 	public function DebitNoteContentDelete($docid, $itemid = 0)
     {
-		$this->db->BeginTrans();
         if ($itemid) {
             if ($this->syslog) {
                 list ($dnotecontid, $customerid) = array_values($this->db->GetRow('SELECT dn.id, customerid FROM debitnotecontents dn
@@ -2348,7 +2343,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         } else
         	$this->DebitNoteDelete($docid);
-		$this->db->CommitTrans();
     }
 
 	public function GetBalanceList(array $params) {

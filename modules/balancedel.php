@@ -26,27 +26,48 @@
 
 $ids = array();
 $docitems = array();
+$invoices = array();
+$receipts = array();
 if (!empty($_GET['id']) && intval($_GET['id']))
 	$ids = array($_GET['id']);
 elseif (count($_POST['marks']))
 	foreach ($_POST['marks'] as $markid => $mark)
-		if ($markid == 'proforma')
-			foreach ($mark as $docid => $items) {
-				$docid = intval($docid);
-				if (!isset($docitems[$docid]))
-					$docitems[$docid] = array();
-				foreach ($items as $item)
-					$docitems[$docid][] = $item;
-			}
-		elseif ($mark)
-			$ids[] = $markid;
+		switch ($markid) {
+			case 'invoice':
+				foreach ($mark as $docid => $items)
+					$invoices[] = $docid;
+				break;
+			case 'receipt':
+				foreach ($mark as $docid => $items)
+					$receipts[] = $docid;
+				break;
+			case 'proforma':
+				foreach ($mark as $docid => $items) {
+					$docid = intval($docid);
+					if (!isset($docitems[$docid]))
+						$docitems[$docid] = array();
+					foreach ($items as $item)
+						$docitems[$docid][] = $item;
+				}
+				break;
+			default:
+				if ($mark)
+					$ids[] = $markid;
+				break;
+		}
 
 $hook_data = $LMS->executeHook('balancedel_before_delete', array(
 	'ids' => $ids,
 	'docitems' => $docitems,
+	'invoices' => $invoices,
+	'receipts' => $receipts,
 ));
 $ids = $hook_data['ids'];
 $docitems = $hook_data['docitems'];
+$invoices = $hook_data['invoices'];
+$receipts = $hook_data['receipts'];
+
+$DB->BeginTrans();
 
 sort($ids);
 if (!empty($ids))
@@ -57,6 +78,16 @@ if (!empty($docitems))
 	foreach ($docitems as $docid => $items)
 		foreach ($items as $itemid)
 			$LMS->InvoiceContentDelete($docid, $itemid);
+
+if (!empty($invoices))
+	foreach ($invoices as $invoiceid)
+		$LMS->InvoiceDelete($invoiceid);
+
+if (!empty($receipts))
+	foreach ($receipts as $receiptid)
+		$LMS->ReceiptDelete($receiptid);
+
+$DB->CommitTrans();
 
 $SESSION->redirect('?' . $SESSION->get('backto'));
 

@@ -217,7 +217,9 @@
 									resourceid="{$item.docid}" external=true icon_tip="Debit note"}
 							{/if}
 						{/if}
-						<INPUT type="checkbox" form="addbalance-form" NAME="marks{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
+						<INPUT type="checkbox" form="addbalance-form"
+								NAME="marks{if $aggregate_documents}{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_INVOICE_PRO || $item.doctype == $smarty.const.DOC_CNOTE}[invoice][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_RECEIPT}[receipt][{$item.docid}]{/if}{else}{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]{/if}"
+								value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
 				{foreachelse}
