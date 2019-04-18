@@ -859,9 +859,9 @@ foreach ($assigns as $assign) {
 						array($invoices[$cid], $val, $assign['taxid'], $assign['prodid'], $unit_name, 1,
 						$desc, empty($assign['tariffid']) ? null : $assign['tariffid'], $itemid, $assign['pdiscount'], $assign['vdiscount']));
 				if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment)
-                    $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                        array($currtime, $val * -1, $assign['taxid'], $cid, $desc, $invoices[$cid], $itemid, $linktechnology));
+					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology) 
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+						array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $invoices[$cid], $itemid, $linktechnology));
 			}
 		} else
 			$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology) 
@@ -944,7 +944,7 @@ foreach ($assigns as $assign) {
 						if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
 							$DB->Execute("UPDATE cash SET value = value + ?
 								WHERE docid = ? AND itemid = ?",
-								array($value * -1, $invoices[$cid], $tmp_itemid));
+								array(str_replace(',', '.', $value * -1), $invoices[$cid], $tmp_itemid));
 					} else {
 						$itemid++;
 
@@ -960,14 +960,14 @@ foreach ($assigns as $assign) {
 								$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'],
 								$itemid, $assign['pdiscount'], $assign['vdiscount']));
 						if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment)
-	                        $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology)
-	                            VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
-	                            array($currtime, $value * -1, $assign['taxid'], $cid, $sdesc, $invoices[$cid], $itemid, $linktechnology));
+							$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology)
+								VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+								array($currtime, str_replace(',', '.', $value * -1), $assign['taxid'], $cid, $sdesc, $invoices[$cid], $itemid, $linktechnology));
 					}
 				} else
 					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology)
 						VALUES (?, ?, ?, ?, ?, ?)",
-						array($currtime, $value * -1, $assign['taxid'], $cid, $sdesc, $linktechnology));
+						array($currtime, str_replace(',', '.', $value * -1), $assign['taxid'], $cid, $sdesc, $linktechnology));
 
 				if (!$quiet) print "CID:$cid\tVAL:$value\tDESC:$sdesc" . PHP_EOL;
 			}
