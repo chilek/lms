@@ -522,7 +522,7 @@ $node_assignments = $DB->GetAllByKey("SELECT " . $DB->GroupConcat('na.assignment
 	WHERE nd.ownerid IS NOT NULL AND ((n.ownerid IS NULL AND n.netdev IS NOT NULL)
 		OR n.ownerid IS NOT NULL)
 		AND a.suspended = 0
-		AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+		AND a.period IN (" . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ")
 		AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
 		AND NOT EXISTS (
 			SELECT id FROM assignments aa
