@@ -4311,4 +4311,6 @@ $_LANG['Preserve pro forma'] = 'Zachowaj pro formę';
 
 $_LANG['modifiable by selected users:<br><strong>$a</strong>'] = 'modyfikowalne przez wybranych użytkowników:<br><strong>$a</strong>';
 
+$_LANG['Illegal promotion schema period value modification!'] = 'Nielegalna modyfikacja wartości okresowych schematu promocyjnego!';
+
 ?>

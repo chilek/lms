@@ -257,6 +257,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
 
+				if (isset($data['modifiedvalues'][$idx]))
+					$value = $data['modifiedvalues'][$idx];
+
                 // Activation
                 if (!$idx) {
 
@@ -919,6 +922,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						$a['promotiontariffid'] = $a['stariffid'][$schemaid];
 					}
 
+					$values = $a['values'][$schemaid];
+					foreach ($a['promotiontariffid'] as $label => $tariffid) {
+						if (empty($tariffid))
+							continue;
+						if (isset($values[$label][$tariffid]))
+							foreach ($values[$label][$tariffid] as $period_idx => $value)
+								if (!preg_match('/^[0-9]+(\.[0-9]{1,2})?$/', $value)) {
+									$error['value-' . $schemaid . '-' . $label . '-' . $tariffid . '-' . $period_idx] =
+										trans('Incorrect value!');
+								}
+					}
+
+					if (empty($from))
+						$from = mktime(0, 0, 0);
+
 					$a['value']     = 0;
 					$a['discount']  = 0;
 					$a['pdiscount'] = 0;
@@ -964,6 +982,50 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		$result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid'));
 
 		return $result;
+	}
+
+	public function CheckSchemaModifiedValues($data) {
+		$schemaid = $data['schemaid'];
+		$stariffs = $data['stariffid'][$schemaid];
+		$values = $data['values'][$schemaid];
+		foreach ($values as $label => &$tariffs) {
+			if (!isset($stariffs[$label]) || empty($stariffs[$label])) {
+				unset($values[$label]);
+				continue;
+			}
+			foreach ($tariffs as $tariffid => &$periods) {
+				if (!in_array($tariffid, $stariffs)) {
+					unset($values[$label][$tariffid]);
+					continue;
+				}
+			}
+			unset($periods);
+		}
+		unset($tariffs);
+
+		$userid = Auth::GetCurrentUser();
+
+		foreach ($values as $label => $tariffs)
+			foreach ($tariffs as $tariffid => $periods) {
+				$a_data = $this->db->GetOne('SELECT data
+					FROM promotionassignments
+					WHERE promotionschemaid = ? AND tariffid = ? AND label = ?',
+					array($schemaid, $tariffid, $label));
+				$a_periods = explode(';', $a_data);
+				$allowed_period_indexes = array();
+				foreach ($a_periods as $a_period_idx => $a_period) {
+					$props = explode(':', $a_period);
+					if (count($props) < 3)
+						continue;
+					$users = explode(',', $props[2]);
+					if (in_array($userid, $users))
+						$allowed_period_indexes[] = $a_period_idx;
+				}
+				if (array_diff(array_keys($periods), $allowed_period_indexes))
+					return false;
+			}
+
+		return true;
 	}
 
 	public function UpdateExistingAssignments($data) {
@@ -3227,7 +3289,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			$promotion['schemas'] = array();
 		unset($promotion);
 
-		$promotion_schemas = $this->db->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name, s.id,
+		$promotion_schemas = $this->db->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name,
+			s.id, s.data AS sdata,
 			(SELECT ' . $this->db->GroupConcat('tariffid', ',') . '
 				FROM promotionassignments WHERE promotionschemaid = s.id
 			) AS tariffs
@@ -3241,18 +3304,34 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if (empty($promotion_schemas))
 			return array();
 		else
-			foreach ($promotion_schemas as $promotion_schema)
+			foreach ($promotion_schemas as $promotion_schema) {
+				$period_labels = array(trans('Activation'));
+				if (empty($promotion_schema['sdata']))
+					$period_labels[] = trans('Months $a-', 1);
+				else {
+					$periods = explode(';', $promotion_schema['sdata']);
+					$month = 1;
+					foreach ($periods as $period) {
+						$period_labels[] = ($period == 1 ? trans('Month $a', $month)
+							: trans('Months $a-$b', $month, $month + $period - 1));
+						$month += $period;
+					}
+					$period_labels[] = trans('Months $a-', $month);
+				}
+
 				$promotions[$promotion_schema['promotionid']]['schemas'][$promotion_schema['id']] =
 					array(
 						'id' => $promotion_schema['id'],
 						'name' => $promotion_schema['name'],
 						'tariffs' => $promotion_schema['tariffs'],
+						'period_labels' => $period_labels,
 						'items' => array(),
 					);
+			}
 
 		$promotion_schema_assignments = $this->db->GetAll('SELECT
-				p.id AS promotion_id, ps.id AS schema_id,
-				t.name as tariff_name, pa.optional,
+				p.id AS promotion_id, ps.id AS schema_id, pa.id AS assignment_id,
+				t.name as tariff_name, pa.optional, pa.data AS adata,
 				(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 't.id') . ' ELSE label END) AS label,
 				t.id as tariffid, t.type AS tarifftype, t.value, t.authtype
 			FROM promotions p
@@ -3260,6 +3339,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
 				LEFT JOIN tariffs t ON pa.tariffid = t.id
 			ORDER BY pa.orderid');
+
+		$userid = Auth::GetCurrentUser();
 
 		if (empty($promotion_schema_assignments))
 			return array();
@@ -3301,13 +3382,34 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				if (!isset($promotions[$pid]['schemas'][$sid]))
 					continue;
 
+				$period_labels = $promotions[$pid]['schemas'][$sid]['period_labels'];
+				$periods = array();
+				$adata = explode(';', $assign['adata']);
+				foreach ($period_labels as $period_label_idx => $period_label) {
+					if (isset($adata[$period_label_idx])) {
+						$props = explode(':', $adata[$period_label_idx]);
+						$period = array(
+							'label' => $period_label,
+							'value' => $props[0] == 'NULL' ? '' : $props[0],
+						);
+						if (count($props) > 2 && !empty($props[2])) {
+							$users = explode(',', $props[2]);
+							$period['modifiable'] = in_array($userid, $users);
+						} else
+							$period['modifiable'] = false;
+						$periods[] = $period;
+					}
+				}
+
 				$promotion_schema_item = array(
+					'assignmentid' => $assign['assignment_id'],
 					'tariffid' => $assign['tariffid'],
 					'tariff'   => $assign['tariff_name'],
 					'value'    => $assign['value'],
 					'optional' => $assign['optional'],
 					'authtype' => $assign['authtype'],
 					'type' => $assign['tarifftype'],
+					'periods' => $periods,
 				);
 
 				if (preg_match('/^unlabeled_(?<tariffid>[0-9]+)$/', $assign['label'], $m))

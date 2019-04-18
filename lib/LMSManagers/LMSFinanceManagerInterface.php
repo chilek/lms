@@ -44,6 +44,8 @@ interface LMSFinanceManagerInterface
 
 	public function ValidateAssignment($data);
 
+	public function CheckSchemaModifiedValues($data);
+
 	public function UpdateExistingAssignments($data);
 
 	public function SuspendAssignment($id, $suspend = TRUE);

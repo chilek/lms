@@ -117,16 +117,17 @@ function CustomerAssignmentHelper(options) {
 
 	this.tariffSelectionHandler = function () {
 		var selected_tariff = $(this).find(':selected');
+		var assignment_id = selected_tariff.attr('data-assignment-id');
 		var tariffaccess = parseInt(selected_tariff.attr('data-tariffaccess'));
 		var tarifftype = parseInt(selected_tariff.attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
-		var tr = $(this).closest('tr').next('.customerdevices');
+		var tr = $(this).closest('tr.schema-tariff-container');
+		var period_tables = tr.find('.single-assignment[data-assignment-id]');
+		tr = tr.next('.customerdevices');
 
-		if (tariffaccess == -1) {
-			tr.hide();
-		} else {
-			tr.show();
-		}
+		tr.toggle(tariffaccess != -1);
+		period_tables.hide();
+		period_tables.filter('[data-assignment-id="' + assignment_id + '"]').show();
 
 		switch (tarifftype) {
 			case helper.internetTariffType:
@@ -167,16 +168,16 @@ function CustomerAssignmentHelper(options) {
 
 	this.tariffCheckboxHandler = function() {
 		var checked = this.checked;
+		var assignment_id = $(this).attr('data-assignment-id');
 		var tariffaccess = parseInt($(this).attr('data-tariffaccess'));
 		var tarifftype = parseInt($(this).attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
-		var tr = $(this).closest('tr').next('.customerdevices');
+		var tr = $(this).closest('tr.schema-tariff-container');
+		var period_table = tr.find('.single-assignment[data-assignment-id="' + assignment_id + '"]');
+		tr = tr.next('.customerdevices');
 
-		if (checked) {
-			tr.show();
-		} else {
-			tr.hide();
-		}
+		tr.toggle(checked);
+		period_table.toggle(checked);
 
 		switch (tarifftype) {
 			case helper.phoneTariffType:
