@@ -111,6 +111,7 @@ switch($action)
 				$invoice['customerid'] = $_GET['customerid'];
 			}
 		}
+		$invoice['number'] = '';
 		$invoice['numberplanid'] = null;
 
 		// get default invoice's numberplanid and next number
@@ -503,11 +504,13 @@ switch($action)
 			$DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
 		}
 
-		if (isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma']))
-			$LMS->PreserveProforma($invoice['proformaid']);
-		else {
-			$LMS->DeleteArchiveTradeDocument($invoice['proformaid']);
-			$LMS->InvoiceDelete($invoice['proformaid']);
+		if (isset($invoice['proformaid']) && !empty($invoice['proformaid'])) {
+			if (isset($invoice['preserve-proforma']) && !empty($invoice['preserve-proforma']))
+				$LMS->PreserveProforma($invoice['proformaid']);
+			else {
+				$LMS->DeleteArchiveTradeDocument($invoice['proformaid']);
+				$LMS->InvoiceDelete($invoice['proformaid']);
+			}
 		}
 
 		$DB->UnLockTables();
@@ -588,7 +591,7 @@ $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
 
 $SMARTY->assign('taxeslist', $taxeslist);
 
-if (isset($invoice['proformaid']))
+if (isset($invoice['proformaid']) && !empty($invoice['proformaid']))
 	$layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $invoice['proformanumber']);
 elseif ($invoice['proforma'])
 	$layout['pagetitle'] = trans('New Pro Forma Invoice');

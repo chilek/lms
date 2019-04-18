@@ -118,7 +118,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	{if isset($invoice.proformaid)}
+	{if isset($invoice.proformaid) && !empty($invoice.proformaid)}
 	<TR>
 		<TD class="bold nobr">
 			<label for="preserve-proforma">
