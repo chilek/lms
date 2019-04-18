@@ -829,8 +829,8 @@ foreach ($assigns as $assign) {
 				$tmp_itemid = 0;
 			else
 				$tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 
-					WHERE tariffid=? AND value=$val AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-						array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']));
+					WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
+						array($assign['tariffid'], $val, $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']));
 
 			if ($tmp_itemid != 0) {
 				if ($assign['invoice'] == DOC_DNOTE)
@@ -939,8 +939,8 @@ foreach ($assigns as $assign) {
 
 					if ($tmp_itemid != 0) {
 						$DB->Execute("UPDATE invoicecontents SET count = count + 1
-							WHERE tariffid = ? AND docid = ? AND description = ?",
-							array($assign['tariffid'], $invoices[$cid], $sdesc));
+							WHERE docid = ? AND itemid = ?",
+							array($invoices[$cid], $tmp_itemid));
 						if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
 							$DB->Execute("UPDATE cash SET value = value + ?
 								WHERE docid = ? AND itemid = ?",
