@@ -4313,4 +4313,6 @@ $_LANG['modifiable by selected users:<br><strong>$a</strong>'] = 'modyfikowalne 
 
 $_LANG['Illegal promotion schema period value modification!'] = 'Nielegalna modyfikacja wartości okresowych schematu promocyjnego!';
 
+$_LANG['trade document archiving'] = 'archiwizacja dokumentów handlowych';
+
 ?>

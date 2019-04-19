@@ -125,7 +125,7 @@
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
 								{/if}
-								{if !$item.cancelled && !$item.archived}
+								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
 									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
@@ -147,7 +147,7 @@
 										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-								{if !$item.cancelled && !$item.archived}
+								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
 									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
@@ -174,7 +174,7 @@
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 									tip="Revise"}
 								{/if}
-								{if !$item.cancelled && !$item.archived}
+								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
 									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
@@ -204,7 +204,7 @@
 									href="?m=receiptedit&id={$item.docid}"
 									resourceid="{$item.docid}" externa=true icon_tip="Cash receipt"}
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
-								{if !$item.cancelled && !$item.archived}
+								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
 									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
@@ -241,7 +241,9 @@
 				{button icon="delete" onclick="javascript:delpos();" label="Delete"}
 				{/if}
 				{button icon="mail" class="multiinvoicesend" label="Send invoices"}
+				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
 				{button icon="archive" class="multiinvoicearchive" label="Archive"}&nbsp;
+				{/if}
 				{trans("Print")}:
 				{button icon="print" label="invoices" onclick="javascript:print_doc('invoice')"}
 				{button icon="cash" label="cash receipt" onclick="javascript:printr();"}
