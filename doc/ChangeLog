@@ -240,7 +240,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to preserve pro forma invoice after its conversion to invoice
     - phpui.default_preserve_proforma_invoice check/uncheck corresponing checkbox [chilan]
   - enhancement: selected users can modify prices for promotion schema tariffs [chilan]
-  - improvement: new trade document archiving user privilege added [chilan]
+  - improvement: new trade document archiving and unarchiving user privileges added [chilan]
 
 version 1.11.23 (2018-03-21):
 
