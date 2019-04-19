@@ -2119,7 +2119,7 @@ class LMS
 			else
 				return MSG_SENT;
 		} elseif(ConfigHelper::getConfig('mail.backend') == 'phpmailer') {
-			$this->mail_object = new PHPMailer();
+			$this->mail_object = new \PHPMailer\PHPMailer\PHPMailer();
 			$this->mail_object->isSMTP();
 
 			$this->mail_object->SMTPKeepAlive = $persist;
