@@ -25,8 +25,11 @@
 		border-right: 1px dotted;
 	}
 	table.single-assignment input[type="text"] {
-		width: 6em;
+		width: 5em;
 		text-align: center;
+	}
+	table.single-assignment [data-restore-selector] {
+		cursor: pointer;
 	}
 
 </style>
@@ -130,10 +133,11 @@
 																					{foreach $item.single.periods as $key => $period}
 																					<td>
 																						{if $period.modifiable}
-																							{textformat assign="elemid"}value-{$schemaid}-{$label}-{$item.single.tariffid}-{$key}{/textformat}
+																							{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.single.tariffid}-{$key}{/textformat}
 																							<input id="{$elemid}" type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.single.tariffid}][{$key}]"
 																									value="{if isset($variables.values[$schemaid][$label][$item.single.tariffid][$key])}{$variables.values[$schemaid][$label][$item.single.tariffid][$key]}{else}{$period.value}{/if}"
 																									{tip trigger=$elemid}>
+																							<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{$period.value}"></i>
 																						{else}
 																							{if $period.value == ''}
 																								-
@@ -178,11 +182,12 @@
 																					{foreach $item.periods as $key => $period}
 																						<td>
 																							{if $period.modifiable}
-																								{textformat assign="elemid"}value-{$schemaid}-{$label}-{$item.tariffid}-{$key}{/textformat}
+																								{textformat assign="elemid"}value-{$schemaid}-{iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))}-{$item.tariffid}-{$key}{/textformat}
 																								<input id="{$elemid}"
 																										type="text" name="{$variable_prefix}[values][{$schemaid}][{$label}][{$item.tariffid}][{$key}]"
 																										value="{if isset($variables.values[$schemaid][$label][$item.tariffid][$key])}{$variables.values[$schemaid][$label][$item.tariffid][$key]}{else}{$period.value}{/if}"
 																										{tip trigger=$elemid}>
+																								<i class="lms-ui-icon-restore" data-restore-selector="#{$elemid}" data-restore-value="{$period.value}"></i>
 																							{else}
 																								{if $period.value == ''}
 																									-
