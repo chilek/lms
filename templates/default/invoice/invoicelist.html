@@ -133,9 +133,12 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	</TR>
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="7">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="pagination.html"}
 		</TD>
+		<td class="lms-ui-pagination text-right">
+			{button icon="add" label="New invoice" onclick="location.href = '?m=invoicenew{if $listdata.cat == 'customerid'}&id={$listdata.search}{/if}&action=init';"}
+		</td>
 	</TR>
 	{/if}
     </THEAD>
@@ -302,9 +305,12 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
     <TFOOT>
 	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="lms-ui-pagination" COLSPAN="7">
+		<TD class="lms-ui-pagination" COLSPAN="6">
 			{include file="pagination.html"}
 		</TD>
+		<td class="lms-ui-pagination text-right">
+			{button icon="add" label="New invoice" onclick="location.href = '?m=invoicenew{if $listdata.cat == 'customerid'}&id={$listdata.search}{/if}&action=init';"}
+		</td>
 	</TR>
 	{/if}
 	<TR>
