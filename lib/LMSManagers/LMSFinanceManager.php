@@ -929,8 +929,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						if (isset($values[$label][$tariffid]))
 							foreach ($values[$label][$tariffid] as $period_idx => $value)
 								if (!preg_match('/^[0-9]+(\.[0-9]{1,2})?$/', $value)) {
-									$error['value-' . $schemaid . '-' . $label . '-' . $tariffid . '-' . $period_idx] =
-										trans('Incorrect value!');
+									$error['value-' . $schemaid . '-'
+										. iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))
+										. '-' . $tariffid . '-' . $period_idx] = trans('Incorrect value!');
 								}
 					}
 

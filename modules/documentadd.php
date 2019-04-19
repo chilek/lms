@@ -105,6 +105,9 @@ if (isset($_POST['document'])) {
 
 		$result = $LMS->ValidateAssignment($selected_assignment);
 		extract($result);
+
+		if (!$LMS->CheckSchemaModifiedValues($a))
+			$error['promotion-select'] = trans('Illegal promotion schema period value modification!');
 	} else
 		$selected_assignment = null;
 
@@ -322,6 +325,7 @@ if (isset($_POST['document'])) {
 				$selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
 
 				if (is_array($selected_assignment['stariffid'][$schemaid])) {
+					$modifiedvalues = $a['values'][$schemaid];
 					$copy_a = $selected_assignment;
 					$snodes = $selected_assignment['snodes'][$schemaid];
 					$sphones = $selected_assignment['sphones'][$schemaid];
@@ -331,6 +335,7 @@ if (isset($_POST['document'])) {
 							continue;
 
 						$copy_a['promotiontariffid'] = $v;
+						$copy_a['modifiedvalues'] = isset($modifiedvalues[$label][$v]) ? $modifiedvalues[$label][$v] : array();
 						$copy_a['nodes'] = $snodes[$label];
 						$copy_a['phones'] = $sphones[$label];
 						$tariffid = $LMS->AddAssignment($copy_a);
