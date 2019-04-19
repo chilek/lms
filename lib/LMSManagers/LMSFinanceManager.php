@@ -3484,6 +3484,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			JOIN documents d ON d.id = c.docid
 			WHERE d.type IN (?)
 				AND c.id IN (" . implode(',', $ids) . ")",
-			$doctypes);
+			array($doctypes));
 	}
 }
