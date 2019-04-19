@@ -65,7 +65,7 @@
 	"php" : ">=5.3",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
-        "phpmailer/phpmailer": "^6",
+        "phpmailer/phpmailer": "^5.2",
         "tecnickcom/tcpdf": "^6.2",
         "spipu/html2pdf": "^4.5",
         "components/normalize.css": "^3.0",
