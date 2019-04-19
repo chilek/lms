@@ -65,28 +65,35 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 	if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth))
 		echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
 
-	if (isset($_POST['marks']))
-		if ($_GET['marks'] == 'invoice')
-			$docids = Utils::filterIntegers(array_values($_POST['marks']));
-		else
-			$docids = $DB->GetCol("SELECT docid FROM cash c
+	if (isset($_POST['marks'])) {
+		if ($_GET['marks'] == 'invoice' || !isset($_POST['marks']['invoice']))
+			$marks = $_POST['marks'];
+		if ($_POST['marks']['invoice'])
+			$marks = $_POST['marks']['invoice'];
+
+		$ids = Utils::filterIntegers($marks);
+
+		if (!empty($ids))
+			$ids = $DB->GetCol("SELECT DISTINCT docid FROM cash c
 				JOIN documents d ON d.id = c.docid
 				WHERE d.type IN (?, ?, ?)
-					AND c.id IN (" . implode(',', Utils::filterIntegers(array_values($_POST['marks']))) . ")",
+					AND c.id IN (" . implode(',', $ids) . ")",
 				array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
-	elseif (isset($_GET['id']) && intval($_GET['id']))
-		$docids = array(intval($_GET['id']));
+	} elseif (isset($_GET['id']) && intval($_GET['id']))
+		$ids = array(intval($_GET['id']));
+	else
+		$ids = array();
 
-	if (empty($docids))
+	if (empty($ids))
 		echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
 	else {
-		$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, d.archived, n.template, m.email
+		$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, a.archived, n.template, m.email
 			FROM documents d
 			LEFT JOIN customers c ON c.id = d.customerid
 			JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
 			LEFT JOIN numberplans n ON n.id = d.numberplanid
-			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $docids) . ")
+			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $ids) . ")
 			ORDER BY d.number",
 			array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
 				DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO));

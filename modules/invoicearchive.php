@@ -24,22 +24,32 @@
  *  $Id$
  */
 
-if (isset($_GET['id']))
+if (isset($_GET['id'])) {
 	if (is_array($_GET['id']))
 		$ids = $_GET['id'];
 	else
 		$ids = array($_GET['id']);
-elseif (isset($_GET['marks']) && isset($_POST['marks'])) {
+	$ids = Utils::filterIntegers($ids);
+} elseif (isset($_GET['marks']) && isset($_POST['marks'])) {
 	if ($_GET['marks'] == 'invoice')
-		$ids = $_POST['marks'];
-	else
-		$ids = $DB->GetCol("SELECT docid FROM cash c
+		$marks = $_POST['marks'];
+	else {
+		$marks = array();
+		if (isset($_POST['marks']['invoice']))
+			$marks = $_POST['marks']['invoice'];
+		if (isset($_POST['marks']['note']))
+			$marks = array_merge($marks, $_POST['marks']['note']);
+	}
+
+	$ids = Utils::filterIntegers($marks);
+	if (!empty($ids))
+		$ids = $DB->GetCol("SELECT DISTINCT docid FROM cash c
 			JOIN documents d ON d.id = c.docid
 			WHERE d.type IN (?, ?, ?, ?)
-				AND c.id IN (" . implode(',', Utils::filterIntegers(array_values($_POST['marks']))) . ")",
-			array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
+				AND c.id IN (" . implode(',', $ids) . ")",
+				array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
 }
-$ids = Utils::filterIntegers($ids);
+
 if (empty($ids))
 	$SESSION->redirect($_SERVER['HTTP_REFERER']);
 

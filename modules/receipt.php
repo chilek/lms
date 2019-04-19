@@ -102,19 +102,22 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
 	$SESSION->restore('rlm', $rlm);
 	$SESSION->remove('rlm');
 
-	if (count($_POST['marks']))
-		foreach ($_POST['marks'] as $id => $mark)
-			$rlm[$id] = $mark;
-	if (count($rlm))
-		foreach ($rlm as $mark)
-			$ids[] = intval($mark);
+	if (isset($_POST['marks'])) {
+		if (isset($_POST['marks']['receipt']))
+			$marks = $_POST['marks']['receipt'];
+		else
+			$marks = $_POST['marks'];
+	} else
+		$marks = array();
+
+	$ids = Utils::filterIntegers($marks);
 
 	if (empty($ids)) {
 		$SESSION->close();
 		die;
 	}
 
-	if (!empty($_GET['cash']))
+	if (isset($_GET['cash']))
 		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
 			WHERE docid = documents.id AND documents.type = ?
 				AND cash.id IN (' . implode(',', $ids) . ')', array(DOC_RECEIPT));

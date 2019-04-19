@@ -182,20 +182,20 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
 
-	if (isset($_POST['marks']))
-		foreach ($_POST['marks'] as $idx => $mark)
-			$ilm[$idx] = intval($mark);
+	if (isset($_POST['marks'])) {
+		if (isset($_POST['marks']['invoice']))
+			$marks = $_POST['marks']['invoice'];
+		else
+			$marks = $_POST['marks'];
+	} else
+		$marks = array();
 
-	if (count($ilm))
-		foreach ($ilm as $mark)
-			$ids[] = $mark;
+	$ids = Utils::filterIntegers($marks);
 
-	if (!isset($ids)) {
+	if (empty($ids)) {
 		$SESSION->close();
 		die;
 	}
-
-	$layout['pagetitle'] = trans('Invoices');
 
 	if (isset($_GET['cash'])) {
 		$ids = $DB->GetCol('SELECT DISTINCT docid
@@ -205,6 +205,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 			ORDER BY docid',
 			array(DOC_INVOICE, DOC_CNOTE));
 	}
+
+	$layout['pagetitle'] = trans('Invoices');
 
 	$which = array();
 

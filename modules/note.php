@@ -132,23 +132,26 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
 
-	if (!empty($_POST['marks']))
-		foreach($_POST['marks'] as $id => $mark)
-			$ilm[$id] = $mark;
-	if (count($ilm))
-		foreach($ilm as $mark)
-			$ids[] = intval($mark);
+	if (isset($_POST['marks'])) {
+		if (isset($_POST['marks']['note']))
+			$marks = $_POST['marks']['note'];
+		else
+			$marks = $_POST['marks'];
+	} else
+		$marks = array();
 
-	if (isset($_GET['cash']) && !empty($ids))
-		// we need to check if that document is a debit note
-		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
-			WHERE docid = documents.id AND documents.type = ?
-			AND cash.id IN (' . implode(',', $ids) . ')', array(DOC_DNOTE));
+	$ids = Utils::filterIntegers($marks);
 
 	if (empty($ids)) {
 		$SESSION->close();
 		die;
 	}
+
+	if (isset($_GET['cash']))
+		// we need to check if that document is a debit note
+		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
+			WHERE docid = documents.id AND documents.type = ?
+			AND cash.id IN (' . implode(',', $ids) . ')', array(DOC_DNOTE));
 
 	$layout['pagetitle'] = trans('Debit Notes');
 
