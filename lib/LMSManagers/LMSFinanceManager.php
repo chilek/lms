@@ -1139,7 +1139,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 	}
 
 	public function DeleteArchiveTradeDocument($id) {
-		$md5sum = $this->db->GetCol('SELECT md5sum FROM documentattachments WHERE docid = ?', array($id));
+		$md5sum = $this->db->GetOne('SELECT md5sum FROM documentattachments WHERE docid = ?', array($id));
 		if (!empty($md5sum)) {
 			$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
 			$file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
