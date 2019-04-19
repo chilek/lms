@@ -129,10 +129,12 @@
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
 											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
-											window.open($(this).attr('href'));
+												window.open($(this).attr('href'));
 											}
-											return false;
+										{else}
+											window.open($(this).attr('href'));
 										{/if}
+										return false;
 									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
 										href="?m=invoiceedit&id={$item.docid}&action=edit"
@@ -162,10 +164,12 @@
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
 											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
-											window.open($(this).attr('href'));
+												window.open($(this).attr('href'));
 											}
-											return false;
+										{else}
+											window.open($(this).attr('href'));
 										{/if}
+										return false;
 									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
 										href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
@@ -217,9 +221,13 @@
 									resourceid="{$item.docid}" external=true icon_tip="Credit note"}
 								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
-										if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
+										{if $item.published}
+											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
+												window.open($(this).attr('href'));
+											}
+										{else}
 											window.open($(this).attr('href'));
-										}
+										{/if}
 										return false;
 									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
@@ -236,12 +244,14 @@
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
-										{if $note.published}
+										{if $item.published}
 											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
-											window.open($(this).attr('href'));
+												window.open($(this).attr('href'));
 											}
-											return false;
+										{else}
+											window.open($(this).attr('href'));
 										{/if}
+										return false;
 									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
 									href="?m=noteedit&id={$item.docid}&action=edit"

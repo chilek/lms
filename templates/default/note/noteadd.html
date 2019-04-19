@@ -133,7 +133,7 @@ window.open('?m=note&id={$newnoteid}');
     </THEAD>
 </TABLE>
 {/if}
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
@@ -188,11 +188,9 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	{/if}
     </TBODY>
-</table>
-
-<FORM METHOD="POST" ACTION="?m=noteadd&amp;action=additem" NAME="additem">
-<INPUT type="submit" class="hiddenbtn">
-<table class="lmsbox">
+	<TFOOT>
+	<FORM METHOD="POST" ACTION="?m=noteadd&amp;action=additem" NAME="additem">
+	<INPUT type="submit" class="hiddenbtn">
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
@@ -207,7 +205,7 @@ window.open('?m=note&id={$newnoteid}');
 			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" {tip text="Add item"}></A>
 		</TD>
 	</TR>
-	<TR>
+	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="?m=notelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 			<A HREF="?m=noteadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
@@ -223,6 +221,8 @@ window.open('?m=note&id={$newnoteid}');
 			{/if}
 		</TD>
 	</TR>
+	</FORM>
+	</TFOOT>
 </TABLE>
 </FORM>
 <SCRIPT type="text/javascript">
