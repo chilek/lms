@@ -170,9 +170,13 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					tip="Convert to invoice"}
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-				{button type="link" icon="mail" class="invoicesend" external=true href="?m=invoicesend&id={$invoice.id}"
-					onclick="return confirmLink(this, '{t a=$invoice.name|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"
-					tip="Send invoice"}
+				{textformat assign="onclick" wrap=5000}
+					if (confirmLink(this, $t('Are you sure, you want to send invoice to customer \'$a\'?', '{$invoice.name|escape:"javascript"|escape:"html"}')))
+						window.open($(this).attr('href'));
+					return false;
+				{/textformat}
+				{button type="link" icon="mail" class="invoicesend" href="?m=invoicesend&id={$invoice.id}"
+					onclick=$onclick tip="Send invoice"}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
@@ -181,12 +185,12 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					{/if}
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}
 						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-							{textformat assign="onclick"}
+							{textformat assign="onclick" wrap=5000}
 								{if $invoice.published}
-								if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}'))
+								if (!confirmLink(this, $t('Document has been published already! Are you sure you want to remove it despite this?')))
 									return false;
 								{/if}
-								return confirmLink(this, '{t a=$number}Are you sure, you want to remove invoice \'$a\' from database?{/t}')";
+								return confirmLink(this, $t('Are you sure, you want to remove invoice \'$a\' from database?', '{$number}'))";
 							{/textformat}
 							{button type="link" icon="delete" tip="Delete" onclick="onclick"
 								href="?m=invoicedel&id={$invoice.id}"}
@@ -200,14 +204,14 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{if !$invoice.closed && !$invoice.archived}
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-						{textformat assign="onclick"}
+						{textformat assign="onclick" wrap=5000}
 							{if $invoice.published}
-							if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}'))
+							if (!confirmLink(this, $t('Document has been published already! Are you sure you want to remove it despite this?')))
 								return false;
 							{/if}
-							return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}');
+							return confirmLink(this, $t('Are you sure, you want to remove credit note \'$a\' from database?', '{$number}'));
 						{/textformat}
-						{button type="link" icon="delete" tip="Delete" onclick="onclick"
+						{button type="link" icon="delete" tip="Delete" onclick=$onclick
 							href="?m=invoicedel&id={$invoice.id}"}
 					{/if}
 				{/if}
@@ -229,11 +233,11 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 						{/if}
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-							{if $invoice.published}
-								{$onclick = "return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"}
-							{else}
-								{$onclick = ""}
-							{/if}
+							{textformat assign="onclick" wrap=5000}
+								{if $invoice.published}
+								return confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'));
+								{/if}
+							{/textformat}
 							{button type="link" icon="edit" tip="Edit" onclick=$onclick
 								href="?m=invoiceedit&id={$invoice.id}&action=edit"}
 						{/if}
@@ -242,19 +246,22 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{/if}
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-					{textformat assign="onclick"}
+					{textformat assign="onclick" wrap=5000}
 						{if $invoice.published}
-						if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}'))
+						if (!confirmLink(this, $t('Document has been published already! Are you sure you want to cancel it despite this?')))
 							return false;
 						{/if}
-						return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\'?{/t}');
+						return confirmLink(this, $t('Are you sure, you want to cancel invoice \'$a\'?', '{$number}'));
 					{/textformat}
 					{button type="link" icon="cancel" tip="Cancel" onclick=$onclick
 						href="?m=invoicecancel&id={$invoice.id}"}
 				{/if}
 			{elseif $invoice.cancelled}
+				{textformat assign="onclick" wrap=5000}
+					return confirmLink(this, $t('Are you sure, you want to recover cancelled invoice \'$a\'?', '{$number}'));
+				{/textformat}
 				{button type="link" icon="back" tip="Recover" href="?m=invoicecancel&id={$invoice.id}&recover=1"
-					onclick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\'?{/t}')"}
+					onclick=$onclick}
 			{/if}
 			{if !$invoice.cancelled}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
@@ -353,7 +360,6 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			unarchive_invoices();
 		}
 	});
-
 
 </script>
 

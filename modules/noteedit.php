@@ -35,6 +35,8 @@ if(isset($_GET['id']) && $action=='edit')
 	if ($LMS->isArchiveDocument($_GET['id']))
 		return;
 
+	$note = $LMS->GetNoteContent($_GET['id']);
+
     $SESSION->remove('notecontents');
     $SESSION->remove('notecustomer');
 

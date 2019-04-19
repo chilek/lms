@@ -145,13 +145,16 @@
 									href="?m=invoice&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="Invoice"}
 								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{if $item.published}
-										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
-									{else}
-										{$onclick=""}
-									{/if}
+									{textformat assign="onclick" wrap=5000}
+										{if $item.published}
+										if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
+											window.open($(this).attr('href'));
+										}
+										return false;
+										{/if}
+									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
-										href="?m=invoiceedit&id={$item.docid}&action=edit" external=true
+										href="?m=invoiceedit&id={$item.docid}&action=edit"
 										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
@@ -175,15 +178,18 @@
 									href="?m=invoice&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
 								{if !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{if $item.published}
-										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
-									{else}
-										{$onclick=""}
-									{/if}
+									{textformat assign="onclick" wrap=5000}
+										{if $item.published}
+										if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
+											window.open($(this).attr('href'));
+										}
+										return false;
+										{/if}
+									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
 										href="?m=invoiceedit&id={$item.docid}&action=edit&proforma=1"
 										onclick=$onclick
-										resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
+										resourceid="{$item.docid}" icon_tip="pro forma invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.cancelled && !$item.referenced}
@@ -210,15 +216,15 @@
 									href="?m=invoice&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="Credit note"}
 								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-									{if $item.published}
-										{$onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"}
-									{else}
-										{$onclick=""}
-									{/if}
+									{textformat assign="onclick" wrap=5000}
+										if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
+											window.open($(this).attr('href'));
+										}
+										return false;
+									{/textformat}
 									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
 										href="?m=invoicenoteedit&id={$item.docid}&action=edit"
-										onclick=$onclick
-										resourceid="{$item.docid}" external=true icon_tip="Invoice"}
+										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
 								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
@@ -238,6 +244,7 @@
 											{button type="link" icon="restore" href="?m=noteunarchive&id={$item.docid}" tip="Unarchive"}
 										{/if}
 									{/if}
+
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
@@ -247,6 +254,19 @@
 								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
 									href="?m=note&id={$item.docid}"
 									resourceid="{$item.docid}" external=true icon_tip="Debit note"}
+								{if !$item.cancelled && !$item.archived}
+									{textformat assign="onclick" wrap=5000}
+										{if $note.published}
+										if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
+											window.open($(this).attr('href'));
+										}
+										return false;
+										{/if}
+									{/textformat}
+									{button type="link" icon="edit" class="lms-ui-tooltip-docnumber"
+										href="?m=noteedit&id={$item.docid}&action=edit"
+										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
+								{/if}
 							{/if}
 						{/if}
 						<INPUT type="checkbox" form="addbalance-form"
@@ -518,7 +538,7 @@
 	{/if}
 
 	$('.invoicesend').click(function(e) {
-		if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}')) {
+		if (confirm($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'))) {
 			window.open($(this).attr('href'));
 		}
 		e.preventDefault();
@@ -543,7 +563,7 @@
 	});
 
 	$('#clear-account').click(function() {
-		if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}')) {
+		if (confirm($t('Are you sure, you want to account ALL debts of customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'))) {
 			location.href = '?m=customerbalanceok&id={$customerinfo.id}';
 		}
 	});

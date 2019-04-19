@@ -317,7 +317,7 @@ $_LANG['Are you sure, you want to remove node from selected groups?'] = 'Jesteś
 $_LANG['Are you sure, you want to remove device \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć urządzenie \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to remove host \\\'$a\\\' and all assigned configuration?'] = 'Jesteś pewien, że chcesz usunąć hosta \\\'$a\\\' i całą jego konfigurację?';
 $_LANG['Are you sure, you want to remove instance \\\'$a\\\' and all assigned configuration?'] = 'Jesteś pewien, że chcesz usunąć instancję \\\'$a\\\' i całą jej konfigurację?';
-$_LANG['Are you sure, you want to remove invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to remove invoice \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to remove network \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz usunąć sieć \\\'$a\\\'?';
 $_LANG['Are you sure, you want to remove node \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to remove network \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć sieć \\\'$a\\\' z bazy danych?';
@@ -1865,7 +1865,7 @@ $_LANG['Select number<!voip>'] = 'Wybierz numer';
 $_LANG['Period'] = 'Okres';
 $_LANG['select period'] = 'wybierz okres';
 $_LANG['Template must contain "%N" or "%C" specifier!'] = 'Szablon musi zawierać specyfikator "%N" lub "%C"!';
-$_LANG['Are you sure, you want to remove credit note \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę korygującą \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to remove credit note \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę korygującą \'$a\' z bazy danych?';
 $_LANG['Corrected to:'] = 'Poprawiono na:';
 $_LANG['credit memo'] = 'nota korygująca';
 $_LANG['credit note'] = 'faktura korygująca';
@@ -2657,7 +2657,7 @@ $_LANG['There are no types in database.'] = 'Brak typów w bazie danych.';
 $_LANG['Use current division data:'] = 'Zastosuj dane bieżącej firmy (oddziału):';
 $_LANG['Seller data change'] = 'Zmiana danych sprzedawcy';
 $_LANG['Are you sure, you want to check/uncheck selected debit notes as accounted?'] = 'Czy na pewno chcesz oznaczyć wybrane noty obciążeniowe jako rozliczone/nierozliczone?';
-$_LANG['Are you sure, you want to remove debit note \\\'$a\\\' from database?'] = 'Czy na pewno chcesz usunąć notę obciążeniową \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to remove debit note \'$a\' from database?'] = 'Czy na pewno chcesz usunąć notę obciążeniową \'$a\' z bazy danych?';
 $_LANG['debit note'] = 'nota obciążeniowa';
 $_LANG['Debit note'] = 'Nota obciążeniowa';
 $_LANG['Debit Notes'] = 'Noty obciążeniowe';
@@ -3253,7 +3253,7 @@ $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 $_LANG['Invoice send'] = 'Wysyłka faktury';
 $_LANG['Send invoice'] = 'Wyślij fakturę';
-$_LANG['Are you sure, you want to send invoice to customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \\\'$a\\\'?';
+$_LANG['Are you sure, you want to send invoice to customer \'$a\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \'$a\'?';
 
 $_LANG['Address type:'] = 'Typ adresu:';
 $_LANG['settlement<!addresstype>'] = 'rozliczeniowy';
@@ -3261,8 +3261,6 @@ $_LANG['localisation<!addresstype>'] = 'lokalizacyjny';
 $_LANG['postal'] = 'korespondencyjny';
 
 $_LANG['Invoice send'] = 'Wysyłka faktur';
-$_LANG['Send invoice'] = 'Wyślij fakturę';
-$_LANG['Are you sure, you want to send invoice to customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \\\'$a\\\'?';
 
 $_LANG['visual editor'] = 'edytor wizualny';
 $_LANG['Message template:'] = 'Szablon wiadomości:';
@@ -3626,10 +3624,10 @@ $_LANG['Assign network to customer'] = 'Przypisz sieć do klienta';
 
 $_LANG['Automatically adjusts the size of the selection list to the number of users when set to 0.'] = 'Automatyczne dopasowanie wielkości listy wyboru do ilości użytkowników jeśli ustawione na 0.';
 
-$_LANG['Are you sure, you want to cancel invoice \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz anulować fakturę \\\'$a\\\'?';
-$_LANG['Are you sure, you want to cancel debit note \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz anulować notę obciążeniową \\\'$a\\\'?';
-$_LANG['Are you sure, you want to recover cancelled invoice \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \\\'$a\\\'?';
-$_LANG['Are you sure, you want to recover cancelled debit note \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną notę obciążeniową \\\'$a\\\'?';
+$_LANG['Are you sure, you want to cancel invoice \'$a\'?'] = 'Jesteś pewien, że chcesz anulować fakturę \'$a\'?';
+$_LANG['Are you sure, you want to cancel debit note \'$a\'?'] = 'Jesteś pewien, że chcesz anulować notę obciążeniową \'$a\'?';
+$_LANG['Are you sure, you want to recover cancelled invoice \'$a\'?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \'$a\'?';
+$_LANG['Are you sure, you want to recover cancelled debit note \'$a\'?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną notę obciążeniową \'$a\'?';
 
 $_LANG['User groups'] = 'Grupy użytkowników';
 $_LANG['user group<!syslog>'] = 'grupa użytkowników';

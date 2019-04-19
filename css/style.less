@@ -2387,10 +2387,20 @@ table.lmsbox {
 				background-color: @highlight !important;
 			}
 			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even) {
-				background-color: @light;
+				& {
+					background-color: @light;
+				}
+				&.cancel {
+					background-color: @red-light;
+				}
 			}
 			tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd) {
-				background-color: @lucid;
+				& {
+					background-color: @lucid;
+				}
+				&.cancel {
+					background-color: @red-lucid;
+				}
 			}
 			tr.ui-selected {
 			}
@@ -2404,10 +2414,20 @@ table.lmsbox {
 			background-color: @highlight !important;
 		}
 		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even):not(.ui-selected) {
-			background-color: @light;
+			& {
+				background-color: @light;
+			}
+			&.cancel {
+				background-color: @red-light;
+			}
 		}
 		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
-			background-color: @lucid;
+			& {
+				background-color: @lucid;
+			}
+			&.cancel {
+				background-color: @red-lucid;
+			}
 		}
 		tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):not(:last-child) {
 			border-bottom: @dotted-line;
@@ -2668,7 +2688,7 @@ td.multiselect {
 }
 
 .cancel {
-	background: #ff6c6c;
+	background: @cancel;
 }
 
 .rotate-90 {
