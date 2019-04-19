@@ -141,4 +141,6 @@ interface LMSFinanceManagerInterface
 	public function GetPromotions();
 
 	public function AggregateDocuments($list);
+
+	public function GetDocumentsForBalanceRecords($ids, $doctypes);
 }

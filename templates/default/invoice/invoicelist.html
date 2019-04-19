@@ -48,6 +48,12 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		document.page.submit();
 	}
 
+	function unarchive_invoices() {
+		document.page.action="?m=invoiceunarchive&marks=invoice";
+		document.page.target="";
+		document.page.submit();
+	}
+
 	function filter()
 	{
 		document.page.action="?m=invoicelist{if $proforma}&proforma=1{/if}";
@@ -208,10 +214,18 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{elseif $invoice.cancelled}
 				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
 			{/if}
-			{if !$invoice.cancelled && !$invoice.archived
-				&& ConfigHelper::checkPrivilege('trade_document_archiving')
-				&& ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-				<A HREF="?m=invoicearchive&id={$invoice.id}"><IMG src="img/db.gif" alt="{trans("Archive")}" title="{trans("Archive")}"></A>
+			{if !$invoice.cancelled}
+				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
+					{if !$invoice.archived}
+						{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+							<A HREF="?m=invoicearchive&id={$invoice.id}"><IMG src="img/db.gif" alt="{trans("Archive")}" title="{trans("Archive")}"></A>
+						{/if}
+					{else}
+						{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+							<A HREF="?m=invoiceunarchive&id={$invoice.id}"><IMG src="img/dbnew.gif" alt="{trans("Unarchive")}" title="{trans("Unarchive")}"></A>
+						{/if}
+					{/if}
+				{/if}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
 				{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
@@ -250,11 +264,14 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				<TR>
 					<TD class="text-left nobr">
 						{if !$proforma}
-						<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
+							<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
 						{/if}
 						<A HREF="javascript:send_invoices();" OnClick="return confirm('{t}Are you sure, you want to send invoices to customers?{/t}');">{trans("Send invoices")} <IMG SRC="img/mail.gif" ALT=""></A>&nbsp;
 						{if ConfigHelper::checkPrivilege('trade_document_archiving')}
-						<a href="javascript:archive_invoices();" OnClick="return confirm('{t}Are you sure, you want to archive selected invoices?{/t}');">{trans("Archive invoices")} <img src="img/db.gif" alt=""></a>
+							<a href="javascript:archive_invoices();" OnClick="return confirm('{t}Are you sure, you want to archive selected invoices?{/t}');">{trans("Archive")} <img src="img/db.gif" alt=""></a>
+						{/if}
+						{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+							<a href="javascript:unarchive_invoices();" OnClick="return confirm('{t}Are you sure, you want to unarchive selected invoices?{/t}');">{trans("Unarchive")} <img src="img/dbnew.gif" alt=""></a>
 						{/if}
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/print.gif" ALT="" ></A>&nbsp;
 						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>

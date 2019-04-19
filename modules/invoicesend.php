@@ -74,11 +74,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 		$ids = Utils::filterIntegers($marks);
 
 		if (!empty($ids))
-			$ids = $DB->GetCol("SELECT DISTINCT docid FROM cash c
-				JOIN documents d ON d.id = c.docid
-				WHERE d.type IN (?, ?, ?)
-					AND c.id IN (" . implode(',', $ids) . ")",
-				array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+			$ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
 	} elseif (isset($_GET['id']) && intval($_GET['id']))
 		$ids = array(intval($_GET['id']));
 	else

@@ -148,10 +148,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	}
 
 	if (isset($_GET['cash']))
-		// we need to check if that document is a debit note
-		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
-			WHERE docid = documents.id AND documents.type = ?
-			AND cash.id IN (' . implode(',', $ids) . ')', array(DOC_DNOTE));
+		$ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_DNOTE));
 
 	$layout['pagetitle'] = trans('Debit Notes');
 

@@ -118,9 +118,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
 	}
 
 	if (isset($_GET['cash']))
-		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
-			WHERE docid = documents.id AND documents.type = ?
-				AND cash.id IN (' . implode(',', $ids) . ')', array(DOC_RECEIPT));
+		$ids = $DB->GetDocumentsForBalanceRecords($ids, array(DOC_RECEIPT));
 
 	sort($ids);
 

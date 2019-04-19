@@ -197,14 +197,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		die;
 	}
 
-	if (isset($_GET['cash'])) {
-		$ids = $DB->GetCol('SELECT DISTINCT docid
-			FROM cash, documents
-			WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?)
-				AND cash.id IN ('.implode(',', $ids).')
-			ORDER BY docid',
-			array(DOC_INVOICE, DOC_CNOTE));
-	}
+	if (isset($_GET['cash']))
+		$ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO));
 
 	$layout['pagetitle'] = trans('Invoices');
 

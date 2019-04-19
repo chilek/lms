@@ -3478,4 +3478,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 		return $list;
 	}
+
+	public function GetDocumentsForBalanceRecords($ids, $doctypes) {
+		return $this->db->GetCol("SELECT DISTINCT docid FROM cash c
+			JOIN documents d ON d.id = c.docid
+			WHERE d.type IN (?, ?, ?, ?)
+				AND c.id IN (" . implode(',', $ids) . ")",
+			$doctypes);
+	}
 }

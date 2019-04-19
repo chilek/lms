@@ -125,8 +125,16 @@
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
 								{/if}
-								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
-									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+										{/if}
+									{else}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=invoiceunarchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
+									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
@@ -147,8 +155,16 @@
 										onclick=$onclick resourceid="{$item.docid}" icon_tip="Invoice"}
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
-								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
-									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+										{/if}
+									{else}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=invoicunearchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
+									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
@@ -174,8 +190,16 @@
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 									tip="Revise"}
 								{/if}
-								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
-									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+										{/if}
+									{else}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=invoiceunarchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
+									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
@@ -204,8 +228,16 @@
 									href="?m=receiptedit&id={$item.docid}"
 									resourceid="{$item.docid}" externa=true icon_tip="Cash receipt"}
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
-								{if !$item.cancelled && !$item.archived && ConfigHelper::checkPrivilege('trade_document_archiving')}
-									{button type="link" icon="archive" href="?m=invoicearchive&id={$item.docid}" tip="Archive"}
+								{if !$item.cancelled}
+									{if !$item.archived}
+										{if ConfigHelper::checkPrivilege('trade_document_archiving')}
+											{button type="link" icon="archive" href="?m=notearchive&id={$item.docid}" tip="Archive"}
+										{/if}
+									{else}
+										{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
+											{button type="link" icon="restore" href="?m=noteunarchive&id={$item.docid}" tip="Unarchive"}
+										{/if}
+									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
@@ -238,11 +270,14 @@
 
 			{tab_buttons}
 				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-				{button icon="delete" onclick="javascript:delpos();" label="Delete"}
+					{button icon="delete" onclick="javascript:delpos();" label="Delete"}
 				{/if}
 				{button icon="mail" class="multiinvoicesend" label="Send invoices"}
 				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
-				{button icon="archive" class="multiinvoicearchive" label="Archive"}&nbsp;
+					{button icon="archive" class="multiinvoicearchive" label="Archive"}&nbsp;
+				{/if}
+				{if ConfigHelper::checkPrivilege('trade_document_uarchiving')}
+					{button icon="restore" class="multiinvoiceunarchive" label="Unarchive"}&nbsp;
 				{/if}
 				{trans("Print")}:
 				{button icon="print" label="invoices" onclick="javascript:print_doc('invoice')"}
@@ -402,6 +437,12 @@
 		document.addbalance.submit();
 	}
 
+	function unarchive_invoices() {
+		document.addbalance.action="?m=invoiceunarchive&marks=cash";
+		document.addbalance.target="";
+		document.addbalance.submit();
+	}
+
 	function show_list()
 	{
 		var type = document.getElementById('showlistselect').value;
@@ -492,6 +533,12 @@
 	$('.multiinvoicearchive').click(function() {
 		if (confirm($t("Are you sure, you want to archive selected documents?"))) {
 			archive_invoices();
+		}
+	});
+
+	$('.multiinvoiceunarchive').click(function() {
+		if (confirm($t("Are you sure, you want to unarchive selected documents?"))) {
+			unarchive_invoices();
 		}
 	});
 

@@ -2893,6 +2893,11 @@ class LMS
 		return $manager->AggregateDocuments($list);
 	}
 
+	public function GetDocumentsForBalanceRecords($ids, $doctypes) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetDocumentsForBalanceRecords($ids, $doctypes);
+	}
+
 	/**
      * VoIP functions
      */
