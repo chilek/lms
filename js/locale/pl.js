@@ -4298,21 +4298,29 @@ $_LANG['shorter than minute'] = 'krócej niż minutę';
 
 $_LANG['Archive'] = 'Archiwizuj';
 $_LANG['Archive invoices'] = 'Archiwizuj faktury';
+$_LANG['Unarchive invoices'] = 'Cofnij archiwizację faktur';
 $_LANG['Archive debit notes'] = 'Archiwizuj noty obciążeniowe';
+$_LANG['Unarchive debit notes'] = 'Cofnij archiwizację not obciążeniowych';
 $_LANG['Archiving'] = 'Archiwizowanie';
 $_LANG['Archived:'] = 'Zarchiwizowany:';
 $_LANG['Select document archived state'] = 'Wybierz stan archiwizacji dokumentu';
 $_LANG['Are you sure, you want to archive that document?'] = 'Jesteś pewien, że chcesz zarchiwizować ten dokument?';
 $_LANG['Are you sure, you want to archive selected invoices?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane faktury?';
+$_LANG['Are you sure, you want to unarchive selected invoices?'] = 'Jesteś pewien, że chcesz cofnąć archiwizację wybranych faktur?';
 $_LANG['Are you sure, you want to archive selected debit notes?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane noty obciążeniowe?';
+$_LANG['Are you sure, you want to unarchive selected debit notes?'] = 'Jesteś pewien, że chcesz cofnąć archiwizację wybranych not obciążeniowych?';
 $_LANG['Are you sure, you want to archive selected documents?'] = 'Jesteś pewien, że chcesz zarchiwizować wybrane dokumenty?';
+$_LANG['Are you sure, you want to unarchive selected documents?'] = 'Jesteś pewien, że chcesz cofnąć archiwizację wybranych dokumentów?';
 $_LANG['Cannot undo document confirmation while it is archived!'] = 'Nie można cofnąć zatwierdzenia dokumentu, gdy jest on zarchiwizowany!';
 $_LANG['archivization date'] = 'data archiwizacji';
 $_LANG['archivizator'] = 'archiwizator';
-
+$_LANG['trade document archiving'] = 'archiwizacja dokumentów handlowych';
+$_LANG['trade document unarchiving'] = 'cofanie archiwizacji dokumentów handlowych';
+$_LANG['Unarchive'] = 'Cofnij archiwizację';
 $_LANG['Cannot write new archived document!'] = 'Nie można zapisać nowego dokumentu archiwalnego!';
 
 $_LANG['Preserve pro forma'] = 'Zachowaj pro formę';
 
 $_LANG['modifiable by selected users:<br><strong>$a</strong>'] = 'modyfikowalne przez wybranych użytkowników:<br><strong>$a</strong>';
+$_LANG['Illegal promotion schema period value modification!'] = 'Nielegalna modyfikacja wartości okresowych schematu promocyjnego!';
 

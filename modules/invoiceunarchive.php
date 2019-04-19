@@ -50,6 +50,6 @@ if (empty($ids))
 	$SESSION->redirect($_SERVER['HTTP_REFERER']);
 
 foreach ($ids as $id)
-	$LMS->ArchiveTradeDocument($id);
+	$LMS->DeleteArchiveTradeDocument($id);
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);
