@@ -4326,4 +4326,6 @@ $_LANG['New invoice'] = 'Nowa faktura';
 
 $_LANG['- no categories -'] = '- bez kategorii -';
 
+$_LANG['new window'] = 'nowe okno';
+
 ?>
