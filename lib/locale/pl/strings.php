@@ -4320,4 +4320,6 @@ $_LANG['Illegal promotion schema period value modification!'] = 'Nielegalna mody
 
 $_LANG['New invoice'] = 'Nowa faktura';
 
+$_LANG['- no categories -'] = '- bez kategorii -';
+
 ?>

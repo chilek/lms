@@ -39,6 +39,7 @@
             {trans("Category:")}
             <input type="hidden" name="catid" value="all">
             <SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect lms-ui-multiselect-filter" data-default-value="{trans("- all -")}">
+                    <option value="-1" data-exclusive{if !is_array($filter.catids) && $filter.catids == -1} selected{/if}>{trans('- no categories -')}</option>
                     {foreach $categories $c}
                     <OPTION value="{$c.id}"{if is_array($filter.catids) && in_array($c.id, $filter.catids)} SELECTED{/if}>{$c.name}</OPTION>
                 {/foreach}
@@ -48,7 +49,7 @@
             {trans("Status:")}
             <input type="hidden" name="s" value="-2">
             <SELECT size="1" name="s[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
-                <option value="-1" data-exclusive{if !is_array($filter_state) && $filter.state == -1} selected{/if}>{trans("not resolved")}</option>
+                <option value="-1" data-exclusive{if !is_array($filter.state) && $filter.state == -1} selected{/if}>{trans("not resolved")}</option>
                 {foreach $_RT_STATES as $idx => $s}
                     <OPTION value="{$idx}" {if is_array($filter.state) && in_array($idx, $filter.state)} SELECTED{/if}>{$s.label}</OPTION>
                 {/foreach}

@@ -59,7 +59,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	 * 			array() of integer values or single integer value
 	 * 		owner - ticket owner (default: null = any), -1 = any, 0 = without owner, -2 = with any owner,
 	 *			array() or single integer value
-	 * 		catids - ticket categories (default: null = any),
+	 * 		catids - ticket categories (default: null = any, -1 = without category),
 	 *			array() of integer values or single integer value
 	 *		removed - ticket removal flag (default: null = any),
 	 *			-1 = without removal flag,
@@ -338,7 +338,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
 							. ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
 					: ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
-				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
+				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')'
+					: ($catids > 0 ? ' AND tc.categoryid = ' . $catids : ($catids == -1 ? ' AND tc.ticketid IS NULL' : '')))
 				. $unreadfilter
 				. $statefilter
 				. $priorityfilter
@@ -429,7 +430,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. ($qids ? ' AND (t.queueid IN (' . implode(',', $qids) . ')'
 					. ($all_queues && $user_permission_checks ? ' OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid : '') . ')'
 				: ($user_permission_checks ? ' AND (t.queueid IS NOT NULL OR t.owner = ' . $userid . ' OR t.verifierid = ' . $userid . ')' : ''))
-			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
+			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')'
+				: ($catids > 0 ? ' AND tc.categoryid = ' . $catids : ($catids == -1 ? ' AND tc.ticketid IS NULL' : '')))
 			. $unreadfilter
 			. $statefilter
 			. $priorityfilter

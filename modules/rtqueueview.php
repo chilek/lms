@@ -65,14 +65,17 @@ if (empty($filter['ids'])) {
 // category id's
 if (isset($_GET['catid'])) {
 	if (is_array($_GET['catid']))
-		$filter['catids'] = Utils::filterIntegers($_GET['catid']);
+		if (in_array(-1, $_GET['catid']))
+			$filter['catids'] = -1;
+		else
+			$filter['catids'] = Utils::filterIntegers($_GET['catid']);
 	elseif (intval($_GET['catid']))
 		$filter['catids'] = Utils::filterIntegers(array($_GET['catid']));
 	elseif ($_GET['catid'] == 'all')
 		$filter['catids'] = 0;
 }
 
-if (!empty($filter['catids'])) {
+if (!empty($filter['catids']) && $filter['catids'] != - 1) {
 	foreach ($filter['catids'] as $catidx => $catid)
 		if (!$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), $catid))
 			unset($filter['catids'][$catidx]);
