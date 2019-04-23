@@ -345,7 +345,8 @@ if(isset($_POST['ticket']))
 			'type' => empty($ticketedit['type']) ? null : $ticketedit['type'],
 			'invprojectid' => empty($ticketedit['invprojectid']) ? null : $ticketedit['invprojectid'],
 			'requestor_userid' => empty($ticketedit['requestor_userid']) ? null : $ticketedit['requestor_userid'],
-			'requestor' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_name']) ? '' : $ticketedit['requestor_name'],
+			'requestor' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
+				|| empty($ticketedit['requestor_name']) ? '' : $ticketedit['requestor_name'],
 			'requestor_mail' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_mail']) ? null : $ticketedit['requestor_mail'],
 			'requestor_phone' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
 			'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],

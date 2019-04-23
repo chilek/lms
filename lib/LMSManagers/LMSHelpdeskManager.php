@@ -1208,18 +1208,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else
             $props['parentid'] = $ticket['parentid'];
 
-        if($ticket['customerid'] != $props['customerid'] && isset($props['customerid'])) {
-				if($ticket['customerid'])
-            	$notes[] = trans('Ticket has been moved from customer $a ($b) to customer $c ($d).',
-            		$LMS->getCustomerName($ticket['customerid']), $ticket['customerid'], $LMS->getCustomerName($props['customerid']), $props['customerid']);
-            else
-            	$notes[] = trans('Ticket has been moved from $a to customer $b ($c).',
-            		$ticket['requestor'], $LMS->getCustomerName($props['customerid']), $props['customerid']);
-            $type = $type | RTMESSAGE_CUSTOMER_CHANGE;
-        }else
-            $props['customerid'] = $ticket['customerid'];
-        if (empty($props['customerid']))
-            $props['customerid'] = null;
+		if ($ticket['customerid'] != $props['customerid']) {
+			if ($ticket['customerid']) {
+				if (empty($props['customerid']))
+					$notes[] = trans('Ticket has been moved from customer $a ($b) to $c.',
+						$LMS->getCustomerName($ticket['customerid']), $ticket['customerid'], $props['requestor']);
+				else
+					$notes[] = trans('Ticket has been moved from customer $a ($b) to customer $c ($d).',
+						$LMS->getCustomerName($ticket['customerid']), $ticket['customerid'], $LMS->getCustomerName($props['customerid']), $props['customerid']);
+			} else
+				$notes[] = trans('Ticket has been moved from $a to customer $b ($c).',
+					$ticket['requestor'], $LMS->getCustomerName($props['customerid']), $props['customerid']);
+			$type = $type | RTMESSAGE_CUSTOMER_CHANGE;
+		} else
+			$props['customerid'] = $ticket['customerid'];
+
+		if (empty($props['customerid']))
+			$props['customerid'] = null;
 
 		if (isset($props['categories'])) {
 			$ticket['categories'] = empty($ticket['categories']) ? array() : explode(',', $ticket['categories']);
