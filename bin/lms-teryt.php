@@ -1208,7 +1208,7 @@ if ( isset($options['buildings']) ) {
 				}
 
 				if ($fields_to_update) {
-					$DB->Execute('UPDATE location_buildings SET updated = 1, '.implode(',', $fields_to_update).'WHERE id = '.$building['id']);
+					$DB->Execute('UPDATE location_buildings SET updated = 1, '.implode(',', $fields_to_update).' WHERE id = '.$building['id']);
 				} else {
 					$to_update[] = $building['id'];
 				}
