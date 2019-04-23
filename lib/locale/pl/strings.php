@@ -3279,7 +3279,11 @@ $_LANG['Ticket has been unassigned from network node $a.'] = 'Anulowano przypisa
 $_LANG['Ticket\'s network device assignments has been changed from $a to $b.'] = 'Przypisanie urządzenia sieciowego zostało zmienione z $a na $b.';
 $_LANG['Ticket has been unassigned from network device $a.'] = 'Anulowano przypisanie zgłoszenia do urządzenia sieciowego $a.';
 $_LANG['Ticket\'s location has been changed from $a to $b.'] = 'Lokalizacja zgłoszenia została zmieniona z $a na $b.';
+$_LANG['Ticket\'s location has been changed to $a.'] = 'Lokalizacja zgłoszenia została zmieniona na $a.';
+$_LANG['Ticket\'s location $a has been removed.'] = 'Lokalizacja zgłoszenia $a została usunięta.';
 $_LANG['Ticket\'s node has been changed from $a ($b) to $c ($d).'] = 'Komputer powiązany ze zgłoszeniem został zmieniony z $a ($b) na $c ($d).';
+$_LANG['Ticket\'s node has been changed to $a ($b).'] = 'Komputer powiązany ze zgłoszeniem został zmieniony na $a ($b).';
+$_LANG['Ticket\'s node $a ($b) has been removed.'] = 'Komputer powiązany ze zgłoszeniem $a ($b) został usunięty.';
 $_LANG['Ticket\'s priority has been changed from $a to $b.'] = 'Priorytet zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Show tickets'] = 'Pokaż zgłoszenia';
 

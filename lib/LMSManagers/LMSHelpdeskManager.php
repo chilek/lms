@@ -1264,16 +1264,23 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		}
 
 		if (isset($props['address_id'])) {
-			if ($ticket['address_id'] != $props['address_id']) {
+			if ($ticket['address_id'] != $props['address_id'] && !empty($ticket['customerid'])) {
 				$type = $type | RTMESSAGE_LOCATION_CHANGE;
 				$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 				$locations = $customer_manager->getCustomerAddresses($ticket['customerid']);
 				$props['location'] = $locations[$props['address_id']]['location'];
-				$notes[] = trans('Ticket\'s location has been changed from $a to $b.',
-					$ticket['location'], $props['location']);
+				if (empty($ticket['address_id']))
+					$notes[] = trans('Ticket\'s location has been changed to $a.',
+						$props['location']);
+				else
+					$notes[] = trans('Ticket\'s location has been changed from $a to $b.',
+						$ticket['location'], $props['location']);
 			}
-		} else
+		} else {
 			$props['address_id'] = null;
+			if (!empty($ticket['location']))
+				$notes[] = trans('Ticket\'s location $a has been removed.', $ticket['location']);
+		}
 
 		if (isset($props['nodeid'])) {
 			if ($ticket['nodeid'] != $props['nodeid']) {
@@ -1282,12 +1289,20 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$node_locations = $node_manager->GetNodeLocations($ticket['customerid']);
 				$props['node_name'] = $node_locations[$props['nodeid']]['name'];
 				$props['node_location'] = $node_locations[$props['nodeid']]['location'];
-				$notes[] = trans('Ticket\'s node has been changed from $a ($b) to $c ($d).',
-					$ticket['node_name'] . ': ' . $ticket['node_location'], $ticket['nodeid'],
-					$props['node_name'] . ': ' . $props['node_location'], $props['nodeid']);
+				if (empty($ticket['nodeid']))
+					$notes[] = trans('Ticket\'s node has been changed to $a ($b).',
+						$props['node_name'] . ': ' . $props['node_location'], $props['nodeid']);
+				else
+					$notes[] = trans('Ticket\'s node has been changed from $a ($b) to $c ($d).',
+						$ticket['node_name'] . ': ' . $ticket['node_location'], $ticket['nodeid'],
+						$props['node_name'] . ': ' . $props['node_location'], $props['nodeid']);
 			}
-		} else
+		} else {
 			$props['nodeid'] = null;
+			if (!empty($ticket['nodeid']))
+				$notes[] = trans('Ticket\'s node $a ($b) has been removed.',
+					$ticket['node_name'] . ': ' . $ticket['node_location'], $ticket['nodeid']);
+		}
 
 		if (empty($props['requestor']))
 			$props['requestor'] = '';
