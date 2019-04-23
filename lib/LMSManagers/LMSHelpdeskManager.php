@@ -1293,7 +1293,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			$props['requestor'] = '';
 
 		if ($type) {
-			$note = implode('<br>', $notes);
+			$note = implode("\n", $notes);
 			if ($props['state'] == RT_RESOLVED) {
 				$resolvetime = time();
 				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {

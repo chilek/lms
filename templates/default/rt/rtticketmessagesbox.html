@@ -104,7 +104,7 @@
 						</td>
 						<td width="98%" colspan="2" class="fbt">
 							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
-							{htmlspecialchars($message.body)}
+							{$message.body|escape|replace:"\n":"<BR>"}
 						</td>
 					</tr>
 				</TBODY>
