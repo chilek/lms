@@ -326,8 +326,8 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2017.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2017.zip');
+define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2018.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2018.zip');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -382,7 +382,7 @@ else
 		die;
 	}
 
-$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'siis_adresy_2018_v2.csv';
+$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2018.csv';
 
 //==============================================================================
 // Download required files
