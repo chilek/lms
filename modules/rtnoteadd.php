@@ -26,6 +26,10 @@
 
 check_file_uploads();
 
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtnotexajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 if (isset($_GET['ticketid'])) {
 	$note['ticketid'] = intval($_GET['ticketid']);
 
@@ -238,6 +242,7 @@ if (!isset($_POST['note'])) {
 $SMARTY->assign('note', $note);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
+$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesForQueue($note['queueid']));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtnoteadd.html');
 

@@ -2,6 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+{$xajax}
 
 {$group_action=is_array($message.ticketid)}
 
@@ -55,6 +56,10 @@
 				<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
 			{/box_row}
 {/if}
+			{box_row icon="img/docum.gif" label="Message template:" field_id="message-templates"}
+				{include file="rt/rtmessagetemplates.html"}
+			{/box_row}
+
 			{block name="rtmessageadd-content"}
 			{box_row icon="img/edit.gif" label="Content:"}
 				<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
@@ -144,7 +149,7 @@
 
 {if !$group_action}
 			{box_row icon="img/queue.gif" label="Queue:"}
-				<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"}>
+				<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 					{foreach $queuelist as $item}
 					<OPTION value="{$item.id}"{if $item.newmessagesubject && $item.newmessagebody} data-newmessage-notify="1"{/if}{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
 					{/foreach}
@@ -170,7 +175,7 @@
 			{/box_row}
 {/if}
 
-			{box_row icon="img/verifier.png" label="Verifier:"}
+			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 					<SELECT size="1" name="message[verifierid]" {tip text="Select user" trigger="verifierid"}>
 						<OPTION value="0">- {trans("select user")} -</OPTION>
@@ -289,6 +294,23 @@
 			} else {
 				select.val($(this).attr('data-old-userid'));
 			}
+		});
+
+		$('body').on('change', '#message-templates', function() {
+			var selected = $('option:selected', this);
+			if (parseInt(selected.val()) == 0) {
+				return;
+			}
+			$('[name="message[subject]"]').val(atob(selected.attr('data-subject')));
+			var selectors = [];
+			$.each(selected.attr('data-types').split(','), function(index, value) {
+				if (value == '0') {
+					selectors.push('[name="message[body]"]');
+				} else if (value == '1') {
+					selectors.push('[name="message[note]"]');
+				}
+			});
+			$(selectors.join(',')).val(atob(selected.attr('data-message')));
 		});
 	});
 

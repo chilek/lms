@@ -84,6 +84,10 @@
 			{/box_row}
 
 {if $layout.module == 'rtticketadd'}
+			{box_row icon="img/docum.gif" label="Message template:" field_id="message-templates"}
+				{include file="rt/rtmessagetemplates.html"}
+			{/box_row}
+
 			{block name="rtticketadd-content"}
 			{box_row icon="img/mail.gif" label="Content:"}
 				<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
@@ -301,6 +305,23 @@
 
 		$('#state').change(function() {
 			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
+		});
+
+		$('body').on('change', '#message-templates', function() {
+			var selected = $('option:selected', this);
+			if (parseInt(selected.val()) == 0) {
+				return;
+			}
+			$('[name="ticket[subject]"]').val(atob(selected.attr('data-subject')));
+			var selectors = [];
+			$.each(selected.attr('data-types').split(','), function(index, value) {
+				if (value == '0') {
+					selectors.push('[name="ticket[body]"]');
+				} else if (value == '1') {
+					selectors.push('[name="ticket[note]"]');
+				}
+			});
+			$(selectors.join(',')).val(atob(selected.attr('data-message')));
 		});
 	});
 

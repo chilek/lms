@@ -1,0 +1,8 @@
+<SELECT name="ticket[message-template]" {tip text="Select message template"}>
+	<OPTION value="0">{trans("- none -")}</OPTION>
+	{foreach $messagetemplates as $template}
+		<OPTION value="{$template.id}" data-subject="{base64_encode($template.subject)}"
+				data-message="{base64_encode($template.message)}"
+				data-types="{$template.types}">{$template.name}</OPTION>
+	{/foreach}
+</SELECT>

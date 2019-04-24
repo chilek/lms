@@ -3041,11 +3041,16 @@ class LMS
 		return $manager->DeleteMessageTemplates($ids);
 	}
 
-	public function GetMessageTemplates($type = 0)
+	public function GetMessageTemplates($type = 0, $queueid = null)
     {
         $manager = $this->getMessageManager();
         return $manager->GetMessageTemplates($type);
     }
+
+	public function GetMessageTemplatesForQueue($queueid) {
+		$manager = $this->getMessageManager();
+		return $manager->GetMessageTemplatesForQueue($queueid);
+	}
 
 	public function GetMessageList(array $params) {
 		$manager = $this->getMessageManager();

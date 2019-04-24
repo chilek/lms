@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -84,7 +84,10 @@ function queue_changed($queue) {
     if(empty($queue))
         return $JSResponse;
 
-    $vid = $LMS->GetQueueVerifier($queue);
+	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesForQueue($queue));
+	$JSResponse->assign('message-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
+
+	$vid = $LMS->GetQueueVerifier($queue);
 
     if(empty($vid))
         return $JSResponse;
@@ -96,7 +99,8 @@ function queue_changed($queue) {
     $content = $SMARTY->fetch('rt/rtverifiers.html');
 
 	$JSResponse->assign('rtverifiers','innerHTML', $content);
-    return $JSResponse;
+
+	return $JSResponse;
 }
 
 $LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed'));

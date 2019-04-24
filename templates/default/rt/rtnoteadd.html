@@ -2,6 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!-- $Id$ -->
+{$xajax}
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="note" id="note-form" action="?m=rtnoteadd">
 <INPUT type="hidden" name="note[inreplyto]" value ="{$note.inreplyto|default:"0"}">
@@ -22,6 +23,15 @@
 	</TR>
     </THEAD>
     <TBODY>
+	<TR>
+		<TD class="bold nobr">
+			<img src="img/docum.gif" alt="">
+			{trans("Message template:")}
+		</TD>
+		<td id="message-templates">
+			{include file="rt/rtmessagetemplates.html"}
+		</td>
+	</TR>
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/note.gif" alt="">
@@ -122,7 +132,7 @@
 			<IMG src="img/queue.gif" alt=""> {trans("Queue:")}
 		</TD>
 		<TD>
-			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"}>
+			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
 			{foreach from=$queuelist item=item}
 				<OPTION value="{$item.id}" {if $item.id == $note.queueid}SELECTED{/if}>{$item.name}</OPTION>
 			{/foreach}
@@ -158,7 +168,7 @@
 		</TD>
 		<TD>
 			{if !$ticket.verifierid || $ticket.verifierid == $layout.logid}
-				<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"}>
+				<SELECT size="1" name="note[verifierid]" {tip text="Select user" trigger="verifierid"} id="rtverifiers">
 					<OPTION value="0">- {trans("select user")} -</OPTION>
 					{foreach $userlist as $user}
 						{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
@@ -228,6 +238,22 @@
 			} else {
 				select.val($(this).attr('data-old-userid'));
 			}
+		});
+
+		$('body').on('change', '#message-templates', function() {
+			var selected = $('option:selected', this);
+			if (parseInt(selected.val()) == 0) {
+				return;
+			}
+			var selectors = [];
+			$.each(selected.attr('data-types').split(','), function(index, value) {
+				if (value == '0') {
+					selectors.push('[name="note[body]"]');
+				} else if (value == '1') {
+					selectors.push('[name="note[note]"]');
+				}
+			});
+			$(selectors.join(',')).val(atob(selected.attr('data-message')));
 		});
 	});
 

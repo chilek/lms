@@ -385,6 +385,7 @@ $SMARTY->assign('netdevlist', $netdevlist);
 $SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesForQueue($queue));
 $SMARTY->display('rt/rtticketadd.html');
 
 ?>

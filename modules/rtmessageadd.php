@@ -26,6 +26,10 @@
 
 check_file_uploads();
 
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtmessagexajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
@@ -525,6 +529,7 @@ if (!is_array($message['ticketid'])) {
 			$message['state'] = RT_OPEN;
 	}
 	$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
+	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesForQueue($queue['id']));
 }
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('categories', $categories);

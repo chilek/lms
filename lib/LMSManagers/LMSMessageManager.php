@@ -138,8 +138,26 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				GROUP BY templateid
 				--ORDER BY q.name
 			) tq ON tq.templateid = t.id
-			' . (empty($type) ? '' : ' WHERE t.type = ' . intval($type)) . '
-			ORDER BY t.name');
+			WHERE 1 = 1' . (empty($type) ? '' : ' AND t.type = ' . intval($type))
+			. ' ORDER BY t.name');
+	}
+
+	public function GetMessageTemplatesForQueue($queueid) {
+		return $this->db->GetAll('SELECT t.id, t.name, t.subject, t.message,
+				' . $this->db->GroupConcat('tt.messagetype') . ' AS types
+			FROM templates t
+			LEFT JOIN rttemplatetypes tt ON tt.templateid = t.id
+			LEFT JOIN rttemplatequeues tq ON tq.templateid = t.id AND tq.queueid = ?
+			LEFT JOIN (
+				SELECT t2.id AS templateid, COUNT(tq2.templateid) AS queuecount
+				FROM templates t2
+				LEFT JOIN rttemplatequeues tq2 ON tq2.templateid = t2.id
+				GROUP BY t2.id
+				HAVING COUNT(tq2.templateid) = 0
+			) t3 ON t3.templateid = t.id
+			WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)  
+			GROUP BY t.id, t.name, t.subject, t.message',
+			array($queueid, TMPL_HELPDESK));
 	}
 
 	public function GetMessageList(array $params) {
