@@ -3024,16 +3024,16 @@ class LMS
         return $nodesessions;
     }
 
-    public function AddMessageTemplate($type, $name, $subject, $message)
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
     {
         $manager = $this->getMessageManager();
-        return $manager->AddMessageTemplate($type, $name, $subject, $message);
+        return $manager->AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $message)
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
     {
         $manager = $this->getMessageManager();
-        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $message);
+        return $manager->UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
     }
 
 	public function DeleteMessageTemplates(array $ids) {

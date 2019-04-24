@@ -18,6 +18,8 @@
 		<COL style="width: 1%;">
 		<COL style="width: 96%;">
 		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
 	</COLGROUP>
 	<THEAD>
 		<TR>
@@ -33,12 +35,18 @@
 			<TD class="nobr">
 				{trans("Message:")}
 			</TD>
+			<TD class="nobr">
+				{trans("Queues:")}
+			</TD>
+			<TD class="nobr">
+				{trans("<!message-type>Message types:")}
+			</TD>
 			<TD>
 				&nbsp;
 			</TD>
 		</TR>
 		<TR>
-			<td colspan="5">
+			<td colspan="7">
 				<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
 				<select name="type" form="filter" onchange="javascript:document.filter.submit();">
 					<option value="0">{trans("- all -")}</option>
@@ -54,7 +62,7 @@
 		{foreach $templates as $template}
 		<TR class="highlight" data-template-id="{$template.id}">
 			<TD class="nobr text-center" data-template-type="{$template.type}">
-				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEAMPLTES[$template.type].label}"></i>
+				<i class="{$_MESSAGETEMPLATES[$template.type].class}" title="{$_MESSAGETEMPLATES[$template.type].label}"></i>
 			</TD>
 			<TD class="nobr" data-template-name="{$template.name}">
 				{$template.name}
@@ -66,6 +74,20 @@
 				{$template.message|truncate:5000:"..."|replace:"\n":"<BR>"}
 				<div style="display: none;" class="data-template-message">{$template.message}</div>
 			</TD>
+			<TD data-template-helpdesk-queues="{$template.queues}">
+				{$template.queuenames}
+			</TD>
+			<TD data-template-helpdesk-message-types="{$template.messagetypes}">
+				{if !empty($template.messagetypes)}
+					{foreach explode(',', $template.messagetypes) as $type}
+						{if $type == $smarty.const.RTMESSAGE_REGULAR}
+						{trans("<!message-type>message")}{if !$type@last},{/if}
+						{elseif $type == $smarty.const.RTMESSAGE_NOTE}
+						{trans("<!message-type>note")}{if !$type@last},{/if}
+						{/if}
+					{/foreach}
+				{/if}
+			</TD>
 			<TD class="text-right nobr">
 				{button type="link" class="edit-template-dialog-btn" icon="edit" tip="Edit"
 					onclick="javascript:open_edit_dialog({$template.id});"}
@@ -76,7 +98,7 @@
 		</TR>
 		{foreachelse}
 		<TR>
-			<TD colspan="5" class="empty-table">
+			<TD colspan="7" class="empty-table">
 				<p>{trans("No message templates in database.")}</p>
 			</TD>
 		</TR>
@@ -84,7 +106,7 @@
 	</TBODY>
 	<TFOOT>
 		<TR class="lms-ui-button-panel">
-			<TD colspan="3" class="nobr">
+			<TD colspan="5" class="nobr">
 				{button icon="add" class="add-template-dialog-btn" tip="Add" label="Add"
 					onclick="javascript:open_add_dialog();"}
 			</TD>

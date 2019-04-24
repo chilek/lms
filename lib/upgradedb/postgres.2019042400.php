@@ -26,7 +26,7 @@ $this->BeginTrans();
 $this->Execute("
 	CREATE SEQUENCE rttemplatetypes_id_seq;
 	CREATE TABLE rttemplatetypes(
-		id          integer DEFAULT nextval('templatetypes_id_seq'::text) NOT NULL,
+		id          integer DEFAULT nextval('rttemplatetypes_id_seq'::text) NOT NULL,
 		templateid  integer                                               NOT NULL
 			CONSTRAINT rttemplatetypes_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
 		messagetype integer                                               NOT NULL,

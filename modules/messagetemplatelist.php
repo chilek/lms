@@ -28,14 +28,17 @@ if (isset($_GET['action'])) {
 	switch ($_GET['action']) {
 		case 'add':
 		case 'edit':
-			$p = array_map('trim', $_POST['template']);
+			$p = $_POST['template'];
+			foreach ($p as $idx => $val)
+				if (!is_array($val))
+					$p[$idx] = trim($val);
 
 			if (!strlen($p['name']))
 				$error[$_GET['action'] . '-template-name'] = trans('Empty message template name!');
 			if (($p['type'] != TMPL_SMS && $p['type'] != TMPL_WARNING) && !strlen($p['subject']))
 				$error[$_GET['action'] . '-template-subject'] = trans('Empty message template subject!');
 
-			if ($p['type'] == TMPL_SMS)
+			if ($p['type'] == TMPL_SMS || $p['type'] == TMPL_HELPDESK)
 				$body_type = 'text';
 			else
 				$body_type = 'html';
@@ -46,9 +49,11 @@ if (isset($_GET['action'])) {
 				die(json_encode(array('error' => $error)));
 			else {
 				if ($_GET['action'] == 'add')
-					$id = $LMS->AddMessageTemplate($p['type'], $p['name'], $p['subject'], $p[$body_type . '-body']);
+					$id = $LMS->AddMessageTemplate($p['type'], $p['name'], $p['subject'],
+						$p['helpdesk-queues'], $p['helpdesk-message-types'], $p[$body_type . '-body']);
 				else
-					$id = $LMS->UpdateMessageTemplate($p['id'], $p['type'], $p['name'], $p['subject'], $p[$body_type . '-body']);
+					$id = $LMS->UpdateMessageTemplate($p['id'], $p['type'], $p['name'], $p['subject'],
+						$p['helpdesk-queues'], $p['helpdesk-message-types'], $p[$body_type . '-body']);
 
 				die(json_encode(array('id' => $id)));
 			}
@@ -70,5 +75,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('type', $type);
 $SMARTY->assign('templates', $LMS->GetMessageTemplates($type));
+$SMARTY->assign('queues', $LMS->GetQueueList(array('only_accessible' => true, 'stats' => false)));
 
 $SMARTY->display('message/messagetemplatelist.html');

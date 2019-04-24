@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2018 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,7 +44,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         . ($limit ? ' LIMIT ' . $limit : ''), array($customerid));
     }
 
-    public function AddMessageTemplate($type, $name, $subject, $message)
+    public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
     {
         $args = array(
             'type' => $type,
@@ -55,16 +55,29 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         if ($this->db->Execute('INSERT INTO templates (type, name, subject, message)
 			VALUES (?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('templates');
+
             if ($this->syslog) {
                 $args[SYSLOG::RES_TMPL] = $id;
                 $this->syslog->AddMessage(SYSLOG::RES_TMPL, SYSLOG::OPER_ADD, $args);
             }
+
+			if ($type == TMPL_HELPDESK) {
+				if (isset($helpdesk_queues) && !empty($helpdesk_queues))
+					foreach ($helpdesk_queues as $queueid)
+						$this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
+							VALUES (?, ?)', array($id, $queueid));
+				if (isset($helpdesk_message_types) && !empty($helpdesk_message_types))
+					foreach ($helpdesk_message_types as $message_type)
+						$this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
+							VALUES (?, ?)', array($id, $message_type));
+			}
+
             return $id;
         }
         return false;
     }
 
-    public function UpdateMessageTemplate($id, $type, $name, $subject, $message)
+    public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
     {
         $args = array(
             'type' => $type,
@@ -84,6 +97,21 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             $args[SYSLOG::RES_TMPL] = $id;
             $this->syslog->AddMessage(SYSLOG::RES_TMPL, SYSLOG::OPER_UPDATE, $args);
         }
+
+		$this->db->Execute('DELETE FROM rttemplatequeues WHERE templateid = ?', array($id));
+		$this->db->Execute('DELETE FROM rttemplatetypes WHERE templateid = ?', array($id));
+
+		if ($type == TMPL_HELPDESK) {
+			if (isset($helpdesk_queues) && !empty($helpdesk_queues))
+				foreach ($helpdesk_queues as $queueid)
+					$this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
+							VALUES (?, ?)', array($id, $queueid));
+			if (isset($helpdesk_message_types) && !empty($helpdesk_message_types))
+				foreach ($helpdesk_message_types as $message_type)
+					$this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
+							VALUES (?, ?)', array($id, $message_type));
+		}
+
         return $res;
     }
 
@@ -92,12 +120,27 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 			array($ids));
 	}
 
-	public function GetMessageTemplates($type = 0)
-    {
-        return $this->db->GetAll('SELECT id, type, name, subject, message FROM templates
-			' . (empty($type) ? '' : ' WHERE type = ' . intval($type)) . '
-			ORDER BY name');
-    }
+	public function GetMessageTemplates($type = 0) {
+		return $this->db->GetAll('SELECT t.id, t.type, t.name, t.subject, t.message,
+				tt.messagetypes, tq.queues, tq.queuenames
+			FROM templates t
+			LEFT JOIN (
+				SELECT templateid, ' . $this->db->GroupConcat('messagetype') . ' AS messagetypes
+				FROM rttemplatetypes
+				GROUP BY templateid
+				--ORDER BY messagetype
+			) tt ON tt.templateid = t.id
+			LEFT JOIN (
+				SELECT templateid, ' . $this->db->GroupConcat('queueid') . ' AS queues,
+					' . $this->db->GroupConcat('q.name') . ' AS queuenames
+				FROM rttemplatequeues
+				JOIN rtqueues q ON q.id = queueid 
+				GROUP BY templateid
+				--ORDER BY q.name
+			) tq ON tq.templateid = t.id
+			' . (empty($type) ? '' : ' WHERE t.type = ' . intval($type)) . '
+			ORDER BY t.name');
+	}
 
 	public function GetMessageList(array $params) {
 		extract($params);

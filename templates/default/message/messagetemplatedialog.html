@@ -3,6 +3,7 @@
 		ol.dialog-box {
 			list-style: none;
 			padding-left: 0;
+			width: 90%;
 		}
 		ol.dialog-box li {
 			padding-bottom: 5px;
@@ -13,6 +14,7 @@
 		}
 		ol.dialog-box select {
 			padding: 2px;
+			width: 40%;
 		}
 	</STYLE>
 
@@ -32,12 +34,37 @@
 			</LI>
 			<LI>
 				{trans("Name:")}<BR>
-				<INPUT TYPE="text" ID="{$operation}-template-name" size="26" NAME="template[name]"  CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+				<INPUT TYPE="text" ID="{$operation}-template-name" NAME="template[name]" size="30" MAXLENGTH="30" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
 			</LI>
 			<LI>
 				{trans("Subject:")}<BR>
-				<INPUT TYPE="text" ID="{$operation}-template-subject" size="26" NAME="template[subject]" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+				<INPUT TYPE="text" ID="{$operation}-template-subject" NAME="template[subject]" size="30" MAXLENGTH="30" MIN="0" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
 			</Li>
+			<li class="{$operation}-helpdesk-properties">
+				<table>
+					<tr>
+						<td width="99%">
+							{trans("Queues:")}<br>
+							<select NAME="template[helpdesk-queues][]" class="lms-ui-multiselect lms-ui-dialog-input lms-ui-multiselect-{$operation}" size="25" multiple>
+								{foreach $queues as $queue}
+								<option value="{$queue.id}">{$queue.name}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td width="1%" class="nobr">
+							{trans("<!message-type>Message types:")}<br>
+							<label class="nobr">
+								<input type="checkbox" name="template[helpdesk-message-types][]" value="{$smarty.const.RTMESSAGE_REGULAR}">
+								{trans("<!message-type>message")}
+							</label>
+							<label class="nobr">
+								<input type="checkbox" name="template[helpdesk-message-types][]" value="{$smarty.const.RTMESSAGE_NOTE}">
+								{trans("<!message-type>note")}
+							</label>
+						</td>
+					</tr>
+				</table>
+			</li>
 			<LI id="{$operation}-html-message">
 				{trans("Message:")}<BR>
 				<TEXTAREA id="{$operation}-template-html-body" cols="80" rows="20" name="template[html-body]" CLASS="lms-ui-wysiwyg-editor text ui-corner lms-ui-dialog-input"></TEXTAREA>
@@ -66,11 +93,16 @@
 			$("#{$operation}-template-type").val($(row).find("[data-template-type]").attr('data-template-type'));
 			$("#{$operation}-template-name").val($(row).find("[data-template-name]").attr('data-template-name'));
 			$("#{$operation}-template-subject").val($(row).find("[data-template-subject]").attr('data-template-subject'));
+			$.each($(row).find("[data-template-helpdesk-message-types]").attr('data-template-helpdesk-message-types').split(','),
+				function(index, value) {
+					$('[name="template[helpdesk-message-types][]"][value="' + value + '"]').prop('checked', true);
+				});
+			$('.lms-ui-multiselect-{$operation}').data('multiselect-object').updateSelection(
+				$(row).find("[data-template-helpdesk-queues]").attr('data-template-helpdesk-queues').split(',')
+			);
 			var body = $(row).find(".data-template-message");
 			$("#{$operation}-template-html-body").html(body.html());
-			if (editor) {
-				editor.setContent(body.html());
-			}
+			editor.setContent(body.html());
 			$("#{$operation}-template-text-body").text(body.text());
 		}
 
@@ -78,21 +110,25 @@
 
 		$('#{$operation}-template-type').change();
 
-		$('#{$operation}-template-dialog [name="template[wysiwyg][html-body]"]:checkbox').prop('checked', editor && !editor.isHidden());
+		$('#{$operation}-template-dialog [name="template[wysiwyg][html-body]"]:checkbox').prop('checked', !editor.isHidden());
 	}
 
 	$( function() {
 		$('#{$operation}-template-type').change(function() {
-			if (parseInt($(this).val()) == {$smarty.const.TMPL_SMS}) {
+			var type = parseInt($(this).val());
+			if (type == {$smarty.const.TMPL_SMS} || type == {$smarty.const.TMPL_HELPDESK}) {
 				$('#{$operation}-html-message').hide();
 				$('#{$operation}-text-message').show();
+				$('.{$operation}-helpdesk-properties').toggle(type == {$smarty.const.TMPL_HELPDESK});
 			} else {
 				$('#{$operation}-html-message').show();
 				$('#{$operation}-text-message').hide();
+				$('.{$operation}-helpdesk-properties').hide();
 			}
 		}).change();
 
 		{$operation}_template_dialog = new LmsUiDialog('{$operation}-template-dialog');
+		{$operation}_template_dialog.setDialogWidth('40%');
 		{$operation}_template_dialog.handler.dialog('option', 'resizable', true);
 		{$operation}_template_dialog.setButtons([
 			{

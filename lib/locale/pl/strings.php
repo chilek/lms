@@ -4328,4 +4328,10 @@ $_LANG['- no categories -'] = '- bez kategorii -';
 
 $_LANG['new window'] = 'nowe okno';
 
+$_LANG['<!message>helpdesk message/note'] = 'wiadomość/notatka helpdesk';
+
+$_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
+$_LANG['<!message-type>message'] = 'wiadomość';
+$_LANG['<!message-type>note'] = 'notatka';
+
 ?>

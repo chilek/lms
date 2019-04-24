@@ -393,6 +393,7 @@ define('TMPL_SMS', 3);
 define('TMPL_WWW', 4);
 define('TMPL_USERPANEL', 5);
 define('TMPL_USERPANEL_URGENT', 6);
+define('TMPL_HELPDESK', 7);
 
 $MESSAGETEMPLATES = array(
 	TMPL_WARNING => array(
@@ -418,6 +419,10 @@ $MESSAGETEMPLATES = array(
 	TMPL_USERPANEL_URGENT => array(
 		'class' => 'lms-ui-icon-userpanel',
 		'label' => trans('<!message>userpanel (urgent)'),
+	),
+	TMPL_HELPDESK => array(
+		'class' => 'lms-ui-icon-helpdesk',
+		'label' => trans('<!message>helpdesk message/note'),
 	),
 );
 
