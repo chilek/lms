@@ -58,6 +58,12 @@ function show_pagecontent() {
 	$('#lms-ui-contents').show();
 	if (location.hash.length && $(location.hash).length) {
 		$(location.hash)[0].scrollIntoView();
+		// workaround floating top position of menu panel and contents area
+		// when url contains internal link
+		var viewportTop = $(window).scrollTop();
+		$('#lms-ui-menu-panel-toggle').css('margin-top', viewportTop);
+		$('#lms-ui-menu-panel').css('margin-top', viewportTop);
+		$('#lms-ui-contents').css('margin-top', viewportTop);
 	} else if (history.state) {
 		window.setTimeout(function(scrollTop) {
 				$('#lms-ui-module-view').scrollTop(scrollTop);
