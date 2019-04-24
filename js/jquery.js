@@ -61,6 +61,14 @@ function show_pagecontent() {
 
 		// workaround floating top position of menu panel and contents area
 		// when url contains internal link
+/*		var viewportTop = $(window).scrollTop();
+		window.setTimeout(function(viewportTop) {
+
+				$('#lms-ui-menu-panel-toggle').css('margin-top', viewportTop);
+				$('#lms-ui-menu-panel').css('margin-top', viewportTop);
+				$('#lms-ui-contents').css('margin-top', viewportTop);
+			}, 50, viewportTop);
+*/
 		window.setTimeout(function() {
 				$('#lms-ui-contents')[0].scrollIntoView();
 			}, 50);
