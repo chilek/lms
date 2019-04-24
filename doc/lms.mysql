@@ -36,6 +36,8 @@ DROP TABLE IF EXISTS filecontainers;
 DROP TABLE IF EXISTS passwdhistory;
 DROP TABLE IF EXISTS userassignments;
 DROP TABLE IF EXISTS usergroups;
+DROP TABLE IF EXISTS rttemplatetypes;
+DROP TABLE IF EXISTS rttemplatequeues;
 DROP TABLE IF EXISTS templates;
 DROP TABLE IF EXISTS logmessagedata;
 DROP TABLE IF EXISTS logmessagekeys;
@@ -2479,6 +2481,36 @@ CREATE TABLE templates (
 	UNIQUE KEY name (type, name)
 ) ENGINE=InnoDB;
 
+# ---------------------------------------------------
+#
+# Structure of table "rttemplatetypes"
+#
+CREATE TABLE rttemplatetypes(
+	id          int(11) NOT NULL auto_increment,
+	templateid  int(11) NOT NULL,
+	messagetype int(11) NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY rttemplatetypes_templateid_key (templateid, messagetype),
+	CONSTRAINT rttemplatetypes_templateid_fkey
+		FOREIGN KEY (templateid) REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# ---------------------------------------------------
+#
+# Structure of table "rttemplatequeues"
+#
+CREATE TABLE rttemplatequeues(
+	id          int(11) NOT NULL auto_increment,
+	templateid  int(11) NOT NULL,
+	queueid  int(11) NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY rttemplatequeues_templateid_key (templateid, queueid),
+	CONSTRAINT rttemplatequeues_templateid_fkey
+		FOREIGN KEY (templateid) REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT rttemplatequeues_queueid_fkey
+		FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 # --------------------------------------------------------
 #
 # Structure of table usergroups
@@ -3479,4 +3511,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019042300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019042400');

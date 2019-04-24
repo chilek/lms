@@ -2429,6 +2429,37 @@ CREATE TABLE templates (
 );
 
 /* ---------------------------------------------------
+ Structure of table "rttemplatetypes"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS rttemplatetypes_id_seq;
+CREATE SEQUENCE rttemplatetypes_id_seq;
+DROP TABLE IF EXISTS rttemplatetypes;
+CREATE TABLE rttemplatetypes(
+	id          integer DEFAULT nextval('rttemplatetypes_id_seq'::text) NOT NULL,
+	templateid  integer                                               NOT NULL
+		CONSTRAINT rttemplatetypes_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	messagetype integer                                               NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT rttemplatetypes_templateid_key UNIQUE (templateid, messagetype)
+);
+
+/* ---------------------------------------------------
+ Structure of table "rttemplatequeues"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS rttemplatequeues_id_seq;
+CREATE SEQUENCE rttemplatequeues_id_seq;
+DROP TABLE IF EXISTS rttemplatequeues;
+CREATE TABLE rttemplatequeues(
+	id          integer DEFAULT nextval('rttemplatequeues_id_seq'::text) NOT NULL,
+	templateid  integer                                               NOT NULL
+		CONSTRAINT rttemplatequeues_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	queueid  integer                                               NOT NULL
+		CONSTRAINT rttemplatequeues_queueid_fkey REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	CONSTRAINT rttemplatequeues_templateid_key UNIQUE (templateid, queueid)
+);
+
+/* ---------------------------------------------------
  Structure of table usergroups
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS usergroups_id_seq;
@@ -3481,6 +3512,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019042300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019042400');
 
 COMMIT;
