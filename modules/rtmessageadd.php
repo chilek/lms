@@ -534,7 +534,7 @@ if (!is_array($message['ticketid'])) {
 } else {
 	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));
 }
-$SMARTY->assign('citing', isset($_GET['citing']));
+$SMARTY->assign('citing', isset($_GET['citing']) || ConfigHelper::checkConfig('phpui.helpdesk_reply_body'));
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('message', $message);
