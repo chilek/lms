@@ -63,23 +63,30 @@
 
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
 							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
-								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
+								{button icon="lms-ui-icon-restore" onclick="if (confirmLink(this,'{trans("Are you sure, you want to restore that message?")}')) location.href = '?m=rtrestore&id={$message.id}&maction=restore';"
+									label="Restore<!RT>"}
+								{button icon="lms-ui-icon-delete" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtremove&id={$message.id}&maction=delperm';"
+									label="Delete permanently"}
 							{else}
-								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=delete" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+								{button icon="lms-ui-icon-trash" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtmessagedel&id={$message.id}&maction=delete';"
+									label="Delete"}
 							{/if}
 						{else}
-							<A href="?m=rtmessageview&amp;id={$message.id}"><IMG src="img/view.gif" alt=""> {trans("Details")}</A>
+							{button icon="lms-ui-icon-details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
 							{if $msgidx > 0}
 								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
-								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
+									{button icon="lms-ui-icon-restore" onclick="if (confirmLink(this,'{trans("Are you sure, you want to restore that message?")}')) location.href = '?m=rtrestore&id={$message.id}&maction=restore';"
+										label="Restore<!RT>"}
+								{button icon="lms-ui-icon-delete" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtremove&id={$message.id}&maction=delperm';"
+									label="Delete permanently"}
 								{else}
-								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=delete" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+									{button icon="lms-ui-icon-trash" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtmessagedel&id={$message.id}&maction=delete';"
+										label="Delete"}
 								{/if}
 							{/if}
 							{if $ticket.state != $smarty.const.RT_RESOLVED}
-								<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}"><IMG src="img/forward.gif" alt=""> {trans("Answer")}</A>
+								{button icon="lms-ui-icon-reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="Answer"}
+								{button icon="lms-ui-icon-citing" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Reply with citing"}
 							{/if}
 						{/if}
 					</TD>

@@ -1354,7 +1354,8 @@ li.lms-ui-suggestion-item {
 	}
 }
 
-.lms-ui-icon-info {
+.lms-ui-icon-info,
+.lms-ui-icon-details {
 	.fa-icon;
 	.fas;
 	.lms-ui-icon;
@@ -2033,6 +2034,26 @@ li.lms-ui-suggestion-item {
 	&:before {
 		color: seagreen;
 		content: @fa-var-key;
+	}
+}
+
+.lms-ui-icon-reply-all,
+.lms-ui-icon-reply {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-reply-all;
+	}
+}
+
+.lms-ui-icon-citing,
+.lms-ui-icon-quote {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-quote-right;
 	}
 }
 

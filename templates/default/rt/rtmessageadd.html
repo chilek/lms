@@ -305,6 +305,12 @@
 			$('[name="message[subject]"]').val(Base64.decode(selected.attr('data-subject')));
 			$('[name="message[body]"]').val(Base64.decode(selected.attr('data-message')));
 		});
+
+		{if isset($citing)}
+		var textarea = $('[name="message[body]"]');
+		textarea.scrollTop(textarea[0].scrollHeight - textarea.height());
+		textarea[0].setSelectionRange(textarea.html().length, textarea.html().length);
+		{/if}
 	});
 
 </SCRIPT>

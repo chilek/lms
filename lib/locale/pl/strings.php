@@ -4336,4 +4336,6 @@ $_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
 $_LANG['<!message-type>message'] = 'wiadomość';
 $_LANG['<!message-type>note'] = 'notatka';
 
+$_LANG['Reply with citing'] = 'Odpowiedz cytując';
+
 ?>

@@ -481,10 +481,11 @@ if (isset($_POST['message'])) {
 			$message['inreplyto'] = $reply['id'];
 			$message['references'] = implode(' ', $reply['references']);
 
-			if (ConfigHelper::checkConfig('phpui.helpdesk_reply_body')) {
+			if (ConfigHelper::checkConfig('phpui.helpdesk_reply_body') || isset($_GET['citing'])) {
 				$body = explode("\n", textwrap(strip_tags($reply['body']), 74));
 				foreach ($body as $line)
 					$message['body'] .= '> ' . $line . "\n";
+				$message['body'] .= "\n";
 			}
 
 		} else {
@@ -533,6 +534,7 @@ if (!is_array($message['ticketid'])) {
 } else {
 	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));
 }
+$SMARTY->assign('citing', isset($_GET['citing']));
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('message', $message);
