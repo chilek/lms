@@ -95,7 +95,22 @@
 				<TBODY>
 				<TR>
 					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0} class="lucid lms-ui-rtmessage-deleted fbt" {else} class="fbt superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
-						{$message.body|escape|replace:"\n":"<BR>"|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"}
+						{$body = $message.body|escape|replace:"[matched-text]":"<span class=\"lms-ui-matched-text\">"|replace:"[/matched-text]":"</span>"}
+						{$quote = false}
+						{foreach explode("\n", $body) as $line}
+							{if strpos($line, '&gt;') === 0}
+								{if !$quote}
+									<blockquote class="lms-ui-blockquote">
+								{/if}
+								{$line = mb_substr($line, 4)}
+								{$quote = true}
+							{elseif $quote}
+								</blockquote>
+								{$quote = false}
+							{/if}
+							{$line}
+							{if !$line@last}<br>{/if}
+						{/foreach}
 					</TD>
 				</TR>
 				</TBODY>
