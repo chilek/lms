@@ -422,7 +422,7 @@ $MESSAGETEMPLATES = array(
 	),
 	TMPL_HELPDESK => array(
 		'class' => 'lms-ui-icon-helpdesk',
-		'label' => trans('<!message>helpdesk message/note'),
+		'label' => trans('<!message>helpdesk'),
 	),
 );
 

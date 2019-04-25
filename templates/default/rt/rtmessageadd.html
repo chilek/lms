@@ -56,8 +56,9 @@
 				<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
 			{/box_row}
 {/if}
-			{box_row icon="img/docum.gif" label="Message template:" field_id="message-templates"}
-				{include file="rt/rtmessagetemplates.html"}
+			{box_row icon="img/docum.gif" label="Message template:" id="message-template-row" field_id="message-templates"
+				visible=!empty($messagetemplates)}
+				{include file="rt/rtmessagetemplates.html" templates=$messagetemplates}
 			{/box_row}
 
 			{block name="rtmessageadd-content"}
@@ -296,21 +297,13 @@
 			}
 		});
 
-		$('body').on('change', '#message-templates', function() {
+		$('body').on('change', '.template-selector', function() {
 			var selected = $('option:selected', this);
 			if (parseInt(selected.val()) == 0) {
 				return;
 			}
 			$('[name="message[subject]"]').val(Base64.decode(selected.attr('data-subject')));
-			var selectors = [];
-			$.each(selected.attr('data-types').split(','), function(index, value) {
-				if (value == '0') {
-					selectors.push('[name="message[body]"]');
-				} else if (value == '1') {
-					selectors.push('[name="message[note]"]');
-				}
-			});
-			$(selectors.join(',')).val(Base64.decode(selected.attr('data-message')));
+			$('[name="message[body]"]').val(Base64.decode(selected.attr('data-message')));
 		});
 	});
 

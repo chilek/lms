@@ -529,7 +529,7 @@ if (!is_array($message['ticketid'])) {
 			$message['state'] = RT_OPEN;
 	}
 	$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
-	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesForQueue($queue['id']));
+	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
 }
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('categories', $categories);

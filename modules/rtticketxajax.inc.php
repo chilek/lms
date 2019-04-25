@@ -84,8 +84,27 @@ function queue_changed($queue) {
     if(empty($queue))
         return $JSResponse;
 
-	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesForQueue($queue));
-	$JSResponse->assign('message-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
+	$templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR);
+	if ($templates) {
+		$SMARTY->assign('templates', $templates);
+		$SMARTY->assign('tip', 'Select message template');
+		$SMARTY->assign('target', '[name="ticket[body]"]');
+		$JSResponse->assign('message-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
+		$JSResponse->assign('message-template-row', 'style', '');
+	} else {
+		$JSResponse->assign('message-template-row', 'style', 'display: none;');
+	}
+
+	$templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE);
+	if ($templates) {
+		$SMARTY->assign('templates', $templates);
+		$SMARTY->assign('tip', 'Select note template');
+		$SMARTY->assign('target', '[name="ticket[note]"]');
+		$JSResponse->assign('note-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
+		$JSResponse->assign('note-template-row', 'style', '');
+	} else {
+		$JSResponse->assign('note-template-row', 'style', 'display: none;');
+	}
 
 	$vid = $LMS->GetQueueVerifier($queue);
 

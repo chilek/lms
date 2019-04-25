@@ -142,22 +142,29 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 			. ' ORDER BY t.name');
 	}
 
-	public function GetMessageTemplatesForQueue($queueid) {
-		return $this->db->GetAll('SELECT t.id, t.name, t.subject, t.message,
-				' . $this->db->GroupConcat('tt.messagetype') . ' AS types
+	public function GetMessageTemplatesByQueueAndType($queueid, $type) {
+		return $this->db->GetAll('SELECT t.id, t.name, t.subject, t.message
 			FROM templates t
-			LEFT JOIN rttemplatetypes tt ON tt.templateid = t.id
 			LEFT JOIN rttemplatequeues tq ON tq.templateid = t.id AND tq.queueid = ?
+			LEFT JOIN rttemplatetypes tt ON tt.templateid = t.id AND tt.messagetype = ?
 			LEFT JOIN (
-				SELECT t2.id AS templateid, COUNT(tq2.templateid) AS queuecount
+				SELECT t2.id AS templateid
 				FROM templates t2
 				LEFT JOIN rttemplatequeues tq2 ON tq2.templateid = t2.id
 				GROUP BY t2.id
 				HAVING COUNT(tq2.templateid) = 0
 			) t3 ON t3.templateid = t.id
-			WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)  
+			LEFT JOIN (
+				SELECT t4.id AS templateid
+				FROM templates t4
+				LEFT JOIN rttemplatequeues tt2 ON tt2.templateid = t4.id
+				GROUP BY t4.id
+				HAVING COUNT(tt2.templateid) = 0
+			) t5 ON t5.templateid = t.id
+			WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)
+				AND (tt.templateid IS NOT NULL OR t.id = t5.templateid)  
 			GROUP BY t.id, t.name, t.subject, t.message',
-			array($queueid, TMPL_HELPDESK));
+			array($queueid, $type, TMPL_HELPDESK));
 	}
 
 	public function GetMessageList(array $params) {

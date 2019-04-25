@@ -3259,11 +3259,13 @@ $_LANG['Invoice send'] = 'Wysyłka faktur';
 
 $_LANG['visual editor'] = 'edytor wizualny';
 $_LANG['Message template:'] = 'Szablon wiadomości:';
+$_LANG['Note template:'] = 'Szablon notatki:';
 $_LANG['Message template operation:'] = 'Czyność na szablonie wiadomości:';
 $_LANG['message template update'] = 'aktualizacja szablonu wiadomości';
 $_LANG['message template creation'] = 'utworzenie szablonu wiadomości';
 $_LANG['New template name:'] = 'Nazwa nowego szablonu:';
 $_LANG['Select message template'] = 'Wybierz szablon wiadomości';
+$_LANG['Select note template'] = 'Wybierz szablon notatki';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
@@ -4328,7 +4330,7 @@ $_LANG['- no categories -'] = '- bez kategorii -';
 
 $_LANG['new window'] = 'nowe okno';
 
-$_LANG['<!message>helpdesk message/note'] = 'wiadomość/notatka helpdesk';
+$_LANG['<!message>helpdesk'] = 'helpdesk';
 
 $_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
 $_LANG['<!message-type>message'] = 'wiadomość';

@@ -23,13 +23,13 @@
 	</TR>
     </THEAD>
     <TBODY>
-	<TR>
+	<TR id="note-template-row"{if empty($notetemplates)} style="display: none;"{/if}>
 		<TD class="bold nobr">
 			<img src="img/docum.gif" alt="">
-			{trans("Message template:")}
+			{trans("Note template:")}
 		</TD>
-		<td id="message-templates">
-			{include file="rt/rtmessagetemplates.html"}
+		<td id="note-templates">
+			{include file="rt/rtmessagetemplates.html" templates=$notetemplates tip="Select note template"}
 		</td>
 	</TR>
 	<TR>
@@ -240,20 +240,12 @@
 			}
 		});
 
-		$('body').on('change', '#message-templates', function() {
+		$('body').on('change', '.template-selector', function() {
 			var selected = $('option:selected', this);
 			if (parseInt(selected.val()) == 0) {
 				return;
 			}
-			var selectors = [];
-			$.each(selected.attr('data-types').split(','), function(index, value) {
-				if (value == '0') {
-					selectors.push('[name="note[body]"]');
-				} else if (value == '1') {
-					selectors.push('[name="note[note]"]');
-				}
-			});
-			$(selectors.join(',')).val(Base64.decode(selected.attr('data-message')));
+			$('[name="note[body]"]').val(Base64.decode(selected.attr('data-message')));
 		});
 	});
 

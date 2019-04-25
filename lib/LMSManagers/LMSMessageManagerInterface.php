@@ -40,7 +40,7 @@ interface LMSMessageManagerInterface
 
     public function GetMessageTemplates($type = 0);
 
-	public function GetMessageTemplatesForQueue($queueid);
+	public function GetMessageTemplatesByQueueAndType($queueid, $type);
 
 	public function GetMessageList(array $params);
 }

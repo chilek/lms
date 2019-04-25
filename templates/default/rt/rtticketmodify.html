@@ -84,8 +84,10 @@
 			{/box_row}
 
 {if $layout.module == 'rtticketadd'}
-			{box_row icon="img/docum.gif" label="Message template:" field_id="message-templates"}
-				{include file="rt/rtmessagetemplates.html"}
+			{box_row icon="img/docum.gif" label="Message template:" field_id="message-templates" id="message-template-row"
+				visible=!empty($messagetemplates)}
+				{include file="rt/rtmessagetemplates.html" templates=$messagetemplates tip="Select message template"
+					target='[name="ticket[body]"]'}
 			{/box_row}
 
 			{block name="rtticketadd-content"}
@@ -93,6 +95,13 @@
 				<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
 			{/box_row}
 			{/block}
+
+			{box_row icon="img/docum.gif" label="Note template:" field_id="note-templates" id="note-template-row"
+				visible=!empty($notetemplates)}
+				{include file="rt/rtmessagetemplates.html" templates=$notetemplates tip="Select note template"
+					target='[name="ticket[note]"]'}
+			{/box_row}
+
 			{box_row icon="img/note.gif" label="Note:"}
 				<TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"}>{$ticket.note}</TEXTAREA>
 			{/box_row}
@@ -307,21 +316,13 @@
 			$('#resolve').prop('checked', $(this).val() == {$smarty.const.RT_RESOLVED});
 		});
 
-		$('body').on('change', '#message-templates', function() {
+		$('body').on('change', '.template-selector', function() {
 			var selected = $('option:selected', this);
 			if (parseInt(selected.val()) == 0) {
 				return;
 			}
 			$('[name="ticket[subject]"]').val(Base64.decode(selected.attr('data-subject')));
-			var selectors = [];
-			$.each(selected.attr('data-types').split(','), function(index, value) {
-				if (value == '0') {
-					selectors.push('[name="ticket[body]"]');
-				} else if (value == '1') {
-					selectors.push('[name="ticket[note]"]');
-				}
-			});
-			$(selectors.join(',')).val(Base64.decode(selected.attr('data-message')));
+			$($(this).attr('data-target')).val(Base64.decode(selected.attr('data-message')));
 		});
 	});
 
