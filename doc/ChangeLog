@@ -242,6 +242,7 @@ version ?.??.?? (????-??-??):
   - enhancement: selected users can modify prices for promotion schema tariffs [chilan]
   - improvement: new trade document archiving and unarchiving user privileges added [chilan]
   - enhancement: added support for helpdesk message/note templates [chilan]
+  - improvement: ticket message reply with citing forced by click on newly added button [chilan]
 
 version 1.11.23 (2018-03-21):
 
