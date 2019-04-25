@@ -98,7 +98,12 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             $this->syslog->AddMessage(SYSLOG::RES_TMPL, SYSLOG::OPER_UPDATE, $args);
         }
 
-		$this->db->Execute('DELETE FROM rttemplatequeues WHERE templateid = ?', array($id));
+		$helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$queues = $helpdesk_manager->GetMyQueues();
+		if (!empty($queues))
+			$this->db->Execute('DELETE FROM rttemplatequeues WHERE templateid = ? AND queueid IN ?',
+				array($id, $queues));
+
 		$this->db->Execute('DELETE FROM rttemplatetypes WHERE templateid = ?', array($id));
 
 		if ($type == TMPL_HELPDESK) {
@@ -121,6 +126,9 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 	}
 
 	public function GetMessageTemplates($type = 0) {
+		$helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$queues = $helpdesk_manager->GetMyQueues();
+
 		return $this->db->GetAll('SELECT t.id, t.type, t.name, t.subject, t.message,
 				tt.messagetypes, tq.queues, tq.queuenames
 			FROM templates t
@@ -134,12 +142,13 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				SELECT templateid, ' . $this->db->GroupConcat('queueid') . ' AS queues,
 					' . $this->db->GroupConcat('q.name') . ' AS queuenames
 				FROM rttemplatequeues
-				JOIN rtqueues q ON q.id = queueid 
+				JOIN rtqueues q ON q.id = queueid
+				WHERE ' . (empty($queues) ? '1=0' : 'queueid IN (' . implode(',', $queues) . ')') . '
 				GROUP BY templateid
 				--ORDER BY q.name
 			) tq ON tq.templateid = t.id
 			WHERE 1 = 1' . (empty($type) ? '' : ' AND t.type = ' . intval($type))
-			. ' ORDER BY t.name');
+			. ' ORDER BY t.name', array($queues));
 	}
 
 	public function GetMessageTemplatesByQueueAndType($queueid, $type) {

@@ -1612,7 +1612,12 @@ class LMS
         return $manager->GetQueueNames();
     }
 
-    public function QueueExists($id)
+	public function GetMyQueues() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetMyQueues();
+	}
+
+	public function QueueExists($id)
     {
         $manager = $this->getHelpdeskManager();
         return $manager->QueueExists($id);

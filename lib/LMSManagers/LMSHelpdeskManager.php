@@ -553,6 +553,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array(Auth::GetCurrentUser(), $del));
     }
 
+	public function GetMyQueues() {
+		return $this->db->GetCol('SELECT q.id FROM rtqueues q
+			JOIN rtrights r ON r.queueid = q.id AND r.userid = ?
+			WHERE q.deleted = 0', array(Auth::GetCurrentUser()));
+	}
+
     public function QueueExists($id)
     {
         return ($this->db->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id)) ? TRUE : FALSE);

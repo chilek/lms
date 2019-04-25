@@ -41,7 +41,9 @@ interface LMSHelpdeskManagerInterface
 
     public function GetQueueNames();
 
-    public function QueueExists($id);
+	public function GetMyQueues();
+
+	public function QueueExists($id);
 
     public function GetQueueIdByName($queue);
 
