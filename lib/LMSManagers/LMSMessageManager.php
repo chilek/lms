@@ -143,9 +143,9 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 	}
 
 	public function GetMessageTemplatesByQueueAndType($queueid, $type) {
-		return $this->db->GetAll('SELECT t.id, t.name, t.subject, t.message
+		return $this->db->GetAll('SELECT DISTINCT t.id, t.name, t.subject, t.message
 			FROM templates t
-			LEFT JOIN rttemplatequeues tq ON tq.templateid = t.id AND tq.queueid = ?
+			LEFT JOIN rttemplatequeues tq ON tq.templateid = t.id AND tq.queueid ' . (is_array($queueid) ? 'IN' : '=') . ' ?
 			LEFT JOIN rttemplatetypes tt ON tt.templateid = t.id AND tt.messagetype = ?
 			LEFT JOIN (
 				SELECT t2.id AS templateid

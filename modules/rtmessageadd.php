@@ -530,6 +530,12 @@ if (!is_array($message['ticketid'])) {
 	}
 	$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
 	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
+} else {
+	$queuelist = $LMS->GetQueueList(array('stats' => false));
+	$queues = array_map(function($queue) {
+			return $queue['id'];
+		}, $queuelist);
+	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queues, RTMESSAGE_REGULAR));
 }
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('categories', $categories);
