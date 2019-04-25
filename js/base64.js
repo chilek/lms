@@ -89,7 +89,7 @@ var Base64 = {
 	}, _utf8_decode: function (e) {
 		var t = "";
 		var n = 0;
-		var r = c1 = c2 = 0;
+		var r =0, c2 = 0;
 		while (n < e.length) {
 			r = e.charCodeAt(n);
 			if (r < 128) {
