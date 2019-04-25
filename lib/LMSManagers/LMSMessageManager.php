@@ -173,7 +173,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 			WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)
 				AND (tt.templateid IS NOT NULL OR t.id = t5.templateid)  
 			GROUP BY t.id, t.name, t.subject, t.message',
-			array($queueid, $type, TMPL_HELPDESK));
+			array(is_array($queueid) ? $queueid : intval($queueid), $type, TMPL_HELPDESK));
 	}
 
 	public function GetMessageList(array $params) {
