@@ -312,7 +312,7 @@
 			if (parseInt(selected.val()) == 0) {
 				return;
 			}
-			$('[name="ticket[subject]"]').val(atob(selected.attr('data-subject')));
+			$('[name="ticket[subject]"]').val(Base64.decode(selected.attr('data-subject')));
 			var selectors = [];
 			$.each(selected.attr('data-types').split(','), function(index, value) {
 				if (value == '0') {
@@ -321,7 +321,7 @@
 					selectors.push('[name="ticket[note]"]');
 				}
 			});
-			$(selectors.join(',')).val(atob(selected.attr('data-message')));
+			$(selectors.join(',')).val(Base64.decode(selected.attr('data-message')));
 		});
 	});
 

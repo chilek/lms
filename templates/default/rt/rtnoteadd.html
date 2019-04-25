@@ -253,7 +253,7 @@
 					selectors.push('[name="note[note]"]');
 				}
 			});
-			$(selectors.join(',')).val(atob(selected.attr('data-message')));
+			$(selectors.join(',')).val(Base64.decode(selected.attr('data-message')));
 		});
 	});
 
