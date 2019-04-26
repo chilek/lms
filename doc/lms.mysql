@@ -2485,7 +2485,7 @@ CREATE TABLE templates (
 #
 # Structure of table "rttemplatetypes"
 #
-CREATE TABLE rttemplatetypes(
+CREATE TABLE rttemplatetypes (
 	id          int(11) NOT NULL auto_increment,
 	templateid  int(11) NOT NULL,
 	messagetype int(11) NOT NULL,
@@ -2499,7 +2499,7 @@ CREATE TABLE rttemplatetypes(
 #
 # Structure of table "rttemplatequeues"
 #
-CREATE TABLE rttemplatequeues(
+CREATE TABLE rttemplatequeues (
 	id          int(11) NOT NULL auto_increment,
 	templateid  int(11) NOT NULL,
 	queueid  int(11) NOT NULL,

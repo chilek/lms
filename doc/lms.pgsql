@@ -2434,7 +2434,7 @@ CREATE TABLE templates (
 DROP SEQUENCE IF EXISTS rttemplatetypes_id_seq;
 CREATE SEQUENCE rttemplatetypes_id_seq;
 DROP TABLE IF EXISTS rttemplatetypes;
-CREATE TABLE rttemplatetypes(
+CREATE TABLE rttemplatetypes (
 	id          integer DEFAULT nextval('rttemplatetypes_id_seq'::text) NOT NULL,
 	templateid  integer                                               NOT NULL
 		CONSTRAINT rttemplatetypes_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -2449,7 +2449,7 @@ CREATE TABLE rttemplatetypes(
 DROP SEQUENCE IF EXISTS rttemplatequeues_id_seq;
 CREATE SEQUENCE rttemplatequeues_id_seq;
 DROP TABLE IF EXISTS rttemplatequeues;
-CREATE TABLE rttemplatequeues(
+CREATE TABLE rttemplatequeues (
 	id          integer DEFAULT nextval('rttemplatequeues_id_seq'::text) NOT NULL,
 	templateid  integer                                               NOT NULL
 		CONSTRAINT rttemplatequeues_templateid_fkey REFERENCES templates (id) ON DELETE CASCADE ON UPDATE CASCADE,
