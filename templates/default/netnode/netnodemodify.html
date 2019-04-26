@@ -230,10 +230,30 @@
 	 */
 	$( '#set_gps' ).click( function() {
 
-		if ($('[name="netnode[address_id]"]').val()) {
-			xajax_get_gps_coordinates({
+		var location = null;
+
+		if ($('[name="netnode[address_id]"]').val() > 0) {
+			location = {
 				address_id: $('[name="netnode[address_id]"]').val()
-			}, '#latitude', '#longitude');
+			}
+		} else if ($('[data-address="city"]').val().length) {
+			location = {
+				street: $('[data-address="street"]').val(),
+				house: $('[data-address="house"]').val(),
+				flat: $('[data-address="flat"]').val()
+			}
+			if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
+				location.city_id = $('[data-address="city-hidden"]').val();
+				location.street_id = $('[data-address="street-hidden"]').val();
+			} else {
+				location.state = $('[data-address="state"]').val();
+				location.zip = $('[data-address="zip"]').val();
+				location.city = $('[data-address="city"]').val();
+			}
+		}
+
+		if (location) {
+			xajax_get_gps_coordinates(location, '#latitude', '#longitude');
 		}
 
 	});
