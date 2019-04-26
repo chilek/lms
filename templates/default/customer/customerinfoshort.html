@@ -155,7 +155,7 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<B>{trans("Balance:")}</B>
-			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+			{if $customerinfo.balance < 0}<span class="lms-ui-error">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 {/if}

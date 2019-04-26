@@ -397,8 +397,8 @@ $(function() {
 			return;
 		}
 		tooltipClass = '';
-		if ($(this).hasClass('alert')) {
-			tooltipClass += ' alert';
+		if ($(this).hasClass('lms-ui-error')) {
+			tooltipClass += ' lms-ui-error';
 			if ($(this).hasClass('bold')) {
 				tooltipClass += ' bold';
 			}
@@ -1132,8 +1132,8 @@ $(function() {
 			selector: '#' + id,
 			init_instance_callback: function (ed) {
 				var textarea = $(ed.settings.selector);
-				if (textarea.hasClass('alert')) {
-					textarea.siblings('.mce-tinymce').addClass('alert');
+				if (textarea.hasClass('lms-ui-error')) {
+					textarea.siblings('.mce-tinymce').addClass('lms-ui-error');
 				}
 				if (elementsToInitiate > 0) {
 					elementsToInitiate--;

@@ -54,7 +54,7 @@ function smarty_function_fileupload($params, $template) {
 				<div class="fileupload-progressbar"><div class="fileupload-progress-label"></div></div>
 			</div>
 			<div class="lms-ui-button-fileupload-container">
-				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' alert' : '') . '" id="' . $id . '_button" '
+				<button type="button" class="lms-ui-button-fileupload lms-ui-button' . (isset($error_tip_params) ? ' lms-ui-error' : '') . '" id="' . $id . '_button" '
 					. (isset($error_tip_params) ? Utils::tip($error_tip_params, $template) : '') . '><i></i> ' . trans("Select files") . '</button>
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;" ' . ($form ? ' form="' . $form . '"' : '') . '>
 			</div>
@@ -70,7 +70,7 @@ function smarty_function_fileupload($params, $template) {
 					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 				</div>';
 	$result .= '</div>
-			<div class="fileupload-status alert bold">
+			<div class="fileupload-status lms-ui-error bold">
 			</div>
 			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="' . $fileupload[$id . '-tmpdir'] . '" ' . ($form ? ' form="' . $form . '"' : '') . '>
 		</div>';

@@ -5,11 +5,11 @@
 <H1>{$layout.pagetitle}</H1>
 {if $emptydb}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><span class="alert">{trans("No such devices in database.")}</span>
+	<BR><BR><span class="lms-ui-error">{trans("No such devices in database.")}</span>
     </TD></TR></TABLE>
 {elseif !$ming && $type == 'flash'}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><span class="alert">{trans("Your PHP does not support Ming library required for map generation!")}</span>
+	<BR><BR><span class="lms-ui-error">{trans("Your PHP does not support Ming library required for map generation!")}</span>
     </TD></TR></TABLE>
 {elseif $ming && (!$type || $type=='flash')}
 <P ALIGN="CENTER">
@@ -55,7 +55,7 @@
 </P>
 {else}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><span class="alert">{trans("Your PHP does not support GD library required for map generation!")}</span>
+	<BR><BR><span class="lms-ui-error">{trans("Your PHP does not support GD library required for map generation!")}</span>
     </TD></TR></TABLE>
 {/if}
 {if !$emptydb && $type != 'openlayers'}

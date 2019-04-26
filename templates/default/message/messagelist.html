@@ -79,7 +79,7 @@
     <TBODY class="lms-ui-multi-check">
 	<form method="post" name="messages">
 	{foreach $messagelist as $message}
-	<TR class="highlight{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}" data-target-url="?m=messageinfo&id={$message.id}">
+	<TR class="highlight{if $message.error > 0} lms-ui-error{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}" data-target-url="?m=messageinfo&id={$message.id}">
 		<TD class="nobr">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>

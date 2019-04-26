@@ -237,7 +237,7 @@
                 {if $customerinfo.cutoffstop > $smarty.now}
 			    <TR>
 			        <TD colspan="2">
-			            <span class="alert">
+			            <span class="lms-ui-error">
 			            {if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}
 			            {trans("Cutoff suspended indefinitely")}
 			            {else}
@@ -358,7 +358,7 @@
 		</TD>
 		<TD WIDTH="98%">
 			{if $customerinfo.balance < 0}
-			<span class="alert">{$customerinfo.balance|money_format}</span>
+			<span class="lms-ui-error">{$customerinfo.balance|money_format}</span>
 			{if $instantpayment}
 			<FORM name="instantpayment" method="POST" action="?m=balanceadd&id={$customerinfo.id}&receipt=1">
 				<script type="text/javascript">

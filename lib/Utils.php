@@ -58,7 +58,7 @@ class Utils {
 				$error = str_replace("\n", '<BR>', $error);
 
 				$result .= ' title="' . $error . '" ';
-				$result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' alert bold" ' : ' alert" ');
+				$result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' lms-ui-error bold" ' : ' lms-ui-error" ');
 			} else {
 				if ($params['text'] != '') {
 					$text = $params['text'];

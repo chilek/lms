@@ -430,20 +430,23 @@ INPUT {
 	font-family: @fonts;
 	vertical-align: middle;
 	&.alert,
+	&.lms-ui-error,
 	&:invalid {
-		background-color: @alert;
+		background-color: @error-background;
 	}
 	&.lms-ui-warning {
 		background-color: @warning-background;
 	}
 	&[type="checkbox"] {
 		&.alert,
+		&.lms-ui-error,
 		&.lms-ui-warning {
 			outline: 2px solid #FF6060;
 		}
 	}
 	&[type="radio"] {
 		&.alert,
+		&.lms-ui-error,
 		&.lms-ui-warning,
 		&:invalid {
 			outline: 2px solid #FF6060;
@@ -476,6 +479,7 @@ TEXTAREA {
 	background-color: @lucid;
 	vertical-align: middle;
 	&.alert,
+	&.lms-ui-error,
 	&.lms-ui-warning,
 	&:invalid {
 		font-size: @font-size;
@@ -485,8 +489,9 @@ TEXTAREA {
 		vertical-align: middle;
 	}
 	&.alert,
+	&.lms-ui-error,
 	&:invalid {
-		background-color: @alert;
+		background-color: @error-background;
 	}
 	&.lms-ui-warning {
 		background-color: @warning-background;
@@ -499,6 +504,7 @@ SELECT {
 	background-color: @lucid;
 	vertical-align: middle;
 	&.alert,
+	&.lms-ui-error,
 	&.lms-ui-warning,
 	&:invalid {
 		font-size: @font-size;
@@ -508,8 +514,9 @@ SELECT {
 		vertical-align: middle;
 	}
 	&.alert,
+	&.lms-ui-error,
 	&:invalid {
-		background-color: @alert;
+		background-color: @error-background;
 	}
 	&.lms-ui-warning {
 		background-color: @warning-background;
@@ -530,7 +537,8 @@ select {
 }
 
 BUTTON		{ font-size:  @font-size; font-family: @fonts; font-weight: bold; padding: 5px; }
-BUTTON.alert { background-color: @alert; }
+BUTTON.alert { background-color: @error-background; }
+BUTTON.lms-ui-error { background-color: @error-background; }
 BUTTON.lms-ui-warning { background-color: @warning-background; }
 
 IMG		{ vertical-align: middle; border: 0; }
@@ -725,8 +733,9 @@ div.lms-ui-multiselectlayer {
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
 .alert,
+.lms-ui-error,
 input:invalid {
-	color: #FF0000 !important;
+	color: @error-text !important;
 }
 .lms-ui-warning {
 	color: @warning-text !important;
@@ -3104,8 +3113,9 @@ table.dataTable {
 	}
 }
 
-.lms-ui-address-select.alert {
-	background-color: @alert !important;
+.lms-ui-address-select.alert,
+.lms-ui-address-select.lms-ui-error {
+	background-color: @error-background !important;
 }
 
 .lms-ui-address-select {

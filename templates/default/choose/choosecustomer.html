@@ -59,7 +59,7 @@ document.search.searchcustomer.focus();
 			{/foreach}
 		</td>
 		<td align="right" nowrap style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
-			{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</font>{/if}
+			{if $customerlist[customerlist].balance < 0}<span class="lms-ui-error">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</span>{/if}
 		</td>
 	</tr>
 	{sectionelse}
