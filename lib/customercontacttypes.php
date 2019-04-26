@@ -196,7 +196,7 @@ $CUSTOMERCONTACTTYPES = array(
 	'phone' => array(
 		'ui' => array(
 			'legend' => array(
-				'icon' => 'lms-ui-icon-phone',
+				'icon' => 'lms-ui-icon-phone fa-fw',
 				'text' => trans('Contact phones'),
 			),
 			'inputtype' => 'tel',
@@ -230,7 +230,7 @@ $CUSTOMERCONTACTTYPES = array(
 	'email' => array(
 		'ui' => array(
 			'legend' => array(
-				'icon' => 'lms-ui-icon-mail',
+				'icon' => 'lms-ui-icon-mail fa-fw',
 				'text' => trans('Email addresses'),
 			),
 			'inputtype' => 'email',
@@ -266,7 +266,7 @@ $CUSTOMERCONTACTTYPES = array(
 	'account' => array(
 		'ui' => array(
 			'legend' => array(
-				'icon' => 'lms-ui-icon-cash',
+				'icon' => 'lms-ui-icon-cash fa-fw',
 				'text' => trans('Alternative bank accounts'),
 			),
 			'inputtype' => 'text',
@@ -290,7 +290,7 @@ $CUSTOMERCONTACTTYPES = array(
 	'url' => array(
 		'ui' => array(
 			'legend' => array(
-				'icon' => 'lms-ui-icon-www',
+				'icon' => 'lms-ui-icon-www fa-fw',
 				'text' => trans('URL addresses'),
 			),
 			'inputtype' => 'text',
@@ -310,7 +310,7 @@ $CUSTOMERCONTACTTYPES = array(
 	'im' => array(
 		'ui' => array(
 			'legend' => array(
-				'icon' => 'lms-ui-icon-chat',
+				'icon' => 'lms-ui-icon-chat fa-fw',
 				'text' => trans('Instant messengers'),
 			),
 			'inputtype' => 'text',
@@ -335,7 +335,7 @@ $CUSTOMERCONTACTTYPES = array(
 	'representative' => array(
 		'ui' => array(
 			'legend' => array(
-				'icon' => 'lms-ui-icon-user',
+				'icon' => 'lms-ui-icon-user fa-fw',
 				'text' => trans('Representatives'),
 			),
 			'inputtype' => 'text',
