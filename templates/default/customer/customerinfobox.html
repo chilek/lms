@@ -54,7 +54,7 @@
 	{foreach $customerinfo.addresses as $v}
 		{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
 		<tr>
-			<td style="width: 1%;"><img src="img/home.gif" alt="" title="{trans('billing address')}"></td>
+			<td style="width: 1%;"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
 			<td style="width: 99%;">
 				<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}</span>
 			</td>
