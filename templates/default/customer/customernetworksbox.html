@@ -69,9 +69,11 @@
 						{button type="link" href="?m=netedit&networkset&id={$network.id}"
 							icon="lms-ui-icon-{if $network.disabled}disconnected{else}connected{/if}"
 							tip="{if $network.disabled}Connect{else}Disconnect{/if}"}
+						{textformat assign="onclick" wrap=5000}
+							return confirmLink(this, $t('Are you sure, you want to remove network \'$a\' from database?', '{$network.name}'));
+						{/textformat}
 						{button type="link" href="?m=netdel&id={$network.id}" icon="delete"
-							onclick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')"
-							tip="Delete"}
+							onclick=$onclick tip="Delete"}
 						{button type="link" href="?m=netedit&id={$network.id}" icon="edit"
 							tip="Edit"}
 						{button type="link" href="?m=netinfo&id={$network.id}" icon="info"

@@ -71,7 +71,10 @@
 		<TD class="nobr">
 			<a href="?m=nodeset&amp;id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}{trans("Disconnect")}{else}{trans("Connect")}{/if}"></A>
 			<a href="?m=nodewarn&amp;id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}{trans("Enable notices")}{else}{trans("Disable notices")}{/if}"></A>
-			<a href="?m=nodedel&amp;id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="{trans("Delete")}"></A>
+			{textformat assign="onclick" wrap=5000}
+				return confirmLink(this, $t('Are you sure, you want to delete node \'$a\' from database?', '{$nodelist[nodelist].name}'));
+			{/textformat}
+			<a href="?m=nodedel&amp;id={$nodelist[nodelist].id}" onClick="{$onclick}"><img src="img/delete.gif" ALT="{trans("Delete")}"></A>
 			<a href="?m=nodeedit&amp;id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="{trans("Edit")}"></A>
 			<a href="?m=nodeinfo&amp;id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="{trans("Info")}"></A>
 		</TD>

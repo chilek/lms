@@ -2,7 +2,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -150,9 +150,6 @@ $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
 
-$_LANG['Accounting period'] = 'Okres czasu naliczania dla zobowiązań';
-$_LANG['Terminated contract number:'] = 'Numer rozwiązywanej umowy:';
-$_LANG['Terminated contract date:'] = 'Data rozwiązywanej umowy:';
 $_LANG['billing'] = 'billing';
 
 $_LANG['purchase invoice'] = 'faktura zakupu';
@@ -274,7 +271,6 @@ $_LANG['- all users -'] = '- wszyscy -';
 $_LANG['amount'] = 'na kwotę';
 $_LANG['Amount:'] = 'Ilość:';
 $_LANG['AND'] = 'I';
-$_LANG['Answer'] = 'Odpowiedz';
 $_LANG['Approved By'] = 'Zatwierdził';
 $_LANG['Are you sure that you want to logout?'] = 'Czy na pewno chcesz się wylogować?';
 $_LANG['Are you sure that you want to remove'] = 'Czy na pewno chcesz usunąć';
@@ -288,7 +284,7 @@ $_LANG['Are you sure, you want to delete alias: \\\'$a\\\'?'] = 'Jesteś pewien,
 $_LANG['Are you sure, you want to delete database backup created at $a ?'] = 'Jesteś pewien, że chcesz usunąć kopie bazy danych utworzoną: $a ?';
 $_LANG['Are you sure, you want to delete domain: \\\'$a\\\' and all accounts/aliases in that domain?'] = 'Jesteś pewien, że chcesz usunąć domenę: \\\'$a\\\' oraz wszystkie konta/aliasy w tej domenie?';
 $_LANG['Are you sure, you want to delete node $a?'] = 'Jesteś pewien, że chcesz usunąć komputer $a?';
-$_LANG['Are you sure, you want to delete node \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to delete node \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to delete option \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć opcję \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to delete selected operation(s) and document item(s)?'] = 'Czy na pewno usunąć wybrane operacje wraz z pozycjami dokumentów?';
 $_LANG['Are you sure, you want to delete that connection?'] = 'Jesteś pewien, że chcesz usunąć to połączenie?';
@@ -319,11 +315,11 @@ $_LANG['Are you sure, you want to remove host \\\'$a\\\' and all assigned config
 $_LANG['Are you sure, you want to remove instance \\\'$a\\\' and all assigned configuration?'] = 'Jesteś pewien, że chcesz usunąć instancję \\\'$a\\\' i całą jej konfigurację?';
 $_LANG['Are you sure, you want to remove invoice \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to remove network \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz usunąć sieć \\\'$a\\\'?';
-$_LANG['Are you sure, you want to remove node \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \\\'$a\\\' z bazy danych?';
-$_LANG['Are you sure, you want to remove network \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć sieć \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to remove node \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \'$a\' z bazy danych?';
+$_LANG['Are you sure, you want to remove network \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć sieć \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to remove option \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć opcję \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to remove queue \\\'$a\\\' and all assigned tickets and messages?'] = 'Jesteś pewien, że chcesz usunąć kolejkę \\\'$a\\\' oraz wszelkie zgłoszenia i wiadomości z nią skojarzone?';
-$_LANG['Are you sure, you want to premanently remove queue \\\'$a\\\' and all assigned tickets and messages?'] = 'Jesteś pewien, że chcesz trwale usunąć kolejkę \\\'$a\\\' oraz wszelkie zgłoszenia i wiadomości z nią skojarzone?';
+$_LANG['Are you sure, you want to permanently remove queue \\\'$a\\\' and all assigned tickets and messages?'] = 'Jesteś pewien, że chcesz trwale usunąć kolejkę \\\'$a\\\' oraz wszelkie zgłoszenia i wiadomości z nią skojarzone?';
 $_LANG['Are you sure, you want to restore queue \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz przywrócić kolejkę \\\'$a\\\'?';
 $_LANG['Are you sure, you want to remove receipt \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć dowód wpłaty nr \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to remove that customer from database?\\n\\nIf that customer have any computers, they will be automatically removed from database too, and information about them irreversible losed!'] = 'Czy na pewno chcesz usunąć tego klienta z bazy danych?\\n\\nJeśli klient ten posiada jakieś komputery, zostaną one usunięte, a dane o nich nieodwracalnie utracone!';
@@ -3264,11 +3260,13 @@ $_LANG['Invoice send'] = 'Wysyłka faktur';
 
 $_LANG['visual editor'] = 'edytor wizualny';
 $_LANG['Message template:'] = 'Szablon wiadomości:';
+$_LANG['Note template:'] = 'Szablon notatki:';
 $_LANG['Message template operation:'] = 'Czyność na szablonie wiadomości:';
 $_LANG['message template update'] = 'aktualizacja szablonu wiadomości';
 $_LANG['message template creation'] = 'utworzenie szablonu wiadomości';
 $_LANG['New template name:'] = 'Nazwa nowego szablonu:';
 $_LANG['Select message template'] = 'Wybierz szablon wiadomości';
+$_LANG['Select note template'] = 'Wybierz szablon notatki';
 $_LANG['Enter name of the new message template'] = 'Wprowadź nazwę nowego szablonu wiadomości';
 $_LANG['no operation on message template'] = 'brak czynności na szablonie wiadomości';
 
@@ -3284,7 +3282,11 @@ $_LANG['Ticket has been unassigned from network node $a.'] = 'Anulowano przypisa
 $_LANG['Ticket\'s network device assignments has been changed from $a to $b.'] = 'Przypisanie urządzenia sieciowego zostało zmienione z $a na $b.';
 $_LANG['Ticket has been unassigned from network device $a.'] = 'Anulowano przypisanie zgłoszenia do urządzenia sieciowego $a.';
 $_LANG['Ticket\'s location has been changed from $a to $b.'] = 'Lokalizacja zgłoszenia została zmieniona z $a na $b.';
+$_LANG['Ticket\'s location has been changed to $a.'] = 'Lokalizacja zgłoszenia została zmieniona na $a.';
+$_LANG['Ticket\'s location $a has been removed.'] = 'Lokalizacja zgłoszenia $a została usunięta.';
 $_LANG['Ticket\'s node has been changed from $a ($b) to $c ($d).'] = 'Komputer powiązany ze zgłoszeniem został zmieniony z $a ($b) na $c ($d).';
+$_LANG['Ticket\'s node has been changed to $a ($b).'] = 'Komputer powiązany ze zgłoszeniem został zmieniony na $a ($b).';
+$_LANG['Ticket\'s node $a ($b) has been removed.'] = 'Komputer powiązany ze zgłoszeniem $a ($b) został usunięty.';
 $_LANG['Ticket\'s priority has been changed from $a to $b.'] = 'Priorytet zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Show tickets'] = 'Pokaż zgłoszenia';
 
@@ -3599,6 +3601,7 @@ $_LANG['Ticket has been unassigned from investment project $a.'] = 'Anulowano pr
 $_LANG['Ticket\'s cause has been changed from $a to $b.'] = 'Przyczyna zgłoszenia została zmieniona z $a na $b.';
 $_LANG['Ticket\'s subject has been changed from $a to $b.'] = 'Temat zgłoszenia został zmieniony z $a na $b.';
 $_LANG['Ticket has been moved from customer $a ($b) to customer $c ($d).'] = 'Zgłoszenie zostało przeniesione od klienta $a ($b) do klienta $c ($d).';
+$_LANG['Ticket has been moved from customer $a ($b) to $c.'] = 'Zgłoszenie zostało przeniesione od klienta $a ($b) do $c.';
 $_LANG['Ticket has been moved from $a to customer $b ($c).'] = 'Zgłoszenie zostało przeniesione od $a do klienta $b ($c).';
 $_LANG['Changes of customers waiting for approval:'] = 'Zmiany klientów oczekujące na zatwierdzenie:';
 $_LANG['Documents waiting for approval'] = 'Dokumenty oczekujące na zatwierdzenie';
@@ -4321,4 +4324,19 @@ $_LANG['Preserve pro forma'] = 'Zachowaj pro formę';
 
 $_LANG['modifiable by selected users:<br><strong>$a</strong>'] = 'modyfikowalne przez wybranych użytkowników:<br><strong>$a</strong>';
 $_LANG['Illegal promotion schema period value modification!'] = 'Nielegalna modyfikacja wartości okresowych schematu promocyjnego!';
+
+$_LANG['New invoice'] = 'Nowa faktura';
+
+$_LANG['- no categories -'] = '- bez kategorii -';
+
+$_LANG['new window'] = 'nowe okno';
+
+$_LANG['<!message>helpdesk'] = 'helpdesk';
+
+$_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
+$_LANG['<!message-type>message'] = 'wiadomość';
+$_LANG['<!message-type>note'] = 'notatka';
+
+$_LANG['Reply with quoting'] = 'Odpowiedz cytując';
+$_LANG['<!vocative>Reply'] = 'Odpowiedz';
 

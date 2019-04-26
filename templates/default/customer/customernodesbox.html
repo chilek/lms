@@ -148,8 +148,11 @@
 					{button type="link" href="?m=nodewarn&id={$node.id}"
 						icon="lms-ui-icon-{if $node.warning}warnon{else}warnoff{/if}"
 						tip="{if $node.warning}Disable notice{else}Enable notice{/if}"}
+					{textformat assign="onclick" wrap=5000}
+						return confirmLink(this, $t('Are you sure, you want to remove node \'$a\' from database?', '{$node.name}'));
+					{/textformat}
 					{button type="link" href="?m=nodedel&id={$node.id}" icon="delete" tip="Delete"
-						onclick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')"}
+						onclick=$onclick}
 					{button type="link" href="?m=nodeadd&ownerid={$customerinfo.id}&premac[]={$node.mac|replace:",":"&premac[]="}&prename={t a=$node.name}$a_clone{/t}{if $node.address_id}&pre_address_id={$node.address_id}{/if}"
 						icon="clone" tip="Clone"}
 					{button type="link" href="?m=nodeedit&id={$node.id}" icon="edit" tip="Edit"}
