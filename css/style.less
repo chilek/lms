@@ -433,12 +433,21 @@ INPUT {
 	&:invalid {
 		background-color: @alert;
 	}
-	&[type="checkbox"].alert {
-		outline: 2px solid #FF6060;
+	&.lms-ui-warning {
+		background-color: @warning-background;
 	}
-	&[type="radio"].alert,
-	&[type="radio"]:invalid {
-		outline: 2px solid #FF6060;
+	&[type="checkbox"] {
+		&.alert,
+		&.lms-ui-warning {
+			outline: 2px solid #FF6060;
+		}
+	}
+	&[type="radio"] {
+		&.alert,
+		&.lms-ui-warning,
+		&:invalid {
+			outline: 2px solid #FF6060;
+		}
 	}
 	&.hiddenbtn {
 		display : none;
@@ -467,13 +476,20 @@ TEXTAREA {
 	background-color: @lucid;
 	vertical-align: middle;
 	&.alert,
+	&.lms-ui-warning,
 	&:invalid {
 		font-size: @font-size;
 		font-family: @fonts;
 		border-style: solid;
 		border-width: 1pt;
-		background-color: @alert;
 		vertical-align: middle;
+	}
+	&.alert,
+	&:invalid {
+		background-color: @alert;
+	}
+	&.lms-ui-warning {
+		background-color: @warning-background;
 	}
 }
 
@@ -483,13 +499,20 @@ SELECT {
 	background-color: @lucid;
 	vertical-align: middle;
 	&.alert,
+	&.lms-ui-warning,
 	&:invalid {
 		font-size: @font-size;
 		font-family: @fonts;
 		border-style: solid;
 		border-width: 1pt;
-		background-color: @alert;
 		vertical-align: middle;
+	}
+	&.alert,
+	&:invalid {
+		background-color: @alert;
+	}
+	&.lms-ui-warning {
+		background-color: @warning-background;
 	}
 }
 
@@ -508,6 +531,7 @@ select {
 
 BUTTON		{ font-size:  @font-size; font-family: @fonts; font-weight: bold; padding: 5px; }
 BUTTON.alert { background-color: @alert; }
+BUTTON.lms-ui-warning { background-color: @warning-background; }
 
 IMG		{ vertical-align: middle; border: 0; }
 
@@ -703,6 +727,9 @@ div.lms-ui-multiselectlayer {
 .alert,
 input:invalid {
 	color: #FF0000 !important;
+}
+.lms-ui-warning {
+	color: @warning-text !important;
 }
 .alertblend	{ color: #FA8072; }
 .suspended	{ color: #30B6C6; }

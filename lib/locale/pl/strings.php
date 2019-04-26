@@ -4338,4 +4338,6 @@ $_LANG['<!message-type>note'] = 'notatka';
 $_LANG['Reply with quoting'] = 'Odpowiedz cytując';
 $_LANG['<!vocative>Reply'] = 'Odpowiedz';
 
+$_LANG['Unable to determine gps coordinates!'] = 'Nie można wyznaczyć współrzędnych GPS!';
+
 ?>

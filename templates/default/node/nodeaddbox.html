@@ -398,7 +398,7 @@
 		if ($('#customer_addresses').val()) {
 			xajax_get_gps_coordinates({
 					address_id: $('#customer_addresses').val()
-				}, 'latitude', 'longitude');
+				}, '#latitude', '#longitude');
 		}
 	});
 

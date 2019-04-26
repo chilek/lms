@@ -32,7 +32,7 @@ function array_provider_filter($provider) {
 	return isset($all_providers[$provider]);
 }
 
-function get_gps_coordinates($location, $callback) {
+function get_gps_coordinates($location, $latitude_selector, $longitude_selector) {
 
 	global $LMS;
 
@@ -67,6 +67,8 @@ function get_gps_coordinates($location, $callback) {
 	$providers = preg_split('/\s*[,|]\s*/', $providers);
 	$providers = array_filter($providers, 'array_provider_filter');
 
+	$found = false;
+
 	foreach ($providers as $provider)
 		if ($provider == 'google') {
 			$location_string = (isset($address['state_name']) && !empty($address['state_name']) ? $address['state_name'] . ', ' : '')
@@ -78,17 +80,20 @@ function get_gps_coordinates($location, $callback) {
 				. (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
 			$geocode = geocode($location_string);
 			if ($geocode['status'] == 'OK') {
+				$found = true;
 				if ($geocode['accuracy'] == 'ROOFTOP') {
-					$result->assign('latitude', 'value', $geocode['latitude']);
-					$result->assign('longitude', 'value', $geocode['longitude']);
+					$result->script('
+						$("' . $latitude_selector . '").val("' . $geocode['latitude'] . '");
+						$("' . $longitude_selector . '").val("' . $geocode['longitude'] . '");
+					');
 					break;
 				} else {
 					$result->script('
-						var longitude = \'' . $geocode['longitude'] . '\';
-						var latitude = \'' . $geocode['latitude'] . '\';
-						if (confirm(\'' . trans('Determined gps coordinates are not precise.\nDo you still want to use them?') . '\')) {
-							$(\'#longitude\').val(longitude);
-							$(\'#latitude\').val(latitude);
+						var longitude = "' . $geocode['longitude'] . '";
+						var latitude = "' . $geocode['latitude'] . '";
+						if (confirm($t("Determined gps coordinates are not precise.\nDo you still want to use them?")) {
+							$("' . $latitude_selector . '").val(latitude);
+							$("' . $longitude_selector . '").val(longitude);
 						}'
 					);
 				}
@@ -106,9 +111,20 @@ function get_gps_coordinates($location, $callback) {
 				WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?', array_values($args));
 			if (empty($buildings) || count($buildings) > 1)
 				break;
-			$result->assign('latitude', 'value', $buildings[0]['latitude']);
-			$result->assign('longitude', 'value', $buildings[0]['longitude']);
+			$found = true;
+			$result->script('
+				$("' . $latitude_selector . '").val("' . $buildings[0]['latitude'] . '");
+				$("' . $longitude_selector . '").val("' . $buildings[1]['longitude'] . '");
+			');
 		}
+
+	if (!$found)
+		$result->script('
+			$("' . $latitude_selector . '").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
+				$t("Unable to determine gps coordinates!"));
+			$("' . $longitude_selector . '").addClass("lms-ui-warning").removeAttr("data-tooltip").attr("title",
+				$t("Unable to determine gps coordinates!"));
+		');
 
 	return $result;
 }

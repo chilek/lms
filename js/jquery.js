@@ -402,6 +402,8 @@ $(function() {
 			if ($(this).hasClass('bold')) {
 				tooltipClass += ' bold';
 			}
+		} else if ($(this).hasClass('lms-ui-warning')) {
+			tooltipClass += 'lms-ui-warning';
 		} else if ($(this).hasClass('bold')) {
 			tooltipClass += 'bold';
 		}
