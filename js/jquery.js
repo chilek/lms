@@ -397,7 +397,7 @@ $(function() {
 			return;
 		}
 		tooltipClass = '';
-		if ($(this).hasClass('lms-ui-error')) {
+		if ($(this).hasClass('lms-ui-error') || $(this).hasClass('alert')) {
 			tooltipClass += ' lms-ui-error';
 			if ($(this).hasClass('bold')) {
 				tooltipClass += ' bold';
@@ -1132,7 +1132,7 @@ $(function() {
 			selector: '#' + id,
 			init_instance_callback: function (ed) {
 				var textarea = $(ed.settings.selector);
-				if (textarea.hasClass('lms-ui-error')) {
+				if (textarea.hasClass('lms-ui-error') || textarea.hasClass('alert')) {
 					textarea.siblings('.mce-tinymce').addClass('lms-ui-error');
 				}
 				if (elementsToInitiate > 0) {
