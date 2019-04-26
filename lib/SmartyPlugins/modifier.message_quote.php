@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function smarty_modifier_blockquote($text) {
+function smarty_modifier_message_quote($text) {
 	$result = '';
 	$lines = explode('<br>', $text);
 	$linecount = count($lines);
@@ -37,7 +37,7 @@ function smarty_modifier_blockquote($text) {
 			$newquote++;
 		}
 		if ($newquote > $quote)
-			$result .= str_repeat('<blockquote class="lms-ui-blockquote">', $newquote - $quote);
+			$result .= str_repeat('<blockquote class="lms-ui-message-quote">', $newquote - $quote);
 		elseif ($newquote < $quote)
 			$result .= str_repeat('</blockquote>', $quote - $newquote);
 		$result .= $line;

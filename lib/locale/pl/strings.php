@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -4336,6 +4336,7 @@ $_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
 $_LANG['<!message-type>message'] = 'wiadomość';
 $_LANG['<!message-type>note'] = 'notatka';
 
-$_LANG['Reply with citing'] = 'Odpowiedz cytując';
+$_LANG['Reply with quoting'] = 'Odpowiedz cytując';
+$_LANG['<!vocative>Reply'] = 'Odpowiedz';
 
 ?>
