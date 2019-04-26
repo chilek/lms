@@ -269,7 +269,6 @@ $_LANG['- all users -'] = '- wszyscy -';
 $_LANG['amount'] = 'na kwotę';
 $_LANG['Amount:'] = 'Ilość:';
 $_LANG['AND'] = 'I';
-$_LANG['Answer'] = 'Odpowiedz';
 $_LANG['Approved By'] = 'Zatwierdził';
 $_LANG['Are you sure that you want to logout?'] = 'Czy na pewno chcesz się wylogować?';
 $_LANG['Are you sure that you want to remove'] = 'Czy na pewno chcesz usunąć';
