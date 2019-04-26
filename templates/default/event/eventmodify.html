@@ -24,6 +24,9 @@
 		<INPUT type="hidden" name="event[id]" value="{$event.id}">
 		<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
 		<INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
+		{if isset($backreferenceid)}
+			<INPUT type="hidden" name="backreferenceid" value="{$backreferenceid}">
+		{/if}
 		<INPUT type="submit" class="hiddenbtn">
 
 		{box_container id="event"}

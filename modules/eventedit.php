@@ -162,7 +162,8 @@ if(isset($_POST['event']))
 		$event['helpdesk'] = isset($event['helpdesk']) ? $event['ticketid'] : null;
 		$LMS->EventUpdate($event);
 
-		$SESSION->redirect('?m=eventlist');
+		$SESSION->redirect('?m=eventlist'
+			. (isset($_POST['backreferenceid']) ? '#' . $_POST['backreferenceid'] : ''));
 	}
 } else
 	$event['overlapwarned'] = 0;
@@ -188,6 +189,10 @@ $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
+
+if (isset($_GET['backreferenceid']) || isset($_POST['backreferenceid']))
+	$SMARTY->assign('backreferenceid', isset($_GET['backreferenceid']) ? $_GET['backreferenceid'] : $_POST['backreferenceid']);
+
 $SMARTY->display('event/eventmodify.html');
 
 ?>
