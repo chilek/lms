@@ -39,7 +39,11 @@
 {foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
 <TR>
 	<TD style="width: 1%;" class="valign-top">
-		<IMG src="{$properties.ui.legend.icon}" alt="">
+		{if strpos($properties.ui.legend.icon, '/') !== false}
+			<IMG src="{$properties.ui.legend.icon}" alt="">
+		{else}
+			<i class="{$properties.ui.legend.icon}"></i>
+		{/if}
 	</TD>
 	<TD style="width: 99%;" class="nobr">
 		{$ctype=$type|cat:'s'}

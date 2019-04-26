@@ -4340,4 +4340,9 @@ $_LANG['<!vocative>Reply'] = 'Odpowiedz';
 
 $_LANG['Unable to determine gps coordinates!'] = 'Nie można wyznaczyć współrzędnych GPS!';
 
+$_LANG['representative'] = 'reprezentant';
+$_LANG['Representatives'] = 'Reprezentanci';
+$_LANG['Enter representative name (optional)'] = 'Wprowadź nazwę reprezentanta (opcjonalnie)';
+$_LANG['Check if representative should be disabled'] = 'Zaznacz jeśli reprezentant ma zostać wyłączony';
+
 ?>

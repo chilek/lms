@@ -243,6 +243,8 @@ version ?.??.?? (????-??-??):
   - improvement: new trade document archiving and unarchiving user privileges added [chilan]
   - enhancement: added support for helpdesk message/note templates [chilan]
   - improvement: ticket message reply with citing forced by click on newly added button [chilan]
+  - enhancement: added representative customer contact type as it will be used to select
+    them on documents [chilan]
 
 version 1.11.23 (2018-03-21):
 

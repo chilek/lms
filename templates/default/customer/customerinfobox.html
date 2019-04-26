@@ -102,7 +102,14 @@
 		<TD style="width: 1%;"></TD>
 		<TD style="width: 99%;" class="nobr">
 			<fieldset style="width: 1%;" class="nobr">
-				<legend class="bold"><IMG SRC="{$properties.ui.legend.icon}" ALT=""> {$properties.ui.legend.text}</legend>
+				<legend class="bold">
+					{if strpos($properties.ui.legend.icon, '/') !== false}
+						<IMG SRC="{$properties.ui.legend.icon}" ALT="">
+					{else}
+						<i class="{$properties.ui.legend.icon}"></i>
+					{/if}
+					{$properties.ui.legend.text}
+				</legend>
 				<TABLE>
 					{foreach $customerinfo[$type|cat:"s"] as $contact}
 					<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>

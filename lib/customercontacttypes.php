@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -64,6 +64,10 @@ function format_customer_im($contact) {
 				. '<a href="https://m.me/' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
 			break;
 	}
+}
+
+function format_customer_representative($contact) {
+	return '<span class="bold">' . $contact['contact'] . '</span>';
 }
 
 function validate_customer_phones(&$customerdata, &$contacts, &$error) {
@@ -169,6 +173,22 @@ function validate_customer_ims(&$customerdata, &$contacts, &$error) {
 			$error['im' . $idx] = trans('IM uid is required!');
 		elseif ($im)
 			$contacts[] = array('name' => $name, 'contact' => $im, 'type' => $type);
+	}
+}
+
+function validate_customer_representatives(&$customerdata, &$contacts, &$error) {
+	if (!isset($customerdata['representatives']))
+		return;
+	foreach ($customerdata['representatives'] as $idx => &$val) {
+		$name = trim($val['contact']);
+		$data = trim($val['name']);
+		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+		$type |= CONTACT_REPRESENTATIVE;
+
+		$val['type'] = $type;
+
+		if ($name)
+			$contacts[] = array('name' => $data, 'contact' => $name, 'type' => $type);
 	}
 }
 
@@ -311,6 +331,26 @@ $CUSTOMERCONTACTTYPES = array(
 		'flagmask' => CONTACT_IM_GG | CONTACT_IM_YAHOO | CONTACT_IM_SKYPE | CONTACT_IM_FACEBOOK,
 		'formatter' => 'format_customer_im',
 		'validator' => 'validate_customer_ims',
+	),
+	'representative' => array(
+		'ui' => array(
+			'legend' => array(
+				'icon' => 'lms-ui-icon-user',
+				'text' => trans('Representatives'),
+			),
+			'inputtype' => 'text',
+			'size' => 40,
+			'tip' => trans('Enter representative name (optional)'),
+			'flags' => array(
+				CONTACT_DISABLED => array(
+					'label' => $CONTACTTYPES[CONTACT_DISABLED],
+					'tip' => trans('Check if representative should be disabled'),
+				),
+			),
+		),
+		'flagmask' => CONTACT_REPRESENTATIVE,
+		'formatter' => 'format_customer_representative',
+		'validator' => 'validate_customer_representatives',
 	),
 );
 
