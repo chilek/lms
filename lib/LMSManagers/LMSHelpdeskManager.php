@@ -1284,7 +1284,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$notes[] = trans('Ticket\'s location has been changed from $a to $b.',
 						$ticket['location'], $props['location']);
 			}
-		} else {
+		} elseif (array_key_exists('address_id', $props)) {
 			$props['address_id'] = null;
 			if (!empty($ticket['location']))
 				$notes[] = trans('Ticket\'s location $a has been removed.', $ticket['location']);
@@ -1305,7 +1305,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						$ticket['node_name'] . ': ' . $ticket['node_location'], $ticket['nodeid'],
 						$props['node_name'] . ': ' . $props['node_location'], $props['nodeid']);
 			}
-		} else {
+		} elseif (array_key_exists('nodeid', $props)) {
 			$props['nodeid'] = null;
 			if (!empty($ticket['nodeid']))
 				$notes[] = trans('Ticket\'s node $a ($b) has been removed.',
