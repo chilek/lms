@@ -42,6 +42,7 @@ if ($taction == 'delete') {
 } elseif ($taction == 'delperm')
 	$DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
 
-$SESSION->redirect('?m=rtqueueview');
+$SESSION->redirect('?m=rtqueueview'
+	. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 
 ?>

@@ -411,6 +411,9 @@ if (isset($_POST['message'])) {
 		$backto = $SESSION->get('backto');
 		if (strpos($backto, 'rtqueueview') === false && isset($msgid))
 			$SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
+		elseif (strpos($backto, 'rtqueueview') !== false)
+			$SESSION->redirect('?' . $backto
+				. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 		else
 			$SESSION->redirect('?' . $backto);
 	}

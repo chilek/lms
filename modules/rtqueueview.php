@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -275,18 +275,21 @@ if (isset($_GET['action']))
 		case 'assign':
 			if (!empty($_GET['ticketid'])) {
 				$LMS->TicketChange($_GET['ticketid'], array('owner' => Auth::GetCurrentUser()));
-				$SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI']));
+				$SESSION->redirect(str_replace('&action=assign', '', $_SERVER['REQUEST_URI'])
+					. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 			}
 			break;
-                case 'unlink':
-                        $LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
-                        $backto = $SESSION->get('backto');
-                        if (empty($backto))
-                                $SESSION->redirect('?m=rtqueuelist');
-                        else
-                                $SESSION->redirect('?' . $backto);
-                        break;
+		case 'unlink':
+			$LMS->TicketChange($_GET['ticketid'], array('parentid' => null));
+			$backto = $SESSION->get('backto');
+			if (empty($backto))
+				$SESSION->redirect('?m=rtqueuelist');
+			else
+				$SESSION->redirect('?' . $backto);
+			break;
 	}
+
+$SESSION->remove('backid');
 
 $SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('queues', $queues);

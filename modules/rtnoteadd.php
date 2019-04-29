@@ -219,9 +219,12 @@ if (isset($_GET['ticketid'])) {
 		}
 
 		$backto = $SESSION->get('backto');
-		if (strpos($backto, 'rtqueueview') === false && isset($msgid)) {
+		if (strpos($backto, 'rtqueueview') === false && isset($msgid))
 			$SESSION->redirect('?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
-		} else
+		elseif (strpos($backto, 'rtqueueview') !== false)
+			$SESSION->redirect('?' . $backto
+				. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+		else
 			$SESSION->redirect('?' . $backto);
 	}
 } else

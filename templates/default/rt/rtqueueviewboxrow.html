@@ -1,5 +1,7 @@
 {block name=rtboxrow}
-<TR class="{if $ticket.state == $smarty.const.RT_RESOLVED}blend {/if}highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}" data-target-url="?m=rtticketview&id={$ticket.id}">
+<TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
+		id="ticket-{$ticket.id}"
+		data-target-url="?m=rtticketview&id={$ticket.id}">
 	<TD class="text-center">
 		{if $ticket.unread}
 		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i></a>
@@ -81,24 +83,55 @@
 	<TD class="lms-ui-buttons nobr text-right">
 		{if $ticket.state != $smarty.const.RT_RESOLVED}
 			{if !$ticket.unread}
-			<a href="?m=rtticketedit&id={$ticket.id}&action=unread"><img src="img/ticket-unread.png" alt="" title="{trans("Mark as unread")}"></a>
+			<a href="#" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=unread' + get_backid(this);">
+				<img src="img/ticket-unread.png" alt="" title="{trans("Mark as unread")}">
+			</a>
 			{else}
-			<a href="?m=rtticketedit&id={$ticket.id}&action=read"><img src="img/ticket-read.png" alt="" title="{trans("Mark as read")}"></a>
+			<a href="#" onclick="location.href = '?m=rtticketedit&id={$ticket.id}&action=read' + get_backid(this);">
+				<img src="img/ticket-read.png" alt="" title="{trans("Mark as read")}">
+			</a>
 			{/if}
 		{/if}
-		{if $ticket.state != $smarty.const.RT_RESOLVED}<a href="?m=eventadd&ticketid={$ticket.id}"><img src="img/event-add.png"></a>{/if}
-		{if !$ticket.ownerid}<A href="?m=rtqueueview&ticketid={$ticket.id}&action=assign"><img src="img/users.gif" alt="" title="{trans("Assign to me")}"></A>{/if}
-		<A href="?m=rtticketprint&id={$ticket.id}" target="_BLANK"><img src="img/print.gif" alt="" title="{trans("Print")}"></A>
-		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-		<A href="?m=rtrestore&id={$ticket.id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}"></A>
-		<A href="?m=rtremove&id={$ticket.id}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"></A>
-		{else}
-		<A href="?m=rtticketdel&id={$ticket.id}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete")}"></A>
+		{if $ticket.state != $smarty.const.RT_RESOLVED}
+			<a href="?m=eventadd&ticketid={$ticket.id}">
+				<img src="img/event-add.png">
+			</a>
 		{/if}
-		<A href="?m=rtticketedit&id={$ticket.id}"><img src="img/edit.gif" alt="" title="{trans("Edit")}"> </A>
-		<A href="?m=rtnoteadd&ticketid={$ticket.id}"><img src="img/note.gif" alt="" title="{trans("New Note")}"> </A>
-		<A href="?m=rtmessageadd&ticketid={$ticket.id}"><img src="img/forward.gif" alt="" title="{trans("New Message")}"> </A>
-		<A href="?m=rtticketview&id={$ticket.id}"><img src="img/info.gif" alt="" title="{trans("Info")}"> </A>
+		{if !$ticket.ownerid}
+			<A href="#" onclick="location.href = '?m=rtqueueview&ticketid={$ticket.id}&action=assign' + get_backid(this);">
+				<img src="img/users.gif" alt="" title="{trans("Assign to me")}">
+			</A>
+		{/if}
+		<A href="?m=rtticketprint&id={$ticket.id}" target="_BLANK">
+			<img src="img/print.gif" alt="" title="{trans("Print")}">
+		</A>
+		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
+			<A href="#"
+					onClick="if (confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')) location.href = '?m=rtrestore&id={$ticket.id}&taction=restore' + get_backid(this);">
+				<img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}">
+			</A>
+			<A href="#"
+					onClick="if (confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')) location.href = '?m=rtremove&id={$ticket.id}&taction=delperm' + get_backid(this);">
+				<img src="img/delete.gif" alt="" title="{trans("Delete permanently")}">
+			</A>
+		{else}
+			<A href="#"
+					onClick="if (confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')) location.href = '?m=rtticketdel&id={$ticket.id}&taction=delete' + get_backid(this);">
+				<img src="img/delete.gif" alt="" title="{trans("Delete")}">
+			</A>
+		{/if}
+		<A href="#" onclick="location.href = '?m=rtticketedit&id={$ticket.id}' + get_backid(this);">
+			<img src="img/edit.gif" alt="" title="{trans("Edit")}">
+		</A>
+		<A href="#" onclick="location.href = '?m=rtnoteadd&ticketid={$ticket.id}' + get_backid(this);">
+			<img src="img/note.gif" alt="" title="{trans("New Note")}">
+		</A>
+		<A href="#" onclick="location.href = '?m=rtmessageadd&ticketid={$ticket.id}' + get_backid(this);">
+			<img src="img/forward.gif" alt="" title="{trans("New Message")}">
+		</A>
+		<A href="?m=rtticketview&id={$ticket.id}">
+			<img src="img/info.gif" alt="" title="{trans("Info")}">
+		</A>
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
 	</TD>
 </TR>

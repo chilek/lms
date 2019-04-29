@@ -39,6 +39,8 @@ $layout['pagetitle'] = trans('Queues List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SESSION->remove('backid');
+
 $SMARTY->assign('filter', $filter);
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('error', $error);

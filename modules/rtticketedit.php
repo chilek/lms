@@ -106,11 +106,13 @@ if ($id && !isset($_POST['ticket'])) {
                 break;
             case 'read':
                 $LMS->MarkTicketAsRead($id);
-                $SESSION->redirect('?m=rtqueueview');
+                $SESSION->redirect('?m=rtqueueview'
+					. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;
             case 'unread':
                 $LMS->MarkTicketAsUnread($id);
-                $SESSION->redirect('?m=rtqueueview');
+                $SESSION->redirect('?m=rtqueueview'
+					. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
                 break;
 			case 'unlink':
 				$LMS->TicketChange($id, array('parentid' => null));
@@ -455,6 +457,9 @@ if(isset($_POST['ticket']))
 		$backto = $SESSION->get('backto');
 		if (empty($backto))
 			$SESSION->redirect('?m=rtticketview&id='.$id);
+		elseif (strpos($backto, 'rtqueueview') !== false)
+			$SESSION->redirect('?' . $backto
+				. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 		else
 			$SESSION->redirect('?' . $backto);
 	}

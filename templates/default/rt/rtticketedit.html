@@ -6,7 +6,7 @@
 
 {$xajax}
 
-<FORM method="POST" name="ticket" id="ticket-form" action="?m=rtticketedit&id={$ticket.ticketid}">
+<FORM method="POST" name="ticket" id="ticket-form" action="?m=rtticketedit&id={$ticket.ticketid}{if isset($backid)}&backid={$backid}{/if}">
 	{include file="rt/rtticketmodify.html"}
 </FORM>
 

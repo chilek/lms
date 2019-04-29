@@ -289,7 +289,7 @@
 	{if $layout.module != 'eventadd'}
 	{box_buttons}
 		{button type="submit" icon="save" onclick="javascript:document.ticket.submit();" accesskey="s" label="Submit"}
-		{button icon="cancel" onclick="location.href='?m={if $queue}rtqueueview&id={$queue}{elseif $ticket.queueid}rtqueueview&id={$ticket.queueid}{else}rtqueuelist{/if}'"
+		{button icon="cancel" onclick="location.href = '?m=rtqueueview{if isset($backid)}#{$backid}{/if}'"
 			label="Cancel"}
 	{/box_buttons}
 	{/if}
