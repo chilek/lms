@@ -31,19 +31,23 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 if (isset($_GET['action'])) {
 	if ($_GET['action'] == 'open') {
 		$DB->Execute('UPDATE events SET closed = 0, closeduserid = NULL, closeddate = 0 WHERE id = ?',array($_GET['id']));
-		$SESSION->redirect('?'.$SESSION->get('backto'));
+		$SESSION->redirect('?'.$SESSION->get('backto')
+			. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 	} elseif ($_GET['action'] == 'close' && isset($_GET['ticketid'])) {
 		$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE ticketid = ?',array(Auth::GetCurrentUser(), $_GET['ticketid']));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	} elseif ($_GET['action'] == 'close') {
 		$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE id = ?',array(Auth::GetCurrentUser(), $_GET['id']));
-		$SESSION->redirect('?'.$SESSION->get('backto'));
+		$SESSION->redirect('?'.$SESSION->get('backto')
+			. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 	} elseif ($_GET['action'] == 'assign') {
-    		$LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
-    		$SESSION->redirect('?' . $SESSION->get('backto'));
+		$LMS->AssignUserToEvent($_GET['id'], Auth::GetCurrentUser());
+		$SESSION->redirect('?' . $SESSION->get('backto')
+			. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 	} elseif ($_GET['action'] == 'unassign') {
 		$LMS->UnassignUserFromEvent($_GET['id'], Auth::GetCurrentUser());
-		$SESSION->redirect('?' . $SESSION->get('backto'));
+		$SESSION->redirect('?' . $SESSION->get('backto')
+			. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 	}
 }
 
@@ -163,7 +167,7 @@ if(isset($_POST['event']))
 		$LMS->EventUpdate($event);
 
 		$SESSION->redirect('?m=eventlist'
-			. (isset($_POST['backreferenceid']) ? '#' . $_POST['backreferenceid'] : ''));
+			. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 	}
 } else
 	$event['overlapwarned'] = 0;
@@ -189,9 +193,6 @@ $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
-
-if (isset($_GET['backreferenceid']) || isset($_POST['backreferenceid']))
-	$SMARTY->assign('backreferenceid', isset($_GET['backreferenceid']) ? $_GET['backreferenceid'] : $_POST['backreferenceid']);
 
 $SMARTY->display('event/eventmodify.html');
 

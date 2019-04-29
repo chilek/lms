@@ -24,9 +24,6 @@
 		<INPUT type="hidden" name="event[id]" value="{$event.id}">
 		<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
 		<INPUT type="hidden" name="event[overlapwarned]" value="{$event.overlapwarned}">
-		{if isset($backreferenceid)}
-			<INPUT type="hidden" name="backreferenceid" value="{$backreferenceid}">
-		{/if}
 		<INPUT type="submit" class="hiddenbtn">
 
 		{box_container id="event"}
@@ -161,7 +158,7 @@
 				{/if}
 				{button type="submit" icon="save" onclick="javascript:document.event.submit();"
 					accesskey="s" label="Submit"}
-				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backreferenceid)}#{$backreferenceid}{/if}';" label="Cancel"}
+				{button icon="cancel" onclick="location.href='?m=eventlist{if isset($backid)}#{$backid}{/if}';" label="Cancel"}
 			{/box_buttons}
 		{/box_container}
         <div id="row"{if $layout.module == 'eventedit' || empty($event.helpdesk)} style="display:none;"}{/if}>

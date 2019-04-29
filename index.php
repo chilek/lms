@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -242,6 +242,11 @@ if ($AUTH->islogged) {
 			$qs_fields = array_flip(explode(',', $qs_fields));
 		}
 		$SMARTY->assign('qs_fields', $qs_fields);
+
+		if (isset($_GET['backid']))
+			$SESSION->save('backid', $_GET['backid']);
+		if ($backid = $SESSION->get('backid'))
+			$SMARTY->assign('backid', $backid);
 	}
 
 	// Load plugin files and register hook callbacks

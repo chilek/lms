@@ -131,6 +131,7 @@ for ($i = 1; $i < $daysnum + 1; $i++) {
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
+$SESSION->remove('backid');
 
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 $SMARTY->assign('today', $today);
