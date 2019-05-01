@@ -72,6 +72,16 @@
         <TBODY>
         {foreach $contents as $posuid => $item}
         <TR id="invoice-contents-position-{$posuid}" class="highlight invoice-contents-position" data-posuid="{$posuid}">
+			{if $item.vdiscount != 0}
+				{$valuebrutto = $item.valuebrutto + $item.vdiscount}
+			{elseif $item.pdiscount != 0}
+				{$valuebrutto = ((100 - $item.pdiscount) * $item.valuebrutto) / 100}
+			{else}
+				{$valuebrutto = $item.valuebrutto}
+			{/if}
+			{$valuebrutto = round($valuebrutto, 2)}
+			{$valuenetto = round(($valuebrutto * 100) / (100 + $taxeslist[$item.taxid].value), 2)}
+
             <TD class="bold invoice-contents-position-counter invoice-contents-sortable-handler">
                 {counter}.
             </TD>
@@ -102,8 +112,9 @@
 			</span>
             </TD>
             <TD class="text-right">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuenetto]" value="{$item.valuenetto}" SIZE="6" {tip text="Enter unitary value without discount"} style="display: none;">
-                <span class="invoice-contents-field-value nobr">
+				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuenetto]"
+					value="{$valuenetto}" SIZE="6" {tip text="Enter unitary value without discount"} style="display: none;">
+				<span class="invoice-contents-field-value nobr">
 				{$item.valuenetto|money_format}
 				</span>
 				{if isset($item.valuenetto_custom_contents)}
@@ -128,8 +139,9 @@
 			</span>
             </TD>
             <TD class="text-right">
-                <INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuebrutto]" SIZE="6" value="{$item.valuebrutto}" {tip text="Enter unitary value without discount"} style="display: none;">
-                <span class="invoice-contents-field-value nobr">
+				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuebrutto]" SIZE="6"
+					value="{$valuebrutto}" {tip text="Enter unitary value without discount"} style="display: none;">
+				<span class="invoice-contents-field-value nobr">
 				{$item.valuebrutto|money_format}
 				</span>
 				{if isset($item.valuebrutto_custom_contents)}
