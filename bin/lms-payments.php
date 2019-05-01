@@ -866,7 +866,7 @@ foreach ($assigns as $assign) {
 		} else
 			$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology) 
 				VALUES (?, ?, ?, ?, ?, ?)",
-				array($currtime, $val * -1, $assign['taxid'], $cid, $desc, $linktechnology));
+				array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $linktechnology));
 
 		if (!$quiet) print "CID:$cid\tVAL:$val\tDESC:$desc" . PHP_EOL;
 
