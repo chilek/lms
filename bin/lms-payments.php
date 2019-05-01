@@ -844,7 +844,7 @@ foreach ($assigns as $assign) {
 				if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
 					$DB->Execute("UPDATE cash SET value = value + ? 
 						WHERE docid = ? AND itemid = ?",
-						array($val * - 1, $invoices[$cid], $tmp_itemid));
+						array(str_replace(',', '.', $val * - 1), $invoices[$cid], $tmp_itemid));
 			} else {
 				$itemid++;
 
