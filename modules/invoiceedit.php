@@ -178,13 +178,16 @@ switch($action)
 			$taxvalue = $taxeslist[$itemdata['taxid']]['value'];
 			if ($itemdata['valuenetto'] != 0)
 			{
-				$itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['pdiscount']) / 100) - $itemdata['vdiscount']);
+				$itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto']
+					* f_round($itemdata['pdiscount']) / 100)
+					- ((100 * $itemdata['vdiscount']) / (100 + $taxvalue)));
 				$itemdata['valuebrutto'] = $itemdata['valuenetto'] * ($taxvalue / 100 + 1);
 				$itemdata['s_valuebrutto'] = f_round(($itemdata['valuenetto'] * $itemdata['count']) * ($taxvalue / 100 + 1));
 			}
 			elseif ($itemdata['valuebrutto'] != 0)
 			{
-				$itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
+				$itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * $itemdata['pdiscount'] / 100)
+					- $itemdata['vdiscount']);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
 				$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
 			}
