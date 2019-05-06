@@ -625,11 +625,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 				'cdate' => $this->data['invoice']['cdate'],
 				'customerid' => $this->data['customerid'],
 			));
-			if ($this->data['invoice']['doctype'] == DOC_CNOTE)
-				$title = trans('for Credit Note No. $a', $docnumber);
-			else
-				$title = trans('for Invoice No. $a', $docnumber);
-			$this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
+			$this->backend->Write(0, trans('for Invoice No. $a', $docnumber), '', 0, 'C', true, 0, false, false, 0);
 		}
 
 		//$this->backend->SetFont('arial', '', 16);

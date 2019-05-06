@@ -1871,7 +1871,6 @@ $_LANG['Credit note number $a already exists!'] = 'Faktura korygująca numer $a 
 $_LANG['Credit note number must be integer!'] = 'Numer faktury korygującej musi być liczbą całkowitą!';
 $_LANG['Enter credit note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer faktury korygującej. UWAGA! Zmiana tego numeru może być NIEBEZPIECZNA! (pozostaw to pole puste aby uzyskać kolejny numer)';
 $_LANG['for Invoice No. $a'] = 'do Faktury nr $a';
-$_LANG['for Credit Note No. $a'] = 'do Korekty nr $a';
 $_LANG['Recover this item'] = 'Przywróć tę pozycję';
 $_LANG['Recover'] = 'Przywróć';
 $_LANG['Remove this item'] = 'Usuń tę pozycję';

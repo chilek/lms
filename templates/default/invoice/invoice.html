@@ -10,11 +10,7 @@
 			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate customerid=$invoice.invoice.customerid assign=number_ref}
 			    <B>{t a=$number}Credit Note No. $a{/t}</B><BR>
 			    <B class="mdf">
-					{if $invoice.invoice.doctype == DOC_CNOTE}
-						{t a=$number_ref}for Credit Note No. $a{/t}
-					{else}
-						{t a=$number_ref}for Invoice No. $a{/t}
-					{/if}
+					{t a=$number_ref}for Invoice No. $a{/t}
 				</B><BR>
 			{elseif $invoice.doctype == $smarty.const.DOC_INVOICE_PRO}
 			    <B>{t a=$number}Pro Forma Invoice No. $a{/t}</B><BR>

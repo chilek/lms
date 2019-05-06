@@ -1622,7 +1622,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetInvoiceContent($invoiceid)
     {
-        global $PAYTYPES, $LMS;
+        global $PAYTYPES;
 
         if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
@@ -1672,8 +1672,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $result['totaltax'] = 0;
             $result['total'] = 0;
 
-            if ($result['reference'])
-                $result['invoice'] = $this->GetInvoiceContent($result['reference']);
+			if ($result['reference']) {
+				$result['invoice'] = $this->GetInvoiceContent($result['reference']);
+				if (isset($result['invoice']['invoice'])) {
+					// replace pointed correction note number to previous one
+					$result['invoice']['number'] = $result['invoice']['invoice']['number'];
+					$result['invoice']['numberplanid'] = $result['invoice']['invoice']['numberplanid'];
+					$result['invoice']['template'] = $result['invoice']['invoice']['template'];
+				}
+			}
 
             if (!$result['division_header']) {
                 $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
