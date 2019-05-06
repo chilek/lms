@@ -1251,6 +1251,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		$idx = 0;
 		foreach ($which as $type) {
 			$data['type'] = $type;
+			$data['duplicate-date'] = $doc['duplicate-date'];
 			$document->Draw($data);
 			$idx++;
 			if ($idx < count($which))
