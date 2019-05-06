@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("UPDATE rtmessages SET body = REPLACE(REPLACE(body, '<br>', E'\n'), '<BR>', E'\n') WHERE type > 1");
+$this->Execute("UPDATE rtmessages SET body = REPLACE(REPLACE(body, '<br>', '\n'), '<BR>', '\n') WHERE type > 1");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019042300', 'dbversion'));
 
