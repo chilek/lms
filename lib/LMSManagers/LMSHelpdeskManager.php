@@ -1133,16 +1133,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }else
             $props['subject'] = $ticket['subject'];
 
-        if ($ticket['netnodeid'] != $props['netnodeid']) {
-			$netnode_manager = new LMSNetNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
-			if (isset($props['netnodeid']))
-            	$notes[] = trans('Ticket\'s network node assignments has been changed from $a to $b.',
-					$netnode_manager->GetNetNodeName($ticket['netnodeid']), $netnode_manager->GetNetNodeName($props['netnodeid']));
-        	else
-				$notes[] = trans('Ticket has been unassigned from network node $a.', $netnode_manager->GetNetNodeName($ticket['netnodeid']));
-            $type = $type | RTMESSAGE_NETNODE_CHANGE;
-        } else
-            $props['netnodeid'] = $ticket['netnodeid'];
+		if (array_key_exists('netnodeid', $props)) {
+			if ($ticket['netnodeid'] != $props['netnodeid']) {
+				$netnode_manager = new LMSNetNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
+				if (isset($props['netnodeid']))
+					$notes[] = trans('Ticket\'s network node assignments has been changed from $a to $b.',
+						$netnode_manager->GetNetNodeName($ticket['netnodeid']), $netnode_manager->GetNetNodeName($props['netnodeid']));
+				else
+					$notes[] = trans('Ticket has been unassigned from network node $a.', $netnode_manager->GetNetNodeName($ticket['netnodeid']));
+				$type = $type | RTMESSAGE_NETNODE_CHANGE;
+			} else
+				$props['netnodeid'] = $ticket['netnodeid'];
+		} else
+			$props['netnodeid'] = $ticket['netnodeid'];
 
         if ($ticket['invprojectid'] != $props['invprojectid']) {
 			$project_manager = new LMSProjectManager($this->db, $this->auth, $this->cache, $this->syslog);
