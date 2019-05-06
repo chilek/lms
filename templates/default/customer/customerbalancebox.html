@@ -121,7 +121,7 @@
 									tip="Send invoice"}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								{if !$item.cancelled && !$item.referenced}
+								{if !$item.cancelled}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
 										tip="Revise"}
 								{/if}
@@ -198,7 +198,7 @@
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.cancelled && !$item.referenced}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
-									tip="Revise"}
+										tip="Revise"}
 								{/if}
 								{if !$item.cancelled}
 									{if !$item.archived}

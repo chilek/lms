@@ -28,10 +28,14 @@ $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 if (isset($_GET['id']) && $action == 'init')
 {
-	if ($LMS->isDocumentReferenced($_GET['id']))
-		$SESSION->redirect('?m=invoicelist');
-
-	$invoice = $LMS->GetInvoiceContent($_GET['id']);
+	$docid = $LMS->GetDocumentLastReference($_GET['id']);
+	$invoice = $LMS->GetInvoiceContent($docid);
+	if ($invoice['doctype'] == DOC_CNOTE) {
+		$invoice['number'] = $invoice['invoice']['number'];
+		$invoice['template'] = $invoice['invoice']['template'];
+		$invoice['numberplanid'] = $invoice['invoice']['numberplanid'];
+		$invoice['cdate'] = $invoice['invoice']['cdate'];
+	}
 
 	if (!empty($invoice['cancelled']))
 		$SESSION->redirect('?m=invoicelist');

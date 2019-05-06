@@ -1679,6 +1679,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					$result['invoice']['number'] = $result['invoice']['invoice']['number'];
 					$result['invoice']['numberplanid'] = $result['invoice']['invoice']['numberplanid'];
 					$result['invoice']['template'] = $result['invoice']['invoice']['template'];
+					$result['invoice']['cdate'] = $result['invoice']['invoice']['cdate'];
 				}
 			}
 
@@ -3492,5 +3493,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			WHERE d.type IN ?
 				AND c.id IN (" . implode(',', $ids) . ")",
 			array($doctypes));
+	}
+
+	public function GetDocumentLastReference($docid) {
+		while ($refdocid = $this->db->GetOne("SELECT id FROM documents WHERE reference = ?", array($docid))) {
+			$docid = $refdocid;
+		}
+		return $docid;
 	}
 }

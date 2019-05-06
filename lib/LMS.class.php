@@ -2904,6 +2904,11 @@ class LMS
 		return $manager->GetDocumentsForBalanceRecords($ids, $doctypes);
 	}
 
+	public function GetDocumentLastReference($docid) {
+		$manager = $this->getFinanceManager();
+		return $manager->GetDocumentLastReference($docid);
+	}
+
 	/**
      * VoIP functions
      */

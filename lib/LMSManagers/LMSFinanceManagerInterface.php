@@ -143,4 +143,6 @@ interface LMSFinanceManagerInterface
 	public function AggregateDocuments($list);
 
 	public function GetDocumentsForBalanceRecords($ids, $doctypes);
+
+	public function GetDocumentLastReference($docid);
 }
