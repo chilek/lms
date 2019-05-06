@@ -3868,6 +3868,7 @@ class LMS
 			$doc['invoice_filename'] = $invoice_filename;
 			$doc['dnote_filename'] = $dnote_filename;
 			$doc['which'] = $which;
+			$doc['duplicate-date'] = $duplicate_date;
 
 			if (!$no_attachments) {
 				$document = $this->GetTradeDocument($doc);

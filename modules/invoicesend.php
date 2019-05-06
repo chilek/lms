@@ -98,7 +98,12 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 			$which = array();
 			if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
 			if (!empty($_GET['copy'])) $which[] = trans('COPY');
-			if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+			if (!empty($_GET['duplicate'])) {
+				$which[] = trans('DUPLICATE');
+				$duplicate_date = isset($_GET['duplicate-date']) ? intval($_GET['duplicate-date']) : 0;
+			} else
+				$duplicate_date = 0;
+
 			if (empty($which)) $which[] = trans('ORIGINAL');
 
 			$currtime = time();
@@ -106,7 +111,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 				'invoice_filename', 'dnote_filename', 'debug_email',
 				'mail_body', 'mail_subject', 'mail_format', 'currtime', 'sender_email', 'sender_name', 'extrafile',
 				'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',
-				'which', 'smtp_options'));
+				'which', 'duplicate_date', 'smtp_options'));
 		}
 	}
 

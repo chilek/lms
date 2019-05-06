@@ -321,10 +321,17 @@
 					<INPUT type="checkbox" form="addbalance-form" name="copy" {if preg_match('/copy/i', $default_printpage)} checked{/if}>
 					{trans("copy")}
 				</label>
-				<label>
-					<INPUT type="checkbox" form="addbalance-form" name="duplicate" {if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
-					{trans("duplicate")}
-				</label>
+				<div id="duplicate-box">
+					<label>
+						<INPUT type="checkbox" form="addbalance-form" name="duplicate" id="duplicate-checkbox"
+								{if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
+						{trans("duplicate")}
+					</label>
+					<div id="duplicate-box-date-selector"
+							{if !preg_match('/duplicate/i', $default_printpage)} style="display: none;"{/if}>
+						<input type="text" form="addbalance-form" name="duplicate-date" class="calendar unix">
+					</div>
+				</div>
 			{/tab_buttons}
 
 			{tab_buttons}
@@ -439,8 +446,13 @@
 			add = "&original=1";
 		if(document.addbalance.copy.checked)
 			add += "&copy=1";
-		if(document.addbalance.duplicate.checked)
+		if (document.addbalance.duplicate.checked) {
 			add += "&duplicate=1";
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
 
 		document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
 		document.addbalance.target="_blank";
@@ -453,8 +465,13 @@
 			add = "&original=1";
 		if(document.addbalance.copy.checked)
 			add += "&copy=1";
-		if(document.addbalance.duplicate.checked)
+		if(document.addbalance.duplicate.checked) {
 			add += "&duplicate=1";
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
 
 		document.addbalance.action="?m=invoicesend&marks=cash" + add;
 		document.addbalance.target="_blank";
@@ -576,6 +593,10 @@
 		if (confirm($t('Are you sure, you want to account ALL debts of customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'))) {
 			location.href = '?m=customerbalanceok&id={$customerinfo.id}';
 		}
+	});
+
+	$('#duplicate-checkbox').click(function() {
+		$('#duplicate-box-date-selector').toggle($(this).prop('checked'));
 	});
 
 	new_doc_type_changed($("[name=newdocument]").val());

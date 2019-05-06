@@ -206,7 +206,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
 	if (!empty($_GET['copy'])) $which[] = trans('COPY');
-	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if (!empty($_GET['duplicate'])) {
+		$which[] = trans('DUPLICATE');
+		$duplicate_date = isset($_GET['duplicate-date']) ? intval($_GET['duplicate-date']) : 0;
+	} else
+		$duplicate_date = 0;
 
 	if (!count($which)) $which[] = trans('ORIGINAL');
 
@@ -230,6 +234,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 			$i++;
 			if ($i == $count) $invoice['last'] = TRUE;
 			$invoice['type'] = $type;
+			$invoice['duplicate-date'] = $duplicate_date;
+
 			invoice_body($document, $invoice);
 		}
 	}

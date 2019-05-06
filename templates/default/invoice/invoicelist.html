@@ -10,6 +10,33 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 //-->
 </SCRIPT>
 {/if}
+
+<style>
+
+	#button-panel {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	#button-panel > * {
+		padding-top: 0.2em;
+		padding-left: 0.2em;
+	}
+
+	#button-panel > :nth-child(n+2) {
+		margin-left: 0.2em;
+	}
+
+	#duplicate-box {
+		display: flex;
+	}
+
+	#duplicate-box > :nth-child(2) {
+		padding-left: 0.8em;
+	}
+
+</style>
+
 <SCRIPT type="text/javascript">
 <!--
 	function pays()
@@ -28,8 +55,13 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			add = "&original=1";
 		if (document.page.copy.checked)
 			add += "&copy=1";
-		if (document.page.duplicate.checked)
+		if (document.page.duplicate.checked) {
 			add += "&duplicate=1";
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
 
 		document.page.action="?m=invoice&print=cached" + add;
 		document.page.target="_blank";
@@ -37,6 +69,18 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 	}
 
 	function send_invoices() {
+		if (document.page.original.checked)
+			add = "&original=1";
+		if (document.page.copy.checked)
+			add += "&copy=1";
+		if (document.page.duplicate.checked) {
+			add += "&duplicate=1";
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
+
 		document.page.action="?m=invoicesend&marks=invoice";
 		document.page.target="_blank";
 		document.page.submit();
@@ -317,7 +361,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		<TD COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD class="text-left">
+					<TD class="text-left" id="button-panel">
 						{if !$proforma}
 							{button icon="cash" label="Check/Uncheck as accounted" onclick="javascript:pays();"}
 						{/if}
@@ -329,9 +373,25 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 							{button icon="restore" class="multiinvoiceunarchive" label="Unarchive"}
 						{/if}
 						{button icon="print" label="Print" onclick="javascript:prints();"}
-						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>
-						<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
+						<label>
+							<INPUT type="checkbox" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}>
+							{trans("original")}
+						</label>
+						<label>
+							<INPUT type="checkbox" name="copy" {if preg_match('/copy/i', $default_printpage)} checked{/if}>
+							{trans("copy")}
+						</label>
+						<div id="duplicate-box">
+							<label>
+								<INPUT type="checkbox" name="duplicate" id="duplicate-checkbox"
+										{if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
+								{trans("duplicate")}
+							</label>
+							<div id="duplicate-box-date-selector"
+									{if !preg_match('/duplicate/i', $default_printpage)} style="display: none;"{/if}>
+								<input type="text" name="duplicate-date" class="calendar unix">
+							</div>
+						</div>
 					</TD>
 					<TD class="text-right nobr">
 						<label>
@@ -365,6 +425,10 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		if (confirm($t("Are you sure, you want to unarchive selected invoices?"))) {
 			unarchive_invoices();
 		}
+	});
+
+	$('#duplicate-checkbox').click(function() {
+		$('#duplicate-box-date-selector').toggle($(this).prop('checked'));
 	});
 
 </script>
