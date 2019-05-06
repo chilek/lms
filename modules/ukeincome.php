@@ -59,7 +59,8 @@ $income = $DB->GetAll('
 
 $linktechnologies = array();
 foreach ($LINKTECHNOLOGIES as $technologies)
-	$linktechnologies = array_merge($linktechnologies, $technologies);
+	foreach ($technologies as $techid => $techlabel)
+		$linktechnologies[$techid] = $techlabel;
 
 $layout['pagetitle'] = trans('UKE income report for period $a - $b', $from, $to);
 
