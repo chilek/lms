@@ -407,7 +407,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, value DESC";
-$assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
+$services = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
@@ -477,16 +477,49 @@ $query = "SELECT
 		   a.datefrom <= ? AND
 		  (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
-	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, a.separatedocument, voipcost.value DESC";
+	." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, voipcost.value DESC";
 
 $billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
+$assigns = array();
+
 if ($billings) {
-	foreach ($billings as $v)
-		array_push($assigns, $v);
-}
+	// intelligent merge of service and billing assignment records
+	$service_customerid = null;
+	$billing_idx = 0;
+	$billing_count = count($billings);
+	foreach ($services as $service_idx => &$service) {
+		$assigns[] = $service;
+		if ($billing_idx == $billing_count)
+			continue;
+
+		$service_customerid = $service['customerid'];
+
+		while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] < $service_customerid)
+			$billing_idx++;
+		if ($billing_idx === $billing_count)
+			continue;
+
+		$old_billing_idx = $billing_idx;
+
+		while ($billing_idx < $billing_count && $billings[$billing_idx]['customerid'] == $service_customerid
+			&& $service['id'] != $billings[$billing_idx]['id'])
+			$billing_idx++;
+
+		if ($billing_idx == $billing_count || $billings[$billing_idx]['customerid'] != $service_customerid) {
+			$billing_idx = $old_billing_idx;
+			continue;
+		} else {
+			$assigns[] = $billings[$billing_idx];
+			$billing_idx++;
+		}
+	}
+	unset($service);
+} else
+	$assigns = $services;
+unset($services);
 
 if (empty($assigns))
 	die;
