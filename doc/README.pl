@@ -214,7 +214,7 @@ Rozdział 1. Wstęp
 1.2.2. Inni
 
    LMS zawiera fragmenty następującego oprogramowania: phpMyAdmin,
-   phpsysinfo, NewsPortal, overLIB, ezpdf, xajax, Tigra Calendar,
+   phpsysinfo, NewsPortal, overLIB, ezpdf, xajax,
    procedury konwersji liczb na postać słowną autorstwa Piotra Klebana
    oraz przykłady kodu zawarte w Podręczniku PHP.
      __________________________________________________________________

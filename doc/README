@@ -210,7 +210,7 @@ Chapter 1. Intro
 1.2.2. Others
 
    LMS uses elements of other software: phpMyAdmin, phpsysinfo,
-   NewsPortal, overLIB, ezpdf, xajax, Tigra Calendar, Piotr Kleban's
+   NewsPortal, overLIB, ezpdf, xajax, Piotr Kleban's
    number-to-words conversion procedures and code examples from PHP
    manual.
      __________________________________________________________________
