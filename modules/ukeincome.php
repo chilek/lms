@@ -43,16 +43,22 @@ if ($to) {
 	$unixto = mktime(23,59,59); //today
 }
 
+if (isset($_POST['brutto']))
+	$value_formula = 'cash.value';
+else
+	$value_formula = '(cash.value * 100) / (100 + t.value)';
+
 $income = $DB->GetAll('
 	SELECT cash.linktechnology AS technology,
 		COUNT(DISTINCT CASE WHEN c.type = 0 THEN c.id ELSE null END) AS privatecount,
 		COUNT(DISTINCT CASE WHEN c.type = 1 THEN c.id ELSE null END) AS bussinesscount,
 		COUNT(DISTINCT c.id) AS totalcount,
-		SUM(CASE WHEN c.type = 0 THEN cash.value ELSE 0 END) * -1 AS privateincome,
-		SUM(CASE WHEN c.type = 1 THEN cash.value ELSE 0 END) * -1 AS bussinessincome,
-		SUM(cash.value) * -1 AS totalincome
+		SUM(CASE WHEN c.type = 0 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS privateincome,
+		SUM(CASE WHEN c.type = 1 THEN ' . $value_formula . ' ELSE 0 END) * -1 AS bussinessincome,
+		SUM(' . $value_formula . ') * -1 AS totalincome
 	FROM cash
 	JOIN customers c ON c.id = cash.customerid
+	JOIN taxes t ON t.id = cash.taxid
 	WHERE cash.type = 0 AND time >= ? AND time <= ?
 	GROUP BY cash.linktechnology
 	ORDER BY cash.linktechnology', array($unixfrom, $unixto));
