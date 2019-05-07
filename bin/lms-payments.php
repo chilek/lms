@@ -447,10 +447,10 @@ $query = "SELECT
 						WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
 					END) AND
 					vc.call_start_time < (CASE a2.period
-						WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
-						WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
-						WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
-						WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
+						WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+						WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+						WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
+						WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 1, $year) . '
 						WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
 					END)
 				GROUP BY va.ownerid, a2.id
