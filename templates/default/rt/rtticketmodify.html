@@ -170,7 +170,7 @@
 				{if $layout.module != 'rtticketedit' || ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline')
 					|| !$ticket.oldverifierid || $ticket.oldverifierid == $layout.logid}
 					<INPUT TYPE="TEXT" NAME="ticket[deadline]" VALUE="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="20"
-						{tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+						{tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 				{else}
 					<INPUT TYPE="hidden" NAME="ticket[deadline]" VALUE="{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}">
 					<span title="{trans("Only verifier can change this")}">{if $ticket.deadline}{$ticket.deadline|date_format:"%Y/%m/%d %H:%M"}{else}{trans("<!rt>- none -")}{/if}</span>

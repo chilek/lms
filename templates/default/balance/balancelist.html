@@ -151,8 +151,8 @@
                         </SELECT>
                         <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>&nbsp;
                         </div>
-                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="14" maxlength="14" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar-time" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="14" maxlength="14" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar-time" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="14" maxlength="14" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="14" maxlength="14" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-datetime" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                         <A href="javascript:filter();">&raquo;&raquo;&raquo;</A><BR>
 		</TD>
 	</TR>

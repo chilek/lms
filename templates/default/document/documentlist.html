@@ -149,13 +149,13 @@
                         {trans("from")}
                         <INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $filter.from > 0}{$filter.from|date_format:"%Y/%m/%d"}{/if}"
 								onChange="javascript:applyFilter();"
-								{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+								{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                     </span>
                     <span class="nobr">
 					    {trans("to")}
                         <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $filter.to > 0}{$filter.to|date_format:"%Y/%m/%d"}{/if}"
 								onChange="javascript:applyFilter();"
-								{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+								{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
                     </span>
 
 					{if !empty($numberplans) && count($numberplans)}

@@ -91,8 +91,8 @@
 		<td><img src="img/calendar.gif" alt=""></td>
 		<td class="bold">{trans("Account active:")}</td>
 		<td class="bold nobr">
-			{trans('from')}:<input type="text" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
-			{trans('to')}:<input type="text" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
+			{trans('from')}:<input type="text" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
+			{trans('to')}:<input type="text" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
 		</td>
 	</tr>
 	{else}

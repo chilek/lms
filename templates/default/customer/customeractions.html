@@ -32,7 +32,7 @@
 							<input type="checkbox" name="cutoffstopindefinitely" value="1" onchange="$('#cutoffstop').css('display', this.checked ? 'none' : '');"{if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)} checked{/if}>
 							{trans("indefinitely")}
 						</label>&nbsp;
-						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip class="calendar" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip class="lms-ui-date" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 					</TD>
 					<TD width="1%" class="nobr text-right">
 						<A href="javascript:document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>

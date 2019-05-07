@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -205,7 +205,7 @@ function init_datepickers(selector) {
 		}
 	}
 	$(selector).each(function() {
-		var unix = $(this).hasClass('unix');
+		var unix = $(this).hasClass('unix') || $(this).hasClass('lms-ui-date-unix');
 		var value = $(this).val();
 		var dt = null;
 		if (unix) {
@@ -255,7 +255,7 @@ $(function() {
 		$(this).unbind('click');
 	});
 
-	init_datepickers('div.calendar input,input.calendar');
+	init_datepickers('div.calendar input,div.lms-ui-date,input.calendar,input.lms-ui-date');
 
 	$('.lms-ui-button-date-period').click(function() {
 		var from = $(this).attr('data-from');
@@ -340,9 +340,9 @@ $(function() {
 		},
 		openOnFocus: false
 	};
-	$('div.calendar-time input,input.calendar-time').each(function() {
+	$('div.calendar-time input,div.lms-ui-datetime input,input.calendar-time,input.lms-ui-datetime').each(function() {
 		var options = datetimepickeroptions;
-		if ($(this).hasClass('calendar-time-seconds')) {
+		if ($(this).hasClass('calendar-time-seconds') || $(this).hasClass('lms-ui-datetime-seconds')) {
 			options.format = "Y/m/d H:i:s";
 		}
 		if ($(this).attr('data-format')) {

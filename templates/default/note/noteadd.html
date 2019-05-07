@@ -72,7 +72,7 @@ window.open('?m=note&id={$newnoteid}');
 		<TD WIDTH="99%" NOWRAP>
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
 				<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 				{if $note.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
 				{/if}

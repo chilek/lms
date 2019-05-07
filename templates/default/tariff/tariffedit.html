@@ -122,9 +122,9 @@
 								</TD>
 								<TD class="nobr">
 									{trans("from:")}
-									<INPUT type="TEXT" name="tariff[datefrom]" value="{if $tariff.datefrom}{$tariff.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
+									<INPUT type="TEXT" name="tariff[datefrom]" value="{if $tariff.datefrom}{$tariff.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
 									{trans("to:")}
-									<INPUT type="TEXT" name="tariff[dateto]" value="{if $tariff.dateto}{$tariff.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+									<INPUT type="TEXT" name="tariff[dateto]" value="{if $tariff.dateto}{$tariff.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
 								</TD>
 							</TR>
                             <TR>

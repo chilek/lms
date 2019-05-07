@@ -361,7 +361,7 @@
 										<input type="checkbox" name="customeradd[cutoffstopindefinitely]" value="1" onchange="$('#cutoffstop').css('display', this.checked ? 'none' : '');"{if $customeradd.cutoffstopindefinitely} checked{/if}>
 										{trans("indefinitely")}
 									</label>&nbsp;
-									<INPUT type="text" name="customeradd[cutoffstop]" id="cutoffstop" {if $customeradd.cutoffstopindefinitely}style="display: none;"{elseif $customeradd.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip class="calendar" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
+									<INPUT type="text" name="customeradd[cutoffstop]" id="cutoffstop" {if $customeradd.cutoffstopindefinitely}style="display: none;"{elseif $customeradd.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip class="lms-ui-date" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 								</TD>
 							</TR>
 						</TABLE>

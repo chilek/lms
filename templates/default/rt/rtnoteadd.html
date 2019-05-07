@@ -192,7 +192,7 @@
 		<TD>
 			{if ConfigHelper::checkConfig('phpui.helpdesk_allow_all_users_modify_deadline') || !$ticket.verifierid || $ticket.verifierid == $layout.logid}
 				<INPUT TYPE="TEXT" NAME="note[deadline]" VALUE="{if $note.deadline}{$note.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}"
-						SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="calendar-time" trigger="deadline"}>
+						SIZE="20" {tip text="Enter deadline in YYYY/MM/DD HH:MM format or click to select it from applet" class="lms-ui-datetime" trigger="deadline"}>
 			{else}
 				<INPUT TYPE="hidden" NAME="note[deadline]" VALUE="{if $note.deadline}{$note.deadline|date_format:"%Y/%m/%d %H:%M"}{/if}">
 				<span title="{trans("Only verifier can change this")}">{if $note.deadline}{$note.deadline|date_format:"%Y/%m/%d %H:%M"}{else}{trans("<!rt>- none -")}{/if}</span>

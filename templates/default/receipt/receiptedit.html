@@ -83,7 +83,7 @@
 			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}

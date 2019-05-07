@@ -144,7 +144,7 @@
 
 				{box_row icon="img/calendar.gif" label="Purchase date:"}
 					<input type="text" name="netdev[purchasetime]" value="{if $netdev.purchasetime}{$netdev.purchasetime}{/if}" size="10" maxlength="10"
-							placeholder="{trans(" yyyy/mm/dd")}" {tip class="calendar unix" trigger="purchasetime" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
+							placeholder="{trans(" yyyy/mm/dd")}" {tip class="lms-ui-date lms-ui-date-unix" trigger="purchasetime" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 				{/box_row}
 
 				{box_row icon="img/guarantee.png" label="Guarantee period:"}

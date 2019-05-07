@@ -124,7 +124,7 @@
 						SIZE="10"
 						MAXLENGTH="20"
 						VALUE="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}"
-						{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 
 					{trans("to")}&nbsp;
 					<INPUT
@@ -133,7 +133,7 @@
 						SIZE="10"
 						MAXLENGTH="20"
 						VALUE="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}"
-						{tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+						{tip class="lms-ui-date" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 
 					{trans("Connection type:")}
 					<SELECT SIZE="1" NAME="ftype">

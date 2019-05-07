@@ -64,7 +64,7 @@
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
 				<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" date-cdate="{$invoice.cdate}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+						placeholder="{trans("yyyy/mm/dd")}" date-cdate="{$invoice.cdate}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 				{if $invoice.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
 				{/if}
@@ -81,7 +81,7 @@
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_sale_date")}
 				<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10"
-						placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
+						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
 			{else}
 				<input type="hidden" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}">
 				{$invoice.sdate|date_format:"%Y/%m/%d"}
@@ -93,7 +93,7 @@
 			{trans("Deadline:")}
 		</TD>
 		<TD class="nobr">
-			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
+			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
 		</TD>
 	</TR>
 	<TR>

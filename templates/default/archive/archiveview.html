@@ -57,9 +57,9 @@
 						<A href="javascript:clear_filter();"><IMG src="img/delete.gif" alt=""></A>
 						<span class="bold">{trans("Filter:")} </span>
 						<label for="datefrom">{trans("From:")}</label>
-						<input type="text" size="12" name="datefrom" id="datefrom" value="{$listdata.datefrom|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+						<input type="text" size="12" name="datefrom" id="datefrom" value="{$listdata.datefrom|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
 						<label for="dateto">{trans("To:")}</label>
-						<input type="text" size="12" name="dateto" id="dateto" value="{$listdata.dateto|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+						<input type="text" size="12" name="dateto" id="dateto" value="{$listdata.dateto|date_format:"Y/m/d"}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
 						<label for="user">{trans("User:")}</label>
 						<SELECT size="1" name="user" id="user">
 							<OPTION value="0"{if $listdata.user == "0"} SELECTED{/if}>{trans("- all -")}</OPTION>

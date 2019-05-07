@@ -97,7 +97,7 @@
 					<B>{trans("Expiration date:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
 				    </TD>
 				</TR>
 				<TR>
