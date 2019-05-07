@@ -248,6 +248,8 @@ version ?.??.?? (????-??-??):
   - improvement: try to restore scrolling state of rtqueueview or eventlist after
     each operation has runned [chilan]
   - enhancement: allow to select invoice duplicate date manually [chilan]
+  - devel/cleanup: calendar, calendar-time css classes renamed to lms-ui-date, lms-ui-datetime
+    respectively [chilan]
 
 version 1.11.23 (2018-03-21):
 
