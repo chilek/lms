@@ -66,10 +66,10 @@
 			<IMG src="img/empty.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{trans("Default:")}</B>
+			<label for="numberplanedit_isdefault"><B>{trans("Default:")}</B></label>
 		</TD>
 		<TD width="98%">
-			<INPUT type="checkbox" name="numberplanedit[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanedit.isdefault!="0"}CHECKED{/if}>
+			<INPUT type="checkbox" name="numberplanedit[isdefault]" id="numberplanedit_isdefault" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanedit.isdefault!="0"}CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR>
