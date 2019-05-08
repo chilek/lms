@@ -503,16 +503,7 @@ $layout['pagetitle'] = trans('Ticket Edit: $a',sprintf("%06d",$ticket['ticketid'
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
-$queuelist = $LMS->GetQueueNames();
-$userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules');
-if ((empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'helpdesk') !== false)
-	&& ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
-	$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
-	if (in_array($ticket['queueid'], $selectedqueues))
-		foreach ($queuelist as $idx => $queue)
-			if (!in_array($queue['id'], $selectedqueues))
-				unset($queuelist[$idx]);
-}
+$queuelist = $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueNames(), $ticket['queueid']);
 
 if (!empty($ticket['customerid']))
 	$SMARTY->assign('nodes', $LMS->GetNodeLocations($ticket['customerid'],

@@ -532,7 +532,7 @@ if (!is_array($message['ticketid'])) {
 		if ($message['state'] == RT_NEW)
 			$message['state'] = RT_OPEN;
 	}
-	$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
+	$SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));
 	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
 } else {
 	$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));

@@ -244,7 +244,7 @@ if (!isset($_POST['note'])) {
 
 $SMARTY->assign('note', $note);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
+$SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $note['queueid']));
 $SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($note['queueid'], RTMESSAGE_NOTE));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtnoteadd.html');

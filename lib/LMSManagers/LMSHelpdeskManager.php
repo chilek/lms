@@ -944,6 +944,19 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		return $this->lastmessageid;
 	}
 
+	public function LimitQueuesToUserpanelEnabled($queuelist, $queueid) {
+		$userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules');
+		if ((empty($userpanel_enabled_modules) || strpos($userpanel_enabled_modules, 'helpdesk') !== false)
+			&& ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
+			$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
+			if (in_array($queueid, $selectedqueues))
+				foreach ($queuelist as $idx => $queue)
+					if (!in_array($queue['id'], $selectedqueues))
+						unset($queuelist[$idx]);
+		}
+		return $queuelist;
+	}
+
     public function GetTicketContents($id, $short = false)
     {
         global $RT_STATES;

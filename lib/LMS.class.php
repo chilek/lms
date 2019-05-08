@@ -1749,7 +1749,12 @@ class LMS
 		return $manager->GetLastMessageID();
 	}
 
-    public function GetTicketContents($id, $short = false)
+	public function LimitQueuesToUserpanelEnabled($queuelist, $queueid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->LimitQueuesToUserpanelEnabled($queuelist, $queueid);
+	}
+
+	public function GetTicketContents($id, $short = false)
     {
         $manager = $this->getHelpdeskManager();
         return $manager->GetTicketContents($id, $short);
