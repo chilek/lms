@@ -114,6 +114,14 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #lms-ui-logo {
 	margin-top: 0.3em;
+	display: flex;
+	justify-content: center;
+	align-self: stretch;
+	:not(:first-child) {
+		margin-left: 0.3em;
+		font-weight: bold;
+		align-self: flex-end;
+	}
 }
 
 #lms-ui-main-menu {
