@@ -396,7 +396,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						}
 					}
 
-					// current period settlement support
+					// creates assignment record for starting partial period
 					if (isset($data['settlement']) && $data['settlement'] == 2 && $idx == 1 && $period == MONTHLY) {
 						$val = $value;
 						if ($tariff['period'] && $period != DISPOSABLE
@@ -422,29 +422,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						$discounted_val = $val;
 
 						list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
-						$nextat = mktime(0, 0, 0, $month + 1, $data['at'], $year);
-						$diffdays = sprintf("%d", ($nextat - $data['datefrom'] - 86400) / 86400);
+						$nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
+						$partial_dateto = $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
+						$diffdays = ($partial_dateto - $data['datefrom']) / 86400;
 						if ($diffdays > 0) {
-							list ($y, $m, $d) = explode('/', date('Y/m/d', $nextat));
+							list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
 							$month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
-							$v = 0;
-							while ($diffdays) {
-								if ($d - $diffdays <= 0) {
-									$v += ($d - 1) * $discounted_val / $month_days;
-									$diffdays -= ($d - 1);
-								} else {
-									$v += $diffdays * $discounted_val / $month_days;
-									$diffdays = 0;
-								}
-								$date = mktime(0, 0, 0, $m, 0, $y);
-								$month_days = strftime("%d", $date);
-								$d = $month_days + 1;
-								$m = strftime("%m", $date);
-								$y = strftime("%Y", $date);
-							}
-							$partial_dateto = $nextat - 1;
+							$v = $diffdays * $discounted_val / $month_days;
 							$partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
-							$partial_at = $dom + 1;
+							$partial_dateto--;
+							if ($data['at'] >= $dom + 1)
+								$partial_at = $data['at'];
+							else
+								$partial_at = $dom + 1;
 
 							if ($value != 'NULL') {
 								$args = array(
@@ -478,38 +468,111 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						}
 					}
 
-                    // assume $data['at'] == 1, set last day of the specified month
-                    $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
-                    $cday   = 0;
-                }
+					// assume $data['at'] == 1, set last day of the specified month
+					$dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
+					$cday = 0;
+				}
 
 				if (!empty($lid) || $value != 'NULL') {
-					// Create assignment
-					$args = array(
-						SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
-						SYSLOG::RES_CUST => $data['customerid'],
-						'period' => $period,
-						'at' => $at,
-						'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
-						'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
-						'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && $idx == 1 ? 1 : 0,
-						SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-						'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
-						'datefrom' => $idx ? $datefrom : 0,
-						'dateto' => $idx && ($idx < count($data_tariff) - 1) ? $dateto : 0,
-						'pdiscount' => 0,
-						'vdiscount' => 0,
-						'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-						SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
-						'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
-						'docid' => empty($data['docid']) ? null : $data['docid'],
-						'commited' => $commited,
-					);
+					$ending_period_date = 0;
 
-					$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+					// creates assignment record for ending partial period
+					if ($idx && $idx == count($data_tariff) - 1 && $period == MONTHLY && isset($data['last-settlement'])
+						&& $data['dateto'] && $data['dateto'] > $dateto) {
+						$val = $value;
+						if ($tariff['period'] && $period != DISPOSABLE
+							&& $tariff['period'] != $period) {
+							if ($tariff['period'] == YEARLY)
+								$val = $val / 12.0;
+							elseif ($tariff['period'] == HALFYEARLY)
+								$val = $val / 6.0;
+							elseif ($tariff['period'] == QUARTERLY)
+								$val = $val / 3.0;
 
-					$this->insertNodeAssignments($data);
-					$this->insertPhoneAssignments($data);
+							if ($period == YEARLY)
+								$val = $val * 12.0;
+							elseif ($period == HALFYEARLY)
+								$val = $val * 6.0;
+							elseif ($period == QUARTERLY)
+								$val = $val * 3.0;
+							elseif ($period == WEEKLY)
+								$val = $val / 4.0;
+							elseif ($period == DAILY)
+								$val = $val / 30.0;
+						}
+						$discounted_val = $val;
+
+						list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
+						$prevperiod = mktime(0, 0, 0, $month, 1, $year);
+						$diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
+						if ($diffdays > 0) {
+							$month_days = strftime("%d", mktime(0, 0, 0, $month + 1, 0, $year));
+							$v = $diffdays * $discounted_val / $month_days;
+							$partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
+							$partial_datefrom = $prevperiod;
+							if ($data['at'] < $dom)
+								$partial_at = $data['at'];
+							else
+								$partial_at = $dom - 1;
+
+							$args = array(
+								SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : $tariffid,
+								SYSLOG::RES_CUST    => $data['customerid'],
+								'period'            => $period,
+								'at'                => $partial_at,
+								'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+								'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+								'settlement'        => 0,
+								SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+								'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+								'datefrom'          => $partial_datefrom,
+								'dateto'            => $data['dateto'],
+								'pdiscount'         => 0,
+								'vdiscount'         => $partial_vdiscount,
+								'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+								SYSLOG::RES_LIAB    => null,
+								'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+								'docid'				=> empty($data['docid']) ? null : $data['docid'],
+								'commited'			=> $commited,
+							);
+
+							$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+							$this->insertNodeAssignments($data);
+							$this->insertPhoneAssignments($data);
+						}
+
+						$ending_period_date = mktime(23, 59, 59, $month, 0, $year);
+					}
+
+					if (!$ending_period_date || $ending_period_end > $datefrom) {
+						// creates assignment record for schema period
+						$args = array(
+							SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
+							SYSLOG::RES_CUST => $data['customerid'],
+							'period' => $period,
+							'at' => $at,
+							'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
+							'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+							'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && $idx == 1 ? 1 : 0,
+							SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+							'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
+							'datefrom' => $idx ? $datefrom : 0,
+							'dateto' => $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date,
+							'pdiscount' => 0,
+							'vdiscount' => 0,
+							'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
+							SYSLOG::RES_LIAB => empty($lid) ? null : $lid,
+							'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+							'docid' => empty($data['docid']) ? null : $data['docid'],
+							'commited' => $commited,
+						);
+
+						$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+						$this->insertNodeAssignments($data);
+						$this->insertPhoneAssignments($data);
+					}
 				}
 
                 if ($idx) {
@@ -518,8 +581,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
         } else {
-			// creates assignment record for partial period
-			if (isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
+			if ($data['period'] == MONTHLY && ((isset($data['settlement']) && $data['settlement'] == 2) || isset($data['last-settlement']))) {
 				if (empty($data['tariffid']))
 					$val = $data['value'];
 				else {
@@ -552,31 +614,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					$discounted_val = ((100 - $data['pdiscount']) * $val) / 100;
 				elseif (!empty($data['vdiscount']))
 					$discounted_val -= $data['vdiscount'];
+			}
 
+			// creates assignment record for starting partial period
+			if (isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
 				list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
-				$nextat = mktime(0, 0, 0, $month + 1, $data['at'], $year);
-				$diffdays = sprintf("%d", ($nextat - $data['datefrom'] - 86400) / 86400);
+				$nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
+				$partial_dateto = $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
+				$diffdays = ($partial_dateto - $data['datefrom']) / 86400;
 				if ($diffdays > 0) {
-					list ($y, $m, $d) = explode('/', date('Y/m/d', $nextat));
+					list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
 					$month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
-					$value = 0;
-					while ($diffdays) {
-						if ($d - $diffdays <= 0) {
-							$value += ($d - 1) * $discounted_val / $month_days;
-							$diffdays -= ($d - 1);
-						} else {
-							$value += $diffdays * $discounted_val / $month_days;
-							$diffdays = 0;
-						}
-						$date = mktime(0, 0, 0, $m, 0, $y);
-						$month_days = strftime("%d", $date);
-						$d = $month_days + 1;
-						$m = strftime("%m", $date);
-						$y = strftime("%Y", $date);
-					}
-					$partial_dateto = $nextat - 1;
+					$value = $diffdays * $discounted_val / $month_days;
 					$partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
-					$partial_at = $dom + 1;
+					$partial_dateto--;
+					if ($data['at'] >= $dom + 1)
+						$partial_at = $data['at'];
+					else
+						$partial_at = $dom + 1;
 
 					if (!empty($data['value'])) {
 						$args = array(
@@ -625,49 +680,113 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				}
 			}
 
-			// creates one assignment record
-            if (!empty($data['value'])) {
-                $args = array(
-                    'name' => $data['name'],
-                    'value' => str_replace(',', '.', $data['value']),
-                    SYSLOG::RES_TAX => intval($data['taxid']),
-                    'prodid' => $data['prodid']
-                );
-                $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
+			// creates assignment record for ending partial period
+			if ($data['datefrom'] < $data['dateto'] && isset($data['last-settlement']) && $data['period'] == MONTHLY) {
+				list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
+				$prevperiod = mktime(0, 0, 0, $month, 1, $year);
+				$diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
+				if ($diffdays > 0) {
+					$month_days = strftime("%d", mktime(0, 0, 0, $month + 1, 0, $year));
+					$value = $diffdays * $discounted_val / $month_days;
+					$partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
+					$partial_datefrom = $prevperiod;
+					if ($data['at'] < $dom)
+						$partial_at = $data['at'];
+					else
+						$partial_at = $dom - 1;
+
+					if (!empty($data['value'])) {
+						$args = array(
+							'name' => $data['name'],
+							'value' => str_replace(',', '.', $data['value']),
+							SYSLOG::RES_TAX => intval($data['taxid']),
+							'prodid' => $data['prodid']
+						);
+						$this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
 					    VALUES (?, ?, ?, ?)', array_values($args));
-                $lid = $this->db->GetLastInsertID('liabilities');
-                if ($this->syslog) {
-                    $args[SYSLOG::RES_LIAB] = $lid;
-                    $args[SYSLOG::RES_CUST] = $data['customerid'];
-                    $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
-                }
-            }
+						$lid = $this->db->GetLastInsertID('liabilities');
+						if ($this->syslog) {
+							$args[SYSLOG::RES_LIAB] = $lid;
+							$args[SYSLOG::RES_CUST] = $data['customerid'];
+							$this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
+						}
+					}
 
-            $args = array(
-                SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
-                SYSLOG::RES_CUST    => $data['customerid'],
-                'period'            => $data['period'],
-                'at'                => $data['at'],
-                'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
-                'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
-                'settlement'        => !isset($data['settlement']) || $data['settlement'] != 1 ? 0 : 1,
-                SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                'datefrom'          => $data['datefrom'],
-                'dateto'            => $data['dateto'],
-                'pdiscount'         => str_replace(',', '.', $data['pdiscount']),
-                'vdiscount'         => str_replace(',', '.', $data['vdiscount']),
-                'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
-                'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
-				'docid'				=> empty($data['docid']) ? null : $data['docid'],
-                'commited'			=> $commited,
-            );
+					$args = array(
+						SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
+						SYSLOG::RES_CUST    => $data['customerid'],
+						'period'            => $data['period'],
+						'at'                => $partial_at,
+						'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
+						'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
+						'settlement'        => 0,
+						SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+						'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+						'datefrom'          => $partial_datefrom,
+						'dateto'            => $data['dateto'],
+						'pdiscount'         => 0,
+						'vdiscount'         => $partial_vdiscount,
+						'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+						SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
+						'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+						'docid'				=> empty($data['docid']) ? null : $data['docid'],
+						'commited'			=> $commited,
+					);
 
-            $result[] = $data['assignmentid'] = $this->insertAssignment($args);
+					$result[] = $data['assignmentid'] = $this->insertAssignment($args);
 
-            $this->insertNodeAssignments($data);
-			$this->insertPhoneAssignments($data);
+					$this->insertNodeAssignments($data);
+					$this->insertPhoneAssignments($data);
+
+					$data['dateto'] = $partial_datefrom - 1;
+				}
+			}
+
+			if ($data['datefrom'] < $data['dateto']) {
+				// creates one assignment record
+				if (!empty($data['value'])) {
+					$args = array(
+						'name' => $data['name'],
+						'value' => str_replace(',', '.', $data['value']),
+						SYSLOG::RES_TAX => intval($data['taxid']),
+						'prodid' => $data['prodid']
+					);
+					$this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
+							VALUES (?, ?, ?, ?)', array_values($args));
+					$lid = $this->db->GetLastInsertID('liabilities');
+					if ($this->syslog) {
+						$args[SYSLOG::RES_LIAB] = $lid;
+						$args[SYSLOG::RES_CUST] = $data['customerid'];
+						$this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
+					}
+				}
+
+				$args = array(
+					SYSLOG::RES_TARIFF => empty($data['tariffid']) ? null : intval($data['tariffid']),
+					SYSLOG::RES_CUST => $data['customerid'],
+					'period' => $data['period'],
+					'at' => $data['at'],
+					'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
+					'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
+					'settlement' => !isset($data['settlement']) || $data['settlement'] != 1 ? 0 : 1,
+					SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+					'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
+					'datefrom' => $data['datefrom'],
+					'dateto' => $data['dateto'],
+					'pdiscount' => str_replace(',', '.', $data['pdiscount']),
+					'vdiscount' => str_replace(',', '.', $data['vdiscount']),
+					'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
+					SYSLOG::RES_LIAB => !isset($lid) || empty($lid) ? null : $lid,
+					'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+					'docid' => empty($data['docid']) ? null : $data['docid'],
+					'commited' => $commited,
+				);
+
+				$result[] = $data['assignmentid'] = $this->insertAssignment($args);
+
+				$this->insertNodeAssignments($data);
+				$this->insertPhoneAssignments($data);
+			}
         }
 
         return $result;

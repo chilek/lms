@@ -250,7 +250,8 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to select invoice duplicate date manually [chilan]
   - devel/cleanup: calendar, calendar-time css classes renamed to lms-ui-date, lms-ui-datetime
     respectively [chilan]
-  - improvement: allow lms-payments.php script to set aligned partial periods for invoice items
+  - enhancement: assignment last defficient period support [chilan]
+  - enchancement: allow lms-payments.php script to set aligned partial periods for invoice items
     (added special symbol %aligned_partial_period) [ravvar]
 
 version 1.11.23 (2018-03-21):

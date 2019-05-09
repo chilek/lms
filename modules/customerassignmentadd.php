@@ -111,6 +111,7 @@ else
 	$default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
 	if (!empty($default_assignment_settlement))
 		$a['settlement'] = true;
+	$a['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
 	$default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
 	if (!empty($default_assignment_period))
 		$a['period'] = $default_assignment_period;

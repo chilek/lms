@@ -2020,6 +2020,7 @@ $_LANG['income/expense'] = 'przychód/rozchód';
 $_LANG['Liability'] = 'Zobowiązanie';
 $_LANG['Options:'] = 'Opcje:';
 $_LANG['with settlement of first deficient period'] = 'z wyrównaniem początkowego okresu niepełnego';
+$_LANG['with settlement of last deficient period'] = 'z wyrównaniem końcowego okresu niepełnego';
 $_LANG['document number'] = 'numer dokumentu';
 $_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS!'] = 'Wprowadź numer dokumentu. UWAGA! Zmiana tego numeru może być niebezpieczna!';
 $_LANG['continuously'] = 'ciągle';
