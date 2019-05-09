@@ -114,7 +114,7 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 			$found = true;
 			$result->script('
 				$("' . $latitude_selector . '").val("' . $buildings[0]['latitude'] . '");
-				$("' . $longitude_selector . '").val("' . $buildings[1]['longitude'] . '");
+				$("' . $longitude_selector . '").val("' . $buildings[0]['longitude'] . '");
 			');
 		}
 
