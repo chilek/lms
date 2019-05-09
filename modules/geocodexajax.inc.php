@@ -91,11 +91,12 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
 					$result->script('
 						var longitude = "' . $geocode['longitude'] . '";
 						var latitude = "' . $geocode['latitude'] . '";
-						if (confirm($t("Determined gps coordinates are not precise.\nDo you still want to use them?")) {
+						if (confirm($t("Determined gps coordinates are not precise.\nDo you still want to use them?"))) {
 							$("' . $latitude_selector . '").val(latitude);
 							$("' . $longitude_selector . '").val(longitude);
 						}'
 					);
+					break;
 				}
 			}
 		} elseif ($provider == 'siis' && isset($address) && isset($address['city_id'])
