@@ -250,6 +250,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to select invoice duplicate date manually [chilan]
   - devel/cleanup: calendar, calendar-time css classes renamed to lms-ui-date, lms-ui-datetime
     respectively [chilan]
+  - enhancement: assignment last defficient period support [chilan]
 
 version 1.11.23 (2018-03-21):
 
