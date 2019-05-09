@@ -19,7 +19,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -95,7 +95,7 @@ if (!$quiet)
 	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
 if (!is_readable($CONFIG_FILE))
-	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
+	die('Unable to read configuration file ['.$CONFIG_FILE.']!');
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -218,6 +218,16 @@ $forward_aligned_periods = array(
 	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
 	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
 	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month,   0, $year+1)),
+	DISPOSABLE => $forward_periods[DISPOSABLE],
+);
+
+$forward_aligned_partial_start_periods = array(
+	DAILY      => $forward_periods[DAILY],
+	WEEKLY     => $forward_periods[WEEKLY],
+	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
+	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
+	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month,   0, $year+1)),
 	DISPOSABLE => $forward_periods[DISPOSABLE],
 );
 
@@ -373,7 +383,7 @@ if (!empty($assigns))
 
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
-		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount,
+		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
 		a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
@@ -713,6 +723,31 @@ foreach ($assigns as $assign) {
 	$desc = preg_replace("/\%period/"                  , $forward_periods[$p]         , $desc);
 	$desc = preg_replace("/\%aligned_period/"          , $forward_aligned_periods[$p] , $desc);
 
+	$dayfrom = explode("/", date(preg_replace("/\%/", "", $date_format), $assign['datefrom']));
+	if ($assign['dateto']) {
+		$dayto = explode("/", date(preg_replace("/\%/", "", $date_format), $assign['dateto']));
+		$dayto_nextday = explode("/", date(preg_replace("/\%/", "", $date_format), $assign['dateto']+1));
+	}
+	if (intval($dayfrom[2]) != 1) {
+		$desc = preg_replace("/\%aligned_partial_period/"  , $forward_aligned_partial_start_periods[$p] , $desc);
+	} else {
+		if (isset($dayto) && isset($dayto_nextday) && intval($dayto_nextday[2]) != 1) {
+			$forward_aligned_partial_end_periods = array(
+				DAILY      => $forward_periods[DAILY],
+				WEEKLY     => $forward_periods[WEEKLY],
+				MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, intval($dayto[2]), $year)),
+				QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, intval($dayto[2]), $year)),
+				HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, intval($dayto[2]), $year)),
+				YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month,   intval($dayto[2]), $year+1)),
+				DISPOSABLE => $forward_periods[DISPOSABLE],
+			);
+			$desc = preg_replace("/\%aligned_partial_period/"  , $forward_aligned_partial_end_periods[$p] , $desc);
+			unset($forward_aligned_partial_end_periods);
+		} else {
+			$desc = preg_replace("/\%aligned_partial_period/"  , $forward_aligned_periods[$p] , $desc);
+		}
+	}
+
 	// for phone calls
     if (isset($assign['phones']))
         $desc = preg_replace('/\%phones/', $assign['phones'], $desc);
@@ -839,7 +874,7 @@ foreach ($assigns as $assign) {
 					($division['zip'] ? $division['zip'] : ''),
 					($division['countryid'] ? $division['countryid'] : null),
 					($division['ten'] ? $division['ten'] : ''),
-					($division['regon'] ? $division['regon'] : ''), 
+					($division['regon'] ? $division['regon'] : ''),
 					($division['account'] ? $division['account'] : ''),
 					($division['inv_header'] ? $division['inv_header'] : ''),
 					($division['inv_footer'] ? $division['inv_footer'] : ''),
