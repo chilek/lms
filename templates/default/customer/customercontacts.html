@@ -1,12 +1,23 @@
 <!--// $Id$ //-->
+
+<style>
+
+	.contacts .contact:not(:last-child) > td {
+		padding-bottom: 0.5em;
+	}
+
+	.contacts .contact:not(:first-child) > td {
+		border-top: 1px solid black;
+	}
+
+</style>
+
 <SCRIPT type="text/javascript">
 <!--
 	function newcontact(type) {
 		var table = $('table.contacts[data-type="' + type + '"]');
-		var innerHTML = '<tr><td class="nobr">';
+		var innerHTML = '<tr class="contact"><td class="nobr">';
 		var nr = $('tr', table).length - 1;
-		if (nr)
-			innerHTML += '<HR>';
 		innerHTML += '<table class="lmsbox-inner"><tr><td>';
 		switch (type) {
 			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
@@ -27,7 +38,9 @@
 			{/foreach}
 		}
 		innerHTML += '</td></tr></table>';
-		innerHTML += '</td></tr>';
+		innerHTML += '</td>';
+		innerHTML += '<td>' + $('#delete-contact-template').html() + '</td>';
+		innerHTML += '</tr>';
 		table.append(innerHTML);
 		$('[title]', table).tooltip({
 			position: { my: "left top" }
@@ -52,9 +65,8 @@
 			</legend>
 			<table class="contacts" data-type="{$type}">
 				{foreach $customerinfo[$ctype] as $key => $item}
-				<TR>
+				<TR class="contact">
 					<TD>
-						{if !$item@first}<HR>{/if}
 						<table class="lmsbox-inner">
 							<TR>
 								<TD>
@@ -84,6 +96,9 @@
 							</TR>
 						</table>
 					</TD>
+					<TD>
+						{button icon="delete" class="delete-contact"}
+					</TD>
 				</TR>
 				{/foreach}
 				<TR class="newcontact">
@@ -95,17 +110,24 @@
 		</fieldset>
 	</TD>
 </TR>
+<div id="delete-contact-template" style="display: none;">
+	{button icon="delete" class="delete-contact"}
+</div>
 {/foreach}
-<script type="text/javascript">
-<!--
+<script>
+
 	$('.contacttype-show').click(function() {
 		var contacts = $(this).parent().hide().siblings('.contacttype-visible').show().find('.contacts');
 		if (!contacts.find('> tbody > tr:not(.newcontact)').length) {
 			newcontact(contacts.attr('data-type'));
 		}
 	});
+
 	$('.contacttype-hide').click(function() {
 		$(this).closest('fieldset').hide().siblings('.contacttype-hidden').show();
 	});
-//-->
+
+	$('.contacts').on('click', '.delete-contact', function() {
+		$(this).closest('tr').remove();
+	});
 </script>
