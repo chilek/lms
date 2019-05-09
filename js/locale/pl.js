@@ -1873,7 +1873,6 @@ $_LANG['Credit note number $a already exists!'] = 'Faktura korygująca numer $a 
 $_LANG['Credit note number must be integer!'] = 'Numer faktury korygującej musi być liczbą całkowitą!';
 $_LANG['Enter credit note number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)'] = 'Wprowadź numer faktury korygującej. UWAGA! Zmiana tego numeru może być NIEBEZPIECZNA! (pozostaw to pole puste aby uzyskać kolejny numer)';
 $_LANG['for Invoice No. $a'] = 'do Faktury nr $a';
-$_LANG['for Credit Note No. $a'] = 'do Korekty nr $a';
 $_LANG['Recover this item'] = 'Przywróć tę pozycję';
 $_LANG['Recover'] = 'Przywróć';
 $_LANG['Remove this item'] = 'Usuń tę pozycję';
@@ -2023,6 +2022,7 @@ $_LANG['income/expense'] = 'przychód/rozchód';
 $_LANG['Liability'] = 'Zobowiązanie';
 $_LANG['Options:'] = 'Opcje:';
 $_LANG['with settlement of first deficient period'] = 'z wyrównaniem początkowego okresu niepełnego';
+$_LANG['with settlement of last deficient period'] = 'z wyrównaniem końcowego okresu niepełnego';
 $_LANG['document number'] = 'numer dokumentu';
 $_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS!'] = 'Wprowadź numer dokumentu. UWAGA! Zmiana tego numeru może być niebezpieczna!';
 $_LANG['continuously'] = 'ciągle';
@@ -4341,4 +4341,9 @@ $_LANG['Reply with quoting'] = 'Odpowiedz cytując';
 $_LANG['<!vocative>Reply'] = 'Odpowiedz';
 
 $_LANG['Unable to determine gps coordinates!'] = 'Nie można wyznaczyć współrzędnych GPS!';
+
+$_LANG['representative'] = 'reprezentant';
+$_LANG['Representatives'] = 'Reprezentanci';
+$_LANG['Enter representative name (optional)'] = 'Wprowadź nazwę reprezentanta (opcjonalnie)';
+$_LANG['Check if representative should be disabled'] = 'Zaznacz jeśli reprezentant ma zostać wyłączony';
 

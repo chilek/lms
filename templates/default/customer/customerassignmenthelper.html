@@ -461,6 +461,13 @@
 							</SELECT>
 							{/if}
 						</label>
+						{if !$variables.id}
+						<br>
+						<label>
+							<INPUT type="checkbox" name="{$variable_prefix}[last-settlement]" value="1"{if $variables['last-settlement']} checked{/if}>
+							{trans("with settlement of last deficient period")}
+						</label>
+						{/if}
 					</TD>
 				</TR>
 
