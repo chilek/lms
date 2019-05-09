@@ -737,9 +737,9 @@ foreach ($assigns as $assign) {
 			$forward_aligned_partial_end_periods = array(
 				DAILY      => $forward_periods[DAILY],
 				WEEKLY     => $forward_periods[WEEKLY],
-				MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, intval($dayto[2]), $year)),
-				QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, intval($dayto[2]), $year)),
-				HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, intval($dayto[2]), $year)),
+				MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month, intval($dayto[2]), $year)),
+				QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+2, intval($dayto[2]), $year)),
+				HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+5, intval($dayto[2]), $year)),
 				YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month,   intval($dayto[2]), $year+1)),
 				DISPOSABLE => $forward_periods[DISPOSABLE],
 			);
