@@ -280,7 +280,7 @@
 							{/if}
 						{/if}
 						<INPUT type="checkbox" form="addbalance-form"
-								NAME="marks{if $aggregate_documents}{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_INVOICE_PRO || $item.doctype == $smarty.const.DOC_CNOTE}[invoice][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_RECEIPT}[receipt][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_DNOTE}[note][{$item.docid}]{/if}{else}{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]{/if}"
+								NAME="marks{if $aggregate_documents}{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_INVOICE_PRO || $item.doctype == $smarty.const.DOC_CNOTE}[invoice][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_RECEIPT}[receipt][{$item.docid}]{elseif $item.doctype == $smarty.const.DOC_DNOTE}[note][{$item.docid}]{/if}{else}{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}{/if}[{$item.id}]"
 								value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
