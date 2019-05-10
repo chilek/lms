@@ -43,7 +43,7 @@ function DBLoad($filename=NULL)
 	$DB->BeginTrans(); // przyspieszmy działanie jeżeli baza danych obsługuje transakcje
 	while(!feof($file))
 	{
-		$line = fgets($file, 8192);
+		$line = fgets($file);
 		if($line!='')
 		{
 			$line = str_replace(";\n", '', $line);
