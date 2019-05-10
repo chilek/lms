@@ -4335,7 +4335,7 @@ $_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
 $_LANG['<!message-type>message'] = 'wiadomość';
 $_LANG['<!message-type>note'] = 'notatka';
 
-$_LANG['Reply with quoting'] = 'Odpowiedz cytując';
+$_LANG['Quote'] = 'Cytuj';
 $_LANG['<!vocative>Reply'] = 'Odpowiedz';
 
 $_LANG['Unable to determine gps coordinates!'] = 'Nie można wyznaczyć współrzędnych GPS!';

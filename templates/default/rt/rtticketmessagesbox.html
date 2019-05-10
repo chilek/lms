@@ -86,7 +86,7 @@
 							{/if}
 							{if $ticket.state != $smarty.const.RT_RESOLVED}
 								{button icon="lms-ui-icon-reply" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}';" label="<!vocative>Reply"}
-								{button icon="lms-ui-icon-quoting" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Reply with quoting"}
+								{button icon="lms-ui-icon-quoting" onclick="location.href = '?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}&citing=1';" label="Quote"}
 							{/if}
 						{/if}
 					</TD>
