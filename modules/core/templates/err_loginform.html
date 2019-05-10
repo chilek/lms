@@ -20,7 +20,7 @@
 					<td align="center" class="loginform light" width="300">
 						<b>{t}LMS version{/t} {$layout.lmsv} ({$layout.lmsvr})<br><br>
 						&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</b><br><br><br>
-						{if $error}<font class="alert bold">{$error}</font>{else}&nbsp;{/if}<br>
+						{if $error}<span class="alert bold">{$error}</span>{else}&nbsp;{/if}<br>
 						<br>
 						<form method="post" name="loginform" action="{$target}">
 						<INPUT type="submit" class="hiddenbtn">
@@ -56,8 +56,8 @@
 						<br>
 						<br>
 						<br>
-						<a href="doc/html/{$_ui_language}/"><font class="blend">{t}Documentation{/t}</font></a><br>
-						<a href="http://www.lms.org.pl/"><font class="blend">{t}LMS Project Homepage{/t}</font></a>
+						<a href="doc/html/{$_ui_language}/"><span class="blend">{t}Documentation{/t}</span></a><br>
+						<a href="http://www.lms.org.pl/"><span class="blend">{t}LMS Project Homepage{/t}</span></a>
 					</td>
 				</tr>
 				{if $layout.dberrors}

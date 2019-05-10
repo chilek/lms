@@ -2,7 +2,7 @@
 <tr>
 	<td class="click-menu" style="border-bottom-style: dashed; border-bottom-width: 1pt;">
 		<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{t}Are you sure that you want to logout?{/t}')) { return self.location.href='?m=core&a=logout&is_sure=1'; } ">
-		<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><NOBR><font style="margin-left: 21px">{t}Logout{/t} {$layout.logname|truncate:10:"..."}</font></NOBR></div>
+		<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><span class="nobr" style="margin-left: 21px">{t}Logout{/t} {$layout.logname|truncate:10:"..."}</span></div>
 		</div>
 	</td>
 </tr>

@@ -32,7 +32,7 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 			<P><DIV ALIGN="CENTER"><CENTER>
 			<H2>{trans("Please to fill following form with customer ID and PIN which was sent to your email.")}</H2>
 			{if $error}
-				<FONT COLOR="red"><B>{trans("Errornous data was entered!")}</B></FONT><BR>
+				<span style="color: red;"><B>{trans("Errornous data was entered!")}</B></span><BR>
 			{/if}
 			<P><FORM METHOD="POST" NAME="loginform" ACTION="balanceview.php">
 				<B>{trans("ID:")}</B><BR>
@@ -46,7 +46,7 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 			<BR>
 			<BR>
 			<BR>
-			<A HREF="http://www.lms.org.pl"><FONT COLOR="#666666">{trans("home page")}</FONT></A>
+			<A HREF="http://www.lms.org.pl"><span style="color: #666666;">{trans("home page")}</span></A>
 			</P>
 		</TD>
 	</TR>

@@ -21,7 +21,7 @@
 			{else}
 			{trans("Proof of Payment")}
 			{/if}
-			<br><font class="sdr">{trans("Receipt")}</font>
+			<br><span class="sdr">{trans("Receipt")}</span>
 		</td>
 		<td colspan="2" width="32%" class="ftopu shdf" align="center">
 			{if $receipt.type == "out"}{trans("CR-out")}{else}{trans("CR-in")}{/if}
@@ -60,11 +60,11 @@
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
 			{if $receipt.type == "out"}{trans("Has")}{else}{trans("Owing")}{/if}
-			<br><font class="sdr">{trans("Cash")}</font>
+			<br><span class="sdr">{trans("Cash")}</span>
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
 			{if $receipt.type == "out"}{trans("Owing")}{else}{trans("Has")}{/if}
-			<br><font class="sdr">{trans("Account<!singular:noun>")}</font>
+			<br><span class="sdr">{trans("Account<!singular:noun>")}</span>
 		</td>
 	</tr>
 	<tr class="grey">
@@ -150,7 +150,7 @@
 	</tr>
 	<tr>
 		<td colspan="6" align="right">
-			<font class="small">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</font>
+			<span class="small">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</span>
 		</td>
 	</tr>
 </table>
@@ -181,7 +181,7 @@
 			{else}
 			{trans("Proof of Payment")}
 			{/if}
-			<br><font class="sdr">{trans("Receipt")}</font>
+			<br><span class="sdr">{trans("Receipt")}</span>
 		</td>
 		<td colspan="2" width="32%" class="ftopu shdf" align="center">
 			{if $receipt.type == "out"}{trans("CR-out")}{else}{trans("CR-in")}{/if}
@@ -220,11 +220,11 @@
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
 			{if $receipt.type == "out"}{trans("Has")}{else}{trans("Owing")}{/if}
-			<br><font class="sdr">{trans("Cash")}</font>
+			<br><span class="sdr">{trans("Cash")}</span>
 		</td>
 		<td width="16%" align="center" class="fall headgrey hdf" nowrap>
 			{if $receipt.type == "out"}{trans("Owing")}{else}{trans("Has")}{/if}
-			<br><font class="sdr">{trans("Account<!singular:noun>")}</font>
+			<br><span class="sdr">{trans("Account<!singular:noun>")}</span>
 		</td>
 	</tr>
 	<tr class="grey">
@@ -308,7 +308,7 @@
 	</tr>
 	<tr>
 		<td colspan="6" align="right">
-			<font class="small">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</font>
+			<span class="small">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</span>
 		</td>
 	</tr>
 </table>

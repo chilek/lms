@@ -7,10 +7,10 @@
 		<td width="100%" COLSPAN="3">
 {/if}
 {if $error.ssn}
-			<CENTER><strong><FONT COLOR="red">{trans("Incorrect Social Security Number!")}</FONT></strong></CENTER>
+			<span class="text-center bold" style="color: red;">{trans("Incorrect Social Security Number!")}</span>
 {/if}
 {if $error.ten}
-			<CENTER><strong><FONT COLOR="red">{trans("Incorrect Tax Exempt Number!")}</FONT></strong></CENTER>
+			<span class="text-center bold" style="color: red;">{trans("Incorrect Tax Exempt Number!")}</span>
 {/if}
 {if $error}
 		</td>

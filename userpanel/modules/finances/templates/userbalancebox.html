@@ -26,7 +26,7 @@
 		<td width="1%" class="nobr">{$item.date}</td>
 		<td width="1%" align="right" class="nobr">{if $item.value > 0 && $item.type != 4}+{/if}{if $item.type == 4}-{/if}{$item.value|money_format}</td>
 		<td width="1%" align="center">&raquo;</td>
-		<td width="1%" align="right" class="nobr">{if $item.after < 0}<font color="red">{/if}{$item.after|money_format}{if $item.after < 0}</font>{/if}</td>
+		<td width="1%" align="right" class="nobr">{if $item.after < 0}<span style="color: red;">{/if}{$item.after|money_format}{if $item.after < 0}</span>{/if}</td>
 		<td width="95%">{$item.comment}</td>
 		{if !$disable_invoices}
 		<td width="1%" class="nobr">

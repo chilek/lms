@@ -4,7 +4,7 @@
 {if $fields_changed}
 	<tr>
 		<td width="100%" colspan="3">
-			<CENTER><strong><FONT COLOR="red">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}</FONT></strong></CENTER>
+			<span class="text-center bold" style="color: red;">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}</span>
 		</td>
 	</tr>
 {/if}
@@ -112,7 +112,7 @@
 			<strong>{trans("Balance:")}</strong>
 		</td>
 		<td width="98%">
-			{if $userinfo.balance < 0}<font color="red"><strong>{$userinfo.balance|money_format}</strong></font>{else}{$userinfo.balance|money_format}{/if}
+			{if $userinfo.balance < 0}<span class="bold" style="color: red;">{$userinfo.balance|money_format}</span>{else}{$userinfo.balance|money_format}{/if}
 		</td>
 	</tr>
 {if $userinfo.bankaccount || $userinfo.accounts}

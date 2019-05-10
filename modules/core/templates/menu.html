@@ -15,7 +15,7 @@
 		<tr>
 			<td class="click-menu">
 				<div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
-					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
+					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><span style="margin-left: 21px">{$menuitem.name}</span></div>
 				</div>
 				<div class="section">
 				{if $menuitem.submenu}
@@ -71,7 +71,7 @@
 			<td nowrap align="center"><br><A href="?m=core&a=copyrights">&copy; 2001-{$smarty.now|date_format:'%Y'}<br>LMS Developers</A></td>
 		</tr>
 		<tr>
-			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>({$layout.lmsvr})<br>DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>
+			<td nowrap align="center"><span style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>({$layout.lmsvr})<br>DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></span>&nbsp;<br>&nbsp;<br></td>
 		</tr>
 	</table>
 	<script type="text/javascript">

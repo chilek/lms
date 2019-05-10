@@ -58,7 +58,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<span class="bold">{$nodelist[nodelist].name}</span></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<span class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
 		</TD>
 		<TD class="valign-top nobr">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>

@@ -18,7 +18,7 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			{if $customerinfo.balance < 0}<FONT COLOR="RED"><H2>{t a=($customerinfo.balance*-1)|money_format b=$customerinfo.id}We are please for punctual payment in value: <B>$a</B> with comment: $b{/t}</FONT></H2>{elseif $customerinfo.balance > 0}{t a=$customerinfo.balance|money_format}You have overpayments on value: $a, they will be moved as payments for future subscriptions or services.{/t}{else}{trans("You have no outstandings towards as.")}{/if}
+			{if $customerinfo.balance < 0}<span style="color: red;"><H2>{t a=($customerinfo.balance*-1)|money_format b=$customerinfo.id}We are please for punctual payment in value: <B>$a</B> with comment: $b{/t}</span></H2>{elseif $customerinfo.balance > 0}{t a=$customerinfo.balance|money_format}You have overpayments on value: $a, they will be moved as payments for future subscriptions or services.{/t}{else}{trans("You have no outstandings towards as.")}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
