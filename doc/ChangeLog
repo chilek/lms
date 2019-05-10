@@ -254,6 +254,7 @@ version ?.??.?? (????-??-??):
   - enchancement: allow lms-payments.php script to set aligned partial periods for invoice items
     (added special symbol %aligned_partial_period) [ravvar]
   - improvement: added delete and clear contact buttons [chilan]
+  - improvement: added jquery based confirmation dialog [chilan]
 
 version 1.11.23 (2018-03-21):
 

@@ -29,6 +29,9 @@
 {if $layout.popup}
 	{block name=module_content}{/block}
 {else}
+	{block name="confirm-dialog"}
+		{include file="confirm-dialog.html"}
+	{/block}
 	{block name=pageleftbar}
 		{include file="menu-panel.html"}
 	{/block}

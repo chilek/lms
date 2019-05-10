@@ -128,9 +128,10 @@
 								{if !$item.cancelled && !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
-											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
-												window.open($(this).attr('href'));
-											}
+											confirmDialog(this, $t('Document has been published already! Are you sure you want to edit it despite this?'),
+												function() {
+													window.open($(this).attr('href'));
+												});
 										{else}
 											window.open($(this).attr('href'));
 										{/if}
@@ -163,9 +164,10 @@
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
-											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
-												window.open($(this).attr('href'));
-											}
+											confirmDialog(this, $t('Document has been published already! Are you sure you want to edit it despite this?'),
+												function() {
+													window.open($(this).attr('href'));
+												});
 										{else}
 											window.open($(this).attr('href'));
 										{/if}
@@ -222,9 +224,10 @@
 								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
-											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
-												window.open($(this).attr('href'));
-											}
+											confirmDialog(this, $t('Document has been published already! Are you sure you want to edit it despite this?'),
+												function() {
+													window.open($(this).attr('href'));
+												});
 										{else}
 											window.open($(this).attr('href'));
 										{/if}
@@ -245,9 +248,10 @@
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
-											if (confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'))) {
-												window.open($(this).attr('href'));
-											}
+											confirmDialog(this, $t('Document has been published already! Are you sure you want to edit it despite this?'),
+												function() {
+													window.open($(this).attr('href'));
+												});
 										{else}
 											window.open($(this).attr('href'));
 										{/if}
@@ -555,44 +559,40 @@
 			{/if}
 		}
 
-		if (!confirm($t("Are you sure, you want to delete selected operation(s) and document item(s)?")))
-			return;
-
-		document.addbalance.action="?m=balancedel";
-		document.addbalance.target="";
-		document.addbalance.submit();
+		confirmDialog(null, $t("Are you sure, you want to delete selected operation(s) and document item(s)?"),
+			function() {
+				document.addbalance.action = "?m=balancedel";
+				document.addbalance.target = "";
+				document.addbalance.submit();
+			});
 	}
 	{/if}
 
 	$('.invoicesend').click(function(e) {
-		if (confirm($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'))) {
-			window.open($(this).attr('href'));
-		}
+		confirmDialog(this, $t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'),
+			function() {
+				window.open($(this).attr('href'));
+			});
 		e.preventDefault();
 	});
 
 	$('.multiinvoicesend').click(function() {
-		if (confirm($t("Are you sure, you want to send invoices to customer?"))) {
-			send_invoices();
-		}
+		confirDialog(null, $t("Are you sure, you want to send invoices to customer?"), send_invoices);
 	});
 
 	$('.multiinvoicearchive').click(function() {
-		if (confirm($t("Are you sure, you want to archive selected documents?"))) {
-			archive_invoices();
-		}
+		confirmDialog(null, $t("Are you sure, you want to archive selected documents?"), archive_invoices);
 	});
 
 	$('.multiinvoiceunarchive').click(function() {
-		if (confirm($t("Are you sure, you want to unarchive selected documents?"))) {
-			unarchive_invoices();
-		}
+		confirmDialog(null, $t("Are you sure, you want to unarchive selected documents?"), unarchive_invoices);
 	});
 
 	$('#clear-account').click(function() {
-		if (confirm($t('Are you sure, you want to account ALL debts of customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'))) {
-			location.href = '?m=customerbalanceok&id={$customerinfo.id}';
-		}
+		confirmDialog(null, $t('Are you sure, you want to account ALL debts of customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'),
+			function() {
+				location.href = '?m=customerbalanceok&id={$customerinfo.id}';
+			});
 	});
 
 	$('#duplicate-checkbox').click(function() {

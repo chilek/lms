@@ -1,0 +1,45 @@
+<div id="lms-ui-confirm-dialog" class="lms-ui-dialog" title="{trans("<!dialog>Confirmation")}" style="display: none;">
+	<OL>
+		<LI class="message">
+		</LI>
+	</OL>
+</div>
+
+<script>
+
+	function confirmDialog(link, message, callback) {
+		$('#lms-ui-confirm-dialog .message').html(message.replace("\n", '<br>'));
+
+		var def = $.Deferred();
+		$('#lms-ui-confirm-dialog').dialog({
+			autoOpen: true,
+			modal: true,
+			resizable: false,
+			buttons: [
+				{
+					text: "{trans("OK")}",
+					icon: "ui-icon-check",
+					class: "lms-ui-button",
+					click: function() {
+						$( this ).dialog( "close" );
+						def.resolveWith(link);
+					}
+				},
+				{
+					text: "{trans("Cancel")}",
+					icon: "ui-icon-closethick",
+					class: "lms-ui-button",
+					click: function() {
+						$( this ).dialog( "close" );
+						def.rejectWith(link);
+					}
+				}
+			]
+		});
+
+		def.done(callback).always(function() {
+				$('#lms-ui-confirm-dialog').dialog('destroy');
+			});
+	}
+
+</script>
