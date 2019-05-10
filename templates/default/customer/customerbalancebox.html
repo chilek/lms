@@ -550,9 +550,16 @@
 	{
 		if ($('tr[data-published="1"] :checked').length) {
 			{if ConfigHelper::checkPrivilege('published_document_modification')}
-			if (!confirm($t("Some documents have been published already! Are you sure you want to delete them despite this?"))) {
-				return;
-			}
+			confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"),
+				function() {}).done(function() {
+					confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"),
+						function () {
+							document.addbalance.action = "?m=balancedel";
+							document.addbalance.target = "";
+							document.addbalance.submit();
+						});
+					});
+			return;
 			{else}
 			confirmDialog($t("Some documents have been published already!"));
 			return;
