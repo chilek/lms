@@ -742,7 +742,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				}
 			}
 
-			if ($data['datefrom'] < $data['dateto']) {
+			if ($data['datefrom'] < $data['dateto'] || !$date['from'] || !$data['dateto']) {
 				// creates one assignment record
 				if (!empty($data['value'])) {
 					$args = array(
