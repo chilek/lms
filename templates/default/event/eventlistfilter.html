@@ -34,7 +34,7 @@
 							<OPTION value="-1" {if is_array($filter.userid) && in_array('-1', $filter.userid)} selected{/if} data-exclusive>
 								<span class="brown">- {trans("unassigned")} -</span></OPTION>
 							{foreach $userlist as $user}
-								<OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.name|truncate:40:"...":true}</OPTION>
+								<OPTION value="{$user.id}"{if is_array($filter.userid) && in_array($user.id, $filter.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.rname|truncate:40:"...":true}</OPTION>
 							{/foreach}
 						</SELECT>
 						{trans("Privacy:")}
