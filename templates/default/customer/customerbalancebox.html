@@ -416,11 +416,11 @@
 
 	function AddBalance(with_receipt) {
 		if (document.forms['addbalance'].elements['addbalance[value]'].value == '') {
-			alert($t("Enter transaction value") + '!');
+			confirmDialog($t("Enter transaction value") + '!');
 			return;
 		}
 		if (document.forms['addbalance'].elements['addbalance[comment]'].value == '') {
-			alert($t("Enter transaction comment") + '!');
+			confirmDialog($t("Enter transaction comment") + '!');
 			return;
 		}
 		if (typeof(with_receipt) == 'boolean' && with_receipt)
@@ -554,7 +554,7 @@
 				return;
 			}
 			{else}
-			alert($t("Some documents have been published already!"));
+			confirmDialog($t("Some documents have been published already!"));
 			return;
 			{/if}
 		}
