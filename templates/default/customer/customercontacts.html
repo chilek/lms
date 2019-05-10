@@ -2,12 +2,26 @@
 
 <style>
 
-	.contacts .contact:not(:last-child) > td {
+	.customer-contacts .contacts .contact:not(:last-child) > td {
 		padding-bottom: 0.5em;
 	}
 
-	.contacts .contact:not(:first-child) > td {
+	.customer-contacts .contacts .contact:not(:first-child) > td {
 		border-top: 1px solid black;
+	}
+
+	.customer-contacts .contacts .contact-buttons {
+		display: flex;
+		flex-flow: column;
+	}
+
+	.customer-contacts .contacts .contact-buttons {
+		display: flex;
+		flex-flow: column;
+	}
+
+	.customer-contacts .contacts .contact-buttons > *:not(:first-child) {
+		margin-top: 0.2em;
 	}
 
 </style>
@@ -39,7 +53,7 @@
 		}
 		innerHTML += '</td></tr></table>';
 		innerHTML += '</td>';
-		innerHTML += '<td>' + $('#delete-contact-template').html() + '</td>';
+		innerHTML += '<td>' + $('#contact-button-template').html() + '</td>';
 		innerHTML += '</tr>';
 		table.append(innerHTML);
 		$('[title]', table).tooltip({
@@ -50,7 +64,7 @@
 //-->
 </SCRIPT>
 {foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
-<TR>
+<TR class="customer-contacts">
 	<TD style="width: 1%;" class="valign-top">
 		<i class="{$properties.ui.legend.icon}"></i>
 	</TD>
@@ -97,7 +111,10 @@
 						</table>
 					</TD>
 					<TD>
-						{button icon="delete" class="delete-contact"}
+						<div class="contact-buttons">
+							{button icon="trash" class="delete-contact" tip="Delete"}
+							{button icon="clear" class="clear-contact" tip="Clear"}
+						</div>
 					</TD>
 				</TR>
 				{/foreach}
@@ -110,8 +127,11 @@
 		</fieldset>
 	</TD>
 </TR>
-<div id="delete-contact-template" style="display: none;">
-	{button icon="delete" class="delete-contact"}
+<div id="contact-button-template" style="display: none;">
+	<div class="contact-buttons">
+		{button icon="trash" class="delete-contact" tip="Delete"}
+		{button icon="clear" class="clear-contact" tip="Clear"}
+	</div>
 </div>
 {/foreach}
 <script>
@@ -130,4 +150,15 @@
 	$('.contacts').on('click', '.delete-contact', function() {
 		$(this).closest('tr').remove();
 	});
+
+	$('.contacts').on('click', '.clear-contact', function() {
+		$(this).closest('tr').find('input').each(function() {
+			if ($(this).is(':checkbox')) {
+				$(this).prop('checked', false);
+			} else {
+				$(this).val('');
+			}
+		});
+	});
+
 </script>

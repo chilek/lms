@@ -1223,8 +1223,8 @@ li.lms-ui-suggestion-item {
 	}
 }
 
-.lms-ui-icon-delete,
-.lms-ui-icon-remove {
+.lms-ui-icon-clean,
+.lms-ui-icon-clear {
 	.fa-icon;
 	.fas;
 	.lms-ui-icon;
@@ -2217,10 +2217,18 @@ button,a,div {
 		}
 	}
 
+	&.lms-ui-button-clean,
+	&.lms-ui-button-clear {
+		& > i {
+			.lms-ui-icon-clear;
+		}
+	}
+
+	&.lms-ui-button-trash,
 	&.lms-ui-button-delete,
 	&.lms-ui-button-remove {
 		& > i {
-			.lms-ui-icon-delete;
+			.lms-ui-icon-trash;
 		}
 	}
 
