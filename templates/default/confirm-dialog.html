@@ -7,7 +7,7 @@
 
 <script>
 
-	function confirmDialog(link, message, callback) {
+	function confirmDialog(message, callback, context) {
 		$('#lms-ui-confirm-dialog .message').html(message.replace("\n", '<br>'));
 
 		var def = $.Deferred();
@@ -22,7 +22,7 @@
 					class: "lms-ui-button",
 					click: function() {
 						$( this ).dialog( "close" );
-						def.resolveWith(link);
+						def.resolveWith(context);
 					}
 				},
 				{
@@ -31,7 +31,7 @@
 					class: "lms-ui-button",
 					click: function() {
 						$( this ).dialog( "close" );
-						def.rejectWith(link);
+						def.rejectWith(context);
 					}
 				}
 			]
