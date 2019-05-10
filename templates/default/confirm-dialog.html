@@ -39,7 +39,13 @@
 			autoOpen: true,
 			modal: true,
 			resizable: false,
-			buttons: buttons
+			buttons: buttons,
+			open: function() {
+				var that = this;
+				$('.ui-widget-overlay').bind('click', function () {
+					$(that).dialog('close');
+				});
+			}
 		});
 
 		if (typeof(callback) !== 'undefined') {
