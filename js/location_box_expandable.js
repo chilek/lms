@@ -214,11 +214,11 @@ $(function() {
     /*!
      * \brief Remove address box.
      */
-    $('body').on('click', '.delete-location-box', function() {
-        if ( confirm($t('Are you sure that you want to remove address?')) == true ) {
-            getLocationBox(this).closest('tr').remove();
-        }
-    });
+	$('body').on('click', '.delete-location-box', function () {
+		confirmDialog($t('Are you sure that you want to remove address?'), this).done(function () {
+			getLocationBox(this).closest('tr').remove();
+		});
+	});
 
     /*!
      * \brief Clear address box inputs.
