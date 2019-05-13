@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,12 +31,12 @@ $(function() {
 	});
 
 	$('#delete-groups').click(function() {
-		if (!$(this).closest('div.lms-ui-multi-check').find('input:checked').length ||
-			!confirm($t("Are you sure, you want to remove customer from selected groups?"))) {
-			return false;
+		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
+			confirmDialog($t("Are you sure, you want to remove customer from selected groups?")).done(function() {
+				var form = $('form#customergroupassignment');
+				form.attr('action', '?m=customergroup&action=delete&id=' + form.find('.customerid')
+					.val()).submit();
+			});
 		}
-		var form = $('form#customergroupassignment');
-		form.attr('action', '?m=customergroup&action=delete&id=' + form.find('.customerid').val() + '&is_sure=1')
-			.submit();
 	});
 });
