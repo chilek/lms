@@ -96,7 +96,7 @@
 
 				<div class="lms-ui-tab-table-column buttons">
 					{if $customerinfo.senddocuments}
-						{button type="link" class="documentsend" icon="mail" href="?m=documentsend&id={$doc.docid}"
+						{button type="link" class="send-doc" icon="mail" href="?m=documentsend&id={$doc.docid}"
 							tip="Document send"}
 					{/if}
 					{assign var=type value=$doc.type}
@@ -105,20 +105,10 @@
 						{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
 					{/if}
 					{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
-						{textformat assign="onclick" wrap=5000}
-							confirmDialog($t('Are you sure, you want to archive that document?')).done(function() {
-								location.href = '?m=documentedit&id={$doc.docid}&action=archive';
-							});
-						{/textformat}
-						{button type="link" icon="archive" onclick=$onclick tip="Archive"}
+						{button type="link" href="?m=documentedit&id={$doc.docid}&action=archive" class="archive-doc" icon="archive" tip="Archive"}
 					{/if}
 					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_DELETE)}
-						{textformat assign="onclick" wrap=5000}
-							confirmDialog($t('Are you sure, you want to remove that document?')).done(function() {
-								location.href = '?m=documentdel&id={$doc.docid}';
-							});
-						{/textformat}
-						{button type="link" icon="delete" onclick=$onclick tip="Remove document"}
+						{button type="link" class="delete-doc" href="?m=documentdel&id={$doc.docid}" icon="delete" onclick=$onclick tip="Remove document"}
 					{/if}
 					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
 						{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
@@ -158,22 +148,19 @@
 {if !empty($documents) && count($documents)}
 		{tab_button_panel}
 			{tab_buttons}
-				{textformat assign="onclick" wrap=5000}
-					confirmDialog($t('Are you sure, you want to send documents to customer?')).done(send_documents);
-				{/textformat}
-				<button type="button" class="lms-ui-button lms-ui-button-mail" onclick="{$onclick}">
+				<button type="button" id="send-documents" class="lms-ui-button lms-ui-button-mail">
 					<i></i> {trans("Send documents")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_docs();">
+				<button type="button" id="print-docs" class="lms-ui-button lms-ui-button-print">
 					<i></i> {trans("Print")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-button-confirm" onclick="javascript:mark_docs();">
+				<button type="button" id="confirm-docs" class="lms-ui-button lms-ui-button-confirm">
 					<i></i> {trans("Confirm")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-button-archive" onclick="javascript:archive_docs();">
+				<button type="button" id="archive-docs" class="lms-ui-button lms-ui-button-archive">
 					<i></i> {trans("Archive")}
 				</button>
-				<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delete_docs();">
+				<button type="button" id="delete-docs" class="lms-ui-button lms-ui-button-delete">
 					<i></i> {trans("Delete")}
 				</button>
 			{/tab_buttons}

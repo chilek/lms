@@ -23,26 +23,26 @@
  */
 
 $(function() {
-	$('#add-nodegroups').click(function() {
-		if ($("input[name='nodegroupid[]']").filter(':checked').length) {
-			$('form#nodegroupassignment').submit();
-		}
-	});
-
-	$('.delete-nodegroup').click(function() {
-		confirmDialog($t('Are you sure, you want to remove node from group?'), this).done(function() {
+	$('.delete-assignment').click(function() {
+		confirmDialog($t('Are you sure, you want to delete this liability?'), this).done(function() {
 			location.href = $(this).attr('href');
 		});
 		return false;
 	});
 
-	$('#delete-nodegroups').click(function() {
-		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
-			confirmDialog($t("Are you sure, you want to remove node from selected groups?"), this).done(function() {
-				$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id=' +
-					$(this).prev().val()).submit();
-
+	$('#delete-assignments').click(function() {
+		if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
+			confirmDialog($t("Are you sure, you want to delete selected liabilities?"), this).done(function () {
+				$('form[name=customerassignments]').submit();
 			});
 		}
+	});
+
+	$('#delete-all-assignments').click(function() {
+		confirmDialog($t("Are you sure, you want to delete all liabilities?"), this)
+			.done(function () {
+				location.href = '?m=customerassignmentdel&cid=' + $(this).prev().val();
+			});
+		return false;
 	});
 });

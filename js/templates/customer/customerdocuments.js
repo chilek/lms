@@ -32,40 +32,70 @@ function toggle_all_attachments(docid) {
 		toggle.html('<img src="img/asc_order.gif">');
 }
 
-function delete_docs() {
-	confirmDialog($t("Are you sure, you want to delete selected documents?")).done(function() {
-		document.customerdocuments.action = "?m=documentdel";
-		document.customerdocuments.target = "";
+$(function() {
+	$('#send-documents').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		confirmDialog($t('Are you sure, you want to send documents to customer?'), this).done(function() {
+			document.customerdocuments.action="?m=documentsend";
+			document.customerdocuments.target="_blank";
+			document.customerdocuments.submit();
+		});
+	});
+
+	$('#delete-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		confirmDialog($t("Are you sure, you want to delete selected documents?"), this).done(function() {
+			document.customerdocuments.action = "?m=documentdel";
+			document.customerdocuments.target = "";
+			document.customerdocuments.submit();
+		});
+	});
+
+	$('#print-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		document.customerdocuments.action="?m=documentview";
+		document.customerdocuments.target="_blank";
 		document.customerdocuments.submit();
 	});
-}
 
-function print_docs() {
-	document.customerdocuments.action="?m=documentview";
-	document.customerdocuments.target="_blank";
-	document.customerdocuments.submit();
-}
+	$('#archive-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		document.customerdocuments.action="?m=documentedit&action=archive";
+		document.customerdocuments.target="";
+		document.customerdocuments.submit();
+	});
 
-function mark_docs() {
-	document.customerdocuments.action="?m=documentedit&action=confirm";
-	document.customerdocuments.target="";
-	document.customerdocuments.submit();
-}
+	$('#confirm-docs').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+		document.customerdocuments.action="?m=documentedit&action=confirm";
+		document.customerdocuments.target="";
+		document.customerdocuments.submit();
+	});
 
-function archive_docs() {
-	document.customerdocuments.action="?m=documentedit&action=archive";
-	document.customerdocuments.target="";
-	document.customerdocuments.submit();
-}
+	$('.archive-doc').click(function() {
+		confirmDialog($t('Are you sure, you want to archive that document?'), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 
-function send_documents() {
-	document.customerdocuments.action="?m=documentsend";
-	document.customerdocuments.target="_blank";
-	document.customerdocuments.submit();
-}
+	$('.delete-doc').click(function() {
+		confirmDialog($t('Are you sure, you want to remove that document?'), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+	});
 
-$(function() {
-	$('.documentsend').click(function () {
+	$('.send-doc').click(function () {
 		confirmDialog($t("Are you sure, you want to send document to customer?"), this).done(function() {
 			window.open($(this).attr('href'));
 		});

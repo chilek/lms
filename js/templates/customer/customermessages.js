@@ -23,26 +23,18 @@
  */
 
 $(function() {
-	$('#add-nodegroups').click(function() {
-		if ($("input[name='nodegroupid[]']").filter(':checked').length) {
-			$('form#nodegroupassignment').submit();
+	$('#delete-messages').click(function() {
+		if ($(this).closest('.lms-ui-multi-check').find('input:checked').length) {
+			confirmDialog($t("Are you sure, you want to delete all selected messages?"), this).done(function () {
+				$('form[name=customermessages]').submit();
+			});
 		}
 	});
 
-	$('.delete-nodegroup').click(function() {
-		confirmDialog($t('Are you sure, you want to remove node from group?'), this).done(function() {
+	$('.delete-message').click(function() {
+		confirmDialog($t('Are you sure, you want to delete that message?'), this).done(function() {
 			location.href = $(this).attr('href');
 		});
 		return false;
-	});
-
-	$('#delete-nodegroups').click(function() {
-		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
-			confirmDialog($t("Are you sure, you want to remove node from selected groups?"), this).done(function() {
-				$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id=' +
-					$(this).prev().val()).submit();
-
-			});
-		}
 	});
 });

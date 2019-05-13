@@ -22,8 +22,14 @@
  *  $Id$
  */
 
-function modalDialog(title, message, buttons, deferred) {
+function modalDialog(title, message, buttons, deferred, context) {
+	var position = { my: "center", at: "center", of: window };
+
 	$('#lms-ui-modal-dialog .message').html(message.replace("\n", '<br>'));
+
+	if (context) {
+		position = { my: "left bottom", at: "left top", of: context };
+	}
 
 	$('#lms-ui-modal-dialog').dialog({
 		autoOpen: true,
@@ -31,6 +37,7 @@ function modalDialog(title, message, buttons, deferred) {
 		resizable: false,
 		title: title,
 		buttons: buttons,
+		position: position,
 		open: function() {
 			var that = this;
 			$('.ui-widget-overlay').bind('click', function () {
@@ -49,6 +56,8 @@ function modalDialog(title, message, buttons, deferred) {
 function alertDialog(message, context) {
 	var deferred = $.Deferred();
 
+	context = typeof(context) === 'undefined' ? null : context;
+
 	return modalDialog($t("<!dialog>Alert"), message,
 		[
 			{
@@ -60,14 +69,14 @@ function alertDialog(message, context) {
 					deferred.resolveWith(context);
 				}
 			}
-		], deferred
+		], deferred, context
 	);
 }
 
 function confirmDialog(message, context) {
 	var deferred = $.Deferred();
 
-	context = typeof(context) === 'undefined' ? this : context;
+	context = typeof(context) === 'undefined' ? null : context;
 
 	return modalDialog($t("<!dialog>Confirmation"), message,
 		[
@@ -77,7 +86,11 @@ function confirmDialog(message, context) {
 				class: "lms-ui-button",
 				click: function() {
 					$( this ).dialog( "close" );
-					deferred.resolveWith(context);
+					if (context) {
+						deferred.resolveWith(context);
+					} else {
+						deferred.resolve();
+					}
 				}
 			},
 			{
@@ -86,9 +99,13 @@ function confirmDialog(message, context) {
 				class: "lms-ui-button",
 				click: function() {
 					$( this ).dialog( "close" );
-					deferred.rejectWith(context);
+					if (context) {
+						deferred.rejectWith(context);
+					} else {
+						deferred.reject();
+					}
 				}
 			}
-		], deferred
+		], deferred, context
 	);
 }

@@ -304,7 +304,7 @@
 
 			{tab_buttons}
 				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-					{button icon="delete" onclick="javascript:delpos();" label="Delete"}
+					{button icon="delete" class="multiinvoicedelete" label="Delete"}
 				{/if}
 				{button icon="mail" class="multiinvoicesend" label="Send invoices"}
 				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
@@ -546,13 +546,16 @@
 	});
 
 	{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-	function delpos()
-	{
+	$('.multiinvoicedelete').click(function() {
+		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
 		if ($('tr[data-published="1"] :checked').length) {
 			{if ConfigHelper::checkPrivilege('published_document_modification')}
-			confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"))
-				.done(function() {
-					confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"))
+			confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"), this)
+				.done(function () {
+					confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"), this)
 						.done(function () {
 							document.addbalance.action = "?m=balancedel";
 							document.addbalance.target = "";
@@ -561,18 +564,18 @@
 				});
 			return;
 			{else}
-			alertDialog($t("Some documents have been published already!"));
+			alertDialog($t("Some documents have been published already!"), this);
 			return;
 			{/if}
 		}
 
-		confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"))
+		confirmDialog($t("Are you sure, you want to delete selected operation(s) and document item(s)?"), this)
 			.done(function() {
 				document.addbalance.action = "?m=balancedel";
 				document.addbalance.target = "";
 				document.addbalance.submit();
 			});
-	}
+	});
 	{/if}
 
 	$('.invoicesend').click(function(e) {
@@ -584,19 +587,19 @@
 	});
 
 	$('.multiinvoicesend').click(function() {
-		confirmDialog($t("Are you sure, you want to send invoices to customer?")).done(send_invoices);
+		confirmDialog($t("Are you sure, you want to send invoices to customer?"), this).done(send_invoices);
 	});
 
 	$('.multiinvoicearchive').click(function() {
-		confirmDialog($t("Are you sure, you want to archive selected documents?")).done(archive_invoices);
+		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(archive_invoices);
 	});
 
 	$('.multiinvoiceunarchive').click(function() {
-		confirmDialog($t("Are you sure, you want to unarchive selected documents?")).done(unarchive_invoices);
+		confirmDialog($t("Are you sure, you want to unarchive selected documents?"), this).done(unarchive_invoices);
 	});
 
 	$('#clear-account').click(function() {
-		confirmDialog($t('Are you sure, you want to account ALL debts of customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'))
+		confirmDialog($t('Are you sure, you want to account ALL debts of customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
 			.done(function() {
 				location.href = '?m=customerbalanceok&id={$customerinfo.id}';
 			});

@@ -1,6 +1,7 @@
 <!--// $Id$ //-->
 
 {css}
+{js}
 
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
 
@@ -37,6 +38,7 @@
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
 				<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
+				<input type="hidden" value="{$customerinfo.id}">
 				<A id="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
 			{/if}
 		{/tab_header_cell}
@@ -198,12 +200,8 @@
 						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
 							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
 					{/if}
-					{textformat assign="onclick" wrap=5000}
-						confirmDialog($t('Are you sure, you want to delete this liability?')).done(function() {
-							location.href = '?m=customerassignmentdel&id={$a.id}';
-						});
-					{/textformat}
-					{button type="link" icon="delete" onclick=$onclick tip="Delete customer's liability"}
+					{button type="link" icon="delete" class="delete-assignment" href="?m=customerassignmentdel&id={$a.id}"
+						tip="Delete customer's liability"}
 					{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
 					<input type="checkbox" name="customerassignments[{$a.id}]" form="customerassignments-form"
 							value="{$a.id}" class="lms-ui-multi-check">
@@ -405,21 +403,6 @@
 			$('#expired').prop('checked', false);
 			$('#commited').prop('checked', true).trigger('change');
 			return false;
-		});
-
-		$('#delete-assignments').click(function() {
-			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
-				confirmDialog($t("Are you sure, you want to delete selected liabilities?")).done(function () {
-					$('form[name=customerassignments]').submit();
-				});
-			}
-		});
-
-		$('#delete-all-assignments').click(function() {
-			confirmDialog($t("Are you sure, you want to delete all liabilities?"))
-				.done(function () {
-					location.href = '?m=customerassignmentdel&cid={$customerinfo.id}';
-				});
 		});
 	});
 

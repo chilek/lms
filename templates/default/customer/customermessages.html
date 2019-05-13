@@ -1,5 +1,7 @@
 <!--// $Id$ //-->
 
+{js}
+
 <form method="post" name="customermessages" id="customermessages-form" action="?m=messagedel">
 </form>
 
@@ -84,12 +86,8 @@
 						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
-						{textformat assign="onclick" wrap=5000}
-							confirmDialog($t('Are you sure, you want to delete that message?')).done(function() {
-								location.href = '?m=messagedel&id={$item.id}';
-							});
-						{/textformat}
-						{button type="link" icon="delete" onclick=$onclick tip="Delete"}
+						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}"
+							tip="Delete"}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"
 							form="customermessages-form">
 					</TD>
@@ -119,15 +117,3 @@
 
 	{/tab_contents}
 {/tab_container}
-
-<script>
-	$(function() {
-		$('#delete-messages').click(function() {
-			if ($(this).closest('.lms-ui-multi-check').find('input:checked').length) {
-				confirmDialog($t("Are you sure, you want to delete all selected messages?")).done(function () {
-					$('form[name=customermessages]').submit();
-				});
-			}
-		});
-	});
-</script>

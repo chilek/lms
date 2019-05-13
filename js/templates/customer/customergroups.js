@@ -32,7 +32,7 @@ $(function() {
 
 	$('#delete-groups').click(function() {
 		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
-			confirmDialog($t("Are you sure, you want to remove customer from selected groups?")).done(function() {
+			confirmDialog($t("Are you sure, you want to remove customer from selected groups?"), this).done(function() {
 				var form = $('form#customergroupassignment');
 				form.attr('action', '?m=customergroup&action=delete&id=' + form.find('.customerid')
 					.val()).submit();

@@ -23,26 +23,10 @@
  */
 
 $(function() {
-	$('#add-nodegroups').click(function() {
-		if ($("input[name='nodegroupid[]']").filter(':checked').length) {
-			$('form#nodegroupassignment').submit();
-		}
-	});
-
-	$('.delete-nodegroup').click(function() {
-		confirmDialog($t('Are you sure, you want to remove node from group?'), this).done(function() {
+	$('.delete-event').click(function() {
+		confirmDialog($t('Are you sure, you want to delete that event?'), this).done(function () {
 			location.href = $(this).attr('href');
 		});
 		return false;
-	});
-
-	$('#delete-nodegroups').click(function() {
-		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
-			confirmDialog($t("Are you sure, you want to remove node from selected groups?"), this).done(function() {
-				$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id=' +
-					$(this).prev().val()).submit();
-
-			});
-		}
 	});
 });
