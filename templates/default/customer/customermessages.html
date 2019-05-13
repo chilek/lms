@@ -84,9 +84,14 @@
 						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
-						{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')"
-							href="?m=messagedel&id={$item.id}" tip="Delete"}
-						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}">
+						{textformat assign="onclick" wrap=5000}
+							confirmDialog($t('Are you sure, you want to delete that message?')).done(function() {
+								location.href = '?m=messagedel&id={$item.id}';
+							});
+						{/textformat}
+						{button type="link" icon="delete" onclick=$onclick tip="Delete"}
+						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"
+							form="customermessages-form">
 					</TD>
 				</TR>
 				{foreachelse}
@@ -117,13 +122,12 @@
 
 <script>
 	$(function() {
-		$('#delete-messages').click(function(e) {
-			if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
-				|| !confirm('{trans("Are you sure, you want to delete all selected messages?")}'))
-				return false;
-			console.log('click');
-			$('form[name=customermessages]').attr('action', function(index, attr) { return attr + '&is_sure=1'; })
-				.submit();
+		$('#delete-messages').click(function() {
+			if ($(this).closest('.lms-ui-multi-check').find('input:checked').length) {
+				confirmDialog($t("Are you sure, you want to delete all selected messages?")).done(function () {
+					$('form[name=customermessages]').submit();
+				});
+			}
 		});
 	});
 </script>

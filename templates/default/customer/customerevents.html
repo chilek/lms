@@ -81,9 +81,12 @@
 							{button type="link" icon="open" href="?m=eventedit&id={$event.id}&action=close"
 								tip="Close"}
 						{/if}
-						{button type="link" icon="delete" href="?m=eventdel&id={$event.id}"
-							onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"
-							tip="Delete"}
+						{textformat assign="onclick" wrap=5000}
+							confirmDialog($t('Are you sure, you want to delete that event?')).done(function() {
+								location.href = '?m=eventdel&id={$event.id}';
+							});
+						{/textformat}
+						{button type="link" icon="delete" onclick=$onclick tip="Delete"}
 						{button type="link" icon="edit" href="?m=eventedit&id={$event.id}" tip="Edit"}
 					</div>
 				</div>
