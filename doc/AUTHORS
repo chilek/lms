@@ -1,21 +1,21 @@
 $Id$
 
-This program is free software; you can redistribute it and/or modify it 
-under the terms of the GNU General Public License as published by the 
-Free Software Foundation; either version 2 of the License, or (at you option) 
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at you option)
 any later version.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
 for more details.
 
-You should have received a copy of the GNU General Public License along 
-with this program; if not, write to the Free Software Foundation, Inc., 
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 PHP Code:
-       
+
 Lukasz 'Baseciq' Mozer
 Michal 'DziQs' Zapalski
 Radoslaw 'Warden' Antoniuk
@@ -25,7 +25,8 @@ Aleksander 'A.L.E.C' Machniak
 Tomasz 'Chilek' Chilinski
 Grzegorz 'Ceho' Chwesewicz
 Maciej 'Lion' Lew
-               
+Rafał 'Ravvar' Pietraszewicz
+
 C Code:
 
 Aleksander 'A.L.E.C' Machniak
@@ -43,35 +44,36 @@ Grzegorz 'Ceho' Chwesewicz
 Design:
 
 Lukasz 'Baseciq' Mozer
-          
+
 HTML, JavaScript, CSS:
-               
+
 Lukasz 'Baseciq' Mozer
 Pawel 'Bob_R' Czerski
 Pawel 'sickone' Kisiela
 Tomasz 'Chilek' Chilinski
 Grzegorz 'Ceho' Chwesewicz
 Maciej 'Lion' Lew
-          
+Rafał 'Ravvar' Pietraszewicz
+
 Images:
-               
+
 Piotr 'Pierzak' Mierzeński
 Grzegorz 'byko' Cichowski
 Kuba 'kflis' Flis
 Lukasz 'Baseciq' Mozer
 Jakub 'Jimmac' Steiner
-          
+
 Web Page & Documentation:
-               
+
 Aleksander 'A.L.E.C' Machniak
 Kuba 'shasta' Jankowski
 Grzegorz 'JaBBaS' Dziegielewski
 Lukasz 'Baseciq' Mozer
 Marcin 'Lexx' Krol
 Konrad 'Kondi' Rzentarzewski
-          
+
 Beta testing:
-               
+
 Grzegorz 'byko' Cichowski
 Radoslaw 'Warden' Antoniuk
 Tomasz 'dzwonek' Dzwonkowski
@@ -82,13 +84,13 @@ Grzegorz 'JaBBaS' Dziegielewski
 Andrzej 'chsh' Gradziel
 
 
-LMS uses elements of other software: 
+LMS uses elements of other software:
 
 phpMyAdmin (http://phpwizard.net/projects/phpMyAdmin),
-phpsysinfo (phpsysinfo.sourceforge.net), 
-NewsPortal (florian-amrhein.de/newsportal/index-anglish.php3), 
-overLIB (www.bosrup.com/web/overlib), 
-ezpdf (www.ros.co.nz/pdf), 
+phpsysinfo (phpsysinfo.sourceforge.net),
+NewsPortal (florian-amrhein.de/newsportal/index-anglish.php3),
+overLIB (www.bosrup.com/web/overlib),
+ezpdf (www.ros.co.nz/pdf),
 Piotr Kleban's number-to-words conversion procedures and
 code examples from PHP manual (http://www.php.net/manual).
 phine/lib-observer (http://github.com/phine/lib-observer),
