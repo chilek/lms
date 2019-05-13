@@ -93,6 +93,7 @@ $(function() {
 		confirmDialog($t('Are you sure, you want to remove that document?'), this).done(function() {
 			location.href = $(this).attr('href');
 		});
+		return false;
 	});
 
 	$('.send-doc').click(function () {
