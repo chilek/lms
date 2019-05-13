@@ -101,8 +101,8 @@
 			{$message.cnt|default:0}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&amp;id={$message.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=messageinfo&amp;id={$message.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			{button type="link" icon="delete" class="delete-message" tip="Delete" href="?m=messagedel&id={$message.id}"}
+			{button type="link" icon="info" tip="Info" onclick="location.href = '?m=messageinfo&id={$message.id}';"}
 			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="lms-ui-multi-check"{if $marks.messageid} checked{/if}>
 		</TD>
 	</TR>
@@ -130,25 +130,34 @@
 			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 		<TD colspan="2" class="text-right nobr">
-			<a id="delete-messages">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
+			{button icon="delete" id="delete-messages" label="Delete" tip="Delete"}
 			<label>
 				{trans("Check All")}
 				<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
 			</label>
 		</TD>
 	</TR>
-	<script type="text/javascript">
-	<!--
-		$(function() {
-			$('#delete-messages').click(function() {
-				if (!$(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length
-					|| !confirm('{trans("Are you sure, you want to delete all selected messages?")}'))
-					return false;
-				$('form[name=messages]').attr('action', '?m=messagedel&is_sure=1').submit();
-			});
-		});
-	//-->
-	</script>
     </TFOOT>
 </TABLE>
+
+<script>
+
+	$('.delete-message').click(function() {
+		confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
+	$('#delete-messages').click(function() {
+		if ($(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length) {
+			confirmDialog($t("Are you sure, you want to delete all selected messages?"), this).done(function() {
+				$('form[name=messages]').attr('action', '?m=messagedel').submit();
+			});
+		}
+		return false;
+	});
+
+</script>
+
 {/block}
