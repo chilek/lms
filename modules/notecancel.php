@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 
-if ($id && $_GET['is_sure'] == '1') {
+if ($id) {
 	if (isset($_GET['recover'])) {
 		$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
 

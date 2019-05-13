@@ -3,35 +3,12 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $note}
-<SCRIPT type="text/javascript">
-<!--
-window.open('?m=note&amp;id={$note}');
-//-->
-</SCRIPT>
-{/if}
-<SCRIPT type="text/javascript">
-<!--
-	function pays()
-	{
-		if(! confirm('{trans("Are you sure, you want to check/uncheck selected debit notes as accounted?")}'))
-			return;
-		document.page.action="?m=notepaid";
-		document.page.target="";
-		document.page.submit();
-	}
 
-	function archive_dnotes() {
-		document.page.action="?m=notearchive&marks=invoice";
-		document.page.target="";
-		document.page.submit();
-	}
+<script>
 
-	function unarchive_dnotes() {
-		document.page.action="?m=noteunarchive&marks=invoice";
-		document.page.target="";
-		document.page.submit();
-	}
+	{if $note}
+	window.open('?m=note&id={$note}');
+	{/if}
 
 	function prints()
 	{
@@ -46,8 +23,9 @@ window.open('?m=note&amp;id={$note}');
 		document.page.target="";
 		document.page.submit();
 	}
-//-->
-</SCRIPT>
+
+</script>
+
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox lms-ui-background-cycle">
@@ -122,7 +100,8 @@ window.open('?m=note&amp;id={$note}');
     <TBODY class="lms-ui-multi-check">
 	{foreach $notelist as $note}
 	{assign var=noteid value=$note.id}
-	<TR class="highlight{if $note.closed} blend{elseif $note.cancelled} cancel{/if}">
+	{number number=$note.number template=$note.template time=$note.cdate assign=number customerid=$note.customerid}
+	<TR class="highlight{if $note.closed} blend{elseif $note.cancelled} cancel{/if}" data-published="{$note.published}" data-number="{$number}">
 		<TD>
 			{$note.id|string_format:"%06d"}
 		</TD>
@@ -130,7 +109,7 @@ window.open('?m=note&amp;id={$note}');
 			{$note.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="text-right nobr">
-			{number number=$note.number template=$note.template time=$note.cdate assign=number customerid=$note.customerid}{$number}
+			{$number}
 		</TD>
 		<TD class="text-right nobr">
 			{$note.value|money_format}
@@ -144,41 +123,17 @@ window.open('?m=note&amp;id={$note}');
 		<TD class="text-right nobr">
 			{if !$note.closed}
 				{if !$note.archived && (!$note.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-					{textformat assign="onclick" wrap=5000}
-						{if $note.published}
-						if (!confirmLink(this, $t('Document has been published already! Are you sure you want to remove it despite this?')))
-							return false;
-						{/if}
-						return confirmLink(this, $t('Are you sure, you want to remove debit note \'$a\' from database?', '{$number}'));
-					{/textformat}
-					{button type="link" icon="delete" tip="Delete" onclick=$onclick href="?m=notedel&id={$note.id}"}
-					{textformat assign="onclick" wrap=5000}
-						{if $note.published}
-						return confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'));
-						{/if}
-					{/textformat}
-					{button type="link" icon="edit" tip="Edit" onclick=$onclick href="?m=noteedit&id={$note.id}&action=edit"}
+					{button type="link" icon="delete" tip="Delete" class="delete-note" href="?m=notedel&id={$note.id}"}
+					{button type="link" icon="edit" tip="Edit" class="edit-note" href="?m=noteedit&id={$note.id}&action=edit"}
 				{/if}
 			{/if}
 
 			{if !$note.cancelled}
 				{if !$note.archived && (!$note.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-					{textformat assign="onclick" wrap=5000}
-						{if $note.published}
-						if (!confirmLink(this, $t('Document has been published already! Are you sure you want to cancel it despite this?')))
-							return false;
-						{/if}
-						return confirmLink(this, $t('Are you sure, you want to cancel debit note \'$a\'?', '{$number}'));
-					{/textformat}
-					{button type="link" icon="cancel" tip="Cancel" onclick=$onclick
-						href="?m=notecancel&id={$note.id}"}
+					{button type="link" icon="cancel" tip="Cancel" class="cancel-note" href="?m=notecancel&id={$note.id}"}
 				{/if}
 			{else}
-				{textformat assign="onclick" wrap=5000}
-					return confirmLink(this, $t('Are you sure, you want to recover cancelled debit note \'$a\'?', '{$number}'));
-				{/textformat}
-				{button type="link" icon="back" tip="Recover" onclick=$onclick
-					href="?m=notecancel&id={$note.id}&recover=1"}
+				{button type="link" icon="back" tip="Recover" class="recover-note" href="?m=notecancel&id={$note.id}&recover=1"}
 			{/if}
 
 			{if !$note.cancelled}
@@ -221,14 +176,14 @@ window.open('?m=note&amp;id={$note}');
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="text-left">
-						{button icon="cash" label="Check/Uncheck as accounted" onclick="javascript:pays();"}
+						{button icon="cash" label="Check/Uncheck as accounted" id="account-notes"}
 						{if ConfigHelper::checkPrivilege('trade_document_archiving')}
-							{button icon="archive" class="multinotearchive" label="Archive"}
+							{button icon="archive" id="archive-notes" label="Archive"}
 						{/if}
 						{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
-							{button icon="restore" class="multinoteunarchive" label="Unarchive"}
+							{button icon="restore" id="unarchive-notes" label="Unarchive"}
 						{/if}
-						{button icon="print" label="Print" onclick="javascript:prints();"}
+						{button icon="print" label="Print" id="print-notes"}
 					</TD>
 					<TD class="text-right nobr">
 						<label>
@@ -246,17 +201,88 @@ window.open('?m=note&amp;id={$note}');
 
 <script>
 
-	$('.multinotearchive').click(function() {
-		if (confirm($t("Are you sure, you want to archive selected debit notes?"))) {
-			archive_dnotes();
+	$('.delete-note').click(function() {
+		var published = parseInt($(this).closest('tr').attr('data-published'));
+		var number = $(this).closest('tr').attr('data-number');
+		if (published) {
+			confirmDialog($t('Document has been published already! Are you sure you want to remove it despite this?'), this).done(function() {
+				confirmDialog($t("Are you sure, you want to remove debit note '$a' from database?", number), this).done(function () {
+					location.href = $(this).attr('href');
+				});
+			});
+		} else {
+			confirmDialog($t("Are you sure, you want to remove debit note '$a' from database?", number), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+		}
+		return false;
+	});
+
+	$('.edit-note').click(function() {
+		var published = parseInt($(this).closest('tr').attr('data-published'));
+		if (published) {
+			confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
 		}
 	});
 
-	$('.multinoteunarchive').click(function() {
-		if (confirm($t("Are you sure, you want to unarchive selected debit notes"))) {
-			unarchive_dnotes();
+	$('.cancel-note').click(function() {
+		var published = parseInt($(this).closest('tr').attr('data-published'));
+		var number = $(this).closest('tr').attr('data-number');
+		if (published) {
+			confirmDialog($t('Document has been published already! Are you sure you want to remove it despite this?'), this).done(function() {
+				confirmDialog($t("Are you sure, you want to cancel debit note '$a'?", number), this).done(function () {
+					location.href = $(this).attr('href');
+				});
+			});
+		} else {
+			confirmDialog($t("Are you sure, you want to cancel debit note '$a'?", number), this).done(function () {
+				location.href = $(this).attr('href');
+			});
 		}
+		return false;
+	});
+
+	$('.recover-note').click(function() {
+		var number = $(this).closest('tr').attr('data-number');
+		confirmDialog($t("Are you sure, you want to recover cancelled debit note '$a'?", number), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
+	$('#account-notes').click(function() {
+		confirmDialog($t("Are you sure, you want to check/uncheck selected debit notes as accounted?"), this).done(function() {
+			document.page.action="?m=notepaid";
+			document.page.target="";
+			document.page.submit();
+		});
+	});
+
+	$('#archive-notes').click(function() {
+		confirmDialog($t("Are you sure, you want to archive selected debit notes?"), this).done(function() {
+			document.page.action="?m=notearchive&marks=invoice";
+			document.page.target="";
+			document.page.submit();
+		});
+	});
+
+	$('#unarchive-notes').click(function() {
+		confirmDialog($t("Are you sure, you want to unarchive selected debit notes"), this).done(function() {
+			document.page.action="?m=noteunarchive&marks=invoice";
+			document.page.target="";
+			document.page.submit();
+		});
+	});
+
+	$('#print-notes').click(function() {
+		document.page.action="?m=note&print=cached";
+		document.page.target="_blank";
+		document.page.submit();
 	});
 
 </script>
+
 {/block}

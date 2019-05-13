@@ -117,7 +117,7 @@
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
-								{button type="link" icon="mail" class="invoicesend" href="?m=invoicesend&id={$item.docid}"
+								{button type="link" icon="mail" class="send-invoice" href="?m=invoicesend&id={$item.docid}"
 									tip="Send invoice"}
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
@@ -304,19 +304,19 @@
 
 			{tab_buttons}
 				{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-					{button icon="delete" class="multiinvoicedelete" label="Delete"}
+					{button icon="delete" id="delete-invoices" label="Delete"}
 				{/if}
-				{button icon="mail" class="multiinvoicesend" label="Send invoices"}
+				{button icon="mail" id="send-invoices" label="Send invoices"}
 				{if ConfigHelper::checkPrivilege('trade_document_archiving')}
-					{button icon="archive" class="multiinvoicearchive" label="Archive"}&nbsp;
+					{button icon="archive" id="archive-invoices" label="Archive"}&nbsp;
 				{/if}
 				{if ConfigHelper::checkPrivilege('trade_document_uarchiving')}
-					{button icon="restore" class="multiinvoiceunarchive" label="Unarchive"}&nbsp;
+					{button icon="restore" id="unarchive-invoices" label="Unarchive"}&nbsp;
 				{/if}
 				{trans("Print")}:
-				{button icon="print" label="invoices" onclick="javascript:print_doc('invoice')"}
-				{button icon="cash" label="cash receipt" onclick="javascript:printr();"}
-				{button icon="dnote" label="debit notes" onclick="javascript:print_doc('note');"}
+				{button icon="print" label="invoices" id="print-invoices"}
+				{button icon="cash" label="cash receipt" id="print-receipts"}
+				{button icon="dnote" label="debit notes" id="print-notes"}
 				<label>
 					<INPUT type="checkbox" form="addbalance-form" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}>
 					{trans("original")}
@@ -428,8 +428,11 @@
 		document.addbalance.submit();
 	}
 
-	function printr()
-	{
+	$('#print-receipts').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
 		var add = "";
 		if(document.addbalance.original.checked && document.addbalance.copy.checked)
 			add = "&which=original,copy";
@@ -441,58 +444,35 @@
 		document.addbalance.action = "?m=receipt&print=cached&cash=1" + add;
 		document.addbalance.target = "_blank";
 		document.addbalance.submit();
-	}
+	});
 
-	function print_doc(type)
-	{
-		var add = "";
-		if(document.addbalance.original.checked)
-			add = "&original=1";
-		if(document.addbalance.copy.checked)
-			add += "&copy=1";
-		if (document.addbalance.duplicate.checked) {
-			add += "&duplicate=1";
-			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
-			if (duplicate_date > 0) {
-				add += "&duplicate-date=" + duplicate_date;
-			}
+
+	$('#print-invoices,#print-notes').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
 		}
 
-		document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
-		document.addbalance.target="_blank";
-		document.addbalance.submit();
-	}
-
-	function send_invoices() {
-		var add = "";
-		if(document.addbalance.original.checked)
-			add = "&original=1";
-		if(document.addbalance.copy.checked)
-			add += "&copy=1";
-		if(document.addbalance.duplicate.checked) {
-			add += "&duplicate=1";
-			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
-			if (duplicate_date > 0) {
-				add += "&duplicate-date=" + duplicate_date;
+		function print_doc(type) {
+			var add = "";
+			if(document.addbalance.original.checked)
+				add = "&original=1";
+			if(document.addbalance.copy.checked)
+				add += "&copy=1";
+			if (document.addbalance.duplicate.checked) {
+				add += "&duplicate=1";
+				var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+				if (duplicate_date > 0) {
+					add += "&duplicate-date=" + duplicate_date;
+				}
 			}
+
+			document.addbalance.action="?m=" + type + "&print=cached&cash=1" + add;
+			document.addbalance.target="_blank";
+			document.addbalance.submit();
 		}
 
-		document.addbalance.action="?m=invoicesend&marks=cash" + add;
-		document.addbalance.target="_blank";
-		document.addbalance.submit();
-	}
-
-	function archive_invoices() {
-		document.addbalance.action="?m=invoicearchive&marks=cash";
-		document.addbalance.target="";
-		document.addbalance.submit();
-	}
-
-	function unarchive_invoices() {
-		document.addbalance.action="?m=invoiceunarchive&marks=cash";
-		document.addbalance.target="";
-		document.addbalance.submit();
-	}
+		print_doc($(this).is('#print-invoices') ? 'invoice' : 'note');
+	});
 
 	function show_list()
 	{
@@ -546,8 +526,8 @@
 	});
 
 	{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
-	$('.multiinvoicedelete').click(function() {
-		if (!$(this).closest('div.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+	$('#delete-invoices').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
 			return;
 		}
 
@@ -578,28 +558,65 @@
 	});
 	{/if}
 
-	$('.invoicesend').click(function(e) {
+	$('.send-invoice').click(function(e) {
 		confirmDialog($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
 			.done(function() {
 				window.open($(this).attr('href'));
 			});
-		e.preventDefault();
+		return false;
 	});
 
-	$('.multiinvoicesend').click(function() {
-		confirmDialog($t("Are you sure, you want to send invoices to customer?"), this).done(send_invoices);
+	$('#send-invoices').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to send invoices to customer?"), this).done(function() {
+			var add = "";
+			if(document.addbalance.original.checked)
+				add = "&original=1";
+			if(document.addbalance.copy.checked)
+				add += "&copy=1";
+			if(document.addbalance.duplicate.checked) {
+				add += "&duplicate=1";
+				var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+				if (duplicate_date > 0) {
+					add += "&duplicate-date=" + duplicate_date;
+				}
+			}
+
+			document.addbalance.action="?m=invoicesend&marks=cash" + add;
+			document.addbalance.target="_blank";
+			document.addbalance.submit();
+		});
 	});
 
-	$('.multiinvoicearchive').click(function() {
-		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(archive_invoices);
+	$('#archive-invoices').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(function() {
+			document.addbalance.action="?m=invoicearchive&marks=cash";
+			document.addbalance.target="";
+			document.addbalance.submit();
+		});
 	});
 
-	$('.multiinvoiceunarchive').click(function() {
-		confirmDialog($t("Are you sure, you want to unarchive selected documents?"), this).done(unarchive_invoices);
+	$('#unarchive-invoices').click(function() {
+		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to unarchive selected documents?"), this).done(function() {
+			document.addbalance.action="?m=invoiceunarchive&marks=cash";
+			document.addbalance.target="";
+			document.addbalance.submit();
+		});
 	});
 
 	$('#clear-account').click(function() {
-		confirmDialog($t('Are you sure, you want to account ALL debts of customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
+		confirmDialog($t("Are you sure, you want to account ALL debts of customer '$a'?", '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
 			.done(function() {
 				location.href = '?m=customerbalanceok&id={$customerinfo.id}';
 			});

@@ -3,13 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $invoice.invoice}
-<SCRIPT type="text/javascript">
-<!--
-window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy={$invoice.copy}&duplicate={$invoice.duplicate}');
-//-->
-</SCRIPT>
-{/if}
 
 <style>
 
@@ -37,66 +30,11 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 
 </style>
 
-<SCRIPT type="text/javascript">
-<!--
-	function pays()
-	{
-		if (!confirm('{trans("Are you sure, you want to check/uncheck selected invoices as accounted?")}'))
-			return;
-		document.page.action="?m=invoicepaid";
-		document.page.target="";
-		document.page.submit();
-	}
+<script>
 
-	function prints()
-	{
-		var add = "";
-		if (document.page.original.checked)
-			add = "&original=1";
-		if (document.page.copy.checked)
-			add += "&copy=1";
-		if (document.page.duplicate.checked) {
-			add += "&duplicate=1";
-			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
-			if (duplicate_date > 0) {
-				add += "&duplicate-date=" + duplicate_date;
-			}
-		}
-
-		document.page.action="?m=invoice&print=cached" + add;
-		document.page.target="_blank";
-		document.page.submit();
-	}
-
-	function send_invoices() {
-		if (document.page.original.checked)
-			add = "&original=1";
-		if (document.page.copy.checked)
-			add += "&copy=1";
-		if (document.page.duplicate.checked) {
-			add += "&duplicate=1";
-			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
-			if (duplicate_date > 0) {
-				add += "&duplicate-date=" + duplicate_date;
-			}
-		}
-
-		document.page.action="?m=invoicesend&marks=invoice";
-		document.page.target="_blank";
-		document.page.submit();
-	}
-
-	function archive_invoices() {
-		document.page.action="?m=invoicearchive&marks=invoice";
-		document.page.target="";
-		document.page.submit();
-	}
-
-	function unarchive_invoices() {
-		document.page.action="?m=invoiceunarchive&marks=invoice";
-		document.page.target="";
-		document.page.submit();
-	}
+	{if $invoice.invoice}
+	window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy={$invoice.copy}&duplicate={$invoice.duplicate}');
+	{/if}
 
 	function filter()
 	{
@@ -104,8 +42,9 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 		document.page.target="";
 		document.page.submit();
 	}
-//-->
-</SCRIPT>
+
+</script>
+
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
@@ -189,7 +128,9 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
     <TBODY class="lms-ui-multi-check">
 	{foreach $invoicelist as $invoice}
 	{assign var=invoiceid value=$invoice.id}
-	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}">
+	{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}
+	<TR class="highlight{if $invoice.closed} blend{elseif $invoice.cancelled} cancel{/if}" data-published="{$invoice.published}"
+			data-number="{$number}" data-customername="{$invoice.name|escape:"javascript"|escape:"html"}">
 		<TD>
 			{$invoice.id|string_format:"%06d"}
 		</TD>
@@ -197,7 +138,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="text-right nobr">
-			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}{$number}
+			{$number}
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.value|money_format} 
@@ -217,13 +158,8 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					tip="Convert to invoice"}
 			{/if}
 			{if $invoice.sendinvoices && !$invoice.cancelled && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
-				{textformat assign="onclick" wrap=5000}
-					if (confirmLink(this, $t('Are you sure, you want to send invoice to customer \'$a\'?', '{$invoice.name|escape:"javascript"|escape:"html"}')))
-						window.open($(this).attr('href'));
-					return false;
-				{/textformat}
-				{button type="link" icon="mail" class="invoicesend" href="?m=invoicesend&id={$invoice.id}"
-					onclick=$onclick tip="Send invoice"}
+				{button type="link" icon="mail" class="send-invoice" href="?m=invoicesend&id={$invoice.id}"
+					tip="Send invoice"}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO || $invoice.type == $smarty.const.DOC_CNOTE}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
@@ -232,33 +168,18 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					{/if}
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO) && !$invoice.closed && !$invoice.referenced && !$invoice.archived}
 						{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-							{textformat assign="onclick" wrap=5000}
-								{if $invoice.published}
-								if (!confirmLink(this, $t('Document has been published already! Are you sure you want to remove it despite this?')))
-									return false;
-								{/if}
-								return confirmLink(this, $t('Are you sure, you want to remove invoice \'$a\' from database?', '{$number}'))";
-							{/textformat}
-							{button type="link" icon="delete" tip="Delete" onclick="onclick"
+							{button type="link" icon="delete" class="delete-invoice" tip="Delete"
 								href="?m=invoicedel&id={$invoice.id}"}
 						{/if}
 					{/if}
 				{else}
-					{button type="link" icon="delete" tip="Delete" href="?m=invoicedel&id={$invoice.id}"
-						onclick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove pro forma invoice \'$a\' from database?{/t}')"}
+					{button type="link" icon="delete" tip="Delete" class="delete-proforma-invoice" href="?m=invoicedel&id={$invoice.id}"}
 				{/if}
 			{/if}
 			{if !$invoice.closed && !$invoice.archived}
 				{if $invoice.type == $smarty.const.DOC_CNOTE}
 					{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-						{textformat assign="onclick" wrap=5000}
-							{if $invoice.published}
-							if (!confirmLink(this, $t('Document has been published already! Are you sure you want to remove it despite this?')))
-								return false;
-							{/if}
-							return confirmLink(this, $t('Are you sure, you want to remove credit note \'$a\' from database?', '{$number}'));
-						{/textformat}
-						{button type="link" icon="delete" tip="Delete" onclick=$onclick
+						{button type="link" icon="delete" class="delete-invoice" tip="Delete"
 							href="?m=invoicedel&id={$invoice.id}"}
 					{/if}
 				{/if}
@@ -266,13 +187,8 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 					{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 						{if $invoice.type == $smarty.const.DOC_INVOICE}
 							{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-								{if $invoice.published}
-									{$onclick = "return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"}
-								{else}
-									{$onclick = ""}
-								{/if}
 								{button type="link" icon="edit"
-									href="?m=invoiceedit&id={$invoice.id}&action=edit" onclick=$onclick tip="Edit"}
+									href="?m=invoiceedit&id={$invoice.id}&action=edit" class="edit-invoice" tip="Edit"}
 							{/if}
 						{else}
 							{button type="link" icon="edit" tip="Edit"
@@ -280,12 +196,7 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 						{/if}
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-							{textformat assign="onclick" wrap=5000}
-								{if $invoice.published}
-								return confirmLink(this, $t('Document has been published already! Are you sure you want to edit it despite this?'));
-								{/if}
-							{/textformat}
-							{button type="link" icon="edit" tip="Edit" onclick=$onclick
+							{button type="link" icon="edit" tip="Edit" class="edit-invoice"
 								href="?m=invoiceedit&id={$invoice.id}&action=edit"}
 						{/if}
 					{/if}
@@ -293,22 +204,12 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{/if}
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && !$invoice.archived && !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-					{textformat assign="onclick" wrap=5000}
-						{if $invoice.published}
-						if (!confirmLink(this, $t('Document has been published already! Are you sure you want to cancel it despite this?')))
-							return false;
-						{/if}
-						return confirmLink(this, $t('Are you sure, you want to cancel invoice \'$a\'?', '{$number}'));
-					{/textformat}
-					{button type="link" icon="cancel" tip="Cancel" onclick=$onclick
+					{button type="link" icon="cancel" tip="Cancel" class="cancel-invoice"
 						href="?m=invoicecancel&id={$invoice.id}"}
 				{/if}
 			{elseif $invoice.cancelled}
-				{textformat assign="onclick" wrap=5000}
-					return confirmLink(this, $t('Are you sure, you want to recover cancelled invoice \'$a\'?', '{$number}'));
-				{/textformat}
 				{button type="link" icon="back" tip="Recover" href="?m=invoicecancel&id={$invoice.id}&recover=1"
-					onclick=$onclick}
+					class="recover-invoice"}
 			{/if}
 			{if !$invoice.cancelled}
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
@@ -363,16 +264,16 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 				<TR>
 					<TD class="text-left" id="button-panel">
 						{if !$proforma}
-							{button icon="cash" label="Check/Uncheck as accounted" onclick="javascript:pays();"}
+							{button icon="cash" label="Check/Uncheck as accounted" id="account-invoices"}
 						{/if}
-						{button icon="mail" class="multiinvoicesend" label="Send invoices"}
+						{button icon="mail" id="send-invoices" label="Send invoices"}
 						{if ConfigHelper::checkPrivilege('trade_document_archiving')}
-							{button icon="archive" class="multiinvoicearchive" label="Archive"}
+							{button icon="archive" id="archive-invoices" label="Archive"}
 						{/if}
 						{if ConfigHelper::checkPrivilege('trade_document_unarchiving')}
-							{button icon="restore" class="multiinvoiceunarchive" label="Unarchive"}
+							{button icon="restore" id="unarchive-invoices" label="Unarchive"}
 						{/if}
-						{button icon="print" label="Print" onclick="javascript:prints();"}
+						{button icon="print" label="Print" id="print-invoices"}
 						<label>
 							<INPUT type="checkbox" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}>
 							{trans("original")}
@@ -409,25 +310,157 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 
 <script>
 
-	$('.multiinvoicesend').click(function() {
-		if (confirm($t("Are you sure, you want to send invoices to customers?"))) {
-			send_invoices();
+	$('.delete-invoice').click(function () {
+		var published = parseInt($(this).closest('tr').attr('data-published'));
+		var number = $(this).closest('tr').attr('data-number');
+		if (published) {
+			confirmDialog($t('Document has been published already! Are you sure you want to remove it despite this?'), this).done(function () {
+				confirmDialog($t("Are you sure, you want to remove invoice '$a' from database?", number), this).done(function () {
+					location.href = $(this).attr('href');
+				});
+			});
+		} else {
+			confirmDialog($t("Are you sure, you want to remove invoice '$a' from database?", number), this).done(function () {
+				location.href = $(this).attr('href');
+			});
 		}
+		return false;
 	});
 
-	$('.multiinvoicearchive').click(function() {
-		if (confirm($t("Are you sure, you want to archive selected invoices?"))) {
-			archive_invoices();
-		}
+	$('.delete-proforma-invoice').click(function () {
+		var number = $(this).closest('tr').attr('data-number');
+		confirmDialog($t("Are you sure, you want to remove pro forma invoice '$a' from database?", number), this).done(function () {
+			location.href = $(this).attr('href');
+		});
+		return false;
 	});
 
-	$('.multiinvoiceunarchive').click(function() {
-		if (confirm($t("Are you sure, you want to unarchive selected invoices?"))) {
-			unarchive_invoices();
+	$('.edit-invoice').click(function () {
+		var published = parseInt($(this).closest('tr').attr('data-published'));
+		if (published) {
+			confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this).done(function () {
+				location.href = $(this).attr('href');
+			});
 		}
+		return false;
 	});
 
-	$('#duplicate-checkbox').click(function() {
+	$('.cancel-invoice').click(function () {
+		var published = parseInt($(this).closest('tr').attr('data-published'));
+		var number = $(this).closest('tr').attr('data-number');
+		if (published) {
+			confirmDialog($t('Document has been published already! Are you sure you want to cancel it despite this?'), this).done(function () {
+				confirmDialog($t("Are you sure, you want to cancel invoice '$a'?", number), this).done(function () {
+					location.href = $(this).attr('href');
+				});
+			});
+		} else {
+			confirmDialog($t("Are you sure, you want to cancel invoice '$a'?", number), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+		}
+		return false;
+	});
+
+	$('.recover-invoice').click(function () {
+		var number = $(this).closest('tr').attr('data-number');
+		confirmDialog($t("Are you sure, you want to recover cancelled invoice '$a'?", number), this).done(function () {
+			location.href = $(this).attr('href');
+		});
+	});
+
+	$('.send-invoice').click(function () {
+		var customername = $(this).closest('tr').attr('data-customername');
+		confirmDialog($t("Are you sure, you want to send invoice to customer '$a'?", customername), this).done(function () {
+			window.open($(this).attr('href'));
+		});
+		return false;
+	});
+
+	$('#account-invoices').click(function () {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t('Are you sure, you want to check/uncheck selected invoices as accounted?'), this).done(function () {
+			document.page.action = "?m=invoicepaid";
+			document.page.target = "";
+			document.page.submit();
+		});
+	});
+
+	$('#send-invoices').click(function () {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to send invoices to customers?"), this).done(function () {
+			if (document.page.original.checked)
+				add = "&original=1";
+			if (document.page.copy.checked)
+				add += "&copy=1";
+			if (document.page.duplicate.checked) {
+				add += "&duplicate=1";
+				var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+				if (duplicate_date > 0) {
+					add += "&duplicate-date=" + duplicate_date;
+				}
+			}
+
+			document.page.action = "?m=invoicesend&marks=invoice";
+			document.page.target = "_blank";
+			document.page.submit();
+		});
+	});
+
+	$('#archive-invoices').click(function () {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to archive selected invoices?"), this).done(function () {
+			document.page.action = "?m=invoicearchive&marks=invoice";
+			document.page.target = "";
+			document.page.submit();
+		});
+	});
+
+	$('#unarchive-invoices').click(function () {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to unarchive selected invoices?"), this).done(function () {
+			document.page.action = "?m=invoiceunarchive&marks=invoice";
+			document.page.target = "";
+			document.page.submit();
+		});
+	});
+
+	$('#print-invoices').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		var add = "";
+		if (document.page.original.checked)
+			add = "&original=1";
+		if (document.page.copy.checked)
+			add += "&copy=1";
+		if (document.page.duplicate.checked) {
+			add += "&duplicate=1";
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
+
+		document.page.action="?m=invoice&print=cached" + add;
+		document.page.target="_blank";
+		document.page.submit();
+	});
+
+	$('#duplicate-checkbox').click(function () {
 		$('#duplicate-box-date-selector').toggle($(this).prop('checked'));
 	});
 

@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 
-if ($id && $_GET['is_sure'] == '1') {
+if ($id) {
 	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification'))
 		return;
 

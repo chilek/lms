@@ -174,6 +174,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		$note['division_header'] = str_replace('%bankaccount',
 			format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
 		$document->Draw($note);
+		if (!isset($note['last']))
+			$document->NewPage();
 	}
 } elseif (isset($_GET['fetchallnotes'])) {
 	$layout['pagetitle'] = trans('Debit Notes');
