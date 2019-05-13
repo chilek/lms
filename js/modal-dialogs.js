@@ -66,7 +66,11 @@ function alertDialog(message, context) {
 				class: "lms-ui-button",
 				click: function() {
 					$( this ).dialog( "close" );
-					deferred.resolveWith(context);
+					if (context) {
+						deferred.resolveWith(context);
+					} else {
+						deferred.resolve();
+					}
 				}
 			}
 		], deferred, context
