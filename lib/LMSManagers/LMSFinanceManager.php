@@ -681,7 +681,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			}
 
 			// creates assignment record for ending partial period
-			if ($data['datefrom'] < $data['dateto'] && isset($data['last-settlement']) && $data['period'] == MONTHLY) {
+			if ($data['dateto'] && $data['datefrom'] < $data['dateto'] && isset($data['last-settlement']) && $data['period'] == MONTHLY) {
 				list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['dateto']));
 				$prevperiod = mktime(0, 0, 0, $month, 1, $year);
 				$diffdays = sprintf("%d", ($data['dateto'] + 1 - $prevperiod) / 86400);
@@ -742,7 +742,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				}
 			}
 
-			if ($data['datefrom'] < $data['dateto'] || !$date['from'] || !$data['dateto']) {
+			if ($data['datefrom'] < $data['dateto'] || !$data['datefrom'] || !$data['dateto']) {
 				// creates one assignment record
 				if (!empty($data['value'])) {
 					$args = array(
