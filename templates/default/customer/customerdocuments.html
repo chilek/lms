@@ -105,12 +105,20 @@
 						{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
 					{/if}
 					{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
-						{button type="link" icon="archive" onclick="return confirmLink(this, '{trans("Are you sure, you want to archive that document?")}')"
-							href="?m=documentedit&id={$doc.docid}&action=archive" tip="Archive"}
+						{textformat assign="onclick" wrap=5000}
+							confirmDialog($t('Are you sure, you want to archive that document?')).done(function() {
+								location.href = '?m=documentedit&id={$doc.docid}&action=archive';
+							});
+						{/textformat}
+						{button type="link" icon="archive" onclick=$onclick tip="Archive"}
 					{/if}
 					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_DELETE)}
-						{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')"
-							href="?m=documentdel&id={$doc.docid}" tip="Remove document"}
+						{textformat assign="onclick" wrap=5000}
+							confirmDialog($t('Are you sure, you want to remove that document?')).done(function() {
+								location.href = '?m=documentdel&id={$doc.docid}';
+							});
+						{/textformat}
+						{button type="link" icon="delete" onclick=$onclick tip="Remove document"}
 					{/if}
 					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
 						{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
@@ -150,8 +158,10 @@
 {if !empty($documents) && count($documents)}
 		{tab_button_panel}
 			{tab_buttons}
-				<button type="button" class="lms-ui-button lms-ui-button-mail"
-						onclick="if (confirm('{trans("Are you sure, you want to send documents to customer?")}')) send_documents();">
+				{textformat assign="onclick" wrap=5000}
+					confirmDialog($t('Are you sure, you want to send documents to customer?')).done(send_documents);
+				{/textformat}
+				<button type="button" class="lms-ui-button lms-ui-button-mail" onclick="{$onclick}">
 					<i></i> {trans("Send documents")}
 				</button>
 				<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_docs();">

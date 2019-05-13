@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,11 +33,11 @@ function toggle_all_attachments(docid) {
 }
 
 function delete_docs() {
-	if (confirm($t("Are you sure, you want to delete selected documents?"))) {
-		document.customerdocuments.action = "?m=documentdel&is_sure=1";
+	confirmDialog($t("Are you sure, you want to delete selected documents?")).done(function() {
+		document.customerdocuments.action = "?m=documentdel";
 		document.customerdocuments.target = "";
 		document.customerdocuments.submit();
-	}
+	});
 }
 
 function print_docs() {
@@ -66,9 +66,9 @@ function send_documents() {
 
 $(function() {
 	$('.documentsend').click(function () {
-		if (confirm($t("Are you sure, you want to send document to customer?"))) {
+		confirmDialog($t("Are you sure, you want to send document to customer?"), this).done(function() {
 			window.open($(this).attr('href'));
-		}
+		});
 		return false;
 	});
 });
