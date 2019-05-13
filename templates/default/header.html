@@ -12,12 +12,12 @@
 	<link href="css/map.css" rel="stylesheet" type="text/css">
 	{block name="extra-css-styles"}{/block}
 	<link href="img/lms-net.gif" rel="shortcut icon">
-	<script type="text/javascript" src="js/common.js"></script>
-	<script type="text/javascript" src="js/base64.js"></script>
-	<script type="text/javascript" src="js/ClickShowHideMenu.js"></script>
-	<script type="text/javascript" src="js/autosuggest.js"></script>
-	<script type="text/javascript" src="js/mousetrap/mousetrap.min.js"></script>
-	<script type="text/javascript" src="js/mousetrap/plugins/global-bind/mousetrap-global-bind.min.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/base64.js"></script>
+	<script src="js/ClickShowHideMenu.js"></script>
+	<script src="js/autosuggest.js"></script>
+	<script src="js/mousetrap/mousetrap.min.js"></script>
+	<script src="js/mousetrap/plugins/global-bind/mousetrap-global-bind.min.js"></script>
 </head>
 <body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
 <input type="file" id="tinymce-image-upload" style="display: none;">
@@ -25,13 +25,12 @@
 <button id="lms-ui-back-to-top" class="lms-ui-button lms-ui-button-back">
 	<i></i> {trans("Back to top")}
 </button>
-<script type="text/javascript" src="js/overlib.js"></script>
+<script src="js/overlib.js"></script>
+{include file="modal-dialogs.html"}
+<script src="js/modal-dialogs.js"></script>
 {if $layout.popup}
 	{block name=module_content}{/block}
 {else}
-	{block name="confirm-dialog"}
-		{include file="confirm-dialog.html"}
-	{/block}
 	{block name=pageleftbar}
 		{include file="menu-panel.html"}
 	{/block}

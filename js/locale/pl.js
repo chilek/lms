@@ -2221,7 +2221,7 @@ $_LANG['PIN code is required!'] = 'Kod PIN jest wymagany!';
 $_LANG['Registry not selected!'] = 'Nie wybrano rejestru!';
 $_LANG['You have no write rights to selected registry!'] = 'Nie posiadasz prawa zapisu w wybranym rejestrze!';
 $_LANG['payments book'] = 'książeczka opłat';
-$_LANG['Add contact field'] = 'Dodaj pole kontaktu';
+$_LANG['Add contact'] = 'Dodaj kontakt';
 $_LANG['Enter contact name/description (optional)'] = 'Wprowadź nazwę/opis kontaktu (opcjonalnie)';
 $_LANG['Phone number is required!'] = 'Numer telefonu jest wymagany!';
 $_LANG['Excluded groups:'] = 'Wyłączone grupy:';
@@ -4337,7 +4337,7 @@ $_LANG['<!message-type>Message types:'] = 'Rodzaje wiadomości';
 $_LANG['<!message-type>message'] = 'wiadomość';
 $_LANG['<!message-type>note'] = 'notatka';
 
-$_LANG['Reply with quoting'] = 'Odpowiedz cytując';
+$_LANG['Quote'] = 'Cytuj';
 $_LANG['<!vocative>Reply'] = 'Odpowiedz';
 
 $_LANG['Unable to determine gps coordinates!'] = 'Nie można wyznaczyć współrzędnych GPS!';
@@ -4346,4 +4346,7 @@ $_LANG['representative'] = 'reprezentant';
 $_LANG['Representatives'] = 'Reprezentanci';
 $_LANG['Enter representative name (optional)'] = 'Wprowadź nazwę reprezentanta (opcjonalnie)';
 $_LANG['Check if representative should be disabled'] = 'Zaznacz jeśli reprezentant ma zostać wyłączony';
+
+$_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
+$_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
 
