@@ -30,11 +30,12 @@ $(function() {
 	});
 
 	$('#delete-nodegroups').click(function() {
-		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length &&
-			confirm($t("Are you sure, you want to remove node from selected groups?"))) {
-			$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id=' +
-				$(this).prev().val() + '&is_sure=1')
-				.submit();
+		if ($(this).closest('div.lms-ui-multi-check').find('input:checked').length) {
+			confirmDialog($t("Are you sure, you want to remove node from selected groups?"), this).done(function() {
+				$('form#nodegroupassignment').attr('action', '?m=nodegroup&action=delete&id=' +
+					$(this).prev().val()).submit();
+
+			});
 		}
 	});
 });
