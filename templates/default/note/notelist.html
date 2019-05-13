@@ -254,6 +254,10 @@
 	});
 
 	$('#account-notes').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
 		confirmDialog($t("Are you sure, you want to check/uncheck selected debit notes as accounted?"), this).done(function() {
 			document.page.action="?m=notepaid";
 			document.page.target="";
@@ -262,6 +266,10 @@
 	});
 
 	$('#archive-notes').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
 		confirmDialog($t("Are you sure, you want to archive selected debit notes?"), this).done(function() {
 			document.page.action="?m=notearchive&marks=invoice";
 			document.page.target="";
@@ -270,6 +278,10 @@
 	});
 
 	$('#unarchive-notes').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
 		confirmDialog($t("Are you sure, you want to unarchive selected debit notes"), this).done(function() {
 			document.page.action="?m=noteunarchive&marks=invoice";
 			document.page.target="";
@@ -278,6 +290,10 @@
 	});
 
 	$('#print-notes').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
 		document.page.action="?m=note&print=cached";
 		document.page.target="_blank";
 		document.page.submit();
