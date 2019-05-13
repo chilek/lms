@@ -85,13 +85,13 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if $message.type == $smarty.const.MSG_MAIL}
-			<img src="img/email.gif" alt="email">
+				<i class="lms-ui-icon-mail"></i>
 			{elseif $message.type == $smarty.const.MSG_WWW}
-			<img src="img/network.gif" alt="www">
+				<i class="lms-ui-icon-web"></i>
 			{elseif $message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT}
-			<img src="img/cms.gif" alt="userpanel">
+				<i class="lms-ui-icon-userpanel"></i>
 			{else}
-			<img src="img/sms.gif" alt="sms">
+				<i class="lms-ui-icon-sms"></i>
 			{/if}
 		</TD>
 		<TD class="bold">

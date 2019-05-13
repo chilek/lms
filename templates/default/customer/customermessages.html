@@ -63,13 +63,13 @@
 					</TD>
 					<TD class="bold" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{if $item.type == $smarty.const.MSG_MAIL}
-							<i class="lms-ui-icon-mail lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-mail fa-fw"></i>
 						{elseif $item.type == $smarty.const.MSG_WWW}
-							<i class="lms-ui-icon-web lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-web fa-fw"></i>
 						{elseif $item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT}
-							<i class="lms-ui-icon-userpanel lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-userpanel fa-fw"></i>
 						{else}
-							<i class="lms-ui-icon-sms lms-ui-fixed-width-icon"></i>
+							<i class="lms-ui-icon-sms fa-fw"></i>
 						{/if}
 						{$item.subject}
 					</TD>
