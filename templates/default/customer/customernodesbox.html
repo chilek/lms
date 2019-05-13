@@ -149,7 +149,10 @@
 						icon="lms-ui-icon-{if $node.warning}warnon{else}warnoff{/if}"
 						tip="{if $node.warning}Disable notice{else}Enable notice{/if}"}
 					{textformat assign="onclick" wrap=5000}
-						return confirmLink(this, $t('Are you sure, you want to remove node \'$a\' from database?', '{$node.name}'));
+						confirmDialog($t('Are you sure, you want to remove node \'$a\' from database?', '{$node.name}'), this).done(function() {
+							location.href = $(this).attr('href');
+						});
+						return false;
 					{/textformat}
 					{button type="link" href="?m=nodedel&id={$node.id}" icon="delete" tip="Delete"
 						onclick=$onclick}
