@@ -3,49 +3,12 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $docid}
-<SCRIPT>
 
+<script>
+
+	{if $docid}
 	window.open('?m=documentview&id={$docid}');
-
-</SCRIPT>
-{/if}
-<SCRIPT>
-	function delete_docs()
-	{
-		if (!confirm('{trans("Are you sure, you want to delete selected documents?")}'))
-			return;
-
-		document.page.action="?m=documentdel&is_sure=1";
-		document.page.target="";
-		document.page.submit();
-	}
-
-	function print_docs()
-	{
-		document.page.action="?m=documentview";
-		document.page.target="_blank";
-		document.page.submit();
-	}
-
-	function mark_docs()
-	{
-		document.page.action="?m=documentedit&action=confirm";
-		document.page.target="";
-		document.page.submit();
-	}
-
-	function archive_docs() {
-		document.page.action="?m=documentedit&action=archive";
-		document.page.target="";
-		document.page.submit();
-	}
-
-	function send_documents() {
-		document.page.action="?m=documentsend";
-		document.page.target="_blank";
-		document.page.submit();
-	}
+	{/if}
 
 	function toggle_all_attachments(docid) {
 		var elem = $('#allattachments-' + docid);
@@ -60,7 +23,9 @@
 	function applyFilter() {
 		document.choosefilter.submit();
 	}
-</SCRIPT>
+
+</script>
+
 <TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -88,7 +53,7 @@
 		</TD>
 		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $filter.direction == "asc" && $filter.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $filter.order == "customer"}<IMG src="img/{if $filter.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD class="text-right nobr">
-			<A href="?m=documentadd&amp;cid={$filter.customer}&amp;typeOD={$filter.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
+			{button icon="add" label="New Document" onclick="location.href = '?m=documentadd&cid={$filter.customer}&typeOD={$filter.type}';"}
 		</TD>
 	</TR>
 	<TR>
@@ -230,7 +195,7 @@
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
 		<TD class="text-right nobr">
 			{if $doc.senddocuments}
-				{button type="link" class="documentsend" icon="mail" href="?m=documentsend&id={$doc.docid}"
+				{button type="link" class="send-document" icon="mail" href="?m=documentsend&id={$doc.docid}"
 					tip="Document send"}
 			{/if}
 			{assign var=type value=$doc.type}
@@ -240,10 +205,10 @@
 			{/if}
 			{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
 				{button type="link" icon="archive" href="?m=documentedit&id={$doc.docid}&action=archive" tip="Archive"
-					onclick="return confirmLink(this, '{trans("Are you sure, you want to archive that document?")}')"}
+					class="archive-document"}
 			{/if}
 			{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_DELETE)}
-				{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to remove that document?")}')"
+				{button type="link" icon="delete" class="delete-document"
 					href="?m=documentdel&id={$doc.docid}" tip="Remove document"}
 			{/if}
 			{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
@@ -295,22 +260,11 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="nobr">
-						<button type="button" class="lms-ui-button lms-ui-button-mail"
-								onclick="if (confirm('{trans("Are you sure, you want to send documents to customer?")}')) send_documents();">
-							<i></i> {trans("Send documents")}
-						</button>
-						<button type="button" class="lms-ui-button lms-ui-button-print" onclick="javascript:print_docs();">
-							<i></i> {trans("Print")}
-						</button>
-						<button type="button" class="lms-ui-button lms-ui-button-confirm" onclick="javascript:mark_docs();">
-							<i></i> {trans("Confirm")}
-						</button>
-						<button type="button" class="lms-ui-button lms-ui-button-archive" onclick="javascript:archive_docs();">
-							<i></i> {trans("Archive")}
-						</button>
-						<button type="button" class="lms-ui-button lms-ui-button-delete" onclick="javascript:delete_docs();">
-							<i></i> {trans("Delete")}
-						</button>
+						{button icon="mail" label="Send documents" id="send-documents"}
+						{button icon="print" label="Print" id="print-documents"}
+						{button icon="confirm" label="Confirm" id="confirm-documents"}
+						{button icon="archive" label="Archive" id="archive-documents"}
+						{button icon="delete" label="Delete" id="delete-documents"}
 					</TD>
 					<TD class="text-right nobr">
 						<label>
@@ -325,13 +279,82 @@
 	</TR>
     </TFOOT>
 </TABLE>
+
 <script>
-	$('.documentsend').click(function() {
-		if (!confirm('{trans("Are you sure, you want to send document to customer?")}')) {
-			return false;
+
+	$('#send-documents').click(function() {
+		confirmDialog($t("Are you sure, you want to send documents to customer?"), this).done(function() {
+			document.page.action="?m=documentsend";
+			document.page.target="_blank";
+			document.page.submit();
+		});
+	});
+
+	$('#print-documents').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
 		}
-		window.open($(this).attr('href'));
+
+		document.page.action="?m=documentview";
+		document.page.target="_blank";
+		document.page.submit();
+	});
+
+	$('#confirm-documents').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		document.page.action="?m=documentedit&action=confirm";
+		document.page.target="";
+		document.page.submit();
+	});
+
+	$('#archive-documents').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to archive selected documents?"), this).done(function() {
+			document.page.action = "?m=documentedit&action=archive";
+			document.page.target = "";
+			document.page.submit();
+		});
+	});
+
+	$('#delete-documents').click(function() {
+		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		confirmDialog($t("Are you sure, you want to delete selected documents?"), this).done(function () {
+			document.page.action = "?m=documentdel";
+			document.page.target = "";
+			document.page.submit();
+		});
+	});
+
+	$('.archive-document').click(function() {
+		confirmDialog($t("Are you sure, you want to archive that document?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
 		return false;
 	});
+
+	$('.delete-document').click(function() {
+		confirmDialog($t("Are you sure, you want to remove that document?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
+	$('.send-document').click(function() {
+		confirmDialog($t("Are you sure, you want to send document to customer?"), this).done(function() {
+			window.open($(this).attr('href'));
+		});
+		return false;
+	});
+
 </script>
+
 {/block}
