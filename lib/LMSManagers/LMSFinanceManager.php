@@ -617,7 +617,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			}
 
 			// creates assignment record for starting partial period
-			if (isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
+			if ($data['datefrom'] && isset($data['settlement']) && $data['settlement'] == 2 && $data['period'] == MONTHLY) {
 				list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
 				$nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
 				$partial_dateto = $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
