@@ -32,7 +32,7 @@ elseif (isset($_POST['customerassignments']))
 if (isset($_GET['cid']))
 	$cid = intval($_GET['cid']);
 
-if ($_GET['is_sure'] == '1' && (isset($ids) || isset($cid))) {
+if (isset($ids) || isset($cid)) {
 	if (isset($ids)) {
 		if (!empty($ids))
 			$customer = $DB->GetOne('SELECT a.customerid

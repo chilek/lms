@@ -37,8 +37,7 @@
 		{tab_header_cell}
 			{if !$customerinfo.deleted}
 				<A href="?m=customerassignmentadd&id={$customerinfo.id}">{trans("New Liability")} &raquo;</A>
-				<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete all liabilities?")}')"
-						href="?m=customerassignmentdel&cid={$customerinfo.id}">{trans("Delete all")} &raquo;</A>
+				<A id="delete-all-assignments" href="#">{trans("Delete all")} &raquo;</A>
 			{/if}
 		{/tab_header_cell}
 	{/tab_header}
@@ -199,8 +198,12 @@
 						{button type="link" icon="wait" href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
 							tip="{if $a.suspended}Enable{else}Disable{/if} accounting of selected liability"}
 					{/if}
-					{button type="link" icon="delete" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
-						href="?m=customerassignmentdel&id={$a.id}" tip="Delete customer's liability"}
+					{textformat assign="onclick" wrap=5000}
+						confirmDialog($t('Are you sure, you want to delete this liability?')).done(function() {
+							location.href = '?m=customerassignmentdel&id={$a.id}';
+						});
+					{/textformat}
+					{button type="link" icon="delete" onclick=$onclick tip="Delete customer's liability"}
 					{button type="link" icon="edit" href="?m=customerassignmentedit&id={$a.id}" tip="Edit"}
 					<input type="checkbox" name="customerassignments[{$a.id}]" form="customerassignments-form"
 							value="{$a.id}" class="lms-ui-multi-check">
@@ -405,13 +408,18 @@
 		});
 
 		$('#delete-assignments').click(function() {
-			if (!$(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length
-				|| !confirm('{trans("Are you sure, you want to delete selected liabilities?")}'))
-				return false;
-			$('form[name=customerassignments]').attr('action', function(index, value) {
-				return value + '&is_sure=1';
-			});
-			$('form[name=customerassignments]').submit();
+			if ($(this).closest('.lms-ui-tab-contents.lms-ui-multi-check').find('input:checked').length) {
+				confirmDialog($t("Are you sure, you want to delete selected liabilities?")).done(function () {
+					$('form[name=customerassignments]').submit();
+				});
+			}
+		});
+
+		$('#delete-all-assignments').click(function() {
+			confirmDialog($t("Are you sure, you want to delete all liabilities?"))
+				.done(function () {
+					location.href = '?m=customerassignmentdel&cid={$customerinfo.id}';
+				});
 		});
 	});
 
