@@ -13,7 +13,7 @@
             </listitem>
             <listitem>
                       <para>computers inventory (IP, MAC),</para>
-            </listitem>   
+            </listitem>
             <listitem>
                       <para>simple financial system suited for network operations,</para>
             </listitem>
@@ -51,7 +51,7 @@
      <sect1 id="authors">
          <title>Authors</title>
          <sect2 id="lms">
-              <title>LMS Developers</title>     
+              <title>LMS Developers</title>
           <itemizedlist>
           <listitem>
                <para>PHP Code:
@@ -65,6 +65,7 @@
                <member><ulink url="http://www.chilan.com">Tomasz 'Chilek' Chilinski</ulink></member>
                <member><ulink url="http://kondi.net">Konrad 'kondi' Rzentarzewski</ulink></member>
                <member><ulink url="http://www.chilan.com">Grzegorz 'Ceho' Chwesewicz</ulink></member>
+               <member>Rafał 'Ravvar' Pietraszewicz</member>
                </simplelist>
                </para>
           </listitem>
@@ -91,7 +92,7 @@
           </listitem>
           <listitem>
               <para>Design:
-              <simplelist>     
+              <simplelist>
               <member><ulink url="http://wwww.baseciq.org">Lukasz 'Baseciq' Mozer</ulink></member>
               </simplelist>
               </para>
@@ -105,6 +106,7 @@
                <member><ulink url="http://www.chilan.com">Tomasz 'Chilek' Chilinski</ulink></member>
                <member><ulink url="http://kondi.net">Konrad 'kondi' Rzentarzewski</ulink></member>
                <member><ulink url="http://www.chilan.com">Grzegorz 'Ceho' Chwesewicz</ulink></member>
+               <member>Rafał 'Ravvar' Pietraszewicz</member>
                </simplelist>
                </para>
           </listitem>
@@ -149,13 +151,13 @@
          </sect2>
          <sect2 id="others">
           <title>Others</title>
-          <para>LMS uses elements of other software: 
+          <para>LMS uses elements of other software:
           <ulink url="http://www.phpmyadmin.net/">phpMyAdmin</ulink>,
-          <ulink url="http://phpsysinfo.sourceforge.net">phpsysinfo</ulink>, 
-          <ulink url="http://florian-amrhein.de/newsportal/index-anglish.php3">NewsPortal</ulink>, 
-          <ulink url="http://www.bosrup.com/web/overlib/">overLIB</ulink>, 
-          <ulink url="http://www.ros.co.nz/pdf/">ezpdf</ulink>, 
-	  <ulink url="http://www.xajaxproject.org/">xajax</ulink>, 
+          <ulink url="http://phpsysinfo.sourceforge.net">phpsysinfo</ulink>,
+          <ulink url="http://florian-amrhein.de/newsportal/index-anglish.php3">NewsPortal</ulink>,
+          <ulink url="http://www.bosrup.com/web/overlib/">overLIB</ulink>,
+          <ulink url="http://www.ros.co.nz/pdf/">ezpdf</ulink>,
+	  <ulink url="http://www.xajaxproject.org/">xajax</ulink>,
           Piotr Kleban's number-to-words conversion procedures and
           code examples from <ulink url="http://www.php.net/manual/">
           PHP manual</ulink>.</para>
@@ -163,16 +165,16 @@
      </sect1>
      <sect1 id="legalnotice">
           <title>Legal Notice</title>
-         <para>This program is free software; you can redistribute it and/or modify it 
-         under the terms of the GNU General Public License as published by the 
-         Free Software Foundation; either version 2 of the License, or (at you option) 
+         <para>This program is free software; you can redistribute it and/or modify it
+         under the terms of the GNU General Public License as published by the
+         Free Software Foundation; either version 2 of the License, or (at you option)
          any later version.</para>
-         <para>This program is distributed in the hope that it will be useful, but 
-         WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-         or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+         <para>This program is distributed in the hope that it will be useful, but
+         WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+         or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
          for more details.</para>
-         <para>You should have received a copy of the GNU General Public License along 
-         with this program; if not, write to the Free Software Foundation, Inc., 
+         <para>You should have received a copy of the GNU General Public License along
+         with this program; if not, write to the Free Software Foundation, Inc.,
          59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.</para>
          <para>Text of License is <ulink url="../../COPYING">here</ulink>.</para>
      </sect1>
@@ -181,7 +183,7 @@
           <sect2 id="contact">
                <title>Contact</title>
                <para>Preferably via a mailing list, which you can subscribe by sending
-               empty e-mail with subject "subscribe lms-en" to address 
+               empty e-mail with subject "subscribe lms-en" to address
                <ulink url="mailto: ecartis@lists.lms.org.pl">ecartis@lists.lms.org.pl</ulink>.
                Further emails should be sent to address lms-en@lists.lms.org.pl.
                </para>
@@ -209,7 +211,7 @@ cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot logout</screen>
           </sect2>
           <sect2 id="history">
                <title>Changelog</title>
-               <para>Information about changes and version history of LMS is included in 
+               <para>Information about changes and version history of LMS is included in
                <ulink url="../../ChangeLog">Changelog</ulink>.</para>
           </sect2>
 		<sect2 id="comercial-support">
@@ -217,7 +219,7 @@ cvs -d :pserver:cvs@cvs.lms.org.pl:/cvsroot logout</screen>
 			<para>
 				There are questions appearing periodically on lms mailing lists about adding some funtions to LMS.
 				Matter of payment for support is very difficult. Note, that there is no company behind LMS,
-				so any commercial adoption or support should be discussed directly between You and involved developer.  
+				so any commercial adoption or support should be discussed directly between You and involved developer.
 				You are reading english version of documentation, it's likely that you are not from Poland, which makes even simple things like issuing invoice or money transfer complex.
 			 The most experienced developer in that matter is Alec. You can see details on support on his page: <ulink url="http://lms.alec.pl/index.php?lang=en">http://lms.alec.pl/index.php?lang=en</ulink></para>
 	</sect2>

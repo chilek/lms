@@ -160,6 +160,7 @@ Rozdział 1. Wstęp
        Tomasz 'Chilek' Chiliński
        Konrad 'kondi' Rzentarzewski
        Grzegorz 'Ceho' Chwesewicz
+       Rafał 'Ravvar' Pietraszewicz
      * Kod C:
 
        Aleksander 'A.L.E.C' Machniak
@@ -184,6 +185,7 @@ Rozdział 1. Wstęp
        Tomasz 'Chilek' Chiliński
        Konrad 'kondi' Rzentarzewski
        Grzegorz 'Ceho' Chwesewicz
+       Rafał 'Ravvar' Pietraszewicz
      * Grafika:
 
        Piotr 'Pierzak' Mierzeński
