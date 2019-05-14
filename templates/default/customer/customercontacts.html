@@ -26,8 +26,8 @@
 
 </style>
 
-<SCRIPT type="text/javascript">
-<!--
+<script>
+
 	function newcontact(type) {
 		var table = $('table.contacts[data-type="' + type + '"]');
 		var innerHTML = '<tr class="contact"><td class="nobr">';
@@ -56,13 +56,17 @@
 		innerHTML += '<td>' + $('#contact-button-template').html() + '</td>';
 		innerHTML += '</tr>';
 		table.append(innerHTML);
+/*
+		// don't remember what it did
 		$('[title]', table).tooltip({
 			position: { my: "left top" }
 		});
+*/
 		table.append($('.newcontact', table));
 	}
-//-->
-</SCRIPT>
+
+</script>
+
 {foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
 <TR class="customer-contacts">
 	<TD style="width: 1%;" class="valign-top">
@@ -127,13 +131,15 @@
 		</fieldset>
 	</TD>
 </TR>
+{/foreach}
+
 <div id="contact-button-template" style="display: none;">
 	<div class="contact-buttons">
 		{button icon="trash" class="delete-contact" tip="Delete"}
 		{button icon="clear" class="clear-contact" tip="Clear"}
 	</div>
 </div>
-{/foreach}
+
 <script>
 
 	$('.contacttype-show').click(function() {
