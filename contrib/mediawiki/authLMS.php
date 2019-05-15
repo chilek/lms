@@ -20,17 +20,17 @@ $wgExtensionCredits['other'][] = array(
 
 class authLMS extends AuthPlugin
 {
-    var $dbname;
-    var $host;
-    var $dbtype;
-    var $dbuser;
-    var $dbpass;
+    private $dbname;
+    private $host;
+    private $dbtype;
+    private $dbuser;
+    private $dbpass;
 
-    var $ip = false;
-    var $passverified = false;
-    var $access = false;
-    var $accessfrom = false;
-    var $accessto = false;
+    private $ip = false;
+    private $passverified = false;
+    private $access = false;
+    private $accessfrom = false;
+    private $accessto = false;
 
     public function __construct($dbname, $host = 'localhost', $dbtype = '', $user = '', $password = '')
     {
@@ -85,7 +85,7 @@ class authLMS extends AuthPlugin
         return false;
     }
 
-    function VerifyPassword($pass1 = '', $pass2)
+    private function VerifyPassword($pass1 = '', $pass2 = '')
     {
         if (empty($pass1)) {
             return false;
@@ -95,7 +95,7 @@ class authLMS extends AuthPlugin
         }
     }
 
-    function VerifyHost($hosts = '')
+    private function VerifyHost($hosts = '')
     {
         if (!$hosts) {
             return true;
@@ -131,7 +131,7 @@ class authLMS extends AuthPlugin
         return false;
     }
 
-    function VerifyAccess($access)
+    private function VerifyAccess($access)
     {
         $access = intval($access);
         if (empty($access)) {
@@ -141,7 +141,7 @@ class authLMS extends AuthPlugin
         }
     }
 
-    function VerifyAccessFrom($access)
+    private function VerifyAccessFrom($access)
     {
         $access = intval($access);
         if (empty($access)) {
@@ -155,7 +155,7 @@ class authLMS extends AuthPlugin
         }
     }
 
-    function VerifyAccessTo($access)
+    private function VerifyAccessTo($access)
     {
         $access = intval($access);
         if (empty($access)) {
