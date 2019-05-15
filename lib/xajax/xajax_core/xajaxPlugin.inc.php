@@ -1,7 +1,4 @@
 <?php
-
-// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-
 /*
     File: xajaxPlugin.inc.php
 
