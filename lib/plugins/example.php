@@ -36,7 +36,7 @@ class example_lms_plugin
      *
      * @param object $LMS LMS object
      */
-    function __construct($LMS)
+    public function __construct($LMS)
     {
         $this->lms = $LMS;
     }
@@ -48,7 +48,7 @@ class example_lms_plugin
      *
      * @return array Node data
      */
-    function node_after($vars)
+    public function node_after($vars)
     {
         // exec("lmsd -q");
 

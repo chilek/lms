@@ -29,12 +29,12 @@ class lms_smspasswords_plugin
     private $lms;
     private $authenticated = false;
 
-    function __construct($LMS)
+    public function __construct($LMS)
     {
         $this->lms = $LMS;
     }
 
-    function access_table_init($vars)
+    public function access_table_init($vars)
     {
         $vars['accesstable'][250] = array('name' => trans('one-time passwords'), 'privilege' => 'onetime_passwords');
         ksort($vars['accesstable']);
@@ -42,7 +42,7 @@ class lms_smspasswords_plugin
         return $vars;
     }
 
-    function send_new_password($phone)
+    public function send_new_password($phone)
     {
         global $SMARTY;
 
@@ -59,7 +59,7 @@ class lms_smspasswords_plugin
         $SMARTY->display('smspassword.html');
     }
 
-    function module_load_before($vars)
+    public function module_load_before($vars)
     {
         global $SMARTY;
 
