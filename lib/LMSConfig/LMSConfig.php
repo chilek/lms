@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable Generic.NamingConventions.UpperCaseConstantName
+
 /*
  *  LMS version 1.11-git
  *
@@ -39,22 +41,22 @@ class LMSConfig
      * @var ConfigContainer Config
      */
     private static $config;
-    
+
     /**
      * @var ConfigContainer UI Config
      */
     private static $ui_config;
-    
+
     /**
      * @var ConfigContainer INI Config
      */
     private static $ini_config;
-    
+
     /**
      * @var ConfigContainer User rights config (privileges)
      */
     private static $user_rights_config;
-    
+
     /**
      * Returns ini config
      *
@@ -76,7 +78,7 @@ class LMSConfig
         }
         return self::$ini_config;
     }
-    
+
     /**
      * Returns ui config
      *
@@ -101,7 +103,7 @@ class LMSConfig
         }
         return self::$ui_config;
     }
-    
+
     /**
      * Returns user rights configuration
      *
@@ -130,7 +132,7 @@ class LMSConfig
         }
         return self::$user_rights_config;
     }
-    
+
     /**
      * Returns merged ini and ui configs
      *
@@ -151,7 +153,7 @@ class LMSConfig
         }
         return self::$config;
     }
-    
+
     /**
      * Merges ini and ui configs
      *
@@ -169,7 +171,7 @@ class LMSConfig
         $ini_config = null;
         $ui_config = null;
         $rights_config = null;
-        
+
         if (isset($options['force_ini_only'])) {
             $ini_config = self::getUiConfig($options);
             $ui_config = self::$ui_config;
@@ -195,28 +197,28 @@ class LMSConfig
                 $rights_config = new ConfigContainer();
             }
         }
-        
+
         $ui_merge_priority = self::default_ui_merge_priority;
         if (isset($options['ui_merge_priority'])) {
             $ui_merge_priority = $options['ui_merge_priority'];
         }
-        
+
         $ini_merge_priority = self::default_ini_merge_priority;
         if (isset($options['ini_merge_priority'])) {
             $ui_merge_priority = $options['ini_merge_priority'];
         }
-        
+
         $config = null;
-        
+
         if ($ini_merge_priority < $ui_merge_priority) {
             $config = self::overrideConfigs($ui_config, $ini_config);
         } else {
             $config = self::overrideConfigs($ini_config, $ui_config);
         }
-        
+
         return self::appendOneConfigSectionsToAnother($config, $rights_config);
     }
-    
+
     /**
      * Overrides secondary config variables by primary ones
      *
@@ -227,7 +229,7 @@ class LMSConfig
     private static function overrideConfigs(ConfigContainer $primary_config, ConfigContainer $secondary_config)
     {
         $config = new ConfigContainer();
-        
+
         $config->addSections($secondary_config->getSections());
         foreach ($primary_config->getSections() as $section) {
             if ($config->hasSection($section->getSectionName())) {
@@ -236,10 +238,10 @@ class LMSConfig
                 $config->addSection($section);
             }
         }
-        
+
         return $config;
     }
-    
+
     /**
      * Adds sections from one config to another
      *

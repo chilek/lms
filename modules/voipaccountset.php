@@ -55,9 +55,8 @@ if ($id && $LMS->VoipAccountExists($id)) {
         $data = array('voipaccountid' => $id);
         $LMS->ExecHook('voip_account_set_after', $data);
     }
-}
-// Selected voipaccounts
-else if (!empty($_POST['marks'])) {
+} else if (!empty($_POST['marks'])) {
+    // Selected voipaccounts
     $voipaccounts = array();
     foreach ($_POST['marks'] as $id) {
         if ($LMS->VoipAccountSet($id, $access)) {

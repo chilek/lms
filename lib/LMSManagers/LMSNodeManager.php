@@ -392,6 +392,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                                 switch ($project) {
                                     case -2:
                                         $searchargs[] = 'n.invprojectid IS NULL';
+                                        break;
                                     case -1:
                                         break;
                                     default:
@@ -811,7 +812,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $result['total'] = $result['connected'] + $result['disconnected'];
         return $result;
     }
-    
+
     public function SetNodeLinkType($node, $link = null)
     {
         if (empty($link)) {

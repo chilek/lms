@@ -31,11 +31,11 @@
 
 class Sysinfo
 {
-    
+
     public function __construct()
     {
     }
-    
+
     public function get_sysinfo()
     {
         $return['hostname'] = $this->hostname();
@@ -56,7 +56,7 @@ class Sysinfo
     {
         $buffer = '';
         $program = $this->find_program($program);
-    
+
         if (!$program) {
             return;
         }
@@ -119,13 +119,13 @@ class Sysinfo
         }
         return $hostname;
     }
-        
+
     public function uptime()
     {
         // Uptime function.
         // Taken afair from PHPSysinfo
         // Untested on *BSD. Can anyone chek this out on *BSD machine? Thanx.
-                
+
         switch (PHP_OS) {
             case 'Linux':
                 $fd = fopen('/proc/uptime', 'r');
@@ -188,6 +188,7 @@ class Sysinfo
             case 'WinNT':
             case 'Win32':
                 $result = 'N.A.';
+                break;
             default:
                 $who = explode('=', execute_program('who', '-q'));
                 $result = $who[1];

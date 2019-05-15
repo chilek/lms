@@ -296,9 +296,8 @@ if (isset($_POST['schema'])) {
                     for ($i=0; $i<$data_cnt-$tdata_cnt; $i++) {
                         $tdata[] = str_replace(',', '.', $tariff['value']);
                     }
-                }
-                // removed periods
-                else {
+                } else {
+                    // removed periods
                     $tdata = array_slice($tdata, 0, $data_cnt);
                 }
 

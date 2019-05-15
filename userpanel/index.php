@@ -267,7 +267,7 @@ if ($SESSION->islogged) {
     }
 
     if ($module_dir !== null) {
-            include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
+        include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
 
         $function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';
         if (function_exists('module_'.$function)) {
@@ -279,9 +279,8 @@ if ($SESSION->islogged) {
                 $layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);
                 $SMARTY->display('error.html');
         }
-    }
+    } elseif ($module=='') {
         // if no module selected, redirect on module with lowest prio
-    elseif ($module=='') {
         $redirectmodule = 'nomodulesfound';
         $redirectprio = 999;
         foreach ($USERPANEL->MODULES as $menupos) {

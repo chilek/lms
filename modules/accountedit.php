@@ -42,7 +42,7 @@ if (isset($_POST['account'])) {
     $oldlogin = $account['login'];
     $oldowner = $account['ownerid'];
     $oldtype = $account['type'];
-    
+
     $account = $_POST['account'];
     $quota = $_POST['quota'];
     $account['id'] = $id;
@@ -58,7 +58,7 @@ if (isset($_POST['account'])) {
     } else {
         $error['type'] = true;
     }
-                
+
     if (!preg_match('/^[a-z0-9._-]+$/', $account['login'])) {
         $error['login'] = trans('Login contains forbidden characters!');
     } elseif (!$account['domainid']) {
@@ -69,15 +69,14 @@ if (isset($_POST['account'])) {
             array($account['login'], $account['domainid'])
         )) {
             $error['login'] = trans('Account with that login name exists!');
-        }
-        // if account is of type mail, check if we've got an alias with the same login@domain
-        elseif ($account['domainid'] && ($account['type'] & 2)) {
+        } elseif ($account['domainid'] && ($account['type'] & 2)) {
+            // if account is of type mail, check if we've got an alias with the same login@domain
             if ($DB->GetOne('SELECT 1 FROM aliases WHERE login=? AND domainid=?', array($account['login'], $account['domainid']))) {
                 $error['login'] = trans('Alias with that login name already exists in that domain!');
             }
         }
     }
-    
+
     if ($account['mail_forward'] != '' && !check_email($account['mail_forward'])) {
             $error['mail_forward'] = trans('Incorrect email!');
     }
@@ -85,7 +84,7 @@ if (isset($_POST['account'])) {
     if ($account['mail_bcc'] != '' && !check_email($account['mail_bcc'])) {
             $error['mail_bcc'] = trans('Incorrect email!');
     }
-            
+
     if ($account['expdate'] == '') {
             $account['expdate'] = 0;
     } else {

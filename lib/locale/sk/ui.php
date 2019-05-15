@@ -35,7 +35,7 @@ function uptimef($ts)
     $days  = floor($hours / 24);
     $hours = floor($hours - ($days * 24));
     $min= floor($min - ($days * 60 * 24) - ($hours * 60));
-    
+
     $result = '';
     if ($days != 0) {
         $result = $days;
@@ -74,7 +74,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
     // from PEAR package Number_Words-0.3.1
     // 'short_version' added by alec/kubatyszko
     // added leading space trim's by alec
-    
+
     if ($short_version) {
             $patterns[0] = "/0/";
             $patterns[1] = "/1/";
@@ -194,10 +194,10 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
     switch (strlen($num)) {
         case 3:
             $h = (int)substr($num, -3, 1);
-
+            break;
         case 2:
             $t = (int)substr($num, -2, 1);
-
+            break;
         case 1:
             $d = (int)substr($num, -1, 1);
             break;
@@ -243,7 +243,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
             $ret .= $_sep . 'sto';
             break;
     }
-    
+
     switch ($t) {
         case 9:
         case 8:

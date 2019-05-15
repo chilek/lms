@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-              
+
 class ExecStack
 {
     public $version = '1.11-git';
@@ -35,7 +35,7 @@ class ExecStack
     public $action;
     public $modules_dir;
 
-    public function __construct($directory = 'modules/', $module, $action)
+    public function __construct($module, $action, $directory = 'modules/')
     {
         $this->module = $module;
         $this->action = $action;
@@ -43,7 +43,7 @@ class ExecStack
         $this->loadModules($directory);
         $this->buildExecStack($module, $action);
     }
-    
+
     public function loadModules($modules_dir)
     {
         $this->modules_dir = $modules_dir;
@@ -108,7 +108,7 @@ class ExecStack
         }
 
         $this->_MODINFO = $_MODINFO_tmp;
-        
+
         return $this->_MODINFO;
     }
 
@@ -140,7 +140,7 @@ class ExecStack
             'pre/*:*' => array(),
             'post/*:*' => array(),
             );
-            
+
         if ($this->_MODINFO) {
             foreach ($this->_MODINFO as $module_name => $module_info) {
                 if (isset($module_info['actions'])) {
@@ -154,7 +154,7 @@ class ExecStack
                 }
             }
         }
-                                
+
         return $this->_BINDTABLE;
     }
 
@@ -167,7 +167,7 @@ class ExecStack
     {
         return ! $this->_MODINFO[$module]['actions'][$action]['notemplate'];
     }
-    
+
     public function getTemplate($module, $action)
     {
         return $this->_MODINFO[$module]['actions'][$action]['template'];
@@ -240,7 +240,7 @@ class ExecStack
 
             // TODO: consider to make functions that will find
             // actions suitable for situations described below
-            
+
             if (! $this->moduleExists($module)) {
                 $module = 'core';
                 $action = 'err_modulenotfound';
@@ -255,7 +255,7 @@ class ExecStack
                 $action = 'err_actionnotpublic';
             }
         }
-                
+
         if ($depth > 15) {
             return null;
         }
@@ -263,7 +263,7 @@ class ExecStack
         if ($this->_BINDTABLE == array()) {
             $this->buildBindTable();
         }
-    
+
         $stack = array();
 
         if ($depth == 0 && $this->_BINDTABLE['pre/*:*']) {
@@ -274,7 +274,7 @@ class ExecStack
                 }
             }
         }
-        
+
         if (isset($this->_BINDTABLE['pre/'.$module.':'.$action])) {
             foreach ($this->_BINDTABLE['pre/'.$module.':'.$action] as $bind) {
                 list($tmodule, $taction) = explode(':', $bind);
@@ -283,9 +283,9 @@ class ExecStack
                 }
             }
         }
-        
+
         array_push($stack, $module.':'.$action);
-    
+
         if (isset($this->_BINDTABLE['post/'.$module.':'.$action])) {
             foreach ($this->_BINDTABLE['post/'.$module.':'.$action] as $bind) {
                 list($tmodule, $taction) = explode(':', $bind);
@@ -294,7 +294,7 @@ class ExecStack
                 }
             }
         }
-        
+
         if ($depth == 0 && $this->_BINDTABLE['post/*:*']) {
             foreach ($this->_BINDTABLE['post/*:*'] as $bind) {
                 list($tmodule, $taction) = explode(':', $bind);
@@ -303,7 +303,7 @@ class ExecStack
                 }
             }
         }
-        
+
         if ($stack && $depth == 0) {
             $this->_EXECSTACK = array();
             foreach ($stack as $stackitem) {

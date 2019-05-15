@@ -35,7 +35,7 @@ function uptimef($ts)
     $days  = floor($hours / 24);
     $hours = floor($hours - ($days * 24));
     $min= floor($min - ($days * 60 * 24) - ($hours * 60));
-    
+
     $result = '';
     if ($days != 0) {
         $result = $days;
@@ -219,11 +219,11 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
             $ret = $_sep . $_minus;
             $num = substr($num, 1);
     }
-        
+
         // strip excessive zero signs and spaces
         $num = trim($num);
         $num = preg_replace('/^0+/', '', $num);
-        
+
     if (strlen($num) > 3) {
             $maxp = strlen($num)-1;
             $curp = $maxp;
@@ -243,7 +243,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
                     continue;
             }
         }
-            
+
         $num = substr($num, $maxp - $curp, $curp - $p + 1);
             $ret = trim($ret);
         if ($num == 0) {
@@ -252,25 +252,24 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
     } elseif ($num == 0 || $num == '') {
             return $_digits[0];
     }
-    
+
     $h = $t = $d = 0;
-      
+
     switch (strlen($num)) {
         case 3:
             $h = (int)substr($num, -3, 1);
-
+            break;
         case 2:
             $t = (int)substr($num, -2, 1);
-
+            break;
         case 1:
             $d = (int)substr($num, -1, 1);
             break;
-
         case 0:
             return;
         break;
     }
-    
+
     if ($h) {
         $ret .= $_sep . $_digits[$h] . $_sep . 'hundred';
 
@@ -332,22 +331,22 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
             $ret .= $_sep . $_digits[$d];
         }
     }
-  
+
     if ($power > 0) {
         if (isset($_exponent[$power])) {
             $lev = $_exponent[$power];
         }
-    
+
         if (!isset($lev) || !is_array($lev)) {
             return null;
         }
-     
+
         $ret .= $_sep . $lev[0];
     }
-    
+
     if ($powsuffix != '') {
         $ret .= $_sep . $powsuffix;
     }
-    
+
         return trim($ret);
 }
