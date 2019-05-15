@@ -9,14 +9,14 @@ class VarStream
     protected static $_data = array();
     protected static $_dataIdx = 0;
     
-    static function createReference(&$var)
+    static public function createReference(&$var)
     {
         $idx = self::$_dataIdx++;
         self::$_data[$idx] =& $var;
         return __CLASS__.'://'.$idx;
     }
     
-    static function unsetReference($path)
+    static public function unsetReference($path)
     {
         $url = parse_url($path);
         $cDataIdx = $url["host"];
