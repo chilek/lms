@@ -1,7 +1,5 @@
 <?php
 
-// phpcs:disable Generic.NamingConventions.UpperCaseConstantName
-
 /*
  * LMS version 1.11-git
  *
@@ -65,7 +63,7 @@ class LMS
     protected $project_manager;
     protected $file_manager;
 
-    const db_dump_multi_record_limit = 500;
+    const DB_DUMP_MULTI_RECORD_LIMIT = 500;
 
     public function __construct(&$DB, &$AUTH, &$SYSLOG)
     {
@@ -309,7 +307,7 @@ class LMS
                 $fields = array_keys($record);
 
                 $query = 'INSERT INTO ' . $tablename . ' (' . implode(',', $fields) . ') VALUES ';
-                $record_limit = self::db_dump_multi_record_limit;
+                $record_limit = self::DB_DUMP_MULTI_RECORD_LIMIT;
                 $records = array();
                 $this->DB->Execute('SELECT * FROM ' . $tablename);
                 while ($row = $this->DB->_driver_fetchrow_assoc()) {
@@ -326,10 +324,10 @@ class LMS
                     if (!$record_limit) {
                         fputs($dumpfile, $query . implode(',', $records) . ";\n");
                         $records = array();
-                        $record_limit = self::db_dump_multi_record_limit;
+                        $record_limit = self::DB_DUMP_MULTI_RECORD_LIMIT;
                     }
                 }
-                if ($record_limit < self::db_dump_multi_record_limit) {
+                if ($record_limit < self::DB_DUMP_MULTI_RECORD_LIMIT) {
                     fputs($dumpfile, $query . implode(',', $records) . ";\n");
                 }
             }

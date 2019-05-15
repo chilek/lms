@@ -1284,25 +1284,25 @@ if ($netnodes) {
                                             $radiosectorid++;
                                         } else {
                                             foreach ($radiosectors as $radiosector) {
-                                                            $radiosector = $allradiosectors[$radiosector];
-                                                            $data = array(
-                                                                'sr_id' => $radiosectorid,
-                                                                'sr_wwid' => $netnode['id'],
-                                                                'sr_intid' => $netintid,
-                                                                'sr_license' => empty($radiosector['license']) ? 'Nie' : 'Tak',
-                                                                'sr_licensenr' => empty($radiosector['license']) ? '' : $radiosector['license'],
-                                                                'sr_azimuth' => round($radiosector['azimuth']),
-                                                                'sr_width' => round($radiosector['width']),
-                                                                'sr_altitude' => $radiosector['altitude'],
-                                                                'sr_range' => $radiosector['rsrange'],
-                                                                'sr_maxspeed' => round($linkspeed / 1000),
-                                                                'sr_invproject' => strlen($prj) ? $prj : '',
-                                                                'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
-                                                            );
-                                                            if (in_array('sr', $sheets)) {
-                                                                $buffer .= 'Z,' . to_csv($data) . EOL;
-                                                            }
-                                                            $radiosectorid++;
+                                                $radiosector = $allradiosectors[$radiosector];
+                                                $data = array(
+                                                    'sr_id' => $radiosectorid,
+                                                    'sr_wwid' => $netnode['id'],
+                                                    'sr_intid' => $netintid,
+                                                    'sr_license' => empty($radiosector['license']) ? 'Nie' : 'Tak',
+                                                    'sr_licensenr' => empty($radiosector['license']) ? '' : $radiosector['license'],
+                                                    'sr_azimuth' => round($radiosector['azimuth']),
+                                                    'sr_width' => round($radiosector['width']),
+                                                    'sr_altitude' => $radiosector['altitude'],
+                                                    'sr_range' => $radiosector['rsrange'],
+                                                    'sr_maxspeed' => round($linkspeed / 1000),
+                                                    'sr_invproject' => strlen($prj) ? $prj : '',
+                                                    'sr_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
+                                                );
+                                                if (in_array('sr', $sheets)) {
+                                                    $buffer .= 'Z,' . to_csv($data) . EOL;
+                                                }
+                                                $radiosectorid++;
                                             }
                                         }
                                     }

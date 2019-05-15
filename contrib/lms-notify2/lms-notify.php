@@ -223,32 +223,32 @@ function create_message()
 }
 function send_email($msgid, $cid, $rmail, $rname, $subject, $body)
 {
-        global $LMS, $DB, $mail_from, $footer;
-        $DB->Execute(
-            "INSERT INTO messageitems
-                (messageid, customerid, destination, status)
-                VALUES (?, ?, ?, ?)",
-            array($msgid, $cid, $rmail, 1)
-        );
+    global $LMS, $DB, $mail_from, $footer;
+    $DB->Execute(
+        "INSERT INTO messageitems
+            (messageid, customerid, destination, status)
+            VALUES (?, ?, ?, ?)",
+        array($msgid, $cid, $rmail, 1)
+    );
     //echo "$msgid, $cid, $rmail, 1\n";
-        $headers = array('From' => $mail_from, 'To' => qp_encode($rname) . ' <' . $rmail . '>',
-        'Subject' => $subject, 'X-msgid' => $DB->GetLastInsertID('messageitems'),
-        'X-customerid' => $cid, 'Return-receipt-to' => $mail_from);
-        if ($footer!='') {
-            $body.="\n\n".$footer."\n";
-        }
-        $result = $LMS->SendMail($rmail, $headers, $body);
+    $headers = array('From' => $mail_from, 'To' => qp_encode($rname) . ' <' . $rmail . '>',
+    'Subject' => $subject, 'X-msgid' => $DB->GetLastInsertID('messageitems'),
+    'X-customerid' => $cid, 'Return-receipt-to' => $mail_from);
+    if ($footer!='') {
+        $body.="\n\n".$footer."\n";
+    }
+    $result = $LMS->SendMail($rmail, $headers, $body);
 
-        $query = "UPDATE messageitems
-                SET status = ?, lastdate = ?NOW?, error = ?
-                WHERE messageid = ? AND customerid = ?";
+    $query = "UPDATE messageitems
+            SET status = ?, lastdate = ?NOW?, error = ?
+            WHERE messageid = ? AND customerid = ?";
 
-        if (is_string($result)) {
-                $DB->Execute($query, array(3, $result, $msgid, $cid));
-        } else { // MSG_SENT
-                $DB->Execute($query, array($result, null, $msgid, $cid));
-        }
-        return($result);
+    if (is_string($result)) {
+            $DB->Execute($query, array(3, $result, $msgid, $cid));
+    } else { // MSG_SENT
+            $DB->Execute($query, array($result, null, $msgid, $cid));
+    }
+    return($result);
 }
 function send_sms($msgid, $cid, $phone, $data)
 {

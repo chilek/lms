@@ -16,8 +16,8 @@ matrix:
       language: php
       php: 5.4
       env:
-        PHPCS_VER="^2"
-        PHPCS_STANDARD="phpcs2.xml"
+        PHPCS_VER="^3"
+        PHPCS_STANDARD="phpcs3.xml"
 
     - os: linux
       language: php

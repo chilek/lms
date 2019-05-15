@@ -1,7 +1,5 @@
 <?php
 
-// phpcs:disable Generic.NamingConventions.UpperCaseConstantName
-
 /*
  *  LMS version 1.11-git
  *
@@ -34,8 +32,8 @@
  */
 class LMSConfig
 {
-    const default_ui_merge_priority = 1;
-    const default_ini_merge_priority = 2;
+    const DEFAULT_UI_MERGE_PRIORITY = 1;
+    const DEFAULT_INI_MERGE_PRIORITY = 2;
 
     /**
      * @var ConfigContainer Config
@@ -198,12 +196,12 @@ class LMSConfig
             }
         }
 
-        $ui_merge_priority = self::default_ui_merge_priority;
+        $ui_merge_priority = self::DEFAULT_UI_MERGE_PRIORITY;
         if (isset($options['ui_merge_priority'])) {
             $ui_merge_priority = $options['ui_merge_priority'];
         }
 
-        $ini_merge_priority = self::default_ini_merge_priority;
+        $ini_merge_priority = self::DEFAULT_INI_MERGE_PRIORITY;
         if (isset($options['ini_merge_priority'])) {
             $ui_merge_priority = $options['ini_merge_priority'];
         }

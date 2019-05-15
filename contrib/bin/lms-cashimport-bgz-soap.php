@@ -166,41 +166,41 @@ if ($cfg = $DB->GetAll('SELECT * FROM cashsources WHERE name = "IDEN BGŻ"')) {
 }
 
 //utworzenie polaczenia z bankiem
-   $soap_client = new My_SoapClient(
-       $soap_url,
-       array(
-                            'trace'             => true,
-                            'exceptions'    => true,
-                                    'cache_wsdl'    => WSDL_CACHE_NONE
-       )
-   );
+    $soap_client = new My_SoapClient(
+        $soap_url,
+        array(
+            'trace'             => true,
+            'exceptions'    => true,
+            'cache_wsdl'    => WSDL_CACHE_NONE
+        )
+    );
 
 // pobranie listy plikow z banku
-   $bgzDocuments = $soap_client->getDocuments(array('in0'=>$pLogin,'in1'=>$pPassword,'in2'=>$pIden));
+    $bgzDocuments = $soap_client->getDocuments(array('in0'=>$pLogin,'in1'=>$pPassword,'in2'=>$pIden));
 
 //dla kazdego pliku
-   foreach ($bgzDocuments->out->Document as $row) {
+    foreach ($bgzDocuments->out->Document as $row) {
         //sprawdzenie czy plik jest zapisany w bazie
         $query= "SELECT * FROM sourcefiles WHERE fileid = $row->id and name ='$row->name' and idate =UNIX_TIMESTAMP('". substr($row->fileDate, 0, 10)."')";
         //echo $query;
-       if ($sql_plik = $DB->GetAll($query)) {
-           echo "Plik ".$row->name." jest już w bazie.\n";
-       } else {
-           echo "Dodaje plik ".$row->name." do bazy.\n";
+        if ($sql_plik = $DB->GetAll($query)) {
+            echo "Plik ".$row->name." jest już w bazie.\n";
+        } else {
+            echo "Dodaje plik ".$row->name." do bazy.\n";
         //pobranie pliku
-           $bgzDocument = $soap_client->getDocument(array('in0'=>$row->id,'in1'=>$pLogin,'in2'=>$pPassword,'in3'=>$pIden));
-           $plik=iconv("ISO-8859-2", "UTF-8", $bgzDocument->out);
+            $bgzDocument = $soap_client->getDocument(array('in0'=>$row->id,'in1'=>$pLogin,'in2'=>$pPassword,'in3'=>$pIden));
+            $plik=iconv("ISO-8859-2", "UTF-8", $bgzDocument->out);
         //dodanie pliku do bazy danych
-           $query= "Insert INTO sourcefiles (name,idate,file,fileid,state)
+            $query= "Insert INTO sourcefiles (name,idate,file,fileid,state)
 		 	values('$row->name',UNIX_TIMESTAMP('". substr($row->fileDate, 0, 10)."'),'".addslashes($plik)."',$row->id,$row->state ) ";
-           $DB->Execute($query);
-           $sourcefileid=$DB->GetLastInsertID();
+            $DB->Execute($query);
+            $sourcefileid=$DB->GetLastInsertID();
         //uruchmienie przetwarzania plikow na wpłaty *******
-           $wplaty_parser=mt940Parser($plik);
+            $wplaty_parser=mt940Parser($plik);
         //zapis wpłat do tabeli cashimport
-           $insert=insertCashImport($wplaty_parser, $sourceid, $sourcefileid);
-           echo 'Ilość zapisanych wpłat:'.$insert."\n";
-       }
-   }//koniec dla kazdego pliku
+            $insert=insertCashImport($wplaty_parser, $sourceid, $sourcefileid);
+            echo 'Ilość zapisanych wpłat:'.$insert."\n";
+        }
+    }//koniec dla kazdego pliku
 
-   echo date("Y-m-d H:i:s")." lms-cashimport-bgz.php END \n";
+    echo date("Y-m-d H:i:s")." lms-cashimport-bgz.php END \n";
