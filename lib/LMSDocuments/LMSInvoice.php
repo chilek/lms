@@ -26,9 +26,9 @@
 
 abstract class LMSInvoice extends LMSDocument
 {
-    abstract function invoice_body_standard();
+    abstract public function invoice_body_standard();
 
-    abstract function invoice_body_ft0100();
+    abstract public function invoice_body_ft0100();
 
     public function Draw($data)
     {
