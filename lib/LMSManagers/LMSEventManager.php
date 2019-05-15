@@ -164,7 +164,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
      *      limit - returned record count (null = unlimited),
      * @return mixed
      */
-    function GetEventList(array $params)
+    public function GetEventList(array $params)
     {
         extract($params);
         foreach (array('year', 'month', 'day') as $var) {

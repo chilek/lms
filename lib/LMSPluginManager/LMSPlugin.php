@@ -53,7 +53,7 @@ abstract class LMSPlugin implements ObserverInterface
     /**
      * Registers hooks handlers
      */
-    abstract function registerHandlers();
+    abstract public function registerHandlers();
 
     /**
      * Loads plugin locales
