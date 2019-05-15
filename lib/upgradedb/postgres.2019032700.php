@@ -23,9 +23,10 @@
 
 $this->BeginTrans();
 
-if ($this->ResourceExists('location_buildings_street_id_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT))
-	$this->Execute("ALTER TABLE location_buildings
+if ($this->ResourceExists('location_buildings_street_id_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE location_buildings
 		DROP CONSTRAINT location_buildings_street_id_fkey");
+}
 
 $this->Execute("ALTER TABLE location_buildings ADD CONSTRAINT location_buildings_street_id_fkey
 	FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE");
@@ -33,5 +34,3 @@ $this->Execute("ALTER TABLE location_buildings ADD CONSTRAINT location_buildings
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019032700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

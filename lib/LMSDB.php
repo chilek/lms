@@ -26,9 +26,9 @@
 
 /**
  * LMSDB
- * 
+ *
  * LMS database provider. Factory pattern. Singleton pattern.
- * 
+ *
  * @package LMS
  */
 class LMSDB
@@ -37,16 +37,16 @@ class LMSDB
     const MYSQLI = 'mysqli';
     const POSTGRESQL = 'postgres';
 
-	const RESOURCE_TYPE_TABLE = 1;
-	const RESOURCE_TYPE_VIEW = 2;
-	const RESOURCE_TYPE_COLUMN = 3;
-	const RESOURCE_TYPE_CONSTRAINT = 4;
+    const RESOURCE_TYPE_TABLE = 1;
+    const RESOURCE_TYPE_VIEW = 2;
+    const RESOURCE_TYPE_COLUMN = 3;
+    const RESOURCE_TYPE_CONSTRAINT = 4;
 
     private static $db;
     
     /**
      * Returns singleton database handler.
-     * 
+     *
      * @return \LMSDBInterface
      */
     public static function getInstance()
@@ -69,11 +69,11 @@ class LMSDB
 
     /**
      * Returns databse object.
-     * 
-     * Tries to connect to specified database and returns connection handler 
-     * object. If connection cannot be opened or databbase type is unknown 
+     *
+     * Tries to connect to specified database and returns connection handler
+     * object. If connection cannot be opened or databbase type is unknown
      * throws exception.
-     * 
+     *
      * @param string $dbtype Database engine name
      * @param string $dbhost Database host
      * @param string $dbuser Database user
@@ -118,7 +118,7 @@ class LMSDB
     
     /**
      * Destroys database handler and singleton instance.
-     * 
+     *
      * Useful for unit tests.
      * @return null Null database handler
      */
@@ -133,7 +133,7 @@ class LMSDB
     
     /**
      * Checks if database connection exists
-     * 
+     *
      * @return boolean
      */
     public static function checkIfInstanceExists()
@@ -144,5 +144,4 @@ class LMSDB
             return false;
         }
     }
-
 }

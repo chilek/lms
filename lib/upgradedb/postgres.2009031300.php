@@ -63,5 +63,3 @@ CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
 $this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

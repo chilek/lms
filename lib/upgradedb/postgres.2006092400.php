@@ -31,8 +31,6 @@ $this->Execute("UPDATE customers SET notes = ''");
 $this->Execute("ALTER TABLE customers ALTER COLUMN notes SET NOT NULL");
 $this->Execute("ALTER TABLE customers ALTER COLUMN notes SET DEFAULT ''");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006092400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006092400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

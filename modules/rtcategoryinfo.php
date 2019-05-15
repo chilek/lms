@@ -24,18 +24,15 @@
  *  $Id$
  */
 
-if(! $LMS->CategoryExists($_GET['id']))
-{
-	$SESSION->redirect('?m=rtcategorylist');
+if (! $LMS->CategoryExists($_GET['id'])) {
+    $SESSION->redirect('?m=rtcategorylist');
 }
 
 $category = $LMS->GetCategory($_GET['id']);
 
-$layout['pagetitle'] = trans('Category Info: $a',$category['name']);
+$layout['pagetitle'] = trans('Category Info: $a', $category['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('category', $category);
 $SMARTY->display('rt/rtcategoryinfo.html');
-
-?>

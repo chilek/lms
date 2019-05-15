@@ -26,14 +26,11 @@
 
 $id = $_GET['id'];
 
-if($id && $_GET['is_sure']=='1')
-{
-	$DB->BeginTrans();
-	$DB->Execute('DELETE FROM aliases WHERE id = ?', array($id));
-	$DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?', array($id));
-	$DB->CommitTrans();
+if ($id && $_GET['is_sure']=='1') {
+    $DB->BeginTrans();
+    $DB->Execute('DELETE FROM aliases WHERE id = ?', array($id));
+    $DB->Execute('DELETE FROM aliasassignments WHERE aliasid = ?', array($id));
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

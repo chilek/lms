@@ -27,53 +27,48 @@ $maction = ($_GET['maction']);
 $taction = ($_GET['taction']);
 $qaction = ($_GET['qaction']);
 
-if ($maction == 'restore')
-{
-	$msg = intval($_GET['id']);
-	$ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
-	$del = 0;
-	$deltime = 0;
-	$deluserid = null;
-	$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, $deluserid, $msg));
+if ($maction == 'restore') {
+    $msg = intval($_GET['id']);
+    $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
+    $del = 0;
+    $deltime = 0;
+    $deluserid = null;
+    $DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, $deluserid, $msg));
 
-	$SESSION->redirect('?m=rtticketview&id=' . $ticket);
+    $SESSION->redirect('?m=rtticketview&id=' . $ticket);
 }
 
-if ($taction == 'restore')
-{
-	$ticket = intval($_GET['id']);
-	$del = 1;
-	$nodel = 0;
-	$deltime = 0;
-	$deluserid = null;
-	// We use incomplete cascaderestore. This means that we restore only ticket, but not restore deleted messages inside ticket which were deleted before restore operation.
-	$DB->BeginTrans();
-	$DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($nodel, $deltime, $deluserid, $ticket));
-	$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and deltime = ? and ticketid = ?', array($nodel, $deluserid, $del, $deltime, $ticket));
-	$DB->CommitTrans();
+if ($taction == 'restore') {
+    $ticket = intval($_GET['id']);
+    $del = 1;
+    $nodel = 0;
+    $deltime = 0;
+    $deluserid = null;
+    // We use incomplete cascaderestore. This means that we restore only ticket, but not restore deleted messages inside ticket which were deleted before restore operation.
+    $DB->BeginTrans();
+    $DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($nodel, $deltime, $deluserid, $ticket));
+    $DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and deltime = ? and ticketid = ?', array($nodel, $deluserid, $del, $deltime, $ticket));
+    $DB->CommitTrans();
 
-	$SESSION->redirect('?m=rtqueueview'
-		. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
+    $SESSION->redirect('?m=rtqueueview'
+        . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
 }
 
-if ($qaction == 'restore')
-{
-	$queue = intval($_GET['id']);
-	$del = 1;
-	$nodel = 0;
-	$deltime = 0;
-	$deluserid = null;
-	$DB->BeginTrans();
-	$DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($nodel, $deltime, $deluserid, $queue));
-	$DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and deltime = ? and queueid = ?', array($nodel, $deluserid, $del, $deltime, $queue));
-	if ($deltickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
-	{
-		foreach ($deltickets as $delticket) {
-			$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and deltime = ? and ticketid = ?', array($nodel, $deluserid, $del, $deltime, $delticket));
-		}
-	}
-	$DB->CommitTrans();
+if ($qaction == 'restore') {
+    $queue = intval($_GET['id']);
+    $del = 1;
+    $nodel = 0;
+    $deltime = 0;
+    $deluserid = null;
+    $DB->BeginTrans();
+    $DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($nodel, $deltime, $deluserid, $queue));
+    $DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and deltime = ? and queueid = ?', array($nodel, $deluserid, $del, $deltime, $queue));
+    if ($deltickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue))) {
+        foreach ($deltickets as $delticket) {
+            $DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and deltime = ? and ticketid = ?', array($nodel, $deluserid, $del, $deltime, $delticket));
+        }
+    }
+    $DB->CommitTrans();
 
-	$SESSION->redirect('?m=rtqueuelist');
+    $SESSION->redirect('?m=rtqueuelist');
 }
-?>

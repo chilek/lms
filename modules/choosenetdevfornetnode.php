@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('Select net devices');
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 if ($p == 'main') {
-	$list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, n.ownerid,
+    $list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, n.ownerid,
 			addr.city as location_city_name, addr.street as location_street_name,
 			addr.house as location_house, addr.flat as location_flat
 		FROM netdevices n
@@ -36,31 +36,29 @@ if ($p == 'main') {
 		WHERE (n.netnodeid IS NULL) OR (n.netnodeid <> ?) AND n.netnodeid IS NULL
 		ORDER BY n.name", array($_GET['id']));
 
-	if ($list) {
-		global $LMS;
+    if ($list) {
+        global $LMS;
 
-		foreach ($list as $k=>$acc) {
-			$tmp = array('city_name'     => $acc['location_city_name'],
-						'location_house' => $acc['location_house'],
-						'location_flat'  => $acc['location_flat'],
-						'street_name'    => $acc['location_street_name']);
+        foreach ($list as $k => $acc) {
+            $tmp = array('city_name'     => $acc['location_city_name'],
+                        'location_house' => $acc['location_house'],
+                        'location_flat'  => $acc['location_flat'],
+                        'street_name'    => $acc['location_street_name']);
 
-			$location = location_str( $tmp );
+            $location = location_str($tmp);
 
-			if ( $location ) {
-				$list[$k]['location'] = $location;
-			} else if ( $acc['ownerid'] ) {
-				$list[$k]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
-			}
-		}
-	}
+            if ($location) {
+                $list[$k]['location'] = $location;
+            } else if ($acc['ownerid']) {
+                $list[$k]['location'] = $LMS->getAddressForCustomerStuff($acc['ownerid']);
+            }
+        }
+    }
 
-	$list['total'] = count($list);
-	$SMARTY->assign('netdevlist', $list);
+    $list['total'] = count($list);
+    $SMARTY->assign('netdevlist', $list);
 }
 
 $SMARTY->assign('objectid', $_GET['id']);
 $SMARTY->assign('part', $p);
 $SMARTY->display('choose/choosenetdevfornetnode.html');
-
-?>

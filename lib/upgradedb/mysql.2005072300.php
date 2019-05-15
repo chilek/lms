@@ -32,6 +32,4 @@ $this->Execute("ALTER TABLE payments CHANGE at at smallint DEFAULT '0' NOT NULL"
 $this->Execute("ALTER TABLE payments CHANGE period period smallint DEFAULT '0' NOT NULL");
 $this->Execute("UPDATE payments SET period = period + 2");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072300', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005072300', 'dbversion'));

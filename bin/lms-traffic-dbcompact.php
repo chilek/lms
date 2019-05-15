@@ -34,30 +34,29 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-	'C:' => 'config-file:',
-	'h' => 'help',
-	'l:' => 'level:',
-	'o' => 'remove-old',
-	'd' => 'remove-deleted',
-	'v' => 'version',
+    'C:' => 'config-file:',
+    'h' => 'help',
+    'l:' => 'level:',
+    'o' => 'remove-old',
+    'd' => 'remove-deleted',
+    'v' => 'version',
 );
 
 foreach ($parameters as $key => $val) {
-	$val = preg_replace('/:/', '', $val);
-	$newkey = preg_replace('/:/', '', $key);
-	$short_to_longs[$newkey] = $val;
+    $val = preg_replace('/:/', '', $val);
+    $newkey = preg_replace('/:/', '', $key);
+    $short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
-		$options[$long] = $options[$short];
-		unset($options[$short]);
-	}
+foreach ($short_to_longs as $short => $long) {
+    if (array_key_exists($short, $options)) {
+        $options[$long] = $options[$short];
+        unset($options[$short]);
+    }
+}
 
-if (array_key_exists('version', $options))
-{
-	print <<<EOF
+if (array_key_exists('version', $options)) {
+    print <<<EOF
 lms-traffic-dbcompact.php
 (C) 2001-2016 LMS Developers
 
@@ -65,8 +64,7 @@ EOF;
         exit(0);
 }
 
-if (array_key_exists('help', $options))
-{
+if (array_key_exists('help', $options)) {
         print <<<EOF
 lms-traffic-dbcompact.php
 (C) 2001-2016 LMS Developers
@@ -86,21 +84,25 @@ EOF;
 }
 
 
-if (array_key_exists('config-file', $options))
-	$CONFIG_FILE = $options['config-file'];
-else
-	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+if (array_key_exists('config-file', $options)) {
+    $CONFIG_FILE = $options['config-file'];
+} else {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+}
 
 $remove_old = array_key_exists('remove-old', $options);
 $remove_deleted = array_key_exists('remove-deleted', $options);
 
 $level = 'medium';
-if (array_key_exists('level', $options))
-	if (in_array($options['level'], array('low', 'medium', 'high')))
-		$level = $options['level'];
+if (array_key_exists('level', $options)) {
+    if (in_array($options['level'], array('low', 'medium', 'high'))) {
+        $level = $options['level'];
+    }
+}
 
-if (!is_readable($CONFIG_FILE))
-	die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+if (!is_readable($CONFIG_FILE)) {
+    die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -126,11 +128,11 @@ if (file_exists($composer_autoload_path)) {
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
@@ -147,93 +149,108 @@ print('Remove stats for deleted nodes: ' . ($remove_deleted ? 'Yes' : 'No') . PH
 
 printf('%d records before compacting ' . PHP_EOL, $DB->GetOne('SELECT COUNT(*) FROM stats'));
 
-if ($remove_old && ($deleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60')) > 0)
-	printf('%d at least one year old records have been removed' . PHP_EOL, $deleted);
+if ($remove_old && ($deleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60')) > 0) {
+    printf('%d at least one year old records have been removed' . PHP_EOL, $deleted);
+}
 
-if ($remove_deleted && ($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM vnodes)')) > 0)
-	printf('%d records for deleted nodes have been removed' . PHP_EOL, $deleted);
+if ($remove_deleted && ($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM vnodes)')) > 0) {
+    printf('%d records for deleted nodes have been removed' . PHP_EOL, $deleted);
+}
 
 $time = time();
 switch ($level) {
-	case 'medium':
-		$period = $time-30*24*60*60; $step = 24*60*60;
-		break;//month, day
-	case 'high':
-		$period = $time-30*24*60*60; $step = 60*60;
-		break; //month, hour
-	default:
-		$period = $time-24*60*60; $step = 24*60*60;
-		break; //1 day, day
+    case 'medium':
+        $period = $time-30*24*60*60;
+        $step = 24*60*60;
+        break;//month, day
+    case 'high':
+        $period = $time-30*24*60*60;
+        $step = 60*60;
+        break; //month, hour
+    default:
+        $period = $time-24*60*60;
+        $step = 24*60*60;
+        break; //1 day, day
 }
 
 if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
-	$nodes = $DB->GetAll('SELECT id, name FROM vnodes ORDER BY name');
+    $nodes = $DB->GetAll('SELECT id, name FROM vnodes ORDER BY name');
 
-	foreach ($nodes as $node) {
-		$deleted = 0;
-		$inserted = 0;
-		$maxtime = $period;
-		$timeoffset = date('Z');
-		$dtdivider = 'FLOOR((dt+'.$timeoffset.')/'.$step.')';
+    foreach ($nodes as $node) {
+        $deleted = 0;
+        $inserted = 0;
+        $maxtime = $period;
+        $timeoffset = date('Z');
+        $dtdivider = 'FLOOR((dt+'.$timeoffset.')/'.$step.')';
 
-		$data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
+        $data = $DB->GetAll('SELECT SUM(download) AS download, SUM(upload) AS upload,
 			COUNT(dt) AS count, MIN(dt) AS mintime, MAX(dt) AS maxtime, nodesessionid
 			FROM stats WHERE nodeid = ? AND dt >= ? AND dt < ?
 			GROUP BY nodeid, nodesessionid, '.$dtdivider.'
 			ORDER BY mintime', array($node['id'], $mintime, $maxtime));
 
-		if ($data) {
-			// If divider-record contains only one record we can skip it
-			// This way we'll minimize delete-insert operations count
-			// e.g. in situation when some records has been already compacted
-			foreach ($data as $rid => $record) {
-				if ($record['count'] == 1)
-					unset($data[$rid]);
-				else
-					break;
-			}
+        if ($data) {
+            // If divider-record contains only one record we can skip it
+            // This way we'll minimize delete-insert operations count
+            // e.g. in situation when some records has been already compacted
+            foreach ($data as $rid => $record) {
+                if ($record['count'] == 1) {
+                    unset($data[$rid]);
+                } else {
+                    break;
+                }
+            }
 
-			// all records for this node has been already compacted
-			if (empty($data)) {
-				echo $node['name'] . ': 0  - removed, 0 - inserted' . PHP_EOL;
-				continue;
-			}
+            // all records for this node has been already compacted
+            if (empty($data)) {
+                echo $node['name'] . ': 0  - removed, 0 - inserted' . PHP_EOL;
+                continue;
+            }
 
-			$values = array();
-			// set start datetime of the period
-			$data = array_values($data);
-			$nodemintime = $data[0]['mintime'];
+            $values = array();
+            // set start datetime of the period
+            $data = array_values($data);
+            $nodemintime = $data[0]['mintime'];
 
-			$DB->BeginTrans();
+            $DB->BeginTrans();
 
-			// delete old records
-			$DB->Execute('DELETE FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?',
-				array($node['id'], $nodemintime, $maxtime));
+            // delete old records
+            $DB->Execute(
+                'DELETE FROM stats WHERE nodeid = ? AND dt >= ? AND dt <= ?',
+                array($node['id'], $nodemintime, $maxtime)
+            );
 
-			// insert new (summary) records
-			foreach ($data as $record) {
-				$deleted += $record['count'];
+            // insert new (summary) records
+            foreach ($data as $record) {
+                $deleted += $record['count'];
 
-				if (!$record['download'] && !$record['upload'])
-					continue;
+                if (!$record['download'] && !$record['upload']) {
+                    continue;
+                }
 
-				$values[] = sprintf('(%d, %d, %d, %d, %s)',
-					$node['id'], $record['maxtime'], $record['upload'], $record['download'],
-					$DB->Escape(empty($record['nodesessionid']) ? null : $record['nodesessionid']));
-			}
+                $values[] = sprintf(
+                    '(%d, %d, %d, %d, %s)',
+                    $node['id'],
+                    $record['maxtime'],
+                    $record['upload'],
+                    $record['download'],
+                    $DB->Escape(empty($record['nodesessionid']) ? null : $record['nodesessionid'])
+                );
+            }
 
-			if (!empty($values))
-				$inserted = $DB->Execute('INSERT INTO stats
+            if (!empty($values)) {
+                $inserted = $DB->Execute('INSERT INTO stats
 					(nodeid, dt, upload, download, nodesessionid) VALUES ' . implode(', ', $values));
+            }
 
-			$DB->CommitTrans();
+            $DB->CommitTrans();
 
-			echo $node['name'].': ' . $deleted . ' - removed, ' . $inserted . ' - inserted' . PHP_EOL;
-		}
-	}
+            echo $node['name'].': ' . $deleted . ' - removed, ' . $inserted . ' - inserted' . PHP_EOL;
+        }
+    }
 }
 
-printf('%d records after compacting' . PHP_EOL , $DB->GetOne('SELECT COUNT(*) FROM stats'));
+printf('%d records after compacting' . PHP_EOL, $DB->GetOne('SELECT COUNT(*) FROM stats'));
 
 $DB->Destroy();
 

@@ -35,6 +35,5 @@ $this->Execute("BEGIN;
 	ALTER TABLE assignments ALTER dateto SET NOT NULL;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031402', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004031402', 'dbversion'));
 $this->Execute("COMMIT");
-?>

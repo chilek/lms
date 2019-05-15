@@ -30,5 +30,3 @@ $this->Execute("UPDATE users SET ntype = 1"); // MSG_MAIL
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011031000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

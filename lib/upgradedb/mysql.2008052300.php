@@ -28,8 +28,6 @@ $this->BeginTrans();
 
 $this->Execute("ALTER TABLE networks CHANGE interface interface varchar(16)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2008052300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008052300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -24,11 +24,8 @@
  *  $Id$
  */
 
-if(isset($_GET['is_sure']))
-{
-	$LMS->CustomergroupDelete($_GET['id']);	
+if (isset($_GET['is_sure'])) {
+    $LMS->CustomergroupDelete($_GET['id']);
 }
 
 $SESSION->redirect('?m=customergrouplist');
-
-?>

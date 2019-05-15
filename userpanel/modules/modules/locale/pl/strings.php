@@ -33,5 +33,3 @@ $_LANG['Display name'] = 'Nazwa wyświetlana';
 $_LANG['Prio'] = 'Priorytet';
 $_LANG['Tip'] = 'Podpowiedź';
 $_LANG['Description'] = 'Opis';
-
-?>

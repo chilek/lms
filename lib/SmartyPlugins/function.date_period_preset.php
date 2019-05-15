@@ -24,53 +24,56 @@
  *  $Id$
  */
 
-function smarty_function_date_period_preset(array $params, Smarty_Internal_Template $template) {
-	$from_selector = isset($params['from']) ? $params['from'] : null;
-	$to_selector = isset($params['to']) ? $params['to'] : null;
-	$periods = isset($params['periods']) ? $params['periods'] : null;
-	if (!isset($from_selector) || !isset($to_selector))
-		return;
+function smarty_function_date_period_preset(array $params, Smarty_Internal_Template $template)
+{
+    $from_selector = isset($params['from']) ? $params['from'] : null;
+    $to_selector = isset($params['to']) ? $params['to'] : null;
+    $periods = isset($params['periods']) ? $params['periods'] : null;
+    if (!isset($from_selector) || !isset($to_selector)) {
+        return;
+    }
 
-	if (!isset($periods))
-		$periods = array('previous-month', 'current-month', 'next-month');
-	elseif (!is_array($periods))
-		$periods = preg_split('/\s*[ ,|]\s*/', $periods);
+    if (!isset($periods)) {
+        $periods = array('previous-month', 'current-month', 'next-month');
+    } elseif (!is_array($periods)) {
+        $periods = preg_split('/\s*[ ,|]\s*/', $periods);
+    }
 
-	$result = '';
+    $result = '';
 
-	foreach ($periods as $period) {
-		switch ($period) {
-			case 'current-month':
-				$label = trans('current month');
-				$icon = 'lms-ui-icon-back';
-				break;
-			case 'current-year':
-				$label = trans('current year');
-				$icon = 'lms-ui-icon-current-year';
-				break;
-			case 'next-month':
-				$label = trans('next month');
-				$icon = 'lms-ui-icon-next';
-				break;
-			case 'next-year':
-				$label = trans('next year');
-				$icon = 'lms-ui-icon-fast-next';
-				break;
-			case 'previous-year':
-				$label = trans('previous year');
-				$icon = 'lms-ui-icon-fast-previous';
-				break;
-			case 'previous-month':
-			default:
-				$label = trans('previous month');
-				$icon = 'lms-ui-icon-previous';
-				break;
-		}
-		$result .= '<button type="button" class="lms-ui-button ' . $icon . ' lms-ui-button-date-period" data-from="'
-			. htmlspecialchars($from_selector) . '" data-to="'
-			. htmlspecialchars($to_selector) . '" data-period="' . $period . '" title="' . $label . '">'
-			. '<i></i></button>&nbsp;';
-	}
+    foreach ($periods as $period) {
+        switch ($period) {
+            case 'current-month':
+                $label = trans('current month');
+                $icon = 'lms-ui-icon-back';
+                break;
+            case 'current-year':
+                $label = trans('current year');
+                $icon = 'lms-ui-icon-current-year';
+                break;
+            case 'next-month':
+                $label = trans('next month');
+                $icon = 'lms-ui-icon-next';
+                break;
+            case 'next-year':
+                $label = trans('next year');
+                $icon = 'lms-ui-icon-fast-next';
+                break;
+            case 'previous-year':
+                $label = trans('previous year');
+                $icon = 'lms-ui-icon-fast-previous';
+                break;
+            case 'previous-month':
+            default:
+                $label = trans('previous month');
+                $icon = 'lms-ui-icon-previous';
+                break;
+        }
+        $result .= '<button type="button" class="lms-ui-button ' . $icon . ' lms-ui-button-date-period" data-from="'
+            . htmlspecialchars($from_selector) . '" data-to="'
+            . htmlspecialchars($to_selector) . '" data-period="' . $period . '" title="' . $label . '">'
+            . '<i></i></button>&nbsp;';
+    }
 
-	return $result;
+    return $result;
 }

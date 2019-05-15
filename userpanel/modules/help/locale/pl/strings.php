@@ -49,5 +49,3 @@ $_LANG['This cannot be empty'] = 'To nie może być puste';
 $_LANG['This module is not configured yet.'] = 'Ten moduł nie jest jeszcze skonfigurowany.';
 $_LANG['This module shows problems solving center'] = 'Moduł ten wyświetla centrum rozwiązywania problemów';
 $_LANG['Title:'] = 'Tytuł:';
-
-?>

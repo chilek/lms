@@ -63,5 +63,3 @@ $this->Execute("ALTER TABLE rtrights ALTER userid DROP DEFAULT");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010062800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

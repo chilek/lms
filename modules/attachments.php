@@ -26,104 +26,115 @@
 
 check_file_uploads();
 
-if (isset($_GET['type']))
-	$attachmenttype = $_GET['type'];
-if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype))
-	die;
+if (isset($_GET['type'])) {
+    $attachmenttype = $_GET['type'];
+}
+if (!preg_match('/^[a-z0-9_]+$/', $attachmenttype)) {
+    die;
+}
 
 switch ($attachmenttype) {
-	case 'netdevid':
-	case 'netnodeid':
-		if (!ConfigHelper::checkPrivilege('network_management'))
-			if (isset($_GET['type']))
-				access_denied();
-			else
-				return;
-		break;
+    case 'netdevid':
+    case 'netnodeid':
+        if (!ConfigHelper::checkPrivilege('network_management')) {
+            if (isset($_GET['type'])) {
+                access_denied();
+            } else {
+                return;
+            }
+        }
+        break;
 }
 
 if (isset($_GET['attachmentaction'])) {
-	switch ($_GET['attachmentaction']) {
-		case 'updatecontainer':
-			header('Content-Type: application/json');
-			if ($LMS->UpdateFileContainer(array(
-					'id' => $_GET['id'],
-					'description' => $_POST['description'],
-				)))
-				die('[]');
-			else
-				die(json_encode(array(
-					'error' => trans('Cannot update file container description!'),
-				)));
-			break;
-		case 'deletecontainer':
-			$LMS->DeleteFileContainer($_GET['id']);
-			break;
-		case 'viewfile':
+    switch ($_GET['attachmentaction']) {
+        case 'updatecontainer':
+            header('Content-Type: application/json');
+            if ($LMS->UpdateFileContainer(array(
+                    'id' => $_GET['id'],
+                    'description' => $_POST['description'],
+                ))) {
+                die('[]');
+            } else {
+                die(json_encode(array(
+                    'error' => trans('Cannot update file container description!'),
+                )));
+            }
+            break;
+        case 'deletecontainer':
+            $LMS->DeleteFileContainer($_GET['id']);
+            break;
+        case 'viewfile':
+            $file = $LMS->GetFile($_GET['fileid']);
+            if (empty($file)) {
+                die;
+            }
 
-			$file = $LMS->GetFile($_GET['fileid']);
-			if (empty($file))
-				die;
+            header('Content-Type: ' . $file['contenttype']);
+            if (!preg_match('/^text/i', $file['contenttype'])) {
+                $pdf = preg_match('/pdf/i', $file['contenttype']);
+                if (!isset($_GET['save'])) {
+                    if ($pdf) {
+                        header('Content-Disposition: inline; filename="'.$file['filename'] . '"');
+                        header('Content-Transfer-Encoding: binary');
+                        header('Content-Length: ' . filesize($file['filepath']) . ' bytes');
+                    } else {
+                        header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                    }
+                } else {
+                    header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
+                }
+                header('Pragma: public');
+            }
+            readfile($file['filepath']);
+            die;
+            break;
 
-			header('Content-Type: ' . $file['contenttype']);
-			if (!preg_match('/^text/i', $file['contenttype'])) {
-				$pdf = preg_match('/pdf/i', $file['contenttype']);
-				if (!isset($_GET['save']))
-					if ($pdf) {
-						header('Content-Disposition: inline; filename="'.$file['filename'] . '"');
-						header('Content-Transfer-Encoding: binary');
-						header('Content-Length: ' . filesize($file['filepath']) . ' bytes');
-					} else
-						header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
-				else
-					header('Content-Disposition: attachment; filename="' . $file['filename'] . '"');
-				header('Pragma: public');
-			}
-			readfile($file['filepath']);
-			die;
-			break;
-
-		case 'downloadzippedcontainer':
-			$LMS->GetZippedFileContainer($_GET['id']);
-			die;
-			break;
-	}
-	$SESSION->redirect('?' . $SESSION->get('backto'));
+        case 'downloadzippedcontainer':
+            $LMS->GetZippedFileContainer($_GET['id']);
+            die;
+            break;
+    }
+    $SESSION->redirect('?' . $SESSION->get('backto'));
 }
 
-if (isset($_GET['resourceid']))
-	$attachmentresourceid = $_GET['resourceid'];
-if (!preg_match('/^[0-9]+$/', $attachmentresourceid))
-	die;
+if (isset($_GET['resourceid'])) {
+    $attachmentresourceid = $_GET['resourceid'];
+}
+if (!preg_match('/^[0-9]+$/', $attachmentresourceid)) {
+    die;
+}
 
 if (isset($_POST['upload'])) {
-	$result = handle_file_uploads('files', $error);
-	extract($result);
-	$SMARTY->assign('fileupload', $fileupload);
+    $result = handle_file_uploads('files', $error);
+    extract($result);
+    $SMARTY->assign('fileupload', $fileupload);
 
-	$upload = $_POST['upload'];
+    $upload = $_POST['upload'];
 
-	if (!$error) {
-		if (!empty($files)) {
-			foreach ($files as &$file)
-				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-			unset($file);
-			$LMS->AddFileContainer(array(
-				'description' => $upload['description'],
-				'files' => $files,
-				'type' => $attachmenttype,
-				'resourceid' => $attachmentresourceid,
-			));
-		}
+    if (!$error) {
+        if (!empty($files)) {
+            foreach ($files as &$file) {
+                $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+            }
+            unset($file);
+            $LMS->AddFileContainer(array(
+                'description' => $upload['description'],
+                'files' => $files,
+                'type' => $attachmenttype,
+                'resourceid' => $attachmentresourceid,
+            ));
+        }
 
-		// deletes uploaded files
-		if (!empty($files))
-			rrmdir($tmppath);
+        // deletes uploaded files
+        if (!empty($files)) {
+            rrmdir($tmppath);
+        }
 
-		$SESSION->redirect('?' . $SESSION->get('backto'));
-	}
+        $SESSION->redirect('?' . $SESSION->get('backto'));
+    }
 
-	$SMARTY->assign('upload', $upload);
+    $SMARTY->assign('upload', $upload);
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

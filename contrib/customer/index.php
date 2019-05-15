@@ -18,7 +18,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -33,12 +33,13 @@ $CONFIG_FILE = '';
 // *******************************************************************
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
-if(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
+if (is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini')) {
         $CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
-elseif(is_readable('/etc/lms/lms.ini'))
+} elseif (is_readable('/etc/lms/lms.ini')) {
         $CONFIG_FILE = '/etc/lms/lms.ini';
-elseif (!is_readable($CONFIG_FILE))
+} elseif (!is_readable($CONFIG_FILE)) {
         die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -77,11 +78,11 @@ if (file_exists($composer_autoload_path)) {
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Initialize templates engine
@@ -99,7 +100,7 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 // Initialize LMS class
 
-$AUTH = NULL;
+$AUTH = null;
 $SYSLOG = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
@@ -126,12 +127,11 @@ $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
-$_SERVER['REMOTE_ADDR'] = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
+$_SERVER['REMOTE_ADDR'] = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
-if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR'])))
-{
-	$balance = $LMS->GetCustomerBalanceList($customerid);
-	$customerinfo = $LMS->GetCustomer($customerid);
+if ($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR']))) {
+    $balance = $LMS->GetCustomerBalanceList($customerid);
+    $customerinfo = $LMS->GetCustomer($customerid);
 
     $customerinfo['tariffsvalue'] = $LMS->GetCustomerTariffsValue($customerid);
 }
@@ -141,5 +141,3 @@ $LMS->executeHook('customer_before_display', array('smarty' => $SMARTY, 'custome
 $SMARTY->assign('customerinfo', $customerinfo);
 $SMARTY->assign('balance', $balance);
 $SMARTY->display('customer.html');
-
-?>

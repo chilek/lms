@@ -41,5 +41,3 @@ $this->Execute("ALTER TABLE divisions CHANGE inv_paytime inv_paytime smallint DE
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013111900', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

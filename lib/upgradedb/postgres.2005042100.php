@@ -33,8 +33,6 @@ $this->Execute("
 	ALTER TABLE admins ALTER hosts SET DEFAULT '';
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005042100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

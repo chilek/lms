@@ -34,5 +34,3 @@ DROP INDEX plicbdoperators_id_idx;
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015090400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

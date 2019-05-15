@@ -29,43 +29,42 @@
 $allow_from = ConfigHelper::getConfig('phpui.allow_from', null);
 
 if ($allow_from) {
-	// delete ipv6 prefix if it's present: 
-	
-	$ipaddr = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
+    // delete ipv6 prefix if it's present:
+    
+    $ipaddr = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
-	$allowedlist = explode(',', $allow_from);
+    $allowedlist = explode(',', $allow_from);
 
-	$isin = FALSE;
+    $isin = false;
 
-	foreach($allowedlist as $value)
-	{
-		$net = '';
-		$mask = '';
-		
-		if(strpos($value, '/')===FALSE)
-			$net = $value;
-		else
-			list($net, $mask) = explode('/', $value);
-		
-		$net = trim($net);
-		$mask = trim($mask);
+    foreach ($allowedlist as $value) {
+        $net = '';
+        $mask = '';
+        
+        if (strpos($value, '/')===false) {
+            $net = $value;
+        } else {
+            list($net, $mask) = explode('/', $value);
+        }
+        
+        $net = trim($net);
+        $mask = trim($mask);
 
-		if($mask == '')
-			$mask = '255.255.255.255';
-		elseif(is_numeric($mask))
-			$mask = prefix2mask($mask);
+        if ($mask == '') {
+            $mask = '255.255.255.255';
+        } elseif (is_numeric($mask)) {
+            $mask = prefix2mask($mask);
+        }
 
-		if(isipinstrict($ipaddr, $net, $mask))
-		{
-			$isin = TRUE;
-			break;
-		}
-	}
+        if (isipinstrict($ipaddr, $net, $mask)) {
+            $isin = true;
+            break;
+        }
+    }
 
-	if(!$isin)
-	{
-		header('HTTP/1.1 403 Forbidden');
-		echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+    if (!$isin) {
+        header('HTTP/1.1 403 Forbidden');
+        echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 		<HTML><HEAD>
 		<TITLE>403 Forbidden</TITLE>
 		</HEAD><BODY>
@@ -76,6 +75,6 @@ if ($allow_from) {
 		'.$_SERVER['SERVER_SIGNATURE'].'
 		</BODY></HTML>
 		';
-		exit(0);
-	}
+        exit(0);
+    }
 }

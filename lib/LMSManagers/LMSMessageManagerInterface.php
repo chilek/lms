@@ -26,21 +26,21 @@
 
 /**
  * LMSMessageManagerInterface
- * 
+ *
  */
 interface LMSMessageManagerInterface
 {
-    public function GetMessages($customerid, $limit = NULL);
+    public function GetMessages($customerid, $limit = null);
     
     public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
     
     public function UpdateMessageTemplate($id, $type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
 
-	public function DeleteMessageTemplates(array $ids);
+    public function DeleteMessageTemplates(array $ids);
 
     public function GetMessageTemplates($type = 0);
 
-	public function GetMessageTemplatesByQueueAndType($queueid, $type);
+    public function GetMessageTemplatesByQueueAndType($queueid, $type);
 
-	public function GetMessageList(array $params);
+    public function GetMessageList(array $params);
 }

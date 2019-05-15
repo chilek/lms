@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE documents ADD COLUMN archived smallint DEFAULT 0 NOT
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019040400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

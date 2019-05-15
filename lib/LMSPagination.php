@@ -49,11 +49,11 @@ abstract class LMSPagination
 
     /**
      * Constructs pagination
-     * 
+     *
      * @param int $page Current page
      * @param int $total Total records
      * @param int $per_page Records per page
-	 * @param string @instance_name Instance name
+     * @param string @instance_name Instance name
      */
     public function __construct($page, $total, $per_page, $instance_name = null)
     {
@@ -66,7 +66,7 @@ abstract class LMSPagination
 
     /**
      * Returns current page
-     * 
+     *
      * @return int Current page
      */
     public function getPage()
@@ -76,7 +76,7 @@ abstract class LMSPagination
 
     /**
      * Returns total records
-     * 
+     *
      * @return int Total records
      */
     public function getTotal()
@@ -86,7 +86,7 @@ abstract class LMSPagination
 
     /**
      * Returns records per page
-     * 
+     *
      * @return int Records per page
      */
     public function getPerPage()
@@ -94,19 +94,19 @@ abstract class LMSPagination
         return $this->per_page;
     }
 
-	/**
-	 * Returns instance name
-	 *
-	 * @return string Instance name
-	 */
-	public function getInstanceName()
-	{
-		return $this->instance_name;
-	}
+    /**
+     * Returns instance name
+     *
+     * @return string Instance name
+     */
+    public function getInstanceName()
+    {
+        return $this->instance_name;
+    }
 
-	/**
+    /**
      * Returns total pages
-     * 
+     *
      * @return int Total pages
      */
     public function getPages()
@@ -116,7 +116,7 @@ abstract class LMSPagination
 
     /**
      * Returns first record number on current page
-     * 
+     *
      * @return int first record number
      */
     public function getFirstOnPage()
@@ -126,7 +126,7 @@ abstract class LMSPagination
 
     /**
      * Returns last record number on current page
-     * 
+     *
      * @return int last record number
      */
     public function getLastOnPage()
@@ -140,7 +140,7 @@ abstract class LMSPagination
     
     /**
      * Returns previous page number
-     * 
+     *
      * @return int Previous page
      */
     public function getPreviousPage()
@@ -154,7 +154,7 @@ abstract class LMSPagination
     
     /**
      * Returns next page number
-     * 
+     *
      * @return int Next page
      */
     public function getNextPage()
@@ -168,7 +168,7 @@ abstract class LMSPagination
 
     /**
      * Sets current page
-     * 
+     *
      * @param int $page Current page
      * @throws DomainException if current page is not an integer or is less than 1
      */
@@ -184,7 +184,7 @@ abstract class LMSPagination
 
     /**
      * Sets total records
-     * 
+     *
      * @param int $total Total records
      * @param int $recalculate_pages Recalculate pages flag
      * @throws DomainException if total records is not an integer or is less than 0
@@ -204,7 +204,7 @@ abstract class LMSPagination
 
     /**
      * Sets records per page
-     * 
+     *
      * @param int $per_page Records per page
      * @param int $recalculate_pages Recalculate pages flag
      * @throws DomainException if records per page is not an integer or is less than 1
@@ -223,12 +223,13 @@ abstract class LMSPagination
     }
 
     /**
-	 * Sets pagintation instance name
-	 * @param string @instance_name Instance name
-	 */
-    public function setInstanceName($instance_name) {
-    	$this->instance_name = $instance_name;
-	}
+     * Sets pagintation instance name
+     * @param string @instance_name Instance name
+     */
+    public function setInstanceName($instance_name)
+    {
+        $this->instance_name = $instance_name;
+    }
 
     /**
      * Calculates total pages
@@ -240,17 +241,15 @@ abstract class LMSPagination
     
     /**
      * Determines if "go to" should be displayed
-     * 
+     *
      * @return boolean True if "go to" should be displated, false otherwise
      */
     abstract function displayGoTo();
     
     /**
      * Determines if link to given page should be displayed
-     * 
+     *
      * @return boolean True if link should be displated, false otherwise
      */
     abstract function displayLink($link_page);
-    
-    
 }

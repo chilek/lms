@@ -26,15 +26,15 @@
 
 /**
  * LMSNetDevManagerInterface
- * 
+ *
  */
 interface LMSNetDevManagerInterface
 {
     public function GetNetDevLinkedNodes($id);
 
-    public function NetDevLinkNode($id, $devid, $link = NULL);
+    public function NetDevLinkNode($id, $devid, $link = null);
 
-    public function SetNetDevLinkType($dev1, $dev2, $link = NULL);
+    public function SetNetDevLinkType($dev1, $dev2, $link = null);
     
     public function IsNetDevLink($dev1, $dev2);
     
@@ -56,9 +56,9 @@ interface LMSNetDevManagerInterface
     
     public function GetNetDevNames();
 
-	public function GetNetDevName($id);
+    public function GetNetDevName($id);
 
-	public function GetNetDevList($order = 'name,asc');
+    public function GetNetDevList($order = 'name,asc');
     
     public function GetNetDevConnectedNames($id);
     
@@ -70,23 +70,23 @@ interface LMSNetDevManagerInterface
     
     public function NetDevExists($id);
 
-	public function GetProducers();
+    public function GetProducers();
 
-	public function GetModels($producerid = null);
+    public function GetModels($producerid = null);
 
-	public function GetRadioSectors($netdevid, $technology = 0);
+    public function GetRadioSectors($netdevid, $technology = 0);
 
-	public function AddRadioSector($netdevid, array $radiosector);
+    public function AddRadioSector($netdevid, array $radiosector);
 
-	public function DeleteRadioSector($id);
+    public function DeleteRadioSector($id);
 
-	public function UpdateRadioSector($id, array $radiosector);
+    public function UpdateRadioSector($id, array $radiosector);
 
-	public function GetManagementUrls($type, $id);
+    public function GetManagementUrls($type, $id);
 
-	public function AddManagementUrl($type, $id, array $url);
+    public function AddManagementUrl($type, $id, array $url);
 
-	public function DeleteManagementUrl($type, $id);
+    public function DeleteManagementUrl($type, $id);
 
-	public function updateManagementUrl($type, $id, array $url);
+    public function updateManagementUrl($type, $id, array $url);
 }

@@ -29,5 +29,3 @@ $this->Execute("UPDATE rttickets SET priority = 2 WHERE priority = 1");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018081600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

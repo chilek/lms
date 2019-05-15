@@ -32,24 +32,30 @@ $search = array(
 
 $search['total'] = intval($LMS->GetNetworkList($search));
 
-if (isset($_GET['page']))
-	$search['page'] = intval($_GET['page']);
-elseif ($SESSION->is_set('netlist_page'))
+if (isset($_GET['page'])) {
+    $search['page'] = intval($_GET['page']);
+} elseif ($SESSION->is_set('netlist_page')) {
     $SESSION->restore('netlist_page', $search['page']);
-else
-	$search['page'] = 1;
+} else {
+    $search['page'] = 1;
+}
 $SESSION->save('netlist_page', $search['page']);
 
 $search['limit'] = intval(ConfigHelper::getConfig('phpui.networklist_pagelimit', $search['total']));
 $search['offset'] = ($search['page'] - 1) * $search['limit'];
 $search['count'] = false;
 
-if (isset($_GET['o']))
-	$search['order'] = $_GET['o'];
+if (isset($_GET['o'])) {
+    $search['order'] = $_GET['o'];
+}
 $netlist = $LMS->GetNetworkList($search);
 
-$pagination = LMSPaginationFactory::getPagination($search['page'], $search['total'], $search['limit'],
-	ConfigHelper::checkConfig('phpui.short_pagescroller'));
+$pagination = LMSPaginationFactory::getPagination(
+    $search['page'],
+    $search['total'],
+    $search['limit'],
+    ConfigHelper::checkConfig('phpui.short_pagescroller')
+);
 
 $listdata['size'] = $netlist['size'];
 $listdata['assigned'] = $netlist['assigned'];
@@ -66,9 +72,7 @@ unset($netlist['direction']);
 $listdata['total'] = count($netlist);
 
 $SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('netlist',$netlist);
+$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('netlist', $netlist);
 $SMARTY->assign('search', false);
 $SMARTY->display('net/netlist.html');
-
-?>

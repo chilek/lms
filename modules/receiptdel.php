@@ -27,18 +27,16 @@
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {
-	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($id));
-	if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid)) < 256) {
-		$SMARTY->display('noaccess.html');
-		$SESSION->close();
-		die;
-	}
+    $regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($id));
+    if ($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid)) < 256) {
+        $SMARTY->display('noaccess.html');
+        $SESSION->close();
+        die;
+    }
 
-	$DB->BeginTrans();
-	$LMS->ReceiptDelete($id);
-	$DB->CommitTrans();
+    $DB->BeginTrans();
+    $LMS->ReceiptDelete($id);
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect('?m=receiptlist');
-
-?>

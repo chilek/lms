@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE nodes ADD chkmac tinyint(1) NOT NULL DEFAULT '1'");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006100700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

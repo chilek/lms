@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss {
+class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss
+{
     public function fontSet()
     {
         $family = strtolower($this->value['font-family']);
@@ -39,20 +40,23 @@ class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss {
         $style = $b.$i;
 
         if ($this->_defaultFont) {
-            if($family=='helvetica')
+            if ($family=='helvetica') {
                 $family='arial';
-            elseif($family=='symbol' || $family=='zapfdingbats')
+            } elseif ($family=='symbol' || $family=='zapfdingbats') {
                 $style='';
+            }
 
             $fontkey = $family.$style;
-            if (!$this->_pdf->isLoadedFont($fontkey))
+            if (!$this->_pdf->isLoadedFont($fontkey)) {
                 $family = $this->_defaultFont;
+            }
         }
 
-        if($family=='helvetica')
+        if ($family=='helvetica') {
             $family='arial';
-        elseif($family=='symbol' || $family=='zapfdingbats')
+        } elseif ($family=='symbol' || $family=='zapfdingbats') {
             $style='';
+        }
 
         // complete style
         $style.= $u.$d.$o;
@@ -64,11 +68,10 @@ class LMSHTML2PDF_parsingCss extends HTML2PDF_parsingCss {
         // apply the font
         $this->_pdf->SetFont($family, $style, $this->value['mini-size']*$size);
         $this->_pdf->setTextColorArray($this->value['color']);
-        if ($this->value['background']['color'])
+        if ($this->value['background']['color']) {
             $this->_pdf->setFillColorArray($this->value['background']['color']);
-        else
+        } else {
             $this->_pdf->setFillColor(255);
+        }
     }
 }
-
-?>

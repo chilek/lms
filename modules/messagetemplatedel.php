@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-if ($_GET['is_sure'] == '1')
-	if (isset($_GET['id']))
-		$LMS->DeleteMessageTemplates(array($_GET['id']));
-	elseif (isset($_POST['marks'])) {
-		$ids = Utils::filterIntegers($_POST['marks']);
-		if (!empty($ids))
-			$LMS->DeleteMessageTemplates($ids);
-	}
+if ($_GET['is_sure'] == '1') {
+    if (isset($_GET['id'])) {
+        $LMS->DeleteMessageTemplates(array($_GET['id']));
+    } elseif (isset($_POST['marks'])) {
+        $ids = Utils::filterIntegers($_POST['marks']);
+        if (!empty($ids)) {
+            $LMS->DeleteMessageTemplates($ids);
+        }
+    }
+}
 
 $SESSION->redirect('?' . $SESSION->get('backto'));
-
-?>

@@ -27,8 +27,6 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE invoicecontents ADD COLUMN discount decimal(4,2) NOT NULL default '0.00'");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006020500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006020500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

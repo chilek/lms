@@ -27,47 +27,51 @@
 
 function check_ten($ten)
 {
-	return preg_match('/^CZ[0-9]{8,10}$/', $ten);
+    return preg_match('/^CZ[0-9]{8,10}$/', $ten);
 }
 
 function check_ssn($ssn)
 {
-	return preg_match('/^[0-9]{6}\/[0-9]{3,4}$/', $ssn);
+    return preg_match('/^[0-9]{6}\/[0-9]{3,4}$/', $ssn);
 }
 
 function check_zip($zip)
 {
-	if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-		return true;
-	} else {
-		return preg_match('/^[1-9][0-9]{4}$/', $zip);
-	}
+    if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
+        return true;
+    } else {
+        return preg_match('/^[1-9][0-9]{4}$/', $zip);
+    }
 }
 
 function check_regon($regon)
 {
-	return preg_match('/^[0-9]{8,10}$/', $regon);
+    return preg_match('/^[0-9]{8,10}$/', $regon);
 }
 
 function check_icn($icn)
 {
-	return preg_match('/^[1-9][0-9]{8}$/', $icn);
+    return preg_match('/^[1-9][0-9]{8}$/', $icn);
 }
 
-function bankaccount($id, $account = NULL) {
-	return iban_account('CZ', 22, $id, $account);
+function bankaccount($id, $account = null)
+{
+    return iban_account('CZ', 22, $id, $account);
 }
 
-function check_bankaccount($account) {
-	return iban_check_account('CZ', 22, $account);
+function check_bankaccount($account)
+{
+    return iban_check_account('CZ', 22, $account);
 }
 
-function format_bankaccount($account) {
-	return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
+function format_bankaccount($account)
+{
+    return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
 }
 
-function getHolidays($year = null) {
-	return array();
+function getHolidays($year = null)
+{
+    return array();
 }
 
 /*!
@@ -75,8 +79,7 @@ function getHolidays($year = null) {
  *
  * \return string
  */
-function generateRandomPostcode() {
+function generateRandomPostcode()
+{
     return rand(1, 9) . sprintf("%04d", rand(0, 9999));
 }
-
-?>

@@ -25,47 +25,44 @@
 
 $lang = $LMS->ui_lang;
 
-foreach($ExecStack->_MODINFO as $modulename => $modinfo)
-{
-	if(isset($modinfo['menus']))
-		foreach($modinfo['menus'] as $menuinfo)
-		{
-			if(!isset($menuinfo['id']))
-				$menuinfo['id'] = $modulename;
+foreach ($ExecStack->_MODINFO as $modulename => $modinfo) {
+    if (isset($modinfo['menus'])) {
+        foreach ($modinfo['menus'] as $menuinfo) {
+            if (!isset($menuinfo['id'])) {
+                $menuinfo['id'] = $modulename;
+            }
 
-			$menu[$menuinfo['id']] = array(
-				'name' => $menuinfo['text'][$lang],
-				'img' => $menuinfo['img'],
-				'tip' => $menuinfo['tip'][$lang],
-				'link' => '?m='.$modulename,
-				'submenu' => array(),
-			);
-		}
+            $menu[$menuinfo['id']] = array(
+            'name' => $menuinfo['text'][$lang],
+            'img' => $menuinfo['img'],
+            'tip' => $menuinfo['tip'][$lang],
+            'link' => '?m='.$modulename,
+            'submenu' => array(),
+            );
+        }
+    }
 }
 
-foreach($ExecStack->_MODINFO as $modulename => $modinfo)
-{
-	if(isset($modinfo['actions']))
-		foreach($modinfo['actions'] as $actionname => $actioninfo)
-		{
-			if(isset($actioninfo['menuname']) && ! $actioninfo['notpublic'] && ! $actioninfo['hidden'])
-			{
-				if(! isset($actioninfo['menu']))
-					$actioninfo['menu'] = $modulename;
-					
-				$args = isset($actioninfo['args']) ? $actioninfo['args'] : ''; 
-				
-				$menu[$actioninfo['menu']]['submenu'][] = array(
-					'name' => $actioninfo['menuname'][$lang],
-					'link' => '?m='.$modulename.'&a='.$actionname.$args,
-					'tip' => $actioninfo['tip'][$lang],
-				);
-			}
-		}
+foreach ($ExecStack->_MODINFO as $modulename => $modinfo) {
+    if (isset($modinfo['actions'])) {
+        foreach ($modinfo['actions'] as $actionname => $actioninfo) {
+            if (isset($actioninfo['menuname']) && ! $actioninfo['notpublic'] && ! $actioninfo['hidden']) {
+                if (! isset($actioninfo['menu'])) {
+                    $actioninfo['menu'] = $modulename;
+                }
+                    
+                $args = isset($actioninfo['args']) ? $actioninfo['args'] : '';
+                
+                $menu[$actioninfo['menu']]['submenu'][] = array(
+                'name' => $actioninfo['menuname'][$lang],
+                'link' => '?m='.$modulename.'&a='.$actionname.$args,
+                'tip' => $actioninfo['tip'][$lang],
+                );
+            }
+        }
+    }
 }
 
 $SMARTY->assign('menu', $menu);
 
 unset($menu);
-
-?>

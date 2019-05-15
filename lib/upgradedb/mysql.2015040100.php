@@ -46,5 +46,3 @@ $this->Execute("ALTER TABLE netnodes CHANGE location_flat location_flat varchar(
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

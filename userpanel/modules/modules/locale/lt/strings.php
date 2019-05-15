@@ -33,5 +33,3 @@ $_LANG['Display name'] = 'Rodomas pavadinimas';
 $_LANG['Prio'] = 'Prioritetas';
 $_LANG['Tip'] = 'Užuomina';
 $_LANG['Description'] = 'Aprašas';
-
-?>

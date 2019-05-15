@@ -36,6 +36,4 @@ $this->Execute("CREATE TABLE hosts (
 $this->Execute("INSERT INTO hosts (id, name, description, lastreload, reload) SELECT id, name, description, lastreload, reload FROM daemonhosts");
 $this->Execute("DROP TABLE daemonhosts");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082900', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005082900', 'dbversion'));

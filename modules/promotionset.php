@@ -27,17 +27,18 @@
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if ($id) {
-	$args = array(
-		'disabled' => !empty($_GET['access']) ? 0 : 1,
-		SYSLOG::RES_PROMO => $id
-	);
-	$DB->Execute('UPDATE promotions SET disabled = ? WHERE id = ?',
-		array_values($args));
+    $args = array(
+        'disabled' => !empty($_GET['access']) ? 0 : 1,
+        SYSLOG::RES_PROMO => $id
+    );
+    $DB->Execute(
+        'UPDATE promotions SET disabled = ? WHERE id = ?',
+        array_values($args)
+    );
 
-	if ($SYSLOG)
-		$SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
+    if ($SYSLOG) {
+        $SYSLOG->AddMessage(SYSLOG::RES_PROMO, SYSLOG::OPER_UPDATE, $args);
+    }
 }
 
 header('Location: ?'.$SESSION->get('backto'));
-
-?>

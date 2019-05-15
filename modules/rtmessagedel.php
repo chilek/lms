@@ -29,20 +29,16 @@ $maction = ($_GET['maction']);
 $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
 $rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $ticket);
 
-if(($rights & 4) != 4)
-{
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
+if (($rights & 4) != 4) {
+    $SMARTY->display('noaccess.html');
+    $SESSION->close();
+    die;
 }
 
-if ($maction == 'delete')
-{
-	$del = 1;
-	$deltime = time();
-	$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $msg));
+if ($maction == 'delete') {
+    $del = 1;
+    $deltime = time();
+    $DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $msg));
 }
 
 $SESSION->redirect('?m=rtticketview&id=' . $ticket);
-
-?>

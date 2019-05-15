@@ -30,14 +30,13 @@ $domain = $DB->GetRow('SELECT d.id, d.name, d.ownerid, d.description, d.mxbackup
 		(SELECT COUNT(*) FROM passwd WHERE domainid = d.id) AS accountcnt, 
 		(SELECT COUNT(*) FROM records WHERE domain_id = d.id) AS recordscnt,
 		(SELECT COUNT(*) FROM aliases WHERE domainid = d.id) AS aliascnt, '
-		.$DB->Concat('lastname', "' '",'c.name').' AS customername
+        .$DB->Concat('lastname', "' '", 'c.name').' AS customername
 		FROM domains d
 		LEFT JOIN customers c ON (d.ownerid = c.id)
 		WHERE d.id = ?', array($id));
 
-if(!$domain)
-{
-	$SESSION->redirect('?'.$SESSION->get('backto'));
+if (!$domain) {
+    $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $layout['pagetitle'] = trans('Domain Info: $a', $domain['name']);
@@ -46,5 +45,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('domain', $domain);
 $SMARTY->display('domain/domaininfo.html');
-
-?>

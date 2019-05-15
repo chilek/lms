@@ -28,7 +28,8 @@
  * \class Kd_tree
  * \brief Class used to find nearest neighbor for point.
  */
-class Kd_tree {
+class Kd_tree
+{
 
     private $root;
     private $k;
@@ -37,7 +38,8 @@ class Kd_tree {
     private $best;
     private $best_dist;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->root = null;
 
         // implemented only for 2D trees.
@@ -49,14 +51,16 @@ class Kd_tree {
      *
      * \param array $P Point coordinates.
      */
-    public function insert( array $P ) {
+    public function insert(array $P)
+    {
         $this->root = $this->_insert($this->root, $P);
     }
 
     /*!
      * \brief Clear tree.
      */
-    public function clear() {
+    public function clear()
+    {
         $this->root      = null;
         $this->best      = null;
         $this->best_dist = PHP_INT_MAX;
@@ -70,8 +74,9 @@ class Kd_tree {
      * \param  int    $cd    Current dimension.
      * \return object        Root
      */
-    private function _insert( $root, array $P, $cd = 0 ) {
-        if ( $root == null ) {
+    private function _insert($root, array $P, $cd = 0)
+    {
+        if ($root == null) {
             return new Kd_node($P);
         }
 
@@ -79,8 +84,8 @@ class Kd_tree {
         $cd = $cd % $this->k;
 
         // add point to subtree
-        if ( $P[$cd] < $root->loc[$cd] ) {
-            $root->left  = $this->_insert($root->left , $P, $cd+1);
+        if ($P[$cd] < $root->loc[$cd]) {
+            $root->left  = $this->_insert($root->left, $P, $cd+1);
         } else {
             $root->right = $this->_insert($root->right, $P, $cd+1);
         }
@@ -94,7 +99,8 @@ class Kd_tree {
      * \param  array $P Point coordinates.
      * \return array    Nearest neighobr coordinates.
      */
-    public function findNN( array $P ) {
+    public function findNN(array $P)
+    {
         // clear values
         $this->best      = null;
         $this->best_dist = PHP_INT_MAX;
@@ -112,11 +118,12 @@ class Kd_tree {
      * \param  kd_node $root
      * \param  int     $cd    Current dimension
      */
-    public function _findNN( array $P, $root, $cd = 0 ) {
+    public function _findNN(array $P, $root, $cd = 0)
+    {
 
         // if root is empty or distance to splitting line is higher
         // that current best distance then return
-        if ( $root == null ) {
+        if ($root == null) {
             return null;
         }
 
@@ -126,20 +133,20 @@ class Kd_tree {
         // if this point is better than the best then set new champion
         $dist = $this->getDist($P, $root->loc);
 
-        if ( $dist < $this->best_dist ) {
+        if ($dist < $this->best_dist) {
             $this->best      = $root->loc;
             $this->best_dist = $dist;
         }
 
         // visit subtrees is most promising order
-        if ( $P[$cd] < $root->loc[$cd] ) {
+        if ($P[$cd] < $root->loc[$cd]) {
             $this->_findNN($P, $root->left, $cd + 1);
-            if ( $this->getDist($P, $this->getLineClosestPoint($P, $root->loc, $cd + 1)) < $this->best_dist) {
+            if ($this->getDist($P, $this->getLineClosestPoint($P, $root->loc, $cd + 1)) < $this->best_dist) {
                 $this->_findNN($P, $root->right, $cd + 1);
             }
         } else {
             $this->_findNN($P, $root->right, $cd + 1);
-            if ( $this->getDist($P, $this->getLineClosestPoint($P, $root->loc, $cd + 1)) < $this->best_dist) {
+            if ($this->getDist($P, $this->getLineClosestPoint($P, $root->loc, $cd + 1)) < $this->best_dist) {
                 $this->_findNN($P, $root->left, $cd + 1);
             }
         }
@@ -153,12 +160,13 @@ class Kd_tree {
      * \return float
      * \return boolean false Not supported dimension value.
      */
-    public function getDist( array $P1, array $P2 ) {
+    public function getDist(array $P1, array $P2)
+    {
 
-        switch ( $this->k ) {
+        switch ($this->k) {
             // compare 2D points
             case 2:
-                return sqrt( pow($P2[0]-$P1[0], 2) + pow($P2[1]-$P1[1], 2) );
+                return sqrt(pow($P2[0]-$P1[0], 2) + pow($P2[1]-$P1[1], 2));
             break;
 
             default:
@@ -174,12 +182,11 @@ class Kd_tree {
      * \param  int   $cd       Current dimension.
      * \return array
      */
-    private function getLineClosestPoint( $P, $root_loc, $cd = 0 ) {
+    private function getLineClosestPoint($P, $root_loc, $cd = 0)
+    {
         $cd = $cd % $this->k;
         $root_loc[$cd] = $P[$cd];
 
         return $root_loc;
     }
 }
-
-?>

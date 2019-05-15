@@ -27,25 +27,26 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification'))
-		return;
+    if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification')) {
+        return;
+    }
 
-	if ($LMS->isDocumentReferenced($id))
-		return;
+    if ($LMS->isDocumentReferenced($id)) {
+        return;
+    }
 
-	if ($LMS->isArchiveDocument($id))
-		return;
+    if ($LMS->isArchiveDocument($id)) {
+        return;
+    }
 
-	$hook_data = $LMS->executeHook('invoicedel_before_delete', array(
-		'id' => $id,
-	));
-	if (!isset($hook_data['continue']) || !empty($hook_data['continue'])) {
-		$DB->BeginTrans();
-		$LMS->InvoiceDelete($id);
-		$DB->CommitTrans();
-	}
+    $hook_data = $LMS->executeHook('invoicedel_before_delete', array(
+        'id' => $id,
+    ));
+    if (!isset($hook_data['continue']) || !empty($hook_data['continue'])) {
+        $DB->BeginTrans();
+        $LMS->InvoiceDelete($id);
+        $DB->CommitTrans();
+    }
 }
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);
-
-?>

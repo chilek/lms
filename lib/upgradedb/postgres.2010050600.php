@@ -43,9 +43,9 @@ $this->Execute("
 	ALTER TABLE nodes DROP mac;
 ");
 
-if(!$this->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid = a.aggfnoid)
-    WHERE p.proname='array_agg'"))
-	$this->Execute("
+if (!$this->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid = a.aggfnoid)
+    WHERE p.proname='array_agg'")) {
+    $this->Execute("
 		CREATE AGGREGATE array_agg (
 		    BASETYPE=anyelement,
 			SFUNC=array_append,
@@ -53,9 +53,8 @@ if(!$this->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid 
 			INITCOND='{}'
 		);
 	");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

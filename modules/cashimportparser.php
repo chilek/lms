@@ -26,27 +26,34 @@
 
 include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 
-if(!isset($patterns) || !is_array($patterns))
-	$error['file'] = trans('Configuration error. Patterns array not found!');
-elseif (isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size']) {
-	$contents = file_get_contents($_FILES['file']['tmp_name']);
-	$filename = $_FILES['file']['name'];
-	$ln = 0;
+if (!isset($patterns) || !is_array($patterns)) {
+    $error['file'] = trans('Configuration error. Patterns array not found!');
+} elseif (isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size']) {
+    $contents = file_get_contents($_FILES['file']['tmp_name']);
+    $filename = $_FILES['file']['name'];
+    $ln = 0;
 
-	$error = $LMS->CashImportParseFile($filename, $contents, $patterns);
+    $error = $LMS->CashImportParseFile($filename, $contents, $patterns);
 
-	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'cashimport.php');
-	die;
+    include(MODULES_DIR . DIRECTORY_SEPARATOR . 'cashimport.php');
+    die;
+} elseif (isset($_FILES['file'])) { // upload errors
+    switch ($_FILES['file']['error']) {
+        case 1:
+        case 2:
+            $error['file'] = trans('File is too large.');
+            break;
+        case 3:
+            $error['file'] = trans('File upload has finished prematurely.');
+            break;
+        case 4:
+            $error['file'] = trans('Path to file was not specified.');
+            break;
+        default:
+            $error['file'] = trans('Problem during file upload.');
+            break;
+    }
 }
-elseif(isset($_FILES['file'])) // upload errors
-	switch($_FILES['file']['error'])
-	{
-		case 1: 
-		case 2: $error['file'] = trans('File is too large.'); break;
-		case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-		case 4: $error['file'] = trans('Path to file was not specified.'); break;
-		default: $error['file'] = trans('Problem during file upload.'); break;
-	}
 
 $layout['pagetitle'] = trans('Cash Operations Import');
 
@@ -59,10 +66,9 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     ORDER BY s.idate DESC LIMIT 10');
 
 $SMARTY->assign('error', $error);
-if (!ConfigHelper::checkConfig('phpui.big_networks'))
-	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks')) {
+    $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+}
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->assign('sourcefiles', $sourcefiles);
 $SMARTY->display('cash/cashimport.html');
-
-?>

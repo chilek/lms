@@ -24,20 +24,22 @@
  *  $Id$
  */
 
-class LMSHtmlDebitNote extends LMSHtmlDocument {
-	public function __construct($smarty) {
-		parent::__construct($smarty, 'notes', 'note' . DIRECTORY_SEPARATOR . 'noteheader.html');
-	}
+class LMSHtmlDebitNote extends LMSHtmlDocument
+{
+    public function __construct($smarty)
+    {
+        parent::__construct($smarty, 'notes', 'note' . DIRECTORY_SEPARATOR . 'noteheader.html');
+    }
 
-	public function Draw($data) {
-		parent::Draw($data);
+    public function Draw($data)
+    {
+        parent::Draw($data);
 
-		$template_file = ConfigHelper::getConfig('notes.template_file');
-		if (!$this->smarty->templateExists('file:' . $template_file))
-			$template_file = 'note' . DIRECTORY_SEPARATOR . $template_file;
-		$this->smarty->assign('note', $this->data);
-		$this->contents .= $this->smarty->fetch('file:' . $template_file);
-	}
+        $template_file = ConfigHelper::getConfig('notes.template_file');
+        if (!$this->smarty->templateExists('file:' . $template_file)) {
+            $template_file = 'note' . DIRECTORY_SEPARATOR . $template_file;
+        }
+        $this->smarty->assign('note', $this->data);
+        $this->contents .= $this->smarty->fetch('file:' . $template_file);
+    }
 }
-
-?>

@@ -42,5 +42,3 @@ SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

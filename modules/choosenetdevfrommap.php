@@ -29,16 +29,14 @@ $layout['pagetitle'] = trans('Select network device');
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 $js = '';
 
-if (!$p)
-	$js = 'var targetfield = window.parent.targetfield;';
-elseif ($p == 'main') {
-	$js = 'var targetfield = window.parent.targetfield;';
+if (!$p) {
+    $js = 'var targetfield = window.parent.targetfield;';
+} elseif ($p == 'main') {
+    $js = 'var targetfield = window.parent.targetfield;';
 
-	include(MODULES_DIR.'/map.inc.php');
+    include(MODULES_DIR.'/map.inc.php');
 }
 
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
 $SMARTY->display('choose/choosenetdevfrommap.html');
-
-?>

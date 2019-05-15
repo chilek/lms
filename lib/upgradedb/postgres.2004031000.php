@@ -40,6 +40,4 @@ $this->Execute("
     ALTER TABLE nodes ALTER warning SET NOT NULL
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031000', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004031000', 'dbversion'));

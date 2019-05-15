@@ -26,9 +26,8 @@
 
 $id = intval($_GET['id']);
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id)
-	$LMS->DeleteDivision($id);
+if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id) {
+    $LMS->DeleteDivision($id);
+}
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

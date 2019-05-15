@@ -73,5 +73,3 @@ $_LANG['Don\'t show customer nodes box if he hasn\'t any nodes'] = 'Jei klientas
 $_LANG['Text of data processing agreement:'] = 'Sutikimo duomenų apdorojimui tekstas:';
 $_LANG['Enter text of agreement for personal data processing'] = 'Įvesk sutikimo asmens duomenų apdorojimui tekstą';
 $_LANG['Personal data processing agreement'] = 'Sutikimas apdoroti asmens duomenis';
-
-?>

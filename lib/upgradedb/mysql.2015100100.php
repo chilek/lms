@@ -26,63 +26,64 @@ $this->BeginTrans();
 $this->Execute("ALTER TABLE users CHANGE rights rights text NOT NULL DEFAULT ''");
 
 $rightmap = array(
-	0 => 'full_access',
-	1 => 'read_only',
-	2 => 'node_connections',
-	3 => 'finances_management',
-	4 => 'reload',
-	5 => 'customer_management',
-	6 => 'node_management',
-	7 => 'traffic_stats',
-	8 => 'messaging',
-	9 => 'helpdesk_administration',
-	10 => 'helpdesk_operation',
-	11 => 'hosting_management',
-	12 => 'configuration',
-	13 => 'network_management',
-	14 => 'timetable_management',
-	15 => 'daemon_management',
-	16 => 'cash_operations',
-	17 => 'customer_group_management',
-	18 => 'node_group_management',
-	19 => 'customer_group_assignments',
-	20 => 'node_group_assignments',
-	21 => 'hide_summaries',
-	22 => 'voip_account_management',
-	23 => 'userpanel_management',
-	24 => 'hide_sysinfo',
-	25 => 'hide_links',
-	26 => 'hide_finances',
-	27 => 'reports',
-	28 => 'cash_registry_administration',
-	29 => 'transaction_logs',
-	30 => 'hide_voip_passwords',
-	31 => 'traffic_stats_compacting',
-	249 => 'backup_management_forbidden',
-	253 => 'user_management_forbidden',
-	255 => 'no_access',
+    0 => 'full_access',
+    1 => 'read_only',
+    2 => 'node_connections',
+    3 => 'finances_management',
+    4 => 'reload',
+    5 => 'customer_management',
+    6 => 'node_management',
+    7 => 'traffic_stats',
+    8 => 'messaging',
+    9 => 'helpdesk_administration',
+    10 => 'helpdesk_operation',
+    11 => 'hosting_management',
+    12 => 'configuration',
+    13 => 'network_management',
+    14 => 'timetable_management',
+    15 => 'daemon_management',
+    16 => 'cash_operations',
+    17 => 'customer_group_management',
+    18 => 'node_group_management',
+    19 => 'customer_group_assignments',
+    20 => 'node_group_assignments',
+    21 => 'hide_summaries',
+    22 => 'voip_account_management',
+    23 => 'userpanel_management',
+    24 => 'hide_sysinfo',
+    25 => 'hide_links',
+    26 => 'hide_finances',
+    27 => 'reports',
+    28 => 'cash_registry_administration',
+    29 => 'transaction_logs',
+    30 => 'hide_voip_passwords',
+    31 => 'traffic_stats_compacting',
+    249 => 'backup_management_forbidden',
+    253 => 'user_management_forbidden',
+    255 => 'no_access',
 );
 
 $users = $this->GetAll("SELECT id, rights FROM users");
 foreach ($users as $user) {
-	$mask = $user['rights'];
-	$len = strlen($mask);
-	$bin = '';
-	$rights = array();
+    $mask = $user['rights'];
+    $len = strlen($mask);
+    $bin = '';
+    $rights = array();
 
-	for ($cnt = $len; $cnt > 0; $cnt--)
-		$bin = sprintf('%04b', hexdec($mask[$cnt - 1])) . $bin;
+    for ($cnt = $len; $cnt > 0; $cnt--) {
+        $bin = sprintf('%04b', hexdec($mask[$cnt - 1])) . $bin;
+    }
 
-	$len = strlen($bin);
-	for ($cnt = $len - 1; $cnt >= 0; $cnt--)
-		if ($bin[$cnt] == '1' && array_key_exists($len - $cnt - 1, $rightmap))
-			$rights[] = $rightmap[$len - $cnt - 1];
+    $len = strlen($bin);
+    for ($cnt = $len - 1; $cnt >= 0; $cnt--) {
+        if ($bin[$cnt] == '1' && array_key_exists($len - $cnt - 1, $rightmap)) {
+            $rights[] = $rightmap[$len - $cnt - 1];
+        }
+    }
 
-	$this->Execute("UPDATE users SET rights = ? WHERE id = ?", array(implode(',', $rights), $user['id']));
+    $this->Execute("UPDATE users SET rights = ? WHERE id = ?", array(implode(',', $rights), $user['id']));
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015100100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

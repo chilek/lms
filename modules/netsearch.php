@@ -25,19 +25,18 @@
  */
 
 if (isset($_GET['ajax'])) {
-	header('Content-type: text/plain');
-	$netsearch = urldecode(trim($_GET['what']));
+    header('Content-type: text/plain');
+    $netsearch = urldecode(trim($_GET['what']));
 
-	switch ($_GET['mode']) {
-		
-		case 'name':
-		case 'inet_ntoa(address)':
-		case 'interface':
-		case 'notes':
-		case 'domain':
-		case 'wins':
-		case 'gateway':
-			$candidates = $DB->GetAll('SELECT
+    switch ($_GET['mode']) {
+        case 'name':
+        case 'inet_ntoa(address)':
+        case 'interface':
+        case 'notes':
+        case 'domain':
+        case 'wins':
+        case 'gateway':
+            $candidates = $DB->GetAll('SELECT
 													' . $_GET['mode'] . ' as item,
 													count(id) AS entries
 												FROM
@@ -49,10 +48,10 @@ if (isset($_GET['ajax'])) {
 												ORDER BY
 													entries DESC, item ASC
 												LIMIT 15');
-		break;
+            break;
 
-		case 'host':
-			$candidates = $DB->GetAll('SELECT
+        case 'host':
+            $candidates = $DB->GetAll('SELECT
 													h.name as item,
 													count(*) AS entries
 												FROM
@@ -64,10 +63,10 @@ if (isset($_GET['ajax'])) {
 												ORDER BY
 													entries DESC, item ASC
 												LIMIT 15');
-		break;
+            break;
 
-		case 'dns':
-			$candidates = $DB->GetAll('SELECT
+        case 'dns':
+            $candidates = $DB->GetAll('SELECT
 													dns as item,
 													count(id) AS entries
 												FROM
@@ -79,8 +78,8 @@ if (isset($_GET['ajax'])) {
 												ORDER BY
 													entries DESC, item ASC
 												LIMIT 15');
-	
-			$candidates2 = $DB->GetAll('SELECT
+    
+            $candidates2 = $DB->GetAll('SELECT
 													dns2 as item,
 													count(id) AS entries
 												FROM
@@ -93,98 +92,108 @@ if (isset($_GET['ajax'])) {
 													entries DESC, item ASC
 												LIMIT 15');
 
-			if (empty($candidates))
-				$candidates = array();
-			
-			if (empty($candidates2))
-				$candidates2 = array();
+            if (empty($candidates)) {
+                $candidates = array();
+            }
+            
+            if (empty($candidates2)) {
+                $candidates2 = array();
+            }
 
-			$candidates = array_merge($candidates, $candidates2);				
-		break;
+            $candidates = array_merge($candidates, $candidates2);
+            break;
 
-		default:
-			exit;
-	}
-										
-	$result = array();
+        default:
+            exit;
+    }
+                                        
+    $result = array();
 
-	if ($candidates)
-		foreach ($candidates as $idx => $row) {
-			$name = $row['item'];
-			$name_class = '';
-			$description = $row['entries'] . ' ' . trans('entries');
-			$description_class = '';
-			$action = '';
+    if ($candidates) {
+        foreach ($candidates as $idx => $row) {
+            $name = $row['item'];
+            $name_class = '';
+            $description = $row['entries'] . ' ' . trans('entries');
+            $description_class = '';
+            $action = '';
 
-			$result[$row['item']] = compact('name', 'name_class', 'description', 'description_class', 'action');
-		}
-	header('Content-Type: application/json');
-	if (!empty($result))
-		echo json_encode(array_values($result));
-	exit;
+            $result[$row['item']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+        }
+    }
+    header('Content-Type: application/json');
+    if (!empty($result)) {
+        echo json_encode(array_values($result));
+    }
+    exit;
 }
 
-if (isset($_POST['search']))
-	$netsearch = $_POST['search'];
+if (isset($_POST['search'])) {
+    $netsearch = $_POST['search'];
+}
 
-if (!isset($netsearch))
-	$SESSION->restore('netsearch', $netsearch);
-else
-	$SESSION->save('netsearch', $netsearch);
+if (!isset($netsearch)) {
+    $SESSION->restore('netsearch', $netsearch);
+} else {
+    $SESSION->save('netsearch', $netsearch);
+}
 
 if (!isset($_GET['searchform']) && !empty($netsearch)) {
-	$layout['pagetitle'] = trans('IP Network Search Results');
+    $layout['pagetitle'] = trans('IP Network Search Results');
 
-	$netsearch['count'] = true;
-	$count = intval($LMS->GetNetworkList($netsearch));
+    $netsearch['count'] = true;
+    $count = intval($LMS->GetNetworkList($netsearch));
 
-	$netsearch['count'] = false;
-	if ($count == 1) {
-		$netsearch['offset'] = 0;
-		$netsearch['limit'] = 1;
-	} else {
-		if (isset($_GET['o']))
-			$netsearch['order'] = $_GET['o'];
+    $netsearch['count'] = false;
+    if ($count == 1) {
+        $netsearch['offset'] = 0;
+        $netsearch['limit'] = 1;
+    } else {
+        if (isset($_GET['o'])) {
+            $netsearch['order'] = $_GET['o'];
+        }
 
-		if(!isset($_GET['page']))
-			$SESSION->restore('ndlsp', $_GET['page']);
+        if (!isset($_GET['page'])) {
+            $SESSION->restore('ndlsp', $_GET['page']);
+        }
 
-		$SESSION->save('ndlsp', $page);
-		$page = (! $_GET['page'] ? 1 : intval($_GET['page']));
-		$netsearch['limit'] = intval(ConfigHelper::getConfig('phpui.networklist_pagelimit', $count));
-		$netsearch['offset']= ($page - 1) * $netsearch['limit'];
+        $SESSION->save('ndlsp', $page);
+        $page = (! $_GET['page'] ? 1 : intval($_GET['page']));
+        $netsearch['limit'] = intval(ConfigHelper::getConfig('phpui.networklist_pagelimit', $count));
+        $netsearch['offset']= ($page - 1) * $netsearch['limit'];
 
-		$SESSION->save('ndlsp', $page);
-	}
-	$netlist = $LMS->GetNetworkList($netsearch);
+        $SESSION->save('ndlsp', $page);
+    }
+    $netlist = $LMS->GetNetworkList($netsearch);
 
-	if ($count == 1)
-		$SESSION->redirect('?m=netinfo&id=' . $netlist[0]['id']);
-	else {
-		$listdata['order'] = $netlist['order'];
-		$listdata['direction'] = $netlist['direction'];
-		$listdata['online'] = $netlist['online'];
-		$listdata['assigned'] = $netlist['assigned'];
-		$listdata['size'] = $netlist['size'];
+    if ($count == 1) {
+        $SESSION->redirect('?m=netinfo&id=' . $netlist[0]['id']);
+    } else {
+        $listdata['order'] = $netlist['order'];
+        $listdata['direction'] = $netlist['direction'];
+        $listdata['online'] = $netlist['online'];
+        $listdata['assigned'] = $netlist['assigned'];
+        $listdata['size'] = $netlist['size'];
 
-		unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
+        unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
 
-		$pagination = LMSPaginationFactory::getPagination($page, $count, $netsearch['limit'],
-			ConfigHelper::checkConfig('phpui.short_pagescroller'));
+        $pagination = LMSPaginationFactory::getPagination(
+            $page,
+            $count,
+            $netsearch['limit'],
+            ConfigHelper::checkConfig('phpui.short_pagescroller')
+        );
 
-		$SMARTY->assign('netlist', $netlist);
-		$SMARTY->assign('listdata', $listdata);
-		$SMARTY->assign('pagination', $pagination);
-		$SMARTY->assign('search', true);
-		$SMARTY->display('net/netlist.html');
-	}
+        $SMARTY->assign('netlist', $netlist);
+        $SMARTY->assign('listdata', $listdata);
+        $SMARTY->assign('pagination', $pagination);
+        $SMARTY->assign('search', true);
+        $SMARTY->display('net/netlist.html');
+    }
 } else {
-	$layout['pagetitle'] = trans('IP Network Search');
+    $layout['pagetitle'] = trans('IP Network Search');
 
-	$SESSION->remove('ndlsp');
-	$SMARTY->assign('autosuggest_placement', ConfigHelper::getConfig('phpui.default_autosuggest_placement'));
-	$SMARTY->assign('k',$k);
-	$SMARTY->display('net/netsearch.html');
+    $SESSION->remove('ndlsp');
+    $SMARTY->assign('autosuggest_placement', ConfigHelper::getConfig('phpui.default_autosuggest_placement'));
+    $SMARTY->assign('k', $k);
+    $SMARTY->display('net/netsearch.html');
 }
-
-?>

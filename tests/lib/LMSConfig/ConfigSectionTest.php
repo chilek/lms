@@ -32,7 +32,6 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     /**
@@ -184,5 +183,4 @@ class ConfigSectionTest extends \PHPUnit_Framework_TestCase
             $this->object->addVariable($variable);
         }
     }
-
 }

@@ -18,7 +18,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -45,7 +45,7 @@ class urgent_notice_popup_plugin
      * Action check if notices module is on
      * and then check for notice urgent for customer
      * and assign smarty variable to control display
-     * popup message in userpanel body.html file 
+     * popup message in userpanel body.html file
      *
      * @param array $vars module notices data
      *
@@ -53,11 +53,12 @@ class urgent_notice_popup_plugin
      */
     function notice_check($vars)
     {
-		global $SMARTY;
-		global $SESSION;
+        global $SMARTY;
+        global $SESSION;
 
-		$LMS = $this->lms;
-		$notice_urgent = $LMS->DB->GetRow('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status
+        $LMS = $this->lms;
+        $notice_urgent = $LMS->DB->GetRow(
+            'SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status
 				FROM customers c, messageitems mi, messages m
 				WHERE c.id=mi.customerid
 					AND m.id=mi.messageid
@@ -65,8 +66,9 @@ class urgent_notice_popup_plugin
                     AND mi.status = 1
                     AND c.id=?
                     ORDER BY m.cdate desc',
-			array($SESSION->id));
-		$SMARTY->assign('notice_urgent', $notice_urgent);
+            array($SESSION->id)
+        );
+        $SMARTY->assign('notice_urgent', $notice_urgent);
 
         // always return $vars
         return $vars;
@@ -78,5 +80,3 @@ $popup_plugin = new urgent_notice_popup_plugin($LMS);
 
 // Register plugin actions:
 $LMS->RegisterHook('userpanel_module_call_before', array($popup_plugin, 'notice_check'));
-
-?>

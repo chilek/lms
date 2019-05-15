@@ -27,7 +27,7 @@
 function get_solution($id)
 {
     global $DB;
-    return $DB->GetRow('SELECT title,body,reference,id FROM up_help WHERE id = ?',array($id));
+    return $DB->GetRow('SELECT title,body,reference,id FROM up_help WHERE id = ?', array($id));
 }
 
 function get_first_solution()
@@ -36,58 +36,60 @@ function get_first_solution()
     return $DB->GetOne('SELECT id FROM up_help WHERE reference IS NULL');
 }
 
-function update_solution($id,$title,$body)
+function update_solution($id, $title, $body)
 {
     global $DB;
-    $DB->Execute('UPDATE up_help SET title=?, body=? WHERE id=?', array($title, $body, $id)); 
+    $DB->Execute('UPDATE up_help SET title=?, body=? WHERE id=?', array($title, $body, $id));
 }
 
-function add_solution($refid,$title,$body)
+function add_solution($refid, $title, $body)
 {
     global $DB;
-    $DB->Execute('INSERT INTO up_help (reference, title, body) VALUES (?, ?, ?)',
-        array(empty($refid) ? null : $refid, $title, $body));
+    $DB->Execute(
+        'INSERT INTO up_help (reference, title, body) VALUES (?, ?, ?)',
+        array(empty($refid) ? null : $refid, $title, $body)
+    );
 }
 
 function delete_solution($id)
 {
     global $DB;
-    $DB->Execute('DELETE FROM up_help WHERE id=?', array($id));    
+    $DB->Execute('DELETE FROM up_help WHERE id=?', array($id));
 }
 
 function get_questions($id)
 {
     global $DB;
-    if (empty($id))
+    if (empty($id)) {
         return $DB->GetAll('SELECT id,title FROM up_help WHERE reference IS NULL');
-    else
-        return $DB->GetAll('SELECT id,title FROM up_help WHERE reference = ?',array($id));
+    } else {
+        return $DB->GetAll('SELECT id,title FROM up_help WHERE reference = ?', array($id));
+    }
 }
 
 function are_questions($id)
 {
     global $DB;
-    if (($DB->GetOne('SELECT id FROM up_help WHERE reference = ? LIMIT 1',array($id))) >0) {
-	return true;
+    if (($DB->GetOne('SELECT id FROM up_help WHERE reference = ? LIMIT 1', array($id))) >0) {
+        return true;
     } else {
-	return false;
+        return false;
     }
 }
 
 function fetch_questions($id)
 {
     $table = array();
-    if($questions = get_questions($id))
-	foreach ($questions as $question)
-	{
-	    if (are_questions($question['id']))
-	    {
-		$table[$question['id']] = $question['title'];
-		$table['next'.$question['id']] = fetch_questions($question['id']);
-	    } else {
-		$table[$question['id']] = $question['title'];
-	    }
-	}
+    if ($questions = get_questions($id)) {
+        foreach ($questions as $question) {
+            if (are_questions($question['id'])) {
+                $table[$question['id']] = $question['title'];
+                $table['next'.$question['id']] = fetch_questions($question['id']);
+            } else {
+                $table[$question['id']] = $question['title'];
+            }
+        }
+    }
     return $table;
 }
 
@@ -95,87 +97,96 @@ function module_main()
 {
     global $SMARTY,$_GET;
     if (isset($_GET['pr'])) {
-	$problem = $_GET['pr'];
+        $problem = $_GET['pr'];
     } else {
-	$problem = get_first_solution();
+        $problem = get_first_solution();
     }
     $solution = get_solution($problem);
     $questions = get_questions($problem);
 
     $SMARTY->assign('solution', $solution);
-    $SMARTY->assign('questions', $questions);    
+    $SMARTY->assign('questions', $questions);
     $SMARTY->display('module:help.html');
 }
 
-if (defined('USERPANEL_SETUPMODE'))
-{
-    function module_setup() {
-	global $SMARTY,$LMS;
+if (defined('USERPANEL_SETUPMODE')) {
+    function module_setup()
+    {
+        global $SMARTY,$LMS;
         $questions = fetch_questions(0);
-	$treefile = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/help/templates/tree.html';
+        $treefile = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/help/templates/tree.html';
         $SMARTY->assign('tree', $questions);
-	$SMARTY->assign('treefile', $treefile);
+        $SMARTY->assign('treefile', $treefile);
         $SMARTY->display('module:help:setup.html');
     }
 
-    function module_edit() {
-	global $SMARTY,$_GET;
+    function module_edit()
+    {
+        global $SMARTY,$_GET;
         $solution = get_solution($_GET['nr']);
-	$SMARTY->assign('solution', $solution);
+        $SMARTY->assign('solution', $solution);
         $SMARTY->display('module:help:edit.html');
     }
 
-    function module_postedit() {
-	global $SMARTY,$_POST;
-        if($_POST['title'] == '')
-    	    $error['title'] = trans('This cannot be empty');
-	if($_POST['body'] == '')
-	    $error['body'] = trans('This cannot be empty');
-	if(!$error) {
-	    update_solution($_POST['id'],$_POST['title'],$_POST['body']);
-    	    header('Location: ?m=userpanel&module=help');
+    function module_postedit()
+    {
+        global $SMARTY,$_POST;
+        if ($_POST['title'] == '') {
+            $error['title'] = trans('This cannot be empty');
+        }
+        if ($_POST['body'] == '') {
+            $error['body'] = trans('This cannot be empty');
+        }
+        if (!$error) {
+            update_solution($_POST['id'], $_POST['title'], $_POST['body']);
+            header('Location: ?m=userpanel&module=help');
         } else {
-	    $solution['id'] = $_POST['id'];
-    	    $solution['title'] = $_POST['title'];
-	    $solution['body'] = $_POST['body'];
-	    $SMARTY->assign('solution', $solution);
-	    $SMARTY->assign('error', $error);
-	    $SMARTY->display('module:help:edit.html');
-	}
+            $solution['id'] = $_POST['id'];
+            $solution['title'] = $_POST['title'];
+            $solution['body'] = $_POST['body'];
+            $SMARTY->assign('solution', $solution);
+            $SMARTY->assign('error', $error);
+            $SMARTY->display('module:help:edit.html');
+        }
     }
 
-    function module_delete() {
-	global $SMARTY,$_GET;
+    function module_delete()
+    {
+        global $SMARTY,$_GET;
         delete_solution($_GET['nr']);
-	header('Location: ?m=userpanel&module=help');
+        header('Location: ?m=userpanel&module=help');
     }
 
-    function module_add() {
-	global $SMARTY,$_GET;
-	$solution['refid'] = !empty($_GET['refid']) ? $_GET['refid'] : 0;
-	$SMARTY->assign('solution', $solution);
-	$SMARTY->display('module:help:add.html');
+    function module_add()
+    {
+        global $SMARTY,$_GET;
+        $solution['refid'] = !empty($_GET['refid']) ? $_GET['refid'] : 0;
+        $SMARTY->assign('solution', $solution);
+        $SMARTY->display('module:help:add.html');
     }
 
-    function module_postadd() {
-	global $SMARTY,$_POST;
-	if($_POST['refid'] == '') 
-	    $_POST['refid'] = 0;
-	if($_POST['title'] == '')
-	    $error['title'] = trans('This cannot be empty');
-	if($_POST['body'] == '')
-	    $error['body'] = trans('This cannot be empty');
-	if(!$error) {
-	    add_solution($_POST['refid'],$_POST['title'],$_POST['body']);
-	    header('Location: ?m=userpanel&module=help');
-	} else {
-	    $solution['refid'] = $_POST['refid'];
-	    $solution['title'] = $_POST['title'];
-	    $solution['body'] = $_POST['body'];
-	    $SMARTY->assign('solution', $solution);
-	    $SMARTY->assign('error', $error);
-	    $SMARTY->display('module:help:add.html');
-	}
+    function module_postadd()
+    {
+        global $SMARTY,$_POST;
+        if ($_POST['refid'] == '') {
+            $_POST['refid'] = 0;
+        }
+        if ($_POST['title'] == '') {
+            $error['title'] = trans('This cannot be empty');
+        }
+        if ($_POST['body'] == '') {
+            $error['body'] = trans('This cannot be empty');
+        }
+        if (!$error) {
+            add_solution($_POST['refid'], $_POST['title'], $_POST['body']);
+            header('Location: ?m=userpanel&module=help');
+        } else {
+            $solution['refid'] = $_POST['refid'];
+            $solution['title'] = $_POST['title'];
+            $solution['body'] = $_POST['body'];
+            $SMARTY->assign('solution', $solution);
+            $SMARTY->assign('error', $error);
+            $SMARTY->display('module:help:add.html');
+        }
     }
 }
-?>

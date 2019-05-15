@@ -40,15 +40,13 @@ $last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, taxes.label AS t
 			WHERE e.userid = lms_current_user() AND a.customerid = cash.customerid)
 		ORDER BY cash.id DESC LIMIT 1');
 
-$SMARTY->assign('last',$last);
-$SMARTY->assign('operation',$SESSION->get('addtype'));
-$SMARTY->assign('sourceid',$SESSION->get('addsource'));
+$SMARTY->assign('last', $last);
+$SMARTY->assign('operation', $SESSION->get('addtype'));
+$SMARTY->assign('sourceid', $SESSION->get('addsource'));
 $SMARTY->assign('comment', $SESSION->get('addbc'));
 $SMARTY->assign('taxid', $SESSION->get('addbtax'));
 $SMARTY->assign('time', $SESSION->get('addbt'));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('customers',$LMS->GetCustomerNames());
+$SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->display('balance/balancenew.html');
-
-?>

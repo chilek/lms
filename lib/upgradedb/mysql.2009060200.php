@@ -44,5 +44,3 @@ $this->Execute("ALTER TABLE cash ADD INDEX importid (importid)");
 $this->Execute("ALTER TABLE cash ADD INDEX sourceid (sourceid)");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009060200', 'dbversion'));
-
-?>

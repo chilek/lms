@@ -25,22 +25,20 @@
  */
 
 $data = array(
-	'locations' => array(),
-	'nodes' => array(),
-	'netdevnodes' => array(),
-	'voipaccounts' => array(),
-	'addresses' => array(),
+    'locations' => array(),
+    'nodes' => array(),
+    'netdevnodes' => array(),
+    'voipaccounts' => array(),
+    'addresses' => array(),
 );
 
 if (isset($_GET['customerid'])) {
-	$data['locations'] = $LMS->GetUniqueNodeLocations($_GET['customerid']);
-	$data['nodes'] = $LMS->GetCustomerNodes($_GET['customerid']);
-	$data['netdevnodes'] = $LMS->getCustomerNetDevNodes($_GET['customerid']);
-	$data['voipaccounts'] = $LMS->GetCustomerVoipAccounts($_GET['customerid']);
-	$data['addresses'] = $LMS->getCustomerAddresses($_GET['customerid']);
+    $data['locations'] = $LMS->GetUniqueNodeLocations($_GET['customerid']);
+    $data['nodes'] = $LMS->GetCustomerNodes($_GET['customerid']);
+    $data['netdevnodes'] = $LMS->getCustomerNetDevNodes($_GET['customerid']);
+    $data['voipaccounts'] = $LMS->GetCustomerVoipAccounts($_GET['customerid']);
+    $data['addresses'] = $LMS->getCustomerAddresses($_GET['customerid']);
 }
 
 header('Content-Type: application/json');
 die(json_encode($data));
-
-?>

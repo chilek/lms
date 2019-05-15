@@ -24,21 +24,23 @@
  *  $Id$
  */
 
-class LMSHtmlReceipt extends LMSHtmlDocument {
-	public function __construct($smarty) {
-		parent::__construct($smarty, 'receipts', 'receipt' . DIRECTORY_SEPARATOR . 'receiptheader.html');
-	}
+class LMSHtmlReceipt extends LMSHtmlDocument
+{
+    public function __construct($smarty)
+    {
+        parent::__construct($smarty, 'receipts', 'receipt' . DIRECTORY_SEPARATOR . 'receiptheader.html');
+    }
 
-	public function Draw($data) {
-		parent::Draw($data);
+    public function Draw($data)
+    {
+        parent::Draw($data);
 
-		$template_file = ConfigHelper::getConfig('receipts.template_file');
-		if (!$this->smarty->templateExists('file:' . $template_file))
-			$template_file = 'receipt' . DIRECTORY_SEPARATOR . $template_file;
-		$this->smarty->assign('type', $this->data['which']);
-		$this->smarty->assign('receipt', $this->data);
-		$this->contents .= $this->smarty->fetch('file:' . $template_file);
-	}
+        $template_file = ConfigHelper::getConfig('receipts.template_file');
+        if (!$this->smarty->templateExists('file:' . $template_file)) {
+            $template_file = 'receipt' . DIRECTORY_SEPARATOR . $template_file;
+        }
+        $this->smarty->assign('type', $this->data['which']);
+        $this->smarty->assign('receipt', $this->data);
+        $this->contents .= $this->smarty->fetch('file:' . $template_file);
+    }
 }
-
-?>

@@ -40,8 +40,6 @@ $this->Execute("ALTER TABLE nodes ADD COLUMN location text NOT NULL DEFAULT ''")
 $this->Execute("ALTER TABLE passwd DROP KEY login");
 $this->Execute("ALTER TABLE passwd ADD UNIQUE KEY (login, domainid)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006081000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006081000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

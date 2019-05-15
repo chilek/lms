@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE networks MODIFY COLUMN snat int(16) unsigned DEFAULT
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018111600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

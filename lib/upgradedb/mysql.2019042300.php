@@ -28,5 +28,3 @@ $this->Execute("UPDATE rtmessages SET body = REPLACE(REPLACE(body, '<br>', '\n')
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019042300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

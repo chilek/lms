@@ -25,141 +25,154 @@
  */
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-if (!$LMS->UserExists($id))
-	$SESSION->redirect('?m=userlist');
+if (!$LMS->UserExists($id)) {
+    $SESSION->redirect('?m=userlist');
+}
 
-$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : FALSE;
+$userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
 
-if($userinfo)
-{
-	$acl = $_POST['acl'];
-	$userinfo['id'] = $id;
+if ($userinfo) {
+    $acl = $_POST['acl'];
+    $userinfo['id'] = $id;
 
-	foreach($userinfo as $key => $value)
-	    if (!is_array($value))
-    		$userinfo[$key] = trim($value);
+    foreach ($userinfo as $key => $value) {
+        if (!is_array($value)) {
+            $userinfo[$key] = trim($value);
+        }
+    }
 
-	if($userinfo['login'] == '')
-		$error['login'] = trans('Login can\'t be empty!');
-	elseif(!preg_match('/^[a-z0-9._-]+$/i', $userinfo['login']))
-		$error['login'] = trans('Login contains forbidden characters!');
-	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $id)
-		$error['login'] = trans('User with specified login exists or that login was used in the past!');
+    if ($userinfo['login'] == '') {
+        $error['login'] = trans('Login can\'t be empty!');
+    } elseif (!preg_match('/^[a-z0-9._-]+$/i', $userinfo['login'])) {
+        $error['login'] = trans('Login contains forbidden characters!');
+    } elseif ($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $id) {
+        $error['login'] = trans('User with specified login exists or that login was used in the past!');
+    }
 
-	if ($userinfo['firstname'] == '')
-		$error['firstname'] = trans('You have to enter first and lastname!');
-	if ($userinfo['lastname'] == '')
-		$error['lastname'] = trans('You have to enter first and lastname!');
+    if ($userinfo['firstname'] == '') {
+        $error['firstname'] = trans('You have to enter first and lastname!');
+    }
+    if ($userinfo['lastname'] == '') {
+        $error['lastname'] = trans('You have to enter first and lastname!');
+    }
 
-	if($userinfo['email']!='' && !check_email($userinfo['email']))
-		$error['email'] = trans('E-mail isn\'t correct!');
+    if ($userinfo['email']!='' && !check_email($userinfo['email'])) {
+        $error['email'] = trans('E-mail isn\'t correct!');
+    }
 
-	if(!empty($userinfo['accessfrom']))
-	{
-		$accessfrom=date_to_timestamp($userinfo['accessfrom']);
-		if(empty($accessfrom))
-			$error['accessfrom'] = trans('Incorrect charging time!');
-	}
-	else
-		$accessfrom = 0;
+    if (!empty($userinfo['accessfrom'])) {
+        $accessfrom=date_to_timestamp($userinfo['accessfrom']);
+        if (empty($accessfrom)) {
+            $error['accessfrom'] = trans('Incorrect charging time!');
+        }
+    } else {
+        $accessfrom = 0;
+    }
 
-	if(!empty($userinfo['accessto']))
-	{
-		$accessto=date_to_timestamp($userinfo['accessto']);
-		if(empty($accessto))
-			$error['accessto'] = trans('Incorrect charging time!');
-	}
-	else
-		$accessto = 0;
+    if (!empty($userinfo['accessto'])) {
+        $accessto=date_to_timestamp($userinfo['accessto']);
+        if (empty($accessto)) {
+            $error['accessto'] = trans('Incorrect charging time!');
+        }
+    } else {
+        $accessto = 0;
+    }
 
-	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
-		$error['accessto'] = trans('Incorrect date range!');
+    if ($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0) {
+        $error['accessto'] = trans('Incorrect date range!');
+    }
 
-	$rights = isset($acl) ? array_keys($acl) : array();
-	$userinfo['rights'] = implode(',', $rights);
+    $rights = isset($acl) ? array_keys($acl) : array();
+    $userinfo['rights'] = implode(',', $rights);
 
-	if (!empty($userinfo['ntype']))
-		$userinfo['ntype'] = array_sum(Utils::filterIntegers($userinfo['ntype']));
+    if (!empty($userinfo['ntype'])) {
+        $userinfo['ntype'] = array_sum(Utils::filterIntegers($userinfo['ntype']));
+    }
 
-	if (!$error) {
-		$userinfo['accessfrom'] = $accessfrom;
-		$userinfo['accessto'] = $accessto;
-		$LMS->UserUpdate($userinfo);
+    if (!$error) {
+        $userinfo['accessfrom'] = $accessfrom;
+        $userinfo['accessto'] = $accessto;
+        $LMS->UserUpdate($userinfo);
 
-		if ($SYSLOG) {
-			$groups = $DB->GetAll('SELECT id, customergroupid FROM excludedgroups WHERE userid = ?',
-				array($userinfo['id']));
-			if (!empty($groups))
-				foreach ($groups as $group) {
-					$args = array(
-						SYSLOG::RES_EXCLGROUP => $group['id'],
-						SYSLOG::RES_CUSTGROUP => $group['customergroupid'],
-						SYSLOG::RES_USER => $userinfo['id']
-					);
-					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
-				}
-		}
-		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
-		if (isset($_POST['selected']))
-			foreach ($_POST['selected'] as $idx => $name) {
-				$DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
+        if ($SYSLOG) {
+            $groups = $DB->GetAll(
+                'SELECT id, customergroupid FROM excludedgroups WHERE userid = ?',
+                array($userinfo['id'])
+            );
+            if (!empty($groups)) {
+                foreach ($groups as $group) {
+                    $args = array(
+                    SYSLOG::RES_EXCLGROUP => $group['id'],
+                    SYSLOG::RES_CUSTGROUP => $group['customergroupid'],
+                    SYSLOG::RES_USER => $userinfo['id']
+                    );
+                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
+        $DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
+        if (isset($_POST['selected'])) {
+            foreach ($_POST['selected'] as $idx => $name) {
+                $DB->Execute('INSERT INTO excludedgroups (customergroupid, userid)
 						VALUES(?, ?)', array($idx, $userinfo['id']));
-				if ($SYSLOG) {
-					$args = array(
-						SYSLOG::RES_EXCLGROUP =>
-							$DB->GetLastInsertID('excludedgroups'),
-						SYSLOG::RES_CUSTGROUP => $idx,
-						SYSLOG::RES_USER => $userinfo['id']
-					);
-					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
-				}
-			}
+                if ($SYSLOG) {
+                    $args = array(
+                        SYSLOG::RES_EXCLGROUP =>
+                        $DB->GetLastInsertID('excludedgroups'),
+                        SYSLOG::RES_CUSTGROUP => $idx,
+                        SYSLOG::RES_USER => $userinfo['id']
+                    );
+                    $SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
+                }
+            }
+        }
 
-		$SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
-	} else {
-		$userinfo['selected'] = array();
-		if(isset($_POST['selected']))
-		{
-		        foreach($_POST['selected'] as $idx => $name)
-			{
-			        $userinfo['selected'][$idx]['id'] = $idx;
-			    	$userinfo['selected'][$idx]['name'] = $name;
-			}
-		}
+        $SESSION->redirect('?m=userinfo&id='.$userinfo['id']);
+    } else {
+        $userinfo['selected'] = array();
+        if (isset($_POST['selected'])) {
+            foreach ($_POST['selected'] as $idx => $name) {
+                $userinfo['selected'][$idx]['id'] = $idx;
+                $userinfo['selected'][$idx]['name'] = $name;
+            }
+        }
 
-		$access = AccessRights::getInstance();
-		$accesslist = $access->getArray(array_keys($acl));
-	}
-}
-else
-{
-	$rights = $LMS->GetUserRights($id);
+        $access = AccessRights::getInstance();
+        $accesslist = $access->getArray(array_keys($acl));
+    }
+} else {
+    $rights = $LMS->GetUserRights($id);
 
-	$access = AccessRights::getInstance();
-	$accesslist = $access->getArray($rights);
+    $access = AccessRights::getInstance();
+    $accesslist = $access->getArray($rights);
 }
 
-foreach($LMS->GetUserInfo($id) as $key => $value)
-	if(!isset($userinfo[$key]))
-		$userinfo[$key] = $value;
+foreach ($LMS->GetUserInfo($id) as $key => $value) {
+    if (!isset($userinfo[$key])) {
+        $userinfo[$key] = $value;
+    }
+}
 
-if(!isset($userinfo['selected']))
-	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name
+if (!isset($userinfo['selected'])) {
+    $userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name
 		FROM customergroups g, excludedgroups
 	        WHERE customergroupid = g.id AND userid = ?
 		ORDER BY name', 'id', array($userinfo['id']));
+}
 
 $layout['pagetitle'] = trans('User Edit: $a', $userinfo['login']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-	$trans = $SYSLOG->GetTransactions(array('userid' => $id));
-	if (!empty($trans))
-		foreach ($trans as $idx => $tran)
-			$SYSLOG->DecodeTransaction($trans[$idx]);
-	$SMARTY->assign('transactions', $trans);
-	$SMARTY->assign('userid', $id);
+    $trans = $SYSLOG->GetTransactions(array('userid' => $id));
+    if (!empty($trans)) {
+        foreach ($trans as $idx => $tran) {
+            $SYSLOG->DecodeTransaction($trans[$idx]);
+        }
+    }
+    $SMARTY->assign('transactions', $trans);
+    $SMARTY->assign('userid', $id);
 }
 
 $SMARTY->assign('accesslist', $accesslist);
@@ -168,5 +181,3 @@ $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('error', $error);
 
 $SMARTY->display('user/useredit.html');
-
-?>

@@ -32,5 +32,3 @@ $_LANG['Module Configuration:'] = 'Konfigurácia modulu:';
 $_LANG['Submit'] = 'Uložiť';
 $_LANG['This module allows your customers to logout'] = 'Tento modul umožňuje svojim zákazníkom odhlásiť sa';
 $_LANG['When your customer logs out, he will be redirected to this url. If url isn\'t specified, then he will be redirected to Userpanel\'s login screen'] = 'Keď sa váš zákazník prihlási, bude presmerovaný na túto adresu. Ak url nieje špecifikovaná, potom bude presmerovaný na Userpanel s prihlasovciou obrazovkou';
-
-?>

@@ -24,17 +24,14 @@
  *  $Id$
  */
 
-if($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid']))
-{
-	$customerid = $_GET['ownerid'];
-	include(MODULES_DIR.'/customer.inc.php');
+if ($_GET['ownerid'] && $LMS->CustomerExists($_GET['ownerid'])) {
+    $customerid = $_GET['ownerid'];
+    include(MODULES_DIR.'/customer.inc.php');
 }
 
 $layout['pagetitle'] = trans('Nodes Scanning');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('nodes',$LMS->ScanNodes());
+$SMARTY->assign('nodes', $LMS->ScanNodes());
 $SMARTY->display('node/nodescan.html');
-
-?>

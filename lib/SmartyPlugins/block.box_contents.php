@@ -24,12 +24,11 @@
  *  $Id$
  */
 
-function smarty_block_box_contents($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		return '<div class="lms-ui-box-contents">
+function smarty_block_box_contents($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        return '<div class="lms-ui-box-contents">
 				' . $content . '
 			</div>';
-	}
+    }
 }
-
-?>

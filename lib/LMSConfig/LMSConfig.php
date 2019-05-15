@@ -57,11 +57,11 @@ class LMSConfig
     
     /**
      * Returns ini config
-     * 
+     *
      * Avaliable options are:
      * force - forces to reload whole ini config
      * ini_file_path - path to ini file
-     * 
+     *
      * @param array $options Associative array of options
      * @return ConfigContainer Config
      */
@@ -79,10 +79,10 @@ class LMSConfig
     
     /**
      * Returns ui config
-     * 
+     *
      * Avaliable options are:
      * force - forces to reload whole ini config
-     * 
+     *
      * @param array $options Associative array of options
      * @return ConfigContainer Config
      * @throws Exception Exception if databse connection doesn't exist
@@ -104,11 +104,11 @@ class LMSConfig
     
     /**
      * Returns user rights configuration
-     * 
+     *
      * Avaliable options are:
      * force - forces to reload whole ini config
      * user_id - user id
-     * 
+     *
      * @param array $options Associative array of options
      * @return ConfigContainer User rights configuration
      * @throws Exception Throws exception when required parameters are not set
@@ -133,13 +133,13 @@ class LMSConfig
     
     /**
      * Returns merged ini and ui configs
-     * 
+     *
      * Avaliable options are:
      * force - forces to reload whole ini config
      * ini_file_path - path to ini file
      * ui_merge_priority - ui merge priority
      * ini_merge_priority - ini merge priority
-     * 
+     *
      * @param array $options Associative array of options
      * @return ConfigContainer Config
      */
@@ -154,13 +154,13 @@ class LMSConfig
     
     /**
      * Merges ini and ui configs
-     * 
+     *
      * Avaliable options are:
      * force - forces to reload whole ini config
      * ini_file_path - path to ini file
      * ui_merge_priority - ui merge priority
      * ini_merge_priority - ini merge priority
-     * 
+     *
      * @param array $options Associative array of options
      * @return \ConfigContainer Merged config
      */
@@ -219,8 +219,8 @@ class LMSConfig
     
     /**
      * Overrides secondary config variables by primary ones
-     * 
-     * @param ConfigContainer $primary_config Overriding config 
+     *
+     * @param ConfigContainer $primary_config Overriding config
      * @param ConfigContainer $secondary_config Config to be overrided
      * @return \ConfigContainer Merged config
      */
@@ -242,7 +242,7 @@ class LMSConfig
     
     /**
      * Adds sections from one config to another
-     * 
+     *
      * @param ConfigContainer $primary_config Primary config
      * @param ConfigContainer $secondary_config Secondary config
      * @return \ConfigContainer Primary config
@@ -252,5 +252,4 @@ class LMSConfig
         $primary_config->addSections($secondary_config->getSections());
         return $primary_config;
     }
-    
 }

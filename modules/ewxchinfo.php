@@ -26,20 +26,20 @@
 
 $cid = intval($_GET['id']);
 
-if ($cid)
+if ($cid) {
     $channel = $DB->GetRow('SELECT c.*, c2.id AS cid
         FROM ewx_channels c
         LEFT JOIN ewx_stm_channels c2 ON (c.id = c2.cid)
         WHERE c.id = ?', array($cid));
-else
+} else {
     $channel = $DB->GetRow('SELECT 0 AS id, ch.upceil, ch.downceil,
         ch.halfduplex, ch.id AS cid
         FROM ewx_stm_channels ch
         WHERE ch.cid = 0');
+}
 
-if(!$channel)
-{
-	$SESSION->redirect('?m=ewxchlist');
+if (!$channel) {
+    $SESSION->redirect('?m=ewxchlist');
 }
 
 $layout['pagetitle'] = trans('Info Channel: $a', $channel['name']);
@@ -76,5 +76,3 @@ $channel['nodecnt'] = $DB->GetOne('SELECT COUNT(*) FROM ewx_stm_nodes n
 
 $SMARTY->assign('channel', $channel);
 $SMARTY->display('ewxch/ewxchinfo.html');
-
-?>

@@ -1,10 +1,11 @@
 <?php
 
-/*! 
+/*!
  * \class SqlProvider
  * \brief Data provider for VoIP classes based on SQL queries.
  */
-class SqlProvider extends VoipDataProvider {
+class SqlProvider extends VoipDataProvider
+{
 
     private static $instance = null;
 
@@ -26,8 +27,9 @@ class SqlProvider extends VoipDataProvider {
     /*!
      * \brief Function return instance of SQL provider.
      */
-    public static function getInstance() {
-        if ( self::$instance === null ) {
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
             self::$instance = new SqlProvider();
         }
 
@@ -42,12 +44,15 @@ class SqlProvider extends VoipDataProvider {
      * \return int    $group  prefix group id
      * \throws NULL           when prefix don't belongs to tariff or tariff doesn't exists
      */
-    public function getGroupByPrefix($prefix, $t_id) {
-        if (isset($this->prefix_group[$prefix.'|'.$t_id]))
+    public function getGroupByPrefix($prefix, $t_id)
+    {
+        if (isset($this->prefix_group[$prefix.'|'.$t_id])) {
             return $this->prefix_group[$prefix.'|'.$t_id];
+        }
 
         $DB = LMSDB::getInstance();
-        $g = $DB->GetRow('SELECT
+        $g = $DB->GetRow(
+            'SELECT
                             vp.groupid as id, vpg.price,
                             vpg.unitsize as unit_size
                           FROM
@@ -57,7 +62,8 @@ class SqlProvider extends VoipDataProvider {
                           WHERE
                             vp.prefix = ? AND
                             vpg.voip_tariff_id = ?',
-                          array($prefix, $t_id));
+            array($prefix, $t_id)
+        );
 
         $this->prefix_group[$prefix.'|'.$t_id] = $g;
 
@@ -70,9 +76,11 @@ class SqlProvider extends VoipDataProvider {
      * \param  string $number customer phone number
      * \return array          informations about customer
      */
-    public function getCustomerByPhone($number) {
+    public function getCustomerByPhone($number)
+    {
         $DB = LMSDB::getInstance();
-        $c = $DB->GetRow('SELECT
+        $c = $DB->GetRow(
+            'SELECT
                             va.id as voipaccountid, vn.phone, va.balance,
                             t.voip_tariff_id as tariffid,
                             t.voip_tariff_rule_id as tariffruleid, va.flags
@@ -85,7 +93,8 @@ class SqlProvider extends VoipDataProvider {
                           WHERE
                             vn.phone ?LIKE? ? AND
                             t.type = ?',
-                          array($number, SERVICE_PHONE));
+            array($number, SERVICE_PHONE)
+        );
 
         return $c;
     }
@@ -97,13 +106,16 @@ class SqlProvider extends VoipDataProvider {
      * \param  int    $t_id   tariff id
      * \return string longest matched prefix
      */
-    public function getLongestPrefix($number, $t_id) {
+    public function getLongestPrefix($number, $t_id)
+    {
         $DB = LMSDB::getInstance();
 
-        if (isset($this->number_tariff[$number.'|'.$t_id]))
+        if (isset($this->number_tariff[$number.'|'.$t_id])) {
             return $this->number_tariff[$number.'|'.$t_id];
+        }
 
-        $p = $DB->GetOne("SELECT
+        $p = $DB->GetOne(
+            "SELECT
                             vp.prefix
                           FROM
                             voip_prefixes vp
@@ -114,7 +126,8 @@ class SqlProvider extends VoipDataProvider {
                             vpg.voip_tariff_id = ?
                           ORDER BY
                             vp.prefix DESC",
-                          array($number, $t_id));
+            array($number, $t_id)
+        );
 
         $this->number_tariff[$number.'|'.$t_id] = $p;
 
@@ -128,22 +141,26 @@ class SqlProvider extends VoipDataProvider {
      * \param  int   $prefixgroupid prefix group id
      * \return array                asociative array
      */
-    public function getRules($rulegroupid, $groupid) {
+    public function getRules($rulegroupid, $groupid)
+    {
         $DB = LMSDB::getInstance();
-        $tmp = $DB->GetAll('SELECT
+        $tmp = $DB->GetAll(
+            'SELECT
                               id, settings
                             FROM
                               voip_rules
                             WHERE
                               rule_group_id   = ? AND
                               prefix_group_id = ?',
-                            array($rulegroupid, $groupid));
+            array($rulegroupid, $groupid)
+        );
 
-        if (!$tmp)
+        if (!$tmp) {
             return array();
+        }
 
         $rules = array();
-        foreach($tmp as $v) {
+        foreach ($tmp as $v) {
             $s = unserialize($v['settings']);
             $s['ruleid'] = $v['id'];
 
@@ -160,9 +177,11 @@ class SqlProvider extends VoipDataProvider {
      * \param  int   $groupid prefix group id
      * \return array $s       customer rule states
      */
-    public function getCustomerRuleStates($vid, $groupid) {
+    public function getCustomerRuleStates($vid, $groupid)
+    {
         $DB = LMSDB::getInstance();
-        $s = $DB->GetAll('SELECT
+        $s = $DB->GetAll(
+            'SELECT
                             vrs.rule_id, vrs.units_left
                           FROM
                             voipaccounts va
@@ -171,7 +190,8 @@ class SqlProvider extends VoipDataProvider {
                           WHERE
                             va.id            = ? AND
                             vr.rule_group_id = ?',
-                          array($vid, $groupid));
+            array($vid, $groupid)
+        );
 
         return $s;
     }
@@ -183,27 +203,29 @@ class SqlProvider extends VoipDataProvider {
      * \return array  $i      informations about voip account
      *                        array(voip_id, flags, group)
      */
-    public function getPrefixGroupName($number, $t_id) {
-         if (isset($this->number_groupname[$number.'|'.$t_id]))
+    public function getPrefixGroupName($number, $t_id)
+    {
+        if (isset($this->number_groupname[$number.'|'.$t_id])) {
             return $this->number_groupname[$number.'|'.$t_id];
+        }
 
         $DB = LMSDB::getInstance();
 
         $pref = $this->getLongestPrefix($number, $t_id);
 
-        $i = $DB->GetOne('SELECT
+        $i = $DB->GetOne(
+            'SELECT
                              vpg.name
                           FROM
                              voip_prefixes vp 
                              LEFT JOIN voip_prefix_groups vpg ON vp.groupid = vpg.id
                           WHERE
                               prefix ?LIKE? ?',
-                          array($pref));
+            array($pref)
+        );
 
         $this->number_groupname[$number.'|'.$t_id] = $i;
 
         return $i;
     }
 }
-
-?>

@@ -36,5 +36,3 @@ $this->Execute("CREATE INDEX hash ON cashimport(hash)");
 $this->Execute("UPDATE dbinfo SET keyvalue = '2005030200' WHERE keytype = 'dbversion'");
 
 $this->CommitTrans();
-
-?>

@@ -33,13 +33,14 @@ class LMSCache
 {
     protected $cache;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->cache = array();
     }
 
     /**
      * Returns cached variable
-     * 
+     *
      * @param string|int $key 1st level key
      * @param string|int $idx 2nd level key
      * @param string|int $name 3rd level key
@@ -63,7 +64,7 @@ class LMSCache
     
     /**
      * Caches variable
-     * 
+     *
      * @param string|int $key 1st level key
      * @param string|int $idx 2nd level key
      * @param string|int $name 3rd level key
@@ -92,7 +93,7 @@ class LMSCache
     
     /**
      * Caches 1st level variable
-     * 
+     *
      * @param string|int $key 1st level key
      * @return mixed Cached variable
      */
@@ -103,7 +104,7 @@ class LMSCache
     
     /**
      * Caches 2nd level variable
-     * 
+     *
      * @param string|int $key 1st level key
      * @param string|int $idx 2nd level key
      * @return mixed Cached variable
@@ -123,7 +124,7 @@ class LMSCache
     
     /**
      * Caches 3rd level variable
-     * 
+     *
      * @param string|int $key 1st level key
      * @param string|int $idx 2nd level key
      * @param string|int $name 3rd level key
@@ -149,5 +150,4 @@ class LMSCache
             $this->cache[$key] = array($idx => array($name => $value));
         }
     }
-    
 }

@@ -34,5 +34,3 @@ $this->Execute("CREATE VIEW vnodes AS SELECT n.*, m.mac FROM nodes n LEFT JOIN v
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015042700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

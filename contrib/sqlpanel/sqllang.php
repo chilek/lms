@@ -24,21 +24,18 @@
  *  $Id$
  */
 
-switch($LMS->ui_lang)
-{
-	case 'pl':
-	    $_LANG['Enter contents of SQL query'] = 'Wprowadź treść zapytania SQL';
-	    $_LANG['Execution time:'] = 'Czas wykonania:';
-	    $_LANG['Query contents:'] = 'Treść zapytania:';
-	    $_LANG['Query is not correct!'] = 'Zapytanie nie jest poprawne!';
-	    $_LANG['Rows count:'] = 'Liczba wierszy:';
-	    $_LANG['Execute'] = 'Wykonaj';
-	    $_LANG['Execute again'] = 'Wykonaj ponownie';
-	    $_LANG['SQL'] = 'SQL';
-	    $_LANG['SQL query'] = 'Zapytanie SQL';
-	    $_LANG['SQL queries executing'] = 'Wykonywanie zapytań SQL';
-	    $_LANG['SQL - Query Results'] = 'SQL - Wyniki zapytania';
-	break;
+switch ($LMS->ui_lang) {
+    case 'pl':
+        $_LANG['Enter contents of SQL query'] = 'Wprowadź treść zapytania SQL';
+        $_LANG['Execution time:'] = 'Czas wykonania:';
+        $_LANG['Query contents:'] = 'Treść zapytania:';
+        $_LANG['Query is not correct!'] = 'Zapytanie nie jest poprawne!';
+        $_LANG['Rows count:'] = 'Liczba wierszy:';
+        $_LANG['Execute'] = 'Wykonaj';
+        $_LANG['Execute again'] = 'Wykonaj ponownie';
+        $_LANG['SQL'] = 'SQL';
+        $_LANG['SQL query'] = 'Zapytanie SQL';
+        $_LANG['SQL queries executing'] = 'Wykonywanie zapytań SQL';
+        $_LANG['SQL - Query Results'] = 'SQL - Wyniki zapytania';
+        break;
 }
-
-?>

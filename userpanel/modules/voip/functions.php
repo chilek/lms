@@ -32,9 +32,10 @@ global $LMS, $SESSION;
  * \param  string  date string
  * \return boolean
  */
-function is_date($date) {
+function is_date($date)
+{
     list($year,$month,$day) = explode('/', $date);
-    return checkdate((int)$month,(int)$day,(int)$year);
+    return checkdate((int)$month, (int)$day, (int)$year);
 }
 
 if (empty($_GET['action'])) {
@@ -46,7 +47,7 @@ switch ($_GET['action']) {
         $id = (int) $_POST['accid'];
         $user_accs = $LMS->DB->GetAllByKey('SELECT id FROM voipaccounts WHERE ownerid = ?', 'id', array( $SESSION->id ));
 
-        if ( !isset($user_accs[$id])) {
+        if (!isset($user_accs[$id])) {
             die();
         }
 
@@ -55,7 +56,7 @@ switch ($_GET['action']) {
                                   LEFT JOIN voipaccounts vacc ON vn.voip_account_id = vacc.id
                                   WHERE voip_account_id = ? ORDER BY vn.number_index', array($id));
 
-        die( json_encode( $info ) );
+        die(json_encode($info));
     break;
 
     case 'updateaccountinfo':
@@ -64,7 +65,7 @@ switch ($_GET['action']) {
 
         $user_accs = $LMS->DB->GetAllByKey('SELECT id FROM voipaccounts WHERE ownerid = ?', 'id', array($SESSION->id));
 
-        if ( !isset($user_accs[$id])) {
+        if (!isset($user_accs[$id])) {
             die(); // failure
         }
 
@@ -91,7 +92,7 @@ switch ($_GET['action']) {
             $LMS->DB->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($id));
 
             // set new indexes
-            if (count($_POST['phones']) != count($current_phones) ) {
+            if (count($_POST['phones']) != count($current_phones)) {
                 $LMS->DB->RollbackTrans();
                 die();
             }
@@ -108,33 +109,39 @@ switch ($_GET['action']) {
         }
 
         $LMS->DB->CommitTrans();
-        die( json_encode(1) ); // success
+        die(json_encode(1)); // success
     break;
 }
 
 if (isset($_GET['record'])) {
-    $uid = $LMS->DB->GetOne('SELECT uniqueid
+    $uid = $LMS->DB->GetOne(
+        'SELECT uniqueid
                              FROM voip_cdr c
                              WHERE
                                 id = ? AND
                                (c.callervoipaccountid in (select id from voipaccounts where ownerid = ?) OR
                                 c.calleevoipaccountid in (select id from voipaccounts where ownerid = ?))',
-                             array($_GET['record'], $SESSION->id, $SESSION->id));
+        array($_GET['record'], $SESSION->id, $SESSION->id)
+    );
 
-    if (empty($uid))
+    if (empty($uid)) {
         die();
+    }
 
-    define('VOIP_CALL_DIR', ConfigHelper::getConfig('voip.call_recording_directory',
-            SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls' . DIRECTORY_SEPARATOR));
+    define('VOIP_CALL_DIR', ConfigHelper::getConfig(
+        'voip.call_recording_directory',
+        SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls' . DIRECTORY_SEPARATOR
+    ));
 
     $filepath = VOIP_CALL_DIR . $uid;
 
-    if (is_readable($filepath . '.mp3'))
+    if (is_readable($filepath . '.mp3')) {
         $filepath .= '.mp3';
-    elseif (is_readable($filepath . '.ogg'))
+    } elseif (is_readable($filepath . '.ogg')) {
         $filepath .= '.ogg';
-    else
+    } else {
         $filepath .= '.wav';
+    }
 
     header('Content-Type: ' . mime_content_type($filepath));
 
@@ -142,7 +149,8 @@ if (isset($_GET['record'])) {
     die();
 }
 
-function module_main() {
+function module_main()
+{
     global $LMS, $SMARTY, $SESSION;
 
     $phones = array();
@@ -155,28 +163,31 @@ function module_main() {
 
     if ($user_acc_ids) {
         $tmp_phones = $LMS->DB->GetAll('SELECT phone FROM voip_numbers
-                                        WHERE voip_account_id IN ('.implode(',',$user_acc_ids).');');
+                                        WHERE voip_account_id IN ('.implode(',', $user_acc_ids).');');
 
-        foreach($tmp_phones as $v) {
+        foreach ($tmp_phones as $v) {
             $phones[] = $v['phone'];
         }
 
         if (empty($_GET['phone']) && count($user_acc_ids) > 1) {
             $params['id'] = $user_acc_ids;
         } else {
-            if (in_array($_GET['phone'], $phones))
+            if (in_array($_GET['phone'], $phones)) {
                 $params['phone'] = $_GET['phone'];
-            else
+            } else {
                 $params['id'] = $user_acc_ids;
+            }
         }
 
-        if (isset($_GET['date_from']) && is_date($_GET['date_from']))
+        if (isset($_GET['date_from']) && is_date($_GET['date_from'])) {
             $params['frangefrom'] = $_GET['date_from'];
-        else if (!isset($_GET['date_from']))
+        } else if (!isset($_GET['date_from'])) {
             $params['frangefrom'] = date("Y/m/01");
+        }
 
-        if (isset($_GET['date_to']) && is_date($_GET['date_to']))
+        if (isset($_GET['date_to']) && is_date($_GET['date_to'])) {
             $params['frangeto'] = $_GET['date_to'];
+        }
 
         if (!empty($_GET['fstatus'])) {
             switch ($_GET['fstatus']) {
@@ -185,7 +196,7 @@ function module_main() {
                 case CALL_BUSY:
                 case CALL_SERVER_FAILED:
                     $params['fstatus'] = $_GET['fstatus'];
-                break;
+                    break;
             }
         }
 
@@ -194,38 +205,38 @@ function module_main() {
                 case CALL_OUTGOING:
                 case CALL_INCOMING:
                     $params['ftype'] = $_GET['ftype'];
-                break;
+                    break;
             }
         }
 
         if (!empty($_GET['o'])) {
             $order = explode(',', $_GET['o']);
 
-            if (empty($order[1]) || $order[1] != 'desc')
+            if (empty($order[1]) || $order[1] != 'desc') {
                 $order[1] = 'asc';
+            }
 
             $params['order'] = $order[0];
             $params['direction'] = $order[1];
             $params['o'] = $_GET['o'];
-        } else
-        	$params['o'] = 'begintime,desc';
+        } else {
+            $params['o'] = 'begintime,desc';
+        }
 
         $billings = $LMS->getVoipBillings($params);
     }
 
     $pagin = new LMSPagination_ext();
-    $pagin->setItemsPerPage( ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100) );
-    $pagin->setItemsCount( empty($billings) ? 0 : count($billings) );
-    $pagin->setCurrentPage( ((!$_GET['page']) ? 1 : (int) $_GET['page']) );
+    $pagin->setItemsPerPage(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
+    $pagin->setItemsCount(empty($billings) ? 0 : count($billings));
+    $pagin->setCurrentPage(((!$_GET['page']) ? 1 : (int) $_GET['page']));
     $pagin->setRange(3);
 
-    $SMARTY->assign('pagination'            , $pagin);
-    $SMARTY->assign('pagin_result'          , $pagin->getPages());
-    $SMARTY->assign('params'                , $params);
-    $SMARTY->assign('billings'              , $billings);
-    $SMARTY->assign('customer_phone_list'   , $phones);
-    $SMARTY->assign('user_accounts'         , $user_accounts);
+    $SMARTY->assign('pagination', $pagin);
+    $SMARTY->assign('pagin_result', $pagin->getPages());
+    $SMARTY->assign('params', $params);
+    $SMARTY->assign('billings', $billings);
+    $SMARTY->assign('customer_phone_list', $phones);
+    $SMARTY->assign('user_accounts', $user_accounts);
     $SMARTY->display('module:billing.html');
 }
-
-?>

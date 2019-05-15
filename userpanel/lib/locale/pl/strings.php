@@ -110,5 +110,3 @@ $_LANG['Enter Google reCAPTCHA secret'] = 'Podaj tajne hasło Google reCAPTCHA:'
 
 $_LANG['Web browser icon'] = 'Ikona w przeglądarce www';
 $_LANG['Enter full or relative URL address of web browser icon'] = 'Podaj pełny lub względny adres URL ikony widocznej w przeglądarce www';
-
-?>

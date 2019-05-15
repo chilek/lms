@@ -27,11 +27,12 @@
 function select_producer($id)
 {
     $JSResponse = new xajaxResponse();
-    $models = LMSDB::getInstance()->GetAll('
+    $models = LMSDB::getInstance()->GetAll(
+        '
         SELECT id, name
         FROM netdevicemodels 
         WHERE netdeviceproducerid = ?
-        ORDER BY name', 
+        ORDER BY name',
         array($id)
     );
     $JSResponse->call('update_models', (array)$models);
@@ -39,34 +40,35 @@ function select_producer($id)
 }
 
 if (isset($_GET['ajax']) && isset($_GET['what'])) {
-	header('Content-type: text/plain');
-	$search = urldecode(trim($_GET['what']));
-	if (!strlen($search)) {
-		print "false;";
-		die;
-	}
+    header('Content-type: text/plain');
+    $search = urldecode(trim($_GET['what']));
+    if (!strlen($search)) {
+        print "false;";
+        die;
+    }
     $list = $DB->GetAll('SELECT id, name
         FROM netdeviceproducers
         WHERE name ?LIKE? ' . $DB->Escape("%$search%") . '
             OR alternative_name ?LIKE? ' . $DB->Escape("%$search%") . '
         ORDER BY name
-        LIMIT 10'
-    );
+        LIMIT 10');
 
-	$result = array();
-	if ($list)
-	    foreach ($list as $idx => $row) {
-	    	$name = $row['name'];
-	    	$name_class = '';
-	    	$description = $description_class = '';
-    		$action = sprintf("javascript: search_producer(%d)", $row['id']);
+    $result = array();
+    if ($list) {
+        foreach ($list as $idx => $row) {
+            $name = $row['name'];
+            $name_class = '';
+            $description = $description_class = '';
+            $action = sprintf("javascript: search_producer(%d)", $row['id']);
 
-			$result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
-		}
+            $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
+        }
+    }
     header('Content-Type: application/json');
-    if (!empty($result))
+    if (!empty($result)) {
         echo json_encode(array_values($result));
-	die;
+    }
+    die;
 }
 
 $LMS->InitXajax();
@@ -82,13 +84,13 @@ $model = isset($_GET['model']) ? $_GET['model'] : null;
 $producers = $DB->GetAll('
     SELECT id, name
     FROM netdeviceproducers 
-    ORDER BY name'
-);
+    ORDER BY name');
 
 $data = array();
 $models = array();
 if ($netdevmodelid) {
-    $data = $DB->GetRow('
+    $data = $DB->GetRow(
+        '
         SELECT m.id AS modelid, p.id AS producerid
         FROM netdeviceproducers p
         JOIN netdevicemodels m ON p.id = m.netdeviceproducerid
@@ -97,7 +99,8 @@ if ($netdevmodelid) {
     );
 } else {
     if ($model) {
-        $data = $DB->GetRow('
+        $data = $DB->GetRow(
+            '
             SELECT m.id AS modelid, p.id AS producerid
             FROM netdeviceproducers p
             JOIN netdevicemodels m ON p.id = m.netdeviceproducerid
@@ -106,7 +109,8 @@ if ($netdevmodelid) {
         );
     }
     if (empty($data) && $producer) {
-        $data = $DB->GetRow('
+        $data = $DB->GetRow(
+            '
             SELECT p.id AS producerid
             FROM netdeviceproducers p
             WHERE p.name = ? OR p.alternative_name = ?',
@@ -131,5 +135,3 @@ $SMARTY->assign('data', $data);
 $SMARTY->assign('producers', $producers);
 $SMARTY->assign('models', $models);
 $SMARTY->display('choose/choosenetdevmodel.html');
-?>
-

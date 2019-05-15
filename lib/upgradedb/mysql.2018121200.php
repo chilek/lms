@@ -29,6 +29,3 @@ $this->Execute("ALTER TABLE rttickets ADD COLUMN verifierticketbody text NOT NUL
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018121200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>
-

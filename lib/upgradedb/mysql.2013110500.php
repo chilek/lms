@@ -36,5 +36,3 @@ $this->Execute("CREATE VIEW customersview AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013110500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

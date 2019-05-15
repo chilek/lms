@@ -56,17 +56,19 @@ $this->Execute("
 
 $this->Execute("INSERT INTO rtcategories (name, description) VALUES(?, ?)", array('default', 'default category'));
 $default_catid = $this->GetLastInsertID('rtcategories');
-$this->Execute("INSERT INTO rtcategoryusers (userid, categoryid) 
+$this->Execute(
+    "INSERT INTO rtcategoryusers (userid, categoryid) 
 		SELECT id, ? FROM users WHERE deleted = 0",
-		array($default_catid));
-$this->Execute("INSERT INTO rtticketcategories (ticketid, categoryid) 
+    array($default_catid)
+);
+$this->Execute(
+    "INSERT INTO rtticketcategories (ticketid, categoryid) 
 		SELECT id, ? FROM rttickets",
-		array($default_catid));
+    array($default_catid)
+);
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'default_categories', ?)", array($default_catid));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011091600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

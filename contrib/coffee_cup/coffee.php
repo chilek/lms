@@ -31,7 +31,5 @@ echo '<H1>'.trans('Making coffee...').'</H1>';
 echo '<pre>';
 system("/sbin/coffee");
 echo '</pre>';
-	
+    
 $SMARTY->display('footer.html');
-
-?>

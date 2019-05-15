@@ -386,5 +386,3 @@ $this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netdevicemodelid) REFERE
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015020900', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

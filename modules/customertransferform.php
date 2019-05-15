@@ -28,8 +28,8 @@ $SMARTY->display('clearheader.html');
 
 $doc = new LMSHtmlTransferForm($_GET['type']);
 echo $doc->Draw(array(
-	'customerid' => $_GET['id'],
-	'value' => $_GET['value'],
+    'customerid' => $_GET['id'],
+    'value' => $_GET['value'],
 ));
 
 $SMARTY->display('clearfooter.html');

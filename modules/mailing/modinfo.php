@@ -25,44 +25,43 @@
  */
 
 $_MODINFO['mailing'] = array(
-		'summary' => array( 
-			'en' => 'Mailing',
-			'pl' => 'Mailing'
-			),
-		'description' => array(
-			'en' => 'Mass mail to customers',
-			'pl' => 'Korespondencja seryjna do klientów'
-			),
-		'version' => '1.11-git',
-		'revision' => '$Revision$',
-		'author' => 'LMS Developers',
-		'url' => 'http://www.lms.org.pl',
-		'notpublic' => FALSE,
-		'priority' => 8,
-		'menus' => array(
-			array(
-				'id' => 'mailing',
-				'text' => array(
-					'en' => 'Mailing',
-					'pl' => 'Mailing',
-					),
-				'img' => 'mail.gif',
-				'tip' => array(
-					'en' => 'Mass Mail',
-					'pl' => 'Korespondencja seryjna',
-					),
-				),
-			),
-		'actions' => array(
-			'mailing' => array(
-				'default' => TRUE,
-				'description' => array(
-					'en' => 'Sending mail to customers groups',
-					'pl' => 'Wysyłanie poczty do grup użytkowników',
-					),
-				),
-			),
-		);
+        'summary' => array(
+            'en' => 'Mailing',
+            'pl' => 'Mailing'
+            ),
+        'description' => array(
+            'en' => 'Mass mail to customers',
+            'pl' => 'Korespondencja seryjna do klientów'
+            ),
+        'version' => '1.11-git',
+        'revision' => '$Revision$',
+        'author' => 'LMS Developers',
+        'url' => 'http://www.lms.org.pl',
+        'notpublic' => false,
+        'priority' => 8,
+        'menus' => array(
+            array(
+                'id' => 'mailing',
+                'text' => array(
+                    'en' => 'Mailing',
+                    'pl' => 'Mailing',
+                    ),
+                'img' => 'mail.gif',
+                'tip' => array(
+                    'en' => 'Mass Mail',
+                    'pl' => 'Korespondencja seryjna',
+                    ),
+                ),
+            ),
+        'actions' => array(
+            'mailing' => array(
+                'default' => true,
+                'description' => array(
+                    'en' => 'Sending mail to customers groups',
+                    'pl' => 'Wysyłanie poczty do grup użytkowników',
+                    ),
+                ),
+            ),
+        );
 
 // vi:encoding=utf-8:termencoding=iso-8859-2:syn=php:cindent:showmatch:
-?>

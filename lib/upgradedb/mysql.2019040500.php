@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE documents ADD COLUMN adate int(11) DEFAULT 0 NOT NUL
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019040500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

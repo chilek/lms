@@ -40,5 +40,3 @@ $this->Execute('CREATE INDEX location_cityid_index ON location_buildings (city_i
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016121400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

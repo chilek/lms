@@ -42,5 +42,3 @@ $_LANG['Submit'] = 'Tęsk';
 $_LANG['This module is for showing bandwidth utilization stats'] = 'Šis modulis rodo ryšio naudojimo statistiką';
 $_LANG['Total:'] = 'Iš viso:';
 $_LANG['Upload'] = 'Išsiųsta';
-
-?>

@@ -25,5 +25,3 @@ $this->BeginTrans();
 $this->Execute("ALTER TABLE rtnotes ADD COLUMN type smallint NOT NULL DEFAULT 1");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015112001', 'dbversion'));
 $this->CommitTrans();
-
-?>

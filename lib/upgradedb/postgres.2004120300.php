@@ -41,12 +41,12 @@ $this->Execute("
     ALTER TABLE passwd ALTER domainid SET DEFAULT 0;
 
 ");
-if($domains = $this->GetAll('SELECT id, name FROM domains'))
-	foreach($domains as $row)
-		$this->Execute('UPDATE passwd SET domainid=? WHERE domain=?', array($row['id'], $row['name']));
+if ($domains = $this->GetAll('SELECT id, name FROM domains')) {
+    foreach ($domains as $row) {
+        $this->Execute('UPDATE passwd SET domainid=? WHERE domain=?', array($row['id'], $row['name']));
+    }
+}
 $this->Execute('ALTER TABLE passwd DROP domain');
 
 $this->Execute("UPDATE dbinfo SET keyvalue = '2004120300' WHERE keytype = 'dbversion'");
 $this->CommitTrans();
-
-?>

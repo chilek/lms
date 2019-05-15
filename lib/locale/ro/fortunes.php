@@ -95,7 +95,5 @@ $fortunes[] = "For every action there is an equal and opposite criticism.";
 $fortunes[] = "The bigger they are, the harder they hit.";
 $fortunes[] = "When somebody drops something, everyone will kick it around instead of picking it up.";
 
-mt_srand ((double) microtime()* 100000000);
-$layout['fortune'] = $fortunes[mt_rand(0,count($fortunes)-1)];
-
-?>
+mt_srand((double) microtime()* 100000000);
+$layout['fortune'] = $fortunes[mt_rand(0, count($fortunes)-1)];

@@ -92,5 +92,3 @@ $_LANG['Your balance'] = 'Tavo sąskaita';
 $_LANG['Your subscriptions'] = 'Tavo įkainiai';
 $_LANG['monthly ($a)'] = 'per menėsį ($a)';
 $_LANG['Reason:'] = 'Priežastis:';
-
-?>

@@ -24,36 +24,39 @@
  *  $Id$
  */
 
-function queue_changed($queue) {
-	global $LMS, $SMARTY;
+function queue_changed($queue)
+{
+    global $LMS, $SMARTY;
 
-	$JSResponse = new xajaxResponse();
-	if(empty($queue))
-		return $JSResponse;
+    $JSResponse = new xajaxResponse();
+    if (empty($queue)) {
+        return $JSResponse;
+    }
 
-	$templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE);
-	if ($templates) {
-		$SMARTY->assign('templates', $templates);
-		$JSResponse->assign('note-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
-		$JSResponse->assign('note-template-row', 'style', '');
-	} else {
-		$JSResponse->assign('note-template-row', 'style', 'display: none;');
-	}
+    $templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE);
+    if ($templates) {
+        $SMARTY->assign('templates', $templates);
+        $JSResponse->assign('note-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
+        $JSResponse->assign('note-template-row', 'style', '');
+    } else {
+        $JSResponse->assign('note-template-row', 'style', 'display: none;');
+    }
 
-	$vid = $LMS->GetQueueVerifier($queue);
+    $vid = $LMS->GetQueueVerifier($queue);
 
-	if(empty($vid))
-		return $JSResponse;
+    if (empty($vid)) {
+        return $JSResponse;
+    }
 
-	$userlist = $LMS->GetUserNames();
+    $userlist = $LMS->GetUserNames();
 
-	$SMARTY->assign('userlist', $userlist);
-	$SMARTY->assign('ticket', array('verifierid'=>$vid));
-	$content = $SMARTY->fetch('rt/rtverifiers.html');
+    $SMARTY->assign('userlist', $userlist);
+    $SMARTY->assign('ticket', array('verifierid'=>$vid));
+    $content = $SMARTY->fetch('rt/rtverifiers.html');
 
-	$JSResponse->assign('rtverifiers','innerHTML', $content);
+    $JSResponse->assign('rtverifiers', 'innerHTML', $content);
 
-	return $JSResponse;
+    return $JSResponse;
 }
 
 $LMS->RegisterXajaxFunction(array('queue_changed'));

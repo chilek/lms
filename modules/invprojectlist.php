@@ -29,8 +29,9 @@ $invprojectlist = $LMS->GetProjects();
 
 $listdata['total'] = count($invprojectlist);
   
-if ($SESSION->is_set('ciplp') && !isset($_GET['page']))
+if ($SESSION->is_set('ciplp') && !isset($_GET['page'])) {
         $SESSION->restore('ciplp', $_GET['page']);
+}
 
 $page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.invprojectlist_pagelimit', $listdata['total']);
@@ -49,5 +50,3 @@ $SMARTY->assign('invprojectlist', $invprojectlist);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('invproject/invprojectlist.html');
-
-?>

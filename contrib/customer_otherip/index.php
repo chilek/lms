@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /*
  * LMS version 1.11-git
@@ -28,5 +28,3 @@ include_once('class.php');
 
 $SMARTY->assign('error', $_GET['error']);
 $SMARTY->display('customerlogin.html');
-
-?>

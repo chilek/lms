@@ -38,27 +38,27 @@ interface LMSLocationManagerInterface
 
     public function GetCountryName($id);
 
-    public function DeleteAddress( $address_id );
+    public function DeleteAddress($address_id);
 
-    public function InsertAddress( $args );
+    public function InsertAddress($args);
 
-    public function InsertCustomerAddress( $customer_id, $args );
+    public function InsertCustomerAddress($customer_id, $args);
 
-    public function UpdateAddress( $args );
+    public function UpdateAddress($args);
 
-    public function UpdateCustomerAddress( $customer_id, $args );
+    public function UpdateCustomerAddress($customer_id, $args);
 
-    public function ValidAddress( $args );
+    public function ValidAddress($args);
 
-    public function CopyAddress( $address_id );
+    public function CopyAddress($address_id);
 
-    public function GetAddress( $address_id );
+    public function GetAddress($address_id);
 
-	public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
+    public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
 
-	public function TerytToLocation($terc, $simc, $ulic);
+    public function TerytToLocation($terc, $simc, $ulic);
 
-	public function GetZipCode(array $params);
+    public function GetZipCode(array $params);
 
-	public function GetCitiesWithSections();
+    public function GetCitiesWithSections();
 }

@@ -26,30 +26,44 @@
 
 function GetNumberPlanList()
 {
-	global $DB;
-	
-	$currmonth = date('n');
-	switch($currmonth)
-	{
-		case 1: case 2: case 3: $startq = 1; break;
-		case 4: case 5: case 6: $startq = 4; break;
-		case 7: case 8: case 9: $startq = 7; break;
-		case 10: case 11: case 12: $startq = 10; break;
-	}
-	
-	$yearstart = mktime(0,0,0,1,1);
-	$quarterstart = mktime(0,0,0,$startq,1);
-	$monthstart = mktime(0,0,0,$currmonth,1);
-	$weekstart = mktime(0,0,0,$currmonth,date('j')-strftime('%u')+1);
-	$daystart = mktime(0,0,0);
+    global $DB;
+    
+    $currmonth = date('n');
+    switch ($currmonth) {
+        case 1:
+        case 2:
+        case 3:
+            $startq = 1;
+            break;
+        case 4:
+        case 5:
+        case 6:
+            $startq = 4;
+            break;
+        case 7:
+        case 8:
+        case 9:
+            $startq = 7;
+            break;
+        case 10:
+        case 11:
+        case 12:
+            $startq = 10;
+            break;
+    }
+    
+    $yearstart = mktime(0, 0, 0, 1, 1);
+    $quarterstart = mktime(0, 0, 0, $startq, 1);
+    $monthstart = mktime(0, 0, 0, $currmonth, 1);
+    $weekstart = mktime(0, 0, 0, $currmonth, date('j')-strftime('%u')+1);
+    $daystart = mktime(0, 0, 0);
 
-	if($list = $DB->GetAll('SELECT id, template, period, doctype, isdefault FROM numberplans ORDER BY id'))
-	{
-		$count = $DB->GetAllByKey('SELECT numberplanid AS id, COUNT(numberplanid) AS count
+    if ($list = $DB->GetAll('SELECT id, template, period, doctype, isdefault FROM numberplans ORDER BY id')) {
+        $count = $DB->GetAllByKey('SELECT numberplanid AS id, COUNT(numberplanid) AS count
 					    FROM documents 
-					    GROUP BY numberplanid','id');
+					    GROUP BY numberplanid', 'id');
 
-		$max = $DB->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
+        $max = $DB->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
 					    FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					    WHERE cdate >= (CASE period
 						WHEN '.YEARLY.' THEN '.$yearstart.'
@@ -57,22 +71,22 @@ function GetNumberPlanList()
 						WHEN '.MONTHLY.' THEN '.$monthstart.'
 						WHEN '.WEEKLY.' THEN '.$weekstart.'
 						WHEN '.DAILY.' THEN '.$daystart.' ELSE 0 END)
-					    GROUP BY numberplanid','id');
+					    GROUP BY numberplanid', 'id');
 
-		foreach ($list as $idx => $item)
-		{
-			$list[$idx]['next'] = isset($max[$item['id']]['max']) ? $max[$item['id']]['max']+1 : 1;
-			$list[$idx]['issued'] = isset($count[$item['id']]['count']) ? $count[$item['id']]['count'] : 0;
-		}
-	}
-	
-	return $list;
+        foreach ($list as $idx => $item) {
+            $list[$idx]['next'] = isset($max[$item['id']]['max']) ? $max[$item['id']]['max']+1 : 1;
+            $list[$idx]['issued'] = isset($count[$item['id']]['count']) ? $count[$item['id']]['count'] : 0;
+        }
+    }
+    
+    return $list;
 }
 
-if ($SESSION->is_set('nplp') && !isset($_GET['page']))
-	$SESSION->restore('nplp', $_GET['page']);
+if ($SESSION->is_set('nplp') && !isset($_GET['page'])) {
+    $SESSION->restore('nplp', $_GET['page']);
+}
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.numberplanlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
@@ -91,5 +105,3 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('numberplan/numberplanlist.html');
-
-?>

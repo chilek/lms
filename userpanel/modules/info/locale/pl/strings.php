@@ -145,5 +145,3 @@ $_LANG['IP address'] = 'Adres IP';
 $_LANG['Device description'] = 'Opis urządzenia';
 $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['IP address'] = 'Adres IP';
-
-?>

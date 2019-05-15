@@ -24,24 +24,20 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET['id']))
-{
-	$SESSION->redirect('?m=netlist');
+if (!$LMS->NetworkExists($_GET['id'])) {
+    $SESSION->redirect('?m=netlist');
 }
 
 $network['name'] = $LMS->GetNetworkName($_GET['id']);
 
-if($_GET['is_sure'])
-{
-	$LMS->NetworkCompress($_GET['id']);
-	$SESSION->redirect('?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
-}else{
-	$layout['pagetitle'] = trans('Readdressing Network $a', strtoupper($network['name']));
-	$SMARTY->display('header.html');
-	echo '<H1>'.trans('Readdressing network $a', strtoupper($network['name'])).'</H1>';
-	echo '<P>'.trans('Are you sure, you want to reorder that network?').'</P>';
-	echo '<A href="?m=netcmp&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
-	$SMARTY->display('footer.html');
+if ($_GET['is_sure']) {
+    $LMS->NetworkCompress($_GET['id']);
+    $SESSION->redirect('?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
+} else {
+    $layout['pagetitle'] = trans('Readdressing Network $a', strtoupper($network['name']));
+    $SMARTY->display('header.html');
+    echo '<H1>'.trans('Readdressing network $a', strtoupper($network['name'])).'</H1>';
+    echo '<P>'.trans('Are you sure, you want to reorder that network?').'</P>';
+    echo '<A href="?m=netcmp&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+    $SMARTY->display('footer.html');
 }
-
-?>

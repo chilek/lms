@@ -29,31 +29,39 @@ $schemas = $this->GetAllByKey("SELECT id, data, continuation, ctariffid
 $assignments = $this->GetAll("SELECT id, promotionschemaid, tariffid, data
 	FROM promotionassignments");
 
-if (!empty($assignments))
-	foreach ($assignments as $assignment) {
-		$schema = $schemas[$assignment['promotionschemaid']];
-		$this->Execute("UPDATE promotionassignments
+if (!empty($assignments)) {
+    foreach ($assignments as $assignment) {
+        $schema = $schemas[$assignment['promotionschemaid']];
+        $this->Execute(
+            "UPDATE promotionassignments
 			SET data = ?
 			WHERE id = ?",
-			array($assignment['data'] . ';' . (empty($schema['continuation']) ? 'NULL' : $tariffs[$assignment['tariffid']]['value']),
-				$assignment['id']));
-	}
+            array($assignment['data'] . ';' . (empty($schema['continuation']) ? 'NULL' : $tariffs[$assignment['tariffid']]['value']),
+            $assignment['id'])
+        );
+    }
+}
 
-if (!empty($schemas))
-	foreach ($schemas as $schemaid => $schema)
-		if (!empty($schema['continuation']) && !empty($schema['ctariffid'])) {
-			$periods = array();
-			if (strlen($schema['data']))
-				$periods = explode(';', $schema['data']);
-			$this->Execute("INSERT INTO promotionassignments (promotionschemaid, tariffid, data)
+if (!empty($schemas)) {
+    foreach ($schemas as $schemaid => $schema) {
+        if (!empty($schema['continuation']) && !empty($schema['ctariffid'])) {
+            $periods = array();
+            if (strlen($schema['data'])) {
+                $periods = explode(';', $schema['data']);
+            }
+            $this->Execute(
+                "INSERT INTO promotionassignments (promotionschemaid, tariffid, data)
 				VALUES (?, ?, ?, ?)",
-				array(
-					$schema['id'],
-					$schema['ctariffid'],
-					implode(';', array_fill(0, count($periods) + 1, 'NULL'))
-						. ';' . $tariffs[$schema['ctariffid']]['value'],
-				));
-		}
+                array(
+                $schema['id'],
+                $schema['ctariffid'],
+                implode(';', array_fill(0, count($periods) + 1, 'NULL'))
+                . ';' . $tariffs[$schema['ctariffid']]['value'],
+                )
+            );
+        }
+    }
+}
 
 $this->Execute("ALTER TABLE promotionschemas DROP COLUMN continuation");
 $this->Execute("ALTER TABLE promotionschemas DROP COLUMN ctariffid");
@@ -61,5 +69,3 @@ $this->Execute("ALTER TABLE promotionschemas DROP COLUMN ctariffid");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019013100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

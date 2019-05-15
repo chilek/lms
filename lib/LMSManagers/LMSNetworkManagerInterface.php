@@ -26,7 +26,7 @@
 
 /**
  * LMSNetworkManagerInterface
- * 
+ *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSNetworkManagerInterface
@@ -61,7 +61,7 @@ interface LMSNetworkManagerInterface
 
     public function GetNetworkList(array $search);
 
-    public function IsIPValid($ip, $checkbroadcast = FALSE, $ignoreid = 0);
+    public function IsIPValid($ip, $checkbroadcast = false, $ignoreid = 0);
 
     public function NetworkOverlaps($network, $mask, $hostid, $ignorenet = 0);
 
@@ -77,7 +77,7 @@ interface LMSNetworkManagerInterface
     
     public function ScanNodes();
 
-	public function GetNetworkPageForIp($netid, $ip);
+    public function GetNetworkPageForIp($netid, $ip);
 
-	public function GetPublicNetworkID($netid);
+    public function GetPublicNetworkID($netid);
 }

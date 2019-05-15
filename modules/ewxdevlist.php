@@ -26,9 +26,9 @@
 
 $channelid = intval($_GET['id']);
 
-if ($channelid)
+if ($channelid) {
     $where = 'WHERE d.channelid = '.$channelid;
-else // default channel
+} else { // default channel
     $where = 'WHERE d.id IN (SELECT netdev
         FROM nodes
         WHERE netdev IS NOT NULL AND id IN (
@@ -36,6 +36,7 @@ else // default channel
             FROM ewx_stm_nodes
             WHERE channelid IN (SELECT id FROM ewx_stm_channels
                 WHERE cid = 0)))';
+}
 
 $devices = $DB->GetAll('SELECT d.id, d.name, d.producer,
         d.model, d.location
@@ -43,5 +44,3 @@ $devices = $DB->GetAll('SELECT d.id, d.name, d.producer,
 
 $SMARTY->assign('devices', $devices);
 $SMARTY->display('netdev/netdevlistshort.html');
-
-?>

@@ -24,85 +24,85 @@
  *  $Id$
  */
 
-function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND') {
-	global $LMS;
+function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
+{
+    global $LMS;
 
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 
-	list($order,$direction) = sscanf($order, '%[^,],%s');
+    list($order,$direction) = sscanf($order, '%[^,],%s');
 
-	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+    ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
-        switch($order)
-        {
-		case 'id':
-		        $sqlord = ' ORDER BY d.id';
-		break;
-		case 'producer':
-		        $sqlord = ' ORDER BY producer';
-		break;
-		case 'model':
-		        $sqlord = ' ORDER BY model';
-		break;
-		case 'ports':
-		        $sqlord = ' ORDER BY ports';
-		break;
-		case 'takenports':
-		        $sqlord = ' ORDER BY takenports';
-		break;
-		case 'serialnumber':
-		        $sqlord = ' ORDER BY serialnumber';
-		break;
-		case 'location':
-		        $sqlord = ' ORDER BY a.location';
-		break;
-		case 'netnode':
-				$sqlord = ' ORDER BY nn.name';
-		break;
-		default:
-		        $sqlord = ' ORDER BY d.name';
-		break;
-	}
+    switch ($order) {
+        case 'id':
+                $sqlord = ' ORDER BY d.id';
+            break;
+        case 'producer':
+                $sqlord = ' ORDER BY producer';
+            break;
+        case 'model':
+                $sqlord = ' ORDER BY model';
+            break;
+        case 'ports':
+                $sqlord = ' ORDER BY ports';
+            break;
+        case 'takenports':
+                $sqlord = ' ORDER BY takenports';
+            break;
+        case 'serialnumber':
+                $sqlord = ' ORDER BY serialnumber';
+            break;
+        case 'location':
+                $sqlord = ' ORDER BY a.location';
+            break;
+        case 'netnode':
+                $sqlord = ' ORDER BY nn.name';
+            break;
+        default:
+                $sqlord = ' ORDER BY d.name';
+            break;
+    }
 
-	if(count($search)) foreach($search as $idx => $value)
-	{
-		$value = trim($value);
-	        if($value!='')
-		{
-			switch($idx)
-			{
-				case 'ipaddr':
-					$searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? '.$DB->Escape("%$value%")
-						.' OR inet_ntoa(n.ipaddr_pub) ?LIKE? '.$DB->Escape("%$value%").')';
-					$nodes = true;
-				break;
-				case 'mac':
-					$searchargs[] = 'n.mac ?LIKE? '.$DB->Escape("%$value%");
-					$nodes = true;
-				break;
-				case 'name':
-				        $searchargs[] = '(d.name ?LIKE? '.$DB->Escape("%$value%")
-						.' OR n.name ?LIKE? '.$DB->Escape("%$value%").')';
-					$nodes = true;
-				break;
-				case 'ports':
-				        $searchargs[] = "ports = ".intval($value);
-				break;
-				case 'location':
-					$searchargs[] = "UPPER(a.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
-					break;
-				default:
-					// UPPER here is a postgresql ILIKE bug workaround
-					$searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
-				break;
-			}
-		}
-	}
+    if (count($search)) {
+        foreach ($search as $idx => $value) {
+            $value = trim($value);
+            if ($value!='') {
+                switch ($idx) {
+                    case 'ipaddr':
+                        $searchargs[] = '(inet_ntoa(n.ipaddr) ?LIKE? '.$DB->Escape("%$value%")
+                        .' OR inet_ntoa(n.ipaddr_pub) ?LIKE? '.$DB->Escape("%$value%").')';
+                        $nodes = true;
+                        break;
+                    case 'mac':
+                        $searchargs[] = 'n.mac ?LIKE? '.$DB->Escape("%$value%");
+                        $nodes = true;
+                        break;
+                    case 'name':
+                        $searchargs[] = '(d.name ?LIKE? '.$DB->Escape("%$value%")
+                        .' OR n.name ?LIKE? '.$DB->Escape("%$value%").')';
+                        $nodes = true;
+                        break;
+                    case 'ports':
+                        $searchargs[] = "ports = ".intval($value);
+                        break;
+                    case 'location':
+                        $searchargs[] = "UPPER(a.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
+                        break;
+                    default:
+                        // UPPER here is a postgresql ILIKE bug workaround
+                        $searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
+                        break;
+                }
+            }
+        }
+    }
 
-	if(isset($searchargs))
-                $searchargs = ' WHERE ('.implode(' '.$sqlskey.' ',$searchargs).')';
+    if (isset($searchargs)) {
+                $searchargs = ' WHERE ('.implode(' '.$sqlskey.' ', $searchargs).')';
+    }
 
-	$netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, a.location, d.description, d.producer,
+    $netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, a.location, d.description, d.producer,
 					d.model, d.serialnumber, d.ports, p.name AS project,
 					(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
 					+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports,
@@ -126,107 +126,106 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND') {
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls    ON ls.id = ld.stateid'
-				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid IS NULL)' : '')
-				.(isset($searchargs) ? $searchargs : '')
-				.($sqlord != '' ? $sqlord.' '.$direction : ''));
+                .(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid IS NULL)' : '')
+                .(isset($searchargs) ? $searchargs : '')
+                .($sqlord != '' ? $sqlord.' '.$direction : ''));
 
-	if ($netdevlist) {
-		$filecontainers = $DB->GetAllByKey('SELECT fc.netdevid, '
-				. $DB->GroupConcat("CASE WHEN fc.description = '' THEN '---' ELSE fc.description END") . ' AS descriptions
+    if ($netdevlist) {
+        $filecontainers = $DB->GetAllByKey('SELECT fc.netdevid, '
+                . $DB->GroupConcat("CASE WHEN fc.description = '' THEN '---' ELSE fc.description END") . ' AS descriptions
 			FROM filecontainers fc
 			WHERE fc.netdevid IS NOT NULL
 			GROUP BY fc.netdevid', 'netdevid');
 
-		foreach ($netdevlist as &$netdev) {
-			$netdev['customlinks'] = array();
-			if (!$netdev['location'] && $netdev['ownerid']) {
-				$netdev['location'] = $LMS->getAddressForCustomerStuff($netdev['ownerid']);
-			}
-			$netdev['terc'] = empty($netdev['state_ident']) ? null
-				: $netdev['state_ident'] . $netdev['district_ident']
-				. $netdev['borough_ident'] . $netdev['borough_type'];
-			$netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
-			$netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
-			$netdev['filecontainers'] = isset($filecontainers[$netdev['id']])
-				? explode(',', $filecontainers[$netdev['id']]['descriptions'])
-				: array();
-		}
-		unset($netdev);
-	}
+        foreach ($netdevlist as &$netdev) {
+            $netdev['customlinks'] = array();
+            if (!$netdev['location'] && $netdev['ownerid']) {
+                $netdev['location'] = $LMS->getAddressForCustomerStuff($netdev['ownerid']);
+            }
+            $netdev['terc'] = empty($netdev['state_ident']) ? null
+                : $netdev['state_ident'] . $netdev['district_ident']
+                . $netdev['borough_ident'] . $netdev['borough_type'];
+            $netdev['simc'] = empty($netdev['city_ident']) ? null : $netdev['city_ident'];
+            $netdev['ulic'] = empty($netdev['street_ident']) ? null : $netdev['street_ident'];
+            $netdev['filecontainers'] = isset($filecontainers[$netdev['id']])
+                ? explode(',', $filecontainers[$netdev['id']]['descriptions'])
+                : array();
+        }
+        unset($netdev);
+    }
 
-	$netdevlist['total'] = count($netdevlist);
-	$netdevlist['order'] = $order;
-	$netdevlist['direction'] = $direction;
+    $netdevlist['total'] = count($netdevlist);
+    $netdevlist['order'] = $order;
+    $netdevlist['direction'] = $direction;
 
-	return $netdevlist;
+    return $netdevlist;
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(isset($_POST['search']))
+if (isset($_POST['search'])) {
         $netdevsearch = $_POST['search'];
+}
 
-if(!isset($netdevsearch))
+if (!isset($netdevsearch)) {
         $SESSION->restore('netdevsearch', $netdevsearch);
-else
-        $SESSION->save('netdevsearch', $netdevsearch);
+} else {
+    $SESSION->save('netdevsearch', $netdevsearch);
+}
 
-if(!isset($_GET['o']))
-	$SESSION->restore('ndlso', $o);
-else
-	$o = $_GET['o'];
+if (!isset($_GET['o'])) {
+    $SESSION->restore('ndlso', $o);
+} else {
+    $o = $_GET['o'];
+}
 $SESSION->save('ndlso', $o);
 
-if(!isset($_POST['k']))
+if (!isset($_POST['k'])) {
         $SESSION->restore('ndlsk', $k);
-else
-        $k = $_POST['k'];
+} else {
+    $k = $_POST['k'];
+}
 $SESSION->save('ndlsk', $k);
 
-if(isset($_GET['search']))
-{
-	$layout['pagetitle'] = trans('Network Devices Search Results');
+if (isset($_GET['search'])) {
+    $layout['pagetitle'] = trans('Network Devices Search Results');
 
-	$netdevlist = NetDevSearch($o, $netdevsearch, $k);
+    $netdevlist = NetDevSearch($o, $netdevsearch, $k);
 
-	$listdata['total'] = $netdevlist['total'];
-	$listdata['order'] = $netdevlist['order'];
-	$listdata['direction'] = $netdevlist['direction'];
+    $listdata['total'] = $netdevlist['total'];
+    $listdata['order'] = $netdevlist['order'];
+    $listdata['direction'] = $netdevlist['direction'];
 
-	unset($netdevlist['total']);
-	unset($netdevlist['order']);
-	unset($netdevlist['direction']);
+    unset($netdevlist['total']);
+    unset($netdevlist['order']);
+    unset($netdevlist['direction']);
 
-	if($listdata['total']==1)
+    if ($listdata['total']==1) {
                 $SESSION->redirect('?m=netdevinfo&id='.$netdevlist[0]['id']);
-	else
-	{
-		if(!isset($_GET['page']))
-    			$SESSION->restore('ndlsp', $_GET['page']);
-	
-		$page = (! $_GET['page'] ? 1 : $_GET['page']);
-		$pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
-		$start = ($page - 1) * $pagelimit;
+    } else {
+        if (!isset($_GET['page'])) {
+                $SESSION->restore('ndlsp', $_GET['page']);
+        }
+    
+        $page = (! $_GET['page'] ? 1 : $_GET['page']);
+        $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
+        $start = ($page - 1) * $pagelimit;
 
-		$SESSION->save('ndlsp', $page);
+        $SESSION->save('ndlsp', $page);
 
-		$SMARTY->assign('page', $page);
-		$SMARTY->assign('pagelimit', $pagelimit);
-		$SMARTY->assign('start', $start);
-		$SMARTY->assign('netdevlist', $netdevlist);
-		$SMARTY->assign('listdata', $listdata);
+        $SMARTY->assign('page', $page);
+        $SMARTY->assign('pagelimit', $pagelimit);
+        $SMARTY->assign('start', $start);
+        $SMARTY->assign('netdevlist', $netdevlist);
+        $SMARTY->assign('listdata', $listdata);
 
-		$SMARTY->display('netdev/netdevsearchresults.html');
-	}
+        $SMARTY->display('netdev/netdevsearchresults.html');
+    }
+} else {
+    $layout['pagetitle'] = trans('Network Devices Search');
+
+    $SESSION->remove('ndlsp');
+    
+    $SMARTY->assign('k', $k);
+    $SMARTY->display('netdev/netdevsearch.html');
 }
-else
-{
-	$layout['pagetitle'] = trans('Network Devices Search');
-
-	$SESSION->remove('ndlsp');
-	
-	$SMARTY->assign('k',$k);
-	$SMARTY->display('netdev/netdevsearch.html');
-}
-
-?>

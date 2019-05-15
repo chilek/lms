@@ -29,74 +29,83 @@ $layout['pagetitle'] = trans('New Config Option');
 $config = isset($_POST['config']) ? $_POST['config'] : array();
 
 if (count($config)) {
-	foreach($config as $key => $val)
-		if ($key != 'wysiwyg')
-			$config[$key] = trim($val);
+    foreach ($config as $key => $val) {
+        if ($key != 'wysiwyg') {
+            $config[$key] = trim($val);
+        }
+    }
 
-	if(!($config['var'] || $config['value'] || $config['description']))
-	{
-		$SESSION->redirect('?m=configlist');
-	}
-	
-	if($config['var']=='')
-		$error['var'] = trans('Option name is required!');
-	elseif(strlen($config['var'])>64)
-		$error['var'] = trans('Option name is too long (max.64 characters)!');
-	elseif(!preg_match('/^[a-z0-9_-]+$/', $config['var']))
-		$error['var'] = trans('Option name contains forbidden characters!');
-	elseif($LMS->GetConfigOptionId($config['var'], $config['section']))
-		$error['var'] = trans('Option exists!');
+    if (!($config['var'] || $config['value'] || $config['description'])) {
+        $SESSION->redirect('?m=configlist');
+    }
+    
+    if ($config['var']=='') {
+        $error['var'] = trans('Option name is required!');
+    } elseif (strlen($config['var'])>64) {
+        $error['var'] = trans('Option name is too long (max.64 characters)!');
+    } elseif (!preg_match('/^[a-z0-9_-]+$/', $config['var'])) {
+        $error['var'] = trans('Option name contains forbidden characters!');
+    } elseif ($LMS->GetConfigOptionId($config['var'], $config['section'])) {
+        $error['var'] = trans('Option exists!');
+    }
 
-	$section = $config['section'];
-	if (empty($section))
-		$error['section'] = trans('Section name can\'t be empty!');
-	elseif (!preg_match('/^[a-z0-9_-]+$/', $section))
-		$error['section'] = trans('Section name contains forbidden characters!');
+    $section = $config['section'];
+    if (empty($section)) {
+        $error['section'] = trans('Section name can\'t be empty!');
+    } elseif (!preg_match('/^[a-z0-9_-]+$/', $section)) {
+        $error['section'] = trans('Section name contains forbidden characters!');
+    }
 
-	$option = $config['section'] . '.' . $config['var'];
-	if(!ConfigHelper::checkPrivilege('superuser') || $config['type'] == CONFIG_TYPE_AUTO)
-		$config['type'] = $LMS->GetConfigDefaultType($option);
+    $option = $config['section'] . '.' . $config['var'];
+    if (!ConfigHelper::checkPrivilege('superuser') || $config['type'] == CONFIG_TYPE_AUTO) {
+        $config['type'] = $LMS->GetConfigDefaultType($option);
+    }
 
-	if($msg = $LMS->CheckOption($option, $config['value'], $config['type']))
-		$error['value'] = $msg;
-	
-	if(!isset($config['disabled'])) $config['disabled'] = 0;
+    if ($msg = $LMS->CheckOption($option, $config['value'], $config['type'])) {
+        $error['value'] = $msg;
+    }
+    
+    if (!isset($config['disabled'])) {
+        $config['disabled'] = 0;
+    }
 
-	if (!$error) {
-		$args = array(
-			'section' => $section,
-			'var' => $config['var'],
-			'value' => $config['value'],
-			'description' => $config['description'],
-			'disabled' => $config['disabled'],
-			'type' => $config['type']
-		);
-		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled, type) VALUES (?, ?, ?, ?, ?, ?)',
-			array_values($args));
+    if (!$error) {
+        $args = array(
+            'section' => $section,
+            'var' => $config['var'],
+            'value' => $config['value'],
+            'description' => $config['description'],
+            'disabled' => $config['disabled'],
+            'type' => $config['type']
+        );
+        $DB->Execute(
+            'INSERT INTO uiconfig (section, var, value, description, disabled, type) VALUES (?, ?, ?, ?, ?, ?)',
+            array_values($args)
+        );
 
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_UICONF] = $DB->GetLastInsertID('uiconfig');
-			$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
-		}
+        if ($SYSLOG) {
+            $args[SYSLOG::RES_UICONF] = $DB->GetLastInsertID('uiconfig');
+            $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
+        }
 
-		if (!isset($config['reuse']))
-			$SESSION->redirect('?m=configlist');
+        if (!isset($config['reuse'])) {
+            $SESSION->redirect('?m=configlist');
+        }
 
-		unset($config['var']);
-		unset($config['value']);
-		unset($config['description']);
-		unset($config['disabled']);
-	}
+        unset($config['var']);
+        unset($config['value']);
+        unset($config['description']);
+        unset($config['disabled']);
+    }
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(isset($_GET['section']))
-	$config['section'] = $_GET['section'];
+if (isset($_GET['section'])) {
+    $config['section'] = $_GET['section'];
+}
 
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
 $SMARTY->display('config/configadd.html');
-
-?>

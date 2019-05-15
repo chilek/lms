@@ -44,8 +44,6 @@ $this->Execute("CREATE INDEX imessengers_customerid_idx ON imessengers (customer
 
 $this->Execute("ALTER TABLE customers DROP COLUMN im");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007033100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007033100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

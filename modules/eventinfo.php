@@ -25,7 +25,7 @@
  */
 
 if (!$_GET['id']) {
-	$SESSION->redirect('?m=eventlist');
+    $SESSION->redirect('?m=eventlist');
 }
 
 $event = $LMS->GetEvent($_GET['id']);
@@ -40,5 +40,3 @@ $SMARTY->assign('event', $event);
 $SMARTY->assign('userlist', $userlist);
 
 $SMARTY->display('event/eventinfo.html');
-
-?>

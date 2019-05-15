@@ -24,11 +24,10 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Phone'),                                          // Display name
-                      'voip',                                                  // Module name - must be the same as directory name
-                      trans('View phone billings and listen recorded calls.'), // Tip
-                      60,                                                      // Priority
-                      trans('This module shows billing list.')        // Description
-                     );
-
-?>
+$USERPANEL->AddModule(
+    trans('Phone'),                                          // Display name
+    'voip',                                                  // Module name - must be the same as directory name
+    trans('View phone billings and listen recorded calls.'), // Tip
+    60,                                                      // Priority
+    trans('This module shows billing list.')        // Description
+);

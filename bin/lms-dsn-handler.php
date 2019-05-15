@@ -19,7 +19,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -28,35 +28,36 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-	'C:' => 'config-file:',
-	'q' => 'quiet',
-	'h' => 'help',
-	'v' => 'version',
+    'C:' => 'config-file:',
+    'q' => 'quiet',
+    'h' => 'help',
+    'v' => 'version',
 );
 
 foreach ($parameters as $key => $val) {
-	$val = preg_replace('/:/', '', $val);
-	$newkey = preg_replace('/:/', '', $key);
-	$short_to_longs[$newkey] = $val;
+    $val = preg_replace('/:/', '', $val);
+    $newkey = preg_replace('/:/', '', $key);
+    $short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options)) {
-		$options[$long] = $options[$short];
-		unset($options[$short]);
-	}
+foreach ($short_to_longs as $short => $long) {
+    if (array_key_exists($short, $options)) {
+        $options[$long] = $options[$short];
+        unset($options[$short]);
+    }
+}
 
 if (array_key_exists('version', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-dsnhandler.php
 (C) 2001-2016 LMS Developers
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 if (array_key_exists('help', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-dsnhandler.php
 (C) 2001-2016 LMS Developers
 
@@ -66,28 +67,31 @@ lms-dsnhandler.php
 -q, --quiet                     suppress any output, except errors;
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
-	print <<<EOF
+    print <<<EOF
 lms-dsnhandler.php
 (C) 2001-2016 LMS Developers
 
 EOF;
 }
 
-if (array_key_exists('config-file', $options))
-	$CONFIG_FILE = $options['config-file'];
-else
-	$CONFIG_FILE = '/etc/lms/lms.ini';
+if (array_key_exists('config-file', $options)) {
+    $CONFIG_FILE = $options['config-file'];
+} else {
+    $CONFIG_FILE = '/etc/lms/lms.ini';
+}
 
-if (!$quiet)
-	echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
+if (!$quiet) {
+    echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
+}
 
-if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
+if (!is_readable($CONFIG_FILE)) {
+    die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -102,21 +106,22 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path))
-	require_once $composer_autoload_path;
-else
-	die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+}
 
 // Init database
 
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
@@ -131,91 +136,111 @@ $SYSLOG = SYSLOG::getInstance();
 */
 
 $ih = @imap_open("{" . ConfigHelper::getConfig('dsn-handler.server') . "}INBOX", ConfigHelper::getConfig('dsn-handler.username'), ConfigHelper::getConfig('dsn-handler.password'));
-if (!$ih)
-	die("Cannot connect to mail server!" . PHP_EOL);
+if (!$ih) {
+    die("Cannot connect to mail server!" . PHP_EOL);
+}
 
 $handled_posts = array();
 $posts = imap_search($ih, 'ALL');
 if (!empty($posts)) {
-	foreach ($posts as $postid) {
-		$post = imap_fetchstructure($ih, $postid);
-		if ($post->subtype != 'REPORT')
-			continue;
-		if (count($post->parts) < 2 || count($post->parts) > 3)
-			continue;
-		$parts = $post->parts;
+    foreach ($posts as $postid) {
+        $post = imap_fetchstructure($ih, $postid);
+        if ($post->subtype != 'REPORT') {
+            continue;
+        }
+        if (count($post->parts) < 2 || count($post->parts) > 3) {
+            continue;
+        }
+        $parts = $post->parts;
 
-		$msgitemid = 0;
-		$status = 0;
-		$diag_code = '';
-		$disposition = '';
-		$lastdate = '';
-		$readdate = '';
-		foreach ($parts as $partid => $part)
-			switch ($part->subtype) {
-				case 'PLAIN':
-					$headers = imap_fetchheader($ih, $postid);
-					if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m))
-						$lastdate = strtotime($m['date']);
-					break;
-				case 'DELIVERY-STATUS':
-					$body = imap_fetchbody($ih, $postid, $partid + 1);
-					if (preg_match('/Status:\s+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
-						$code = explode('.', $m['status']);
-						$status = intval($code[0]);
-					}
-					if (preg_match('/Diagnostic-Code:\s+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m))
-						$diag_code = $m['code'];
-					break;
-				case 'DISPOSITION-NOTIFICATION':
-					$body = imap_fetchbody($ih, $postid, $partid + 1);
-					if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m))
-						$disposition = $m['disposition'];
-					if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m))
-						$msgitemid = intval($m['msgitemid']);
-					$headers = imap_fetchheader($ih, $postid);
-					if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m))
-						$readdate = strtotime($m['date']);
-					break;
-				case 'RFC822-HEADERS':
-				case 'RFC822':
-					$body = imap_fetchbody($ih, $postid, $partid + 1);
-					if (preg_match('/X-LMS-Message-Item-Id:\s+(?<msgitemid>[0-9]+)/', $body, $m))
-						$msgitemid = intval($m['msgitemid']);
-					if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m))
-						$msgitemid = intval($m['msgitemid']);
-					break;
-			}
-		if (empty($msgitemid))
-			continue;
-		if (!empty($status)) {
-			if ($status == 4) {
-				$handled_posts[] = $postid;
-				continue;
-			}
-			switch ($status) {
-				case 2:
-					$status = MSG_DELIVERED;
-					break;
-				case 5:
-					$status = MSG_ERROR;
-					break;
-			}
-			if (empty($lastdate))
-				$lastdate = $DB->GetOne('SELECT lastdate FROM messageitems WHERE id = ?', array($msgitemid));
-			$DB->Execute('UPDATE messageitems SET status = ?, error = ?, lastdate = ? WHERE id = ?',
-				array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null,
-					$lastdate, $msgitemid));
-		} elseif (!empty($disposition) && !empty($readdate))
-			$DB->Execute('UPDATE messageitems SET status = ?, lastreaddate = ? WHERE id = ?',
-				array(MSG_DELIVERED, $readdate, $msgitemid));
-		else
-			continue;
+        $msgitemid = 0;
+        $status = 0;
+        $diag_code = '';
+        $disposition = '';
+        $lastdate = '';
+        $readdate = '';
+        foreach ($parts as $partid => $part) {
+            switch ($part->subtype) {
+                case 'PLAIN':
+                    $headers = imap_fetchheader($ih, $postid);
+                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                        $lastdate = strtotime($m['date']);
+                    }
+                    break;
+                case 'DELIVERY-STATUS':
+                    $body = imap_fetchbody($ih, $postid, $partid + 1);
+                    if (preg_match('/Status:\s+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
+                        $code = explode('.', $m['status']);
+                        $status = intval($code[0]);
+                    }
+                    if (preg_match('/Diagnostic-Code:\s+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m)) {
+                        $diag_code = $m['code'];
+                    }
+                    break;
+                case 'DISPOSITION-NOTIFICATION':
+                    $body = imap_fetchbody($ih, $postid, $partid + 1);
+                    if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m)) {
+                        $disposition = $m['disposition'];
+                    }
+                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                        $msgitemid = intval($m['msgitemid']);
+                    }
+                    $headers = imap_fetchheader($ih, $postid);
+                    if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m)) {
+                        $readdate = strtotime($m['date']);
+                    }
+                    break;
+                case 'RFC822-HEADERS':
+                case 'RFC822':
+                    $body = imap_fetchbody($ih, $postid, $partid + 1);
+                    if (preg_match('/X-LMS-Message-Item-Id:\s+(?<msgitemid>[0-9]+)/', $body, $m)) {
+                        $msgitemid = intval($m['msgitemid']);
+                    }
+                    if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m)) {
+                        $msgitemid = intval($m['msgitemid']);
+                    }
+                    break;
+            }
+        }
+        if (empty($msgitemid)) {
+            continue;
+        }
+        if (!empty($status)) {
+            if ($status == 4) {
+                $handled_posts[] = $postid;
+                continue;
+            }
+            switch ($status) {
+                case 2:
+                    $status = MSG_DELIVERED;
+                    break;
+                case 5:
+                    $status = MSG_ERROR;
+                    break;
+            }
+            if (empty($lastdate)) {
+                $lastdate = $DB->GetOne('SELECT lastdate FROM messageitems WHERE id = ?', array($msgitemid));
+            }
+            $DB->Execute(
+                'UPDATE messageitems SET status = ?, error = ?, lastdate = ? WHERE id = ?',
+                array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null,
+                    $lastdate,
+                $msgitemid)
+            );
+        } elseif (!empty($disposition) && !empty($readdate)) {
+            $DB->Execute(
+                'UPDATE messageitems SET status = ?, lastreaddate = ? WHERE id = ?',
+                array(MSG_DELIVERED, $readdate, $msgitemid)
+            );
+        } else {
+            continue;
+        }
 
-		$handled_posts[] = $postid;
-	}
-	foreach ($handled_posts as $postid)
-		imap_delete($ih, $postid);
+        $handled_posts[] = $postid;
+    }
+    foreach ($handled_posts as $postid) {
+        imap_delete($ih, $postid);
+    }
 }
 
 imap_close($ih, CL_EXPUNGE);

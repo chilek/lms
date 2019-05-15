@@ -33,7 +33,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 {
     /**
      * Returns number of customer assignments to given group
-     * 
+     *
      * @param int $id Group id
      * @return int Assignments number
      */
@@ -42,14 +42,14 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         return $this->db->GetOne(
             'SELECT COUNT(*) 
             FROM customerassignments
-            WHERE customergroupid = ?', 
+            WHERE customergroupid = ?',
             array($id)
         );
     }
     
     /**
      * Adds customer group
-     * 
+     *
      * @param array $customergroupdata Customer group data
      * @return boolean|int Customer group id on success, false on failure
      */
@@ -67,13 +67,13 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             }
             return $id;
         } else {
-            return FALSE;
+            return false;
         }
     }
     
     /**
      * Updates customer group
-     * 
+     *
      * @param array $customergroupdata Customer group data
      * @return type
      */
@@ -84,15 +84,16 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             'description' => $customergroupdata['description'],
             SYSLOG::RES_CUSTGROUP => $customergroupdata['id']
         );
-        if ($this->syslog)
+        if ($this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_CUSTGROUP, SYSLOG::OPER_UPDATE, $args);
+        }
         return $this->db->Execute('UPDATE customergroups SET name=?, description=? 
 				WHERE id=?', array_values($args));
     }
 
     /**
      * Deletes customer group
-     * 
+     *
      * @param type $id
      * @return boolean
      */
@@ -102,37 +103,39 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             if ($this->syslog) {
                 $custassigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
 					WHERE customergroupid = ?', array($id));
-                if (!empty($custassigns))
+                if (!empty($custassigns)) {
                     foreach ($custassigns as $custassign) {
                         $args = array(
-                            SYSLOG::RES_CUSTASSIGN => $custassign['id'],
-                            SYSLOG::RES_CUST => $custassign['customerid'],
-                            SYSLOG::RES_CUSTGROUP => $custassign['customergroupid']
+                        SYSLOG::RES_CUSTASSIGN => $custassign['id'],
+                        SYSLOG::RES_CUST => $custassign['customerid'],
+                        SYSLOG::RES_CUSTGROUP => $custassign['customergroupid']
                         );
                         $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
+                }
                 $this->syslog->AddMessage(SYSLOG::RES_CUSTGROUP, SYSLOG::OPER_DELETE, array(SYSLOG::RES_CUSTGROUP => $id));
             }
             $this->db->Execute('DELETE FROM customergroups WHERE id=?', array($id));
-            return TRUE;
-        } else
-            return FALSE;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Checks if customer group exists
-     * 
+     *
      * @param int $id Customer group id
-     * @return boolean True on success, false otherwise 
+     * @return boolean True on success, false otherwise
      */
     public function CustomergroupExists($id)
     {
-        return ($this->db->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? TRUE : FALSE);
+        return ($this->db->GetOne('SELECT id FROM customergroups WHERE id=?', array($id)) ? true : false);
     }
 
     /**
      * Returns customer group id by it's name
-     * 
+     *
      * @param string $name Customer group name
      * @return int Customer group id
      */
@@ -143,7 +146,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     
     /**
      * Returns customer group name by it's id
-     * 
+     *
      * @param int $id Customer group id
      * @return string Customer group name
      */
@@ -154,7 +157,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     
     /**
      * Returns all customer groups
-     * 
+     *
      * @return array Customer groups
      */
     public function CustomergroupGetAll()
@@ -172,12 +175,12 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     
     /**
      * Returns customer group
-     * 
+     *
      * @param int $id Customer group id
      * @param int $network Network id
      * @return array Customer group
      */
-    public function CustomergroupGet($id, $network = NULL)
+    public function CustomergroupGet($id, $network = null)
     {
         if ($network) {
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -204,7 +207,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     
     /**
      * Returns customer groups
-     * 
+     *
      * @return array Customer groups
      */
     public function CustomergroupGetList()
@@ -235,7 +238,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     
     /**
      * Returns customer groups assigned to customer
-     * 
+     *
      * @param int $id Customer id
      * @return array Customer groups
      */
@@ -245,14 +248,14 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             'SELECT customergroups.id AS id, name, description 
             FROM customergroups, customerassignments 
             WHERE customergroups.id=customergroupid AND customerid=? 
-            ORDER BY name ASC', 
+            ORDER BY name ASC',
             array($id)
         );
     }
     
     /**
      * Returns customer groups without customer
-     * 
+     *
      * @param int $customerid Customer id
      * @return array Customer groups
      */
@@ -263,14 +266,14 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             FROM customergroups 
             LEFT JOIN customerassignments ON (customergroups.id=customergroupid AND customerid = ?)
             GROUP BY customergroups.id, name, customerid 
-            HAVING customerid IS NULL ORDER BY name', 
+            HAVING customerid IS NULL ORDER BY name',
             array($customerid)
         );
     }
     
     /**
      * Returns customer groups assignments for customer
-     * 
+     *
      * @param int $id Customer id
      * @return array Customer groups assignments
      */
@@ -280,49 +283,53 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             'SELECT customerassignments.id AS id, customergroupid, customerid 
             FROM customerassignments, customergroups 
             WHERE customerid=? AND customergroups.id = customergroupid 
-            ORDER BY customergroupid ASC', 
+            ORDER BY customergroupid ASC',
             array($id)
         );
     }
 
     /**
      * Deletes customer assignment
-     * 
+     *
      * @param array $customerassignmentdata Customer assignment data
      * @return type
      */
-	public function CustomerassignmentDelete($customerassignmentdata) {
-		if ($this->syslog) {
-			if (isset($customerassignmentdata['customergroupid']))
-				$assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+    public function CustomerassignmentDelete($customerassignmentdata)
+    {
+        if ($this->syslog) {
+            if (isset($customerassignmentdata['customergroupid'])) {
+                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
 					WHERE customergroupid = ? AND customerid = ?', array($customerassignmentdata['customergroupid'],
-					$customerassignmentdata['customerid']));
-			else
-				$assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
+                    $customerassignmentdata['customerid']));
+            } else {
+                $assigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
 					WHERE customerid = ?', array($customerassignmentdata['customerid']));
-			if (!empty($assigns))
-				foreach ($assigns as $assign) {
-					$args = array(
-						SYSLOG::RES_CUSTASSIGN => $assign['id'],
-						SYSLOG::RES_CUST => $assign['customerid'],
-						SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
-					);
-					$this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
-				}
-		}
+            }
+            if (!empty($assigns)) {
+                foreach ($assigns as $assign) {
+                    $args = array(
+                    SYSLOG::RES_CUSTASSIGN => $assign['id'],
+                    SYSLOG::RES_CUST => $assign['customerid'],
+                    SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
 
-		if (isset($customerassignmentdata['customergroupid']))
-			return $this->db->Execute('DELETE FROM customerassignments 
+        if (isset($customerassignmentdata['customergroupid'])) {
+            return $this->db->Execute('DELETE FROM customerassignments 
 				WHERE customergroupid=? AND customerid=?', array($customerassignmentdata['customergroupid'],
-					$customerassignmentdata['customerid']));
-		else
-			return $this->db->Execute('DELETE FROM customerassignments 
+                    $customerassignmentdata['customerid']));
+        } else {
+            return $this->db->Execute('DELETE FROM customerassignments 
 				WHERE customerid=?', array($customerassignmentdata['customerid']));
+        }
     }
     
     /**
      * Adds customer assignment
-     * 
+     *
      * @param array  $customerassignmentdata Customer assignment data
      * @return type
      */
@@ -344,7 +351,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     
     /**
      * Checks if customer assignment exists
-     * 
+     *
      * @param int $groupid Customer group id
      * @param int $customerid Customer id
      * @return int|null 1 if exists, null otherwise
@@ -356,12 +363,12 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     
     /**
      * Returns customers without groups
-     * 
+     *
      * @param int $groupid Customer group id
      * @param int $network Network id
      * @return array Customers
      */
-    public function GetCustomerWithoutGroupNames($groupid, $network = NULL)
+    public function GetCustomerWithoutGroupNames($groupid, $network = null)
     {
         if ($network) {
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -378,5 +385,4 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
                         . 'GROUP BY c.id, c.lastname, c.name
 			ORDER BY c.lastname, c.name', array($groupid));
     }
-
 }

@@ -29,373 +29,425 @@ $listdata = $modellist = array();
 $producerlist = $DB->GetAll('SELECT id, name FROM netdeviceproducers ORDER BY name ASC');
 
 
-if (!isset($_GET['p_id']))
-	$SESSION->restore('ndpid', $pid);
-else
-	$pid = intval($_GET['p_id']);
+if (!isset($_GET['p_id'])) {
+    $SESSION->restore('ndpid', $pid);
+} else {
+    $pid = intval($_GET['p_id']);
+}
 $SESSION->save('ndpid', $pid);
 
-if (!isset($_GET['page']))
-	$SESSION->restore('ndlpage', $_GET['page']);
+if (!isset($_GET['page'])) {
+    $SESSION->restore('ndlpage', $_GET['page']);
+}
 
-if ($pid)
-	$producerinfo = $DB->GetRow('SELECT p.id , p.alternative_name FROM netdeviceproducers p WHERE p.id = ?', array($pid));
-else
-	$producerinfo = array();
+if ($pid) {
+    $producerinfo = $DB->GetRow('SELECT p.id , p.alternative_name FROM netdeviceproducers p WHERE p.id = ?', array($pid));
+} else {
+    $producerinfo = array();
+}
 
 $listdata['pid'] = $pid; // producer id
 
-function cancel_producer() {
-	$obj = new xajaxResponse();
+function cancel_producer()
+{
+    $obj = new xajaxResponse();
 
-	$obj->assign("id_producer","value","");
-	$obj->assign("id_producername","value","");
-	$obj->assign("id_alternative_name","value","");
-	$obj->script("removeClass(xajax.$('id_producername'),'alert');");
-	$obj->script("xajax.$('div_produceredit').style.display='none';");
+    $obj->assign("id_producer", "value", "");
+    $obj->assign("id_producername", "value", "");
+    $obj->assign("id_alternative_name", "value", "");
+    $obj->script("removeClass(xajax.$('id_producername'),'alert');");
+    $obj->script("xajax.$('div_produceredit').style.display='none';");
 
-	return $obj;
+    return $obj;
 }
 
 
-function add_producer() {
-	$obj = new xajaxResponse();
+function add_producer()
+{
+    $obj = new xajaxResponse();
 
-	$obj->script("xajax.$('div_produceredit').style.display='';");
-	$obj->script("removeClass(xajax.$('id_producername'),'alert');");
-	$obj->assign("id_action_name","innerHTML",trans('New producer'));
-	$obj->assign("id_producer","value","");
-	$obj->assign("id_producername","value","");
-	$obj->assign("id_alternative_name","value","");
-	$obj->script("xajax.$('id_producername').focus();");
+    $obj->script("xajax.$('div_produceredit').style.display='';");
+    $obj->script("removeClass(xajax.$('id_producername'),'alert');");
+    $obj->assign("id_action_name", "innerHTML", trans('New producer'));
+    $obj->assign("id_producer", "value", "");
+    $obj->assign("id_producername", "value", "");
+    $obj->assign("id_alternative_name", "value", "");
+    $obj->script("xajax.$('id_producername').focus();");
 
-	return $obj;
+    return $obj;
 }
 
-function edit_producer($id) {
-	global $DB;
-	$obj = new xajaxResponse();
+function edit_producer($id)
+{
+    global $DB;
+    $obj = new xajaxResponse();
 
-	$producer = $DB->GetRow('SELECT * FROM netdeviceproducers WHERE id = ?',
-		array($id));
+    $producer = $DB->GetRow(
+        'SELECT * FROM netdeviceproducers WHERE id = ?',
+        array($id)
+    );
 
-	$obj->script("xajax.$('div_produceredit').style.display='';");
-	$obj->script("removeClass(xajax.$('id_producername'),'alert');");
-	$obj->assign("id_action_name","innerHTML", trans('Producer edit: $a', $producer['name']));
+    $obj->script("xajax.$('div_produceredit').style.display='';");
+    $obj->script("removeClass(xajax.$('id_producername'),'alert');");
+    $obj->assign("id_action_name", "innerHTML", trans('Producer edit: $a', $producer['name']));
 
-	$obj->assign("id_producer","value", $producer['id']);
-	$obj->assign("id_producername","value", $producer['name']);
-	$obj->assign("id_alternative_name","value", $producer['alternative_name']);
-	$obj->script("xajax.$('id_producername').focus();");
+    $obj->assign("id_producer", "value", $producer['id']);
+    $obj->assign("id_producername", "value", $producer['name']);
+    $obj->assign("id_alternative_name", "value", $producer['alternative_name']);
+    $obj->script("xajax.$('id_producername').focus();");
 
-	return $obj;
+    return $obj;
 }
 
-function save_producer($forms) {
-	global $LMS;
+function save_producer($forms)
+{
+    global $LMS;
 
-	$DB = LMSDB::getInstance();
-	$obj = new xajaxResponse();
+    $DB = LMSDB::getInstance();
+    $obj = new xajaxResponse();
 
-	$form = $forms['produceredit'];
-	$formid = $form['id'];
-	$error = false;
+    $form = $forms['produceredit'];
+    $formid = $form['id'];
+    $error = false;
 
-	$obj->script("removeClass(xajax.$('id_producername'),'alert');");
+    $obj->script("removeClass(xajax.$('id_producername'),'alert');");
 
-	if (empty($form['name'])) {
-		$error = true;
-		$obj->setEvent("id_producername","onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Producer name is required!") . "</span>')");
-	}
+    if (empty($form['name'])) {
+        $error = true;
+        $obj->setEvent("id_producername", "onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Producer name is required!") . "</span>')");
+    }
 
-	if (!$error) {
-		if (!$form['id'])
-			$error = ($DB->GetOne('SELECT COUNT(*) FROM netdeviceproducers WHERE name = ?',
-				array(strtoupper($form['name']))) ? true : false);
-		else
-			$error = ($DB->GetOne('SELECT COUNT(*) FROM netdeviceproducers WHERE name = ? AND id <> ? ',
-				array(strtoupper($form['name']), $form['id'])) ? true : false);
+    if (!$error) {
+        if (!$form['id']) {
+            $error = ($DB->GetOne(
+                'SELECT COUNT(*) FROM netdeviceproducers WHERE name = ?',
+                array(strtoupper($form['name']))
+            ) ? true : false);
+        } else {
+            $error = ($DB->GetOne(
+                'SELECT COUNT(*) FROM netdeviceproducers WHERE name = ? AND id <> ? ',
+                array(strtoupper($form['name']), $form['id'])
+            ) ? true : false);
+        }
 
-		if ($error)
-			$obj->setEvent("id_producername","onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Producer already exists!") . "</span>')");
-	}
+        if ($error) {
+            $obj->setEvent("id_producername", "onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Producer already exists!") . "</span>')");
+        }
+    }
 
-	$hook_data = $LMS->executeHook('netdevproducer_validation_before_update',
-		array(
-			'netdevproducerdata' => $form,
-			'error' => $error,
-		)
-	);
-	$form = $hook_data['netdevproducerdata'];
-	$error = $hook_data['error'];
+    $hook_data = $LMS->executeHook(
+        'netdevproducer_validation_before_update',
+        array(
+            'netdevproducerdata' => $form,
+            'error' => $error,
+        )
+    );
+    $form = $hook_data['netdevproducerdata'];
+    $error = $hook_data['error'];
 
-	if ($error) {
-		$obj->script("addClass(xajax.$('id_producername'),'alert');");
-		$obj->script("xajax.$('id_producername').focus();");
-	} else {
-		if ($form['id']) {
-			$DB->Execute('UPDATE netdeviceproducers SET name = ?, alternative_name = ? WHERE id = ?',
-				array($form['name'],
-					($form['alternative_name'] ? $form['alternative_name'] : NULL),
-					$form['id']
-				));
-			$obj->script("xajax_cancel_producer();");
-			$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$formid';");
-		} else {
-			$DB->Execute('INSERT INTO netdeviceproducers (name, alternative_name) VALUES (?, ?)',
-				array($form['name'],
-					($form['alternative_name'] ? $form['alternative_name'] : NULL)
-				));
-			$form['id'] = $DB->getLastInsertId('netdeviceproducers');
+    if ($error) {
+        $obj->script("addClass(xajax.$('id_producername'),'alert');");
+        $obj->script("xajax.$('id_producername').focus();");
+    } else {
+        if ($form['id']) {
+            $DB->Execute(
+                'UPDATE netdeviceproducers SET name = ?, alternative_name = ? WHERE id = ?',
+                array($form['name'],
+                    ($form['alternative_name'] ? $form['alternative_name'] : null),
+                    $form['id']
+                )
+            );
+            $obj->script("xajax_cancel_producer();");
+            $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$formid';");
+        } else {
+            $DB->Execute(
+                'INSERT INTO netdeviceproducers (name, alternative_name) VALUES (?, ?)',
+                array($form['name'],
+                    ($form['alternative_name'] ? $form['alternative_name'] : null)
+                )
+            );
+            $form['id'] = $DB->getLastInsertId('netdeviceproducers');
 
-			$obj->script("xajax_cancel_producer();");
-			$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=" . $form['id'] . "';");
-		}
+            $obj->script("xajax_cancel_producer();");
+            $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=" . $form['id'] . "';");
+        }
 
-		$hook_data = $LMS->executeHook('netdevproducer_after_update',
-			array(
-				'netdevproducerdata' => $form,
-			)
-		);
-	}
+        $hook_data = $LMS->executeHook(
+            'netdevproducer_after_update',
+            array(
+                'netdevproducerdata' => $form,
+            )
+        );
+    }
 
-	return $obj;
+    return $obj;
 }
 
-function delete_producer($id) {
-	global $LMS;
+function delete_producer($id)
+{
+    global $LMS;
 
-	$DB = LMSDB::getInstance();
-	$obj = new xajaxResponse();
+    $DB = LMSDB::getInstance();
+    $obj = new xajaxResponse();
 
-	$hook_data = $LMS->executeHook('netdevproducer_validation_before_delete',
-		array(
-			'id' => $id,
-			'error' => array(),
-		)
-	);
-	$error = $hook_data['error'];
+    $hook_data = $LMS->executeHook(
+        'netdevproducer_validation_before_delete',
+        array(
+            'id' => $id,
+            'error' => array(),
+        )
+    );
+    $error = $hook_data['error'];
 
-	if (!$error) {
-		$DB->Execute('DELETE FROM netdeviceproducers WHERE id = ?', array($id));
+    if (!$error) {
+        $DB->Execute('DELETE FROM netdeviceproducers WHERE id = ?', array($id));
 
-		$hook_data = $LMS->executeHook('netdevproducer_after_delete',
-			array(
-				'id' => $id,
-				'error' => array(),
-			)
-		);
+        $hook_data = $LMS->executeHook(
+            'netdevproducer_after_delete',
+            array(
+                'id' => $id,
+                'error' => array(),
+            )
+        );
 
-		$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=';");
-	} else
-		$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=" . $id . "';");
+        $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=';");
+    } else {
+        $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=" . $id . "';");
+    }
 
-	return $obj;
+    return $obj;
 }
 
 
-function cancel_model() {
-	$obj = new xajaxResponse();
+function cancel_model()
+{
+    $obj = new xajaxResponse();
 
-	$obj->assign("id_model","value","");
-	$obj->assign("id_modelname","value","");
-	$obj->assign("id_model_alternative_name","value","");
-	$obj->script("removeClass(xajax.$('id_model_name'),'alert');");
-	$obj->script("xajax.$('div_modeledit').style.display='none';");
+    $obj->assign("id_model", "value", "");
+    $obj->assign("id_modelname", "value", "");
+    $obj->assign("id_model_alternative_name", "value", "");
+    $obj->script("removeClass(xajax.$('id_model_name'),'alert');");
+    $obj->script("xajax.$('div_modeledit').style.display='none';");
 
-	return $obj;
+    return $obj;
 }
 
-function add_model() {
-	$obj = new xajaxResponse();
+function add_model()
+{
+    $obj = new xajaxResponse();
 
-	$obj->script("xajax.$('div_modeledit').style.display='';");
-	$obj->script("removeClass(xajax.$('id_model_name'),'alert');");
-	$obj->assign("id_model_action_name","innerHTML",trans("New model"));
-	$obj->assign("id_model","value","");
-	$obj->assign("id_model_name","value","");
-	$obj->assign("id_model_alternative_name","value","");
-	$obj->script("xajax.$('id_model_name').focus();");
+    $obj->script("xajax.$('div_modeledit').style.display='';");
+    $obj->script("removeClass(xajax.$('id_model_name'),'alert');");
+    $obj->assign("id_model_action_name", "innerHTML", trans("New model"));
+    $obj->assign("id_model", "value", "");
+    $obj->assign("id_model_name", "value", "");
+    $obj->assign("id_model_alternative_name", "value", "");
+    $obj->script("xajax.$('id_model_name').focus();");
 
-	return $obj;
+    return $obj;
 }
 
-function edit_model($id) {
-	global $LMS;
+function edit_model($id)
+{
+    global $LMS;
 
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 
-	$obj = new xajaxResponse();
+    $obj = new xajaxResponse();
 
-	$model = $DB->GetRow('SELECT * FROM netdevicemodels WHERE id = ?', array($id));
+    $model = $DB->GetRow('SELECT * FROM netdevicemodels WHERE id = ?', array($id));
 
-	$hook_data = $LMS->executeHook('netdevmodel_edit_before_display',
-		array(
-			'netdevmodeldata' => $model,
-			'xajaxResponse' => $obj,
-		)
-	);
-	$model = $hook_data['netdevmodeldata'];
+    $hook_data = $LMS->executeHook(
+        'netdevmodel_edit_before_display',
+        array(
+            'netdevmodeldata' => $model,
+            'xajaxResponse' => $obj,
+        )
+    );
+    $model = $hook_data['netdevmodeldata'];
 
-	$obj->script("xajax.$('div_modeledit').style.display='';");
-	$obj->script("removeClass(xajax.$('id_model_name'),'alert');");
-	$obj->assign("id_model_action_name","innerHTML", trans('Model edit: $a', $model['name']));
+    $obj->script("xajax.$('div_modeledit').style.display='';");
+    $obj->script("removeClass(xajax.$('id_model_name'),'alert');");
+    $obj->assign("id_model_action_name", "innerHTML", trans('Model edit: $a', $model['name']));
 
-	$obj->assign("id_model","value", $model['id']);
-	$obj->assign("id_model_name","value", $model['name']);
-	$obj->assign("id_model_alternative_name","value", $model['alternative_name']);
-	$obj->script("xajax.$('id_model_name').focus();");
+    $obj->assign("id_model", "value", $model['id']);
+    $obj->assign("id_model_name", "value", $model['name']);
+    $obj->assign("id_model_alternative_name", "value", $model['alternative_name']);
+    $obj->script("xajax.$('id_model_name').focus();");
 
-	return $obj;
+    return $obj;
 }
 
-function save_model($forms) {
-	global $LMS;
+function save_model($forms)
+{
+    global $LMS;
 
-	$DB = LMSDB::getInstance();
-	$obj = new xajaxResponse();
+    $DB = LMSDB::getInstance();
+    $obj = new xajaxResponse();
 
-	$form = $forms['modeledit'];
-	$formid = intval($form['id']);
-	$pid = intval($form['pid']);
-	$error = false;
+    $form = $forms['modeledit'];
+    $formid = intval($form['id']);
+    $pid = intval($form['pid']);
+    $error = false;
 
-	$obj->script("removeClass(xajax.$('id_model_name'),'alert');");
+    $obj->script("removeClass(xajax.$('id_model_name'),'alert');");
 
-	if (empty($form['name'])) {
-		$error = true;
-		$obj->setEvent("id_model_name","onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Model name is required!") . "</span>')");
-	}
+    if (empty($form['name'])) {
+        $error = true;
+        $obj->setEvent("id_model_name", "onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Model name is required!") . "</span>')");
+    }
 
-	if (!$error) {
-		if (!$form['id'])
-			$error = ($DB->GetOne('SELECT COUNT(*) FROM netdevicemodels WHERE netdeviceproducerid = ? AND UPPER(name) = ? ',
-				array($pid, strtoupper($form['name']))) ? true : false);
-		else
-			$error = ($DB->GetOne('SELECT COUNT(*) FROM netdevicemodels WHERE id <> ? AND netdeviceproducerid = ? AND UPPER(name) = ?',
-				array($formid, $pid, strtoupper($form['name']))) ? true : false);
+    if (!$error) {
+        if (!$form['id']) {
+            $error = ($DB->GetOne(
+                'SELECT COUNT(*) FROM netdevicemodels WHERE netdeviceproducerid = ? AND UPPER(name) = ? ',
+                array($pid, strtoupper($form['name']))
+            ) ? true : false);
+        } else {
+            $error = ($DB->GetOne(
+                'SELECT COUNT(*) FROM netdevicemodels WHERE id <> ? AND netdeviceproducerid = ? AND UPPER(name) = ?',
+                array($formid, $pid, strtoupper($form['name']))
+            ) ? true : false);
+        }
 
-		if ($error)
-			$obj->setEvent("id_model_name","onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Model already exists!") . "</span>')");
-	}
+        if ($error) {
+            $obj->setEvent("id_model_name", "onmouseover", "popup('<span class=\\\"red bold\\\">" . trans("Model already exists!") . "</span>')");
+        }
+    }
 
-	$hook_data = $LMS->executeHook('netdevmodel_validation_before_update',
-		array(
-			'netdevmodeldata' => $form,
-			'error' => $error,
-		)
-	);
-	$form = $hook_data['netdevmodeldata'];
-	$error = $hook_data['error'];
+    $hook_data = $LMS->executeHook(
+        'netdevmodel_validation_before_update',
+        array(
+            'netdevmodeldata' => $form,
+            'error' => $error,
+        )
+    );
+    $form = $hook_data['netdevmodeldata'];
+    $error = $hook_data['error'];
 
-	if ($error) {
-		$obj->script("addClass(xajax.$('id_model_name'),'alert');");
-		$obj->script("xajax.$('id_model_name').focus();");
-	} else {
-		if ($formid) {
-			$DB->Execute('UPDATE netdevicemodels SET name = ?, alternative_name = ? WHERE id = ?',
-				array($form['name'],
-					($form['alternative_name'] ? $form['alternative_name'] : NULL),
-					$formid,
-				));
-			$obj->script("xajax_cancel_model();");
-			$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
-		} else {
-			$DB->Execute('INSERT INTO netdevicemodels (netdeviceproducerid, name, alternative_name) VALUES (?, ?, ?)',
-				array($pid,
-					$form['name'],
-					($form['alternative_name'] ? $form['alternative_name'] : NULL),
-				));
-			$form['id'] = $DB->GetLastInsertID('netdevicemodels');
+    if ($error) {
+        $obj->script("addClass(xajax.$('id_model_name'),'alert');");
+        $obj->script("xajax.$('id_model_name').focus();");
+    } else {
+        if ($formid) {
+            $DB->Execute(
+                'UPDATE netdevicemodels SET name = ?, alternative_name = ? WHERE id = ?',
+                array($form['name'],
+                    ($form['alternative_name'] ? $form['alternative_name'] : null),
+                    $formid,
+                )
+            );
+            $obj->script("xajax_cancel_model();");
+            $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
+        } else {
+            $DB->Execute(
+                'INSERT INTO netdevicemodels (netdeviceproducerid, name, alternative_name) VALUES (?, ?, ?)',
+                array($pid,
+                    $form['name'],
+                    ($form['alternative_name'] ? $form['alternative_name'] : null),
+                )
+            );
+            $form['id'] = $DB->GetLastInsertID('netdevicemodels');
 
-			$obj->script("xajax_cancel_model();");
-			$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
-		}
+            $obj->script("xajax_cancel_model();");
+            $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
+        }
 
-		$hook_data = $LMS->executeHook('netdevmodel_after_update',
-			array(
-				'netdevmodeldata' => $form,
-			)
-		);
-	}
+        $hook_data = $LMS->executeHook(
+            'netdevmodel_after_update',
+            array(
+                'netdevmodeldata' => $form,
+            )
+        );
+    }
 
-	return $obj;
+    return $obj;
 }
 
-function delete_model($id) {
-	global $LMS;
+function delete_model($id)
+{
+    global $LMS;
 
-	$DB = LMSDB::getInstance();
-	$obj = new xajaxResponse();
+    $DB = LMSDB::getInstance();
+    $obj = new xajaxResponse();
 
-	$id = intval($id);
+    $id = intval($id);
 
-	$pid = $DB->GetOne('SELECT p.id FROM netdevicemodels m
+    $pid = $DB->GetOne(
+        'SELECT p.id FROM netdevicemodels m
 		JOIN netdeviceproducers p ON (p.id = m.netdeviceproducerid) WHERE m.id = ?',
-		array($id));
+        array($id)
+    );
 
-	if (!$DB->GetOne('SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = ?', array($id))) {
+    if (!$DB->GetOne('SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = ?', array($id))) {
+        $hook_data = $LMS->executeHook(
+            'netdevmodel_validation_before_delete',
+            array(
+                'id' => $id,
+                'error' => array(),
+            )
+        );
+        $error = $hook_data['error'];
 
-		$hook_data = $LMS->executeHook('netdevmodel_validation_before_delete',
-			array(
-				'id' => $id,
-				'error' => array(),
-			)
-		);
-		$error = $hook_data['error'];
+        if (!$error) {
+            $result = $DB->Execute('DELETE FROM netdevicemodels WHERE id = ?', array($id));
 
-		if (!$error) {
-			$result = $DB->Execute('DELETE FROM netdevicemodels WHERE id = ?', array($id));
+            if ($result) {
+                $hook_data = $LMS->executeHook(
+                    'netdevmodel_after_delete',
+                    array(
+                        'id' => $id,
+                    )
+                );
+            }
+        }
+    }
 
-			if ($result)
-				$hook_data = $LMS->executeHook('netdevmodel_after_delete',
-					array(
-						'id' => $id,
-					)
-				);
-		}
-	}
+    $obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
 
-	$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
-
-	return $obj;
+    return $obj;
 }
 
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array(
-	'cancel_producer',
-	'add_producer',
-	'edit_producer',
-	'save_producer',
-	'delete_producer',
-	'cancel_model',
-	'add_model',
-	'edit_model',
-	'save_model',
-	'delete_model',
+    'cancel_producer',
+    'add_producer',
+    'edit_producer',
+    'save_producer',
+    'delete_producer',
+    'cancel_model',
+    'add_model',
+    'edit_model',
+    'save_model',
+    'delete_model',
 ));
 
 
-function GetModelList($pid = NULL) {
-	global $DB;
+function GetModelList($pid = null)
+{
+    global $DB;
 
-	if (!$pid)
-		return NULL;
+    if (!$pid) {
+        return null;
+    }
 
-	$list = $DB->GetAll('SELECT m.id, m.name, m.alternative_name,
+    $list = $DB->GetAll(
+        'SELECT m.id, m.name, m.alternative_name,
 			(SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = m.id) AS netdevcount
 			FROM netdevicemodels m
 			WHERE m.netdeviceproducerid = ?
 			ORDER BY m.name ASC',
-			array($pid));
+        array($pid)
+    );
 
-	if (!empty($list)) {
-		foreach ($list as &$model)
-			$model['customlinks'] = array();
-		unset($model);
-	}
+    if (!empty($list)) {
+        foreach ($list as &$model) {
+            $model['customlinks'] = array();
+        }
+        unset($model);
+    }
 
-	return $list;
+    return $list;
 }
 
 $modellist = GetModelList($pid);
@@ -406,29 +458,27 @@ $page = (!$_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.netdevmodel_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
-$SESSION->save('ndlpage',$page);
+$SESSION->save('ndlpage', $page);
 
 $hook_data = $LMS->executeHook(
-	'netdevmodels_before_display',
-	array(
-		'producerlist' => $producerlist,
-		'producerinfo' => $producerinfo,
-		'modellist' => $modellist,
-		'smarty' => $SMARTY,
-	)
+    'netdevmodels_before_display',
+    array(
+        'producerlist' => $producerlist,
+        'producerinfo' => $producerinfo,
+        'modellist' => $modellist,
+        'smarty' => $SMARTY,
+    )
 );
 $producerlist = $hook_data['producerlist'];
 $producerinfo = $hook_data['producerinfo'];
 $modellist = $hook_data['modellist'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('producerlist',$producerlist);
-$SMARTY->assign('modellist',$modellist);
-$SMARTY->assign('producerinfo',$producerinfo);
-$SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('page',$page);
-$SMARTY->assign('start',$start);
+$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('producerlist', $producerlist);
+$SMARTY->assign('modellist', $modellist);
+$SMARTY->assign('producerinfo', $producerinfo);
+$SMARTY->assign('pagelimit', $pagelimit);
+$SMARTY->assign('page', $page);
+$SMARTY->assign('start', $start);
 $SMARTY->display('netdev/netdevmodels.html');
-
-?>

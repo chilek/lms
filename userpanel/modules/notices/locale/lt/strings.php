@@ -30,5 +30,3 @@ $_LANG['Notices'] = 'Žinutės';
 $_LANG['Shows administrative notices'] = 'Rodo administracines žinutes';
 $_LANG['This module is for showing notices for your customer'] = 'Šis modulis rodo administracines žinutes skirtas Tavo klientui';
 $_LANG['We don\'t have any notices to you.'] = 'Neturi žinučių.';
-
-?>

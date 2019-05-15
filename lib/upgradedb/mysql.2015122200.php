@@ -24,19 +24,24 @@
  *  $Id$
  */
 
-function parse_address_2015122200($address) {
-	$address = trim($address);
-	if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z-]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<apartment>[0-9a-z]+)$/i', $address, $m)))
-		if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z-]*)$/i', $address, $m))) {
-			$res = preg_match('/^(?<street>.+)$/i', $address, $m);
-			if (!$res)
-				return null;
-	}
-	$res = array();
-	foreach ($m as $key => $value)
-		if (is_string($key))
-			$res[$key] = $value;
-	return $res;
+function parse_address_2015122200($address)
+{
+    $address = trim($address);
+    if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z-]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<apartment>[0-9a-z]+)$/i', $address, $m))) {
+        if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z-]*)$/i', $address, $m))) {
+            $res = preg_match('/^(?<street>.+)$/i', $address, $m);
+            if (!$res) {
+                return null;
+            }
+        }
+    }
+    $res = array();
+    foreach ($m as $key => $value) {
+        if (is_string($key)) {
+            $res[$key] = $value;
+        }
+    }
+    return $res;
 }
 
 $this->BeginTrans();
@@ -51,32 +56,39 @@ $this->Execute("ALTER TABLE customers ADD COLUMN post_building varchar(20) DEFAU
 $this->Execute("ALTER TABLE customers ADD COLUMN post_apartment varchar(20) DEFAULT NULL");
 
 $customers = $this->GetAll("SELECT id, address, post_address FROM customers");
-if (!empty($customers))
-	foreach ($customers as $customer) {
-		$args = array();
-		if (!empty($customer['address'])) {
-			$address = parse_address_2015122200($customer['address']);
-			if (!empty($address))
-				foreach (array('street', 'building', 'apartment') as $idx) {
-					if (array_key_exists($idx, $address))
-						$args[$idx] = $address[$idx];
-				}
-			else
-				$args['street'] = $customer['address'];
-		}
-		if (!empty($customer['post_address'])) {
-			$address = parse_address_2015122200($customer['post_address']);
-			if (!empty($address))
-				foreach (array('street', 'building', 'apartment') as $idx) {
-					if (array_key_exists($idx, $address))
-						$args['post_' . $idx] = $address[$idx];
-				}
-			else
-				$args['post_street'] = $customer['post_address'];
-		}
-		$this->Execute("UPDATE customers SET " . implode(' = ?, ', array_keys($args)) . " = ? WHERE id = ?",
-			array_merge($args, array('id' => $customer['id'])));
-	}
+if (!empty($customers)) {
+    foreach ($customers as $customer) {
+        $args = array();
+        if (!empty($customer['address'])) {
+            $address = parse_address_2015122200($customer['address']);
+            if (!empty($address)) {
+                foreach (array('street', 'building', 'apartment') as $idx) {
+                    if (array_key_exists($idx, $address)) {
+                        $args[$idx] = $address[$idx];
+                    }
+                }
+            } else {
+                $args['street'] = $customer['address'];
+            }
+        }
+        if (!empty($customer['post_address'])) {
+            $address = parse_address_2015122200($customer['post_address']);
+            if (!empty($address)) {
+                foreach (array('street', 'building', 'apartment') as $idx) {
+                    if (array_key_exists($idx, $address)) {
+                        $args['post_' . $idx] = $address[$idx];
+                    }
+                }
+            } else {
+                $args['post_street'] = $customer['post_address'];
+            }
+        }
+        $this->Execute(
+            "UPDATE customers SET " . implode(' = ?, ', array_keys($args)) . " = ? WHERE id = ?",
+            array_merge($args, array('id' => $customer['id']))
+        );
+    }
+}
 
 $this->Execute("ALTER TABLE customers DROP COLUMN address");
 $this->Execute("ALTER TABLE customers DROP COLUMN post_address");
@@ -115,5 +127,3 @@ $this->Execute("CREATE VIEW customeraddressview AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

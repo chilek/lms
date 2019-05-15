@@ -32,18 +32,19 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : DIRECTORY_SEPARATOR . 'etc
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 
-ini_set('session.name','LMSSESSIONID');
+ini_set('session.name', 'LMSSESSIONID');
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // find alternative config files:
-if (is_readable('lms.ini'))
-	$CONFIG_FILE = 'lms.ini';
-elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini'))
-	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
-elseif (is_readable('..' . DIRECTORY_SEPARATOR .'lms.ini'))
-	$CONFIG_FILE = '..' . DIRECTORY_SEPARATOR .'lms.ini';
-elseif (!is_readable($CONFIG_FILE))
-	die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+if (is_readable('lms.ini')) {
+    $CONFIG_FILE = 'lms.ini';
+} elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
+} elseif (is_readable('..' . DIRECTORY_SEPARATOR .'lms.ini')) {
+    $CONFIG_FILE = '..' . DIRECTORY_SEPARATOR .'lms.ini';
+} elseif (!is_readable($CONFIG_FILE)) {
+    die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -93,11 +94,11 @@ require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!<BR>");
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!<BR>");
 }
 
 // Initialize templates engine (must be before locale settings)
@@ -105,13 +106,15 @@ $SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
-if (constant('Smarty::SMARTY_VERSION'))
-	$ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
-else
-	$ver_chunks = NULL;
+if (constant('Smarty::SMARTY_VERSION')) {
+    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+} else {
+    $ver_chunks = null;
+}
 
-if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0)
-	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
+if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+    die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.0.</B>');
+}
 
 define('SMARTY_VERSION', $ver_chunks[0]);
 
@@ -120,8 +123,7 @@ $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Redirect to SSL
 $_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
-if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
-{
+if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
      header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
      exit(0);
 }
@@ -134,10 +136,11 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
-$AUTH = NULL;
+$AUTH = null;
 $SYSLOG = SYSLOG::getInstance();
-if ($SYSLOG)
-	$SYSLOG->NewTransaction('userpanel');
+if ($SYSLOG) {
+    $SYSLOG->NewTransaction('userpanel');
+}
 
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
@@ -156,10 +159,13 @@ $SMARTY->setPluginManager($plugin_manager);
 
 // Load plugin files and register hook callbacks
 $plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
-if (!empty($plugins))
-	foreach ($plugins as $plugin_name => $plugin)
-		if ($plugin['enabled'])
-			require(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin_name . '.php');
+if (!empty($plugins)) {
+    foreach ($plugins as $plugin_name => $plugin) {
+        if ($plugin['enabled']) {
+            require(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin_name . '.php');
+        }
+    }
+}
 
 $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION);
@@ -169,28 +175,32 @@ $LMS->lang = $_language;
 // Initialize modules
 
 $enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
-if (!is_null($enabled_modules))
-	$enabled_modules = explode(',', $enabled_modules);
+if (!is_null($enabled_modules)) {
+    $enabled_modules = explode(',', $enabled_modules);
+}
 
 $modules_dirs = array(USERPANEL_MODULES_DIR);
 $modules_dirs = $plugin_manager->executeHook('userpanel_modules_dir_initialized', $modules_dirs);
 
 foreach ($modules_dirs as $suspected_module_dir) {
-	$dh  = opendir($suspected_module_dir);
-	while (false !== ($filename = readdir($dh))) {
-		if ((is_null($enabled_modules) || in_array($filename, $enabled_modules)) && (preg_match('/^[a-zA-Z0-9]/',$filename))
-			&& (is_dir($suspected_module_dir . $filename)) && file_exists($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php')) {
-				@include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
-				include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php');
-				if (is_dir($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
-					$plugins = glob($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . '*.php');
-					if (!empty($plugins))
-						foreach ($plugins as $plugin_name)
-							if (is_readable($plugin_name))
-								include($plugin_name);
-				}
-		}
-	}
+    $dh  = opendir($suspected_module_dir);
+    while (false !== ($filename = readdir($dh))) {
+        if ((is_null($enabled_modules) || in_array($filename, $enabled_modules)) && (preg_match('/^[a-zA-Z0-9]/', $filename))
+            && (is_dir($suspected_module_dir . $filename)) && file_exists($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php')) {
+                @include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
+                include($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'configuration.php');
+            if (is_dir($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
+                $plugins = glob($suspected_module_dir . $filename . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . '*.php');
+                if (!empty($plugins)) {
+                    foreach ($plugins as $plugin_name) {
+                        if (is_readable($plugin_name)) {
+                            include($plugin_name);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
@@ -199,8 +209,8 @@ $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->setTemplateDir(null);
 $style = ConfigHelper::getConfig('userpanel.style', 'default');
 $SMARTY->addTemplateDir(array(
-	USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR .  $style . DIRECTORY_SEPARATOR . 'templates',
-	USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates',
+    USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR .  $style . DIRECTORY_SEPARATOR . 'templates',
+    USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates',
 ));
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
@@ -224,90 +234,80 @@ $plugin_manager->executeHook('userpanel_lms_initialized', $LMS);
 
 $plugin_manager->executeHook('userpanel_smarty_initialized', $SMARTY);
 
-if($SESSION->islogged)
-{
-	$module = isset($_GET['m']) ? $_GET['m'] : '';
+if ($SESSION->islogged) {
+    $module = isset($_GET['m']) ? $_GET['m'] : '';
 
-	if (isset($USERPANEL->MODULES[$module])) $USERPANEL->MODULES[$module]['selected'] = true;
+    if (isset($USERPANEL->MODULES[$module])) {
+        $USERPANEL->MODULES[$module]['selected'] = true;
+    }
 
-	// Userpanel rights module
-	$rights = $USERPANEL->GetCustomerRights($SESSION->id);
-	$SMARTY->assign('rights', $rights);
+    // Userpanel rights module
+    $rights = $USERPANEL->GetCustomerRights($SESSION->id);
+    $SMARTY->assign('rights', $rights);
 
-	if(ConfigHelper::checkConfig('userpanel.hide_nodes_modules'))
-	{
-		if(!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
-		{
-			unset($USERPANEL->MODULES['notices']);
-			unset($USERPANEL->MODULES['stats']);
-		}
-	}
-
-	// Userpanel popup for urgent notice
-	$res = $LMS->ExecHook('userpanel_module_call_before');
-
-	$LMS->executeHook('userpanel_' . $module . '_on_load');
-
-	$module_dir = null;
-	foreach ($modules_dirs as $suspected_module_dir)
-		if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
-			&& isset($USERPANEL->MODULES[$module])) {
-			$module_dir = $suspected_module_dir;
-			break;
-		}
-
-	if ($module_dir !== null) {
-    		include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
-
-		$function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';
-		if (function_exists('module_'.$function)) 
-		{
-		    $to_execute = 'module_'.$function;
-			$layout['userpanel_module'] = $module;
-			$layout['userpanel_function'] = $function;
-		    $to_execute();
-		} else {
-    		    $layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);
-    		    $SMARTY->display('error.html');
-		}
+    if (ConfigHelper::checkConfig('userpanel.hide_nodes_modules')) {
+        if (!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id))) {
+            unset($USERPANEL->MODULES['notices']);
+            unset($USERPANEL->MODULES['stats']);
         }
+    }
+
+    // Userpanel popup for urgent notice
+    $res = $LMS->ExecHook('userpanel_module_call_before');
+
+    $LMS->executeHook('userpanel_' . $module . '_on_load');
+
+    $module_dir = null;
+    foreach ($modules_dirs as $suspected_module_dir) {
+        if (file_exists($suspected_module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php')
+            && isset($USERPANEL->MODULES[$module])) {
+            $module_dir = $suspected_module_dir;
+            break;
+        }
+    }
+
+    if ($module_dir !== null) {
+            include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
+
+        $function = isset($_GET['f']) && $_GET['f']!='' ? $_GET['f'] : 'main';
+        if (function_exists('module_'.$function)) {
+            $to_execute = 'module_'.$function;
+            $layout['userpanel_module'] = $module;
+            $layout['userpanel_function'] = $function;
+            $to_execute();
+        } else {
+                $layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);
+                $SMARTY->display('error.html');
+        }
+    }
         // if no module selected, redirect on module with lowest prio
-	elseif ($module=='')
-        {
-		$redirectmodule = 'nomodulesfound';
-		$redirectprio = 999;
-		foreach ($USERPANEL->MODULES as $menupos)
-		    if ($redirectprio > $menupos['prio']) 
-		    {
-			$redirectmodule = $menupos['module'];
-			$redirectprio = $menupos['prio'];
-		    }
-		if ($redirectmodule == 'nomodulesfound') 
-		{
-    		    $layout['error'] = trans('No modules found!');
-    		    $SMARTY->display('error.html');
-		} 
-		else
-		{
-		    header('Location: ?m='.$redirectmodule);
-		}
+    elseif ($module=='') {
+        $redirectmodule = 'nomodulesfound';
+        $redirectprio = 999;
+        foreach ($USERPANEL->MODULES as $menupos) {
+            if ($redirectprio > $menupos['prio']) {
+                $redirectmodule = $menupos['module'];
+                $redirectprio = $menupos['prio'];
+            }
         }
-        else
-        {
-    		$layout['error'] = trans('Module <b>$a</b> not found!', $module);
-    		$SMARTY->display('error.html');
-    	}
+        if ($redirectmodule == 'nomodulesfound') {
+                $layout['error'] = trans('No modules found!');
+                $SMARTY->display('error.html');
+        } else {
+            header('Location: ?m='.$redirectmodule);
+        }
+    } else {
+        $layout['error'] = trans('Module <b>$a</b> not found!', $module);
+        $SMARTY->display('error.html');
+    }
 
-        if(!isset($_SESSION['lastmodule']) || $_SESSION['lastmodule'] != $module)
-    		$_SESSION['lastmodule'] = $module;
-}
-else
-{
+    if (!isset($_SESSION['lastmodule']) || $_SESSION['lastmodule'] != $module) {
+        $_SESSION['lastmodule'] = $module;
+    }
+} else {
         $SMARTY->assign('error', $SESSION->error);
-        $SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
+        $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
         $SMARTY->display('login.html');
 }
 
 $DB->Destroy();
-
-?>

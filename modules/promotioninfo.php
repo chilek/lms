@@ -25,23 +25,28 @@
  */
 
 
-$promotion = $DB->GetRow('SELECT * FROM promotions WHERE id = ?',
-    array(intval($_GET['id'])));
+$promotion = $DB->GetRow(
+    'SELECT * FROM promotions WHERE id = ?',
+    array(intval($_GET['id']))
+);
 
-if(!$promotion)
-{
-	$SESSION->redirect('?m=promotionlist');
+if (!$promotion) {
+    $SESSION->redirect('?m=promotionlist');
 }
 
-$promotion['schemas'] = $DB->GetAllByKey('SELECT
+$promotion['schemas'] = $DB->GetAllByKey(
+    'SELECT
     s.name, s.disabled, s.description, s.id
     FROM promotionschemas s WHERE s.promotionid = ?
-    ORDER BY name', 'id',
-    array($promotion['id']));
+    ORDER BY name',
+    'id',
+    array($promotion['id'])
+);
 
 if (!empty($promotion['schemas'])) {
     $schemas = implode(', ', array_keys($promotion['schemas']));
-    $promotion['tariffs'] = $DB->GetAll('SELECT
+    $promotion['tariffs'] = $DB->GetAll(
+        'SELECT
         t.name, t.id, t.value, t.upceil, t.downceil
         FROM tariffs t
         WHERE t.id IN (SELECT DISTINCT tariffid
@@ -49,7 +54,8 @@ if (!empty($promotion['schemas'])) {
             WHERE promotionschemaid IN ('.$schemas.')
         )
         ORDER BY t.name, t.value DESC',
-        array($promotion['id']));
+        array($promotion['id'])
+    );
 }
 
 $layout['pagetitle'] = trans('Promotion Info: $a', $promotion['name']);
@@ -58,5 +64,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('promotion', $promotion);
 $SMARTY->display('promotion/promotioninfo.html');
-
-?>

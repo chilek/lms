@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE netradiosectors ALTER COLUMN frequency TYPE numeric(
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

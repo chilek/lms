@@ -32,8 +32,6 @@ $list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, va.location
 	WHERE n.id <> " . intval($_GET['id']) . " ORDER BY NAME");
 $list['total'] = count($list);
 
-$SMARTY->assign('netdevlist',$list);
-$SMARTY->assign('objectid',$_GET['id']);
+$SMARTY->assign('netdevlist', $list);
+$SMARTY->assign('objectid', $_GET['id']);
 $SMARTY->display('choose/choosenetdevreplace.html');
-
-?>

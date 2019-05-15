@@ -27,17 +27,17 @@
 $id = intval($_GET['id']);
 
 if ($id) {
-	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
-		return;
+    if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser')) {
+        return;
+    }
 
-	if ($LMS->isArchiveDocument($id))
-		return;
+    if ($LMS->isArchiveDocument($id)) {
+        return;
+    }
 
-	$DB->BeginTrans();
-	$LMS->DebitNoteDelete($id);
-	$DB->CommitTrans();
+    $DB->BeginTrans();
+    $LMS->DebitNoteDelete($id);
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect('?m=notelist');
-
-?>

@@ -25,23 +25,21 @@
  */
 
 if (isset($_GET['id'])) {
-	$id = intval($_GET['id']);
-	if ($id) {
-		$DB->BeginTrans();
-		$DB->Execute('DELETE FROM messageitems WHERE messageid = ?', array($id));
-		$DB->Execute('DELETE FROM messages WHERE id = ?', array($id));
-		$DB->CommitTrans();
-	}
+    $id = intval($_GET['id']);
+    if ($id) {
+        $DB->BeginTrans();
+        $DB->Execute('DELETE FROM messageitems WHERE messageid = ?', array($id));
+        $DB->Execute('DELETE FROM messages WHERE id = ?', array($id));
+        $DB->CommitTrans();
+    }
 } elseif (isset($_POST['marks'])) {
-	$ids = implode(',', Utils::filterIntegers($_POST['marks']));
-	if (!empty($ids)) {
-		$DB->BeginTrans();
-		$DB->Execute('DELETE FROM messageitems WHERE messageid IN (' . $ids . ')');
-		$DB->Execute('DELETE FROM messages WHERE id IN (' . $ids . ')');
-		$DB->CommitTrans();
-	}
+    $ids = implode(',', Utils::filterIntegers($_POST['marks']));
+    if (!empty($ids)) {
+        $DB->BeginTrans();
+        $DB->Execute('DELETE FROM messageitems WHERE messageid IN (' . $ids . ')');
+        $DB->Execute('DELETE FROM messages WHERE id IN (' . $ids . ')');
+        $DB->CommitTrans();
+    }
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

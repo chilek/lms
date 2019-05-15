@@ -29,24 +29,25 @@ $to = $_POST['to'];
 
 // date format 'yyyy/mm/dd'
 if ($from) {
-	list ($year, $month, $day) = explode('/', $from);
-	$unixfrom = mktime(0,0,0, $month, $day, $year);
+    list ($year, $month, $day) = explode('/', $from);
+    $unixfrom = mktime(0, 0, 0, $month, $day, $year);
 } else {
-	$from = date('Y/m/d',time());
-	$unixfrom = mktime(0,0,0); //today
+    $from = date('Y/m/d', time());
+    $unixfrom = mktime(0, 0, 0); //today
 }
 if ($to) {
-	list ($year, $month, $day) = explode('/',$to);
-	$unixto = mktime(23,59,59, $month, $day, $year);
+    list ($year, $month, $day) = explode('/', $to);
+    $unixto = mktime(23, 59, 59, $month, $day, $year);
 } else {
-	$to = date('Y/m/d',time());
-	$unixto = mktime(23,59,59); //today
+    $to = date('Y/m/d', time());
+    $unixto = mktime(23, 59, 59); //today
 }
 
-if (isset($_POST['brutto']))
-	$value_formula = 'cash.value';
-else
-	$value_formula = '(cash.value * 100) / (100 + t.value)';
+if (isset($_POST['brutto'])) {
+    $value_formula = 'cash.value';
+} else {
+    $value_formula = '(cash.value * 100) / (100 + t.value)';
+}
 
 $income = $DB->GetAll('
 	SELECT cash.linktechnology AS technology,
@@ -64,9 +65,11 @@ $income = $DB->GetAll('
 	ORDER BY cash.linktechnology', array($unixfrom, $unixto));
 
 $linktechnologies = array();
-foreach ($LINKTECHNOLOGIES as $technologies)
-	foreach ($technologies as $techid => $techlabel)
-		$linktechnologies[$techid] = $techlabel;
+foreach ($LINKTECHNOLOGIES as $technologies) {
+    foreach ($technologies as $techid => $techlabel) {
+        $linktechnologies[$techid] = $techlabel;
+    }
+}
 
 $layout['pagetitle'] = trans('UKE income report for period $a - $b', $from, $to);
 

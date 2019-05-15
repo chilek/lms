@@ -24,11 +24,10 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Helpdesk'),	// Display name
-		    'helpdesk',		// Module name - must be the same as directory name
-		    trans('Allows you to contact with network administrator'), // Tip 
-		    70,			// Priority
-		    trans('This module allows your customers to contact with you')	// Description
-		    );
-
-?>
+$USERPANEL->AddModule(
+    trans('Helpdesk'),    // Display name
+    'helpdesk',     // Module name - must be the same as directory name
+    trans('Allows you to contact with network administrator'), // Tip
+    70,         // Priority
+    trans('This module allows your customers to contact with you')  // Description
+);

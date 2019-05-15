@@ -28,6 +28,4 @@ $this->Execute("ALTER TABLE rtmessages ADD userid INT(11) DEFAULT '0' NOT NULL")
 $this->Execute("ALTER TABLE rtmessages CHANGE sender adminid INT(11) DEFAULT '0' NOT NULL");
 $this->Execute("ALTER TABLE rtqueues DROP INDEX email");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004071200', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004071200', 'dbversion'));

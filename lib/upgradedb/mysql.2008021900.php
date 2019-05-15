@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE passwd ADD mail_forward varchar(255) NOT NULL DEFAUL
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021900', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

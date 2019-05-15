@@ -24,41 +24,43 @@
  *  $Id$
  */
 
-function smarty_function_event_time_selection($params, $template) {
-	$field_prefix = isset($params['field_prefix']) ? $params['field_prefix'] : 'event';
-	$begin = isset($params['begin']) ? $params['begin'] : '';
-	$end = isset($params['end']) ? $params['end'] : '';
-	$whole_days = isset($params['wholedays']) && $params['wholedays'];
+function smarty_function_event_time_selection($params, $template)
+{
+    $field_prefix = isset($params['field_prefix']) ? $params['field_prefix'] : 'event';
+    $begin = isset($params['begin']) ? $params['begin'] : '';
+    $end = isset($params['end']) ? $params['end'] : '';
+    $whole_days = isset($params['wholedays']) && $params['wholedays'];
 
-	$legend_code = '<div class="lms-ui-event-time-legend">';
-	for ($i = 0; $i <= 22; $i += 2)
-		$legend_code .= '<div class="lms-ui-event-time-legend-label">' . sprintf('%02d', $i) . ':00 &#8212;</div>
+    $legend_code = '<div class="lms-ui-event-time-legend">';
+    for ($i = 0; $i <= 22; $i += 2) {
+        $legend_code .= '<div class="lms-ui-event-time-legend-label">' . sprintf('%02d', $i) . ':00 &#8212;</div>
 						<div class="lms-ui-event-time-legend-scale">-</div>';
-	$legend_code .= '</div>';
+    }
+    $legend_code .= '</div>';
 
-	return '
+    return '
 		<div class="lms-ui-event-time-container">
 			<div class="lms-ui-event-time-top-panel">
 				<div class="lms-ui-event-time-period">
 					<div class="lms-ui-event-time-date">
 						' . trans("Begin:") . ' <INPUT type="text" id="event-start" placeholder="' . trans("yyyy/mm/dd hh:mm")
-							. '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
-							Utils::tip(array(
-								'class' => 'calendar-time',
-								'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-								'trigger' => 'begin',
-							), $template)
-							. ' required>
+                            . '" name="' . $field_prefix . '[begin]" value="' . $begin . '" size="14" ' .
+                            Utils::tip(array(
+                                'class' => 'calendar-time',
+                                'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+                                'trigger' => 'begin',
+                            ), $template)
+                            . ' required>
 					</div>
 					<div class="lms-ui-event-time-date">
 						' . trans("End:") . ' <INPUT type="text" id="event-end" placeholder="' . trans("yyyy/mm/dd hh:mm")
-							. '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
-							Utils::tip(array(
-								'class' => 'calendar-time',
-								'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
-								'trigger' => 'end',
-							), $template)
-							. '>
+                            . '" name="' . $field_prefix . '[end]" value="' . $end . '" size="14" ' .
+                            Utils::tip(array(
+                                'class' => 'calendar-time',
+                                'text' => 'Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar',
+                                'trigger' => 'end',
+                            ), $template)
+                            . '>
 					</div>
 				</div>
 				<div class="lms-ui-event-whole-days">
@@ -70,8 +72,8 @@ function smarty_function_event_time_selection($params, $template) {
 				</div>
 			</div>
 			<div class="lms-ui-event-time-bottom-panel">'
-				. $legend_code .
-				'<div class="lms-ui-event-time-slider"></div>
+                . $legend_code .
+                '<div class="lms-ui-event-time-slider"></div>
 			</div>
 		</div>
 		<script>

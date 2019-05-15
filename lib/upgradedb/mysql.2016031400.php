@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE tariffs ADD FOREIGN KEY (numberplanid) REFERENCES nu
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016031400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

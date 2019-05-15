@@ -36,35 +36,36 @@ ini_set('error_reporting', E_ALL&~E_NOTICE);
 define('XVALUE', 100);
 
 $parameters = array(
-	'C:' => 'config-file:',
-	'q' => 'quiet',
-	'h' => 'help',
-	'v' => 'version',
+    'C:' => 'config-file:',
+    'q' => 'quiet',
+    'h' => 'help',
+    'v' => 'version',
 );
 
 foreach ($parameters as $key => $val) {
-	$val = preg_replace('/:/', '', $val);
-	$newkey = preg_replace('/:/', '', $key);
-	$short_to_longs[$newkey] = $val;
+    $val = preg_replace('/:/', '', $val);
+    $newkey = preg_replace('/:/', '', $key);
+    $short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options)) {
-		$options[$long] = $options[$short];
-		unset($options[$short]);
-	}
+foreach ($short_to_longs as $short => $long) {
+    if (array_key_exists($short, $options)) {
+        $options[$long] = $options[$short];
+        unset($options[$short]);
+    }
+}
 
 if (array_key_exists('version', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-maketcnew.php
 (C) 2001-2017 LMS Developers
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 if (array_key_exists('help', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-maketcnew.php
 (C) 2001-2017 LMS Developers
 
@@ -74,30 +75,33 @@ lms-maketcnew.php
 -q, --quiet                     suppress any output, except errors;
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
-	print <<<EOF
+    print <<<EOF
 lms-maketcnew.php
 (C) 2001-2017 LMS Developers
 
 EOF;
 }
 
-if (array_key_exists('config-file', $options))
-	$CONFIG_FILE = $options['config-file'];
-else
-	$CONFIG_FILE = '/etc/lms/lms.ini';
+if (array_key_exists('config-file', $options)) {
+    $CONFIG_FILE = $options['config-file'];
+} else {
+    $CONFIG_FILE = '/etc/lms/lms.ini';
+}
 
-if (!$quiet)
-	echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
+if (!$quiet) {
+    echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
-if (!is_readable($CONFIG_FILE))
-	die('Unable to read configuration file [' . $CONFIG_FILE . ']!' . PHP_EOL);
+if (!is_readable($CONFIG_FILE)) {
+    die('Unable to read configuration file [' . $CONFIG_FILE . ']!' . PHP_EOL);
+}
 
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
@@ -111,9 +115,9 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
-	require_once $composer_autoload_path;
+    require_once $composer_autoload_path;
 } else {
-	die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -121,11 +125,11 @@ if (file_exists($composer_autoload_path)) {
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't work without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't work without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
@@ -171,30 +175,35 @@ $networks = preg_split('/(\s+|\s*,\s*)/', $networks, -1, PREG_SPLIT_NO_EMPTY);
 $excluded_networks = ConfigHelper::getConfig('tcnew.excluded_networks', '', true);
 $excluded_networks = preg_split('/(\s+|\s*,\s*)/', $excluded_networks, -1, PREG_SPLIT_NO_EMPTY);
 
-if (empty($networks))
-	$networks = array_diff($existing_networks, $excluded_networks);
-else
-	$networks = array_intersect(array_diff($networks, $excluded_networks), $existing_networks);
+if (empty($networks)) {
+    $networks = array_diff($existing_networks, $excluded_networks);
+} else {
+    $networks = array_intersect(array_diff($networks, $excluded_networks), $existing_networks);
+}
 
-$networks = $DB->GetAllByKey("SELECT id, name, address, mask, interface FROM networks"
-	. (empty($networks) ? '' : " WHERE UPPER(name) IN ('" . implode("','", array_map('mb_strtoupper', $networks)) . "')"),
-	'id');
+$networks = $DB->GetAllByKey(
+    "SELECT id, name, address, mask, interface FROM networks"
+    . (empty($networks) ? '' : " WHERE UPPER(name) IN ('" . implode("','", array_map('mb_strtoupper', $networks)) . "')"),
+    'id'
+);
 
 // customer groups
 $customergroups = ConfigHelper::getConfig('tcnew.customergroups', '', true);
 $customergroups = preg_split('/(\s+|\s*,\s*)/', $customergroups, -1, PREG_SPLIT_NO_EMPTY);
-if (empty($customergroups))
-	$customerids = array();
-else
-	$customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM customerassignments a
+if (empty($customergroups)) {
+    $customerids = array();
+} else {
+    $customerids = $DB->GetRow("SELECT DISTINCT a.customerid FROM customerassignments a
 		JOIN customergroups g ON g.id = a.customergroupid
 		WHERE UPPER(g.name) IN ('" . implode("','", array_map('mb_strtoupper', $customergroups)) . "')");
+}
 
 // nodes
-if ($all_assignments)
-	$query = '(';
-else
-	$query = '';
+if ($all_assignments) {
+    $query = '(';
+} else {
+    $query = '';
+}
 
 $query .= "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS uprate, t.upceil AS upceil,
 	(CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) AS downrate_n,
@@ -221,10 +230,10 @@ $query .= "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS up
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
 		AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
-		. (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")");
+        . (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")");
 
-if ($all_assignments)
-	$query .= ") UNION (
+if ($all_assignments) {
+    $query .= ") UNION (
 	SELECT t.downrate, t.downceil, t.uprate, t.upceil,
 		(CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) AS downrate_n,
 		(CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) AS downceil_n,
@@ -259,124 +268,131 @@ if ($all_assignments)
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
 		AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
-		. (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")") . "
+        . (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")") . "
 	) ORDER BY customerid, assignmentid";
-else
-	$query .= " ORDER BY a.customerid, na.assignmentid";
+} else {
+    $query .= " ORDER BY a.customerid, na.assignmentid";
+}
 
 $nodes = $DB->GetAll($query);
-if (empty($nodes))
-	die("Unable to read database or assignments table is empty!" . PHP_EOL);
+if (empty($nodes)) {
+    die("Unable to read database or assignments table is empty!" . PHP_EOL);
+}
 
 // adding nodes to channels array
 $channels = array();
 foreach ($nodes as $node) {
-	$assignmentid = $node['assignmentid'];
-	$ip = $node['ip'];
-	$inet = ip_long($ip);
-	$networkid = $node['netid'];
+    $assignmentid = $node['assignmentid'];
+    $ip = $node['ip'];
+    $inet = ip_long($ip);
+    $networkid = $node['netid'];
 
-	// looking for channel
-	$j = 0; $channelfound = false;
-	foreach ($channels as $key => $channel) {
-		$j = $key;
-		if ($channel['id'] == $assignmentid) {
-			$channelfound = true;
-			break;
-		}
-	}
+    // looking for channel
+    $j = 0;
+    $channelfound = false;
+    foreach ($channels as $key => $channel) {
+        $j = $key;
+        if ($channel['id'] == $assignmentid) {
+            $channelfound = true;
+            break;
+        }
+    }
 
-	list ($uprate, $downrate, $upceil, $downceil, $uprate_n, $downrate_n, $upceil_n, $downceil_n,
-		$climit, $plimit, $nodeid) =
-		array($node['uprate'], $node['downrate'], $node['upceil'], $node['downceil'],
-			$node['uprate_n'], $node['downrate_n'], $node['upceil_n'], $node['downceil_n'],
-			$node['climit'], $node['plimit'], $node['id']);
+    list ($uprate, $downrate, $upceil, $downceil, $uprate_n, $downrate_n, $upceil_n, $downceil_n,
+        $climit, $plimit, $nodeid) =
+        array($node['uprate'], $node['downrate'], $node['upceil'], $node['downceil'],
+            $node['uprate_n'], $node['downrate_n'], $node['upceil_n'], $node['downceil_n'],
+            $node['climit'], $node['plimit'], $node['id']);
 
-	if (!$channelfound) { // channel (assignment) not found
-		// mozliwe ze komputer jest juz przypisany do innego
-		// zobowiazania, uwzgledniamy to...
-		$j = 0; $channelfound = false;
-		foreach ($channels as $chankey => $channel) {
-			$j = $chankey;
-			$x = 0; $nodefound = false;
-			foreach ($channel['nodes'] as $nodekey => $chnode) {
-				$x = $nodekey;
-				if ($chnode['id'] == $nodeid) {
-					$nodefound = true;
-					break;
-				}
-			}
-			if ($nodefound) {
-				$channelfound = true;
-				break;
-			}
-		}
+    if (!$channelfound) { // channel (assignment) not found
+        // mozliwe ze komputer jest juz przypisany do innego
+        // zobowiazania, uwzgledniamy to...
+        $j = 0;
+        $channelfound = false;
+        foreach ($channels as $chankey => $channel) {
+            $j = $chankey;
+            $x = 0;
+            $nodefound = false;
+            foreach ($channel['nodes'] as $nodekey => $chnode) {
+                $x = $nodekey;
+                if ($chnode['id'] == $nodeid) {
+                    $nodefound = true;
+                    break;
+                }
+            }
+            if ($nodefound) {
+                $channelfound = true;
+                break;
+            }
+        }
 
-		// ...komputer znaleziony, sprawdzmy czy kanal nie
-		// zawiera juz tego zobowiazania
-		if ($channelfound) {
-			$y = 0; $subfound = false;
-			foreach ($channels[$j]['subs'] as $subkey => $sub) {
-				$y = $subkey;
-				if ($sub == $assignmentid) {
-					$subfound = true;
-					break;
-				}
-			}
+        // ...komputer znaleziony, sprawdzmy czy kanal nie
+        // zawiera juz tego zobowiazania
+        if ($channelfound) {
+            $y = 0;
+            $subfound = false;
+            foreach ($channels[$j]['subs'] as $subkey => $sub) {
+                $y = $subkey;
+                if ($sub == $assignmentid) {
+                    $subfound = true;
+                    break;
+                }
+            }
 
-			// zobowiazanie nie znalezione, zwiekszamy kanal
-			if (!$subfound) {
-				$channels[$j]['uprate'] += $uprate;
-				$channels[$j]['upceil'] += $upceil;
-				$channels[$j]['downrate'] += $downrate;
-				$channels[$j]['downceil'] += $downceil;
-				$channels[$j]['uprate_n'] += $uprate_n;
-				$channels[$j]['upceil_n'] += $upceil_n;
-				$channels[$j]['downrate_n'] += $downrate_n;
-				$channels[$j]['downceil_n'] += $downceil_n;
-				$channels[$j]['climit'] += $climit;
-				$channels[$j]['plimit'] += $plimit;
+            // zobowiazanie nie znalezione, zwiekszamy kanal
+            if (!$subfound) {
+                $channels[$j]['uprate'] += $uprate;
+                $channels[$j]['upceil'] += $upceil;
+                $channels[$j]['downrate'] += $downrate;
+                $channels[$j]['downceil'] += $downceil;
+                $channels[$j]['uprate_n'] += $uprate_n;
+                $channels[$j]['upceil_n'] += $upceil_n;
+                $channels[$j]['downrate_n'] += $downrate_n;
+                $channels[$j]['downceil_n'] += $downceil_n;
+                $channels[$j]['climit'] += $climit;
+                $channels[$j]['plimit'] += $plimit;
 
-				$channels[$j]['subs'][] = $assignmentid;
-			}
+                $channels[$j]['subs'][] = $assignmentid;
+            }
 
-			continue;
-		}
+            continue;
+        }
 
-		// ...nie znaleziono komputera, tworzymy kanal
-		$channels[] = array('id' => $assignmentid, 'nodes' => array(), 'subs' => array(),
-			'cid' => $node['ownerid'], 'customer' => $node['customer'],
-			'uprate' => $uprate, 'upceil' => $upceil,
-			'downrate' => $downrate, 'downceil' => $downceil,
-			'uprate_n' => $uprate_n, 'upceil_n' => $upceil_n,
-			'downrate_n' => $downrate_n, 'downceil_n' => $downceil_n,
-			'climit' => $climit, 'plimit' => $plimit);
-		$j = count($channels) - 1;
-	}
+        // ...nie znaleziono komputera, tworzymy kanal
+        $channels[] = array('id' => $assignmentid, 'nodes' => array(), 'subs' => array(),
+            'cid' => $node['ownerid'], 'customer' => $node['customer'],
+            'uprate' => $uprate, 'upceil' => $upceil,
+            'downrate' => $downrate, 'downceil' => $downceil,
+            'uprate_n' => $uprate_n, 'upceil_n' => $upceil_n,
+            'downrate_n' => $downrate_n, 'downceil_n' => $downceil_n,
+            'climit' => $climit, 'plimit' => $plimit);
+        $j = count($channels) - 1;
+    }
 
-	$channels[$j]['nodes'][] = array('id' => $nodeid, 'network' => $networkid, 'ip' => $ip,
-		'name' => $node['name'], 'mac' => $node['mac']);
+    $channels[$j]['nodes'][] = array('id' => $nodeid, 'network' => $networkid, 'ip' => $ip,
+        'name' => $node['name'], 'mac' => $node['mac']);
 }
 
 if ($create_device_channels) {
-	$devices = $DB->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ip, n.name, n.mac, n.netid
+    $devices = $DB->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ip, n.name, n.mac, n.netid
 		FROM vnodes n
 		JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL
 		WHERE nd.ownerid IS NULL
 			AND n.netid IN (" . implode(',', array_keys($networks)) . ")");
 
-	if (!empty($devices)) {
-		$channels[] = array('id' => '0', 'nodes' => array(), 'subs' => array(),
-			'cid' => '1', 'customer' => 'Devices', 'uprate' => '128', 'upceil' => '10000',
-			'downrate' => '128', 'downceil' => '10000',
-			'uprate_n' => '128', 'upceil_n' => '10000',
-			'downrate_n' => '128', 'downceil_n' => '10000',
-			'climit' => '0', 'plimit' => '0');
-		foreach ($devices as $device)
-			$channels[count($channels) - 1]['nodes'][] = array('id' => $device['id'],
-				'network' => $device['netid'], 'ip' => $device['ip'],
-				'name' => $device['name'], 'mac' => $device['mac']);
-	}
+    if (!empty($devices)) {
+        $channels[] = array('id' => '0', 'nodes' => array(), 'subs' => array(),
+            'cid' => '1', 'customer' => 'Devices', 'uprate' => '128', 'upceil' => '10000',
+            'downrate' => '128', 'downceil' => '10000',
+            'uprate_n' => '128', 'upceil_n' => '10000',
+            'downrate_n' => '128', 'downceil_n' => '10000',
+            'climit' => '0', 'plimit' => '0');
+        foreach ($devices as $device) {
+            $channels[count($channels) - 1]['nodes'][] = array('id' => $device['id'],
+                'network' => $device['netid'], 'ip' => $device['ip'],
+                'name' => $device['name'], 'mac' => $device['mac']);
+        }
+    }
 }
 
 // open file
@@ -384,8 +400,9 @@ $fh = fopen($script_file, "w");
 $fh_d = fopen($script_file_day, "w");
 $fh_n = fopen($script_file_night, "w");
 
-if (empty($fh) || empty($fh_d) || empty($fh_n))
-	die;
+if (empty($fh) || empty($fh_d) || empty($fh_n)) {
+    die;
+}
 
 fwrite($fh, preg_replace("/\\\\n/", "\n", $script_begin));
 fwrite($fh_d, preg_replace("/\\\\n/", "\n", $script_begin_day));
@@ -396,133 +413,133 @@ $mark = XVALUE;
 
 // channels loop
 foreach ($channels as $channel) {
-	$c_up = $script_class_up;
-	$c_down = $script_class_down;
-	$c_up_day = $script_class_up_day;
-	$c_down_day = $script_class_down_day;
-	$c_up_night = $script_class_up_night;
-	$c_down_night = $script_class_down_night;
+    $c_up = $script_class_up;
+    $c_down = $script_class_down;
+    $c_up_day = $script_class_up_day;
+    $c_down_day = $script_class_down_day;
+    $c_up_night = $script_class_up_night;
+    $c_down_night = $script_class_down_night;
 
-	// make rules...
-	$uprate = $channel['uprate'];
-	$upceil = (!$channel['upceil'] ? $uprate : $channel['upceil']);
-	$downrate = $channel['downrate'];
-	$downceil = (!$channel['downceil'] ? $downrate : $channel['downceil']);
-	$uprate_n = $channel['uprate_n'];
-	$upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
-	$downrate_n = $channel['downrate_n'];
-	$downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
-	$from = array("/\\\\n/", "/\%cid/", "/\%cname/", "/\%h/", "/\%class/",
-		"/\%uprate/", "/\%upceil/", "/\%downrate/", "/\%downceil/");
+    // make rules...
+    $uprate = $channel['uprate'];
+    $upceil = (!$channel['upceil'] ? $uprate : $channel['upceil']);
+    $downrate = $channel['downrate'];
+    $downceil = (!$channel['downceil'] ? $downrate : $channel['downceil']);
+    $uprate_n = $channel['uprate_n'];
+    $upceil_n = (!$channel['upceil_n'] ? $uprate_n : $channel['upceil_n']);
+    $downrate_n = $channel['downrate_n'];
+    $downceil_n = (!$channel['downceil_n'] ? $downrate_n : $channel['downceil_n']);
+    $from = array("/\\\\n/", "/\%cid/", "/\%cname/", "/\%h/", "/\%class/",
+        "/\%uprate/", "/\%upceil/", "/\%downrate/", "/\%downceil/");
 
-	$to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-		$uprate, $upceil, $downrate, $downceil);
-	$c_up = preg_replace($from, $to, $c_up);
-	$c_up_day = preg_replace($from, $to, $c_up_day);
-	$to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-		$uprate_n, $upceil_n, $downrate_n, $downceil_n);
-	$c_up_night = preg_replace($from, $to, $c_up_night);
+    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
+        $uprate, $upceil, $downrate, $downceil);
+    $c_up = preg_replace($from, $to, $c_up);
+    $c_up_day = preg_replace($from, $to, $c_up_day);
+    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+    $c_up_night = preg_replace($from, $to, $c_up_night);
 
-	$to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-		$uprate, $upceil, $downrate, $downceil);
-	$c_down = preg_replace($from, $to, $c_down);
-	$c_down_day = preg_replace($from, $to, $c_down_day);
-	$to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
-		$uprate_n, $upceil_n, $downrate_n, $downceil_n);
-	$c_down_night = preg_replace($from, $to, $c_down_night);
+    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
+        $uprate, $upceil, $downrate, $downceil);
+    $c_down = preg_replace($from, $to, $c_down);
+    $c_down_day = preg_replace($from, $to, $c_down_day);
+    $to = array("\n", $channel['cid'], $channel['customer'], sprintf("%x", $x), sprintf("%d", $x),
+        $uprate_n, $upceil_n, $downrate_n, $downceil_n);
+    $c_down_night = preg_replace($from, $to, $c_down_night);
 
-	// ... and write to file
-	fwrite($fh, $c_down);
-	fwrite($fh, $c_up);
-	fwrite($fh_d, $c_down_day);
-	fwrite($fh_d, $c_up_day);
-	fwrite($fh_n, $c_down_night);
-	fwrite($fh_n, $c_up_night);
+    // ... and write to file
+    fwrite($fh, $c_down);
+    fwrite($fh, $c_up);
+    fwrite($fh_d, $c_down_day);
+    fwrite($fh_d, $c_up_day);
+    fwrite($fh_n, $c_down_night);
+    fwrite($fh_n, $c_up_night);
 
-	foreach ($channel['nodes'] as $host) {
-		// octal parts of IP
-		$hostip = ip2long($host['ip']);
-		$o1 = ($hostip >> 24) & 0xff; // first octet
-		$o2 = ($hostip >> 16) & 0xff; // second octet
-		$o3 = ($hostip >> 8) & 0xff; // third octet
-		$o4 = $hostip & 0xff; // last octet
-		$h1 = sprintf("%02x", $o1); // first octet in hex
-		$h2 = sprintf("%02x", $o2); // second octet in hex
-		$h3 = sprintf("%02x", $o3); // third octet in hex
-		$h4 = sprintf("%02x", $o4); // last octet in hex
-		$h = sprintf("%x", $o4); // last octet in hex
+    foreach ($channel['nodes'] as $host) {
+        // octal parts of IP
+        $hostip = ip2long($host['ip']);
+        $o1 = ($hostip >> 24) & 0xff; // first octet
+        $o2 = ($hostip >> 16) & 0xff; // second octet
+        $o3 = ($hostip >> 8) & 0xff; // third octet
+        $o4 = $hostip & 0xff; // last octet
+        $h1 = sprintf("%02x", $o1); // first octet in hex
+        $h2 = sprintf("%02x", $o2); // second octet in hex
+        $h3 = sprintf("%02x", $o3); // third octet in hex
+        $h4 = sprintf("%02x", $o4); // last octet in hex
+        $h = sprintf("%x", $o4); // last octet in hex
 
-		$h_up = $script_filter_up;
-		$h_down = $script_filter_down;
-		$h_up_day = $script_filter_up_day;
-		$h_down_day = $script_filter_down_day;
-		$h_up_night = $script_filter_up_night;
-		$h_down_night = $script_filter_down_night;
+        $h_up = $script_filter_up;
+        $h_down = $script_filter_down;
+        $h_up_day = $script_filter_up_day;
+        $h_down_day = $script_filter_down_day;
+        $h_up_night = $script_filter_up_night;
+        $h_down_night = $script_filter_down_night;
 
-		// make rules...
-		// get first mac from the list
-		$mac = $host['mac'];
-		if (!$script_multi_mac) {
-			$mac = explode(',', $mac);
-			$mac = array_shift($mac);
-		}
+        // make rules...
+        // get first mac from the list
+        $mac = $host['mac'];
+        if (!$script_multi_mac) {
+            $mac = explode(',', $mac);
+            $mac = array_shift($mac);
+        }
 
-		$from = array("/\\\\n/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/", "/\%ms/",
-			"/\%m/", "/\%x/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-			"/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/", "/\%h/", "/\%class/");
+        $from = array("/\\\\n/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/", "/\%ms/",
+            "/\%m/", "/\%x/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
+            "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/", "/\%h/", "/\%class/");
 
-		$to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
-			$host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-			$h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
-		$h_up = preg_replace($from, $to, $h_up);
-		$h_up_day = preg_replace($from, $to, $h_up_day);
-		$h_up_night = preg_replace($from, $to, $h_up_night);
+        $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
+            $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
+            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
+        $h_up = preg_replace($from, $to, $h_up);
+        $h_up_day = preg_replace($from, $to, $h_up_day);
+        $h_up_night = preg_replace($from, $to, $h_up_night);
 
-		$to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
-			$host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
-			$h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
-		$h_down = preg_replace($from, $to, $h_down);
-		$h_down_day = preg_replace($from, $to, $h_down_day);
-		$h_down_night = preg_replace($from, $to, $h_down_night);
+        $to = array("\n", $host['name'], $networks[$host['network']]['interface'], $h,
+            $host['ip'], $host['mac'], $mac, sprintf("%x", $mark), $o1, $o2, $o3, $o4,
+            $h1, $h2, $h3, $h4, sprintf("%x", $x), sprintf("%d", $x));
+        $h_down = preg_replace($from, $to, $h_down);
+        $h_down_day = preg_replace($from, $to, $h_down_day);
+        $h_down_night = preg_replace($from, $to, $h_down_night);
 
-		// ...write to file
-		fwrite($fh, $h_down);
-		fwrite($fh, $h_up);
-		fwrite($fh_d, $h_down_day);
-		fwrite($fh_d, $h_up_day);
-		fwrite($fh_n, $h_down_night);
-		fwrite($fh_n, $h_up_night);
+        // ...write to file
+        fwrite($fh, $h_down);
+        fwrite($fh, $h_up);
+        fwrite($fh_d, $h_down_day);
+        fwrite($fh_d, $h_up_day);
+        fwrite($fh_n, $h_down_night);
+        fwrite($fh_n, $h_up_night);
 
-		if ($channel['climit']) {
-			$cl = $script_climit;
+        if ($channel['climit']) {
+            $cl = $script_climit;
 
-			$from = array("/\\\\n/", "/\%climit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
-				"/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-				"/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
-			$to = array("\n", $channel['climit'], $host['name'],
-				$networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-				$mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
-			$cl = preg_replace($from, $to, $cl);
+            $from = array("/\\\\n/", "/\%climit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
+                "/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
+                "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
+            $to = array("\n", $channel['climit'], $host['name'],
+                $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
+                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
+            $cl = preg_replace($from, $to, $cl);
 
-			fwrite($fh, $cl);
-		}
+            fwrite($fh, $cl);
+        }
 
-		if ($channel['plimit']) {
-			$pl = $script_plimit;
+        if ($channel['plimit']) {
+            $pl = $script_plimit;
 
-			$from = array("/\\\\n/", "/\%plimit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
-				"/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
-				"/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
-			$to = array("\n", $channel['plimit'], $host['name'],
-				$networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
-				$mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
-			$pl = preg_replace($from, $to, $pl);
+            $from = array("/\\\\n/", "/\%plimit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
+                "/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
+                "/\%h1/", "/\%h2/", "/\%h3/", "/\%h4/");
+            $to = array("\n", $channel['plimit'], $host['name'],
+                $networks[$host['network']]['interface'], $h, $host['ip'], $host['mac'],
+                $mac, $o1, $o2, $o3, $o4, $h1, $h2, $h3, $h4);
+            $pl = preg_replace($from, $to, $pl);
 
-			fwrite($fh, $pl);
-		}
-		$mark++;
-	}
-	$x++;
+            fwrite($fh, $pl);
+        }
+        $mark++;
+    }
+    $x++;
 }
 
 // file footer

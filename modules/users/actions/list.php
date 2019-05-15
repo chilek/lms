@@ -28,6 +28,4 @@ $layout['pagetitle'] = trans('Users List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('userslist',$LMS->GetUserList());
-
-?>
+$SMARTY->assign('userslist', $LMS->GetUserList());

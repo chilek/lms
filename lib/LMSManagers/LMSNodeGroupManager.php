@@ -54,7 +54,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
 				ORDER BY name', 'id', array($nodeid));
     }
 
-    public function GetNodesWithoutGroup($groupid, $network = NULL)
+    public function GetNodesWithoutGroup($groupid, $network = null)
     {
         if ($network) {
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -72,7 +72,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
                         . ' ORDER BY nodename', array($groupid));
     }
 
-    public function GetNodesWithGroup($groupid, $network = NULL)
+    public function GetNodesWithGroup($groupid, $network = null)
     {
         if ($network) {
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -90,7 +90,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
                         . ' ORDER BY nodename', array($groupid));
     }
 
-    public function GetNodeGroup($id, $network = NULL)
+    public function GetNodeGroup($id, $network = null)
     {
         $result = $this->db->GetRow('SELECT id, name, description, prio,
 				(SELECT COUNT(*) FROM nodegroupassignments 

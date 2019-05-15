@@ -24,34 +24,34 @@
  *  $Id$
  */
 
-//function atip 
+//function atip
 
-function smarty_function_multi_location_box( $params = array(), $template )
+function smarty_function_multi_location_box($params = array(), $template)
 {
-    if ( !function_exists('smarty_function_location_box') ) {
-        foreach ( $template->getPluginsDir() as $v ) {
-            if ( file_exists($v . 'function.location_box.php') ) {
+    if (!function_exists('smarty_function_location_box')) {
+        foreach ($template->getPluginsDir() as $v) {
+            if (file_exists($v . 'function.location_box.php')) {
                 require_once $v . 'function.location_box.php';
             }
         }
     }
 
-    if ( empty($params['prefix']) ) {
+    if (empty($params['prefix'])) {
         $params['prefix'] = 'address';
     }
 
     // when use first time write script content
-    if ( !defined('MULTI_LOCATION_BOX') ) {
+    if (!defined('MULTI_LOCATION_BOX')) {
         define('MULTI_LOCATION_BOX', 1);
         echo '<script type="text/javascript" src="js/multi_location_box.js"></script>';
     }
 
-    if ( !empty($params['addresses']) ) {
+    if (!empty($params['addresses'])) {
         echo '<div class="multi-location-box">';
         echo '<table class="multi-location-table">';
         $i = 0;
 
-        foreach ($params['addresses'] as $v)  {
+        foreach ($params['addresses'] as $v) {
             $uid = uniqid();
 
             echo '<tr>';
@@ -65,7 +65,7 @@ function smarty_function_multi_location_box( $params = array(), $template )
             $v['select_type'] = 'on';
             ++$i;
 
-            smarty_function_location_box( $v, $template );
+            smarty_function_location_box($v, $template);
 
             echo '</div>';
             echo '</td>';
@@ -77,5 +77,3 @@ function smarty_function_multi_location_box( $params = array(), $template )
         echo '</div>';
     }
 }
-
-?>

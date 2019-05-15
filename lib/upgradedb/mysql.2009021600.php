@@ -28,8 +28,6 @@ $this->BeginTrans();
 
 $this->Execute("ALTER TABLE ewx_pt_config CHANGE name name varchar(32) NOT NULL DEFAULT ''");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2009021600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009021600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

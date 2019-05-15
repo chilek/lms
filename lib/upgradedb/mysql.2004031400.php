@@ -69,5 +69,3 @@ $this->Execute("ALTER TABLE users DROP tariff, DROP payday");
 $this->Execute("ALTER TABLE users CHANGE message message TEXT NOT NULL");
 $this->Execute("ALTER TABLE invoicecontents CHANGE value value DECIMAL(9, 2) NOT NULL, CHANGE taxvalue taxvalue DECIMAL(9, 2) NOT NULL, CHANGE count count DECIMAL(9, 2) NOT NULL ");
 $this->Execute("UPDATE dbinfo SET keyvalue='2004031400' WHERE keytype='dbversion'");
-
-?>

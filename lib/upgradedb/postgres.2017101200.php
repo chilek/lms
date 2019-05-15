@@ -61,28 +61,26 @@ $this->Execute("
 
 $userids = $this->GetCol("SELECT id FROM users");
 if (!empty($userids)) {
-	$sql_userids = implode(',', $userids);
-	$this->Execute("UPDATE documents SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE documents SET cuserid = NULL WHERE cuserid = 0 OR cuserid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE cash SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE rtqueues SET deluserid = NULL WHERE deluserid = 0 OR deluserid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE rttickets SET deluserid = NULL WHERE deluserid = 0 OR deluserid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE rtmessages SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE rtmessages SET deluserid = NULL WHERE deluserid = 0 OR deluserid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE events SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE events SET closeduserid = NULL WHERE closeduserid = 0 OR closeduserid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE events SET moduserid = NULL WHERE moduserid = 0 OR moduserid NOT IN (" . $sql_userids . ")");
-	$this->Execute("DELETE FROM eventassignments WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("DELETE FROM docrights WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("DELETE FROM cashrights WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE cashreglog SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("DELETE FROM excludedgroups WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE messages SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE logtransactions SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $sql_userids = implode(',', $userids);
+    $this->Execute("UPDATE documents SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE documents SET cuserid = NULL WHERE cuserid = 0 OR cuserid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE cash SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE rtqueues SET deluserid = NULL WHERE deluserid = 0 OR deluserid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE rttickets SET deluserid = NULL WHERE deluserid = 0 OR deluserid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE rtmessages SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE rtmessages SET deluserid = NULL WHERE deluserid = 0 OR deluserid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE events SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE events SET closeduserid = NULL WHERE closeduserid = 0 OR closeduserid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE events SET moduserid = NULL WHERE moduserid = 0 OR moduserid NOT IN (" . $sql_userids . ")");
+    $this->Execute("DELETE FROM eventassignments WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("DELETE FROM docrights WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("DELETE FROM cashrights WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE cashreglog SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("DELETE FROM excludedgroups WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE messages SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
+    $this->Execute("UPDATE logtransactions SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

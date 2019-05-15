@@ -28,32 +28,33 @@ $state = $DB->GetRow('SELECT * FROM states WHERE id=?', array($_GET['id']));
 
 $name = $state['name'];
 
-$stateedit = isset($_POST['stateedit']) ? $_POST['stateedit'] : NULL;
+$stateedit = isset($_POST['stateedit']) ? $_POST['stateedit'] : null;
 
-if(count($stateedit))
-{
-	$stateedit['name'] = trim($stateedit['name']);
-	$stateedit['description'] = trim($stateedit['description']);
-	$stateedit['id'] = $state['id'];
+if (count($stateedit)) {
+    $stateedit['name'] = trim($stateedit['name']);
+    $stateedit['description'] = trim($stateedit['description']);
+    $stateedit['id'] = $state['id'];
 
-	if($stateedit['name'] == '')
-		$error['name'] = trans('State name is required!');
+    if ($stateedit['name'] == '') {
+        $error['name'] = trans('State name is required!');
+    }
 
-	if (!$error) {
-		$args = array(
-			'name' => $stateedit['name'],
-			'description' => $stateedit['description'],
-			SYSLOG::RES_STATE => $stateedit['id']
-		);
-		$DB->Execute('UPDATE states SET name=?, description=? WHERE id=?', array_values($args));
+    if (!$error) {
+        $args = array(
+            'name' => $stateedit['name'],
+            'description' => $stateedit['description'],
+            SYSLOG::RES_STATE => $stateedit['id']
+        );
+        $DB->Execute('UPDATE states SET name=?, description=? WHERE id=?', array_values($args));
 
-		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_UPDATE, $args);
+        if ($SYSLOG) {
+            $SYSLOG->AddMessage(SYSLOG::RES_STATE, SYSLOG::OPER_UPDATE, $args);
+        }
 
-		$SESSION->redirect('?m=statelist');
-	}
+        $SESSION->redirect('?m=statelist');
+    }
 
-	$state = $stateedit;
+    $state = $stateedit;
 }
 
 $layout['pagetitle'] = trans('State Edit: $a', $name);
@@ -63,5 +64,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('stateedit', $state);
 $SMARTY->assign('error', $error);
 $SMARTY->display('state/stateedit.html');
-
-?>

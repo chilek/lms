@@ -26,7 +26,5 @@
 
 function smarty_modifier_money_format($number)
 {
-	return moneyf($number);
+    return moneyf($number);
 }
-
-?>

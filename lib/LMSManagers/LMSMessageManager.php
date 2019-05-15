@@ -31,7 +31,7 @@
 class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 {
 
-    public function GetMessages($customerid, $limit = NULL)
+    public function GetMessages($customerid, $limit = null)
     {
         return $this->db->GetAll('SELECT i.messageid AS id, i.status, i.error,
 		        i.destination, i.lastdate, i.lastreaddate, m.subject, m.type, m.cdate,
@@ -61,16 +61,20 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                 $this->syslog->AddMessage(SYSLOG::RES_TMPL, SYSLOG::OPER_ADD, $args);
             }
 
-			if ($type == TMPL_HELPDESK) {
-				if (isset($helpdesk_queues) && !empty($helpdesk_queues))
-					foreach ($helpdesk_queues as $queueid)
-						$this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
+            if ($type == TMPL_HELPDESK) {
+                if (isset($helpdesk_queues) && !empty($helpdesk_queues)) {
+                    foreach ($helpdesk_queues as $queueid) {
+                        $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
 							VALUES (?, ?)', array($id, $queueid));
-				if (isset($helpdesk_message_types) && !empty($helpdesk_message_types))
-					foreach ($helpdesk_message_types as $message_type)
-						$this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
+                    }
+                }
+                if (isset($helpdesk_message_types) && !empty($helpdesk_message_types)) {
+                    foreach ($helpdesk_message_types as $message_type) {
+                        $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
 							VALUES (?, ?)', array($id, $message_type));
-			}
+                    }
+                }
+            }
 
             return $id;
         }
@@ -90,46 +94,58 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             unset($args['name']);
             $res = $this->db->Execute('UPDATE templates SET type = ?, subject = ?, message = ?
 				WHERE id = ?', array_values($args));
-        } else
+        } else {
             $res = $this->db->Execute('UPDATE templates SET type = ?, name = ?, subject = ?, message = ?
 				WHERE id = ?', array_values($args));
+        }
         if ($res && $this->syslog) {
             $args[SYSLOG::RES_TMPL] = $id;
             $this->syslog->AddMessage(SYSLOG::RES_TMPL, SYSLOG::OPER_UPDATE, $args);
         }
 
-		$helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
-		$queues = $helpdesk_manager->GetMyQueues();
-		if (!empty($queues))
-			$this->db->Execute('DELETE FROM rttemplatequeues WHERE templateid = ? AND queueid IN ?',
-				array($id, $queues));
+        $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $queues = $helpdesk_manager->GetMyQueues();
+        if (!empty($queues)) {
+            $this->db->Execute(
+                'DELETE FROM rttemplatequeues WHERE templateid = ? AND queueid IN ?',
+                array($id, $queues)
+            );
+        }
 
-		$this->db->Execute('DELETE FROM rttemplatetypes WHERE templateid = ?', array($id));
+        $this->db->Execute('DELETE FROM rttemplatetypes WHERE templateid = ?', array($id));
 
-		if ($type == TMPL_HELPDESK) {
-			if (isset($helpdesk_queues) && !empty($helpdesk_queues))
-				foreach ($helpdesk_queues as $queueid)
-					$this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
+        if ($type == TMPL_HELPDESK) {
+            if (isset($helpdesk_queues) && !empty($helpdesk_queues)) {
+                foreach ($helpdesk_queues as $queueid) {
+                    $this->db->Execute('INSERT INTO rttemplatequeues (templateid, queueid)
 							VALUES (?, ?)', array($id, $queueid));
-			if (isset($helpdesk_message_types) && !empty($helpdesk_message_types))
-				foreach ($helpdesk_message_types as $message_type)
-					$this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
+                }
+            }
+            if (isset($helpdesk_message_types) && !empty($helpdesk_message_types)) {
+                foreach ($helpdesk_message_types as $message_type) {
+                    $this->db->Execute('INSERT INTO rttemplatetypes (templateid, messagetype)
 							VALUES (?, ?)', array($id, $message_type));
-		}
+                }
+            }
+        }
 
         return $res;
     }
 
-	public function DeleteMessageTemplates(array $ids) {
-		return $this->db->Execute('DELETE FROM templates WHERE id IN ?',
-			array($ids));
-	}
+    public function DeleteMessageTemplates(array $ids)
+    {
+        return $this->db->Execute(
+            'DELETE FROM templates WHERE id IN ?',
+            array($ids)
+        );
+    }
 
-	public function GetMessageTemplates($type = 0) {
-		$helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
-		$queues = $helpdesk_manager->GetMyQueues();
+    public function GetMessageTemplates($type = 0)
+    {
+        $helpdesk_manager = new LMSHelpdeskManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $queues = $helpdesk_manager->GetMyQueues();
 
-		return $this->db->GetAll('SELECT t.id, t.type, t.name, t.subject, t.message,
+        return $this->db->GetAll('SELECT t.id, t.type, t.name, t.subject, t.message,
 				tt.messagetypes, tq.queues, tq.queuenames
 			FROM templates t
 			LEFT JOIN (
@@ -148,11 +164,13 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				--ORDER BY q.name
 			) tq ON tq.templateid = t.id
 			WHERE 1 = 1' . (empty($type) ? '' : ' AND t.type = ' . intval($type))
-			. ' ORDER BY t.name', array($queues));
-	}
+            . ' ORDER BY t.name', array($queues));
+    }
 
-	public function GetMessageTemplatesByQueueAndType($queueid, $type) {
-		return $this->db->GetAll('SELECT DISTINCT t.id, t.name, t.subject, t.message
+    public function GetMessageTemplatesByQueueAndType($queueid, $type)
+    {
+        return $this->db->GetAll(
+            'SELECT DISTINCT t.id, t.name, t.subject, t.message
 			FROM templates t
 			LEFT JOIN rttemplatequeues tq ON tq.templateid = t.id AND tq.queueid ' . (is_array($queueid) ? 'IN' : '=') . ' ?
 			LEFT JOIN rttemplatetypes tt ON tt.templateid = t.id AND tt.messagetype = ?
@@ -173,95 +191,106 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 			WHERE t.type = ? AND (tq.templateid IS NOT NULL OR t.id = t3.templateid)
 				AND (tt.templateid IS NOT NULL OR t.id = t5.templateid)  
 			GROUP BY t.id, t.name, t.subject, t.message',
-			array(is_array($queueid) ? $queueid : intval($queueid), $type, TMPL_HELPDESK));
-	}
+            array(is_array($queueid) ? $queueid : intval($queueid), $type, TMPL_HELPDESK)
+        );
+    }
 
-	public function GetMessageList(array $params) {
-		extract($params);
-		foreach (array('search', 'cat', 'status') as $var)
-			if (!isset($$var))
-				$$var = null;
-		if (!isset($order))
-			$order = 'cdate,desc';
-		if (!isset($type))
-			$type = '';
-		if (!isset($count))
-			$count = false;
+    public function GetMessageList(array $params)
+    {
+        extract($params);
+        foreach (array('search', 'cat', 'status') as $var) {
+            if (!isset($$var)) {
+                $$var = null;
+            }
+        }
+        if (!isset($order)) {
+            $order = 'cdate,desc';
+        }
+        if (!isset($type)) {
+            $type = '';
+        }
+        if (!isset($count)) {
+            $count = false;
+        }
 
-		if($order=='')
-			$order='cdate,desc';
+        if ($order=='') {
+            $order='cdate,desc';
+        }
 
-		list($order,$direction) = sscanf($order, '%[^,],%s');
-		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+        list($order,$direction) = sscanf($order, '%[^,],%s');
+        ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
-		switch($order)
-		{
-			case 'subject':
-				$sqlord = ' ORDER BY m.subject';
-				break;
-			case 'type':
-				$sqlord = ' ORDER BY m.type';
-				break;
-			case 'cnt':
-				$sqlord = ' ORDER BY cnt';
-				break;
-			default:
-				$sqlord = ' ORDER BY m.cdate';
-				break;
-		}
+        switch ($order) {
+            case 'subject':
+                $sqlord = ' ORDER BY m.subject';
+                break;
+            case 'type':
+                $sqlord = ' ORDER BY m.type';
+                break;
+            case 'cnt':
+                $sqlord = ' ORDER BY cnt';
+                break;
+            default:
+                $sqlord = ' ORDER BY m.cdate';
+                break;
+        }
 
-		if($search!='' && $cat)
-		{
-			switch($cat)
-			{
-				case 'userid':
-					$where[] = 'm.userid = '.intval($search);
-					break;
-				case 'username':
-					$where[] = 'UPPER(u.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
-					$userjoin = true;
-					break;
-				case 'subject':
-					$where[] = 'UPPER(m.subject) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
-					break;
-				case 'destination':
-					$where[] = 'EXISTS (SELECT 1 FROM messageitems i
+        if ($search!='' && $cat) {
+            switch ($cat) {
+                case 'userid':
+                    $where[] = 'm.userid = '.intval($search);
+                    break;
+                case 'username':
+                    $where[] = 'UPPER(u.name) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+                    $userjoin = true;
+                    break;
+                case 'subject':
+                    $where[] = 'UPPER(m.subject) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . ')';
+                    break;
+                case 'destination':
+                    $where[] = 'EXISTS (SELECT 1 FROM messageitems i
 					WHERE i.messageid = m.id AND UPPER(i.destination) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . '))';
-					break;
-				case 'customerid':
-					$where[] = 'EXISTS (SELECT 1 FROM messageitems i
+                    break;
+                case 'customerid':
+                    $where[] = 'EXISTS (SELECT 1 FROM messageitems i
 					WHERE i.customerid = '.intval($search).' AND i.messageid = m.id)';
-					break;
-				case 'name':
-					$where[] = 'EXISTS (SELECT 1 FROM messageitems i
+                    break;
+                case 'name':
+                    $where[] = 'EXISTS (SELECT 1 FROM messageitems i
 					JOIN customers c ON (c.id = i.customerid)
 					WHERE i.messageid = m.id AND UPPER(c.lastname) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . '))';
-					break;
-			}
-		}
+                    break;
+            }
+        }
 
-		if($type)
-		{
-			$type = intval($type);
-			$where[] = 'm.type = '.$type;
-		}
+        if ($type) {
+            $type = intval($type);
+            $where[] = 'm.type = '.$type;
+        }
 
-		if($status)
-		{
-			switch($status)
-			{
-				case MSG_NEW: $where[] = 'x.sent + x.delivered + x.error = 0'; break;
-				case MSG_ERROR: $where[] = 'x.error > 0'; break;
-				case MSG_SENT: $where[] = 'x.sent = x.cnt'; break;
-				case MSG_DELIVERED: $where[] = 'x.delivered = x.cnt'; break;
-			}
-		}
+        if ($status) {
+            switch ($status) {
+                case MSG_NEW:
+                    $where[] = 'x.sent + x.delivered + x.error = 0';
+                    break;
+                case MSG_ERROR:
+                    $where[] = 'x.error > 0';
+                    break;
+                case MSG_SENT:
+                    $where[] = 'x.sent = x.cnt';
+                    break;
+                case MSG_DELIVERED:
+                    $where[] = 'x.delivered = x.cnt';
+                    break;
+            }
+        }
 
-		if(!empty($where))
-			$where = 'WHERE '.implode(' AND ', $where);
+        if (!empty($where)) {
+            $where = 'WHERE '.implode(' AND ', $where);
+        }
 
-		if ($count) {
-			return $this->db->GetOne('SELECT COUNT(m.id)
+        if ($count) {
+            return $this->db->GetOne('SELECT COUNT(m.id)
 				FROM messages m
 				JOIN (
 					SELECT i.messageid,
@@ -278,11 +307,11 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 					WHERE e.customerid IS NULL
 					GROUP BY i.messageid
 				) x ON (x.messageid = m.id) '
-				.(!empty($userjoin) ? 'JOIN users u ON (u.id = m.userid) ' : '')
-				.(!empty($where) ? $where : ''));
-		}
+                .(!empty($userjoin) ? 'JOIN users u ON (u.id = m.userid) ' : '')
+                .(!empty($where) ? $where : ''));
+        }
 
-		$result = $this->db->GetAll('SELECT m.id, m.cdate, m.type, m.subject,
+        $result = $this->db->GetAll('SELECT m.id, m.cdate, m.type, m.subject,
 			x.cnt, x.sent, x.error, x.delivered
 			FROM messages m
 			JOIN (
@@ -300,17 +329,17 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				WHERE e.customerid IS NULL
 				GROUP BY i.messageid
 			) x ON (x.messageid = m.id) '
-			.(!empty($userjoin) ? 'JOIN users u ON (u.id = m.userid) ' : '')
-			.(!empty($where) ? $where : '')
-			.$sqlord.' '.$direction
-			. (isset($limit) ? ' LIMIT ' . $limit : '')
-			. (isset($offset) ? ' OFFSET ' . $offset : ''));
+            .(!empty($userjoin) ? 'JOIN users u ON (u.id = m.userid) ' : '')
+            .(!empty($where) ? $where : '')
+            .$sqlord.' '.$direction
+            . (isset($limit) ? ' LIMIT ' . $limit : '')
+            . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
-		$result['type'] = $type;
-		$result['status'] = $status;
-		$result['order'] = $order;
-		$result['direction'] = $direction;
+        $result['type'] = $type;
+        $result['status'] = $status;
+        $result['order'] = $order;
+        $result['direction'] = $direction;
 
-		return $result;
-	}
+        return $result;
+    }
 }

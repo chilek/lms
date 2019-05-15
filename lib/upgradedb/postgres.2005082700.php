@@ -35,8 +35,6 @@ $this->Execute("
 	ALTER TABLE cash DROP reference;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005082700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

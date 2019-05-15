@@ -38,5 +38,3 @@ $this->Execute("CREATE VIEW vnetworks AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016033100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

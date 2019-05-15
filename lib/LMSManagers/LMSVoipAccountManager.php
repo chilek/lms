@@ -66,11 +66,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             foreach ($search as $idx => $value) {
                 if ($value != '') {
                     switch ($idx) {
-                        case 'login' :
+                        case 'login':
                             $searchargs[] = 'v.login ?LIKE? ' . $this->db->Escape("%$value%");
-                        break;
+                            break;
 
-                        default :
+                        default:
                             $searchargs[] = $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }
                 }
@@ -94,8 +94,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 				addr.city_id as location_city, addr.street_id as location_street,
 				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM voipaccounts v '
-				. (isset($search['phone']) ? 'JOIN voip_numbers n ON n.voip_account_id = v.id' : '')
-				. ' JOIN customerview c ON (v.ownerid = c.id)
+                . (isset($search['phone']) ? 'JOIN voip_numbers n ON n.voip_account_id = v.id' : '')
+                . ' JOIN customerview c ON (v.ownerid = c.id)
 				LEFT JOIN vaddresses addr          ON addr.id = v.address_id
 				LEFT JOIN location_cities lc       ON lc.id   = addr.city_id
 				LEFT JOIN location_streets ls      ON ls.id   = addr.street_id
@@ -103,38 +103,41 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 				LEFT JOIN location_boroughs lb     ON lb.id   = lc.boroughid
 				LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
 				LEFT JOIN location_states lst      ON lst.id  = ld.stateid '
-	            . (isset($searchargs) ? $searchargs : '')
-	            . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+                . (isset($searchargs) ? $searchargs : '')
+                . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
         );
 
-        if ( $voipaccountlist ) {
+        if ($voipaccountlist) {
             global $LMS;
 
-            foreach ($voipaccountlist as $k=>$v) {
-                if ( !$v['location'] && $v['ownerid'] ) {
-                    $voipaccountlist[$k]['location'] = $LMS->getAddressForCustomerStuff( $v['ownerid'] );
+            foreach ($voipaccountlist as $k => $v) {
+                if (!$v['location'] && $v['ownerid']) {
+                    $voipaccountlist[$k]['location'] = $LMS->getAddressForCustomerStuff($v['ownerid']);
                 }
             }
         }
 
         $tmp_phone_list = $this->db->GetAll('SELECT voip_account_id, phone FROM voip_numbers');
         $phone_list = array();
-		if (!empty($tmp_phone_list)) {
-			foreach ($tmp_phone_list as $k=>$v)
-				if (isset($phone_list[$v['voip_account_id']]))
-					$phone_list[$v['voip_account_id']][] = $v['phone'];
-				else
-					$phone_list[$v['voip_account_id']] = array($v['phone']);
-			unset($tmp_phone_list);
-		}
+        if (!empty($tmp_phone_list)) {
+            foreach ($tmp_phone_list as $k => $v) {
+                if (isset($phone_list[$v['voip_account_id']])) {
+                    $phone_list[$v['voip_account_id']][] = $v['phone'];
+                } else {
+                    $phone_list[$v['voip_account_id']] = array($v['phone']);
+                }
+            }
+            unset($tmp_phone_list);
+        }
 
-		if (!empty($voipaccountlist)) {
-			foreach ($voipaccountlist as &$voipaccount)
-				if ( isset($phone_list[$voipaccount['id']]) ) {
-					$voipaccount['phone'] = $phone_list[$voipaccount['id']];
-				}
-			unset($voipaccount);
-		}
+        if (!empty($voipaccountlist)) {
+            foreach ($voipaccountlist as &$voipaccount) {
+                if (isset($phone_list[$voipaccount['id']])) {
+                    $voipaccount['phone'] = $phone_list[$voipaccount['id']];
+                }
+            }
+            unset($voipaccount);
+        }
 
         $voipaccountlist['total'] = empty($voipaccountlist) ? 0 : count($voipaccountlist);
         $voipaccountlist['order'] = $order;
@@ -150,7 +153,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param int $access Access
      * @return int|false Integer on success, false on failure
      */
-    public function voipAccountSet($id, $access = -1) {
+    public function voipAccountSet($id, $access = -1)
+    {
         if ($access != -1) {
             if ($access) {
                 $voip_account_updated = $this->db->Execute(
@@ -236,12 +240,13 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param array $voipaccountdata VoIP account data
      * @return int|false Id on success, flase on failure
      */
-    public function voipAccountAdd($voipaccountdata) {
+    public function voipAccountAdd($voipaccountdata)
+    {
         $DB = $this->db;
         $DB->BeginTrans();
 
         // -1 is equal to no selected, then set null
-        if ( $voipaccountdata['address_id'] < 0 ) {
+        if ($voipaccountdata['address_id'] < 0) {
             $voipaccountdata['address_id'] = null;
         }
 
@@ -278,12 +283,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 return $id;
             } else {
                 $DB->RollbackTrans();
-                return FALSE;
+                return false;
             }
         }
 
         $DB->RollbackTrans();
-        return FALSE;
+        return false;
     }
 
     /**
@@ -292,8 +297,10 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param int $id VoIP account id
      * @return boolean True if exists, false otherwise
      */
-    public function voipAccountExists($id) {
-        $voip_account = $this->db->GetOne('
+    public function voipAccountExists($id)
+    {
+        $voip_account = $this->db->GetOne(
+            '
             SELECT v.id
             FROM voipaccounts v
             WHERE v.id = ? AND NOT EXISTS (
@@ -313,7 +320,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param int $id VoIP account id
      * @return int Owner id
      */
-    public function getVoipAccountOwner($id) {
+    public function getVoipAccountOwner($id)
+    {
         return $this->db->GetOne('SELECT ownerid FROM voipaccounts WHERE id=?', array($id));
     }
 
@@ -323,8 +331,10 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param int $id VoIP account id
      * @return array|false VoIP account data on success, false on failure
      */
-    public function getVoipAccount($id) {
-        $result = $this->db->GetRow('
+    public function getVoipAccount($id)
+    {
+        $result = $this->db->GetRow(
+            '
             SELECT v.id, ownerid, login, passwd, creationdate, moddate, creatorid,
                 modid, access, balance, lb.name AS borough_name,
                 ld.name AS district_name, lst.name AS state_name, lc.name AS city_name,
@@ -346,7 +356,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             array($id)
         );
 
-        if ( $result ) {
+        if ($result) {
             $customer_manager        = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $user_manager            = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['createdby']     = $user_manager->getUserName($result['creatorid']);
@@ -367,7 +377,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param string $login Login
      * @return int VoIP account id
      */
-    public function getVoipAccountIDByLogin($login) {
+    public function getVoipAccountIDByLogin($login)
+    {
         return $this->db->GetAll('SELECT id FROM voipaccounts WHERE login=?', array($login));
     }
 
@@ -377,7 +388,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param  string $phone Phone number
      * @return int    VoIP account id
      */
-    public function getVoipAccountIDByPhone($phone) {
+    public function getVoipAccountIDByPhone($phone)
+    {
         return $this->db->GetOne('SELECT voip_account_id FROM voip_numbers WHERE phone = ?', array($phone));
     }
 
@@ -387,7 +399,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param int $id VoIP account id
      * @return string VoIP account login
      */
-    public function getVoipAccountLogin($id) {
+    public function getVoipAccountLogin($id)
+    {
         return $this->db->GetOne('SELECT login FROM voipaccounts WHERE id=?', array($id));
     }
 
@@ -396,7 +409,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      *
      * @param int $id VoIP account id
      */
-    public function deleteVoipAccount($id) {
+    public function deleteVoipAccount($id)
+    {
         $this->db->BeginTrans();
         $this->db->Execute('DELETE FROM voipaccounts WHERE id = ?', array($id));
         $this->db->Execute('DELETE FROM voip_numbers WHERE voip_account_id = ?', array($id));
@@ -409,11 +423,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param type $voipaccountdata New VoIP account data
      * @return boolean
      */
-    public function voipAccountUpdate($data) {
+    public function voipAccountUpdate($data)
+    {
         $this->db->BeginTrans();
 
         // -1 is equal to no selected, then set null
-        if ( $data['address_id'] < 0 ) {
+        if ($data['address_id'] < 0) {
             $data['address_id'] = null;
         }
 
@@ -422,7 +437,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
              SET login=?, passwd=?, moddate=?NOW?, access=?, modid=?,
                  ownerid=?, flags=?, balance=?, cost_limit=?, address_id=?
              WHERE id=?',
-             array(
+            array(
                 $data['login'],
                 $data['passwd'],
                 $data['access'],
@@ -454,22 +469,25 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
             $data['phone'] = array_flip($data['phone']);
             foreach ($current_phones as $v) {
-                if (!isset($data['phone'][$v['phone']]))
+                if (!isset($data['phone'][$v['phone']])) {
                     $phone_to_delete[] = " phone = '".$v['phone'] . "' ";
+                }
             }
 
-            if ($phone_to_delete)
+            if ($phone_to_delete) {
                 $this->db->Execute('DELETE FROM voip_numbers WHERE ' . implode('OR', $phone_to_delete));
+            }
 
-            if ($phone_to_insert)
+            if ($phone_to_insert) {
                 $this->db->Execute('INSERT INTO voip_numbers (voip_account_id, phone, number_index) VALUES ' . implode(',', $phone_to_insert));
+            }
 
             $this->db->CommitTrans();
-            return TRUE;
+            return true;
         }
 
         $this->db->RollbackTrans();
-        return FALSE;
+        return false;
     }
 
     /**
@@ -478,7 +496,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param int $id Customer id
      * @return array VoIP accounts data
      */
-    public function getCustomerVoipAccounts($id) {
+    public function getCustomerVoipAccounts($id)
+    {
         $result = $this->db->GetAll(
             'SELECT v.id, login, passwd, ownerid, access,
                 lb.name AS borough_name, ld.name AS district_name,
@@ -497,13 +516,17 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 LEFT JOIN location_districts ld    ON ld.id   = lb.districtid
                 LEFT JOIN location_states lst      ON lst.id  = ld.stateid
             WHERE ownerid=?
-            ORDER BY login ASC', array($id)
+            ORDER BY login ASC',
+            array($id)
         );
 
         if (!empty($result)) {
-            foreach ($result as &$account)
-                $account['phones'] = $this->db->GetAll('SELECT * FROM voip_numbers WHERE voip_account_id = ?',
-					array($account['id']));
+            foreach ($result as &$account) {
+                $account['phones'] = $this->db->GetAll(
+                    'SELECT * FROM voip_numbers WHERE voip_account_id = ?',
+                    array($account['id'])
+                );
+            }
             unset($account);
         }
 
@@ -516,23 +539,28 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @param  array $params Array with parameters
      * @return array $result Array with billings
      */
-    public function getVoipBillings(array $params) {
-		if (isset($params['count']))
-			$count = $params['count'];
-		else
-			$count = false;
-		if (isset($params['offset']))
-			$offset = $params['offset'];
-		else
-			$offset = null;
-		if (isset($params['limit']))
-			$limit = $params['limit'];
-		else
-			$limit = null;
+    public function getVoipBillings(array $params)
+    {
+        if (isset($params['count'])) {
+            $count = $params['count'];
+        } else {
+            $count = false;
+        }
+        if (isset($params['offset'])) {
+            $offset = $params['offset'];
+        } else {
+            $offset = null;
+        }
+        if (isset($params['limit'])) {
+            $limit = $params['limit'];
+        } else {
+            $limit = null;
+        }
 
         $order = explode(',', $params['o']);
-        if (empty($order[1]) || $order[1] != 'desc')
+        if (empty($order[1]) || $order[1] != 'desc') {
              $order[1] = 'asc';
+        }
 
         switch ($order[0]) {
             case 'caller_name':
@@ -546,7 +574,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             case 'type':
             case 'price':
                 $order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
-            break;
+                break;
 
             default:
                 $order_string = '';
@@ -561,8 +589,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $tmp = '(' . implode(',', $params['id']) . ')';
                 $where[] = '(cdr.callervoipaccountid in ' . $tmp . ' OR cdr.calleevoipaccountid in' . $tmp . ')';
                 unset($tmp);
-            } else
+            } else {
                 $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . ' OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+            }
         }
 
         // PHONE
@@ -573,39 +602,41 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         // CALL BILLING RANGE
         if (!empty($params['frangefrom'])) {
             list($year,$month,$day) = explode('/', $params['frangefrom']);
-            $where[] = 'call_start_time >= ' . mktime(0,0,0, $month, $day, $year);
+            $where[] = 'call_start_time >= ' . mktime(0, 0, 0, $month, $day, $year);
         }
 
         if (!empty($params['frangeto'])) {
             list($year,$month,$day) = explode('/', $params['frangeto']);
-            $where[] = 'call_start_time <= ' . mktime(23,59,59, $month, $day, $year);
+            $where[] = 'call_start_time <= ' . mktime(23, 59, 59, $month, $day, $year);
         }
 
         // CALL STATUS
-        if (!empty($params['fstatus']))
+        if (!empty($params['fstatus'])) {
             switch ($params['fstatus']) {
                 case CALL_ANSWERED:
                 case CALL_NO_ANSWER:
                 case CALL_BUSY:
                 case CALL_SERVER_FAILED:
                     $where[] = 'cdr.status = ' . $params['fstatus'];
-                break;
+                    break;
             }
+        }
 
         // CALL TYPE
-        if (!empty($params['ftype']))
+        if (!empty($params['ftype'])) {
             switch ($params['ftype']) {
                 case CALL_OUTGOING:
                 case CALL_INCOMING:
                     $where[] = 'cdr.type = ' . $params['ftype'];
-                break;
+                    break;
             }
+        }
 
         $where_string = ($where) ? ' WHERE ' . implode(' AND ', $where) : '';
 
         $DB = $this->db;
 
-		if ($count) {
+        if ($count) {
             return $DB->GetOne('SELECT COUNT(cdr.id)
                                   FROM
                                      voip_cdr cdr
@@ -618,7 +649,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                                      LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
                                      ' . $where_string);
-		}
+        }
 
         $bill_list = $DB->GetAll('SELECT
                                      cdr.id, caller, callee, price, call_start_time as begintime, cdr.uniqueid,
@@ -641,8 +672,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
                                      LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
                                      ' . $where_string . $order_string
-			. (isset($limit) ? ' LIMIT ' . $limit : '')
-			. (isset($offset) ? ' OFFSET ' . $offset : ''));
+            . (isset($limit) ? ' LIMIT ' . $limit : '')
+            . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
         return $bill_list;
     }
@@ -652,7 +683,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      *
      * @return array Array with tariffs
      */
-    public function getVoipTariffs() {
+    public function getVoipTariffs()
+    {
         return $this->db->GetAll('SELECT id, name, description FROM voip_tariffs');
     }
 
@@ -661,7 +693,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      *
      * @return array Array with tariffs
      */
-    public function getVoipTariffRuleGroups() {
+    public function getVoipTariffRuleGroups()
+    {
         return $this->db->GetAll('SELECT id, name, description FROM voip_rule_groups');
     }
 }

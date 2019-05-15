@@ -24,12 +24,11 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Accounts'),	// Display name
-		    'accounts', 		// Module name - must be the same as directory name
-		    trans('Account administration'), // Tip 
-		    6,			// Priority
-		    trans('This module alow account (mail) administration'),	// Description
-		    2005081901		// Database version
-		    );
-
-?>
+$USERPANEL->AddModule(
+    trans('Accounts'),    // Display name
+    'accounts',         // Module name - must be the same as directory name
+    trans('Account administration'), // Tip
+    6,          // Priority
+    trans('This module alow account (mail) administration'),    // Description
+    2005081901      // Database version
+);

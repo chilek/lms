@@ -24,38 +24,35 @@
  *  $Id$
  */
 
-if(isset($_POST['customergroupadd']))
-{
-	$customergroupadd = $_POST['customergroupadd'];
-	
-	foreach($customergroupadd as $key => $value)
-		$customergroupadd[$key] = trim($value);
+if (isset($_POST['customergroupadd'])) {
+    $customergroupadd = $_POST['customergroupadd'];
+    
+    foreach ($customergroupadd as $key => $value) {
+        $customergroupadd[$key] = trim($value);
+    }
 
-	if($customergroupadd['name']=='' && $customergroupadd['description']=='')
-	{
-		$SESSION->redirect('?m=customergrouplist');
-	}
+    if ($customergroupadd['name']=='' && $customergroupadd['description']=='') {
+        $SESSION->redirect('?m=customergrouplist');
+    }
 
-	if($customergroupadd['name'] == '')
-		$error['name'] = trans('Group name required!');
-	elseif(strlen($customergroupadd['name']) > 255)
-		$error['name'] = trans('Group name is too long!');
-	elseif(!preg_match('/^[._a-z0-9-]+$/i', $customergroupadd['name']))
-		$error['name'] = trans('Invalid chars in group name!');
-	elseif($LMS->CustomergroupGetId($customergroupadd['name']))
-		$error['name'] = trans('Group with name $a already exists!',$customergroupadd['name']);
+    if ($customergroupadd['name'] == '') {
+        $error['name'] = trans('Group name required!');
+    } elseif (strlen($customergroupadd['name']) > 255) {
+        $error['name'] = trans('Group name is too long!');
+    } elseif (!preg_match('/^[._a-z0-9-]+$/i', $customergroupadd['name'])) {
+        $error['name'] = trans('Invalid chars in group name!');
+    } elseif ($LMS->CustomergroupGetId($customergroupadd['name'])) {
+        $error['name'] = trans('Group with name $a already exists!', $customergroupadd['name']);
+    }
 
-	if(!$error)
-	{
-		$SESSION->redirect('?m=customergrouplist&id='.$LMS->CustomergroupAdd($customergroupadd));
-	}
+    if (!$error) {
+        $SESSION->redirect('?m=customergrouplist&id='.$LMS->CustomergroupAdd($customergroupadd));
+    }
 
-	$SMARTY->assign('error',$error);
-	$SMARTY->assign('customergroupadd',$customergroupadd);
+    $SMARTY->assign('error', $error);
+    $SMARTY->assign('customergroupadd', $customergroupadd);
 }
 
 $layout['pagetitle'] = trans('New Group');
 
 $SMARTY->display('customer/customergroupadd.html');
-
-?>

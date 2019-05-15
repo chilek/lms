@@ -36,5 +36,3 @@ $this->Execute("ALTER TABLE netlinks ADD CONSTRAINT netlinks_dst_fkey
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101103', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -26,23 +26,19 @@
 
 $id = $_GET['id'];
 
-if($id && $_GET['is_sure']=='1')
-{
-	$DB->BeginTrans();
-	
-	if($DB->Execute('DELETE FROM passwd WHERE id = ?', array($id)))
-	{	
-		// alias-account assignments...
-		$DB->Execute('DELETE FROM aliasassignments WHERE accountid = ?', array($id));
-		// ...and orphaned aliases
-		$DB->Execute('DELETE FROM aliases 
+if ($id && $_GET['is_sure']=='1') {
+    $DB->BeginTrans();
+    
+    if ($DB->Execute('DELETE FROM passwd WHERE id = ?', array($id))) {
+        // alias-account assignments...
+        $DB->Execute('DELETE FROM aliasassignments WHERE accountid = ?', array($id));
+        // ...and orphaned aliases
+        $DB->Execute('DELETE FROM aliases 
 			WHERE NOT EXISTS (SELECT 1 FROM aliasassignments 
 				WHERE aliasid = aliases.id)');
-	}
-	
-	$DB->CommitTrans();
+    }
+    
+    $DB->CommitTrans();
 }
 
 header('Location: ?m=accountlist');
-
-?>

@@ -29,5 +29,3 @@ $this->Execute("CREATE INDEX cash_linktechnology_idx ON cash (linktechnology)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019041200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

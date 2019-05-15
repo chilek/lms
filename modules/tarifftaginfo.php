@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$id = !empty($_GET['id']) ? $_GET['id'] : NULL;
+$id = !empty($_GET['id']) ? $_GET['id'] : null;
 
 if (!$id || !$LMS->TarifftagExists($id)) {
     $SESSION->redirect('?m=tarifftaglist');
@@ -44,4 +44,3 @@ $SMARTY->assign('tarifftag', $tarifftag);
 $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('tariffscount', $tariffscount);
 $SMARTY->display('tariff/tarifftaginfo.html');
-?>

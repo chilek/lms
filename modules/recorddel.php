@@ -24,16 +24,13 @@
 
 $id = $_GET['id']*1;
 
-if($id)
-{
-	$domainid = $DB->GetRow('SELECT domain_id FROM records WHERE records.id = ?', array($id));
-	$DB->Execute('DELETE FROM records WHERE id = ?', array($id));
+if ($id) {
+    $domainid = $DB->GetRow('SELECT domain_id FROM records WHERE records.id = ?', array($id));
+    $DB->Execute('DELETE FROM records WHERE id = ?', array($id));
 
-	include(LIB_DIR.'/dns.php');
+    include(LIB_DIR.'/dns.php');
 
-	update_soa_serial($domainid['domain_id']);
+    update_soa_serial($domainid['domain_id']);
 }
 
 $SESSION->redirect('?m=recordlist');
-
-?>

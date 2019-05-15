@@ -26,72 +26,77 @@
 
 $SESSION->restore('conls', $section);
 
-function parse_cfg_val($value) {
-	if (is_bool($value))
-		return $value ? 'true' : 'false';
-	else
-		return (string) $value;
+function parse_cfg_val($value)
+{
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
+    } else {
+        return (string) $value;
+    }
 }
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 $DB->BeginTrans();
 
-foreach (array('phpui', 'invoices', 'notes', 'receipts', 'finances', 'sms', 'mail', 'zones') as $sec)
-	if (!empty($CONFIG[$sec]) && (!$section || $section == $sec))
-		foreach ($CONFIG[$sec] as $key => $val) {
-			$args = array(
-				'section' => $sec,
-				'var' => $key,
-				'value' => parse_cfg_val($val)
-			);
-			$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-				array_values($args));
+foreach (array('phpui', 'invoices', 'notes', 'receipts', 'finances', 'sms', 'mail', 'zones') as $sec) {
+    if (!empty($CONFIG[$sec]) && (!$section || $section == $sec)) {
+        foreach ($CONFIG[$sec] as $key => $val) {
+            $args = array(
+            'section' => $sec,
+            'var' => $key,
+            'value' => parse_cfg_val($val)
+            );
+            $DB->Execute(
+                'INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+                array_values($args)
+            );
 
-			if ($SYSLOG) {
-				$args[SYSLOG::RES_UICONFIG] = $DB->GetLastInsertID('uiconfig');
-				$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
-			}
-		}
+            if ($SYSLOG) {
+                $args[SYSLOG::RES_UICONFIG] = $DB->GetLastInsertID('uiconfig');
+                $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
+            }
+        }
+    }
+}
 
 if (isset($CONFIG['userpanel'])) {
-	if ($SYSLOG) {
-		$configs = $DB->GetCol('SELECT id FROM uiconfig WHERE section = ?', array('userpanel'));
-		if (!empty($configs))
-			foreach ($configs as $config) {
-				$args = array(SYSLOG::RES_UICONF => $config);
-				$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
-			}
-	}
-	// it's possible that userpanel config is in database yet
-	$DB->Execute('DELETE FROM uiconfig WHERE section = \'userpanel\'');
+    if ($SYSLOG) {
+        $configs = $DB->GetCol('SELECT id FROM uiconfig WHERE section = ?', array('userpanel'));
+        if (!empty($configs)) {
+            foreach ($configs as $config) {
+                $args = array(SYSLOG::RES_UICONF => $config);
+                $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+            }
+        }
+    }
+    // it's possible that userpanel config is in database yet
+    $DB->Execute('DELETE FROM uiconfig WHERE section = \'userpanel\'');
 
-	foreach ($CONFIG['userpanel'] as $key => $val) {
-		$args = array(
-			'section' => 'userpanel',
-			'var' => $key,
-			'value' => parse_cfg_val($val)
-		);
-		$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)', array_values($args));
+    foreach ($CONFIG['userpanel'] as $key => $val) {
+        $args = array(
+            'section' => 'userpanel',
+            'var' => $key,
+            'value' => parse_cfg_val($val)
+        );
+        $DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)', array_values($args));
 
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_UICONF] = $DB->GetLastInsertID('uiconfig');
-			$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
-		}
-	}
+        if ($SYSLOG) {
+            $args[SYSLOG::RES_UICONF] = $DB->GetLastInsertID('uiconfig');
+            $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
+        }
+    }
 }
 
 /*
 foreach($CONFIG['directories'] as $key => $val)
 {
-	$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
-			array('directories', $key, $val)
-			);
+    $DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)',
+            array('directories', $key, $val)
+            );
 }
 */
 
 $DB->CommitTrans();
 
 header('Location: ?m=configlist');
-
-?>

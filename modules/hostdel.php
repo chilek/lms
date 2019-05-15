@@ -27,42 +27,40 @@
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {
-	if($DB->Execute('DELETE FROM hosts WHERE id = ?', array($id)))
-	{
-		if ($SYSLOG) {
-			$args = array(SYSLOG::RES_HOST => $id);
-			$SYSLOG->AddMessage(SYSLOG::RES_HOST, SYSLOG::OPER_DELETE, $args);
-		}
+    if ($DB->Execute('DELETE FROM hosts WHERE id = ?', array($id))) {
+        if ($SYSLOG) {
+            $args = array(SYSLOG::RES_HOST => $id);
+            $SYSLOG->AddMessage(SYSLOG::RES_HOST, SYSLOG::OPER_DELETE, $args);
+        }
 
-		if($instances = $DB->GetCol('SELECT id FROM daemoninstances WHERE hostid = ?', array($id)))
-		{
-			foreach($instances as $instance)
-			{
-				if ($SYSLOG) {
-					$args = array(
-						SYSLOG::RES_HOST => $id,
-						SYSLOG::RES_DAEMONINST => $instance
-					);
-					$SYSLOG->AddMessage(SYSLOG::RES_DAEMONINST, SYSLOG::OPER_DELETE, $args);
-					$configs = $DB->GetCol('SELECT id FROM daemonconfig c WHERE instanceid = ?',
-						array($instance));
-					if (!empty($configs))
-						foreach ($configs as $config) {
-							$args = array(
-								SYSLOG::RES_HOST => $id,
-								SYSLOG::RES_DAEMONCONF => $config,
-								SYSLOG::RES_DAEMONINST => $instance
-							);
-							$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_DELETE, $args);
-						}
-				}
-				$DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($instance));
-				$DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($instance));
-			}
-		}
-	}
+        if ($instances = $DB->GetCol('SELECT id FROM daemoninstances WHERE hostid = ?', array($id))) {
+            foreach ($instances as $instance) {
+                if ($SYSLOG) {
+                    $args = array(
+                        SYSLOG::RES_HOST => $id,
+                        SYSLOG::RES_DAEMONINST => $instance
+                    );
+                    $SYSLOG->AddMessage(SYSLOG::RES_DAEMONINST, SYSLOG::OPER_DELETE, $args);
+                    $configs = $DB->GetCol(
+                        'SELECT id FROM daemonconfig c WHERE instanceid = ?',
+                        array($instance)
+                    );
+                    if (!empty($configs)) {
+                        foreach ($configs as $config) {
+                            $args = array(
+                            SYSLOG::RES_HOST => $id,
+                            SYSLOG::RES_DAEMONCONF => $config,
+                            SYSLOG::RES_DAEMONINST => $instance
+                            );
+                            $SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_DELETE, $args);
+                        }
+                    }
+                }
+                $DB->Execute('DELETE FROM daemoninstances WHERE id = ?', array($instance));
+                $DB->Execute('DELETE FROM daemonconfig WHERE instanceid = ?', array($instance));
+            }
+        }
+    }
 }
 
 header('Location: ?m=hostlist');
-
-?>

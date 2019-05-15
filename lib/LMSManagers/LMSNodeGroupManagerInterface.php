@@ -26,7 +26,7 @@
 
 /**
  * LMSNodeGroupManagerInterface
- * 
+ *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSNodeGroupManagerInterface
@@ -37,11 +37,11 @@ interface LMSNodeGroupManagerInterface
 
     public function GetNodeGroupNamesWithoutNode($nodeid);
 
-    public function GetNodesWithoutGroup($groupid, $network = NULL);
+    public function GetNodesWithoutGroup($groupid, $network = null);
 
-    public function GetNodesWithGroup($groupid, $network = NULL);
+    public function GetNodesWithGroup($groupid, $network = null);
 
-    public function GetNodeGroup($id, $network = NULL);
+    public function GetNodeGroup($id, $network = null);
 
     public function CompactNodeGroups();
 }

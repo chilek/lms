@@ -24,10 +24,11 @@
  *  $Id$
  */
 
-if(!preg_match('/^[0-9]+$/', $_GET['id']))
-	$SESSION->redirect('?m=voipaccountbillinglist');
-else
-	$billing_id = $_GET['id'];
+if (!preg_match('/^[0-9]+$/', $_GET['id'])) {
+    $SESSION->redirect('?m=voipaccountbillinglist');
+} else {
+    $billing_id = $_GET['id'];
+}
 
 $cdr = $DB->GetRow('SELECT
 						c.id, caller, callee, call_start_time, totaltime, billedtime, price, c.status, c.type, 
@@ -45,5 +46,3 @@ $cdr = $DB->GetRow('SELECT
 
 $SMARTY->assign('cdr', $cdr);
 $SMARTY->display('voipaccount/voipaccountbillinginfo.html');
-
-?>

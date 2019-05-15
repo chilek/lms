@@ -26,7 +26,7 @@
 
 /**
  * LMSUserManagerInterface
- * 
+ *
  */
 interface LMSUserManagerInterface
 {
@@ -36,9 +36,9 @@ interface LMSUserManagerInterface
 
     public function getUserNames();
 
-	public function getUserNamesIndexedById();
+    public function getUserNamesIndexedById();
 
-	public function getUserList();
+    public function getUserList();
 
     public function getUserIDByLogin($login);
 

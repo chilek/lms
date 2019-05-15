@@ -34,27 +34,30 @@ $this->LockTables("documents");
 
 $offset = 0;
 do {
-	$docs = $this->GetAll("SELECT id, cdate, number, numberplanid FROM documents
+    $docs = $this->GetAll("SELECT id, cdate, number, numberplanid FROM documents
 		WHERE fullnumber IS NULL
 		ORDER BY id LIMIT 100000 OFFSET $offset");
-	$stop = empty($docs);
-	if (!$stop) {
-		foreach ($docs as $doc) {
-			if ($doc['numberplanid'])
-				$template = $numberplans[$doc['numberplanid']]['template'];
-			else
-				$template = DEFAULT_NUMBER_TEMPLATE;
-			$fullnumber = docnumber(array(
-				'number' => $doc['number'],
-				'template' => $template,
-				'cdate' => $doc['cdate'],
-			));
-			$this->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
-				array($fullnumber, $doc['id']));
-		}
-		$offset += count($docs);
-		unset($docs);
-	}
+    $stop = empty($docs);
+    if (!$stop) {
+        foreach ($docs as $doc) {
+            if ($doc['numberplanid']) {
+                $template = $numberplans[$doc['numberplanid']]['template'];
+            } else {
+                $template = DEFAULT_NUMBER_TEMPLATE;
+            }
+            $fullnumber = docnumber(array(
+                'number' => $doc['number'],
+                'template' => $template,
+                'cdate' => $doc['cdate'],
+            ));
+            $this->Execute(
+                "UPDATE documents SET fullnumber = ? WHERE id = ?",
+                array($fullnumber, $doc['id'])
+            );
+        }
+        $offset += count($docs);
+        unset($docs);
+    }
 } while (!$stop);
 
 $this->UnLockTables("documents");
@@ -62,5 +65,3 @@ $this->UnLockTables("documents");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -28,10 +28,10 @@ define('CONFIG_TYPE_NONE', 7);
 
 $this->BeginTrans();
 
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'event_usergroup_selection_type', 'update', ?)",
-	array(CONFIG_TYPE_NONE));
+$this->Execute(
+    "INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'event_usergroup_selection_type', 'update', ?)",
+    array(CONFIG_TYPE_NONE)
+);
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016041900', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

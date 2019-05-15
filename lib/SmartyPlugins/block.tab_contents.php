@@ -24,11 +24,12 @@
  *  $Id$
  */
 
-function smarty_block_tab_contents($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$id = isset($params['id']) ? $params['id'] : null;
+function smarty_block_tab_contents($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        $id = isset($params['id']) ? $params['id'] : null;
 
-		return '
+        return '
 			<div class="lms-ui-tab-contents lms-ui-multi-check" id="' . $id . '" style="display: none;">
 				' . $content . '
 			</div>
@@ -37,7 +38,5 @@ function smarty_block_tab_contents($params, $content, $template, $repeat) {
 						   $("#' . $id . '").show();
 				   }
 			</script>';
-	}
+    }
 }
-
-?>

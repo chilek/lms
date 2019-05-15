@@ -36,7 +36,7 @@ class UserRightsConfigProvider implements ConfigProviderInterface
     
     /**
      * Return user rights array
-     * 
+     *
      * @param array $options Associative array of options
      * @return array
      */
@@ -47,8 +47,8 @@ class UserRightsConfigProvider implements ConfigProviderInterface
         }
         $id = $options['user_id'];
         $db = LMSDB::getInstance();
-		$rights = $db->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
-		$rights = empty($rights) ? array() : explode(',', $rights);
+        $rights = $db->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
+        $rights = empty($rights) ? array() : explode(',', $rights);
 
         return array($rights);
     }

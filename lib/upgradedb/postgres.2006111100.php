@@ -34,5 +34,3 @@ CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006111100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

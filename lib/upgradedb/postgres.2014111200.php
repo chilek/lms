@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE messageitems ADD lastreaddate integer NOT NULL DEFAU
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

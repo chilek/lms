@@ -28,14 +28,16 @@ $layout['pagetitle'] = trans('Select netdevice');
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 
-if (!$p || $p == 'main')
-	$SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
+if (!$p || $p == 'main') {
+    $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
+}
 
-if (isset($_GET['netdevid']))
-	$netdevid = $_GET['netdevid'];
+if (isset($_GET['netdevid'])) {
+    $netdevid = $_GET['netdevid'];
+}
 
 if (isset($_POST['searchnetdev']) && $_POST['searchnetdev']) {
-	$search = $_POST['searchnetdev'];
+    $search = $_POST['searchnetdev'];
 
     $netdevices = $DB->GetAll('
 		SELECT n.id, n.name, va.location, n.producer, n.ports, n.ownerid, n.address_id
@@ -46,26 +48,24 @@ if (isset($_POST['searchnetdev']) && $_POST['searchnetdev']) {
             . ' AND NOT EXISTS (SELECT n.id FROM netlinks WHERE (n.id = dst AND src = ' . intval($netdevid) . ')
 					OR (n.id = src AND dst = ' . intval($netdevid) . '))'
             : '') . '
-		ORDER BY n.name'
-	);
+		ORDER BY n.name');
 
-	if ( $netdevices ) {
+    if ($netdevices) {
         foreach ($netdevices as $k => $nd) {
             $netdevices[$k]['ports'] = $nd['ports'] - $LMS->CountNetDevLinks($nd['id']);
 
-            if ( !empty($nd['ownerid']) && empty($nd['address_id']) ) {
-            	$netdevices[$k]['location'] = $LMS->getAddressForCustomerStuff($nd['ownerid']);
-			}
+            if (!empty($nd['ownerid']) && empty($nd['address_id'])) {
+                $netdevices[$k]['location'] = $LMS->getAddressForCustomerStuff($nd['ownerid']);
+            }
         }
     }
 
-	$SMARTY->assign('searchnetdev', $search);
-	$SMARTY->assign('netdevices', $netdevices);
+    $SMARTY->assign('searchnetdev', $search);
+    $SMARTY->assign('netdevices', $netdevices);
 }
 
-if (isset($netdevid))
-	$SMARTY->assign('netdevid', $netdevid);
+if (isset($netdevid)) {
+    $SMARTY->assign('netdevid', $netdevid);
+}
 $SMARTY->assign('part', $p);
 $SMARTY->display('choose/choosenetdevice.html');
-
-?>

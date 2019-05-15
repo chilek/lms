@@ -26,7 +26,7 @@
 
 /**
  * LMSCustomerManagerInterface
- * 
+ *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
@@ -54,7 +54,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerBalanceList($id, $totime = null, $direction = 'ASC', $aggregate_documents = false);
 
-	public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
+    public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC');
 
     public function customerStats();
 
@@ -64,7 +64,7 @@ interface LMSCustomerManagerInterface
 
     public function getCustomerNodes($id, $count = null);
 
-    public function getCustomerNetDevs( $customer_id );
+    public function getCustomerNetDevs($customer_id);
 
     public function GetCustomerNetworks($id, $count = null);
 
@@ -78,13 +78,13 @@ interface LMSCustomerManagerInterface
 
     public function checkCustomerAddress($a_id, $c_id);
 
-    public function getCustomerAddresses( $id, $hide_deleted );
+    public function getCustomerAddresses($id, $hide_deleted);
 
-    public function getAddressForCustomerStuff( $customer_id );
+    public function getAddressForCustomerStuff($customer_id);
 
-    public function getFullAddressForCustomerStuff( $customer_id );
+    public function getFullAddressForCustomerStuff($customer_id);
 
-	public function GetCustomerContacts($id, $mask = null);
+    public function GetCustomerContacts($id, $mask = null);
 
-	public function GetCustomerDivision($id);
+    public function GetCustomerDivision($id);
 }

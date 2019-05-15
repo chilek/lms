@@ -4,15 +4,17 @@
  * \class Estimate
  * \brief Class responsibility for return informations about calls.
  */
-class Estimate {
-    private $provider = NULL;
+class Estimate
+{
+    private $provider = null;
 
     /*!
      * \brief Class constructor
      *
      * \param object $provider Method of providing information for the class.
      */
-    public function __construct(VoipDataProvider $provider) {
+    public function __construct(VoipDataProvider $provider)
+    {
         $this->provider = $provider;
     }
 
@@ -23,7 +25,8 @@ class Estimate {
      * \param  string $callee callee phone number
      * \return int    $time   maximum call time in seconds
      */
-    public function getMaxCallTime($caller, $callee) {
+    public function getMaxCallTime($caller, $callee)
+    {
         $provider = $this->provider;
 
         $customer          = $provider->getCustomerByPhone($caller);
@@ -67,7 +70,8 @@ class Estimate {
      * \param  float  $time   connection time in seconds
      * \return array  $price  connection cost and used rules
      */
-    public function getCallCost($caller, $callee, $time) {
+    public function getCallCost($caller, $callee, $time)
+    {
         $provider = $this->provider;
 
         $customer          = $provider->getCustomerByPhone($caller);
@@ -103,8 +107,9 @@ class Estimate {
             unset($rules[$rule['ruleid']]);
         }
 
-        if ($time)
+        if ($time) {
             $result['price'] += $this->calcCost($time, $group['unit_size'], $group['price']);
+        }
 
         return $result;
     }
@@ -117,7 +122,8 @@ class Estimate {
      * \param  float $p price per minute
      * \return float
      */
-    private function calcCost($t, $s, $p) {
+    private function calcCost($t, $s, $p)
+    {
         if ($s == 0) {
             throw new Exception('Unit size must be higher than 0.');
         }
@@ -133,7 +139,8 @@ class Estimate {
      * \param  float $p price per minute
      * \return float
      */
-    private function calcTime($c, $s, $p) {
+    private function calcTime($c, $s, $p)
+    {
         if ($s == 0) {
             throw new Exception('Unit size must be higher than 0.');
         }
@@ -146,5 +153,3 @@ class Estimate {
         return floor(($c*60) / ($p*$s)) * $s;
     }
 }
-
-?>

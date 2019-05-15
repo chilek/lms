@@ -35,7 +35,5 @@ $this->Execute("
 	ALTER TABLE users ALTER zip SET NOT NULL;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005012700', 'dbversion'));
 $this->CommitTrans();
-
-?>

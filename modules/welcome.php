@@ -34,39 +34,38 @@ $layout['dbtype'] = ConfigHelper::getConfig('database.type');
 if (ConfigHelper::checkConfig('privileges.superuser')) {
     $content = $LMS->CheckUpdates();
 
-    if(isset($content['newer_version'])) {
-    	list($v, ) = preg_split('/\s+/', $LMS->_version);
+    if (isset($content['newer_version'])) {
+        list($v, ) = preg_split('/\s+/', $LMS->_version);
 
-	    if(version_compare($content['newer_version'], $v) > 0)
-		    $SMARTY->assign('newer_version', $content['newer_version']);
+        if (version_compare($content['newer_version'], $v) > 0) {
+            $SMARTY->assign('newer_version', $content['newer_version']);
+        }
     }
 
-	$SMARTY->assign('regdata', $LMS->GetRegisterData());
+    $SMARTY->assign('regdata', $LMS->GetRegisterData());
 }
 
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
 $SMARTY->assign('rtstats', $LMS->RTStats());
 
 if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_sysinfo')) {
-	$SI = new Sysinfo;
-	$SMARTY->assign('sysinfo', $SI->get_sysinfo());
+    $SI = new Sysinfo;
+    $SMARTY->assign('sysinfo', $SI->get_sysinfo());
 }
 
 if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')) {
-	$SMARTY->assign('customerstats', $LMS->CustomerStats());
-	$SMARTY->assign('nodestats', $LMS->NodeStats());
-	$documentsnotapproved=$DB->GetOne('SELECT COUNT(id) AS sum FROM documents WHERE type < 0 AND closed = 0');
-	$SMARTY->assign('documentsnotapproved', ( $documentsnotapproved ? $documentsnotapproved : 0));
+    $SMARTY->assign('customerstats', $LMS->CustomerStats());
+    $SMARTY->assign('nodestats', $LMS->NodeStats());
+    $documentsnotapproved=$DB->GetOne('SELECT COUNT(id) AS sum FROM documents WHERE type < 0 AND closed = 0');
+    $SMARTY->assign('documentsnotapproved', ( $documentsnotapproved ? $documentsnotapproved : 0));
 
-	 if (file_exists(ConfigHelper::getConfig('directories.userpanel_dir') . DIRECTORY_SEPARATOR . 'index.php')) {
-		$customerschanges=$DB->GetOne('SELECT COUNT(id) FROM up_info_changes');
-		$SMARTY->assign('customerschanges', ( $customerschanges ? $customerschanges : 0));
-	}
+    if (file_exists(ConfigHelper::getConfig('directories.userpanel_dir') . DIRECTORY_SEPARATOR . 'index.php')) {
+        $customerschanges=$DB->GetOne('SELECT COUNT(id) FROM up_info_changes');
+        $SMARTY->assign('customerschanges', ( $customerschanges ? $customerschanges : 0));
+    }
 }
 
 $layout['plugins'] = $plugin_manager->getAllPluginInfo();
 
 $SMARTY->assign('welcome_sortable_order', json_encode($SESSION->get_persistent_setting('welcome-sortable-order')));
 $SMARTY->display('welcome/welcome.html');
-
-?>

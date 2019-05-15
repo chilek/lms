@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE documents ADD COLUMN commitflags tinyint(1) DEFAULT 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017112100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

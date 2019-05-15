@@ -29,5 +29,3 @@ $this->Execute("SELECT setval('zipcodes_id_seq', MAX(id)) FROM zipcodes");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017040700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

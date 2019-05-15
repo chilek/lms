@@ -2067,5 +2067,3 @@ $_LANG['cash'] = 'grynieji';
 $_LANG['compensation'] = 'kompensacija';
 $_LANG['transfer'] = 'pavedimas';
 $_LANG['transfer/cash'] = 'pavedimas/grynieji';
-
-?>

@@ -24,92 +24,103 @@
  *  $Id$
  */
 
-function GetCategories($queueid) {
-	global $LMS;
+function GetCategories($queueid)
+{
+    global $LMS;
 
-	$result = new xajaxResponse();
+    $result = new xajaxResponse();
 
-	if (empty($queueid))
-		return $result;
+    if (empty($queueid)) {
+        return $result;
+    }
 
-	$categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-	if (empty($categories))
-		return $result;
+    $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
+    if (empty($categories)) {
+        return $result;
+    }
 
-	$queuecategories = $LMS->GetQueueCategories($queueid);
+    $queuecategories = $LMS->GetQueueCategories($queueid);
 
-	foreach ($categories as $category)
-		$result->assign('cat' . $category['id'], 'checked', isset($queuecategories[$category['id']]));
+    foreach ($categories as $category) {
+        $result->assign('cat' . $category['id'], 'checked', isset($queuecategories[$category['id']]));
+    }
 
-	return $result;
+    return $result;
 }
 
-function select_location($customerid, $address_id) {
-	global $LMS;
+function select_location($customerid, $address_id)
+{
+    global $LMS;
 
-	$JSResponse = new xajaxResponse();
-	$nodes = $LMS->GetNodeLocations($customerid, !empty($address_id) && intval($address_id) > 0 ? $address_id : null);
-	if (empty($nodes))
-		$nodes = array();
-	$JSResponse->call('update_nodes', array_values($nodes));
-	return $JSResponse;
+    $JSResponse = new xajaxResponse();
+    $nodes = $LMS->GetNodeLocations($customerid, !empty($address_id) && intval($address_id) > 0 ? $address_id : null);
+    if (empty($nodes)) {
+        $nodes = array();
+    }
+    $JSResponse->call('update_nodes', array_values($nodes));
+    return $JSResponse;
 }
 
-function netnode_changed($netnodeid, $netdevid) {
-	global $LMS, $SMARTY;
-
-	$JSResponse = new xajaxResponse();
-
-	$search = array();
-	if (!empty($netnodeid))
-		$search['netnode'] = $netnodeid;
-	$netdevlist = $LMS->GetNetDevList('name', $search);
-	unset($netdevlist['total']);
-	unset($netdevlist['order']);
-	unset($netdevlist['direction']);
-
-	$SMARTY->assign('netdevlist', $netdevlist);
-	$SMARTY->assign('ticket', array('netdevid' => $netdevid));
-	$SMARTY->assign('form', 'ticket');
-	$content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtnetdevs.html');
-	$JSResponse->assign('rtnetdevs', 'innerHTML', $content);
-
-	return $JSResponse;
-}
-
-function queue_changed($queue) {
+function netnode_changed($netnodeid, $netdevid)
+{
     global $LMS, $SMARTY;
 
     $JSResponse = new xajaxResponse();
-    if(empty($queue))
+
+    $search = array();
+    if (!empty($netnodeid)) {
+        $search['netnode'] = $netnodeid;
+    }
+    $netdevlist = $LMS->GetNetDevList('name', $search);
+    unset($netdevlist['total']);
+    unset($netdevlist['order']);
+    unset($netdevlist['direction']);
+
+    $SMARTY->assign('netdevlist', $netdevlist);
+    $SMARTY->assign('ticket', array('netdevid' => $netdevid));
+    $SMARTY->assign('form', 'ticket');
+    $content = $SMARTY->fetch('rt' . DIRECTORY_SEPARATOR . 'rtnetdevs.html');
+    $JSResponse->assign('rtnetdevs', 'innerHTML', $content);
+
+    return $JSResponse;
+}
+
+function queue_changed($queue)
+{
+    global $LMS, $SMARTY;
+
+    $JSResponse = new xajaxResponse();
+    if (empty($queue)) {
         return $JSResponse;
+    }
 
-	$templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR);
-	if ($templates) {
-		$SMARTY->assign('templates', $templates);
-		$SMARTY->assign('tip', 'Select message template');
-		$SMARTY->assign('target', '[name="ticket[body]"]');
-		$JSResponse->assign('message-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
-		$JSResponse->assign('message-template-row', 'style', '');
-	} else {
-		$JSResponse->assign('message-template-row', 'style', 'display: none;');
-	}
+    $templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR);
+    if ($templates) {
+        $SMARTY->assign('templates', $templates);
+        $SMARTY->assign('tip', 'Select message template');
+        $SMARTY->assign('target', '[name="ticket[body]"]');
+        $JSResponse->assign('message-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
+        $JSResponse->assign('message-template-row', 'style', '');
+    } else {
+        $JSResponse->assign('message-template-row', 'style', 'display: none;');
+    }
 
-	$templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE);
-	if ($templates) {
-		$SMARTY->assign('templates', $templates);
-		$SMARTY->assign('tip', 'Select note template');
-		$SMARTY->assign('target', '[name="ticket[note]"]');
-		$JSResponse->assign('note-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
-		$JSResponse->assign('note-template-row', 'style', '');
-	} else {
-		$JSResponse->assign('note-template-row', 'style', 'display: none;');
-	}
+    $templates = $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE);
+    if ($templates) {
+        $SMARTY->assign('templates', $templates);
+        $SMARTY->assign('tip', 'Select note template');
+        $SMARTY->assign('target', '[name="ticket[note]"]');
+        $JSResponse->assign('note-templates', 'innerHTML', $SMARTY->fetch('rt/rtmessagetemplates.html'));
+        $JSResponse->assign('note-template-row', 'style', '');
+    } else {
+        $JSResponse->assign('note-template-row', 'style', 'display: none;');
+    }
 
-	$vid = $LMS->GetQueueVerifier($queue);
+    $vid = $LMS->GetQueueVerifier($queue);
 
-    if(empty($vid))
+    if (empty($vid)) {
         return $JSResponse;
+    }
 
     $userlist = $LMS->GetUserNames();
 
@@ -117,11 +128,9 @@ function queue_changed($queue) {
     $SMARTY->assign('ticket', array('verifierid'=>$vid));
     $content = $SMARTY->fetch('rt/rtverifiers.html');
 
-	$JSResponse->assign('rtverifiers','innerHTML', $content);
+    $JSResponse->assign('rtverifiers', 'innerHTML', $content);
 
-	return $JSResponse;
+    return $JSResponse;
 }
 
 $LMS->RegisterXajaxFunction(array('GetCategories', 'select_location', 'netnode_changed', 'queue_changed'));
-
-?>

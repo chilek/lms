@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE documents ADD INDEX reference (reference)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014012700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

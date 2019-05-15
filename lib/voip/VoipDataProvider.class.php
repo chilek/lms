@@ -13,11 +13,16 @@
  *
  * $estimate = new Estimate( yourCustom::getInstance() );
  */
-abstract class VoipDataProvider {
+abstract class VoipDataProvider
+{
 
     // extortion use singleton pattern for providers
-    protected final function __construct() {}
-    public static function getInstance() {}
+    final protected function __construct()
+    {
+    }
+    public static function getInstance()
+    {
+    }
 
 
     abstract protected function getGroupByPrefix($prefix, $tariffid);
@@ -37,9 +42,11 @@ abstract class VoipDataProvider {
      * \return array         array with matched rule
      * \return NULL          when array is empty
      */
-    public function getBestRule(array $rules) {
-        if (!$rules)
-            return NULL;
+    public function getBestRule(array $rules)
+    {
+        if (!$rules) {
+            return null;
+        }
 
         $k            = array_keys($rules);
         $best_rule_id = $rules[$k[0]]['ruleid'];
@@ -55,5 +62,3 @@ abstract class VoipDataProvider {
         return $rules[$best_rule_id];
     }
 }
-
-?>

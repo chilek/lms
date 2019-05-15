@@ -182,5 +182,4 @@ class LMSPaginationTest extends \PHPUnit_Framework_TestCase
         $pagination->setPage(12);
         $this->assertEquals(111, $pagination->getLastOnPage());
     }
-
 }

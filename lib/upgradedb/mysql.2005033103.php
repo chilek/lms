@@ -58,6 +58,4 @@ $this->Execute("
 	UNIQUE KEY instanceid (instanceid, var))
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033103', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005033103', 'dbversion'));

@@ -33,5 +33,3 @@ $this->Execute("ALTER TABLE tariffs ADD INDEX type (type)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007111400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

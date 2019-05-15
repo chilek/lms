@@ -32,5 +32,3 @@ $_LANG['Module Configuration:'] = 'Konfiguracja modułu:';
 $_LANG['Submit'] = 'Zapisz';
 $_LANG['This module allows your customers to logout'] = 'Ten moduł pozwala Twojemu klientowi na wylogowanie się';
 $_LANG['When your customer logs out, he will be redirected to this url. If url isn\'t specified, then he will be redirected to Userpanel\'s login screen'] = 'Podczas wylogowania klient zostanie przekierowany pod podany adres. Jeżeli pole jest puste, zostanie wyświetlony ekran logowania do Userpanela';
-
-?>

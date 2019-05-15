@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-interface LMSTariffTagManagerInterface{
+interface LMSTariffTagManagerInterface
+{
     
     public function TarifftagGetId($name);
     
@@ -51,5 +52,4 @@ interface LMSTariffTagManagerInterface{
     public function TarifftagUpdate($tarifftagdata);
     
     public function TarifftagGetAll();
-    
 }

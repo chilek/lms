@@ -44,5 +44,4 @@ class LMSPaginationFactoryTest extends \PHPUnit_Framework_TestCase
         $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, false, null);
         $this->assertInstanceOf('LMSPaginationLong', $pagination);
     }
-    
 }

@@ -38,5 +38,3 @@ $_LANG['Change indexes for phones assigned to your account.'] = 'Zmiana indeksó
 $_LANG['You don\'t have any VoIP account.'] = 'Nie posiadasz kont VoIP.';
 $_LANG['No such data for selected period.'] = 'Brak danych z wybranego okresu.';
 $_LANG['This module shows billing list.'] = 'Ten moduł pokazuje listy billingów telefonicznych.';
-
-?>

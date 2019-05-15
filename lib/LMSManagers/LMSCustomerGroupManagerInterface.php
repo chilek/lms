@@ -26,7 +26,7 @@
 
 /**
  * LMSCustomerGroupManagerInterface
- * 
+ *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSCustomerGroupManagerInterface
@@ -47,7 +47,7 @@ interface LMSCustomerGroupManagerInterface
 
     public function CustomergroupGetAll();
 
-    public function CustomergroupGet($id, $network = NULL);
+    public function CustomergroupGet($id, $network = null);
 
     public function CustomergroupGetList();
 
@@ -63,5 +63,5 @@ interface LMSCustomerGroupManagerInterface
 
     public function CustomerassignmentExist($groupid, $customerid);
 
-    public function GetCustomerWithoutGroupNames($groupid, $network = NULL);
+    public function GetCustomerWithoutGroupNames($groupid, $network = null);
 }

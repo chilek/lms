@@ -24,9 +24,8 @@
  *  $Id$
  */
 
-if($_GET['is_sure']=='1')
-	$LMS->PaymentDelete($_GET['id']);	
+if ($_GET['is_sure']=='1') {
+    $LMS->PaymentDelete($_GET['id']);
+}
 
 $SESSION->redirect('?m=paymentlist');
-
-?>

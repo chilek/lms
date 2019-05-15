@@ -31,15 +31,16 @@ $this->Execute("ALTER TABLE nodegroups ADD prio integer NOT NULL DEFAULT 0");
 $list = $this->GetAll('SELECT id FROM nodegroups');
 
 $prio = 1;
-if($list) foreach($list as $row)
-{    
-	$this->Execute('UPDATE nodegroups SET prio = ? WHERE id = ?',  
-			array($prio ,$row['id']));
-	$prio++;
+if ($list) {
+    foreach ($list as $row) {
+        $this->Execute(
+            'UPDATE nodegroups SET prio = ? WHERE id = ?',
+            array($prio ,$row['id'])
+        );
+        $prio++;
+    }
 }
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2008010700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

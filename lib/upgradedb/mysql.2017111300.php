@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE tariffs ADD COLUMN authtype tinyint(1) DEFAULT 0 NOT
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017111300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

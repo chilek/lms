@@ -2095,4 +2095,3 @@ $_LANG['Delete Voip Account $a'] = 'Zrušiť účet Voip: $a';
 $_LANG['Voip Account Info: $a'] = 'Informácie o účte: $a';
 $_LANG['Voip Account Edit: $a'] = 'Upraviť účet VoIP: $a';
 $_LANG['Voip Accounts ($a):'] = 'VoIP účty ($a)';
-?>

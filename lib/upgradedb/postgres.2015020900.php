@@ -389,5 +389,3 @@ $this->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_netdevicemodel_
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015020900', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

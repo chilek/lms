@@ -40,8 +40,6 @@ $this->Execute("
 ");
 $this->Execute("CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005072000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

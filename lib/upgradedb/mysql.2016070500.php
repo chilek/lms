@@ -27,5 +27,3 @@ $this->Execute("ALTER TABLE voip_cdr ADD UNIQUE (uniqueid)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016070500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

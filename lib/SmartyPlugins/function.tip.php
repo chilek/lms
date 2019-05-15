@@ -24,8 +24,7 @@
  *  $Id$
  */
 
-function smarty_function_tip($params, $template) {
-	return Utils::tip($params, $template);
+function smarty_function_tip($params, $template)
+{
+    return Utils::tip($params, $template);
 }
-
-?>

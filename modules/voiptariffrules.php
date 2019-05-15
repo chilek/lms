@@ -32,9 +32,11 @@ $layout['pagetitle'] = trans('Tariff rule list');
  * \param  array   $groups array with groups
  * \return boolean         query result
  */
-function insertGroups(array $groups) {
-    if (!$groups)
-        return FALSE;
+function insertGroups(array $groups)
+{
+    if (!$groups) {
+        return false;
+    }
 
     $DB = LMSDB::getInstance();
     $r = $DB->Execute('INSERT INTO
@@ -42,7 +44,7 @@ function insertGroups(array $groups) {
                         (rule_group_id, prefix_group_id, settings)
                        VALUES ' . implode(',', $groups));
 
-    return $r ? TRUE : FALSE;
+    return $r ? true : false;
 }
 
 /*!
@@ -51,17 +53,21 @@ function insertGroups(array $groups) {
  * \param  array  $rule array with paramteres
  * \return string       serialized array
  */
-function serializeRuleParams(array $rule) {
+function serializeRuleParams(array $rule)
+{
     $tmp = array();
 
-    if (isset($rule['price']))
+    if (isset($rule['price'])) {
         $tmp['price'] = str_replace(',', '.', $rule['price']);
+    }
 
-    if (isset($rule['units']))
+    if (isset($rule['units'])) {
         $tmp['units'] = str_replace(',', '.', $rule['units']);
+    }
 
-    if (isset($rule['unit_size']))
+    if (isset($rule['unit_size'])) {
         $tmp['unit_size'] = str_replace(',', '.', $rule['unit_size']);
+    }
 
     return serialize($tmp);
 }
@@ -72,7 +78,8 @@ function serializeRuleParams(array $rule) {
  * \param  int   rule id to load
  * \return array
  */
-function getRuleGroups($id) {
+function getRuleGroups($id)
+{
     $DB = LMSDB::getInstance();
     $tmp = $DB->GetAll('SELECT
                             r.id, r.name, r.description, vr.settings,
@@ -114,7 +121,8 @@ function getRuleGroups($id) {
  * \return NULL                 when name doesn't exists or is incorrect
  * \return array                when all it's good
  */
-function getGroupTableRow($name, $def_price='', $def_units='', $def_unit_size='') {
+function getGroupTableRow($name, $def_price = '', $def_units = '', $def_unit_size = '')
+{
 
     $JSResponse = new xajaxResponse();
 
@@ -132,8 +140,8 @@ function getGroupTableRow($name, $def_price='', $def_units='', $def_unit_size=''
 
         global $SMARTY;
         $SMARTY->assign('default', $default);
-        $SMARTY->assign('row_id' , $id);
-        $SMARTY->assign('group'  , $group);
+        $SMARTY->assign('row_id', $id);
+        $SMARTY->assign('group', $group);
 
         $row = $SMARTY->fetch('voipaccount/voiptarifftablerow.html');
 
@@ -157,7 +165,7 @@ if (isset($_GET['ajax'])) {
                            LIMIT 20', array('%'.$search.'%'));
 
     $result = array();
-    if ($candidates)
+    if ($candidates) {
         foreach ($candidates as $idx => $row) {
             $name = $row['item'];
             $name_class = '';
@@ -167,12 +175,13 @@ if (isset($_GET['ajax'])) {
 
             $result[$row['item']] = compact('name', 'name_class', 'description', 'description_class', 'action');
         }
+    }
     header('Content-Type: application/json');
     echo json_encode(array_values($result));
     exit;
 }
 
-$rule    = (isset($_POST['rule'])) ? $_POST['rule'] : NULL;
+$rule    = (isset($_POST['rule'])) ? $_POST['rule'] : null;
 $rule_id = (isset($_GET['id'])) ? (int) $_GET['id'] : 0;
 $error   = array();
 
@@ -185,42 +194,46 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     $DB->Execute('DELETE FROM voip_rules
                   WHERE rule_group_id = ?', array($rule_id));
 
-    $rule    = NULL;
+    $rule    = null;
     $rule_id = 0;
 
     $DB->CommitTrans();
-}
-else if ($rule) {
-    if (!$rule_id)
+} else if ($rule) {
+    if (!$rule_id) {
         $rule_id = $DB->GetOne("SELECT id FROM voip_rule_groups WHERE name = ?", array($rule['name']));
+    }
 
-    if (!$rule['name'])
+    if (!$rule['name']) {
         $error['name'] = trans("Tariff rule name is required!");
-    else if (isset($rule_id) && $rule_id != $rule['id'])
+    } else if (isset($rule_id) && $rule_id != $rule['id']) {
         $error['name'] = trans("Tariff rule with specified name already exists!");
+    }
 
-    if (empty($rule['group']))
+    if (empty($rule['group'])) {
         $error['group_search'] = trans('Tariff rule must contains at least one group!');
-    else {
+    } else {
         foreach ($rule['group'] as $v) {
             $p  = 'price' . $v['ruleid'];
             $u  = 'units' . $v['ruleid'];
             $us = 'unit_size' . $v['ruleid'];
 
-            if (!is_numeric($v['price']) && $v['price'] != '')
+            if (!is_numeric($v['price']) && $v['price'] != '') {
                 $error[$p] = trans("Incorrect value!");
-            else if ($v['price'] < 0)
+            } else if ($v['price'] < 0) {
                 $error[$p] = trans("Number must be positive!");
+            }
 
-            if (!is_numeric($v['units']) && $v['units'] != '')
+            if (!is_numeric($v['units']) && $v['units'] != '') {
                 $error[$u] = trans("Incorrect value!");
-            else if ($v['units'] < 0)
+            } else if ($v['units'] < 0) {
                 $error[$u] = trans("Number must be positive!");
+            }
 
-            if (!is_numeric($v['unit_size']) && $v['unit_size'] != '')
+            if (!is_numeric($v['unit_size']) && $v['unit_size'] != '') {
                 $error[$us] = trans("Incorrect value!");
-            else if ($v['units'] < 0)
+            } else if ($v['units'] < 0) {
                 $error[$us] = trans("Number must be positive!");
+            }
         }
     }
 
@@ -230,36 +243,39 @@ else if ($rule) {
         $new_groups = array();
 
         if (!$rule_id) {
-	        $DB->Execute('INSERT INTO voip_rule_groups (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
+            $DB->Execute('INSERT INTO voip_rule_groups (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
             $rule['id'] = $rule_id = $DB->GetLastInsertID('voip_rule_groups');
 
-  	    	foreach($rule['group'] as $v) {
-  	            $settings = serializeRuleParams($v);
-	       	    $new_groups[] = "($rule_id, " . $v['groupid'] . ",'$settings')";
-	   		}
-	    } else {
-			$DB->Execute('UPDATE voip_rule_groups SET name = ?, description = ? WHERE id = ?',
-				array($rule['name'], $rule['description'], $rule_id));
+            foreach ($rule['group'] as $v) {
+                $settings = serializeRuleParams($v);
+                $new_groups[] = "($rule_id, " . $v['groupid'] . ",'$settings')";
+            }
+        } else {
+            $DB->Execute(
+                'UPDATE voip_rule_groups SET name = ?, description = ? WHERE id = ?',
+                array($rule['name'], $rule['description'], $rule_id)
+            );
 
-	        $dbrules = $DB->GetAllByKey('SELECT id, rule_group_id, prefix_group_id, settings
+            $dbrules = $DB->GetAllByKey('SELECT id, rule_group_id, prefix_group_id, settings
 	                                     FROM voip_rules
 	                                     WHERE rule_group_id = ?', 'id', array($rule_id));
 
-	        foreach ($rule['group'] as $v) {
-	            $settings = serializeRuleParams($v);
+            foreach ($rule['group'] as $v) {
+                $settings = serializeRuleParams($v);
 
-	            if (isset($dbrules[$v['ruleid']])) {
-	                $DB->Execute('UPDATE voip_rules SET settings = ?
+                if (isset($dbrules[$v['ruleid']])) {
+                    $DB->Execute('UPDATE voip_rules SET settings = ?
 	                              WHERE id = ?', array($settings, $v['ruleid']));
-	            }
-	            else
-	                $new_groups[] = "($rule_id, " . $v['groupid'] . ",'$settings')";
-	        }
+                } else {
+                    $new_groups[] = "($rule_id, " . $v['groupid'] . ",'$settings')";
+                }
+            }
 
             foreach ($dbrules as $v) {
-                if (!isset($rule['group'][$v['id']]))
+                if (!isset($rule['group'][$v['id']])) {
                     $DB->Execute('DELETE FROM voip_rules
                                   WHERE id = ?', array($v['id']));
+                }
             }
         }
 
@@ -267,8 +283,7 @@ else if ($rule) {
         $SMARTY->clearAssign('rule');
         $SMARTY->assign('rule', getRuleGroups($rule_id));
     }
-}
-else if (isset($_GET['id']) && $rule_id) {
+} else if (isset($_GET['id']) && $rule_id) {
     $SMARTY->clearAssign('rule');
     $SMARTY->assign('rule', getRuleGroups($rule_id));
 }
@@ -276,5 +291,3 @@ else if (isset($_GET['id']) && $rule_id) {
 $SMARTY->assign('rule_list', $DB->GetAll('SELECT id, name FROM voip_rule_groups'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('voipaccount/voiptariffrules.html');
-
-?>

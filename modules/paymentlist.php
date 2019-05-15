@@ -34,8 +34,6 @@ unset($paymentlist['total']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('paymentlist',$paymentlist);
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('paymentlist', $paymentlist);
+$SMARTY->assign('listdata', $listdata);
 $SMARTY->display('payment/paymentlist.html');
-
-?>

@@ -25,31 +25,37 @@
  */
 
 if (isset($_GET['id'])) {
-	if (is_array($_GET['id']))
-		$ids = $_GET['id'];
-	else
-		$ids = array($_GET['id']);
-	$ids = Utils::filterIntegers($ids);
+    if (is_array($_GET['id'])) {
+        $ids = $_GET['id'];
+    } else {
+        $ids = array($_GET['id']);
+    }
+    $ids = Utils::filterIntegers($ids);
 } elseif (isset($_GET['marks']) && isset($_POST['marks'])) {
-	if ($_GET['marks'] == 'invoice')
-		$marks = $_POST['marks'];
-	else {
-		$marks = array();
-		if (isset($_POST['marks']['invoice']))
-			$marks = $_POST['marks']['invoice'];
-		if (isset($_POST['marks']['note']))
-			$marks = array_merge($marks, $_POST['marks']['note']);
-	}
+    if ($_GET['marks'] == 'invoice') {
+        $marks = $_POST['marks'];
+    } else {
+        $marks = array();
+        if (isset($_POST['marks']['invoice'])) {
+            $marks = $_POST['marks']['invoice'];
+        }
+        if (isset($_POST['marks']['note'])) {
+            $marks = array_merge($marks, $_POST['marks']['note']);
+        }
+    }
 
-	$ids = Utils::filterIntegers($marks);
-	if (!empty($ids) && (!isset($_GET['marks']) || $_GET['marks'] == 'cash'))
-		$ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
+    $ids = Utils::filterIntegers($marks);
+    if (!empty($ids) && (!isset($_GET['marks']) || $_GET['marks'] == 'cash')) {
+        $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
+    }
 }
 
-if (empty($ids))
-	$SESSION->redirect($_SERVER['HTTP_REFERER']);
+if (empty($ids)) {
+    $SESSION->redirect($_SERVER['HTTP_REFERER']);
+}
 
-foreach ($ids as $id)
-	$LMS->DeleteArchiveTradeDocument($id);
+foreach ($ids as $id) {
+    $LMS->DeleteArchiveTradeDocument($id);
+}
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);

@@ -37,314 +37,347 @@ $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-if (!$categories)
-	access_denied();
+if (!$categories) {
+    access_denied();
+}
 
 $allow_empty_categories = ConfigHelper::checkConfig('phpui.helpdesk_allow_empty_categories');
 $empty_category_warning = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_empty_category_warning', true));
 
-if(isset($_POST['ticket']))
-{
-	$ticket = $_POST['ticket'];
-	$queue = $ticket['queue'];
+if (isset($_POST['ticket'])) {
+    $ticket = $_POST['ticket'];
+    $queue = $ticket['queue'];
 
-	$result = handle_file_uploads('files', $error);
-	extract($result);
-	$SMARTY->assign('fileupload', $fileupload);
+    $result = handle_file_uploads('files', $error);
+    extract($result);
+    $SMARTY->assign('fileupload', $fileupload);
 
-	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
-		&& !empty($ticket['verifierid']) && $ticket['verifierid'] == $ticket['owner']) {
-		$error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
-		$error['owner'] = trans('Ticket verifier could not be the same as owner!');
-	};
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_check_owner_verifier_conflict', true))
+        && !empty($ticket['verifierid']) && $ticket['verifierid'] == $ticket['owner']) {
+        $error['verifierid'] = trans('Ticket owner could not be the same as verifier!');
+        $error['owner'] = trans('Ticket verifier could not be the same as owner!');
+    };
 
-	$deadline = datetime_to_timestamp($ticket['deadline']);
-	if ($deadline && $deadline < time())
-		$error['deadline'] = trans('Ticket deadline could not be set in past!');
+    $deadline = datetime_to_timestamp($ticket['deadline']);
+    if ($deadline && $deadline < time()) {
+        $error['deadline'] = trans('Ticket deadline could not be set in past!');
+    }
 
-	if($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid'])
-	{
-		$SESSION->redirect('?m=rtticketadd&id='.$queue);
-	}
+    if ($ticket['subject']=='' && $ticket['body']=='' && !$ticket['custid']) {
+        $SESSION->redirect('?m=rtticketadd&id='.$queue);
+    }
 
-	if (empty($ticket['categories']) && (!$allow_empty_categories || (empty($ticket['categorywarn']) && $empty_category_warning))) {
-		if ($allow_empty_categories) {
-			$ticket['categorywarn'] = 1;
-			$error['categories'] = trans('Category selection is recommended but not required!');
-		} else
-			$error['categories'] = trans('You have to select category!');
-	}
+    if (empty($ticket['categories']) && (!$allow_empty_categories || (empty($ticket['categorywarn']) && $empty_category_warning))) {
+        if ($allow_empty_categories) {
+            $ticket['categorywarn'] = 1;
+            $error['categories'] = trans('Category selection is recommended but not required!');
+        } else {
+            $error['categories'] = trans('You have to select category!');
+        }
+    }
 
-	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2)
-		$error['queue'] = trans('You have no privileges to this queue!');
+    if (($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2) {
+        $error['queue'] = trans('You have no privileges to this queue!');
+    }
 
-	if($ticket['subject'] == '')
-		$error['subject'] = trans('Ticket must have its title!');
+    if ($ticket['subject'] == '') {
+        $error['subject'] = trans('Ticket must have its title!');
+    }
 
-	if($ticket['body'] == '')
-		$error['body'] = trans('Ticket must have its body!');
+    if ($ticket['body'] == '') {
+        $error['body'] = trans('Ticket must have its body!');
+    }
 
-	if($ticket['mail']!='' && !check_email($ticket['mail']))
-		$error['mail'] = trans('Incorrect email!');
+    if ($ticket['mail']!='' && !check_email($ticket['mail'])) {
+        $error['mail'] = trans('Incorrect email!');
+    }
 
-	if(!empty($ticket['requestor_phone']))
-		if(strlen($ticket['requestor_phone']) > 32 )
-			$error['phone'] = trans('Specified phone number is not correct!');
+    if (!empty($ticket['requestor_phone'])) {
+        if (strlen($ticket['requestor_phone']) > 32) {
+            $error['phone'] = trans('Specified phone number is not correct!');
+        }
+    }
 
-	if ((isset($ticket['customerid']) && $ticket['customerid'] !=0 && $ticket['custid'] != $ticket['customerid'])
-		|| (intval($ticket['custid']) && !$LMS->CustomerExists($ticket['custid'])))
-		$error['custid'] = trans('Specified ID is not proper or does not exist!');
-	else {
-		$ticket['customerid'] = $ticket['custid'] ? $ticket['custid'] : 0;
-		if ($ticket['customerid'] && $ticket['address_id'] <= 0) {
-			$addresses = $LMS->getCustomerAddresses($ticket['customerid']);
-			if (count($addresses) > 1 && !$_POST['address_id_warning']) {
-				$error['address_id'] = trans('No address has been selected!');
-				$SMARTY->assign('address_id_warning', 1);
-			}
-		}
-	}
+    if ((isset($ticket['customerid']) && $ticket['customerid'] !=0 && $ticket['custid'] != $ticket['customerid'])
+        || (intval($ticket['custid']) && !$LMS->CustomerExists($ticket['custid']))) {
+        $error['custid'] = trans('Specified ID is not proper or does not exist!');
+    } else {
+        $ticket['customerid'] = $ticket['custid'] ? $ticket['custid'] : 0;
+        if ($ticket['customerid'] && $ticket['address_id'] <= 0) {
+            $addresses = $LMS->getCustomerAddresses($ticket['customerid']);
+            if (count($addresses) > 1 && !$_POST['address_id_warning']) {
+                $error['address_id'] = trans('No address has been selected!');
+                $SMARTY->assign('address_id_warning', 1);
+            }
+        }
+    }
 
-	if ($ticket['requestor_userid'] == '0') {
-		if (empty($ticket['requestor_name']) && empty($ticket['requestor_mail']) && empty($ticket['requestor_phone']))
-			$error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
-				trans('At least requestor name, mail or phone should be filled!');
-	}
+    if ($ticket['requestor_userid'] == '0') {
+        if (empty($ticket['requestor_name']) && empty($ticket['requestor_mail']) && empty($ticket['requestor_phone'])) {
+            $error['requestor_name'] = $error['requestor_mail'] = $error['requestor_phone'] =
+                trans('At least requestor name, mail or phone should be filled!');
+        }
+    }
 
-	$hook_data = $LMS->executeHook('ticketadd_validation_before_submit',
-		array(
-			'ticket' => $ticket,
-			'error' => $error,
-		)
-	);
-	$ticket = $hook_data['ticket'];
-	$error = $hook_data['error'];
+    $hook_data = $LMS->executeHook(
+        'ticketadd_validation_before_submit',
+        array(
+            'ticket' => $ticket,
+            'error' => $error,
+        )
+    );
+    $ticket = $hook_data['ticket'];
+    $error = $hook_data['error'];
 
-	if (!$error) {
-		if (!$ticket['customerid']) {
-			if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '')
-				$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
-				$ticket['requestor_userid'] = $userinfo['id'];
-		}
+    if (!$error) {
+        if (!$ticket['customerid']) {
+            if ($ticket['requestor_name'] == '' && $ticket['requestor_phone'] == '' && $ticket['requestor_mail'] == '') {
+                $userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+            }
+                $ticket['requestor_userid'] = $userinfo['id'];
+        }
 
-		if ($ticket['address_id'] == -1)
-			$ticket['address_id'] = null;
+        if ($ticket['address_id'] == -1) {
+            $ticket['address_id'] = null;
+        }
 
-		if (empty($ticket['nodeid']))
-			$ticket['nodeid'] = null;
+        if (empty($ticket['nodeid'])) {
+            $ticket['nodeid'] = null;
+        }
 
-		if (empty($ticket['netnodeid']))
-			$ticket['netnodeid'] = null;
+        if (empty($ticket['netnodeid'])) {
+            $ticket['netnodeid'] = null;
+        }
 
-		if (empty($ticket['netdevid']))
-			$ticket['netdevid'] = null;
+        if (empty($ticket['netdevid'])) {
+            $ticket['netdevid'] = null;
+        }
 
-        if (empty($ticket['invprojectid']))
+        if (empty($ticket['invprojectid'])) {
             $ticket['invprojectid'] = null;
+        }
 
-		if (!empty($ticket['requestor_userid'])) {
-			$ticket['requestor'] = '';
-			$ticket['requestor_mail'] = null;
-			$ticket['requestor_phone'] = null;
-		} else {
-			$ticket['requestor_userid'] = null;
-			$ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
-			$ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
-			$ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
-		}
+        if (!empty($ticket['requestor_userid'])) {
+            $ticket['requestor'] = '';
+            $ticket['requestor_mail'] = null;
+            $ticket['requestor_phone'] = null;
+        } else {
+            $ticket['requestor_userid'] = null;
+            $ticket['requestor'] = empty($ticket['requestor_name']) ? '' : $ticket['requestor_name'];
+            $ticket['requestor_mail'] = empty($ticket['requestor_mail']) ? null : $ticket['requestor_mail'];
+            $ticket['requestor_phone'] = empty($ticket['requestor_phone']) ? null : $ticket['requestor_phone'];
+        }
 
-		$ticket['verifierid'] = empty($ticket['verifierid']) ? null : $ticket['verifierid'];
-		$ticket['deadline'] = empty($ticket['deadline']) ? null : $deadline;
+        $ticket['verifierid'] = empty($ticket['verifierid']) ? null : $ticket['verifierid'];
+        $ticket['deadline'] = empty($ticket['deadline']) ? null : $deadline;
 
-        if (empty($ticket['type']))
+        if (empty($ticket['type'])) {
             $ticket['type'] = null;
+        }
 
-        if (empty($ticket['service']))
+        if (empty($ticket['service'])) {
             $ticket['service'] = null;
+        }
 
-		$attachments = null;
+        $attachments = null;
 
-		if (!empty($files)) {
-			foreach ($files as &$file) {
-				$attachments[] = array(
-					'content_type' => $file['type'],
-					'filename' => $file['name'],
-					'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
-				);
-				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-			}
-			unset($file);
-		}
-		$id = $LMS->TicketAdd($ticket, $files);
+        if (!empty($files)) {
+            foreach ($files as &$file) {
+                $attachments[] = array(
+                    'content_type' => $file['type'],
+                    'filename' => $file['name'],
+                    'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
+                );
+                $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+            }
+            unset($file);
+        }
+        $id = $LMS->TicketAdd($ticket, $files);
 
-		$hook_data = $LMS->executeHook('ticketadd_after_submit',
-			array(
-				'id' => $id,
-				'ticket' => $ticket,
-			)
-		);
-		$ticket = $hook_data['ticket'];
-		// deletes uploaded files
-		if (!empty($files) && !empty($tmppath))
-			rrmdir($tmppath);
+        $hook_data = $LMS->executeHook(
+            'ticketadd_after_submit',
+            array(
+                'id' => $id,
+                'ticket' => $ticket,
+            )
+        );
+        $ticket = $hook_data['ticket'];
+        // deletes uploaded files
+        if (!empty($files) && !empty($tmppath)) {
+            rrmdir($tmppath);
+        }
 
-		if (isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.newticket_notify')) {
-			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+        if (isset($ticket['notify']) && ConfigHelper::checkConfig('phpui.newticket_notify')) {
+            $user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
-			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
-			if (!empty($helpdesk_sender_name))
-			{
-				$mailfname = $helpdesk_sender_name;
+            $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
+            if (!empty($helpdesk_sender_name)) {
+                $mailfname = $helpdesk_sender_name;
 
-				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
-				elseif($mailfname == 'user') $mailfname = $user['name'];
-				$mailfname = '"'.$mailfname.'"';
-			}
-			else
-				$mailfname = '';
+                if ($mailfname == 'queue') {
+                    $mailfname = $LMS->GetQueueName($queue);
+                } elseif ($mailfname == 'user') {
+                    $mailfname = $user['name'];
+                }
+                $mailfname = '"'.$mailfname.'"';
+            } else {
+                $mailfname = '';
+            }
 
-			$mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
+            $mailfrom = $LMS->DetermineSenderEmail($user['email'], $LMS->GetQueueEmail($ticket['queue']), $ticket['requestor_mail']);
 
-			$ticketdata = $LMS->GetTicketContents($id);
+            $ticketdata = $LMS->GetTicketContents($id);
 
-			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
-			$headers['Reply-To'] = $headers['From'];
-			$headers['Message-ID'] = $LMS->GetLastMessageID();
+            $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+            $headers['Reply-To'] = $headers['From'];
+            $headers['Message-ID'] = $LMS->GetLastMessageID();
 
-			$queuedata = $LMS->GetQueue($queue);
+            $queuedata = $LMS->GetQueue($queue);
 
-			if ($ticket['customerid']) {
-				$info = $LMS->GetCustomer($ticket['customerid'], true);
+            if ($ticket['customerid']) {
+                $info = $LMS->GetCustomer($ticket['customerid'], true);
 
-				$emails = array_map(function($contact) {
-						return $contact['fullname'];
-					}, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
-				$phones = array_map(function($contact) {
-						return $contact['fullname'];
-					}, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
+                $emails = array_map(function ($contact) {
+                        return $contact['fullname'];
+                }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
+                $phones = array_map(function ($contact) {
+                        return $contact['fullname'];
+                }, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
-				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-					$params = array(
-						'id' => $id,
-						'customerid' => $ticket['customerid'],
-						'customer' => $info,
-						'emails' => $emails,
-						'phones' => $phones,
-					);
-					$mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-						ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-					$sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
-						ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
-				}
+                if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                    $params = array(
+                        'id' => $id,
+                        'customerid' => $ticket['customerid'],
+                        'customer' => $info,
+                        'emails' => $emails,
+                        'phones' => $phones,
+                    );
+                    $mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'),
+                        $params
+                    );
+                    $sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(
+                        ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'),
+                        $params
+                    );
+                }
 
-				if (isset($ticket['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
-					&& !empty($emails)) {
-					$ticketid = sprintf("%06d", $id);
-					$custmail_subject = $queuedata['newticketsubject'];
-					$custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
-					$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
-					$custmail_body = $queuedata['newticketbody'];
-					$custmail_body = str_replace('%tid', $ticketid, $custmail_body);
-					$custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
-					$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-					$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-					$custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+                if (isset($ticket['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
+                    && !empty($emails)) {
+                    $ticketid = sprintf("%06d", $id);
+                    $custmail_subject = $queuedata['newticketsubject'];
+                    $custmail_subject = str_replace('%tid', $ticketid, $custmail_subject);
+                    $custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
+                    $custmail_body = $queuedata['newticketbody'];
+                    $custmail_body = str_replace('%tid', $ticketid, $custmail_body);
+                    $custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
+                    $custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+                    $custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+                    $custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
                     $custmail_body = str_replace('%service', $ticket['service'], $custmail_body);
-					$custmail_headers = array(
-						'From' => $headers['From'],
-						'Reply-To' => $headers['From'],
-						'Subject' => $custmail_subject,
-					);
-					foreach ($emails as $email) {
-						$custmail_headers['To'] = '<' . $info['email'] . '>';
-						$LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
-					}
-				}
+                    $custmail_headers = array(
+                        'From' => $headers['From'],
+                        'Reply-To' => $headers['From'],
+                        'Subject' => $custmail_subject,
+                    );
+                    foreach ($emails as $email) {
+                        $custmail_headers['To'] = '<' . $info['email'] . '>';
+                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                    }
+                }
+            } elseif (!empty($requestor) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+                $mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
+                $sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;
+            }
 
-			} elseif (!empty($requestor) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-				$mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
-				$sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;
-			}
+            $params = array(
+                'id' => $id,
+                'queue' => $queuedata['name'],
+                'customerid' => $ticket['customerid'],
+                'status' => $ticketdata['status'],
+                'categories' => $ticketdata['categorynames'],
+                'priority' => $RT_PRIORITIES[$ticketdata['priority']],
+                'deadline' => $ticketdata['deadline'],
+                'service' => $ticketdata['service'],
+                'type' => $ticketdata['type'],
+                'subject' => $ticket['subject'],
+                'body' => $ticket['body'],
+                'attachments' => &$attachments,
+            );
+            $headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
+            $headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+            $params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+            $body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+            $params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+            $sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
-			$params = array(
-				'id' => $id,
-				'queue' => $queuedata['name'],
-				'customerid' => $ticket['customerid'],
-				'status' => $ticketdata['status'],
-				'categories' => $ticketdata['categorynames'],
-				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
-				'deadline' => $ticketdata['deadline'],
-				'service' => $ticketdata['service'],
-				'type' => $ticketdata['type'],
-				'subject' => $ticket['subject'],
-				'body' => $ticket['body'],
-				'attachments' => &$attachments,
-			);
-			$headers['X-Priority'] = $RT_MAIL_PRIORITIES[$ticketdata['priority']];
-			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
-			$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
-			$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
-			$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
-			$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
+            $LMS->NotifyUsers(array(
+                'queue' => $queue,
+                'mail_headers' => $headers,
+                'mail_body' => $body,
+                'sms_body' => $sms_body,
+                'attachments' => &$attachments,
+            ));
+        }
 
-			$LMS->NotifyUsers(array(
-				'queue' => $queue,
-				'mail_headers' => $headers,
-				'mail_body' => $body,
-				'sms_body' => $sms_body,
-				'attachments' => &$attachments,
-			));
-		}
+        $SESSION->redirect('?m=rtticketview&id='.$id);
+    }
+    $SMARTY->assign('error', $error);
 
-		$SESSION->redirect('?m=rtticketview&id='.$id);
-	}
-	$SMARTY->assign('error', $error);
+    $queuelist = $LMS->GetQueueList(array('stats' => false));
 
-	$queuelist = $LMS->GetQueueList(array('stats' => false));
-
-	foreach ($categories as &$category)
-		$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
-	unset($category);
+    foreach ($categories as &$category) {
+        $category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
+    }
+    unset($category);
 } else {
-	$queuelist = $LMS->GetQueueList(array('stats' => false));
-	if (!$queue && !empty($queuelist)) {
-		$firstqueue = reset($queuelist);
-		$queue = $firstqueue['id'];
-		$ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
-		if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody'])
-			$ticket['customernotify'] = 1;
-	} elseif ($queue) {
-		$queuedata = $LMS->GetQueue($queue);
-		$ticket['verifierid'] = empty($queuedata['verifier']) ? 0 : $queuedata['verifier']['id'];
-		if ($queuedata['newticketsubject'] && $queuedata['newticketbody'])
-			$ticket['customernotify'] = 1;
-	}
+    $queuelist = $LMS->GetQueueList(array('stats' => false));
+    if (!$queue && !empty($queuelist)) {
+        $firstqueue = reset($queuelist);
+        $queue = $firstqueue['id'];
+        $ticket['verifierid'] = $LMS->GetQueueVerifier($queue);
+        if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody']) {
+            $ticket['customernotify'] = 1;
+        }
+    } elseif ($queue) {
+        $queuedata = $LMS->GetQueue($queue);
+        $ticket['verifierid'] = empty($queuedata['verifier']) ? 0 : $queuedata['verifier']['id'];
+        if ($queuedata['newticketsubject'] && $queuedata['newticketbody']) {
+            $ticket['customernotify'] = 1;
+        }
+    }
 
-	$queuecategories = $LMS->GetQueueCategories($queue);
-	foreach ($categories as &$category)
-		if (isset($queuecategories[$category['id']]) || count($categories) == 1
-			// handle category id got from welcome module so this category will be selected
-			|| (isset($_GET['catid']) && $category['id'] == intval($_GET['catid'])))
-			$category['checked'] = 1;
-	unset($category);
+    $queuecategories = $LMS->GetQueueCategories($queue);
+    foreach ($categories as &$category) {
+        if (isset($queuecategories[$category['id']]) || count($categories) == 1
+            // handle category id got from welcome module so this category will be selected
+            || (isset($_GET['catid']) && $category['id'] == intval($_GET['catid']))) {
+            $category['checked'] = 1;
+        }
+    }
+    unset($category);
 
-	if (ConfigHelper::checkConfig('phpui.helpdesk_notify'))
-		$ticket['notify'] = TRUE;
+    if (ConfigHelper::checkConfig('phpui.helpdesk_notify')) {
+        $ticket['notify'] = true;
+    }
 
-	$ticket['categorywarn'] = 0;
+    $ticket['categorywarn'] = 0;
 }
 
 $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (!ConfigHelper::checkConfig('phpui.big_networks'))
-	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks')) {
+    $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
+}
 
 if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
-	$SMARTY->assign('nodes', $LMS->GetNodeLocations($ticket['customerid'],
-		isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null));
-	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
+    $SMARTY->assign('nodes', $LMS->GetNodeLocations(
+        $ticket['customerid'],
+        isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null
+    ));
+    $SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
 }
 
 $netnodelist = $LMS->GetNetNodeList(array('short' => true), 'name');
@@ -352,10 +385,11 @@ unset($netnodelist['total']);
 unset($netnodelist['order']);
 unset($netnodelist['direction']);
 
-if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid']))
-	$search = array('netnode' => $ticket['netnodeid']);
-else
-	$search = array();
+if (isset($ticket['netnodeid']) && !empty($ticket['netnodeid'])) {
+    $search = array('netnode' => $ticket['netnodeid']);
+} else {
+    $search = array();
+}
 $search['short'] = true;
 $netdevlist = $LMS->GetNetDevList('name', $search);
 unset($netdevlist['total']);
@@ -388,5 +422,3 @@ $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_REGULAR));
 $SMARTY->assign('notetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue, RTMESSAGE_NOTE));
 $SMARTY->display('rt/rtticketadd.html');
-
-?>

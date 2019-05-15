@@ -25,46 +25,44 @@
  */
 
 $patterns[] = array(
-    'id' => NULL,	// import source identifier (from 'cashsources' table)
+    'id' => null,   // import source identifier (from 'cashsources' table)
     'pattern' => "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/",
-    'pid' => 0,		// customer ID position in expression
-			// if zero - we try to search ID by regexp,
-			// invoice number or customer name and forename in entire line
+    'pid' => 0,     // customer ID position in expression
+            // if zero - we try to search ID by regexp,
+            // invoice number or customer name and forename in entire line
     'extpid' => false, // if true then we treat pid as customer id from external system
 
-    'pname' => 2,	// name position 
-    'plastname' => 3,	// forename position 
-    'pvalue' => 4,	// value position
-    'pcomment' => 5,	// operation comment position
-    'pdate' => 1,  	// date position
-	'srcaccount' => null, // sender bank account position
-	'dstaccount' => null, // receiver bank account position
+    'pname' => 2,   // name position
+    'plastname' => 3,   // forename position
+    'pvalue' => 4,  // value position
+    'pcomment' => 5,    // operation comment position
+    'pdate' => 1,   // date position
+    'srcaccount' => null, // sender bank account position
+    'dstaccount' => null, // receiver bank account position
 
     'date_regexp' => '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/', // date format (dd.mm.yyyy)
     'pday' => 1,
     'pmonth' => 2,
     'pyear' => 3,
 
-    'pid_regexp' => '/.*ID[:\-\/]([0-9]{0,4}).*/i', 	// if 'pid' is not specified
-    							// try to find it by regexp
+    'pid_regexp' => '/.*ID[:\-\/]([0-9]{0,4}).*/i',     // if 'pid' is not specified
+                                // try to find it by regexp
 
     'invoice_regexp' => '/.*(\d+)\/LMS\/([0-9]{4}).*/',// format of invoice number
-							// default %N/LMS/%Y
-    'pinvoice_number' => 1,	// position of invoice number in $invoice_regexp
-    'pinvoice_year' => 2,	// year position in $invoice_regexp
-    'pinvoice_month' => 0,	// month position in $invoice_regexp
+                            // default %N/LMS/%Y
+    'pinvoice_number' => 1, // position of invoice number in $invoice_regexp
+    'pinvoice_year' => 2,   // year position in $invoice_regexp
+    'pinvoice_month' => 0,  // month position in $invoice_regexp
 
-	'comment_replace' => array(
-		'from' => array('/^(.+)$/'),
-		'to' => array('$1 (z rachunku: %srcaccount%, na rachunek: %dstaccount%, od klienta: %customername%)'),
-	),
+    'comment_replace' => array(
+        'from' => array('/^(.+)$/'),
+        'to' => array('$1 (z rachunku: %srcaccount%, na rachunek: %dstaccount%, od klienta: %customername%)'),
+    ),
 
-    'encoding' => 'UTF-8',	// imported data encoding (for conversion)
+    'encoding' => 'UTF-8',  // imported data encoding (for conversion)
 
-    'modvalue' => 0,		// if not zero do value = value * modvalue
-    'use_line_hash' => FALSE,	// create md5 hash for whole import line instead of
-				// time, value, customer name and comment
-    'line_idx_hash' => FALSE,	// include line number into hash data
+    'modvalue' => 0,        // if not zero do value = value * modvalue
+    'use_line_hash' => false,   // create md5 hash for whole import line instead of
+                // time, value, customer name and comment
+    'line_idx_hash' => false,   // include line number into hash data
 );
-
-?>

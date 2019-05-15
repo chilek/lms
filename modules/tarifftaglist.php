@@ -37,4 +37,3 @@ unset($tarifftaglist['totalcount']);
 $SMARTY->assign('tarifftaglist', $tarifftaglist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('tariff/tarifftaglist.html');
-?>

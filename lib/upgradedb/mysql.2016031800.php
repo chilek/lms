@@ -30,4 +30,3 @@ define('CONFIG_TYPE_BOOLEAN', 1);
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'quicksearch_autosubmit', 'true', ?)", array(CONFIG_TYPE_BOOLEAN));
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016031800', 'dbversion'));
 $this->CommitTrans();
-?>

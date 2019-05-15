@@ -25,10 +25,10 @@
  */
 
 if (!$SYSLOG) {
-	$body = trans('Transaction logging is disabled.');
-	$SMARTY->assign('body', $body);
-	$SMARTY->display('dialog.html');
-	die;
+    $body = trans('Transaction logging is disabled.');
+    $SMARTY->assign('body', $body);
+    $SMARTY->display('dialog.html');
+    die;
 }
 
 $type = isset($_GET['type']) ? intval($_GET['type']) : 0;
@@ -36,11 +36,12 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $date = isset($_GET['date']) ? intval($_GET['date']) : 0;
 
 $resource = array(
-	'type' => $type,
-	'id' => $id
+    'type' => $type,
+    'id' => $id
 );
-if (!empty($date))
-	$resource['date'] = $date;
+if (!empty($date)) {
+    $resource['date'] = $date;
+}
 
 $resource['properties'] = $SYSLOG->GetResourceProperties($resource);
 $resource['name'] = SYSLOG::getResourceName($type);
@@ -49,14 +50,14 @@ $resource['name'] = SYSLOG::getResourceName($type);
 //die;
 
 $trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey($type), 'value' => $id));
-if (!empty($trans))
-	foreach ($trans as $idx => $tran)
-		$SYSLOG->DecodeTransaction($trans[$idx]);
+if (!empty($trans)) {
+    foreach ($trans as $idx => $tran) {
+        $SYSLOG->DecodeTransaction($trans[$idx]);
+    }
+}
 $SMARTY->assign('transactions', $trans);
 
 $layout['pagetitle'] = trans('Archived Resource Information');
 
 $SMARTY->assign('resource', $resource);
 $SMARTY->display('archive/archiveinfo.html');
-
-?>

@@ -30,57 +30,62 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (!isset($_POST['event'])) {
        $event = array();
-       if (isset($_GET['datefrom']))
-               $event['datefrom'] = $_GET['datefrom'];
-       if (isset($_GET['dateto']))
-               $event['dateto'] = $_GET['dateto'];
-       if (isset($_GET['ticketid']))
-               $event['ticketid'] = $_GET['ticketid'];
-       if (!empty($event))
-               $_POST['event'] = $event;
+    if (isset($_GET['datefrom'])) {
+            $event['datefrom'] = $_GET['datefrom'];
+    }
+    if (isset($_GET['dateto'])) {
+            $event['dateto'] = $_GET['dateto'];
+    }
+    if (isset($_GET['ticketid'])) {
+            $event['ticketid'] = $_GET['ticketid'];
+    }
+    if (!empty($event)) {
+            $_POST['event'] = $event;
+    }
 }
 
-if(isset($_POST['event']))
-{
-	$event = $_POST['event'];
+if (isset($_POST['event'])) {
+    $event = $_POST['event'];
 
-	if ($event['ticketid'])
-		$event['ticketid'] = intval($event['ticketid']);
+    if ($event['ticketid']) {
+        $event['ticketid'] = intval($event['ticketid']);
+    }
 
-	if($event['datefrom'])
-	{
-		list($year, $month, $day) = explode('/', $event['datefrom']);
-		$event['datefrom'] = mktime(0,0,0, $month, $day, $year);
-	}
+    if ($event['datefrom']) {
+        list($year, $month, $day) = explode('/', $event['datefrom']);
+        $event['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+    }
 
-	if($event['dateto'])
-	{
-		list($year, $month, $day) = explode('/', $event['dateto']);
-		$event['dateto'] = mktime(0,0,0, $month, $day, $year);
-	}
+    if ($event['dateto']) {
+        list($year, $month, $day) = explode('/', $event['dateto']);
+        $event['dateto'] = mktime(0, 0, 0, $month, $day, $year);
+    }
 
-	if($event['custid'])
-		$event['customerid'] = $event['custid'];
-		
-	$eventlist = $LMS->EventSearch($event);
-	$daylist = array();
+    if ($event['custid']) {
+        $event['customerid'] = $event['custid'];
+    }
+        
+    $eventlist = $LMS->EventSearch($event);
+    $daylist = array();
 
-	if(count($eventlist))
-		foreach($eventlist as $event)
-			if(!in_array($event['date'], $daylist))
-				$daylist[] = $event['date'];
-		
-	$SMARTY->assign('eventlist', $eventlist);
-	$SMARTY->assign('daylist', $daylist);
-	$SMARTY->assign('getHolidays', getHolidays($year));
-	$SMARTY->display('event/eventsearchresults.html');
-	$SESSION->close();
-	die;
+    if (count($eventlist)) {
+        foreach ($eventlist as $event) {
+            if (!in_array($event['date'], $daylist)) {
+                $daylist[] = $event['date'];
+            }
+        }
+    }
+        
+    $SMARTY->assign('eventlist', $eventlist);
+    $SMARTY->assign('daylist', $daylist);
+    $SMARTY->assign('getHolidays', getHolidays($year));
+    $SMARTY->display('event/eventsearchresults.html');
+    $SESSION->close();
+    die;
 }
 
-$SMARTY->assign('userlist',$LMS->GetUserNames());
-if (!ConfigHelper::checkConfig('phpui.big_networks'))
-	$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
+$SMARTY->assign('userlist', $LMS->GetUserNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks')) {
+    $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+}
 $SMARTY->display('event/eventsearch.html');
-
-?>

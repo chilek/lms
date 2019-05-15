@@ -29,10 +29,11 @@
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
-interface LMSCashManagerInterface {
-	public function GetCashByID($id);
+interface LMSCashManagerInterface
+{
+    public function GetCashByID($id);
 
-	public function CashImportParseFile($filename, $contents, $patterns, $quiet);
+    public function CashImportParseFile($filename, $contents, $patterns, $quiet);
 
-	public function CashImportCommit();
+    public function CashImportCommit();
 }

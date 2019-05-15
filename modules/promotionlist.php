@@ -44,5 +44,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('promotionlist', $promolist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('promotion/promotionlist.html');
-
-?>

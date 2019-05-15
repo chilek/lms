@@ -26,30 +26,29 @@
 
 global $LMS,$SMARTY,$SESSION,$DB;
 
-if (isset($_GET['aggregate_documents']))
-	$aggregate_documents = !empty($_GET['aggregate_documents']);
-else
-	$aggregate_documents = ConfigHelper::checkConfig('userpanel.aggregate_documents');
+if (isset($_GET['aggregate_documents'])) {
+    $aggregate_documents = !empty($_GET['aggregate_documents']);
+} else {
+    $aggregate_documents = ConfigHelper::checkConfig('userpanel.aggregate_documents');
+}
 
 $balance = $LMS->GetCustomerBalanceList($SESSION->id, null, 'ASC', $aggregate_documents);
 $userinfo = $LMS->GetCustomer($SESSION->id);
 $assignments = $LMS->GetCustomerAssignments($SESSION->id);
 
-if(isset($balance['docid']))
-	foreach($balance['docid'] as $idx => $val)
-	{
-		if($balance['doctype'][$idx] == 1)
-		{
-			if($number = $LMS->docnumber($val))
-				$balance['number'][$idx] = trans('Invoice No. $a', $number);
-		}
-	}
+if (isset($balance['docid'])) {
+    foreach ($balance['docid'] as $idx => $val) {
+        if ($balance['doctype'][$idx] == 1) {
+            if ($number = $LMS->docnumber($val)) {
+                $balance['number'][$idx] = trans('Invoice No. $a', $number);
+            }
+        }
+    }
+}
 
-$SMARTY->assign('custom_content','');
+$SMARTY->assign('custom_content', '');
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('balancelist', $balance);
 $SMARTY->assign('aggregate_documents', $aggregate_documents);
 $SMARTY->assign('assignments', $assignments);
 $SMARTY->display('module:finances.html');
-
-?>

@@ -30,17 +30,19 @@
  * Time: 08:08
  */
 
-function smarty_block_tab_hourglass($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$content = '<div class="lms-ui-tab-hourglass">
+function smarty_block_tab_hourglass($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        $content = '<div class="lms-ui-tab-hourglass">
 						<i></i>' . $content . '
 					</div>';
 
-		if (isset($params['template']) && $params['template'])
-			return '<div class="lms-ui-tab-hourglass-template">
+        if (isset($params['template']) && $params['template']) {
+            return '<div class="lms-ui-tab-hourglass-template">
 						' . $content . '
 					</div>';
-		else
-			return $content;
-	}
+        } else {
+            return $content;
+        }
+    }
 }

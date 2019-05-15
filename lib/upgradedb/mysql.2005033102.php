@@ -25,6 +25,4 @@
  */
 
 $this->Execute("ALTER TABLE passwd ADD createtime INT DEFAULT 0 NOT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033102', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005033102', 'dbversion'));

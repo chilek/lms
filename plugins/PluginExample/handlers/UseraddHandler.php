@@ -34,7 +34,7 @@ class UseraddHandler
 {
     /**
      * Example of additional validation
-     * 
+     *
      * @param mixed $hook_data
      * @return mixed
      */
@@ -48,7 +48,7 @@ class UseraddHandler
     
     /**
      * Example of additional logging
-     * 
+     *
      * @param mixed $hook_data
      * @return null
      */
@@ -57,5 +57,4 @@ class UseraddHandler
         error_log("User with id $hook_data added");
         return $hook_data;
     }
-    
 }

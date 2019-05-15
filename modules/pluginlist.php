@@ -27,17 +27,18 @@
 $layout['pagetitle'] = trans('Plugin List');
 
 $plugins_config = ConfigHelper::getConfig('phpui.plugins', null, true);
-if (is_null($plugins_config))
-	$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
-		array('phpui', 'plugins', ''));
+if (is_null($plugins_config)) {
+    $DB->Execute(
+        "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
+        array('phpui', 'plugins', '')
+    );
+}
 
 if (isset($_POST['plugins'])) {
-	$postdata = $_POST['plugins'];
-	$plugin_manager->enablePlugin($postdata['name'], $postdata['toggle'] ? true : false);
-	$SESSION->redirect('?m=pluginlist');
+    $postdata = $_POST['plugins'];
+    $plugin_manager->enablePlugin($postdata['name'], $postdata['toggle'] ? true : false);
+    $SESSION->redirect('?m=pluginlist');
 }
 
 $SMARTY->assign('plugins', $plugin_manager->getAllPluginInfo());
 $SMARTY->display('pluginlist.html');
-
-?>

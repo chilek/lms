@@ -35,7 +35,7 @@ class UiConfigProvider implements ConfigProviderInterface
     
     /**
      * Return uiconfig database table
-     * 
+     *
      * @param array $options Associative array of options
      * @return array
      */

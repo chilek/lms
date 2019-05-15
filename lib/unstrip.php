@@ -26,25 +26,23 @@
 
 function r_stripslashes($string)
 {
-	if(isset($string))
-	{
-		foreach($string as $key => $value)
-		{
-			if(is_array($value))
-				$string[$key] = r_stripslashes($value);
-			else
-				$string[$key] = stripslashes($value);
-		}
+    if (isset($string)) {
+        foreach ($string as $key => $value) {
+            if (is_array($value)) {
+                $string[$key] = r_stripslashes($value);
+            } else {
+                $string[$key] = stripslashes($value);
+            }
+        }
 
-		return $string;
-	}
-	else
-		return FALSE;
+        return $string;
+    } else {
+        return false;
+    }
 }
 
-if(get_magic_quotes_gpc())
-	$_POST = r_stripslashes($_POST);
+if (get_magic_quotes_gpc()) {
+    $_POST = r_stripslashes($_POST);
+}
 
-$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:","",$_SERVER['REMOTE_ADDR']);
-
-?>
+$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:", "", $_SERVER['REMOTE_ADDR']);

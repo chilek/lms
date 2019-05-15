@@ -42,5 +42,3 @@ $_LANG['Submit'] = 'Uložiť';
 $_LANG['This module is for showing bandwidth utilization stats'] = 'Tento modul je určený pre zobrazovanie štatistiky o využívaní odkazu';
 $_LANG['Total:'] = 'Celkom:';
 $_LANG['Upload'] = 'Upload';
-
-?>

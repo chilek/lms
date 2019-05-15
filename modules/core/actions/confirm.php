@@ -29,5 +29,3 @@ $layout['pagetitle'] = trans('Question');
 $SMARTY->assign('text', stripslashes($_GET['text']));
 $SMARTY->assign('href', $_GET['link']);
 $SMARTY->display('confirm.html');
-
-?>

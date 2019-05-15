@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE events ADD closeddate int(11) NOT NULL DEFAULT 0");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016071200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

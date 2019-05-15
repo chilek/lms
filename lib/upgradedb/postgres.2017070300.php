@@ -44,11 +44,11 @@ $RT_SOURCES = array(
         RT_SOURCE_SMS => trans('SMS'),
 );
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
-	array('userpanel', 'visible_ticket_sources', implode(';', array_keys($RT_SOURCES))));
+$this->Execute(
+    "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
+    array('userpanel', 'visible_ticket_sources', implode(';', array_keys($RT_SOURCES)))
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

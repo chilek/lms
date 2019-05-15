@@ -33,5 +33,3 @@ $this->Execute("UPDATE uiconfig SET section = 'mail'
 $this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

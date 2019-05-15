@@ -52,5 +52,3 @@ $this->Execute("INSERT INTO countries (name) VALUES ('Slovakia')");
 $this->Execute("INSERT INTO countries (name) VALUES ('USA')");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008112400', 'dbversion'));
-
-?>

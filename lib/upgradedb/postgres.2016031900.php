@@ -26,4 +26,3 @@ define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'ping_type', '1', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER));
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016031900', 'dbversion'));
 $this->CommitTrans();
-?>

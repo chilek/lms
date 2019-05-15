@@ -40,5 +40,3 @@ $this->Execute("ALTER TABLE tariffs ALTER dlimit SET DEFAULT 0");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007012500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

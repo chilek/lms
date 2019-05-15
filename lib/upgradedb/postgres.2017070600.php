@@ -27,5 +27,3 @@ $this->Execute("ALTER TABLE netnodes ADD COLUMN info text DEFAULT NULL");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

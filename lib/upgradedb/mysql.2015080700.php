@@ -33,18 +33,24 @@ $CONTACT_EMAIL = 8;
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE customercontacts CHANGE phone contact varchar(255) NOT NULL DEFAULT ''");
-$this->Execute("UPDATE customercontacts SET type = type | ? WHERE type = 0 OR type = ?",
-	array($CONTACT_LANDLINE, $CONTACT_FAX));
-$this->Execute("UPDATE customercontacts SET type = ? WHERE type IS NULL",
-	array($CONTACT_LANDLINE));
+$this->Execute(
+    "UPDATE customercontacts SET type = type | ? WHERE type = 0 OR type = ?",
+    array($CONTACT_LANDLINE, $CONTACT_FAX)
+);
+$this->Execute(
+    "UPDATE customercontacts SET type = ? WHERE type IS NULL",
+    array($CONTACT_LANDLINE)
+);
 
 $customers = $this->GetAll("SELECT id, email FROM customers WHERE email <> ''");
 if (!empty($customers)) {
-	$records = array();
-	foreach ($customers as $customer)
-		$records[] = sprintf('(%d, \'%s\', %d)', $customer['id'], $customer['email'], $CONTACT_EMAIL);
-	if (!empty($records))
-		$this->Execute("INSERT INTO customercontacts (customerid, contact, type) VALUES " . implode(',', $records));
+    $records = array();
+    foreach ($customers as $customer) {
+        $records[] = sprintf('(%d, \'%s\', %d)', $customer['id'], $customer['email'], $CONTACT_EMAIL);
+    }
+    if (!empty($records)) {
+        $this->Execute("INSERT INTO customercontacts (customerid, contact, type) VALUES " . implode(',', $records));
+    }
 }
 
 $this->Execute("DROP VIEW IF EXISTS customersview");
@@ -64,5 +70,3 @@ $this->Execute("CREATE VIEW contractorview AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015080700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

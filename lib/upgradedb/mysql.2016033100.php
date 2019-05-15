@@ -34,9 +34,7 @@ $this->Execute("CREATE VIEW vnetworks AS
 					LEFT JOIN networks ne ON (ne.id = no.netid)
 					LEFT JOIN hosts h ON (h.id = ne.hostid)
 					WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;");
-	
+    
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016033100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

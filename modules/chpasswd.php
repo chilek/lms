@@ -26,45 +26,42 @@
 
 $id = Auth::GetCurrentUser();
 
-if ($LMS->UserExists($id))
-{
-	if (isset($_POST['passwd']))
-	{
-		$passwd = $_POST['passwd'];
+if ($LMS->UserExists($id)) {
+    if (isset($_POST['passwd'])) {
+        $passwd = $_POST['passwd'];
 
-		if ($passwd['passwd'] == '' || $passwd['confirm'] == '')
-			$error['password'] = trans('Empty passwords are not allowed!');
-		elseif ($passwd['passwd'] != $passwd['confirm'])
-			$error['password'] = trans('Passwords does not match!');
-		elseif (!check_password_strength($passwd['passwd']))
-			$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
-		elseif ($LMS->PasswdExistsInHistory($id, $passwd['passwd']))
-			$error['password'] = trans('You already used this password!');
-		
-		if (!$error)
-		{
-			$oldpasswd = $LMS->DB->GetOne('SELECT passwd FROM users WHERE id = ?', array($id));
-			list (, $alg, $salt) = explode('$', $oldpasswd);
-			$newpasswd = crypt($passwd['passwd'], '$' . $alg . '$' . $salt . '$');
-			if ($newpasswd == $oldpasswd)
-				$error['password'] = $error['confirm'] = trans('New password is the same as old password!');
-			if (!$error) {
-				$LMS->SetUserPassword($id, $passwd['passwd']);
-				$SESSION->save('session_passwdrequiredchange', FALSE);
-				header('Location: ?' . $SESSION->get('backto'));
-			}
-		}
-	}
+        if ($passwd['passwd'] == '' || $passwd['confirm'] == '') {
+            $error['password'] = trans('Empty passwords are not allowed!');
+        } elseif ($passwd['passwd'] != $passwd['confirm']) {
+            $error['password'] = trans('Passwords does not match!');
+        } elseif (!check_password_strength($passwd['passwd'])) {
+            $error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
+        } elseif ($LMS->PasswdExistsInHistory($id, $passwd['passwd'])) {
+            $error['password'] = trans('You already used this password!');
+        }
+        
+        if (!$error) {
+            $oldpasswd = $LMS->DB->GetOne('SELECT passwd FROM users WHERE id = ?', array($id));
+            list (, $alg, $salt) = explode('$', $oldpasswd);
+            $newpasswd = crypt($passwd['passwd'], '$' . $alg . '$' . $salt . '$');
+            if ($newpasswd == $oldpasswd) {
+                $error['password'] = $error['confirm'] = trans('New password is the same as old password!');
+            }
+            if (!$error) {
+                $LMS->SetUserPassword($id, $passwd['passwd']);
+                $SESSION->save('session_passwdrequiredchange', false);
+                header('Location: ?' . $SESSION->get('backto'));
+            }
+        }
+    }
 
-	$passwd['id'] = $id;
-	$layout['pagetitle'] = trans('Password Change');
+    $passwd['id'] = $id;
+    $layout['pagetitle'] = trans('Password Change');
 
-	$SMARTY->assign('passwd', $passwd);
-	$SMARTY->assign('error', $error);
-	$SMARTY->assign('target', '?m=chpasswd');
-	$SMARTY->display('user/userpasswd.html');
+    $SMARTY->assign('passwd', $passwd);
+    $SMARTY->assign('error', $error);
+    $SMARTY->assign('target', '?m=chpasswd');
+    $SMARTY->display('user/userpasswd.html');
+} else {
+    $SESSION->redirect('?m=' . $SESSION->get('lastmodule'));
 }
-else
-	$SESSION->redirect('?m=' . $SESSION->get('lastmodule'));
-
-?>

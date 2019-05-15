@@ -29,15 +29,11 @@
 $this->Execute("
     BEGIN;
     ALTER TABLE invoicecontents ALTER taxvalue DROP NOT NULL;
-    COMMIT"
-);
+    COMMIT");
 
 $this->Execute("
     BEGIN;
     ALTER TABLE tariffs ALTER taxvalue DROP NOT NULL;
-    COMMIT"
-);
+    COMMIT");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004040701', 'dbversion'));
-
-?>

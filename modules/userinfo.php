@@ -27,18 +27,21 @@
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $userinfo = $LMS->GetUserInfo($id);
 
-if (!$userinfo || $userinfo['deleted'])
-	$SESSION->redirect('?m=userlist');
+if (!$userinfo || $userinfo['deleted']) {
+    $SESSION->redirect('?m=userlist');
+}
 
 $rights = $LMS->GetUserRights($id);
 $access = AccessRights::getInstance();
 $accesslist = $access->getArray($rights);
 
 $ntype = array();
-if ($userinfo['ntype'] & MSG_MAIL)
+if ($userinfo['ntype'] & MSG_MAIL) {
     $ntype[] = trans('email');
-if ($userinfo['ntype'] & MSG_SMS)
+}
+if ($userinfo['ntype'] & MSG_SMS) {
     $ntype[] = trans('sms');
+}
 $userinfo['ntype'] = implode(', ', $ntype);
 
 $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
@@ -46,12 +49,14 @@ $layout['pagetitle'] = trans('User Info: $a', $userinfo['login']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-	$trans = $SYSLOG->GetTransactions(array('userid' => $id));
-	if (!empty($trans))
-		foreach ($trans as $idx => $tran)
-			$SYSLOG->DecodeTransaction($trans[$idx]);
-	$SMARTY->assign('transactions', $trans);
-	$SMARTY->assign('userid', $id);
+    $trans = $SYSLOG->GetTransactions(array('userid' => $id));
+    if (!empty($trans)) {
+        foreach ($trans as $idx => $tran) {
+            $SYSLOG->DecodeTransaction($trans[$idx]);
+        }
+    }
+    $SMARTY->assign('transactions', $trans);
+    $SMARTY->assign('userid', $id);
 }
 
 $SMARTY->assign('userinfo', $userinfo);
@@ -61,5 +66,3 @@ $SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customer
 					    ORDER BY name', array($userinfo['id'])));
 
 $SMARTY->display('user/userinfo.html');
-
-?>

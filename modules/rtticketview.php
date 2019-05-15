@@ -24,102 +24,113 @@
  *  $Id$
  */
 
-if(! $LMS->TicketExists($_GET['id']))
-	$SESSION->redirect('?m=rtqueuelist');
-else
-	$id = $_GET['id'];
+if (! $LMS->TicketExists($_GET['id'])) {
+    $SESSION->redirect('?m=rtqueuelist');
+} else {
+    $id = $_GET['id'];
+}
 
-if (!$LMS->CheckTicketAccess($id))
-	access_denied();
+if (!$LMS->CheckTicketAccess($id)) {
+    access_denied();
+}
 
 $ticket = $LMS->GetTicketContents($id);
 $ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
 
-if(!empty($ticket['relatedtickets']))
-	foreach($ticket['relatedtickets'] as $rid)
-	{
-		$relatedticketscontent[] = $LMS->GetTicketContents($rid);
-	}
+if (!empty($ticket['relatedtickets'])) {
+    foreach ($ticket['relatedtickets'] as $rid) {
+        $relatedticketscontent[] = $LMS->GetTicketContents($rid);
+    }
+}
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
-if (empty($categories))
-	$categories = array();
+if (empty($categories)) {
+    $categories = array();
+}
 
-if($ticket['deluserid'])
-	$ticket['delusername'] = $LMS->GetUserName($ticket['deluserid']);
+if ($ticket['deluserid']) {
+    $ticket['delusername'] = $LMS->GetUserName($ticket['deluserid']);
+}
 
 if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) {
-	$yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
-	//$del = 0;
-	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets
+    $yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
+    //$del = 0;
+    $stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets
 				WHERE 1=1'
-				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rttickets.deleted = 0' : '')
-				. ' AND customerid = ? AND createtime >= ?'
-				. ' GROUP BY cause', 'cause', array($ticket['customerid'], $yearago));
+                . (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rttickets.deleted = 0' : '')
+                . ' AND customerid = ? AND createtime >= ?'
+                . ' GROUP BY cause', 'cause', array($ticket['customerid'], $yearago));
 
-	$SMARTY->assign('stats', $stats);
+    $SMARTY->assign('stats', $stats);
 }
 
 if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-	$customer = $LMS->GetCustomer($ticket['customerid'], true);
-	$customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
+    $customer = $LMS->GetCustomer($ticket['customerid'], true);
+    $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
 
-	if(!empty($customer['contacts'])) $customer['phone'] = $customer['contacts'][0]['phone'];
+    if (!empty($customer['contacts'])) {
+        $customer['phone'] = $customer['contacts'][0]['phone'];
+    }
 
-	$customernodes = $LMS->GetCustomerNodes($ticket['customerid']);
-	$allnodegroups = $LMS->GetNodeGroupNames();
+    $customernodes = $LMS->GetCustomerNodes($ticket['customerid']);
+    $allnodegroups = $LMS->GetNodeGroupNames();
 
-	$SMARTY->assign('customerinfo', $customer);
-	$SMARTY->assign('customernodes', $customernodes);
-	$SMARTY->assign('allnodegroups', $allnodegroups);
+    $SMARTY->assign('customerinfo', $customer);
+    $SMARTY->assign('customernodes', $customernodes);
+    $SMARTY->assign('allnodegroups', $allnodegroups);
 }
 
 $iteration = $LMS->GetQueueContents(array('ids' => $ticket['queueid'], 'order' => 'createtime,desc',
-	'state' => -1, 'priority' => null, 'owner' => -1, 'catids' => null));
+    'state' => -1, 'priority' => null, 'owner' => -1, 'catids' => null));
 
 if (!empty($iteration['total'])) {
-	foreach ($iteration as $idx => $element)
-		if (isset($element['id']) && intval($element['id']) == intval($_GET['id'])) {
-			$next_ticketid = isset($iteration[$idx + 1]) ? $iteration[$idx + 1]['id'] : 0;
-			$prev_ticketid = isset($iteration[$idx - 1]) ? $iteration[$idx - 1]['id'] : 0;
-			break;
-		}
-	$ticket['next_ticketid'] = $next_ticketid;
-	$ticket['prev_ticketid'] = $prev_ticketid;
+    foreach ($iteration as $idx => $element) {
+        if (isset($element['id']) && intval($element['id']) == intval($_GET['id'])) {
+            $next_ticketid = isset($iteration[$idx + 1]) ? $iteration[$idx + 1]['id'] : 0;
+            $prev_ticketid = isset($iteration[$idx - 1]) ? $iteration[$idx - 1]['id'] : 0;
+            break;
+        }
+    }
+    $ticket['next_ticketid'] = $next_ticketid;
+    $ticket['prev_ticketid'] = $prev_ticketid;
 }
 
-foreach ($categories as $category)
-{
-	$category['checked'] = isset($ticket['categories'][$category['id']]);
-	$ncategories[] = $category;
+foreach ($categories as $category) {
+    $category['checked'] = isset($ticket['categories'][$category['id']]);
+    $ncategories[] = $category;
 }
 $categories = $ncategories;
 $assignedevents = $LMS->GetEventsByTicketId($id);
 
 $LMS->MarkTicketAsRead($id);
 
-$layout['pagetitle'] = trans('Ticket Review: $a',sprintf("%06d", $ticket['ticketid']));
+$layout['pagetitle'] = trans('Ticket Review: $a', sprintf("%06d", $ticket['ticketid']));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 
 if (isset($_GET['highlight'])) {
-	$highlight = $_GET['highlight'];
-	if (isset($highlight['regexp']))
-		foreach ($ticket['messages'] as &$message)
-			$message['body'] = preg_replace('/(' . $highlight['pattern'] . ')/i',
-			'[matched-text]$1[/matched-text]', $message['body']);
-	else
-		foreach ($ticket['messages'] as &$message) {
-			$offset = 0;
-			while (($pos = mb_stripos($message['body'], $highlight['pattern'], $offset)) !== false) {
-				$message['body'] = mb_substr($message['body'], 0, $pos)
-					. '[matched-text]' . mb_substr($message['body'], $pos, mb_strlen($highlight['pattern']))
-					. '[/matched-text]' . mb_substr($message['body'], $pos + mb_strlen($highlight['pattern']));
-				$offset = $pos + strlen('[matched-text][/matched-text]') + mb_strlen($highlight['pattern']) + 1;
-			}
-		}
-	unset($message);
+    $highlight = $_GET['highlight'];
+    if (isset($highlight['regexp'])) {
+        foreach ($ticket['messages'] as &$message) {
+            $message['body'] = preg_replace(
+                '/(' . $highlight['pattern'] . ')/i',
+                '[matched-text]$1[/matched-text]',
+                $message['body']
+            );
+        }
+    } else {
+        foreach ($ticket['messages'] as &$message) {
+            $offset = 0;
+            while (($pos = mb_stripos($message['body'], $highlight['pattern'], $offset)) !== false) {
+                $message['body'] = mb_substr($message['body'], 0, $pos)
+                . '[matched-text]' . mb_substr($message['body'], $pos, mb_strlen($highlight['pattern']))
+                . '[/matched-text]' . mb_substr($message['body'], $pos + mb_strlen($highlight['pattern']));
+                $offset = $pos + strlen('[matched-text][/matched-text]') + mb_strlen($highlight['pattern']) + 1;
+            }
+        }
+    }
+        unset($message);
 }
 
 $SMARTY->assign('ticket', $ticket);
@@ -128,5 +139,3 @@ $SMARTY->assign('relatedticketscontent', $relatedticketscontent);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);
 $SMARTY->display('rt/rtticketview.html');
-
-?>

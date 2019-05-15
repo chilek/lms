@@ -42,5 +42,3 @@ $_LANG['Submit'] = 'Zapisz';
 $_LANG['This module is for showing bandwidth utilization stats'] = 'Ten moduł pokazuje statystki zajęcia łącza';
 $_LANG['Total:'] = 'Razem:';
 $_LANG['Upload'] = 'Upload';
-
-?>

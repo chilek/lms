@@ -88,5 +88,3 @@ CREATE VIEW customeraddressview AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017051201', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

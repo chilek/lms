@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE cashimport CHANGE customer customer text NOT NULL DE
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

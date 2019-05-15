@@ -26,24 +26,24 @@
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!$LMS->CustomerExists($_GET['id']))
-	header('Location: ?m=customerlist');
+if (!$LMS->CustomerExists($_GET['id'])) {
+    header('Location: ?m=customerlist');
+}
 
 $customername = $LMS->GetCustomerName($_GET['id']);
 $id = $_GET['id'];
 
 $layout['pagetitle'] = trans('Customer Balance: $a', '<A HREF="?m=customerinfo&id='.$_GET['id'].'">'.$customername.'</A>');
 
-if (isset($_GET['aggregate_documents']))
-	$aggregate_documents = !empty($_GET['aggregate_documents']);
-else
-	$aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
+if (isset($_GET['aggregate_documents'])) {
+    $aggregate_documents = !empty($_GET['aggregate_documents']);
+} else {
+    $aggregate_documents = ConfigHelper::checkConfig('phpui.aggregate_documents');
+}
 
 $SMARTY->assign('aggregate_documents', $aggregate_documents);
 $SMARTY->assign('balancelist', $LMS->GetCustomerBalanceList($_GET['id'], null, false, $aggregate_documents));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('customername',$customername);
-$SMARTY->assign('id',$id);
+$SMARTY->assign('customername', $customername);
+$SMARTY->assign('id', $id);
 $SMARTY->display('customer/customerbalance.html');
-
-?>

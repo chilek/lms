@@ -32,10 +32,11 @@ $nodes = $DB->GetAll('SELECT n.id, n.name, n.mac,
     JOIN ewx_stm_channels c ON (s.channelid = c.id)
     WHERE c.cid = ?', array($_GET['id']));
 
-if ($nodes) foreach($nodes as $idx => $row)
-    $nodes[$idx]['lastonlinedate'] = lastonline_date($row['lastonline']);
+if ($nodes) {
+    foreach ($nodes as $idx => $row) {
+        $nodes[$idx]['lastonlinedate'] = lastonline_date($row['lastonline']);
+    }
+}
 
 $SMARTY->assign('customernodes', $nodes);
 $SMARTY->display('node/nodelistshort.html');
-
-?>

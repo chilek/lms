@@ -24,47 +24,53 @@
  *  $Id$
  */
 
-if(isset($_POST['category']))
-{
-	$category = $_POST['category'];
+if (isset($_POST['category'])) {
+    $category = $_POST['category'];
 
-	if($category['name']=='' && $category['description']=='')
-	{
-		$SESSION->redirect('?m=rtcategorylist');
-	}
+    if ($category['name']=='' && $category['description']=='') {
+        $SESSION->redirect('?m=rtcategorylist');
+    }
 
-	if($category['name'] == '')
-		$error['name'] = trans('Category name must be defined!');
+    if ($category['name'] == '') {
+        $error['name'] = trans('Category name must be defined!');
+    }
 
-	if($category['name'] != '' && $LMS->GetCategoryIdByName($category['name']))
-		$error['name'] = trans('Category with specified name already exists!');
+    if ($category['name'] != '' && $LMS->GetCategoryIdByName($category['name'])) {
+        $error['name'] = trans('Category with specified name already exists!');
+    }
 
-	if(isset($category['users']))
-		foreach($category['users'] as $key => $value)
-			$category['owners'][] = array('id' => $key, 'value' => $value);
+    if (isset($category['users'])) {
+        foreach ($category['users'] as $key => $value) {
+            $category['owners'][] = array('id' => $key, 'value' => $value);
+        }
+    }
 
-	if(!$error)
-	{
-		$DB->Execute('INSERT INTO rtcategories (name, description, style) VALUES (?, ?, ?)',
-				array(trim($category['name']), $category['description'], $category['style']));
+    if (!$error) {
+        $DB->Execute(
+            'INSERT INTO rtcategories (name, description, style) VALUES (?, ?, ?)',
+            array(trim($category['name']), $category['description'], $category['style'])
+        );
 
-		$id = $DB->GetLastInsertId('rtcategories');
+        $id = $DB->GetLastInsertId('rtcategories');
 
-		if(isset($category['owners']) && $id)
-			foreach ($category['owners'] as $val)
-				$DB->Execute('INSERT INTO rtcategoryusers(userid, categoryid) VALUES(?, ?)', 
-					array($val['id'], $id));
+        if (isset($category['owners']) && $id) {
+            foreach ($category['owners'] as $val) {
+                $DB->Execute(
+                    'INSERT INTO rtcategoryusers(userid, categoryid) VALUES(?, ?)',
+                    array($val['id'], $id)
+                );
+            }
+        }
 
-		$SESSION->redirect('?m=rtcategoryinfo&id='.$id);
-	}
+        $SESSION->redirect('?m=rtcategoryinfo&id='.$id);
+    }
 }
 
 $users = $LMS->GetUserNames();
 
-foreach($users as $user) 
-{
-	$user['owner'] = isset($category['users'][$user['id']]);
-	$category['nowners'][] = $user;
+foreach ($users as $user) {
+    $user['owner'] = isset($category['users'][$user['id']]);
+    $category['nowners'][] = $user;
 }
 $category['owners'] = $category['nowners'];
 
@@ -75,5 +81,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('category', $category);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtcategoryadd.html');
-
-?>

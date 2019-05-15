@@ -38,5 +38,3 @@ $this->Execute("ALTER TABLE location_buildings DROP COLUMN flats");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017030100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

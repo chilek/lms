@@ -23,11 +23,11 @@
 
 $this->BeginTrans();
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
-	array('userpanel', 'allow_reopen_tickets_newer_than', '0'));
+$this->Execute(
+    "INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
+    array('userpanel', 'allow_reopen_tickets_newer_than', '0')
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018012200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

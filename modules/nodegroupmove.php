@@ -27,20 +27,23 @@
 $from = !empty($_GET['from']) ? intval($_GET['from']) : 0;
 $to = !empty($_GET['to']) ? intval($_GET['to']) : 0;
 
-if($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from)) 
-	&& $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($to)) 
-	&& $_GET['is_sure'] == 1)
-{
-	$DB->BeginTrans();
-	
-	if ($SYSLOG)
-		$nids = $DB->GetCol('SELECT noderid FROM nodegroupassignments a
+if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
+    && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($to))
+    && $_GET['is_sure'] == 1) {
+    $DB->BeginTrans();
+    
+    if ($SYSLOG) {
+        $nids = $DB->GetCol(
+            'SELECT noderid FROM nodegroupassignments a
 				WHERE a.nodegroupid = ?
 				AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga
 					WHERE nga.nodegroupid = a.nodegroupid AND nga.nodegroupid = ?)',
-				array($from, $to));
+            array($from, $to)
+        );
+    }
 
-	$DB->Execute('INSERT INTO nodegroupassignments (nodegroupid, nodeid)
+    $DB->Execute(
+        'INSERT INTO nodegroupassignments (nodegroupid, nodeid)
 			SELECT ?, nodeid 
 			FROM nodegroupassignments a
 			JOIN nodes n ON (a.nodeid = n.id)
@@ -48,39 +51,39 @@ if($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 			WHERE a.nodegroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM nodegroupassignments na
 				WHERE na.nodeid = a.nodeid AND na.nodegroupid = ?)',
-			array($to, $from, $to));
+        array($to, $from, $to)
+    );
 
-	if ($SYSLOG && $nids) {
-		foreach ($nids as $nid) {
-			$aid = $DB->GetOne('SELECT a.id FROM nodegroupassignments a
+    if ($SYSLOG && $nids) {
+        foreach ($nids as $nid) {
+            $aid = $DB->GetOne('SELECT a.id FROM nodegroupassignments a
 				WHERE a.nodeid = ? AND a.nodegroupid = ?', array($nid, $to));
-			$args = array(
-				SYSLOG::RES_NODEGROUPASSIGN => $aid,
-				SYSLOG::RES_NODE => $nid,
-				SYSLOG::RES_NODEGROUP => $to
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
-		}
+            $args = array(
+                SYSLOG::RES_NODEGROUPASSIGN => $aid,
+                SYSLOG::RES_NODE => $nid,
+                SYSLOG::RES_NODEGROUP => $to
+            );
+            $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
+        }
 
-		$assigns = $DB->GetAll('SELECT id, nodeid FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
-		if (!empty($assigns))
-			foreach ($assigns as $assign) {
-				$args = array(
-					SYSLOG::RES_NODEGROUPASSIGN => $assign['id'],
-					SYSLOG::RES_NODE => $assign['nodeid'],
-					SYSLOG::RES_NODEGROUP => $from
-				);
-				$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
-			}
-	}
-	
-	$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
+        $assigns = $DB->GetAll('SELECT id, nodeid FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
+        if (!empty($assigns)) {
+            foreach ($assigns as $assign) {
+                $args = array(
+                SYSLOG::RES_NODEGROUPASSIGN => $assign['id'],
+                SYSLOG::RES_NODE => $assign['nodeid'],
+                SYSLOG::RES_NODEGROUP => $from
+                );
+                $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
+            }
+        }
+    }
+    
+    $DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
 
         $DB->CommitTrans();
-	
-	$SESSION->redirect('?m=nodegroupinfo&id='.$to);
+    
+    $SESSION->redirect('?m=nodegroupinfo&id='.$to);
+} else {
+    header('Location: ?'.$SESSION->get('backto'));
 }
-else
-	header('Location: ?'.$SESSION->get('backto'));
-
-?>

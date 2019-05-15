@@ -25,6 +25,4 @@
  */
 
 $this->Execute("ALTER TABLE passwd ADD realname VARCHAR(255) DEFAULT '' NOT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033101', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005033101', 'dbversion'));

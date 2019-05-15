@@ -30,5 +30,3 @@ $this->Execute("UPDATE documents SET sdate = cdate WHERE type IN (1, 3)"); // DO
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -49,5 +49,3 @@ $_LANG['This cannot be empty'] = 'Tai negali būti tuščia';
 $_LANG['This module is not configured yet.'] = 'Šis modulis nėra sukonfiguruotas.';
 $_LANG['This module shows problems solving center'] = 'Šis modulis parodo problemų sprendimo centrą';
 $_LANG['Title:'] = 'Pavadinimas:';
-
-?>

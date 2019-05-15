@@ -30,91 +30,96 @@ $layout['pagetitle'] = $proforma ? trans('Pro Forma Invoice List') : trans('Invo
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SESSION->restore('ilm', $marks);
-if(isset($_POST['marks']))
-	foreach($_POST['marks'] as $id => $mark)
-		$marks[$id] = $mark;
+if (isset($_POST['marks'])) {
+    foreach ($_POST['marks'] as $id => $mark) {
+        $marks[$id] = $mark;
+    }
+}
 $SESSION->save('ilm', $marks);
 
-if(isset($_POST['search']))
-	$s = $_POST['search'];
-else
-	$SESSION->restore('ils', $s);
-if(!isset($s))
-     {
+if (isset($_POST['search'])) {
+    $s = $_POST['search'];
+} else {
+    $SESSION->restore('ils', $s);
+}
+if (!isset($s)) {
      $year=date("Y", time());
      $month=date("m", time());
      $s = $year.'/'.$month;
-     }
+}
 $SESSION->save('ils', $s);
 
-if(isset($_GET['o']))
-	$o = $_GET['o'];
-else
-	$SESSION->restore('ilo', $o);
+if (isset($_GET['o'])) {
+    $o = $_GET['o'];
+} else {
+    $SESSION->restore('ilo', $o);
+}
 $SESSION->save('ilo', $o);
 
-if(isset($_POST['cat']))
-	$c = $_POST['cat'];
-else
-	$SESSION->restore('ilc', $c);
-if (!isset($c))
-{
-$c="month";
+if (isset($_POST['cat'])) {
+    $c = $_POST['cat'];
+} else {
+    $SESSION->restore('ilc', $c);
+}
+if (!isset($c)) {
+    $c="month";
 }
 $SESSION->save('ilc', $c);
 
 if (isset($_POST['numberplanid'])) {
-	if ($_POST['numberplanid'] == 'all')
-		$np = array();
-	else
-		$np = $_POST['numberplanid'];
-} else
-	$SESSION->restore('ilnp', $np);
+    if ($_POST['numberplanid'] == 'all') {
+        $np = array();
+    } else {
+        $np = $_POST['numberplanid'];
+    }
+} else {
+    $SESSION->restore('ilnp', $np);
+}
 $SESSION->save('ilnp', $np);
 
-if (isset($_POST['search']))
-	$h = isset($_POST['hideclosed']);
-elseif (($h = $SESSION->get('ilh')) === NULL)
-	$h = ConfigHelper::checkConfig('invoices.hide_closed');
+if (isset($_POST['search'])) {
+    $h = isset($_POST['hideclosed']);
+} elseif (($h = $SESSION->get('ilh')) === null) {
+    $h = ConfigHelper::checkConfig('invoices.hide_closed');
+}
 $SESSION->save('ilh', $h);
 
 if (isset($_POST['group'])) {
-	if ($_POST['group'] == 'all')
-		$g = array();
-	else
-		$g = $_POST['group'];
-	$ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : NULL;
+    if ($_POST['group'] == 'all') {
+        $g = array();
+    } else {
+        $g = $_POST['group'];
+    }
+    $ge = isset($_POST['groupexclude']) ? $_POST['groupexclude'] : null;
 } else {
-	$SESSION->restore('ilg', $g);
-	$SESSION->restore('ilge', $ge);
+    $SESSION->restore('ilg', $g);
+    $SESSION->restore('ilge', $ge);
 }
 $SESSION->save('ilg', $g);
 $SESSION->save('ilge', $ge);
 
-if($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s))
-{
-	list($year, $month, $day) = explode('/', $s);
-	$s = mktime(0,0,0, $month, $day, $year);
-}
-elseif($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s))
-{
-	list($year, $month) = explode('/', $s);
-        $s = mktime(0,0,0, $month, 1, $year);
+if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
+    list($year, $month, $day) = explode('/', $s);
+    $s = mktime(0, 0, 0, $month, $day, $year);
+} elseif ($c == 'month' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}$/', $s)) {
+    list($year, $month) = explode('/', $s);
+        $s = mktime(0, 0, 0, $month, 1, $year);
 }
 
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-	'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
+    'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
-if (empty($page))
-	$page = 1;
+if (empty($page)) {
+    $page = 1;
+}
 $page = intval($page);
 $offset = ($page - 1) * $limit;
 
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-	'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset, 'proforma' => $proforma,
-	'count' => false));
+    'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset, 'proforma' => $proforma,
+    'count' => false));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -132,34 +137,33 @@ $listdata['direction'] = $invoicelist['direction'];
 unset($invoicelist['order']);
 unset($invoicelist['direction']);
 
-if($invoice = $SESSION->get('invoiceprint'))
-{
+if ($invoice = $SESSION->get('invoiceprint')) {
         $SMARTY->assign('invoice', $invoice);
         $SESSION->remove('invoiceprint');
 }
 
-$hook_data = $LMS->ExecuteHook('invoicelist_before_display',
-	array(
-		'invoicelist' => $invoicelist,
-	)
+$hook_data = $LMS->ExecuteHook(
+    'invoicelist_before_display',
+    array(
+        'invoicelist' => $invoicelist,
+    )
 );
 $invoicelist = $hook_data['invoicelist'];
 
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('marks',$marks);
-$SMARTY->assign('grouplist',$LMS->CustomergroupGetAll());
+$SMARTY->assign('marks', $marks);
+$SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
 
-if ($proforma)
-	$doctypes = array(DOC_INVOICE_PRO);
-else
-	$doctypes = array(DOC_INVOICE, DOC_CNOTE);
+if ($proforma) {
+    $doctypes = array(DOC_INVOICE_PRO);
+} else {
+    $doctypes = array(DOC_INVOICE, DOC_CNOTE);
+}
 $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
-	'doctype' => $doctypes,
+    'doctype' => $doctypes,
 )));
 
 $SMARTY->assign('proforma', $proforma);
-$SMARTY->assign('invoicelist',$invoicelist);
+$SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->display('invoice/invoicelist.html');
-
-?>

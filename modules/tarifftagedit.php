@@ -39,8 +39,9 @@ $layout['pagetitle'] = trans('Edit tag').': '.$tarifftag['name'];
 
 if (isset($_POST['tarifftag'])) {
     $tarifftagedit = $_POST['tarifftag'];
-    foreach ($tarifftagedit as $key => $value)
+    foreach ($tarifftagedit as $key => $value) {
         $tarifftagedit[$key] = trim($value);
+    }
 
     $tarifftagedit['id'] = $_GET['id'];
 
@@ -71,4 +72,3 @@ $SMARTY->assign('tariffs', $tariffs);
 $SMARTY->assign('tariffscount', $tariffscount);
 $SMARTY->assign('tarifftags', $LMS->TarifftagGetAll());
 $SMARTY->display('tariff/tarifftagedit.html');
-?>

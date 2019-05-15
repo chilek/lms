@@ -23,11 +23,9 @@
  *
  *  $Id$
  */
-		      
+              
 function module_main()
 {
     global $SMARTY;
     $SMARTY->display('module:modules.html');
 }
-
-?>

@@ -26,14 +26,14 @@
 
 $id = $_GET['id'];
 
-if ($id)
-	$LMS->EventDelete($id);
+if ($id) {
+    $LMS->EventDelete($id);
+}
 
 $backto = $SESSION->get('backto');
-if (!empty($backto) && preg_match('/^m=rtticketview/', $backto))
-	$SESSION->redirect('?' . $backto);
+if (!empty($backto) && preg_match('/^m=rtticketview/', $backto)) {
+    $SESSION->redirect('?' . $backto);
+}
 
 header('Location: ?m=eventlist'
-	. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-
-?>
+    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));

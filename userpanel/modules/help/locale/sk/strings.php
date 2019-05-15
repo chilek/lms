@@ -49,5 +49,3 @@ $_LANG['This cannot be empty'] = 'To nemôže byť prázdne';
 $_LANG['This module is not configured yet.'] = 'Tento modul ešte nie je nakonfigurovaný.';
 $_LANG['This module shows problems solving center'] = 'Tento modul zobrazuje centrum riešenia problémov';
 $_LANG['Title:'] = 'Názov:';
-
-?>

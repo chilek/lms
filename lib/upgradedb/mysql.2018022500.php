@@ -34,5 +34,3 @@ $this->Execute("ALTER TABLE pna DROP INDEX zip,
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018022500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

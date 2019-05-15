@@ -32,5 +32,3 @@ $stats = isset($_GET['stats']);
 $LMS->DatabaseCreate($gz, $stats);
 
 header('Location: ?m=dblist');
-
-?>

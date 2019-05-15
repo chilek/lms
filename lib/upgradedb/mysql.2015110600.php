@@ -26,11 +26,11 @@ define('EMAIL_INVOICE', 16);
 
 $this->BeginTrans();
 
-$this->Execute("UPDATE customercontacts SET type = ? WHERE customerid IN (SELECT id FROM customers WHERE einvoice = 1 AND invoicenotice = 1) AND (type & ?) > 0",
-            array(EMAIL | EMAIL_INVOICE, EMAIL));
+$this->Execute(
+    "UPDATE customercontacts SET type = ? WHERE customerid IN (SELECT id FROM customers WHERE einvoice = 1 AND invoicenotice = 1) AND (type & ?) > 0",
+    array(EMAIL | EMAIL_INVOICE, EMAIL)
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015110600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

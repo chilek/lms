@@ -26,6 +26,4 @@
 
 $this->Execute("ALTER TABLE passwd CHANGE home home varchar(255) NOT NULL DEFAULT ''");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004112400', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004112400', 'dbversion'));

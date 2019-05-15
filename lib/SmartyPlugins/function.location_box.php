@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function smarty_function_location_box( $params = array(), $template )
+function smarty_function_location_box($params = array(), $template)
 {
     global $DB;
 
@@ -53,8 +53,8 @@ function smarty_function_location_box( $params = array(), $template )
     $input_name_address_id  = 'address_id';
 
     // check if prefix for input names is set
-    if ( isset($params['prefix']) && mb_strlen(trim($params['prefix'])) > 0 ) {
-        $p = trim( $params['prefix'] );
+    if (isset($params['prefix']) && mb_strlen(trim($params['prefix'])) > 0) {
+        $p = trim($params['prefix']);
 
         $input_name             = $p . '[' . $input_name             . ']';
         $input_name_country_id  = $p . '[' . $input_name_country_id  . ']';
@@ -73,14 +73,14 @@ function smarty_function_location_box( $params = array(), $template )
         $input_name_def_address = $p . '[' . $input_name_def_address . ']';
         $input_name_address_id  = $p . '[' . $input_name_address_id  . ']';
 
-        unset( $prefix );
+        unset($prefix);
     }
 
     echo '<div class="location-box">';
 
     echo '<fieldset class="lms-ui-address-box" id="' . $LOCATION_ID . '">';
 
-    if ( isset($params['address_id']) && $params['address_id'] != null ) {
+    if (isset($params['address_id']) && $params['address_id'] != null) {
         echo '<input type="hidden" value="' . $params['address_id']  . '" name="' . $input_name_address_id . '">';
     }
 
@@ -98,16 +98,16 @@ function smarty_function_location_box( $params = array(), $template )
               <td>' . trans('State') . '</td>
               <td>';
 
-    if ( $template->getTemplateVars('__states') ) {
+    if ($template->getTemplateVars('__states')) {
         $states = $template->getTemplateVars('__states');
     } else {
         $states = $DB->GetCol('SELECT name FROM states;');
         $template->assign('__states', $states);
     }
 
-    if ( $states ) {
+    if ($states) {
         echo '<select name="' . $input_name_state . '" style="height: 16px;';
-        if ( !empty($params['teryt']) ) {
+        if (!empty($params['teryt'])) {
             echo 'display: none;';
         }
         echo '" data-address="state-select">';
@@ -115,7 +115,7 @@ function smarty_function_location_box( $params = array(), $template )
 
         $tmp_state = mb_strtolower($params['location_state_name']);
 
-        foreach ( $states as $v ) {
+        foreach ($states as $v) {
             echo '<option ' . (mb_strtolower($v) == $tmp_state ? 'selected' : '')  . '>' . $v . '</option>';
         }
 
@@ -175,24 +175,24 @@ function smarty_function_location_box( $params = array(), $template )
               <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
           </tr>';
 
-    if ( empty($params['countryid']) ) {
+    if (empty($params['countryid'])) {
         $params['countryid'] = -1;
     }
 
-    if ( $template->getTemplateVars('__countries') ) {
+    if ($template->getTemplateVars('__countries')) {
         $countries = $template->getTemplateVars('__countries');
     } else {
         $countries = $DB->GetAll('SELECT id, name FROM countries;');
         $template->assign('__countries', $countries);
     }
 
-    if ( $countries ) {
+    if ($countries) {
         echo '<tr><td>' . trans('Country:') . '</td><td>
               <select name="' . $input_name_country_id . '" data-address="country">
               <option value="">---</option>';
 
         foreach ($countries as $v) {
-            if ( $v['id'] == $params['location_country_id'] ) {
+            if ($v['id'] == $params['location_country_id']) {
                 echo '<option value="'.$v['id'].'" selected>' . trans($v['name']) . '</option>' ;
             } else {
                 echo '<option value="'.$v['id'].'">' . trans($v['name']) . '</option>' ;
@@ -202,8 +202,8 @@ function smarty_function_location_box( $params = array(), $template )
         echo '</select></td></tr>';
     }
 
-    if ( isset($params['default_type']) ) {
-        if ( $params['location_address_type'] == null ) {
+    if (isset($params['default_type'])) {
+        if ($params['location_address_type'] == null) {
             $params['location_address_type'] = -1;
         }
 
@@ -228,7 +228,5 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '</fieldset>';
 
-	echo '</div>';
+    echo '</div>';
 }
-
-?>

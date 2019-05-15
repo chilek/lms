@@ -141,5 +141,3 @@ CREATE VIEW vnodes AS
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017030800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

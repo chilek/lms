@@ -26,39 +26,39 @@
 
 /**
  * LMSDocumentManagerInterface
- * 
+ *
  */
 interface LMSDocumentManagerInterface
 {
-    public function GetDocuments($customerid = NULL, $limit = NULL);
+    public function GetDocuments($customerid = null, $limit = null);
 
-	public function GetDocumentList(array $params);
+    public function GetDocumentList(array $params);
 
-	public function GetNumberPlans($properties);
+    public function GetNumberPlans($properties);
 
     public function GetNewDocumentNumber($properties);
 
     public function DocumentExists($properties);
 
-	public function CommitDocuments(array $ids);
+    public function CommitDocuments(array $ids);
 
-	public function ArchiveDocuments(array $ids);
+    public function ArchiveDocuments(array $ids);
 
-	public function UpdateDocumentPostAddress($docid, $customerid);
+    public function UpdateDocumentPostAddress($docid, $customerid);
 
-	public function DeleteDocumentAddresses($docid);
+    public function DeleteDocumentAddresses($docid);
 
-	public function isArchiveDocument($id);
+    public function isArchiveDocument($id);
 
-	public function AddArchiveDocument($docid, $file);
+    public function AddArchiveDocument($docid, $file);
 
-	public function GetArchiveDocument($docid);
+    public function GetArchiveDocument($docid);
 
-	public function AddDocumentFileAttachments(array $files);
+    public function AddDocumentFileAttachments(array $files);
 
-	public function DocumentAttachmentExists($md5sum);
+    public function DocumentAttachmentExists($md5sum);
 
-	public function GetDocumentFullContents($id);
+    public function GetDocumentFullContents($id);
 
-	public function SendDocuments($docs, $type, $params);
+    public function SendDocuments($docs, $type, $params);
 }

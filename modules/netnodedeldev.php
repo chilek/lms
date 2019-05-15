@@ -28,10 +28,8 @@ $id = intval($_GET['id']);
 $did = intval($_GET['did']);
 
 if (!empty($id)) {
-	$DB->Execute("UPDATE netdevices SET netnodeid=NULL,address_id=NULL,longitude=NULL,latitude=NULL WHERE id=?", array($did));
-	$SESSION->redirect('?m=netnodeinfo&id=' . $id);
+    $DB->Execute("UPDATE netdevices SET netnodeid=NULL,address_id=NULL,longitude=NULL,latitude=NULL WHERE id=?", array($did));
+    $SESSION->redirect('?m=netnodeinfo&id=' . $id);
 } else {
-	$SESSION->redirect('?m=netnodelist');
+    $SESSION->redirect('?m=netnodelist');
 }
-
-?>

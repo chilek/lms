@@ -27,49 +27,50 @@
 $SESSION->restore('ilm', $ilm);
 $SESSION->remove('ilm');
 
-if(count($_POST['marks']))
-	foreach($_POST['marks'] as $id => $mark)
-		$ilm[$id] = $mark;
+if (count($_POST['marks'])) {
+    foreach ($_POST['marks'] as $id => $mark) {
+        $ilm[$id] = $mark;
+    }
+}
 
-if(count($ilm))
-	foreach($ilm as $mark)
-		$ids[] = intval($mark);
+if (count($ilm)) {
+    foreach ($ilm as $mark) {
+        $ids[] = intval($mark);
+    }
+}
 
-if(count($ids))
-{
-	foreach($ids as $noteid)
-	{
-		list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid, 
+if (count($ids)) {
+    foreach ($ids as $noteid) {
+        list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid, 
 			(SELECT SUM(value) FROM debitnotecontents
 				WHERE docid = d.id) AS value, closed
 			FROM documents d
 			WHERE id = ?', array($noteid)));
-		// add payment
-		if (ConfigHelper::checkConfig('phpui.note_check_payment') && !$closed) {
-			if ($value != 0)
-				$LMS->AddBalance(array(
-					'type' => 1,
-					'time' => time(),
-					'value' => $value,
-					'customerid' => $cid,
-					'comment' => trans('Accounted'),
-				));
-		}
+        // add payment
+        if (ConfigHelper::checkConfig('phpui.note_check_payment') && !$closed) {
+            if ($value != 0) {
+                $LMS->AddBalance(array(
+                    'type' => 1,
+                    'time' => time(),
+                    'value' => $value,
+                    'customerid' => $cid,
+                    'comment' => trans('Accounted'),
+                ));
+            }
+        }
 
-		if ($SYSLOG) {
-			$args = array(
-				SYSLOG::RES_DOC => $noteid,
-				SYSLOG::RES_CUST => $cid,
-				'closed' => intval(!$closed),
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
-		}
-		$DB->Execute('UPDATE documents SET closed = 
+        if ($SYSLOG) {
+            $args = array(
+                SYSLOG::RES_DOC => $noteid,
+                SYSLOG::RES_CUST => $cid,
+                'closed' => intval(!$closed),
+            );
+            $SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+        }
+        $DB->Execute('UPDATE documents SET closed = 
 			(CASE closed WHEN 0 THEN 1 ELSE 0 END)
 			WHERE id = ?', array($noteid));
-	}
+    }
 }
 
 $SESSION->redirect('?'.$SESSION->get('backto'));
-
-?>

@@ -25,5 +25,3 @@
  */
 
 $SMARTY->assign('error', $AUTH->error);
-
-?>

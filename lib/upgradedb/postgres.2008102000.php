@@ -74,22 +74,22 @@ $address = ConfigHelper::getConfig('finances.address');
 $city = ConfigHelper::getConfig('finances.city');
 $zip = ConfigHelper::getConfig('finances.zip');
 $account = ConfigHelper::getConfig('finances.account');
-$this->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
+$this->Execute(
+    "INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-	array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
-		!empty($header) ? str_replace("\\n", "\n", $header) : '',
-		!empty($footer) ? str_replace("\\n", "\n", $footer) : '',
-		!empty($default_author) ? $default_author : '',
-		!empty($cplace) ? $cplace : '',
-		!empty($name) && $name != 'finances/name' ? $name : 'default',
-		!empty($address) && $address != 'finances/address'  ? $address : '',
-		!empty($city) && $city != 'finances/city'  ? $city : '',
-		!empty($zip) && $zip != 'finances/zip'  ? $zip : '',
-		!empty($account) ? $account : '',
-	));
+    array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
+        !empty($header) ? str_replace("\\n", "\n", $header) : '',
+        !empty($footer) ? str_replace("\\n", "\n", $footer) : '',
+        !empty($default_author) ? $default_author : '',
+        !empty($cplace) ? $cplace : '',
+        !empty($name) && $name != 'finances/name' ? $name : 'default',
+        !empty($address) && $address != 'finances/address'  ? $address : '',
+        !empty($city) && $city != 'finances/city'  ? $city : '',
+        !empty($zip) && $zip != 'finances/zip'  ? $zip : '',
+        !empty($account) ? $account : '',
+    )
+);
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

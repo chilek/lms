@@ -40,8 +40,6 @@ $this->Execute("
 	ALTER TABLE invoicecontents DROP pkwiu;
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005062100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005062100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

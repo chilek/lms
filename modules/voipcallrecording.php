@@ -24,34 +24,41 @@
  *  $Id$
  */
 
-define('VOIP_CALL_DIR', ConfigHelper::getConfig('voip.call_recording_directory',
-	SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls'));
+define('VOIP_CALL_DIR', ConfigHelper::getConfig(
+    'voip.call_recording_directory',
+    SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls'
+));
 
 $cdr = $DB->GetRow("SELECT uniqueid, caller, callee, call_start_time, totaltime FROM voip_cdr WHERE id = ?", array($_GET['id']));
 $filename = $cdr['uniqueid'];
 $filepath = VOIP_CALL_DIR . DIRECTORY_SEPARATOR . $filename;
-$out_filename = sprintf('%s_%s_%s_%d', date('Y-m-d_H:i:s', $cdr['call_start_time']),
-	$cdr['caller'], $cdr['callee'], $cdr['totaltime']);
+$out_filename = sprintf(
+    '%s_%s_%s_%d',
+    date('Y-m-d_H:i:s', $cdr['call_start_time']),
+    $cdr['caller'],
+    $cdr['callee'],
+    $cdr['totaltime']
+);
 
-if (empty($filename))
-	die;
+if (empty($filename)) {
+    die;
+}
 
-if (is_readable($filepath . '.mp3'))
-	$ext = '.mp3';
-elseif (is_readable($filepath . '.ogg'))
-	$ext = '.ogg';
-else
-	$ext = '.wav';
+if (is_readable($filepath . '.mp3')) {
+    $ext = '.mp3';
+} elseif (is_readable($filepath . '.ogg')) {
+    $ext = '.ogg';
+} else {
+    $ext = '.wav';
+}
 
 $filepath .= $ext;
 header('Content-Type: ' . mime_content_type($filepath));
 
 if (isset($_GET['download'])) {
-	$out_filename .= $ext;
-	header('Content-Disposition: attachment; filename="' . $out_filename . '"');
+    $out_filename .= $ext;
+    header('Content-Disposition: attachment; filename="' . $out_filename . '"');
 }
 
 echo file_get_contents($filepath);
 die;
-
-?>

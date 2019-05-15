@@ -31,5 +31,3 @@ $_LANG['Notices'] = 'Powiadomienia';
 $_LANG['Shows notices'] = 'Pokazuje powiadomienia';
 $_LANG['This module is for showing notices for your customer'] = 'Ten moduł ma za zadanie pokazać powiadomienia skierowane do Twojego klienta';
 $_LANG['We don\'t have any notices to you.'] = 'Nie ma do Ciebie żadnych powiadomień.';
-
-?>

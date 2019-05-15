@@ -73,5 +73,3 @@ $_LANG['Don\'t show customer nodes box if he hasn\'t any nodes'] = 'Ak nemáte p
 $_LANG['Text of data processing agreement:'] = 'Text dohody pre spracovanie dát:';
 $_LANG['Enter text of agreement for personal data processing'] = 'Zadajte prosím znenie dohody na spracovanie osobných údajov';
 $_LANG['Personal data processing agreement'] = 'Súhlas so spracovaním osobných údajov';
-
-?>

@@ -24,26 +24,27 @@
  *  $Id$
  */
 
-abstract class LMSInvoice extends LMSDocument {
-	abstract function invoice_body_standard();
+abstract class LMSInvoice extends LMSDocument
+{
+    abstract function invoice_body_standard();
 
-	abstract function invoice_body_ft0100();
+    abstract function invoice_body_ft0100();
 
-	public function Draw($data) {
-		parent::Draw($data);
-		if (isset($this->data['invoice']))
-			$template = ConfigHelper::getConfig('invoices.cnote_template_file');
-		else
-			$template = ConfigHelper::getConfig('invoices.template_file');
-		switch ($template) {
-			case "standard":
-				$this->invoice_body_standard();
-				break;
-			case "FT-0100":
-				$this->invoice_body_ft0100();
-				break;
-		}
-	}
+    public function Draw($data)
+    {
+        parent::Draw($data);
+        if (isset($this->data['invoice'])) {
+            $template = ConfigHelper::getConfig('invoices.cnote_template_file');
+        } else {
+            $template = ConfigHelper::getConfig('invoices.template_file');
+        }
+        switch ($template) {
+            case "standard":
+                $this->invoice_body_standard();
+                break;
+            case "FT-0100":
+                $this->invoice_body_ft0100();
+                break;
+        }
+    }
 }
-
-?>

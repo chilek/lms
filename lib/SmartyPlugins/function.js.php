@@ -24,10 +24,12 @@
  *  $Id$
  */
 
-function smarty_function_js(array $params, Smarty_Internal_Template $template) {
-	$js_file = preg_replace(array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
-		array('', ''), $template->template_resource) . '.js';
-	return '<script src="js/templates/' . $js_file . '"></script>';
+function smarty_function_js(array $params, Smarty_Internal_Template $template)
+{
+    $js_file = preg_replace(
+        array('/^[a-z]+:(\[[0-9]+\])?/i', '/\.[^\.]+$/'),
+        array('', ''),
+        $template->template_resource
+    ) . '.js';
+    return '<script src="js/templates/' . $js_file . '"></script>';
 }
-
-?>

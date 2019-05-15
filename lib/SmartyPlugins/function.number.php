@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-function smarty_function_number($params, $template) {
-	$result = docnumber(array(
-		'number' => $params['number'],
-		'template' => $params['template'],
-		'cdate' => $params['time'],
-		'customerid' => $params['customerid'],
-	));
-	if(isset($params['assign']))
-		$template->assign($params['assign'], $result);
-	else
-		return $result;
+function smarty_function_number($params, $template)
+{
+    $result = docnumber(array(
+        'number' => $params['number'],
+        'template' => $params['template'],
+        'cdate' => $params['time'],
+        'customerid' => $params['customerid'],
+    ));
+    if (isset($params['assign'])) {
+        $template->assign($params['assign'], $result);
+    } else {
+        return $result;
+    }
 }
-
-?>

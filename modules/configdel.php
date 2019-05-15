@@ -27,13 +27,11 @@
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {
-	$DB->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
-	if ($SYSLOG) {
-		$args = array(SYSLOG::RES_UICONF => $id);
-		$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
-	}
+    $DB->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
+    if ($SYSLOG) {
+        $args = array(SYSLOG::RES_UICONF => $id);
+        $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+    }
 }
 
 header('Location: ?m=configlist');
-
-?>

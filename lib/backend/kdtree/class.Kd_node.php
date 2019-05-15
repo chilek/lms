@@ -28,17 +28,17 @@
  * \class Kd_node
  * \brief Assistant class for Kd_tree.
  */
-class Kd_node {
+class Kd_node
+{
 
     public $loc   = null;
     public $left  = null;
     public $right = null;
 
-    public function __construct( array $p = null ) {
-        if ( $p ) {
+    public function __construct(array $p = null)
+    {
+        if ($p) {
             $this->loc = $p;
         }
     }
 }
-
-?>

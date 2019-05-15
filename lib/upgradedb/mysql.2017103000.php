@@ -30,5 +30,3 @@ $this->Execute("UPDATE promotionassignments SET selectionid = NULL WHERE selecti
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017103000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -55,5 +55,3 @@ $this->Execute("CREATE TABLE messageitems (
 $this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

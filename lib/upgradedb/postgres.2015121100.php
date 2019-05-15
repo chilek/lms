@@ -28,5 +28,3 @@ $this->BeginTrans();
 $this->Execute("ALTER TABLE cashsources ADD COLUMN deleted smallint NOT NULL DEFAULT 0");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015121100', 'dbversion'));
 $this->CommitTrans();
-
-?>

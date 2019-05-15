@@ -35,7 +35,7 @@ class UiConfigParser implements ConfigParserInterface
     
     /**
      * Converts raw ui config into it's object representation
-     * 
+     *
      * @param array $raw_config Raw config
      * @param array $options Associative array of options
      * @return \ConfigContainer Config object

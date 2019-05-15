@@ -32,102 +32,114 @@ include(LIB_DIR . DIRECTORY_SEPARATOR . 'FPDI' . DIRECTORY_SEPARATOR . 'VarStrea
 global $LMS, $SESSION, $SMARTY, $layout;
 global $invoice_type, $type, $document, $classname;
 
-function try_generate_archive_invoices($ids) {
-	global $LMS, $SESSION, $invoice_type, $type, $document, $classname;
+function try_generate_archive_invoices($ids)
+{
+    global $LMS, $SESSION, $invoice_type, $type, $document, $classname;
 
-	$SMARTY = LMSSmarty::getInstance();
+    $SMARTY = LMSSmarty::getInstance();
 
-	$archive_stats = $LMS->GetTradeDocumentArchiveStats($ids);
+    $archive_stats = $LMS->GetTradeDocumentArchiveStats($ids);
 
-	if (($invoice_type == 'pdf' && ($archive_stats['html'] > 0 || $archive_stats['rtype'] == 'html'))
-		|| ($invoice_type == 'html' && ($archive_stats['pdf'] > 0 || $archive_stats['rtype'] == 'pdf')))
-		die('Currently you can only print many documents of type text/html or application/pdf!');
+    if (($invoice_type == 'pdf' && ($archive_stats['html'] > 0 || $archive_stats['rtype'] == 'html'))
+        || ($invoice_type == 'html' && ($archive_stats['pdf'] > 0 || $archive_stats['rtype'] == 'pdf'))) {
+        die('Currently you can only print many documents of type text/html or application/pdf!');
+    }
 
-	if (!empty($archive_stats) && $archive_stats['archive'] > 0 && $type != trans('DUPLICATE')) {
-		if ($archive_stats['rtype'] && $archive_stats['rtype'] != $invoice_type)
-			$invoice_type = $archive_stats['rtype'];
+    if (!empty($archive_stats) && $archive_stats['archive'] > 0 && $type != trans('DUPLICATE')) {
+        if ($archive_stats['rtype'] && $archive_stats['rtype'] != $invoice_type) {
+            $invoice_type = $archive_stats['rtype'];
+        }
 
-		$attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
-		header('Content-Type: ' . ($invoice_type == 'pdf' ? 'application/pdf' : 'text/html'));
-		header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
-		header('Pragma: public');
+        $attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
+        header('Content-Type: ' . ($invoice_type == 'pdf' ? 'application/pdf' : 'text/html'));
+        header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
+        header('Pragma: public');
 
-		if ($invoice_type == 'pdf') {
-			$pdf = new FPDI();
-//			$pdf = new Fpdi();
-			$pdf->setPrintHeader(false);
-			$pdf->setPrintFooter(false);
-		}
+        if ($invoice_type == 'pdf') {
+            $pdf = new FPDI();
+//          $pdf = new Fpdi();
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+        }
 
-		$i = 0;
+        $i = 0;
 
-		foreach ($ids as $idx => $invoiceid) {
-			if ($LMS->isArchiveDocument($invoiceid)) {
-				$file = $LMS->GetArchiveDocument($invoiceid);
+        foreach ($ids as $idx => $invoiceid) {
+            if ($LMS->isArchiveDocument($invoiceid)) {
+                $file = $LMS->GetArchiveDocument($invoiceid);
 
-				if ($file['document']['customerid'] != $SESSION->id)
-					continue;
+                if ($file['document']['customerid'] != $SESSION->id) {
+                    continue;
+                }
 
-				if (!$file['document']['published'])
-					$LMS->PublishDocuments($invoiceid);
-			} else {
-				if (!$document)
-					if ($invoice_type == 'pdf')
-						$document = new $classname(trans('Invoices'));
-					else
-						$document = new LMSHtmlInvoice($SMARTY);
+                if (!$file['document']['published']) {
+                    $LMS->PublishDocuments($invoiceid);
+                }
+            } else {
+                if (!$document) {
+                    if ($invoice_type == 'pdf') {
+                        $document = new $classname(trans('Invoices'));
+                    } else {
+                        $document = new LMSHtmlInvoice($SMARTY);
+                    }
+                }
 
-				$invoice = $LMS->GetInvoiceContent($invoiceid);
+                $invoice = $LMS->GetInvoiceContent($invoiceid);
 
-				if ($invoice['customerid'] != $SESSION->id)
-					continue;
+                if ($invoice['customerid'] != $SESSION->id) {
+                    continue;
+                }
 
-				$invoice['type'] = $type;
+                $invoice['type'] = $type;
 
-				$document->Draw($invoice);
+                $document->Draw($invoice);
 
-				if (!$invoice['published'])
-					$LMS->PublishDocuments($invoice['id']);
+                if (!$invoice['published']) {
+                    $LMS->PublishDocuments($invoice['id']);
+                }
 
-				$file['data'] = $document->WriteToString();
+                $file['data'] = $document->WriteToString();
 
-				unset($document);
-				$document = null;
-			}
+                unset($document);
+                $document = null;
+            }
 
-			$LMS->PublishDocuments($invoiceid);
+            $LMS->PublishDocuments($invoiceid);
 
-			if ($invoice_type == 'pdf') {
-				$pageCount = $pdf->setSourceFile(VarStream::createReference($file['data']));
-				//$pageCount = $pdf->setSourceFile(StreamReader::createByString($file['data']));
-				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-					// import a page
-					$templateId = $pdf->importPage($pageNo);
-					// get the size of the imported page
-					$size = $pdf->getTemplateSize($templateId);
+            if ($invoice_type == 'pdf') {
+                $pageCount = $pdf->setSourceFile(VarStream::createReference($file['data']));
+                //$pageCount = $pdf->setSourceFile(StreamReader::createByString($file['data']));
+                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                    // import a page
+                    $templateId = $pdf->importPage($pageNo);
+                    // get the size of the imported page
+                    $size = $pdf->getTemplateSize($templateId);
 
-					// create a page (landscape or portrait depending on the imported page size)
-					if ($size['w'] > $size['h'])
-						$pdf->AddPage('L', array($size['w'], $size['h']));
-					else
-						$pdf->AddPage('P', array($size['w'], $size['h']));
-					//$pdf->AddPage($size['orientation'], $size);
+                    // create a page (landscape or portrait depending on the imported page size)
+                    if ($size['w'] > $size['h']) {
+                        $pdf->AddPage('L', array($size['w'], $size['h']));
+                    } else {
+                        $pdf->AddPage('P', array($size['w'], $size['h']));
+                    }
+                    //$pdf->AddPage($size['orientation'], $size);
 
-					// use the imported page
-					$pdf->useTemplate($templateId);
-				}
-			} else {
-				echo $file['data'];
-				if ($idx < count($ids) - 1)
-					echo '<div style="page-break-after: always;">&nbsp;</div>';
-			}
-		}
+                    // use the imported page
+                    $pdf->useTemplate($templateId);
+                }
+            } else {
+                echo $file['data'];
+                if ($idx < count($ids) - 1) {
+                    echo '<div style="page-break-after: always;">&nbsp;</div>';
+                }
+            }
+        }
 
-		if ($invoice_type == 'pdf')
-			$pdf->Output();
+        if ($invoice_type == 'pdf') {
+            $pdf->Output();
+        }
 
-		die;
-	}
+        die;
+    }
 }
 
 $type = ConfigHelper::checkConfig('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
@@ -136,103 +148,110 @@ $attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
 $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 
 if ($invoice_type == 'pdf') {
-	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
-	$pdf_type = ucwords($pdf_type);
-	$classname = 'LMS' . $pdf_type . 'Invoice';
-	$document = new $classname(trans('Invoices'));
+    $pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+    $pdf_type = ucwords($pdf_type);
+    $classname = 'LMS' . $pdf_type . 'Invoice';
+    $document = new $classname(trans('Invoices'));
 } else {
-	// use LMS templates directory
-	define('SMARTY_TEMPLATES_DIR', ConfigHelper::getConfig('directories.smarty_templates_dir', ConfigHelper::getConfig('directories.sys_dir').'/templates'));
-	$SMARTY->setTemplateDir(null);
-	$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
-	if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
-		&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
-		$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
-	$SMARTY->AddTemplateDir(
-		array(
-			SMARTY_TEMPLATES_DIR . '/default',
-			SMARTY_TEMPLATES_DIR,
-		)
-	);
-	$document = new LMSHtmlInvoice($SMARTY);
+    // use LMS templates directory
+    define('SMARTY_TEMPLATES_DIR', ConfigHelper::getConfig('directories.smarty_templates_dir', ConfigHelper::getConfig('directories.sys_dir').'/templates'));
+    $SMARTY->setTemplateDir(null);
+    $custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
+    if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
+        && !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)) {
+        $SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
+    }
+    $SMARTY->AddTemplateDir(
+        array(
+            SMARTY_TEMPLATES_DIR . '/default',
+            SMARTY_TEMPLATES_DIR,
+        )
+    );
+    $document = new LMSHtmlInvoice($SMARTY);
 }
 
 // handle multi-invoices print
-if(!empty($_POST['inv']))
-{
-	$layout['pagetitle'] = trans('Invoices');
+if (!empty($_POST['inv'])) {
+    $layout['pagetitle'] = trans('Invoices');
 
-	try_generate_archive_invoices(array_keys($_POST['inv']));
+    try_generate_archive_invoices(array_keys($_POST['inv']));
 
-	$count = count($_POST['inv']);
-	$i = 0;
-	foreach (array_keys($_POST['inv']) as $key) {
-		$invoice = $LMS->GetInvoiceContent(intval($key));
-		$i++;
-		if ($invoice['customerid'] != $SESSION->id)
-			continue;
+    $count = count($_POST['inv']);
+    $i = 0;
+    foreach (array_keys($_POST['inv']) as $key) {
+        $invoice = $LMS->GetInvoiceContent(intval($key));
+        $i++;
+        if ($invoice['customerid'] != $SESSION->id) {
+            continue;
+        }
 
-		if ($count == 1)
-			$docnumber = docnumber(array(
-				'number' => $invoice['number'],
-				'template' => $invoice['template'],
-				'cdate' => $invoice['cdate'],
-			));
+        if ($count == 1) {
+            $docnumber = docnumber(array(
+                'number' => $invoice['number'],
+                'template' => $invoice['template'],
+                'cdate' => $invoice['cdate'],
+            ));
+        }
 
-		if($i == $count)
-			$invoice['last'] = TRUE;
-		$invoice['type'] = $type;
+        if ($i == $count) {
+            $invoice['last'] = true;
+        }
+        $invoice['type'] = $type;
 
-		$document->Draw($invoice);
-		if (!isset($invoice['last']))
-			$document->NewPage();
+        $document->Draw($invoice);
+        if (!isset($invoice['last'])) {
+            $document->NewPage();
+        }
 
-		if (!$invoice['published'])
-			$LMS->PublishDocuments($invoice['id']);
-	}
+        if (!$invoice['published']) {
+            $LMS->PublishDocuments($invoice['id']);
+        }
+    }
 } else {
-	$invoice = $LMS->GetInvoiceContent($_GET['id']);
+    $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-	if ($invoice['customerid'] != $SESSION->id)
-		die;
+    if ($invoice['customerid'] != $SESSION->id) {
+        die;
+    }
 
-	if ($invoice['archived'] && $type != trans('DUPLICATE')) {
-		$invoice = $LMS->GetArchiveDocument($_GET['id']);
-		if ($invoice) {
-			header('Content-Type: ' . $invoice['content-type']);
-			header('Content-Disposition: inline; filename=' . $invoice['filename']);
-			echo $invoice['data'];
-		}
-		$SESSION->close();
-		die;
-	}
+    if ($invoice['archived'] && $type != trans('DUPLICATE')) {
+        $invoice = $LMS->GetArchiveDocument($_GET['id']);
+        if ($invoice) {
+            header('Content-Type: ' . $invoice['content-type']);
+            header('Content-Disposition: inline; filename=' . $invoice['filename']);
+            echo $invoice['data'];
+        }
+        $SESSION->close();
+        die;
+    }
 
-	$invoice['last'] = TRUE;
-	$invoice['type'] = $type;
+    $invoice['last'] = true;
+    $invoice['type'] = $type;
 
-	$docnumber = docnumber(array(
-		'number' => $invoice['number'],
-		'template' => $invoice['template'],
-		'cdate' => $invoice['cdate'],
-	));
+    $docnumber = docnumber(array(
+        'number' => $invoice['number'],
+        'template' => $invoice['template'],
+        'cdate' => $invoice['cdate'],
+    ));
 
-	if(!isset($invoice['invoice']))
-		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
-	else
-		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
+    if (!isset($invoice['invoice'])) {
+        $layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
+    } else {
+        $layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
+    }
 
-	$document->Draw($invoice);
+    $document->Draw($invoice);
 
-	if (!$invoice['published'])
-		$LMS->PublishDocuments($invoice['id']);
+    if (!$invoice['published']) {
+        $LMS->PublishDocuments($invoice['id']);
+    }
 }
 
 if (!is_null($attachment_name) && isset($docnumber)) {
-	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
-	$attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
-} else
-	$attachment_name = 'invoices.pdf';
+    $attachment_name = str_replace('%number', $docnumber, $attachment_name);
+    $attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+} else {
+    $attachment_name = 'invoices.pdf';
+}
 
 $document->WriteToBrowser($attachment_name);
-
-?>

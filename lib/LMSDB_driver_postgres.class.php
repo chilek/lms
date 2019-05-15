@@ -26,9 +26,9 @@
 
 /**
  * LMSDB_driver_postgres
- * 
+ *
  * PostgreSQL engine driver wrapper for LMS.
- * 
+ *
  * @package LMS
  */
 class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
@@ -36,9 +36,9 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 
     /**
      * Constructs driver.
-     * 
+     *
      * Connects to database.
-     * 
+     *
      * @param string $dbhost
      * @param string $dbuser
      * @param string $dbpasswd
@@ -49,7 +49,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     {
         if (!extension_loaded('pgsql')) {
             trigger_error('PostgreSQL extension not loaded!', E_USER_WARNING);
-            $this->_loaded = FALSE;
+            $this->_loaded = false;
             return;
         }
 
@@ -58,23 +58,21 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         //$this->_version .= ' ('.preg_replace('/^.Revision: ([0-9.]+).*/','\1',$this->_revision).'/'.preg_replace('/^.Revision: ([0-9.]+).*/','\1','$Revision$').')';
         $this->_version .= '';
         $this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
-
     }
 
     /**
      * Returns database engine info.
-     * 
+     *
      * @return string
      */
     public function _driver_dbversion()
     {
         return $this->GetOne("SELECT split_part(version(),' ',2)");
-
     }
 
     /**
      * Connects to database.
-     * 
+     *
      * @param string $dbhost
      * @param string $dbuser
      * @param string $dbpasswd
@@ -96,14 +94,13 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
             $this->_dbhost = $dbhost;
             $this->_dbuser = $dbuser;
             $this->_dbname = $dbname;
-            $this->_error = FALSE;
-            $this->_loaded = TRUE;
+            $this->_error = false;
+            $this->_loaded = true;
         } else {
-            $this->_error = TRUE;
+            $this->_error = true;
         }
 
         return $this->_dblink;
-
     }
 
     /**
@@ -112,36 +109,33 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_shutdown()
     {
         $this->_driver_disconnect();
-
     }
 
     /**
      * Disconnects driver from database.
-     * 
+     *
      * @return bool
      */
     public function _driver_disconnect()
     {
-        $this->_loaded = FALSE;
+        $this->_loaded = false;
         @pg_close($this->_dblink);
-
     }
 
     /**
      * Selects database.
-     * 
+     *
      * @param string $dbname
      * @throws Exception
      */
     public function _driver_selectdb($dbname)
     {
         throw new Exception('PostgreSQL driver cannot change dbname. Sorry...');
-
     }
 
     /**
      * Returns errors.
-     * 
+     *
      * @return string
      */
     public function _driver_geterror()
@@ -151,12 +145,11 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         } else {
             return 'We\'re not connected!';
         }
-
     }
 
     /**
      * Executes query.
-     * 
+     *
      * @param string $query
      * @return resource
      */
@@ -165,60 +158,56 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         $this->_query = $query;
         $this->_result = @pg_query($this->_dblink, $query);
         if ($this->_result) {
-            $this->_error = FALSE;
+            $this->_error = false;
         } else {
-            $this->_error = TRUE;
+            $this->_error = true;
         }
         return $this->_result;
-
     }
 
     /**
      * Executes multiple queries at once.
-     * 
+     *
      * @param string $query
      * @return boolean
      */
     public function _driver_multi_execute($query)
     {
         return $this->_driver_execute($query);
-
     }
 
     /**
      * Returns single row from resource as associative array.
-     * 
+     *
      * @param resource $result
      * @return array|boolean
      */
-    public function _driver_fetchrow_assoc($result = NULL)
+    public function _driver_fetchrow_assoc($result = null)
     {
         if (!$this->_error) {
-            return @pg_fetch_array($result ? $result : $this->_result, NULL, PGSQL_ASSOC);
+            return @pg_fetch_array($result ? $result : $this->_result, null, PGSQL_ASSOC);
         } else {
-            return FALSE;
+            return false;
         }
-
     }
 
     /**
      * Returns single row from resource as array.
-     * 
+     *
      * @return array|boolean
      */
     public function _driver_fetchrow_num()
     {
         if (!$this->_error) {
-            return @pg_fetch_array($this->_result, NULL, PGSQL_NUM);
+            return @pg_fetch_array($this->_result, null, PGSQL_NUM);
         } else {
-            return FALSE;
+            return false;
         }
-
     }
 
     /**
      * Returns number of affected rows or false on query failure.
-     * 
+     *
      * @return int|boolean
      */
     public function _driver_affected_rows()
@@ -226,14 +215,13 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         if (!$this->_error) {
             return @pg_affected_rows($this->_result);
         } else {
-            return FALSE;
+            return false;
         }
-
     }
 
     /**
      * Returns number of rows in result reqource or false on failure.
-     * 
+     *
      * @return int|boolean
      */
     public function _driver_num_rows()
@@ -241,14 +229,13 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         if (!$this->_error) {
             return @pg_num_rows($this->_result);
         } else {
-            return FALSE;
+            return false;
         }
-
     }
 
     public function _quote_value($input)
     {
-        if ($input === NULL) {
+        if ($input === null) {
             return 'NULL';
         } elseif (gettype($input) == 'string') {
             return '\'' . @pg_escape_string($this->_dblink, $input) . '\'';
@@ -257,94 +244,87 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         } else {
             return $input;
         }
-
     }
 
     /**
      * Returns name of sql function used to get time.
-     * 
+     *
      * @return string
      */
     public function _driver_now()
     {
         return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer';
-
     }
 
     /**
      * Returns name of sql function used for "like" statement.
-     * 
+     *
      * @return string
      */
     public function _driver_like()
     {
         return 'ILIKE';
-
     }
 
     /**
      * Returns concat sql part.
-     * 
+     *
      * @param string $input
      * @return string
      */
     public function _driver_concat($input)
     {
         return implode(' || ', $input);
-
     }
 
     /**
      * Returns list of tables in database.
-     * 
+     *
      * @return array
      */
     public function _driver_listtables()
     {
         return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\' and relname !~ \'^sql_\'');
-
     }
 
     /**
      * Begins transaction.
-     * 
+     *
      * @return int|false
      */
     public function _driver_begintrans()
     {
         return $this->Execute('BEGIN');
-
     }
 
     /**
      * Commits transaction.
-     * 
+     *
      * @return int|false
      */
     public function _driver_committrans()
     {
         return $this->Execute('COMMIT');
-
     }
 
     /**
      * Rollbacks transactions.
-     * 
+     *
      * @return int|false
      */
     public function _driver_rollbacktrans()
     {
         return $this->Execute('ROLLBACK');
-
     }
 
-	private function _driver_locktables_filter_helper($table) {
-		return !$this->_driver_resourceexists($table, LMSDB::RESOURCE_TYPE_VIEW);
-	}
+    private function _driver_locktables_filter_helper($table)
+    {
+        return !$this->_driver_resourceexists($table, LMSDB::RESOURCE_TYPE_VIEW);
+    }
 
     /**
      * Locks table.
-     * 
+     *
      * @param string $table
      * @param string $locktype
      * @todo: locktype
@@ -357,35 +337,32 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         } else {
             $this->Execute('LOCK ' . $table);
         }
-
     }
 
     /**
      * Unlocks tables.
-     * 
+     *
      * @return boolean
      */
     public function _driver_unlocktables()
     {
-        return TRUE;
-
+        return true;
     }
 
     /**
      * Returns last inserted element id.
-     * 
+     *
      * @param string $table
      * @return int
      */
     public function _driver_lastinsertid($table = null)
     {
         return $this->GetOne('SELECT currval(\'' . $table . '_id_seq\')');
-
     }
 
     /**
      * Creates group concat sql part.
-     * 
+     *
      * @param string $field
      * @param string $separator
      * @param boolean $distinct
@@ -398,91 +375,101 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         } else {
             return 'array_to_string(array_agg(DISTINCT ' . $field . '), \'' . $separator . '\')';
         }
-
     }
 
     /**
      * Sets connection encoding.
-     * 
+     *
      * @param string $name Connection name
      */
     public function _driver_setencoding($name)
     {
         $this->Execute('SET NAMES ?', array($name));
-
     }
 
-	/**
-	* Gets year for date.
-	* 
-	* @param string $date
-	* @return year string
-	*/
-	public function _driver_year($date) {
-		return 'DATE_PART(\'year\', ' . $date . '::timestamp)';
-	}
+    /**
+    * Gets year for date.
+    *
+    * @param string $date
+    * @return year string
+    */
+    public function _driver_year($date)
+    {
+        return 'DATE_PART(\'year\', ' . $date . '::timestamp)';
+    }
 
-	/**
-	* Gets month for date.
-	* 
-	* @param string $date
-	* @return month string
-	*/
-	public function _driver_month($date) {
-		return 'DATE_PART(\'month\', ' . $date . '::timestamp)';
-	}
+    /**
+    * Gets month for date.
+    *
+    * @param string $date
+    * @return month string
+    */
+    public function _driver_month($date)
+    {
+        return 'DATE_PART(\'month\', ' . $date . '::timestamp)';
+    }
 
-	/**
-	* Gets day for date.
-	* 
-	* @param string $date
-	* @return day string
-	*/
-	public function _driver_day($date) {
-		return 'DATE_PART(\'day\', ' . $date . '::timestamp)';
-	}
+    /**
+    * Gets day for date.
+    *
+    * @param string $date
+    * @return day string
+    */
+    public function _driver_day($date)
+    {
+        return 'DATE_PART(\'day\', ' . $date . '::timestamp)';
+    }
 
-	/**
-	 * Regular expression match for selected field.
-	 *
-	 * @param string $field
-	 * @param string $regexp
-	 * @return regexp match string
-	 */
-	public function _driver_regexp($field, $regexp) {
-		return $field . ' ~ \'' . $regexp . '\'';
-	}
+    /**
+     * Regular expression match for selected field.
+     *
+     * @param string $field
+     * @param string $regexp
+     * @return regexp match string
+     */
+    public function _driver_regexp($field, $regexp)
+    {
+        return $field . ' ~ \'' . $regexp . '\'';
+    }
 
-	/**
-	* Check if database resource exists (table, view)
-	*
-	* @param string $name
-	* @param int $type
-	* @return exists boolean
-	*/
-	public function _driver_resourceexists($name, $type) {
-		switch ($type) {
-			case LMSDB::RESOURCE_TYPE_TABLE:
-			case LMSDB::RESOURCE_TYPE_VIEW:
-				if ($type == LMSDB::RESOURCE_TYPE_TABLE)
-					$table_type = 'BASE TABLE';
-				else
-					$table_type = 'VIEW';
-				return $this->GetOne('SELECT COUNT(*) FROM information_schema.tables
+    /**
+    * Check if database resource exists (table, view)
+    *
+    * @param string $name
+    * @param int $type
+    * @return exists boolean
+    */
+    public function _driver_resourceexists($name, $type)
+    {
+        switch ($type) {
+            case LMSDB::RESOURCE_TYPE_TABLE:
+            case LMSDB::RESOURCE_TYPE_VIEW:
+                if ($type == LMSDB::RESOURCE_TYPE_TABLE) {
+                    $table_type = 'BASE TABLE';
+                } else {
+                    $table_type = 'VIEW';
+                }
+                return $this->GetOne(
+                    'SELECT COUNT(*) FROM information_schema.tables
 					WHERE table_catalog=? AND table_name=? AND table_type=?',
-					array($this->_dbname, $name, $table_type)) > 0;
-				break;
-			case LMSDB::RESOURCE_TYPE_COLUMN:
-				list ($table_name, $column_name) = explode('.', $name);
-				return $this->GetOne('SELECT COUNT(*) FROM information_schema.columns
+                    array($this->_dbname, $name, $table_type)
+                ) > 0;
+                break;
+            case LMSDB::RESOURCE_TYPE_COLUMN:
+                list ($table_name, $column_name) = explode('.', $name);
+                return $this->GetOne(
+                    'SELECT COUNT(*) FROM information_schema.columns
 					WHERE table_catalog = ? AND table_name = ? AND column_name = ?',
-					array($this->_dbname, $table_name, $column_name)) > 0;
-				break;
-			case LMSDB::RESOURCE_TYPE_CONSTRAINT:
-				return $this->GetOne('SELECT COUNT(*) FROM information_schema.table_constraints
+                    array($this->_dbname, $table_name, $column_name)
+                ) > 0;
+                break;
+            case LMSDB::RESOURCE_TYPE_CONSTRAINT:
+                return $this->GetOne(
+                    'SELECT COUNT(*) FROM information_schema.table_constraints
 					WHERE table_catalog = ? AND constraint_name = ?',
-					array($this->_dbname, $name)) > 0;
-				break;
-		}
-	}
+                    array($this->_dbname, $name)
+                ) > 0;
+                break;
+        }
+    }
 }

@@ -29,31 +29,29 @@ $this->BeginTrans();
 // REGON (Business Registration Number)
 $this->Execute("ALTER TABLE customers ADD COLUMN regon varchar(255)");
 $this->Execute("UPDATE customers SET regon = ''");
-$this->Execute("ALTER TABLE customers ALTER COLUMN regon SET DEFAULT ''"); 
-$this->Execute("ALTER TABLE customers ALTER COLUMN regon SET NOT NULL"); 
+$this->Execute("ALTER TABLE customers ALTER COLUMN regon SET DEFAULT ''");
+$this->Execute("ALTER TABLE customers ALTER COLUMN regon SET NOT NULL");
 // KRS/EDG (Register of Business Entities)
 $this->Execute("ALTER TABLE customers ADD COLUMN rbe varchar(255)");
 $this->Execute("UPDATE customers SET rbe = ''");
-$this->Execute("ALTER TABLE customers ALTER COLUMN rbe SET DEFAULT ''"); 
-$this->Execute("ALTER TABLE customers ALTER COLUMN rbe SET NOT NULL"); 
+$this->Execute("ALTER TABLE customers ALTER COLUMN rbe SET DEFAULT ''");
+$this->Execute("ALTER TABLE customers ALTER COLUMN rbe SET NOT NULL");
 // Dowod osobisty (Identity Card Number)
 $this->Execute("ALTER TABLE customers ADD COLUMN icn varchar(255)");
 $this->Execute("UPDATE customers SET icn = ''");
-$this->Execute("ALTER TABLE customers ALTER COLUMN icn SET DEFAULT ''"); 
-$this->Execute("ALTER TABLE customers ALTER COLUMN icn SET NOT NULL"); 
+$this->Execute("ALTER TABLE customers ALTER COLUMN icn SET DEFAULT ''");
+$this->Execute("ALTER TABLE customers ALTER COLUMN icn SET NOT NULL");
 
 // Node location
 $this->Execute("ALTER TABLE nodes ADD COLUMN location text");
 $this->Execute("UPDATE nodes SET location = ''");
-$this->Execute("ALTER TABLE nodes ALTER COLUMN location SET DEFAULT ''"); 
-$this->Execute("ALTER TABLE nodes ALTER COLUMN location SET NOT NULL"); 
+$this->Execute("ALTER TABLE nodes ALTER COLUMN location SET DEFAULT ''");
+$this->Execute("ALTER TABLE nodes ALTER COLUMN location SET NOT NULL");
 
 // Account names (logins) will be unique only in one domain context
 $this->Execute("ALTER TABLE passwd DROP CONSTRAINT passwd_login_key");
 $this->Execute("ALTER TABLE passwd ADD UNIQUE (login, domainid)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006081000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006081000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -24,18 +24,18 @@
  *  $Id$
  */
 
-function smarty_function_location_box_expandable( $params = array(), $template )
+function smarty_function_location_box_expandable($params = array(), $template)
 {
-    if ( !function_exists('smarty_function_location_box') ) {
-        foreach ( $template->getPluginsDir() as $v ) {
-            if ( file_exists($v . 'function.location_box.php') ) {
+    if (!function_exists('smarty_function_location_box')) {
+        foreach ($template->getPluginsDir() as $v) {
+            if (file_exists($v . 'function.location_box.php')) {
                 require_once $v . 'function.location_box.php';
             }
         }
     }
 
     // set default prefix
-    if ( empty($params['data']['prefix']) ) {
+    if (empty($params['data']['prefix'])) {
         $params['data']['prefix'] = 'address';
     }
 
@@ -48,11 +48,19 @@ function smarty_function_location_box_expandable( $params = array(), $template )
 
     $title = '';
 
-    switch ( $params['data']['location_address_type']  ) {
-        case POSTAL_ADDRESS           : $title = trans('postal address');             break;
-        case BILLING_ADDRESS          : $title = trans('billing address');            break;
-        case LOCATION_ADDRESS         : $title = trans('location/recipient address'); break;
-        case DEFAULT_LOCATION_ADDRESS : $title = trans('default location address');   break;
+    switch ($params['data']['location_address_type']) {
+        case POSTAL_ADDRESS:
+            $title = trans('postal address');
+            break;
+        case BILLING_ADDRESS:
+            $title = trans('billing address');
+            break;
+        case LOCATION_ADDRESS:
+            $title = trans('location/recipient address');
+            break;
+        case DEFAULT_LOCATION_ADDRESS:
+            $title = trans('default location address');
+            break;
     }
 
     echo '<div class="address-full"
@@ -61,7 +69,7 @@ function smarty_function_location_box_expandable( $params = array(), $template )
                 data-state="' . (isset($params['data']['show']) ? 'opened' : 'closed') . '">' .
                 $location_str . '</div>';
 
-    if ( isset($params['data']['show']) ) {
+    if (isset($params['data']['show'])) {
         echo '<div id="' . $uid . '">';
     } else {
         echo '<div id="' . $uid . '" style="display: none;">';
@@ -70,26 +78,24 @@ function smarty_function_location_box_expandable( $params = array(), $template )
     echo '<div style="padding: 3px 0; position: relative;">';
     echo '<span class="lms-ui-button clear-location-box"><img src="img/eraser.gif" alt="">' . trans('Clear') . '</span>';
 
-    if ( isset($params['data']['clear_button']) ) {
+    if (isset($params['data']['clear_button'])) {
         echo '&nbsp;&nbsp;<span class="lms-ui-button delete-location-box"><img src="img/delete.gif" alt="">' . trans('Delete') . '</span>';
     }
 
-    if ( isset($params['data']['use_counter']) ) {
+    if (isset($params['data']['use_counter'])) {
         echo '<div style="position: absolute; right: 0; top: 7px;">' . trans('assigned to <b>$a</b> nodes', $params['data']['use_counter']) . '</div>';
     }
 
     echo '</div>';
 
-    if ( isset($params['data']['location_address_type']) ) {
+    if (isset($params['data']['location_address_type'])) {
         echo '<input type="hidden" value="' . $params['data']['location_address_type']  . '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
     } else {
         echo '<input type="hidden" value="' . LOCATION_ADDRESS .                          '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
     }
 
-    smarty_function_location_box( $params['data'], $template );
+    smarty_function_location_box($params['data'], $template);
 
     echo '</div>';
     echo '</div>';
 }
-
-?>

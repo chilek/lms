@@ -31,5 +31,3 @@ $this->Execute("ALTER TABLE netradiosectors ADD COLUMN license varchar(64) DEFAU
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

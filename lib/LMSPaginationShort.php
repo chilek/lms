@@ -34,7 +34,7 @@ class LMSPaginationShort extends LMSPagination
     
     /**
      * Determines if "go to" should be displayed
-     * 
+     *
      * @return boolean True if "go to" should be displated, false otherwise
      */
     public function displayGoTo()
@@ -48,7 +48,7 @@ class LMSPaginationShort extends LMSPagination
     
     /**
      * Determines if link to given page should be displayed
-     * 
+     *
      * @return boolean True if link should be displated, false otherwise
      */
     public function displayLink($link_page)
@@ -63,5 +63,4 @@ class LMSPaginationShort extends LMSPagination
             return false;
         }
     }
-    
 }

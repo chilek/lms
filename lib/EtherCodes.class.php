@@ -24,21 +24,24 @@
  *  $Id$
  */
 
-class EtherCodes {
-	private static $producers = array();
+class EtherCodes
+{
+    private static $producers = array();
 
-	public static function GetProducer($mac) {
-		$mac = strtoupper(str_replace(':', '-', substr($mac, 0, 8)));
+    public static function GetProducer($mac)
+    {
+        $mac = strtoupper(str_replace(':', '-', substr($mac, 0, 8)));
 
-		if (empty(self::$producers)) {
-			$maclines = @file(LIB_DIR . DIRECTORY_SEPARATOR . 'ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-			if (!empty($maclines))
-				foreach ($maclines as $line) {
-					list ($prefix, $producer) = explode(':', $line);
-					self::$producers[$prefix] = $producer;
-			}
-		}
+        if (empty(self::$producers)) {
+            $maclines = @file(LIB_DIR . DIRECTORY_SEPARATOR . 'ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+            if (!empty($maclines)) {
+                foreach ($maclines as $line) {
+                    list ($prefix, $producer) = explode(':', $line);
+                    self::$producers[$prefix] = $producer;
+                }
+            }
+        }
 
-		return $mac && isset(self::$producers[$mac]) ? self::$producers[$mac] : '';
-	}
+        return $mac && isset(self::$producers[$mac]) ? self::$producers[$mac] : '';
+    }
 }

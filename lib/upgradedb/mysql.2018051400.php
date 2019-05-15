@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_verifierid_fkey F
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018051400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

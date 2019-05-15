@@ -111,5 +111,3 @@ $_LANG['Speed unit type'] = 'Typ jednostki szybkości';
 $_LANG['Speed unit aggregation threshold'] = 'Wyzwalacz agregacji jednostki szybkości';
 $_LANG['<!speed-unit>SI'] = 'SI';
 $_LANG['<!speed-unit>binary'] = 'binarny';
-
-?>

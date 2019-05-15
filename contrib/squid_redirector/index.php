@@ -18,7 +18,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -65,11 +65,11 @@ if (file_exists($composer_autoload_path)) {
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Initialize templates engine
@@ -103,32 +103,24 @@ include('lang.php');
 
 $SMARTY->assignByRef('layout', $layout);
 
-if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-{
-	$forwarded_ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-	$nodeid = $LMS->GetNodeIDByIP($forwarded_ip['0']);    
-} 
-else 
-{
-	$nodeid = $LMS->GetNodeIDByIP(str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']));
+if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $forwarded_ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $nodeid = $LMS->GetNodeIDByIP($forwarded_ip['0']);
+} else {
+    $nodeid = $LMS->GetNodeIDByIP(str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']));
 }
 
-$customerid = $LMS->GetNodeOwner($nodeid);    
-$nodeinfo = $LMS->GetNode($nodeid);    
+$customerid = $LMS->GetNodeOwner($nodeid);
+$nodeinfo = $LMS->GetNode($nodeid);
 
-if (isset($_GET['readed']))
-{
-	$DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?', array($nodeid));
-	header('Location: '.$_GET['oldurl']);
-} 
-else 
-{
-	$customerinfo = $LMS->GetCustomer($customerid);
-	$layout['oldurl'] = $_GET['oldurl'];
-	$SMARTY->assign('customerinfo', $customerinfo);
+if (isset($_GET['readed'])) {
+    $DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?', array($nodeid));
+    header('Location: '.$_GET['oldurl']);
+} else {
+    $customerinfo = $LMS->GetCustomer($customerid);
+    $layout['oldurl'] = $_GET['oldurl'];
+    $SMARTY->assign('customerinfo', $customerinfo);
         $SMARTY->assign('nodeinfo', $nodeinfo);
-	$SMARTY->assign('layout', $layout);
-	$SMARTY->display('message.html');
+    $SMARTY->assign('layout', $layout);
+    $SMARTY->display('message.html');
 }
-
-?>

@@ -40,20 +40,21 @@ $this->Execute("
     CREATE INDEX customercontacts_phone_idx ON customercontacts (phone);
 ");
 
-if($list = $this->GetAll('SELECT phone1, phone2, phone3, id FROM customers'))
-{
-	foreach($list as $row)
-	{
-		if(trim($row['phone1']))
-			$this->Execute('INSERT INTO customercontacts (customerid, phone)
-					VALUES(?, ?)', array($row['id'], $row['phone1'])); 
-		if(trim($row['phone2']))
-			$this->Execute('INSERT INTO customercontacts (customerid, phone)
+if ($list = $this->GetAll('SELECT phone1, phone2, phone3, id FROM customers')) {
+    foreach ($list as $row) {
+        if (trim($row['phone1'])) {
+            $this->Execute('INSERT INTO customercontacts (customerid, phone)
+					VALUES(?, ?)', array($row['id'], $row['phone1']));
+        }
+        if (trim($row['phone2'])) {
+            $this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone2']));
-		if(trim($row['phone3']))
-			$this->Execute('INSERT INTO customercontacts (customerid, phone)
+        }
+        if (trim($row['phone3'])) {
+            $this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone3']));
-	}
+        }
+    }
 }
 
 $this->Execute("
@@ -65,5 +66,3 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

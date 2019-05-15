@@ -29,18 +29,18 @@ $numbers_list = $this->GetAll("SELECT voip_account_id, phone FROM voip_numbers O
 $counter = array();
 
 if ($numbers_list) {
-	foreach ($numbers_list as $number) {
-		$vaccid = $number['voip_account_id'];
-		$phone  = $number['phone'];
+    foreach ($numbers_list as $number) {
+        $vaccid = $number['voip_account_id'];
+        $phone  = $number['phone'];
 
-		if (isset($counter[$vaccid])) {
-			++$counter[$vaccid];
-			$this->Execute("UPDATE voip_numbers SET `index` = ? WHERE phone ?LIKE? ?", array($counter[$vaccid], $phone));
-		} else {
-			$counter[$vaccid] = 1;
-			$this->Execute("UPDATE voip_numbers SET `index` = 1 WHERE phone ?LIKE? ?", array($phone));
-		}
-	}
+        if (isset($counter[$vaccid])) {
+            ++$counter[$vaccid];
+            $this->Execute("UPDATE voip_numbers SET `index` = ? WHERE phone ?LIKE? ?", array($counter[$vaccid], $phone));
+        } else {
+            $counter[$vaccid] = 1;
+            $this->Execute("UPDATE voip_numbers SET `index` = 1 WHERE phone ?LIKE? ?", array($phone));
+        }
+    }
 }
 
 $this->Execute("ALTER TABLE voip_numbers ADD CONSTRAINT vn_uniq_index UNIQUE (voip_account_id, `index`)");
@@ -48,5 +48,3 @@ $this->Execute("ALTER TABLE voip_numbers ADD CONSTRAINT vn_uniq_index UNIQUE (vo
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016100500', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

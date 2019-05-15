@@ -26,26 +26,27 @@
 
 /**
  * LMSProjectManagerInterface
- * 
+ *
  */
-interface LMSProjectManagerInterface {
-	public function CleanupProjects();
+interface LMSProjectManagerInterface
+{
+    public function CleanupProjects();
 
-	public function GetProjects();
+    public function GetProjects();
 
-	public function GetProject($id);
+    public function GetProject($id);
 
-	public function GetProjectName($id);
+    public function GetProjectName($id);
 
-	public function GetProjectByName($name);
+    public function GetProjectByName($name);
 
-	public function ProjectByNameExists($name);
+    public function ProjectByNameExists($name);
 
-	public function AddProject($project);
+    public function AddProject($project);
 
-	public function DeleteProject($id);
+    public function DeleteProject($id);
 
-	public function UpdateProject($id, $project);
+    public function UpdateProject($id, $project);
 
-	public function GetProjectType($id);
+    public function GetProjectType($id);
 }

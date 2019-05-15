@@ -35,5 +35,3 @@ $this->Execute("CREATE TABLE voip_emergency_numbers (
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

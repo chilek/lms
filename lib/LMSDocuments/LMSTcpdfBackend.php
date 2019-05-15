@@ -32,48 +32,52 @@
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
-class LMSTcpdfBackend extends LMSTCPDF {
-	public function __construct($pagesize, $orientation, $title) {
-		global $layout;
+class LMSTcpdfBackend extends LMSTCPDF
+{
+    public function __construct($pagesize, $orientation, $title)
+    {
+        global $layout;
 
-		parent::__construct($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
+        parent::__construct($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
 
-		$this->SetProducer('LMS Developers');
-		$this->SetSubject($title);
-		$this->SetCreator('LMS ' . $layout['lmsv']);
-		$this->SetDisplayMode('fullwidth', 'SinglePage', 'UseNone');
+        $this->SetProducer('LMS Developers');
+        $this->SetSubject($title);
+        $this->SetCreator('LMS ' . $layout['lmsv']);
+        $this->SetDisplayMode('fullwidth', 'SinglePage', 'UseNone');
 
-		$this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
-		$this->SetHeaderMargin(PDF_MARGIN_HEADER);
-		$this->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+        $this->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $this->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-		$this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-		$this->setLanguageArray($l);
+        $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $this->setLanguageArray($l);
 
-		/* disable font subsetting to improve performance */
-		$this->setFontSubsetting(false);
+        /* disable font subsetting to improve performance */
+        $this->setFontSubsetting(false);
 
-		$this->AppendPage();
-	}
+        $this->AppendPage();
+    }
 
-	public function AppendPage() {
-		$this->AddPage();
-	}
+    public function AppendPage()
+    {
+        $this->AddPage();
+    }
 
-	public function WriteToBrowser($filename = null) {
-		ob_clean();
-		header('Pragma: private');
-		header('Cache-control: private, must-revalidate');
-		if (!is_null($filename))
-			$this->Output($filename);
-		else
-			$this->Output();
-	}
+    public function WriteToBrowser($filename = null)
+    {
+        ob_clean();
+        header('Pragma: private');
+        header('Cache-control: private, must-revalidate');
+        if (!is_null($filename)) {
+            $this->Output($filename);
+        } else {
+            $this->Output();
+        }
+    }
 
-	public function WriteToString() {
-		return $this->Output(null, 'S');
-	}
+    public function WriteToString()
+    {
+        return $this->Output(null, 'S');
+    }
 }
-
-?>

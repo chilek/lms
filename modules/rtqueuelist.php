@@ -24,10 +24,11 @@
  *  $Id$
  */
 
-if (isset($_POST['deleted']))
-	$filter['deleted'] = $_POST['deleted'];
-elseif (!isset($filter['deleted']))
-	$filter['deleted'] = true;
+if (isset($_POST['deleted'])) {
+    $filter['deleted'] = $_POST['deleted'];
+} elseif (!isset($filter['deleted'])) {
+    $filter['deleted'] = true;
+}
 
 $SESSION->saveFilter($filter);
 
@@ -45,5 +46,3 @@ $SMARTY->assign('filter', $filter);
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueuelist.html');
-
-?>

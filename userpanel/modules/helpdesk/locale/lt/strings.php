@@ -63,5 +63,3 @@ $_LANG['This module allows your customers to contact with you'] = 'Šis modulis 
 $_LANG['Ticket must have its body!'] = 'Turi nurodyti prašymo turinį!';
 $_LANG['Ticket must have its title!'] = 'Prašymas turi būti pavadintas!';
 $_LANG['Message'] = 'Žinutė';
-
-?>

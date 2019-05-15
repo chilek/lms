@@ -24,16 +24,15 @@
  *  $Id$
  */
 
-function smarty_block_tab_table($params, $content, $template, $repeat) {
-	if (!$repeat) {
-		$id = isset($params['id']) ? $params['id'] : null;
-		$hourglass = isset($params['hourglass']) && $params['hourglass'];
+function smarty_block_tab_table($params, $content, $template, $repeat)
+{
+    if (!$repeat) {
+        $id = isset($params['id']) ? $params['id'] : null;
+        $hourglass = isset($params['hourglass']) && $params['hourglass'];
 
-		return '
+        return '
 			<div class="lms-ui-tab-table"' . ($id ? ' id="' . $id . '"' : '') . '>
 				' . ($hourglass ? '<div class="lms-ui-tab-hourglass"><i></i>' . $content . '</div>' : $content) . '
 			</div>';
-	}
+    }
 }
-
-?>

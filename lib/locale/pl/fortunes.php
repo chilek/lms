@@ -86,7 +86,7 @@ $fortunes[] = "01:04 < [hunter]> robić dokumentacje ?
 01:08 <@agaran> :>>> Hunterq uwazaj";
 
 $fortunes[] = "19:16.31| <@Baseciq> SELECT users.id, lastname, SUM((type * -2 + 7) * value) FROM users LEFT OUTER JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE status=3 AND deleted=0 GROUP BY users.id;
-19:17.00| <@Lexx__> Wy z tymi zapytaniami jobla dostajcie ;P";		     
+19:17.00| <@Lexx__> Wy z tymi zapytaniami jobla dostajcie ;P";
 
 $fortunes[] = "Lexx (0:16)
 GPL nie przewiduje zdaje sie braku odpowiedzialnosci za smierc przez kod ;]";
@@ -142,7 +142,5 @@ maila 5 godzin. Przy okazji mam nocleg w Poznaniu\" dlugosc rozmowy 68 minut
 Pozdrawiam,
 Tomasz T. Ciaszczyk";
 
-mt_srand ((double) microtime()* 100000000);
-$layout['fortune'] = $fortunes[mt_rand(0,count($fortunes)-1)];
-
-?>
+mt_srand((double) microtime()* 100000000);
+$layout['fortune'] = $fortunes[mt_rand(0, count($fortunes)-1)];

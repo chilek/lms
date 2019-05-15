@@ -28,10 +28,11 @@ $layout['pagetitle'] = trans('Cash Registries List');
 
 $allowed = ConfigHelper::checkPrivilege('cash_registry_administration');
 
-if ($allowed)
-	$args = array();
-else
-	$args = array(Auth::GetCurrentUser());
+if ($allowed) {
+    $args = array();
+} else {
+    $args = array(Auth::GetCurrentUser());
+}
 
 $reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name, 
 			cashregs.description AS description, disabled,
@@ -46,15 +47,16 @@ $reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name,
 		ORDER BY cashregs.name', $args);
 
 $listdata['sum'] = 0;
-if($reglist)
-	foreach($reglist as $row)
-		if(!$row['disabled'])
-			$listdata['sum'] += $row['balance'];
+if ($reglist) {
+    foreach ($reglist as $row) {
+        if (!$row['disabled']) {
+            $listdata['sum'] += $row['balance'];
+        }
+    }
+}
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('reglist', $reglist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('cash/cashreglist.html');
-
-?>

@@ -31,14 +31,12 @@ $this->Execute("CREATE VIEW customersview AS
 		    	SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = c.id)
-			AND c.type IN (?,?) ;",array(0,1));
-			
+			AND c.type IN (?,?) ;", array(0,1));
+            
 $this->Execute("CREATE VIEW contractorview AS
 		SELECT c.* FROM customers c
-		WHERE  c.type = ? ;",array(2));
+		WHERE  c.type = ? ;", array(2));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012111100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

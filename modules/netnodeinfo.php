@@ -32,11 +32,12 @@ $layout['pagetitle'] = trans('Net Device Node Info: $a', $info['name']);
 
 $result = $LMS->GetNetNode($id);
 
-if (!$result)
-	$SESSION->redirect('?m=netnodelist');
+if (!$result) {
+    $SESSION->redirect('?m=netnodelist');
+}
 
 if ($nodeinfo['ownerid']) {
-	$nodeinfo['owner'] = $LMS->getCustomerName( $nodeinfo['ownerid'] );
+    $nodeinfo['owner'] = $LMS->getCustomerName($nodeinfo['ownerid']);
 }
 
 $SMARTY->assign('nodeinfo', $result);
@@ -50,7 +51,7 @@ $nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name",
 $SMARTY->assign('netdevlist', $nlist);
 
 $queue = $LMS->GetQueueContents(array('ids' => null, 'order' => null, 'state' => null, 'priority' => null,
-	'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => null, 'netnodeids' => $id));
+    'owner' => -1, 'catids' => null, 'removed' => null, 'netdevids' => null, 'netnodeids' => $id));
 $total = $queue['total'];
 unset($queue['total']);
 unset($queue['state']);
@@ -74,5 +75,3 @@ $SMARTY->assign('pagelimit', $pagelimit);
 
 $SMARTY->assign('netnodeinfo_sortable_order', $SESSION->get_persistent_setting('netnodeinfo-sortable-order'));
 $SMARTY->display('netnode/netnodeinfo.html');
-
-?>

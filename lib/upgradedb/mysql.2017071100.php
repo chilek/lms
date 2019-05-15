@@ -30,5 +30,3 @@ $this->Execute("ALTER TABLE events ADD CONSTRAINT events_address_id_fk
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017071100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

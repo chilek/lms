@@ -26,6 +26,4 @@
 
 $this->Execute("ALTER TABLE users ADD serviceaddr text DEFAULT '' NOT NULL");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004072100', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004072100', 'dbversion'));

@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE events ADD enddate int(11) DEFAULT '0' NOT NULL");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014090200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

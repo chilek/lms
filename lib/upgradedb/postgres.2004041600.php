@@ -44,5 +44,3 @@ $this->Execute("
     UPDATE dbinfo SET keyvalue = '2004041600' WHERE keytype = 'dbversion';
     COMMIT;
 ");
-
-?>

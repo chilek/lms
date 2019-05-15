@@ -24,24 +24,27 @@
  *  $Id$
  */
 
-class LMSHtmlInvoice extends LMSHtmlDocument {
-	public function __construct($smarty) {
-		parent::__construct($smarty, 'invoices', 'invoice' . DIRECTORY_SEPARATOR . 'invoiceheader.html');
-	}
+class LMSHtmlInvoice extends LMSHtmlDocument
+{
+    public function __construct($smarty)
+    {
+        parent::__construct($smarty, 'invoices', 'invoice' . DIRECTORY_SEPARATOR . 'invoiceheader.html');
+    }
 
-	public function Draw($data) {
-		parent::Draw($data);
-		if(isset($this->data['invoice']))
-			$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
-		else
-			$template_file = ConfigHelper::getConfig('invoices.template_file');
-		if (!$this->smarty->templateExists('file:' . $template_file))
-			$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
-		$this->smarty->assign('type', $this->data['type']);
-		$this->smarty->assign('duplicate', $this->data['type'] == trans('DUPLICATE'));
-		$this->smarty->assign('invoice', $this->data);
-		$this->contents .= $this->smarty->fetch('file:' . $template_file);
-	}
+    public function Draw($data)
+    {
+        parent::Draw($data);
+        if (isset($this->data['invoice'])) {
+            $template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
+        } else {
+            $template_file = ConfigHelper::getConfig('invoices.template_file');
+        }
+        if (!$this->smarty->templateExists('file:' . $template_file)) {
+            $template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
+        }
+        $this->smarty->assign('type', $this->data['type']);
+        $this->smarty->assign('duplicate', $this->data['type'] == trans('DUPLICATE'));
+        $this->smarty->assign('invoice', $this->data);
+        $this->contents .= $this->smarty->fetch('file:' . $template_file);
+    }
 }
-
-?>

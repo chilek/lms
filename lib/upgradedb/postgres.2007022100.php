@@ -32,5 +32,3 @@ $this->Execute("UPDATE rtrights SET rights = 15 WHERE rights = 3");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

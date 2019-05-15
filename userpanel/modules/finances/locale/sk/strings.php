@@ -92,5 +92,3 @@ $_LANG['Your balance'] = 'Váš zostatok';
 $_LANG['Your subscriptions'] = 'Vaša tarify';
 $_LANG['monthly ($a)'] = 'mesačne ($a)';
 $_LANG['Reason:'] = 'Dôvod:';
-
-?>

@@ -24,47 +24,50 @@
  *  $Id$
  */
 
-function smarty_function_documentview($params, $template) {
-	static $vars = array('type', 'name', 'url', 'id', 'text');
-	static $types = array(
-		'image/jpeg' => 'image',
-		'image/png' => 'image',
-		'image/gif' => 'image',
-		'audio/mp3' => 'audio',
-		'audio/ogg' => 'audio',
-		'audio/oga' => 'audio',
-		'audio/wav' => 'audio',
-		'video/mp4' => 'video',
-		'video/ogg' => 'video',
-		'video/webm' => 'video',
-		'application/pdf' => 'pdf',
-	);
+function smarty_function_documentview($params, $template)
+{
+    static $vars = array('type', 'name', 'url', 'id', 'text');
+    static $types = array(
+        'image/jpeg' => 'image',
+        'image/png' => 'image',
+        'image/gif' => 'image',
+        'audio/mp3' => 'audio',
+        'audio/ogg' => 'audio',
+        'audio/oga' => 'audio',
+        'audio/wav' => 'audio',
+        'video/mp4' => 'video',
+        'video/ogg' => 'video',
+        'video/webm' => 'video',
+        'application/pdf' => 'pdf',
+    );
 
-	$result = '';
-	foreach ($vars as $var)
-		if (isset($params[$var]))
-			$$var = $params[$var];
-		else
-			return $result;
-	$external = isset($params['external']) && $params['external'] == 'true';
+    $result = '';
+    foreach ($vars as $var) {
+        if (isset($params[$var])) {
+            $$var = $params[$var];
+        } else {
+            return $result;
+        }
+    }
+    $external = isset($params['external']) && $params['external'] == 'true';
 
-	if (isset($types[$type]))
-		$type = $types[$type];
-	else
-		$type = '';
+    if (isset($types[$type])) {
+        $type = $types[$type];
+    } else {
+        $type = '';
+    }
 
-	$result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
+    $result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
 		data-url="' . $url . '"></div>';
 
-	$result .= '<A href="' . $url . '"';
-	if (empty($type))
-		$result .=  ' class="lms-ui-button-view" ' . ($external ? ' rel="external"' : '');
-	else
-		$result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
-			. 'class="lms-ui-button-view documentview documentview-' . $type . '"';
-	$result .= '>' . $text . '</A>';
+    $result .= '<A href="' . $url . '"';
+    if (empty($type)) {
+        $result .=  ' class="lms-ui-button-view" ' . ($external ? ' rel="external"' : '');
+    } else {
+        $result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
+            . 'class="lms-ui-button-view documentview documentview-' . $type . '"';
+    }
+    $result .= '>' . $text . '</A>';
 
-	return $result;
+    return $result;
 }
-
-?>

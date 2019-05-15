@@ -77,5 +77,3 @@ $_LANG['yearly'] = 'ročně';
 $_LANG['Rights'] = 'Práva';
 $_LANG['Hiding some modules useless when customer hasn\'t got any nodes'] = 'Schová některé moduly, pokud zákazník nemá počítač';
 $_LANG['Disabling modules:'] = 'Vypnuté moduly:';
-
-?>

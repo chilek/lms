@@ -26,40 +26,46 @@
 
 $startup_errors = array();
 
-if(!is_dir(SMARTY_COMPILE_DIR))
-	$startup_errors[] = 'mkdir '.SMARTY_COMPILE_DIR;
+if (!is_dir(SMARTY_COMPILE_DIR)) {
+    $startup_errors[] = 'mkdir '.SMARTY_COMPILE_DIR;
+}
 
-if(!is_writable(SMARTY_COMPILE_DIR))
-	$startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod -R 755 ".SMARTY_COMPILE_DIR;
+if (!is_writable(SMARTY_COMPILE_DIR)) {
+    $startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod -R 755 ".SMARTY_COMPILE_DIR;
+}
 
-if(!is_dir(BACKUP_DIR))
-	$startup_errors[] = 'mkdir '.BACKUP_DIR;
-	
-if(!is_writable(BACKUP_DIR))
-	$startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.BACKUP_DIR."\nchmod -R 755 ".BACKUP_DIR;
+if (!is_dir(BACKUP_DIR)) {
+    $startup_errors[] = 'mkdir '.BACKUP_DIR;
+}
+    
+if (!is_writable(BACKUP_DIR)) {
+    $startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.BACKUP_DIR."\nchmod -R 755 ".BACKUP_DIR;
+}
 
-if(!is_dir(DOC_DIR))
-	$startup_errors[] = 'mkdir '.DOC_DIR;
-	
-if(!is_writable(DOC_DIR))
-	$startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod -R 755 ".DOC_DIR;
+if (!is_dir(DOC_DIR)) {
+    $startup_errors[] = 'mkdir '.DOC_DIR;
+}
+    
+if (!is_writable(DOC_DIR)) {
+    $startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod -R 755 ".DOC_DIR;
+}
 
 $__xajax_deferred_dir = SYS_DIR . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'xajax_js' . DIRECTORY_SEPARATOR . 'deferred';
 
-if (!is_dir($__xajax_deferred_dir))
-	$startup_errors[] = 'mkdir ' . $__xajax_deferred_dir;
-
-if (!is_writable($__xajax_deferred_dir))
-	$startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $__xajax_deferred_dir
-		. "\nchmod -R 755 " . $__xajax_deferred_dir;
-
-if (count($startup_errors) > 0) {
-	print('Can not start because detected some problems. Please run:<PRE>');
-	foreach ($startup_errors as &$err) {
-            print ($err."\n");
-        }
-	print('</PRE>This helps me to work. Thanks.');
-	die();
+if (!is_dir($__xajax_deferred_dir)) {
+    $startup_errors[] = 'mkdir ' . $__xajax_deferred_dir;
 }
 
-?>
+if (!is_writable($__xajax_deferred_dir)) {
+    $startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $__xajax_deferred_dir
+        . "\nchmod -R 755 " . $__xajax_deferred_dir;
+}
+
+if (count($startup_errors) > 0) {
+    print('Can not start because detected some problems. Please run:<PRE>');
+    foreach ($startup_errors as &$err) {
+            print ($err."\n");
+    }
+    print('</PRE>This helps me to work. Thanks.');
+    die();
+}

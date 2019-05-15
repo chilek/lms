@@ -45,18 +45,20 @@ $paytypes = array(
 
 $this->Execute("DROP VIEW customersview");
 
-foreach ($tables as $tab => $col)
-{
+foreach ($tables as $tab => $col) {
     $this->Execute("ALTER TABLE $tab ADD paytype2 smallint DEFAULT NULL");
 
     $types = $this->GetCol("SELECT LOWER($col) AS paytype FROM $tab GROUP BY LOWER($col)");
 
-    if (!empty($types)) foreach ($types as $type) {
-        foreach ($paytypes as $pid => $pname)
-            if (in_array($type, $pname)) {
-                $this->Execute("UPDATE $tab SET paytype2 = $pid WHERE LOWER($col) = ?", array($type));
-                break;
+    if (!empty($types)) {
+        foreach ($types as $type) {
+            foreach ($paytypes as $pid => $pname) {
+                if (in_array($type, $pname)) {
+                    $this->Execute("UPDATE $tab SET paytype2 = $pid WHERE LOWER($col) = ?", array($type));
+                    break;
+                }
             }
+        }
     }
 
     $this->Execute("ALTER TABLE $tab DROP $col");
@@ -75,25 +77,25 @@ $this->Execute("
 $cfg = $this->GetOne("SELECT value FROM uiconfig WHERE var = 'paytype' AND section = 'invoices'");
 
 if ($cfg) {
-    foreach ($paytypes as $pid => $pname)
+    foreach ($paytypes as $pid => $pname) {
         if (in_array($cfg, $pname)) {
             $this->Execute("UPDATE uiconfig SET value = $pid WHERE var = 'paytype' AND section = 'invoices'");
             break;
         }
+    }
 }
 
 $cfg = $this->GetOne("SELECT value FROM daemonconfig WHERE var = 'paytype'");
 
 if ($cfg) {
-    foreach ($paytypes as $pid => $pname)
+    foreach ($paytypes as $pid => $pname) {
         if (in_array($cfg, $pname)) {
             $this->Execute("UPDATE daemonconfig SET value = '$pid' WHERE var = 'paytype'");
             break;
         }
+    }
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010061800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

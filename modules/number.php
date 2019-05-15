@@ -24,36 +24,32 @@
  *  $Id$
  */
 
-if($doc = $DB->GetRow('SELECT number, cdate, type, numberplans.template, extnumber
+if ($doc = $DB->GetRow('SELECT number, cdate, type, numberplans.template, extnumber
 			FROM documents
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			WHERE documents.id = ?', array($_GET['id'])))
-{
-	$ntempl = docnumber(array(
-		'number' => $doc['number'],
-		'template' => $doc['template'],
-		'cdate' => $doc['cdate'],
-		'ext_num' => $doc['extnumber'],
-	));
+			WHERE documents.id = ?', array($_GET['id']))) {
+    $ntempl = docnumber(array(
+        'number' => $doc['number'],
+        'template' => $doc['template'],
+        'cdate' => $doc['cdate'],
+        'ext_num' => $doc['extnumber'],
+    ));
 
-	switch($doc['type'])
-	{
-		case DOC_INVOICE:
-			$ntempl = trans('Invoice No. $a',$ntempl);
-		break;
-		case DOC_RECEIPT:
-			$ntempl = trans('Cash Receipt No. $a',$ntempl);
-		break;
-		case DOC_CNOTE:
-			$ntempl = trans('Credit Note No. $a',$ntempl);
-		break;
-		case DOC_DNOTE:
-			$ntempl = trans('Debit Note No. $a',$ntempl);
-		break;
-	}
-	
-	$SMARTY->assign('content', $ntempl);
-	$SMARTY->display('dynpopup.html');
+    switch ($doc['type']) {
+        case DOC_INVOICE:
+            $ntempl = trans('Invoice No. $a', $ntempl);
+            break;
+        case DOC_RECEIPT:
+            $ntempl = trans('Cash Receipt No. $a', $ntempl);
+            break;
+        case DOC_CNOTE:
+            $ntempl = trans('Credit Note No. $a', $ntempl);
+            break;
+        case DOC_DNOTE:
+            $ntempl = trans('Debit Note No. $a', $ntempl);
+            break;
+    }
+    
+    $SMARTY->assign('content', $ntempl);
+    $SMARTY->display('dynpopup.html');
 }
-
-?>

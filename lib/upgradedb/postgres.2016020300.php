@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE users ADD COLUMN settings TEXT NOT NULL DEFAULT ''")
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

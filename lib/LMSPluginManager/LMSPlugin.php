@@ -29,76 +29,83 @@ use Phine\Observer\SubjectInterface;
 
 /**
  * LMSPlugin
- * 
+ *
  * Abstractaction for all plugin classes
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
-abstract class LMSPlugin implements ObserverInterface {
-	protected $handlers;
-	private $dirname;
-	private $dbschversion = null;
+abstract class LMSPlugin implements ObserverInterface
+{
+    protected $handlers;
+    private $dirname;
+    private $dbschversion = null;
 
-	public function __construct() {
-		$reflector = new ReflectionClass(get_class($this));
-		$this->dirname = dirname($reflector->getFileName());
-		$this->registerHandlers();
-		//$this->loadLocales();
-		$this->upgradeDb();
-	}
+    public function __construct()
+    {
+        $reflector = new ReflectionClass(get_class($this));
+        $this->dirname = dirname($reflector->getFileName());
+        $this->registerHandlers();
+        //$this->loadLocales();
+        $this->upgradeDb();
+    }
 
-	/**
-	 * Registers hooks handlers
-	 */
-	abstract function registerHandlers();
+    /**
+     * Registers hooks handlers
+     */
+    abstract function registerHandlers();
 
-	/**
-	 * Loads plugin locales
-	 */
-	static public function loadLocales() {
-		global $_ui_language, $_LANG;
+    /**
+     * Loads plugin locales
+     */
+    public static function loadLocales()
+    {
+        global $_ui_language, $_LANG;
 
-		$reflector = new ReflectionClass(get_called_class());
-		$filename = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR
-			. 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
-		if (@is_readable($filename))
-			require_once($filename);
-	}
+        $reflector = new ReflectionClass(get_called_class());
+        $filename = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR
+            . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
+        if (@is_readable($filename)) {
+            require_once($filename);
+        }
+    }
 
-	/**
-	 * Inserts plugin templates dir at beginning of smarty template dir list
-	 */
-	static public function insertDefaultTemplateDir(Smarty $smarty) {
-		$template_dirs = $smarty->getTemplateDir();
-		$reflector = new ReflectionClass(get_called_class());
-		$plugin_templates = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'templates';
-		array_unshift($template_dirs, $plugin_templates);
-		$smarty->setTemplateDir($template_dirs);
-	}
+    /**
+     * Inserts plugin templates dir at beginning of smarty template dir list
+     */
+    public static function insertDefaultTemplateDir(Smarty $smarty)
+    {
+        $template_dirs = $smarty->getTemplateDir();
+        $reflector = new ReflectionClass(get_called_class());
+        $plugin_templates = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'templates';
+        array_unshift($template_dirs, $plugin_templates);
+        $smarty->setTemplateDir($template_dirs);
+    }
 
-	/**
-	 * Loads plugin database schema updates
-	 */
-	protected function upgradeDb() {
-		$constant = get_class($this) . '::PLUGIN_DBVERSION';
-		if (defined($constant)) {
-			$libdir = $this->dirname . DIRECTORY_SEPARATOR . 'lib';
-			$docdir = $this->dirname . DIRECTORY_SEPARATOR . 'doc';
-			$this->dbschversion = LMSDB::getInstance()->UpgradeDb(constant($constant), get_class($this), $libdir, $docdir);
-		}
-	}
+    /**
+     * Loads plugin database schema updates
+     */
+    protected function upgradeDb()
+    {
+        $constant = get_class($this) . '::PLUGIN_DBVERSION';
+        if (defined($constant)) {
+            $libdir = $this->dirname . DIRECTORY_SEPARATOR . 'lib';
+            $docdir = $this->dirname . DIRECTORY_SEPARATOR . 'doc';
+            $this->dbschversion = LMSDB::getInstance()->UpgradeDb(constant($constant), get_class($this), $libdir, $docdir);
+        }
+    }
 
-	/**
-	 * Returns current database schema version
-	 */
-	public function getDbSchemaVersion() {
-		return $this->dbschversion;
-	}
+    /**
+     * Returns current database schema version
+     */
+    public function getDbSchemaVersion()
+    {
+        return $this->dbschversion;
+    }
 
     /**
      * Receives notification from plugin manager and processes it.
-     * 
+     *
      * @param SubjectInterface $lms_plugin_manager Plugin manager
      */
     public function receiveUpdate(SubjectInterface $lms_plugin_manager)
@@ -111,7 +118,7 @@ abstract class LMSPlugin implements ObserverInterface {
     
     /**
      * Processes hook
-     * 
+     *
      * @param string $hook_name Hook name
      * @param mixed $hook_data Hook data
      * @return mixed Modified hook data
@@ -136,12 +143,11 @@ abstract class LMSPlugin implements ObserverInterface {
         } else {
             return $hook_data;
         }
-        
     }
     
     /**
      * Returns handler class name for hook
-     * 
+     *
      * @param string $hook_name Hook name
      * @return string Handler class name
      * @throws Exception
@@ -157,7 +163,7 @@ abstract class LMSPlugin implements ObserverInterface {
     
     /**
      * Returns handler method name for hook
-     * 
+     *
      * @param string $hook_name Hook name
      * @return string Handler method name
      * @throws Exception

@@ -34,5 +34,3 @@ $this->Execute("ALTER TABLE assignments ADD FOREIGN KEY (numberplanid) REFERENCE
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010062200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

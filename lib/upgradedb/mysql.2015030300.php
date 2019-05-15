@@ -30,5 +30,3 @@ $this->Execute("ALTER TABLE assignments ADD attribute varchar(255) DEFAULT NULL"
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015030300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

@@ -30,5 +30,3 @@ $_LANG['Notices'] = 'Správy';
 $_LANG['Shows administrative notices'] = 'Ukáž administratívne správy';
 $_LANG['This module is for showing notices for your customer'] = 'Tento modul je určený pre zobrazovanie informácií pre správu vašich zákazníkov';
 $_LANG['We don\'t have any notices to you.'] = 'Nemáte žiadne nové správy.';
-
-?>

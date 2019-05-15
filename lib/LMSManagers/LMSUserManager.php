@@ -44,7 +44,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             SYSLOG::RES_USER => $id
         );
         $this->db->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array_values($args));
-	$this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
+        $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
         if ($this->syslog) {
             unset($args['passwd']);
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERPASSWDCHANGE, $args);
@@ -57,7 +57,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      * @param int $id User id
      * @return string User name
      */
-    public function getUserName($id = null) {
+    public function getUserName($id = null)
+    {
         if ($id === null) {
             $id = Auth::GetCurrentUser();
         } else if (!$id) {
@@ -87,11 +88,12 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC');
     }
 
-	public function getUserNamesIndexedById() {
-		return $this->db->GetAllByKey('SELECT id, name, rname,
+    public function getUserNamesIndexedById()
+    {
+        return $this->db->GetAllByKey('SELECT id, name, rname,
 				(CASE WHEN access = 1 AND accessfrom <= ?NOW? AND (accessto >=?NOW? OR accessto = 0) THEN 1 ELSE 0 END) AS access
 			FROM vusers WHERE deleted=0 ORDER BY rname ASC', 'id');
-	}
+    }
 
     /**
      * Returns users
@@ -240,14 +242,14 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         switch ($this->db->GetOne('SELECT deleted FROM users WHERE id=?', array($id))) {
             case '0':
-                return TRUE;
+                return true;
                 break;
             case '1':
                 return -1;
                 break;
             case '':
             default:
-                return FALSE;
+                return false;
                 break;
         }
     }
@@ -371,18 +373,19 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             $rights = $this->db->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
         }
 
-		$rights = explode(',', $rights);
+        $rights = explode(',', $rights);
 
         return $rights;
     }
 
     public function PasswdExistsInHistory($id, $passwd)
     {
-	    $history = $this->db->GetAll('SELECT id, hash FROM passwdhistory WHERE userid = ? ORDER BY id DESC LIMIT ?', array($id, intval(ConfigHelper::getConfig('phpui.passwordhistory'))));
-	    foreach ($history as $h) {
-		    if (crypt($passwd, $h['hash']) == $h['hash']) return TRUE;
-	    }
-	    return FALSE;
+        $history = $this->db->GetAll('SELECT id, hash FROM passwdhistory WHERE userid = ? ORDER BY id DESC LIMIT ?', array($id, intval(ConfigHelper::getConfig('phpui.passwordhistory'))));
+        foreach ($history as $h) {
+            if (crypt($passwd, $h['hash']) == $h['hash']) {
+                return true;
+            }
+        }
+        return false;
     }
-
 }

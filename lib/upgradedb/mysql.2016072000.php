@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE cashimport CHANGE description description text NOT N
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016072000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

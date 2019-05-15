@@ -246,7 +246,5 @@ $fortunes[] = "Žádný učený z nebe nespadl.";
 $fortunes[] = "Z wikipedie česká přísloví přepsal roku 2012 Jan Šritter";
 
 
-mt_srand ((double) microtime()* 100000000);
-$layout['fortune'] = $fortunes[mt_rand(0,count($fortunes)-1)];
-
-?>
+mt_srand((double) microtime()* 100000000);
+$layout['fortune'] = $fortunes[mt_rand(0, count($fortunes)-1)];

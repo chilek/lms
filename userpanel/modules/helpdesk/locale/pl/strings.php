@@ -82,5 +82,3 @@ $_LANG['(unlimited)'] = '(nieograniczony)';
 $_LANG['One from files is too large!'] = 'Zbyt duży rozmiar jednego z plików!';
 $_LANG['Total file size is too large!'] = 'Zbyt duży całkowity rozmiar plików!';
 $_LANG['Request list:'] = 'Lista zgłoszeń:';
-
-?>

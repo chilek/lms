@@ -18,7 +18,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -63,16 +63,13 @@ $SMARTY->assign('_action', $ExecStack->action);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
-$error = NULL; // initialize error variable needed for (almost) all modules
+$error = null; // initialize error variable needed for (almost) all modules
 
-if($AUTH->islogged !== TRUE)
-{
-	$SMARTY->assign('error', $AUTH->error);
-	$SMARTY->display('../modules/core/templates/login.html');
-	die;
+if ($AUTH->islogged !== true) {
+    $SMARTY->assign('error', $AUTH->error);
+    $SMARTY->display('../modules/core/templates/login.html');
+    die;
 }
 
 // core plugins
 register_plugin('menu-menuend', '../modules/core/templates/logout.html');
-
-?>

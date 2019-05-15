@@ -26,17 +26,17 @@
 
 /**
  * LMSEventManagerInterface
- * 
+ *
  */
 interface LMSEventManagerInterface
 {
-	public function EventAdd($event);
+    public function EventAdd($event);
 
-	public function EventUpdate($event);
+    public function EventUpdate($event);
 
-	public function EventDelete($id);
+    public function EventDelete($id);
 
-	public function GetEvent($id);
+    public function GetEvent($id);
 
     public function GetEventList(array $params);
 
@@ -44,11 +44,11 @@ interface LMSEventManagerInterface
 
     public function GetCustomerIdByTicketId($id);
 
-	public function EventOverlaps(array $params);
+    public function EventOverlaps(array $params);
 
     public function AssignUserToEvent($id, $userid);
 
     public function UnassignUserFromEvent($id, $userid);
 
-	public function MoveEvent($id, $delta);
+    public function MoveEvent($id, $delta);
 }

@@ -46,5 +46,3 @@ if ($lang == 'pl') {
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

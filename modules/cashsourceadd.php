@@ -24,47 +24,48 @@
  *  $Id$
  */
 
-$sourceadd = isset($_POST['sourceadd']) ? $_POST['sourceadd'] : NULL;
+$sourceadd = isset($_POST['sourceadd']) ? $_POST['sourceadd'] : null;
 
-if($sourceadd) 
-{
-	$sourceadd['name'] = trim($sourceadd['name']);
-	$sourceadd['description'] = trim($sourceadd['description']);
+if ($sourceadd) {
+    $sourceadd['name'] = trim($sourceadd['name']);
+    $sourceadd['description'] = trim($sourceadd['description']);
 
-	if($sourceadd['name']=='' && $sourceadd['description']=='')
-	{
-		$SESSION->redirect('?m=cashsourcelist');
-	}
+    if ($sourceadd['name']=='' && $sourceadd['description']=='') {
+        $SESSION->redirect('?m=cashsourcelist');
+    }
 
-	if($sourceadd['name'] == '')
-		$error['name'] = trans('Source name is required!');
-	elseif(mb_strlen($sourceadd['name'])>32)
-		$error['name'] = trans('Source name is too long!');
-	elseif($DB->GetOne('SELECT 1 FROM cashsources WHERE name = ?', array($sourceadd['name'])))
-		$error['name'] = trans('Source with specified name exists!');
+    if ($sourceadd['name'] == '') {
+        $error['name'] = trans('Source name is required!');
+    } elseif (mb_strlen($sourceadd['name'])>32) {
+        $error['name'] = trans('Source name is too long!');
+    } elseif ($DB->GetOne('SELECT 1 FROM cashsources WHERE name = ?', array($sourceadd['name']))) {
+        $error['name'] = trans('Source with specified name exists!');
+    }
 
-	if ($sourceadd['account'] != '' && (strlen($sourceadd['account'])>48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $sourceadd['account'])))
-		$error['account'] = trans('Wrong account number!');
+    if ($sourceadd['account'] != '' && (strlen($sourceadd['account'])>48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $sourceadd['account']))) {
+        $error['account'] = trans('Wrong account number!');
+    }
 
-	if (!$error) {
-		$args = array(
-			'name' => $sourceadd['name'],
-			'description' => $sourceadd['description'],
-			'account' => $sourceadd['account'],
-		);
-		$DB->Execute('INSERT INTO cashsources (name, description, account) VALUES (?, ?, ?)', array_values($args));
+    if (!$error) {
+        $args = array(
+            'name' => $sourceadd['name'],
+            'description' => $sourceadd['description'],
+            'account' => $sourceadd['account'],
+        );
+        $DB->Execute('INSERT INTO cashsources (name, description, account) VALUES (?, ?, ?)', array_values($args));
 
-		if ($SYSLOG) {
-			$args[SYSLOG::RES_CASHSOURCE] = $DB->GetLastInsertID('cashsources');
-			$SYSLOG->AddMessage(SYSLOG::RES_CASHSOURCE, SYSLOG::OPER_ADD, $args);
-		}
+        if ($SYSLOG) {
+            $args[SYSLOG::RES_CASHSOURCE] = $DB->GetLastInsertID('cashsources');
+            $SYSLOG->AddMessage(SYSLOG::RES_CASHSOURCE, SYSLOG::OPER_ADD, $args);
+        }
 
-		if(!isset($sourceadd['reuse']))
-			$SESSION->redirect('?m=cashsourcelist');
+        if (!isset($sourceadd['reuse'])) {
+            $SESSION->redirect('?m=cashsourcelist');
+        }
 
-		unset($sourceadd['name']);
-		unset($sourceadd['description']);
-	}
+        unset($sourceadd['name']);
+        unset($sourceadd['description']);
+    }
 }
 
 $layout['pagetitle'] = trans('Cash Import Source New');
@@ -74,5 +75,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourceadd', $sourceadd);
 $SMARTY->display('cash/cashsourceadd.html');
-
-?>

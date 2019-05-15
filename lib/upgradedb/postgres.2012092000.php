@@ -30,5 +30,3 @@ $this->Execute("ALTER TABLE users ADD accessto integer NOT NULL DEFAULT 0;");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012092000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

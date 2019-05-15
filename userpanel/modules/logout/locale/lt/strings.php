@@ -32,5 +32,3 @@ $_LANG['Module Configuration:'] = 'Modulio konfiguracija:';
 $_LANG['Submit'] = 'Tęsk';
 $_LANG['This module allows your customers to logout'] = 'Šis modulis leidžia Tavo klientui atsijungti';
 $_LANG['When your customer logs out, he will be redirected to this url. If url isn\'t specified, then he will be redirected to Userpanel\'s login screen'] = 'Atsijungiant klientas bus nukreiptas šiuo adresu. Jei laukas paliekamas tuščias, bus parodytas Vartotojo panelės prisijungimo langas';
-
-?>

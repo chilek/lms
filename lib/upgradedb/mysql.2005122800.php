@@ -53,11 +53,10 @@ $this->Execute("CREATE TABLE cashregs (
     ) ENGINE=MyISAM
 ");
 
-if($create_reg)
-	$this->Execute("INSERT INTO cashregs (name) VALUES ('default')");
+if ($create_reg) {
+    $this->Execute("INSERT INTO cashregs (name) VALUES ('default')");
+}
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005122800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005122800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

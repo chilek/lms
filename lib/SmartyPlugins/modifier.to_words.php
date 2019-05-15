@@ -26,7 +26,5 @@
 
 function smarty_modifier_to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
-	return to_words($num, $power, $powsuffix, $short_version);
+    return to_words($num, $power, $powsuffix, $short_version);
 }
-
-?>

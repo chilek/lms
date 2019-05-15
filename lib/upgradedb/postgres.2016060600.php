@@ -28,5 +28,3 @@ $this->Execute("ALTER TABLE voipaccounts ADD COLUMN balance numeric(12,5) NOT NU
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

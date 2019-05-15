@@ -24,11 +24,10 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Help'),	// Display name
-		    'help', 		// Module name - must be the same as directory name
-		    trans('Runs problems solving center'), // Tip 
-		    5,			// Priority
-		    trans('This module shows problems solving center')	// Description
-		    );
-
-?>
+$USERPANEL->AddModule(
+    trans('Help'),    // Display name
+    'help',         // Module name - must be the same as directory name
+    trans('Runs problems solving center'), // Tip
+    5,          // Priority
+    trans('This module shows problems solving center')  // Description
+);

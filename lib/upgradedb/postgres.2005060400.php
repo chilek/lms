@@ -34,8 +34,6 @@ $this->Execute("
 	CREATE INDEX cash_reference_idx ON cash(reference); 
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005060400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

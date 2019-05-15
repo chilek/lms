@@ -33,15 +33,15 @@ class ConfigLoader
 {
     /**
      * Loads config
-     * 
+     *
      * Avaliable options are:
      * provider - config provider name
      * parser - config parser name
      * ini_file_path - path to ini file
-     * 
-     * Retrieves raw config from provider, and passes it to parser. Returns 
+     *
+     * Retrieves raw config from provider, and passes it to parser. Returns
      * parser output.
-     * 
+     *
      * @param array $options Associative array of options
      * @return ConfigContainer Config
      */
@@ -53,13 +53,13 @@ class ConfigLoader
     
     /**
      * Loads raw config
-     * 
+     *
      * Avaliable options are:
      * provider - config provider name
      * ini_file_path - path to ini file
-     * 
+     *
      * Choses provider and passes options to it.
-     * 
+     *
      * @param array $options Associative array of options
      * @return array Raw config
      * @throws Exception Throws exception when config provider is unknown
@@ -91,12 +91,12 @@ class ConfigLoader
     
     /**
      * Parses raw config
-     * 
+     *
      * Avaliable options are:
      * parser - config parser name
-     * 
+     *
      * Choses provider, passes raw config to it and returns it's output.
-     * 
+     *
      * @param array $raw_config Raw config
      * @param array $options Associative array of options
      * @return ConfigContainer Config
@@ -126,5 +126,4 @@ class ConfigLoader
         
         return $parser->objectify($raw_config, $options);
     }
-    
 }

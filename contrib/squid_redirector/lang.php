@@ -18,21 +18,18 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
  */
 
-switch($LMS->ui_lang)
-{
-     case 'pl':
-          $_LANG['Administration message'] = 'Wiadomość administracyjna';
-          $_LANG['Click here to mark this message as readed.'] = 'Kliknij tutaj aby odznaczyć tą wiadomość jako przeczytaną.';
-          $_LANG['Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.'] = 'Dostęp do sieci na tym komputerze jest zablokowany. Możliwe przyczyny: nieznana karta sieciowa lub nieznany komputer.';
-          $_LANG['Please contact with our Customer Service.'] = 'Proszę się skontaktować z naszym Biurem Obsługi.';
-          $_LANG['Access to network on this computer is locked.'] = 'Dostęp do sieci na tym komputerze jest zablokowany.';
-     break;
+switch ($LMS->ui_lang) {
+    case 'pl':
+         $_LANG['Administration message'] = 'Wiadomość administracyjna';
+         $_LANG['Click here to mark this message as readed.'] = 'Kliknij tutaj aby odznaczyć tą wiadomość jako przeczytaną.';
+         $_LANG['Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.'] = 'Dostęp do sieci na tym komputerze jest zablokowany. Możliwe przyczyny: nieznana karta sieciowa lub nieznany komputer.';
+         $_LANG['Please contact with our Customer Service.'] = 'Proszę się skontaktować z naszym Biurem Obsługi.';
+         $_LANG['Access to network on this computer is locked.'] = 'Dostęp do sieci na tym komputerze jest zablokowany.';
+        break;
 }
-
-?>

@@ -1814,161 +1814,166 @@ $producer[] = "D-Link";
 
 function mkpw($nchars)
 {
-	$allowed='0123456789ABCDEF';
-	mt_srand ((double) microtime() * 100000000);
-	$return = '';
-	while (strlen($return)<$nchars) 
-		$return .= $allowed[mt_rand(0,strlen($allowed)-1)];
-	return $return;
+    $allowed='0123456789ABCDEF';
+    mt_srand((double) microtime() * 100000000);
+    $return = '';
+    while (strlen($return)<$nchars) {
+        $return .= $allowed[mt_rand(0, strlen($allowed)-1)];
+    }
+    return $return;
 }
 
 function makemac()
 {
-	for($i = 0; $i < 6; $i ++)
-		$mac[] = mkpw(2);
-	return join(':',$mac);
+    for ($i = 0; $i < 6; $i ++) {
+        $mac[] = mkpw(2);
+    }
+    return join(':', $mac);
 }
 
-if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
-{
-	$SMARTY->display('header.html');
+if (isset($_GET['l']) && sprintf('%d', $_GET['l']) > 0 && sprintf('%d', $_GET['l']) <= 65000) {
+    $SMARTY->display('header.html');
 
-	echo '<H1>'.trans('Generating random data').'</H1>';
+    echo '<H1>'.trans('Generating random data').'</H1>';
 
-	echo '<B>'.trans('Clearing database...').'</B>'; flush();
-	$DB->Execute('DELETE FROM nodes');
-	$DB->Execute('DELETE FROM divisions');
-	$DB->Execute('DELETE FROM customers');
-	$DB->Execute('DELETE FROM customercontacts');
-	$DB->Execute('DELETE FROM cash');
-	$DB->Execute('DELETE FROM assignments');
-	$DB->Execute('DELETE FROM networks');
-	$DB->Execute('DELETE FROM hosts');
-	$DB->Execute('DELETE FROM tariffs');
-	$DB->Execute('DELETE FROM payments');
-	$DB->Execute('DELETE FROM netdevices');
-	$DB->Execute('DELETE FROM netlinks');
-	$DB->Execute('DELETE FROM documents');
-	$DB->Execute('DELETE FROM taxes');
-	$DB->Execute('DELETE FROM invoicecontents');
-	$DB->Execute('DELETE FROM receiptcontents');
-	$DB->Execute('DELETE FROM numberplanassignments');
-	$DB->Execute('DELETE FROM numberplans');
-	$DB->Execute('DELETE FROM customer_addresses');
-	$DB->Execute('DELETE FROM addresses');
+    echo '<B>'.trans('Clearing database...').'</B>';
+    flush();
+    $DB->Execute('DELETE FROM nodes');
+    $DB->Execute('DELETE FROM divisions');
+    $DB->Execute('DELETE FROM customers');
+    $DB->Execute('DELETE FROM customercontacts');
+    $DB->Execute('DELETE FROM cash');
+    $DB->Execute('DELETE FROM assignments');
+    $DB->Execute('DELETE FROM networks');
+    $DB->Execute('DELETE FROM hosts');
+    $DB->Execute('DELETE FROM tariffs');
+    $DB->Execute('DELETE FROM payments');
+    $DB->Execute('DELETE FROM netdevices');
+    $DB->Execute('DELETE FROM netlinks');
+    $DB->Execute('DELETE FROM documents');
+    $DB->Execute('DELETE FROM taxes');
+    $DB->Execute('DELETE FROM invoicecontents');
+    $DB->Execute('DELETE FROM receiptcontents');
+    $DB->Execute('DELETE FROM numberplanassignments');
+    $DB->Execute('DELETE FROM numberplans');
+    $DB->Execute('DELETE FROM customer_addresses');
+    $DB->Execute('DELETE FROM addresses');
 
-	if(ConfigHelper::getConfig('database.type')=='postgres')
-	{
-		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
-		$DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
-		$DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
-		$DB->Execute('DROP SEQUENCE "customercontacts_id_seq"; CREATE SEQUENCE "customercontacts_id_seq"');
-		$DB->Execute('DROP SEQUENCE "cash_id_seq";  CREATE SEQUENCE "cash_id_seq"');
-		$DB->Execute('DROP SEQUENCE "assignments_id_seq";CREATE SEQUENCE "assignments_id_seq"');
-		$DB->Execute('DROP SEQUENCE "networks_id_seq";   CREATE SEQUENCE "networks_id_seq"');
-		$DB->Execute('DROP SEQUENCE "hosts_id_seq";   CREATE SEQUENCE "hosts_id_seq"');
-		$DB->Execute('DROP SEQUENCE "tariffs_id_seq";    CREATE SEQUENCE "tariffs_id_seq"');
-		$DB->Execute('DROP SEQUENCE "netdevices_id_seq"; CREATE SEQUENCE "netdevices_id_seq"');
-		$DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
-		$DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
-		$DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
-		$DB->Execute('DROP SEQUENCE "numberplanassignments_id_seq";  CREATE SEQUENCE "numberplanassignments_id_seq"');
-		$DB->Execute('DROP SEQUENCE "numberplans_id_seq";  CREATE SEQUENCE "numberplans_id_seq"');
-		$DB->Execute('DROP SEQUENCE "addresses_id_seq";  CREATE SEQUENCE "addresses_id_seq"');
-		$DB->Execute('DROP SEQUENCE "customer_addresses_id_seq";  CREATE SEQUENCE "customer_addresses_id_seq"');
-	}
-	elseif(ConfigHelper::getConfig('database.type') == 'mysql' || ConfigHelper::getConfig('database.type') == 'mysqli')
-	{
-		$DB->Execute('ALTER TABLE customers auto_increment=0');
-		$DB->Execute('ALTER TABLE customercontacts auto_increment=0');
-		$DB->Execute('ALTER TABLE divisions auto_increment=0');
-		$DB->Execute('ALTER TABLE nodes auto_increment=0');
-		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
-		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
-		$DB->Execute('ALTER TABLE taxes auto_increment=0');
-		$DB->Execute('ALTER TABLE numberplanassignments auto_increment=0');
-		$DB->Execute('ALTER TABLE numberplans auto_increment=0');
-	}
+    if (ConfigHelper::getConfig('database.type')=='postgres') {
+        $DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
+        $DB->Execute('DROP SEQUENCE "divisions_id_seq"; CREATE SEQUENCE "divisions_id_seq"');
+        $DB->Execute('DROP SEQUENCE "customers_id_seq"; CREATE SEQUENCE "customers_id_seq"');
+        $DB->Execute('DROP SEQUENCE "customercontacts_id_seq"; CREATE SEQUENCE "customercontacts_id_seq"');
+        $DB->Execute('DROP SEQUENCE "cash_id_seq";  CREATE SEQUENCE "cash_id_seq"');
+        $DB->Execute('DROP SEQUENCE "assignments_id_seq";CREATE SEQUENCE "assignments_id_seq"');
+        $DB->Execute('DROP SEQUENCE "networks_id_seq";   CREATE SEQUENCE "networks_id_seq"');
+        $DB->Execute('DROP SEQUENCE "hosts_id_seq";   CREATE SEQUENCE "hosts_id_seq"');
+        $DB->Execute('DROP SEQUENCE "tariffs_id_seq";    CREATE SEQUENCE "tariffs_id_seq"');
+        $DB->Execute('DROP SEQUENCE "netdevices_id_seq"; CREATE SEQUENCE "netdevices_id_seq"');
+        $DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
+        $DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
+        $DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
+        $DB->Execute('DROP SEQUENCE "numberplanassignments_id_seq";  CREATE SEQUENCE "numberplanassignments_id_seq"');
+        $DB->Execute('DROP SEQUENCE "numberplans_id_seq";  CREATE SEQUENCE "numberplans_id_seq"');
+        $DB->Execute('DROP SEQUENCE "addresses_id_seq";  CREATE SEQUENCE "addresses_id_seq"');
+        $DB->Execute('DROP SEQUENCE "customer_addresses_id_seq";  CREATE SEQUENCE "customer_addresses_id_seq"');
+    } elseif (ConfigHelper::getConfig('database.type') == 'mysql' || ConfigHelper::getConfig('database.type') == 'mysqli') {
+        $DB->Execute('ALTER TABLE customers auto_increment=0');
+        $DB->Execute('ALTER TABLE customercontacts auto_increment=0');
+        $DB->Execute('ALTER TABLE divisions auto_increment=0');
+        $DB->Execute('ALTER TABLE nodes auto_increment=0');
+        $DB->Execute('ALTER TABLE netdevices auto_increment=0');
+        $DB->Execute('ALTER TABLE tariffs auto_increment=0');
+        $DB->Execute('ALTER TABLE taxes auto_increment=0');
+        $DB->Execute('ALTER TABLE numberplanassignments auto_increment=0');
+        $DB->Execute('ALTER TABLE numberplans auto_increment=0');
+    }
 
-	$addr = array(
-				'location_city_name'   => 'Mahagonny',
-				'location_street_name' => $streets[ array_rand( $streets ) ],
-				'location_flat'        => mt_rand(1,300),
-				'location_zip'         => generateRandomPostcode(),
-			);
+    $addr = array(
+                'location_city_name'   => 'Mahagonny',
+                'location_street_name' => $streets[ array_rand($streets) ],
+                'location_flat'        => mt_rand(1, 300),
+                'location_zip'         => generateRandomPostcode(),
+            );
 
-	$DB->Execute('INSERT INTO divisions (name, shortname, address_id) VALUES(?,?,?)', array('default', 'default', $LMS->InsertAddress( $addr )));
-	$divisionid = $DB->GetLastInsertID('divisions');
+    $DB->Execute('INSERT INTO divisions (name, shortname, address_id) VALUES(?,?,?)', array('default', 'default', $LMS->InsertAddress($addr)));
+    $divisionid = $DB->GetLastInsertID('divisions');
 
-	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('tax-free', 0, 0));
-	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('7%', 7, 1));
-	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('22%', 22, 1));
+    $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('tax-free', 0, 0));
+    $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('7%', 7, 1));
+    $DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)', array('22%', 22, 1));
 
-	echo ' [OK]<BR>';
-	echo '<B>'.trans('Generating subscriptions...').'</B>'; flush();
-	$tariffdata = array( 'name' => 'Lite', 'description' => 'Lite Tariff', 
-			    'value' => '30', 'taxid' => '1', 'prodid' => '', 
-			    'uprate' => '64', 'upceil' => '64', 
-			    'downrate' => '128', 'downceil' => '128',
-			    'down_burst_time' => 0, 'down_burst_limit' => 0, 'down_burst_threshold' => 0,
-				'down_burst_time_n' => null, 'down_burst_limit_n' => null, 'down_burst_threshold_n' => null,
-				'up_burst_time' => 0, 'up_burst_limit' => 0, 'up_burst_threshold' => 0,
-				'up_burst_time_n' => null, 'up_burst_limit_n' => null, 'up_burst_threshold_n' => null,
-			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
-			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
-			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
-			    'domain_limit' => 0, 'alias_limit' => 0,
-			    'type' => SERVICE_INTERNET, 'authtype' => 0);
-	$t1 = $LMS->TariffAdd($tariffdata);
-	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 
-			    'value' => '60', 'taxid' => '2', 'prodid' => '', 
-			    'uprate' => '128', 'upceil' => '128', 
-			    'downrate' => '256', 'downceil' => '256',
-				'down_burst_time' => 0, 'down_burst_limit' => 0, 'down_burst_threshold' => 0,
-				'down_burst_time_n' => null, 'down_burst_limit_n' => null, 'down_burst_threshold_n' => null,
-				'up_burst_time' => 0, 'up_burst_limit' => 0, 'up_burst_threshold' => 0,
-				'up_burst_time_n' => null, 'up_burst_limit_n' => null, 'up_burst_threshold_n' => null,
-			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
-			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
-			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
-			    'domain_limit' => 0, 'alias_limit' => 0,
-			    'type' => SERVICE_INTERNET, 'authtype' => 0);
-	$t2 = $LMS->TariffAdd($tariffdata);
-	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 
-			    'value' => '120', 'taxid' => '3', 'prodid' => '', 
-			    'uprate' => '256', 'upceil' => '256', 
-			    'downrate' => '512', 'downceil' => '512',
-				'down_burst_time' => 0, 'down_burst_limit' => 0, 'down_burst_threshold' => 0,
-				'down_burst_time_n' => null, 'down_burst_limit_n' => null, 'down_burst_threshold_n' => null,
-				'up_burst_time' => 0, 'up_burst_limit' => 0, 'up_burst_threshold' => 0,
-				'up_burst_time_n' => null, 'up_burst_limit_n' => null, 'up_burst_threshold_n' => null,
-			    'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
-			    'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
-			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
-			    'domain_limit' => 0, 'alias_limit' => 0,
-			    'type' => SERVICE_INTERNET, 'authtype' => 0);
-	$t3 = $LMS->TariffAdd($tariffdata);
-	echo ($t1 && $t2 && $t3) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
+    echo ' [OK]<BR>';
+    echo '<B>'.trans('Generating subscriptions...').'</B>';
+    flush();
+    $tariffdata = array( 'name' => 'Lite', 'description' => 'Lite Tariff',
+                'value' => '30', 'taxid' => '1', 'prodid' => '',
+                'uprate' => '64', 'upceil' => '64',
+                'downrate' => '128', 'downceil' => '128',
+                'down_burst_time' => 0, 'down_burst_limit' => 0, 'down_burst_threshold' => 0,
+                'down_burst_time_n' => null, 'down_burst_limit_n' => null, 'down_burst_threshold_n' => null,
+                'up_burst_time' => 0, 'up_burst_limit' => 0, 'up_burst_threshold' => 0,
+                'up_burst_time_n' => null, 'up_burst_limit_n' => null, 'up_burst_threshold_n' => null,
+                'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+                'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
+                'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
+                'domain_limit' => 0, 'alias_limit' => 0,
+                'type' => SERVICE_INTERNET, 'authtype' => 0);
+    $t1 = $LMS->TariffAdd($tariffdata);
+    $tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff',
+                'value' => '60', 'taxid' => '2', 'prodid' => '',
+                'uprate' => '128', 'upceil' => '128',
+                'downrate' => '256', 'downceil' => '256',
+                'down_burst_time' => 0, 'down_burst_limit' => 0, 'down_burst_threshold' => 0,
+                'down_burst_time_n' => null, 'down_burst_limit_n' => null, 'down_burst_threshold_n' => null,
+                'up_burst_time' => 0, 'up_burst_limit' => 0, 'up_burst_threshold' => 0,
+                'up_burst_time_n' => null, 'up_burst_limit_n' => null, 'up_burst_threshold_n' => null,
+                'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+                'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
+                'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
+                'domain_limit' => 0, 'alias_limit' => 0,
+                'type' => SERVICE_INTERNET, 'authtype' => 0);
+    $t2 = $LMS->TariffAdd($tariffdata);
+    $tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff',
+                'value' => '120', 'taxid' => '3', 'prodid' => '',
+                'uprate' => '256', 'upceil' => '256',
+                'downrate' => '512', 'downceil' => '512',
+                'down_burst_time' => 0, 'down_burst_limit' => 0, 'down_burst_threshold' => 0,
+                'down_burst_time_n' => null, 'down_burst_limit_n' => null, 'down_burst_threshold_n' => null,
+                'up_burst_time' => 0, 'up_burst_limit' => 0, 'up_burst_threshold' => 0,
+                'up_burst_time_n' => null, 'up_burst_limit_n' => null, 'up_burst_threshold_n' => null,
+                'climit' => '0', 'plimit' => '0', 'dlimit' => 0,
+                'sh_limit' => 0, 'www_limit' => 0, 'mail_limit' => 0, 'sql_limit' => 0, 'ftp_limit' => 0,
+                'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
+                'domain_limit' => 0, 'alias_limit' => 0,
+                'type' => SERVICE_INTERNET, 'authtype' => 0);
+    $t3 = $LMS->TariffAdd($tariffdata);
+    echo ($t1 && $t2 && $t3) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
 
-	echo '<B>'.trans('Generating payments...').'</B>'; flush();
-	$paymentdata = array( 'name' => 'DSL-2048', 'description' => 'Internet Link subscription', 'value' => '200', 'creditor' => 'Internet Super Provider Ltd.', 'period' => MONTHLY, 'at' => '10');
-	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( 'name' => 'Server Room', 'description' => 'Rent', 'value' => '300', 'creditor' => 'Residential Cooperative "VIEW"', 'period' => MONTHLY, 'at' => '20');
-	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( 'name' => 'Domain', 'description' => 'Domain "our.net" subscription', 'value' => '150', 'creditor' => 'NASK', 'period' => YEARLY, 'at' => '31');
-	$LMS->PaymentAdd($paymentdata);
+    echo '<B>'.trans('Generating payments...').'</B>';
+    flush();
+    $paymentdata = array( 'name' => 'DSL-2048', 'description' => 'Internet Link subscription', 'value' => '200', 'creditor' => 'Internet Super Provider Ltd.', 'period' => MONTHLY, 'at' => '10');
+    $LMS->PaymentAdd($paymentdata);
+    $paymentdata = array( 'name' => 'Server Room', 'description' => 'Rent', 'value' => '300', 'creditor' => 'Residential Cooperative "VIEW"', 'period' => MONTHLY, 'at' => '20');
+    $LMS->PaymentAdd($paymentdata);
+    $paymentdata = array( 'name' => 'Domain', 'description' => 'Domain "our.net" subscription', 'value' => '150', 'creditor' => 'NASK', 'period' => YEARLY, 'at' => '31');
+    $LMS->PaymentAdd($paymentdata);
 
-	echo ' [OK]<BR>';
-	echo '<B>'.trans('Generating hosts...').'</B>'; flush();
-	$DB->Execute('INSERT INTO hosts (name, description) VALUES(?, ?)',
-		array('test', 'test host'));
-	$hostid = $DB->GetLastInsertID('hosts');
-	echo ($hostid) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
+    echo ' [OK]<BR>';
+    echo '<B>'.trans('Generating hosts...').'</B>';
+    flush();
+    $DB->Execute(
+        'INSERT INTO hosts (name, description) VALUES(?, ?)',
+        array('test', 'test host')
+    );
+    $hostid = $DB->GetLastInsertID('hosts');
+    echo ($hostid) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
 
-	echo '<B>'.trans('Generating network...').'</B>'; flush();
-	$prefix = ($_GET['l']*2>1024) ? 16 : 22;
+    echo '<B>'.trans('Generating network...').'</B>';
+    flush();
+    $prefix = ($_GET['l']*2>1024) ? 16 : 22;
 
-	$netdata = array('name'      => 'LAN1',
+    $netdata = array('name'      => 'LAN1',
                      'address'   => '192.168.0.0',
                      'prefix'    => $prefix,
                      'gateway'   => '192.168.0.1',
@@ -1982,228 +1987,232 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
                      'hostid'    => $hostid,
                      'authtype'  => 0,
                      'notes'     => '');
-	$netid = $LMS->NetworkAdd($netdata);
-	echo ($netid) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
+    $netid = $LMS->NetworkAdd($netdata);
+    echo ($netid) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
 
-	echo '<B>'.trans('Generating customers...').'</B>';	flush();
-	$startip = ip_long('192.168.0.0')+1;
-	$cnt = 0;
-	$lnsize = count($lastnames);
-	$nsize = count($names);
-	$nodsize = count($nodenames);
-	$ppsize = count($phoneprefix);
-	$ssize = count($streets);
-	$esize = count($emaildomains);
-	for($i = 0; $i < sprintf('%d',$_GET['l']); $i++)
-	{
-		$customeradd = array();
-		$customeradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
-		$customeradd['name'] = $names[mt_rand(0,$nsize-1)];
-		$customeradd['phone'] = $phoneprefix[mt_rand(0,$ppsize-1)];
-		for($j = 0; $j < 6; $j++)
-			$customeradd['phone'] .= mt_rand(0,9);
-		$street = mt_rand(0,$ssize-1);
+    echo '<B>'.trans('Generating customers...').'</B>';
+    flush();
+    $startip = ip_long('192.168.0.0')+1;
+    $cnt = 0;
+    $lnsize = count($lastnames);
+    $nsize = count($names);
+    $nodsize = count($nodenames);
+    $ppsize = count($phoneprefix);
+    $ssize = count($streets);
+    $esize = count($emaildomains);
+    for ($i = 0; $i < sprintf('%d', $_GET['l']); $i++) {
+        $customeradd = array();
+        $customeradd['lastname'] = $lastnames[mt_rand(0, $lnsize-1)];
+        $customeradd['name'] = $names[mt_rand(0, $nsize-1)];
+        $customeradd['phone'] = $phoneprefix[mt_rand(0, $ppsize-1)];
+        for ($j = 0; $j < 6; $j++) {
+            $customeradd['phone'] .= mt_rand(0, 9);
+        }
+        $street = mt_rand(0, $ssize-1);
 
-		$customeradd['addresses'][0]['location_address_type'] = BILLING_ADDRESS;
-		$customeradd['addresses'][0]['location_city_name']    = 'Mahagonny';
-		$customeradd['addresses'][0]['location_street_name']  = $streets[$street];
-		$customeradd['addresses'][0]['location_house']        = mt_rand(1,50);
-		$customeradd['addresses'][0]['location_flat']         = mt_rand(1,300);
-		$customeradd['addresses'][0]['location_zip']          = generateRandomPostcode();
+        $customeradd['addresses'][0]['location_address_type'] = BILLING_ADDRESS;
+        $customeradd['addresses'][0]['location_city_name']    = 'Mahagonny';
+        $customeradd['addresses'][0]['location_street_name']  = $streets[$street];
+        $customeradd['addresses'][0]['location_house']        = mt_rand(1, 50);
+        $customeradd['addresses'][0]['location_flat']         = mt_rand(1, 300);
+        $customeradd['addresses'][0]['location_zip']          = generateRandomPostcode();
 
-		if ( mt_rand(1, 4) == 1 ) {
-			$customeradd['addresses'][1]['location_address_type'] = POSTAL_ADDRESS;
-			$customeradd['addresses'][1]['location_city_name']    = 'Mahagonny';
-			$customeradd['addresses'][1]['location_street_name']  = $streets[$street];
-			$customeradd['addresses'][1]['location_house']        = mt_rand(1,50);
-			$customeradd['addresses'][1]['location_flat']         = mt_rand(1,300);
-			$customeradd['addresses'][1]['location_zip']          = generateRandomPostcode();
-		}
+        if (mt_rand(1, 4) == 1) {
+            $customeradd['addresses'][1]['location_address_type'] = POSTAL_ADDRESS;
+            $customeradd['addresses'][1]['location_city_name']    = 'Mahagonny';
+            $customeradd['addresses'][1]['location_street_name']  = $streets[$street];
+            $customeradd['addresses'][1]['location_house']        = mt_rand(1, 50);
+            $customeradd['addresses'][1]['location_flat']         = mt_rand(1, 300);
+            $customeradd['addresses'][1]['location_zip']          = generateRandomPostcode();
+        }
 
-		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
-		$customeradd['status'] = 3;
-		$customeradd['tariff'] = mt_rand(1,3);
-		$customeradd['payday'] = mt_rand(1,28);
-		$customeradd['im'] = 0;
-		$customeradd['ten'] = '';
-		$customeradd['ssn'] = '';
-		$customeradd['regon'] = '';
-		$customeradd['rbe'] = '';
-		$customeradd['rbename'] = '';
-		$customeradd['icn'] = '';
-		$customeradd['notes'] = '';
-		$customeradd['info'] = '';
-		$customeradd['message'] = '';
-		$customeradd['pin'] = mt_rand(10000,99999);
-		$customeradd['cutoffstop'] = 0;
-		$customeradd['divisionid'] = 1;
-		$customeradd['countryid'] = 0;
-		$customeradd['consentdate'] = 0;
-		$customeradd['paytime'] = -1;
-		$customeradd['extid'] = 0;
+        $customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0, $esize-1)]);
+        $customeradd['status'] = 3;
+        $customeradd['tariff'] = mt_rand(1, 3);
+        $customeradd['payday'] = mt_rand(1, 28);
+        $customeradd['im'] = 0;
+        $customeradd['ten'] = '';
+        $customeradd['ssn'] = '';
+        $customeradd['regon'] = '';
+        $customeradd['rbe'] = '';
+        $customeradd['rbename'] = '';
+        $customeradd['icn'] = '';
+        $customeradd['notes'] = '';
+        $customeradd['info'] = '';
+        $customeradd['message'] = '';
+        $customeradd['pin'] = mt_rand(10000, 99999);
+        $customeradd['cutoffstop'] = 0;
+        $customeradd['divisionid'] = 1;
+        $customeradd['countryid'] = 0;
+        $customeradd['consentdate'] = 0;
+        $customeradd['paytime'] = -1;
+        $customeradd['extid'] = 0;
 
-		$id = $LMS->CustomerAdd($customeradd);
-		$LMS->AddAssignment(array(
-			'tariffid' => $customeradd['tariff'],
-			'customerid' => $id,
-			'period' => MONTHLY,
-			'at' => $customeradd['payday'], 
-			'invoice' => 0, 
-			'datefrom' => 0, 
-			'dateto' => 0, 
-			'pdiscount' => 0, 
-			'vdiscount' => 0, 
-			'settlement' => 0, 
-			'nodes' => NULL
-		));
-		$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+        $id = $LMS->CustomerAdd($customeradd);
+        $LMS->AddAssignment(array(
+            'tariffid' => $customeradd['tariff'],
+            'customerid' => $id,
+            'period' => MONTHLY,
+            'at' => $customeradd['payday'],
+            'invoice' => 0,
+            'datefrom' => 0,
+            'dateto' => 0,
+            'pdiscount' => 0,
+            'vdiscount' => 0,
+            'settlement' => 0,
+            'nodes' => null
+        ));
+        $DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
 			VALUES (?, ?, ?)', array($id, $customeradd['email'], CONTACT_EMAIL));
-		$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+        $DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
 			VALUES (?, ?, ?)', array($id, $customeradd['phone'], CONTACT_LANDLINE));
 
-		$nodes = mt_rand(1,2);
-		for($j = 0; $j < $nodes; $j++)
-		{
-			$nodedata['name'] = $nodenames[mt_rand(0,$nodsize-1)].$i;
-			$cnt++;
-			$startip++;
-			$nodedata['netid'] = $netid;
-			$nodedata['ipaddr'] = long_ip($startip);
-			$nodedata['ipaddr_pub'] = '0.0.0.0';
-			$nodedata['macs'] = (array) makemac();
-			$nodedata['ownerid'] = $id;
-			$nodedata['access'] = 1;
-			$nodedata['warning'] = 0;
-			$nodedata['info'] = '';
-			$nodedata['passwd'] = '';
-			$nodedata['netdev'] = 0;
-			$nodedata['location'] = '';
-			$nodedata['chkmac'] = 1;
-			$nodedata['halfduplex'] = 0;
-			$nodedata['authtype'] = 0;
-			if($nodeid = $LMS->NodeAdd($nodedata))
-				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
-		}
-		$startip ++;
-	}
-	
-	echo ' [OK]<BR>';
-	echo '<B>'.trans('Generating network hardware and connections...').'</B>'; flush();
-	$nodes = $DB->GetOne('SELECT count(id) FROM vnodes');
-	$sprod = count($producer);
-	$i = 0;
-	while($nodes)
-	{
-		$i++;
-		$prod = mt_rand(0,$sprod-1);
-		$LMS->NetDevAdd(array(
-			'name'         => 'SWITCH_'.$i,
-			'location'     => $streets[mt_rand(0,$ssize-1)].' '.mt_rand(1,50),
-			'description'  => '',
-			'producer'     => $producer[$prod],
-			'model'        => '10/100 Mbps Switch',
-			'serialnumber' => ($i*1000000+$i*200000).'-'.($i*11111).'-'.($i*33),
-			'ports'        => '16',
-			'purchasetime' => 0,
-			'guaranteeperiod' => NULL,
-			'info'         => '',
-			'shortname'    => '',
-			'nastype'      => 0,
-			'secret'       => '',
-			'community'    => '',
-			'clients'      => 0,
-			'status'       => 0,
-		));
-		$ports = mt_rand(4,14);
-		for($j = 0; $j < $ports; $j++)
-		{
-			if(!$nodes) break;
-			$LMS->NetDevLinkNode($nodes,$i);
-			$nodes--;
-		}
+        $nodes = mt_rand(1, 2);
+        for ($j = 0; $j < $nodes; $j++) {
+            $nodedata['name'] = $nodenames[mt_rand(0, $nodsize-1)].$i;
+            $cnt++;
+            $startip++;
+            $nodedata['netid'] = $netid;
+            $nodedata['ipaddr'] = long_ip($startip);
+            $nodedata['ipaddr_pub'] = '0.0.0.0';
+            $nodedata['macs'] = (array) makemac();
+            $nodedata['ownerid'] = $id;
+            $nodedata['access'] = 1;
+            $nodedata['warning'] = 0;
+            $nodedata['info'] = '';
+            $nodedata['passwd'] = '';
+            $nodedata['netdev'] = 0;
+            $nodedata['location'] = '';
+            $nodedata['chkmac'] = 1;
+            $nodedata['halfduplex'] = 0;
+            $nodedata['authtype'] = 0;
+            if ($nodeid = $LMS->NodeAdd($nodedata)) {
+                $DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000, time()+2592000),$nodeid));
+            }
+        }
+        $startip ++;
+    }
+    
+    echo ' [OK]<BR>';
+    echo '<B>'.trans('Generating network hardware and connections...').'</B>';
+    flush();
+    $nodes = $DB->GetOne('SELECT count(id) FROM vnodes');
+    $sprod = count($producer);
+    $i = 0;
+    while ($nodes) {
+        $i++;
+        $prod = mt_rand(0, $sprod-1);
+        $LMS->NetDevAdd(array(
+            'name'         => 'SWITCH_'.$i,
+            'location'     => $streets[mt_rand(0, $ssize-1)].' '.mt_rand(1, 50),
+            'description'  => '',
+            'producer'     => $producer[$prod],
+            'model'        => '10/100 Mbps Switch',
+            'serialnumber' => ($i*1000000+$i*200000).'-'.($i*11111).'-'.($i*33),
+            'ports'        => '16',
+            'purchasetime' => 0,
+            'guaranteeperiod' => null,
+            'info'         => '',
+            'shortname'    => '',
+            'nastype'      => 0,
+            'secret'       => '',
+            'community'    => '',
+            'clients'      => 0,
+            'status'       => 0,
+        ));
+        $ports = mt_rand(4, 14);
+        for ($j = 0; $j < $ports; $j++) {
+            if (!$nodes) {
+                break;
+            }
+            $LMS->NetDevLinkNode($nodes, $i);
+            $nodes--;
+        }
 /*
-		$ip['ownerid'] = 0;
-		$ip['ipaddr'] = long_ip($startip);
-		$ip['ipaddr_pub'] = '0.0.0.0';
-		$ip['macs'] = (array) makemac();
-		$ip['name'] = 'SWITCH_'.$i;
-		$ip['access'] = 1;
-		$ip['warning'] = 0;
-		$ip['info'] = '';
-		$ip['passwd'] = '';
-		$ip['netdev'] = $i;
-		$startip++;
+        $ip['ownerid'] = 0;
+        $ip['ipaddr'] = long_ip($startip);
+        $ip['ipaddr_pub'] = '0.0.0.0';
+        $ip['macs'] = (array) makemac();
+        $ip['name'] = 'SWITCH_'.$i;
+        $ip['access'] = 1;
+        $ip['warning'] = 0;
+        $ip['info'] = '';
+        $ip['passwd'] = '';
+        $ip['netdev'] = $i;
+        $startip++;
 */
-		if($i>1)
-			$LMS->NetDevLink($i, $i-1, array(
-				'type' => 0,
-				'technology' => 8,
-				'speed' => 1000000,
-			));
-	}
-	echo ' [OK]<BR>';
+        if ($i>1) {
+            $LMS->NetDevLink($i, $i-1, array(
+                'type' => 0,
+                'technology' => 8,
+                'speed' => 1000000,
+            ));
+        }
+    }
+    echo ' [OK]<BR>';
 
-	if ($_GET['i']) {
-		$DB->Execute('INSERT INTO numberplans (template, period, doctype, isdefault) VALUES (?, ?, ?, ?)',
-			array(DEFAULT_NUMBER_TEMPLATE, YEARLY, DOC_INVOICE, 1));
-		$numberplanid = $DB->GetLastInsertID('numberplans');
-		$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
-			array($numberplanid, $divisionid));
+    if ($_GET['i']) {
+        $DB->Execute(
+            'INSERT INTO numberplans (template, period, doctype, isdefault) VALUES (?, ?, ?, ?)',
+            array(DEFAULT_NUMBER_TEMPLATE, YEARLY, DOC_INVOICE, 1)
+        );
+        $numberplanid = $DB->GetLastInsertID('numberplans');
+        $DB->Execute(
+            'INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
+            array($numberplanid, $divisionid)
+        );
 
-		echo '<B>'.trans('Generating invoices...').'</B>'; flush();
+        echo '<B>'.trans('Generating invoices...').'</B>';
+        flush();
 
-		if($_GET['i'] > 100) $_GET['i'] = 100;
+        if ($_GET['i'] > 100) {
+            $_GET['i'] = 100;
+        }
 
-		$inv['number'] = 0;
-		$inv['paytime'] = 14;
-		$inv['paytype'] = 1; // cash
-		$inv['numberplanid'] = $numberplanid;
-		$inv['type'] = DOC_INVOICE;
-		$inv['cdate'] = time() - ($_GET['i']+1) * 86400;
-		$contents['prodid'] = '';
-		$contents['tariffid'] = 0;
-		$contents['jm'] = trans(ConfigHelper::getConfig('payments.default_unit_name'));
-		$contents['name'] = trans('Subscription');
+        $inv['number'] = 0;
+        $inv['paytime'] = 14;
+        $inv['paytype'] = 1; // cash
+        $inv['numberplanid'] = $numberplanid;
+        $inv['type'] = DOC_INVOICE;
+        $inv['cdate'] = time() - ($_GET['i']+1) * 86400;
+        $contents['prodid'] = '';
+        $contents['tariffid'] = 0;
+        $contents['jm'] = trans(ConfigHelper::getConfig('payments.default_unit_name'));
+        $contents['name'] = trans('Subscription');
 
-		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customeraddressview.name').' AS customername,
+        $customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)', "' '", 'customeraddressview.name').' AS customername,
 				id, ssn, address, zip, city, ten, divisionid, countryid FROM customeraddressview');
 
-		if($customers)
-			for($n=0; $n<$_GET['i']; $n++)
-			{
-				$contents['taxid'] = mt_rand(1,3);
-				$contents['count'] = mt_rand(1,3);
-				$contents['valuebrutto'] = 100+$n*10+$n*0.1;
-				$contents['pdiscount'] = 0;
-				$contents['vdiscount'] = 0;
-				$inv['cdate'] += 86400;
+        if ($customers) {
+            for ($n=0; $n<$_GET['i']; $n++) {
+                $contents['taxid'] = mt_rand(1, 3);
+                $contents['count'] = mt_rand(1, 3);
+                $contents['valuebrutto'] = 100+$n*10+$n*0.1;
+                $contents['pdiscount'] = 0;
+                $contents['vdiscount'] = 0;
+                $inv['cdate'] += 86400;
 
-				foreach($customers as $c)
-				{
-					$inv['number']++;
-					$cont[0] = $contents;
-					$LMS->AddInvoice(array('customer' => $c, 'contents' => $cont, 'invoice' => $inv));
-				}
-			}
-	
-		echo ' [OK]';
-	}
+                foreach ($customers as $c) {
+                    $inv['number']++;
+                    $cont[0] = $contents;
+                    $LMS->AddInvoice(array('customer' => $c, 'contents' => $cont, 'invoice' => $inv));
+                }
+            }
+        }
+    
+        echo ' [OK]';
+    }
 
-	$SMARTY->display('footer.html');
+    $SMARTY->display('footer.html');
+} else {
+    $SMARTY->display('header.html');
+    echo '<H1>'.trans('Generating random data').'</H1>';
+    echo '<form method="get" action="?">';
+    echo '<input type="hidden" name="m" value="genfake">';
+    echo '<input type="submit" class="hiddenbtn">';
+    echo '<span class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</span><p>';
+    echo trans('How many customers? (max.65000):').' <input type="text" name="l" size="5"><br>';
+    echo trans('How many invoices for each customer? (max.100):').' <input type="text" name="i" size="5">';
+    echo '<br><input type="submit" value="'.trans('Generate').'"></p></form>';
+    $SMARTY->display('footer.html');
 }
-else
-{
-	$SMARTY->display('header.html');
-	echo '<H1>'.trans('Generating random data').'</H1>';
-	echo '<form method="get" action="?">';
-	echo '<input type="hidden" name="m" value="genfake">';
-	echo '<input type="submit" class="hiddenbtn">';
-	echo '<span class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</span><p>';
-	echo trans('How many customers? (max.65000):').' <input type="text" name="l" size="5"><br>';
-	echo trans('How many invoices for each customer? (max.100):').' <input type="text" name="i" size="5">';
-	echo '<br><input type="submit" value="'.trans('Generate').'"></p></form>';
-	$SMARTY->display('footer.html');
-}
-
-?>
-

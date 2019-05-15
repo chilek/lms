@@ -37,10 +37,14 @@ $this->Execute("
 	PRIMARY KEY (id))
 ");
 
-$this->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)", 
-		array(str_replace('%M','%m',ConfigHelper::getConfig('invoices.number_template')), ConfigHelper::getConfig('invoices.monthly_numbering') ? 3 : 5));
-$this->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)", 
-		array(str_replace('%M','%m',ConfigHelper::getConfig('receipts.number_template')), ConfigHelper::getConfig('receipts.monthly_numbering') ? 3 : 5));
+$this->Execute(
+    "INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)",
+    array(str_replace('%M', '%m', ConfigHelper::getConfig('invoices.number_template')), ConfigHelper::getConfig('invoices.monthly_numbering') ? 3 : 5)
+);
+$this->Execute(
+    "INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)",
+    array(str_replace('%M', '%m', ConfigHelper::getConfig('receipts.number_template')), ConfigHelper::getConfig('receipts.monthly_numbering') ? 3 : 5)
+);
 
 $this->Execute("
     ALTER TABLE documents ADD numberplanid integer;
@@ -53,8 +57,6 @@ $this->Execute("
     CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005080300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005080300', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

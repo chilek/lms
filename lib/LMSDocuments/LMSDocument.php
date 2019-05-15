@@ -24,30 +24,34 @@
  *  $Id$
  */
 
-abstract class LMSDocument {
-	protected $data;
-	protected $backend;
+abstract class LMSDocument
+{
+    protected $data;
+    protected $backend;
 
-	public function __construct($backendclass, $title, $pagesize = 'A4', $orientation = 'portrait') {
-		$this->data = null;
-		$this->backend = new $backendclass($pagesize, $orientation, $title);
-	}
+    public function __construct($backendclass, $title, $pagesize = 'A4', $orientation = 'portrait')
+    {
+        $this->data = null;
+        $this->backend = new $backendclass($pagesize, $orientation, $title);
+    }
 
-	public function Draw($data) {
-		$this->data = $data;
-	}
+    public function Draw($data)
+    {
+        $this->data = $data;
+    }
 
-	public function NewPage() {
-		$this->backend->AppendPage();
-	}
+    public function NewPage()
+    {
+        $this->backend->AppendPage();
+    }
 
-	public function WriteToBrowser($filename = null) {
-		$this->backend->WriteToBrowser($filename);
-	}
+    public function WriteToBrowser($filename = null)
+    {
+        $this->backend->WriteToBrowser($filename);
+    }
 
-	public function WriteToString() {
-		return $this->backend->WriteToString();
-	}
+    public function WriteToString()
+    {
+        return $this->backend->WriteToString();
+    }
 }
-
-?>

@@ -28,113 +28,111 @@ $layout['pagetitle'] = trans('Copyrights');
 
 $authors = array(
 
-		'alec' => array(
-			'realname' => 'Aleksander Machniak',
-			'www' => 'www.alec.pl',
-			'info' => 'PHP, C, Perl, HTML, JavaScript, T-Script, images, doc'
-		     ),
+        'alec' => array(
+            'realname' => 'Aleksander Machniak',
+            'www' => 'www.alec.pl',
+            'info' => 'PHP, C, Perl, HTML, JavaScript, T-Script, images, doc'
+             ),
 
-		'Baseciq' => array(
-			'realname' => 'Łukasz Jarosław Mozer',
-			'www' => 'www.baseciq.org',
-			'info' => 'inventor & maintainer, PHP, Perl, design, HTML, JavaScript, CSS, images, doc, website'
-			),
+        'Baseciq' => array(
+            'realname' => 'Łukasz Jarosław Mozer',
+            'www' => 'www.baseciq.org',
+            'info' => 'inventor & maintainer, PHP, Perl, design, HTML, JavaScript, CSS, images, doc, website'
+            ),
 
-		'Ceho' => array(
-			'realname' => 'Grzegorz Chwesewicz',
-			'info' => 'PHP, Perl, HTML, JavaScript',
-			'www' => 'www.chilan.com'
-			),
+        'Ceho' => array(
+            'realname' => 'Grzegorz Chwesewicz',
+            'info' => 'PHP, Perl, HTML, JavaScript',
+            'www' => 'www.chilan.com'
+            ),
 
-		'Chilek' => array(
-			'realname' => 'Tomasz Chiliński',
-			'info' => 'PHP, Perl, HTML, JavaScript, C',
-			'www' => 'www.chilan.com'
-			),
+        'Chilek' => array(
+            'realname' => 'Tomasz Chiliński',
+            'info' => 'PHP, Perl, HTML, JavaScript, C',
+            'www' => 'www.chilan.com'
+            ),
 
-		'hunter' => array(
-			'info' => 'PHP, Perl',
-			'realname' => 'Krzysztof Drewicz',
-			),
+        'hunter' => array(
+            'info' => 'PHP, Perl',
+            'realname' => 'Krzysztof Drewicz',
+            ),
 
-		'Lexx' => array(
-			'info' => 'PHP, C, doc, website',
-			'www' => 'www.lexx.w.pl',
-			'realname' => 'Marcin Król',
-		     ),
+        'Lexx' => array(
+            'info' => 'PHP, C, doc, website',
+            'www' => 'www.lexx.w.pl',
+            'realname' => 'Marcin Król',
+             ),
 
-		'Lion' => array(
-			'realname' => 'Maciej Lew',
-			'info' => 'PHP, HTML, CSS, JavaScript',
-			'www' => 'www.lion.net.pl'
-			),
-		'Ravvar' => array(
-			'realname' => 'Rafał Pietraszewicz',
-			'info' => 'PHP, HTML, CSS, JavaScript',
-			),
+        'Lion' => array(
+            'realname' => 'Maciej Lew',
+            'info' => 'PHP, HTML, CSS, JavaScript',
+            'www' => 'www.lion.net.pl'
+            ),
+        'Ravvar' => array(
+            'realname' => 'Rafał Pietraszewicz',
+            'info' => 'PHP, HTML, CSS, JavaScript',
+            ),
 
-		);
+        );
 
 $others = array(
 
-		'agaran' => array(
-			'info' => 'Perl',
-			'realname' => 'Maciej Pijanka',
-			),
+        'agaran' => array(
+            'info' => 'Perl',
+            'realname' => 'Maciej Pijanka',
+            ),
 
-		'kflis' => array(
-			'info' => 'Betatesting, images',
-			'www' => 'www.kflis.net',
-			'realname' => 'Kuba Flis',
-			),
+        'kflis' => array(
+            'info' => 'Betatesting, images',
+            'www' => 'www.kflis.net',
+            'realname' => 'Kuba Flis',
+            ),
 
-		'dzwonus' => array(
-			'info' => 'Betatesting, idea co-author',
-			'realname' => 'Tomasz Dzwonkowski',
-			),
+        'dzwonus' => array(
+            'info' => 'Betatesting, idea co-author',
+            'realname' => 'Tomasz Dzwonkowski',
+            ),
 
-		'victus' => array(
-			'info' => 'Betatesting, idea co-author',
-			'realname' => 'Sebastian Frasunkiewicz',
-			),
+        'victus' => array(
+            'info' => 'Betatesting, idea co-author',
+            'realname' => 'Sebastian Frasunkiewicz',
+            ),
 
-		'shasta' => array(
-			'info' => 'MySQL, WWW site',
-			'realname' => 'Kuba Jankowski',
-			'www' => 's.atn.pl',
-			),
+        'shasta' => array(
+            'info' => 'MySQL, WWW site',
+            'realname' => 'Kuba Jankowski',
+            'www' => 's.atn.pl',
+            ),
 
-		'Bob_R' => array(
-			'info' => 'CSS, HTML, JavaScript',
-			'realname' => 'Paweł Czerski',
-			'www' => 'plug.atn.pl/~bober/',
-			),
+        'Bob_R' => array(
+            'info' => 'CSS, HTML, JavaScript',
+            'realname' => 'Paweł Czerski',
+            'www' => 'plug.atn.pl/~bober/',
+            ),
 
-		'sickone' => array(
-			'realname' => 'Paweł Kisiela',
-			'info' => 'CSS, HTML, JavaScript',
-			'www' => 'gamechannel.int.pl',
-			),
+        'sickone' => array(
+            'realname' => 'Paweł Kisiela',
+            'info' => 'CSS, HTML, JavaScript',
+            'www' => 'gamechannel.int.pl',
+            ),
 
-		'DziQs' => array(
-			'realname' => 'Michał Zapalski',
-			'info' => 'PHP, Perl',
-			),
+        'DziQs' => array(
+            'realname' => 'Michał Zapalski',
+            'info' => 'PHP, Perl',
+            ),
 
-		'kondi' => array(
-			'realname' => 'Konrad Rzentarzewski',
-			'info' => 'i18n, PHP, JavaScript',
-			'www' => 'kondi.net',
-			),
+        'kondi' => array(
+            'realname' => 'Konrad Rzentarzewski',
+            'info' => 'i18n, PHP, JavaScript',
+            'www' => 'kondi.net',
+            ),
 
-		'Pierzak' => array(
-			'realname' => 'Piotr Mierzeński',
-			'info' => 'Logo project',
-			),
-		);
+        'Pierzak' => array(
+            'realname' => 'Piotr Mierzeński',
+            'info' => 'Logo project',
+            ),
+        );
 
 $SMARTY->assign('authors', $authors);
 $SMARTY->assign('others', $others);
 $SMARTY->display('copyrights.html');
-
-?>

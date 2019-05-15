@@ -32,4 +32,3 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->display('rt/rtcategorylist.html');
-?>

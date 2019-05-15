@@ -46,27 +46,24 @@ CREATE TABLE zipcodes (
 $this->Execute("ALTER TABLE customers ADD INDEX zip (zip)");
 $this->Execute("INSERT INTO zipcodes (zip) SELECT DISTINCT zip FROM customers");
 
-if(ConfigHelper::getConfig('phpui.lang') == 'pl' 
-	|| $this->GetOne("SELECT 1 FROM uiconfig WHERE var='lang' AND section='phpui' AND disabled=0 AND value='pl'"))
-{
-	$this->Execute("INSERT INTO states (name) VALUES ('dolnośląskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('kujawsko-pomorskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('lubelskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('lubuskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('łódzkie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('małopolskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('mazowieckie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('opolskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('podkarpackie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('podlaskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('pomorskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('śląskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('świętokrzyskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('warmińsko-mazurskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('wielkopolskie')");
-	$this->Execute("INSERT INTO states (name) VALUES ('zachodniopomorskie')");
+if (ConfigHelper::getConfig('phpui.lang') == 'pl'
+    || $this->GetOne("SELECT 1 FROM uiconfig WHERE var='lang' AND section='phpui' AND disabled=0 AND value='pl'")) {
+    $this->Execute("INSERT INTO states (name) VALUES ('dolnośląskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('kujawsko-pomorskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('lubelskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('lubuskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('łódzkie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('małopolskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('mazowieckie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('opolskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('podkarpackie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('podlaskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('pomorskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('śląskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('świętokrzyskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('warmińsko-mazurskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('wielkopolskie')");
+    $this->Execute("INSERT INTO states (name) VALUES ('zachodniopomorskie')");
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008080800', 'dbversion'));
-
-?>

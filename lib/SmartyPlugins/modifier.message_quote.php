@@ -24,29 +24,30 @@
  *  $Id$
  */
 
-function smarty_modifier_message_quote($text) {
-	$result = '';
-	$lines = explode('<br>', $text);
-	$linecount = count($lines);
-	$quote = 0;
-	$lineidx = 0;
-	foreach ($lines as $line) {
-		$newquote = 0;
-		while (strpos($line, '&gt;') === 0) {
-			$line = substr($line, 5);
-			$newquote++;
-		}
-		if ($newquote > $quote)
-			$result .= str_repeat('<blockquote class="lms-ui-message-quote">', $newquote - $quote);
-		elseif ($newquote < $quote)
-			$result .= str_repeat('</blockquote>', $quote - $newquote);
-		$result .= $line;
-		if ($lineidx < $linecount - 1)
-			$result .= '<br>';
-		$quote = $newquote;
-	}
+function smarty_modifier_message_quote($text)
+{
+    $result = '';
+    $lines = explode('<br>', $text);
+    $linecount = count($lines);
+    $quote = 0;
+    $lineidx = 0;
+    foreach ($lines as $line) {
+        $newquote = 0;
+        while (strpos($line, '&gt;') === 0) {
+            $line = substr($line, 5);
+            $newquote++;
+        }
+        if ($newquote > $quote) {
+            $result .= str_repeat('<blockquote class="lms-ui-message-quote">', $newquote - $quote);
+        } elseif ($newquote < $quote) {
+            $result .= str_repeat('</blockquote>', $quote - $newquote);
+        }
+        $result .= $line;
+        if ($lineidx < $linecount - 1) {
+            $result .= '<br>';
+        }
+        $quote = $newquote;
+    }
 
-	return $result;
+    return $result;
 }
-
-?>

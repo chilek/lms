@@ -38,5 +38,3 @@ $this->Execute("ALTER TABLE networks
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013032100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

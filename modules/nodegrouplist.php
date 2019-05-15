@@ -26,45 +26,46 @@
 
 function GroupList()
 {
-	global $DB;
-	
-	if($nodegrouplist = $DB->GetAll('SELECT id, name, description, prio,
+    global $DB;
+    
+    if ($nodegrouplist = $DB->GetAll('SELECT id, name, description, prio,
 	    	        (SELECT COUNT(*)
 	                FROM nodegroupassignments
 	                WHERE nodegroupid = nodegroups.id
 			) AS nodescount
-	                FROM nodegroups ORDER BY prio ASC, name ASC'))
-	{
-	        $nodegrouplist['total'] = count($nodegrouplist);
-	        $nodegrouplist['nodestotal'] = 0;
-		
-	        foreach($nodegrouplist as $idx => $row)
-	        {
-	        	$nodegrouplist['nodestotal'] += $row['nodescount'];
-	        }
-	}
+	                FROM nodegroups ORDER BY prio ASC, name ASC')) {
+            $nodegrouplist['total'] = count($nodegrouplist);
+            $nodegrouplist['nodestotal'] = 0;
+        
+        foreach ($nodegrouplist as $idx => $row) {
+            $nodegrouplist['nodestotal'] += $row['nodescount'];
+        }
+    }
 
         return $nodegrouplist;
 }
 
 if (isset($_POST['nodegroupids'])) {
-	$nodegroupids = $_POST['nodegroupids'];
-	if (empty($nodegroupids))
-		die;
-	foreach ($nodegroupids as $idx => $nodegroupid) {
-		$DB->Execute('UPDATE nodegroups SET prio = ? WHERE id = ?',
-			array($idx + 1, $nodegroupid));
-		if ($SYSLOG) {
-			$args = array(
-				SYSLOG::RES_NODEGROUP => $nodegroupid,
-				'prio' => $idx + 1,
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
-		}
-	}
-	header('Content-Type: application/json');
-	echo json_encode(array('result' => 'OK'));
-	die;
+    $nodegroupids = $_POST['nodegroupids'];
+    if (empty($nodegroupids)) {
+        die;
+    }
+    foreach ($nodegroupids as $idx => $nodegroupid) {
+        $DB->Execute(
+            'UPDATE nodegroups SET prio = ? WHERE id = ?',
+            array($idx + 1, $nodegroupid)
+        );
+        if ($SYSLOG) {
+            $args = array(
+                SYSLOG::RES_NODEGROUP => $nodegroupid,
+                'prio' => $idx + 1,
+            );
+            $SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
+        }
+    }
+    header('Content-Type: application/json');
+    echo json_encode(array('result' => 'OK'));
+    die;
 }
 
 $layout['pagetitle'] = trans('Node Groups List');
@@ -81,5 +82,3 @@ $SMARTY->assign('nodegrouplist', $nodegrouplist);
 $SMARTY->assign('listdata', $listdata);
 
 $SMARTY->display('node/nodegrouplist.html');
-
-?>

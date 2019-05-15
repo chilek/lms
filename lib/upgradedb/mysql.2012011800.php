@@ -28,8 +28,6 @@ $this->BeginTrans();
 
 $this->Execute("ALTER TABLE sessions CHANGE content content mediumtext NOT NULL");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2012011800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012011800', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

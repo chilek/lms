@@ -28,18 +28,24 @@
  * LMSProjectManager
  *
  */
-class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface {
-	public function CleanupProjects() {
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
-			$this->db->Execute("DELETE FROM invprojects WHERE type <> ? AND id NOT IN
+class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
+{
+    public function CleanupProjects()
+    {
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true))) {
+            $this->db->Execute(
+                "DELETE FROM invprojects WHERE type <> ? AND id NOT IN
 				(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
 					UNION SELECT DISTINCT invprojectid FROM vnodes WHERE invprojectid IS NOT NULL
 					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
-				array(INV_PROJECT_SYSTEM));
-	}
+                array(INV_PROJECT_SYSTEM)
+            );
+        }
+    }
 
-	public function GetProjects() {
-		return $this->db->GetAllByKey('SELECT ip.id, ip.name, ip.divisionid, 
+    public function GetProjects()
+    {
+        return $this->db->GetAllByKey('SELECT ip.id, ip.name, ip.divisionid, 
 				n.ncount AS nodes, nn.ncount AS netnodes
 			FROM invprojects ip
 			LEFT JOIN (
@@ -52,56 +58,75 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 			) nn ON n.invprojectid = ip.id
 			WHERE ip.type <> ?
 			ORDER BY ip.name', 'id', array(INV_PROJECT_SYSTEM));
-	}
+    }
 
-	public function GetProject($id) {
-		return $this->db->GetRow('SELECT * FROM invprojects
+    public function GetProject($id)
+    {
+        return $this->db->GetRow(
+            'SELECT * FROM invprojects
 			WHERE type <> ? AND id = ?',
-			array(INV_PROJECT_SYSTEM, $id));
-	}
+            array(INV_PROJECT_SYSTEM, $id)
+        );
+    }
 
-	public function GetProjectName($id) {
-		return $this->db->GetOne('SELECT name FROM invprojects
+    public function GetProjectName($id)
+    {
+        return $this->db->GetOne(
+            'SELECT name FROM invprojects
 			WHERE type <> ? AND id = ?',
-			array(INV_PROJECT_SYSTEM, $id));
-	}
+            array(INV_PROJECT_SYSTEM, $id)
+        );
+    }
 
-	public function GetProjectByName($name) {
-		return $this->db->GetRow('SELECT * FROM invprojects
+    public function GetProjectByName($name)
+    {
+        return $this->db->GetRow(
+            'SELECT * FROM invprojects
 			WHERE type <> ? AND name = ?',
-			array(INV_PROJECT_SYSTEM, $name));
-	}
+            array(INV_PROJECT_SYSTEM, $name)
+        );
+    }
 
-	public function ProjectByNameExists($name) {
-		return $this->db->GetOne("SELECT id FROM invprojects
+    public function ProjectByNameExists($name)
+    {
+        return $this->db->GetOne(
+            "SELECT id FROM invprojects
 			WHERE name = ? AND type <> ?",
-			array($name, INV_PROJECT_SYSTEM));
-	}
+            array($name, INV_PROJECT_SYSTEM)
+        );
+    }
 
-	public function AddProject($project) {
-		$this->db->Execute("INSERT INTO invprojects (name, divisionid, type) VALUES (?, ?, ?)",
-			array(
-				$project['project'],
-				isset($project['divisionid']) && !empty($project['divisionid']) ? $project['divisionid'] : null,
-				INV_PROJECT_REGULAR
-			)
-		);
-		return $this->db->GetLastInsertID('invprojects');
-	}
+    public function AddProject($project)
+    {
+        $this->db->Execute(
+            "INSERT INTO invprojects (name, divisionid, type) VALUES (?, ?, ?)",
+            array(
+                $project['project'],
+                isset($project['divisionid']) && !empty($project['divisionid']) ? $project['divisionid'] : null,
+                INV_PROJECT_REGULAR
+            )
+        );
+        return $this->db->GetLastInsertID('invprojects');
+    }
 
-	public function DeleteProject($id) {
-		return $this->db->Execute('DELETE FROM invprojects WHERE id=?', array($id));
-	}
+    public function DeleteProject($id)
+    {
+        return $this->db->Execute('DELETE FROM invprojects WHERE id=?', array($id));
+    }
 
-	public function UpdateProject($id, $project) {
-		$project['type'] = INV_PROJECT_REGULAR;
-		$project['id'] = $id;
-		return $this->db->Execute('UPDATE invprojects SET name=?, divisionid=?, type=?
+    public function UpdateProject($id, $project)
+    {
+        $project['type'] = INV_PROJECT_REGULAR;
+        $project['id'] = $id;
+        return $this->db->Execute('UPDATE invprojects SET name=?, divisionid=?, type=?
             WHERE id = ?', array_values($project));
-	}
+    }
 
-	public function GetProjectType($id) {
-		return $this->db->GetOne('SELECT type FROM invprojects WHERE id = ?',
-			array($id));
-	}
+    public function GetProjectType($id)
+    {
+        return $this->db->GetOne(
+            'SELECT type FROM invprojects WHERE id = ?',
+            array($id)
+        );
+    }
 }

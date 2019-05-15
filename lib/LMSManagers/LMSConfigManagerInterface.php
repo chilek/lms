@@ -26,7 +26,7 @@
 
 /**
  * LMSConfigManagerInterface
- * 
+ *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSConfigManagerInterface

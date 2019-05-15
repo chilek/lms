@@ -35,11 +35,11 @@ CREATE TABLE numberplanassignments (
 ) ENGINE=MyISAM;
 ");
 
-if($divs = $this->GetAll('SELECT id FROM divisions'))
-	foreach($divs as $div)
-		$this->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+if ($divs = $this->GetAll('SELECT id FROM divisions')) {
+    foreach ($divs as $div) {
+        $this->Execute('INSERT INTO numberplanassignments (planid, divisionid)
 			SELECT id, ? FROM numberplans', array($div['id']));
+    }
+}
 
 $this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));
-
-?>

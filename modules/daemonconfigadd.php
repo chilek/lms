@@ -24,50 +24,51 @@
  *  $Id$
  */
 
-$config = isset($_POST['config']) ? $_POST['config'] : NULL;
+$config = isset($_POST['config']) ? $_POST['config'] : null;
 
-if($config) 
-{
-	foreach($config as $idx => $key)
-		$config[$idx] = trim($key);
-	
-	$config['instanceid'] = $_GET['id'];
-	
-	if($config['var']=='' && $config['description']=='' && $config['value']=='')
-	{
-		$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
-	}
-	
-	if($config['var'] == '')
-		$error['var'] = trans('Option name is required!');
-	elseif($DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid'])))
-		$error['var'] = trans('Option with specified name exists in that instance!');
+if ($config) {
+    foreach ($config as $idx => $key) {
+        $config[$idx] = trim($key);
+    }
+    
+    $config['instanceid'] = $_GET['id'];
+    
+    if ($config['var']=='' && $config['description']=='' && $config['value']=='') {
+        $SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
+    }
+    
+    if ($config['var'] == '') {
+        $error['var'] = trans('Option name is required!');
+    } elseif ($DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid']))) {
+        $error['var'] = trans('Option with specified name exists in that instance!');
+    }
 
-	if (!$error) {
-		$config['value'] = str_replace("\r\n","\n",$config['value']);
+    if (!$error) {
+        $config['value'] = str_replace("\r\n", "\n", $config['value']);
 
-		$args = array(
-			'var' => $config['var'], 
-			SYSLOG::RES_DAEMONINST => $config['instanceid'], 
-			'description' => $config['description'],
-			'value' => $config['value']
-		);
-		$DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)', array_values($args));
+        $args = array(
+            'var' => $config['var'],
+            SYSLOG::RES_DAEMONINST => $config['instanceid'],
+            'description' => $config['description'],
+            'value' => $config['value']
+        );
+        $DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)', array_values($args));
 
-		if ($SYSLOG) {
-			$hostid = $DB->GetOne('SELECT hostid FROM daemoninstances WHERE id = ?', array($config['instanceid']));
-			$args[SYSLOG::RES_DAEMONCONF] = $DB->GetLastInsertID('daemonconfig');
-			$args[SYSLOG::RES_HOST] = $hostid;
-			$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_ADD, $args);
-		}
+        if ($SYSLOG) {
+            $hostid = $DB->GetOne('SELECT hostid FROM daemoninstances WHERE id = ?', array($config['instanceid']));
+            $args[SYSLOG::RES_DAEMONCONF] = $DB->GetLastInsertID('daemonconfig');
+            $args[SYSLOG::RES_HOST] = $hostid;
+            $SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_ADD, $args);
+        }
 
-		if (!isset($config['reuse']))
-			$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
+        if (!isset($config['reuse'])) {
+            $SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
+        }
 
-		unset($config['var']);
-		unset($config['value']);
-		unset($config['description']);
-	}
+        unset($config['var']);
+        unset($config['value']);
+        unset($config['description']);
+    }
 }
 
 $instance = $DB->GetRow('SELECT daemoninstances.name AS name, hosts.name AS hostname FROM daemoninstances, hosts WHERE hosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
@@ -80,5 +81,3 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('instanceid', $_GET['id']);
 $SMARTY->assign('config', $config);
 $SMARTY->display('daemon/daemonconfigadd.html');
-
-?>

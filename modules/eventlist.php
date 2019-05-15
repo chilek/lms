@@ -26,83 +26,103 @@
 
 // ajax request handling
 if (isset($_GET['action']) && $_GET['action'] == 'eventmove') {
-	if (!isset($_GET['id']) || !isset($_GET['delta']))
-		die;
-	$LMS->MoveEvent($_GET['id'], $_GET['delta']);
-	header('Content-Type: application/json');
-	die('[]');
+    if (!isset($_GET['id']) || !isset($_GET['delta'])) {
+        die;
+    }
+    $LMS->MoveEvent($_GET['id'], $_GET['delta']);
+    header('Content-Type: application/json');
+    die('[]');
 }
 
-if (isset($filter['edate']) && !empty($filter['edate']))
-	list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
+if (isset($filter['edate']) && !empty($filter['edate'])) {
+    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', $filter['edate']);
+}
 
 if (!isset($_POST['loginform']) && !empty($_POST)) {
-	list ($filter['year'], $filter['month'], $filter['day']) = explode('/', isset($_POST['date']) ? $_POST['date'] : date('Y/m/j'));
+    list ($filter['year'], $filter['month'], $filter['day']) = explode('/', isset($_POST['date']) ? $_POST['date'] : date('Y/m/j'));
 
-	if ($filter['edate']) {
-		if (empty($filter['month']))
-			if ($filter['month'] != $_POST['month'])
-				$filter['day'] = 1;
-		if (empty($filter['year']))
-			if ($filter['year'] != $_POST['year'])
-				$filter['day'] = 1;
-	} else
-		$day = date('j',time());
+    if ($filter['edate']) {
+        if (empty($filter['month'])) {
+            if ($filter['month'] != $_POST['month']) {
+                $filter['day'] = 1;
+            }
+        }
+        if (empty($filter['year'])) {
+            if ($filter['year'] != $_POST['year']) {
+                $filter['day'] = 1;
+            }
+        }
+    } else {
+        $day = date('j', time());
+    }
 
-	$filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
-	$filter['userid'] = isset($_POST['a']) ? $_POST['a'] : NULL;
-	$filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
-	$filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
-	$filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
-	$filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
+    $filter['userand'] = isset($_POST['userand']) ? intval($_POST['userand']) : 0;
+    $filter['userid'] = isset($_POST['a']) ? $_POST['a'] : null;
+    $filter['customerid'] = isset($_POST['u']) ? $_POST['u'] : null;
+    $filter['type'] = isset($_POST['type']) ? $_POST['type'] : null;
+    $filter['privacy'] = isset($_POST['privacy']) ? intval($_POST['privacy']) : null;
+    $filter['closed'] = isset($_POST['closed']) ? $_POST['closed'] : null;
 } else {
-	if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
-		if (isset($_GET['day']))
-			$filter['day'] = $_GET['day'];
-		elseif ($filter['edate']) {
-			if ($filter['month'] != $_GET['month'] || $filter['year'] != $_GET['year'])
-				$filter['day'] = 1;
-		} else
-			$filter['day'] = 1;
+    if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
+        if (isset($_GET['day'])) {
+            $filter['day'] = $_GET['day'];
+        } elseif ($filter['edate']) {
+            if ($filter['month'] != $_GET['month'] || $filter['year'] != $_GET['year']) {
+                $filter['day'] = 1;
+            }
+        } else {
+            $filter['day'] = 1;
+        }
 
-		if (isset($_GET['month']))
-			$filter['month'] = $_GET['month'];
+        if (isset($_GET['month'])) {
+            $filter['month'] = $_GET['month'];
+        }
 
-		if (isset($_GET['year']))
-			$filter['year'] = $_GET['year'];
-	}
+        if (isset($_GET['year'])) {
+            $filter['year'] = $_GET['year'];
+        }
+    }
 
-	$filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
+    $filter['userand'] = isset($_GET['userand']) ? intval($_GET['userand']) : 0;
 
-	if (isset($_GET['a']))
-		$filter['userid'] = $_GET['a'];
+    if (isset($_GET['a'])) {
+        $filter['userid'] = $_GET['a'];
+    }
 
-	if (isset($_GET['u']))
-		$filter['customerid'] = $_GET['u'] == 'all' ? null : $_GET['u'];
+    if (isset($_GET['u'])) {
+        $filter['customerid'] = $_GET['u'] == 'all' ? null : $_GET['u'];
+    }
 
-	if (isset($_GET['type']))
-		$filter['type'] = $_GET['type'] == 'all' ? null : $_GET['type'];
+    if (isset($_GET['type'])) {
+        $filter['type'] = $_GET['type'] == 'all' ? null : $_GET['type'];
+    }
 
-	if (isset($_GET['privacy']))
-		$filter['privacy'] = $_GET['privacy'] == 'all' ? null : $_GET['privacy'];
+    if (isset($_GET['privacy'])) {
+        $filter['privacy'] = $_GET['privacy'] == 'all' ? null : $_GET['privacy'];
+    }
 
-	if (isset($_GET['closed']))
-		$filter['closed'] = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
+    if (isset($_GET['closed'])) {
+        $filter['closed'] = $_GET['closed'] = 'all' ? '' : $_GET['closed'];
+    }
 }
 
-if (isset($filter['year']) && isset($filter['month']) && isset($filter['day']))
-	$filter['edate'] = sprintf('%04d/%02d/%02d', $filter['year'], $filter['month'], $filter['day']);
+if (isset($filter['year']) && isset($filter['month']) && isset($filter['day'])) {
+    $filter['edate'] = sprintf('%04d/%02d/%02d', $filter['year'], $filter['month'], $filter['day']);
+}
 
 $SESSION->saveFilter($filter);
 
-if (!isset($filter['day']))
-	$filter['day'] = date('j');
+if (!isset($filter['day'])) {
+    $filter['day'] = date('j');
+}
 
-if (!isset($filter['month']))
-	$filter['month'] = date('m');
+if (!isset($filter['month'])) {
+    $filter['month'] = date('m');
+}
 
-if (!isset($filter['year']))
-	$filter['year'] = date('Y');
+if (!isset($filter['year'])) {
+    $filter['year'] = date('Y');
+}
 
 $layout['pagetitle'] = trans('Timetable');
 
@@ -110,24 +130,24 @@ $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
 
 if (ConfigHelper::checkConfig('phpui.timetable_overdue_events')) {
-	$filter['forward'] = -1;
-	$filter['closed'] = 0;
-	$overdue_events = $LMS->GetEventList($filter);
+    $filter['forward'] = -1;
+    $filter['closed'] = 0;
+    $overdue_events = $LMS->GetEventList($filter);
 }
 
 // create calendars
 for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
-	$dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
-	$daylist[$i] = $dt;
+    $dt = mktime(0, 0, 0, $filter['month'], $filter['day'] + $i, $filter['year']);
+    $daylist[$i] = $dt;
 }
 
 $date = mktime(0, 0, 0, $filter['month'], $filter['day'], $filter['year']);
 $daysnum = date('t', $date);
 for ($i = 1; $i < $daysnum + 1; $i++) {
-	$date = mktime(0, 0, 0, $filter['month'], $i, $filter['year']);
-	$days['day'][] = date('j', $date);
-	$days['dow'][] = date('w', $date);
-	$days['sel'][] = ($i == $filter['day']);
+    $date = mktime(0, 0, 0, $filter['month'], $i, $filter['year']);
+    $days['day'][] = date('j', $date);
+    $days['dow'][] = date('w', $date);
+    $days['sel'][] = ($i == $filter['day']);
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -137,18 +157,18 @@ $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 $SMARTY->assign('today', $today);
 
 $SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'));
-$SMARTY->assign('eventlist',$eventlist);
-if (ConfigHelper::checkConfig('phpui.timetable_overdue_events'))
-	$SMARTY->assign('overdue_events',$overdue_events);
+$SMARTY->assign('eventlist', $eventlist);
+if (ConfigHelper::checkConfig('phpui.timetable_overdue_events')) {
+    $SMARTY->assign('overdue_events', $overdue_events);
+}
 
-$SMARTY->assign('days',$days);
-$SMARTY->assign('daylist',$daylist);
-$SMARTY->assign('date',$date);
-$SMARTY->assign('error',$error);
-$SMARTY->assign('userlist',$LMS->GetUserNames());
-if (!ConfigHelper::checkConfig('phpui.big_networks'))
-	$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
+$SMARTY->assign('days', $days);
+$SMARTY->assign('daylist', $daylist);
+$SMARTY->assign('date', $date);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('userlist', $LMS->GetUserNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks')) {
+    $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+}
 $SMARTY->assign('getHolidays', getHolidays($year));
 $SMARTY->display('event/eventlist.html');
-
-?>

@@ -34,8 +34,9 @@ $a = $DB->GetRow('SELECT a.invoice, a.settlement,
     LEFT JOIN numberplans n2 ON n2.id = d.numberplanid
     WHERE a.id = ?', array($_GET['id']));
 
-if ($a['template'])
+if ($a['template']) {
     $a['numberplan'] = $a['template'].' ('.$NUM_PERIODS[$a['period']].')';
+}
 
 if (!empty($a['docnumber'])) {
     $a['docnumber'] = docnumber(array(
@@ -44,13 +45,15 @@ if (!empty($a['docnumber'])) {
        'cdate' => $a['cdate'],
        'customerid' => empty($a['customerid']) ? null : $a['customerid'],
     ));
-    $a['document'] = trans('$a no. $b issued on $c',
-        $DOCTYPES[$a['doctype']], $a['docnumber'], date('Y/m/d', $a['cdate']));
+    $a['document'] = trans(
+        '$a no. $b issued on $c',
+        $DOCTYPES[$a['doctype']],
+        $a['docnumber'],
+        date('Y/m/d', $a['cdate'])
+    );
 }
 
 $a['paytypename'] = $PAYTYPES[$a['paytype']];
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->display('customer/customerassignmentinfoshort.html');
-
-?>

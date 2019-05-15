@@ -24,11 +24,10 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Modules'),	// Display name
-		    'modules', 		// Module name - must be the same as directory name
-		    trans('Show informations about modules'), // Tip 
-		    98,			// Priority
-		    trans('This module is for showing informations about modules')	// Description
-		    );
-
-?>
+$USERPANEL->AddModule(
+    trans('Modules'), // Display name
+    'modules',      // Module name - must be the same as directory name
+    trans('Show informations about modules'), // Tip
+    98,         // Priority
+    trans('This module is for showing informations about modules')  // Description
+);

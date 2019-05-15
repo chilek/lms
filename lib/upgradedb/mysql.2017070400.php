@@ -38,5 +38,3 @@ $this->Execute("ALTER TABLE rtmessages ADD COLUMN deluserid int(11) NOT NULL DEF
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070400', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

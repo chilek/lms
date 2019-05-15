@@ -26,27 +26,27 @@
 
 $id = $_GET['id'];
 
-if(! $LMS->TicketExists($id))
-{
-	$SESSION->redirect('?m=rtqueuelist');
+if (! $LMS->TicketExists($id)) {
+    $SESSION->redirect('?m=rtqueuelist');
 }
 
-if (!$LMS->CheckTicketAccess($id))
-	access_denied();
+if (!$LMS->CheckTicketAccess($id)) {
+    access_denied();
+}
 
 //$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $ticket = $LMS->GetTicketContents($id);
 $ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
-$ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
+$ticket['message'] = $DB->GetOne(
+    'SELECT body FROM rtmessages
 		    WHERE ticketid = ?
-		    ORDER BY createtime DESC LIMIT 1', 
-		    array($id));
+		    ORDER BY createtime DESC LIMIT 1',
+    array($id)
+);
 
 $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
 
 $SMARTY->assign('ticket', $ticket);
 
 $SMARTY->display('rt/rtticketinfoshort.html');
-
-?>

@@ -32,5 +32,3 @@ $this->Execute("ALTER TABLE rttickets ADD INDEX creatorid (creatorid)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007110600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

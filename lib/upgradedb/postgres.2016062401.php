@@ -61,5 +61,3 @@ $this->Execute("DROP SEQUENCE IF EXISTS voip_rules_id_seq;
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062401', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

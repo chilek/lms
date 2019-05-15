@@ -26,16 +26,14 @@
 
 global $SMARTY;
 
-if(isset($_POST['document']))
-{
+if (isset($_POST['document'])) {
 /* short example of errors handling
 
-	$error['notes'] = 'Error';
-	$result = 'Error';
-	return;
+    $error['notes'] = 'Error';
+    $result = 'Error';
+    return;
 */
-}
-else // AJAX request
+} else // AJAX request
 {
     // Variables accessible in AJAX request
     // $customer    - selected customer ID
@@ -43,5 +41,3 @@ else // AJAX request
 }
 
 $result = $SMARTY->fetch(DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
-
-?>

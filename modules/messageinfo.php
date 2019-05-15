@@ -24,64 +24,61 @@
  *  $Id$
  */
 
-function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NULL)
+function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $status = null)
 {
-	global $DB;
+    global $DB;
 
-	if($order=='')
-		$order='id,desc';
+    if ($order=='') {
+        $order='id,desc';
+    }
 
-	list($order,$direction) = sscanf($order, '%[^,],%s');
-	($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+    list($order,$direction) = sscanf($order, '%[^,],%s');
+    ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
-	switch($order)
-	{
-		case 'customer':
-			$sqlord = ' ORDER BY customer';
-		break;
-		case 'status':
-			$sqlord = ' ORDER BY i.status';
-		break;
-		default:
-			$sqlord = ' ORDER BY i.id';
-		break;
-	}
+    switch ($order) {
+        case 'customer':
+            $sqlord = ' ORDER BY customer';
+            break;
+        case 'status':
+            $sqlord = ' ORDER BY i.status';
+            break;
+        default:
+            $sqlord = ' ORDER BY i.id';
+            break;
+    }
 
-	if($search!='' && $cat)
-	{
-		switch($cat)
-		{
-			case 'customerid':
-				$where[] = ' i.customerid = '.intval($search);
-			break;
-			case 'destination':
-				$where[] = ' UPPER(i.destination) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
-			break;
-			case 'name':
-				$where[] = ' UPPER(c.lastname) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
-			break;
-		}
-	}
+    if ($search!='' && $cat) {
+        switch ($cat) {
+            case 'customerid':
+                $where[] = ' i.customerid = '.intval($search);
+                break;
+            case 'destination':
+                $where[] = ' UPPER(i.destination) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
+                break;
+            case 'name':
+                $where[] = ' UPPER(c.lastname) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
+                break;
+        }
+    }
 
-	if($status)
-	{
-		switch($status)
-		{
-			case MSG_NEW:
-			case MSG_ERROR:
-			case MSG_SENT:
-			case MSG_DELIVERED:
-				$where[] = 'i.status = '.$status;
-				break;
-		}
-	}
+    if ($status) {
+        switch ($status) {
+            case MSG_NEW:
+            case MSG_ERROR:
+            case MSG_SENT:
+            case MSG_DELIVERED:
+                $where[] = 'i.status = '.$status;
+                break;
+        }
+    }
 
-	if(!empty($where))
-		$where = ' AND '.implode(' AND ', $where);
+    if (!empty($where)) {
+        $where = ' AND '.implode(' AND ', $where);
+    }
 
-	$result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error,
+    $result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error,
 			i.destination, i.lastdate, i.lastreaddate,'
-			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customer
+            .$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customer
 		FROM messageitems i
 		LEFT JOIN customers c ON (c.id = i.customerid)
 		LEFT JOIN (
@@ -90,14 +87,14 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 			WHERE e.userid = lms_current_user()
 		) e ON (e.customerid = c.id) 
 		WHERE e.customerid IS NULL AND i.messageid = '.intval($id)
-		.(!empty($where) ? $where : '')
-		.$sqlord.' '.$direction);
+        .(!empty($where) ? $where : '')
+        .$sqlord.' '.$direction);
 
-	$result['status'] = $status;
-	$result['order'] = $order;
-	$result['direction'] = $direction;
+    $result['status'] = $status;
+    $result['order'] = $order;
+    $result['direction'] = $direction;
 
-	return $result;
+    return $result;
 }
 
 $message = $DB->GetRow('SELECT m.*, u.name
@@ -105,44 +102,50 @@ $message = $DB->GetRow('SELECT m.*, u.name
 		LEFT JOIN vusers u ON (u.id = m.userid) 
 		WHERE m.id = ?', array(intval($_GET['id'])));
 
-if(!$message)
-{
-	$SESSION->redirect('?m=messagelist');
+if (!$message) {
+    $SESSION->redirect('?m=messagelist');
 }
 
-if(mb_strlen($message['subject']) > 25)
-	$subject = mb_substr($message['subject'], 0, 25).'...';
-else
-	$subject = $message['subject'];
+if (mb_strlen($message['subject']) > 25) {
+    $subject = mb_substr($message['subject'], 0, 25).'...';
+} else {
+    $subject = $message['subject'];
+}
 
 $SESSION->restore('milm', $marks);
-if(isset($_POST['marks']))
-	foreach($_POST['marks'] as $id => $mark)
-		$marks[$id] = $mark;
+if (isset($_POST['marks'])) {
+    foreach ($_POST['marks'] as $id => $mark) {
+        $marks[$id] = $mark;
+    }
+}
 $SESSION->save('milm', $marks);
 
-if(isset($_POST['search']))
-	$s = $_POST['search'];
-else
-	$SESSION->restore('mils', $s);
+if (isset($_POST['search'])) {
+    $s = $_POST['search'];
+} else {
+    $SESSION->restore('mils', $s);
+}
 $SESSION->save('mils', $s);
 
-if(isset($_POST['cat']))
-	$c = $_POST['cat'];
-else
-	$SESSION->restore('milc', $c);
+if (isset($_POST['cat'])) {
+    $c = $_POST['cat'];
+} else {
+    $SESSION->restore('milc', $c);
+}
 $SESSION->save('milc', $c);
 
-if(isset($_GET['o']))
-	$o = $_GET['o'];
-else
-	$SESSION->restore('milo', $o);
+if (isset($_GET['o'])) {
+    $o = $_GET['o'];
+} else {
+    $SESSION->restore('milo', $o);
+}
 $SESSION->save('milo', $o);
 
-if(isset($_POST['status']))
-	$status = $_POST['status'];
-else
-	$SESSION->restore('milst', $status);
+if (isset($_POST['status'])) {
+    $status = $_POST['status'];
+} else {
+    $SESSION->restore('milst', $status);
+}
 $SESSION->save('milst', $status);
 
 $itemlist = GetItemList($message['id'], $o, $s, $c, $status);
@@ -160,8 +163,9 @@ unset($itemlist['direction']);
 
 $listdata['total'] = count($itemlist);
 
-if ($SESSION->is_set('milp') && !isset($_GET['page']))
-	$SESSION->restore('milp', $_GET['page']);
+if ($SESSION->is_set('milp') && !isset($_GET['page'])) {
+    $SESSION->restore('milp', $_GET['page']);
+}
 
 $page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.messagelist_pagelimit', $listdata['total']);
@@ -180,5 +184,3 @@ $SMARTY->assign('marks', $marks);
 $SMARTY->assign('itemlist', $itemlist);
 
 $SMARTY->display('message/messageinfo.html');
-
-?>

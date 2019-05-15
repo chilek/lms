@@ -30,53 +30,49 @@ $AUTH_MODINFO = array();
 
 // first reading user access rights (for current user it was done in auth/main)
 
-if($userid)
-	if($rights = $DB->GetOne('SELECT data FROM rights WHERE userid = ?', array($userid)))
-	{
-		$AUTH_MODULES = array_merge($AUTH_MODULES, unserialize($rights));
-	}
+if ($userid) {
+    if ($rights = $DB->GetOne('SELECT data FROM rights WHERE userid = ?', array($userid))) {
+        $AUTH_MODULES = array_merge($AUTH_MODULES, unserialize($rights));
+    }
+}
 
 // creating all modules/actions list
 
-if($handle = opendir($ExecStack->modules_dir))
-{
-        while(false !== ($file = readdir($handle)))
-	{
-		if(is_dir($ExecStack->modules_dir.'/'.$file) && is_readable($ExecStack->modules_dir.'/'.$file.'/modinfo.php'))
-		{
-			include($ExecStack->modules_dir.'/'.$file.'/modinfo.php');
-			foreach($_MODINFO as $module_name => $module_info)
-			{
-				if(isset($module_info['actions']))
-				{
-					$AUTH_MODINFO[$module_name]['count'] = 0;
-					
-					if(isset($module_info['description']))
-						$AUTH_MODINFO[$module_name]['description'] = $module_info['description'];
-					if(isset($module_info['summary']))
-						$AUTH_MODINFO[$module_name]['description'] = $module_info['summary'];
-					if(isset($module_info['summary']))
-						$AUTH_MODINFO[$module_name]['description'] = $module_info['summary'];
-						
-					foreach($module_info['actions'] as $action_name => $action_info)
-						if((!isset($action_info['hidden']) ||  $action_info['hidden'] !== TRUE) 
-						    && (!isset($action_info['notpublic']) || $action_info['notpublic'] !== TRUE))
-						{
-							$AUTH_MODINFO[$module_name]['actions'][$action_name] = $action_info;
-							$AUTH_MODINFO[$module_name]['count']++;
-						}
-				}
-			}
-		}
-	}
-	closedir($handle);   
+if ($handle = opendir($ExecStack->modules_dir)) {
+    while (false !== ($file = readdir($handle))) {
+        if (is_dir($ExecStack->modules_dir.'/'.$file) && is_readable($ExecStack->modules_dir.'/'.$file.'/modinfo.php')) {
+            include($ExecStack->modules_dir.'/'.$file.'/modinfo.php');
+            foreach ($_MODINFO as $module_name => $module_info) {
+                if (isset($module_info['actions'])) {
+                    $AUTH_MODINFO[$module_name]['count'] = 0;
+                    
+                    if (isset($module_info['description'])) {
+                        $AUTH_MODINFO[$module_name]['description'] = $module_info['description'];
+                    }
+                    if (isset($module_info['summary'])) {
+                        $AUTH_MODINFO[$module_name]['description'] = $module_info['summary'];
+                    }
+                    if (isset($module_info['summary'])) {
+                        $AUTH_MODINFO[$module_name]['description'] = $module_info['summary'];
+                    }
+                        
+                    foreach ($module_info['actions'] as $action_name => $action_info) {
+                        if ((!isset($action_info['hidden']) ||  $action_info['hidden'] !== true)
+                            && (!isset($action_info['notpublic']) || $action_info['notpublic'] !== true)) {
+                            $AUTH_MODINFO[$module_name]['actions'][$action_name] = $action_info;
+                            $AUTH_MODINFO[$module_name]['count']++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    closedir($handle);
 }
 
 $SMARTY->assign('rights', $AUTH_MODULES);
 $SMARTY->assign('modinfo', $AUTH_MODINFO);
 
-register_plugin('users-add-beforetableend',  '../modules/auth/templates/rightsedit.html');
+register_plugin('users-add-beforetableend', '../modules/auth/templates/rightsedit.html');
 register_plugin('users-edit-beforetableend', '../modules/auth/templates/rightsedit.html');
 register_plugin('users-info-beforetableend', '../modules/auth/templates/rightsinfo.html');
-
-?>

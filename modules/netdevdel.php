@@ -27,68 +27,70 @@
 $id = intval($_GET['id']);
 
 if ($api) {
-	if (!$LMS->NetDevExists($id))
-		die;
-} elseif (!$LMS->NetDevExists($id))
-	$SESSION->redirect('?m=netdevlist');
+    if (!$LMS->NetDevExists($id)) {
+        die;
+    }
+} elseif (!$LMS->NetDevExists($id)) {
+    $SESSION->redirect('?m=netdevlist');
+}
 
 if (!$api) {
-	$layout['pagetitle'] = trans('Deletion of Device with ID: $a', sprintf('%04d', $id));
-	$SMARTY->assign('netdevid', $id);
+    $layout['pagetitle'] = trans('Deletion of Device with ID: $a', sprintf('%04d', $id));
+    $SMARTY->assign('netdevid', $id);
 }
 
 if ($LMS->CountNetDevLinks($id) > 0) {
-	if ($api)
-		$error['general'] = trans('Device connected to other device or node can\'t be deleted.');
-	else
-		$body = '<P>' . trans('Device connected to other device or node can\'t be deleted.') . '</P>';
-} else
-	if (!$api && $_GET['is_sure'] != 1) {
-		$body = '<P>' . trans('Are you sure, you want to delete that device?') . '</P>'; 
-		$body .= '<P><A HREF="?m=netdevdel&id=' . $id . '&is_sure=1">' . trans('Yes, I am sure.') . '</A></P>';
-	} else {
-		if (!$api) {
-			header('Location: ?m=netdevlist');
-			$body = '<P>' . trans('Device has been deleted.') . '</P>';
-		}
+    if ($api) {
+        $error['general'] = trans('Device connected to other device or node can\'t be deleted.');
+    } else {
+        $body = '<P>' . trans('Device connected to other device or node can\'t be deleted.') . '</P>';
+    }
+} else if (!$api && $_GET['is_sure'] != 1) {
+    $body = '<P>' . trans('Are you sure, you want to delete that device?') . '</P>';
+    $body .= '<P><A HREF="?m=netdevdel&id=' . $id . '&is_sure=1">' . trans('Yes, I am sure.') . '</A></P>';
+} else {
+    if (!$api) {
+        header('Location: ?m=netdevlist');
+        $body = '<P>' . trans('Device has been deleted.') . '</P>';
+    }
 
-		$hook_data = $LMS->executeHook(
-			'netdevedel_validation_before_submit',
-			array(
-				'id' => $id,
-				'body' => $body,
-			)
-		);
-		if (!isset($hook_data['abort']) || empty($hook_data['abort'])) {
-			$result = $LMS->DeleteNetDev($id);
+    $hook_data = $LMS->executeHook(
+        'netdevedel_validation_before_submit',
+        array(
+            'id' => $id,
+            'body' => $body,
+        )
+    );
+    if (!isset($hook_data['abort']) || empty($hook_data['abort'])) {
+        $result = $LMS->DeleteNetDev($id);
 
-			$hook_data = $LMS->executeHook('netdevdel_after_submit',
-				array(
-					'id' => $id,
-				)
-			);
+        $hook_data = $LMS->executeHook(
+            'netdevdel_after_submit',
+            array(
+                'id' => $id,
+            )
+        );
 
-			$LMS->CleanupProjects();
-			if ($api) {
-				if ($result) {
-					header('Content-Type: application/json');
-					echo json_encode(array('id' => $id));
-				}
-				die;
-			}
-		} else
-			$body = $hook_data['body'];
-	}
-
-if ($api) {
-	if (isset($error['general'])) {
-		header('Content-Type: application/json');
-		echo json_encode($error);
-	}
-	die;
+        $LMS->CleanupProjects();
+        if ($api) {
+            if ($result) {
+                header('Content-Type: application/json');
+                echo json_encode(array('id' => $id));
+            }
+            die;
+        }
+    } else {
+        $body = $hook_data['body'];
+    }
 }
 
-$SMARTY->assign('body',$body);
-$SMARTY->display('dialog.html');
+if ($api) {
+    if (isset($error['general'])) {
+        header('Content-Type: application/json');
+        echo json_encode($error);
+    }
+    die;
+}
 
-?>
+$SMARTY->assign('body', $body);
+$SMARTY->display('dialog.html');

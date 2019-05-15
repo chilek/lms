@@ -24,61 +24,70 @@
  *  $Id$
  */
 
-class USERPANEL {
-	private $DB;
-	private $SESSION;
-	public $MODULES = array();
-	private $module_order = null;
+class USERPANEL
+{
+    private $DB;
+    private $SESSION;
+    public $MODULES = array();
+    private $module_order = null;
 
-	public function __construct(&$DB, &$SESSION) { // ustawia zmienne klasy
-		$this->DB = &$DB;
-		$this->SESSION = &$SESSION;
-		$module_order = ConfigHelper::getConfig('userpanel.module_order', '', true);
-		if (strlen($module_order))
-			$this->module_order = array_flip(explode(',', $module_order));
-	}
+    public function __construct(&$DB, &$SESSION)
+    {
+ // ustawia zmienne klasy
+        $this->DB = &$DB;
+        $this->SESSION = &$SESSION;
+        $module_order = ConfigHelper::getConfig('userpanel.module_order', '', true);
+        if (strlen($module_order)) {
+            $this->module_order = array_flip(explode(',', $module_order));
+        }
+    }
 
-	public function _postinit() {
-		return TRUE;
-	}
+    public function _postinit()
+    {
+        return true;
+    }
 
-	public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = NULL) {
-		if (isset($this->module_order[$module]))
-			$prio = $this->module_order[$module];
-		if ($name != '') {
-			$this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description, 'selected' => false, 'module' => $module, 'submenu' => $submenu);
-			if (!function_exists('cmp')) {
-			    function cmp($a, $b) {
-				if ($a['prio'] == $b['prio']) 
-				{
-				    return 0;
-				}
-				return ($a['prio'] < $b['prio']) ? -1 : 1;
-			    }
-			}
-			uasort($this->MODULES,'cmp');
-			return TRUE;
-		}
-		return FALSE;
-	}
+    public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = null)
+    {
+        if (isset($this->module_order[$module])) {
+            $prio = $this->module_order[$module];
+        }
+        if ($name != '') {
+            $this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description, 'selected' => false, 'module' => $module, 'submenu' => $submenu);
+            if (!function_exists('cmp')) {
+                function cmp($a, $b)
+                {
+                    if ($a['prio'] == $b['prio']) {
+                        return 0;
+                    }
+                    return ($a['prio'] < $b['prio']) ? -1 : 1;
+                }
+            }
+            uasort($this->MODULES, 'cmp');
+            return true;
+        }
+        return false;
+    }
 
-	public function GetCustomerRights($id) {
-		$result = NULL;
+    public function GetCustomerRights($id)
+    {
+        $result = null;
 
-		$rights = $this->DB->GetAll('SELECT name, module 
+        $rights = $this->DB->GetAll('SELECT name, module 
 					FROM up_rights
 					LEFT JOIN up_rights_assignments ON up_rights.id=up_rights_assignments.rightid
 					WHERE customerid=?', array($id));
 
-		if (!$rights)
-			$rights = $this->DB->GetAll('SELECT name, module FROM up_rights WHERE setdefault=1');
+        if (!$rights) {
+            $rights = $this->DB->GetAll('SELECT name, module FROM up_rights WHERE setdefault=1');
+        }
 
-		if ($rights)
-			foreach ($rights as $right)
-				$result[$right['module']][$right['name']] = true;
+        if ($rights) {
+            foreach ($rights as $right) {
+                $result[$right['module']][$right['name']] = true;
+            }
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 }
-
-?>

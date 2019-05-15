@@ -33,4 +33,3 @@ if ($id && $_GET['is_sure'] == "1" && $LMS->TariffTagExists($id)) {
 }
 
 $SESSION->redirect('?m=tarifftaglist');
-?>

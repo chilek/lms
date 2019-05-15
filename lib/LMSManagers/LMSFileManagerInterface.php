@@ -24,20 +24,21 @@
  *  $Id$
  */
 
-interface LMSFileManagerInterface {
-	public function GetFileContainers($type, $id);
+interface LMSFileManagerInterface
+{
+    public function GetFileContainers($type, $id);
 
-	public function GetFile($id);
+    public function GetFile($id);
 
-	public function GetZippedFileContainer($id);
+    public function GetZippedFileContainer($id);
 
-	public function AddFileContainer(array $params);
+    public function AddFileContainer(array $params);
 
-	public function UpdateFileContainer(array $params);
+    public function UpdateFileContainer(array $params);
 
-	public function DeleteFileContainer($id);
+    public function DeleteFileContainer($id);
 
-	public function DeleteFileContainers($type, $resourceid);
+    public function DeleteFileContainers($type, $resourceid);
 
-	public function FileExists($md5sum);
+    public function FileExists($md5sum);
 }

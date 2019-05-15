@@ -24,16 +24,18 @@
  *  $Id$
  */
 
-function sessionHandler($item, $name) {
-	global $SESSION;
+function sessionHandler($item, $name)
+{
+    global $SESSION;
 
-	if (!isset($_GET[$item]))
-		$SESSION->restore($name, $o);
-	else
-		$o = $_GET[$item];
+    if (!isset($_GET[$item])) {
+        $SESSION->restore($name, $o);
+    } else {
+        $o = $_GET[$item];
+    }
 
-	$SESSION->save($name, $o);
-	return $o;
+    $SESSION->save($name, $o);
+    return $o;
 }
 
 $layout['pagetitle'] = trans('Billing list');
@@ -44,8 +46,9 @@ $params = array();
 $params['o']          = sessionHandler('o', 'vblo');
 $params['id']         = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 $params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
-if (empty($params['frangefrom']))
-	$params['frangefrom'] = date('Y/m/01');
+if (empty($params['frangefrom'])) {
+    $params['frangefrom'] = date('Y/m/01');
+}
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
@@ -65,52 +68,60 @@ $bill_list = $LMS->getVoipBillings($params);
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 // CALL BILLING RANGE
-if (!empty($params['frangefrom']))
-	$listdata['frangefrom'] = date_to_timestamp($params['frangefrom']);
+if (!empty($params['frangefrom'])) {
+    $listdata['frangefrom'] = date_to_timestamp($params['frangefrom']);
+}
 
-if (!empty($params['frangeto'])) 
-	$listdata['frangeto'] = date_to_timestamp($params['frangeto']);
+if (!empty($params['frangeto'])) {
+    $listdata['frangeto'] = date_to_timestamp($params['frangeto']);
+}
 
 // CALL STATUS
-if (!empty($params['fstatus']))
-	switch ($params['fstatus']) {
-		case CALL_ANSWERED:
-		case CALL_NO_ANSWER:
-		case CALL_BUSY:
-		case CALL_SERVER_FAILED:
-			$listdata['fstatus'] = $params['fstatus'];
-		break;
-	}
+if (!empty($params['fstatus'])) {
+    switch ($params['fstatus']) {
+        case CALL_ANSWERED:
+        case CALL_NO_ANSWER:
+        case CALL_BUSY:
+        case CALL_SERVER_FAILED:
+            $listdata['fstatus'] = $params['fstatus'];
+            break;
+    }
+}
 
 // CALL TYPE
-if (!empty($params['ftype']))
-	switch ($params['ftype']) {
-		case CALL_OUTGOING:
-		case CALL_INCOMING:
-			$listdata['ftype'] = $params['ftype'];
-		break;
-	}
+if (!empty($params['ftype'])) {
+    switch ($params['ftype']) {
+        case CALL_OUTGOING:
+        case CALL_INCOMING:
+            $listdata['ftype'] = $params['ftype'];
+            break;
+    }
+}
 
-$voipaccountlist = $LMS->GetVoipAccountList('owner', NULL, NULL);
+$voipaccountlist = $LMS->GetVoipAccountList('owner', null, null);
 unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);
 unset($voipaccountlist['direction']);
 
 $order = explode(',', $params['o']);
-if (empty($order[1]) || $order[1] != 'desc')
-	$order[1] = 'asc';
+if (empty($order[1]) || $order[1] != 'desc') {
+    $order[1] = 'asc';
+}
 
 $listdata['order'] = $order[0];
 $listdata['direction'] = $order[1];
 
-if (!empty($_GET['page']))
-	$listdata['page'] = (int) $_GET['page'];
+if (!empty($_GET['page'])) {
+    $listdata['page'] = (int) $_GET['page'];
+}
 
-if ($params['id'] != NULL)
-	$listdata['fvoipaccid'] = $params['id'];
+if ($params['id'] != null) {
+    $listdata['fvoipaccid'] = $params['id'];
+}
 
-if ($SESSION->is_set('valp') && !isset($_GET['page']))
-	$SESSION->restore('valp', $_GET['page']);
+if ($SESSION->is_set('valp') && !isset($_GET['page'])) {
+    $SESSION->restore('valp', $_GET['page']);
+}
 
 $SESSION->save('valp', $page);
 
@@ -123,13 +134,11 @@ $billing_stats = $DB->GetRow('SELECT
                                  voip_cdr');
 
 $SMARTY->assign('voipaccounts', $voipaccountlist);
-$SMARTY->assign('pagination'  , $pagination);
-$SMARTY->assign('billings'    , $bill_list);
-$SMARTY->assign('total'       , $total);
-$SMARTY->assign('page'        , $page);
-$SMARTY->assign('pagelimit'   , $limit);
-$SMARTY->assign('listdata'    , $listdata);
-$SMARTY->assign('stats'       , $billing_stats);
+$SMARTY->assign('pagination', $pagination);
+$SMARTY->assign('billings', $bill_list);
+$SMARTY->assign('total', $total);
+$SMARTY->assign('page', $page);
+$SMARTY->assign('pagelimit', $limit);
+$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('stats', $billing_stats);
 $SMARTY->display('voipaccount/voipaccountbillinglist.html');
-
-?>

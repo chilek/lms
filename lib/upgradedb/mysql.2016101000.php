@@ -45,27 +45,26 @@ $this->Execute("
 ");
 
 $ims = $this->GetAll("SELECT customerid, uid, type FROM imessengers");
-if (!empty($ims))
-	foreach ($ims as $im) {
-		switch ($im['type']) {
-			case IM_GG:
-				$type = CONTACT_IM_GG;
-				break;
-			case IM_YAHOO:
-				$type = CONTACT_IM_YAHOO;
-				break;
-			case IM_SKYPE:
-				$type = CONTACT_IM_SKYPE;
-				break;
-		}
-		$this->Execute("INSERT INTO customercontacts (customerid, name, contact, type)
+if (!empty($ims)) {
+    foreach ($ims as $im) {
+        switch ($im['type']) {
+            case IM_GG:
+                $type = CONTACT_IM_GG;
+                break;
+            case IM_YAHOO:
+                $type = CONTACT_IM_YAHOO;
+                break;
+            case IM_SKYPE:
+                $type = CONTACT_IM_SKYPE;
+                break;
+        }
+        $this->Execute("INSERT INTO customercontacts (customerid, name, contact, type)
 			VALUES (?, ?, ?, ?)", array($im['customerid'], '', $im['uid'], $type));
-	}
+    }
+}
 
 $this->Execute("DROP TABLE imessengers");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016101000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

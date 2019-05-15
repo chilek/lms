@@ -48,7 +48,7 @@ class ConfigVariable
     
     /**
      * Constructs config variable
-     * 
+     *
      * @param string $name Variable name
      * @param string $value Variable value
      * @param string $comment Variable comment
@@ -62,7 +62,7 @@ class ConfigVariable
     
     /**
      * Returns variable name
-     * 
+     *
      * @return string
      */
     public function getVariable()
@@ -72,7 +72,7 @@ class ConfigVariable
 
     /**
      * Returns variable value
-     * 
+     *
      * @return string
      */
     public function getValue()
@@ -82,12 +82,11 @@ class ConfigVariable
 
     /**
      * Returns variable comment
-     * 
+     *
      * @return string
      */
     public function getComment()
     {
         return $this->comment;
     }
-    
 }

@@ -25,11 +25,13 @@
 
 $layout['pagetitle'] = trans('Network Statistics');
 
-$traffic = Traffic( time()-(60*60), time(), 0,
-	$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
+$traffic = Traffic(
+    time()-(60*60),
+    time(),
+    0,
+    $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download'
+);
 
 $SMARTY->assign('download', $traffic['download']);
 $SMARTY->assign('upload', $traffic['upload']);
-$SMARTY->assign('bars', TRUE);
-
-?>
+$SMARTY->assign('bars', true);

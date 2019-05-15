@@ -26,25 +26,26 @@
 
 function GetInstanceList($hostid)
 {
-	global $DB;
+    global $DB;
 
-	$where = $hostid ? 'WHERE hostid = '.intval($hostid) : '';
-		
-	return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description, 
+    $where = $hostid ? 'WHERE hostid = '.intval($hostid) : '';
+        
+    return $DB->GetAll('SELECT daemoninstances.id AS id, daemoninstances.name AS name, daemoninstances.description AS description, 
 			module, crontab, priority, disabled, hosts.name AS hostname
 			FROM daemoninstances LEFT JOIN hosts ON hosts.id = hostid '
-			.$where. 
-			' ORDER BY hostname, priority, name');
+            .$where.
+            ' ORDER BY hostname, priority, name');
 }
 
 $layout['pagetitle'] = trans('Instances List');
 
-if(!isset($_GET['id']))
+if (!isset($_GET['id'])) {
         $SESSION->restore('dilh', $hostid);
-else
-        $hostid = $_GET['id'];
+} else {
+    $hostid = $_GET['id'];
+}
 $SESSION->save('dilh', $hostid);
-		
+        
 $instancelist = GetInstanceList($hostid);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -53,5 +54,3 @@ $SMARTY->assign('instancelist', $instancelist);
 $SMARTY->assign('hostid', $hostid);
 $SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 $SMARTY->display('daemon/daemoninstancelist.html');
-
-?>

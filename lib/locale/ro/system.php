@@ -26,52 +26,57 @@
 
 function check_ten($ten)
 {
-	return TRUE;
+    return true;
 }
 
 function check_ssn($ssn)
 {
-	$ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
-	
-	if(!is_numeric($ssn) || strlen($ssn) < 13)
-		return FALSE;
-	
-	return TRUE;
+    $ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
+    
+    if (!is_numeric($ssn) || strlen($ssn) < 13) {
+        return false;
+    }
+    
+    return true;
 }
 
 function check_zip($zip)
 {
-	if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
-		return true;
-	} else {
-		return preg_match('/^[0-9]{6}$/', $zip);
-	}
+    if (ConfigHelper::checkConfig('phpui.skip_zip_validation')) {
+        return true;
+    } else {
+        return preg_match('/^[0-9]{6}$/', $zip);
+    }
 }
 
 function check_regon($regon) // business registration number
 {
-	return true;
+    return true;
 }
 
 function check_icn($icn) // identity card number
 {
-	return true;
+    return true;
 }
 
-function bankaccount($id, $account = NULL) {
-	return iban_account('RO', 22, $id, $account);
+function bankaccount($id, $account = null)
+{
+    return iban_account('RO', 22, $id, $account);
 }
 
-function check_bankaccount($account) {
-	return iban_check_account('RO', 22, $account);
+function check_bankaccount($account)
+{
+    return iban_check_account('RO', 22, $account);
 }
 
-function format_bankaccount($account) {
-	return $account;
+function format_bankaccount($account)
+{
+    return $account;
 }
 
-function getHolidays($year = null) {
-	return array();
+function getHolidays($year = null)
+{
+    return array();
 }
 
 /*!
@@ -79,8 +84,7 @@ function getHolidays($year = null) {
  *
  * \return string
  */
-function generateRandomPostcode() {
+function generateRandomPostcode()
+{
     return sprintf("%06d", rand(0, 999999));
 }
-
-?>

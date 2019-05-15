@@ -24,38 +24,33 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET['id'])||!$LMS->NetworkExists($_GET['mapto']))
-{
-	$SESSION->redirect('?m=netlist');
+if (!$LMS->NetworkExists($_GET['id'])||!$LMS->NetworkExists($_GET['mapto'])) {
+    $SESSION->redirect('?m=netlist');
 }
 
-$network['source'] = $LMS->GetNetworkRecord($_GET['id'],$SESSION->get('ntlp'.$_GET['id'],1024));
+$network['source'] = $LMS->GetNetworkRecord($_GET['id'], $SESSION->get('ntlp'.$_GET['id'], 1024));
 $network['dest'] = $LMS->GetNetworkRecord($_GET['mapto']);
 
-if($network['source']['assigned'] > $network['dest']['free'])
-	$error['remap'] = TRUE;
-
-if(!$error)
-{
-	if($_GET['is_sure'])
-	{
-		$LMS->NetworkRemap($network['source']['id'],$network['dest']['id']);
-		$SESSION->redirect('?m=netinfo&id='.$network['dest']['id']);
-
-	}else{
-		$layout['pagetitle'] = trans('Readdressing Network $a',strtoupper($network['source']['name']));
-		$SMARTY->display('header.html');
-		echo '<H1>'.$layout['pagetitle'].'</H1>';
-		echo '<P>'.trans('Are you sure, you want to readdress network $a to network $b ?',strtoupper($network['source']['name']).' ('.$network['source']['address'].'/'.$network['source']['prefix'].')', strtoupper($network['dest']['name']).' ('.$network['dest']['address'].'/'.$network['dest']['prefix'].')').'</P>';
-		echo '<A href="?m=netremap&id='.$_GET['id'].'&mapto='.$_GET['mapto'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
-		$SMARTY->display('footer.html');
-	}
-}else{
-	$networks = $LMS->GetNetworks();
-	$SMARTY->assign('network',$network['source']);
-	$SMARTY->assign('networks',$networks);
-	$SMARTY->assign('error',$error);
-	$SMARTY->display('net/netinfo.html');
+if ($network['source']['assigned'] > $network['dest']['free']) {
+    $error['remap'] = true;
 }
-	
-?>
+
+if (!$error) {
+    if ($_GET['is_sure']) {
+        $LMS->NetworkRemap($network['source']['id'], $network['dest']['id']);
+        $SESSION->redirect('?m=netinfo&id='.$network['dest']['id']);
+    } else {
+        $layout['pagetitle'] = trans('Readdressing Network $a', strtoupper($network['source']['name']));
+        $SMARTY->display('header.html');
+        echo '<H1>'.$layout['pagetitle'].'</H1>';
+        echo '<P>'.trans('Are you sure, you want to readdress network $a to network $b ?', strtoupper($network['source']['name']).' ('.$network['source']['address'].'/'.$network['source']['prefix'].')', strtoupper($network['dest']['name']).' ('.$network['dest']['address'].'/'.$network['dest']['prefix'].')').'</P>';
+        echo '<A href="?m=netremap&id='.$_GET['id'].'&mapto='.$_GET['mapto'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
+        $SMARTY->display('footer.html');
+    }
+} else {
+    $networks = $LMS->GetNetworks();
+    $SMARTY->assign('network', $network['source']);
+    $SMARTY->assign('networks', $networks);
+    $SMARTY->assign('error', $error);
+    $SMARTY->display('net/netinfo.html');
+}

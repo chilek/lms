@@ -24,82 +24,93 @@
  *  $Id$
  */
 
-function validateManagementUrl($params) {
-	$error = NULL;
+function validateManagementUrl($params)
+{
+    $error = null;
 
-	if (!strlen($params['url']))
-		$error['url'] = trans('Management URL cannot be empty!');
-	elseif (strlen($params['url']) < 7)
-		$error['url'] = trans('Management URL is too short!');
+    if (!strlen($params['url'])) {
+        $error['url'] = trans('Management URL cannot be empty!');
+    } elseif (strlen($params['url']) < 7) {
+        $error['url'] = trans('Management URL is too short!');
+    }
 
-	return $error;
+    return $error;
 }
 
-function _getManagementUrls($type, $result) {
-	$lms = LMS::getInstance();
-	$mgmurls = $lms->GetManagementUrls($type, $_GET['id']);
+function _getManagementUrls($type, $result)
+{
+    $lms = LMS::getInstance();
+    $mgmurls = $lms->GetManagementUrls($type, $_GET['id']);
 
-	$smarty = LMSSmarty::getInstance();
-	$smarty->assign('mgmurls', $mgmurls);
-	$mgmurllist = $smarty->fetch('managementurl/managementurllist.html');
+    $smarty = LMSSmarty::getInstance();
+    $smarty->assign('mgmurls', $mgmurls);
+    $mgmurllist = $smarty->fetch('managementurl/managementurllist.html');
 
-	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
+    $result->assign('managementurltable', 'innerHTML', $mgmurllist);
 }
 
-function _addManagementUrl($type, $params) {
-	$result = new xajaxResponse();
+function _addManagementUrl($type, $params)
+{
+    $result = new xajaxResponse();
 
-	$formdata = array();
-	parse_str($params, $formdata);
+    $formdata = array();
+    parse_str($params, $formdata);
 
-	$error = validateManagementUrl($formdata);
+    $error = validateManagementUrl($formdata);
 
-	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $formdata['url']))
-			$formdata['url'] = 'http://' . $formdata['url'];
+    if (!$error) {
+        if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $formdata['url'])) {
+            $formdata['url'] = 'http://' . $formdata['url'];
+        }
 
-		$lms = LMS::getInstance();
-		$lms->AddManagementUrl($type, $_GET['id'], $formdata);
+        $lms = LMS::getInstance();
+        $lms->AddManagementUrl($type, $_GET['id'], $formdata);
 
-		$result->call('hideAddManagementUrl');
+        $result->call('hideAddManagementUrl');
 
-		_getManagementUrls($type, $result);
-	} else
-		$result->call('managementUrlErrors', $error);
+        _getManagementUrls($type, $result);
+    } else {
+        $result->call('managementUrlErrors', $error);
+    }
 
-	return $result;
+    return $result;
 }
 
-function _delManagementUrl($type, $id) {
-	$result = new xajaxResponse();
+function _delManagementUrl($type, $id)
+{
+    $result = new xajaxResponse();
 
-	$lms = LMS::getInstance();
-	$lms->DeleteManagementUrl($type, $id);
+    $lms = LMS::getInstance();
+    $lms->DeleteManagementUrl($type, $id);
 
-	_getManagementUrls($type, $result);
+    _getManagementUrls($type, $result);
 
-	return $result;
+    return $result;
 }
 
-function _updateManagementUrl($type, $id, $params) {
-	$result = new xajaxResponse();
+function _updateManagementUrl($type, $id, $params)
+{
+    $result = new xajaxResponse();
 
-	$res = validateManagementUrl($params);
+    $res = validateManagementUrl($params);
 
-	$error = array();
-	foreach ($res as $key => $val)
-		$error[$key . '_edit_' . $id] = $val;
+    $error = array();
+    foreach ($res as $key => $val) {
+        $error[$key . '_edit_' . $id] = $val;
+    }
 
-	if (!$error) {
-		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
-			$params['url'] = 'http://' . $params['url'];
+    if (!$error) {
+        if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url'])) {
+            $params['url'] = 'http://' . $params['url'];
+        }
 
-		$lms = LMS::getInstance();
-		$lms->UpdateManagementUrl($type, $id, $params);
+        $lms = LMS::getInstance();
+        $lms->UpdateManagementUrl($type, $id, $params);
 
-		_getManagementUrls($type, $result);
-	} else
-		$result->call('managementUrlErrors', $error);
+        _getManagementUrls($type, $result);
+    } else {
+        $result->call('managementUrlErrors', $error);
+    }
 
-	return $result;
+    return $result;
 }

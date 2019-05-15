@@ -24,11 +24,8 @@
  *  $Id$
  */
 
-if($_GET['is_sure']=='1')
-{
-	$LMS->UserDelete($_GET['id']);
+if ($_GET['is_sure']=='1') {
+    $LMS->UserDelete($_GET['id']);
 }
 
 header('Location: ?m='.$SESSION->get('lastmodule'));
-
-?>

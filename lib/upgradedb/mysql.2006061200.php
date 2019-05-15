@@ -32,8 +32,6 @@ $this->Execute("ALTER TABLE domains ADD COLUMN ownerid int(11) NOT NULL default 
 $this->Execute("ALTER TABLE passwd ADD INDEX ownerid (ownerid)");
 $this->Execute("ALTER TABLE domains ADD INDEX ownerid (ownerid)");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006061200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006061200', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

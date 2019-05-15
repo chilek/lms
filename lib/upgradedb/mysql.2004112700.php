@@ -26,5 +26,3 @@
 
 //$this->Execute("ALTER TABLE uiconfig ADD UNIQUE (section, var)");
 $this->Execute("UPDATE dbinfo SET keyvalue='2004112700' WHERE keytype='dbversion'");
-
-?>

@@ -34,5 +34,3 @@ $this->Execute("ALTER TABLE documents ALTER COLUMN reason SET DEFAULT ''");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007053100', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

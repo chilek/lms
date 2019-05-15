@@ -31,5 +31,3 @@ $this->Execute("CREATE INDEX documents_customerid_idx ON documents (customerid)"
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

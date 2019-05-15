@@ -35,5 +35,3 @@ ALTER TABLE aliasassignments ADD CONSTRAINT aliasassignments_aliasid_key UNIQUE 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

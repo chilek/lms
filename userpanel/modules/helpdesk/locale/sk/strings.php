@@ -63,5 +63,3 @@ $_LANG['This module allows your customers to contact with you'] = 'Tento modul u
 $_LANG['Ticket must have its body!'] = 'Musíš zadať obsah požiadavku!';
 $_LANG['Ticket must have its title!'] = 'Požiadavok musí mať nadpis!';
 $_LANG['Message'] = 'Správa';
-
-?>

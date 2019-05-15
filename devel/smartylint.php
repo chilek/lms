@@ -19,7 +19,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -38,12 +38,13 @@ define('K_TCPDF_EXTERNAL_CONFIG', true);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // find alternative config files:
-if (is_readable('lms.ini'))
-	$CONFIG_FILE = 'lms.ini';
-elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini'))
-	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
-elseif (!is_readable($CONFIG_FILE))
-	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
+if (is_readable('lms.ini')) {
+    $CONFIG_FILE = 'lms.ini';
+} elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini')) {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
+} elseif (!is_readable($CONFIG_FILE)) {
+    die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -68,10 +69,11 @@ define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
 
 // Load autoloader
 $composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path))
-	require_once $composer_autoload_path;
-else
-die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
+}
 
 // Do some checks and load config defaults
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
@@ -81,11 +83,11 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Initialize templates engine (must be before locale settings)
@@ -93,12 +95,14 @@ $SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
-if (defined('Smarty::SMARTY_VERSION'))
-	$ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
-else
-	$ver_chunks = NULL;
-if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0)
-	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
+if (defined('Smarty::SMARTY_VERSION')) {
+    $ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+} else {
+    $ver_chunks = null;
+}
+if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0) {
+    die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
+}
 
 define('SMARTY_VERSION', $ver_chunks[0]);
 
@@ -122,30 +126,33 @@ $SMARTY->setPluginManager($plugin_manager);
 $SMARTY->setTemplateDir(null);
 $custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
 if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
-	&& !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir))
-	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
+    && !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)) {
+    $SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
+}
 $SMARTY->AddTemplateDir(
-	array(
-		SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
-		SMARTY_TEMPLATES_DIR,
-	)
+    array(
+        SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
+        SMARTY_TEMPLATES_DIR,
+    )
 );
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 
 $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
-if ($argc != 2)
-	die('smartylint: syntax error - template file name is required!' . PHP_EOL);
+if ($argc != 2) {
+    die('smartylint: syntax error - template file name is required!' . PHP_EOL);
+}
 
-if (!is_readable($argv[1]))
-	die('smartylint: template file ' . $argv[1] . ' does not exist or is not readable!' . PHP_EOL);
+if (!is_readable($argv[1])) {
+    die('smartylint: template file ' . $argv[1] . ' does not exist or is not readable!' . PHP_EOL);
+}
 
 try {
-	$SMARTY->clearCache('file:' . $argv[1]);
-	$SMARTY->fetch('file:' . $argv[1]);
+    $SMARTY->clearCache('file:' . $argv[1]);
+    $SMARTY->fetch('file:' . $argv[1]);
 } catch (Exception $e) {
-	echo $e->getMessage() . PHP_EOL;
+    echo $e->getMessage() . PHP_EOL;
 }
 
 ?>

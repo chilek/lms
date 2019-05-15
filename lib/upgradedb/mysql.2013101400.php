@@ -42,30 +42,28 @@ $dl = $this->GetAll('SELECT id, name, address, city, zip, countryid, ten, regon,
 
 $count = sizeof($dl);
 
-if ($dl) for ($i=0; $i<$count; $i++) {
-	
-	$this->Execute("UPDATE documents SET div_name = ?, div_address = ?, div_city = ?, div_zip = ?, 
+if ($dl) {
+    for ($i=0; $i<$count; $i++) {
+        $this->Execute("UPDATE documents SET div_name = ?, div_address = ?, div_city = ?, div_zip = ?, 
 			div_countryid = ?, div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, 
 			div_inv_footer = ?, div_inv_author = ?, div_inv_cplace = ? 
-			WHERE divisionid = ? ;",array(
-			($dl[$i]['name'] ? $dl[$i]['name'] : ''), 
-			($dl[$i]['address'] ? $dl[$i]['address'] : ''), 
-			($dl[$i]['city'] ? $dl[$i]['city'] : ''), 
-			($dl[$i]['zip'] ? $dl[$i]['zip'] : ''),
-			($dl[$i]['countryid'] ? $dl[$i]['countryid'] : 0),
-			($dl[$i]['ten'] ? $dl[$i]['ten'] : ''),
-			($dl[$i]['regon'] ? $dl[$i]['regon'] : ''),
-			($dl[$i]['account'] ? $dl[$i]['account'] : ''),
-			($dl[$i]['inv_header'] ? $dl[$i]['inv_header'] : ''),
-			($dl[$i]['inv_footer'] ? $dl[$i]['inv_footer'] : ''),
-			($dl[$i]['inv_author'] ? $dl[$i]['inv_author'] : ''),
-			($dl[$i]['inv_cplace'] ? $dl[$i]['inv_cplace'] : ''),
-			$dl[$i]['id']
-			)
-	);
-	
+			WHERE divisionid = ? ;", array(
+            ($dl[$i]['name'] ? $dl[$i]['name'] : ''),
+            ($dl[$i]['address'] ? $dl[$i]['address'] : ''),
+            ($dl[$i]['city'] ? $dl[$i]['city'] : ''),
+            ($dl[$i]['zip'] ? $dl[$i]['zip'] : ''),
+            ($dl[$i]['countryid'] ? $dl[$i]['countryid'] : 0),
+            ($dl[$i]['ten'] ? $dl[$i]['ten'] : ''),
+            ($dl[$i]['regon'] ? $dl[$i]['regon'] : ''),
+            ($dl[$i]['account'] ? $dl[$i]['account'] : ''),
+            ($dl[$i]['inv_header'] ? $dl[$i]['inv_header'] : ''),
+            ($dl[$i]['inv_footer'] ? $dl[$i]['inv_footer'] : ''),
+            ($dl[$i]['inv_author'] ? $dl[$i]['inv_author'] : ''),
+            ($dl[$i]['inv_cplace'] ? $dl[$i]['inv_cplace'] : ''),
+            $dl[$i]['id']
+            ));
     }
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013101400', 'dbversion'));
 $this->CommitTrans();
-?>

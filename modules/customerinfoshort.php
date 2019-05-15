@@ -33,5 +33,3 @@ $SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('customerinfo', $customerinfo);
 
 $SMARTY->display('customer/customerinfoshort.html');
-
-?>

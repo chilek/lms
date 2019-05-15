@@ -38,5 +38,3 @@ ALTER TABLE cash ALTER itemid SET NOT NULL;
 	UPDATE dbinfo SET keyvalue = '2005013000' WHERE keytype = 'dbversion'
 ");
 $this->CommitTrans();
-
-?>

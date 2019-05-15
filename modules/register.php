@@ -24,10 +24,9 @@
  *  $Id$
  */
 
-if($_SERVER['REQUEST_METHOD'] == 'POST')
-{
-	$LMS->UpdateRegisterData($_POST['name'], $_POST['url'], ($_POST['hidden'] == 1 ? TRUE : FALSE));
-	$SESSION->redirect('?m=welcome');
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $LMS->UpdateRegisterData($_POST['name'], $_POST['url'], ($_POST['hidden'] == 1 ? true : false));
+    $SESSION->redirect('?m=welcome');
 }
 
 $layout['pagetitle'] = trans('Register your installation today! ;-)');
@@ -35,5 +34,3 @@ $layout['pagetitle'] = trans('Register your installation today! ;-)');
 $SMARTY->assign('uiid', $LMS->GetUniqueInstallationID());
 $SMARTY->assign('regdata', $LMS->GetRegisterData());
 $SMARTY->display('register.html');
-
-?>

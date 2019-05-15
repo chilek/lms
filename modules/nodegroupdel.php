@@ -24,24 +24,24 @@
  *  $Id$
  */
 
-if(isset($_GET['is_sure']))
-{
-	$id = intval($_GET['id']);
+if (isset($_GET['is_sure'])) {
+    $id = intval($_GET['id']);
 
-	if(!$DB->GetOne('SELECT 1 FROM nodegroupassignments WHERE nodegroupid = ? 
-		LIMIT 1', array($id)))
-	{
-		$DB->BeginTrans();
-		$DB->Execute('DELETE FROM nodegroups WHERE id = ?', array($id));
-//		$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($id));
-		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_DELETE,
-				array(SYSLOG::RES_NODEGROUP => $id));
-		$DB->CommitTrans();
-		$LMS->CompactNodeGroups();
-	}
+    if (!$DB->GetOne('SELECT 1 FROM nodegroupassignments WHERE nodegroupid = ? 
+		LIMIT 1', array($id))) {
+        $DB->BeginTrans();
+        $DB->Execute('DELETE FROM nodegroups WHERE id = ?', array($id));
+//      $DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($id));
+        if ($SYSLOG) {
+            $SYSLOG->AddMessage(
+                SYSLOG::RES_NODEGROUP,
+                SYSLOG::OPER_DELETE,
+                array(SYSLOG::RES_NODEGROUP => $id)
+            );
+        }
+        $DB->CommitTrans();
+        $LMS->CompactNodeGroups();
+    }
 }
 
 $SESSION->redirect('?m=nodegrouplist');
-
-?>

@@ -26,54 +26,59 @@
 
 $layout['pagetitle'] = trans('Messages List');
 
-if(isset($_POST['search']))
-	$s = $_POST['search'];
-else
-	$SESSION->restore('mls', $s);
+if (isset($_POST['search'])) {
+    $s = $_POST['search'];
+} else {
+    $SESSION->restore('mls', $s);
+}
 $SESSION->save('mls', $s);
 
-if(isset($_POST['cat']))
-	$c = $_POST['cat'];
-else
-	$SESSION->restore('mlc', $c);
+if (isset($_POST['cat'])) {
+    $c = $_POST['cat'];
+} else {
+    $SESSION->restore('mlc', $c);
+}
 $SESSION->save('mlc', $c);
 
-if(isset($_GET['o']))
-	$o = $_GET['o'];
-else
-	$SESSION->restore('mlo', $o);
+if (isset($_GET['o'])) {
+    $o = $_GET['o'];
+} else {
+    $SESSION->restore('mlo', $o);
+}
 $SESSION->save('mlo', $o);
 
-if(isset($_POST['type']))
-	$t = $_POST['type'];
-else
-	$SESSION->restore('mlt', $t);
+if (isset($_POST['type'])) {
+    $t = $_POST['type'];
+} else {
+    $SESSION->restore('mlt', $t);
+}
 $SESSION->save('mlt', $t);
 
-if(isset($_POST['status']))
-	$status = $_POST['status'];
-else
-	$SESSION->restore('mlst', $status);
+if (isset($_POST['status'])) {
+    $status = $_POST['status'];
+} else {
+    $SESSION->restore('mlst', $status);
+}
 $SESSION->save('mlst', $status);
 
-if(!empty($_GET['cid']))
-{
-	$s = $_GET['cid'];
-	$c = 'customerid';
-	$o = $t = $status = NULL;
+if (!empty($_GET['cid'])) {
+    $s = $_GET['cid'];
+    $c = 'customerid';
+    $o = $t = $status = null;
 }
 
 $total = intval($LMS->GetMessageList(array('order' => $o, 'search' => $s, 'cat' => $c, 'type' => $t,
-	'status' => $status, 'count' => true)));
+    'status' => $status, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.messagelist_pagelimit', $total));
-if ($SESSION->is_set('mlp') && !isset($_GET['page']))
-	$SESSION->restore('mlp', $_GET['page']);
+if ($SESSION->is_set('mlp') && !isset($_GET['page'])) {
+    $SESSION->restore('mlp', $_GET['page']);
+}
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
 $offset = ($page - 1) * $limit;
 
 $messagelist = $LMS->GetMessageList(array('order' => $o, 'search' => $s, 'cat' => $c, 'type' => $t,
-	'status' => $status, 'count' => false, 'offset' => $offset, 'limit' => $limit));
+    'status' => $status, 'count' => false, 'offset' => $offset, 'limit' => $limit));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -95,9 +100,7 @@ $SESSION->save('mlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('pagination', $pagination);
-$SMARTY->assign('messagelist',$messagelist);
+$SMARTY->assign('messagelist', $messagelist);
 $SMARTY->display('message/messagelist.html');
-
-?>

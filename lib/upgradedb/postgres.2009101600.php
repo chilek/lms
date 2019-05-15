@@ -40,5 +40,3 @@ ALTER TABLE tariffs ADD plimit_n integer DEFAULT NULL;
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009101600', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

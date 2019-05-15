@@ -24,37 +24,31 @@
  *  $Id$
  */
 
-function module_main() 
+function module_main()
 {
     global $SESSION, $LMS;
     
     $SESSION->LogOut();
 
-    if (ConfigHelper::getConfig('userpanel.logout_url')!='')
-    {
-	header('Location: '.ConfigHelper::getConfig('userpanel.logout_url'));
-    } 
-    else
-    {
-	header('Location: ?m=');
+    if (ConfigHelper::getConfig('userpanel.logout_url')!='') {
+        header('Location: '.ConfigHelper::getConfig('userpanel.logout_url'));
+    } else {
+        header('Location: ?m=');
     }
 }
 
-if (defined('USERPANEL_SETUPMODE'))
-{
-    function module_setup() 
+if (defined('USERPANEL_SETUPMODE')) {
+    function module_setup()
     {
-	global $SMARTY,$LMS;
+        global $SMARTY,$LMS;
         $SMARTY->assign('logouturl', ConfigHelper::getConfig('userpanel.logout_url'));
-	$SMARTY->display('module:logout:setup.html');
+        $SMARTY->display('module:logout:setup.html');
     }
 
-    function module_submit_setup() 
+    function module_submit_setup()
     {
-	global $SMARTY,$DB;
+        global $SMARTY,$DB;
         $DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'logout_url\'', array($_POST['logouturl']));
-	header('Location: ?m=userpanel&module=logout');
+        header('Location: ?m=userpanel&module=logout');
     }
 }
-
-?>

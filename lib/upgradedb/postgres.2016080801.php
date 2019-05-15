@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE voip_rules ALTER COLUMN id SET DEFAULT nextval('voip
                 UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080801', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

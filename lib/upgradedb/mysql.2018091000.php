@@ -27,16 +27,17 @@ $this->Execute('ALTER TABLE events MODIFY begintime int(11)');
 $this->Execute('ALTER TABLE events MODIFY endtime int(11)');
 
 $events = $this->GetAll('SELECT id, begintime, endtime FROM events');
-if (!empty($events))
-	foreach ($events as $event) {
-		$begintime = floor($event['begintime'] / 100) * 3600 + ($event['begintime'] % 100) * 60;
-		$endtime = floor($event['endtime'] / 100) * 3600 + ($event['endtime'] % 100) * 60;
-		$this->Execute('UPDATE events SET begintime = ?, endtime = ? WHERE id = ?',
-			array($begintime, $endtime, $event['id']));
-	}
+if (!empty($events)) {
+    foreach ($events as $event) {
+        $begintime = floor($event['begintime'] / 100) * 3600 + ($event['begintime'] % 100) * 60;
+        $endtime = floor($event['endtime'] / 100) * 3600 + ($event['endtime'] % 100) * 60;
+        $this->Execute(
+            'UPDATE events SET begintime = ?, endtime = ? WHERE id = ?',
+            array($begintime, $endtime, $event['id'])
+        );
+    }
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2018091000', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

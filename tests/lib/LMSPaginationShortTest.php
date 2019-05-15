@@ -36,9 +36,9 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
     
     public function testDisplayGoToReturnsFalseIfNumberOfPagesIsLessThanOrEqualNine()
     {
-        $pagination = new \LMSPaginationShort(1,1,1);
+        $pagination = new \LMSPaginationShort(1, 1, 1);
         $this->assertEquals($pagination->displayGoTo(), false);
-        for ($i = 2 ; $i <= 9 ; $i++) {
+        for ($i = 2; $i <= 9; $i++) {
             $pagination->setTotal($i);
             $this->assertEquals(false, $pagination->displayGoTo(), "Fails when i == $i");
         }
@@ -46,8 +46,8 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
     
     public function testDisplayGoToReturnsFalseIfNumberOfPagesIsGreaterThanNine()
     {
-        $pagination = new \LMSPaginationShort(1,1,1);
-        for ($i = 10 ; $i < 99 ; $i++) {
+        $pagination = new \LMSPaginationShort(1, 1, 1);
+        for ($i = 10; $i < 99; $i++) {
             $pagination->setTotal($i++);
             $this->assertEquals(true, $pagination->displayGoTo(), "Fails when i == $i");
         }
@@ -56,7 +56,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
     public function testDisplayLinkReturnsTrueIfLinkPageIsInRangeOf2FromCurrentPage()
     {
         $pagination = new \LMSPaginationShort(10, 100, 1);
-        for ($i = 8 ; $i <= 12 ; $i++) {
+        for ($i = 8; $i <= 12; $i++) {
             $this->assertEquals(true, $pagination->displayLink($i), "Fails when i == $i");
         }
     }
@@ -64,7 +64,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
     public function testDisplayLinkReturnsTrueIfLinkPageIsInRangeOf1FromFirstPage()
     {
         $pagination = new \LMSPaginationShort(10, 100, 1);
-        for ($i = 1; $i <= 2 ; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
             $this->assertEquals(true, $pagination->displayLink($i), "Fails when i == $i");
         }
     }
@@ -72,7 +72,7 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
     public function testDisplayLinkReturnsTrueIfLinkPageIsInRangeOf1FromLastPage()
     {
         $pagination = new \LMSPaginationShort(10, 100, 1);
-        for ($i = $pagination->getPages() - 1; $i <= $pagination->getPages() ; $i++) {
+        for ($i = $pagination->getPages() - 1; $i <= $pagination->getPages(); $i++) {
             $this->assertEquals(true, $pagination->displayLink($i), "Fails when i == $i");
         }
     }
@@ -87,8 +87,4 @@ class LMSPaginationShortTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(false, $pagination->displayLink($i), "Fails when i == $i");
         }
     }
-    
-    
-    
-    
 }

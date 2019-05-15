@@ -29,28 +29,24 @@ $voipaccountlogin = $LMS->GetVoipAccountLogin($voipaccountid);
 
 $layout['pagetitle'] = trans('Delete Voip Account $a', $voipaccountlogin);
 
-if (!$LMS->VoipAccountExists($voipaccountid))
-{
-	$body = '<P>'.trans('Incorrect ID number').'</P>';
-}else{
+if (!$LMS->VoipAccountExists($voipaccountid)) {
+    $body = '<P>'.trans('Incorrect ID number').'</P>';
+} else {
+    if ($_GET['is_sure']!=1) {
+        $body = '<P>'.trans('Are you sure, you want to remove voip account \'$a\' from database?', $voipaccountlogin).'</P>';
+        $body .= '<P><A HREF="?m=voipaccountdel&id='.$voipaccountid.'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
+    } else {
+        $owner = $LMS->GetVoipAccountOwner($voipaccountid);
+        $LMS->DeleteVoipAccount($voipaccountid);
+        if ($SESSION->is_set('backto')) {
+            header('Location: ?'.$SESSION->get('backto'));
+        } else {
+            header('Location: ?m=customerinfo&id='.$owner);
+        }
 
-	if($_GET['is_sure']!=1)
-	{
-		$body = '<P>'.trans('Are you sure, you want to remove voip account \'$a\' from database?', $voipaccountlogin).'</P>'; 
-		$body .= '<P><A HREF="?m=voipaccountdel&id='.$voipaccountid.'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
-	}else{
-		$owner = $LMS->GetVoipAccountOwner($voipaccountid);
-		$LMS->DeleteVoipAccount($voipaccountid);
-		if($SESSION->is_set('backto'))
-			header('Location: ?'.$SESSION->get('backto'));
-		else
-			header('Location: ?m=customerinfo&id='.$owner);
-
-		$body = '<P>'.trans('Voip account $a was deleted', $voipaccountname).'</P>';
-	}
+        $body = '<P>'.trans('Voip account $a was deleted', $voipaccountname).'</P>';
+    }
 }
 
-$SMARTY->assign('body',$body);
+$SMARTY->assign('body', $body);
 $SMARTY->display('dialog.html');
-
-?>

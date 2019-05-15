@@ -25,6 +25,4 @@
  */
 
 $this->Execute("ALTER TABLE admins ADD hosts varchar(255) DEFAULT '' NOT NULL");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042100', 'dbversion'));
-
-?>
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2005042100', 'dbversion'));

@@ -27,22 +27,22 @@
 $ticket = intval($_GET['id']);
 $taction = ($_GET['taction']);
 
-if (!($LMS->CheckTicketAccess($ticket) & RT_RIGHT_DELETE))
-	access_denied();
+if (!($LMS->CheckTicketAccess($ticket) & RT_RIGHT_DELETE)) {
+    access_denied();
+}
 
 if ($taction == 'delete') {
-	$del = 1;
-	$nodel = 0;
-	$deltime = time();
-	// We use incomplete cascade delete. This means that we delete only messages tah weren't deleted before ticket delete operation.
-	$DB->BeginTrans();
-	$DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $ticket));
-	$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $ticket));
-	$DB->CommitTrans();
-} elseif ($taction == 'delperm')
-	$DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
+    $del = 1;
+    $nodel = 0;
+    $deltime = time();
+    // We use incomplete cascade delete. This means that we delete only messages tah weren't deleted before ticket delete operation.
+    $DB->BeginTrans();
+    $DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $ticket));
+    $DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $ticket));
+    $DB->CommitTrans();
+} elseif ($taction == 'delperm') {
+    $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
+}
 
 $SESSION->redirect('?m=rtqueueview'
-	. ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
-
-?>
+    . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));

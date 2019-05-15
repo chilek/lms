@@ -29,5 +29,3 @@ $this->Execute("ALTER TABLE tariffs ADD UNIQUE KEY name (name, value)");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011021700', 'dbversion'));
 
 $this->CommitTrans();
-
-?>

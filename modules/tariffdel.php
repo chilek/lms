@@ -26,12 +26,10 @@
 
 $id = intval($_GET['id']);
 
-if($id && $_GET['is_sure']=="1" && $LMS->TariffExists($id))
-{
-	if(!$DB->GetOne('SELECT 1 FROM assignments WHERE tariffid = ? LIMIT 1', array($id)))
-		$LMS->TariffDelete($id);
+if ($id && $_GET['is_sure']=="1" && $LMS->TariffExists($id)) {
+    if (!$DB->GetOne('SELECT 1 FROM assignments WHERE tariffid = ? LIMIT 1', array($id))) {
+        $LMS->TariffDelete($id);
+    }
 }
 
 $SESSION->redirect('?m=tarifflist');
-
-?>

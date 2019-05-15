@@ -27,19 +27,17 @@
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {
-	if ($SYSLOG) {
-		$config = $DB->GetRow('SELECT instanceid, hostid FROM daemonconfig c
+    if ($SYSLOG) {
+        $config = $DB->GetRow('SELECT instanceid, hostid FROM daemonconfig c
 			JOIN daemoninstances i ON i.id = c.instanceid WHERE c.id = ?', array($id));
-		$args = array(
-			SYSLOG::RES_DAEMONINST => $config['instanceid'],
-			SYSLOG::RES_HOST => $config['hostid'],
-			SYSLOG::RES_DAEMONCONF => $id
-		);
-		$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_DELETE, $args);
-	}
-	$DB->Execute('DELETE FROM daemonconfig WHERE id = ?', array($id));
+        $args = array(
+            SYSLOG::RES_DAEMONINST => $config['instanceid'],
+            SYSLOG::RES_HOST => $config['hostid'],
+            SYSLOG::RES_DAEMONCONF => $id
+        );
+        $SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_DELETE, $args);
+    }
+    $DB->Execute('DELETE FROM daemonconfig WHERE id = ?', array($id));
 }
 
 header('Location: ?'.$SESSION->get('backto'));
-
-?>

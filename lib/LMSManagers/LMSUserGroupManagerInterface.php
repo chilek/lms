@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-interface LMSUserGroupManagerInterface{
+interface LMSUserGroupManagerInterface
+{
     
     public function UsergroupGetId($name);
     
@@ -51,5 +52,4 @@ interface LMSUserGroupManagerInterface{
     public function UsergroupUpdate($usergroupdata);
     
     public function UsergroupGetAll();
-    
 }

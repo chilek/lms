@@ -27,96 +27,94 @@
 $layout['pagetitle'] = trans('Copyrights');
 
 $authors = array(
-		
-		'alec' => array(
-			'realname' => 'Aleksander Machniak',
-			'www' => 'www.alec.pl',
-			'info' => 'PHP, C, Perl, HTML, JavaScript, images, doc, PostgreSQL'
-		     ),
+        
+        'alec' => array(
+            'realname' => 'Aleksander Machniak',
+            'www' => 'www.alec.pl',
+            'info' => 'PHP, C, Perl, HTML, JavaScript, images, doc, PostgreSQL'
+             ),
 
-		'Baseciq' => array(
-			'realname' => 'Łukasz Jarosław Mozer',
-			'www' => 'www.baseciq.org',
-			'info' => 'inventor & maintainer, PHP, Perl, design, HTML, JavaScript, CSS, images, doc, project\'s WWW'
-			),
+        'Baseciq' => array(
+            'realname' => 'Łukasz Jarosław Mozer',
+            'www' => 'www.baseciq.org',
+            'info' => 'inventor & maintainer, PHP, Perl, design, HTML, JavaScript, CSS, images, doc, project\'s WWW'
+            ),
 
-		'chilek' => array(
-			'info' => 'PHP, Perl',
-			'realname' => 'Tomasz Chilinski',
-			),
+        'chilek' => array(
+            'info' => 'PHP, Perl',
+            'realname' => 'Tomasz Chilinski',
+            ),
 
-		'hunter' => array(
-			'info' => 'PHP, Perl',
-			'realname' => 'Krzysztof Drewicz',
-			),
+        'hunter' => array(
+            'info' => 'PHP, Perl',
+            'realname' => 'Krzysztof Drewicz',
+            ),
 
-		'Lexx' => array(
-			'info' => 'PHP, C, doc, project\'s  WWW',
-			'www' => 'www.lexx.w.pl',
-			'realname' => 'Marcin Król',
-		     ),
-	
-		);
+        'Lexx' => array(
+            'info' => 'PHP, C, doc, project\'s  WWW',
+            'www' => 'www.lexx.w.pl',
+            'realname' => 'Marcin Król',
+             ),
+    
+        );
 
 $others = array(
 
-		'agaran' => array(
-			'info' => 'Perl',
-			'realname' => 'Maciej Pijanka',
-			),
-		
-		'kflis' => array(
-			'info' => 'Betatesting, images',
-			'www' => 'www.kflis.net',
-			'realname' => 'Kuba Flis',
-			),
+        'agaran' => array(
+            'info' => 'Perl',
+            'realname' => 'Maciej Pijanka',
+            ),
+        
+        'kflis' => array(
+            'info' => 'Betatesting, images',
+            'www' => 'www.kflis.net',
+            'realname' => 'Kuba Flis',
+            ),
 
-		'dzwonus' => array(
-			'info' => 'Betatesting, idea co-author',
-			'realname' => 'Tomasz Dzwonkowski',
-			),
+        'dzwonus' => array(
+            'info' => 'Betatesting, idea co-author',
+            'realname' => 'Tomasz Dzwonkowski',
+            ),
 
-		'victus' => array(
-			'info' => 'Betatesting, idea co-author',
-			'realname' => 'Sebastian Frasunkiewicz',
-			),
+        'victus' => array(
+            'info' => 'Betatesting, idea co-author',
+            'realname' => 'Sebastian Frasunkiewicz',
+            ),
 
-		'shasta' => array(
-			'info' => 'MySQL, WWW site',
-			'realname' => 'Kuba Jankowski',
-			'www' => 's.atn.pl',
-			),
+        'shasta' => array(
+            'info' => 'MySQL, WWW site',
+            'realname' => 'Kuba Jankowski',
+            'www' => 's.atn.pl',
+            ),
 
-		'Bob_R' => array(
-			'info' => 'CSS, HTML, JavaScript',
-			'realname' => 'Paweł Czerski',
-			'www' => 'plug.atn.pl/~bober/',
-			),
+        'Bob_R' => array(
+            'info' => 'CSS, HTML, JavaScript',
+            'realname' => 'Paweł Czerski',
+            'www' => 'plug.atn.pl/~bober/',
+            ),
 
-		'sickone' => array(
-			'realname' => 'Paweł Kisiela',
-			'info' => 'CSS, HTML, JavaScript',
-			'www' => 'gamechannel.int.pl',
-			),
+        'sickone' => array(
+            'realname' => 'Paweł Kisiela',
+            'info' => 'CSS, HTML, JavaScript',
+            'www' => 'gamechannel.int.pl',
+            ),
 
-		'DziQs' => array(
-			'realname' => 'Michał Zapalski',
-			'info' => 'PHP, Perl',
-			),
+        'DziQs' => array(
+            'realname' => 'Michał Zapalski',
+            'info' => 'PHP, Perl',
+            ),
 
-		'kondi' => array(
-			'realname' => 'Konrad Rzentarzewski',
-			'info' => 'i18n, PHP, JavaScript',
-			'www' => 'kondi.net',
-			),
+        'kondi' => array(
+            'realname' => 'Konrad Rzentarzewski',
+            'info' => 'i18n, PHP, JavaScript',
+            'www' => 'kondi.net',
+            ),
 
-		'Pierzak' => array(
-			'realname' => 'Piotr Mierzeński',
-			'info' => 'Logo project',
-			),
-		);
-				
+        'Pierzak' => array(
+            'realname' => 'Piotr Mierzeński',
+            'info' => 'Logo project',
+            ),
+        );
+                
 $SMARTY->assign('authors', $authors);
 $SMARTY->assign('others', $others);
-
-?>

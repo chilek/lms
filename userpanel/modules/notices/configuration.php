@@ -24,11 +24,10 @@
  *  $Id$
  */
 
-$USERPANEL->AddModule(trans('Notices'),	// Display name
-		    'notices', 		// Module name - must be the same as directory name
-		    trans('Shows notices'), // Tip 
-		    40,			// Priority
-		    trans('This module is for showing notices for your customer')	// Description
-		    );
-
-?>
+$USERPANEL->AddModule(
+    trans('Notices'), // Display name
+    'notices',      // Module name - must be the same as directory name
+    trans('Shows notices'), // Tip
+    40,         // Priority
+    trans('This module is for showing notices for your customer')   // Description
+);

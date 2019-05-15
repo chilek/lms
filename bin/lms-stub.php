@@ -19,7 +19,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
  *  $Id$
@@ -28,35 +28,36 @@
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 $parameters = array(
-	'C:' => 'config-file:',
-	'q' => 'quiet',
-	'h' => 'help',
-	'v' => 'version',
+    'C:' => 'config-file:',
+    'q' => 'quiet',
+    'h' => 'help',
+    'v' => 'version',
 );
 
 foreach ($parameters as $key => $val) {
-	$val = preg_replace('/:/', '', $val);
-	$newkey = preg_replace('/:/', '', $key);
-	$short_to_longs[$newkey] = $val;
+    $val = preg_replace('/:/', '', $val);
+    $newkey = preg_replace('/:/', '', $key);
+    $short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach ($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options)) {
-		$options[$long] = $options[$short];
-		unset($options[$short]);
-	}
+foreach ($short_to_longs as $short => $long) {
+    if (array_key_exists($short, $options)) {
+        $options[$long] = $options[$short];
+        unset($options[$short]);
+    }
+}
 
 if (array_key_exists('version', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-stub.php
 (C) 2001-2016 LMS Developers
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 if (array_key_exists('help', $options)) {
-	print <<<EOF
+    print <<<EOF
 lms-stub.php
 (C) 2001-2016 LMS Developers
 
@@ -66,28 +67,31 @@ lms-stub.php
 -q, --quiet                     suppress any output, except errors
 
 EOF;
-	exit(0);
+    exit(0);
 }
 
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
-	print <<<EOF
+    print <<<EOF
 lms-stub.php
 (C) 2001-2016 LMS Developers
 
 EOF;
 }
 
-if (array_key_exists('config-file', $options))
-	$CONFIG_FILE = $options['config-file'];
-else
-	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+if (array_key_exists('config-file', $options)) {
+    $CONFIG_FILE = $options['config-file'];
+} else {
+    $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+}
 
-if (!$quiet)
-	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
+if (!$quiet) {
+    echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
+}
 
-if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+if (!is_readable($CONFIG_FILE)) {
+    die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -113,11 +117,11 @@ if (file_exists($composer_autoload_path)) {
 $DB = null;
 
 try {
-	$DB = LMSDB::getInstance();
+    $DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-	trigger_error($ex->getMessage(), E_USER_WARNING);
-	// can't working without database
-	die("Fatal error: cannot connect to database!" . PHP_EOL);
+    trigger_error($ex->getMessage(), E_USER_WARNING);
+    // can't working without database
+    die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 /* ****************************************
@@ -136,7 +140,7 @@ $SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 
-$AUTH = NULL;
+$AUTH = null;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
