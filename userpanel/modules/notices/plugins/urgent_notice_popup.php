@@ -36,7 +36,7 @@ class urgent_notice_popup_plugin
      *
      * @param object $LMS LMS object
      */
-    function __construct($LMS)
+    public function __construct($LMS)
     {
         $this->lms = $LMS;
     }
@@ -51,7 +51,7 @@ class urgent_notice_popup_plugin
      *
      * @return array module notices data
      */
-    function notice_check($vars)
+    public function notice_check($vars)
     {
         global $SMARTY;
         global $SESSION;
