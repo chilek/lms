@@ -244,12 +244,12 @@ abstract class LMSPagination
      *
      * @return boolean True if "go to" should be displated, false otherwise
      */
-    abstract function displayGoTo();
+    abstract public function displayGoTo();
     
     /**
      * Determines if link to given page should be displayed
      *
      * @return boolean True if link should be displated, false otherwise
      */
-    abstract function displayLink($link_page);
+    abstract public function displayLink($link_page);
 }

@@ -303,10 +303,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     } else {
                         continue;
                     }
-                }
-
+                } else {
                 // promotion period
-                else {
                     $lid = 0;
 
                     if (!$period) {

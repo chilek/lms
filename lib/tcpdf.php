@@ -204,111 +204,93 @@ class LMSTCPDF extends TCPDF
         $prev_font_spacing = $this->font_spacing;
         // cell vertical alignment
         switch ($calign) {
-            case 'A': {
+            case 'A':
                 // font top
                 switch ($valign) {
-                    case 'T': {
+                    case 'T':
                         // top
                         $y -= $this->cell_padding['T'];
                         break;
-                    }
-                    case 'B': {
+                    case 'B':
                         // bottom
                         $y -= ($h - $this->cell_padding['B'] - $this->FontAscent - $this->FontDescent);
                         break;
-                    }
                     default:
                     case 'C':
-                    case 'M': {
+                    case 'M':
                         // center
                         $y -= (($h - $this->FontAscent - $this->FontDescent) / 2);
                         break;
-                    }
                 }
                 break;
-            }
-            case 'L': {
+            case 'L':
                 // font baseline
                 switch ($valign) {
-                    case 'T': {
+                    case 'T':
                         // top
                         $y -= ($this->cell_padding['T'] + $this->FontAscent);
                         break;
-                    }
-                    case 'B': {
+                    case 'B':
                         // bottom
                         $y -= ($h - $this->cell_padding['B'] - $this->FontDescent);
                         break;
-                    }
                     default:
                     case 'C':
-                    case 'M': {
+                    case 'M':
                         // center
                         $y -= (($h + $this->FontAscent - $this->FontDescent) / 2);
                         break;
-                    }
                 }
                 break;
-            }
-            case 'D': {
+            case 'D':
                 // font bottom
                 switch ($valign) {
-                    case 'T': {
+                    case 'T':
                         // top
                         $y -= ($this->cell_padding['T'] + $this->FontAscent + $this->FontDescent);
                         break;
-                    }
-                    case 'B': {
+                    case 'B':
                         // bottom
                         $y -= ($h - $this->cell_padding['B']);
                         break;
-                    }
                     default:
                     case 'C':
-                    case 'M': {
+                    case 'M':
                         // center
                         $y -= (($h + $this->FontAscent + $this->FontDescent) / 2);
                         break;
-                    }
                 }
                 break;
-            }
-            case 'B': {
+            case 'B':
                 // cell bottom
                 $y -= $h;
                 break;
-            }
             case 'C':
-            case 'M': {
+            case 'M':
                 // cell center
                 $y -= ($h / 2);
                 break;
-            }
             default:
-            case 'T': {
+            case 'T':
                 // cell top
                 break;
-            }
         }
         // text vertical alignment
         switch ($valign) {
-            case 'T': {
+            case 'T':
                 // top
                 $yt = $y + $this->cell_padding['T'];
                 break;
-            }
-            case 'B': {
+            case 'B':
                 // bottom
                 $yt = $y + $h - $this->cell_padding['B'] - $this->FontAscent - $this->FontDescent;
                 break;
-            }
             default:
             case 'C':
-            case 'M': {
+            case 'M':
                 // center
                 $yt = $y + (($h - $this->FontAscent - $this->FontDescent) / 2);
                 break;
-            }
         }
         $basefonty = $yt + $this->FontAscent;
         if (TCPDF_STATIC::empty_string($w) or ($w <= 0)) {
@@ -419,35 +401,31 @@ class LMSTCPDF extends TCPDF
             // replace carriage return characters
             $txt2 = str_replace("\r", ' ', $txt2);
             switch ($align) {
-                case 'C': {
+                case 'C':
                     $dx = ($w - $width) / 2;
                     break;
-                }
-                case 'R': {
+                case 'R':
                     if ($this->rtl) {
                         $dx = $this->cell_padding['R'];
                     } else {
                         $dx = $w - $width - $this->cell_padding['R'];
                     }
                     break;
-                }
-                case 'L': {
+                case 'L':
                     if ($this->rtl) {
                         $dx = $w - $width - $this->cell_padding['L'];
                     } else {
                         $dx = $this->cell_padding['L'];
                     }
                     break;
-                }
                 case 'J':
-                default: {
+                default:
                     if ($this->rtl) {
                         $dx = $this->cell_padding['R'];
                     } else {
                         $dx = $this->cell_padding['L'];
                     }
                     break;
-                }
             }
             if ($this->rtl) {
                 $xdx = $x - $dx - $width;

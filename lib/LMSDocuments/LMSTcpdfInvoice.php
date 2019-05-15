@@ -541,7 +541,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $this->backend->Text(7, 263, moneyf($value));
     }
 
-    function invoice_main_form_fill()
+    protected function invoice_main_form_fill()
     {
         /* set font style & color */
         $this->backend->SetFont('arial', '', 9);

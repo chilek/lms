@@ -53,7 +53,7 @@ class ConfigVariable
      * @param string $value Variable value
      * @param string $comment Variable comment
      */
-    function __construct($name, $value, $comment = null)
+    public function __construct($name, $value, $comment = null)
     {
         $this->name = $name;
         $this->value = $value;

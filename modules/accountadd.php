@@ -65,9 +65,8 @@ if (isset($_POST['account'])) {
         array($account['login'], $account['domainid'])
     )) {
         $error['login'] = trans('Account with that login name exists!');
-    }
+    } elseif ($account['domainid'] && ($account['type'] & 2)) {
     // if account is of type mail, check if we've got an alias with the same login@domain
-    elseif ($account['domainid'] && ($account['type'] & 2)) {
         if ($DB->GetOne('SELECT 1 FROM aliases WHERE login=? AND domainid=?', array($account['login'], $account['domainid']))) {
             $error['login'] = trans('Alias with that login name already exists in that domain!');
         }
