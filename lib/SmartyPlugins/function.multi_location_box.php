@@ -26,8 +26,12 @@
 
 //function atip
 
-function smarty_function_multi_location_box($params = array(), $template)
+function smarty_function_multi_location_box($params, $template)
 {
+    if (empty($params)) {
+        $params = array();
+    }
+
     if (!function_exists('smarty_function_location_box')) {
         foreach ($template->getPluginsDir() as $v) {
             if (file_exists($v . 'function.location_box.php')) {

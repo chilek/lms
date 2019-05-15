@@ -24,8 +24,12 @@
  *  $Id$
  */
 
-function smarty_function_location_box_expandable($params = array(), $template)
+function smarty_function_location_box_expandable($params, $template)
 {
+    if (empty($params)) {
+        $params = array();
+    }
+
     if (!function_exists('smarty_function_location_box')) {
         foreach ($template->getPluginsDir() as $v) {
             if (file_exists($v . 'function.location_box.php')) {

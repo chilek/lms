@@ -24,9 +24,13 @@
  *  $Id$
  */
 
-function smarty_function_location_box($params = array(), $template)
+function smarty_function_location_box($params, $template)
 {
     global $DB;
+
+    if (empty($params)) {
+        $params = array();
+    }
 
     // generate unique id for location box
     $LOCATION_ID = 'lmsui-' . uniqid();

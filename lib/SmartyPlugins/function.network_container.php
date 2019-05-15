@@ -24,8 +24,12 @@
  *  $Id$
  */
 
-function smarty_function_network_container($params = array(), $template)
+function smarty_function_network_container($params, $template)
 {
+    if (empty($params)) {
+        $params = array();
+    }
+
     $template->assign('ip', !empty($params['ip'])    ? $params['ip']    : 0);
     $template->assign('mask', !empty($params['mask'])  ? $params['mask']  : 0);
     $template->assign('hosts', !empty($params['hosts']) ? $params['hosts'] : array());
