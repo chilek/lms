@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAliasList($order = 'login,asc', $search, $customer = '', $domain = '')
+function GetAliasList($search, $customer = '', $domain = '', $order = 'login,asc')
 {
     global $DB;
 
@@ -71,13 +71,13 @@ function GetAliasList($order = 'login,asc', $search, $customer = '', $domain = '
 				FROM aliasassignments GROUP BY aliasid) s ON (a.id = s.aliasid) '
             .$where
                     .($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = count($list);
     $list['order'] = $order;
     $list['direction'] = $direction;
     $list['customer'] = $customer;
     $list['domain'] = $domain;
-    
+
     return $list;
 }
 
@@ -122,7 +122,7 @@ if (count($search) || isset($_GET['s'])) {
     $search = count($search) ? $search : $SESSION->get('aliassearch');
 
     if (!$error) {
-        $aliaslist = GetAliasList($o, $search, $u, $d);
+        $aliaslist = GetAliasList($search, $u, $d, $o);
 
         $listdata['total'] = $aliaslist['total'];
         $listdata['order'] = $aliaslist['order'];
@@ -135,7 +135,7 @@ if (count($search) || isset($_GET['s'])) {
         unset($aliaslist['customer']);
         unset($aliaslist['domain']);
         unset($aliaslist['direction']);
-    
+
         $page = (! isset($_GET['page']) ? 1 : $_GET['page']);
         $pagelimit = ConfigHelper::getConfig('phpui.aliaslist_pagelimit', $queuedata['total']);
         $start = ($page - 1) * $pagelimit;

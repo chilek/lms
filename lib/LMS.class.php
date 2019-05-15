@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable Generic.NamingConventions.UpperCaseConstantName
+
 /*
  * LMS version 1.11-git
  *
@@ -3463,7 +3465,7 @@ class LMS
         }
         return $this->config_manager;
     }
-    
+
     /**
      * Returns database handler
      *
@@ -3473,7 +3475,7 @@ class LMS
     {
         return $this->DB;
     }
-    
+
     /**
      * Returns authorization handler
      *
@@ -3483,7 +3485,7 @@ class LMS
     {
         return $this->AUTH;
     }
-    
+
     /**
      * Returns internal cache handler
      *
@@ -3493,7 +3495,7 @@ class LMS
     {
         return $this->cache;
     }
-    
+
     /**
      * Returns syslog
      *
@@ -3663,7 +3665,7 @@ class LMS
     {
         $this->config_manager = $manager;
     }
-    
+
     /**
      * Sets database connection handler
      *
@@ -3673,7 +3675,7 @@ class LMS
     {
         $this->DB = $db;
     }
-    
+
     /**
      * Sets authorization handler
      *
@@ -3683,7 +3685,7 @@ class LMS
     {
         $this->AUTH = $auth;
     }
-    
+
     /**
      * Sets internal cache handler
      *
@@ -3693,7 +3695,7 @@ class LMS
     {
         $this->cache = $cache;
     }
-    
+
     /**
      * Sets syslog
      *
@@ -3703,8 +3705,8 @@ class LMS
     {
         $this->SYSLOG = $syslog;
     }
-    
-    
+
+
     /**
      * Returns user group manager
      *
@@ -3717,19 +3719,19 @@ class LMS
         }
         return $this->user_group_manager;
     }
-    
+
     public function UsergroupGetId($name)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupGetId($name);
     }
-    
+
     public function UsergroupAdd($usergroupdata)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupAdd($usergroupdata);
     }
-    
+
     public function UsergroupGetList()
     {
         $manager = $this->getUserGroupManager();
@@ -3741,49 +3743,49 @@ class LMS
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupGet($id);
     }
-    
+
     public function UsergroupExists($id)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupExists($id);
     }
-    
+
     public function GetUserWithoutGroupNames($groupid)
     {
         $manager = $this->getUserGroupManager();
         return $manager->GetUserWithoutGroupNames($groupid);
     }
-    
+
     public function UserassignmentDelete($userassignmentdata)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UserassignmentDelete($userassignmentdata);
     }
-    
+
     public function UserassignmentExist($groupid, $userid)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UserassignmentExist($groupid, $userid);
     }
-    
+
     public function UserassignmentAdd($userassignmentdata)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UserassignmentAdd($userassignmentdata);
     }
-    
+
     public function UsergroupDelete($id)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupDelete($id);
     }
-    
+
     public function UsergroupUpdate($usergroupdata)
     {
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupUpdate($usergroupdata);
     }
-    
+
     public function UsergroupGetAll()
     {
         $manager = $this->getUserGroupManager();

@@ -222,11 +222,11 @@ switch ($action) {
     case 'disconnect':
         $LMS->NetDevUnLink($_GET['id'], $_GET['devid']);
         $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
-
+        break;
     case 'disconnectnode':
         $LMS->NetDevLinkNode($_GET['nodeid'], 0);
         $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
-
+        break;
     case 'connect':
         $linktype = !empty($_GET['linktype']) ? intval($_GET['linktype']) : '0';
         $srcradiosector = ($linktype == LINKTYPE_WIRELESS ? intval($_GET['srcradiosector']) : null);
@@ -370,6 +370,7 @@ switch ($action) {
         }
 
         $SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
+        break;
 
     case 'ipset':
         if (!empty($_GET['ip'])) {

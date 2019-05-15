@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetDomainList($order = 'name,asc', $search, $customer = '')
+function GetDomainList($search, $customer = '', $order = 'name,asc')
 {
     global $DB;
 
@@ -46,7 +46,7 @@ function GetDomainList($order = 'name,asc', $search, $customer = '')
             $sqlord = " ORDER BY d.name $direction";
             break;
     }
-    
+
     if (!empty($search['domain'])) {
         $where[] = 'd.name ?LIKE? '.$DB->Escape('%'.$search['domain'].'%');
     }
@@ -66,7 +66,7 @@ function GetDomainList($order = 'name,asc', $search, $customer = '')
 			LEFT JOIN customers c ON (d.ownerid = c.id) '
             .$where
             .($sqlord != '' ? $sqlord : ''));
-    
+
     $list['total'] = count($list);
     $list['order'] = $order;
     $list['direction'] = $direction;
@@ -107,7 +107,7 @@ if (count($search) || isset($_GET['s'])) {
     $search = count($search) ? $search : $SESSION->get('domainsearch');
 
     if (!$error) {
-        $domainlist = GetDomainList($o, $search, $c);
+        $domainlist = GetDomainList($search, $c, $o);
 
         $listdata['total'] = $domainlist['total'];
         $listdata['order'] = $domainlist['order'];
@@ -118,7 +118,7 @@ if (count($search) || isset($_GET['s'])) {
         unset($domainlist['order']);
         unset($domainlist['customer']);
         unset($domainlist['direction']);
-    
+
         $page = (! isset($_GET['page']) ? 1 : $_GET['page']);
         $pagelimit = ConfigHelper::getConfig('phpui.domainlist_pagelimit', $queuedata['total']);
         $start = ($page - 1) * $pagelimit;

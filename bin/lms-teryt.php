@@ -717,9 +717,8 @@ if (isset($options['update'])) {
                 }
 
                 $terc[$key]['valid'] = 1;
-            }
-            // else insert new state
-            else {
+            } else {
+                // else insert new state
                 $DB->Execute(
                     'INSERT INTO location_states (name,ident) VALUES (?,?)',
                     array(mb_strtolower($row['nazwa']), $row['woj'])
@@ -734,9 +733,8 @@ if (isset($options['update'])) {
                     'valid' => 1
                 );
             }
-        }
-        // if $row['gmi'] is empty then this row contains district
-        else if (empty($row['gmi'])) {
+        } elseif (empty($row['gmi'])) {
+            // if $row['gmi'] is empty then this row contains district
             $statekey = $row['woj'] . ':0:0:0';
 
             // if district already exists then try update
@@ -751,9 +749,8 @@ if (isset($options['update'])) {
                 }
 
                 $terc[$key]['valid'] = 1;
-            }
-            // else insert new state
-            else {
+            } else {
+                // else insert new state
                 $DB->Execute(
                     'INSERT INTO location_districts (stateid, name, ident) VALUES (?,?,?)',
                     array($terc[$statekey]['id'], $row['nazwa'], $row['pow'])
@@ -768,9 +765,8 @@ if (isset($options['update'])) {
                     'valid' => 1
                 );
             }
-        }
-        // else row contains brough
-        else {
+        } else {
+            // else row contains brough
             $districtkey = $row['woj'] . ':' . $row['pow'] . ':0:0';
 
             // if district already exists then try update
@@ -785,9 +781,8 @@ if (isset($options['update'])) {
                 }
 
                 $terc[$key]['valid'] = 1;
-            }
-            // else insert new state
-            else {
+            } else {
+                // else insert new state
                 $DB->Execute(
                     'INSERT INTO location_boroughs (districtid, name, ident, type) VALUES (?,?,?,?)',
                     array($terc[$districtkey]['id'], $row['nazwa'], $row['gmi'], $row['rodz'])
@@ -927,9 +922,8 @@ if (isset($options['update'])) {
 
         if ($refid == $id) {
             $refid = null;
-        }
-        // refid not found (refered city is below this one), process later
-        else if (!$simc[$refid]) {
+        } elseif (!$simc[$refid]) {
+            // refid not found (refered city is below this one), process later
             $cities_r[$refid][] = array(
                 'key'   => $key,
                 'nazwa' => $row['nazwa'],
@@ -953,9 +947,8 @@ if (isset($options['update'])) {
             // mark data as valid
             $simc[$id]['valid'] = 1;
             $cities[$id] = $data['id'];
-        }
-        // add new city
-        else if (!$refid || $simc[$row['sympod']]) {
+        } elseif (!$refid || $simc[$row['sympod']]) {
+            // add new city
             $DB->Execute(
                 'INSERT INTO location_cities (boroughid, name, cityid, ident) VALUES (?,?,?,?)',
                 array($terc[$key]['id'], $row['nazwa'], $refid, $id)
@@ -996,9 +989,8 @@ if (isset($options['update'])) {
                     // mark data as valid
                     $simc[$rid]['valid'] = 1;
                     $cities[$rid] = $rid;
-                }
-                // add new city
-                else {
+                } else {
+                    // add new city
                     $DB->Execute(
                         'INSERT INTO location_cities (boroughid, name, cityid, ident) VALUES (?,?,?,?)',
                         array($terc[$key]['id'], $elem['nazwa'], $cities[$id], $rid)
@@ -1131,9 +1123,8 @@ if (isset($options['update'])) {
 
             // mark data as valid
             $ulic[$key]['valid'] = 1;
-        }
-        // add new street
-        else {
+        } else {
+            // add new street
             $DB->Execute(
                 'INSERT INTO location_streets (cityid, name, name2, typeid, ident) VALUES (?,?,?,?,?)',
                 array($cities[$row['sym']], $row['nazwa_1'], empty($row['nazwa_2']) ? null : $row['nazwa_2'], $typeid, $row['sym_ul'])

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAccountList($order = 'login,asc', $search, $customer = null, $type = null, $kind = null, $domain = '')
+function GetAccountList($search, $customer = null, $type = null, $kind = null, $domain = '', $order = 'login,asc')
 {
     global $DB, $ACCOUNTTYPES;
 
@@ -165,7 +165,7 @@ if (count($search) || isset($_GET['s'])) {
     $search = count($search) ? $search : $SESSION->get('accountsearch');
 
     if (!$error) {
-        $accountlist = GetAccountList($o, $search, $u, $t, $k, $d);
+        $accountlist = GetAccountList($search, $u, $t, $k, $d, $o);
 
         $listdata['total'] = $accountlist['total'];
         $listdata['order'] = $accountlist['order'];
@@ -182,7 +182,7 @@ if (count($search) || isset($_GET['s'])) {
         unset($accountlist['customer']);
         unset($accountlist['domain']);
         unset($accountlist['direction']);
-    
+
         $page = (! isset($_GET['page']) ? 1 : $_GET['page']);
         $pagelimit = ConfigHelper::getConfig('phpui.accountlist_pagelimit', $queuedata['total']);
         $start = ($page - 1) * $pagelimit;
