@@ -190,6 +190,7 @@ if (!empty($_POST['inv'])) {
                 'number' => $invoice['number'],
                 'template' => $invoice['template'],
                 'cdate' => $invoice['cdate'],
+                'customerid' =>  $invoice['customerid'],
             ));
         }
 
@@ -232,6 +233,7 @@ if (!empty($_POST['inv'])) {
         'number' => $invoice['number'],
         'template' => $invoice['template'],
         'cdate' => $invoice['cdate'],
+        'customerid' => $invoice['customerid'],
     ));
 
     if (!isset($invoice['invoice'])) {
