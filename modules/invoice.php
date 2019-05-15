@@ -183,6 +183,17 @@ if ($jpk) {
         unset($jpk_type);
     }
     $jpk_data = '';
+
+    if ($jpk) {
+        if (isset($_GET['jpk_format'])) {
+            $jpk_format = $_GET['jpk_format'];
+            if ($jpk_format != 'xml' && $jpk_format != 'csv') {
+                $jpk_format = 'xml';
+            }
+        } else {
+            $jpk_format = 'xml';
+        }
+    }
 }
 
 if ($invoice_type == 'pdf') {
@@ -1009,7 +1020,7 @@ if (!is_null($attachment_name) && isset($docnumber)) {
     if ($jpk_type == 'fa') {
         $attachment_name = strftime('JPK_FA-%Y-%m-%d-%H-%M-%S.xml');
     } else {
-        $attachment_name = strftime('JPK_VAT-%Y-%m-%d-%H-%M-%S.xml');
+        $attachment_name = strftime('JPK_VAT-%Y-%m-%d-%H-%M-%S.' . ($jpk_format == 'xml' ? 'xml' : 'csv'));
     }
 } else {
     $attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
@@ -1017,10 +1028,31 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 
 if ($jpk) {
     // send jpk data to web browser
-        header('Content-Type: text/xml');
-        header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
-        header('Pragma: public');
-        echo $jpk_data;
+    if ($jpk_format == 'csv') {
+        if (!class_exists('DOMDocument')) {
+                die('Fatal error! PHP XML exenstion is not installed!');
+        }
+        if (!class_exists('XSLTProcessor')) {
+                die('Fatal error! PHP XSLT extension is not installed!');
+        }
+
+        $xsldoc = new DOMDocument();
+        $xsldoc->load(LIB_DIR . DIRECTORY_SEPARATOR . 'Schemat_JPK_VAT(3)_v1-1.xsl');
+
+        $xmldoc = new DOMDocument();
+        $xmldoc->loadXML($jpk_data);
+
+        $xslt = new XSLTProcessor();
+        $xslt->importStyleSheet($xsldoc);
+        $jpk_data = $xslt->transformToXML($xmldoc);
+    }
+
+
+    header('Content-Type: text/xml');
+    header('Content-Disposition: attachment; filename="' . $attachment_name . '"');
+    header('Pragma: public');
+
+    echo $jpk_data;
 } else {
     $document->WriteToBrowser($attachment_name);
 }
