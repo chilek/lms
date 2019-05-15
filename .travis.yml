@@ -77,7 +77,7 @@ before_script:
   - mysql -e 'CREATE DATABASE lms;'
   - mysql lms < doc/lms.mysql
   - if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
-  - phpcs --standard=$PHPCS_STANDARD .
+  - ./vendor/bin/phpcs --standard=$PHPCS_STANDARD .
   - npm install -g jshint
   - jshint .
   - ./vendor/bin/phpunit
