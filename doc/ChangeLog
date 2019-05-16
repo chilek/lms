@@ -1,6 +1,6 @@
 $Id$
 
-version ?.??.?? (????-??-??):
+version 24.0 (2019-05-16):
 
   - enhancement: script automating the installation of LMS + PostgreSQL in the Centos 7
     system has been added to the "sample" catalog [darton]
