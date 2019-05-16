@@ -348,10 +348,10 @@ function parse_customer_data($data, $row)
     if (preg_match("/\%abonament/", $data)) {
         $saldo = $DB->GetOne(
             "SELECT SUM(value)
-			FROM assignments a, tariffs
-			WHERE tariffid = tariffs.id AND customerid = ?
-				AND a.datefrom <= $currtime AND (a.dateto > $currtime OR a.dateto = 0)
-				AND ((a.datefrom < a.dateto) OR (a.datefrom = 0 AND a.datefrom = 0))",
+            FROM assignments a, tariffs
+            WHERE tariffid = tariffs.id AND customerid = ?
+                AND a.datefrom <= $currtime AND (a.dateto > $currtime OR a.dateto = 0)
+                AND ((a.datefrom < a.dateto) OR (a.datefrom = 0 AND a.datefrom = 0))",
             array($row['id'])
         );
         $data = preg_replace("/\%abonament/", $saldo, $data);
@@ -404,7 +404,7 @@ function create_message($type, $subject, $template)
 
     $DB->Execute(
         "INSERT INTO messages (type, cdate, subject, body)
-		VALUES (?, ?NOW?, ?, ?)",
+        VALUES (?, ?NOW?, ?, ?)",
         array($type, $subject, $template)
     );
     return $DB->GetLastInsertID('messages');
@@ -419,8 +419,8 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
 
     $DB->Execute(
         "INSERT INTO messageitems
-		(messageid, customerid, destination, status)
-		VALUES (?, ?, ?, ?)",
+        (messageid, customerid, destination, status)
+        VALUES (?, ?, ?, ?)",
         array($msgid, $cid, $rmail, 1)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
@@ -456,8 +456,8 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
     $result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);
 
     $query = "UPDATE messageitems
-		SET status = ?, lastdate = ?NOW?, error = ?
-		WHERE messageid = ? AND customerid = ? AND id = ?";
+        SET status = ?, lastdate = ?NOW?, error = ?
+        WHERE messageid = ? AND customerid = ? AND id = ?";
 
     if (is_string($result)) {
         $DB->Execute($query, array(3, $result, $msgid, $cid, $msgitemid));
@@ -474,16 +474,16 @@ function send_sms($msgid, $cid, $phone, $data)
 
     $DB->Execute(
         "INSERT INTO messageitems
-		(messageid, customerid, destination, status)
-		VALUES (?, ?, ?, ?)",
+        (messageid, customerid, destination, status)
+        VALUES (?, ?, ?, ?)",
         array($msgid, $cid, $phone, 1)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
     $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
     $query = "UPDATE messageitems
-		SET status = ?, lastdate = ?NOW?, error = ?
-		WHERE messageid = ? AND customerid = ? AND id = ?";
+        SET status = ?, lastdate = ?NOW?, error = ?
+        WHERE messageid = ? AND customerid = ? AND id = ?";
 
     if (preg_match("/[^0-9]/", $result)) {
         $DB->Execute($query, array(3, $result, $msgid, $cid, $msgitemid));
@@ -524,8 +524,8 @@ if (empty($types) || in_array('timetable', $types)) {
     $days = $notifications['timetable']['days'];
     $users = $DB->GetAll(
         "SELECT id, name, (CASE WHEN ntype & ? > 0 THEN email ELSE '' END) AS email,
-			(CASE WHEN ntype & ? > 0 THEN phone ELSE '' END) AS phone FROM vusers
-		WHERE deleted = 0 AND access = 1 AND ntype & ? > 0 AND (email <> '' OR phone <> '')",
+            (CASE WHEN ntype & ? > 0 THEN phone ELSE '' END) AS phone FROM vusers
+        WHERE deleted = 0 AND access = 1 AND ntype & ? > 0 AND (email <> '' OR phone <> '')",
         array(MSG_MAIL, MSG_SMS, (MSG_MAIL | MSG_SMS))
     );
     $date = mktime(0, 0, 0);
@@ -538,15 +538,15 @@ if (empty($types) || in_array('timetable', $types)) {
 
         $contents = '';
         $events = $DB->GetAll("SELECT DISTINCT title, description, begintime, endtime,
-			customerid, UPPER(lastname) AS lastname, c.name AS name, address
-			FROM events
-			LEFT JOIN customeraddressview c ON (c.id = customerid)
-			LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
-			WHERE date=? AND
-			((private=1 AND (events.userid=? OR eventassignments.userid=?)) OR
-			(private=0 AND eventassignments.userid=?) OR
-			(private=0 AND eventassignments.userid IS NULL))
-			ORDER BY begintime", array($date, $user['id'], $user['id'], $user['id']));
+            customerid, UPPER(lastname) AS lastname, c.name AS name, address
+            FROM events
+            LEFT JOIN customeraddressview c ON (c.id = customerid)
+            LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
+            WHERE date=? AND
+            ((private=1 AND (events.userid=? OR eventassignments.userid=?)) OR
+            (private=0 AND eventassignments.userid=?) OR
+            (private=0 AND eventassignments.userid IS NULL))
+            ORDER BY begintime", array($date, $user['id'], $user['id'], $user['id']));
 
         if (!empty($events)) {
             $mail_contents = '';
@@ -576,7 +576,7 @@ if (empty($types) || in_array('timetable', $types)) {
                         . ", " . $event['address'];
                     $contacts = $DB->GetCol(
                         "SELECT contact FROM customercontacts
-						WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0",
+                        WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0",
                         array($event['customerid'], CONTACT_DISABLED, (CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE))
                     );
                     if (!empty($contacts)) {
@@ -618,26 +618,26 @@ if (empty($types) || in_array('documents', $types)) {
     $days = $notifications['documents']['days'];
     $customers = $DB->GetAll(
         "SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
-			b.balance, m.email, x.phone
-		FROM customers c
-		LEFT JOIN (
-			SELECT customerid, SUM(value) AS balance FROM cash
-			GROUP BY customerid
-		) b ON b.customerid = c.id
-		JOIN documents d ON d.customerid = c.id
-		JOIN documentcontents dc ON dc.docid = d.id
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
-			AND dc.todate < $daystart + (? + 1) * 86400",
+            b.balance, m.email, x.phone
+        FROM customers c
+        LEFT JOIN (
+            SELECT customerid, SUM(value) AS balance FROM cash
+            GROUP BY customerid
+        ) b ON b.customerid = c.id
+        JOIN documents d ON d.customerid = c.id
+        JOIN documentcontents dc ON dc.docid = d.id
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
+            AND dc.todate < $daystart + (? + 1) * 86400",
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -717,36 +717,36 @@ if (empty($types) || in_array('contracts', $types)) {
     $days = $notifications['contracts']['days'];
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, d.dateto AS cdate,
-			m.email, x.phone
-		FROM customers c
-		JOIN cash ON (c.id = cash.customerid) "
+            SUM(value) AS balance, d.dateto AS cdate,
+            m.email, x.phone
+        FROM customers c
+        JOIN cash ON (c.id = cash.customerid) "
         . ($expiration_type == 'assignments' ?
             "JOIN (
-				SELECT MAX(a.dateto) AS dateto, a.customerid
-				FROM assignments a
-				WHERE a.dateto > 0
-				GROUP BY a.customerid
-				HAVING(a.dateto) >= $daystart + $days * 86400 AND d.dateto < $daystart + ($days + 1) * 86400
-			) d ON d.customerid = c.id" :
+                SELECT MAX(a.dateto) AS dateto, a.customerid
+                FROM assignments a
+                WHERE a.dateto > 0
+                GROUP BY a.customerid
+                HAVING(a.dateto) >= $daystart + $days * 86400 AND d.dateto < $daystart + ($days + 1) * 86400
+            ) d ON d.customerid = c.id" :
             "JOIN (
-				SELECT DISTINCT customerid, 0 AS dateto FROM documents
-				JOIN documentcontents dc ON dc.docid = documents.id
-				WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
-					AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
-			) d ON d.customerid = c.id") . "
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone
-		WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400",
+                SELECT DISTINCT customerid, 0 AS dateto FROM documents
+                JOIN documentcontents dc ON dc.docid = documents.id
+                WHERE dc.todate >= $daystart + $days * 86400 AND dc.todate < $daystart + ($days + 1) * 86400
+                    AND documents.type IN (" . DOC_CONTRACT . ',' . DOC_ANNEX . ")
+            ) d ON d.customerid = c.id") . "
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone
+        WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400",
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -825,43 +825,43 @@ if (empty($types) || in_array('debtors', $types)) {
     // @TODO: check 'messages' table and don't send notifies to often
     $customers = $DB->GetAll(
         "SELECT c.id, c.pin, c.lastname, c.name,
-			b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
-		FROM customers c
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		LEFT JOIN (
-			SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
-		) b ON b.customerid = c.id
-		LEFT JOIN (
-			SELECT cash.customerid, SUM(value) AS balance FROM cash
-			LEFT JOIN customers ON customers.id = cash.customerid
-			LEFT JOIN divisions ON divisions.id = customers.divisionid
-			LEFT JOIN documents d ON d.id = cash.docid
-			LEFT JOIN (
-				SELECT SUM(value) AS totalvalue, docid FROM cash
-				JOIN documents ON documents.id = cash.docid
-				WHERE documents.type = ?
-				GROUP BY docid
-			) tv ON tv.docid = cash.docid
-			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
-				OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
-					(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) + ?) * 86400 < $currtime)))
-				OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
-					OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
-					OR (((d.type = ? AND tv.totalvalue < 0)
-						OR d.type IN (?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
-			GROUP BY cash.customerid
-		) b2 ON b2.customerid = c.id
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		WHERE c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?",
+            b2.balance AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
+        FROM customers c
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (
+            SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
+        ) b ON b.customerid = c.id
+        LEFT JOIN (
+            SELECT cash.customerid, SUM(value) AS balance FROM cash
+            LEFT JOIN customers ON customers.id = cash.customerid
+            LEFT JOIN divisions ON divisions.id = customers.divisionid
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN (
+                SELECT SUM(value) AS totalvalue, docid FROM cash
+                JOIN documents ON documents.id = cash.docid
+                WHERE documents.type = ?
+                GROUP BY docid
+            ) tv ON tv.docid = cash.docid
+            WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+                OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) + ?) * 86400 < $currtime)))
+                OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
+                    OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
+                    OR (((d.type = ? AND tv.totalvalue < 0)
+                        OR d.type IN (?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
+            GROUP BY cash.customerid
+        ) b2 ON b2.customerid = c.id
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        WHERE c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?",
         array(
             DOC_CNOTE,
             $days,
@@ -947,53 +947,53 @@ if (empty($types) || in_array('reminder', $types)) {
     $limit = $notifications['reminder']['limit'];
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
-		b2.balance AS balance, b.balance AS totalbalance, v.value
-		FROM documents d
-		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		LEFT JOIN (
-			SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
-		) b ON b.customerid = c.id
-		LEFT JOIN (
-			SELECT cash.customerid, SUM(value) AS balance FROM cash
-			LEFT JOIN customers ON customers.id = cash.customerid
-			LEFT JOIN divisions ON divisions.id = customers.divisionid
-			LEFT JOIN documents d ON d.id = cash.docid
-			LEFT JOIN (
-				SELECT SUM(value) AS totalvalue, docid FROM cash
-				JOIN documents ON documents.id = cash.docid
-				WHERE documents.type = ?
-				GROUP BY docid
-			) tv ON tv.docid = cash.docid
-			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
-				OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
-					(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < $currtime)))
-				OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
-					OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
-					OR (((d.type = ? AND tv.totalvalue < 0)
-						OR d.type IN (?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
-			GROUP BY cash.customerid
-		) b2 ON b2.customerid = c.id
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		JOIN (
-			SELECT SUM(value) * -1 AS value, docid
-			FROM cash
-			GROUP BY docid
-		) v ON (v.docid = d.id)
-		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		WHERE d.type = ? AND d.closed = 0 AND b2.balance < ?
-			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 >= $daystart
-			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $dayend",
+        d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+        b2.balance AS balance, b.balance AS totalbalance, v.value
+        FROM documents d
+        JOIN customers c ON (c.id = d.customerid)
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (
+            SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
+        ) b ON b.customerid = c.id
+        LEFT JOIN (
+            SELECT cash.customerid, SUM(value) AS balance FROM cash
+            LEFT JOIN customers ON customers.id = cash.customerid
+            LEFT JOIN divisions ON divisions.id = customers.divisionid
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN (
+                SELECT SUM(value) AS totalvalue, docid FROM cash
+                JOIN documents ON documents.id = cash.docid
+                WHERE documents.type = ?
+                GROUP BY docid
+            ) tv ON tv.docid = cash.docid
+            WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+                OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < $currtime)))
+                OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
+                    OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
+                    OR (((d.type = ? AND tv.totalvalue < 0)
+                        OR d.type IN (?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
+            GROUP BY cash.customerid
+        ) b2 ON b2.customerid = c.id
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        JOIN (
+            SELECT SUM(value) * -1 AS value, docid
+            FROM cash
+            GROUP BY docid
+        ) v ON (v.docid = d.id)
+        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+        WHERE d.type = ? AND d.closed = 0 AND b2.balance < ?
+            AND ((d.cdate / 86400) + d.paytime - ?) * 86400 >= $daystart
+            AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $dayend",
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
@@ -1085,46 +1085,46 @@ if (empty($types) || in_array('income', $types)) {
     $days = $notifications['income']['days'];
     $incomes = $DB->GetAll(
         "SELECT c.id, c.pin, cash.value, cash.time AS cdate,
-		m.email, x.phone, divisions.account,
-		" . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
-		b2.balance AS balance, b.balance AS totalbalance
-		FROM cash
-		JOIN customers c ON c.id = cash.customerid
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		LEFT JOIN (
-			SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
-		) b ON b.customerid = c.id
-		LEFT JOIN (
-			SELECT cash.customerid, SUM(value) AS balance FROM cash
-			LEFT JOIN customers ON customers.id = cash.customerid
-			LEFT JOIN divisions ON divisions.id = customers.divisionid
-			LEFT JOIN documents d ON d.id = cash.docid
-			LEFT JOIN (
-				SELECT SUM(value) AS totalvalue, docid FROM cash
-				JOIN documents ON documents.id = cash.docid
-				WHERE documents.type = ?
-				GROUP BY docid
-			) tv ON tv.docid = cash.docid
-			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
-				OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
-					(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END)) * 86400 < $currtime)))
-				OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
-					OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
-					OR (((d.type = ? AND tv.totalvalue < 0)
-						OR d.type IN (?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
-			GROUP BY cash.customerid
-		) b2 ON b2.customerid = c.id
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400",
+        m.email, x.phone, divisions.account,
+        " . $DB->Concat('c.lastname', "' '", 'c.name') . " AS name,
+        b2.balance AS balance, b.balance AS totalbalance
+        FROM cash
+        JOIN customers c ON c.id = cash.customerid
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (
+            SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
+        ) b ON b.customerid = c.id
+        LEFT JOIN (
+            SELECT cash.customerid, SUM(value) AS balance FROM cash
+            LEFT JOIN customers ON customers.id = cash.customerid
+            LEFT JOIN divisions ON divisions.id = customers.divisionid
+            LEFT JOIN documents d ON d.id = cash.docid
+            LEFT JOIN (
+                SELECT SUM(value) AS totalvalue, docid FROM cash
+                JOIN documents ON documents.id = cash.docid
+                WHERE documents.type = ?
+                GROUP BY docid
+            ) tv ON tv.docid = cash.docid
+            WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
+                OR (cash.type = 0 AND cash.time + ((CASE customers.paytime WHEN -1 THEN
+                    (CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE customers.paytime END)) * 86400 < $currtime)))
+                OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
+                    OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
+                    OR (((d.type = ? AND tv.totalvalue < 0)
+                        OR d.type IN (?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
+            GROUP BY cash.customerid
+        ) b2 ON b2.customerid = c.id
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400",
         array(
             DOC_CNOTE,
             DOC_RECEIPT,
@@ -1208,32 +1208,32 @@ if (empty($types) || in_array('income', $types)) {
 if (empty($types) || in_array('invoices', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
-		COALESCE(ca.balance, 0) AS balance, v.value
-		FROM documents d
-		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		JOIN (SELECT SUM(value) * -1 AS value, docid
-			FROM cash
-			GROUP BY docid
-		) v ON (v.docid = d.id)
-		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		LEFT JOIN (SELECT SUM(value) AS balance, customerid
-			FROM cash
-			GROUP BY customerid
-		) ca ON (ca.customerid = d.customerid)
-		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?)
-			AND d.cdate >= ? AND d.cdate <= ?",
+        d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
+        COALESCE(ca.balance, 0) AS balance, v.value
+        FROM documents d
+        JOIN customers c ON (c.id = d.customerid)
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        JOIN (SELECT SUM(value) * -1 AS value, docid
+            FROM cash
+            GROUP BY docid
+        ) v ON (v.docid = d.id)
+        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+        LEFT JOIN (SELECT SUM(value) AS balance, customerid
+            FROM cash
+            GROUP BY customerid
+        ) ca ON (ca.customerid = d.customerid)
+        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?)
+            AND d.cdate >= ? AND d.cdate <= ?",
         array(
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
@@ -1319,32 +1319,32 @@ if (empty($types) || in_array('invoices', $types)) {
 if (empty($types) || in_array('notes', $types)) {
     $documents = $DB->GetAll(
         "SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
-		COALESCE(ca.balance, 0) AS balance, v.value
-		FROM documents d
-		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		JOIN (SELECT SUM(value) * -1 AS value, docid
-			FROM cash
-			GROUP BY docid
-		) v ON (v.docid = d.id)
-		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		LEFT JOIN (SELECT SUM(value) AS balance, customerid
-			FROM cash
-			GROUP BY customerid
-		) ca ON (ca.customerid = d.customerid)
-		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
-			AND d.cdate >= ? AND d.cdate <= ?",
+        d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
+        COALESCE(ca.balance, 0) AS balance, v.value
+        FROM documents d
+        JOIN customers c ON (c.id = d.customerid)
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        JOIN (SELECT SUM(value) * -1 AS value, docid
+            FROM cash
+            GROUP BY docid
+        ) v ON (v.docid = d.id)
+        LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+        LEFT JOIN (SELECT SUM(value) AS balance, customerid
+            FROM cash
+            GROUP BY customerid
+        ) ca ON (ca.customerid = d.customerid)
+        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
+            AND d.cdate >= ? AND d.cdate <= ?",
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -1428,24 +1428,24 @@ if (empty($types) || in_array('notes', $types)) {
 if (empty($types) || in_array('warnings', $types)) {
     $customers = $DB->GetAll(
         "SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-		c.pin, c.message, m.email, x.phone, divisions.account, COALESCE(ca.balance, 0) AS balance
-		FROM customers c
-		LEFT JOIN divisions ON divisions.id = c.divisionid
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) m ON (m.customerid = c.id)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-			FROM customercontacts
-			WHERE (type & ?) = ?
-			GROUP BY customerid
-		) x ON (x.customerid = c.id)
-		LEFT JOIN (SELECT SUM(value) AS balance, customerid
-			FROM cash
-			GROUP BY customerid
-		) ca ON (ca.customerid = c.id)
-		WHERE c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)",
+        c.pin, c.message, m.email, x.phone, divisions.account, COALESCE(ca.balance, 0) AS balance
+        FROM customers c
+        LEFT JOIN divisions ON divisions.id = c.divisionid
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) m ON (m.customerid = c.id)
+        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+            FROM customercontacts
+            WHERE (type & ?) = ?
+            GROUP BY customerid
+        ) x ON (x.customerid = c.id)
+        LEFT JOIN (SELECT SUM(value) AS balance, customerid
+            FROM cash
+            GROUP BY customerid
+        ) ca ON (ca.customerid = c.id)
+        WHERE c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)",
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -1519,8 +1519,8 @@ if (empty($types) || in_array('events', $types)) {
     $time = intval(strftime('%H%M'));
     $events = $DB->GetAll(
         "SELECT id, title, description, customerid, userid FROM events
-		WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0 AND date <= ? AND enddate >= ?
-			AND begintime <= ? AND (endtime = 0 OR endtime >= ?)",
+        WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0 AND date <= ? AND enddate >= ?
+            AND begintime <= ? AND (endtime = 0 OR endtime >= ?)",
         array($daystart, $dayend, $time, $time)
     );
 
@@ -1528,9 +1528,9 @@ if (empty($types) || in_array('events', $types)) {
         $customers = array();
         $users = $DB->GetAllByKey(
             "SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
-				(CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
-			WHERE deleted = 0 AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
-			ORDER BY id",
+                (CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
+            WHERE deleted = 0 AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
+            ORDER BY id",
             'id',
             array(MSG_MAIL, MSG_SMS)
         );
@@ -1548,20 +1548,20 @@ if (empty($types) || in_array('events', $types)) {
                 if (!array_key_exists($cid, $customers)) {
                     $customers[$cid] = $DB->GetRow(
                         "SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-							m.email, x.phone
-						FROM customers c
-						LEFT JOIN divisions ON divisions.id = c.divisionid
-						LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-							FROM customercontacts
-							WHERE (type & ?) = ?
-							GROUP BY customerid
-						) m ON (m.customerid = c.id)
-						LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-							FROM customercontacts
-							WHERE (type & ?) = ?
-							GROUP BY customerid
-						) x ON (x.customerid = c.id)
-						WHERE c.id = ?",
+                            m.email, x.phone
+                        FROM customers c
+                        LEFT JOIN divisions ON divisions.id = c.divisionid
+                        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+                            FROM customercontacts
+                            WHERE (type & ?) = ?
+                            GROUP BY customerid
+                        ) m ON (m.customerid = c.id)
+                        LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+                            FROM customercontacts
+                            WHERE (type & ?) = ?
+                            GROUP BY customerid
+                        ) x ON (x.customerid = c.id)
+                        WHERE c.id = ?",
                         array(
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
@@ -1694,12 +1694,12 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
     }
 
     $nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-			FROM vnodes n
-		JOIN (SELECT DISTINCT customerid FROM messageitems
-			JOIN messages m ON m.id = messageid
-			WHERE type = ? AND status = ?
-		) m ON m.customerid = n.ownerid
-		ORDER BY ipaddr", array(MSG_WWW, MSG_NEW));
+            FROM vnodes n
+        JOIN (SELECT DISTINCT customerid FROM messageitems
+            JOIN messages m ON m.id = messageid
+            WHERE type = ? AND status = ?
+        ) m ON m.customerid = n.ownerid
+        ORDER BY ipaddr", array(MSG_WWW, MSG_NEW));
 
     if (!$debug && $fh) {
         fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
@@ -1741,12 +1741,12 @@ if (in_array('www', $channels) && !empty($types)) {
         if (!empty($notification['customers'])) {
             if ($type == 'warnings') {
                 $nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-						FROM vnodes
-					WHERE warning = 1 ORDER BY ipaddr");
+                        FROM vnodes
+                    WHERE warning = 1 ORDER BY ipaddr");
             } else {
                 $nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-						FROM vnodes
-					WHERE ownerid IN (" . implode(',', $notification['customers']) . ")"
+                        FROM vnodes
+                    WHERE ownerid IN (" . implode(',', $notification['customers']) . ")"
                     . " ORDER BY id");
             }
             if (!empty($nodes)) {
@@ -1790,7 +1790,7 @@ if (!empty($intersect)) {
                     }
                     $customers = $DB->GetCol(
                         "SELECT id FROM customers
-						WHERE status IN (?, ?) AND id IN (" . implode(',', $customers) . ")",
+                        WHERE status IN (?, ?) AND id IN (" . implode(',', $customers) . ")",
                         array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION)
                     );
                     if (empty($customers)) {
@@ -1799,13 +1799,13 @@ if (!empty($intersect)) {
                     if (in_array('node-access', $actions)) {
                         $nodes = $DB->GetAll(
                             "SELECT id, ownerid FROM nodes WHERE access = ?
-							AND ownerid IN (" . implode(',', $customers) . ")",
+                            AND ownerid IN (" . implode(',', $customers) . ")",
                             array(1)
                         );
                         if (!empty($nodes)) {
                             foreach ($nodes as $node) {
                                 $DB->Execute("UPDATE nodes SET access = ?
-									WHERE id = ?", array(0, $node['id']));
+                                    WHERE id = ?", array(0, $node['id']));
                                 if ($SYSLOG) {
                                     $SYSLOG->NewTransaction('lms-notify.php');
                                     $SYSLOG->AddMessage(
@@ -1824,15 +1824,15 @@ if (!empty($intersect)) {
                     if (in_array('assignment-invoice', $actions)) {
                         $assigns = $DB->GetAll(
                             "SELECT id, customerid FROM assignments
-							WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-								AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-								AND customerid IN (" . implode(',', $customers) . ")",
+                            WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+                                AND customerid IN (" . implode(',', $customers) . ")",
                             array(1)
                         );
                         if (!empty($assigns)) {
                             foreach ($assigns as $assign) {
                                 $DB->Execute("UPDATE assignments SET invoice = ?
-									WHERE id = ?", array(0, $assign['id']));
+                                    WHERE id = ?", array(0, $assign['id']));
                                 if ($SYSLOG) {
                                     $SYSLOG->NewTransaction('lms-notify.php');
                                     $SYSLOG->AddMessage(
@@ -1851,7 +1851,7 @@ if (!empty($intersect)) {
                     if (in_array('customer-status', $actions)) {
                         $custids = $DB->GetCol(
                             "SELECT id FROM customers
-							WHERE status <> ? AND id IN (" . implode(',', $customers) . ")",
+                            WHERE status <> ? AND id IN (" . implode(',', $customers) . ")",
                             array(CSTATUS_DEBT_COLLECTION)
                         );
                         if (!empty($custids)) {
@@ -1885,7 +1885,7 @@ if (!empty($intersect)) {
                                 array($cid)
                             )) {
                                 $DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
-									VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
+                                    VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
                                 if ($SYSLOG) {
                                     $SYSLOG->NewTransaction('lms-notify.php');
                                     $args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
@@ -1915,13 +1915,13 @@ if (!empty($intersect)) {
                     if (in_array('node-access', $actions)) {
                         $nodes = $DB->GetAll(
                             "SELECT id, ownerid FROM nodes WHERE access = ?
-							AND ownerid IN (" . implode(',', $customers) . ")",
+                            AND ownerid IN (" . implode(',', $customers) . ")",
                             array(0)
                         );
                         if (!empty($nodes)) {
                             foreach ($nodes as $node) {
                                 $DB->Execute("UPDATE nodes SET access = ?
-									WHERE id = ?", array(1, $node['id']));
+                                    WHERE id = ?", array(1, $node['id']));
                                 if ($SYSLOG) {
                                     $SYSLOG->NewTransaction('lms-notify.php');
                                     $SYSLOG->AddMessage(
@@ -1940,15 +1940,15 @@ if (!empty($intersect)) {
                     if (in_array('assignment-invoice', $actions)) {
                         $assigns = $DB->GetAll(
                             "SELECT id, customerid FROM assignments
-							WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-								AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-								AND customerid IN (" . implode(',', $customers) . ")",
+                            WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+                                AND customerid IN (" . implode(',', $customers) . ")",
                             array(0)
                         );
                         if (!empty($assigns)) {
                             foreach ($assigns as $assign) {
                                 $DB->Execute("UPDATE assignments SET invoice = ?
-									WHERE id = ?", array(1, $assign['id']));
+                                    WHERE id = ?", array(1, $assign['id']));
                                 if ($SYSLOG) {
                                     $SYSLOG->NewTransaction('lms-notify.php');
                                     $SYSLOG->AddMessage(
@@ -1967,7 +1967,7 @@ if (!empty($intersect)) {
                     if (in_array('customer-status', $actions)) {
                         $custids = $DB->GetCol(
                             "SELECT id FROM customers
-							WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
+                            WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
                             array(CSTATUS_DEBT_COLLECTION)
                         );
                         if (!empty($custids)) {
@@ -2007,14 +2007,14 @@ if (!empty($intersect)) {
                                 if ($year < $current_year || ($year == $current_year && $month < $current_month)) {
                                     $aids = $DB->GetCol(
                                         "SELECT id FROM assignments
-										WHERE customerid = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
-											AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
+                                        WHERE customerid = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
+                                            AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
                                         array($cid)
                                     );
                                     if (!empty($aids)) {
                                         foreach ($aids as $aid) {
                                             $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
-												WHERE id = ?", array($args['datefrom'], $aid));
+                                                WHERE id = ?", array($args['datefrom'], $aid));
                                             if ($SYSLOG) {
                                                 $args[SYSLOG::RES_ASSIGN] = $aid;
                                                 $args[SYSLOG::RES_CUST] = $cid;
@@ -2025,7 +2025,7 @@ if (!empty($intersect)) {
                                 }
                             }
                             $aids = $DB->GetCol("SELECT id FROM assignments
-								WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
+                                WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
                             if (!empty($aids)) {
                                 foreach ($aids as $aid) {
                                     $DB->Execute("DELETE FROM assignments WHERE id = ?", array($aid));
