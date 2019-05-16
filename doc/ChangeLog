@@ -1,5 +1,7 @@
 $Id$
 
+version 25-git (????-??-??):
+
 version 24.0 (2019-05-16):
 
   - enhancement: script automating the installation of LMS + PostgreSQL in the Centos 7

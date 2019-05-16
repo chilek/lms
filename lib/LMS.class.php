@@ -36,7 +36,7 @@ class LMS
     public $cache;  // internal cache
     public $hooks = array(); // registered plugin hooks
     public $xajax;  // xajax object
-    public $_version = '24'; // class version
+    public $_version = '25-git'; // class version
     public $_revision = '$Format:%cI$'; // %H for last commit checksum
     private $mail_object = null;
     private static $lms = null;
