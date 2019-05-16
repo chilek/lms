@@ -194,12 +194,8 @@ $smtp_options = array(
     'user' => ConfigHelper::getConfig($config_section . '.smtp_user'),
     'pass' => ConfigHelper::getConfig($config_section . '.smtp_pass'),
     'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth'),
-    'ssl_verify_peer' => ConfigHelper::checkValue(
-        ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)
-    ),
-    'ssl_verify_peer_name' => ConfigHelper::checkValue(
-        ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)
-    ),
+    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)),
+    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)),
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
 );
 
@@ -242,39 +238,14 @@ foreach (array(
              'timetable'
          ) as $type) {
     $notifications[$type] = array();
-    $notifications[$type]['limit'] = intval(ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_limit',
-        0
-    ));
-    $notifications[$type]['message'] = ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_message',
-        $type . ' notification'
-    );
-    $notifications[$type]['subject'] = ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_subject',
-        $type . ' notification'
-    );
-    $notifications[$type]['days'] = intval(ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_days',
-        0
-    ));
-    $notifications[$type]['file'] = ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_file',
-        '/etc/rc.d/' . $type . '.sh'
-    );
-    $notifications[$type]['header'] = ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_header',
-        "#!/bin/bash\n\nipset flush $type\n"
-    );
-    $notifications[$type]['rule'] = ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_rule',
-        "ipset add $type %i\n"
-    );
-    $notifications[$type]['footer'] = ConfigHelper::getConfig(
-        $config_section . '.' . $type . '_footer',
-        '',
-        true
-    );
+    $notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
+    $notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message', $type . ' notification');
+    $notifications[$type]['subject'] = ConfigHelper::getConfig($config_section . '.' . $type . '_subject', $type . ' notification');
+    $notifications[$type]['days'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_days', 0));
+    $notifications[$type]['file'] = ConfigHelper::getConfig($config_section . '.' . $type . '_file', '/etc/rc.d/' . $type . '.sh');
+    $notifications[$type]['header'] = ConfigHelper::getConfig($config_section . '.' . $type . '_header', "#!/bin/bash\n\nipset flush $type\n");
+    $notifications[$type]['rule'] = ConfigHelper::getConfig($config_section . '.' . $type . '_rule', "ipset add $type %i\n");
+    $notifications[$type]['footer'] = ConfigHelper::getConfig($config_section . '.' . $type . '_footer', '', true);
 }
 
 if (in_array('mail', $channels) && empty($mail_from)) {
