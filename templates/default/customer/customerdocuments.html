@@ -119,7 +119,7 @@
 						url="?m=documentview&id={$doc.docid}" external=true
 						text="<i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
 					{/if}
-					{if count($doc.attachments) > 1}
+					{if count($doc.attachments) > 1 || !$doc.attachments[0].main}
 						<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
 							<img src="img/asc_order.gif">
 						</a>
