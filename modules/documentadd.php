@@ -40,6 +40,7 @@ if (isset($_POST['document'])) {
 
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
         $error['customer'] = trans('Customer not selected!');
+        $error['customerid'] = trans('Customer not selected!');
     }
 
     if (!$document['type']) {
