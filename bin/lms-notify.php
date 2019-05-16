@@ -1905,9 +1905,8 @@ if (!empty($intersect)) {
                         break;
                     }
                     $customers = $DB->GetCol(
-                        "SELECT id FROM customers
-						WHERE status = ?" . (empty($customers) ? '' : " AND id NOT IN (" . implode(',',
-                                $customers) . ")"),
+                        "SELECT id FROM customers WHERE status = ?"
+                        . (empty($customers) ? '' : " AND id NOT IN (" . implode(',', $customers) . ")"),
                         array(CSTATUS_DEBT_COLLECTION)
                     );
                     if (empty($customers)) {
