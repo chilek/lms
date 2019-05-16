@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-ini_set('error_reporting', E_ALL&~E_NOTICE);
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
 
 $parameters = array(
     'C:' => 'config-file:',
@@ -122,7 +122,8 @@ if (isset($options['actions'])) {
 $current_month = intval(strftime('%m'));
 $current_year = intval(strftime('%Y'));
 
-$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'notify');
+$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i',
+    $options['section']) ? $options['section'] : 'notify');
 
 $timeoffset = date('Z');
 
@@ -153,7 +154,7 @@ if (!is_readable($CONFIG_FILE)) {
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
-$CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
+$CONFIG = (array)parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
@@ -193,8 +194,10 @@ $smtp_options = array(
     'user' => ConfigHelper::getConfig($config_section . '.smtp_user'),
     'pass' => ConfigHelper::getConfig($config_section . '.smtp_pass'),
     'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth'),
-    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)),
-    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)),
+    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer',
+        true)),
+    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name',
+        true)),
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
 );
 
@@ -224,15 +227,31 @@ if ($script_service) {
 // messages - send message to customers which have awaiting www messages
 // timetable - send event notify to users
 $notifications = array();
-foreach (array('documents', 'contracts', 'debtors', 'reminder', 'income', 'invoices', 'notes', 'warnings', 'messages', 'timetable') as $type) {
+foreach (array(
+             'documents',
+             'contracts',
+             'debtors',
+             'reminder',
+             'income',
+             'invoices',
+             'notes',
+             'warnings',
+             'messages',
+             'timetable'
+         ) as $type) {
     $notifications[$type] = array();
     $notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
-    $notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message', $type . ' notification');
-    $notifications[$type]['subject'] = ConfigHelper::getConfig($config_section . '.' . $type . '_subject', $type . ' notification');
+    $notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message',
+        $type . ' notification');
+    $notifications[$type]['subject'] = ConfigHelper::getConfig($config_section . '.' . $type . '_subject',
+        $type . ' notification');
     $notifications[$type]['days'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_days', 0));
-    $notifications[$type]['file'] = ConfigHelper::getConfig($config_section . '.' . $type . '_file', '/etc/rc.d/' . $type . '.sh');
-    $notifications[$type]['header'] = ConfigHelper::getConfig($config_section . '.' . $type . '_header', "#!/bin/bash\n\nipset flush $type\n");
-    $notifications[$type]['rule'] = ConfigHelper::getConfig($config_section . '.' . $type . '_rule', "ipset add $type %i\n");
+    $notifications[$type]['file'] = ConfigHelper::getConfig($config_section . '.' . $type . '_file',
+        '/etc/rc.d/' . $type . '.sh');
+    $notifications[$type]['header'] = ConfigHelper::getConfig($config_section . '.' . $type . '_header',
+        "#!/bin/bash\n\nipset flush $type\n");
+    $notifications[$type]['rule'] = ConfigHelper::getConfig($config_section . '.' . $type . '_rule',
+        "ipset add $type %i\n");
     $notifications[$type]['footer'] = ConfigHelper::getConfig($config_section . '.' . $type . '_footer', '', true);
 }
 
@@ -456,8 +475,11 @@ function send_mail_to_user($rmail, $rname, $subject, $body)
     global $LMS, $mail_from, $notify_email;
     global $smtp_options;
 
-    $headers = array('From' => $mail_from, 'To' => qp_encode($rname) . " <$rmail>",
-        'Subject' => $subject);
+    $headers = array(
+        'From' => $mail_from,
+        'To' => qp_encode($rname) . " <$rmail>",
+        'Subject' => $subject
+    );
     if (!empty($notify_email)) {
         $headers['Cc'] = $notify_email;
     }
@@ -509,9 +531,9 @@ if (empty($types) || in_array('timetable', $types)) {
             $sms_contents = '';
             foreach ($events as $event) {
                 $begintime = sprintf("%02d:%02d", floor($event['begintime'] / 100), $event['begintime'] % 100);
-                $mail_contents .= trans("Timetable for today") . ': '  . $today . PHP_EOL;
-                $sms_contents .= trans("Timetable for today") . ': '  . $today . ', ';
-                $mail_contents .= "----------------------------------------------------------------------------".PHP_EOL;
+                $mail_contents .= trans("Timetable for today") . ': ' . $today . PHP_EOL;
+                $sms_contents .= trans("Timetable for today") . ': ' . $today . ', ';
+                $mail_contents .= "----------------------------------------------------------------------------" . PHP_EOL;
                 $mail_contents .= trans("Time:") . "\t" . $begintime;
                 $sms_contents .= trans("Time:") . " " . $begintime;
                 if ($event['endtime'] != 0 && $event['begintime'] != $event['endtime']) {
@@ -524,7 +546,7 @@ if (empty($types) || in_array('timetable', $types)) {
                 $mail_contents .= trans('Title:') . "\t" . $event['title'] . PHP_EOL;
                 $sms_contents .= $event['title'];
                 $mail_contents .= trans('Description:') . "\t" . $event['description'] . PHP_EOL;
-                $sms_contents .=  ' (' . $event['description'] . ')';
+                $sms_contents .= ' (' . $event['description'] . ')';
                 if ($event['customerid']) {
                     $mail_contents .= trans('Customer:') . "\t" . $event['lastname'] . " " . $event['name']
                         . ", " . $event['address'] . PHP_EOL;
@@ -546,7 +568,8 @@ if (empty($types) || in_array('timetable', $types)) {
 
             if (!empty($user['email'])) {
                 $recipient_name = $row['lastname'] . ' ' . $row['name'];
-                $recipient_mails = ($debug_email ? explode(',', $debug_email) : (!empty($user['email']) ? explode(',', trim($user['email'])) : null));
+                $recipient_mails = ($debug_email ? explode(',', $debug_email) : (!empty($user['email']) ? explode(',',
+                    trim($user['email'])) : null));
                 if (!$quiet) {
                     printf("[timetable/mail] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
                 }
@@ -591,13 +614,16 @@ if (empty($types) || in_array('documents', $types)) {
 		) x ON (x.customerid = c.id)
 		WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
 			AND dc.todate < $daystart + (? + 1) * 86400",
-        array(CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+        array(
+            CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-            DOC_CONTRACT, DOC_ANNEX,
+            DOC_CONTRACT,
+            DOC_ANNEX,
             $days,
-        $days)
+            $days
+        )
     );
 
     if (!empty($customers)) {
@@ -697,12 +723,14 @@ if (empty($types) || in_array('contracts', $types)) {
 		) x ON (x.customerid = c.id)
 		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone
 		WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400",
-        array(CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+        array(
+            CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
             $days,
-        $days)
+            $days
+        )
     );
 
     if (!empty($customers)) {
@@ -811,13 +839,21 @@ if (empty($types) || in_array('debtors', $types)) {
 		) x ON (x.customerid = c.id)
 		WHERE c.status <> ? AND c.cutoffstop < $currtime AND b2.balance " . ($limit > 0 ? '>' : '<') . " ?",
         array(
-            DOC_CNOTE, $days, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days,
+            DOC_CNOTE,
+            $days,
+            DOC_RECEIPT,
+            DOC_CNOTE,
+            DOC_CNOTE,
+            DOC_INVOICE,
+            DOC_DNOTE,
+            $days,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
             CSTATUS_DISCONNECTED,
-        $limit)
+            $limit
+        )
     );
 
     if (!empty($customers)) {
@@ -935,15 +971,21 @@ if (empty($types) || in_array('reminder', $types)) {
 			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 >= $daystart
 			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $dayend",
         array(
-            DOC_CNOTE, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE,
+            DOC_CNOTE,
+            DOC_RECEIPT,
+            DOC_CNOTE,
+            DOC_CNOTE,
+            DOC_INVOICE,
+            DOC_DNOTE,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
             DOC_INVOICE,
-        $limit,
-        $days,
-        $days)
+            $limit,
+            $days,
+            $days
+        )
     );
     if (!empty($documents)) {
         $notifications['reminder']['customers'] = array();
@@ -1060,12 +1102,18 @@ if (empty($types) || in_array('income', $types)) {
 		) x ON (x.customerid = c.id)
 		WHERE cash.type = 1 AND cash.value > 0 AND cash.time >= $daystart + (? * 86400) AND cash.time < $daystart + (? + 1) * 86400",
         array(
-            DOC_CNOTE, DOC_RECEIPT, DOC_CNOTE, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE,
+            DOC_CNOTE,
+            DOC_RECEIPT,
+            DOC_CNOTE,
+            DOC_CNOTE,
+            DOC_INVOICE,
+            DOC_DNOTE,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
-            $days, $days,
+            $days,
+            $days,
         )
     );
 
@@ -1168,9 +1216,10 @@ if (empty($types) || in_array('invoices', $types)) {
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
             DOC_INVOICE,
-        DOC_CNOTE,
-        $daystart,
-        $dayend)
+            DOC_CNOTE,
+            $daystart,
+            $dayend
+        )
     );
 
     if (!empty($documents)) {
@@ -1278,8 +1327,9 @@ if (empty($types) || in_array('notes', $types)) {
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
             DOC_DNOTE,
-        $daystart,
-        $dayend)
+            $daystart,
+            $dayend
+        )
     );
     if (!empty($documents)) {
         $notifications['notes']['customers'] = array();
@@ -1376,7 +1426,8 @@ if (empty($types) || in_array('warnings', $types)) {
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
-            CONTACT_MOBILE | CONTACT_NOTIFICATIONS)
+            CONTACT_MOBILE | CONTACT_NOTIFICATIONS
+        )
     );
 
     if (!empty($customers)) {
@@ -1491,7 +1542,8 @@ if (empty($types) || in_array('events', $types)) {
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
                             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
                             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
-                            CONTACT_MOBILE | CONTACT_NOTIFICATIONS, $cid
+                            CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+                            $cid
                         )
                     );
                 }
@@ -1500,8 +1552,8 @@ if (empty($types) || in_array('events', $types)) {
                     foreach ($emails as $contact) {
                         if (!array_key_exists($contact, $emails)) {
                             $contacts[$contact] = array(
-                            'cid' => $cid,
-                            'email' => $contact,
+                                'cid' => $cid,
+                                'email' => $contact,
                             );
                         }
                     }
@@ -1511,8 +1563,8 @@ if (empty($types) || in_array('events', $types)) {
                     foreach ($phones as $contact) {
                         if (!array_key_exists($contact, $phones)) {
                             $contacts[$contact] = array(
-                            'cid' => $cid,
-                            'phone' => $contact,
+                                'cid' => $cid,
+                                'phone' => $contact,
                             );
                         }
                     }
@@ -1525,8 +1577,8 @@ if (empty($types) || in_array('events', $types)) {
                     foreach ($emails as $contact) {
                         if (!array_key_exists($contact, $contacts)) {
                             $contacts[$contact] = array(
-                            'uid' => $uid,
-                            'phone' => $contact,
+                                'uid' => $uid,
+                                'phone' => $contact,
                             );
                         }
                     }
@@ -1536,8 +1588,8 @@ if (empty($types) || in_array('events', $types)) {
                     foreach ($phones as $contact) {
                         if (!array_key_exists($contact, $contacts)) {
                             $contacts[$contact] = array(
-                            'uid' => $uid,
-                            'phone' => $contact,
+                                'uid' => $uid,
+                                'phone' => $contact,
                             );
                         }
                     }
@@ -1671,7 +1723,7 @@ if (in_array('www', $channels) && !empty($types)) {
                 $nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
 						FROM vnodes
 					WHERE ownerid IN (" . implode(',', $notification['customers']) . ")"
-                . " ORDER BY id");
+                    . " ORDER BY id");
             }
             if (!empty($nodes)) {
                 foreach ($nodes as $node) {
@@ -1731,13 +1783,16 @@ if (!empty($intersect)) {
                                 $DB->Execute("UPDATE nodes SET access = ?
 									WHERE id = ?", array(0, $node['id']));
                                 if ($SYSLOG) {
-                                                $SYSLOG->NewTransaction('lms-notify.php');
-                                                $SYSLOG->AddMessage(
-                                                    SYSLOG::RES_NODE,
-                                                    SYSLOG::OPER_UPDATE,
-                                                    array(SYSLOG::RES_NODE => $node['id'], SYSLOG::RES_CUST => $node['ownerid'],
-                                                        'access' => 0)
-                                                );
+                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                    $SYSLOG->AddMessage(
+                                        SYSLOG::RES_NODE,
+                                        SYSLOG::OPER_UPDATE,
+                                        array(
+                                            SYSLOG::RES_NODE => $node['id'],
+                                            SYSLOG::RES_CUST => $node['ownerid'],
+                                            'access' => 0
+                                        )
+                                    );
                                 }
                             }
                         }
@@ -1755,13 +1810,16 @@ if (!empty($intersect)) {
                                 $DB->Execute("UPDATE assignments SET invoice = ?
 									WHERE id = ?", array(0, $assign['id']));
                                 if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_ASSIGN,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(SYSLOG::RES_ASSIGN => $assign['id'], SYSLOG::RES_CUST => $assign['customerid'],
-                                                'invoice' => 0)
-                                        );
+                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                    $SYSLOG->AddMessage(
+                                        SYSLOG::RES_ASSIGN,
+                                        SYSLOG::OPER_UPDATE,
+                                        array(
+                                            SYSLOG::RES_ASSIGN => $assign['id'],
+                                            SYSLOG::RES_CUST => $assign['customerid'],
+                                            'invoice' => 0
+                                        )
+                                    );
                                 }
                             }
                         }
@@ -1779,23 +1837,23 @@ if (!empty($intersect)) {
                                     array(CSTATUS_DEBT_COLLECTION, $custid)
                                 );
                                 if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_CUST,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION)
-                                        );
+                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                    $SYSLOG->AddMessage(
+                                        SYSLOG::RES_CUST,
+                                        SYSLOG::OPER_UPDATE,
+                                        array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION)
+                                    );
                                 }
                             }
                         }
                     }
                     if (in_array('all-assignment-suspension', $actions)) {
                         $args = array(
-                        SYSLOG::RES_ASSIGN => null,
-                        SYSLOG::RES_CUST => null,
-                        'datefrom' => time(),
-                        SYSLOG::RES_TARIFF => null,
-                        SYSLOG::RES_LIAB => null,
+                            SYSLOG::RES_ASSIGN => null,
+                            SYSLOG::RES_CUST => null,
+                            'datefrom' => time(),
+                            SYSLOG::RES_TARIFF => null,
+                            SYSLOG::RES_LIAB => null,
                         );
                         foreach ($customers as $cid) {
                             if (!$DB->GetOne(
@@ -1814,8 +1872,8 @@ if (!empty($intersect)) {
                         }
                     }
                     $plugin_manager->executeHook('notification_blocks', array(
-                    'customers' => $customers,
-                    'actions' => $actions,
+                        'customers' => $customers,
+                        'actions' => $actions,
                     ));
                     break;
                 case 'unblock':
@@ -1824,7 +1882,8 @@ if (!empty($intersect)) {
                     }
                     $customers = $DB->GetCol(
                         "SELECT id FROM customers
-						WHERE status = ?" . (empty($customers) ? '' : " AND id NOT IN (" . implode(',', $customers) . ")"),
+						WHERE status = ?" . (empty($customers) ? '' : " AND id NOT IN (" . implode(',',
+                                $customers) . ")"),
                         array(CSTATUS_DEBT_COLLECTION)
                     );
                     if (empty($customers)) {
@@ -1841,13 +1900,16 @@ if (!empty($intersect)) {
                                 $DB->Execute("UPDATE nodes SET access = ?
 									WHERE id = ?", array(1, $node['id']));
                                 if ($SYSLOG) {
-                                                $SYSLOG->NewTransaction('lms-notify.php');
-                                                $SYSLOG->AddMessage(
-                                                    SYSLOG::RES_NODE,
-                                                    SYSLOG::OPER_UPDATE,
-                                                    array(SYSLOG::RES_NODE => $node['id'], SYSLOG::RES_CUST => $node['ownerid'],
-                                                        'access' => 1)
-                                                );
+                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                    $SYSLOG->AddMessage(
+                                        SYSLOG::RES_NODE,
+                                        SYSLOG::OPER_UPDATE,
+                                        array(
+                                            SYSLOG::RES_NODE => $node['id'],
+                                            SYSLOG::RES_CUST => $node['ownerid'],
+                                            'access' => 1
+                                        )
+                                    );
                                 }
                             }
                         }
@@ -1865,13 +1927,16 @@ if (!empty($intersect)) {
                                 $DB->Execute("UPDATE assignments SET invoice = ?
 									WHERE id = ?", array(1, $assign['id']));
                                 if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_ASSIGN,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(SYSLOG::RES_ASSIGN => $assign['id'], SYSLOG::RES_CUST => $assign['customerid'],
-                                                'invoice' => 1)
-                                        );
+                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                    $SYSLOG->AddMessage(
+                                        SYSLOG::RES_ASSIGN,
+                                        SYSLOG::OPER_UPDATE,
+                                        array(
+                                            SYSLOG::RES_ASSIGN => $assign['id'],
+                                            SYSLOG::RES_CUST => $assign['customerid'],
+                                            'invoice' => 1
+                                        )
+                                    );
                                 }
                             }
                         }
@@ -1889,22 +1954,22 @@ if (!empty($intersect)) {
                                     array(CSTATUS_CONNECTED, $custid)
                                 );
                                 if ($SYSLOG) {
-                                        $SYSLOG->NewTransaction('lms-notify.php');
-                                        $SYSLOG->AddMessage(
-                                            SYSLOG::RES_CUST,
-                                            SYSLOG::OPER_UPDATE,
-                                            array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED)
-                                        );
+                                    $SYSLOG->NewTransaction('lms-notify.php');
+                                    $SYSLOG->AddMessage(
+                                        SYSLOG::RES_CUST,
+                                        SYSLOG::OPER_UPDATE,
+                                        array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED)
+                                    );
                                 }
                             }
                         }
                     }
                     if (in_array('all-assignment-suspension', $actions)) {
                         $args = array(
-                        SYSLOG::RES_ASSIGN => null,
-                        SYSLOG::RES_CUST => null,
-                        'settlement' => 1,
-                        'datefrom' => time(),
+                            SYSLOG::RES_ASSIGN => null,
+                            SYSLOG::RES_CUST => null,
+                            'settlement' => 1,
+                            'datefrom' => time(),
                         );
                         foreach ($customers as $cid) {
                             if ($SYSLOG) {
@@ -1928,9 +1993,9 @@ if (!empty($intersect)) {
                                             $DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?
 												WHERE id = ?", array($args['datefrom'], $aid));
                                             if ($SYSLOG) {
-                                                    $args[SYSLOG::RES_ASSIGN] = $aid;
-                                                    $args[SYSLOG::RES_CUST] = $cid;
-                                                    $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
+                                                $args[SYSLOG::RES_ASSIGN] = $aid;
+                                                $args[SYSLOG::RES_CUST] = $cid;
+                                                $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
                                             }
                                         }
                                     }
@@ -1942,19 +2007,19 @@ if (!empty($intersect)) {
                                 foreach ($aids as $aid) {
                                     $DB->Execute("DELETE FROM assignments WHERE id = ?", array($aid));
                                     if ($SYSLOG) {
-                                            $SYSLOG->AddMessage(
-                                                SYSLOG::RES_ASSIGN,
-                                                SYSLOG::OPER_DELETE,
-                                                array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $cid)
-                                            );
+                                        $SYSLOG->AddMessage(
+                                            SYSLOG::RES_ASSIGN,
+                                            SYSLOG::OPER_DELETE,
+                                            array(SYSLOG::RES_ASSIGN => $aid, SYSLOG::RES_CUST => $cid)
+                                        );
                                     }
                                 }
                             }
                         }
                     }
                     $plugin_manager->executeHook('notification_unblocks', array(
-                    'customers' => $customers,
-                    'actions' => $actions,
+                        'customers' => $customers,
+                        'actions' => $actions,
                     ));
                     break;
             }
