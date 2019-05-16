@@ -107,7 +107,7 @@
 			{trans("Type:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" class="lms-ui-advanced-select" {tip text="Select document type" trigger="type"}>
+			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" {tip class="lms-ui-advanced-select lms-ui-required" text="Select document type" trigger="type"}>
 				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
@@ -134,7 +134,7 @@
 	<tr id="referencedocument">
 		{include file="document/documentreference.html"}
 	</tr>
-	<TR>
+	<TR id="document-file-row"{if !$document.type} style="display: none;"{/if}>
 		<TD>
 			<IMG src="img/save.gif" alt="">
 		</TD>
@@ -205,8 +205,9 @@
 <DIV id="plugin" name="plugin">{$plugin_result}</DIV>
 {$script_result}
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+
+<script>
+
 	$(function() {
 		$('form[name="documentadd"] [name="document[title]"]').focus();
 
@@ -223,8 +224,12 @@
 				$('form[name="documentadd"]').removeAttr('target');
 			}
 		});
+
+		$('[name="document[type]"]').change(function() {
+			$('#document-file-row').toggle(parseInt($(this).val()) != 0);
+		});
 	});
 	//setnumberplans();
-//-->
-</SCRIPT>
+
+</script>
 {/block}

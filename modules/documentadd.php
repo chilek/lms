@@ -36,10 +36,6 @@ if (isset($_POST['document'])) {
     $oldfromdate = $document['fromdate'];
     $oldtodate = $document['todate'];
 
-    if (!($document['title'] || $document['description'] || $document['type'])) {
-        $SESSION->redirect('?' . $SESSION->get('backto'));
-    }
-
     $document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
     if (!$LMS->CustomerExists(intval($document['customerid']))) {
@@ -201,29 +197,27 @@ if (isset($_POST['document'])) {
     extract($result);
     $SMARTY->assign('fileupload', $fileupload);
 
-    if (!$error) {
-        if (!empty($attachments)) {
-            foreach ($attachments as $attachment) {
-                $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
-                $attachment['md5sum'] = md5_file($attachment['tmpname']);
-                $attachment['main'] = false;
-                $files[] = $attachment;
-            }
+    if (!empty($attachments)) {
+        foreach ($attachments as $attachment) {
+            $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+            $attachment['md5sum'] = md5_file($attachment['tmpname']);
+            $attachment['main'] = false;
+            $files[] = $attachment;
         }
-        if (isset($document['attachments']) && !empty($document['attachments'])) {
-            foreach ($document['attachments'] as $attachment => $value) {
-                $filename = $engine['attachments'][$attachment];
-                if ($filename[0] != DIRECTORY_SEPARATOR) {
-                    $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
-                }
-                $files[] = array(
-                'tmpname' => null,
-                'name' => $filename,
-                'type' => mime_content_type($filename),
-                'md5sum' => md5_file($filename),
-                'main' => false,
-                );
+    }
+    if (isset($document['attachments']) && !empty($document['attachments'])) {
+        foreach ($document['attachments'] as $attachment => $value) {
+            $filename = $engine['attachments'][$attachment];
+            if ($filename[0] != DIRECTORY_SEPARATOR) {
+                $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
             }
+            $files[] = array(
+            'tmpname' => null,
+            'name' => $filename,
+            'type' => mime_content_type($filename),
+            'md5sum' => md5_file($filename),
+            'main' => false,
+            );
         }
     }
 

@@ -147,29 +147,27 @@ if (isset($_POST['document'])) {
     }
 
     $globalfiles = array();
-    if (!$error) {
-        if (!empty($attachments)) {
-            foreach ($attachments as $attachment) {
-                $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
-                $attachment['md5sum'] = md5_file($attachment['tmpname']);
-                $attachment['main'] = false;
-                $globalfiles[] = $attachment;
-            }
+    if (!empty($attachments)) {
+        foreach ($attachments as $attachment) {
+            $attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+            $attachment['md5sum'] = md5_file($attachment['tmpname']);
+            $attachment['main'] = false;
+            $globalfiles[] = $attachment;
         }
-        if (isset($document['attachments']) && !empty($document['attachments'])) {
-            foreach ($document['attachments'] as $attachment => $value) {
-                $filename = $engine['attachments'][$attachment];
-                if ($filename[0] != DIRECTORY_SEPARATOR) {
-                    $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
-                }
-                $globalfiles[] = array(
+    }
+    if (isset($document['attachments']) && !empty($document['attachments'])) {
+        foreach ($document['attachments'] as $attachment => $value) {
+            $filename = $engine['attachments'][$attachment];
+            if ($filename[0] != DIRECTORY_SEPARATOR) {
+                $filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
+            }
+            $globalfiles[] = array(
                 'tmpname' => null,
                 'name' => $filename,
                 'type' => mime_content_type($filename),
                 'md5sum' => md5_file($filename),
                 'main' => false,
-                );
-            }
+            );
         }
     }
 

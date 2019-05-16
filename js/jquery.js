@@ -475,7 +475,8 @@ $(function() {
 			no_results_text: $t('No results match'),
 			placeholder_text_single: $t('Select an Option'),
 			search_contains: true,
-			disable_search_threshold: 5
+			disable_search_threshold: 5,
+			inherit_select_classes: true
 		}, $(this).attr('data-options') ? JSON.parse($(this).attr('data-options')) : {}));
 	});
 
