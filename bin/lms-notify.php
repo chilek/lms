@@ -122,8 +122,7 @@ if (isset($options['actions'])) {
 $current_month = intval(strftime('%m'));
 $current_year = intval(strftime('%Y'));
 
-$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i',
-    $options['section']) ? $options['section'] : 'notify');
+$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'notify');
 
 $timeoffset = date('Z');
 
@@ -194,10 +193,8 @@ $smtp_options = array(
     'user' => ConfigHelper::getConfig($config_section . '.smtp_user'),
     'pass' => ConfigHelper::getConfig($config_section . '.smtp_pass'),
     'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth'),
-    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer',
-        true)),
-    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name',
-        true)),
+    'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)),
+    'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)),
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
 );
 
@@ -241,17 +238,12 @@ foreach (array(
          ) as $type) {
     $notifications[$type] = array();
     $notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
-    $notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message',
-        $type . ' notification');
-    $notifications[$type]['subject'] = ConfigHelper::getConfig($config_section . '.' . $type . '_subject',
-        $type . ' notification');
+    $notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message', $type . ' notification');
+    $notifications[$type]['subject'] = ConfigHelper::getConfig($config_section . '.' . $type . '_subject', $type . ' notification');
     $notifications[$type]['days'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_days', 0));
-    $notifications[$type]['file'] = ConfigHelper::getConfig($config_section . '.' . $type . '_file',
-        '/etc/rc.d/' . $type . '.sh');
-    $notifications[$type]['header'] = ConfigHelper::getConfig($config_section . '.' . $type . '_header',
-        "#!/bin/bash\n\nipset flush $type\n");
-    $notifications[$type]['rule'] = ConfigHelper::getConfig($config_section . '.' . $type . '_rule',
-        "ipset add $type %i\n");
+    $notifications[$type]['file'] = ConfigHelper::getConfig($config_section . '.' . $type . '_file', '/etc/rc.d/' . $type . '.sh');
+    $notifications[$type]['header'] = ConfigHelper::getConfig($config_section . '.' . $type . '_header', "#!/bin/bash\n\nipset flush $type\n");
+    $notifications[$type]['rule'] = ConfigHelper::getConfig($config_section . '.' . $type . '_rule', "ipset add $type %i\n");
     $notifications[$type]['footer'] = ConfigHelper::getConfig($config_section . '.' . $type . '_footer', '', true);
 }
 
@@ -568,8 +560,7 @@ if (empty($types) || in_array('timetable', $types)) {
 
             if (!empty($user['email'])) {
                 $recipient_name = $row['lastname'] . ' ' . $row['name'];
-                $recipient_mails = ($debug_email ? explode(',', $debug_email) : (!empty($user['email']) ? explode(',',
-                    trim($user['email'])) : null));
+                $recipient_mails = ($debug_email ? explode(',', $debug_email) : (!empty($user['email']) ? explode(',', trim($user['email'])) : null));
                 if (!$quiet) {
                     printf("[timetable/mail] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['email']);
                 }
@@ -1882,8 +1873,7 @@ if (!empty($intersect)) {
                     }
                     $customers = $DB->GetCol(
                         "SELECT id FROM customers
-						WHERE status = ?" . (empty($customers) ? '' : " AND id NOT IN (" . implode(',',
-                                $customers) . ")"),
+						WHERE status = ?" . (empty($customers) ? '' : " AND id NOT IN (" . implode(',', $customers) . ")"),
                         array(CSTATUS_DEBT_COLLECTION)
                     );
                     if (empty($customers)) {
