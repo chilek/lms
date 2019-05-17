@@ -85,7 +85,7 @@
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
-			{if $invoice.ten != ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif $invoice.ssn != ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
+			{if $invoice.ten != ""}{trans("TEN:")} {$invoice.ten}<BR>{elseif !ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $invoice.ssn != ""}{trans("SSN:")} {$invoice.ssn}<BR>{/if}
 
 			<BR>
 

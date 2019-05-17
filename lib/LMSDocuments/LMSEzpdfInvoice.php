@@ -198,7 +198,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
         if ($this->data['ten']) {
             $y=$y-$this->backend->text_align_left($x, $y, $font_size, trans('TEN').' '.$this->data['ten']);
-        } else if ($this->data['ssn']) {
+        } else if (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
             $y=$y-$this->backend->text_align_left($x, $y, $font_size, trans('SSN').' '.$this->data['ssn']);
         }
         $y=$y-$this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Customer No.: $a', sprintf('%04d', $this->data['customerid'])) . '</b>');

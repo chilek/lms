@@ -728,7 +728,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         $buyer .= '<br>';
         if ($this->data['ten']) {
             $buyer .= trans('TEN') . ': ' . $this->data['ten'] . '<br>';
-        } elseif ($this->data['ssn']) {
+        } elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_ssn', true)) && $this->data['ssn']) {
             $buyer .= trans('SSN') . ': ' . $this->data['ssn'] . '<br>';
         }
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.show_customerid', true))) {
