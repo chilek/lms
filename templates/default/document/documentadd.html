@@ -73,7 +73,7 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" customOnChange="CustomerChanged();"}
+			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" required=true customOnChange="CustomerChanged();"}
 		</TD>
 	</TR>
 	<TR>
@@ -107,7 +107,7 @@
 			{trans("Type:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" {tip class="lms-ui-advanced-select lms-ui-required" text="Select document type" trigger="type"}>
+			<SELECT SIZE="1" NAME="document[type]" onchange="DocTypeChanged();" {tip class="lms-ui-advanced-select" text="Select document type" trigger="type"} required>
 				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>
