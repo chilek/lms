@@ -122,7 +122,7 @@ class SqlProvider extends VoipDataProvider
                             LEFT JOIN voip_price_groups vpg on
                             vp.groupid = vpg.prefix_group_id
                           WHERE 
-                            ? ?LIKE? (" . $DB->Concat('vp.prefix', '%') . ") AND
+                            ? ?LIKE? (" . $DB->Concat('vp.prefix', "'%'") . ") AND
                             vpg.voip_tariff_id = ?
                           ORDER BY
                             vp.prefix DESC",
