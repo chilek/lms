@@ -333,36 +333,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         $which[] = trans('ORIGINAL');
     }
 
-    try_generate_archive_invoices($ids);
-
-    $count = count($ids) * count($which);
-    $i = 0;
-
-    foreach ($ids as $idx => $invoiceid) {
-        $invoice = $LMS->GetInvoiceContent($invoiceid);
-        if (count($ids) == 1) {
-            $docnumber = docnumber(array(
-                'number' => $invoice['number'],
-                'template' => $invoice['template'],
-                'cdate' => $invoice['cdate'],
-                'customerid' => $invoice['customerid'],
-            ));
-        }
-
-        $invoice['dontpublish'] = $dontpublish;
-        foreach ($which as $type) {
-            $i++;
-            if ($i == $count) {
-                $invoice['last'] = true;
-            }
-            $invoice['type'] = $type;
-            invoice_body($document, $invoice);
-        }
-    }
-
-    $count = count($ids) * count($which);
-    $i = 0;
-
     if ($jpk) {
         if ($jpk_type == 'vat') {
             // if date from for report is earlier than 1 I 2018
@@ -459,7 +429,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         $jpk_data .= "\t</Podmiot1>\n";
         $totalvalue = 0;
         $totaltax = 0;
+    } else {
+        try_generate_archive_invoices($ids);
     }
+
+    $count = count($ids) * count($which);
+    $i = 0;
 
     $invoices = array();
     foreach ($ids as $idx => $invoiceid) {
