@@ -5,6 +5,7 @@ version 25-git (????-??-??):
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN
     on invoices [chilan]
   - improvement: show icon correspondent to netdevnode online status in netdevinfo [ravvar]
+  - devel: bumped required php version to 5.6 [chilan]
 
 version 24.0 (2019-05-16):
 
