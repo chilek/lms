@@ -55,9 +55,10 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			ORDER BY n.name ASC', array($id));
 
         if ($result) {
-            foreach ($result as $idx => $node) {
-                $result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
+            foreach ($result as &$node) {
+                $node['lastonlinedate'] = lastonline_date($node['lastonline']);
             }
+            unset($node);
         }
 
         return $result;
