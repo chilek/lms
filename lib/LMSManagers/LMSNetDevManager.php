@@ -35,12 +35,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevLinkedNodes($id)
     {
-        return $this->db->GetAll('SELECT n.id AS id, n.name AS name, linktype, rs.name AS radiosector,
+        $result = $this->db->GetAll('SELECT n.id AS id, n.name AS name, linktype, rs.name AS radiosector,
         		linktechnology, linkspeed,
 			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub,
 			n.netdev, port, ownerid,
 			' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
-			net.name AS netname, n.location,
+			net.name AS netname, n.location, lastonline,
 			lc.name AS city_name, lb.name AS borough_name, lb.type AS borough_type,
 			ld.name AS district_name, ls.name AS state_name
 			FROM vnodes n
@@ -53,6 +53,14 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE n.netdev = ? AND ownerid IS NOT NULL
 			ORDER BY n.name ASC', array($id));
+
+        if ($result) {
+            foreach ($result as $idx => $node) {
+                $result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
+            }
+        }
+
+        return $result;
     }
 
     public function NetDevLinkNode($id, $devid, $link = null)
