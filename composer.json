@@ -62,7 +62,7 @@
         }
     ],
     "require": {
-	"php" : ">=5.3",
+        "php" : ">=5.6",
         "phine/observer": "2.0",
         "phine/exception": "1.0",
         "phpmailer/phpmailer": "^5.2",
