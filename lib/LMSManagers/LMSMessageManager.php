@@ -152,7 +152,6 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				SELECT templateid, ' . $this->db->GroupConcat('messagetype') . ' AS messagetypes
 				FROM rttemplatetypes
 				GROUP BY templateid
-				--ORDER BY messagetype
 			) tt ON tt.templateid = t.id
 			LEFT JOIN (
 				SELECT templateid, ' . $this->db->GroupConcat('queueid') . ' AS queues,
@@ -161,7 +160,6 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				JOIN rtqueues q ON q.id = queueid
 				WHERE ' . (empty($queues) ? '1=0' : 'queueid IN (' . implode(',', $queues) . ')') . '
 				GROUP BY templateid
-				--ORDER BY q.name
 			) tq ON tq.templateid = t.id
 			WHERE 1 = 1' . (empty($type) ? '' : ' AND t.type = ' . intval($type))
             . ' ORDER BY t.name', array($queues));
