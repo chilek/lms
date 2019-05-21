@@ -297,6 +297,9 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                 unset($file_content);
                 continue;
             }
+            if (preg_match('/^=\?UTF-8\?B\?/', $file_name)) {
+                $file_name = imap_utf8($file_name);
+            }
             $files[] = array(
                 'name' => $file_name,
                 'type' => $partdata['content-type'],
