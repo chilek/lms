@@ -34,7 +34,7 @@ function GetCustomerCovenants($customerid)
     if (!$customerid) {
         return null;
     }
-    
+
     return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.comment, c.taxid, 
 			taxes.label AS tax, c.id AS cashid,
 			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net
@@ -515,6 +515,7 @@ switch ($action) {
         $iid = $LMS->AddInvoice($hook_data);
 
         $hook_data['invoice']['id'] = $iid;
+        $hook_data['contents'] = $contents;
         $hook_data = $LMS->ExecuteHook('invoicenew_save_after_submit', $hook_data);
 
         $contents = $hook_data['contents'];
