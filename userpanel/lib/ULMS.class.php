@@ -127,7 +127,7 @@ class ULMS extends LMS
         return $tickets;
     }
 
-    public function GetTicketContents($id)
+    public function GetTicketContents($id, $short = false)
     {
         global $RT_STATES;
 
