@@ -87,9 +87,9 @@ abstract class LMSDB_common implements LMSDBInterface
      */
     public function Connect($dbhost, $dbuser, $dbpasswd, $dbname)
     {
-        
+
         register_shutdown_function(array($this, '_driver_shutdown'));
-        
+
         // database initialization
         if ($this->_driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)) {
             return $this->_dblink;
@@ -137,7 +137,7 @@ abstract class LMSDB_common implements LMSDBInterface
                 'time' => microtime(true) - $start,
             );
         }
-        
+
         return $this->_driver_affected_rows();
     }
 
@@ -166,7 +166,7 @@ abstract class LMSDB_common implements LMSDBInterface
                 'time' => microtime(true) - $start,
             );
         }
-        
+
         return $this->_driver_affected_rows();
     }
 
@@ -748,9 +748,8 @@ abstract class LMSDB_common implements LMSDBInterface
                 $tables = 0;
             }
             // if there are no tables we can install lms database
-            if ($dbinfo == 0 && $tables == 0 && empty($this->errors)) {
+            if (empty($dbinfo) && $tables == 0 && empty($this->errors)) {
                 // detect database type and select schema dump file to load
-                $schema = '';
                 if ($this->_dbtype == LMSDB::POSTGRESQL) {
                     $schema = 'lms.pgsql';
                 } elseif ($this->_dbtype == LMSDB::MYSQL || $this->_dbtype == LMSDB::MYSQLI) {
