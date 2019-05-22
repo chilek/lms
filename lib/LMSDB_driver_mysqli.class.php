@@ -185,7 +185,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
                 }
             }
         }
-        $this->_error = $total_result;
+        $this->_error = !$total_result;
         $this->errors = $db_errors;
         return $total_result;
     }
