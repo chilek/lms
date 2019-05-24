@@ -2372,6 +2372,12 @@ a[class*="lms-ui-button-"] {
 	> i:before {
 		color: black;
 	}
+	&:hover {
+		cursor: pointer;
+		border: 1px solid @dark;
+		border-radius: 3px;
+		text-decoration: none;
+	}
 }
 
 .lms-ui-rtmessage-current {
@@ -3888,7 +3894,7 @@ div.lms-ui-wysiwyg-editor {
 			justify-content: flex-end;
 			align-items: center;
 			& > *:not(first-child) {
-				padding-left: 0.3em;
+				margin-left: 0.3em;
 			}
 		}
 	}
