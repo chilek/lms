@@ -165,8 +165,9 @@ switch ($action) {
         $error = array();
 
         $itemdata = r_trim($_POST);
-        $contents = changeContents($contents, $itemdata['invoice-contents']);
-
+        if (isset($itemdata['invoice-contents'])) {
+            $contents = changeContents($contents, $itemdata['invoice-contents']);
+        }
         if ($action == 'savepos') {
             if (!isset($_GET['posuid']) || !isset($contents[$_GET['posuid']])) {
                 die;
