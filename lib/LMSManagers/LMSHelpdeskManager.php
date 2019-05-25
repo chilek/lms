@@ -1356,7 +1356,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $props['type'] = $ticket['type'];
         }
 
-        if ($ticket['parentid'] != $props['parentid']) {
+        if ($ticket['parentid'] != $props['parentid'] && isset($props['parentid'])) {
             $notes[] = trans('Ticket parent ID has been set to $a.', $props['parentid']);
             $type = $type | RTMESSAGE_PARENT_CHANGE;
         } else {
