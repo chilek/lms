@@ -35,6 +35,7 @@ $ticket['customerid'] = isset($_GET['customerid']) && intval($_GET['customerid']
 $ticket['netdevid'] = isset($_GET['netdevid']) ? intval($_GET['netdevid']) : 0;
 $ticket['netnodeid'] = isset($_GET['netnodeid']) ? intval($_GET['netnodeid']) : 0;
 $ticket['invprojectid'] = isset($_GET['invprojectid']) ? intval($_GET['invprojectid']) : 0;
+$ticket['parentid'] = isset($_GET['parentid']) ? intval($_GET['parentid']) : null;
 
 $categories = $LMS->GetUserCategories(Auth::GetCurrentUser());
 if (!$categories) {
