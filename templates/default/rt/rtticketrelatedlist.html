@@ -5,11 +5,16 @@
 		<COL style="width: 1%;">
 	</COLGROUP>
 	<THEAD>
-		<TR class="hand lmsbox-titlebar" data-lmsbox-content="relationpanel-{$layout.module}">
+		<TR class="hand lmsbox-titlebar nobr" data-lmsbox-content="relationpanel-{$layout.module}">
 			<TD class="bold">
 				<i class="lms-ui-icon-helpdesk"></i> {trans("Related tickets:")}
 			</TD>
-			<TD></TD>
+			<TD>
+			{if $ticket.state != $smarty.const.RT_RESOLVED}
+			{button icon="add" label="Add"
+			onclick="location.href='?m=rtticketadd&parentid={$ticket.ticketid}{if $ticket.customerid}&customerid={$ticket.customerid}{/if}';"}
+			{/if}
+			</TD>
 		</TR>
 	</THEAD>
 	<TBODY>
