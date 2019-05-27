@@ -39,7 +39,16 @@ $ticket['relatedtickets'] = $LMS->GetRelatedTicketIds($id);
 
 if (!empty($ticket['relatedtickets'])) {
     foreach ($ticket['relatedtickets'] as $rid) {
-        $relatedticketscontent[] = $LMS->GetTicketContents($rid);
+        if ($LMS->CheckTicketAccess($rid)) {
+            $relatedticketscontent[] = $LMS->GetTicketContents($rid);
+        }
+    }
+}
+
+if (!empty($ticket['parentid'])) {
+    $parentticket = true;
+    if ($LMS->CheckTicketAccess($ticket['parentid'])) {
+        $parentticketcontent[] = $LMS->GetTicketContents($ticket['parentid']);
     }
 }
 
@@ -135,6 +144,7 @@ if (isset($_GET['highlight'])) {
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('relatedticketscontent', $relatedticketscontent);
+$SMARTY->assign('parentticketcontent', $parentticketcontent);
 
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('assignedevents', $assignedevents);
