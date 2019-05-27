@@ -425,5 +425,11 @@
 {/if}
 <br>
 {include file="rt/rtticketeventlist.html"}
+{if $ticket.parentid}
+<br>
+{include file="rt/rtticketparentinfo.html"}
+{/if}
+{if $ticket.relatedtickets}
 <br>
 {include file="rt/rtticketrelatedlist.html"}
+{/if}
