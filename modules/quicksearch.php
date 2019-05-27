@@ -524,6 +524,12 @@ switch ($mode) {
             }
         }
 
+        $s['name'] = $search;
+
+        $SESSION->save('netdevsearch', $s);
+
+        $target = '?m=netdevsearch&search';
+
         break;
 
     case 'ticket':
@@ -706,6 +712,14 @@ switch ($mode) {
                 break;
             }
         }
+
+        $s['network_name'] = $search;
+        $s['compareType'] = 1;
+
+        $SESSION->save('netsearch', $s);
+
+        $target = '?m=netsearch';
+
         break;
     case 'account':
         $ac = explode('@', $search);
