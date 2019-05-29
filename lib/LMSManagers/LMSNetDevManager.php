@@ -617,6 +617,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 								HAVING COUNT(netlinks.id) >= 0
 							)';
                             break;
+                        case 101:
+                            $where[] = '(no.lastonline IS NOT NULL AND (?NOW? - no.lastonline) <= ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . ')';
+                            break;
                         default:
                             $where[] = 'd.status = ' . intval($value);
                     }
@@ -652,8 +655,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         if ($count) {
             return $this->db->GetOne('SELECT COUNT(d.id)
-				FROM netdevices d
-				LEFT JOIN vaddresses addr       ON d.address_id = addr.id
+				FROM netdevices d ' . ($short ? '' : '
+			    LEFT JOIN (
+			        SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
+			        FROM nodes
+			        WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
+			            AND lastonline > 0 
+			        GROUP BY netdev
+			    ) no ON no.netdevid = d.id ') . '
+			    LEFT JOIN vaddresses addr       ON d.address_id = addr.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes n            ON n.id = d.netnodeid
 				LEFT JOIN location_streets lst  ON lst.id = addr.street_id

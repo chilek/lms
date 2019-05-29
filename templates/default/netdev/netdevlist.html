@@ -47,6 +47,7 @@
 					<OPTION VALUE="{$idx}"{if $listdata.status == $idx} SELECTED{/if}>{$status}</OPTION>
 				{/foreach}
 				<OPTION value="100"{if $listdata.status == 100} selected{/if}>{trans("TERRIT not specified")}</OPTION>
+				<OPTION value="101"{if $listdata.status == 101} selected{/if}>{trans("online")}</OPTION>
 			</SELECT>
 			{trans("Project:")}
 			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
