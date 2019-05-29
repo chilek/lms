@@ -7,6 +7,7 @@ version 25-git (????-??-??):
   - improvement: show icon correspondent to netdevnode online status in netdevinfo [ravvar]
   - devel: bumped required php version to 5.6 [chilan]
   - devel: bumped required phpmailer version to 6.x [chilan]
+  - improvement: show online status for network devices ip addresses [chilan]
 
 version 24.0 (2019-05-16):
 
