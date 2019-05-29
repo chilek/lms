@@ -1636,6 +1636,7 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+
 .lms-ui-icon-nodeoff {
 	.lms-ui-icon-node;
 }
@@ -1656,7 +1657,6 @@ li.lms-ui-suggestion-item {
 	-webkit-text-stroke-color: red;
 }
 
-.lms-ui-icon-netdev,
 .lms-ui-icon-netdevice,
 .lms-ui-icon-device {
 	.fa-icon;
@@ -1665,6 +1665,36 @@ li.lms-ui-suggestion-item {
 	&:before {
 		content: @fa-var-hdd;
 	}
+}
+
+.lms-ui-icon-netdev {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		color: mediumslateblue;
+		content: @fa-var-hdd;
+	}
+}
+
+.lms-ui-icon-netdevoff {
+	.lms-ui-icon-netdevice;
+}
+
+.lms-ui-icon-netdevon {
+	.lms-ui-icon-netdevice;
+	text-stroke-width: 1px;
+	text-stroke-color: gold;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: gold;
+}
+
+.lms-ui-icon-netdevunk {
+	.lms-ui-icon-netdevice;
+	text-stroke-width: 1px;
+	text-stroke-color: red;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: red;
 }
 
 .lms-ui-icon-customer {
@@ -1716,16 +1746,6 @@ li.lms-ui-suggestion-item {
 	&:before {
 		color: darkslategray;
 		content: @fa-var-globe;
-	}
-}
-
-.lms-ui-icon-netdev {
-	.fa-icon;
-	.fas;
-	.lms-ui-icon;
-	&:before {
-		color: mediumslateblue;
-		content: @fa-var-hdd;
 	}
 }
 

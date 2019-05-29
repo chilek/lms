@@ -4,13 +4,16 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="get" action="?m=netdevlist" name="choosefilter">
+
+{$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
+
 <INPUT type="hidden" NAME="m" VALUE="netdevlist">
 <TABLE class="lmsbox lms-ui-background-cycle">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD width="95%">
 			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 			<A href="?m=netdevlist&amp;o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<td width="1%" class="nobr valign-top">
@@ -91,7 +94,16 @@
 	{foreach $netdevlist as $netdev}
 	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
 		<TD class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""> <a href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
+			{if $netdev.lastonline}
+				{if ($smarty.now-$netdev.lastonline) > $lastonline_limit}
+					<i class="lms-ui-icon-netdevoff" {tip a=$netdev.lastonlinedate text="Last online: \$a"}></i>
+				{else}
+					<i class="lms-ui-icon-netdevon" {tip a="on-line" text="Last online: \$a"}></i>
+				{/if}
+			{else}
+				<i class="lms-ui-icon-netdevunk"></i>
+			{/if}
+			<a href="?m=netdevinfo&amp;id={$netdev.id}" name="{$netdev.id}"
 					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}{if $netdev.filecontainers}<br><br><i class='lms-ui-icon-fileupload'></i>&nbsp;{implode('<br><i class=\'lms-ui-icon-fileupload\'></i>&nbsp;', $netdev.filecontainers)}{/if}"
 					><B>{$netdev.name}</B></A><BR>
 			{if $netdev.producer}

@@ -681,8 +681,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				(CASE WHEN lst.ident IS NULL
 					THEN (CASE WHEN addr.street = \'\' THEN \'99999\' ELSE \'99998\' END)
 					ELSE lst.ident END) AS street_ident,
-				addr.house as location_house, addr.flat as location_flat, addr.location') . '
-			FROM netdevices d
+				addr.house as location_house, addr.flat as location_flat, addr.location, no.lastonline') . '
+			FROM netdevices d ' . ($short ? '' : '
+			    LEFT JOIN (
+			        SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
+			        FROM nodes
+			        WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
+			            AND lastonline > 0 
+			        GROUP BY netdev
+			    ) no ON no.netdevid = d.id ') . '
 				LEFT JOIN vaddresses addr       ON d.address_id = addr.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes n            ON n.id = d.netnodeid
@@ -718,6 +725,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 $netdev['filecontainers'] = isset($filecontainers[$netdev['id']])
                     ? explode(',', $filecontainers[$netdev['id']]['descriptions'])
                     : array();
+
+                $netdev['lastonlinedate'] = lastonline_date($netdev['lastonline']);
             }
             unset($netdev);
         }
