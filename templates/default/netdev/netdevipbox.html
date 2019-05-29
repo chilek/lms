@@ -2,6 +2,8 @@
 
 {css}
 
+{$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
+
 {tab_container id="netdevipbox"}
 
 	{tab_header content_id="deviceips"}
@@ -56,6 +58,15 @@
 				<div class="lms-ui-tab-table-wrapper col-5">
 					<div class="lms-ui-tab-table-wrapper col-2">
 						<div class="lms-ui-tab-table-column name">
+							{if $netdevip.lastonline}
+								{if ($smarty.now-$netdevip.lastonline) > $lastonline_limit}
+									<i class="lms-ui-icon-nodeoff" {tip a=$netdevip.lastonlinedate text="Last online: \$a"}></i>
+								{else}
+									<i class="lms-ui-icon-nodeon" {tip a="on-line" text="Last online: \$a"}></i>
+								{/if}
+							{else}
+								<i class="lms-ui-icon-nodeunk"></i>
+							{/if}
 							<strong>{$netdevip.name}</strong>
 							{if $netdevip.location}<BR>
 								{$netdevip.info|truncate:50:"...":true}

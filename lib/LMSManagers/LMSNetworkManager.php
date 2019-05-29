@@ -226,11 +226,21 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetNetDevIPs($id)
     {
-        return $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname, n.authtype
+        $result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname, n.authtype,
+			n.lastonline
 			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
 			WHERE ownerid IS NULL AND netdev = ?', array($id));
+
+        if ($result) {
+            foreach ($result as &$node) {
+                $node['lastonlinedate'] = lastonline_date($node['lastonline']);
+            }
+            unset($node);
+        }
+
+        return $result;
     }
 
     public function GetNetworkList(array $search)
@@ -246,7 +256,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
-        
+
         switch ($order) {
             case 'name':
                 $sqlord = ' ORDER BY n.name';
@@ -290,7 +300,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $p = '';
             $search['compareType'] = '=';
         }
-        
+
         foreach ($search as $k => $v) {
             if ($v != '') {
                 switch ($k) {
@@ -401,7 +411,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $networks['order'] = $order;
             $networks['direction'] = $direction;
         }
-        
+
         return $networks;
     }
 
