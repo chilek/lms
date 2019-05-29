@@ -3,6 +3,9 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+
+{$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
+
 <TABLE class="lmsbox lms-ui-background-cycle">
     <COLGROUP>
 		<COL style="width: 95%;">
@@ -16,7 +19,7 @@
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD>
 			<IMG src="img/netdev.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevsearch&search&o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 			<A href="?m=netdevsearch&search&o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="valign-top nobr">
@@ -50,7 +53,16 @@
 	{$netdev=$netdevlist[netdevlist]}
 	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
 		<TD class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""><a name="{$netdev.id}"
+			{if $netdev.lastonline}
+				{if ($smarty.now-$netdev.lastonline) > $lastonline_limit}
+					<i class="lms-ui-icon-netdevoff" {tip a=$netdev.lastonlinedate text="Last online: \$a"}></i>
+				{else}
+					<i class="lms-ui-icon-netdevon" {tip a="on-line" text="Last online: \$a"}></i>
+				{/if}
+			{else}
+				<i class="lms-ui-icon-netdevunk"></i>
+			{/if}
+			<a name="{$netdev.id}"
 					title="{$netdev.description|replace:"\n":"<br>"|default:trans("- no description -")}{if $netdev.filecontainers}<br><br><i class='lms-ui-icon-fileupload'></i>&nbsp;{implode('<br><i class=\'lms-ui-icon-fileupload\'></i>&nbsp;', $netdev.filecontainers)}{/if}"
 					><B>{$netdev.name}</B></A>
 			<BR>

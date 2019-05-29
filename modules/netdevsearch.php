@@ -116,9 +116,16 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
 					lc.ident AS city_ident,
 					a.street AS location_street_name, a.street_id as location_street,
 					lst.ident AS street_ident,
-					a.house as location_house, a.flat as location_flat, a.location
+					a.house as location_house, a.flat as location_flat, a.location, no.lastonline
 				FROM netdevices d
-				LEFT JOIN vaddresses a ON d.address_id = a.id
+			    LEFT JOIN (
+			        SELECT netdev AS netdevid, MAX(lastonline) AS lastonline
+			        FROM nodes
+			        WHERE nodes.netdev IS NOT NULL AND nodes.ownerid IS NULL
+			            AND lastonline > 0 
+			        GROUP BY netdev
+			    ) no ON no.netdevid = d.id
+			    LEFT JOIN vaddresses a ON d.address_id = a.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes nn            ON nn.id = d.netnodeid
 				LEFT JOIN location_streets lst  ON lst.id = a.street_id
@@ -150,6 +157,8 @@ function NetDevSearch($order = 'name,asc', $search = null, $sqlskey = 'AND')
             $netdev['filecontainers'] = isset($filecontainers[$netdev['id']])
                 ? explode(',', $filecontainers[$netdev['id']]['descriptions'])
                 : array();
+
+            $netdev['lastonlinedate'] = lastonline_date($netdev['lastonline']);
         }
         unset($netdev);
     }
@@ -206,7 +215,7 @@ if (isset($_GET['search'])) {
         if (!isset($_GET['page'])) {
                 $SESSION->restore('ndlsp', $_GET['page']);
         }
-    
+
         $page = (! $_GET['page'] ? 1 : $_GET['page']);
         $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
         $start = ($page - 1) * $pagelimit;
@@ -225,7 +234,7 @@ if (isset($_GET['search'])) {
     $layout['pagetitle'] = trans('Network Devices Search');
 
     $SESSION->remove('ndlsp');
-    
+
     $SMARTY->assign('k', $k);
     $SMARTY->display('netdev/netdevsearch.html');
 }
