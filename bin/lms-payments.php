@@ -901,14 +901,18 @@ foreach ($assigns as $assign) {
 
                 if (!isset($divisions[$customer['divisionid']])) {
                     $divisions[$customer['divisionid']] = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
-						account, inv_header, inv_footer, inv_author, inv_cplace
+						account, inv_header, inv_footer, inv_author, inv_cplace, inv_paytime
 						FROM vdivisions WHERE id = ?", array($customer['divisionid']));
                 }
                 $division = $divisions[$customer['divisionid']];
 
                 $paytime = $customer['paytime'];
                 if ($paytime == -1) {
-                    $paytime = $deadline;
+                    if (isset($division['inv_paytime'])) {
+                        $paytime = $division['inv_paytime'];
+                    } else {
+                        $paytime = $deadline;
+                    }
                 }
 
                 $fullnumber = docnumber(array(
