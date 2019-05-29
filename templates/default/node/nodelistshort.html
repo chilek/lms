@@ -1,41 +1,40 @@
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
-<TABLE class="lmsbox-inner" id="table">
+<TABLE class="lmsbox-inner lms-ui-background-cycle" id="table">
     <THEAD>
 	<TR>
-		<td class="nobr">
+		<td class="bold nobr">
 		    {if $layout.module == 'ewxnodelist'}
-		    <B>{t a=$customernodes|@count|default:"0"}Channel Nodes ($a):{/t}</B>
+		    	{t a=$customernodes|@count|default:"0"}Channel Nodes ($a):{/t}
 		    {else}
-			<B>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</B>
+				{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
 			{/if}
 		</td>
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=customernodes loop=$customernodes}
-	<tr class="highlight {cycle}{if ! $customernodes[customernodes].access} blend{/if}">
-		<td onClick="parent.location.href='?m=nodeinfo&amp;id={$customernodes[customernodes].id}';">
-			{if $customernodes[customernodes].lastonline}
-                                {if ($smarty.now-$customernodes[customernodes].lastonline) > $lastonline_limit}
-				<img src="img/node_off.gif" ALT="" title="{t a=$customernodes[customernodes].lastonlinedate}Last online: $a{/t}">
+	{foreach $customernodes as $node}
+	<tr class="highlight{if ! $node.access} blend{/if}" data-target-url="?m=nodeinfo&id={$node.id}">
+		<td>
+			{if $node.lastonline}
+				{if ($smarty.now-$node.lastonline) > $lastonline_limit}
+					<i class="lms-ui-icon-nodeoff" {tip a=$node.lastonlinedate text="Last online: \$a"}></i>
 				{else}
-				<img src="img/node_on.gif" ALT="" title="{t a="on-line"}Last online: $a{/t}">
-			        {/if}
+					<i class="lms-ui-icon-nodeon" {tip a="on-line" text="Last online: \$a"}></i>
+		        {/if}
 			{else}
-			<img src="img/node_unk.gif" alt="">
+				<i class="lms-ui-icon-nodeunk"></i>
 			{/if}
-			<B>{$customernodes[customernodes].name}</B><BR>
-			{$customernodes[customernodes].ip} {if $customernodes[customernodes].ip_pub!="0.0.0.0"} ({$customernodes[customernodes].ip_pub}) {/if} / {$customernodes[customernodes].mac}<BR>
-			{$customernodes[customernodes].info|truncate:40:"...":true}
+			<B>{$node.name}</B><BR>
+			{$node.ip} {if $node.ip_pub!="0.0.0.0"} ({$node.ip_pub}) {/if} / {$node.mac}<BR>
+			{$node.info|truncate:40:"...":true}
 		</TD>
 	</TR>
-	{sectionelse}
+	{foreachelse}
 	<TR>
 		<td class="empty-table">
 			<p>{trans("No nodes found in database.")}</p>
 		</td>
 	</TR>
-	{/section}
+	{/foreach}
     </TBODY>
 </TABLE>

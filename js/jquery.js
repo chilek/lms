@@ -377,17 +377,20 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$('[data-target-url] > :not(.lms-ui-buttons):not(.buttons),.lms-ui-tab-table-column[data-target-url]').click(function(e) {
-		var url = $(this).attr('data-target-url');
-		if (!url) {
-			url = $(this).parent().attr('data-target-url');
+	$(document).on('click', '[data-target-url] > :not(.lms-ui-buttons):not(.buttons),.lms-ui-tab-table-column[data-target-url]',
+		function(e) {
+			console.log(e);
+			var url = $(this).attr('data-target-url');
+			if (!url) {
+				url = $(this).parent().attr('data-target-url');
+			}
+			if (e.ctrlKey) {
+				window.open(url);
+			} else {
+				location.href = url;
+			}
 		}
-		if (e.ctrlKey) {
-			window.open(url);
-		} else {
-			location.href = url;
-		}
-	});
+	);
 
 	$('.lms-ui-button-clipboard').attr('title', $t('Click copies to clipboard'));
 	new ClipboardJS('.lms-ui-button-clipboard');

@@ -152,13 +152,13 @@
 			<span class="bold">
 			<A name="{$node.id}">
 			{if $node.lastonline}
-			    {if ($smarty.now-$node.lastonline) > $lastonline_limit}
-				<img src="img/node_off.gif" alt="">
-			    {else}
-				<img src="img/node_on.gif" alt="">
-			    {/if}
+				{if ($smarty.now-$node.lastonline) > $lastonline_limit}
+					<i class="lms-ui-icon-nodeoff" {tip a=$node.lastonlinedate text="Last online: \$a"}></i>
+				{else}
+					<i class="lms-ui-icon-nodeon" {tip a="on-line" text="Last online: \$a"}></i>
+				{/if}
 			{else}
-			    <img src="img/node_unk.gif" alt="">
+				<i class="lms-ui-icon-nodeunk"></i>
 			{/if}
 			{if $node.info}
 			    <IMG src="img/info1.gif" alt="" {tip text=$node.info}>

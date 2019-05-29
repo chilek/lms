@@ -192,7 +192,7 @@
 			({if $customer.extid}{$customer.extid} / {/if}{$customer.id|string_format:"%04d"})
 			<BR>
 			{if $customer.account}
-			<IMG src="img/node{if !$customer.online}_off{/if}.gif" alt="" class="lms-ui-tooltip-nodelist" data-resourceid="{$customer.id}">
+			<a class="lms-ui-tooltip-nodelist lms-ui-icon-node{if !$customer.online}off{else}on{/if}" data-resourceid="{$customer.id}">
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
