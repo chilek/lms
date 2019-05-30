@@ -465,13 +465,13 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 if (empty($msgtmplid)) {
                     break;
                 }
-                $LMS->UpdateMessageTemplate($msgtmplid, $msgtmpltype, null, $message['subject'], $message['body']);
+                $LMS->UpdateMessageTemplate($msgtmplid, $msgtmpltype, null, $message['subject'], null, null, $message['body']);
                 break;
             case 3:
                 if (!strlen($msgtmplname)) {
                     break;
                 }
-                $LMS->AddMessageTemplate($msgtmpltype, $msgtmplname, $message['subject'], $message['body']);
+                $LMS->AddMessageTemplate($msgtmpltype, $msgtmplname, $message['subject'], null, null, $message['body']);
                 break;
         }
     }
