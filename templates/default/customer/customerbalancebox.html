@@ -8,6 +8,11 @@
 <FORM name="addbalance" method="POST" id="addbalance-form" action="?m=balanceadd&id={$balancelist.customerid}">
 </FORM>
 
+<FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&type=customerbalance"
+	target="_blank">
+	<input type="hidden" name="customer" value="{$balancelist.customerid}">
+</FORM>
+
 {tab_container id="customerbalancebox"}
 
 	{if $limit}
@@ -27,6 +32,14 @@
 				<input type="checkbox" name="aggregate_documents" value="1"
 						{if $aggregate_documents} checked{/if}>
 			</label>
+
+			{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
+				form="printcustomerbalance">&nbsp;
+			{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}
+				form="printcustomerbalance">
+			<a href="javascript:document.printcustomerbalance.submit();">{trans("Customer Balance Sheet")}</a>
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A id="newtransferformanchor" rel="external" href="?m=customertransferform&id={$balancelist.customerid}&type={LMSHtmlTransferForm::VALUE_ASSIGNMENTS}">{trans("Transfer form:")}</A>
