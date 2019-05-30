@@ -688,7 +688,7 @@ switch ($mode) {
 
                     $description = '';
                     $description_class = '';
-                    $action = '?m=netinfo&id=' . $row['network'];
+                    $action = '?m=netinfo&id=' . $row['id'];
 
                     if (preg_match("~^$search\$~i", $row['id'])) {
                         $description = trans('Id:') . ' ' . $row['id'];
