@@ -10,6 +10,7 @@ version 25-git (????-??-??):
   - improvement: show online status for network devices ip addresses [chilan]
   - improvement: show device online status on network device list [chilan]
   - enhancement: online status filter on network device list [chilan]
+  - improvement: added shortcut to print customer balance from customer balance box [chilan]
 
 version 24.0 (2019-05-16):
 
