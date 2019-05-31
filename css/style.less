@@ -2510,11 +2510,11 @@ table.lmsbox {
 		& > tfoot {
 			background-color: @light;
 		}
-		&.lms-ui-background-cycle > tbody {
-			& > tr.highlight:hover {
+		&.lms-ui-background-cycle > tbody > tr {
+			&.highlight:hover {
 				background-color: @highlight !important;
 			}
-			& > tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even) {
+			&:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even) {
 				& {
 					background-color: @light;
 				}
@@ -2522,7 +2522,7 @@ table.lmsbox {
 					background-color: @red-light;
 				}
 			}
-			& > tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd) {
+			&:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd) {
 				& {
 					background-color: @lucid;
 				}
@@ -2530,18 +2530,18 @@ table.lmsbox {
 					background-color: @red-lucid;
 				}
 			}
-			& > tr.ui-selected {
+			&.ui-selected {
 			}
-			& > tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):not(:last-child) {
+			&:not(.lms-ui-button-panel):not(.lms-ui-header-panel):not(:last-child) {
 				border-bottom: @dotted-line;
 			}
 		}
 	}
-	&.lms-ui-background-cycle > tbody {
-		& > tr.highlight:hover {
+	&.lms-ui-background-cycle > tbody > tr {
+		&.highlight:hover {
 			background-color: @highlight !important;
 		}
-		& > tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even):not(.ui-selected) {
+		&:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(even):not(.ui-selected) {
 			& {
 				background-color: @light;
 			}
@@ -2549,7 +2549,7 @@ table.lmsbox {
 				background-color: @red-light;
 			}
 		}
-		& > tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
+		&:not(.lms-ui-button-panel):not(.lms-ui-header-panel):nth-child(odd):not(.ui-selected) {
 			& {
 				background-color: @lucid;
 			}
@@ -2557,7 +2557,7 @@ table.lmsbox {
 				background-color: @red-lucid;
 			}
 		}
-		& > tr:not(.lms-ui-button-panel):not(.lms-ui-header-panel):not(:last-child) {
+		&:not(.lms-ui-button-panel):not(.lms-ui-header-panel):not(:last-child) {
 			border-bottom: @dotted-line;
 		}
 	}
