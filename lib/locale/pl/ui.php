@@ -192,12 +192,12 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
     $h = $t = $d = 0;
 
     switch (strlen($num)) {
+        // phpcs:disable PSR2.ControlStructures.SwitchDeclaration
         case 3:
             $h = (int)substr($num, -3, 1);
-            break;
         case 2:
             $t = (int)substr($num, -2, 1);
-            break;
+        // phpcs:enable PSR2.ControlStructures.SwitchDeclaration
         case 1:
             $d = (int)substr($num, -1, 1);
             break;
