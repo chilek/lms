@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Actualize data'] = 'Aktualizuj dane';
 $_LANG['Customer ID'] = 'Nr klienta';
 $_LANG['Login data'] = 'Logowanie';
 $_LANG['Actualize'] = 'Aktualizuj';
