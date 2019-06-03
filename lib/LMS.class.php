@@ -2348,6 +2348,9 @@ class LMS
             }
 
             foreach ($headers as $name => $value) {
+                if (is_array($value)) {
+                    $value = reset($value);
+                }
                 if (strpos(strtolower($name), 'x') === 0) {
                     $this->mail_object->addCustomHeader($name, $value);
                 }
