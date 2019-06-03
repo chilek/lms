@@ -1,5 +1,6 @@
 {box title="Your subscriptions"}
 {$show_speeds = ConfigHelper::checkConfig('userpanel.show_speeds')}
+{$show_period = ConfigHelper::checkConfig('userpanel.show_period')}
 {$speed_unit_type = ConfigHelper::getConfig('userpanel.speed_unit_type')}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('userpanel.speed_unit_aggregation_threshold')}
 {$count = 0}
@@ -16,7 +17,9 @@
 			<th>{trans("Uprate (ceil):")}</th>
 			{/if}
 			<th>{trans("Invoice")}</th>
+			{if $show_period}
 			<th>{trans("Period")}</th>
+			{/if}
 		</thead>
 		{foreach $assignments as $assignment}
 			{if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
@@ -35,17 +38,19 @@
 						({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
 					</td>
 					{/if}
+					{if $show_period}
 					<td class="text-center">{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
 					<td>
 						{if $assignment.datefrom}{trans("from")} {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $assignment.dateto}{trans("to")} {$assignment.dateto|date_format:"%Y/%m/%d"}{/if}
 					</td>
+					{/if}
 				</tr>
 				{$count = $count +1}
 			{/if}
 		{foreachelse}
 			<tr>
-				<td colspan="{if $show_speeds}8{else}6{/if}">
+				<td colspan="{if $show_speeds}{if $show_period}8{else}7{/if}{else}{if $show_period}6{else}5{/if}{/if}">
 					{trans("You haven't got any assigned subscriptions.")}
 				</td>
 			</tr>

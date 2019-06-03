@@ -34,6 +34,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $SMARTY->assign('invoice_duplicate', ConfigHelper::getConfig('userpanel.invoice_duplicate'));
         $SMARTY->assign('show_tariffname', ConfigHelper::getConfig('userpanel.show_tariffname'));
         $SMARTY->assign('show_speeds', ConfigHelper::getConfig('userpanel.show_speeds'));
+        $SMARTY->assign('show_period', ConfigHelper::getConfig('userpanel.show_period'));
         $SMARTY->assign('show_last_years', ConfigHelper::getConfig('userpanel.show_last_years'));
         $SMARTY->assign('aggregate_documents', ConfigHelper::checkConfig('userpanel.aggregate_documents'));
         $SMARTY->assign('speed_unit_type', ConfigHelper::getConfig('userpanel.speed_unit_type'));
@@ -68,6 +69,11 @@ if (defined('USERPANEL_SETUPMODE')) {
             $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'show_speeds\'');
         } else {
             $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_speeds\'');
+        }
+        if ($_POST['show_period']) {
+            $DB->Execute('UPDATE uiconfig SET value = \'1\' WHERE section = \'userpanel\' AND var = \'show_period\'');
+        } else {
+            $DB->Execute('UPDATE uiconfig SET value = \'0\' WHERE section = \'userpanel\' AND var = \'show_period\'');
         }
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

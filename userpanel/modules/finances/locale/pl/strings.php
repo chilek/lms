@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$_LANG['Show period column in assignments panel'] = 'Pokaż kolumnę okres w zakładce zobowiazań';
 $_LANG['$a dollars $b cents'] = '$a zł $b gr';
 $_LANG['Accounting day'] = 'Dzień naliczania';
 $_LANG['Admin:'] = 'Administrator:';
