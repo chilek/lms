@@ -66,7 +66,7 @@ class urgent_notice_popup_plugin
                     AND mi.status = ?
                     AND c.id=?
                     ORDER BY m.cdate desc',
-            array(MSG_USERPANEL_URGENT, MSG_NEW, $SESSION->id)
+            array(MSG_USERPANEL_URGENT, MSG_SENT, $SESSION->id)
         );
         $SMARTY->assign('notice_urgent', $notice_urgent);
 

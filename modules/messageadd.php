@@ -644,7 +644,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $headers['Return-Receipt-To'] = $mdn_email;
                 $headers['Disposition-Notification-To'] = $mdn_email;
             }
-        } elseif ($message['type'] != MSG_WWW) {
+        } elseif ($message['type'] != MSG_WWW && $message['type'] != MSG_USERPANEL && $message['type'] != MSG_USERPANEL_URGENT) {
             $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
             if (!empty($debug_phone)) {
                 echo '<B>'.trans('Warning! Debug mode (using phone $a).', $debug_phone).'</B><BR>';
