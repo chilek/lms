@@ -62,11 +62,11 @@ class urgent_notice_popup_plugin
 				FROM customers c, messageitems mi, messages m
 				WHERE c.id=mi.customerid
 					AND m.id=mi.messageid
-                    AND m.type = 6
-                    AND mi.status = 1
+                    AND m.type = ?
+                    AND mi.status = ?
                     AND c.id=?
                     ORDER BY m.cdate desc',
-            array($SESSION->id)
+            array(MSG_USERPANEL_URGENT, MSG_NEW, $SESSION->id)
         );
         $SMARTY->assign('notice_urgent', $notice_urgent);
 
