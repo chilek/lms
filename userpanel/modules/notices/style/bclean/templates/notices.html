@@ -54,7 +54,7 @@
 					<td colspan="4" >
 						<h3>{trans("Body:")}</h3>
 						{$items.body}<br /><br />
-						{if $items.status !=2}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
+						{if $items.status != $smarty.const.MSG_DELIVERED}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
 				</tr>
 				<SCRIPT type="text/javascript">
 					<!--
