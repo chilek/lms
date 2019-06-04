@@ -6,7 +6,7 @@
     <tr>
        <td>
 						{box title="Warning to you"}
-						
+
 						<table width="100%">
 						 <tr>
 				      <td align="center">
@@ -65,7 +65,7 @@ xajax_setNoticeRead({$notice_urgent.id});
 								{foreach $notice as $items}
 								<tr class="dark hand {cycle name=messages}{if $items.status == $smarty.const.MSG_ERROR} alert{elseif $items.status == $smarty.const.MSG_SENT} blend{elseif $items.status == $smarty.const.MSG_DELIVERED} green{/if}" onCLick="ReadNotice('{$items.id}');">
 									<td width="2%" class="nobr">{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
-									<td width="8%" >{if $items.type==6 }<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
+									<td width="8%" >{if $items.type == $smarty.const.MSG_USERPANEL_URGENT}<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
 									<td width="80%" style="word-break:break-all;">{$items.subject}</td>
 									<td width="10%" style="border: 0px solid;">
 										{if $items.type == $smarty.const.MSG_USERPANEL || $items.type == $smarty.const.MSG_USERPANEL_URGENT}
