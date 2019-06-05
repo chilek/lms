@@ -57,15 +57,19 @@ function module_main()
         $SMARTY->assign('notice', $notice);
     }
 
-    if (isset($_GET['confirm_urgent'])) {
+    if (isset($_GET['confirm_urgent']) && isset($_GET['module_backto'])) {
         $confirm_urgent = $_GET['confirm_urgent'];
         $DB->Execute(
             'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
             array(MSG_DELIVERED, $confirm_urgent)
         );
-        header('Location: ?m=notices');
+        header('Location: ?m='.$_GET['module_backto']);
     }
-    $SMARTY->display('module:notices.html');
+    if (isset($_GET['module_backto'])) {
+        $SMARTY->display('module:'.$_GET['module_backto'].'.html');
+    } else {
+        $SMARTY->display('module:notices.html');
+    }
 }
 
 function setNoticeRead($noticeid)

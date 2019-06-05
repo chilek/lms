@@ -33,3 +33,26 @@ $USERPANEL->AddModule(
     null,
     'lms-userpanel-notices'
 );
+
+$USERPANEL->registerCallback('notices', function ($db, $smarty) {
+    global $SESSION;
+
+    $notice_urgent = $db->GetRow(
+        'SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status
+				FROM customers c, messageitems mi, messages m
+				WHERE c.id=mi.customerid
+					AND m.id=mi.messageid
+                    AND m.type = ?
+                    AND mi.status = ?
+                    AND c.id=?
+                    ORDER BY m.cdate desc',
+        array(MSG_USERPANEL_URGENT, MSG_SENT, $SESSION->id)
+    );
+
+    $db->Execute('UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ?', array($notice_urgent['id']));
+
+    $smarty->assign('notice_urgent', $notice_urgent);
+    $smarty->assign('module_backto', ltrim($_SERVER['QUERY_STRING'], 'm='));
+
+    return $smarty->fetch('module:callback-handler.html');
+});
