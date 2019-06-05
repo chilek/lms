@@ -1,0 +1,30 @@
+{$xajax}
+{if $notice_urgent}
+    <script>
+        $(function() {
+            $('#urgent_modal').modal('show');
+        });
+        xajax_setNoticeRead({$notice_urgent.id});
+    </script>
+
+    <div class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="urgent_modal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">{$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"} / {$notice_urgent.subject}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{$notice_urgent.body}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary"href="?m=notices&confirm_urgent={$notice_urgent.id}&module_backto={$module_backto}">{trans("I confirm reading")}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}

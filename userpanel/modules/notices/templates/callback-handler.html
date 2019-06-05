@@ -1,0 +1,24 @@
+{$xajax}
+{if $notice_urgent}
+    <script>
+        $(function () {
+            $("#dialog-confirm").dialog({
+                resizable: false,
+                height: "auto",
+                width: 400,
+                modal: true,
+                buttons: {
+                    "{trans("I confirm reading")}": function () {
+                        location.href = '?m=notices&confirm_urgent={$notice_urgent.id}&module_backto={$module_backto}'
+                    }
+                }
+            });
+        });
+        xajax_setNoticeRead({$notice_urgent.id});
+    </script>
+    {assign var=title_date value=$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"}
+    {assign var=title_subject value=$notice_urgent.subject}
+    <div id="dialog-confirm" title="{$title_date} / {$title_subject}">
+        <p>{$notice_urgent.body}</p>
+    </div>
+{/if}
