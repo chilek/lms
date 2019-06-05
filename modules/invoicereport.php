@@ -69,11 +69,7 @@ $listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
-if (in_array(DOC_DNOTE, $doctypes)) {
-    $taxescount = -1;
-} else {
-    $taxescount = 0;
-}
+$taxescount = 0;
 
 if (!empty($_POST['group'])) {
     if (is_array($_POST['group'])) {
