@@ -30,6 +30,7 @@ class USERPANEL
     private $SESSION;
     public $MODULES = array();
     private $module_order = null;
+    private $callbacks = array();
 
     public function __construct(&$DB, &$SESSION)
     {
@@ -89,5 +90,28 @@ class USERPANEL
         }
 
         return $result;
+    }
+
+    public function registerCallback($module, $callback)
+    {
+        $this->callbacks[] = array(
+            'module' => $module,
+            'callback' => $callback,
+        );
+    }
+
+    public function executeCallbacks($smarty)
+    {
+        $old_m = $_GET['m'];
+        $html = '';
+
+        foreach ($this->callbacks as $callback) {
+            $_GET['m'] = $callback['module'];
+            $html .= call_user_func($callback['callback'], $this->DB, $smarty);
+        }
+
+        $_GET['m'] = $old_m;
+
+        return $html;
     }
 }

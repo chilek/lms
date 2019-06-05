@@ -274,6 +274,9 @@ if ($SESSION->islogged) {
             $to_execute = 'module_'.$function;
             $layout['userpanel_module'] = $module;
             $layout['userpanel_function'] = $function;
+
+            $SMARTY->assign('callback_result', $USERPANEL->executeCallbacks($SMARTY));
+
             $to_execute();
         } else {
                 $layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);
