@@ -181,3 +181,7 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
 div.g-recaptcha {
     margin: 20px 10px 0px 10px;
 }
+
+.lms-userpanel-notices-icon {
+    color: red;
+}

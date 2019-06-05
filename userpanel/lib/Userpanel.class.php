@@ -48,13 +48,14 @@ class USERPANEL
         return true;
     }
 
-    public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = null)
+    public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = null, $icon = null)
     {
         if (isset($this->module_order[$module])) {
             $prio = $this->module_order[$module];
         }
         if ($name != '') {
-            $this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description, 'selected' => false, 'module' => $module, 'submenu' => $submenu);
+            $this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description,
+                'selected' => false, 'module' => $module, 'submenu' => $submenu, 'icon' => $icon);
             if (!function_exists('cmp')) {
                 function cmp($a, $b)
                 {

@@ -18,7 +18,10 @@
 			<ul class="navbar-nav mr-auto">
 				{foreach from=$modules item=menuitem}
 					<li class="nav-item {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}">
-						<a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>{$menuitem.name|replace:" ":"&nbsp;"}</a>
+						<a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>
+							{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
+							{$menuitem.name|replace:" ":"&nbsp;"}
+						</a>
 					</li>
 				{/foreach}
 			</ul>

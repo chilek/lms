@@ -156,3 +156,7 @@ TEXTAREA.alert  { background-color: #FFFF99;}
 div.g-recaptcha {
     margin: 20px 10px 0px 10px;
 }
+
+.lms-userpanel-notices-icon {
+    color: red;
+}

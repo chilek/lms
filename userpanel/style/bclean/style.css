@@ -75,3 +75,7 @@ div.form-group.row > label.col-form-label {
 nav.navbar {
     margin-bottom: 0.3em;
 }
+
+.lms-userpanel-notices-icon {
+    color: red;
+}
