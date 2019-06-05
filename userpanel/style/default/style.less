@@ -1,0 +1,238 @@
+/*
+ * LMS version 1.11-git
+ *
+ *  (C) Copyright 2001-2019 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+@import "../../../css/fontawesome/less/fontawesome";
+@fa-font-path: "../../css/fontawesome/webfonts";
+@import "../../../css/fontawesome/less/solid";
+@import "../../../css/fontawesome/less/brands";
+@import "../../../css/fontawesome/less/regular";
+
+BODY		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin: 0pt; height: 100%; margin: 0; }
+TABLE		{ border: 0; }
+TD		{ font-size: 10pt; }
+TR.blend	{ color: #888888; }
+A		{ text-decoration: none; color: #3333FF; }
+A:hover		{ text-decoration: underline; color: #940000; }
+P		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H1		{ font-size: 18pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H2		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H3		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H4		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+IMG		{ border: 0; vertical-align: middle; }
+INPUT 		{ border-width: 1pt; border-color: #000000; border-style: solid; background-color: #EEEEEE;}
+INPUT.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid; background-color: #FFFF99;}
+TEXTAREA 	{ border-width: 1pt; border-color: #000000; border-style: solid; background-color: #EEEEEE;}
+TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid; background-color: #FFFF99;}
+
+.copyrights	{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; color: #BABABA; width:500px}
+.copyrights a	{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; color: #000000; }
+.copyrights a:hover	{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; color: #940000; }
+.tabnotsel		{ font-size: 12px; text-decoration: none; color: white; font-weight: bold;}
+.tabsel			{ font-size: 12px; text-decoration: none; color: black; font-weight: bold;}
+.tabnotsel:hover	{ font-size: 12px; text-decoration: none; color: white; }
+.tabsel:hover		{ font-size: 12px; text-decoration: none; color: black; }
+.superlight	{ background-color: #EEEEEE; }
+.light		{ background-color: #F1F1F1; }
+.dark		{ background-color: #CCCCCC; }
+.darkest	{ background-color: #BBBBBB; }
+.hand		{ cursor: pointer; }
+
+.nobr		{ white-space: nowrap; }
+.bold		{ font-weight: bold; }
+.text-right	{ text-align: right; }
+.text-left	{ text-align: left; }
+.text-center	{ text-align: center; }
+.valign-top	{ vertical-align: top; }
+.valign-bottom	{ vertical-align: bottom; }
+
+.BOOK		{ padding: 5pt; }
+.SCREEN		{ font-size: 10pt; background: #F4F0EC; border: 1px solid #333333; padding: 3pt; font-family: Courier; }
+.PROMPT		{ font-size: 10pt; font-family: Courier; }
+.login		{ position:absolute; left:0px; top:0px; width:100%; height:100%; z-index:1; background: url(grad.gif); background-repeat: repeat-x; }
+
+#dialog {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.30);
+    padding: 8px;
+    /*margin-top: 140px;*/
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    -webkit-border-radius: 9px; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+    -moz-border-radius: 9px; /* FF1-3.6 */
+    border-radius: 9px; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+}
+
+#dialog-bg {
+    /*background-color: #FBFBFB;*/
+    background-color: rgba(0,0,0,0.60);
+    width: 80%;
+    height: auto;
+		 margin-top: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-border-radius: 7px; /* Saf3-4, iOS 1-3.2, Android <1.6 */
+    -moz-border-radius: 7px; /* FF1-3.6 */
+    border-radius: 7px; /* Opera 10.5, IE9, Saf5, Chrome, FF4, iOS 4, Android 2.1+ */
+}
+
+#dialog-title {
+    width: 100%;
+    height: 60px;
+    padding-top: 16px;
+    background-color: #FFFFFF;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#E9E9E9)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient(top, #FFFFFF, #E9E9E9); /* Chrome 10+, Saf5.1+, iOS 5+ */
+    background-image: -moz-linear-gradient(top, #FFFFFF, #E9E9E9); /* FF3.6 */
+    background-image: -ms-linear-gradient(top, #FFFFFF, #E9E9E9); /* IE10 */
+    background-image: -o-linear-gradient(top, #FFFFFF, #E9E9E9); /* Opera 11.10+ */
+    background-image: linear-gradient(top, #FFFFFF, #E9E9E9);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#FFFFFF', EndColorStr='#E9E9E9'); /* IE6-IE9 */
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom: 1px solid #FFFFFF;
+    color: #434343;
+    /*text-shadow: 1px 1px 1px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=1, offy=1);*/
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: default;
+}
+
+#dialog-description {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    color: #555555;
+    font-size: 13px;
+    text-align: center;
+    line-height: 24px;
+    /*border-top: 1px solid #B9B9B9;*/
+    cursor: default;
+}
+
+.userbox {
+    border-spacing: 0;
+    border-collapse: separate;
+    border: 2px solid #940000;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.userbox-title {
+    text-align:left;
+    color: white;
+    white-space: nowrap;
+    background-color: #940000;
+    padding-left: 5px;
+    padding-top: 2px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.pagin-box .pagin-button {
+    display: inline-block;
+    text-decoration: none;
+    padding: 7px;
+    border-radius: 3px;
+    color: black;
+    border: 1px solid gray;
+}
+
+.pagin-box .active:hover {
+    cursor: pointer;
+    background-color: #940000;
+    color: white;
+    border: 1px solid black;
+}
+
+.pagin-box .inactive {
+    background-color: lightgray;
+    pointer-events: none;
+    cursor: default;
+}
+
+.submit-btn {
+    border-radius: 7px;
+    padding: 2px 25px;
+    height: 30px;
+    font-weight: bold;
+    background-color: #900000;
+    color: white;
+    -webkit-box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	outline:0;
+}
+
+.submit-btn:hover {
+    cursor: pointer;
+    background-color: #b30000;
+}
+
+.billing-tab tr:nth-child(n+2):nth-last-child(n+2):hover {
+    background-color: #a6a6a6;
+}
+
+.lms-ui-customer-property-changed {
+	color: red;
+}
+
+div.g-recaptcha {
+    margin: 20px 10px 0px 10px;
+}
+
+@keyframes lms-userpanel-blink {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.lms-userpanel-icon-warning {
+    .fa-icon;
+    .fas;
+    color: red;
+    animation: lms-userpanel-blink 1.2s infinite;
+    &:before {
+        content: @fa-var-exclamation;
+    }
+}
