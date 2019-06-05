@@ -69,11 +69,6 @@ $listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
-if (in_array(DOC_DNOTE, $doctypes)) {
-    $taxescount = -1;
-} else {
-    $taxescount = 0;
-}
 
 if (!empty($_POST['group'])) {
     if (is_array($_POST['group'])) {
@@ -153,6 +148,12 @@ if (empty($doctypes)) {
     $doctypes = array(DOC_INVOICE, DOC_CNOTE);
 }
 
+if (in_array(DOC_DNOTE, $doctypes)) {
+    $taxescount = -1;
+} else {
+    $taxescount = 0;
+}
+
 if (!empty($_POST['numberplanid'])) {
     if (is_array($_POST['numberplanid'])) {
         $numberplans = Utils::filterIntegers($_POST['numberplanid']);
@@ -172,8 +173,8 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid,' . (in_array(DOC_DNOTE, $doctype
 	d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
 	    FROM documents d
 		' . (in_array(DOC_DNOTE, $doctypes) ? 'LEFT JOIN debitnotecontents c ON c.docid = d.id'
-            : 'LEFT JOIN invoicecontents c ON c.docid = d.id
-				LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = c.itemid') . '
+            : 'LEFT JOIN invoicecontents c ON c.docid = d.id') . '
+				LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = c.itemid
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id' .
         ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
         . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
