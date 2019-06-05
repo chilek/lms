@@ -11,6 +11,8 @@ version 25-git (????-??-??):
   - improvement: show device online status on network device list [chilan]
   - enhancement: online status filter on network device list [chilan]
   - improvement: added shortcut to print customer balance from customer balance box [chilan]
+  - enhancement: userpanel: callback mechanism introduced which allows to generate html content
+    from hidden module [chilan]
 
 version 24.0 (2019-05-16):
 
