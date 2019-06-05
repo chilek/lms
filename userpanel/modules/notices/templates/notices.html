@@ -68,15 +68,13 @@ xajax_setNoticeRead({$notice_urgent.id});
 									<td width="8%" >{if $items.type == $smarty.const.MSG_USERPANEL_URGENT}<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
 									<td width="80%" style="word-break:break-all;">{$items.subject}</td>
 									<td width="10%" style="border: 0px solid;">
-										{if $items.type == $smarty.const.MSG_USERPANEL || $items.type == $smarty.const.MSG_USERPANEL_URGENT}
-											{if $items.status == $smarty.const.MSG_SENT}
-											{trans("Unread")}
-											{elseif $items.status == $smarty.const.MSG_DELIVERED}
-											{trans("Was read on:")}<br />
-											{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}
+										{if $items.type == $smarty.const.MSG_USERPANEL_URGENT || $items.type == $smarty.const.MSG_USERPANEL}
+											{if $items.status == $smarty.const.MSG_SENT && !$items.lastreaddate}
+												{trans("Unread")}
+											{elseif $items.status == $smarty.const.MSG_SENT || $items.status == $smarty.const.MSG_DELIVERED}
+												{trans("Was read on:")}<br />
+												{$items.lastreaddate|date_format:"%Y/%m/%d %H:%M"}
 											{/if}
-										{else}
-										&nbsp;
 										{/if}
 									</td>
 								</tr>

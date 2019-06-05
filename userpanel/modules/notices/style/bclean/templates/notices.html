@@ -54,7 +54,16 @@
 					<td>{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
 					<td>{if $items.type == $smarty.const.MSG_USERPANEL_URGENT}<strong>{trans("Urgent")}</strong>{else}{trans("Casual")}{/if}</td>
 					<td>{$items.subject}</td>
-					<td>{if $items.type == $smarty.const.MSG_USERPANEL_URGENT && $items.status == $smarty.const.MSG_NEW}{trans("Unread")}{elseif $items.type == $smarty.const.MSG_USERPANEL_URGENT && $items.status == $smarty.const.MSG_SENT}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{elseif $items.type == $smarty.const.MSG_USERPANEL && $items.status == $smarty.const.MSG_NEW}{trans("Unread")}{elseif $items.type == $smarty.const.MSG_USERPANEL && $items.status == $smarty.const.MSG_SENT}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}</td>
+					<td>
+						{if $items.type == $smarty.const.MSG_USERPANEL_URGENT || $items.type == $smarty.const.MSG_USERPANEL}
+							{if $items.status == $smarty.const.MSG_SENT && !$items.lastreaddate}
+								{trans("Unread")}
+							{elseif $items.status == $smarty.const.MSG_SENT || $items.status == $smarty.const.MSG_DELIVERED}
+								{trans("Was read on:")}<br />
+								{$items.lastreaddate|date_format:"%Y/%m/%d %H:%M"}
+							{/if}
+						{/if}
+					</td>
 				</tr>
 				<tr id="{$items.id}" style="display:none;">
 					<td colspan="4" >

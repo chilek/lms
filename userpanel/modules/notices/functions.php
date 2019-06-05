@@ -45,7 +45,8 @@ function module_main()
         header('Location: ?m=notices');
     } else {
         $notice = $DB->GetAll(
-            'SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status, mi.lastdate
+            'SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status,
+                mi.lastdate, mi.lastreaddate
 			FROM customers c
 			JOIN messageitems mi ON mi.customerid = c.id
 			JOIN messages m ON m.id = mi.messageid
