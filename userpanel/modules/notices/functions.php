@@ -57,26 +57,34 @@ function module_main()
         $SMARTY->assign('notice', $notice);
     }
 
-    if (isset($_GET['confirm_urgent']) && isset($_GET['module_backto'])) {
-        $confirm_urgent = $_GET['confirm_urgent'];
-        $DB->Execute(
-            'UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
-            array(MSG_DELIVERED, $confirm_urgent)
-        );
-        header('Location: ?m='.$_GET['module_backto']);
+    if (isset($_GET['confirm_urgent'])) {
+        $notice_handler = UserpanelNoticeHandler::getInstance();
+        $notice_handler->markNoticeAsDelivered($_GET['confirm_urgent']);
+        if (isset($_GET['ajax'])) {
+            header('Content-Type: application/json');
+            print json_encode(array(
+                'urgent_notice' => $notice_handler->getUrgentNotice(),
+                'unread_notices' => $notice_handler->getUnreadNotices(),
+            ));
+            return;
+        }
+        header('Location: ?m=notices');
     }
-    if (isset($_GET['module_backto'])) {
-        $SMARTY->display('module:'.$_GET['module_backto'].'.html');
-    } else {
-        $SMARTY->display('module:notices.html');
-    }
+    $SMARTY->display('module:notices.html');
 }
 
 function setNoticeRead($noticeid)
 {
-    global $DB;
+    $db = LMSDB::getInstance();
     $result = new xajaxResponse();
-    $DB->Execute('UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ?', array($noticeid));
+
+    $notice_handler = UserpanelNoticeHandler::getInstance();
+    $notice_handler->markNoticeAsRead($noticeid);
+    $unread_notices = $notice_handler->getUnreadNotices();
+    if (empty($unread_notices)) {
+        $result->script("$('.lms-userpanel-notices').removeClass('lms-userpanel-icon-warning');");
+    }
+
     return $result;
 }
 

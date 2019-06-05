@@ -37,7 +37,7 @@
 	    {/if}
 	{/if}
         <td style="vertical-align: top; background-image: url(style/default/{if $menuitem.selected}tabs_tab_sel.gif{else}tabs_tab_notsel.gif{/if}); background-repeat: repeat-x; padding-top: 2px;" width="1px">
-    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip} class="{if $menuitem.selected}tabsel{else}tabnotsel{/if}">
+    	    <a href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip} class="{if $menuitem.selected}tabsel{else}tabnotsel{/if} nobr">
 				{if $menuitem.icon}<i class="{$menuitem.icon}"></i>{/if}
 				{$menuitem.name|replace:" ":"&nbsp;"}
 			</a>

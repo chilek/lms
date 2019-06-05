@@ -34,25 +34,16 @@ $USERPANEL->AddModule(
     'lms-userpanel-notices'
 );
 
-$USERPANEL->registerCallback('notices', function ($db, $smarty) {
-    global $SESSION;
+require_once('UserpanelNoticeHandler.php');
+$notice_handler = new UserpanelNoticeHandler($DB, $SMARTY, $SESSION->id);
 
-    $notice_urgent = $db->GetRow(
-        'SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status
-				FROM customers c, messageitems mi, messages m
-				WHERE c.id=mi.customerid
-					AND m.id=mi.messageid
-                    AND m.type = ?
-                    AND mi.status = ?
-                    AND c.id=?
-                    ORDER BY m.cdate desc',
-        array(MSG_USERPANEL_URGENT, MSG_SENT, $SESSION->id)
-    );
+$USERPANEL->registerCallback('notices', function ($db, $smarty) use ($notice_handler) {
+    $urgent_notice = $notice_handler->getUrgentNotice();
+    $notice_handler->markNoticeAsRead($urgent_notice['id']);
+    $smarty->assign('urgent_notice', $urgent_notice);
 
-    $db->Execute('UPDATE messageitems SET lastreaddate = ?NOW? WHERE id = ?', array($notice_urgent['id']));
-
-    $smarty->assign('notice_urgent', $notice_urgent);
-    $smarty->assign('module_backto', ltrim($_SERVER['QUERY_STRING'], 'm='));
+    $unread_notices = $notice_handler->getUnreadNotices();
+    $smarty->assign('unread_notices', $unread_notices);
 
     return $smarty->fetch('module:callback-handler.html');
 });

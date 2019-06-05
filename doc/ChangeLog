@@ -13,6 +13,9 @@ version 25-git (????-??-??):
   - improvement: added shortcut to print customer balance from customer balance box [chilan]
   - enhancement: userpanel: callback mechanism introduced which allows to generate html content
     from hidden module [chilan]
+  - enhancement: userpanel: urgent notices are shown independently of active tab/module [chilan]
+  - enhancement: userpanel: special icon on notices tab inform if there are any unread
+    notices [chilan]
 
 version 24.0 (2019-05-16):
 

@@ -1,27 +1,66 @@
-{$xajax}
-{if $notice_urgent}
+{if $unread_notices}
+<script>
+
+    $('.lms-userpanel-notices').addClass('lms-userpanel-icon-warning');
+
+</script>
+{/if}
+
+{if $urgent_notice}
     <script>
+
         $(function() {
-            $('#urgent_modal').modal('show');
+            $('#urgent-notice-dialog').modal('show');
+
+            $('#urgent-notice-confirm').click(function() {
+                $.ajax(
+                    '?m=notices&ajax=1&confirm_urgent=' + $(this).attr('data-id'),
+                    {
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#urgent-notice-dialog').modal('hide');
+                            if (!parseInt(data["unread_notices"])) {
+                                $('.lms-userpanel-notices').removeClass('lms-userpanel-icon-warning');
+                            }
+                            if (typeof(data["urgent_notice"]) == 'object') {
+                                $('#urgent-notice-dialog').one('hidden.bs.modal', function() {
+                                    $('#urgent-notice-confirm').attr('data-id', data["urgent_notice"].id);
+                                    cdate = new Date(parseInt(data["urgent_notice"].cdate) * 1000);
+                                    $('#urgent-notice-title').html(sprintf("%04d/%02d/%02d %02d:%02d / %s",
+                                        cdate.getFullYear(),
+                                        cdate.getMonth() + 1,
+                                        cdate.getDate(),
+                                        cdate.getHours(),
+                                        cdate.getMinutes(),
+                                        data["urgent_notice"].subject
+                                    ));
+                                    $('#urgent-notice-body').html(data["urgent_notice"].body);
+                                    $('#urgent-notice-dialog').modal('show');
+                                });
+                            }
+                        }
+                    }
+                );
+            });
         });
-        xajax_setNoticeRead({$notice_urgent.id});
+
     </script>
 
     <div class="container">
         <!-- Modal -->
-        <div class="modal fade" id="urgent_modal" role="dialog">
+        <div class="modal fade" id="urgent-notice-dialog" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">{$notice_urgent.cdate|date_format:"%Y/%m/%d %H:%M"} / {$notice_urgent.subject}</h4>
+                        <h4 id="urgent-notice-title" class="modal-title">{$urgent_notice.cdate|date_format:"%Y/%m/%d %H:%M"} / {$urgent_notice.subject}</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                    <div class="modal-body">
-                        <p>{$notice_urgent.body}</p>
+                    <div id="urgent-notice-body" class="modal-body">
+                        {$urgent_notice.body}
                     </div>
                     <div class="modal-footer">
-                        <a class="btn btn-primary"href="?m=notices&confirm_urgent={$notice_urgent.id}&module_backto={$module_backto}">{trans("I confirm reading")}</a>
+                        <a id="urgent-notice-confirm" data-id="{$urgent_notice.id}" class="btn btn-primary">{trans("I confirm reading")}</a>
                     </div>
                 </div>
             </div>
