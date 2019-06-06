@@ -150,7 +150,10 @@
 				.removeClass("ui-state-error")
 				.removeAttr("title");
 
-			$('#{$operation}-template-html-body').html(tinymce.get('{$operation}-template-html-body').getContent());
+			var editor = tinymce.get('{$operation}-template-html-body');
+			if (editor) {
+				$('#{$operation}-template-html-body').html(editor.getContent());
+			}
 
 			$.ajax({
 				method: "POST",
