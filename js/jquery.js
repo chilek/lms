@@ -377,13 +377,16 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('click', '[data-target-url] > :not(.lms-ui-buttons):not(.buttons),.lms-ui-tab-table-column[data-target-url]',
+	$(document).on('click mouseup', '[data-target-url] > :not(.lms-ui-buttons):not(.buttons),.lms-ui-tab-table-column[data-target-url]',
 		function(e) {
+			if (e.type == 'mouseup' && e.which != 2) {
+				return;
+			}
 			var url = $(this).attr('data-target-url');
 			if (!url) {
 				url = $(this).parent().attr('data-target-url');
 			}
-			if (e.ctrlKey) {
+			if (e.ctrlKey || (e.type == 'mouseup' && e.which == 2)) {
 				window.open(url);
 			} else {
 				location.href = url;
