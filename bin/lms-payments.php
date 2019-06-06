@@ -165,6 +165,7 @@ $unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 $check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
 $proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
 $delete_old_assignments_after_days = intval(ConfigHelper::getConfig('payments.delete_old_assignments_after_days', 30));
+$prefer_settlement_only = ConfigHelper::checkConfig('payments.prefer_settlement_only');
 
 function localtime2()
 {
@@ -977,76 +978,80 @@ foreach ($assigns as $assign) {
                 $numberplans[$cid] = $plan;
             }
 
-            if ($assign['invoice'] == DOC_DNOTE) {
-                $tmp_itemid = 0;
-            } else {
-                $tmp_itemid = $DB->GetOne(
-                    "SELECT itemid FROM invoicecontents 
-					WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-                    array($assign['tariffid'], $val, $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])
-                );
-            }
-
-            if ($tmp_itemid != 0) {
+            if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
                 if ($assign['invoice'] == DOC_DNOTE) {
-                    $DB->Execute(
-                        "UPDATE debitnotecontents SET value = value + ? 
-						WHERE docid = ? AND itemid = ?",
-                        array($val, $invoices[$cid], $tmp_itemid)
-                    );
+                    $tmp_itemid = 0;
                 } else {
-                    $DB->Execute(
-                        "UPDATE invoicecontents SET count = count + 1 
-						WHERE docid = ? AND itemid = ?",
-                        array($invoices[$cid], $tmp_itemid)
+                    $tmp_itemid = $DB->GetOne(
+                        "SELECT itemid FROM invoicecontents 
+                        WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
+                        array($assign['tariffid'], $val, $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])
                     );
                 }
-                if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
-                    $DB->Execute(
-                        "UPDATE cash SET value = value + ? 
-						WHERE docid = ? AND itemid = ?",
-                        array(str_replace(',', '.', $val * - 1), $invoices[$cid], $tmp_itemid)
-                    );
-                }
-            } else {
-                $itemid++;
 
-                if ($assign['invoice'] == DOC_DNOTE) {
-                    $DB->Execute(
-                        "INSERT INTO debitnotecontents (docid, value, description, itemid) 
-						VALUES (?, ?, ?, ?)",
-                        array($invoices[$cid], $val, $desc, $itemid)
-                    );
+                if ($tmp_itemid != 0) {
+                    if ($assign['invoice'] == DOC_DNOTE) {
+                        $DB->Execute(
+                            "UPDATE debitnotecontents SET value = value + ? 
+                            WHERE docid = ? AND itemid = ?",
+                            array($val, $invoices[$cid], $tmp_itemid)
+                        );
+                    } else {
+                        $DB->Execute(
+                            "UPDATE invoicecontents SET count = count + 1 
+                            WHERE docid = ? AND itemid = ?",
+                            array($invoices[$cid], $tmp_itemid)
+                        );
+                    }
+                    if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
+                        $DB->Execute(
+                            "UPDATE cash SET value = value + ? 
+                            WHERE docid = ? AND itemid = ?",
+                            array(str_replace(',', '.', $val * -1), $invoices[$cid], $tmp_itemid)
+                        );
+                    }
                 } else {
-                    $DB->Execute(
-                        "INSERT INTO invoicecontents (docid, value, taxid, prodid, 
-						content, count, description, tariffid, itemid, pdiscount, vdiscount) 
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        array($invoices[$cid], $val, $assign['taxid'], $assign['prodid'], $unit_name, 1,
-                        $desc,
-                        empty($assign['tariffid']) ? null : $assign['tariffid'],
-                        $itemid,
-                        $assign['pdiscount'],
-                        $assign['vdiscount'])
-                    );
-                }
-                if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
-                    $DB->Execute(
-                        "INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology) 
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                        array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $invoices[$cid], $itemid, $linktechnology)
-                    );
+                    $itemid++;
+
+                    if ($assign['invoice'] == DOC_DNOTE) {
+                        $DB->Execute(
+                            "INSERT INTO debitnotecontents (docid, value, description, itemid) 
+                            VALUES (?, ?, ?, ?)",
+                            array($invoices[$cid], $val, $desc, $itemid)
+                        );
+                    } else {
+                        $DB->Execute(
+                            "INSERT INTO invoicecontents (docid, value, taxid, prodid, 
+                            content, count, description, tariffid, itemid, pdiscount, vdiscount) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            array($invoices[$cid], $val, $assign['taxid'], $assign['prodid'], $unit_name, 1,
+                                $desc,
+                                empty($assign['tariffid']) ? null : $assign['tariffid'],
+                                $itemid,
+                                $assign['pdiscount'],
+                                $assign['vdiscount'])
+                        );
+                    }
+                    if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
+                        $DB->Execute(
+                            "INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                            array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $invoices[$cid], $itemid, $linktechnology)
+                        );
+                    }
                 }
             }
         } else {
-            $DB->Execute(
-                "INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology) 
-				VALUES (?, ?, ?, ?, ?, ?)",
-                array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $linktechnology)
-            );
+            if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
+                $DB->Execute(
+                    "INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology) 
+                    VALUES (?, ?, ?, ?, ?, ?)",
+                    array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $linktechnology)
+                );
+            }
         }
 
-        if (!$quiet) {
+        if (!$quiet && (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom'])) {
             print "CID:$cid\tVAL:$val\tDESC:$desc" . PHP_EOL;
         }
 
