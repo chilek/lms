@@ -379,7 +379,6 @@ $(function() {
 
 	$(document).on('click', '[data-target-url] > :not(.lms-ui-buttons):not(.buttons),.lms-ui-tab-table-column[data-target-url]',
 		function(e) {
-			console.log(e);
 			var url = $(this).attr('data-target-url');
 			if (!url) {
 				url = $(this).parent().attr('data-target-url');
