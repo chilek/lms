@@ -27,7 +27,16 @@
 @import "../../../css/fontawesome/less/solid";
 @import "../../../css/fontawesome/less/brands";
 @import "../../../css/fontawesome/less/regular";
-@import "../../../css/less/lms-variables";
+
+@dialog-title: #333;
+@light: #DFD5BD;
+@dark: #fff7de;
+@superdark: #decea5;
+
+@darkbrown: #615847;
+@highlight: #CCFFCC;
+@lucid: #EBE4D6;
+
 @import "../../../css/less/style-jquery-ui";
 
 BODY		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin: 0pt; background-color: #FFF7DE; height: 100%; margin: 0; }
@@ -221,20 +230,4 @@ div.g-recaptcha {
     &:before {
         content: @fa-var-exclamation;
     }
-}
-
-@widget-background: #e7dead;
-@widget-border: #c5c5c5;
-@widget-titlebar: #decea5;
-.ui-dialog .ui-dialog-titlebar {
-    background-color: @widget-titlebar;
-}
-
-.ui-widget.ui-widget-content {
-    background-color: @widget-background;
-}
-
-.ui-dialog .ui-dialog-buttonpane {
-    background-color: @widget-background;
-    border-top: 1px solid @widget-border;
 }
