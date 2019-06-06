@@ -16,6 +16,8 @@ version 25-git (????-??-??):
   - enhancement: userpanel: urgent notices are shown independently of active tab/module [chilan]
   - enhancement: userpanel: special icon on notices tab inform if there are any unread
     notices [chilan]
+  - enhancement: allow to prefer generation of settlements only - when
+    payments.prefer_settlement_only set to 'true' [chilan]
 
 version 24.0 (2019-05-16):
 
