@@ -2336,47 +2336,7 @@ button,a,div {
 
 }
 
-button.lms-ui-button {
-	border: 1px solid @darkbrown;
-	color: black;
-	text-decoration: none;
-	padding: 0.33em;
-	padding-top: 0.15em;
-	padding-bottom: 0.15em;
-	background-color: @light;
-	background-repeat: no-repeat;
-	background-position: 3px 3px;
-	outline: none;
-	&.lms-ui-button-icon {
-		padding-left: 25px;
-	}
-	&:hover {
-		text-decoration: none;
-	}
-	&:not([disabled]) {
-		&:hover {
-			box-shadow: 0px 0px 1px 1px blue;
-		}
-		&:active {
-			background-color: @dark;
-			box-shadow: inset 1px 1px 4px 0px rgba(0, 0, 0, 0.4);
-		}
-		&:focus {
-			box-shadow: 0px 0px 1px 1px black;
-		}
-	}
-	&[disabled] {
-		color: @blend;
-		cursor: no-drop;
-		&:before {
-			color: @blend;
-		}
-	}
-	i + .lms-ui-label {
-		padding-left: 0.3em;
-		font-weight: 700;
-	}
-}
+@import "less/style-button";
 
 button.lms-ui-button-fileupload {
 	&.lms-ui-fileupload-dropzone {

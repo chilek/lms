@@ -32,19 +32,21 @@
                         $("#urgent-notice-dialog").dialog('close');
                     })
                 },
-                buttons: {
-                    "{trans("I confirm reading")}": function () {
+                buttons: [{
+                    text: "{trans("I confirm reading")}",
+                    class: "lms-ui-button",
+                    click: function () {
                         $.ajax(
                             '?m=notices&ajax=1&confirm_urgent=' + $("#urgent-notice-dialog").attr('data-id'),
                             {
                                 dataType: 'json',
-                                success: function(data) {
+                                success: function (data) {
                                     $('#urgent-notice-dialog').dialog('close');
                                     if (!parseInt(data["unread_notices"])) {
                                         $('.lms-userpanel-notices').removeClass('lms-userpanel-icon-warning');
                                     }
-                                    if (typeof(data["urgent_notice"]) == 'object') {
-                                        $('#urgent-notice-dialog').one('dialogclose', function() {
+                                    if (typeof (data["urgent_notice"]) == 'object') {
+                                        $('#urgent-notice-dialog').one('dialogclose', function () {
                                             $('#urgent-notice-dialog').attr('data-id', data["urgent_notice"].id);
                                             cdate = new Date(parseInt(data["urgent_notice"].cdate) * 1000);
                                             $('#urgent-notice-dialog').attr('title', sprintf("%04d/%02d/%02d %02d:%02d / %s",
@@ -63,7 +65,7 @@
                             }
                         );
                     }
-                }
+                }]
             });
         });
 
