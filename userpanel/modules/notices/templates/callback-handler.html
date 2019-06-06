@@ -21,11 +21,11 @@
                 },
                 show: {
                     effect: "fade",
-                    duration: 500
+                    duration: 350
                 },
                 hide: {
                     effect: "fade",
-                    duration: 500
+                    duration: 350
                 },
                 open: function(){
                     $('.ui-widget-overlay').bind('click', function() {
@@ -44,18 +44,20 @@
                                         $('.lms-userpanel-notices').removeClass('lms-userpanel-icon-warning');
                                     }
                                     if (typeof(data["urgent_notice"]) == 'object') {
-                                        $('#urgent-notice-dialog').attr('data-id', data["urgent_notice"].id);
-                                        cdate = new Date(parseInt(data["urgent_notice"].cdate) * 1000);
-                                        $('#urgent-notice-dialog').attr('title', sprintf("%04d/%02d/%02d %02d:%02d / %s",
-                                            cdate.getFullYear(),
-                                            cdate.getMonth() + 1,
-                                            cdate.getDate(),
-                                            cdate.getHours(),
-                                            cdate.getMinutes(),
-                                            data["urgent_notice"].subject
-                                        ));
-                                        $('#urgent-notice-body').html(data["urgent_notice"].body);
-                                        $('#urgent-notice-dialog').dialog('open');
+                                        $('#urgent-notice-dialog').one('dialogclose', function() {
+                                            $('#urgent-notice-dialog').attr('data-id', data["urgent_notice"].id);
+                                            cdate = new Date(parseInt(data["urgent_notice"].cdate) * 1000);
+                                            $('#urgent-notice-dialog').attr('title', sprintf("%04d/%02d/%02d %02d:%02d / %s",
+                                                cdate.getFullYear(),
+                                                cdate.getMonth() + 1,
+                                                cdate.getDate(),
+                                                cdate.getHours(),
+                                                cdate.getMinutes(),
+                                                data["urgent_notice"].subject
+                                            ));
+                                            $('#urgent-notice-body').html(data["urgent_notice"].body);
+                                            $('#urgent-notice-dialog').dialog('open');
+                                        });
                                     }
                                 }
                             }
