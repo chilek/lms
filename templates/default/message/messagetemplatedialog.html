@@ -101,7 +101,9 @@
 			);
 			var body = $(row).find(".data-template-message");
 			$("#{$operation}-template-html-body").html(body.html());
-			editor.setContent(body.html());
+			if (editor) {
+				editor.setContent(body.html());
+			}
 			$("#{$operation}-template-text-body").text(body.text());
 		}
 
@@ -109,7 +111,7 @@
 
 		$('#{$operation}-template-type').change();
 
-		$('#{$operation}-template-dialog [name="template[wysiwyg][html-body]"]:checkbox').prop('checked', !editor.isHidden());
+		$('#{$operation}-template-dialog [name="template[wysiwyg][html-body]"]:checkbox').prop('checked', editor && !editor.isHidden());
 	}
 
 	$( function() {
