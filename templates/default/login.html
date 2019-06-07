@@ -49,7 +49,7 @@
 								</tr>
 								<tr>
 									<td colspan="2" class="text-center">
-										<input class="bold" type="submit" name="loginform[submit]" value="{trans("Login")}">
+										{button type="submit" label="Login"}
 									</td>
 								</tr>
 							</table>
@@ -72,10 +72,10 @@
 		</td>
 	</tr>
 </table>
-<script type="text/javascript">
-<!--
-document.forms['loginform'].elements['loginform[login]'].focus();
--->
+<script>
+
+	document.forms['loginform'].elements['loginform[login]'].focus();
+
 </script>
 </body>
 </html>
