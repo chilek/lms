@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,8 +36,12 @@ class lms_smspasswords_plugin
 
     public function access_table_init($vars)
     {
-        $vars['accesstable'][250] = array('name' => trans('one-time passwords'), 'privilege' => 'onetime_passwords');
-        ksort($vars['accesstable']);
+        $access = AccessRights::getInstance();
+
+        $access->insertPermission(
+            new Permission('onetime_passwords', trans('one-time passwords')),
+            AccessRights::FIRST_FORBIDDEN_PERMISSION
+        );
 
         return $vars;
     }
@@ -102,8 +106,7 @@ class lms_smspasswords_plugin
                 'SELECT phone FROM users WHERE id = ?',
                 array(Auth::GetCurrentUser())
             );
-            $rights = $LMS->GetUserRights(Auth::GetCurrentUser());
-            if (empty($phone) || !array_search(250, $rights)) {
+            if (empty($phone) || !ConfigHelper::checkConfig('privileges.onetime_passwords')) {
                 $SESSION->save('session_smsauthenticated', true);
                 $vars['abort'] = false;
                 return $vars;
