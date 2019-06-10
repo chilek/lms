@@ -155,7 +155,7 @@ $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
-$sdate_next = ConfigHelper::getConfig('payments.saledate_next_month', 0);
+$sdate_next = ConfigHelper::checkConfig('payments.saledate_next_month');
 $paytype = ConfigHelper::getConfig('payments.paytype', 2); // TRANSFER
 $comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attribute subscription for period %period");
 $s_comment = ConfigHelper::getConfig('payments.settlement_comment', $comment);
