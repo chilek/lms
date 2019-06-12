@@ -110,7 +110,7 @@ if (isset($_POST['assignment'])) {
     if (!empty($default_assignment_invoice)) {
         if (preg_match('/^[0-9]+$/', $default_assignment_invoice)) {
             $a['invoice'] = $default_assignment_invoice;
-        } else {
+        } elseif (ConfigHelper::checkValue($default_assignment_invoice)) {
             $a['invoice'] = DOC_INVOICE;
         }
     }
