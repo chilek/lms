@@ -108,7 +108,11 @@ if (isset($_POST['assignment'])) {
 } else {
     $default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
     if (!empty($default_assignment_invoice)) {
-        $a['invoice'] = $default_assignment_invoice;
+        if (preg_match('/^[0-9]+$/', $default_assignment_invoice)) {
+            $a['invoice'] = $default_assignment_invoice;
+        } else {
+            $a['invoice'] = DOC_INVOICE;
+        }
     }
     $default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
     if (!empty($default_assignment_settlement)) {
