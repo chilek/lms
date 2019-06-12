@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2018 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -81,8 +81,16 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      */
     public function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
     {
+        if (strpos($dbhost, ':') !== false) {
+            list ($host, $port) = explode(':', $dbhost);
+        } else {
+            $host = $dbhost;
+            $port = '';
+        }
+
         $cstring = implode(' ', array(
-            ($dbhost != '' && $dbhost != 'localhost' ? 'host=' . $dbhost : ''),
+            ($host != '' && $host != 'localhost' ? 'host=' . $host : ''),
+            ($port != '' ? 'port=' . $port : ''),
             ($dbuser != '' ? 'user=' . $dbuser : ''),
             ($dbpasswd != '' ? 'password=' . $dbpasswd : ''),
             ($dbname != '' ? 'dbname=' . $dbname : ''),
