@@ -116,7 +116,11 @@ if (isset($_POST['assignment'])) {
     }
     $default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
     if (!empty($default_assignment_settlement)) {
-        $a['settlement'] = true;
+        if (preg_match('/^[0-9]+$/', $default_assignment_settlement)) {
+            $a['settlement'] = $default_assignment_settlement;
+        } elseif (ConfigHelper::checkValue($default_assignment_settlement)) {
+            $a['settlement'] = 1;
+        }
     }
     $a['last-settlement'] = ConfigHelper::checkConfig('phpui.default_assignment_last_settlement');
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
