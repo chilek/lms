@@ -115,8 +115,8 @@ function get_gps_coordinates($location, $latitude_selector, $longitude_selector)
             }
             $buildings = $DB->GetAll('SELECT * FROM location_buildings
 				WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?', array_values($args));
-            if (empty($buildings) || count($buildings) > 1) {
-                break;
+            if (empty($buildings) || count($buildings) > 1 || empty($buildings[0]['longitude'])) {
+                continue;
             }
             $found = true;
             $result->script('
