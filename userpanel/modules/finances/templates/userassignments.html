@@ -25,12 +25,12 @@
 		<td class="nobr">{$assignment.payday}</td>
 		{if $show_speeds}
 			<td class="nobr" align="right">
-				{if empty($assignment.downrate)}-{else}{convert_to_units($assignment.downrate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
-				({if empty($assignment.downceil)}-{else}{convert_to_units($assignment.downceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
+				{if empty($assignment.downrate)}-{else}{convert_to_units($assignment.downrate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
+				({if empty($assignment.downceil)}-{else}{convert_to_units($assignment.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
 			</td>
 			<td class="nobr" align="right">
-				{if empty($assignment.uprate)}-{else}{convert_to_units($assignment.uprate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
-				({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
+				{if empty($assignment.uprate)}-{else}{convert_to_units($assignment.uprate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if}
+				({if empty($assignment.upceil)}-{else}{convert_to_units($assignment.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{/if})
 			</td>
 		{/if}
 		<td>{if $assignment.invoice}{trans("yes")}{else}&nbsp;{/if}</td>
@@ -58,14 +58,14 @@
 			<td class="nobr" align="right">
 				{sum array=$assignments column="real_downrate" default="-" assign="real_downrate"}
 				{sum array=$assignments column="real_downceil" default="-" assign="real_downceil"}
-				{if $real_downrate}{convert_to_units($real_downrate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
-				({if $real_downceil}{convert_to_units($real_downceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
+				{if $real_downrate}{convert_to_units($real_downrate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+				({if $real_downceil}{convert_to_units($real_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
 			</td>
 			<td class="nobr" align="right">
 				{sum array=$assignments column="real_uprate" default="-" assign="real_uprate"}
 				{sum array=$assignments column="real_upceil" default="-" assign="real_upceil"}
-				{if $real_uprate}{convert_to_units($real_uprate * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
-				({if $real_upceil}{convert_to_units($real_upceil * 1000, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
+				{if $real_uprate}{convert_to_units($real_uprate * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+				({if $real_upceil}{convert_to_units($real_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if})
 			</td>
 		{/if}
 		<td>&nbsp;</td>

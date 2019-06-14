@@ -5,6 +5,9 @@
 
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
 
+{$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
+
 <form method="post" name="customerassignments" id="customerassignments-form" action="?m=customerassignmentdel">
 </form>
 
@@ -171,12 +174,12 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column downceil">
 								{if $a.tariffid || $a.liabilityid}
-									{if $a.downceil}{convert_to_units($a.downceil * 1000)}/s{else}-{/if}
+									{if $a.downceil}{convert_to_units($a.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column upceil">
 								{if $a.tariffid || $a.liabilityid}
-									{if $a.upceil}{convert_to_units($a.upceil * 1000)}/s{else}-{/if}
+									{if $a.upceil}{convert_to_units($a.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
 								{/if}
 							</div>
 						</div>
@@ -371,8 +374,8 @@
 			{/if}
 			});
 
-		$('#total-downceil').html(total_downceil ? convert_to_units(total_downceil * 1000) + '/s' : '-');
-		$('#total-upceil').html(total_upceil ? convert_to_units(total_upceil * 1000) + '/s' : '-');
+		$('#total-downceil').html(total_downceil ? convert_to_units(total_downceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
+		$('#total-upceil').html(total_upceil ? convert_to_units(total_upceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		$('#total-value').html(sprintf(money_format, total_value));
 		$('#total-disc-value').html('(' + sprintf(money_format, total_disc_value) + ')');

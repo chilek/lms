@@ -17,6 +17,9 @@
 //-->
 </script>
 
+{$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
+
 <STYLE>
     .tariff_tab tr td {
         white-space: nowrap;
@@ -30,11 +33,11 @@
 </STYLE>
 
 {function bitrate_restrictions}
-    {if $day}{convert_to_units($day * 1000)}/s{else}{trans("no limits")}{/if}
+    {if $day}{convert_to_units($day * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("no limits")}{/if}
 
     ({trans("night:")}
 
-    {if $night}{convert_to_units($night * 1000)}/s{else}{trans("not defined")}{/if})
+    {if $night}{convert_to_units($night * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}{trans("not defined")}{/if})
 {/function}
 
 {function restrictions}

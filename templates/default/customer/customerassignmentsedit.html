@@ -3,6 +3,10 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+
+{$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
+{$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
+
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -38,7 +42,7 @@
 
 								{foreach $tariffs as $tariff}
 									<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" data-tariffaccess="{$tariff.authtype}" data-tarifftags="{$tariff.tags}" {if $tariff.id==$assignment.tariffid} selected{/if} data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
-									{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}{/if}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * 1000)}/{convert_to_units($tariff.upceil * 1000)}{/if})
+									{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}{/if}{if $tariff.upceil || $tariff.downceil}, {convert_to_units($tariff.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/{convert_to_units($tariff.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}{/if})
 									</option>
 								{/foreach}
 							</select>
