@@ -18,6 +18,8 @@ version 25-git (????-??-??):
     notices [chilan]
   - enhancement: allow to prefer generation of settlements only - when
     payments.prefer_settlement_only set to 'true' [chilan]
+  - improvement: phpui.speed_unit_type and phpui.speed_unit_aggregation_threshold control
+    bandwith unit presentation [chilan]
 
 version 24.0 (2019-05-16):
 
