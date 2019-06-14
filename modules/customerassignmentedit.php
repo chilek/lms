@@ -265,6 +265,10 @@ if (isset($_POST['assignment'])) {
 
         if ($a['liabilityid']) {
             if ($a['tariffid']) {
+                $DB->Execute(
+                    'UPDATE assignments SET tariffid = ?, liabilityid = NULL WHERE id = ?',
+                    array($a['tariffid'], $a['id'])
+                );
                 $DB->Execute('DELETE FROM liabilities WHERE id=?', array($a['liabilityid']));
                 if ($SYSLOG) {
                     $args = array(
