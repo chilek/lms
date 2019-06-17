@@ -100,8 +100,8 @@
 				<div class="lms-ui-tab-table-column buttons">
 					{button type="link" href="?m=netdevedit&id={if $netdev.id}{$netdev.id}{else}{$netdevedit.id}{/if}&action=ipset&ip={$netdevip.id}"
 						icon="lms-ui-icon-{if $netdevip.access}connected{else}disconnected{/if}" tip="{if $netdevip.access}Disconnect{else}Connect{/if}"}
-					{button type="link" href="?m=netdevedit&action=ipdel&id={$netdev.id}&ip={$netdevip.id}"
-						onclick="return confirmLink(this, '{t a=$netdevip.name}Are you sure, you want to delete address \'$a\' from database?{/t}');"
+					<input type="hidden" value="{$netdevip.name}">
+					{button type="link" class="delete-address" href="?m=netdevedit&action=ipdel&id={$netdev.id}&ip={$netdevip.id}"
 						icon="delete" tip="Delete"}
 					{button type="link" href="?m=netdevedit&action=editip&id={$netdev.id}&ip={$netdevip.id}"
 						icon="edit" tip="Edit"}
@@ -132,3 +132,14 @@
 	{/tab_contents}
 
 {/tab_container}
+
+<script>
+
+	$('.delete-address').click(function() {
+		confirmDialog($t("Are you sure, you want to delete address '$a' from database?", $(this).prev().val()), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
+</script>

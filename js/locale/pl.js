@@ -23,6 +23,7 @@
  *  $Id$
  */
 
+$_LANG['There is no assigned parent ticket.'] = 'Nie ma przypisanego zgłoszenia nadrzędnego.';
 $_LANG['Are you sure, you want to unlink this ticket $a?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie $a?';
 $_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można powiązać zgłoszenia z powodu pętli powiązań!';
 $_LANG['Ticket parent ID has been set to $a.'] = 'ID zgłoszenia nadrzędnego zostało ustawione na $a.';
@@ -279,7 +280,7 @@ $_LANG['Are you sure, you want to assign new addresses for all computers? Rememb
 $_LANG['Are you sure, you want to change network $a to network \'+getText(\'mapto\')+\'?'] = 'Jesteś pewien, że chcesz przeadresować sieć $a do sieci \'+getText(\'mapto\')+\'?';
 $_LANG['Are you sure, you want to check/uncheck selected invoices as accounted?'] = 'Jesteś pewien, że chcesz zaznaczyć/odznaczyć wybrane faktury jako rozliczone?';
 $_LANG['Are you sure, you want to delete account \\\'$a\\\' and all assigned to them aliases?'] = 'Jesteś pewien, że chcesz usunąć konto \\\'$a\\\' oraz wszystkie aliasy z nim skojarzone?';
-$_LANG['Are you sure, you want to delete address \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć adres \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to delete address \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć adres \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to delete alias: \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz usunąć alias: \\\'$a\\\'?';
 $_LANG['Are you sure, you want to delete database backup created at $a ?'] = 'Jesteś pewien, że chcesz usunąć kopie bazy danych utworzoną: $a ?';
 $_LANG['Are you sure, you want to delete domain: \\\'$a\\\' and all accounts/aliases in that domain?'] = 'Jesteś pewien, że chcesz usunąć domenę: \\\'$a\\\' oraz wszystkie konta/aliasy w tej domenie?';
@@ -1551,7 +1552,7 @@ $_LANG['Small font text appearing in selected (in template) place of the invoice
 $_LANG['Smarty version:'] = 'Wersja Smarty:';
 $_LANG['SMTP settings.'] = 'Ustawienia SMTP.';
 $_LANG['Sorting:'] = 'Sortowanie:';
-$_LANG['Specified address does not belongs to any network!'] = 'Wybrany adres nie należy do żadnej sieci!';
+$_LANG['Specified address does not belong to any network!'] = 'Wybrany adres nie należy do żadnej sieci!';
 $_LANG['Specified address is not a network address, setting $a'] = 'Wybrany adres nie jest adresem sieci, ustawiam $a';
 $_LANG['Specified domain contains forbidden characters!'] = 'Domena zawiera niepoprawne znaki ustawiam!';
 $_LANG['Specified e-mail is not correct!'] = 'Wybrany email nie jest poprawny!';
@@ -1682,21 +1683,21 @@ $_LANG['URL:'] = 'Adres URL:';
 $_LANG['URL of your homepage:'] = 'Adres twojej strony domowej:';
 $_LANG['USA'] = 'USA';
 $_LANG['Enter message body.<br><br>'
-	+ 'Supported substitutions/variables:<br>'
-	+ '<strong>%customer</strong> - customer first name and last name or name,<br>'
-	+ '<strong>%balance</strong> - customer balance,<br>'
-	+ '<strong>%cid</strong> - customer identifier,<br>'
-	+ '<strong>%pin</strong> - customer pin,<br>'
-	+ '<strong>%bankaccount</strong> - bank account for payments,<br>'
-	+ '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
-	'Wprowadź treść wiadomości.<br><br>'
-	+ 'Obsługiwane podstawienia/zmienne:<br>'
-	+ '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
-	+ '<strong>%balance</strong> - saldo klienta,<br>'
-	+ '<strong>%cid</strong> - identyfikator klienta,<br>'
-	+ '<strong>%pin</strong> - pin klienta,<br>'
-	+ '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
-	+ '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
+    + 'Supported substitutions/variables:<br>'
+    + '<strong>%customer</strong> - customer first name and last name or name,<br>'
+    + '<strong>%balance</strong> - customer balance,<br>'
+    + '<strong>%cid</strong> - customer identifier,<br>'
+    + '<strong>%pin</strong> - customer pin,<br>'
+    + '<strong>%bankaccount</strong> - bank account for payments,<br>'
+    + '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
+    'Wprowadź treść wiadomości.<br><br>'
+    + 'Obsługiwane podstawienia/zmienne:<br>'
+    + '<strong>%customer</strong> - imię i nazwisko lub nazwa klienta,<br>'
+    + '<strong>%balance</strong> - saldo klienta,<br>'
+    + '<strong>%cid</strong> - identyfikator klienta,<br>'
+    + '<strong>%pin</strong> - pin klienta,<br>'
+    + '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
+    + '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';

@@ -356,7 +356,7 @@ switch ($action) {
         break;
 
     case 'ipdel':
-        if ($_GET['is_sure'] == '1' && !empty($_GET['ip'])) {
+        if (!empty($_GET['ip'])) {
             if ($SYSLOG) {
                 $args = array(
                     SYSLOG::RES_NODE => $_GET['ip'],

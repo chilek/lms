@@ -278,7 +278,7 @@ $_LANG['Are you sure, you want to assign new addresses for all computers? Rememb
 $_LANG['Are you sure, you want to change network $a to network \'+getText(\'mapto\')+\'?'] = 'Jesteś pewien, że chcesz przeadresować sieć $a do sieci \'+getText(\'mapto\')+\'?';
 $_LANG['Are you sure, you want to check/uncheck selected invoices as accounted?'] = 'Jesteś pewien, że chcesz zaznaczyć/odznaczyć wybrane faktury jako rozliczone?';
 $_LANG['Are you sure, you want to delete account \\\'$a\\\' and all assigned to them aliases?'] = 'Jesteś pewien, że chcesz usunąć konto \\\'$a\\\' oraz wszystkie aliasy z nim skojarzone?';
-$_LANG['Are you sure, you want to delete address \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć adres \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to delete address \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć adres \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to delete alias: \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz usunąć alias: \\\'$a\\\'?';
 $_LANG['Are you sure, you want to delete database backup created at $a ?'] = 'Jesteś pewien, że chcesz usunąć kopie bazy danych utworzoną: $a ?';
 $_LANG['Are you sure, you want to delete domain: \\\'$a\\\' and all accounts/aliases in that domain?'] = 'Jesteś pewien, że chcesz usunąć domenę: \\\'$a\\\' oraz wszystkie konta/aliasy w tej domenie?';

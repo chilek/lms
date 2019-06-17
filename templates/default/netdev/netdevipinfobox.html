@@ -235,7 +235,8 @@
 		<tr>
 			<td width="100%" colspan="3" class="text-right">
 				<a href="?m=netdevedit&id={$netdev.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
-				<a href="?m=netdevedit&id={$netdev.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+				<input type="hidden" value="{$nodeipdata.name}">
+				<a id="delete-address" href="?m=netdevedit&id={$netdev.id}&action=ipdel&ip={$nodeipdata.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			</td>
 		</tr>
     </tbody>
@@ -280,5 +281,13 @@
         });
     });
     {/if}
+
+	$('#delete-address').click(function() {
+		confirmDialog($t("Are you sure, you want to delete address '$a' from database?", $(this).prev().val()), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
 //-->
 </script>
