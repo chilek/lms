@@ -337,7 +337,6 @@ switch ($action) {
         $subtitle = trans('New IP address');
         $nodeipdata['access'] = 1;
         $nodeipdata['macs'] = array(0 => '');
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'addip';
         break;
@@ -352,7 +351,6 @@ switch ($action) {
             $macs[] = $nodeipdata['macs'][$key]['mac'];
         }
         $nodeipdata['macs'] = $macs;
-        $SMARTY->assign('networks', $LMS->GetNetworks(true));
         $SMARTY->assign('nodeipdata', $nodeipdata);
         $edit = 'ip';
         break;
@@ -424,7 +422,7 @@ switch ($action) {
         } elseif (!check_ip($nodeipdata['ipaddr'])) {
             $error['ipaddr'] = trans('Incorrect IP address!');
         } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr'])) {
-            $error['ipaddr'] = trans('Specified address does not belongs to any network!');
+            $error['ipaddr'] = trans('Specified address does not belong to any network!');
         } else {
             if (empty($nodeipdata['netid'])) {
                 $nodeipdata['netid'] = $DB->GetOne(
@@ -432,8 +430,12 @@ switch ($action) {
                     array($nodeipdata['ipaddr'])
                 );
             }
-            if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid'])) {
+            if (!$LMS->IsIPInNetwork($nodeipdata['ipaddr'], $nodeipdata['netid'])) {
+                $error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
+            } else if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid'])) {
                 $error['ipaddr'] = trans('Specified IP address is in use!');
+            } else if ($LMS->IsIPGateway($nodedata['ipaddr'])) {
+                $error['ipaddr'] = trans('Specified IP address is network gateway!');
             }
         }
 
@@ -533,7 +535,7 @@ switch ($action) {
         } elseif (!check_ip($nodeipdata['ipaddr'])) {
             $error['ipaddr'] = trans('Incorrect IP address!');
         } elseif (!$LMS->IsIPValid($nodeipdata['ipaddr'])) {
-            $error['ipaddr'] = trans('Specified address does not belongs to any network!');
+            $error['ipaddr'] = trans('Specified address does not belong to any network!');
         } else {
             if (empty($nodeipdata['netid'])) {
                 $nodeipdata['netid'] = $DB->GetOne(
@@ -541,9 +543,13 @@ switch ($action) {
                     array($nodeipdata['ipaddr'])
                 );
             }
-            if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']) &&
+            if (!$LMS->IsIPInNetwork($nodeipdata['ipaddr'], $nodeipdata['netid'])) {
+                $error['ipaddr'] = trans('Specified IP address doesn\'t belong to selected network!');
+            } else if (!$LMS->IsIPFree($nodeipdata['ipaddr'], $nodeipdata['netid']) &&
                 $LMS->GetNodeIPByID($_GET['ip']) != $nodeipdata['ipaddr']) {
                 $error['ipaddr'] = trans('IP address is in use!');
+            } else if ($LMS->IsIPGateway($nodedata['ipaddr'])) {
+                $error['ipaddr'] = trans('Specified IP address is network gateway!');
             }
         }
 
@@ -838,11 +844,13 @@ switch ($edit) {
         $SMARTY->display('netdev/netdevedit.html');
         break;
     case 'ip':
+        $SMARTY->assign('networks', $LMS->GetNetworks(true));
         $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
         $SMARTY->assign('netdevvipedit_sortable_order', $SESSION->get_persistent_setting('netdevipedit-sortable-order'));
         $SMARTY->display('netdev/netdevipedit.html');
         break;
     case 'addip':
+        $SMARTY->assign('networks', $LMS->GetNetworks(true));
         $SMARTY->assign('netdevvipadd_sortable_order', $SESSION->get_persistent_setting('netdevipadd-sortable-order'));
         $SMARTY->display('netdev/netdevipadd.html');
         break;

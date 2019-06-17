@@ -1550,7 +1550,7 @@ $_LANG['Small font text appearing in selected (in template) place of the invoice
 $_LANG['Smarty version:'] = 'Wersja Smarty:';
 $_LANG['SMTP settings.'] = 'Ustawienia SMTP.';
 $_LANG['Sorting:'] = 'Sortowanie:';
-$_LANG['Specified address does not belongs to any network!'] = 'Wybrany adres nie należy do żadnej sieci!';
+$_LANG['Specified address does not belong to any network!'] = 'Wybrany adres nie należy do żadnej sieci!';
 $_LANG['Specified address is not a network address, setting $a'] = 'Wybrany adres nie jest adresem sieci, ustawiam $a';
 $_LANG['Specified domain contains forbidden characters!'] = 'Domena zawiera niepoprawne znaki ustawiam!';
 $_LANG['Specified e-mail is not correct!'] = 'Wybrany email nie jest poprawny!';
