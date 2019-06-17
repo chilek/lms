@@ -804,6 +804,12 @@ class LMS
         return $manager->GetNodeIDByName($name);
     }
 
+    public function GetNodeIDByNetName($name)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->GetNodeIDByNetName($name);
+    }
+
     public function GetNodeIPByID($id)
     {
         $manager = $this->getNodeManager();

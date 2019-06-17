@@ -93,7 +93,7 @@ if (isset($_POST['nodedata'])) {
         $error['name'] = trans('Node name is too long (max.32 characters)!');
     } else if (!preg_match('/' . ConfigHelper::getConfig('phpui.node_name_regexp', '^[_a-z0-9-.]+$') . '/i', $nodedata['name'])) {
         $error['name'] = trans('Specified name contains forbidden characters!');
-    } else if ($LMS->GetNodeIDByName($nodedata['name'])) {
+    } else if ($LMS->GetNodeIDByName($nodedata['name']) || $LMS->GetNodeIDByNetName($nodedata['name'])) {
         $error['name'] = trans('Specified name is in use!');
     }
 

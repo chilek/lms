@@ -411,7 +411,7 @@ switch ($action) {
             $error['ipname'] = trans('Address field is required!');
         } elseif (strlen($nodeipdata['name']) > 32) {
             $error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
-        } elseif ($LMS->GetNodeIDByName($nodeipdata['name'])) {
+        } elseif ($LMS->GetNodeIDByName($nodeipdata['name']) || $LMS->GetNodeIDByNetName($nodeipdata['name'])) {
             $error['ipname'] = trans('Specified name is in use!');
         } elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name'])) {
             $error['ipname'] = trans('Name contains forbidden characters!');
@@ -523,8 +523,8 @@ switch ($action) {
             $error['ipname'] = trans('Address field is required!');
         } elseif (strlen($nodeipdata['name']) > 32) {
             $error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
-        } elseif ($LMS->GetNodeIDByName($nodeipdata['name']) &&
-                $LMS->GetNodeName($_GET['ip']) != $nodeipdata['name']) {
+        } elseif (($LMS->GetNodeIDByName($nodeipdata['name']) || $LMS->GetNodeIDByNetName($nodeipdata['name']))
+                && strtoupper($LMS->GetNodeName($_GET['ip'])) != strtoupper($nodeipdata['name'])) {
             $error['ipname'] = trans('Specified name is in use!');
         } elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name'])) {
             $error['ipname'] = trans('Name contains forbidden characters!');
