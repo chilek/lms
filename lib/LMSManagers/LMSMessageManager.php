@@ -258,6 +258,11 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 					JOIN customers c ON (c.id = i.customerid)
 					WHERE i.messageid = m.id AND UPPER(c.lastname) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . '))';
                     break;
+                case 'date':
+                    $beginOfDay = strtotime("midnight", strtotime($search));
+                    $endOfDay   = strtotime("tomorrow", $beginOfDay) - 1;
+                    $where[] = 'm.cdate BETWEEN ' . $beginOfDay . ' AND ' . $endOfDay . '';
+                    break;
             }
         }
 

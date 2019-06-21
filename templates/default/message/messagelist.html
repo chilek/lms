@@ -32,7 +32,7 @@
 		<TD colspan="5" class="nobr">
 			<FORM METHOD="POST" NAME="page" action="?m=messagelist">
 			<INPUT type="submit" class="hiddenbtn">
-			<B>{trans("Filter:")} </B> 
+			<B>{trans("Filter:")} </B>
 			<INPUT type="text" name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 			<SELECT size="1" name="cat">
 				<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
@@ -42,6 +42,7 @@
 				<OPTION value="username"{if $listdata.cat == "username"} SELECTED{/if}>{trans("user name")}</OPTION>
 				<OPTION value="userid"{if $listdata.cat == "userid"} SELECTED{/if}>{trans("user ID")}</OPTION>
 				<OPTION value="destination"{if $listdata.cat == "destination"} SELECTED{/if}>{trans("destination number/email")}</OPTION>
+				<OPTION value="date"{if $listdata.cat == "date"} SELECTED{/if}>{trans("date (YYYY/MM/DD)")}</OPTION>
 			</SELECT>&nbsp;
 			{trans("Type:")}
 			<SELECT size="1" name="type">
@@ -111,7 +112,7 @@
 		<TD colspan="5" class="empty-table">
 			<p>{trans("No such messages in database.")}</p>
 		</TD>
-	</TR>	
+	</TR>
 	{/foreach}
 	</form>
     </TBODY>
