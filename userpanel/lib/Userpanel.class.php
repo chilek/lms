@@ -31,6 +31,7 @@ class USERPANEL
     public $MODULES = array();
     private $module_order = null;
     private $callbacks = array();
+    private $module_dirs = array();
 
     public function __construct(&$DB, &$SESSION)
     {
@@ -48,14 +49,28 @@ class USERPANEL
         return true;
     }
 
-    public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = null, $icon = null)
+    public function setModuleDirectories($module_dirs) {
+        $this->module_dirs = $module_dirs;
+    }
+
+    public function getModuleDirectory($filename) {
+        foreach ($this->module_dirs as $dir) {
+            if (strpos($filename, $dir) === 0) {
+                return $dir;
+            }
+        }
+        return null;
+    }
+
+    public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = null, $icon = null, $module_dir = null)
     {
         if (isset($this->module_order[$module])) {
             $prio = $this->module_order[$module];
         }
         if ($name != '') {
             $this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description,
-                'selected' => false, 'module' => $module, 'submenu' => $submenu, 'icon' => $icon);
+                'selected' => false, 'module' => $module, 'submenu' => $submenu, 'icon' => $icon,
+                'module_dir' => isset($module_dir) ? $module_dir : USERPANEL_MODULES_DIR);
             if (!function_exists('cmp')) {
                 function cmp($a, $b)
                 {
@@ -108,7 +123,7 @@ class USERPANEL
 
         foreach ($this->callbacks as $callback) {
             $_GET['m'] = $callback['module'];
-            $html .= call_user_func($callback['callback'], $this->DB, $smarty);
+            $html .= call_user_func($callback['callback'], $this->DB, $smarty, $this->MODULES[$callback['module']]['module_dir']);
         }
 
         $_GET['m'] = $old_m;

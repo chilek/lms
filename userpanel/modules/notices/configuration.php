@@ -37,7 +37,7 @@ $USERPANEL->AddModule(
 require_once('UserpanelNoticeHandler.php');
 $notice_handler = new UserpanelNoticeHandler($DB, $SMARTY, $SESSION->id);
 
-$USERPANEL->registerCallback('notices', function ($db, $smarty) use ($notice_handler) {
+$USERPANEL->registerCallback('notices', function ($db, $smarty, $mod_dir) use ($notice_handler) {
     $urgent_notice = $notice_handler->getUrgentNotice();
     $notice_handler->markNoticeAsRead($urgent_notice['id']);
     $smarty->assign('urgent_notice', $urgent_notice);
@@ -45,5 +45,13 @@ $USERPANEL->registerCallback('notices', function ($db, $smarty) use ($notice_han
     $unread_notices = $notice_handler->getUnreadNotices();
     $smarty->assign('unread_notices', $unread_notices);
 
-    return $smarty->fetch('module:callback-handler.html');
+    global $module_dir;
+    $old_module_dir = $module_dir;
+    $module_dir = $mod_dir;
+
+    $html = $smarty->fetch('module:callback-handler.html');
+
+    $module_dir = $old_module_dir;
+
+    return $html;
 });
