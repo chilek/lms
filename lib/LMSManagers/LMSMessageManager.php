@@ -204,6 +204,19 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         if (!isset($order)) {
             $order = 'cdate,desc';
         }
+
+        if (isset($datefrom)) {
+            $datefrom = intval($datefrom);
+        } else {
+            $datefrom = 0;
+        }
+
+        if (isset($dateto)) {
+            $dateto = intval($dateto);
+        } else {
+            $dateto = 0;
+        }
+
         if (!isset($type)) {
             $type = '';
         }
@@ -214,6 +227,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         if ($order=='') {
             $order='cdate,desc';
         }
+
 
         list($order,$direction) = sscanf($order, '%[^,],%s');
         ($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
@@ -258,17 +272,20 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 					JOIN customers c ON (c.id = i.customerid)
 					WHERE i.messageid = m.id AND UPPER(c.lastname) ?LIKE? UPPER(' . $this->db->Escape('%' . $search . '%') . '))';
                     break;
-                case 'date':
-                    $beginOfDay = strtotime("midnight", strtotime($search));
-                    $endOfDay   = strtotime("tomorrow", $beginOfDay) - 1;
-                    $where[] = 'm.cdate BETWEEN ' . $beginOfDay . ' AND ' . $endOfDay . '';
-                    break;
             }
         }
 
         if ($type) {
             $type = intval($type);
             $where[] = 'm.type = '.$type;
+        }
+
+        if ($datefrom) {
+            $where[] = 'm.cdate >= ' . $datefrom;
+        }
+
+        if ($dateto) {
+            $where[] = 'm.cdate <= ' . $dateto;
         }
 
         if ($status) {

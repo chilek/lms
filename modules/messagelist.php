@@ -67,8 +67,22 @@ if (!empty($_GET['cid'])) {
     $o = $t = $status = null;
 }
 
-$total = intval($LMS->GetMessageList(array('order' => $o, 'search' => $s, 'cat' => $c, 'type' => $t,
-    'status' => $status, 'count' => true)));
+$args = array(
+    'order' => $o,
+    'search' => $s,
+    'cat' => $c,
+    'type' => $t,
+    'status' => $status,
+    'count' => true
+);
+
+if ($c == 'date') {
+    list ($y, $m, $d) = explode('/', $s);
+    $args['datefrom'] = mktime(0, 0, 0, $m, $d, $y);
+    $args['dateto'] = $args['datefrom'] + 86399;
+}
+
+$total = intval($LMS->GetMessageList($args));
 
 $limit = intval(ConfigHelper::getConfig('phpui.messagelist_pagelimit', $total));
 if ($SESSION->is_set('mlp') && !isset($_GET['page'])) {
@@ -77,8 +91,10 @@ if ($SESSION->is_set('mlp') && !isset($_GET['page'])) {
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
 $offset = ($page - 1) * $limit;
 
-$messagelist = $LMS->GetMessageList(array('order' => $o, 'search' => $s, 'cat' => $c, 'type' => $t,
-    'status' => $status, 'count' => false, 'offset' => $offset, 'limit' => $limit));
+$args['count'] = false;
+$args['offset'] = $offset;
+$args['limit'] = $limit;
+$messagelist = $LMS->GetMessageList($args);
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
