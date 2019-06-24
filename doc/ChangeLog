@@ -20,6 +20,7 @@ version 25-git (????-??-??):
     payments.prefer_settlement_only set to 'true' [chilan]
   - improvement: phpui.speed_unit_type and phpui.speed_unit_aggregation_threshold control
     bandwith unit presentation [chilan]
+  - improvement: add date category to filter in messages list [ravvar]
 
 version 24.0 (2019-05-16):
 
