@@ -49,11 +49,13 @@ class USERPANEL
         return true;
     }
 
-    public function setModuleDirectories($module_dirs) {
+    public function setModuleDirectories($module_dirs)
+    {
         $this->module_dirs = $module_dirs;
     }
 
-    public function getModuleDirectory($filename) {
+    public function getModuleDirectory($filename)
+    {
         foreach ($this->module_dirs as $dir) {
             if (strpos($filename, $dir) === 0) {
                 return $dir;
