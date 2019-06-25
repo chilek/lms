@@ -341,8 +341,11 @@
 			confirmDialog($t('Document has been published already! Are you sure you want to edit it despite this?'), this).done(function () {
 				location.href = $(this).attr('href');
 			});
+			return false;
+		} else {
+			location.href = $(this).attr('href');
+			return false;
 		}
-		return false;
 	});
 
 	$('.cancel-invoice').click(function () {
