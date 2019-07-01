@@ -312,7 +312,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 				name.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ..." : name;
 
 			if (action && !me.autosubmit) {
-				var a = $('<a href="' + dest + '"/>').get(0);
+				var a = $('<a href="' + action + '"/>').get(0);
 				a.appendChild(name_elem);
 				a.appendChild(desc_elem);
 				li.appendChild(a);
