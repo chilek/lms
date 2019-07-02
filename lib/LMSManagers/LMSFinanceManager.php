@@ -1154,45 +1154,48 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $schemaid = $data['schemaid'];
         $stariffs = $data['stariffid'][$schemaid];
         $values = $data['values'][$schemaid];
-        foreach ($values as $label => &$tariffs) {
-            if (!isset($stariffs[$label]) || empty($stariffs[$label])) {
-                unset($values[$label]);
-                continue;
-            }
-            foreach ($tariffs as $tariffid => &$periods) {
-                if (!in_array($tariffid, $stariffs)) {
-                    unset($values[$label][$tariffid]);
+
+        if (!is_array($values)) {
+            foreach ($values as $label => &$tariffs) {
+                if (!isset($stariffs[$label]) || empty($stariffs[$label])) {
+                    unset($values[$label]);
                     continue;
                 }
-            }
-            unset($periods);
-        }
-        unset($tariffs);
-
-        $userid = Auth::GetCurrentUser();
-
-        foreach ($values as $label => $tariffs) {
-            foreach ($tariffs as $tariffid => $periods) {
-                $a_data = $this->db->GetOne(
-                    'SELECT data
-					FROM promotionassignments
-					WHERE promotionschemaid = ? AND tariffid = ? AND label = ?',
-                    array($schemaid, $tariffid, $label)
-                );
-                $a_periods = explode(';', $a_data);
-                $allowed_period_indexes = array();
-                foreach ($a_periods as $a_period_idx => $a_period) {
-                    $props = explode(':', $a_period);
-                    if (count($props) < 3) {
+                foreach ($tariffs as $tariffid => &$periods) {
+                    if (!in_array($tariffid, $stariffs)) {
+                        unset($values[$label][$tariffid]);
                         continue;
                     }
-                    $users = explode(',', $props[2]);
-                    if (in_array($userid, $users)) {
-                        $allowed_period_indexes[] = $a_period_idx;
-                    }
                 }
-                if (array_diff(array_keys($periods), $allowed_period_indexes)) {
-                    return false;
+                unset($periods);
+            }
+            unset($tariffs);
+
+            $userid = Auth::GetCurrentUser();
+
+            foreach ($values as $label => $tariffs) {
+                foreach ($tariffs as $tariffid => $periods) {
+                    $a_data = $this->db->GetOne(
+                        'SELECT data
+                        FROM promotionassignments
+                        WHERE promotionschemaid = ? AND tariffid = ? AND label = ?',
+                        array($schemaid, $tariffid, $label)
+                    );
+                    $a_periods = explode(';', $a_data);
+                    $allowed_period_indexes = array();
+                    foreach ($a_periods as $a_period_idx => $a_period) {
+                        $props = explode(':', $a_period);
+                        if (count($props) < 3) {
+                            continue;
+                        }
+                        $users = explode(',', $props[2]);
+                        if (in_array($userid, $users)) {
+                            $allowed_period_indexes[] = $a_period_idx;
+                        }
+                    }
+                    if (array_diff(array_keys($periods), $allowed_period_indexes)) {
+                        return false;
+                    }
                 }
             }
         }
