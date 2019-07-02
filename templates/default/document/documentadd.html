@@ -16,7 +16,7 @@
 	function print_document()
 	{
 		document.forms['documentadd'].action += '&print=1';
-		document.forms['documentadd'].submit();
+		$('#submit-button').trigger('click');
 	}
 
 	function DocTypeChanged() {
