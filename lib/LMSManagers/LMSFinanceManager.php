@@ -1627,7 +1627,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						AND customerid = d.customerid)' : '')
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
             .' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
-			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
+			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices, d.archived '
             . (isset($having) ? $having : '')
             .$sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
