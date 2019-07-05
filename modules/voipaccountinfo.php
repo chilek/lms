@@ -60,5 +60,8 @@ $hook_data = $plugin_manager->executeHook(
 
 $voipaccountinfo = $hook_data['voipaccountinfo'];
 
+$LMS->InitXajax();
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $SMARTY->assign('voipaccountinfo', $voipaccountinfo);
 $SMARTY->display('voipaccount/voipaccountinfo.html');

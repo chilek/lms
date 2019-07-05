@@ -66,6 +66,9 @@ $hook_data = $plugin_manager->executeHook(
 $voipaccountlist = $hook_data['voipaccountlist'];
 $listdata = $hook_data['listdata'];
 
+$LMS->InitXajax();
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $SMARTY->assign('page', $page);
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('start', $start);

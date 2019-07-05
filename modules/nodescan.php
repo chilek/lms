@@ -33,5 +33,8 @@ $layout['pagetitle'] = trans('Nodes Scanning');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$LMS->InitXajax();
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $SMARTY->assign('nodes', $LMS->ScanNodes());
 $SMARTY->display('node/nodescan.html');
