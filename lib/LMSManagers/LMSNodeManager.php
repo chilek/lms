@@ -672,9 +672,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             if (!empty($nodes)) {
                 foreach ($nodes as $node) {
                     $args = array(
-                    SYSLOG::RES_NODE => $node['id'],
-                    SYSLOG::RES_CUST => $node['ownerid'],
-                    'warning' => $warning
+                        SYSLOG::RES_NODE => $node['id'],
+                        SYSLOG::RES_CUST => $node['ownerid'],
+                        'warning' => $warning ? 1 : 0
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
                 }
