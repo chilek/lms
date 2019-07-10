@@ -129,7 +129,8 @@
 									tip="Convert to invoice"}
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
-								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
+								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO
+								|| $item.doctype == $smarty.const.DOC_DNOTE)}
 								{button type="link" icon="mail" class="send-invoice" href="?m=invoicesend&id={$item.docid}"
 									tip="Send invoice"}
 							{/if}
