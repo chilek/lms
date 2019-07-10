@@ -266,6 +266,12 @@ foreach ($networks as $networkid => $net) {
     $net_prefix .= "\n\tsubnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
         . " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n"
         . (!empty($net['dhcpstart']) ? "\t\trange " . $net['dhcpstart'] . " " . $net['dhcpend'] . ";\n" : "");
+    if ($default_lease != $default_lease_time) {
+        $net_prefix .= "\t\tdefault-lease-time " . $default_lease . ";\n";
+    }
+    if ($max_lease != $max_lease_time) {
+        $net_prefix .= "\t\tmax-lease-time " . $max_lease . ";\n";
+    }
     foreach ($options as $name => $value) {
         $net_prefix .= "\t\toption " . $name . " " . $value . ";\n";
     }
