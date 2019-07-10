@@ -1167,7 +1167,7 @@ if (isset($options['update'])) {
 
 if (isset($options['buildings'])) {
     $fh = fopen($building_base_name, "r");
-    if ($fh === null) {
+    if (empty($fh)) {
         fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $building_base_name);
         die;
     }
