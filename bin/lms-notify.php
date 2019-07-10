@@ -947,7 +947,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
                     OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
+                        OR d.type IN (?, ?)) AND (" . ($days > 0 ? 'cash.docid = d.id OR ' : '') . "d.cdate + d.paytime * 86400 < $currtime))))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
