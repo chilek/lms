@@ -210,7 +210,7 @@ function RTSearch($search, $order = 'createtime,desc')
 		LEFT JOIN vaddresses va ON va.id = t.address_id'
         .(isset($where) ? $where : '')
         . ' GROUP BY t.id, t.customerid, t.subject, t.state, t.owner, t.service, t.type,
-			va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
+			t.address_id, va.name, va.city, va.street, va.house, va.flat, c.address, c.city,
 			vusers.name, rtqueues.name,
 			t.requestor, c.lastname, c.name, t.createtime, m.lastmodified, t.deleted, t.deltime, t.priority,
 			t.verifierid, t.deadline, m3.messageid '
