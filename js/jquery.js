@@ -377,16 +377,22 @@ $(function() {
 
 	init_multiselects('select.lms-ui-multiselect');
 
-	$(document).on('click mouseup', '[data-target-url] > :not(.lms-ui-buttons):not(.buttons),.lms-ui-tab-table-column[data-target-url]',
+	$(document).on('mouseup', '[data-target-url]',
 		function(e) {
-			if (e.type == 'mouseup' && e.which != 2) {
+			var elem = $(this);
+			var target = $(e.target);
+			var url = $(this).attr('data-target-url');
+			var link = target.closest('a');
+			var ifLink = (link.length && elem.find(link).length > 0);
+			var ifButton = elem.find(target.closest('button')).length > 0;
+			var ifNewWindow = (e.which == 2 || e.ctrlKey);
+
+			if (ifButton || (ifLink && link.attr('href'))
+				|| (elem.is('td,.lms-ui-tab-table-column') && elem.is('.lms-ui-buttons,.buttons'))) {
 				return;
 			}
-			var url = $(this).attr('data-target-url');
-			if (!url) {
-				url = $(this).parent().attr('data-target-url');
-			}
-			if (e.ctrlKey || (e.type == 'mouseup' && e.which == 2)) {
+
+			if (ifNewWindow) {
 				window.open(url);
 			} else {
 				location.href = url;

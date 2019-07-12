@@ -21,6 +21,8 @@ version 25-git (????-??-??):
   - improvement: phpui.speed_unit_type and phpui.speed_unit_aggregation_threshold control
     bandwith unit presentation [chilan]
   - improvement: add date category to filter in messages list [ravvar]
+  - improvement: data-target-url attribute support has been improved and is far
+    easier to use [chilan]
 
 version 24.0 (2019-05-16):
 
