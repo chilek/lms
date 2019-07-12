@@ -307,7 +307,7 @@
 							{if $ticket.parentid}
 							<TR>
 								<TD class="bold">
-									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Parent ticket:")}
+									<i class="lms-ui-icon-content lms-ui-icon-parentticket"></i>{trans("Parent ticket:")}
 								</TD>
 								<TD>
 									<A href="?m=rtticketview&amp;id={$ticket.parentid}">{t a=$ticket.parentid|string_format:"%06d"}$a{/t}</A>
@@ -317,7 +317,7 @@
 							{if $ticket.relatedtickets}
 							<TR>
 								<TD class="bold nobr">
-									<i class="lms-ui-icon-content lms-ui-icon-reload"></i>{trans("Related tickets:")}
+									<i class="lms-ui-icon-content lms-ui-icon-relatedticket"></i>{trans("Related tickets:")}
 								</TD>
 								<TD>
 									{foreach $ticket.relatedtickets as $i}
