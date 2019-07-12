@@ -57,7 +57,7 @@
 			<td style="width: 1%;"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
 			<td style="width: 99%;">
 				<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
-					<a href="https://www.google.com/maps/place/{$v.location}"><i class="lms-ui-icon-location"></i></a>
+					<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}"><i class="lms-ui-icon-location"></i></a>
 				</span>
 			</td>
 		</tr>
@@ -71,7 +71,7 @@
 			<td style="width: 1%;"><img src="img/post.gif" alt="" title="{trans('postal address')}"></td>
 			<td style="width: 99%;">
 				<span title="{trans('postal address')}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
-					<a href="https://www.google.com/maps/place/{$v.location}"><i class="lms-ui-icon-location"></i></a>
+					<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}"><i class="lms-ui-icon-location"></i></a>
 				</span>
 			</td>
 		</tr>
@@ -95,7 +95,7 @@
 			</td>
 			<td style="width: 99%;">
 				<span title="{$title}">{if $v.location_name}{$v.location_name}, {/if}{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}
-					<a href="https://www.google.com/maps/place/{$v.location}"><i class="lms-ui-icon-location"></i></a>
+					<a href="https://www.google.com/maps/place/{$v.location}" title="{trans("Google Maps")}"><i class="lms-ui-icon-location"></i></a>
 				</span>
 			</td>
 		</tr>

@@ -4348,3 +4348,5 @@ $_LANG['Check if representative should be disabled'] = 'Zaznacz jeśli reprezent
 
 $_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
 $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
+
+$_LANG['Google Maps'] = 'Mapy Google';
