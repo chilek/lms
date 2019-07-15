@@ -1146,7 +1146,7 @@ CREATE TABLE ewx_stm_channels (
 	PRIMARY KEY (id),
 	UNIQUE KEY cid (cid),
 	CONSTRAINT ewx_stm_channels_cid_fkey
-		FOREIGN KEY (cid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (cid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3512,4 +3512,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019060300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019071500');
