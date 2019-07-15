@@ -1582,11 +1582,11 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 		char *downrate = strdup(itoa(h.downrate));
 		char *downceil = strdup(itoa(h.downceil));
 		char *halfduplex = strdup(itoa(h.halfduplex));
-		char *channelid = chid ? strdup(itoa(chid)) : strdup("NULL");
+		char *channelid = strdup(itoa(chid));
 
 		g->db->pexec(g->db->conn, "INSERT INTO ewx_stm_nodes (nodeid, mac, ipaddr, channelid, uprate, upceil, downrate, downceil, halfduplex) "
 				    "VALUES (?, '?', INET_ATON('?'), ?, ?, ?, ?, ?, ?)", 
-				    itoa(h.id), h.mac, h.ip, channelid, uprate, upceil, downrate, downceil, halfduplex);
+				    itoa(h.id), h.mac, h.ip, chid ? channelid : "NULL", uprate, upceil, downrate, downceil, halfduplex);
 
 		free(uprate);
 		free(upceil);
