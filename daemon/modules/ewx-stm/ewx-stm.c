@@ -1498,7 +1498,10 @@ int del_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 //    		for(vars = response->variables; vars; vars = vars->next_variable)
 //    			print_variable(vars->name, vars->name_length, vars);
 
-		g->db->pexec(g->db->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid = ?", itoa(h.id));
+		if (h.id)
+			g->db->pexec(g->db->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid = ?", itoa(h.id));
+		else
+			g->db->pexec(g->db->conn, "DELETE FROM ewx_stm_nodes WHERE nodeid IS NULL");
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ewx-stm] Deleted node %s (%05d)", ewx->base.instance, h.ip, h.id);
 #endif
@@ -1579,7 +1582,7 @@ int add_node(GLOBAL *g, struct ewx_module *ewx, struct snmp_session *sh, struct 
 		char *downrate = strdup(itoa(h.downrate));
 		char *downceil = strdup(itoa(h.downceil));
 		char *halfduplex = strdup(itoa(h.halfduplex));
-		char *channelid = strdup(itoa(chid));
+		char *channelid = chid ? strdup(itoa(chid)) : strdup("NULL");
 
 		g->db->pexec(g->db->conn, "INSERT INTO ewx_stm_nodes (nodeid, mac, ipaddr, channelid, uprate, upceil, downrate, downceil, halfduplex) "
 				    "VALUES (?, '?', INET_ATON('?'), ?, ?, ?, ?, ?, ?)", 
