@@ -147,9 +147,11 @@
 				</SELECT>
 			{/box_row}
 
-{if !$group_action}
 			{box_row icon="img/queue.gif" label="Queue:"}
 				<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"} onchange="xajax_queue_changed($(this).val(), $('#rtverifiers').val())">
+					{if $group_action}
+						<option value="-100"{if $message.queueid == -100} selected{/if} data-newmessage-notify="1">{trans("- no changes -")}</option>
+					{/if}
 					{foreach $queuelist as $item}
 					<OPTION value="{$item.id}"{if $item.newmessagesubject && $item.newmessagebody} data-newmessage-notify="1"{/if}{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
 					{/foreach}
@@ -159,6 +161,9 @@
 			{box_row icon="img/users.gif" label="Owner:"}
 				<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
 					<OPTION value="0">- {trans("select user")} -</OPTION>
+					{if $group_action}
+						<option value="-100"{if $message.owner == -100} selected{/if}>{trans("- no changes -")}</option>
+					{/if}
 					{foreach $userlist as $user}
 					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
@@ -173,7 +178,6 @@
 					{trans("assign to me")}
 				</label>
 			{/box_row}
-{/if}
 
 			{box_row icon="img/verifier.png" label="Verifier:" field_id="rtverifiers"}
 				{if $group_action || !$ticket.verifierid || $ticket.verifierid == $layout.logid}

@@ -284,14 +284,18 @@ if (isset($_POST['message'])) {
                 $message['state'] = RT_RESOLVED;
             }
 
-            if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($ticketid))) {
-                $message['owner'] = Auth::GetCurrentUser();
-            }
+            $owner = $DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($ticketid));
 
             if ($group_reply) {
-                $props = array(
-                    'owner' => empty($message['owner']) ? null : $message['owner'],
-                );
+                $props = array();
+                if ($message['owner'] == -100) {
+                    if (!$owner) {
+                        $message['owner'] = Auth::GetCurrentUser();
+                        $props['owner'] = empty($message['owner']) ? null : $message['owner'];
+                    }
+                } else {
+                    $props['owner'] = empty($message['owner']) ? null : $message['owner'];
+                }
                 if ($message['cause'] != -1) {
                     $props['cause'] = $message['cause'];
                 }
@@ -301,6 +305,9 @@ if (isset($_POST['message'])) {
                 if ($message['priority'] != -100) {
                     $props['priority'] = $message['priority'];
                 }
+                if ($message['queueid'] != -100) {
+                    $props['queueid'] = $message['queueid'];
+                }
                 if ($message['verifierid'] != -1) {
                     $props['verifierid'] = empty($message['verifierid']) ? null : $message['verifierid'];
                 }
@@ -308,6 +315,9 @@ if (isset($_POST['message'])) {
                     $props['deadline'] = empty($message['deadline']) ? null : $deadline;
                 }
             } else {
+                if (!$owner) {
+                    $message['owner'] = Auth::GetCurrentUser();
+                }
                 $props = array(
                     'queueid' => $message['queueid'],
                     'owner' => empty($message['owner']) ? null : $message['owner'],
@@ -471,6 +481,8 @@ if (isset($_POST['message'])) {
             $message['customernotify'] = 1;
             $message['state'] = -1;
             $message['cause'] = -1;
+            $message['queueid'] = -100;
+            $message['owner'] = -100;
             $message['priority'] = -100;
             $message['deadline'] = 0;
             $message['verifierid'] = -1;
@@ -591,6 +603,7 @@ if (!is_array($message['ticketid'])) {
     $SMARTY->assign('queuelist', $LMS->LimitQueuesToUserpanelEnabled($LMS->GetQueueList(array('stats' => false)), $message['queueid']));
     $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($queue['id'], RTMESSAGE_REGULAR));
 } else {
+    $SMARTY->assign('queuelist', $LMS->GetQueueList(array('stats' => false)));
     $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplatesByQueueAndType($LMS->GetMyQueues(), RTMESSAGE_REGULAR));
 }
 $SMARTY->assign('citing', isset($_GET['citing']) || ConfigHelper::checkConfig('phpui.helpdesk_reply_body'));
