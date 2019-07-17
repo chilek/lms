@@ -24,6 +24,7 @@ version 25-git (????-??-??):
   - improvement: data-target-url attribute support has been improved and is far
     easier to use [chilan]
   - enhancement: icon near customer addresses which redirect to google maps places [chilan]
+  - improvement: allow to change owner and queue during group message reply [chilan]
 
 version 24.0 (2019-05-16):
 
