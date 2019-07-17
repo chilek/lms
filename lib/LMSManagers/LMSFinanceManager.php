@@ -2145,7 +2145,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 ' AND '.(!empty($exclude) ? 'NOT' : '').' EXISTS (
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
 			            AND customerid = d.customerid)' : '')
-            .' GROUP BY d.id, number, cdate, cancelled, d.customerid,
+            .' GROUP BY d.id, number, cdate, archived, cancelled, d.customerid,
 			d.name, address, zip, city, numberplans.template, closed, published, c.name '
             .(isset($having) ? $having : '')
             .$sqlord.' '.$direction
