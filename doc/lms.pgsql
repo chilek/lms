@@ -2417,7 +2417,7 @@ CREATE INDEX logmessagedata_name_idx ON logmessagedata (name);
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS templates_id_seq;
 CREATE SEQUENCE templates_id_seq;
-DROP TABLE IF EXISTS templates;
+DROP TABLE IF EXISTS templates CASCADE;
 CREATE TABLE templates (
 	id      integer		 DEFAULT nextval('templates_id_seq'::text) NOT NULL,
 	type    smallint	 NOT NULL,
@@ -2527,7 +2527,7 @@ CREATE TABLE filecontainers (
 /* ---------------------------------------------------
  Structure of table files
 ------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS filec_id_seq;
+DROP SEQUENCE IF EXISTS files_id_seq;
 CREATE SEQUENCE files_id_seq;
 DROP TABLE IF EXISTS files CASCADE;
 CREATE TABLE files (
