@@ -396,6 +396,8 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function invoice_data($x, $y, $width, $font_size, $margin)
     {
+        $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
+
         $this->backend->setlinestyle(0.5);
         $this->backend->line($x, $y, $x + $width, $y);
 
@@ -405,7 +407,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $t_data[$v++] = '<b>' . trans('Product ID:') . '</b>';
         $t_data[$v++] = '<b>' . trans('Unit:') . '</b>';
         $t_data[$v++] = '<b>' . trans('Amount:') . '</b>';
-        if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
+        if (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) {
             $t_data[$v++] = '<b>' . trans('Discount:') . '</b>';
         }
         $t_data[$v++] = '<b>' . trans('Unitary Net Value:') . '</b>';
@@ -429,17 +431,19 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.3f', $item['count']));
-                if (!empty($this->data['pdiscount'])) {
-                    $tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-                }
-                if (!empty($this->data['vdiscount'])) {
-                    $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
-                    if ($tmp_width > $tt_width[$v]) {
-                        $tt_width[$v] = $tmp_width;
+                if (!$hide_discount) {
+                    if (!empty($this->data['pdiscount'])) {
+                        $tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
                     }
-                }
-                if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
-                    $v++;
+                    if (!empty($this->data['vdiscount'])) {
+                        $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
+                        if ($tmp_width > $tt_width[$v]) {
+                            $tt_width[$v] = $tmp_width;
+                        }
+                    }
+                    if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
+                        $v++;
+                    }
                 }
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['basevalue'])) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['totalbase'])) + 6;
@@ -461,17 +465,19 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.3f', $item['count']));
-                if (!empty($this->data['pdiscount'])) {
-                    $tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-                }
-                if (!empty($this->data['vdiscount'])) {
-                    $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
-                    if ($tmp_width > $tt_width[$v]) {
-                        $tt_width[$v] = $tmp_width;
+                if (!$hide_discount) {
+                    if (!empty($this->data['pdiscount'])) {
+                        $tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
                     }
-                }
-                if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
-                    $v++;
+                    if (!empty($this->data['vdiscount'])) {
+                        $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
+                        if ($tmp_width > $tt_width[$v]) {
+                            $tt_width[$v] = $tmp_width;
+                        }
+                    }
+                    if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
+                        $v++;
+                    }
                 }
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['basevalue'])) + 6;
                 $tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['totalbase'])) + 6;
@@ -487,8 +493,8 @@ class LMSEzpdfInvoice extends LMSInvoice
         }
         // Kolumna 2 będzie miała rozmiar ustalany dynamicznie
         $t_width[2] = $width - ($t_width[1] + $t_width[3] + $t_width[4] + $t_width[5] + $t_width[6] + $t_width[7]
-            + $t_width[8] + $t_width[9] + $t_width[10] + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? $t_width[11] : 0)
-            + 2 * $margin * (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? 11 : 10));
+            + $t_width[8] + $t_width[9] + $t_width[10] + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? $t_width[11] : 0)
+            + 2 * $margin * (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 11 : 10));
         $y = $this->invoice_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
         $t_justify[11] = $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
         $t_justify[2] = 'left';
@@ -508,14 +514,16 @@ class LMSEzpdfInvoice extends LMSInvoice
                     $t_data[$v++] = $item['prodid'];
                     $t_data[$v++] = $item['content'];
                     $t_data[$v++] = sprintf('%.3f', $item['count']);
-                    $item['pdiscount'] = floatval($item['pdiscount']);
-                    $item['vdiscount'] = floatval($item['vdiscount']);
-                    if (!empty($item['pdiscount'])) {
-                        $t_data[$v++] = sprintf('%.2f %%', $item['pdiscount']);
-                    } elseif (!empty($item['vdiscount'])) {
-                        $t_data[$v++] = moneyf($item['vdiscount']);
-                    } elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
-                        $t_data[$v++] = '';
+                    if (!$hide_discount) {
+                        $item['pdiscount'] = floatval($item['pdiscount']);
+                        $item['vdiscount'] = floatval($item['vdiscount']);
+                        if (!empty($item['pdiscount'])) {
+                            $t_data[$v++] = sprintf('%.2f %%', $item['pdiscount']);
+                        } elseif (!empty($item['vdiscount'])) {
+                            $t_data[$v++] = moneyf($item['vdiscount']);
+                        } elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
+                            $t_data[$v++] = '';
+                        }
                     }
                     $t_data[$v++] = moneyf($item['basevalue']);
                     $t_data[$v++] = moneyf($item['totalbase']);
@@ -528,13 +536,13 @@ class LMSEzpdfInvoice extends LMSInvoice
                 }
             }
 
-            $x = $x + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
-                + $t_width[4] + $t_width[5] + $t_width[6] + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? $t_width[7] : 0);
+            $x = $x + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
+                + $t_width[4] + $t_width[5] + $t_width[6] + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? $t_width[7] : 0);
 
             $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
-            $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+            $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
             $t_data[$v++] = moneyf($this->data['invoice']['totalbase']);
             $t_data[$v++] = "<b>x</b>";
             $t_data[$v++] = moneyf($this->data['invoice']['totaltax']);
@@ -545,12 +553,12 @@ class LMSEzpdfInvoice extends LMSInvoice
 
             $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('in it:') . '</b>');
-            $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+            $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
             $this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
 
             if ($this->data['invoice']['taxest']) {
                 foreach ($this->data['invoice']['taxest'] as $item) {
-                    $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+                    $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
                     $t_data[$v++] = moneyf($item['base']);
                     $t_data[$v++] = $item['taxlabel'];
                     $t_data[$v++] = moneyf($item['tax']);
@@ -578,14 +586,16 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $t_data[$v++] = $item['prodid'];
                 $t_data[$v++] = $item['content'];
                 $t_data[$v++] = sprintf('%.3f', $item['count']);
-                $item['pdiscount'] = floatval($item['pdiscount']);
-                $item['vdiscount'] = floatval($item['vdiscount']);
-                if (!empty($item['pdiscount'])) {
-                    $t_data[$v++] = sprintf('%.2f %%', $item['pdiscount']);
-                } elseif (!empty($item['vdiscount'])) {
-                    $t_data[$v++] = moneyf($item['vdiscount']);
-                } elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
-                    $t_data[$v++] = '';
+                if (!$hide_discount) {
+                    $item['pdiscount'] = floatval($item['pdiscount']);
+                    $item['vdiscount'] = floatval($item['vdiscount']);
+                    if (!empty($item['pdiscount'])) {
+                        $t_data[$v++] = sprintf('%.2f %%', $item['pdiscount']);
+                    } elseif (!empty($item['vdiscount'])) {
+                        $t_data[$v++] = moneyf($item['vdiscount']);
+                    } elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
+                        $t_data[$v++] = '';
+                    }
                 }
                 $t_data[$v++] = moneyf($item['basevalue']);
                 $t_data[$v++] = moneyf($item['totalbase']);
@@ -600,13 +610,13 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $return[1] = $y;
 
-        $x = $x + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
-            + $t_width[4] + $t_width[5] + $t_width[6] + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? $t_width[7] : 0);
+        $x = $x + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
+            + $t_width[4] + $t_width[5] + $t_width[6] + (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? $t_width[7] : 0);
 
         $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
         $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
-        $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+        $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
         $t_data[$v++] = moneyf($this->data['totalbase']);
         $t_data[$v++] = "<b>x</b>";
         $t_data[$v++] = moneyf($this->data['totaltax']);
@@ -618,12 +628,12 @@ class LMSEzpdfInvoice extends LMSInvoice
 
         $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
         $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('in it:') . '</b>');
-        $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+        $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
         $this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
 
         if ($this->data['taxest']) {
             foreach ($this->data['taxest'] as $item) {
-                $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+                $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
                 $t_data[$v++] = moneyf($item['base']);
                 $t_data[$v++] = $item['taxlabel'];
                 $t_data[$v++] = moneyf($item['tax']);
@@ -639,11 +649,11 @@ class LMSEzpdfInvoice extends LMSInvoice
 
             $y = $y - 5;
             $fy = $y - $margin - $this->backend->GetFontHeight($font_size);
-            $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+            $v = (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) ? 8 : 7;
             $this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
             $this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Difference value:') . '</b>');
 
-            $v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+            $v = (!$hide_discount && !empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
             $t_data[$v++] = ($totalbase > 0 ? '+' : '') . moneyf($totalbase);
             $t_data[$v++] = "<b>x</b>";
             $t_data[$v++] = ($totaltax > 0 ? '+' : '') . moneyf($totaltax);
@@ -659,6 +669,8 @@ class LMSEzpdfInvoice extends LMSInvoice
 
     protected function new_invoice_data($x, $y, $width, $font_size, $margin)
     {
+        $hide_discount = ConfigHelper::checkConfig('invoices.hide_discount');
+
         $this->backend->setlinestyle(0.5);
         $data = array();
         $cols = array();
@@ -678,7 +690,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $cols['prodid'] = '<b>' . trans('Product ID:') . '</b>';
         $cols['content'] = '<b>' . trans('Unit:') . '</b>';
         $cols['count'] = '<b>' . trans('Amount:') . '</b>';
-        if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) {
+        if (!$hide_discount && (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))) {
             $cols['discount'] = '<b>' . trans('Discount:') . '</b>';
         }
         $cols['basevalue'] = '<b>' . trans('Unitary Net Value:') . '</b>';
@@ -701,13 +713,15 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
                 $tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.3f', $item['count']));
-                if (!empty($this->data['pdiscount'])) {
-                    $tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-                }
-                if (!empty($this->data['vdiscount'])) {
-                    $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
-                    if ($tmp_width > $tt_width['discount']) {
-                        $tt_width['discount'] = $tmp_width;
+                if (!$hide_discount) {
+                    if (!empty($this->data['pdiscount'])) {
+                        $tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
+                    }
+                    if (!empty($this->data['vdiscount'])) {
+                        $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
+                        if ($tmp_width > $tt_width['discount']) {
+                            $tt_width['discount'] = $tmp_width;
+                        }
                     }
                 }
                 $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, moneyf($item['basevalue'])) + 6;
@@ -730,13 +744,15 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
                 $tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
                 $tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.3f', $item['count']));
-                if (!empty($this->data['pdiscount'])) {
-                    $tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-                }
-                if (!empty($this->data['vdiscount'])) {
-                    $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
-                    if ($tmp_width > $tt_width['discount']) {
-                        $tt_width['discount'] = $tmp_width;
+                if (!$hide_discount) {
+                    if (!empty($this->data['pdiscount'])) {
+                        $tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
+                    }
+                    if (!empty($this->data['vdiscount'])) {
+                        $tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
+                        if ($tmp_width > $tt_width['discount']) {
+                            $tt_width['discount'] = $tmp_width;
+                        }
                     }
                 }
                 $tt_width['basevalue'] = $this->backend->getTextWidth($font_size, moneyf($item['basevalue'])) + 6;
@@ -818,12 +834,14 @@ class LMSEzpdfInvoice extends LMSInvoice
                     $data[$i]['prodid'] = $item['prodid'];
                     $data[$i]['content'] = $item['content'];
                     $data[$i]['count'] = sprintf('%.3f', $item['count']);
-                    $item['pdiscount'] = floatval($item['pdiscount']);
-                    $item['vdiscount'] = floatval($item['vdiscount']);
-                    if (!empty($item['pdiscount'])) {
-                        $data[$i]['discount'] = sprintf('%.2f %%', $item['pdiscount']);
-                    } elseif (!empty($item['vdiscount'])) {
-                        $data[$i]['discount'] = moneyf($item['vdiscount']);
+                    if (!$hide_discount) {
+                        $item['pdiscount'] = floatval($item['pdiscount']);
+                        $item['vdiscount'] = floatval($item['vdiscount']);
+                        if (!empty($item['pdiscount'])) {
+                            $data[$i]['discount'] = sprintf('%.2f %%', $item['pdiscount']);
+                        } elseif (!empty($item['vdiscount'])) {
+                            $data[$i]['discount'] = moneyf($item['vdiscount']);
+                        }
                     }
                     $data[$i]['basevalue'] = moneyf($item['basevalue']);
                     $data[$i]['totalbase'] = moneyf($item['totalbase']);
@@ -892,12 +910,14 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $data[$i]['prodid'] = $item['prodid'];
                 $data[$i]['content'] = $item['content'];
                 $data[$i]['count'] = sprintf('%.3f', $item['count']);
-                $item['pdiscount'] = floatval($item['pdiscount']);
-                $item['vdiscount'] = floatval($item['vdiscount']);
-                if (!empty($item['pdiscount'])) {
-                    $data[$i]['discount'] = sprintf('%.2f %%', $item['pdiscount']);
-                } elseif (!empty($item['vdiscount'])) {
-                    $data[$i]['discount'] = moneyf($item['vdiscount']);
+                if (!$hide_discount) {
+                    $item['pdiscount'] = floatval($item['pdiscount']);
+                    $item['vdiscount'] = floatval($item['vdiscount']);
+                    if (!empty($item['pdiscount'])) {
+                        $data[$i]['discount'] = sprintf('%.2f %%', $item['pdiscount']);
+                    } elseif (!empty($item['vdiscount'])) {
+                        $data[$i]['discount'] = moneyf($item['vdiscount']);
+                    }
                 }
                 $data[$i]['basevalue'] = moneyf($item['basevalue']);
                 $data[$i]['totalbase'] = moneyf($item['totalbase']);

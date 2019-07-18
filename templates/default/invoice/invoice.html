@@ -1,4 +1,5 @@
 {$use_alert_color = ConfigHelper::checkConfig('invoices.use_alert_color')}
+{$hide_discount = ConfigHelper::checkConfig('invoices.hide_discount')}
 
 <!--// $Id$ //-->
 <DIV{if !$invoice.last} STYLE="page-break-after: always"{/if}>
@@ -121,7 +122,7 @@
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("No.")}</B>
 	</TD>
-	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="head" ALIGN="CENTER">
+	<TD WIDTH="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}90{else}91{/if}%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Name of Product, Commodity or Service:")}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
@@ -133,7 +134,7 @@
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Amount:")}</B>
 	</TD>
-	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
+	{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{trans("Discount:")}</B>
 	</TD>
@@ -156,7 +157,7 @@
     </TR>
 {if $invoice.invoice}
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}11{else}10{/if}" CLASS="fbottom">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}11{else}10{/if}" CLASS="fbottom">
 		<B>{trans("Was:")}</B>
 	</TD>
     </TR>
@@ -165,7 +166,7 @@
 {foreach from=$invoice.invoice.content item=item}
     <TR class="{cycle}">
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
-	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="flr">
+	<TD WIDTH="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}90{else}91{/if}%" CLASS="flr">
 		{$item.description}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr">
@@ -177,7 +178,7 @@
 	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
 		{$item.count|string_format:"%.3f"}
 	</TD>
-	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
+	{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|money_format}{/if}
 	</TD>
@@ -200,7 +201,7 @@
     </TR>
 {/foreach}
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
@@ -217,7 +218,7 @@
 	</TD>
     </TR>
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
 	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
@@ -226,7 +227,7 @@
     </TR>
 {foreach from=$invoice.invoice.taxest item=item}
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
@@ -244,7 +245,7 @@
     </TR>
 {/foreach}
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}11{else}10{/if}" CLASS="fbottom">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}11{else}10{/if}" CLASS="fbottom">
 		<B>{trans("Corrected to:")}</B>
 	</TD>
     </TR>
@@ -254,7 +255,7 @@
 {foreach from=$invoice.content item=item}
     <TR class="{cycle name=cycle2}">
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT">{counter}.</TD>
-	<TD WIDTH="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}90{else}91{/if}%" CLASS="flr">
+	<TD WIDTH="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}90{else}91{/if}%" CLASS="flr">
 		{$item.description}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr">
@@ -266,7 +267,7 @@
 	<TD WIDTH="1%" CLASS="flr" ALIGN="CENTER">
 		{$item.count|string_format:"%.3f"}
 	</TD>
-	{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}
+	{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|money_format}{/if}
 	</TD>
@@ -289,7 +290,7 @@
     </TR>
     {/foreach}
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
@@ -306,7 +307,7 @@
 	</TD>
     </TR>
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
 	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
@@ -315,7 +316,7 @@
     </TR>
     {foreach from=$invoice.taxest item=item}
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
@@ -337,10 +338,10 @@
 	{math assign=totaltax equation="x-y" x=$invoice.totaltax y=$invoice.invoice.totaltax}
 	{math assign=total equation="x-y" x=$invoice.total y=$invoice.invoice.total}
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}11{else}10{/if}"></TD>
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}11{else}10{/if}"></TD>
     </TR>
     <TR>
-	<TD COLSPAN="{if $invoice.pdiscount != 0 || $invoice.vdiscount != 0}7{else}6{/if}" ALIGN="RIGHT">
+	<TD COLSPAN="{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}7{else}6{/if}" ALIGN="RIGHT">
 		<B>{trans("Difference value:")}</B>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
@@ -467,8 +468,8 @@
 	{/if}
 {/if}
 
-{* 
-customer's balance: {$invoice.customerbalancelist.balance} 
+{*
+customer's balance: {$invoice.customerbalancelist.balance}
 *}
 
 {if $invoice.customerbalancelist.list}
@@ -502,7 +503,7 @@ customer's balance: {$invoice.customerbalancelist.balance}
 		<TD width="93%">{$item.comment}</TD>
         </TR>
 	{/section}
-</TABLE>	
-{/if}	
+</TABLE>
+{/if}
 
 </DIV>
