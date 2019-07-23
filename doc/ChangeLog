@@ -27,6 +27,8 @@ version 25-git (????-??-??):
   - improvement: allow to change owner and queue during group message reply [chilan]
   - enhancement: invoices.hide_discount configuration variable ('false' by default) controls
     if discount column is presented on invoices [chilan]
+  - improvement: added copy to clipboard buttons/icons for events, tickets, ticket message
+    and notes [chilan]
 
 version 24.0 (2019-05-16):
 
