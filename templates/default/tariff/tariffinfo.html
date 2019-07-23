@@ -391,7 +391,7 @@
                     {section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
                      <TD WIDTH="33%" class="highlight {cycle}" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
                         <IMG SRC="img/customer.gif" ALT="">
-                        <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}">
+                        <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}"{if !$tariff.customers[l2].active} class="blend"{/if}>
                             ({$tariff.customers[l2].id|string_format:"%04d"})
                             {$tariff.customers[l2].customername|truncate:50:" ..."}
                             {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}

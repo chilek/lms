@@ -2446,12 +2446,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			LEFT JOIN taxes ON (t.taxid = taxes.id)
 			WHERE t.id=?', array($id));
 
-        $result['customers'] = $this->db->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
+        $result['customers'] = $this->db->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt,
+                COUNT(CASE WHEN s.customerid IS NULL AND commited = 1 AND suspended = 0 AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE NULL END) AS active, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername '
                 . ($network ? ', COUNT(vnodes.id) AS nodescount ' : '')
-                . 'FROM assignments, customerview c '
+                . 'FROM assignments, customerview c
+                LEFT JOIN (
+                    SELECT DISTINCT a.customerid
+                    FROM assignments a
+                    WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+                        AND a.datefrom < ?NOW? AND (a.dateto = 0 OR a.dateto > ?NOW?)
+                ) s ON s.customerid = c.id '
                 . ($network ? 'LEFT JOIN vnodes ON (c.id = vnodes.ownerid) ' : '')
-                . 'WHERE c.id = customerid AND commited = 1 AND deleted = 0 AND tariffid = ? '
+                . 'WHERE c.id = assignments.customerid AND commited = 1 AND deleted = 0 AND tariffid = ? '
                 . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
                         . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                 . 'GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
