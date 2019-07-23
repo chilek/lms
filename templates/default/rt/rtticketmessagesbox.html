@@ -62,6 +62,7 @@
 						{/if}
 
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
+							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 								{button icon="lms-ui-icon-restore" onclick="if (confirmLink(this,'{trans("Are you sure, you want to restore that message?")}')) location.href = '?m=rtrestore&id={$message.id}&maction=restore';"
 									label="Restore<!RT>"}
@@ -72,6 +73,7 @@
 									label="Delete"}
 							{/if}
 						{else}
+							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 							{button icon="lms-ui-icon-details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
 							{if $msgidx > 0}
 								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}

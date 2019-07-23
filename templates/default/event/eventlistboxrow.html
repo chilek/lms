@@ -47,6 +47,9 @@
     </TD>
     <TD class="text-right nobr">
         <div class="no-print">
+            <a href="#" class="lms-ui-button-clipboard" data-clipboard-text="{$url}?m=eventinfo&id={$event.id}">
+                <i></i>
+            </a>
             {if $imadded}
             <a href="#" onclick="location.href = '?m=eventedit&id={$event.id}&action=unassign&backid=' + $(this).closest('.event-day-table').attr('id');">
                 <img src="img/users.gif" alt="{trans("<!event>Unassign")}" title=" {trans("<!event>Unassign")} ">

@@ -689,7 +689,7 @@ $(function() {
 				}
 				e.stopPropagation();
 			});
-			row.find('a').click(function(e) {
+			row.find('a:not(.lms-ui-button-clipboard)').click(function(e) {
 				e.stopPropagation();
 			});
 		});

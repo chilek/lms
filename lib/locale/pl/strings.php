@@ -4350,3 +4350,4 @@ $_LANG['<!dialog>Confirmation'] = 'Potwierdzenie';
 $_LANG['<!dialog>Alert'] = 'Ostrzeżenie';
 
 $_LANG['Google Maps'] = 'Mapy Google';
+$_LANG['Copy link'] = 'Kopiuj link';

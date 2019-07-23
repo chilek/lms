@@ -2106,6 +2106,16 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-link,
+.lms-ui-icon-url {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-link;
+	}
+}
+
 button,a,div {
 	&.lms-ui-button-netnode {
 		& > i {
@@ -2296,7 +2306,6 @@ button,a,div {
 			.lms-ui-icon-close;
 		}
 	}
-
 }
 
 @import "less/style-button";

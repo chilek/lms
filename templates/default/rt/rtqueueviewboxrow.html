@@ -17,6 +17,9 @@
 	<TD class="nobr">
 		<span class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}">
 			<span class="bold" style="{$_RT_PRIORITY_STYLES[$ticket.priority]}">&nbsp;{$ticket.id|string_format:"%06d"}&nbsp;</span>
+		<a href="#" class="lms-ui-button-clipboard" data-clipboard-text="{$url}?m=rtticketview&id={$ticket.id}">
+			<i></i>
+		</a>
 		<span>{if is_array($filter.ids) && count($filter.ids) != 1}{$ticket.name}{/if}</span>
 		<br>
 		{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}

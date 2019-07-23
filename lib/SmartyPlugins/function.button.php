@@ -52,6 +52,8 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
     $visible = isset($params['visible']) ? $params['visible'] : true;
     // optional - keyboard shortcut
     $accesskey = isset($params['accesskey']) ? $params['accesskey'] : null;
+    // optional - contents copied to clipboard
+    $clipboard = isset($params['clipboard']) ? $params['clipboard'] : null;
 
     return '<' . ($type == 'link' ? 'a' . ($href ? ' href="' . $href . '"' : '') : 'button type="' . $type . '"')
             . ' class="' . ($type == 'link' ? '' : 'lms-ui-button') . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
@@ -60,6 +62,7 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
             . ($tip ? ' title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')
+            . ($clipboard ? ' data-clipboard-text="' . $clipboard . '"' : '')
             . ($visible ? '' : ' style="display: none;"')
             . ($accesskey ? ' accesskey="' . $accesskey . '"' : '') . '>'
             . ($icon ? '<i' . ($custom_icon ? ' class="' . $icon . '"' : '') . '></i>' : '')
