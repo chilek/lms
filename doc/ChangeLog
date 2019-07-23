@@ -29,6 +29,7 @@ version 25-git (????-??-??):
     if discount column is presented on invoices [chilan]
   - improvement: added copy to clipboard buttons/icons for events, tickets, ticket message
     and notes [chilan]
+  - improvement: show customers with all inactive assignments for given tariff as blend [chilan]
 
 version 24.0 (2019-05-16):
 
