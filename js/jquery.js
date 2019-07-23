@@ -670,6 +670,9 @@ $(function() {
 			var checkbox = $(elem)[0];
 			var row = $(checkbox).closest('tr,.lms-ui-tab-table-row');
 			row.click(function(e) {
+				if ($(e.target).closest('.lms-ui-button-clipboard').length) {
+					return;
+				}
 				if (e.shiftKey) {
 					checkElements(checkbox);
 				} else {
