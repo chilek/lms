@@ -19,14 +19,14 @@
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD>
 			<IMG src="img/netnode.png" ALT="">&nbsp;<A href="?m=netnodelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
-			<A href="?m=netnodelist&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
+			<A href="?m=netnodelist&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-center">
-			<A href="?m=netnodelist&o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+			<A href="?m=netnodelist&o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-center">
-		   	<A href="?m=netnodelist&o=invprojectid{if $listdata.direction == "asc" && $listdata.order == "invprojectid"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "invprojectid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+		   	<A href="?m=netnodelist&o=invprojectid{if $listdata.direction == "asc" && $listdata.order == "invprojectid"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "invprojectid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD class="text-center">
 			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -39,7 +39,7 @@
 	</TR>
 	<TR>
 		<TD colspan="2" class="nobr">
-			<span class="bold">{trans("Filter:")}</span> 
+			<span class="bold">{trans("Filter:")}</span>
 			{if $divisions}
 			{trans("Division:")}
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
@@ -95,7 +95,7 @@
     </THEAD>
     <TBODY>
 	{foreach $nlist as $item}
-	<TR class="highlight" data-target-url="?m=netnodeinfo&id={$item.id}">
+	<TR class="highlight" data-target-url="?m=netnodeinfo&id={$item.id}" data-name="{$item.name}">
 		<TD class="valign-top">
 			<IMG src="img/netnode.png" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
 			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$item.type]} / {$_NETELEMENTSTATUSES[$item.status]}
@@ -116,7 +116,7 @@
 		</TD>
 		<TD class="text-center">{$item.lastinspectiontime|date_format:"%x"}</TD>
 		<TD class="lms-ui-buttons text-right nobr">
-			<a href="?m=netnodedel&id={$item.id}" onClick="return confirmLink(this, '{t a=$item.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a class="delete-netnode" href="?m=netnodedel&id={$item.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=netnodeedit&id={$item.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<a href="?m=netnodeinfo&id={$item.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
@@ -140,4 +140,13 @@
 	</TR>
 </TABLE>
 </FORM>
+	<script>
+		$('.delete-netnode').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove net device node '$a' from database?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

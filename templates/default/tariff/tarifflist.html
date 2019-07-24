@@ -119,7 +119,7 @@
     </THEAD>
     <TBODY>
 	{foreach $tarifflist as $tariff}
-	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}" data-target-url="?m=tariffinfo&id={$tariff.id}">
+	<TR class="highlight{if $tariff.disabled == 1 && !$listdata.state} blend{/if}" data-target-url="?m=tariffinfo&id={$tariff.id}" data-name="{$tariff.name}">
 		<TD>
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a>
 			{if $tariff.datefrom || $tariff.dateto}
@@ -177,7 +177,11 @@
 						<img src="img/noaccess.gif" alt="{t}Enable{/t}" title="{t}Enable{/t}" />
 					{/if}
 				</a>
-				{if $tariff.customers}<A HREF="javascript:alert('{trans("Subscription with assigned customers cannot be deleted!")}');">{else}<A HREF="?m=tariffdel&amp;id={$tariff.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{/if}<IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+				{if $tariff.customers}
+					<A class="delete-tariff-alert" href="#">
+				{else}
+					<A class="delete-tariff" HREF="?m=tariffdel&id={$tariff.id}">
+				{/if}<IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 				<A HREF="?m=tariffedit&amp;id={$tariff.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 				<A HREF="?m=tariffadd&amp;id={$tariff.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 				<A HREF="?m=tariffinfo&amp;id={$tariff.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -208,4 +212,18 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-tariff').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to delete tariff '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-tariff-alert').click(function() {
+			alertDialog($t("Subscription with assigned customers cannot be deleted!"), this);
+			return;
+		});
+	</script>
 {/block}

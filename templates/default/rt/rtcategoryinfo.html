@@ -82,12 +82,21 @@
 	    </TD>
 	</TR>
 	<TR>
-	    <TD COLSPAN="3" class="text-right"> 
+	    <TD COLSPAN="3" class="text-right">
 	        <A HREF="?m=rtqueueview&catid={$category.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
 	    	<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+		<A id="delete-rtcategory" HREF="?m=rtcategorydel&id={$category.id}" data-name="{$category.name}"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 	    </TD>
 	</TR>
     </TBODY>
 </TABLE></P>
+	<script>
+		$('#delete-rtcategory').click(function() {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

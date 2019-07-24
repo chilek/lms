@@ -64,26 +64,22 @@
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
 							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-								{button icon="lms-ui-icon-restore" onclick="if (confirmLink(this,'{trans("Are you sure, you want to restore that message?")}')) location.href = '?m=rtrestore&id={$message.id}&maction=restore';"
-									label="Restore<!RT>"}
-								{button icon="lms-ui-icon-delete" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtremove&id={$message.id}&maction=delperm';"
-									label="Delete permanently"}
+								{button icon="lms-ui-icon-restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
+
+								{button icon="lms-ui-icon-delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
 							{else}
-								{button icon="lms-ui-icon-trash" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtmessagedel&id={$message.id}&maction=delete';"
-									label="Delete"}
+								{button icon="lms-ui-icon-trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
 							{/if}
 						{else}
 							{button icon="lms-ui-icon-link" class="lms-ui-button-clipboard" label="Copy link" clipboard="{$url}?m=rtticketview&id={$ticket.ticketid}#rtmessage-{$message.id}"}
 							{button icon="lms-ui-icon-details" onclick="location.href = '?m=rtmessageview&id={$message.id}';" label="Details"}
 							{if $msgidx > 0}
 								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-									{button icon="lms-ui-icon-restore" onclick="if (confirmLink(this,'{trans("Are you sure, you want to restore that message?")}')) location.href = '?m=rtrestore&id={$message.id}&maction=restore';"
-										label="Restore<!RT>"}
-								{button icon="lms-ui-icon-delete" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtremove&id={$message.id}&maction=delperm';"
-									label="Delete permanently"}
+									{button icon="lms-ui-icon-restore" class="restore-rtmessage" resourceid="?m=rtrestore&id={$message.id}&maction=restore" label="Restore<!RT>"}
+
+									{button icon="lms-ui-icon-delete" class="remove-rtmessage" resourceid="?m=rtremove&id={$message.id}&maction=delperm" label="Delete permanently"}
 								{else}
-									{button icon="lms-ui-icon-trash" onclick="if (confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')) location.href = '?m=rtmessagedel&id={$message.id}&maction=delete';"
-										label="Delete"}
+									{button icon="lms-ui-icon-trash" class="delete-rtmessage" resourceid="?m=rtmessagedel&id={$message.id}&maction=delete" label="Delete"}
 								{/if}
 							{/if}
 							{if $ticket.state != $smarty.const.RT_RESOLVED}
@@ -133,4 +129,22 @@
 			.next('tbody').addClass('lms-ui-rtmessage-current');
 		$('tr' + location.hash).parent('tbody').addClass('lms-ui-rtsystemmessage-current');
 	}
+	$('.delete-rtmessage').click(function() {
+		confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
+			location.href = $(this).attr('data-resourceid');
+		});
+		return false;
+	});
+	$('.restore-rtmessage').click(function() {
+		confirmDialog($t("Are you sure, you want to restore that message?"), this).done(function() {
+			location.href = $(this).attr('data-resourceid');
+		});
+		return false;
+	});
+	$('.remove-rtmessage').click(function() {
+		confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
+			location.href = $(this).attr('data-resourceid');
+		});
+		return false;
+	});
 </script>

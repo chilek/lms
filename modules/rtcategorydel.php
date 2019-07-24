@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,23 +24,16 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Remove category ID: $a', sprintf("%04d", $_GET['id']));
-
 if (!$LMS->CategoryExists($_GET['id'])) {
-    $body = '<P>'.trans('Specified ID is not proper or does not exist!').'</P>';
+    $layout['pagetitle'] = trans('Remove category ID: $a', sprintf("%04d", $_GET['id']));
+    $body = '<P>' . trans('Specified ID is not proper or does not exist!') . '</P>';
+    $body .= '<A HREF="?' . $SESSION->get('backto') . '">' . trans('Back') . '</A></P>';
+    $SMARTY->assign('body', $body);
+    $SMARTY->display('dialog.html');
 } else {
-    if ($_GET['is_sure'] != 1) {
-        $body = '<P>'.trans('Do you want to remove category called $a?', $LMS->GetCategoryName($_GET['id'])) .'</P>';
-        $body .= '<P><A HREF="?m=rtcategorydel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
-        $body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';
-    } else {
-        $category = intval($_GET['id']);
+    $category = intval($_GET['id']);
 
-        $DB->Execute('DELETE FROM rtcategories WHERE id=?', array($category));
+    $DB->Execute('DELETE FROM rtcategories WHERE id=?', array($category));
 
-        $SESSION->redirect('?m=rtcategorylist');
-    }
+    $SESSION->redirect('?m=rtcategorylist');
 }
-
-$SMARTY->assign('body', $body);
-$SMARTY->display('dialog.html');

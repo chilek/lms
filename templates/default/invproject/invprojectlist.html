@@ -27,7 +27,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$invprojectlist item=invproject}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight {cycle}" data-name="{$invproject.name}">
 		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';">
 			({$invproject.id|string_format:"%04d"})
 		</TD>
@@ -50,7 +50,7 @@
 		</TD>
 		<TD align="right" NOWRAP>
 			<A HREF="?m=invprojectedit&id={$invproject.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A HREF="?m=invprojectdel&id={$invproject.id}" OnClick="return confirmLink(this, '{t a=$invproject.name}Are you sure, you want to remove investment project \'$a\' ?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-invproject" HREF="?m=invprojectdel&id={$invproject.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -69,4 +69,13 @@
 	</TR>
         </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-invproject').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove investment project '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

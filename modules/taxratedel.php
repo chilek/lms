@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 
-if ($_GET['is_sure'] == 1 && $id) {
+if ($id) {
     if (($DB->GetOne('SELECT 1 FROM cash WHERE taxid=? LIMIT 1', array($id))
         + $DB->GetOne('SELECT 1 FROM tariffs WHERE taxid=? LIMIT 1', array($id))
         + $DB->GetOne('SELECT 1 FROM invoicecontents WHERE taxid=? LIMIT 1', array($id))

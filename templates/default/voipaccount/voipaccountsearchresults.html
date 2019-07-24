@@ -14,20 +14,20 @@
     <thead>
         <tr {tip text="Click on column name to change sorting order"}>
             <td class="nobr">
-                <img src="img/voip.gif" alt=""> 
-                <a class="bold" href="?m=voipaccountsearch&search&o=login{if $listdata.direction == "asc" && $listdata.order == "login"},desc{/if}">{trans("Login:")}</a> 
+                <img src="img/voip.gif" alt="">
+                <a class="bold" href="?m=voipaccountsearch&search&o=login{if $listdata.direction == "asc" && $listdata.order == "login"},desc{/if}">{trans("Login:")}</a>
                 {if $listdata.order == "login"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
                 <br>
-                <img src="img/customer.gif" alt=""> 
-                <a href="?m=voipaccountsearch&search&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Owner:")}</a> 
+                <img src="img/customer.gif" alt="">
+                <a href="?m=voipaccountsearch&search&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Owner:")}</a>
                 {if $listdata.order == "owner"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </td>
             <td class="bold nobr">
-                <a href="?m=voipaccountsearch&search&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</a> 
+                <a href="?m=voipaccountsearch&search&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</a>
                 {if $listdata.order == "id"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
@@ -53,7 +53,7 @@
     <tbody>
         {cycle values="light,lucid" print=false}
         {section name=voipaccountlist loop=$voipaccountlist start=$start max=$pagelimit}
-        <tr class="highlight {cycle}">
+        <tr class="highlight {cycle}" data-name="{$voipaccountlist[voipaccountlist].login}">
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';">
                 <a class="bold" name="{$voipaccountlist[voipaccountlist].id}">
                     <img src="img/voip.gif" alt=""> {$voipaccountlist[voipaccountlist].login}
@@ -70,9 +70,7 @@
                 {if ConfigHelper::checkPrivilege('hide_voip_passwords')}{'*'|str_repeat:8}{else}{$voipaccountlist[voipaccountlist].passwd}{/if}
             </td>
             <td class="text-right nobr" align="right">
-                <a href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}" onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">
-                    <img src="img/delete.gif" alt="{trans("Delete")}">
-                </a>
+                <a class="delete-voipaccount" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="{trans("Delete")}"></a>
                 <a href="?m=voipaccountedit&id={$voipaccountlist[voipaccountlist].id}">
                     <img src="img/edit.gif" alt="{trans("Edit")}">
                 </a>
@@ -101,4 +99,13 @@
         </tr>
     </tbody>
 </table>
+    <script>
+        $('.delete-voipaccount').click(function() {
+            var name = $(this).closest('tr').attr('data-name');
+            confirmDialog($t("Are you sure, you want to remove voip account '$a' from database?", name), this).done(function() {
+                location.href = $(this).attr('href');
+            });
+            return false;
+        });
+    </script>
 {/block}

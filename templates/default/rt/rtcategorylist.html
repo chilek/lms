@@ -44,7 +44,7 @@
     </THEAD>
     <TBODY>
 	{foreach $categories as $category}
-	<TR class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}">
+	<TR class="highlight" data-target-url="?m=rtqueueview&catid={$category.id}" data-name="{$category.name}">
 		<TD COLSPAN="2">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$category.name}</B><BR>
@@ -75,7 +75,7 @@
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			<A HREF="?m=rtqueueview&amp;catid={$category.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
-			<A HREF="?m=rtcategorydel&amp;id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-rtcategory" HREF="?m=rtcategorydel&id={$category.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=rtcategoryedit&amp;id={$category.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=rtcategoryinfo&amp;id={$category.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
@@ -106,4 +106,13 @@
 	</TR>
         </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-rtcategory').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

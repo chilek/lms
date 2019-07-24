@@ -71,7 +71,7 @@
     </THEAD>
     <TBODY>
 	{foreach $queues as $queue}
-	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}">
+	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" data-target-url="?m=rtqueueview&id={$queue.id}" data-name="{$queue.name}">
 		<TD class="nobr bold">
 		{if $queue.critical != 0}
 			<i class="lms-ui-icon-content lms-ui-icon-critical"></i>
@@ -113,10 +113,10 @@
 			<a href="?m=rtqueueedit&id={$queue.id}&unread=0"><img src="img/ticket-read.png" alt="" title="{t a=$queue.unread}Mark as read ($a unread){/t}"></a>
 			{/if}
 			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<A HREF="?m=rtrestore&amp;id={$queue.id}&amp;qaction=restore" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to restore queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"></A>
-			<A HREF="?m=rtremove&amp;id={$queue.id}&amp;qaction=delperm" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to permanently remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete permanently")}" title="{trans("Delete permanently")}"></A>
+			<A class="restore-rtqueue" HREF="?m=rtrestore&id={$queue.id}&qaction=restore"><IMG src="img/reload.gif" alt="{trans("Restore<!RT>")}" title="{trans("Restore<!RT>")}"></A>
+			<A class="remove-rtqueue" HREF="?m=rtremove&id={$queue.id}&qaction=delperm"><IMG src="img/delete.gif" alt="{trans("Delete permanently")}" title="{trans("Delete permanently")}"></A>
 			{else}
-			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=delete" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-rtqueue" HREF="?m=rtqueuedel&id={$queue.id}&amp;qaction=delete"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			{/if}
 			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
 			<A HREF="?m=rtqueueedit&amp;id={$queue.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
@@ -155,4 +155,27 @@
 	</TR>
         </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-rtqueue').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove queue '$a' and all assigned tickets and messages?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.restore-rtqueue').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to restore queue '$a' and all assigned tickets and messages?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.remove-rtqueue').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to permanently remove queue '$a' and all assigned tickets and messages?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

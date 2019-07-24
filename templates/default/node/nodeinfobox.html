@@ -416,18 +416,14 @@
 			{block name="nodeinfobox-buttons"}
 			<a href="?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></a>
 			<a href="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></A>
-			<a href="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
-				{trans("Delete")}
-				<img src="img/delete.gif" alt="">
-			</a>
+			<a id="delete-node" href="?m=nodedel&id={$nodeinfo.id}" data-name="{$nodeinfo.name}">{trans("Delete")} <img src="img/delete.gif" alt=""></a>
 			{/block}
 		</td>
 	</tr>
     </tbody>
 </table>
 
-<script type="text/javascript">
-<!--
+<script>
     xajax_getNodeStats({$nodeinfo.id});
 
     {if !$disable_active_links}
@@ -546,5 +542,13 @@
 	}
 
 	xajax_getRadioSectors({$nodeinfo.netdev}, {$nodeinfo.linktechnology});
-//-->
+
+	$('#delete-node').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove node '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
 </script>

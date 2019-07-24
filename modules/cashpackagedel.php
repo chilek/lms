@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,15 +26,13 @@
 
 $sourcefileid = intval($_GET['id']);
 $name = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($sourcefileid));
-$layout['pagetitle'] = trans('Removing package "$a"', $name);
 
 if (!$name) {
+    $layout['pagetitle'] = trans('Removing package "$a"', $name);
     $body = '<P>'.trans('Specified ID is not proper or does not exist!').'</P>';
-} elseif ($_GET['is_sure'] != 1) {
-    $body = '<P>'.trans('Do you want to remove package "$a"?', $name).'</P>';
-    $body .= '<P>'.trans('All cash operations from that package will be lost.').'</P>';
-    $body .= '<P><A HREF="?m=cashpackagedel&id=' . $sourcefileid . '&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
-    $body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('No, I\'ve changed my mind.').'</A></P>';
+    $body .= '<A HREF="?'.$SESSION->get('backto').'">'.trans('Back').'</A></P>';
+    $SMARTY->assign('body', $body);
+    $SMARTY->display('dialog.html');
 } else {
     $DB->BeginTrans();
 
@@ -80,6 +78,3 @@ if (!$name) {
 
     $SESSION->redirect('?m=cashimport');
 }
-
-$SMARTY->assign('body', $body);
-$SMARTY->display('dialog.html');

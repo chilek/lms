@@ -147,7 +147,7 @@
 	<TBODY>
 	{block name="nodelist-list-body"}
 	{foreach $nodelist as $node}
-	<TR class="highlight {if ! $node.access} blend{/if}" data-target-url="?m=nodeinfo&id={$node.id}">
+	<TR class="highlight {if ! $node.access} blend{/if}" data-target-url="?m=nodeinfo&id={$node.id}" data-name="{$node.name}">
 		<TD class="nobr">
 			<span class="bold">
 			<A name="{$node.id}">
@@ -180,7 +180,7 @@
 		<TD class="lms-ui-buttons nobr">
 			<a href="?m=nodeset&amp;id={$node.id}"><img src="img/{if ! $node.access}no{/if}access.gif" alt="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}" title="{if ! $node.access}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></A>
 			<a href="?m=nodewarn&amp;id={$node.id}"><img src="img/warning{if ! $node.warning}off{else}on{/if}.gif" alt="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}" title="{if ! $node.warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if}"></A>
-			<a onClick="return confirmLink(this, '{t a=$node.name}Are you sure, you want to remove node \'$a\' from database?{/t}')" href="?m=nodedel&amp;id={$node.id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a class="delete-node" href="?m=nodedel&id={$node.id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=nodeedit&amp;id={$node.id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<a href="?m=nodeinfo&amp;id={$node.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
@@ -197,4 +197,13 @@
 	</TBODY>
 </TABLE>
 </FORM>
+<script>
+	$('.delete-node').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove node '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>
 {/block}

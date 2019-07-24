@@ -278,7 +278,7 @@
 			{if $ticket.relatedtickets}
 			{box_row icon="lms-ui-icon-relatedticket" label="Related tickets:"}
 				{foreach $ticket.relatedtickets as $i}
-					<A href="?m=rtticketview&amp;id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><A href="?m=rtticketedit&amp;id={$i.id}&amp;action=unlink" onClick="return confirmLink(this, '{t a=$i.id|string_format:"%06d"}Are you sure, you want to unlink this ticket $a?{/t}')">{trans("Unlink")}</A>
+					<A href="?m=rtticketview&id={$i.id}">{t a=$i.id|string_format:"%06d"}$a{/t}</A><A id="unlink-rtticket" href="?m=rtticketedit&id={$i.id}&action=unlink" data-name="{$i.id|string_format:"%06d"}">{trans("Unlink")}</A>
 				{/foreach}
 			{/box_row}
 			{/if}
@@ -326,4 +326,11 @@
 		});
 	});
 
+	$('#unlink-rtticket').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to unlink ticket '$a'?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 </script>

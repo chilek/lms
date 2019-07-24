@@ -36,9 +36,18 @@
 	<TR>
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="?m=promotionedit&id={$promotion.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
-			<A HREF="?m=promotiondel&id={$promotion.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this promotion?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A> 
+			<A id="delete-promotion" HREF="?m=promotiondel&id={$promotion.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 			</FORM>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
+<script>
+	$('#delete-promotion').click(function() {
+		confirmDialog($t("Are you sure, you want to delete this promotion?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>
+

@@ -26,7 +26,7 @@
 
 $id = $_GET['id'];
 
-if ($id && $_GET['is_sure']=='1') {
+if ($id) {
     if (!$DB->GetOne('SELECT 1 FROM cash WHERE sourceid = ?', array($id))
         && !$DB->GetOne('SELECT 1 FROM cashimport WHERE sourceid = ?', array($id))) {
         $DB->Execute('DELETE FROM cashsources WHERE id = ?', array($id));

@@ -1629,4 +1629,3 @@ $_LANG['Do you want to remove registry "$a"?'] = 'Vrei să ştergi Registrul "$a
 $_LANG['Edit Cash Registry: $a'] = 'Editeaza Registrul Financiar: $a';
 $_LANG['Edit Document: $a'] = 'Editează document';
 $_LANG['Enable/disable MAC address checking'] = 'Activeză/Dezactivează verificarea adreselor MAC';
-

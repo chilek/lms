@@ -3,8 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function Delete()
 	{
 		document.cashimport.action += '&action=delete';
@@ -16,7 +15,6 @@
 		document.cashimport.action += '&action=save';
 		document.cashimport.submit();
 	}
-//-->
 </SCRIPT>
 <FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
@@ -200,7 +198,7 @@
 		</TD>
 		<TD class="nobr">
 			<SELECT name="source" {tip text="Select import source (optional)" trigger="source"}>
-				<OPTION value="0">{trans("- auto -")}</OPTION> 
+				<OPTION value="0">{trans("- auto -")}</OPTION>
 				{foreach $sourcelist as $item}
 				<OPTION value="{$item.id}">{$item.name}</OPTION>
 				{/foreach}
@@ -255,7 +253,7 @@
 					<TD class="text-center nobr">{$item.username}</TD>
 					<TD class="text-center">{$item.count|default:0}</TD>
 					<TD class="text-right">
-						<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+						<A class="delete-cashpackage" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 					</TD>
 				</TR>
 				{foreachelse}
@@ -271,5 +269,13 @@
 	</TR>
     </TBODY>
 </TABLE>
+	<script>
+		$('.delete-cashpackage').click(function() {
+			confirmDialog($t("Are you sure, you want to delete this package and related operations?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}
 

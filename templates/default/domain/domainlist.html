@@ -74,20 +74,19 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=domainlist loop=$domainlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight {cycle}" data-name="{$domainlist[domainlist].name}">
 		<TD NOWRAP onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
 			<IMG src="img/domain.gif" alt=""{if $domainlist[domainlist].description} {tip text=$domainlist[domainlist].description}{/if}><B> {$domainlist[domainlist].name}</B>
 		</TD>
-		
 		<TD align="right" NOWRAP onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
 			({$domainlist[domainlist].id|string_format:"%04d"})
 		</TD>
                 <TD NOWRAP onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
             		{$domainlist[domainlist].type}
-                </TD>		
+                </TD>
 		<TD align="left" NOWRAP onclick="return self.location.href='?m=domaininfo&amp;id={$domainlist[domainlist].id}'">
 			{if $domainlist[domainlist].ownerid}
-			<IMG src="img/customer.gif" alt=""> 
+			<IMG src="img/customer.gif" alt="">
 			<A href="?m=customerinfo&amp;id={$domainlist[domainlist].ownerid}">{$domainlist[domainlist].customername|truncate:45:"...":true} ({$domainlist[domainlist].ownerid|string_format:"%04d"})</A>
 			{/if}
 		</TD>
@@ -95,13 +94,13 @@
 			{$domainlist[domainlist].cnt|default:0}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=domaindel&amp;id={$domainlist[domainlist].id}" OnClick="return confirmLink(this, '{t a=$domainlist[domainlist].name}Are you sure, you want to delete domain: \'$a\' and all accounts/aliases in that domain?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-domain" href="?m=domaindel&id={$domainlist[domainlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=domainedit&amp;id={$domainlist[domainlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A href="?m=domaininfo&amp;id={$domainlist[domainlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
-	<TR>	
+	<TR>
 		<TD colspan="6" class="empty-table">
 			<p>{trans("No such domains in database.")}</p>
 		</TD>
@@ -118,7 +117,7 @@
 	{/if}
 	<TR>
 		<TD colspan="5" align="right">
-			<B>{trans("Total:")} {sum array=$domainlist column="cnt"}</B>	
+			<B>{trans("Total:")} {sum array=$domainlist column="cnt"}</B>
 		</TD>
 		<TD align="right" nowrap>
 			<A href="?m=domainadd&amp;cid={$listdata.customer}">{trans("New Domain")} <IMG src="img/save.gif" alt=""></A>
@@ -126,4 +125,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-domain').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete domain: '$a' and all accounts/aliases in that domain?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

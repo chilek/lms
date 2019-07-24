@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,17 +27,7 @@
 $nodeid = intval($_GET['id']);
 
 if (!$LMS->NodeExists($nodeid)) {
-    header('Location: ?'.$SESSION->get('backto'));
-} else if ($_GET['is_sure']!=1) {
-    $nodename = $LMS->GetNodeName($nodeid);
-
-    $layout['pagetitle'] = trans('Delete Node $a', $nodename);
-
-    $body = '<P>'.trans('Are you sure, you want to delete node $a?', $nodename).'</P>';
-    $body .= '<P><A HREF="?m=nodedel&id='.$nodeid.'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
-
-    $SMARTY->assign('body', $body);
-    $SMARTY->display('dialog.html');
+    $SESSION->redirect('?'.$SESSION->get('backto'));
 } else {
     $owner = $LMS->GetNodeOwner($nodeid);
 
@@ -57,8 +47,8 @@ if (!$LMS->NodeExists($nodeid)) {
     $LMS->executeHook('nodedel_after_submit', $plugin_data);
 
     if ($SESSION->is_set('backto')) {
-        header('Location: ?'.$SESSION->get('backto'));
+        $SESSION->redirect('?'.$SESSION->get('backto'));
     } else {
-        header('Location: ?m=customerinfo&id='.$owner);
+        $SESSION->redirect('?m=customerinfo&id='.$owner);
     }
 }

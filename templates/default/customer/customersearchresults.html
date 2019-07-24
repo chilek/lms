@@ -80,7 +80,7 @@
 	{/section}
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
+	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}" data-name="{$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}">
 		<TD onClick="return self.location.href='?m=customerinfo&id={$customerlist[customerlist].id}';" valign="top">
 			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info} <img src="img/info1.gif" ALT="" {tip text=$customerlist[customerlist].info}>{/if} <A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}"><B>{$customerlist[customerlist].customername}</B>{if $customerlist[customerlist].deleted} (<span class="red">{trans("deleted customer")}</span>){/if}</A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
@@ -98,7 +98,7 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if $customerlist[customerlist].balance < 0}
-				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
+				<A class="balanceok-customer" href="?m=customerbalanceok&id={$customerlist[customerlist].id}"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
 			{/if}
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
@@ -127,9 +127,9 @@
 			{if $listdata.state == 50}
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
 			{else}
-			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-customer" href="?m=customerdel&id={$customerlist[customerlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			{/if} 
+			{/if}
 			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
@@ -197,4 +197,22 @@
     </TFOOT>
 </TABLE>
 </FORM>
+	<script>
+		$('.balanceok-customer').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-customer').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

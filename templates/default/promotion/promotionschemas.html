@@ -25,7 +25,7 @@
                         <TBODY>
 			{cycle values="light,lucid" print=false name=schemas}
 			{foreach from=$promotion.schemas item=schema}
-    		<TR class="highlight {cycle name=schemas}{if $schema.disabled} blend{/if}"  >
+    		<TR class="highlight {cycle name=schemas}{if $schema.disabled} blend{/if}" data-name="{$schema.name}">
 			    <TD onClick="return self.location.href='?m=promotionschemainfo&id={$schema.id}';" NOWRAP>
 				    <B>{$schema.name}</B>
 			    </TD>
@@ -34,7 +34,7 @@
 			    </TD>
 			    <TD NOWRAP>
 				<A HREF="?m=promotionschemaset&id={$schema.id}&access={$schema.disabled}">{if $schema.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
-				<A HREF="?m=promotionschemadel&id={$schema.id}" onClick="return confirmLink(this, '{t a=$schema.name}Are you sure, you want to remove schema \'$a\'?{/t}')"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+				<A class="delete-promotion" HREF="?m=promotionschemadel&id={$schema.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
                                <A HREF="?m=promotionschemaclone&id={$schema.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
                                <A HREF="?m=promotionschemaedit&id={$schema.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 				<A HREF="?m=promotionschemainfo&id={$schema.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -53,11 +53,17 @@
 	</TR>
     </TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 if (getCookie('promotionschemas') == '1')
 {
 	document.getElementById('promotionschemas').style.display = '';
 }
-//-->
+$('.delete-promotion').click(function() {
+	var name = $(this).closest('tr').attr('data-name');
+	confirmDialog($t("Are you sure, you want to remove schema '$a'?", name), this).done(function() {
+		location.href = $(this).attr('href');
+	});
+	return false;
+});
+
 </SCRIPT>

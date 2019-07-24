@@ -253,14 +253,13 @@
 	<TR>
 		<TD class="text-right">
 			<A HREF="javascript:document.queue.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+			<A id="delete-rtqueue" HREF="?m=rtqueuedel&id={$queue.id}&qaction=delete" accesskey="d" data-name="{$queue.name}"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 			<A HREF="?m=rtqueuelist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE></FORM></P>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 $(function() {
 	$('form[name="queue"] [name="queue[name]"]').focus();
 
@@ -280,6 +279,13 @@ $(function() {
 		$('#checkall').prop('checked', categorycheckbox.length == categorycheckbox.filter(':checked').length);
 	});
 });
-//-->
+$('#delete-rtqueue').click(function() {
+	var name = $(this).attr('data-name');
+	confirmDialog($t("Are you sure, you want to remove queue '$a' and all assigned tickets and messages?", name), this).done(function() {
+		location.href = $(this).attr('href');
+	});
+	return false;
+});
+
 </SCRIPT>
 {/block}

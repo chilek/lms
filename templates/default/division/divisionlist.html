@@ -23,7 +23,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$divisionlist}
-	<TR class="highlight {cycle}{if $divisionlist[list].status} blend{/if}"  >
+	<TR class="highlight {cycle}{if $divisionlist[list].status} blend{/if}" data-name="{$divisionlist[list].shortname}">
 		<TD NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
 			<IMG src="img/division.gif" alt=""> <B>{$divisionlist[list].shortname}</B>
 		</TD>
@@ -38,8 +38,8 @@
 		</TD>
 		<TD align="right" NOWRAP>
 			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}&amp;changestatus=1"><IMG src="img/wait.gif" alt="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}" title="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}"></A>
-			<A href="?m=divisiondel&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=divisionclone&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to clone division \'$a\'?{/t}')"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+			<A class="delete-division" href="?m=divisiondel&id={$divisionlist[list].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="clone-division" href="?m=divisionclone&id={$divisionlist[list].id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -66,4 +66,20 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-division').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete division '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.clone-division').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to clone division '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

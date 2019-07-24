@@ -23,7 +23,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$optionlist item=option}
-	<TR class="highlight {cycle}{if $option.disabled} blend{/if}"  >
+	<TR class="highlight {cycle}{if $option.disabled} blend{/if}" data-name="{$option.var}">
 		<TD valign="top" onClick="return self.location.href='?m=daemonconfigedit&id={$option.id}';" nowrap>
 			<IMG src="img/settings.gif" alt="">
 			<B>{$option.var}</B>
@@ -36,7 +36,7 @@
 		</TD>
 		<TD align="right" NOWRAP>
 			<A HREF="?m=daemonconfigedit&id={$option.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $option.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
-			<A HREF="?m=daemonconfigdel&id={$option.id}" OnClick="return confirmLink(this, '{t a=$option.var}Are you sure, you want to remove option \'$a\' from database?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-daemonconfig" HREF="?m=daemonconfigdel&id={$option.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=daemonconfigedit&id={$option.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -56,4 +56,13 @@
 	</TR>
     </TFOOT>
 </TABLE></P>
+	<script>
+		$('.delete-daemonconfig').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove option '$a' from database?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

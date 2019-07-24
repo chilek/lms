@@ -42,7 +42,7 @@
     <TBODY>
 	{foreach $userslist as $user}
 	{if $user.id}
-	<TR class="highlight{if !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}">
+	<TR class="highlight{if !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}" data-name="{$user.login}">
 		<TD class="nobr">
 			<IMG src="img/users.gif" alt=""> {$user.login}
 		</TD>
@@ -71,7 +71,7 @@
 			    {/if}
 			{/if}
 			<a href="?m=userpasswd&amp;id={$user.id}"><img src="img/keys.gif" alt="{trans("Change password")}" title="{trans("Change password")}"></a>
-			{if $user.id != $layout.logid}<a href="?m=userdel&amp;id={$user.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>{/if}
+			{if $user.id != $layout.logid}<a class="delete-user" href="?m=userdel&id={$user.id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>{/if}
 			<a href="?m=useredit&amp;id={$user.id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></a>
 			<a href="?m=userinfo&amp;id={$user.id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></a>
 		</TD>
@@ -80,4 +80,13 @@
 	{/foreach}
     </TBODY>
 </TABLE>
+	<script>
+		$('.delete-user').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to irreversibly delete that user account '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

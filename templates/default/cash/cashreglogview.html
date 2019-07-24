@@ -36,7 +36,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=cashreglog loop=$cashreglog start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if ($cashreglog[cashreglog].validfrom !=0 && $cashreglog[cashreglog].validfrom > $smarty.now) || ($cashreglog[cashreglog].validto !=0 && $cashreglog[cashreglog].validto < $smarty.now)} blend{/if}"  >
+	<TR class="highlight {cycle}{if ($cashreglog[cashreglog].validfrom !=0 && $cashreglog[cashreglog].validfrom > $smarty.now) || ($cashreglog[cashreglog].validto !=0 && $cashreglog[cashreglog].validto < $smarty.now)} blend{/if}">
 		<TD NOWRAP onclick="location.href='?m=cashregloginfo&id={$cashreglog[cashreglog].id}'">
 			<IMG src="img/time.gif" alt=""> {$cashreglog[cashreglog].time|date_format:"%x %H:%M"}
 		</TD>
@@ -55,7 +55,7 @@
 		<TD align="right" NOWRAP>
 			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-cashreglog" href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -81,4 +81,12 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-cashreglog').click(function() {
+			confirmDialog($t("Are you sure, you want to delete selected entry?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

@@ -32,7 +32,7 @@
 			<IMG src="img/info1.gif" alt="">
 		</TD>
 		<TD style="width: 98%;" colspan="2">
-			<TABLE width="100%" cellpadding="3"> 
+			<TABLE width="100%" cellpadding="3">
 				<TR><TD class="fall superlight">
 					{$customergroup.description|replace:"\n":"<BR>"}
 				</TD></TR>
@@ -43,10 +43,18 @@
 	<TR>
 		<TD class="text-right" colspan="3">
 			<A href="?m=customergroupedit&amp;id={$customergroup.id}{if $membersnetid}&amp;membersnetid={$membersnetid}{/if}{if $othersnetid}&amp;othersnetid={$othersnetid}{/if}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-			{if $customergroup.count == 0} <A href="?m=customergroupdel&amp;id={$customergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>{/if}
+			{if $customergroup.count == 0} <A id="delete-group" href="?m=customergroupdel&id={$customergroup.id}">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>{/if}
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
 {include file="customer/customergroupassignments.html"}
+	<script>
+		$('#delete-group').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that group?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

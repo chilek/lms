@@ -72,7 +72,12 @@
             <a href="?m=eventadd&id={$event.id}">
                 <IMG src="img/clone.gif" alt="{trans("Clone")}" title="&nbsp;{trans("Clone")}&nbsp;">
             </a>
-            <A href="#" OnClick="if (confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')) location.href='?m=eventdel&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');">
+                {textformat assign="onclick" wrap=5000}
+                    confirmDialog($t('Are you sure, you want to delete that event?'), this).done(function() {
+                    location.href = '?m=eventdel&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');
+                    });
+                {/textformat}
+            <A href="#" OnClick="{$onclick}">
                 <IMG src="img/delete.gif" alt="{trans("Delete")}" title="&nbsp;{trans("Delete")}&nbsp;">
             </A>
             <A href="#" onclick="location.href = '?m=eventedit&id={$event.id}&backid=' + $(this).closest('.event-day-table').attr('id');">

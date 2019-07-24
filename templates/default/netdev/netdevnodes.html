@@ -133,9 +133,7 @@
 				</div>
 
 				<div class="lms-ui-tab-table-column buttons">
-					{button type="link" href="?m=netdevedit&action=disconnectnode&id={$netdev.id}&nodeid={$node.id}"
-						onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"
-						icon="delete" tip="Delete connection"}
+					{button type="link" class="disconnectnode" href="?m=netdevedit&action=disconnectnode&id={$netdev.id}&nodeid={$node.id}" icon="delete" tip="Delete connection"}
 				</div>
 			</div>
 			{foreachelse}
@@ -269,5 +267,12 @@
 		}
 		xjx.$('devnodesradiosector').disabled = false;
 	}
+
+	$('.disconnectnode').click(function() {
+		confirmDialog($t("Are you sure, you want to delete that connection?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 
 </SCRIPT>

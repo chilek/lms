@@ -1,9 +1,7 @@
-<?php
-
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2019 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +22,11 @@
  *  $Id$
  */
 
-$LMS->UsergroupDelete($_GET['id']);
-
-$SESSION->redirect('?m=usergrouplist');
+// $(function() {
+	$('.delete-network').click(function() {
+		confirmDialog($t("Are you sure, you want to remove network \'$a\' from database?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+// });

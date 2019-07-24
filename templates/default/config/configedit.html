@@ -79,15 +79,14 @@
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+			<A id="delete-config" href="?m=configdel&id={$config.id}" data-name="{$config.section}.{$config.var}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 </P>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	$(function() {
 		$('form[name="config"] [name="config[var]"]').focus();
 
@@ -97,6 +96,13 @@
 			});
 		});
 	});
-//-->
+
+	$('#delete-config').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 </SCRIPT>
 {/block}

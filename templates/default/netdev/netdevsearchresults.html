@@ -51,7 +51,7 @@
 	<TBODY>
 	{section name=netdevlist loop=$netdevlist start=$start max=$pagelimit}
 	{$netdev=$netdevlist[netdevlist]}
-	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
+	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}" data-name="{$netdev.name}">
 		<TD class="valign-top">
 			{if $netdev.lastonline}
 				{if ($smarty.now-$netdev.lastonline) > $lastonline_limit}
@@ -98,7 +98,7 @@
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdev.serialnumber}
 		</TD>
 		<TD class="text-right nobr">
-			<a href="?m=netdevdel&id={$netdev.id}" onClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a class="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=netdevedit&id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<a href="?m=netdevadd&id={$netdev.id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 			<a href="?m=netdevinfo&id={$netdev.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -129,4 +129,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-netdev').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

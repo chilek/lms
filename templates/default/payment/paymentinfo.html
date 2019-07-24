@@ -31,10 +31,10 @@
 			<IMG SRC="img/value.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Value:")}</B> 
+			<B>{trans("Value:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{$payment.value|money_format} 
+			{$payment.value|money_format}
 		</TD>
 	</TR>
 	<TR>
@@ -44,17 +44,17 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Payment day:")}</B>
 		</TD>
-		<TD WIDTH="98%">								
+		<TD WIDTH="98%">
 			{$payment.payday}
 		</TD>
-	</TR>	
+	</TR>
 	{if $payment.description}
-	<TR>	
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
-			<TABLE WIDTH="100%" CELLPADDING="5"> 
+			<TABLE WIDTH="100%" CELLPADDING="5">
 			    <TR><TD CLASS="fall superlight">
 				    {$payment.description|replace:"\n":"<BR>"}
 			    </TD></TR>
@@ -71,10 +71,18 @@
 			<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
 			<A HREF="javascript:document.addbalance.submit();">{trans("Account payment")} <IMG SRC="img/pay.gif" alt=""></A>
 			<A HREF="?m=paymentedit&id={$payment.id}">{trans("Edit")} <IMG SRC="img/edit.gif" alt=""></A>
-			<A HREF="?m=paymentdel&id={$payment.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that payment?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A> 
+			<A id="delete-payment" HREF="?m=paymentdel&id={$payment.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 			</FORM>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
+	<script>
+		$('#delete-payment').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that payment?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

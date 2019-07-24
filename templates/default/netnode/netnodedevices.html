@@ -43,7 +43,7 @@
 				</THEAD>
 				<TBODY>
 				{section name=netdevlist loop=$netdevlist start=$start}
-				<tr class="highlight"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" >
+				<tr class="highlight"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" data-name="{$netdevlist[netdevlist].name}">
 					<td class="valign-top nobr">
 						<img src="img/netdev.gif" alt=""> <b>{$netdevlist[netdevlist].name}</b><br>
 							<img src="img/producer.gif" alt=""> {$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
@@ -55,7 +55,7 @@
 						{$netdevlist[netdevlist].serialnumber}
 					</td>
 					<td class="nobr">
-						<A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif"  alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+						<A class="delete-netnodedev" href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}"><img src="img/delete.gif"  alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 						<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 					</td>
 				</tr>
@@ -72,8 +72,7 @@
 	</TR>
     </TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 function change_nodelinktype(linktype) {
 	linktype = parseInt(linktype);
 	var options = document.getElementById('devnodeslinktechnology').options;
@@ -102,5 +101,12 @@ function change_nodelinktype(linktype) {
 if (getCookie('devicenodepanel') == '1') {
 	$('#devicenodepanel').show();
 }
-//-->
+
+$('.delete-netnodedev').click(function() {
+	var name = $(this).closest('tr').attr('data-name');
+	confirmDialog($t("Are you sure, you want to remove net device '$a' from node?", name), this).done(function() {
+		location.href = $(this).attr('href');
+	});
+	return false;
+});
 </SCRIPT>

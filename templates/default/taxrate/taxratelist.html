@@ -46,7 +46,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=taxratelist loop=$taxratelist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}"  >
+	<TR class="highlight {cycle}{if ($taxratelist[taxratelist].validfrom !=0 && $taxratelist[taxratelist].validfrom > $smarty.now) || ($taxratelist[taxratelist].validto !=0 && $taxratelist[taxratelist].validto < $smarty.now)} blend{/if}" data-name="{$taxratelist[taxratelist].label}">
 		<TD class="nobr" onClick="return self.location.href='?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}';">
 			<IMG src="img/tax.gif" alt=""><B> {$taxratelist[taxratelist].label}</B>
 		</TD>
@@ -69,7 +69,7 @@
 			{if $taxratelist[taxratelist].validto}{$taxratelist[taxratelist].validto|date_format:"%x"}{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="?m=taxratedel&amp;id={$taxratelist[taxratelist].id}" OnClick="return confirmLink(this, '{t a=$taxratelist[taxratelist].label}Are you sure, you want to delete taxrate \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-taxrate" href="?m=taxratedel&id={$taxratelist[taxratelist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=taxrateedit&amp;id={$taxratelist[taxratelist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -96,4 +96,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-taxrate').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete taxrate '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

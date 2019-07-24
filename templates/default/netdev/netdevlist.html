@@ -93,7 +93,7 @@
     </THEAD>
     <TBODY>
 	{foreach $netdevlist as $netdev}
-	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}">
+	<TR class="highlight" data-target-url="?m=netdevinfo&id={$netdev.id}" data-name="{$netdev.name}">
 		<TD class="valign-top">
 			{if $netdev.lastonline}
 				{if ($smarty.now-$netdev.lastonline) > $lastonline_limit}
@@ -149,7 +149,7 @@
 			<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="{$link.label}" {$link.tip}>{else}{$link.label}{/if}</A>
 			{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
-			<a href="?m=netdevdel&amp;id={$netdev.id}" onClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<a class="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=netdevedit&amp;id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<a href="?m=netdevadd&amp;id={$netdev.id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 			<a href="?m=netdevinfo&amp;id={$netdev.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -180,4 +180,13 @@
 	</TFOOT>
 </TABLE>
 </FORM>
+<script>
+	$('.delete-netdev').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>
 {/block}

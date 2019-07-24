@@ -39,7 +39,7 @@
     </THEAD>
     <TBODY>
 	{foreach $reglist as $reg}
-	<TR class="highlight {if $reg.disabled} blend{/if}" data-target-url="?m=receiptlist&regid={$reg.id}">
+	<TR class="highlight {if $reg.disabled} blend{/if}" data-target-url="?m=receiptlist&regid={$reg.id}" data-name="{$reg.name}">
 		<TD class="nobr bold">
 			<IMG src="img/queue.gif" ALT=""> {$reg.name}
 		</TD>
@@ -62,7 +62,7 @@
 			<A HREF="?m=receiptadd&type=in&action=init&regid={$reg.id}"><IMG SRC="img/kp.png" alt="New Cash-in Receipt")}" title="{trans("New Cash-in Receipt")}"></A>
 			<A HREF="?m=receiptadd&type=out&action=init&regid={$reg.id}"><IMG SRC="img/kw.png" alt="New Cash-out Receipt")}" title="{trans("New Cash-out Receipt")}"></A>
 			<A HREF="?m=receiptlist&amp;regid={$reg.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
-			<A HREF="?m=cashregdel&amp;id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-cashreg" HREF="?m=cashregdel&id={$reg.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=cashregedit&amp;id={$reg.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=cashreginfo&amp;id={$reg.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
@@ -94,4 +94,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-cashreg').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove registry '$a' and all assigned receipts?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}
