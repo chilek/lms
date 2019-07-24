@@ -30,7 +30,7 @@
         <tbody>
             {cycle values="light,lucid" print=false}
             {section name=tarifftags loop=$tarifftaglist}
-                <tr class="highlight {cycle}"  >
+                <tr class="highlight {cycle}" data-name="{$tarifftaglist[tarifftags].name}">
                     <td onClick="return self.location.href = '?m=tarifftaginfo&amp;id={$tarifftaglist[tarifftags].id}';">
                         <span class="bold">{$tarifftaglist[tarifftags].name}</span><br>
                     {if $tarifftaglist[tarifftags].description}{$tarifftaglist[tarifftags].description}{/if}
@@ -45,7 +45,7 @@
                     {if $tarifftaglist[tarifftags].tariffscount}
                         <a href="javascript:alert('{trans("Tag with assigned tariffs cannont be deleted!")}');">
                         {else}
-                            <a href="?m=tarifftagdel&amp;id={$tarifftaglist[tarifftags].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove this tag?")}');">
+                            <a class="delete-tarifftag" href="?m=tarifftagdel&id={$tarifftaglist[tarifftags].id}">
                             {/if}
                             <img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>
                         <a href="?m=tarifftagedit&amp;id={$tarifftaglist[tarifftags].id}"><img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></a>
@@ -61,4 +61,14 @@
         {/section}
     </tbody>
 </TABLE>
+    <script>
+        $('.delete-tarifftag').click(function() {
+            var name = $(this).closest('tr').attr('data-name');
+            console.log('name=', name);
+            confirmDialog($t("Are you sure, you want to remove tag '$a'?", name), this).done(function() {
+                location.href = $(this).attr('href');
+            });
+            return false;
+        });
+    </script>
 {/block}

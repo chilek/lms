@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
 {css}
+{js}
 
 {tab_container id="customervoipaccountsbox"}
 	{tab_header content_id="voipaccountspanel"}
@@ -67,8 +68,7 @@
 					</div>
 
 					<div class="lms-ui-tab-table-column buttons">
-						{button type="link" icon="delete" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')"
-							href="?m=voipaccountdel&id={$voipaccount.id}" tip="Delete"}
+						{button type="link" icon="delete" class="delete-voipaccount" href="?m=voipaccountdel&id={$voipaccount.id}" tip="Delete"}
 						{button type="link" icon="edit" href="?m=voipaccountedit&id={$voipaccount.id}"
 							tip="Edit"}
 						{button type="link" icon="info" href="?m=voipaccountinfo&id={$voipaccount.id}"

@@ -183,7 +183,7 @@
 
 	{foreach $customerlist as $customer}
         {block name="customerlist-list-row"}
-	<TR class="highlight {if $customer.account && !$customer.nodeac} blend{/if}" data-target-url="?m=customerinfo&id={$customer.id}">
+	<TR class="highlight {if $customer.account && !$customer.nodeac} blend{/if}" data-target-url="?m=customerinfo&id={$customer.id}" data-name="{$customer.customername|escape:"javascript"|escape:"html"}">
 		<TD>
 			<IMG src="img/{$_CSTATUSES[$customer.status].img}" alt="">{if $customer.info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customer.info}>{/if}<A name="{$customer.id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customer.id}">&nbsp;<span class="bold">{$customer.customername|escape}</span></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customer.full_address}{if $customer.country != ""}, {t}{$customer.country}{/t}{/if}
@@ -205,7 +205,7 @@
 		<TD class="lms-ui-buttons text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 				{if $customer.balance < 0}
-					<A href="?m=customerbalanceok&amp;id={$customer.id}" OnClick="return confirmLink(this, '{t a=$customer.customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
+					<A class="balanceok-customer" href="?m=customerbalanceok&id={$customer.id}"><IMG src="img/pay.gif" alt="{trans("Account")}" title="{trans("Account")}"></A>
 				{/if}
 			{/if}
 			{if $customer.account}
@@ -235,7 +235,7 @@
 			{if $filter.state == 50}
 			<A href="?m=customeredit&amp;id={$customer.id}&amp;action=recover"><IMG src="img/recover.gif" alt="{trans("Recover")}" title="{trans("Recover")}"></A>
 			{else}
-			<A href="?m=customerdel&amp;id={$customer.id}" OnCLick="return confirmLink(this, '{t a=$customer.customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-customer" href="?m=customerdel&id={$customer.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=customeredit&amp;id={$customer.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			{/if}
 			<A href="?m=customerinfo&amp;id={$customer.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -254,4 +254,22 @@
 	</TBODY>
 </TABLE>
 </FORM>
+	<script>
+		$('.balanceok-customer').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-customer').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

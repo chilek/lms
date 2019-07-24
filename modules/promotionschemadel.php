@@ -28,26 +28,24 @@ $id = intval($_GET['id']);
 $promotionid = $DB->GetOne('SELECT promotionid FROM promotionschemas
     WHERE id = ?', array($id));
 
-if ($_GET['is_sure'] == '1') {
-    if ($SYSLOG) {
-        $args = array(
-            SYSLOG::RES_PROMOSCHEMA => $id,
-            SYSLOG::RES_PROMO => $promotionid,
-        );
-        $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
-        $assigns = $DB->GetAll(
-            'SELECT id, tariffid FROM promotionassignments WHERE promotionschemaid = ?',
-            array($id)
-        );
-        if (!empty($assigns)) {
-            foreach ($assigns as $assign) {
-                $args[SYSLOG::RES_PROMOASSIGN] = $assign['id'];
-                $args[SYSLOG::RES_TARIFF] = $assign['tariffid'];
-                $SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
-            }
+if ($SYSLOG) {
+    $args = array(
+        SYSLOG::RES_PROMOSCHEMA => $id,
+        SYSLOG::RES_PROMO => $promotionid,
+    );
+    $SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_DELETE, $args);
+    $assigns = $DB->GetAll(
+        'SELECT id, tariffid FROM promotionassignments WHERE promotionschemaid = ?',
+        array($id)
+    );
+    if (!empty($assigns)) {
+        foreach ($assigns as $assign) {
+            $args[SYSLOG::RES_PROMOASSIGN] = $assign['id'];
+            $args[SYSLOG::RES_TARIFF] = $assign['tariffid'];
+            $SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
         }
     }
-    $DB->Execute('DELETE FROM promotionschemas WHERE id = ?', array($id));
 }
+$DB->Execute('DELETE FROM promotionschemas WHERE id = ?', array($id));
 
-$SESSION->redirect('?m=promotioninfo&id='.$promotionid);
+$SESSION->redirect('?m=promotioninfo&id=' . $promotionid);

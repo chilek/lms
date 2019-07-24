@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 
-if ($id && $_GET['is_sure'] == "1" && $LMS->TariffTagExists($id)) {
+if ($id && $LMS->TariffTagExists($id)) {
     if (!$DB->GetOne('SELECT 1 FROM tariffassignments WHERE tariffid = ? LIMIT 1', array($id))) {
         $LMS->TariffTagDelete($id);
     }

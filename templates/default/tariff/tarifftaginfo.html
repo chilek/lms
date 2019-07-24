@@ -12,7 +12,7 @@
             {if $tarifftag.description}
                 <tr>
                     <td style="width: 100%;">
-                        <table width="100%" cellpadding="3"> 
+                        <table width="100%" cellpadding="3">
                             <tr>
                                 <td class="fall superlight">{$tarifftag.description|replace:"\n":"<br>"}</td>
                             </tr>
@@ -23,10 +23,18 @@
             <tr>
                 <td class="text-right">
                     <a href="?m=tarifftagedit&amp;id={$tarifftag.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
-                    {if $tarifftag.count == 0} <a href="?m=tarifftagdel&amp;id={$tarifftag.id}" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that tag?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a>{/if}
+                    {if $tarifftag.count == 0} <a id="delete-tarifftag" href="?m=tarifftagdel&id={$tarifftag.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></a>{/if}
                 </td>
             </tr>
         </tbody>
     </table>
     {include file="tariff/tarifftagassignments.html"}
+    <script>
+        $('#delete-tarifftag').click(function() {
+            confirmDialog($t("Are you sure, you want to remove this tag?"), this).done(function() {
+                location.href = $(this).attr('href');
+            });
+            return false;
+        });
+    </script>
 {/block}

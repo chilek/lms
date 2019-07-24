@@ -87,10 +87,10 @@
 	<TR>
 		<TD class="bold nobr">
 			<img src="img/gateway.gif" alt=""> {trans("Gateway:")}
-		</TD>		
+		</TD>
 		<TD>
 			{if $unlockedit}
-			<INPUT type="text" name="networkdata[gateway]" value="{$network.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}> 
+			<INPUT type="text" name="networkdata[gateway]" value="{$network.gateway}" {tip text="Enter gateway address (optional)" trigger="gateway"}>
 			{else}
 			{$network.gateway}
 			{/if}
@@ -167,7 +167,7 @@
 		</TD>
 	</TR>
 	{if $network.hostid || $unlockedit}
-	<tr> 
+	<tr>
 		<TD class="bold nobr">
 			<img src="img/host.gif" alt=""> {trans("Host:")}
 		</td>
@@ -258,12 +258,12 @@
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
 			<INPUT type="submit" class="hiddenbtn">
-			<A href="?m=netcmp&amp;id={$network.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!")}');">{trans("Put in order")} <img src="img/cmp.gif" alt="{trans("Put in order")}"></A>
+			<A id="putinorder-net" href="?m=netcmp&id={$network.id}" >{trans("Put in order")} <img src="img/cmp.gif" alt="{trans("Put in order")}"></A>
 			<input type="hidden" name="is_sure" value="1">
 			<input type="hidden" name="m" value="netremap">
 			<input type="hidden" name="id" value="{$network.id}">
 			{if $netlistsize > 1}
-			<a href="javascript:document.remap.submit();" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to change network $a to network '+getText(document.remap.mapto.value)+'?{/t}');">{trans("Reassign to network:")}</A> 
+			<a href="javascript:document.remap.submit();" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to change network $a to network '+getText(document.remap.mapto.value)+'?{/t}');">{trans("Reassign to network:")}</A>
 			<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
 				{section name=networks loop=$networks}
 				{if $networks[networks].id != $network.id}
@@ -273,12 +273,12 @@
 			</select>
 			{/if}
 			<A href="javascript:document.netedit.submit()" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt="{trans("Submit")}"></a>
-			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
+			<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
 			<A href="?m=netinfo&amp;id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="{trans("Cancel")}"></A>
 			</form>
 			{else}
 			<A href="?m=netedit&amp;id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="{trans("Edit")}"></A>
-			<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this,'{t a=$network.name}Are you sure, you want to remove network \'$a\'?{/t}')">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
+			<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
 			{/if}
 		</TD>
 	</TR>
@@ -348,4 +348,19 @@
 {if $unlockedit}
 </form>
 {/if}
+	<script>
+		$('#delete-net').click(function() {
+			var name = $(this).attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove network '$a' from database?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('#putinorder-net').click(function() {
+			confirmDialog($t("Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

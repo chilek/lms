@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,26 +27,18 @@
 $voipaccountid = intval($_GET['id']);
 $voipaccountlogin = $LMS->GetVoipAccountLogin($voipaccountid);
 
-$layout['pagetitle'] = trans('Delete Voip Account $a', $voipaccountlogin);
-
 if (!$LMS->VoipAccountExists($voipaccountid)) {
-    $body = '<P>'.trans('Incorrect ID number').'</P>';
+    $layout['pagetitle'] = trans('Delete Voip Account $a', $voipaccountlogin);
+    $body = '<P>' . trans('Incorrect ID number') . '</P>';
+    $body .= '<A HREF="?' . $SESSION->get('backto') . '">' . trans('Back') . '</A></P>';
+    $SMARTY->assign('body', $body);
+    $SMARTY->display('dialog.html');
 } else {
-    if ($_GET['is_sure']!=1) {
-        $body = '<P>'.trans('Are you sure, you want to remove voip account \'$a\' from database?', $voipaccountlogin).'</P>';
-        $body .= '<P><A HREF="?m=voipaccountdel&id='.$voipaccountid.'&is_sure=1">'.trans('Yes, I am sure.').'</A></P>';
+    $owner = $LMS->GetVoipAccountOwner($voipaccountid);
+    $LMS->DeleteVoipAccount($voipaccountid);
+    if ($SESSION->is_set('backto')) {
+        $SESSION->redirect('?'.$SESSION->get('backto'));
     } else {
-        $owner = $LMS->GetVoipAccountOwner($voipaccountid);
-        $LMS->DeleteVoipAccount($voipaccountid);
-        if ($SESSION->is_set('backto')) {
-            header('Location: ?'.$SESSION->get('backto'));
-        } else {
-            header('Location: ?m=customerinfo&id='.$owner);
-        }
-
-        $body = '<P>'.trans('Voip account $a was deleted', $voipaccountname).'</P>';
+        $SESSION->redirect('?m=customerinfo&id=' . $owner);
     }
 }
-
-$SMARTY->assign('body', $body);
-$SMARTY->display('dialog.html');

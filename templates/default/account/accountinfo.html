@@ -7,7 +7,7 @@
     <THEAD>
 	<TR>
 		<TD width="1%">
-			<img src="img/account.gif" alt="">		
+			<img src="img/account.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Login:")}</B>
@@ -166,7 +166,7 @@
 			<A href="?m=accountedit&id={$account.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></A>
 			<A href="?m=accountpasswd&id={$account.id}">{trans("Change password")} <img src="img/pass.gif" alt=""></A>
 			<A href="?m=aliasadd&accountid={$account.id}">{trans("Create alias")} <img src="img/alias.gif" alt=""></A>
-			<A href="?m=accountdel&id={$account.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that account?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+			<A id="delete-account" href="?m=accountdel&id={$account.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
@@ -198,7 +198,7 @@
                             <TBODY>
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach from=$account.aliases item=alias}
-				<TR class="highlight {cycle name=assign}"  >
+				<TR class="highlight {cycle name=assign}" data-name="{$alias.login}@{$alias.domain}" data-bindname="{$alias.login}@{$alias.domain}">
 					<TD WIDTH="80%" NOWRAP OnClick="return self.location.href='?m=aliasinfo&id={$alias.id}'">
 					    <B>{$alias.login}@{$alias.domain}</B>
 					</TD>
@@ -206,9 +206,8 @@
 					    ({$alias.id|string_format:"%04d"})
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
-					    {assign var=name value="`$alias.login`@`$alias.domain`"}
-					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete assignment with alias: \'$a\'?{/t}')"><IMG src="img/eraser.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}"></A>
-					    <A href="?m=aliasdel&id={$alias.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+					    <A class="delete-alias-bind" href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}"><IMG src="img/eraser.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}"></A>
+					    <A class="delete-alias" href="?m=aliasdel&id={$alias.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 					</TD>
@@ -226,4 +225,26 @@
 	</TR>
     </TBODY>
 </TABLE>
+	<script>
+		$('#delete-account').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that account?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-alias').click(function() {
+			var aliasname = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete alias: '$a'?", aliasname), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-alias-bind').click(function() {
+			var aliasbindname = $(this).closest('tr').attr('data-bindname');
+			confirmDialog($t("Are you sure, you want to delete assignment with alias: '$a'?", aliasbindname), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

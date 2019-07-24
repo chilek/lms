@@ -77,25 +77,32 @@
                                 <TD class="text-center">
                                         <INPUT TYPE="checkbox" NAME="allbox" id="allbox" class="lms-ui-multi-check-all">
                                 </TD>
-                        </TR> 
+                        </TR>
                         </TBODY>
-		</TABLE>			
+		</TABLE>
 	    </TD>
 	</TR>
 	<TR>
 	    <TD COLSPAN="3" class="text-right">
 	    	<A HREF="javascript:document.category.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-		<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');" accesskey="d"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+		<A id="delete-rtcategory" HREF="?m=rtcategorydel&id={$category.id}" data-name="{$category.name}" accesskey="d"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 		<A HREF="?m=rtcategorylist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 	    </TD>
 	</TR>
     </TBODY>
 </TABLE></FORM></P>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 $(function() {
 	$('form[name="category"] [name="category[name]"]').focus();
 });
-//-->
+
+$('#delete-rtcategory').click(function() {
+	var name = $(this).attr('data-name');
+	confirmDialog($t("Are you sure, you want to remove category '$a'?", name), this).done(function() {
+		location.href = $(this).attr('href');
+	});
+	return false;
+});
+
 </SCRIPT>
 {/block}

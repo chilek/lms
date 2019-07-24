@@ -37,7 +37,7 @@
 	</TFOOT>
 	<TBODY>
 	{foreach $customergrouplist as $customergroup}
-	<TR class="highlight" data-target-url="?m=customergroupinfo&id={$customergroup.id}">
+	<TR class="highlight" data-target-url="?m=customergroupinfo&id={$customergroup.id}" data-name="{$customergroup.name}">
 		<TD>
 			<IMG src="img/group.gif" alt="">&nbsp;<span class="bold">{$customergroup.name}</span><BR>
 			{if $customergroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$customergroup.description}{/if}
@@ -46,13 +46,13 @@
 			({$customergroup.id|string_format:"%04d"})
 		</TD>
 		<TD class="text-right">
-			{$customergroup.customerscount} 
+			{$customergroup.customerscount}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
 			{if $customergroup.customerscount}
-			<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
+			<A class="delete-group-alert" href="#">
 			{else}
-			<A href="?m=customergroupdel&amp;id={$customergroup.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			<A class="delete-group" href="?m=customergroupdel&id={$customergroup.id}">
 			{/if}
 			<IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=customergroupedit&amp;id={$customergroup.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
@@ -68,4 +68,19 @@
 	{/foreach}
 	</TBODY>
 </TABLE>
+	<script>
+		$('.delete-group').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to remove group '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-group-alert').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			alertDialog($t("Group '$a' has members and cannot be deleted!", name), this);
+				return;
+		});
+	</script>
 {/block}

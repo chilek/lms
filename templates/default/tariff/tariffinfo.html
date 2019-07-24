@@ -352,7 +352,7 @@
             </A>
 
             {if $tariff.count == 0}
-            <A HREF="?m=tariffdel&id={$tariff.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">
+            <A id="delete-tariff" HREF="?m=tariffdel&id={$tariff.id}">
                 {trans("Delete")} <IMG SRC="img/delete.gif" ALT="">
             </A>
             {/if}
@@ -439,5 +439,12 @@
     </TR>
     </TBODY>
 </TABLE>
-
+    <script>
+        $('#delete-tariff').click(function() {
+            confirmDialog($t("Are you sure, you want to delete that tariff?"), this).done(function() {
+                location.href = $(this).attr('href');
+            });
+            return false;
+        });
+    </script>
 {/block}

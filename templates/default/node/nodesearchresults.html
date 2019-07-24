@@ -42,7 +42,7 @@
     </THEAD>
     <TBODY class="lms-ui-multi-check">
 	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
-	<TR class="highlight {if ! $nodelist[nodelist].access} blend{/if}"  >
+	<TR class="highlight {if ! $nodelist[nodelist].access} blend{/if}" data-name="{$nodelist[nodelist].name}">
 		<TD onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
@@ -71,10 +71,7 @@
 		<TD class="nobr">
 			<a href="?m=nodeset&amp;id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}{trans("Disconnect")}{else}{trans("Connect")}{/if}"></A>
 			<a href="?m=nodewarn&amp;id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}{trans("Enable notices")}{else}{trans("Disable notices")}{/if}"></A>
-			{textformat assign="onclick" wrap=5000}
-				return confirmLink(this, $t('Are you sure, you want to delete node \'$a\' from database?', '{$nodelist[nodelist].name}'));
-			{/textformat}
-			<a href="?m=nodedel&amp;id={$nodelist[nodelist].id}" onClick="{$onclick}"><img src="img/delete.gif" ALT="{trans("Delete")}"></A>
+			<a class="delete-node" href="?m=nodedel&id={$nodelist[nodelist].id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=nodeedit&amp;id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="{trans("Edit")}"></A>
 			<a href="?m=nodeinfo&amp;id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="{trans("Info")}"></A>
 		</TD>
@@ -180,8 +177,7 @@
 	</THEAD>
 </TABLE>
 </form>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function changeOperation(operation) {
 		$('.operationparams').hide();
 		switch (parseInt(operation)) {
@@ -258,6 +254,14 @@
 				break;
 		}
 	}
-//-->
+
+	$('.delete-node').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to delete node '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
 </SCRIPT>
 {/block}

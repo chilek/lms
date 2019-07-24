@@ -22,7 +22,7 @@
 	    <tr>
 		<td style="width: 1%;"><img src="img/info1.gif" alt=""></td>
 		<td style="width: 98%;" colspan="2">
-		    <table width="100%" cellpadding="3"> 
+		    <table width="100%" cellpadding="3">
 			<tr>
 			    <td class="fall superlight">{$usergroup.description|replace:"\n":"<br>"}</td>
 			</tr>
@@ -33,10 +33,18 @@
 	    <tr>
 		<td class="text-right" colspan="3">
 		    <a href="?m=usergroupedit&amp;id={$usergroup.id}{if $membersnetid}&amp;membersnetid={$membersnetid}{/if}{if $othersnetid}&amp;othersnetid={$othersnetid}{/if}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
-		    {if $usergroup.count == 0} <a href="?m=usergroupdel&amp;id={$usergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a>{/if}
+		    {if $usergroup.count == 0} <a id="delete-usergroup" href="?m=usergroupdel&id={$usergroup.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></a>{/if}
 		</td>
 	    </tr>
 	</tbody>
     </table>
 {include file="user/usergroupassignments.html"}
+	<script>
+		$('#delete-usergroup').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that group?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

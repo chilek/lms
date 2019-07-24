@@ -42,7 +42,7 @@
 	</TFOOT>
 	<TBODY id="nodegrouplist">
 	{foreach $nodegrouplist as $nodegroup}
-	<TR class="highlight" data-nodegroup-id="{$nodegroup.id}">
+	<TR class="highlight" data-nodegroup-id="{$nodegroup.id}" data-name="{$nodegroup.name}">
 		<TD onClick="return self.location.href='?m=nodegroupinfo&id={$nodegroup.id}';">
 			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{$nodegroup.name}</span><BR>
 			{if $nodegroup.description}<IMG src="img/info1.gif" alt="">&nbsp;{$nodegroup.description}{/if}
@@ -54,8 +54,11 @@
 			{$nodegroup.nodescount}
 		</TD>
 		<TD style="width: 1%;" class="text-right nobr">
-			{if $nodegroup.nodescount}<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
-			{else}<A href="?m=nodegroupdel&id={$nodegroup.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			{if $nodegroup.nodescount}
+{*				<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">*}
+				<A class="delete-nodegroup-alert" href="#">
+			{else}
+				<A class="delete-nodegroup"href="?m=nodegroupdel&id={$nodegroup.id}">
 			{/if}<IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=nodegroupedit&id={$nodegroup.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A href="?m=nodegroupinfo&id={$nodegroup.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -69,8 +72,7 @@
 	</TR>
 	{/foreach}
 	</TBODY>
-	<script type="text/javascript">
-	<!--
+	<script>
 		$(function() {
 			$('#nodegrouplist').sortable({
 				items: "> tr[data-nodegroup-id]",
@@ -102,7 +104,21 @@
 				}
 			});
 		});
-	//-->
 	</script>
 </TABLE>
+	<script>
+		$('.delete-nodegroup').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			console.log('name=', name);
+			confirmDialog($t("Are you sure, you want to remove group '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('.delete-nodegroup-alert').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			alertDialog($t("Group '$a' has members and cannot be deleted!", name), this);
+			return;
+		});
+	</script>
 {/block}

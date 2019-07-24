@@ -61,11 +61,19 @@
 	</TR>
 	{/if}
 	<TR>
-	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
-	    	<A HREF="?m=cashreglogedit&id={$reglog.id}" accesskey="s">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
-		<A href="?m=cashreglogdel&id={$reglog.id}" onclick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
-	    </TD>
+		<TD width="100%" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="?m=cashreglogedit&id={$reglog.id}" accesskey="s">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
+			<A id="delete-cashreglog" href="?m=cashreglogdel&id={$reglog.id}">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+		</TD>
 	</TR>
     </TBODY>
 </TABLE>
+	<script>
+		$('#delete-cashreglog').click(function() {
+			confirmDialog($t("Are you sure, you want to delete selected entry?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

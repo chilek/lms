@@ -91,7 +91,7 @@
 	{/foreach}
 	{cycle values="light,lucid" print=false}
 	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}"  >
+	<TR class="highlight {cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}" data-name="{$accountlist[accountlist].login}@{$accountlist[accountlist].domain}">
 		<TD OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
                         <SPAN class="nobr bold"><IMG src="img/account.gif" alt=""> {$accountlist[accountlist].login}@{$accountlist[accountlist].domain}</SPAN>
 			{if $accountlist[accountlist].ownerid}
@@ -124,9 +124,9 @@
 		<TD class="text-right">
 			{assign var=account value="`$accountlist[accountlist].login`@`$accountlist[accountlist].domain`"}
 			<SPAN class="nobr">
-			<A href="?m=accountpasswd&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="{trans("Change password")}" title="{trans("Change password")}"></A> 
-			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" alt="{trans("Create alias")}" title="{trans("Create alias")}"></A> 
-			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure, you want to delete account \'$a\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" title="{trans("Delete")}" alt="{trans("Delete")}"></A>
+			<A href="?m=accountpasswd&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="{trans("Change password")}" title="{trans("Change password")}"></A>
+			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" alt="{trans("Create alias")}" title="{trans("Create alias")}"></A>
+			<A class="delete-account" href="?m=accountdel&id={$accountlist[accountlist].id}"><IMG src="img/delete.gif" title="{trans("Delete")}" alt="{trans("Delete")}"></A>
 			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A href="?m=accountinfo&id={$accountlist[accountlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
                         </SPAN>
@@ -162,4 +162,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-account').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete account '$a' and all assigned to them aliases?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

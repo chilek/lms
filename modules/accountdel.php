@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,9 +26,9 @@
 
 $id = $_GET['id'];
 
-if ($id && $_GET['is_sure']=='1') {
+if ($id) {
     $DB->BeginTrans();
-    
+
     if ($DB->Execute('DELETE FROM passwd WHERE id = ?', array($id))) {
         // alias-account assignments...
         $DB->Execute('DELETE FROM aliasassignments WHERE accountid = ?', array($id));
@@ -37,7 +37,7 @@ if ($id && $_GET['is_sure']=='1') {
 			WHERE NOT EXISTS (SELECT 1 FROM aliasassignments 
 				WHERE aliasid = aliases.id)');
     }
-    
+
     $DB->CommitTrans();
 }
 

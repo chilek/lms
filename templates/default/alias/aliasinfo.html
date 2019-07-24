@@ -58,10 +58,18 @@
 	<TR>
 		<TD colspan="3" align="right" nowrap>
 			<A href="?m=aliasedit&id={$alias.id}" accesskey="e">{trans("Edit")} <IMG SRC="img/save.gif" ALT=""></A>
-			<A href="?m=aliasdel&id={$alias.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that alias?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A id="delete-alias" href="?m=aliasdel&id={$alias.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 </FORM>
+	<script>
+		$('#delete-alias').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that alias?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

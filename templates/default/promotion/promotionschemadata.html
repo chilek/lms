@@ -114,7 +114,6 @@
 					{/foreach}
 					<TD class="nobr">
 						<A class="tariff-view button-del" href="?m=promotionschemaedit&action=tariffdel&id={$schema.id}&aid={$tariff.id}"
-								OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete this assignment?")}');"
 								{if $error && $formdata.aid == $tariff.id} style="display: none;"{/if}>
 							<IMG src="img/delete.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}">
 						</A>
@@ -302,5 +301,12 @@
 	if (getCookie('promotionschemadata') == '1') {
 		$('#promotionschemadata').show();
 	}
+
+	$('.tariff-view, .button-del').click(function() {
+		confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 
 </SCRIPT>

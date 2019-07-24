@@ -38,7 +38,7 @@
     </THEAD>
     <TBODY>
 	{foreach $configlist as $config}
-	<TR class="{if $config.disabled} blend{/if}">
+	<TR class="{if $config.disabled} blend{/if}" data-name="{$config.section}.{$config.var}">
 		<TD OnClick="return self.location.href='?m=configedit&id={$config.id}';" class="nobr">
 			{$config.section}
 		</TD>
@@ -54,7 +54,7 @@
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=configedit&id={$config.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
-			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-config" href="?m=configdel&id={$config.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=configedit&id={$config.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -76,8 +76,7 @@
 	</TR>
     </TFOOT>
 </TABLE>
-<script type="text/javascript">
-<!--
+<script>
 	$('.configadd').click(function() {
 		var select = $('thead tr select', $(this).closest('table'));
 		href = '?m=configadd';
@@ -86,6 +85,13 @@
 		}
 		window.location.href = href;
 	});
-//-->
+
+	$('.delete-config').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 </script>
 {/block}

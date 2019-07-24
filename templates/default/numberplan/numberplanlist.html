@@ -26,7 +26,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=numberplanlist loop=$numberplanlist}
-	<TR class="highlight {cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}"  >
+	<TR class="highlight {cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}" data-name="{$numberplanlist[numberplanlist].template}">
 		<TD NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			<IMG src="img/id.gif" alt=""> <B>{$numberplanlist[numberplanlist].template}</B>
 		</TD>
@@ -51,7 +51,7 @@
 			{if $numberplanlist[numberplanlist].isdefault}{trans("yes")}{/if}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=numberplandel&amp;id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-numberplan" href="?m=numberplandel&id={$numberplanlist[numberplanlist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -78,4 +78,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-numberplan').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete numberplan '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

@@ -26,7 +26,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$hostlist item=host}
-	<TR class="highlight {cycle}"  >
+	<TR class="highlight {cycle}" data-name="{$host.name}">
 		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';" nowrap>
 			<IMG src="img/host.gif" alt="">
 			<B>{$host.name}</B>
@@ -42,7 +42,7 @@
 		</TD>
 		<TD align="right" NOWRAP>
 			<A HREF="?m=hostedit&amp;id={$host.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<A HREF="?m=hostdel&amp;id={$host.id}" OnClick="return confirmLink(this, '{t a=$host.name}Are you sure, you want to remove host \'$a\' and all assigned configuration?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-host" HREF="?m=hostdel&id={$host.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -61,4 +61,13 @@
 	</TR>
         </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-host').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove host '$a' and all assigned configuration?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

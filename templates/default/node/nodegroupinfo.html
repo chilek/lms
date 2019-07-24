@@ -26,12 +26,12 @@
 		</TD>
 	</TR>
 	{if $nodegroup.description}
-	<TR>	
+	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="98%" COLSPAN="2">
-			<TABLE WIDTH="100%" CELLPADDING="3"> 
+			<TABLE WIDTH="100%" CELLPADDING="3">
 			    <TR><TD CLASS="fall superlight">
 				    {$nodegroup.description|replace:"\n":"<BR>"}
 			    </TD></TR>
@@ -43,11 +43,19 @@
 	        <TD ALIGN="RIGHT" COLSPAN="3">
 			<A HREF="?m=nodegroupedit&amp;id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			{if !$nodegroup.count}
-			<A HREF="?m=nodegroupdel&amp;id={$nodegroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A id="delete-nodegroup" HREF="?m=nodegroupdel&amp;id={$nodegroup.id}">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 			{/if}
 		</TD>
 	</TR>
     </TBODY>
 </TABLE></P>
 {include file="node/nodegroupassignments.html"}
+	<script>
+		$('#delete-nodegroup').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that group?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

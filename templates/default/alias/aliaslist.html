@@ -55,7 +55,7 @@
                 <TD class="text-right nobr">
                         <A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{trans("New Alias")} <IMG src="img/save.gif" alt=""></A>
                 </TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="4">
@@ -67,7 +67,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=aliaslist loop=$aliaslist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}{if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now} blend{/if}"  >
+	<TR class="highlight {cycle}{if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now} blend{/if}" data-name="{$aliaslist[aliaslist].login}@{$aliaslist[aliaslist].domain}">
 		<TD onclick="return self.location.href='?m=aliasinfo&id={$aliaslist[aliaslist].id}';">
                         <SPAN class="nobr bold"><IMG src="img/alias.gif" ALT="" > {$aliaslist[aliaslist].login}@{$aliaslist[aliaslist].domain}</SPAN>
 		</TD>
@@ -81,7 +81,7 @@
 		<TD class="text-right">
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`"}
                         <SPAN class="nobr">
-			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t a=$alias}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-alias" href="?m=aliasdel&id={$aliaslist[aliaslist].id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
                         </SPAN>
@@ -113,4 +113,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-alias').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to delete alias: '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

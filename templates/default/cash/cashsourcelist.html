@@ -33,7 +33,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$sourcelist item=source}
-	<TR class="highlight {cycle} {if $source.deleted == 1} blend{/if}">
+	<TR class="highlight {cycle} {if $source.deleted == 1} blend{/if}" data-name="{$source.name}">
 		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'" class="nobr bold">
                         <IMG src="img/isource.gif" alt=""> {$source.name}
 		</TD>
@@ -54,7 +54,7 @@
 			{else}
 			    <a href="?m=cashsourcelist&action=disable&id={$source.id}"><img src="img/access.gif" alt="{t}Disable{/t}" title="{t}Disable{/t}" /></a>
 				{/if}
-			<A HREF="?m=cashsourcedel&id={$source.id}" OnClick="return confirmLink(this, '{t a=$source.name}Are you sure, you want to remove source \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-cashsource" HREF="?m=cashsourcedel&id={$source.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=cashsourceedit&id={$source.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -69,9 +69,18 @@
     <TFOOT>
 	<TR>
 		<TD colspan="5" class="text-right nobr">
-                        <A href="?m=cashsourceadd">{trans("Add source")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=cashsourceadd">{trans("Add source")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-cashsource').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove source '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

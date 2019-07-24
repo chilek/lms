@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-if ($_GET['is_sure']=='1') {
-    $LMS->UserDelete($_GET['id']);
-}
+$LMS->UserDelete($_GET['id']);
 
-header('Location: ?m='.$SESSION->get('lastmodule'));
+header('Location: ?m=' . $SESSION->get('lastmodule'));

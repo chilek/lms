@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 
-if ($id && $_GET['is_sure'] == '1') {
+if ($id) {
     if ($DB->Execute('DELETE FROM hosts WHERE id = ?', array($id))) {
         if ($SYSLOG) {
             $args = array(SYSLOG::RES_HOST => $id);

@@ -367,10 +367,10 @@
 				{/if}
 			{/if}
 			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<a href="?m=rtrestore&id={$ticket.ticketid}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$ticket.ticketid|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><i class="lms-ui-icon-restore"></i>{trans("Restore<!RT>")}</a>
-			<a href="?m=rtticketdel&id={$ticket.ticketid}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$ticket.ticketid|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</a>
+			<a id="restore-rtticket" href="?m=rtrestore&id={$ticket.ticketid}&taction=restore" data-name="{$ticket.ticketid|string_format:"%06d"}"><i class="lms-ui-icon-restore"></i>{trans("Restore<!RT>")}</a>
+			<a id="remove-rtticket" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delperm" data-name="{$ticket.ticketid|string_format:"%06d"}"><img src="img/delete.gif" alt="" title="{trans("Delete permanently")}"> {trans("Delete permanently")}</a>
 			{else}
-			<a href="?m=rtticketdel&id={$ticket.ticketid}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$ticket.ticketid|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="{trans("Delete")}">{trans("Delete")}</a>
+			<a id="delete-rtticket" href="?m=rtticketdel&id={$ticket.ticketid}&taction=delete" data-name="{$ticket.ticketid|string_format:"%06d"}"><img src="img/delete.gif" alt="" title="{trans("Delete")}">{trans("Delete")}</a>
 			{/if}
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>
 		</TD>
@@ -433,3 +433,28 @@
 <br>
 {include file="rt/rtticketrelatedlist.html"}
 {/if}
+
+<script>
+	$('#delete-rtticket').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove ticket '$a'?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+	$('#restore-rtticket').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+	$('#remove-rtticket').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>
+

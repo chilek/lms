@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-if (isset($_GET['is_sure'])) {
-    $id = intval($_GET['id']);
+$id = intval($_GET['id']);
 
+if ($id) {
     if (!$DB->GetOne('SELECT 1 FROM nodegroupassignments WHERE nodegroupid = ? 
 		LIMIT 1', array($id))) {
         $DB->BeginTrans();

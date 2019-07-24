@@ -45,7 +45,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$instancelist item=instance}
-	<TR class="highlight {cycle}{if $instance.disabled} blend{/if}"  >
+	<TR class="highlight {cycle}{if $instance.disabled} blend{/if}" data-name="{$instance.name}">
 		<TD onClick="return self.location.href='?m=daemoninstanceview&amp;id={$instance.id}';" nowrap>
 			<IMG src="img/settings.gif" alt="">
 			<B>{$instance.name}</B>
@@ -66,7 +66,7 @@
 			<A HREF="?m=daemoninstanceview&amp;id={$instance.id}"><IMG SRC="img/view.gif" alt="{trans("Browse Configuration")}" title="{trans("Browse Configuration")}"></A>
 			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}&amp;statuschange=1"><IMG SRC="img/wait.gif" alt="{if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
 			<A HREF="?m=daemoninstanceadd&amp;id={$instance.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
-			<A HREF="?m=daemoninstancedel&amp;id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-daemoninstance" HREF="?m=daemoninstancedel&id={$instance.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
@@ -86,4 +86,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-daemoninstance').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove instance '$a' and all assigned configuration?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

@@ -178,11 +178,18 @@
 
                 <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="edit"></a>
 
-                <a href="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">
-					{trans("Delete")} <img src="img/delete.gif" alt="delete">
-                </a>
+                <a id="delete-voipaccount" href="?m=voipaccountdel&id={$voipaccountinfo.id}" data-name="{$voipaccountinfo.login}">{trans("Delete")} <img src="img/delete.gif" alt="delete"></a>
             </td>
         </tr>
         {/block}
     </tbody>
 </table>
+<script>
+    $('#delete-voipaccount').click(function() {
+        var name = $(this).attr('data-name');
+        confirmDialog($t("Are you sure, you want to remove voip account '$a' from database?", name), this).done(function() {
+            location.href = $(this).attr('href');
+        });
+        return false;
+    });
+</script>

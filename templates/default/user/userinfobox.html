@@ -180,9 +180,18 @@
 				{/if}
 			{/if}
 			<A href="?m=useredit&amp;id={$userinfo.id}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-			<A href="?m=userdel&amp;id={$userinfo.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+			<A id="delete-user" href="?m=userdel&id={$userinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
 			<A href="?m=userpasswd&amp;id={$userinfo.id}">{trans("Change password")} <IMG src="img/keys.gif" alt=""> </A>
 			<a href="?m=userlist">{trans("User list")} <img src="img/users.gif" alt=""></a>
 		</TD>
 	</TR>
 </TABLE>
+<script>
+	$('#delete-user').click(function() {
+		confirmDialog($t("Are you sure, you want to irreversibly delete that user account?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>
+

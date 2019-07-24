@@ -36,7 +36,7 @@
     </THEAD>
     <TBODY>
 	{foreach $promotionlist as $promo}
-	<TR class="highlight {if $promo.disabled} blend{/if}"  >
+	<TR class="highlight {if $promo.disabled} blend{/if}" data-name="{$promo.name}">
 		<TD nowrap onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			<IMG src="img/promo.gif" ALT=""> <B>{$promo.name}</B>
 			{if $promo.datefrom || $promo.dateto}
@@ -62,7 +62,7 @@
 		</TD>
 		<TD class="text-right nobr">
 			<A HREF="?m=promotionset&amp;id={$promo.id}&amp;access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
-			<A HREF="?m=promotiondel&amp;id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-promotion" HREF="?m=promotiondel&id={$promo.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=promotionclone&id={$promo.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 			<A HREF="?m=promotionedit&amp;id={$promo.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=promotioninfo&amp;id={$promo.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
@@ -92,4 +92,13 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$('.delete-promotion').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove promotion '$a'?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

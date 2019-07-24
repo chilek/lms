@@ -78,7 +78,7 @@
 	</TFOOT>
 	<TBODY>
 	{foreach $netlist as $net}
-	<TR class="highlight{if $net.disabled == 1} blend{/if}" data-target-url="?m=netinfo&id={$net.id}">
+	<TR class="highlight{if $net.disabled == 1} blend{/if}" data-target-url="?m=netinfo&id={$net.id}" data-name="{$net.name}">
 		<TD>
 			<A name="{$net.id}" class="nobr">
 			<IMG src="img/network.gif" alt=""> <span class="bold">{$net.name|truncate:40:"...":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $net.hostname}{$net.hostname}{else}{trans("none")}{/if} / {$net.address} / {$net.prefix} {if $net.interface}({$net.interface}){/if} {if $net.vlanid}/ {$net.vlanid}{/if}
@@ -100,7 +100,7 @@
 		</TD>
 		<TD class="lms-ui-buttons nobr">
 			<A href="?m=netedit&amp;networkset&amp;id={$net.id}">{if $net.disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
-			<a href="?m=netdel&amp;id={$net.id}" onClick="return confirmLink(this,'{t a=$net.name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Remove")}" title="{trans("Remove")}"></A>
+			<a class="delete-net" href="?m=netdel&id={$net.id}"><IMG src="img/delete.gif" alt="{trans("Remove")}" title="{trans("Remove")}"></A>
 			<A href="?m=netedit&amp;id={$net.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A href="?m=netinfo&amp;id={$net.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
@@ -114,4 +114,13 @@
 	{/foreach}
 	</TBODY>
 </table>
+<script>
+	$('.delete-net').click(function() {
+		var name = $(this).closest('tr').attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove network '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>
 {/block}

@@ -339,18 +339,25 @@
 			<a href="?m=netdevadd&id={$netdev.id}">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}"</a>
 			<A href="javascript:void(0);" onclick="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdev.id}', 'Replace netdev', 600, 290, 1, 1);">{trans("Replace")} <img src="img/alias.gif" ALT="{trans("Replace")}"></A>
 			<A href="?m=netdevedit&id={$netdev.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
-			<A href="?m=netdevdel&id={$netdev.id}" OnClick="return confirmLink(this, '{t a=$netdev.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
+			<A id="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1" data-name="{$netdev.name}">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
 			{/block}
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 {if $devicepanel}
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 if (getCookie('devicepanel') == '1') {
 	$('#devicepanel').show();
 }
-//-->
 </SCRIPT>
 {/if}
+<script>
+	$('#delete-netdev').click(function() {
+		var name = $(this).attr('data-name');
+		confirmDialog($t("Are you sure, you want to remove device '$a' from database?", name), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+</script>

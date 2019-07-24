@@ -82,7 +82,7 @@
 	</TR>
 	<TR>
 		<TD colspan="7">
-				<B>{trans("Filter:")} </B> 
+				<B>{trans("Filter:")} </B>
 				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter -")}</OPTION>
@@ -111,12 +111,12 @@
     <TBODY class="lms-ui-multi-check">
 	{foreach $receiptlist as $receipt}
 	{assign var=receiptid value=$receipt.id}
-	<TR class="highlight">
+	<TR class="highlight" data-name="{$receipt.number}">
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
 			{if !$receipt.closed}<span class="lms-ui-error">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
 			{$receipt.user|truncate:"16":"...":true}
-			{if !$receipt.closed}</span>{/if}		
+			{if !$receipt.closed}</span>{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="lms-ui-error"{/if}>
 			{$receipt.number}
@@ -141,7 +141,7 @@
 			{if !$receipt.closed}
 			<A HREF="?m=receiptadv&id={$receipt.id}"><IMG SRC="img/eraser.gif" alt="{trans("Settle advance")}" title="{trans("Settle advance")}"></A>
 			{/if}
-			<A onClick="return confirmLink(this, '{t a=$receipt.number}Are you sure, you want to remove receipt \'$a\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A class="delete-receipt" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="{trans("Print")}" title="{trans("Print")}"></A>
 			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}" class="lms-ui-multi-check"{if $marks.$receiptid} checked{/if}>
@@ -152,7 +152,7 @@
 		<TD COLSPAN="7" class="empty-table">
 			<p>{trans("No such receipts in database.")}</p>
 		</TD>
-	</TR>	
+	</TR>
 	{/foreach}
     </TBODY>
     <TFOOT>
@@ -239,4 +239,13 @@
 </TABLE>
 </P>
 {/if}
+	<script>
+		$('.delete-receipt').click(function() {
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove receipt '$a' from database?", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+	</script>
 {/block}

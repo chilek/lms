@@ -125,9 +125,7 @@
 					</div>
 				</div>
 				<div class="lms-ui-tab-table-column buttons">
-					{button type="link" href="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdevice.id}"
-						onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that connection?")}');"
-						icon="delete" tip="Delete connection"}
+					{button type="link" class="disconnectbox" href="?m=netdevedit&action=disconnect&id={$netdev.id}&devid={$netdevice.id}" icon="delete" tip="Delete connection"}
 				</div>
 			</div>
 			{foreachelse}
@@ -253,7 +251,7 @@
 		}
 		xjx.$('connboxsrcradiosector').style.display = (linktype == 1 ? '' : 'none');
 		xjx.$('connboxdstradiosector').style.display = (linktype == 1 ? '' : 'none');
-	
+
 		if (linktype == 1) {
 			var selected = xjx.$('srcnetdev').selectedIndex;
 			if (selected) {
@@ -262,7 +260,7 @@
 			}
 		}
 	}
-	
+
 	function change_devlinktechnology(linktechnology) {
 		linktechnology = parseInt(linktechnology);
 		var linktype = xjx.$('connboxlinktype').options[xjx.$('connboxlinktype').selectedIndex].value;
@@ -276,17 +274,17 @@
 			xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id}, linktechnology);
 		}
 	}
-	
+
 	function get_radio_sectors_for_self_netdev() {
 		xjx.$('connboxdstradiosector').disabled = true;
 		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdev.id});
 	}
-	
+
 	function get_radio_sectors_for_netdev() {
 		xjx.$('connboxsrcradiosector').disabled = true;
 		xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value);
 	}
-	
+
 	function radio_sectors_received_for_srcnetdev(radiosectors) {
 		var options = xjx.$('connboxsrcradiosector').options;
 		var oldvalue = options[xjx.$('connboxsrcradiosector').selectedIndex].value;
@@ -303,7 +301,7 @@
 		}
 		xjx.$('connboxsrcradiosector').disabled = false;
 	}
-	
+
 	function radio_sectors_received_for_dstnetdev(radiosectors) {
 		var options = xjx.$('connboxdstradiosector').options;
 		var oldvalue = options[xjx.$('connboxdstradiosector').selectedIndex].value;
@@ -320,9 +318,16 @@
 		}
 		xjx.$('connboxdstradiosector').disabled = false;
 	}
-	
+
 	{if $restnetdevlist[0]}
 	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', {$restnetdevlist[0].id});
 	{/if}
+
+	$('.disconnectbox').click(function() {
+		confirmDialog($t("Are you sure, you want to delete that connection?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
 
 </SCRIPT>

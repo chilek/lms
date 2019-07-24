@@ -82,7 +82,7 @@
     <tbody>
         {section name=voipaccountlist loop=$voipaccountlist start=$start max=$pagelimit}
         {block name="voipaccountlist-list-row"}
-        <tr class="highlight">
+        <tr class="highlight" data-name="{$voipaccountlist[voipaccountlist].login}">
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" nowrap>
                 <img src="img/voip.gif" alt="">
                 <strong>{$voipaccountlist[voipaccountlist].login}</strong>
@@ -111,9 +111,7 @@
                     <a href="?m=voipaccountset&amp;id={$voipaccountlist[voipaccountlist].id}">
                         <img src="img/{if ! $voipaccountlist[voipaccountlist].access}no{/if}access.gif" alt="{if ! $voipaccountlist[voipaccountlist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if}" title="{if ! $voipaccountlist[voipaccountlist].access}{trans("Connect")}{else}{trans("Disconnect")}{/if}">
                     </a>
-                    <a onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')" href="?m=voipaccountdel&amp;id={$voipaccountlist[voipaccountlist].id}">
-                        <img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}">
-                    </a>
+                    <a class="delete-voipaccount" href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>
                     <a href="?m=voipaccountedit&amp;id={$voipaccountlist[voipaccountlist].id}">
                         <img src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}">
                     </a>
@@ -148,5 +146,14 @@
         </tr>
     </tfoot>
 </table>
+    <script>
+        $('.delete-voipaccount').click(function() {
+            var name = $(this).closest('tr').attr('data-name');
+            confirmDialog($t("Are you sure, you want to remove voip account '$a' from database?", name), this).done(function() {
+                location.href = $(this).attr('href');
+            });
+            return false;
+        });
+    </script>
 {/block}
 {block name=extra_content}{/block}
