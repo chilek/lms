@@ -47,19 +47,23 @@ $layout['pagetitle'] = trans('Info Channel: $a', $channel['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if ($channel['id']) {
-    $channel['devices'] = $DB->GetAll('SELECT id, name, location,
-        (SELECT COUNT(*) FROM vnodes WHERE netdev = netdevices.id AND ownerid IS NOT NULL) AS nodes
-	    FROM netdevices
-    	WHERE channelid = ? ORDER BY name', array($channel['id']));
+    $channel['devices'] = $DB->GetAll('SELECT nd.id, nd.name, location,
+        (SELECT COUNT(*) FROM vnodes WHERE netdev = nd.id AND ownerid IS NOT NULL) AS nodes
+	    FROM netdevices nd
+	    LEFT JOIN vaddresses a ON a.id = nd.address_id
+    	WHERE channelid = ? ORDER BY nd.name', array($channel['id']));
 
-    $channel['freedevices'] = $DB->GetAll('SELECT id, name, location, producer
-	    FROM netdevices
-    	WHERE channelid IS NULL ORDER BY name');
+    $channel['freedevices'] = $DB->GetAll('SELECT nd.id, nd.name, location, producer
+	    FROM netdevices nd
+	    LEFT JOIN vaddresses a ON a.id = nd.address_id
+    	WHERE channelid IS NULL ORDER BY nd.name');
 } else {
     // default channel
-    $channel['devices'] = $DB->GetAll('SELECT id, name, location,
-        (SELECT COUNT(*) FROM vnodes WHERE netdev = netdevices.id AND ownerid IS NOT NULL) AS nodes
-	    FROM netdevices WHERE id IN (
+    $channel['devices'] = $DB->GetAll('SELECT nd.id, nd.name, location,
+        (SELECT COUNT(*) FROM vnodes WHERE netdev = nd.id AND ownerid IS NOT NULL) AS nodes
+	    FROM netdevices nd
+	    LEFT JOIN vaddresses a ON a.id = nd.address_id
+	    WHERE nd.id IN (
             SELECT netdev
             FROM vnodes
             WHERE netdev IS NOT NULL AND id IN (
@@ -67,7 +71,7 @@ if ($channel['id']) {
                 FROM ewx_stm_nodes
                 WHERE channelid IN (SELECT id FROM ewx_stm_channels
                     WHERE cid = 0)))
-	    ORDER BY name', array($channel['id']));
+	    ORDER BY nd.name', array($channel['id']));
 }
 
 $channel['devcnt'] = count($channel['devices']);
