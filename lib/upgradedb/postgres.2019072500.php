@@ -23,11 +23,13 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-    ALTER TABLE events DROP CONSTRAINT events_address_id_fk;
-    ALTER TABLE events ADD CONSTRAINT events_address_id_fkey
-        FOREIGN KEY (address_id) REFERENCES addresses(id) ON UPDATE CASCADE ON DELETE SET NULL
-");
+if ($this->ResourceExists('events_address_id_fk', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("
+        ALTER TABLE events DROP CONSTRAINT events_address_id_fk;
+        ALTER TABLE events ADD CONSTRAINT events_address_id_fkey
+            FOREIGN KEY (address_id) REFERENCES addresses(id) ON UPDATE CASCADE ON DELETE SET NULL
+    ");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019072500', 'dbversion'));
 
