@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,26 +24,17 @@
  *  $Id$
  */
 
-if (isset($_GET['is_sure'])) {
-    $basename = 'lms-'.$_GET['db'];
+$basename = 'lms-' . $_GET['db'];
 
-    if (@file_exists(ConfigHelper::getConfig('directories.backup_dir').'/'.$basename.'.sql')) {
-        $filename = $basename . '.sql';
-        @unlink(ConfigHelper::getConfig('directories.backup_dir').'/' . $filename);
-    } elseif ((extension_loaded('zlib'))&&((@file_exists(ConfigHelper::getConfig('directories.backup_dir').'/'.$basename.'.sql.gz')))) {
-        $filename = $basename . '.sql.gz';
-        @unlink(ConfigHelper::getConfig('directories.backup_dir').'/' . $filename);
-    }
-    if (isset($filename) && $SYSLOG) {
-        $SYSLOG->AddMessage(SYSLOG::RES_DBBACKUP, SYSLOG::OPER_DELETE, array('filename' => $filename));
-    }
-
-    $SESSION->redirect('?m=dblist');
-} else {
-    $layout['pagetitle'] = trans('Backup Delete');
-    $SMARTY->display('header.html');
-    echo '<H1>'.trans('Deletion of Database Backup').'</H1>';
-    echo '<P>'.trans('Are you sure, you want to delete database backup created at $a ?', date('Y/m/d H:i.s', $_GET['db'])).'</P>';
-    echo '<a href="?m=dbdel&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
-    $SMARTY->display('footer.html');
+if (@file_exists(ConfigHelper::getConfig('directories.backup_dir') . '/' . $basename . '.sql')) {
+    $filename = $basename . '.sql';
+    @unlink(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename);
+} elseif ((extension_loaded('zlib')) && ((@file_exists(ConfigHelper::getConfig('directories.backup_dir') . '/' . $basename . '.sql.gz')))) {
+    $filename = $basename . '.sql.gz';
+    @unlink(ConfigHelper::getConfig('directories.backup_dir') . '/' . $filename);
 }
+if (isset($filename) && $SYSLOG) {
+    $SYSLOG->AddMessage(SYSLOG::RES_DBBACKUP, SYSLOG::OPER_DELETE, array('filename' => $filename));
+}
+
+$SESSION->redirect('?m=dblist');

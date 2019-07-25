@@ -1,7 +1,8 @@
 {block name=rtboxrow}
 <TR class="single-ticket {if $ticket.state == $smarty.const.RT_RESOLVED}blend{/if} highlight lms-ui-rt{if $ticket.deleted == 1 && $ticket.deltime != 0}-deleted{elseif $ticket.delcount && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{/if}"
 		id="ticket-{$ticket.id}"
-		data-target-url="?m=rtticketview&id={$ticket.id}">
+		data-target-url="?m=rtticketview&id={$ticket.id}"
+		data-name="{$ticket.id|string_format:"%06d"}">
 	<TD class="text-center">
 		{if $ticket.unread}
 		<a href="?m=rtticketview&id={$ticket.id}{if $ticket.firstunread}#rtmessage-{$ticket.firstunread}{/if}" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$ticket.id}"><i class="lms-ui-icon-{if $ticket.priority == $smarty.const.RT_PRIORITY_CRITICAL && $ticket.state != $smarty.const.RT_RESOLVED}critical{else}unread{/if}"></i></a>
@@ -109,17 +110,14 @@
 			<img src="img/print.gif" alt="" title="{trans("Print")}">
 		</A>
 		{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
-			<A href="#"
-					onClick="if (confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')) location.href = '?m=rtrestore&id={$ticket.id}&taction=restore' + get_backid(this);">
+			<A class="restore-ticket" href="?m=rtrestore&id={$ticket.id}&taction=restore">
 				<img src="img/reload.gif" alt="" title="{trans("Restore<!RT>")}">
 			</A>
-			<A href="#"
-					onClick="if (confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')) location.href = '?m=rtremove&id={$ticket.id}&taction=delperm' + get_backid(this);">
+			<A class="remove-ticket" href="?m=rtremove&id={$ticket.id}&taction=delperm">
 				<img src="img/delete.gif" alt="" title="{trans("Delete permanently")}">
 			</A>
 		{else}
-			<A href="#"
-					onClick="if (confirmLink(this, '{t a=$ticket.id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')) location.href = '?m=rtticketdel&id={$ticket.id}&taction=delete' + get_backid(this);">
+			<A class="delete-ticket" href="?m=rtticketdel&id={$ticket.id}&taction=delete">
 				<img src="img/delete.gif" alt="" title="{trans("Delete")}">
 			</A>
 		{/if}
@@ -138,5 +136,6 @@
 		<input type="checkbox" class="lms-ui-multi-check" name="ticketid[]" value="{$ticket.id}">
 	</TD>
 </TR>
+
 {/block}
 
