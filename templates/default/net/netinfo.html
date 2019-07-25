@@ -2,20 +2,6 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{if $unlockedit}
-<script type="text/javascript">
-<!--
-	function getText(index) {
-		var elem = document.getElementById(index);
-		index = elem.options[elem.selectedIndex].value;
-		{foreach $networks as $net}
-		if (index == {$net.id})
-			return '{$net.name} ({$net.address}/{$net.prefix})';
-		{/foreach}
-	}
-//-->
-</script>
-{/if}
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -256,29 +242,29 @@
 	<TR>
 		<TD class="text-right" colspan="4">
 			{if $unlockedit}
-			<form name="remap" action="" method="get">
-			<INPUT type="submit" class="hiddenbtn">
-			<A id="putinorder-net" href="?m=netcmp&id={$network.id}" >{trans("Put in order")} <img src="img/cmp.gif" alt="{trans("Put in order")}"></A>
-			<input type="hidden" name="is_sure" value="1">
-			<input type="hidden" name="m" value="netremap">
-			<input type="hidden" name="id" value="{$network.id}">
-			{if $netlistsize > 1}
-			<a href="javascript:document.remap.submit();" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to change network $a to network '+getText(document.remap.mapto.value)+'?{/t}');">{trans("Reassign to network:")}</A>
-			<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
-				{section name=networks loop=$networks}
-				{if $networks[networks].id != $network.id}
-				<option value="{$networks[networks].id}">{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})</option>
+				<form name="remap" action="" method="get">
+				<INPUT type="submit" class="hiddenbtn">
+				<A id="putinorder-net" href="?m=netcmp&id={$network.id}" >{trans("Put in order")} <img src="img/cmp.gif" alt="{trans("Put in order")}"></A>
+				<input type="hidden" name="is_sure" value="1">
+				<input type="hidden" name="m" value="netremap">
+				<input type="hidden" name="id" value="{$network.id}">
+				{if $netlistsize > 1}
+					<a id="change-net" data-name="{$network.name}" href="#">{trans("Reassign to network:")}</A>
+					<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
+						{section name=networks loop=$networks}
+						{if $networks[networks].id != $network.id}
+						<option value="{$networks[networks].id}">{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})</option>
+						{/if}
+						{/section}
+					</select>
 				{/if}
-				{/section}
-			</select>
-			{/if}
-			<A href="javascript:document.netedit.submit()" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt="{trans("Submit")}"></a>
-			<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
-			<A href="?m=netinfo&amp;id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="{trans("Cancel")}"></A>
-			</form>
+				<A href="javascript:document.netedit.submit()" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt="{trans("Submit")}"></a>
+				<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
+				<A href="?m=netinfo&amp;id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="{trans("Cancel")}"></A>
+				</form>
 			{else}
-			<A href="?m=netedit&amp;id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="{trans("Edit")}"></A>
-			<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
+				<A href="?m=netedit&amp;id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="{trans("Edit")}"></A>
+				<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
 			{/if}
 		</TD>
 	</TR>
@@ -359,6 +345,14 @@
 		$('#putinorder-net').click(function() {
 			confirmDialog($t("Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!"), this).done(function() {
 				location.href = $(this).attr('href');
+			});
+			return false;
+		});
+		$('#change-net').click(function() {
+			var fromname = $(this).attr('data-name');
+			var toname = $("select[name='mapto'] option:selected").text();
+			confirmDialog($t("Are you sure, you want to change network '$a' to network '$b'?", fromname, toname), this).done(function() {
+				document.remap.submit();
 			});
 			return false;
 		});

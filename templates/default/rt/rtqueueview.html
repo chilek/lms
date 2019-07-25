@@ -89,6 +89,34 @@
 			});
 			location.href = '?m=rtmessageadd&ticketid[]=' + ticketid.join('&ticketid[]=');
 		});
+
+		$('.delete-ticket').click(function() {
+			var link = $(this).attr('href');
+			var fulllink = link + get_backid(this);
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to remove ticket $a?", name), this).done(function() {
+				location.href = fulllink;
+			});
+			return false;
+		});
+		$('.restore-ticket').click(function() {
+			var link = $(this).attr('href');
+			var fulllink = link + get_backid(this);
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to restore ticket $a?", name), this).done(function() {
+				location.href = fulllink;
+			});
+			return false;
+		});
+		$('.remove-ticket').click(function() {
+			var link = $(this).attr('href');
+			var fulllink = link + get_backid(this);
+			var name = $(this).closest('tr').attr('data-name');
+			confirmDialog($t("Are you sure, you want to permanently remove ticket $a?", name), this).done(function() {
+				location.href = fulllink;
+			});
+			return false;
+		});
 	});
 
 </script>

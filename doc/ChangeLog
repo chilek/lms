@@ -30,6 +30,8 @@ version 25-git (????-??-??):
   - improvement: added copy to clipboard buttons/icons for events, tickets, ticket message
     and notes [chilan]
   - improvement: show customers with all inactive assignments for given tariff as blend [chilan]
+  - devel: change confirmation message appearance throughout change type from ConfirmLink
+    to ConfirmDialog [ravvar]
 
 version 24.0 (2019-05-16):
 
