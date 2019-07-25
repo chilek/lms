@@ -196,6 +196,9 @@ if (!empty($_POST['marks'])) {
                 html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false);
             }
         } else {
+            if (preg_match('#^application/.*pdf#', $doc['contenttype'])) {
+                $doc['contenttype'] = 'application/pdf';
+            }
             header('Content-Type: ' . $doc['contenttype']);
 
             if (!preg_match('/^text/i', $doc['contenttype'])) {
