@@ -2158,7 +2158,7 @@ CREATE TABLE events (
 	CONSTRAINT events_ticketid_fkey
 		FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT events_address_id_fkey
-		FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
+		FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	CONSTRAINT events_customerid_fkey
 		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT events_userid_fkey
@@ -3512,4 +3512,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019071500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019072500');
