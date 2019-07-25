@@ -257,7 +257,6 @@
 	<script>
 		$('.balanceok-customer').click(function() {
 			var name = $(this).closest('tr').attr('data-name');
-			console.log('name=', name);
 			confirmDialog($t("Are you sure, you want to account ALL debts of customer \'$a\'?", name), this).done(function() {
 				location.href = $(this).attr('href');
 			});
@@ -265,7 +264,6 @@
 		});
 		$('.delete-customer').click(function() {
 			var name = $(this).closest('tr').attr('data-name');
-			console.log('name=', name);
 			confirmDialog($t("Are you sure, you want to remove customer '$a' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!", name), this).done(function() {
 				location.href = $(this).attr('href');
 			});
