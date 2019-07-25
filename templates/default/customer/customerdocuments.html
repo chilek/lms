@@ -94,38 +94,40 @@
 					</div>
 				</div>
 
-				<div class="lms-ui-tab-table-column buttons">
-					{if $customerinfo.senddocuments}
-						{button type="link" class="send-doc" icon="mail" href="?m=documentsend&id={$doc.docid}"
-							tip="Document send"}
-					{/if}
-					{assign var=type value=$doc.type}
-					{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
-					{if ! $doc.closed && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM)}
-						{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
-					{/if}
-					{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
-						{button type="link" href="?m=documentedit&id={$doc.docid}&action=archive" class="archive-doc" icon="archive" tip="Archive"}
-					{/if}
-					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_DELETE)}
-						{button type="link" class="delete-doc" href="?m=documentdel&id={$doc.docid}" icon="delete" onclick=$onclick tip="Remove document"}
-					{/if}
-					{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
-						{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
-					{/if}
-					{$docattach = $doc.attachments[0]}
-					{if $docattach.main || count($doc.attachments) == 1}
-						{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
-						url="?m=documentview&id={$doc.docid}" external=true
-						text="<i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
-					{/if}
-					{if count($doc.attachments) > 1 || !$doc.attachments[0].main}
-						<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
-							<img src="img/asc_order.gif">
-						</a>
-					{/if}
-					<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" form="customerdocuments-form" class="lms-ui-multi-check" VALUE="{$doc.docid}">
-					<div id="allattachments-{$doc.docid}" style="display: none;">
+				<div class="lms-ui-tab-table-column buttons" style="flex-direction: column;">
+					<div class="lms-ui-tab-table-column buttons">
+						{if $customerinfo.senddocuments}
+							{button type="link" class="send-doc" icon="mail" href="?m=documentsend&id={$doc.docid}"
+								tip="Document send"}
+						{/if}
+						{assign var=type value=$doc.type}
+						{button type="link" icon="save" href="?m=documentview&id={$doc.docid}&save=1" tip="Save"}
+						{if ! $doc.closed && ($docrights.$type.rights & $smarty.const.DOCRIGHT_CONFIRM)}
+							{button type="link" icon="confirm" href="?m=documentedit&id={$doc.docid}&action=confirm" tip="Confirm"}
+						{/if}
+						{if $doc.closed && !$doc.archived && ($docrights.$type.rights & $smarty.const.DOCRIGHT_ARCHIVE)}
+							{button type="link" href="?m=documentedit&id={$doc.docid}&action=archive" class="archive-doc" icon="archive" tip="Archive"}
+						{/if}
+						{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_DELETE)}
+							{button type="link" class="delete-doc" href="?m=documentdel&id={$doc.docid}" icon="delete" onclick=$onclick tip="Remove document"}
+						{/if}
+						{if ($docrights.$type.rights & $smarty.const.DOCRIGHT_EDIT)}
+							{button type="link" icon="edit" href="?m=documentedit&id={$doc.docid}" tip="Edit"}
+						{/if}
+						{$docattach = $doc.attachments[0]}
+						{if $docattach.main || count($doc.attachments) == 1}
+							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+							url="?m=documentview&id={$doc.docid}" external=true
+							text="<i class=\"{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{/if}\"></i>"}
+						{/if}
+						{if count($doc.attachments) > 1 || !$doc.attachments[0].main}
+							<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+								<img src="img/asc_order.gif">
+							</a>
+						{/if}
+						<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" form="customerdocuments-form" class="lms-ui-multi-check" VALUE="{$doc.docid}">
+					</div>
+					<div id="allattachments-{$doc.docid}" class="document-attachment-container" style="display: none;">
 						{foreach $doc.attachments as $docattach}
 							{if $docattach@first && $docattach.main}{continue}{/if}
 							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
