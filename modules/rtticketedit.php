@@ -364,8 +364,10 @@ if (isset($_POST['ticket'])) {
             'requestor_userid' => empty($ticketedit['requestor_userid']) ? null : $ticketedit['requestor_userid'],
             'requestor' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
                 || empty($ticketedit['requestor_name']) ? '' : $ticketedit['requestor_name'],
-            'requestor_mail' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_mail']) ? null : $ticketedit['requestor_mail'],
-            'requestor_phone' => !empty($ticketedit['requestor_userid']) || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
+            'requestor_mail' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
+                || empty($ticketedit['requestor_mail']) ? null : $ticketedit['requestor_mail'],
+            'requestor_phone' => !empty($ticketedit['requestor_userid']) || $ticketedit['requestor_userid'] == ''
+                || empty($ticketedit['requestor_phone']) ? null : $ticketedit['requestor_phone'],
             'parentid' => empty($ticketedit['parentid']) ? null : $ticketedit['parentid'],
         );
         $LMS->TicketChange($ticketedit['ticketid'], $props);

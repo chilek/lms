@@ -1501,7 +1501,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             }
         }
 
-        if (empty($props['requestor'])) {
+        if (isset($props['requestor']) && empty($props['requestor'])) {
             $props['requestor'] = '';
         }
 
