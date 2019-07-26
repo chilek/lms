@@ -4,8 +4,7 @@
 {$xajax}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function savereceipt(print)
 	{
 		var add = "";
@@ -39,7 +38,6 @@
 		document.additem.target = "";
 		document.additem.submit();
 	}
-//-->
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&amp;action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
@@ -191,7 +189,7 @@
 			<IMG SRC="img/customer.gif" ALT=""> <B>{trans("Customer:")}</B>
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<B>{$customer.customername}</B> 
+			<B>{$customer.customername}</B>
 			&nbsp;&raquo;&nbsp; {if $customer.postoffice && $customer.postoffice != $customer.city && $customer.street}{$customer.city}, {/if}{$customer.address},
 				{$customer.zip} {if $customer.postoffice}{$customer.postoffice}{else}{$customer.city}{/if}
 			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
@@ -409,7 +407,7 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A HREF="?m=receiptadd&amp;action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>			
+		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
@@ -460,19 +458,20 @@
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			<A HREF="?m=receiptadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
+				<A HREF="javascript:alertDialog($t('Customer not selected!'));">
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Receipt have no items!")}');">
+				<A HREF="javascript:alertDialog($t('Receipt have no items!'));">
 			{else}
 			<A HREF="javascript:savereceipt(0);">
 			{/if}
 			{trans("Save")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
+				<A HREF="javascript:alertDialog($t('Customer not selected!'));">
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Receipt have no items!")}');">
+				<A HREF="javascript:alertDialog($t('Receipt have no items!'));">
 			{else}
-			<A HREF="javascript:savereceipt(1);">
+				<A HREF="javascript:savereceipt(1);">
 			{/if}
 			{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
@@ -482,13 +481,11 @@
 </TABLE>
 </P>
 {/if}
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 {if !$receipt.selected}
 $(function() {
 	$('form[name="setcustomer"] [name="receipt[regid]"]').focus();
 });
 {/if}
-//-->
 </SCRIPT>
 {/block}

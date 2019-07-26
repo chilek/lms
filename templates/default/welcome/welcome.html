@@ -80,7 +80,7 @@
 	</script>
 	{if $newer_version}
 		<script>
-			alert('{t a=$newer_version b="http://lms.org.pl/download"}There is newer version of LMS ($a) available for download from $b.{/t}');
+			alertDialog($t("There is newer version of LMS ($a) available for download from $b.",'{$newer_version}', 'http://lms.org.pl/download'));
 		</script>
 	{/if}
 {/block}

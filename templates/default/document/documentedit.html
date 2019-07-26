@@ -190,7 +190,7 @@
 		$('#closed').click(function() {
 			if ($('#archived').prop('checked') && !$(this).prop('checked')) {
 				$(this).prop('checked', true);
-				alert($t("Cannot undo document confirmation while it is archived!"));
+				alertDialog($t("Cannot undo document confirmation while it is archived!"), this);
 			}
 			$('#archived').closest('tr').toggle($(this).prop('checked'));
 		});

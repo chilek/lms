@@ -197,23 +197,23 @@ function submit_location() {
     var tmp, input_str;
 
     if (cr.style.display == 'none' || city.value == 0) {
-        alert('{trans("City has not been selected!")}');
-        return;
+		window.parent.alertDialog($t("City has not been selected!"));
+		return;
     }
 
     if (house.value == '') {
-        alert('{trans("House number is required!")}');
-        return;
+		window.parent.alertDialog($t("House number is required!"));
+		return;
     }
 
     if (house.length > 8) {
-        alert('{trans("House number is too long (max. 8 characters)!")}');
+		window.parent.alertDialog($t("House number is too long (max. 8 characters)!"));
         return;
     }
 
     if (flat.length > 8) {
-        alert('{trans("Flat number is too long (max. 8 characters)!")}');
-        return;
+		window.parent.alertDialog($t("Flat number is too long (max. 8 characters)!"));
+		return;
     }
 
     // SET CITY

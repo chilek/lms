@@ -207,13 +207,13 @@ window.open('?m=note&id={$newnoteid}');
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="?m=notelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="?m=noteadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
+			<A HREF="?m=noteadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>
 			{if !$customer}
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
+			<A class="customer-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A class="customer-alert" href="#">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{elseif !$contents}
-			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
+			<A class="document-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A class="document-alert" href="#">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{else}
 			<A HREF="?m=noteadd&amp;action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:printnote()">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
@@ -224,11 +224,19 @@ window.open('?m=note&id={$newnoteid}');
 	</TFOOT>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 $(function() {
 	$('form[name="setcustomer"] [name="note[number]"]').focus();
 });
-//-->
+
+$('.customer-alert').click(function() {
+	alertDialog($t("Customer not selected!"), this);
+	return;
+});
+$('.document-alert').click(function() {
+	alertDialog($t("Document has no items!"), this);
+	return;
+});
+
 </SCRIPT>
 {/block}

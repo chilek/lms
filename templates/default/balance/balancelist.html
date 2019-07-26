@@ -13,7 +13,7 @@
 				return;
 			}
 			{else}
-			alert('{trans("Some documents have been published already!")}');
+			alertDialog($t("Some documents have been published already!"), $('#deletemarked'));
 			return;
 			{/if}
 		}
@@ -229,7 +229,7 @@
     <TFOOT>
 	<TR>
 		<TD COLSPAN="8" class="nobr">
-			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
+			<A id="deletemarked" HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="original">{trans("original")}</label>

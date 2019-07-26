@@ -3829,6 +3829,7 @@ $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';
 $_LANG['LMS: operation failed!'] = 'LMS: operacja nie powiodła się!';
 $_LANG['Operation failed!'] = 'Operacja nie powiodła się!';
 $_LANG['AJAX: Invalid result - status:'] = 'AJAX: niepoprawny wynik - status:';
+$_LANG['AJAX: Invalid result - status: $a'] = 'AJAX: niepoprawny wynik - status: $a';
 
 $_LANG['Columns'] = 'Kolumny';
 $_LANG['Column visibility'] = 'Widoczność kolumn';
