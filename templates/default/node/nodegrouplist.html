@@ -55,7 +55,6 @@
 		</TD>
 		<TD style="width: 1%;" class="text-right nobr">
 			{if $nodegroup.nodescount}
-{*				<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">*}
 				<A class="delete-nodegroup-alert" href="#">
 			{else}
 				<A class="delete-nodegroup"href="?m=nodegroupdel&id={$nodegroup.id}">
@@ -93,12 +92,12 @@
 						success: function(data, textStatus, qXHR) {
 							if (data.result === undefined || data.result != 'OK') {
 								$('#nodegrouplist').sortable('cancel');
-								alert('{trans("LMS: operation failed!")}');
+								alertDialog($t("LMS: operation failed!"));
 							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							$('#nodegrouplist').sortable('cancel');
-							alert('{trans("AJAX: Invalid result - status:")}' + textStatus + '!');
+							alertDialog($t("AJAX: Invalid result - status: $a", textStatus));
 						}
 					});
 				}

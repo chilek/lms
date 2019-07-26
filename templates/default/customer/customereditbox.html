@@ -455,7 +455,7 @@
 		$('[name^="customerdata[emails]"][value="16"]').off('click').click(function() {
 			var checked = $(this).prop('checked');
 			if (!$('#chkinvoicenotice').prop('checked') && checked) {
-				alert('{trans("Customer has not checked \'electronic invoice\' consent and you are trying to mark this mail contact for invoice sending!")}');
+				alertDialog($t("Customer has not checked \'electronic invoice\' consent and you are trying to mark this mail contact for invoice sending!"), this);
 			}
 		});
 	}

@@ -17,6 +17,11 @@
 
 	$(function() {
 		$('form[name="setheader"] [name="cnote[number]"]').focus();
+
+		$('.note-alert').click(function() {
+			alertDialog($t("There are errors in credit note main information!"), this);
+			return;
+		});
 	});
 
 	$(document).on('change', '[name="cnote[numberplanid]"]', function() {
@@ -320,8 +325,8 @@
 			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 			{if $error}
-				<A HREF="javascript:alert('{trans("There are errors in credit note main information!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-				<A HREF="javascript:alert('{trans("There are errors in credit note main information!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+				<A class="note-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+				<A class="note-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 			{else}
 				<A HREF="javascript:document.save.submit()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 				<A HREF="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>

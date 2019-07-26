@@ -43,7 +43,7 @@
                 </td>
                 <td class="text-right nobr">
                     {if $tarifftaglist[tarifftags].tariffscount}
-                        <a href="javascript:alert('{trans("Tag with assigned tariffs cannont be deleted!")}');">
+                            <A class="delete-tarifftag-alert" href="#">
                         {else}
                             <a class="delete-tarifftag" href="?m=tarifftagdel&id={$tarifftaglist[tarifftags].id}">
                             {/if}
@@ -64,11 +64,14 @@
     <script>
         $('.delete-tarifftag').click(function() {
             var name = $(this).closest('tr').attr('data-name');
-            console.log('name=', name);
             confirmDialog($t("Are you sure, you want to remove tag '$a'?", name), this).done(function() {
                 location.href = $(this).attr('href');
             });
             return false;
+        });
+        $('.delete-tarifftag-alert').click(function() {
+            alertDialog($t("Tag with assigned tariffs cannont be deleted!"), this);
+            return;
         });
     </script>
 {/block}

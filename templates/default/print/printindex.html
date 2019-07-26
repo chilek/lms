@@ -742,7 +742,7 @@
 
 	function export_to_jpk(type) {
 		if ($('form[name="printinvoices"] select[name="division"]').val() == '0') {
-			alert('{trans("Division not selected!")}');
+			alertDialog($t("Division not selected!"), $(".export_to_jpk"));
 			return;
 		}
 
@@ -908,8 +908,8 @@
 					<OPTION value="csv">{trans("CSV")}</OPTION>
 				</SELECT>
 			</label>
-			<a href="javascript:export_to_jpk('fa');">{trans("Export to JPK-FA format")} <img src="img/docum.gif" alt=""></a>
-			<a href="javascript:export_to_jpk('vat');">{trans("Export to JPK-VAT format")} <img src="img/docum.gif" alt=""></a>
+			<a class="export_to_jpk" href="javascript:export_to_jpk('fa');">{trans("Export to JPK-FA format")} <img src="img/docum.gif" alt=""></a>
+			<a class="export_to_jpk" href="javascript:export_to_jpk('vat');">{trans("Export to JPK-VAT format")} <img src="img/docum.gif" alt=""></a>
 			<a href="javascript:print_forms();">{trans("Print form of cash transfer")} <img src="img/print.gif" alt=""></a>
 			<A href="javascript:print();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>

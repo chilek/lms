@@ -32,6 +32,8 @@ version 25-git (????-??-??):
   - improvement: show customers with all inactive assignments for given tariff as blend [chilan]
   - devel: change confirmation message appearance throughout change type from ConfirmLink
     to ConfirmDialog [ravvar]
+  - devel: change warning message appearance throughout change type from alert
+    to alertDialog [ravvar]
 
 version 24.0 (2019-05-16):
 

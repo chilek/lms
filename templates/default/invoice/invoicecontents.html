@@ -262,11 +262,11 @@
                             <A HREF="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}">{trans("Cancel")} <IMG src="img/cancel.gif"></A>
                             <A href="?m={$layout.module}&action=init{if $layout.module == 'invoiceedit'}&id={$invoice.id}{/if}">{trans("Clear Contents")} <IMG src="img/delete.gif" alt=""></A>
                             {if !$customer}
-                            <A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                            <A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                <A class="customer-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+                                <A class="customer-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
                             {elseif !$contents}
-                            <A HREF="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-                            <A HREF="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+                                <A class="invoice-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+                                <A class="invoice-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
                             {else}
                             <A HREF="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
                             <A HREF="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
@@ -405,5 +405,14 @@
             }
 		});
 	});
+
+    $('.customer-alert').click(function() {
+        alertDialog($t("Customer not selected!"), this);
+        return;
+    });
+    $('.invoice-alert').click(function() {
+        alertDialog($t("Invoice have no items!"), this);
+        return;
+    });
 
 </script>

@@ -274,7 +274,6 @@ $_LANG['Are you sure that you want to logout?'] = 'Czy na pewno chcesz się wylo
 $_LANG['Are you sure that you want to remove'] = 'Czy na pewno chcesz usunąć';
 $_LANG['Are you sure, you want to account ALL debts of customer \'$a\'?'] = 'Jesteś pewien, że chcesz rozliczyć WSZYSTKIE należności użytkownika \'$a\'?';
 $_LANG['Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!'] = 'Jesteś pewien, że chcesz przypisać nowe adresy do wszystkich komputerów? Pamiętaj, to może stwarzać problemy w twojej sieci!';
-//$_LANG['Are you sure, you want to change network $a to network \'+getText(\'mapto\')+\'?'] = 'Jesteś pewien, że chcesz przeadresować sieć $a do sieci \'+getText(\'mapto\')+\'?';
 $_LANG['Are you sure, you want to change network \'$a\' to network \'$b\'?'] = 'Jesteś pewien, że chcesz przeadresować sieć \'$a\' do sieci \'$b\'?';
 $_LANG['Are you sure, you want to check/uncheck selected invoices as accounted?'] = 'Jesteś pewien, że chcesz zaznaczyć/odznaczyć wybrane faktury jako rozliczone?';
 $_LANG['Are you sure, you want to delete account \'$a\' and all assigned to them aliases?'] = 'Jesteś pewien, że chcesz usunąć konto \'$a\' oraz wszystkie aliasy z nim skojarzone?';
@@ -3829,6 +3828,7 @@ $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';
 $_LANG['LMS: operation failed!'] = 'LMS: operacja nie powiodła się!';
 $_LANG['Operation failed!'] = 'Operacja nie powiodła się!';
 $_LANG['AJAX: Invalid result - status:'] = 'AJAX: niepoprawny wynik - status:';
+$_LANG['AJAX: Invalid result - status: $a'] = 'AJAX: niepoprawny wynik - status: $a';
 
 $_LANG['Columns'] = 'Kolumny';
 $_LANG['Column visibility'] = 'Widoczność kolumn';

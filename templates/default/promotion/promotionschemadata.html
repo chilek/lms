@@ -238,12 +238,12 @@
 					success: function (data, textStatus, qXHR) {
 						if (data.result === undefined || data.result != 'OK') {
 							$('#userpanel-modules').sortable('cancel');
-							alert('{trans("LMS: operation failed!")}');
+							alertDialog($t("LMS: operation failed!"));
 						}
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						$('#schematariffs').sortable('cancel');
-						alert('{trans("AJAX: Invalid result - status:")}' + textStatus + '!');
+						alertDialog($t("AJAX: Invalid result - status: $a", textStatus));
 					}
 				});
 			}
@@ -257,7 +257,7 @@
 			var row = $(this).closest('tr');
 
 			if ($('.tariff-edit:visible').length) {
-				alert($t('Unable to edit two rows at once!'));
+				alertDialog($t("Unable to edit two rows at once!"), this);
 				return false;
 			}
 
@@ -302,7 +302,7 @@
 		$('#promotionschemadata').show();
 	}
 
-	$('.tariff-view, .button-del').click(function() {
+	$('.button-del').click(function() {
 		confirmDialog($t("Are you sure, you want to delete this assignment?"), this).done(function() {
 			location.href = $(this).attr('href');
 		});

@@ -73,7 +73,7 @@
         </table>
         <script type="text/javascript">
             <!--
-    
+
             function change_producer(elem)
             {
                 var model = document.getElementById('model');
@@ -115,11 +115,11 @@
 
                 if (producer.value !== '0') {
                     if (producer.value === '') {
-                        alert('{trans("Producer is required!")}');
+                        window.parent.alertDialog($t("Producer is required!"));
                         return;
                     }
                     if (model.value === '') {
-                        alert('{trans("Model is required")}');
+                        window.parent.alertDialog($t("Model is required"));
                         return;
                     }
                     netdevmodelform.elements[varname + '[producer]'].value = producer.options[producer.selectedIndex].text;
