@@ -2837,10 +2837,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, type, taxid,
 			customerid, comment, docid, itemid, importid, sourceid)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-        if ($res && $this->syslog) {
-            unset($args[SYSLOG::RES_USER]);
-            $args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
-            $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
+
+        if ($res) {
+            $cashid = $this->db->GetLastInsertID('cash');
+            if ($this->syslog) {
+                unset($args[SYSLOG::RES_USER]);
+                $args[SYSLOG::RES_CASH] = $cashid;
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
+            }
+            $res = $cashid;
         }
         return $res;
     }
