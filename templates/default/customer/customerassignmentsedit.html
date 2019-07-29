@@ -122,6 +122,7 @@
 		$('#submit-button').click(function(e) {
 			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
 			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
+			console.log('tariffid =', tariffid);
 
 			if (isNaN(tariffid)) {
 				document.assignment.submit();
@@ -137,12 +138,16 @@
                     	return;
 					break;
 				default:
-					if (tariffTypes[tariffid] == {$smarty.const.SERVICE_INTERNET}
-				        && !$('#nodelist :checked:not([name="allbox"])').length
-				        && !confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
-					    e.stopImmediatePropagation();
-					    return;
-				    }
+					if (tariffTypes[tariffid] == {$smarty.const.SERVICE_INTERNET} && !$('#nodelist :checked:not([name="allbox"])').length) {
+						confirmDialog($t("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?"), this)
+								.done(function() {
+									document.assignment.submit();
+								})
+								.fail(function() {
+									e.stopImmediatePropagation();
+								});
+						return;
+					}
 					break;
 			}
 			{/if}

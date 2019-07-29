@@ -8,17 +8,15 @@
 	{/if}
 {/if}
 <script type="text/javascript" src="js/location_box_expandable.js"></script>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function randomize() {
-		if (document.customeredit.elements['customerdata[pin]'].value != '')
-			if (!confirm('{trans("Are you sure, you want to generate new PIN?")}'))
-				return;
-
-		document.customeredit.elements['customerdata[pin]'].value =
-			generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{$pin_allowed_characters}');
+		if (document.customeredit.elements['customerdata[pin]'].value != '') {
+			confirmDialog($t("Are you sure, you want to generate new PIN?"), $('#randomize')).done(function () {
+				document.customeredit.elements['customerdata[pin]'].value =
+						generate_random_string({$pin_min_size} +Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{$pin_allowed_characters}');
+			});
+		}
 	}
-//-->
 </SCRIPT>
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
 <INPUT type="hidden" name="customerdata[id]" value="{$customerinfo.id}">
@@ -215,7 +213,7 @@
 		</TD>
 		<TD style="width: 98%;">
 			<INPUT type="text" required name="customerdata[pin]" size="{$pin_max_size}" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip text=$pin_tip trigger="pin"}>&nbsp;
-			<A href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
+			<A id="randomize" href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>

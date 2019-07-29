@@ -34,6 +34,8 @@ version 25-git (????-??-??):
     to ConfirmDialog [ravvar]
   - devel: change warning message appearance throughout change type from alert
     to alertDialog [ravvar]
+  - devel: change confirmation message appearance throughout change type from 'confirm'
+    to 'ConfirmDialog' [ravvar]
 
 version 24.0 (2019-05-16):
 

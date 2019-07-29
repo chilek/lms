@@ -3,27 +3,29 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-	<!--
+<SCRIPT>
 	function DeleteMarked()
 	{
 		if ($('tr[data-published="1"] :checked').length) {
 			{if ConfigHelper::checkPrivilege('published_document_modification')}
-			if (!confirm('{trans("Some documents have been published already! Are you sure you want to delete them despite this?")}')) {
-				return;
-			}
+				confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"), $('#deletemarked')).done(function() {
+					document.page.action="?m=balancedel";
+					document.page.target="";
+					document.page.submit();
+				});
+				return false;
 			{else}
-			alertDialog($t("Some documents have been published already!"), $('#deletemarked'));
-			return;
+				alertDialog($t("Some documents have been published already!"), $('#deletemarked'));
+				return;
 			{/if}
 		}
 
-		if(!confirm('{trans("Are you sure, you want to delete selected operation(s) and/or document item(s)?")}'))
-			return;
-
-		document.page.action="?m=balancedel";
-		document.page.target="";
-		document.page.submit();
+		confirmDialog($t("Are you sure, you want to delete selected operation(s) and/or document item(s)?"), $('#deletemarked')).done(function() {
+			document.page.action="?m=balancedel";
+			document.page.target="";
+			document.page.submit();
+		});
+		return false;
 	}
 
 	function printr()
@@ -77,7 +79,6 @@
 		document.page.submit();
 	}
 	{/if}
-	//-->
 </SCRIPT>
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
