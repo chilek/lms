@@ -31,10 +31,10 @@ if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
     && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($to))
     && $_GET['is_sure'] == 1) {
     $DB->BeginTrans();
-    
+
     if ($SYSLOG) {
         $nids = $DB->GetCol(
-            'SELECT noderid FROM nodegroupassignments a
+            'SELECT nodeid FROM nodegroupassignments a
 				WHERE a.nodegroupid = ?
 				AND NOT EXISTS (SELECT 1 FROM nodegroupassignments nga
 					WHERE nga.nodegroupid = a.nodegroupid AND nga.nodegroupid = ?)',
@@ -47,7 +47,7 @@ if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 			SELECT ?, nodeid 
 			FROM nodegroupassignments a
 			JOIN nodes n ON (a.nodeid = n.id)
-			JOIN customerview c (n.ownerid = c.id)
+			JOIN customerview c ON (n.ownerid = c.id)
 			WHERE a.nodegroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM nodegroupassignments na
 				WHERE na.nodeid = a.nodeid AND na.nodegroupid = ?)',
@@ -78,11 +78,11 @@ if ($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
             }
         }
     }
-    
+
     $DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($from));
 
         $DB->CommitTrans();
-    
+
     $SESSION->redirect('?m=nodegroupinfo&id='.$to);
 } else {
     header('Location: ?'.$SESSION->get('backto'));
