@@ -8,8 +8,7 @@
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function checkaddr(email)
 	{
 		{literal}
@@ -138,22 +137,20 @@
 			if (data.recipients <= 50) {
 				document.message.submit();
 			} else {
-				var message = '{t}Are you sure you want to send messages to $a customer(s)?{/t}'.replace('$a', data.recipients);
-				if (confirm(message)) {
+				confirmDialog($t("Are you sure you want to send messages to $a customer(s)?", data.recipients), $('#submit-try')).done(function() {
 					document.message.submit();
-				}
+				});
 			}
 		});
 		return false;
 	}
--->
 </SCRIPT>
 <TABLE class="lmsbox">
     <THEAD>
 {if $message.customerid}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/customer.gif" alt=""> 
+			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Recipient:")}
@@ -166,7 +163,7 @@
 {else}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/group.gif" alt=""> 
+			<IMG src="img/group.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Recipients:")}
@@ -284,7 +281,7 @@
     <TBODY>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/mailsms.gif" alt=""> 
+			<IMG src="img/mailsms.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Type:")}
@@ -307,7 +304,7 @@
 	{if $message.emails}
 	<TR id="customermails"{if $message.type != $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD>
-			<IMG src="img/email.gif" alt=""> 
+			<IMG src="img/email.gif" alt="">
 		</TD>
 		<TD class="bold nobr">
 			{trans("E-mail:")}
@@ -324,7 +321,7 @@
 	{if $message.phones}
 	<TR id="customerphones"{if $message.type != $smarty.const.MSG_SMS} style="display: none;"{/if}>
 		<TD>
-			<IMG src="img/phone.gif" alt=""> 
+			<IMG src="img/phone.gif" alt="">
 		</TD>
 		<TD class="bold nobr">
 			{trans("Phone:")}
@@ -340,7 +337,7 @@
 	{/if}
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/email.gif" alt=""> 
+			<IMG src="img/email.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Sender E-mail:")}
@@ -354,7 +351,7 @@
 	</TR>
 	<TR ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/users.gif" alt=""> 
+			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold">
 			{trans("Sender:")}
@@ -367,7 +364,7 @@
 	{if $users}
 	<TR ID="users"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/users.gif" alt=""> 
+			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold">
 			{trans("Users:")}
@@ -383,7 +380,7 @@
 	{/if}
 	<TR ID="phonenumber"{if $message.type != $smarty.const.MSG_ANYSMS} style="display: none;"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/sms.gif" alt=""> 
+			<IMG src="img/sms.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold">
 			{trans("Phone number:")}
@@ -395,7 +392,7 @@
 {/if}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG src="img/mail.gif" alt=""> 
+			<IMG src="img/mail.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold">
 			{trans("Subject:")}
@@ -433,7 +430,7 @@
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
 		<TD style="width: 1%;">
-			<IMG src="img/edit.gif" alt=""> 
+			<IMG src="img/edit.gif" alt="">
 		</TD>
 		<TD style="width: 1%;" class="bold nobr">
 			{trans("Message body:")}
@@ -476,14 +473,13 @@
 	</TR>
 	<TR>
 		<TD class="text-right" colspan="3">
-			 <A href="#" onClick="submit_try();" accesskey="s">{trans("Send")} <IMG src="img/save.gif" alt=""></A>
+			 <A id="submit-try" href="#" onClick="submit_try();" accesskey="s">{trans("Send")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 $(function() {
 	$('form[name="message"] [name="message[sender]"]').focus();
 });
@@ -494,6 +490,5 @@ document.getElementById('smstext').onmouseout = function() {
 	pophide();
 }
 
-//-->
 </SCRIPT>
 {/block}

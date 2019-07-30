@@ -370,21 +370,20 @@
 			<span class="lms-ui-error">{$customerinfo.balance|money_format}</span>
 			{if $instantpayment}
 			<FORM name="instantpayment" method="POST" action="?m=balanceadd&id={$customerinfo.id}&receipt=1">
-				<script type="text/javascript">
-					<!--
+				<script>
 					function AddInstantPayment() {
-						if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to make instant payment for customer \'$a\'?{/t}')) {
+						var name = $('#add-instantpayment').attr('data-name');
+						confirmDialog($t("Are you sure, you want to make instant payment for customer '$a'?", name), $('#add-instantpayment')).done(function () {
 							document.instantpayment.submit();
-						}
+						});
 					}
-					//-->
 				</script>
 				<input type="hidden" name="instantpayment[customerid]" value="{$customerinfo.id}">
 				<input type="hidden" name="instantpayment[value]" value="{$customerinfo.balance*-1}">
 				<input type="hidden" name="instantpayment[type]" value="1">
 				<input type="hidden" name="instantpayment[sourceid]" value="0">
 				<input type="hidden" name="instantpayment[comment]" value="{trans("instant payment")}">
-				<a href="javascript:AddInstantPayment()"><img src="img/printr.gif"> {trans("instant payment")}</a>
+				<a id="add-instantpayment" data-name="{$customerinfo.customername|escape:"javascript"|escape:"html"}" href="javascript:AddInstantPayment()"><img src="img/printr.gif"> {trans("instant payment")}</a>
 				<label>
 					<input type="checkbox" name="instantpayment[print]" value="1" {if ConfigHelper::checkConfig('receipts.instant_payment_print')} checked{/if}>
 					{trans("print")}

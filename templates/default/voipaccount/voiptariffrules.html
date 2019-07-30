@@ -56,7 +56,7 @@
                                     {/if}
                                 </select>
                                 &nbsp;&nbsp;<a href="javascript:loadTariff();">{trans("load<!voip>")}</a>
-                                &nbsp;&nbsp;<a href="javascript:deleteTariff();">{trans("delete")}</a>
+                                &nbsp;&nbsp;<a id="delete-tariffrule" href="javascript:deleteTariff();">{trans("delete")}</a>
                             </td>
                         </tr>
                         <tr class="space_row">
@@ -250,10 +250,10 @@
         if (id == 0)
             return 0;
 
-        if (!confirm("{trans("Are you sure that you want remove tariff rule")} '" + rule_list[id].text + "' ?"))
-            return 0;
-
-        window.location.href = "?m=voiptariffrules&id=" + rule_list[id].value + "&action=delete";
+        confirmDialog($t("Are you sure that you want remove tariff rule '$a'?", rule_list[id].text), $('#delete-tariffrule')).done(function() {
+            window.location.href = "?m=voiptariffrules&id=" + rule_list[id].value + "&action=delete";
+        });
+        return 0;
     }
 
     // groups table is empty check

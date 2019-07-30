@@ -124,22 +124,21 @@
 {include file='message/messagetemplatedialog.html' operation="edit"}
 
 <script>
-
 	$(function() {
 		$('#delete-message-templates').click(function() {
-			if (!$(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length
-				|| !confirm('{trans("Are you sure, you want to delete all selected message templates?")}'))
+			if ($(this).closest('tfoot').siblings('tbody.lms-ui-multi-check').find('input:checked').length) {
+				confirmDialog($t("Are you sure, you want to delete all selected message templates?"), this).done(function() {
+					$('form#messagetemplates').attr('action', '?m=messagetemplatedel').submit();
+				});
 				return false;
-			$('form#messagetemplates').attr('action', '?m=messagetemplatedel').submit();
+			}
+		});
+		$('.delete-messagetemplate').click(function() {
+			confirmDialog($t("Are you sure, you want to delete that message template?"), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+			return false;
 		});
 	});
-
-	$('.delete-messagetemplate').click(function() {
-		confirmDialog($t("Are you sure, you want to delete that message template?"), this).done(function() {
-			location.href = $(this).attr('href');
-		});
-		return false;
-	});
-
 </script>
 {/block}

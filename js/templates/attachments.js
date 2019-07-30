@@ -80,4 +80,12 @@ $(function() {
 			});
 		}
 	});
+
+	$('.container-del').click(function() {
+		confirmDialog($t("Are you sure you want to delete this file container?"), this).done(function() {
+			location.href = $(this).attr('href');
+		});
+		return false;
+	});
+
 });

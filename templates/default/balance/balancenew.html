@@ -2,8 +2,7 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
 	function CountSelectedCustomers()
 	{
 		var j = 0;
@@ -16,12 +15,11 @@
 
 	function del(id)
 	{
-		if(confirm('{trans("Are you sure, you want to delete last operation?")}'))
-		{
+		confirmDialog($t("Are you sure, you want to delete last operation?"), $('#delete-lastoperation')).done(function() {
 			location.href = '?m=balancedel&id=' + id;
-		}
+		});
+		return false;
 	}
-//-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
@@ -121,7 +119,7 @@
 					</TD>
 					<TD width="98%" NOWRAP>
 						<SELECT name="addbalance[sourceid]" {tip text="Select import source (optional)" trigger="source"}>
-						<OPTION value="0">{trans("- none -")}</OPTION> 
+						<OPTION value="0">{trans("- none -")}</OPTION>
 						{foreach from=$sourcelist item=item}
 						<OPTION value="{$item.id}"{if $item.id == $sourceid} SELECTED{/if}>{$item.name}</OPTION>
 						{/foreach}
@@ -239,7 +237,7 @@
 				{/if}
 				<TR>
 					<TD ALIGN="right" COLSPAN="3">
-						<A HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+						<A id="delete-lastoperation" HREF="javascript:del({$last.id});" ACCESSKEY="d" >{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 					</TD>
 				</TR>
 			{/if}

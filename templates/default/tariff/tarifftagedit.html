@@ -29,7 +29,7 @@
                         <input type="hidden" name="is_sure" value="1">
                         <input type="hidden" name="m" value="tarifftagmove">
                         <input type="hidden" name="from" value="{$tarifftag.id}">
-                        <a href="javascript:document.tmove.submit();" onclick="return confirm('{trans("Are you sure, you want to move tariffs to selected tag?")}')">{trans("Move tariffs to tag")}:</a>
+                        <a id="change-tag" href="#">{trans("Move tariffs to tag")}:</a>
                         <select size="1" name="to" {tip text="Select tag to which you want to move tariffs"}>
                             {foreach from=$tarifftags item=item}
                                 {if $item.id != $tarifftag.id}
@@ -46,12 +46,17 @@
         </tr>
     </tbody>
 </table>
-<script type="text/javascript">
-<!--
+<script>
 	$(function() {
 		$('form[name="tedit"] [name="tarifftag[name]"]').focus();
-	});
-//-->
+    });
+
+    $('#change-tag').click(function() {
+        confirmDialog($t("Are you sure, you want to move tariffs to selected tag?"), this).done(function() {
+            document.tmove.submit();
+        });
+        return false;
+    });
 </script>
 {include file="tariff/tarifftagassignments.html"}
 {/block}
