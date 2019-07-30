@@ -180,6 +180,13 @@ if (isset($netdev)) {
     $SMARTY->assign('netdev', $netdev);
 } elseif (isset($_GET['id'])) {
     $netdev = $LMS->GetNetDev($_GET['id']);
+
+    if (preg_match('/^[0-9]+$/', $netdev['producerid'])
+        && preg_match('/^[0-9]+$/', $netdev['modelid'])) {
+        $netdev['producer'] = $netdev['producerid'];
+        $netdev['model'] = $netdev['modelid'];
+    }
+
     $netdev['name'] = trans('$a (clone)', $netdev['name']);
     $netdev['teryt'] = !empty($netdev['location_city']) && !empty($netdev['location_street']);
     $SMARTY->assign('netdev', $netdev);
