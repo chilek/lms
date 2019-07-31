@@ -58,7 +58,8 @@ function LmsUiIconSelectMenu( id, options ) {
 LmsUiIconSelectMenu.prototype.init = function() {
     $( this.select_id )
         .iconselectmenu($.extend(this.options, { classes: { 'ui-selectmenu-button': 'lms-ui-button-selectmenu' }}))
-        .iconselectmenu( 'menuWidget' );
+        .iconselectmenu( 'menuWidget' )
+        .css("max-height","50vh");
 
     // rewrite jQuery UI styles
     $( this.select_id+"-button" ).addClass('lms-ui-address-select ' + $(this.select_id).attr('class'));
