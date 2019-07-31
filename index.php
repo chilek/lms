@@ -281,6 +281,12 @@ if ($AUTH->islogged) {
         'user_id' => Auth::GetCurrentUser(),
     ));
 
+    LMSConfig::getConfig(array(
+        'force' => true,
+        'force_user_settings_only' => true,
+        'user_id' => Auth::GetCurrentUser(),
+    ));
+
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     $deny = $allow = false;
 

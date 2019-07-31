@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,8 +26,6 @@
 
 /**
  * ConfigLoader
- *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class ConfigLoader
 {
@@ -50,7 +48,7 @@ class ConfigLoader
         $raw_config = $this->loadRawConfig($options);
         return $this->parseRawConfig($raw_config, $options);
     }
-    
+
     /**
      * Loads raw config
      *
@@ -69,15 +67,15 @@ class ConfigLoader
         if (!isset($options['provider'])) {
             throw new Exception('Config provider not set!');
         }
-        
+
         $provider = null;
-        
+
         switch ($options['provider']) {
             case IniConfigProvider::NAME:
                 $provider = new IniConfigProvider();
                 break;
             case UiConfigProvider::NAME:
-                $provider = new UiConfigProvider();
+                $provider = new UiConfigProvider($options['user_id']);
                 break;
             case UserRightsConfigProvider::NAME:
                 $provider = new UserRightsConfigProvider();
@@ -85,10 +83,10 @@ class ConfigLoader
             default:
                 throw new Exception('Unknown config provider!');
         }
-        
+
         return $provider->load($options);
     }
-    
+
     /**
      * Parses raw config
      *
@@ -107,9 +105,9 @@ class ConfigLoader
         if (!isset($options['parser'])) {
             throw new Exception('Config parser not set!');
         }
-        
+
         $parser = null;
-        
+
         switch ($options['parser']) {
             case IniConfigParser::NAME:
                 $parser = new IniConfigParser();
@@ -123,7 +121,7 @@ class ConfigLoader
             default:
                 throw new Exception('Unknown config parser!');
         }
-        
+
         return $parser->objectify($raw_config, $options);
     }
 }

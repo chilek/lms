@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -69,6 +69,11 @@ $config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
 $option = $config['section'] . '.' . $config['var'];
 $config['type'] = ($config['type'] == CONFIG_TYPE_AUTO) ? $LMS->GetConfigDefaultType($option) : $config['type'];
 
+$configusers = $DB->GetAll('SELECT c.*, u.login, u.firstname, u.lastname
+    FROM uiconfig c
+    LEFT JOIN users u on c.userid = u.id
+    WHERE c.configid = ?', array($config['id']));
+
 if (isset($_POST['config'])) {
     $cfg = $_POST['config'];
     $cfg['id'] = $id;
@@ -128,6 +133,8 @@ if (isset($_POST['config'])) {
             'type' => $cfg['type'],
             SYSLOG::RES_UICONF => $cfg['id']
         );
+
+        $DB->BeginTrans();
         $DB->Execute(
             'UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ?, type = ? WHERE id = ?',
             array_values($args)
@@ -137,6 +144,26 @@ if (isset($_POST['config'])) {
             $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
         }
 
+        if ($cfg['section'] != $config['section'] || $cfg['var'] != $config['var'] || $cfg['type'] != $config['type']) {
+            $userargs = array(
+                'newsection' => $cfg['section'],
+                'newvar' => $cfg['var'],
+                'type' => $cfg['type'],
+                'oldsection' => $config['section'],
+                'oldvar' => $config['var'],
+                SYSLOG::RES_UICONF => $cfg['id']
+            );
+
+            $DB->Execute(
+                'UPDATE uiconfig SET section = ?, var = ? , type = ? WHERE section = ? AND var = ?',
+                array_values($userargs)
+            );
+
+            if ($SYSLOG) {
+                $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $userargs);
+            }
+        }
+        $DB->CommitTrans();
         $SESSION->redirect('?m=configlist');
     }
     $config = $cfg;
@@ -149,4 +176,5 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
+$SMARTY->assign('configusers', $configusers);
 $SMARTY->display('config/configedit.html');

@@ -1,4 +1,4 @@
-{extends file="layout.html"}
+extends{extends file="layout.html"}
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <style>
@@ -14,7 +14,8 @@
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
-		<COL style="width: 97%;">
+		<COL style="width: 95%;">
+		<COL style="width: 1%;">
 		<COL style="width: 1%;">
     </COLGROUP>
     <THEAD>
@@ -30,6 +31,9 @@
 		</TH>
 		<TH scope="col" class="text-center">
 			{trans("Comment:")}
+		</TH>
+		<TH scope="col" class="nobr" data-searchable="true" data-select-value="true">
+			{trans("User:")}
 		</TH>
 		<TH scope="col" class="text-right nobr" data-searchable="false" data-sortable="false">
 			<A class="configadd">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
@@ -52,15 +56,18 @@
 			{$config.description|truncate:5000:"..."}
 			{if $config.usercomment != ''}<p><SPAN class="bold">{trans("Comment:")}</SPAN> {$config.usercomment|truncate:2000:"..."}</p>{/if}
 		</TD>
+		<TD>
+			{if $config.userid}{$config.login} / {$config.firstname} {$config.lastname}{else}-- {t}Global{/t} --{/if}
+		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=configedit&id={$config.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
-			<A class="delete-config" href="?m=configdel&id={$config.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
-			<A href="?m=configedit&id={$config.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A class="delete-config" data-user="{$config.userid}" href="?m=configdel&id={$config.id}{if !$config.userid}&globalconf=1{/if}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m={if $config.userid}configedituser{else}configedit{/if}&id={$config.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="5" class="empty-table">
+		<TD colspan="6" class="empty-table">
 			<p>
 				{trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
 			</p>
@@ -70,7 +77,7 @@
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD colspan="5" class="text-right bold">
+		<TD colspan="6" class="text-right bold">
 			<A class="configadd">{trans("Add option")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
@@ -88,10 +95,18 @@
 
 	$('.delete-config').click(function() {
 		var name = $(this).closest('tr').attr('data-name');
-		confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function() {
-			location.href = $(this).attr('href');
-		});
+		var userid = $(this).attr('data-user');
+		if (userid) {
+			confirmDialog($t("Are you sure, you want to delete option '$a' from database?", name), this).done(function () {
+				location.href = $(this).attr('href');
+			});
+		} else {
+			confirmDialog($t("Are you sure, you want to delete option '$a' from database?\n\nThis action will remove this option for all users.", name), this).done(function() {
+				location.href = $(this).attr('href');
+			});
+		}
 		return false;
 	});
+
 </script>
 {/block}
