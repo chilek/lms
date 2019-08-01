@@ -80,7 +80,7 @@ EOF;
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
-upgrade.php
+upgradedb.php
 (C) 2001-2019 LMS Developers
 
 EOF;
