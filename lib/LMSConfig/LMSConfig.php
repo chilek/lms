@@ -32,6 +32,7 @@
  */
 class LMSConfig
 {
+    // higher value means bigger priority
     const DEFAULT_INI_MERGE_PRIORITY = 1;
     const DEFAULT_UI_MERGE_PRIORITY = 2;
 
