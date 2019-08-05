@@ -32,8 +32,8 @@
  */
 class LMSConfig
 {
-    const DEFAULT_UI_MERGE_PRIORITY = 1;
-    const DEFAULT_INI_MERGE_PRIORITY = 2;
+    const DEFAULT_INI_MERGE_PRIORITY = 1;
+    const DEFAULT_UI_MERGE_PRIORITY = 2;
 
     /**
      * @var ConfigContainer Config
@@ -171,7 +171,7 @@ class LMSConfig
         $rights_config = null;
 
         if (isset($options['force_ini_only'])) {
-            $ini_config = self::getUiConfig($options);
+            $ini_config = self::getIniConfig($options);
             $ui_config = self::$ui_config;
             $rights_config = self::$user_rights_config;
         } elseif (isset($options['force_ui_only'])) {
@@ -187,8 +187,8 @@ class LMSConfig
             $ini_config = self::$ini_config;
             $ui_config = self::$ui_config;
         } else {
-            $ini_config = self::getUiConfig($options);
-            $ui_config = self::getIniConfig($options);
+            $ini_config = self::getIniConfig($options);
+            $ui_config = self::getUiConfig($options);
             try {
                 $rights_config = self::getUserRightsConfig($options);
             } catch (Exception $ex) {
@@ -203,7 +203,7 @@ class LMSConfig
 
         $ini_merge_priority = self::DEFAULT_INI_MERGE_PRIORITY;
         if (isset($options['ini_merge_priority'])) {
-            $ui_merge_priority = $options['ini_merge_priority'];
+            $ini_merge_priority = $options['ini_merge_priority'];
         }
 
         $config = null;
