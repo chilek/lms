@@ -675,7 +675,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             } elseif ($search['addresstype'] == LOCATION_ADDRESS) {
                                 $searchargs[] = "EXISTS (SELECT 1 FROM customer_addresses ca2
 									JOIN vaddresses va ON va.id = ca2.address_id
-									WHERE ca2.customer_id = c.id
+									WHERE ca2.customer_id = c.id AND ca2.type IN (" . DEFAULT_LOCATION_ADDRESS . ',' . LOCATION_ADDRESS . ")
 										AND UPPER(va.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
                             } else {
                                 $searchargs[] = "UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
