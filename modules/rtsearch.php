@@ -112,11 +112,11 @@ function RTSearch($search, $order = 'createtime,desc')
     }
     if (isset($search['queue'])) {
         if (is_array($search['queue'])) {
-            $where_queue = '(queueid IN (' . implode(',', $search['queue']) . ')';
+            $where_queue = '(t.queueid IN (' . implode(',', $search['queue']) . ')';
         } elseif (empty($search['queue'])) {
             return null;
         } else {
-            $where_queue = '(queueid = '.intval($search['queue']);
+            $where_queue = '(t.queueid = '.intval($search['queue']);
         }
         $user_permission_checks = ConfigHelper::checkConfig('phpui.helpdesk_additional_user_permission_checks');
         $userid = Auth::GetCurrentUser();
@@ -247,6 +247,7 @@ if (isset($_POST['search'])) {
 
 if (isset($_GET['id'])) {
     $search['custid'] = $_GET['id'];
+    $search['queue'] = null;
 }
 
 if (isset($_GET['state'])) {
@@ -264,7 +265,7 @@ if (isset($_GET['state'])) {
         'name' => '',
         'email' => '',
         'owner' => '0',
-        'queue' => '0',
+        'queue' => null,
         'uptime' => '',
         'catids' => null
     );
@@ -288,10 +289,6 @@ if (isset($search) || isset($_GET['s'])) {
             foreach ($search['queue'] as $queue) {
                 if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue)) {
                     $error['queue'] = trans('You have no privileges to review this queue!');
-                } else if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $search['queue'])) {
-                    $error['queue'] = trans('You have no privileges to review this queue!');
-                } else {
-                    $search['queue'] = null;
                 }
             }
         }
