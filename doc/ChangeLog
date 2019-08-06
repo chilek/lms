@@ -38,7 +38,7 @@ version 25-git (????-??-??):
     to 'ConfirmDialog' [ravvar]
   - enhancement: customer group node list network filters take network devices ip addresses
     into consideration [chilan]
-  - enhacement: add per user settings to ui configuration [ravvar]
+  - enhancement: add per user settings to ui configuration [ravvar]
 
 version 24.0 (2019-05-16):
 
