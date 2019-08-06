@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -185,8 +185,11 @@ function GetConfigList()
 
     $DB = LMSDB::getInstance();
 
-    $config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled 
-			FROM uiconfig WHERE section != \'userpanel\'');
+    $config = $DB->GetAll('SELECT c.id, c.section, c.var, c.value, c.description as usercomment, c.disabled, c.userid,
+        u.login, u.firstname, u.lastname
+        FROM uiconfig c
+        LEFT JOIN users u on c.userid = u.id           
+        WHERE section != \'userpanel\'');
 
     $md_dir = SYS_DIR . DIRECTORY_SEPARATOR . 'doc' . DIRECTORY_SEPARATOR . 'configuration-variables';
 

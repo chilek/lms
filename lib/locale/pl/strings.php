@@ -285,6 +285,7 @@ $_LANG['Are you sure, you want to delete domain: \'$a\' and all accounts/aliases
 $_LANG['Are you sure, you want to delete node $a?'] = 'Jesteś pewien, że chcesz usunąć komputer $a?';
 $_LANG['Are you sure, you want to delete node \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \'$a\' z bazy danych?';
 $_LANG['Are you sure, you want to delete option \'$a\' from database?'] = 'Jesteś pewien, że chcesz usunąć opcję \'$a\' z bazy danych?';
+$_LANG['Are you sure, you want to delete option \'$a\' from database?\n\nThis action will remove this option for all users.'] = 'Jesteś pewien, że chcesz usunąć opcję \'$a\' z bazy danych?\n\nTa akcja usunie tę opcję dla wszystkich użytkowników.';
 $_LANG['Are you sure, you want to delete selected operation(s) and document item(s)?'] = 'Czy na pewno usunąć wybrane operacje wraz z pozycjami dokumentów?';
 $_LANG['Are you sure, you want to delete that connection?'] = 'Jesteś pewien, że chcesz usunąć to połączenie?';
 $_LANG['Are you sure, you want to delete that device?'] = 'Jesteś pewien, że chcesz usunąć to urządzenie?';
@@ -4363,3 +4364,14 @@ $_LANG['Copy link'] = 'Kopiuj link';
 
 $_LANG['Are you sure that you want remove tariff rule \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć regułę taryfikacyjną \'$a\'?';
 $_LANG['Are you sure that you want remove tariff \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć cennik \'$a\'?';
+
+$_LANG['Set for user'] = 'Ustaw dla użytkownika';
+$_LANG['Users parameters'] = 'Parametry użytkowników';
+$_LANG['Setting config option \'$a\' for user'] = 'Ustawianie opcji konfiguracyjnej \'$a\' dla użytkownika';
+$_LANG['Edition config option \'$a\' for user \'$b\''] = 'Edycja opcji konfiguracyjnej \'$a\' dla użytkownika \'$b\'';
+$_LANG['Users parameters:'] = 'Parametry użytkowników';
+$_LANG['No data'] = 'Brak danych';
+$_LANG['Are you sure, you want to delete?'] = 'Jesteś pewien/pewna, że chcesz usunąć?';
+$_LANG['User login'] = 'Login';
+$_LANG['User login:'] = 'Login:';
+$_LANG['Global'] = 'Globalne';

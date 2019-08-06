@@ -2052,8 +2052,12 @@ CREATE TABLE uiconfig (
     description text 		NOT NULL DEFAULT '',
     disabled 	smallint 	NOT NULL DEFAULT 0,
     type 	smallint 	NOT NULL DEFAULT 0,
+    userid 	integer 	DEFAULT NULL
+        CONSTRAINT uiconfig_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    configid 	integer 	DEFAULT NULL
+        CONSTRAINT uiconfig_configid_fkey REFERENCES uiconfig (id) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (id),
-    CONSTRAINT uiconfig_section_key UNIQUE (section, var)
+    CONSTRAINT uiconfig_section_key UNIQUE (section, var, userid)
 );
 
 /* ---------------------------------------------------
@@ -3513,6 +3517,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019072500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019080100');
 
 COMMIT;

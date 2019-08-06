@@ -25,13 +25,31 @@
  */
 
 $id = intval($_GET['id']);
+$globalconf = isset($_GET['globalconf']) ? $_GET['globalconf'] : null;
 
 if ($id) {
-    $DB->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
-    if ($SYSLOG) {
-        $args = array(SYSLOG::RES_UICONF => $id);
-        $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+    if (empty($globalconf)) {
+        $DB->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
+        if ($SYSLOG) {
+            $args = array(SYSLOG::RES_UICONF => $id);
+            $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+        }
+    } else {
+        $DB->BeginTrans();
+
+        $DB->Execute('DELETE FROM uiconfig WHERE configid = ?', array($id));
+        if ($SYSLOG) {
+            $args = array(SYSLOG::RES_UICONF => $id);
+            $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+        }
+
+        $DB->Execute('DELETE FROM uiconfig WHERE id = ?', array($id));
+        if ($SYSLOG) {
+            $args = array(SYSLOG::RES_UICONF => $id);
+            $SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
+        }
+        $DB->CommitTrans();
     }
 }
 
-header('Location: ?m=configlist');
+$SESSION->redirect('?'.$SESSION->get('backto'));

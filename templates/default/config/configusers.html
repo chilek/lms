@@ -1,0 +1,62 @@
+<TABLE class="lmsbox lms-ui-background-cycle">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 98%;">
+        <COL style="width: 1%;">
+    </COLGROUP>
+    <THEAD>
+    <TR>
+        <TD COLSPAN=3">
+            <strong>{trans("Users parameters")}</strong>
+        </TD>
+    </TR>
+    <TR>
+        <TD class="nobr">
+            <strong>{trans("Login:")}</strong><BR>
+            {trans("First/last name:")}
+        </TD>
+        <TD class="nobr">
+            {trans("Value:")}<BR>
+            {trans("Comment:")}
+        </TD>
+        <TD class="nobr" align="right">
+            <A href="?m=configadduser&configid={$config.id}">{trans("Add")} <img src="img/add.gif" alt=""></A>
+        </TD>
+    </TR>
+    </THEAD>
+    <TBODY>
+    {foreach $configusers as $configuser}
+        <TR class="highlight {if $configuser.disabled} blend{/if}">
+            <TD class="nobr">
+                <strong>{$configuser.login}</strong><BR>
+                {$configuser.firstname} {$configuser.lastname}
+            </TD>
+            <TD class="nobr">
+                {$configuser.value}<BR>
+                {$configuser.description}
+            </TD>
+            <TD class="text-right nobr">
+                <A href="?m=configedit&id={$configuser.id}&statuschange=1"><IMG src="img/wait.gif" alt="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}" title="{if $config.disabled}{trans("Enable")}{else}{trans("Disable")}{/if}"></A>
+                <A class="delete-config" href="?m=configdel&id={$configuser.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+                <A href="?m=configedituser&id={$configuser.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+            </TD>
+        </TR>
+        {foreachelse}
+        <TR>
+            <TD COLSPAN="3" class="fall" align="center">
+                <p>&nbsp;</p>
+                <p><strong>{t}No data{/t}</strong></p>
+                <p>&nbsp;</p>
+            </TD>
+        </TR>
+    {/foreach}
+    </TBODY>
+</TABLE>
+<script>
+    $('.delete-config').click(function() {
+        confirmDialog($t("Are you sure, you want to delete?"), this).done(function() {
+            location.href = $(this).attr('href');
+        });
+        return false;
+    });
+</script>

@@ -1,0 +1,119 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+	<!--// $Id$ //-->
+	<H1>{$layout.pagetitle}</H1>
+	<style>
+		.lmsbox thead td:last-child {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+		}
+	</style>
+	<FORM method="POST" action="?m=configedituser&id={$config.id}" name="userconfig">
+		<INPUT type="submit" class="hiddenbtn">
+		<TABLE class="lmsbox">
+			<THEAD>
+			<TR>
+				<TD width="1%">
+					<img src="img/settings.gif" alt="">
+				</TD>
+				<TD width="1%" class="nobr">
+					<B>{trans("User login")} / {trans("Name:")}</B>
+				</TD>
+				<TD>
+					{$config.login} / {$config.firstname} {$config.lastname}
+				</TD>
+			</TR>
+			</THEAD>
+			<TBODY>
+			<TR>
+				<TD>
+					<img src="img/settings.gif" alt="">
+				</TD>
+				<TD>
+					<strong>{trans("Name:")}</strong>
+				</TD>
+				<TD>
+					{$config.var}
+				</TD>
+			</TR>
+			<TR>
+				<TD>
+					<img src="img/settings.gif" alt="">
+				</TD>
+				<TD>
+					<strong>{trans("Section:")}</strong>
+				</TD>
+				<TD>
+					{$config.section}
+				</TD>
+			</TR>
+			<TR>
+				<TD width="1%">
+					<img src="img/producer.gif" alt="">
+				</TD>
+				<TD width="1%">
+					<B>{trans("Value:")}</B>
+				</TD>
+				<TD width="98%">
+					<TEXTAREA rows="5" cols="50" name="userconfig[value]" {tip class="lms-ui-wysiwyg-editor" text="Enter option value" trigger="value"} data-wysiwyg="{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT || isset($config.wysiwyg.value)}true{else}false{/if}">{$config.value}</TEXTAREA>
+				</TD>
+			</TR>
+			<TR>
+				<TD width="1%">
+					<img src="img/info1.gif" alt="">
+				</TD>
+				<TD width="1%">
+					<B>{trans("Comment:")}</B>
+				</TD>
+				<TD width="98%">
+					<TEXTAREA rows="5" cols="50" name="userconfig[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
+				</TD>
+			</TR>
+			<TR>
+				<TD width="1%">
+					<img src="img/wait.gif" alt="">
+				</TD>
+				<TD width="1%">
+					<B>{trans("Status:")}</B>
+				</TD>
+				<TD width="98%">
+					<INPUT type="checkbox" value="1" name="userconfig[disabled]" id="config_disabled"{if $config.disabled} CHECKED{/if} {tip text="You can turn it off"}><label for="config_disabled">{trans("Off")}</label>
+				</TD>
+			</TR>
+			{if ConfigHelper::checkPrivilege('superuser')}
+				<TR>
+					<TD width="1%">
+						<img src="img/desc.gif" alt="">
+					</TD>
+					<TD width="1%">
+						<B>{trans("Type:")}</B>
+					</TD>
+					<TD width="98%">
+						{$config.typetext}
+					</TD>
+				</TR>
+			{/if}
+			<TR>
+				<TD align="right" colspan="3">
+					<A id="submit-button" href="javascript:document.userconfig.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+					<A href="?m=configlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
+				</TD>
+			</TR>
+			</TBODY>
+		</TABLE>
+	</FORM>
+	</P>
+	<SCRIPT>
+		$(function() {
+			$('form[name="userconfig"] [name="userconfig[user]"]').focus();
+
+			$('[name="userconfig[type]"]').change(function(e) {
+				$('[name="userconfig[value]"]').trigger('lms:visual_editor_change_required', {
+					ifShow: $(this).val() == '{$smarty.const.CONFIG_TYPE_RICHTEXT}'
+				});
+			});
+		});
+	</SCRIPT>
+{/block}

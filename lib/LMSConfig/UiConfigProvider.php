@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,13 +26,11 @@
 
 /**
  * UiConfigProvider
- *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class UiConfigProvider implements ConfigProviderInterface
 {
     const NAME = 'UI_CONFIG_PROVIDER';
-    
+
     /**
      * Return uiconfig database table
      *
@@ -42,6 +40,22 @@ class UiConfigProvider implements ConfigProviderInterface
     public function load(array $options = array())
     {
         $db = LMSDB::getInstance();
-        return $db->GetAll('SELECT section, var, value, description FROM uiconfig WHERE disabled = 0');
+        $userid = (isset($options['user_id'])) ? $options['user_id'] : false;
+        if (!$userid) {
+            return $db->GetAll('SELECT section, var, value, description FROM uiconfig WHERE disabled = 0 AND userid is null');
+        } else {
+            return $db->GetAll(
+                'SELECT u1.section, u1.var, u1.value, u1.description
+            FROM uiconfig u1
+            WHERE u1.disabled = 0
+            AND u1.id = (SELECT u2.id
+                FROM uiconfig u2
+                WHERE u2.section = u1.section
+                AND u2.var = u1.var
+                AND (u2.userid = ? OR u2.userid is null)
+                ORDER BY COALESCE(u2.userid, 0) DESC LIMIT 1)',
+                array($userid)
+            );
+        }
     }
 }
