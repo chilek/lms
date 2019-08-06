@@ -36,6 +36,8 @@ version 25-git (????-??-??):
     to alertDialog [ravvar]
   - devel: change confirmation message appearance throughout change type from 'confirm'
     to 'ConfirmDialog' [ravvar]
+  - enhancement: customer group node list network filters take network devices ip addresses
+    into consideration [chilan]
 
 version 24.0 (2019-05-16):
 
