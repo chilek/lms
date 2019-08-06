@@ -46,7 +46,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             array($id)
         );
     }
-    
+
     /**
      * Adds customer group
      *
@@ -70,7 +70,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             return false;
         }
     }
-    
+
     /**
      * Updates customer group
      *
@@ -143,7 +143,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         return $this->db->GetOne('SELECT id FROM customergroups WHERE name=?', array($name));
     }
-    
+
     /**
      * Returns customer group name by it's id
      *
@@ -154,7 +154,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         return $this->db->GetOne('SELECT name FROM customergroups WHERE id=?', array($id));
     }
-    
+
     /**
      * Returns all customer groups
      *
@@ -172,7 +172,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
                 ORDER BY g.name ASC'
         );
     }
-    
+
     /**
      * Returns customer group
      *
@@ -192,11 +192,15 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 
         $result['customers'] = $this->db->GetAll('SELECT c.id AS id,'
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername 
-			FROM customerassignments, customers c '
-                . ($network ? 'LEFT JOIN nodes ON c.id = nodes.ownerid ' : '')
+            FROM customerassignments, customers c '
+                . ($network ? 'LEFT JOIN nodes n ON c.id = n.ownerid
+                    LEFT JOIN netdevices nd ON nd.ownerid = c.id
+                    LEFT JOIN nodes n2 ON n2.ownerid IS NULL AND n2.netdev = nd.id ' : '')
                 . 'WHERE c.id = customerid AND customergroupid = ? '
-                . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR
-			(ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
+                . ($network ? 'AND ((n.ipaddr > ' . $net['address'] . ' AND n.ipaddr < ' . $net['broadcast'] . ') OR
+                    (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . ') OR
+                    (n2.ipaddr > ' . $net['address'] . ' AND n2.ipaddr < ' . $net['broadcast'] . ') OR
+                    (n2.ipaddr_pub > ' . $net['address'] . ' AND n2.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
                 . ' GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
 
         $result['customerscount'] = empty($result['customers']) ? 0 : count($result['customers']);
@@ -204,7 +208,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 
         return $result;
     }
-    
+
     /**
      * Returns customer groups
      *
@@ -235,7 +239,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 
         return $customergrouplist;
     }
-    
+
     /**
      * Returns customer groups assigned to customer
      *
@@ -252,7 +256,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             array($id)
         );
     }
-    
+
     /**
      * Returns customer groups without customer
      *
@@ -270,7 +274,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
             array($customerid)
         );
     }
-    
+
     /**
      * Returns customer groups assignments for customer
      *
@@ -326,7 +330,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
 				WHERE customerid=?', array($customerassignmentdata['customerid']));
         }
     }
-    
+
     /**
      * Adds customer assignment
      *
@@ -348,7 +352,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         }
         return $res;
     }
-    
+
     /**
      * Checks if customer assignment exists
      *
@@ -360,7 +364,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         return $this->db->GetOne('SELECT 1 FROM customerassignments WHERE customergroupid=? AND customerid=?', array($groupid, $customerid));
     }
-    
+
     /**
      * Returns customers without groups
      *
@@ -376,13 +380,17 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         }
 
         return $this->db->GetAll('SELECT c.id AS id, ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
-			FROM customerview c '
-                        . ($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
+            FROM customerview c '
+                        . ($network ? 'LEFT JOIN nodes n ON (c.id = n.ownerid)
+                        LEFT JOIN netdevices nd ON nd.ownerid = c.id
+                        LEFT JOIN nodes n2 ON n2.ownerid IS NULL AND n2.netdev = nd.id ' : '')
                         . 'WHERE c.deleted = 0 AND c.id NOT IN (
-				SELECT customerid FROM customerassignments WHERE customergroupid = ?) '
-                        . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
-                                . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
-                        . 'GROUP BY c.id, c.lastname, c.name
-			ORDER BY c.lastname, c.name', array($groupid));
+                SELECT customerid FROM customerassignments WHERE customergroupid = ?) '
+                        . ($network ? 'AND ((n.ipaddr > ' . $net['address'] . ' AND n.ipaddr < ' . $net['broadcast'] . ') OR
+                        (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . ') OR
+                        (n2.ipaddr > ' . $net['address'] . ' AND n2.ipaddr < ' . $net['broadcast'] . ') OR
+                        (n2.ipaddr_pub > ' . $net['address'] . ' AND n2.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
+                        . ' GROUP BY c.id, c.lastname, c.name
+            ORDER BY c.lastname, c.name', array($groupid));
     }
 }
