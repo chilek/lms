@@ -103,7 +103,10 @@ if (count($userconfig)) {
     }
 }
 
+$userslist = $LMS->GetUserList();
+unset($userslist['total']);
+
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);
-$SMARTY->assign('userslist', $LMS->GetUserList());
+$SMARTY->assign('userslist', $userslist);
 $SMARTY->display('config/configadduser.html');

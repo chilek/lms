@@ -22,7 +22,7 @@
 			<B>{trans("User login")} / {trans("Name:")}</B>
 		</TD>
 		<TD>
-			<SELECT size="1" name="userconfig[userid]" {tip class="lms-ui-combobox" text="Select user" trigger="userid"} required>
+			<SELECT size="1" name="userconfig[userid]" {tip text="Select user" trigger="userid"} required>
 				{foreach $userslist as $user}
 					<OPTION value="{$user.id}"{if $config.user == $user.id} selected{/if}>{$user.login} / {$user.name}</OPTION>
 				{/foreach}
