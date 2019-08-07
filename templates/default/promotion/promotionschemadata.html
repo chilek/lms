@@ -86,7 +86,7 @@
 										data-tooltip-message="modifiable by selected users:<br><strong>$a</strong>" data-separator="<br>"
 										multiple>
 									{foreach $users as $user}
-									<option value="{$user.id}"{if in_array($user.id, $formdata[$tariff.id].users[$key])} selected{/if}>{$user.rname}</option>
+									<option value="{$user.id}"{if isset($formdata[$tariff.id].users[$key]) && in_array($user.id, $formdata[$tariff.id].users[$key])} selected{/if}>{$user.rname}</option>
 									{/foreach}
 								</SELECT>
 							</div>
