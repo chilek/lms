@@ -1654,6 +1654,7 @@ $_LANG['Time'] = 'Czas';
 $_LANG['Time:'] = 'Czas:';
 $_LANG['WWW session timeout. After that time (in seconds) user will be logged out if action has been made. Default: 600.'] = 'Czas wygaśnięcia sesji. Po tym czasie (określonym w sekundach) użytkownik zostanie wylogowany jeżeli nie podejmie żadnej akcji. Domyślnie: 600.';
 $_LANG['Timetable'] = 'Terminarz';
+$_LANG['Show in timetable'] = 'Pokaż w terminarzu';
 $_LANG['timetable management'] = 'zarządzanie terminarzem';
 $_LANG['Title'] = 'Tytuł';
 $_LANG['Title:'] = 'Tytuł:';
