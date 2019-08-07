@@ -39,6 +39,7 @@ version 25-git (????-??-??):
   - enhancement: customer group node list network filters take network devices ip addresses
     into consideration [chilan]
   - enhancement: add per user settings to ui configuration [ravvar]
+  - enhancement: added credit note reason template support [chilan]
 
 version 24.0 (2019-05-16):
 
