@@ -32,6 +32,7 @@
         <option value="ip"{if !isset($qs_properties.node) || isset($qs_properties.node.ip)} selected{/if}>{trans("<!qs>ip address")}</option>
         <option value="public_ip"{if !isset($qs_properties.node) || isset($qs_properties.node.public_ip)} selected{/if}>{trans("<!qs>public ip address")}</option>
         <option value="mac"{if !isset($qs_properties.node) || isset($qs_properties.node.mac)} selected{/if}>{trans("<!qs>mac address")}</option>
+        <option value="location_address"{if !isset($qs_properties.node) || isset($qs_properties.node.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
     </select>
     <input type="text" name="qs[node]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
 </div>

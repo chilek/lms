@@ -325,19 +325,20 @@ switch ($mode) {
             // MySQL is slow here when vnodes view is used
             if (ConfigHelper::getConfig('database.type') == 'postgres') {
                 $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access, lastonline
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, location, access, lastonline
 				    FROM vnodes n
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             } else {
                 $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
-			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, access, lastonline
+			        INET_NTOA(ipaddr_pub) AS ip_pub, mac, va.location, access, lastonline
 				    FROM nodes n
 				    JOIN (
                         SELECT nodeid, GROUP_CONCAT(mac SEPARATOR \',\') AS mac
                         FROM macs
                         GROUP BY nodeid
                     ) m ON (n.id = m.nodeid)
+                    LEFT JOIN vaddresses va ON va.id = n.address_id
 				    WHERE %where
     				ORDER BY n.name LIMIT ?';
             }
@@ -347,7 +348,8 @@ switch ($mode) {
                 . (empty($properties) || isset($properties['name']) ? " OR LOWER(n.name) ?LIKE? LOWER($sql_search)" : '')
                 . (empty($properties) || isset($properties['ip']) ? " OR INET_NTOA(ipaddr) ?LIKE? $sql_search" : '')
                 . (empty($properties) || isset($properties['public_ip']) ? " OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search" : '')
-                . (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '') . "
+                . (empty($properties) || isset($properties['mac']) ? " OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true) . ")" : '')
+                . (empty($properties) || isset($properties['location_address']) ? " OR LOWER(location) ?LIKE? LOWER($sql_search)" : '') . "
 				)
 			    AND NOT EXISTS (
                     SELECT 1 FROM customerassignments a
@@ -390,6 +392,8 @@ switch ($mode) {
                         $description = trans('IP') . ': ' . $row['ip'];
                     } else if ((empty($properties) || isset($properties['public_ip'])) && preg_match("~$search~i", $row['ip_pub'])) {
                         $description = trans('IP') . ': ' . $row['ip_pub'];
+                    } else if ((empty($properties) || isset($properties['location_address'])) && preg_match("~$search~i", $row['location'])) {
+                        $description = trans('Address') . ': ' . $row['location'];
                     } else if ((empty($properties) || isset($properties['mac'])) && preg_match("~" . macformat($search) . "~i", $row['mac'])) {
                         $macs = explode(',', $row['mac']);
                         foreach ($macs as $mac) {
