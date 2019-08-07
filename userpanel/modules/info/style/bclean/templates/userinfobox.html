@@ -290,10 +290,28 @@
 			</div>
 			<div class="modal-footer">
 				{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
-					<a class="btn btn-danger" href="javascript:document.useredit.submit()" accesskey="A">{trans("Save")}</a>
+					<a class="btn btn-danger" id="updateuserbtn" href="#" accesskey="A">{trans("Save")}</a>
 				{/if}
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
 			</div>
 		</div>
 	</div>
 </div>
+<script>
+
+	$('#updateuserbtn').click(function() {
+		var emails = $('input[type="email"]');
+		var invalid = emails.length;
+		emails.each(function() {
+			if (this.checkValidity()) {
+				invalid--;
+			}
+		});
+		if (invalid) {
+			return false;
+		} else {
+			document.useredit.submit();
+		}
+	});
+
+</script>

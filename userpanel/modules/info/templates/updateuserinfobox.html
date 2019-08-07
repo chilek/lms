@@ -44,9 +44,9 @@
 {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			<TABLE cellpadding="0" cellspacing="2">
 			{foreach $userinfo.emails as $email}
-				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
+				<TR><TD><INPUT type="email" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
 			{foreachelse}
-				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[email][0]" VALUE="{$userinfo.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
+				<TR><TD><INPUT type="email" NAME="userdata[email][0]" VALUE="{$userinfo.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
 			{/foreach}
 			</TABLE>
 {else}
@@ -165,10 +165,28 @@
 }
 	<tr>
 		<td width="99%" colspan="2" align="right">
-			<a href="javascript:document.useredit.submit()" accesskey="A">{trans("Save")} {img src="edit.gif" alt=""}</a>
+			<a href="#" id="updateuserbtn" accesskey="A">{trans("Save")} {img src="edit.gif" alt=""}</a>
 		</td>
 	</tr>
 {/if}
 </table>
 </FORM>
+<script>
+
+	$('#updateuserbtn').click(function() {
+		var emails = $('input[type="email"]');
+		var invalid = emails.length;
+		emails.each(function() {
+			if (this.checkValidity()) {
+				invalid--;
+			}
+		});
+		if (invalid) {
+			return false;
+		} else {
+			document.useredit.submit();
+		}
+	});
+
+</script>
 {/box}
