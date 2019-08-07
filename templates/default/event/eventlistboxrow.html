@@ -47,6 +47,11 @@
     </TD>
     <TD class="text-right nobr">
         <div class="no-print">
+            {if !isset($eventlist_mode)}
+            <a href="#" class="lms-ui-button-timetable" onclick="location.href = '?m=eventlist&year={strftime('%Y', $event.date)}&month={strftime('%m', $event.date)}&day={strftime('%d', $event.date)}';">
+                <i></i>
+            </a>
+            {/if}
             <a href="#" class="lms-ui-button-clipboard" data-clipboard-text="{$url}?m=eventinfo&id={$event.id}">
                 <i></i>
             </a>
