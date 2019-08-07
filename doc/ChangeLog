@@ -40,6 +40,8 @@ version 25-git (????-??-??):
     into consideration [chilan]
   - enhancement: add per user settings to ui configuration [ravvar]
   - enhancement: added credit note reason template support [chilan]
+  - improvement: allow to quick search nodes by location address [chilan]
+  - improvement: allow to jump immediately to ticket assigned event day in timetable [chilan]
 
 version 24.0 (2019-05-16):
 
