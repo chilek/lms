@@ -570,5 +570,6 @@ $args = array(
     'division' => $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cnote['customerid'])),
 );
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
 
 $SMARTY->display('invoice/invoicenotemodify.html');

@@ -394,6 +394,7 @@ define('TMPL_WWW', 4);
 define('TMPL_USERPANEL', 5);
 define('TMPL_USERPANEL_URGENT', 6);
 define('TMPL_HELPDESK', 7);
+define('TMPL_CNOTE_REASON', 8);
 
 $MESSAGETEMPLATES = array(
     TMPL_WARNING => array(
@@ -423,6 +424,10 @@ $MESSAGETEMPLATES = array(
     TMPL_HELPDESK => array(
         'class' => 'lms-ui-icon-helpdesk',
         'label' => trans('<!message>helpdesk'),
+    ),
+    TMPL_CNOTE_REASON => array(
+        'class' => 'lms-ui-icon-finances',
+        'label' => trans('<!message>credit note reason'),
     ),
 );
 

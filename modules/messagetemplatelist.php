@@ -38,7 +38,7 @@ if (isset($_GET['action'])) {
             if (!strlen($p['name'])) {
                 $error[$_GET['action'] . '-template-name'] = trans('Empty message template name!');
             }
-            if (($p['type'] != TMPL_SMS && $p['type'] != TMPL_WARNING) && !strlen($p['subject'])) {
+            if (($p['type'] != TMPL_SMS && $p['type'] != TMPL_WARNING && $p['type'] != TMPL_CNOTE_REASON) && !strlen($p['subject'])) {
                 $error[$_GET['action'] . '-template-subject'] = trans('Empty message template subject!');
             }
 

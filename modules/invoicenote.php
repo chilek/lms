@@ -585,4 +585,5 @@ $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('refdoc', $invoice);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('numberplanlist', $numberplanlist);
+$SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
 $SMARTY->display('invoice/invoicenotemodify.html');

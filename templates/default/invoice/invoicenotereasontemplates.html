@@ -1,0 +1,6 @@
+<SELECT class="template-selector" {tip text=$tip}{if isset($target)} data-target='{$target}'{/if}>
+    <OPTION value="0">{trans("- none -")}</OPTION>
+    {foreach $templates as $template}
+        <OPTION value="{$template.id}" data-message="{base64_encode($template.message)}">{$template.name}</OPTION>
+    {/foreach}
+</SELECT>

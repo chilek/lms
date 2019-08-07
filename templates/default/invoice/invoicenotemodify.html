@@ -28,6 +28,14 @@
 		$('[name="cnote[number]"]').val('');
 	});
 
+	$('body').on('change', '.template-selector', function() {
+		var selected = $('option:selected', this);
+		if (parseInt(selected.val()) == 0) {
+			return;
+		}
+		$('[name="cnote[reason]"]').val(Base64.decode(selected.attr('data-message')));
+	});
+
 </script>
 <FORM NAME="setheader" METHOD="POST" ACTION="?m={$layout.module}&action=setheader">
 <INPUT type="submit" class="hiddenbtn">
@@ -134,6 +142,14 @@
 			<input type="checkbox" id="use_current_customer_data" name="cnote[use_current_customer_data]" value="1"
 					{if $cnote.use_current_customer_data} checked{/if} {tip text="Check it if you want to use current customer data"}>
 		</TD>
+	</TR>
+	<TR{if empty($messagetemplates)} style="display: none;"{/if}>
+		<td class="bold nobr">
+			{trans("Reason template:")}
+		</td>
+		<td class="nobr">
+			{include file="invoice/invoicenotereasontemplates.html" templates=$messagetemplates}
+		</td>
 	</TR>
 	<TR>
 		<TD class="bold nobr">
