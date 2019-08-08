@@ -119,7 +119,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 
     if (!$error) {
         foreach ($data as $idx => $d) {
-            $data[$idx] = $d['value'] . ':' . (empty($d['period']) ? '' : $d['period']) . ':' . (empty($d['users']) ? '' : implode(',', $d['users']));
+            $data[$idx] = $d['value'] . ':' . (empty($d['period']) ? '' : intval($d['period'])) . ':' . (empty($d['users']) ? '' : implode(',', $d['users']));
         }
         $datastr = implode(';', $data);
 
