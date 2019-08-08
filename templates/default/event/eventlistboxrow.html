@@ -11,6 +11,7 @@
             {if $event.begintime != $event.endtime}
                 - {($day + $event.endtime)|date_format:"%H:%M"}
             {/if}
+            {if $event.multiday}<br>{trans("multi day")}{/if}
         {/if}
         {if $overdue == 1}
             <br>{$event.date|date_format:"%x"}
