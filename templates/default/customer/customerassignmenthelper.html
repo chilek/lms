@@ -66,9 +66,9 @@
 										<option value="0">{trans("<!promotionschema>- none -")}</option>
 										{/if}
 										{foreach $promotions as $promotion}
-										<optgroup label="{$promotion.name}" data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{if !$variables.alltariffs} style="display: none;"{/if}{/if}>
+										<optgroup title="{$promotion.description|escape|truncate:512:"...":true}" label="{$promotion.name}" data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{if !$variables.alltariffs} style="display: none;"{/if}{/if}>
 										{foreach $promotion.schemas as $schemaid => $schema}
-										<OPTION value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
+										<OPTION title="{$schema.description|escape|truncate:512:"...":true}" value="{$schemaid}"{if $variables.schemaid == $schemaid} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
 										{/foreach}
 										</optgroup>
 										{/foreach}
