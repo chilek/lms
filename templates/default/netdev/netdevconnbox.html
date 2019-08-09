@@ -141,7 +141,7 @@
 			{tab_buttons}
 				{if $netdev.ports == $netdev.takenports}
 					<strong>{trans("All ports in that device are in use.")}</strong>
-				{elseif $nodelist == NULL}
+				{elseif $restnetdevlist == NULL}
 					<strong>{trans("No such devices for connection.")}</strong>
 				{else}
 					<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit" form="connect-form">
