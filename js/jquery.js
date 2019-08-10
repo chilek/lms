@@ -456,7 +456,8 @@ $(function() {
 		{ class: 'lms-ui-tooltip-rtticketinfo', url: '?m=rtticketinfo&id='},
 		{ class: 'lms-ui-tooltip-customerassignmentinfo', url: '?m=customerassignmentinfo&id='},
 		{ class: 'lms-ui-tooltip-nodegroupinfo', url: '?m=nodeinfo&nodegroups=1&id='},
-		{ class: 'lms-ui-tooltip-netdevlist', url: '?m=ewxdevlist&id='}
+		{ class: 'lms-ui-tooltip-netdevlist', url: '?m=ewxdevlist&id='},
+		{ class: 'lms-ui-tooltip-eventinfoshort', url: '?m=eventinfoshort&id='}
 	].forEach(function(popup) {
 		$('.' + popup.class).tooltip({
 			items: '.' + popup.class,

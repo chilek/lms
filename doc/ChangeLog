@@ -118,6 +118,10 @@ version 25-git (????-??-??):
   - enhancement: search node owners can be assign to (or unassign from) customer group [chilan]
   - enhancement: add hooks to event editing and deleting scripts [ravvar]
   - enhancement: customer search by simultaneously selecting many statuses [chilan]
+  - enhancement: introduce schedule - a new timetable view with
+    configurable working day hours and interval time - configuration variable
+    phpui.timetable_working_hours (default "08:00-19:00")
+    and phpui.timetable_working_hours_interval (default 30 minuntes)[ravvar]
 
 version 24.0 (2019-05-16):
 

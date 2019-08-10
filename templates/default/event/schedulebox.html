@@ -1,0 +1,112 @@
+{block name="schedulebox"}
+<style>
+    .event-single-sortable-handler {
+        cursor: grab;
+    }
+</style>
+{foreach $daylist as $day}
+<TABLE id="event-day-{$day}" class="lmsbox lms-ui-background-cycle event-day-table">
+    <COLGROUP>
+        <COL style="width: 180px; vertical-align: top;">
+        {for $foo=1 to ($usereventlistcount - 1)}
+        <COL style="width: 1%; vertical-align: top;">
+        {/for}
+    </COLGROUP>
+    <THEAD>
+        <TR{if $day == $today} class="superdark"{/if}>
+            <TD class="bold nobr" align="left">
+                <i class="lms-ui-icon-content lms-ui-icon-timetable"></i>{$day|date_format:"%A"}&nbsp;
+                <span class="bold">({$day|date_format:"%x"})</span>&nbsp;
+                {if $getHolidays[$day]}
+                <span class="red">{trans("Holiday:")} {$getHolidays[$day]}</span>&nbsp;
+                {/if}
+                <a href="?m=eventsearch&datefrom={$day|date_format:"%Y/%m/%d"}&dateto={$day|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
+            </TD>
+            <TD class="text-right nobr" colspan="{$usereventlistcount}">
+                <div class="no-print">
+					{button icon="add" onclick="window.location.href='?m=eventadd&day={$day|date_format:"%d"}&month={$day|date_format:"%m"}&year={$day|date_format:"%Y"}';"
+						external=true label="Add Event"}
+                </div>
+            </TD>
+        </TR>
+    </THEAD>
+    <TBODY class="event-day" data-event-day="{$day}">
+    <tr>
+        <td>
+            &nbsp;
+        </td>
+        {foreach $usereventlistgrid as $userevents}
+            <td style="border-left: solid 2px; text-align: center;">
+                <strong>{$userevents.username}</strong>
+            </td>
+        {/foreach}
+    </tr>
+    {foreach $times as $ktime => $time}
+        <tr class="highlight">
+            <td class="nobr" align="center">
+                <strong>{$time}</strong>
+            </td>
+            {foreach $usereventlistgrid as $userevents}
+                <td style="border-left: solid 2px;">
+                    {foreach $userevents['eventsgrid'] as $edate => $dateevents}
+                        {if $edate == $day}
+                            <table style="border-collapse: separate;">
+                                <tr>
+                                    {foreach $dateevents['grid'] as $tekey => $tevents}
+                                    {if $tekey == $ktime}
+                                        {section name=tevent loop=$tevents}
+                                            {if !isset($tevents[tevent].id)}
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td style="min-width: 90px;">
+                                                                &nbsp;
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            {else}
+                                                <td>
+                                                    <table style="{if $tevents[tevent].position == 1} margin-top: -12px; margin-bottom: -7px;{else} margin-top: -3px; margin-bottom: -7px;{/if}">
+                                                        <tr>
+                                                            <td style="min-width: 90px; {if isset($_EVENTSTYLES[$tevents[tevent].type])} {$_EVENTSTYLES[$tevents[tevent].type]}{/if}" class="text-center bold lms-ui-tooltip-eventinfoshort" data-target-url="?m=eventinfo&id={$tevents[tevent].id}" data-resourceid="{$tevents[tevent].id}">
+                                                                {if $tevents[tevent].position == 0}
+                                                                    {if $_EVENTTYPES[$tevents[tevent].type]}{$_EVENTTYPES[$tevents[tevent].type]}<br>{else}<br>{/if}
+                                                                    {if $tevents[tevent].ticketid}<a href="?m=rtticketview&id={$tevents[tevent].ticketid}" style="color: black">{$tevents[tevent].ticketid|string_format:"%06d"}</a><br>{else}<br>{/if}
+
+                                                                    {if $tevents[tevent].endtime == 86400}
+                                                                        {trans("whole day")}
+                                                                    {else}
+                                                                        {($day + $tevents[tevent].begintime)|date_format:"%H:%M"}
+                                                                        {if $tevents[tevent].begintime != $tevents[tevent].endtime}
+                                                                            - {($day + $tevents[tevent].endtime)|date_format:"%H:%M"}
+                                                                        {/if}
+                                                                        {if $tevents[tevent].multiday}<br>{trans("multi day")}{/if}
+                                                                    {/if}
+                                                                {else}
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                {/if}
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            {/if}
+                                        {/section}
+                                    {/if}
+                                    {/foreach}
+                                </tr>
+                            </table>
+                        {/if}
+                    {/foreach}
+                </td>
+            {/foreach}
+        </tr>
+    {/foreach}
+    </TBODY>
+</TABLE>
+{/foreach}
+
+{/block}

@@ -721,6 +721,12 @@ $menu = array(
                     'prio' => 10,
                 ),
                 array(
+                    'name' => trans('Schedule'),
+                    'link' => '?m=schedule',
+                    'tip' => trans('Schedule'),
+                    'prio' => 11,
+                ),
+                array(
                     'name' => trans('New Event'),
                     'link' => '?m=eventadd',
                     'tip' => trans('New Event Addition'),
