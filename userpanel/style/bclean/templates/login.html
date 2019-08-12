@@ -80,7 +80,7 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     <h2 class="form-signin text-center">
 						{if $company_logo}
 							<img src="{$company_logo}">
@@ -95,10 +95,9 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
-                        {if $error}<div class="alert alert-danger">{$error}</div>{/if}
                         <fieldset class="form-group">
                             <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
                             <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
@@ -145,7 +144,27 @@
                 </div>
             </div>
         </div> <!-- /container -->
+        {if $error}
+        <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000" style="position: absolute; top: 1rem; right: 1rem;">
+                <div class="toast-header bg-light">
+                    <span class="badge badge-warning mr-1">&nbsp;</span>
+                    <strong class="mr-auto">{trans("Notification")}</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    {$error}
+                </div>
+            </div>
+        </div>
+        {/if}
+        <script src="style/bclean/vendor/twbs/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
         <script>
+        $(document).ready(function(){
+            $('.toast').toast('show');
+        });
 			function switch_form(type) {
 				if (type == 'login') {
 					document.getElementById('login').style.display = '';
