@@ -349,7 +349,7 @@ CREATE TABLE documents (
 	name varchar(255)	DEFAULT '' NOT NULL,
 	address varchar(255)	DEFAULT '' NOT NULL,
 	zip varchar(10)		NULL DEFAULT NULL,
-	city varchar(32)	NULL DEFAULT NULL,
+	city varchar(100)	NULL DEFAULT NULL,
 	countryid integer	DEFAULT NULL
 		CONSTRAINT documents_countryid_fkey REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	ten varchar(50)		DEFAULT '' NOT NULL,
@@ -3517,6 +3517,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019080100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019081200');
 
 COMMIT;
