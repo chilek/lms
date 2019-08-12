@@ -1,7 +1,7 @@
 {box title="Balance"}
 <br>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col">
         {if $userinfo.balance < 0}
 			<h4 class="font-weight-bold">{trans("Current balance:")}<br/><strong class="text-danger">{$userinfo.balance|money_format}</strong></h4>
             {$custom_content}

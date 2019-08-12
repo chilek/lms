@@ -80,7 +80,7 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     <h2 class="form-signin text-center">
 						{if $company_logo}
 							<img src="{$company_logo}">
@@ -95,7 +95,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         {if $error}<div class="alert alert-danger">{$error}</div>{/if}
