@@ -192,18 +192,18 @@
 						</div>
 						<div class="form-group row">
 							<label for="building" class="col-form-label">{trans("Building:")}</label>
-							<INPUT class="col-lg-2 form-control" id="building" TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" placeholder="{trans("Enter building number")}">
+							<INPUT class="col form-control" id="building" TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" placeholder="{trans("Enter building number")}">
 
 							<label for="apartment" class="col-form-label">{trans("Apartment:")}</label>
-							<INPUT class="col-lg-2 form-control" id="apartment" TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" placeholder="{trans("Enter apartment number")}">
+							<INPUT class="col form-control" id="apartment" TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" placeholder="{trans("Enter apartment number")}">
 						</div>
 
 						<div class="form-group row">
 							<label for="zip" class="col-form-label">{trans("Zip:")}</label>
-							<INPUT class="col-lg-2 form-control" id="zip" TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" placeholder="{trans("Enter zip code")}">
+							<INPUT class="col-2 form-control" id="zip" TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" placeholder="{trans("Enter zip code")}">
 
 							<label for="city" class="col-form-label">{trans("City:")}</label>
-							<INPUT class="col-lg-5 form-control" id="city" TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" placeholder="{trans("Enter city name")}">
+							<INPUT class="col-5 form-control" id="city" TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" placeholder="{trans("Enter city name")}">
 						</div>
 					{else}
 						{$userinfo.address},<br/> {$userinfo.zip} {$userinfo.city}
