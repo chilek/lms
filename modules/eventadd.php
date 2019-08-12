@@ -37,7 +37,7 @@ if (isset($_POST['event']['helpdesk']) && isset($_POST['ticket'])) {
     $ticket = $_POST['ticket'];
 }
 
-$userlist = $LMS->GetUserList();
+$userlist = $LMS->GetUserNames();
 unset($userlist['total']);
 
 if (isset($_POST['event'])) {

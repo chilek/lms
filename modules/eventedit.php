@@ -64,7 +64,7 @@ if (isset($_GET['id'])) {
     $event['end'] = date('Y/m/d H:i', $event['enddate'] + ($event['endtime'] == 86400 ? 0 : $event['endtime']));
 }
 
-$userlist = $LMS->GetUserList();
+$userlist = $LMS->GetUserNames();
 unset($userlist['total']);
 
 if (isset($_POST['event'])) {
