@@ -41,6 +41,7 @@ $_LANG['Error'] = 'Błąd';
 $_LANG['[ Error! ]'] = '[ Błąd! ]';
 $_LANG['Error:'] = 'Błąd:';
 $_LANG['Error!'] = 'Błąd!';
+$_LANG['Notification'] = 'Powiadomienie';
 $_LANG['For more information see'] = 'Aby dowiedzieć się więcej zobacz';
 $_LANG['Function <b>$a</b> in module <b>$b</b> not found!'] = 'Funkcja <b>$a</b> w module <b>$b</b> nie odnaleziona!';
 $_LANG['Hint style:'] = 'Styl podpowiedzi:';
