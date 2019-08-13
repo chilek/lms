@@ -53,7 +53,7 @@
 						<option value="">{trans("<!person>- none -")}</option>
 						<option value="0"{if $ticket.requestor_userid == '0'} selected{/if}>{trans("- indicated person -")}</option>
 						{foreach $userlist as $user}
-							<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.name}</option>
+							<option value="{$user.id}"{if $ticket.requestor_userid == $user.id} selected{/if}>{$user.rname}</option>
 						{/foreach}
 					</SELECT>
 				</div>

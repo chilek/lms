@@ -84,7 +84,7 @@
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
 				<OPTION value="0">{trans("- all owners -")}</OPTION>
 				{foreach $userlist as $item}
-				<OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.name}</OPTION>
+				<OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.rname}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -224,7 +224,7 @@
                         <SELECT size="1" name="search[verifierid]" {tip text="Select user/owner of the ticket"}>
                                 <OPTION value="0">{trans("- all owners -")}</OPTION>
                                 {foreach $userlist as $item}
-                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.name}</OPTION>
+                                <OPTION value="{$item.id}" {if $item.id == $search.verifierid}SELECTED{/if}>{$item.rname}</OPTION>
                                 {/foreach}
                         </SELECT>
 		</TD>

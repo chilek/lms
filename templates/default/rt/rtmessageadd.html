@@ -168,7 +168,7 @@
 					{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 						|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 						|| $user.id == $message.owner}
-					<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.owner} selected{/if}>{$user.name}</OPTION>
+					<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.owner} selected{/if}>{$user.rname}</OPTION>
 					{/if}
 					{/foreach}
 				</SELECT>
@@ -190,7 +190,7 @@
 							{if !ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users')
 								|| (ConfigHelper::checkConfig('phpui.helpdesk_hide_disabled_users') && $user.access)
 								|| $user.id == $message.verifierid}
-							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.name}</OPTION>
+							<OPTION value="{$user.id}"{if !$user.access} class="blend"{/if}{if $user.id == $message.verifierid} selected{/if}>{$user.rname}</OPTION>
 							{/if}
 						{/foreach}
 					</SELECT>
