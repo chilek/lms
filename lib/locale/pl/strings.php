@@ -4379,3 +4379,23 @@ $_LANG['Are you sure, you want to delete?'] = 'Jesteś pewien/pewna, że chcesz 
 $_LANG['User login'] = 'Login';
 $_LANG['User login:'] = 'Login:';
 $_LANG['Global'] = 'Globalne';
+
+$_LANG['<!netelemtype>office building'] = 'budynek biurowy';
+$_LANG['<!netelemtype>residential building'] = 'budynek mieszkalny';
+$_LANG['<!netelemtype>industrial building'] = 'budynek przemysłowy';
+$_LANG['<!netelemtype>service building'] = 'budynek usługowy';
+$_LANG['<!netelemtype>public building'] = 'budynek użyteczności publicznej';
+$_LANG['<!netelemtype>religious building'] = 'obiekt sakralny';
+$_LANG['<!netelemtype>power grid object'] = 'obiekt sieci elektroenergetycznej';
+$_LANG['<!netelemtype>tower'] = 'wieża';
+$_LANG['<!netelemtype>mast'] = 'maszt';
+$_LANG['<!netelemtype>chimney'] = 'komin';
+$_LANG['<!netelemtype>container'] = 'kontener';
+$_LANG['<!netelemtype>street cabinet'] = 'szafa uliczna';
+$_LANG['<!netelemtype>pole'] = 'słup';
+$_LANG['<!netelemtype>box'] = 'skrzynka';
+$_LANG['<!netelemtype>cable well'] = 'studnia kablowa';
+
+$_LANG['Own node'] = 'Węzeł własny';
+$_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
+$_LANG['Foreign node'] = 'Węzeł obcy';

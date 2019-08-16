@@ -817,27 +817,27 @@ $NETELEMENTSTATUSES = array(
 );
 
 $NETELEMENTTYPES = array(
-    0   => 'budynek biurowy',
-    2   => 'budynek mieszkalny',
-    1   => 'budynek przemysłowy',
-    11  => 'budynek usługowy',
-    12  => 'budynek użyteczności publicznej',
-    3   => 'obiekt sakralny',
-    13  => 'obiekt sieci elektroenergetycznej',
-    5   => 'wieża',
-    4   => 'maszt',
-    10  => 'komin',
-    6   => 'kontener',
-    7   => 'szafa uliczna',
-    14  => 'słup',
-    8   => 'skrzynka',
-    9   => 'studnia kablowa',
+    0   => trans('<!netelemtype>office building'),
+    2   => trans('<!netelemtype>residential building'),
+    1   => trans('<!netelemtype>industrial building'),
+    11  => trans('<!netelemtype>service building'),
+    12  => trans('<!netelemtype>public building'),
+    3   => trans('<!netelemtype>religious building'),
+    13  => trans('<!netelemtype>power grid object'),
+    5   => trans('<!netelemtype>tower'),
+    4   => trans('<!netelemtype>mast'),
+    10  => trans('<!netelemtype>chimney'),
+    6   => trans('<!netelemtype>container'),
+    7   => trans('<!netelemtype>street cabinet'),
+    14  => trans('<!netelemtype>pole'),
+    8   => trans('<!netelemtype>box'),
+    9   => trans('<!netelemtype>cable well'),
 );
 
 $NETELEMENTOWNERSHIPS = array(
-    0   => 'Węzeł własny',
-    1   => 'Węzeł współdzielony z innym podmiotem',
-    2   => 'Węzeł obcy',
+    0   => trans('Own node'),
+    1   => trans('Node shared with another entity'),
+    2   => trans('Foreign node'),
 );
 
 $USERPANEL_AUTH_TYPES = array(
