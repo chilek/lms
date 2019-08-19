@@ -5,73 +5,97 @@
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
     <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-    <link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
     <title>::: {trans("Welcome to LMS")} {$layout.lmsv} :::</title>
+	<style>
+		body {
+			justify-content: center;
+		}
+
+		body > div {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.login-logo-container {
+			padding: 1em;
+			display: flex;
+			justify-content: center;
+		}
+
+		.login-logo-container > img {
+			width: 10em;
+		}
+
+		.login-box-container {
+			padding: 2em;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 1em;
+		}
+
+		.lms-ui-dberrors {
+
+		}
+	</style>
 </head>
 <body>
-<table width="100%" style="position: absolute; height: 100%;">
-	<tr>
-		<td align="center">
-			<table cellpadding="20">
+<div>
+	<div class="login-logo-container">
+		<img src="img/logo.png" alt="">
+	</div>
+	<div class="login-box-container loginform light">
+		<span class="bold text-center">
+			{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
+			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
+		</span><br><br><br>
+		{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}<br>
+		<br>
+		<form method="post" name="loginform" action="{$target}">
+			<p><INPUT type="submit" class="hiddenbtn"></p>
+			<table>
 				<tr>
-					<td>
-						<img src="img/logo.png" alt="">
+					<td class="text-right bold">
+						{trans("Login:")}&nbsp;
 					</td>
-					<td align="center" class="loginform light" style="width: 300px;">
-						<span class="bold">{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
-						&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</span><br><br><br>
-						{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}<br>
-						<br>
-						<form method="post" name="loginform" action="{$target}">
-						<p><INPUT type="submit" class="hiddenbtn"></p>
-							<table>
-								<tr>
-									<td class="text-right bold">
-										{trans("Login:")}&nbsp;
-									</td>
-									<td>
-										<input class="bold" type="text" name="loginform[login]" size="10" accesskey="l">
-									</td>
-								</tr>
-								<tr>
-									<td class="text-right bold">
-										{trans("Password:")}&nbsp;
-									</td>
-									<td>
-										<input class="bold" type="password" name="loginform[pwd]" size="10"><br>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										&nbsp;
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2" class="text-center">
-										{button type="submit" label="Login"}
-									</td>
-								</tr>
-							</table>
-						</form>
-						<br>
-						<br>
-						<br>
-						<a href="doc/html/{$_ui_language}/"><span class="blend">{trans("Documentation")}</span></a><br>
-						<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
+					<td>
+						<input class="bold" type="text" name="loginform[login]" size="30" accesskey="l">
 					</td>
 				</tr>
-				{if $layout.dberrors}
+				<tr>
+					<td class="text-right bold">
+						{trans("Password:")}&nbsp;
+					</td>
+					<td>
+						<input class="bold" type="password" name="loginform[pwd]" size="30"><br>
+					</td>
+				</tr>
 				<tr>
 					<td colspan="2">
-					{include file="dberrors.html"}
+						&nbsp;
 					</td>
 				</tr>
-				{/if}
+				<tr>
+					<td colspan="2" class="text-center">
+						{button type="submit" label="Login"}
+					</td>
+				</tr>
 			</table>
-		</td>
-	</tr>
-</table>
+		</form>
+		<br>
+		<br>
+		<br>
+		<a href="doc/html/{$_ui_language}/"><span class="blend">{trans("Documentation")}</span></a><br>
+		<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
+	</div>
+	{if $layout.dberrors}
+		{include file="dberrors.html"}
+	{/if}
+</div>
 <script>
 
 	document.forms['loginform'].elements['loginform[login]'].focus();
