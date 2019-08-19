@@ -20,6 +20,39 @@
 	}
 //-->
 </SCRIPT>
+<style>
+
+	.customer-header {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.customer-data {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.customer-data > table {
+		flex-grow: 1;
+	}
+
+	#customer-left-panel {
+		margin-right: 10em;
+	}
+
+	#customer-right-panel {
+		margin-right: 2em;
+	}
+
+</style>
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -27,11 +60,11 @@
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
-		<TD style="width: 100%;" colspan="2">
+		<TD style="width: 100%;">
 			<TABLE width="100%">
 				<TR>
-					<TD style="width: 1%;">
-						<TABLE width="100%">
+					<TD class="customer-header">
+						<TABLE>
 							<TR>
 								<TD class="bold">
 									{trans("Name/Surname:")}
@@ -51,9 +84,7 @@
 								</TD>
 							</TR>
 						</TABLE>
-					</TD>
-					<TD style="width: 99%;">
-						<TABLE width="100%">
+						<TABLE>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
 									{trans("External system identifier:")}
@@ -71,14 +102,18 @@
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 50%;" class="container valign-top">
-			<TABLE cellpadding="3" width="100%">
+		<TD class="customer-data">
+			<TABLE id="customer-left-panel">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 99%;">
+				</COLGROUP>
 				{block name="customeradd-leftcolumn"}
 				<TR>
-					<TD style="width: 1%;">
+					<TD>
 						<img src="img/{if $customeradd.status}{$_CSTATUSES[$customeradd.status].img}{else}{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
 					</TD>
-					<TD style="width: 99%;">
+					<TD>
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
 							{foreach $_CSTATUSES as $statusidx => $status}
 							<OPTION value="{$statusidx}"{if $customeradd.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
@@ -88,10 +123,10 @@
 				</TR>
 				{if $divisions}
 				<TR>
-					<TD style="width: 1%;">
+					<TD>
 						<img src="img/division.gif" alt="">
 					</TD>
-					<TD style="width: 99%;">
+					<TD>
 						<SELECT size="1" name="customeradd[divisionid]" {tip text="Select division" trigger="divisionid"}>
 							{foreach from=$divisions item=item}{if !$item.status}
 							<OPTION value="{$item.id}"{if $customeradd.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
@@ -102,10 +137,10 @@
 				{/if}
 				{if $groups}
 				<TR>
-					<TD style="width: 1%;">
+					<TD>
 						<IMG SRC="img/group.gif" alt="">
 					</TD>
-					<TD style="width: 99%;" class="nobr" colspan="2">
+					<TD class="nobr">
 						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
 							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
 							{foreach $groups as $group}
@@ -116,10 +151,10 @@
 				</TR>
 				{/if}
 				<TR>
-					<TD style="width: 1%;">
+					<TD>
 						<IMG SRC="img/folder.gif" alt="">
 					</TD>
-					<TD style="width: 99%;" class="nobr" colspan="2">
+					<TD class="nobr">
 						<INPUT type="radio" name="customeradd[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
 						<INPUT type="radio" name="customeradd[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 					</TD>
@@ -128,8 +163,8 @@
 				{$addr_counter = 0}
 
 				<tr>
-					<td style="width: 1%;" class="valign-top"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
-					<td style="width: 99%;">
+					<td class="valign-top"><i class="lms-ui-icon-home fa-fw" title="{trans('billing address')}"></i></td>
+					<td>
 						{$addr_found = 0}
 						{foreach $customeradd.addresses as $v}
 							{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
@@ -171,8 +206,8 @@
 				</tr>
 
 				<tr>
-					<td style="width: 1%;" class="valign-top"><img src="img/post.gif" alt="" title="{trans('postal address')}"></td>
-					<td style="width: 99%;">
+					<td class="valign-top"><img src="img/post.gif" alt="" title="{trans('postal address')}"></td>
+					<td>
 						{$addr_found = 0}
 						{foreach $customeradd.addresses as $v}
 							{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
@@ -206,14 +241,14 @@
 				{foreach $customeradd.addresses as $v}
 				{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
 				<tr>
-					<td style="width: 1%;" class="valign-top">
+					<td class="valign-top">
 						{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
 							<img src="img/pin_blue.png" alt="" title="{trans('default location address')}" class="location-box-image">
 						{else}
 							<img src="img/location.png" alt="" title="{trans('location/recipient address')}" class="location-box-image">
 						{/if}
 					</td>
-					<td style="width: 99%;">
+					<td>
 						{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
 						{$address_idx = $addr_counter}
 						{$v.default_type = 1}
@@ -244,19 +279,19 @@
 
 				{include file="customer/customercontacts.html" customerinfo=$customeradd formelemprefix="customeradd"}
 				<TR>
-					<TD style="width: 1%;">
+					<TD>
 						<IMG src="img/pin.gif" alt="">
 					</TD>
-					<TD style="width: 99%;">
+					<TD>
 						<INPUT type="text" required size="{$pin_max_size}" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text=$pin_tip trigger="pin"}>&nbsp;
 						<A href="javascript:randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%;" class="valign-top">
+					<TD class="valign-top">
 						<IMG src="img/serialnumber.gif" alt="">
 					</TD>
-					<TD style="width: 99%;">
+					<TD>
 						<TABLE width="100%">
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("ICN")}:</TD>
@@ -316,10 +351,10 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%;" class="valign-top">
+					<TD class="valign-top">
 						<IMG src="img/options.gif" alt="">
 					</TD>
-					<TD style="width: 99%;">
+					<TD>
 						<TABLE>
 							<TR>
 								<TD>
@@ -368,10 +403,10 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%" class="valign-top">
+					<TD class="valign-top">
 						<IMG src="img/options.gif" alt="">
 					</TD>
-					<TD style="width: 99%">
+					<TD>
 						<TABLE cellpadding="0">
 							{block name="customeradd-options"}
 							<TR>
@@ -412,25 +447,27 @@
 				</TR>
 				{/block}
 			</TABLE>
-		</TD>
-		<TD style="width: 50%;" class="container valign-top">
-			<TABLE width="100%" cellpadding="3">
+			<TABLE id="customer-right-panel">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 99%;">
+				</COLGROUP>
 				{block name="customeradd-rightcolumn"}
 				<TR>
-					<TD style="width: 1%;"><IMG src="img/info1.gif" alt=""></TD>
-					<TD style="width: 99%;">
+					<TD><IMG src="img/info1.gif" alt=""></TD>
+					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[info]" class="lms-ui-wysiwyg-editor" {tip text="Enter additional information (optional)"}{if isset($customeradd.wysiwyg.info)} data-wysiwyg="{$customeradd.wysiwyg.info}"{/if}>{$customeradd.info|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%;"><IMG src="img/warningon.gif" alt=""></TD>
-					<TD style="width: 99%;">
+					<TD><IMG src="img/warningon.gif" alt=""></TD>
+					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[message]" class="lms-ui-wysiwyg-editor" {tip text="Enter notice contents (optional)"}{if isset($customeradd.wysiwyg.message)} data-wysiwyg="{$customeradd.wysiwyg.message}"{/if}>{$customeradd.message|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%;"><IMG src="img/note.gif" alt=""></TD>
-					<TD style="width: 99%;">
+					<TD><IMG src="img/note.gif" alt=""></TD>
+					<TD>
 						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" class="lms-ui-wysiwyg-editor" {tip text="Enter notes (optional)"}{if isset($customeradd.wysiwyg.notes)} data-wysiwyg="{$customeradd.wysiwyg.notes}"{/if}>{$customeradd.notes|escape}</TEXTAREA>
 					</TD>
 				</TR>
@@ -439,11 +476,14 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%;" class="text-right" colspan="2">
-			<input type="submit" style="display: none;" id="submitbtn"">
-			<A href="#" id="submit" accesskey="S">{trans("Submit")} <img src="img/save.gif" alt=""></A>
-			<A href="?m=customerlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="customeradd[reuse]" id="customeradd_reuse" value="ON" {if $customeradd.reuse}checked{/if}><label for="customeradd_reuse"> {trans("Display this form again, when this customer is saved")}</label>
+		<TD style="width: 100%;" class="lms-ui-box-buttons">
+			{button type="submit" id="save-button" icon="save" label="Submit"}
+			{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '?m=customerlist';"}
+			<br>
+			<label>
+				<INPUT type="checkbox" name="customeradd[reuse]" id="customeradd_reuse" value="ON" {if $customeradd.reuse}checked{/if}>
+				{trans("Display this form again, when this customer is saved")}
+			</label>
 		</TD>
 	</TR>
 	</TBODY>
@@ -483,10 +523,6 @@
 
 		$('.contacts[data-type="email"] .newcontact a').click(function() {
 			init_email_validators();
-		});
-
-		$('#submit').click(function() {
-			$('#submitbtn').click();
 		});
 
 		$('.gusapi-button').click(function() {
