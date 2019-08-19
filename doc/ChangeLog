@@ -42,6 +42,8 @@ version 25-git (????-??-??):
   - enhancement: added credit note reason template support [chilan]
   - improvement: allow to quick search nodes by location address [chilan]
   - improvement: allow to jump immediately to ticket assigned event day in timetable [chilan]
+  - improvement: phpui.default_divisionid specifies pre-selected division of added
+    customer [chilan]
 
 version 24.0 (2019-05-16):
 
