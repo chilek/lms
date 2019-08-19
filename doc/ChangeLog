@@ -44,6 +44,7 @@ version 25-git (????-??-??):
   - improvement: allow to jump immediately to ticket assigned event day in timetable [chilan]
   - improvement: phpui.default_divisionid specifies pre-selected division of added
     customer [chilan]
+  - improvement: make login form mobile device friendly [chilan]
 
 version 24.0 (2019-05-16):
 
