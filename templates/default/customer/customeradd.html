@@ -40,7 +40,7 @@
 		flex-wrap: wrap;
 	}
 
-	.customer-data > table {
+	.customer-data > div {
 		flex-grow: 1;
 	}
 
@@ -64,36 +64,40 @@
 			<TABLE width="100%">
 				<TR>
 					<TD class="customer-header">
-						<TABLE>
-							<TR>
-								<TD class="bold">
-									{trans("Name/Surname:")}
-								</TD>
-								<TD>&nbsp;</TD>
-								<TD>
-									<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" required {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold">
-									{trans("First name:")}
-								</TD>
-								<TD>&nbsp;</TD>
-								<TD>
-									<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="name" bold=1}>
-								</TD>
-							</TR>
-						</TABLE>
-						<TABLE>
-							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{trans("External system identifier:")}
-								</TD>
-								<TD style="width: 99%;">
-									<input type="text" size="20" maxlength="20" name="customeradd[extid]" value="{$customeradd.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
-								</TD>
-							</TR>
-						</TABLE>
+						<div>
+							<TABLE>
+								<TR>
+									<TD class="bold">
+										{trans("Name/Surname:")}
+									</TD>
+									<TD>&nbsp;</TD>
+									<TD>
+										<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" required {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
+									</TD>
+								</TR>
+								<TR>
+									<TD class="bold">
+										{trans("First name:")}
+									</TD>
+									<TD>&nbsp;</TD>
+									<TD>
+										<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="name" bold=1}>
+									</TD>
+								</TR>
+							</TABLE>
+						</div>
+						<div>
+							<TABLE>
+								<TR>
+									<TD style="width: 1%;" class="bold nobr">
+										{trans("External system identifier:")}
+									</TD>
+									<TD style="width: 99%;">
+										<input type="text" size="20" maxlength="20" name="customeradd[extid]" value="{$customeradd.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+									</TD>
+								</TR>
+							</TABLE>
+						</div>
 					</TD>
 				</TR>
 			</TABLE>
@@ -103,7 +107,8 @@
 	<TBODY>
 	<TR>
 		<TD class="customer-data">
-			<TABLE id="customer-left-panel">
+			<div id="customer-left-panel">
+				<TABLE>
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 99%;">
@@ -447,7 +452,9 @@
 				</TR>
 				{/block}
 			</TABLE>
-			<TABLE id="customer-right-panel">
+			</div>
+			<div id="customer-right-panel">
+				<TABLE>
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 99%;">
@@ -473,6 +480,7 @@
 				</TR>
 				{/block}
 			</TABLE>
+			</div>
 		</TD>
 	</TR>
 	<TR>
