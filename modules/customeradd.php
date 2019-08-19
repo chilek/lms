@@ -111,7 +111,7 @@ if (isset($_POST['customeradd'])) {
     if ($customeradd['name'] == '' && !$customeradd['type']) {
         $error['name'] = trans('First name cannot be empty!');
     }
-    
+
     if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
         if ($customeradd['group'] == 0) {
             $error['group'] = trans('Group name required!');
@@ -198,7 +198,7 @@ if (isset($_POST['customeradd'])) {
             }
         }
     }
-    
+
     // check addresses
     foreach ($customeradd['addresses'] as $k => $v) {
         if ($v['location_address_type'] == BILLING_ADDRESS && !$v['location_city_name']) {
@@ -306,6 +306,8 @@ if (isset($_POST['customeradd'])) {
             'type' => 0
         )
     );
+
+    $customeradd['divisionid'] = intval(ConfigHelper::getConfig('phpui.default_divisionid'));
 }
 
 if (!isset($customeradd['cutoffstopindefinitely'])) {
