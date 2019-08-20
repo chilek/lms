@@ -49,6 +49,7 @@ version 25-git (????-??-??):
     country [chilan]
   - enhancement: script automating the installation of LMS + PostgreSQL for the Debian 10/Buster
     system has been added to the "sample" catalog [interduo]
+  - improvement: make customer and node forms responsive [chilan, ravvar]
 
 version 24.0 (2019-05-16):
 
