@@ -49,19 +49,19 @@ systemctl restart postgresql
 #LMS CONFIG
 mkdir /etc/lms/;
 cat <<EOT >> ${inifile}
-[database];
+[database]
 user = ${dbuser};
 password = ${dbpass};
 database = ${dbname};
 
-[directory];
+[directory]
 sysdir = ${lmsdir};
 backup_dir = ${lmsdir}/backups;
 doc_dir = ${lmsdir}/documents;
 smarty_compile_dir = ${lmsdir}/templates_c;
 userpanel_dir = ${lmsdir}/userpanel;
 
-[rt];
+[rt]
 mail_dir = ${lmsdir}/rtattachements;
 EOT
 
