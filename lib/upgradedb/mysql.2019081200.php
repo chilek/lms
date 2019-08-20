@@ -23,8 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE documents CHANGE TYPE city varchar(100) NULL DEFAULT NULL");
-
+$this->Execute("ALTER TABLE documents MODIFY COLUMN city varchar(100) NULL DEFAULT NULL");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019081200', 'dbversion'));
 
 $this->CommitTrans();
