@@ -45,6 +45,8 @@ version 25-git (????-??-??):
   - improvement: phpui.default_divisionid specifies pre-selected division of added
     customer [chilan]
   - improvement: make login form mobile device friendly [chilan]
+  - enhancement: invoice and debit note language depends on division country and customer
+    country [chilan]
 
 version 24.0 (2019-05-16):
 
