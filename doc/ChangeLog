@@ -2,8 +2,6 @@ $Id$
 
 version 25-git (????-??-??):
 
-  - enhancement: script automating the installation of LMS + PostgreSQL for the Debian 10/Buster
-    system has been added to the "sample" catalog [interduo]
   - improvement: introduced invoices.hide_ssn configuration variable which allows to hide SSN
     on invoices [chilan]
   - improvement: show icon correspondent to netdevnode online status in netdevinfo [ravvar]
@@ -49,6 +47,8 @@ version 25-git (????-??-??):
   - improvement: make login form mobile device friendly [chilan]
   - enhancement: invoice and debit note language depends on division country and customer
     country [chilan]
+  - enhancement: script automating the installation of LMS + PostgreSQL for the Debian 10/Buster
+    system has been added to the "sample" catalog [interduo]
 
 version 24.0 (2019-05-16):
 
