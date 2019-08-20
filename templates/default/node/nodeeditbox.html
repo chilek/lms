@@ -8,6 +8,27 @@
 		white-space: nowrap;
 	}
 
+	.node-data {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.node-data > div {
+		flex-grow: 1;
+	}
+
+	#node-left-panel {
+		margin-right: 10em;
+	}
+
+	#node-right-panel {
+		margin-right: 2em;
+	}
+
 </style>
 
 {include file="google-maps.html"}
@@ -32,8 +53,9 @@
 			<td style="width: 100%;" colspan="3" class="container">
 				<table style="width: 100%;" cellpadding="0">
 					<tr>
-						<td width="50%" class="tab-beautify valign-top">
-							<table style="width: 100%;" cellpadding="3">
+						<td class="tab-beautify node-data">
+							<div id="node-left-panel">
+								<table style="width: 100%;" cellpadding="3">
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
@@ -280,9 +302,9 @@
 									</td>
 								</tr>
 							</table>
-						</td>
-						<td width="50%" class="valign-top">
-							<table width="100%" class="tab-beautify">
+							</div>
+							<div id="node-right-panel">
+								<table width="100%" class="tab-beautify">
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
@@ -376,18 +398,19 @@
 										{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 									</td>
 								</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td width="100%" class="text-right" COLSPAN="3">
-			<a href="javascript:document.editnode.submit();" ACCESSKEY="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
-			<a href="?m=nodeinfo&amp;id={$nodeinfo.id}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
-		</td>
-	</tr>
+							</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td width="100%" class="lms-ui-box-buttons" COLSPAN="3">
+				{button type="submit" id="save-button" icon="save" label="Submit"}
+				{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '?m=nodeinfo&id={$nodeinfo.id}';"}
+			</td>
+		</tr>
     </tbody>
 </table>
 </form>
