@@ -1459,6 +1459,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         $idx = 0;
+        if (isset($data['lang'])) {
+            refresh_ui_language($data['lang']);
+        }
         foreach ($which as $type) {
             $data['type'] = $type;
             $data['duplicate-date'] = $doc['duplicate-date'];
@@ -1467,6 +1470,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($idx < count($which)) {
                 $document->NewPage();
             }
+        }
+        if (isset($data['lang'])) {
+            reset_ui_language();
         }
 
         return array(
@@ -1875,10 +1881,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
-				cp.name AS post_country
+				cp.name AS post_country,
+				(CASE WHEN d.div_countryid IS NOT NULL
+				    THEN (CASE WHEN d.countryid IS NULL
+				        THEN cdv.ccode
+				        ELSE cn.ccode
+				    END)
+				    ELSE NULL
+				END) AS lang
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
+				LEFT JOIN countries cdv ON cdv.id = d.div_countryid
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id

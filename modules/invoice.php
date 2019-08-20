@@ -31,6 +31,7 @@ include(LIB_DIR . DIRECTORY_SEPARATOR . 'FPDI' . DIRECTORY_SEPARATOR . 'VarStrea
 
 function invoice_body($document, $invoice)
 {
+    refresh_ui_language($invoice['lang']);
     $document->Draw($invoice);
     if (!isset($invoice['last'])) {
         $document->NewPage();

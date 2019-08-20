@@ -144,3 +144,35 @@ setlocale(LC_TIME, $LANGDEFS[$_language]['locale']);
 setlocale(LC_NUMERIC, $LANGDEFS[$_language]['locale']);
 
 mb_internal_encoding('UTF-8');
+
+$_current_ui_language = $_ui_language;
+
+function refresh_ui_language($lang)
+{
+    global $_current_ui_language;
+    global $_LANG;
+    if (!empty($lang)) {
+        $language = substr($lang, 0, 2);
+        if ($language != $_current_ui_language) {
+            $_current_ui_language = $language;
+            $_LANG = array();
+            if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php')) {
+                include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
+            }
+        }
+    }
+}
+
+function reset_ui_language()
+{
+    global $_current_ui_language;
+    global $_ui_language;
+    global $_LANG;
+    if ($_current_ui_language != $_ui_language) {
+        $_current_ui_language = $_ui_language;
+        $_LANG = array();
+        if (@is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php')) {
+            include(LIB_DIR . DIRECTORY_SEPARATOR . 'locale' . DIRECTORY_SEPARATOR . $_current_ui_language . DIRECTORY_SEPARATOR . 'strings.php');
+        }
+    }
+}

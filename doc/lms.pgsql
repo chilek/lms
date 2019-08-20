@@ -45,6 +45,7 @@ DROP TABLE IF EXISTS countries CASCADE;
 CREATE TABLE countries (
 	id      integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
 	name    varchar(255) NOT NULL DEFAULT '',
+	ccode   varchar(5),
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
@@ -2996,12 +2997,13 @@ INSERT INTO up_rights(module, name, description, setdefault)
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_contact', 'Customer can change contact information');
 
-INSERT INTO countries (name) VALUES
-('Lithuania'),
-('Poland'),
-('Romania'),
-('Slovakia'),
-('USA');
+INSERT INTO countries (name, ccode) VALUES
+('Lithuania', 'lt_LT'),
+('Poland', 'pl_PL'),
+('Romania', 'ro_RO'),
+('Slovakia', 'sk_SK'),
+('USA', 'en_US'),
+('Czech', 'cs_CZ');
 
 INSERT INTO nastypes (name) VALUES
 ('mikrotik_snmp'),
@@ -3517,6 +3519,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019081200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019082000');
 
 COMMIT;

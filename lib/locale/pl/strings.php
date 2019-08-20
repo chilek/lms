@@ -1554,6 +1554,7 @@ $_LANG['Display this form again, when this option is saved'] = 'Pokaż ten formu
 $_LANG['Size:'] = 'Rozmiar:';
 $_LANG['Quantity of numbers'] = 'Ilość numerów';
 $_LANG['Slovakia'] = 'Słowacja';
+$_LANG['Czech'] = 'Czechy';
 $_LANG['Small font text appearing in selected (in template) place of the invoice, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123'] = 'Tekst napisany małą czcionką pojawiająca się w wybranym (w szablonie) miejscu na fakturze. np. Nasz bank: SNETISP, 828823917293871928371\nNumer telefonu 555 123 123';
 $_LANG['Smarty version:'] = 'Wersja Smarty:';
 $_LANG['SMTP settings.'] = 'Ustawienia SMTP.';
