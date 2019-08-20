@@ -78,6 +78,7 @@ function try_generate_archive_notes($ids)
                     format_bankaccount(bankaccount($note['customerid'], $note['account'])),
                     $note['division_header']
                 );
+                refresh_ui_language($note['lang']);
                 $document->Draw($note);
 
                 $file['data'] = $document->WriteToString();
@@ -195,11 +196,14 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             format_bankaccount(bankaccount($note['customerid'], $note['account'])),
             $note['division_header']
         );
+        refresh_ui_language($note['lang']);
         $document->Draw($note);
+
         if (!isset($note['last'])) {
             $document->NewPage();
         }
     }
+    reset_ui_language();
 } elseif (isset($_GET['fetchallnotes'])) {
     $layout['pagetitle'] = trans('Debit Notes');
 
@@ -247,8 +251,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             format_bankaccount(bankaccount($note['customerid'], $note['account'])),
             $note['division_header']
         );
+        refresh_ui_language($note['lang']);
         $document->Draw($note);
     }
+    reset_ui_language();
 } elseif ($note = $LMS->GetNoteContent($_GET['id'])) {
     $ids = array($_GET['id']);
 
@@ -277,7 +283,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         format_bankaccount(bankaccount($note['customerid'], $note['account'])),
         $note['division_header']
     );
+    refresh_ui_language($note['lang']);
     $document->Draw($note);
+    reset_ui_language();
 } else {
     $SESSION->redirect('?m=notelist');
 }
