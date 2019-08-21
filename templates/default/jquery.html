@@ -33,7 +33,8 @@
         zipCodeBackend: '{ConfigHelper::getConfig('phpui.zipcode_backend', 'osm')}',
         multiSelectPopupOnBottom: {if ConfigHelper::checkConfig('phpui.multiselect_popup_on_bottom')}true{else}false{/if},
 		multiSelectMaxVisible: '{ConfigHelper::getConfig('phpui.multiselect_max_visible', 0)}',
-        eventTimeStep: {ConfigHelper::getConfig('phpui.event_time_step', 30)}
+        eventTimeStep: {ConfigHelper::getConfig('phpui.event_time_step', 30)},
+		openCalendarOnInputClick: {if ConfigHelper::checkConfig('phpui.open_calendar_on_input_click')}true{else}false{/if}
 	};
 
 	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}

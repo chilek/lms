@@ -123,8 +123,6 @@ function init_multiselects(selector) {
 function init_datepickers(selector) {
 	var options = {
 		showButtonPanel: true,
-		showOn: 'button',
-		buttonText: '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>',
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
 		beforeShow: function (input, inst) {
@@ -204,6 +202,12 @@ function init_datepickers(selector) {
 			}
 		}
 	}
+
+	if (!lmsSettings.openCalendarOnInputClick) {
+		options.showOn = 'button';
+		options.buttonText = '<i class="fas fa-calendar-alt" title="' + $t('Click here to open calendar') + '"></i>';
+	}
+
 	$(selector).each(function() {
 		var unix = $(this).hasClass('unix') || $(this).hasClass('lms-ui-date-unix');
 		var value = $(this).val();
@@ -369,10 +373,16 @@ $(function() {
 			})
 		});
 
-		$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
-			.insertAfter(this).click(function() {
+		if (lmsSettings.openCalendarOnInputClick) {
+			$(this).click(function () {
+				$(this).datetimepicker('toggle');
+			});
+		} else {
+			$('<i class="fas fa-calendar-alt ui-datepicker-trigger" title="' + $t('Click here to open calendar') + '"></i>')
+				.insertAfter(this).click(function () {
 				$(this).prev().datetimepicker('toggle');
 			});
+		}
 	});
 
 	init_multiselects('select.lms-ui-multiselect');
