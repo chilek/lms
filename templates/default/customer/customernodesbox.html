@@ -8,6 +8,7 @@
 
 {$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
 {if ConfigHelper::checkConfig('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
+{assign var=today value=$today|date_format:"%s"}
 
 {tab_container id="customernodesbox"}
 
@@ -85,7 +86,10 @@
 							{/if}
 							<strong>{$node.name}</strong>
 							{if isset($nodeassignments[$node.id])}
-								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}">{$assignment.name}</a>{if !$assignment@last},{/if}{/foreach}){/if}
+								({foreach $nodeassignments[$node.id] as $assignment}<a href="?m=customerassignmentedit&id={$assignment.id}"><span
+										class="{if ($assignment.dateto < $today && $assignment.dateto) || ($assignment.liabilityid && $assignment.at < $today && $assignment.at > 365)} blend{elseif ($assignment.datefrom > $today && $assignment.datefrom && $assignment.period) && !($assignment.suspended)} alertblend{elseif ($assignment.suspended)}suspended{/if}
+										{if !$assignment.commited} lms-ui-assignment-not-commited{/if}">{$assignment.name}</span></a>{if !$assignment@last}, {/if}{/foreach})
+							{/if}
 							{if $node.location}<BR>
 								<span class="nobr">{$node.location|truncate:60:"...":true}</span>
 							{/if}

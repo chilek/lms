@@ -70,9 +70,7 @@ if (!empty($assignments)) {
                 if (!isset($nodeassignments[$node['id']])) {
                     $nodeassignments[$node['id']] = array();
                 }
-                $nodeassignments[$node['id']] = array(
-                'assignment' => $assignment,
-                );
+                $nodeassignments[$node['id']][] = $assignment;
             }
         }
     }
