@@ -130,7 +130,7 @@ class Session
             if ($this->ValidateRecaptchaResponse()) {
                 $authdata = $this->VerifyPassword();
             }
-        } else {
+        } elseif ($this->passwd) {
             $authdata = $this->VerifyPassword();
         }
 
