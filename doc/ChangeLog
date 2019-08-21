@@ -50,6 +50,8 @@ version 25-git (????-??-??):
   - enhancement: script automating the installation of LMS + PostgreSQL for the Debian 10/Buster
     system has been added to the "sample" catalog [interduo]
   - improvement: make customer and node forms responsive [chilan, ravvar]
+  - improvement: phpui.open_calendar_on_input_click set to 'true' ('false' by default) enables
+    old-style date picker behavior on input control click [chilan]
 
 version 24.0 (2019-05-16):
 
