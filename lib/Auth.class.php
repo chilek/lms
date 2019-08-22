@@ -155,10 +155,6 @@ class Auth
                 }
             }
 
-            if (!$this->error) {
-                $this->error = trans('Please login.');
-            }
-
             $this->LogOut();
         }
     }
@@ -204,7 +200,7 @@ class Auth
             return true;
         }
     }
-    
+
     public function VerifyAccessFrom($access)
     {
         $access = intval($access);
@@ -219,7 +215,7 @@ class Auth
             return false;
         }
     }
-    
+
     public function VerifyAccessTo($access)
     {
         $access = intval($access);
@@ -276,7 +272,7 @@ class Auth
     {
         $this->islogged = false;
 
-        if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip, 
+        if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
 			passwdexpiration, passwdlastchange, access, accessfrom, accessto
 			FROM vusers WHERE login=? AND deleted=0', array($this->login))) {
             $this->logname = $user['name'];
