@@ -1562,9 +1562,10 @@ CREATE TABLE nodesessions (
 	tag varchar(32)		DEFAULT '' NOT NULL,
 	terminatecause varchar(32) DEFAULT '' NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
-	nasipaddr bigint	DEFAULT NULL,
-	nasport text		DEFAULT NULL
+    nasipaddr bigint	DEFAULT NULL,
+    nasport text		DEFAULT NULL,
+    nasid text          DEFAULT NULL,
+	PRIMARY KEY (id)
 );
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
 CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);
@@ -3519,6 +3520,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019082000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019082200');
 
 COMMIT;
