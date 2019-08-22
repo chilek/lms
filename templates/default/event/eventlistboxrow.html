@@ -25,23 +25,23 @@
         {/foreach}
     </TD>
     <TD data-target-url="?m=eventinfo&id={$event.id}">
-        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i><span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
-        {if $event.description != ''}<br><i class="lms-ui-icon-description"></i>{$event.description}{/if}
-        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i>{$event.note}</span>{/if}
+        <a href="?m=eventinfo&id={$event.id}"><i class="lms-ui-icon-timetable"></i> <span class="bold" {if !$event.closed}style="color:black"{/if}>{$event.title}</span></a>
+        {if $event.description != ''}<br><i class="lms-ui-icon-description"></i> {$event.description}{/if}
+        {if $event.note != ''}<span{if !$event.closed} style="color: red;"{/if}><br><i class="lms-ui-icon-note"></i> {$event.note}</span>{/if}
     </TD>
     <TD class="nobr" colspan="2" data-target-url="?m=eventinfo&id={$event.id}">
         {if $event.netnode_name}
-        <i class="lms-ui-icon-netnode"></i><a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
-            {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i>{$event.netnode_location}{/if}
+        <i class="lms-ui-icon-netnode"></i> <a href="?m=netnodeinfo&id={$event.netnode_id}">{$event.netnode_name}</a>
+            {if !empty($event.netnode_location)}<br><i class="lms-ui-icon-location"></i> {$event.netnode_location}{/if}
         {else}
         {if $event.customername}
-        <i class="lms-ui-icon-customer"></i><A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
+        <i class="lms-ui-icon-customer"></i> <A href="?m=customerinfo&amp;id={$event.customerid}">{$event.customername|truncate:"30":"...":true}</A><br>
         {if !empty($event.address_id)}
-        <i class="lms-ui-icon-location"></i>{$event.location}
+        <i class="lms-ui-icon-location"></i> {$event.location}
         {elseif !empty($event.nodeid)}
-        <a href="?m=nodeinfo&id={$event.nodeid}">{$event.nodelocation}</a>
+        <a href="?m=nodeinfo&id={$event.nodeid}"> {$event.nodelocation}</a>
         {else}
-        <i class="lms-ui-icon-location"></i>{$event.customerlocation}
+        <i class="lms-ui-icon-location"></i> {$event.customerlocation}
         {/if}
         {/if}
         {/if}
