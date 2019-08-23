@@ -53,8 +53,9 @@
 		<span class="bold text-center">
 			{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
 			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
-		</span><br><br><br>
-		{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}<br>
+		</span>
+		<br>
+		{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}
 		<br>
 		<form method="post" name="loginform" action="{$target}">
 			<table>
@@ -86,7 +87,6 @@
 				</tr>
 			</table>
 		</form>
-		<br>
 		<br>
 		<br>
 		<a href="doc/html/{$_ui_language}/"><span class="blend">{trans("Documentation")}</span></a><br>
