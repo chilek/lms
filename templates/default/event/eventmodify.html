@@ -219,7 +219,6 @@
 			{if intval($event.customerid)}
 			{if $event.address_id}
 			$('#customer_addresses').val( {$event.address_id} );
-			customer_addresses.refresh();
 			{else}
 			if (Object.keys(addresses).length == 1) {
 				$('#customer_addresses').val($('#customer_addresses option:last-child').val());
