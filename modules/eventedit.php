@@ -26,6 +26,7 @@
 
 $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if (isset($_GET['action'])) {
