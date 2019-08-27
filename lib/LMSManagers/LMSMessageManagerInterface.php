@@ -32,7 +32,7 @@ interface LMSMessageManagerInterface
 {
     public function GetMessages($customerid, $limit = null);
 
-    public function IsMessageTemplateExists($type, $name);
+    public function MessageTemplateExists($type, $name);
 
     public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message);
 

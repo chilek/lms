@@ -44,7 +44,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         . ($limit ? ' LIMIT ' . $limit : ''), array($customerid));
     }
 
-    public function IsMessageTemplateExists($type, $name)
+    public function MessageTemplateExists($type, $name)
     {
         return $this->db->GetOne(
             'SELECT id FROM templates WHERE type = ? AND name = ?',

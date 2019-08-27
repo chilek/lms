@@ -3216,10 +3216,10 @@ class LMS
         return $nodesessions;
     }
 
-    public function IsMessageTemplateExists($type, $name)
+    public function MessageTemplateExists($type, $name)
     {
         $manager = $this->getMessageManager();
-        return $manager->IsMessageTemplateExists($type, $name);
+        return $manager->MessageTemplateExists($type, $name);
     }
 
     public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
