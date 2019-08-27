@@ -216,7 +216,11 @@ class LMSConfig
             $config = self::overrideConfigs($ini_config, $ui_config);
         }
 
-        return self::appendOneConfigSectionsToAnother($config, $rights_config);
+        if (empty($rights_config)) {
+            return $config;
+        } else {
+            return self::appendOneConfigSectionsToAnother($config, $rights_config);
+        }
     }
 
     /**
