@@ -44,6 +44,14 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
                         . ($limit ? ' LIMIT ' . $limit : ''), array($customerid));
     }
 
+    public function IsMessageTemplateExists($type, $name)
+    {
+        return $this->db->GetOne(
+            'SELECT id FROM templates WHERE type = ? AND name = ?',
+            array($type, $name)
+        );
+    }
+
     public function AddMessageTemplate($type, $name, $subject, $helpdesk_queues, $helpdesk_message_types, $message)
     {
         $args = array(

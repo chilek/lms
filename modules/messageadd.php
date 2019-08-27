@@ -471,7 +471,16 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 if (!strlen($msgtmplname)) {
                     break;
                 }
-                $LMS->AddMessageTemplate($msgtmpltype, $msgtmplname, $message['subject'], null, null, $message['body']);
+                if (!$LMS->IsMessageTemplateExists($msgtmpltype, $msgtmplname)) {
+                    $LMS->AddMessageTemplate(
+                        $msgtmpltype,
+                        $msgtmplname,
+                        $message['subject'],
+                        null,
+                        null,
+                        $message['body']
+                    );
+                }
                 break;
         }
     }
