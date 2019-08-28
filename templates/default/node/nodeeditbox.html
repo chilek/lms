@@ -21,10 +21,6 @@
 		flex-grow: 1;
 	}
 
-	#node-left-panel {
-		margin-right: 10em;
-	}
-
 	#node-right-panel {
 		margin-right: 2em;
 	}
@@ -141,7 +137,7 @@
 									<td>
 										{trans("MAC address:")}
 									</td>
-									<td class="lms-ui-mac-address-selection nobr">
+									<td class="lms-ui-mac-address-selection">
 										{mac_address_selection form="nodeedit" macs=$nodeinfo.macs}
 									</td>
 								</tr>
@@ -236,7 +232,7 @@
 									<td>
 										{trans("Customer:")}
 									</td>
-									<td class="nobr">
+									<td>
 										{customerlist
 											form        = "editnode"
 											customers   = $customers
@@ -260,7 +256,7 @@
 									<td>
 										{trans("Location:")}
 									</td>
-									<td class="nobr">
+									<td>
 										<select id="customer_addresses" name="nodeedit[address_id]" {tip trigger="address_id"}></select>
 									</td>
 								</tr>
@@ -272,7 +268,7 @@
 									<td>
 										{trans("Options:")}
 									</td>
-									<td class="nobr">
+									<td>
 										<label>
 											<input type="checkbox" name="nodeedit[chkmac]" value="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
 											{trans("MAC checking")}
@@ -292,7 +288,7 @@
 									<td>
 										{trans("Type:")}
 									</td>
-									<td class="nobr">
+									<td>
 										{foreach $_SESSIONTYPES as $idx => $sessiontype}
 											<label>
 												<input type="checkbox" name="nodeedit[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if $nodeinfo.authtype & $idx} checked{/if}>
@@ -327,7 +323,7 @@
 									<td>
 										<span class="bold">{trans("GPS longitude:")}</span>
 									</td>
-									<td class="nobr">
+									<td>
 										<input type="text" id="longitude" name="nodeedit[longitude]" value="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
 										<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 									</td>
@@ -340,7 +336,7 @@
 									<td>
 										<span class="bold">{trans("GPS latitude:")}</span>
 									</td>
-									<td class="nobr">
+									<td>
 										<input type="text" id="latitude" name="nodeedit[latitude]" value="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
 										<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 									</td>
