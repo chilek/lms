@@ -23,12 +23,8 @@
 		flex-grow: 1;
 	}
 
-	#node-left-panel {
-		margin-right: 10em;
-	}
-
 	#node-right-panel {
-		margin-right: 2em;
+		margin-right: -0.75em;
 	}
 
 </style>
@@ -51,7 +47,7 @@
 					<tr>
 						<td class="tab-beautify node-data">
 							<div id="node-left-panel">
-								<table class="tab-beautify">
+								<table>
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
@@ -163,7 +159,7 @@
 										<td>
 											{trans("Net device:")}
 										</td>
-										<TD class="nobr">
+										<TD>
 											{if $nodeinfo.netdev}
 												<span class="bold">
 													<a href="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
@@ -244,7 +240,7 @@
 									<td>
 										{trans("Options:")}
 									</td>
-									<td class="nobr">
+									<td>
 										{if $disable_active_links}
 											<ol class="lms-inline-list">
 												{if $nodeinfo.chkmac}<li>{trans("MAC checking")}</li>{/if}
@@ -273,7 +269,7 @@
 									<td>
 										{trans("Type:")}
 									</td>
-									<td class="nobr">
+									<td>
 										{if $disable_active_links}
 											<ol class="lms-inline-list">
 												{foreach $_SESSIONTYPES as $idx => $sessiontype}
@@ -302,7 +298,7 @@
 							</table>
 							</div>
 							<div id="node-right-panel">
-								<table id="nodeinfo" class="tab-beautify">
+								<table id="nodeinfo">
 							{block name="nodeinfobox-rightcolumn"}
                                 <colgroup>
                                     <col style="width: 1%;">

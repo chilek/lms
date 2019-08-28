@@ -21,10 +21,6 @@
 		flex-grow: 1;
 	}
 
-	#node-left-panel {
-		margin-right: 10em;
-	}
-
 	#node-right-panel {
 		margin-right: 2em;
 	}
@@ -121,7 +117,7 @@
 								<TD style="width: 1%;">
 									<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 								</TD>
-								<td style="width: 99%;" class="lms-ui-mac-address-selection nobr" COLSPAN="2">
+								<td style="width: 99%;" class="lms-ui-mac-address-selection" COLSPAN="2">
 									{mac_address_selection form="nodedata" macs=$nodedata.macs}
 								</td>
 							</TR>
@@ -193,7 +189,7 @@
 								<td style="width: 1%;">
 									<img src="img/customer.gif" alt="{trans("Customer:")}">
 								</td>
-								<td style="width: 99%;" class="nobr">
+								<td style="width: 99%;">
 									{customerlist
 										form       = "nodeadd"
 										customers  = $customers
@@ -232,7 +228,7 @@
 								<TD style="width: 1%;">
 									<IMG SRC="img/netdev.gif" ALT="">
 								</TD>
-								<TD style="width: 99%;" class="nobr">
+								<TD style="width: 99%;">
 									{foreach $_SESSIONTYPES as $idx => $sessiontype}
 									<label>
 										<INPUT TYPE="checkbox" NAME="nodedata[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($nodedata.authtype & $idx) == $idx} checked{/if}>
