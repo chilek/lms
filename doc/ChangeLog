@@ -52,6 +52,7 @@ version 25-git (????-??-??):
   - improvement: make customer and node forms responsive [chilan, ravvar]
   - improvement: phpui.open_calendar_on_input_click set to 'true' ('false' by default) enables
     old-style date picker behavior on input control click [chilan]
+  - enhancement: userpanel: session expiration time to left presented on right-top corner [chilan]
 
 version 24.0 (2019-05-16):
 
