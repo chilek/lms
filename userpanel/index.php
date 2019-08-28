@@ -228,6 +228,7 @@ $SMARTY->assignByRef('modules', $USERPANEL->MODULES);
 $SMARTY->assignByRef('layout', $layout);
 $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo'));
+$SMARTY->assign('timeout', $_TIMEOUT);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 

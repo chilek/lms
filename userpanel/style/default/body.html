@@ -1,21 +1,28 @@
 <table width="100%" cellspacing="0" cellpadding="0" style="background-image:url('style/default/keyboard.jpg'); background-repeat:no-repeat; background-color: #ECECEC;">
     <tr style="height:100px;">
-	<td align="right" style="padding-right:15px;">
-		<h2>
-		{if $company_logo}
-			<img src="{$company_logo}" alt=""/>
-		{/if}
-		{if $page_header}
-			{if $company_logo}<br/>{/if}{$page_header}
-		{/if}
-		{if !$page_header && !$company_logo}
-			LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br/>
-			@ {$layout.hostname}
-		{/if}
-		</h2>
-	</td>
+		<td style="padding-left: 1em; padding-right: 1em;">
+			<h2>
+			{if $company_logo}
+				<img src="{$company_logo}" alt=""/>
+			{/if}
+			{if $page_header}
+				{if $company_logo}<br/>{/if}{$page_header}
+			{/if}
+			{if !$page_header && !$company_logo}
+				LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br/>
+				@ {$layout.hostname}
+			{/if}
+			</h2>
+		</td>
+		<td class="text-right valign-top" style="padding: 1em 1em;">
+			{trans("Session expires after:")}
+			<span id="lms-ui-session-expire">
+				{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
+			</span>
+		</td>
     </tr>
-<tr><td>
+	<tr>
+		<td colspan="2">
 <table style="text-align: left; width: 100%; background-image: url(style/default/tabs_bg.gif); background-repeat: repeat-x;" cellspacing="0" cellpadding="0">
     <tr>
 	{foreach $modules as $menuitem}
@@ -62,5 +69,7 @@
 	<td>&nbsp;</td>
     </tr>
 </table>
-</tr></td></table>
+		</td>
+	</tr>
+</table>
 <div style="margin:0px; background-image: url('style/default/grad.gif'); background-repeat: repeat-x; height: 400px">

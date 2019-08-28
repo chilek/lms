@@ -1,14 +1,24 @@
-<h1 class="mt-1">
-	{if $company_logo}
-		<img src="{$company_logo}">
-	{/if}
-	{if $page_header}
-		{if $company_logo}<br>{/if}<small class="text-muted">{$page_header}</small>
-	{/if}
-	{if !$company_logo && !$page_header}
-		<small class="text-muted">{trans('Virtual Customer Service')}</small>
-	{/if}
-</h1>
+<div class="row justify-content-between no-gutters">
+	<h1>
+		{if $company_logo}
+			<img src="{$company_logo}">
+		{/if}
+		{if $page_header}
+			{if $company_logo}<br>{/if}<small class="text-muted">{$page_header}</small>
+		{/if}
+		{if !$company_logo && !$page_header}
+			<small class="text-muted">{trans('Virtual Customer Service')}</small>
+		{/if}
+	</h1>
+	<div>
+		<small>
+			{trans("Session expires after:")}
+			<span id="lms-ui-session-expire" class="font-weight-bold text-danger">
+				{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
+			</span>
+		</small>
+	</div>
+</div>
 {if $modules}
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-toggleable-md">
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
