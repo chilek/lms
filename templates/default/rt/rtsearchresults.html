@@ -58,6 +58,14 @@
 </TABLE>
 <script>
 
+        function get_backid(elem) {
+                var ticket = $(elem).closest('.single-ticket').prev('.single-ticket');
+                if (ticket.length) {
+                        return '&backid=' + ticket.attr('id');
+                }
+                return '';
+        }
+
 	$(function() {
 		function disableLink() {
 			var disabled = $('.lms-ui-multi-check:checked').length < 2;
