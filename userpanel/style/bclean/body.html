@@ -3,10 +3,10 @@
 		<img src="{$company_logo}">
 	{/if}
 	{if $page_header}
-		<br><small class="text-muted">{$page_header}</small>
+		{if $company_logo}<br>{/if}<small class="text-muted">{$page_header}</small>
 	{/if}
 	{if !$company_logo && !$page_header}
-		<br><small class="text-muted">{trans('Virtual Customer Service')}</small>
+		<small class="text-muted">{trans('Virtual Customer Service')}</small>
 	{/if}
 </h1>
 {if $modules}
