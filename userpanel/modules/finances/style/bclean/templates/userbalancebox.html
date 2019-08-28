@@ -6,6 +6,7 @@
 	$(function() {
 		$(".table-click[data-href] td:not(.buttons)").click(function() {
 			window.open($(this).closest('tr').attr("data-href"));
+			reset_login_timeout();
 		});
 
 		$(".table-click[data-href] td:last-child").click(function(e) {
@@ -94,7 +95,7 @@
 									{if isset($link.extra)}{$link.extra}{/if}
 								{/foreach}
 								{if $item.doctype == $smarty.const.DOC_INVOICE || $item.doctype == $smarty.const.DOC_CNOTE}
-									<a class="btn btn-primary btn-sm" href="?m=finances&f=invoice&id={$item.docid}" role="button" target="_blank">
+									<a class="btn btn-primary btn-sm" onclick="reset_login_timeout();" href="?m=finances&f=invoice&id={$item.docid}" role="button" target="_blank">
 										{trans("Print")}
 									</a>
 								{else}

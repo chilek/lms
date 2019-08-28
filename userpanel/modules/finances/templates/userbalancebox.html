@@ -35,7 +35,7 @@
 			{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
 			{if $item.doctype == 1 || $item.doctype == 3}
-			<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" target="_blank">{img src="print.gif" alt="Print" text=$item.number}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$item.docid}]" value="1" />
+			<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" onclick="reset_login_timeout();" target="_blank">{img src="print.gif" alt="Print" text=$item.number}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$item.docid}]" value="1" />
 			{else}
 			&nbsp;
 			{/if}
@@ -58,7 +58,7 @@
 			<table width="100%" cellpadding="0" cellspacing="0">
 			    <tr>
 				<td width="50%">
-					{img src="print.gif" alt="Print"} <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+					{img src="print.gif" alt="Print"} <a onclick="reset_login_timeout();" href="javascript:document.invoices.submit();">{trans("Print selected")}</a>
 					{img src="group.gif" alt="Aggregate documents"} <a href="?m=finances&aggregate_documents={if $aggregate_documents}0{else}1{/if}">
 						{if $aggregate_documents}{trans("Don't aggregate documents")}{else}{trans("Aggregate documents")}{/if}
 					</a>

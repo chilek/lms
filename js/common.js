@@ -384,6 +384,12 @@ function reset_login_timeout()
     if (lms_login_timeout_update) {
 		clearInterval(lms_login_timeout_update);
 		lms_login_timeout_update = 0;
+		if (lms_session_expire_elem.length) {
+			lms_session_expire_elem.text(sprintf("%02d:%02d",
+				Math.floor(lms_login_timeout_value / 60),
+				lms_login_timeout_value % 60
+			));
+		}
 	}
     start_login_timeout(lms_login_timeout_value);
 }
