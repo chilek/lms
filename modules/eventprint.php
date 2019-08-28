@@ -87,11 +87,17 @@ function GetEvents($date = null, $userid = 0, $type = 0, $customerid = 0, $priva
 				WHERE userid = vusers.id AND eventid = ? ',
                 array($row['id'])
             );
+
             $endtime = $row['endtime'];
+
+            $row['wholeday'] = $endtime == 86400;
+            $row['multiday'] = false;
+
             if ($row['enddate'] && $row['enddate'] - $row['date']) {
                 $days = round(($row['enddate'] - $row['date']) / 86400);
+                $row['multiday'] = $days > 0;
                 $row['enddate'] = $row['date'] + 86400;
-                $row['endtime'] = 0;
+                //$row['endtime'] = 0;
                 $list2[] = $row;
             } else {
                 $list2[] = $row;

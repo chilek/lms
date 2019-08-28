@@ -10,7 +10,7 @@
 			<H1>{$layout.pagetitle}: {$date|date_format:"%x (%A)"}</H1>
 		</TD>
 		<TD class="text-right">
-			LMS {$layout.lmsv} @ {$layout.hostname} {$smarty.now|date_format:"%A %e %B %Y"}<BR> 
+			LMS {$layout.lmsv} @ {$layout.hostname} {$smarty.now|date_format:"%A %e %B %Y"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
 		</TD>
 	</TR>
@@ -46,11 +46,16 @@
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
-	<TR class="{cycle}"{if $event.closed==1} style="color: lightgray;"{/if}>
+	<TR class="{cycle}{if $event.wholeday} event-whole-day{/if}{if $event.multiday} event-multi-day{/if}"{if $event.closed==1} style="color: lightgray;"{/if}>
 		<TD class="text-center nobr">
-			{($date + $event.begintime)|date_format:"%H:%M"}
-			{if $event.begintime != $event.endtime}
-				- {($date + $event.endtime)|date_format:"%H:%M"}
+			{if $event.endtime == 86400}
+				{trans("whole day")}
+			{else}
+				{($date + $event.begintime)|date_format:"%H:%M"}
+				{if $event.begintime != $event.endtime}
+					- {($date + $event.endtime)|date_format:"%H:%M"}
+				{/if}
+				{if $event.multiday}<br>{trans("multi day")}{/if}
 			{/if}
 		</TD>
 		<TD class="text-center">
