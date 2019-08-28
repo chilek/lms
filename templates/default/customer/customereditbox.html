@@ -42,10 +42,6 @@
 		flex-grow: 1;
 	}
 
-	#customer-left-panel {
-		margin-right: 10em;
-	}
-
 	#customer-right-panel {
 		margin-right: 2em;
 	}
@@ -133,7 +129,7 @@
 									<TD>
 										<IMG src="img/division.gif" alt="">
 									</TD>
-									<TD class="nobr">
+									<TD>
 										<SELECT size="1" name="customerdata[divisionid]" {tip text="Select division" trigger="divisionid"}>
 											{foreach from=$divisions item=item}
 											{if !$item.status || $item.id == $customerinfo.divisionid}
@@ -148,7 +144,7 @@
 									<TD>
 										<IMG src="img/folder.gif" alt="">
 									</TD>
-									<TD class="nobr">
+									<TD>
 										<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
 										<INPUT type="radio" name="customerdata[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customerinfo.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 									</TD>
@@ -270,7 +266,7 @@
 									<TD style="width: 99%;">
 										<TABLE width="100%">
 											<TR>
-												<TD style="width: 1%;" class="nobr">{trans("ICN")}:</TD>
+												<TD style="width: 1%;">{trans("ICN")}:</TD>
 												<TD style="width: 99%;">
 													{if $customerinfo.icnwarning}
 													<INPUT type="hidden" name="customerdata[icnwarning]" value="1">
@@ -279,7 +275,7 @@
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;" class="nobr">{trans("SSN")}:</TD>
+												<TD style="width: 1%;">{trans("SSN")}:</TD>
 												<TD style="width: 99%;">
 													<INPUT type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
 													{if $customerinfo.ssnwarning}
@@ -291,7 +287,7 @@
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;" class="nobr">{trans("TEN")}:</TD>
+												<TD style="width: 1%;">{trans("TEN")}:</TD>
 												<TD style="width: 99%;">
 													<INPUT type="text" name="customerdata[ten]" value="{$customerinfo.ten}" size="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
 													{if $customerinfo.tenwarning}
@@ -304,20 +300,20 @@
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;" class="nobr">{trans("REGON")}:</TD>
+												<TD style="width: 1%;">{trans("REGON")}:</TD>
 												<TD style="width: 99%;">
 													<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 													<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;" class="nobr">{trans("RBE Name:")}</TD>
+												<TD style="width: 1%;">{trans("RBE Name:")}</TD>
 												<TD style="width: 99%;">
 													<TEXTAREA name="customerdata[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customerinfo.rbename|escape}</TEXTAREA>
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;" class="nobr">{trans("RBE")}:</TD>
+												<TD style="width: 1%;">{trans("RBE")}:</TD>
 												<TD style="width: 99%;">
 													<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 													<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
