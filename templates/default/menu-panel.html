@@ -128,6 +128,10 @@
 
 		</script>
 	</div>
+	<div id="lms-ui-session-expire" title="{trans("Session expires after:")}">
+		{$timeout = ConfigHelper::getConfig('phpui.timeout')}
+		{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
+	</div>
 	<div id="lms-ui-copyrights">
 		&copy; 2001-{$smarty.now|date_format:'%Y'}<br>
 		DB: {$layout.lmsdbv}<br>
