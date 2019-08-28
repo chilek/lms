@@ -97,7 +97,12 @@
 								{/foreach}
 							</select>
 						{else}
-							{trans("Request not assigned to any node.")}
+							{if !empty($event.ticket.nodeid)}
+								{$event.ticket.node_name} ({$event.ticket.nodeid})
+								<input type="hidden" name="event[nodeid]" value="{$event.ticket.nodeid}">
+							{else}
+								{trans("Request not assigned to any node.")}
+							{/if}
 						{/if}
 					{/box_row}
 

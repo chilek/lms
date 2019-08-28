@@ -411,6 +411,9 @@ if (isset($event['helpdesk'])) {
     $SMARTY->assign('ticket', $ticket);
 } elseif (isset($eventticketid)) {
     $event['ticketid'] = $eventticketid;
+    $event['ticket'] = $LMS->GetTicketContents($eventticketid);
+    $event['customerid'] = $event['ticket']['customerid'];
+    $event['customername'] = $event['ticket']['customername'];
 }
 
 if (isset($_GET['customerid'])) {
