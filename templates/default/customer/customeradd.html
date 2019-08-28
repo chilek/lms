@@ -145,7 +145,7 @@
 					<TD>
 						<IMG SRC="img/group.gif" alt="">
 					</TD>
-					<TD class="nobr">
+					<TD>
 						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
 							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
 							{foreach $groups as $group}
@@ -159,7 +159,7 @@
 					<TD>
 						<IMG SRC="img/folder.gif" alt="">
 					</TD>
-					<TD class="nobr">
+					<TD>
 						<INPUT type="radio" name="customeradd[type]" value="{$smarty.const.CTYPES_PRIVATE}" id="private" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_PRIVATE} CHECKED{/if}><label for="private">{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}</label>
 						<INPUT type="radio" name="customeradd[type]" value="{$smarty.const.CTYPES_COMPANY}" id="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 					</TD>
@@ -299,7 +299,7 @@
 					<TD>
 						<TABLE width="100%">
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("ICN")}:</TD>
+								<TD style="width: 1%;">{trans("ICN")}:</TD>
 								<TD style="width: 99%;">
 									{if $customeradd.icnwarning}
 									<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
@@ -308,7 +308,7 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("SSN")}:</TD>
+								<TD style="width: 1%;">{trans("SSN")}:</TD>
 								<TD style="width: 99%;">
 									<INPUT type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
 									{if $customeradd.ssnwarning}
@@ -320,7 +320,7 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("TEN")}:</TD>
+								<TD style="width: 1%;">{trans("TEN")}:</TD>
 								<TD style="width: 99%;">
 									<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
 									{if $customeradd.tenwarning}
@@ -333,20 +333,20 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("REGON")}:</TD>
+								<TD style="width: 1%;">{trans("REGON")}:</TD>
 								<TD style="width: 99%;">
 									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("RBE Name:")}</TD>
+								<TD style="width: 1%;">{trans("RBE Name:")}</TD>
 								<TD style="width: 99%;">
 									<TEXTAREA name="customeradd[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customeradd.rbename|escape}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("RBE")}:</TD>
+								<TD style="width: 1%;">{trans("RBE")}:</TD>
 								<TD style="width: 99%;">
 									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
