@@ -53,6 +53,7 @@ function module_setup()
     $SMARTY->assign('force_ssl', ConfigHelper::getConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl', 1)));
     $SMARTY->assign('google_recaptcha_sitekey', ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey', ''));
     $SMARTY->assign('google_recaptcha_secret', ConfigHelper::getConfig('userpanel.google_recaptcha_secret', ''));
+    $SMARTY->assign('timeout', intval(ConfigHelper::getConfig('userpanel.timeout')));
     $enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
     if (is_null($enabled_modules)) {
         $enabled_modules = array();
@@ -166,6 +167,12 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'google_recaptcha_secret'", array($_POST['google_recaptcha_secret']));
     } else {
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'google_recaptcha_secret', ?)", array($_POST['google_recaptcha_secret']));
+    }
+
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'timeout'")) {
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'timeout'", array(intval($_POST['timeout'])));
+    } else {
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'timeout', ?)", array(intval($_POST['timeout'])));
     }
 
     if (isset($_POST['enabled_modules'])) {

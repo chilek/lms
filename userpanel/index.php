@@ -128,7 +128,7 @@ if ($_FORCE_SSL && $_SERVER['HTTPS'] != 'on') {
      exit(0);
 }
 
-$_TIMEOUT = ConfigHelper::getConfig('phpui.timeout');
+$_TIMEOUT = ConfigHelper::getConfig('userpanel.timeout');
 
 // Include required files (including sequence is important)
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');

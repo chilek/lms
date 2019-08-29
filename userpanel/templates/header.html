@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_ui_language}">
 <head>
   <meta content="text/html; charset={$LANGDEFS.$_ui_language.charset}" http-equiv="content-type" />
-  <meta http-equiv="refresh" content="{ConfigHelper::getConfig('phpui.timeout')+5}">
+  <meta http-equiv="refresh" content="{ConfigHelper::getConfig('userpanel.timeout')+5}">
   <title>{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</title>
   <link href="{ConfigHelper::getConfig('userpanel.shortcut_icon', 'img/lms-net.gif')}" rel="shortcut icon">
   <script type="text/javascript" src="style/default/common.js"></script>
@@ -14,7 +14,7 @@
 {if $hint_mode != 'classic' && $hint_mode != 'none'}
   <script type="text/javascript" src="style/default/avatar.js"></script>
 </head>
-<body onload="javascript:draginit();start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
+<body onload="javascript:draginit();start_login_timeout({ConfigHelper::getConfig('userpanel.timeout')})">
 <div id="drag" class="drag" style="width:150px; position:absolute; left:350px; top:150px; visibility:hidden;">
 <div id ="hint" style="visibility:hidden; position:relative; top:70px;">
 <img src="style/default/note1.gif" style="vertical-align:bottom;" alt="" />
@@ -30,11 +30,11 @@
 </div>
 {elseif $hint_mode == 'classic'}
 </head>
-<body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
+<body onload="start_login_timeout({ConfigHelper::getConfig('userpanel.timeout')})">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" src="style/default/overlib.js"></script>
 {else}
 </head>
-<body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
+<body onload="start_login_timeout({ConfigHelper::getConfig('userpanel.timeout')})">
 {/if}
 {body}

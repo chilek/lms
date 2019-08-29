@@ -113,3 +113,5 @@ $_LANG['Web browser icon'] = 'Ikona w przeglądarce www';
 $_LANG['Enter full or relative URL address of web browser icon'] = 'Podaj pełny lub względny adres URL ikony widocznej w przeglądarce www';
 
 $_LANG['Session expires after:'] = 'Sesja wygasa za:';
+
+$_LANG['Session timeout:'] = 'Czas wygasania sesji:';
