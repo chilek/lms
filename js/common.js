@@ -359,7 +359,7 @@ var lms_login_timeout_value,
 function start_login_timeout(sec)
 {
     if (!sec) sec = 600;
-    lms_login_timeout = sec;
+    lms_login_timeout_value = sec;
     lms_login_timeout_ts = Date.now() + sec * 1000;
     lms_login_timeout = setTimeout(function() {
             window.location.assign(window.location.href);
@@ -376,6 +376,9 @@ function start_login_timeout(sec)
 					Math.floor(time_to_expire / 60),
 					time_to_expire % 60
 				));
+	    		if (typeof(session_expiration_warning_handler) == 'function') {
+	    			session_expiration_warning_handler(time_to_expire);
+				}
 	    }, 1000);
 	}
 }
@@ -393,6 +396,11 @@ function reset_login_timeout()
 			));
 		}
 	}
+
+    if (typeof(session_expiration_warning_reset) == 'function') {
+    	session_expiration_warning_reset();
+	}
+
     start_login_timeout(lms_login_timeout_value);
 }
 

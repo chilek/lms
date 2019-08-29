@@ -167,4 +167,30 @@
 		});
 	});
 
+	var lms_session_expiration_warning_interval = {intval(ConfigHelper::getConfig('phpui.session_expiration_warning_interval', 0))}
+	var lms_session_expiration_warning_dialog = false;
+
+	function session_expiration_warning_reset() {
+		lms_session_expiration_warning_dialog = false;
+	}
+
+	function session_expiration_warning_handler(time_to_expire) {
+		if (lms_session_expiration_warning_interval
+				&& lms_login_timeout_value - 10 >= lms_session_expiration_warning_interval
+				&& time_to_expire < lms_session_expiration_warning_interval) {
+			if (!lms_session_expiration_warning_dialog) {
+				lms_session_expiration_warning_dialog = true;
+				alertDialog($t('Your session is near to expiration! Click "OK" if you want to prevent logout.')).done(function () {
+					$.ajax('?', {
+						async: true,
+						method: 'GET',
+						success: function() {
+							reset_login_timeout();
+						}
+					});
+				});
+			}
+		}
+	}
+
 </script>

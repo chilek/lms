@@ -150,6 +150,9 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
+
+$_LANG['billing'] = 'billing';
+
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -1553,6 +1556,7 @@ $_LANG['Display this form again, when this option is saved'] = 'Pokaż ten formu
 $_LANG['Size:'] = 'Rozmiar:';
 $_LANG['Quantity of numbers'] = 'Ilość numerów';
 $_LANG['Slovakia'] = 'Słowacja';
+$_LANG['Czech'] = 'Czechy';
 $_LANG['Small font text appearing in selected (in template) place of the invoice, e.g. Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123'] = 'Tekst napisany małą czcionką pojawiająca się w wybranym (w szablonie) miejscu na fakturze. np. Nasz bank: SNETISP, 828823917293871928371\nNumer telefonu 555 123 123';
 $_LANG['Smarty version:'] = 'Wersja Smarty:';
 $_LANG['SMTP settings.'] = 'Ustawienia SMTP.';
@@ -1653,6 +1657,7 @@ $_LANG['Time'] = 'Czas';
 $_LANG['Time:'] = 'Czas:';
 $_LANG['WWW session timeout. After that time (in seconds) user will be logged out if action has been made. Default: 600.'] = 'Czas wygaśnięcia sesji. Po tym czasie (określonym w sekundach) użytkownik zostanie wylogowany jeżeli nie podejmie żadnej akcji. Domyślnie: 600.';
 $_LANG['Timetable'] = 'Terminarz';
+$_LANG['Show in timetable'] = 'Pokaż w terminarzu';
 $_LANG['timetable management'] = 'zarządzanie terminarzem';
 $_LANG['Title'] = 'Tytuł';
 $_LANG['Title:'] = 'Tytuł:';
@@ -2222,6 +2227,7 @@ $_LANG['IP Network Search'] = 'Szukaj sieci IP';
 $_LANG['Network Devices Search Results'] = 'Wyniki wyszukiwania urządzeń';
 $_LANG['No such devices matching search criteria.'] = 'Brak urządzeń spełniających kryteria wyszukiwania.';
 $_LANG['Reason:'] = 'Powód:';
+$_LANG['Reason template:'] = 'Szablon powodu:';
 $_LANG['Enter reason (optional)'] = 'Podaj powód (opcjonalnie)';
 $_LANG['PIN code is required!'] = 'Kod PIN jest wymagany!';
 $_LANG['Registry not selected!'] = 'Nie wybrano rejestru!';
@@ -4213,6 +4219,7 @@ $_LANG['treat as regular expression'] = 'traktuj jako wyrażenie regularne';
 
 $_LANG['whole days'] = 'całe dni';
 $_LANG['whole day'] = 'cały dzień';
+$_LANG['multi day'] = 'wielodniowe';
 $_LANG['$a days'] = '$a dni';
 
 $_LANG['Click here to open calendar'] = 'Kliknij tutaj, aby otworzyć kalendarz';
@@ -4261,6 +4268,7 @@ $_LANG['Are you sure, you want to delete all selected message templates?'] = 'Je
 $_LANG['<!message>userpanel'] = 'panel abonencki';
 $_LANG['<!message>userpanel (urgent)'] = 'panel abonencki (pilne)';
 $_LANG['<!message>warning'] = 'ostrzeżenie';
+$_LANG['<!message>credit note reason'] = 'powód korekty';
 $_LANG['Add message template'] = 'Dodaj szablon wiadomości';
 $_LANG['Edit message template'] = 'Edytuj szablon wiadomości';
 $_LANG['Empty message template name!'] = 'Pusta nazwa szablonu wiadomości!';
@@ -4365,6 +4373,7 @@ $_LANG['Are you sure that you want remove tariff rule \'$a\'?'] = 'Czy jesteś p
 $_LANG['Are you sure that you want remove tariff \'$a\'?'] = 'Czy jesteś pewien, że chcesz usunąć cennik \'$a\'?';
 
 $_LANG['Set for user'] = 'Ustaw dla użytkownika';
+$_LANG['Users parameters'] = 'Parametry użytkowników';
 $_LANG['Setting config option \'$a\' for user'] = 'Ustawianie opcji konfiguracyjnej \'$a\' dla użytkownika';
 $_LANG['Edition config option \'$a\' for user \'$b\''] = 'Edycja opcji konfiguracyjnej \'$a\' dla użytkownika \'$b\'';
 $_LANG['Users parameters:'] = 'Parametry użytkowników';
@@ -4373,3 +4382,25 @@ $_LANG['Are you sure, you want to delete?'] = 'Jesteś pewien/pewna, że chcesz 
 $_LANG['User login'] = 'Login';
 $_LANG['User login:'] = 'Login:';
 $_LANG['Global'] = 'Globalne';
+
+$_LANG['<!netelemtype>office building'] = 'budynek biurowy';
+$_LANG['<!netelemtype>residential building'] = 'budynek mieszkalny';
+$_LANG['<!netelemtype>industrial building'] = 'budynek przemysłowy';
+$_LANG['<!netelemtype>service building'] = 'budynek usługowy';
+$_LANG['<!netelemtype>public building'] = 'budynek użyteczności publicznej';
+$_LANG['<!netelemtype>religious building'] = 'obiekt sakralny';
+$_LANG['<!netelemtype>power grid object'] = 'obiekt sieci elektroenergetycznej';
+$_LANG['<!netelemtype>tower'] = 'wieża';
+$_LANG['<!netelemtype>mast'] = 'maszt';
+$_LANG['<!netelemtype>chimney'] = 'komin';
+$_LANG['<!netelemtype>container'] = 'kontener';
+$_LANG['<!netelemtype>street cabinet'] = 'szafa uliczna';
+$_LANG['<!netelemtype>pole'] = 'słup';
+$_LANG['<!netelemtype>box'] = 'skrzynka';
+$_LANG['<!netelemtype>cable well'] = 'studnia kablowa';
+
+$_LANG['Own node'] = 'Węzeł własny';
+$_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym podmiotem';
+$_LANG['Foreign node'] = 'Węzeł obcy';
+
+$_LANG['Your session is near to expiration! Click "OK" if you want to prevent logout.'] = 'Twoja sesja jest bliska przeterminowania! Kliknij "OK" jeśli chcesz zapobiec wylogowaniu.';
