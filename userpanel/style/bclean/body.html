@@ -1,4 +1,14 @@
-<div class="row justify-content-between no-gutters">
+<div class="row justify-content-end no-gutters">
+	<div>
+		<small>
+			{trans("Session expires after:")}
+			<span id="lms-ui-session-expire" class="font-weight-bold text-danger">
+				{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
+			</span>
+		</small>
+	</div>
+</div>
+<div class="row justify-content-start no-gutters">
 	<h1>
 		{if $company_logo}
 			<img src="{$company_logo}">
@@ -10,14 +20,6 @@
 			<small class="text-muted">{trans('Virtual Customer Service')}</small>
 		{/if}
 	</h1>
-	<div>
-		<small>
-			{trans("Session expires after:")}
-			<span id="lms-ui-session-expire" class="font-weight-bold text-danger">
-				{sprintf("%02d:%02d", floor($timeout / 60), $timeout % 60)}
-			</span>
-		</small>
-	</div>
 </div>
 {if $modules}
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-toggleable-md">
