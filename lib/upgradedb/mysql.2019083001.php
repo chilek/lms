@@ -151,7 +151,7 @@ $this->Execute("
         FROM nodes n
         JOIN vnodes_mac m ON m.nodeid = n.id
         LEFT JOIN vaddresses a ON a.id = n.address_id
-        JOIN vnodetariffs_tariffs t1 ON t1.nodeid = n.id
+        LEFT JOIN vnodetariffs_tariffs t1 ON t1.nodeid = n.id
         LEFT JOIN vnodealltariffs_tariffs t2 ON t2.nodeid = n.id
         WHERE (n.ipaddr <> 0 OR n.ipaddr_pub <> 0)
               AND ((t1.nodeid IS NOT NULL AND t2.nodeid IS NULL)
