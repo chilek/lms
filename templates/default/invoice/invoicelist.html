@@ -197,7 +197,7 @@
 					{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 						{if !$invoice.referenced && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 							{button type="link" icon="edit" tip="Edit" class="edit-invoice"
-								href="?m=invoiceedit&id={$invoice.id}&action=edit"}
+								href="?m=invoicenoteedit&id={$invoice.id}&action=edit"}
 						{/if}
 					{/if}
 				{/if}
