@@ -57,6 +57,7 @@ version 25-git (????-??-??):
     warning popup is displayed if given seconds left to auto-logout (default value '0'
     means function is disabled) [chilan]
   - enhancement: separate session timeout for userpanel [chilan]
+  - enhancement: implemented count for assignments [chilan]
 
 version 24.0 (2019-05-16):
 
