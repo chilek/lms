@@ -423,7 +423,13 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
-			END), 2) AS value,
+			END), 2) AS unitary_value,
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+			(CASE a.suspended WHEN 0
+				THEN 1.0
+				ELSE $suspension_percentage / 100
+			END), 2) * a.count AS value,
+		a.count AS count,
 		(SELECT COUNT(id) FROM assignments
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= $currtime
@@ -985,7 +991,7 @@ foreach ($assigns as $assign) {
                     $tmp_itemid = $DB->GetOne(
                         "SELECT itemid FROM invoicecontents 
                         WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-                        array($assign['tariffid'], $val, $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])
+                        array($assign['tariffid'], $val / $assign['count'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])
                     );
                 }
 
@@ -998,9 +1004,9 @@ foreach ($assigns as $assign) {
                         );
                     } else {
                         $DB->Execute(
-                            "UPDATE invoicecontents SET count = count + 1 
+                            "UPDATE invoicecontents SET count = count + ?
                             WHERE docid = ? AND itemid = ?",
-                            array($invoices[$cid], $tmp_itemid)
+                            array($assign['count'], $invoices[$cid], $tmp_itemid)
                         );
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
@@ -1024,7 +1030,7 @@ foreach ($assigns as $assign) {
                             "INSERT INTO invoicecontents (docid, value, taxid, prodid, 
                             content, count, description, tariffid, itemid, pdiscount, vdiscount) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            array($invoices[$cid], $val, $assign['taxid'], $assign['prodid'], $unit_name, 1,
+                            array($invoices[$cid], $val / $assign['count'], $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
                                 $desc,
                                 empty($assign['tariffid']) ? null : $assign['tariffid'],
                                 $itemid,
@@ -1124,15 +1130,15 @@ foreach ($assigns as $assign) {
                         $tmp_itemid = $DB->GetOne(
                             "SELECT itemid FROM invoicecontents
 						WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
-                            array($assign['tariffid'], $value, $invoices[$cid], $sdesc)
+                            array($assign['tariffid'], $value / $assign['count'], $invoices[$cid], $sdesc)
                         );
                     }
 
                     if ($tmp_itemid != 0) {
                         $DB->Execute(
-                            "UPDATE invoicecontents SET count = count + 1
+                            "UPDATE invoicecontents SET count = count + ?
 							WHERE docid = ? AND itemid = ?",
-                            array($invoices[$cid], $tmp_itemid)
+                            array($assign['count'], $invoices[$cid], $tmp_itemid)
                         );
                         if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment) {
                             $DB->Execute(
@@ -1155,7 +1161,7 @@ foreach ($assigns as $assign) {
                                 "INSERT INTO invoicecontents (docid, value, taxid, prodid,
 								content, count, description, tariffid, itemid, pdiscount, vdiscount)
 								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                                array($invoices[$cid], $value, $assign['taxid'], $assign['prodid'], $unit_name, 1,
+                                array($invoices[$cid], $value / $assign['count'], $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
                                 $sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'],
                                 $itemid,
                                 $assign['pdiscount'],

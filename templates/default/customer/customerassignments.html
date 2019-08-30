@@ -152,6 +152,7 @@
 								{if $a.tariffid || $a.liabilityid}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 										{$a.value|money_format}
+										{if $a.count != 1}({$a.unitary_value} x {$a.count}){/if}
 									{/if}
 								{/if}
 							</div>
@@ -174,12 +175,18 @@
 						<div class="lms-ui-tab-table-wrapper col-2">
 							<div class="lms-ui-tab-table-column downceil">
 								{if $a.tariffid || $a.liabilityid}
-									{if $a.downceil}{convert_to_units($a.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+									{if $a.downceil}
+										{convert_to_units($a.downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+										{if $a.count != 1}({convert_to_units($a.unitary_downceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)} x {$a.count}){/if}
+									{else}-{/if}
 								{/if}
 							</div>
 							<div class="lms-ui-tab-table-column upceil">
 								{if $a.tariffid || $a.liabilityid}
-									{if $a.upceil}{convert_to_units($a.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s{else}-{/if}
+									{if $a.upceil}
+										{convert_to_units($a.upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s
+										{if $a.count != 1}({convert_to_units($a.unitary_upceil * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)} x {$a.count}){/if}
+									{else}-{/if}
 								{/if}
 							</div>
 						</div>

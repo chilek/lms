@@ -237,6 +237,18 @@
 							<TBODY>
 							{block name="customerassignmenthelper-properties"}
 
+							<TR id="a_count" style="display: none;">
+								<TD>
+									<IMG src="img/values.gif" alt="">
+								</TD>
+								<TD class="bold nobr">
+									{trans("Count:")}
+								</TD>
+								<TD>
+									<INPUT type="text" name="{$variable_prefix}[count]" value="{if $variables.count}{$variables.count}{else}1{/if}" size="15" pattern="[0-9]+([\.][0-9]+)?" formnovalidate {tip text="Enter count in numeric format" trigger="count"}>
+								</TD>
+							</TR>
+
 							<TR id="a_name" style="display: none;">
 								<TD>
 									<IMG src="img/money.gif" alt="">

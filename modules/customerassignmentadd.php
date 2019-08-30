@@ -59,6 +59,7 @@ if (isset($_POST['assignment'])) {
         $a['at']         = $at;
         $a['datefrom']   = $from;
         $a['dateto']     = $to;
+        $a['count']      = $count;
 
         $DB->BeginTrans();
 
@@ -131,6 +132,7 @@ if (isset($_POST['assignment'])) {
     if (!empty($default_assignment_at)) {
         $a['at'] = $default_assignment_at;
     }
+    $a['at'] = 1;
 }
 
 $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');

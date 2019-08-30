@@ -208,7 +208,7 @@ function CustomerAssignmentHelper(options) {
 			if (checked) {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
-				if (((authtype && (authtype & tariffaccess)) || !tariffaccess) && 
+				if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
 					(location == location_select || !location_select.length)) {
 					ms.showOption(key);
 				} else {
@@ -307,7 +307,7 @@ function CustomerAssignmentHelper(options) {
 							}
 							var nodeid = String(node.id).lpad('0', 4);
 							options += '<option value="' + node.id + '"' +
-								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) && 
+								(("snodes" in selected) && (schemaid in selected.snodes) && (label in selected.snodes[schemaid]) &&
 								(selected.snodes[schemaid][label].indexOf(node.id) > -1) ? ' selected' : '') +
 								' data-tariffaccess="' + node.authtype + '"' +
 								' data-location="' + node.location + '"' +
@@ -482,6 +482,8 @@ function tariffSelectionHandler() {
 			$('#a_discount').show();
 		}
 	}
+
+	$('#a_count').toggle(val >= 0);
 
 	$('span.global-node-checkbox').each(function(key, value) {
 		var authtype = parseInt($(this).attr('data-tariffaccess'));

@@ -205,12 +205,16 @@ if ($all_assignments) {
     $query = '';
 }
 
-$query .= "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS uprate, t.upceil AS upceil,
-	(CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) AS downrate_n,
-	(CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) AS downceil_n,
-	(CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) AS uprate_n,
-	(CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) AS upceil_n,
-	t.climit AS climit, t.plimit AS plimit,
+$query .= "SELECT ROUND(t.downrate * a.count) AS downrate,
+    ROUND(t.downceil * a.count) AS downceil,
+    ROUND(t.uprate * a.count) AS uprate,
+    ROUND(t.upceil * a.count) AS upceil,
+	ROUND((CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) * a.count) AS downrate_n,
+	ROUND((CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) * a.count) AS downceil_n,
+	ROUND((CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) * a.count) AS uprate_n,
+	ROUND((CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) * a.count) AS upceil_n,
+	ROUND(t.climit * a.count) AS climit,
+	ROUND(t.plimit * a.count) AS plimit,
 	n.id, n.ownerid, n.name, n.netid, INET_NTOA(n.ipaddr) AS ip, n.mac,
 	na.assignmentid, a.customerid,
 	TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
@@ -234,12 +238,16 @@ $query .= "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS up
 
 if ($all_assignments) {
     $query .= ") UNION (
-	SELECT t.downrate, t.downceil, t.uprate, t.upceil,
-		(CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) AS downrate_n,
-		(CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) AS downceil_n,
-		(CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) AS uprate_n,
-		(CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) AS upceil_n,
-		t.climit, t.plimit,
+	SELECT ROUND(t.downrate * a.count) AS downrate,
+	    ROUND(t.downceil * a.count) AS downceil,
+	    ROUND(t.uprate * a.count) AS uprate,
+	    ROUND(t.upceil * a.count) AS upceil,
+		ROUND((CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) * a.count) AS downrate_n,
+		ROUND((CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) * a.count) AS downceil_n,
+		ROUND((CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) * a.count) AS uprate_n,
+		ROUND((CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) * a.count) AS upceil_n,
+		ROUND(t.climit * a.count) AS climit,
+		ROUND(t.plimit * a.count) AS plimit,
 		n.id, n.ownerid, n.name, n.netid, INET_NTOA(n.ipaddr) AS ip, n.mac,
 		a.id AS assignmentid, a.customerid,
 		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer

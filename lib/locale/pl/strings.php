@@ -4402,3 +4402,7 @@ $_LANG['Node shared with another entity'] = 'Węzeł współdzielony z innym pod
 $_LANG['Foreign node'] = 'Węzeł obcy';
 
 $_LANG['Your session is near to expiration! Click "OK" if you want to prevent logout.'] = 'Twoja sesja jest bliska przeterminowania! Kliknij "OK" jeśli chcesz zapobiec wylogowaniu.';
+
+$_LANG['Count:'] = 'Ilość:';
+$_LANG['Incorrect count format! Numeric value required!'] = 'Niepoprawny format ilości! Wymaga wartość liczbowa!';
+$_LANG['Enter count in numeric format'] = 'Podaj ilość w formacie liczbowym';
