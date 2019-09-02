@@ -154,7 +154,7 @@ if (isset($_POST['assignment'])) {
     if (!empty($default_assignment_at)) {
         $a['at'] = $default_assignment_at;
     }
-    $a['at'] = 1;
+    $a['count'] = 1;
 }
 
 $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');
