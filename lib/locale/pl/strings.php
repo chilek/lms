@@ -4408,3 +4408,6 @@ $_LANG['Incorrect count format! Numeric value required!'] = 'Niepoprawny format 
 $_LANG['Enter count in numeric format'] = 'Podaj ilość w formacie liczbowym';
 
 $_LANG['This item is already bound with another assignment!'] = 'Ten element jest już powiązany z innym zobowiązaniem!';
+
+$_LANG['Enable lock'] = 'Włącz blokadę';
+$_LANG['Disable lock'] = 'Wyłącz blokadę';

@@ -1501,6 +1501,15 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-unlock {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-unlock;
+	}
+}
+
 .lms-ui-icon-warning,
 .lms-ui-icon-warn,
 .lms-ui-icon-warnoff {
@@ -2245,9 +2254,16 @@ button,a,div {
 		}
 	}
 
-	&.lms-ui-button-suspend {
+	&.lms-ui-button-suspend,
+	&.lms-ui-button-lock {
 		& > i {
 			.lms-ui-icon-suspend;
+		}
+	}
+
+	&.lms-ui-button-unlock {
+		& > i {
+			.lms-ui-icon-unlock;
 		}
 	}
 

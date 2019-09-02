@@ -35,7 +35,14 @@
 	</div>
 
 	<div class="lms-ui-tab-table-column buttons">
-		{button type="link" icon="suspend" tip="Toggle lock" onclick="javascript:toggleNodeLock({$nodelock.id});"}
+		{if $nodelock.disabled}
+			{$icon = "unlock"}
+			{$tip = "Enable lock"}
+		{else}
+			{$icon = "lock"}
+			{$tip = "Disable lock"}
+		{/if}
+		{button type="link" icon=$icon tip=$tip onclick="javascript:toggleNodeLock({$nodelock.id});"}
 		{button type="link" icon="delete" tip="Remove lock" onclick="javascript:delNodeLock({$nodelock.id});"}
 	</div>
 </div>
