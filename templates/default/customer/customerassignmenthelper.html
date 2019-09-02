@@ -522,9 +522,12 @@
 						{foreach $customernodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
-								<input type="checkbox" name="{$variable_prefix}[nodes][{counter}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
+								<input type="checkbox" name="{$variable_prefix}[nodes][{counter print=true assign="nodeidx"}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
 								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 							</label>
+							{if isset($variables.node_warns[$nodeidx])}
+								<input type="hidden" name="{$variable_prefix}[node_warns][{$nodeidx}]" value="1">
+							{/if}
 							<br>
 						</span>
 						{/foreach}

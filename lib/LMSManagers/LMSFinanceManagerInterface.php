@@ -117,11 +117,11 @@ interface LMSFinanceManagerInterface
     public function PaymentDelete($id);
 
     public function PaymentUpdate($paymentdata);
-    
+
     public function GetHostingLimits($customerid);
-    
+
     public function GetTaxes($from = null, $to = null);
-    
+
     public function CalcAt($period, $date);
 
     public function PublishDocuments($ids);
@@ -145,4 +145,6 @@ interface LMSFinanceManagerInterface
     public function GetDocumentsForBalanceRecords($ids, $doctypes);
 
     public function GetDocumentLastReference($docid);
+
+    public function CheckNodeTariffRestrictions($aid, $nodes);
 }

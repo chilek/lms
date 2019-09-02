@@ -3892,4 +3892,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
         return $docid;
     }
+
+    public function CheckNodeTariffRestrictions($aid, $nodes)
+    {
+        $nodeassigns = $this->db->GetCol('SELECT nodeid FROM nodeassignments WHERE nodeid IN ('
+            . implode(', ', $nodes) . ')' . (empty($aid) ? '' : ' AND assignmentid <> ' . intval($aid)));
+        $result = array();
+        if (!empty($nodeassigns)) {
+            foreach ($nodes as $idx => $nodeid) {
+                if (in_array($nodeid, $nodeassigns)) {
+                    $result[$idx] = $nodeid;
+                }
+            }
+        }
+        return $result;
+    }
 }

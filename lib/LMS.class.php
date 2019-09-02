@@ -3087,6 +3087,12 @@ class LMS
         return $manager->GetDocumentLastReference($docid);
     }
 
+    public function CheckNodeTariffRestrictions($aid, $nodes)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->CheckNodeTariffRestrictions($aid, $nodes);
+    }
+
     /**
      * VoIP functions
      */

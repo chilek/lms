@@ -259,6 +259,28 @@ if (isset($_POST['assignment'])) {
         unset($a['phones']);
     }
 
+    // try to restrict node assignment sharing
+    if (isset($a['nodes']) && !empty($a['nodes'])) {
+        $restricted_nodes = $LMS->CheckNodeTariffRestrictions($a['id'], $a['nodes']);
+        $node_multi_tariff_restriction = ConfigHelper::getConfig(
+            'phpui.node_multi_tariff_restriction',
+            '',
+            true
+        );
+        if (preg_match('/^(error|warning)$/', $node_multi_tariff_restriction) && !empty($restricted_nodes)) {
+            foreach ($restricted_nodes as $idx => $nodeid) {
+                if ($node_multi_tariff_restriction == 'error') {
+                    $error['assignment[nodes][' . $idx . ']'] = trans('This item is already bound with another assignment!');
+                } else {
+                    if (!isset($a['node_warns'][$idx])) {
+                        $error['assignment[nodes][' . $idx . ']'] = trans('This item is already bound with another assignment!');
+                    }
+                    $a['node_warns'][$idx] = 1;
+                }
+            }
+        }
+    }
+
     $hook_data = $LMS->executeHook(
         'customerassignmentedit_validation_before_submit',
         array(
