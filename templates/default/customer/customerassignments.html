@@ -159,7 +159,8 @@
 							<div class="lms-ui-tab-table-column discount">
 								{if $a.tariffid || $a.liabilityid}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-										{if $a.pdiscount != 0}{$a.pdiscount}%{elseif $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}
+										{if $a.pdiscount != 0}{$a.pdiscount}%{elseif $a.vdiscount != 0}{$a.vdiscount|money_format}
+											{if $a.count != 1}({$a.unitary_vdiscount} x {$a.count}){/if}{else}-{/if}
 									{/if}
 								{/if}
 							</div>

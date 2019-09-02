@@ -81,7 +81,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $assignments = $this->db->GetAll('SELECT
                                             a.id AS id, a.tariffid, a.customerid, a.period,
                                             a.at, a.suspended, a.invoice, a.settlement,
-                                            a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
+                                            a.datefrom, a.dateto, a.pdiscount,
+                                            a.vdiscount AS unitary_vdiscount,
+                                            (a.vdiscount * a.count) AS vdiscount,                                                                                        
                                             a.attribute, a.liabilityid, a.separatedocument,
                                             ROUND(t.uprate * a.count) AS uprate,
                                             uprate AS unitary_uprate,
