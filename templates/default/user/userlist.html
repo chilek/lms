@@ -44,22 +44,22 @@
 	{if $user.id}
 	<TR class="highlight{if !$user.access} blend{/if}" data-target-url="?m=userinfo&id={$user.id}" data-name="{$user.login}">
 		<TD class="nobr">
-			<IMG src="img/users.gif" alt=""> {$user.login}
+			{$user.login}
 		</TD>
 		<TD class="nobr">
-			<IMG src="img/info2.gif" alt=""> {$user.name}
+			{$user.name}
 		</TD>
 		<TD class="nobr">
-			<IMG src="img/phone.gif" alt=""> {if $user.phone}{$user.phone}{else} - {/if}
+			{if $user.phone}{$user.phone}{else} - {/if}
 		</TD>
 		<td class="nobr">
-			<img src="img/calendar.gif" alt=""> {$user.accessfrom}
+			{$user.accessfrom}
 		</td>
 		<td class="nobr">
-			<img src="img/calendar.gif" alt=""> {$user.accessto}
+			{$user.accessto}
 		</td>
 		<TD class="nobr">
-			<IMG src="img/time.gif" alt=""> {$user.lastlogin}
+			{$user.lastlogin}
 			{$user.lastloginip} {if $user.lastloginip != $user.lastloginhost}({$user.lastloginhost}){/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
