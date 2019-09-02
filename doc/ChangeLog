@@ -58,6 +58,9 @@ version 25-git (????-??-??):
     means function is disabled) [chilan]
   - enhancement: separate session timeout for userpanel [chilan]
   - enhancement: implemented count for assignments [chilan]
+  - enhancement: phpui.node_multi_tariff_restriction variable controls how multi tariffs
+    to single node assignments are handled (default empty value means current
+    behavior) [chilan]
 
 version 24.0 (2019-05-16):
 
