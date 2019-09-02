@@ -3123,13 +3123,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($limits = $this->db->GetAll('SELECT alias_limit, domain_limit,
-			sh_limit, www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
-			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
-			FROM tariffs WHERE type <> ? AND type <> ? AND type <> ? AND id IN (SELECT tariffid FROM assignments
-			WHERE customerid = ? AND tariffid IS NOT NULL
-				AND commited = 1
-				AND (dateto > ?NOW? OR dateto = 0)
-				AND (datefrom < ?NOW? OR datefrom = 0))', array(SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV, $customerid))) {
+                sh_limit, www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
+                quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit,
+                a.count
+            FROM assignments a
+            JOIN tariffs t ON t.id = a.tariffid
+            WHERE customerid = ?
+                AND t.type NOT IN (?, ?, ?) 
+                AND commited = 1
+                AND (a.dateto = 0 OR a.dateto > ?NOW?)
+                AND a.datefrom < ?NOW?)', array($customerid, SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV))) {
             foreach ($limits as $row) {
                 foreach ($row as $idx => $val) {
                     if ($idx == 'alias_limit' || $idx == 'domain_limit') {
@@ -3144,12 +3147,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     if ($row[$type['alias'] . '_limit'] === null || $result['count'][$typeidx] === null) {
                         $result['count'][$typeidx] = null;
                     } else {
-                        $result['count'][$typeidx] += $row[$type['alias'] . '_limit'];
+                        $result['count'][$typeidx] += intval(floor($row[$type['alias'] . '_limit'] * $row['count']));
                     }
                     if ($row['quota_' . $type['alias'] . '_limit'] === null || $result['quota'][$typeidx] === null) {
                         $result['quota'][$typeidx] = null;
                     } else {
-                        $result['quota'][$typeidx] += $row['quota_' . $type['alias'] . '_limit'];
+                        $result['quota'][$typeidx] += intval(floor($row['quota_' . $type['alias'] . '_limit'] * $row['count']));
                     }
                 }
             }
