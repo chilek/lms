@@ -47,7 +47,7 @@ function getNodeLocks()
     $nodeid = intval($_GET['id']);
     $DB = LMSDB::getInstance();
     $locks = $DB->GetAll(
-        'SELECT id, days, fromsec, tosec FROM nodelocks WHERE nodeid = ? ORDER BY id',
+        'SELECT id, days, fromsec, tosec, disabled FROM nodelocks WHERE nodeid = ? ORDER BY id',
         array($nodeid)
     );
     if ($locks) {
@@ -61,8 +61,9 @@ function getNodeLocks()
                     $lockdays[$i] = 1;
                 }
             }
+            $disabled = intval($lock['disabled']);
             $nodelocks[] = array('id' => $lock['id'], 'days' => $lockdays, 'fhour' => intval($fromsec / 3600), 'fminute' => intval(($fromsec % 3600) / 60),
-                'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60));
+                'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60), 'disabled' => $disabled);
         }
     }
     $SMARTY->assign('nodelocks', $nodelocks);
@@ -118,6 +119,20 @@ function delNodeLock($id)
 
     $DB = LMSDB::getInstance();
     $DB->Execute('DELETE FROM nodelocks WHERE id = ?', array($id));
+
+    $result->call('getNodeLocks');
+
+    return $result;
+}
+
+function toggleNodeLock($id)
+{
+    $result = new xajaxResponse();
+
+    $nodeid = intval($_GET['id']);
+
+    $DB = LMSDB::getInstance();
+    $DB->Execute('UPDATE nodelocks SET disabled = (CASE WHEN disabled = 0 THEN 1 ELSE 0 END) WHERE id = ?', array($id));
 
     $result->call('getNodeLocks');
 
@@ -270,6 +285,6 @@ function getFirstFreeAddress($netid, $elemid)
     return $result;
 }
 
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats',
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'toggleNodeLock', 'getThroughput', 'getNodeStats',
     'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors',
     'getFirstFreeAddress'));

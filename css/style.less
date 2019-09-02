@@ -1491,6 +1491,16 @@ li.lms-ui-suggestion-item {
 	}
 }
 
+.lms-ui-icon-suspend,
+.lms-ui-icon-lock {
+	.fa-icon;
+	.fas;
+	.lms-ui-icon;
+	&:before {
+		content: @fa-var-lock;
+	}
+}
+
 .lms-ui-icon-warning,
 .lms-ui-icon-warn,
 .lms-ui-icon-warnoff {
@@ -2232,6 +2242,12 @@ button,a,div {
 	&.lms-ui-button-remove {
 		& > i {
 			.lms-ui-icon-trash;
+		}
+	}
+
+	&.lms-ui-button-suspend {
+		& > i {
+			.lms-ui-icon-suspend;
 		}
 	}
 

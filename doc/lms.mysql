@@ -1422,6 +1422,7 @@ CREATE TABLE nodelocks (
 	days smallint		DEFAULT 0 NOT NULL,
 	fromsec int(11)		DEFAULT 0 NOT NULL,
 	tosec int(11)		DEFAULT 0 NOT NULL,
+	disabled tinyint(1)     DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
@@ -3527,4 +3528,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019083001');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019090200');

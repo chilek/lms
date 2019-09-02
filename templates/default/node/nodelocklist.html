@@ -19,7 +19,7 @@
 {/if}
 
 {foreach $nodelocks as $nodelock}
-<div class="lms-ui-tab-table-row">
+<div class="lms-ui-tab-table-row{if $nodelock.disabled} blend{/if}">
 	<div class="lms-ui-tab-table-wrapper col-3">
 		<div class="lms-ui-tab-table-column days">
 			{foreach $nodelock.days as $daynr => $day}
@@ -35,6 +35,7 @@
 	</div>
 
 	<div class="lms-ui-tab-table-column buttons">
+		{button type="link" icon="suspend" tip="Toggle lock" onclick="javascript:toggleNodeLock({$nodelock.id});"}
 		{button type="link" icon="delete" tip="Remove lock" onclick="javascript:delNodeLock({$nodelock.id});"}
 	</div>
 </div>

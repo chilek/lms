@@ -1319,6 +1319,7 @@ CREATE TABLE nodelocks (
 	days smallint		DEFAULT 0 NOT NULL,
 	fromsec integer		DEFAULT 0 NOT NULL,
 	tosec integer		DEFAULT 0 NOT NULL,
+	disabled 		smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -3578,6 +3579,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019083001');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019090200');
 
 COMMIT;

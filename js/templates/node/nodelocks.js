@@ -40,6 +40,13 @@ function delNodeLock(id) {
 	xajax_delNodeLock(id);
 }
 
+function toggleNodeLock(id) {
+	$('#nodelocktable').prop('disabled', true);
+	$('#nodelockspanel #nodelocktable').html(
+		$('#nodelockspanel .lms-ui-tab-hourglass-template').html());
+	xajax_toggleNodeLock(id);
+}
+
 $("#nodelockspanel .lms-ui-button-delete").click(function() {
 	$(this).parent().find('[id*="lockdays_"]').prop('checked', false).end()
 		.find('select').val(0);
