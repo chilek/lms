@@ -61,6 +61,7 @@ version 25-git (????-??-??):
   - enhancement: phpui.node_multi_tariff_restriction variable controls how multi tariffs
     to single node assignments are handled (default empty value means current
     behavior) [chilan]
+  - enhancement: nodelocks can be enabled/disabled [chilan]
 
 version 24.0 (2019-05-16):
 
