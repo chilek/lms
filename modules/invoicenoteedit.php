@@ -287,8 +287,8 @@ switch ($action) {
                 $contents[$idx]['pdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($contents[$idx]['discount']) : 0);
                 $contents[$idx]['vdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_AMOUNT ? floatval($contents[$idx]['discount']) : 0);
             }
-            if ($contents[$idx]['pdiscount'] < 0 || $contents[$idx]['pdiscount'] > 99.9 || $contents[$idx]['vdiscount'] < 0) {
-                $error['discount'] = trans('Wrong discount value!');
+            if ($contents[$idx]['pdiscount'] < 0 || $contents[$idx]['pdiscount'] > 99.99 || $contents[$idx]['vdiscount'] < 0) {
+                $error['discount[' . $idx . ']'] = trans('Wrong discount value!');
             }
 
             $contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
@@ -343,6 +343,18 @@ switch ($action) {
         }
 
         if (!empty($error)) {
+            foreach ($contents as $idx => $item) {
+                $contents[$idx]['taxid'] = $newcontents['taxid'][$idx];
+                $contents[$idx]['prodid'] = $newcontents['prodid'][$idx];
+                $contents[$idx]['content'] = $newcontents['content'][$idx];
+                $contents[$idx]['count'] = $newcontents['count'][$idx];
+                $contents[$idx]['discount'] = $newcontents['discount'][$idx];
+                $contents[$idx]['discount_type'] = $newcontents['discount_type'][$idx];
+                $contents[$idx]['name'] = $newcontents['name'][$idx];
+                $contents[$idx]['tariffid'] = $newcontents['tariffid'][$idx];
+                $contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx];
+                $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx];
+            }
             break;
         }
 

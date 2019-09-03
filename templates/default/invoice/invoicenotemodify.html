@@ -340,13 +340,8 @@
 			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
 			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			{if $error}
-				<A class="note-alert" href="#">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-				<A class="note-alert" href="#">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{else}
-				<A HREF="javascript:document.save.submit()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-				<A HREF="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{/if}
+			<A HREF="javascript:document.save.submit()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
 	</TBODY>
