@@ -48,7 +48,7 @@
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach $income as $row}
-	<TR class="{cycle}">
+	<TR class="{cycle advance=false}">
 		<TD ALIGN="CENTER">
 			{counter}.
 		</TD>
@@ -83,6 +83,35 @@
 		</TD>
 		{/if}
 	</TR>
+	{if isset($bandwidth_linktechnologies) && isset($bandwidth_linktechnologies[$row.technology])}
+	<TR class="{cycle}">
+		<TD ALIGN="CENTER">
+			&nbsp;
+		</TD>
+		<TD ALIGN="CENTER" colspan="{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}7{else}5{/if}">
+			<table width="100%" border="1">
+				<thead>
+					<tr>
+						<td width="30" CLASS="HEAD nobr text-center">{trans("Bandwidth interval")}</td>
+						<td width="30" CLASS="HEAD nobr text-center">{trans("<!customer>Private")}</td>
+						<td width="30" CLASS="HEAD nobr text-center">{trans("<!customer>Bussiness")}</td>
+						<td width="30" CLASS="HEAD nobr text-center">{trans("Total")}</td>
+					</tr>
+				</thead>
+				<tbody>
+				{foreach $bandwidth_linktechnologies[$row.technology] as $label => $stats}
+					<tr>
+						<td class="text-center">{$label}</td>
+						<td class="text-center">{$stats.private}</td>
+						<td class="text-center">{$stats.bussiness}</td>
+						<td class="text-center">{$stats.total}</td>
+					</tr>
+				{/foreach}
+				</tbody>
+			</table>
+		</TD>
+	</TR>
+	{/if}
 	{foreachelse}
 	<TR>
 		<TD COLSPAN="8" class="empty-table">

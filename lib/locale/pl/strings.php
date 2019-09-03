@@ -4411,3 +4411,8 @@ $_LANG['This item is already bound with another assignment!'] = 'Ten element jes
 
 $_LANG['Enable lock'] = 'Włącz blokadę';
 $_LANG['Disable lock'] = 'Wyłącz blokadę';
+
+$_LANG['Bandwidth distribution:'] = 'Rozkład przepływności:';
+$_LANG['Bandwidth interval'] = 'Przedział przepływności';
+$_LANG['<!customer>Private'] = 'Prywatni';
+$_LANG['<!customer>Bussiness'] = 'Biznesowi';
