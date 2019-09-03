@@ -716,12 +716,14 @@ if (!empty($node_assignments)) {
             );
             if (!empty($nodes)) {
                 foreach ($nodes as $nodeid) {
-                    foreach ($node_assignments[$nodeid] as $assignmentid) {
-                        $assignment_linktechnologies[$assignmentid] = array(
-                        'id' => $assignmentid,
-                        'technology' => $netlink['technology'],
-                        'technologycount' => 1,
-                        );
+                    if (isset($node_assignments[$nodeid])) {
+                        foreach ($node_assignments[$nodeid] as $assignmentid) {
+                            $assignment_linktechnologies[$assignmentid] = array(
+                                'id' => $assignmentid,
+                                'technology' => $netlink['technology'],
+                                'technologycount' => 1,
+                            );
+                        }
                     }
                 }
             }
