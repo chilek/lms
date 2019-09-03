@@ -169,9 +169,9 @@ if ($bandwidths) {
 }
 
 $linktechnologies = array();
-foreach ($LINKTECHNOLOGIES as $technologies) {
+foreach ($LINKTECHNOLOGIES as $linktype => $technologies) {
     foreach ($technologies as $techid => $techlabel) {
-        $linktechnologies[$techid] = $techlabel;
+        $linktechnologies[$techid] = trans('<!link>$a ($b)', $techlabel, $LINKTYPES[$linktype]);
     }
 }
 
