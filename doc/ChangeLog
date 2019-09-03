@@ -62,6 +62,8 @@ version 25-git (????-??-??):
     to single node assignments are handled (default empty value means current
     behavior) [chilan]
   - enhancement: nodelocks can be enabled/disabled [chilan]
+  - improvement: phpui.datatables_max_records can have 0 value which means
+    no record limit [chilan]
 
 version 24.0 (2019-05-16):
 
