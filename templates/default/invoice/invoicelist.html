@@ -370,6 +370,7 @@
 		confirmDialog($t("Are you sure, you want to recover cancelled invoice '$a'?", number), this).done(function () {
 			location.href = $(this).attr('href');
 		});
+		return false;
 	});
 
 	$('.send-invoice').click(function () {

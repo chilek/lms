@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 
-if ($id && $_GET['is_sure'] == '1') {
+if ($id) {
     if (isset($_GET['recover'])) {
         $DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
 
