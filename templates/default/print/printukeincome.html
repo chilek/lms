@@ -93,8 +93,8 @@
 				<thead>
 					<tr>
 						<td width="30" CLASS="HEAD nobr text-center">{trans("Bandwidth interval")}</td>
-						<td width="30" CLASS="HEAD nobr text-center">{trans("<!customer>Private")}</td>
-						<td width="30" CLASS="HEAD nobr text-center">{trans("<!customer>Bussiness")}</td>
+						<td width="30" CLASS="HEAD nobr text-center">{trans("<!link>Bussiness links")}</td>
+						<td width="30" CLASS="HEAD nobr text-center">{trans("<!link>Private links")}</td>
 						<td width="30" CLASS="HEAD nobr text-center">{trans("Total")}</td>
 					</tr>
 				</thead>
@@ -102,8 +102,8 @@
 				{foreach $bandwidth_linktechnologies[$row.technology] as $label => $stats}
 					<tr>
 						<td class="text-center">{$label}</td>
-						<td class="text-center">{$stats.private}</td>
 						<td class="text-center">{$stats.bussiness}</td>
+						<td class="text-center">{$stats.private}</td>
 						<td class="text-center">{$stats.total}</td>
 					</tr>
 				{/foreach}
