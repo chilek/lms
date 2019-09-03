@@ -129,23 +129,11 @@ if ($bandwidths) {
         JOIN customers c ON c.id = cash.customerid
         JOIN invoicecontents ic ON ic.docid = cash.docid AND ic.itemid = cash.itemid
         JOIN tariffs t ON t.id = ic.tariffid
-        JOIN assignments a ON a.tariffid = t.id AND a.customerid = cash.customerid
-        JOIN nodeassignments na ON na.assignmentid = a.id
-        LEFT JOIN (
-            SELECT customerid FROM assignments a
-            WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
-                AND a.datefrom <= ?
-                AND (a.dateto >= ? OR a.dateto = 0)
-        ) allsuspended ON allsuspended.customerid = cash.customerid
         WHERE t.type = ? AND cash.linktechnology IS NOT NULL
             AND t.downceil > 0 AND t.upceil > 0
-            AND allsuspended.customerid IS NULL
             AND cash.time >= ? AND cash.time <= ?
-            AND a.datefrom <= ?
-            AND (a.dateto = 0 OR a.dateto >= ?)
-            AND a.suspended = 0
         GROUP BY cash.linktechnology, t.downceil, t.upceil
-        ORDER BY cash.linktechnology', array($unixfrom, $unixto, SERVICE_INTERNET, $unixfrom, $unixto, $unixfrom, $unixto));
+        ORDER BY cash.linktechnology', array(SERVICE_INTERNET, $unixfrom, $unixto));
     if (!empty($customer_links)) {
         foreach ($customer_links as $customer_link) {
             $linktechnology = $customer_link['linktechnology'];
