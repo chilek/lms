@@ -122,8 +122,8 @@ if ($bandwidths) {
 
     $customer_links = $DB->GetAll('
         SELECT cash.linktechnology, t.downceil, t.upceil,
-            SUM(CASE WHEN c.type = 0 THEN 1 ELSE 0 END) AS private,
-            SUM(CASE WHEN c.type = 1 THEN 1 ELSE 0 END) AS bussiness,
+            SUM(CASE WHEN c.type = 0 THEN ROUND(ic.count) ELSE 0 END) AS private,
+            SUM(CASE WHEN c.type = 1 THEN ROUND(ic.count) ELSE 0 END) AS bussiness,
             COUNT(*) AS total
         FROM cash
         JOIN customers c ON c.id = cash.customerid
