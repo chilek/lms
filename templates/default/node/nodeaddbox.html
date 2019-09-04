@@ -181,7 +181,9 @@
 										<OPTION VALUE="{$NNprojects[project].id}" {if ($nodedata.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
 										{/section}
 									</SELECT>
-									<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname}" {tip text="Enter new project name" trigger="projectname" } id="projectname">
+									<INPUT TYPE="TEXT" NAME="nodedata[projectname]" VALUE="{$nodedata.projectname}"
+										{tip text="Enter new project name" trigger="projectname" } id="projectname"
+										{if !isset($nodedata.invprojectid) || empty($nodedata.invprojectid)} style="display: none;"{/if}>
 
 								</TD>
 							</TR>
