@@ -161,6 +161,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_customer', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
@@ -295,6 +304,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_customerext', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
@@ -409,6 +427,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_node', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
@@ -463,6 +490,15 @@ switch ($mode) {
                                 $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_netnode', $hook_data);
+            $result = $hook_data['result'];
                     header('Content-type: application/json');
             if (!empty($result)) {
                     echo json_encode(array_values($result));
@@ -512,6 +548,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_netdevice', $hook_data);
+            $result = $hook_data['result'];
                 header('Content-type: application/json');
             if (!empty($result)) {
                     echo json_encode(array_values($result));
@@ -615,6 +660,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_ticket', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
@@ -660,6 +714,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_wireless', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
@@ -701,6 +764,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_network', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
@@ -763,6 +835,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_account', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
@@ -822,6 +903,15 @@ switch ($mode) {
                     $result[$row['id']] = compact('name', 'name_class', 'description', 'description_class', 'action');
                 }
             }
+            $hook_data = array(
+                'search' => $search,
+                'sql_search' => $sql_search,
+                'properties' => $properties,
+                'session' => $SESSION,
+                'result' => $result
+            );
+            $hook_data = $LMS->executeHook('quicksearch_ajax_document', $hook_data);
+            $result = $hook_data['result'];
             header('Content-type: application/json');
             if (!empty($result)) {
                 echo json_encode(array_values($result));
