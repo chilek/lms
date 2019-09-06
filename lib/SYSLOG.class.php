@@ -557,4 +557,18 @@ class SYSLOG
         //xdebug_var_dump($result);
         return $result;
     }
+
+    public function AddResources($namesArray, $keysArray = NULL)
+    {
+        if(is_array($namesArray)) {
+            foreach($namesArray as $key => $value) {
+                self::$resources[$key] = $value;
+            }
+        }
+        if($keysArray != NULL && is_array($keysArray)) {
+            foreach($keysArray as $key => $value) {
+                self::$resource_keys[$key] = $value;
+            }
+        }
+    }
 }
