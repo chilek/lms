@@ -46,10 +46,12 @@
 	<TR>
 		<TD style="width: 100%;" COLSPAN="2" CLASS="container">
 			<TABLE style="width: 100%;" CELLPADDING="0">
+				{block name="nodeaddbox-tablebody"}
 				<TR>
 					<TD class="node-data">
 						<div id="node-left-panel">
 							<TABLE>
+							{block name="nodeaddbox-leftcolumn"}
 							<TR>
 								<TD style="width: 1%;">
 									<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
@@ -239,10 +241,12 @@
 									{/foreach}
 								</TD>
 							</TR>
+							{/block}
 							</TABLE>
 						</div>
 						<div id="node-right-panel">
 							<TABLE>
+							{block name="nodeaddbox-rightcolumn"}
 							<tr>
 								<td width="1%">
 									<img src="img/network.gif" alt="">
@@ -305,15 +309,18 @@
 									</SELECT>
 								</TD>
 							</TR>
+							{/block}
 							</TABLE>
 						</div>
 					</TD>
 				</TR>
+			{/block}
 			</TABLE>
 		</TD>
 	</TR>
 	<TR>
 		<TD style="width: 100%;" COLSPAN="2" class="lms-ui-box-buttons">
+			{block name="nodeaddbox-options"}
 			{button id="scan-button" icon="lms-ui-icon-search" label="Scan" onclick="location.href = '?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}';"}
 			{button type="submit" id="save-button" icon="save" label="Submit"}
 			{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}';"}
@@ -322,6 +329,7 @@
 				<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" {if $nodedata.reuse}checked{/if}>
 				{trans("Display this form again, when this node is saved")}
 			</label>
+			{/block}
 		</TD>
 	</TR>
     </TBODY>
