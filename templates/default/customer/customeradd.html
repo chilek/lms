@@ -22,16 +22,50 @@
 </SCRIPT>
 <style>
 
-	.customer-header {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-		flex-wrap: wrap;
-	}
+    .customer-header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+    }
 
-	.customer-data {
+    .customer-header-left-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        flex-basis: 420px;
+    }
+
+    .customer-header-right-panel {
+        display: flex;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+
+    .customer-header label{
+        padding-right: 0.5em;
+    }
+
+    .customer-header label > *:not(:first-child){
+        padding-right: 0.5em;
+    }
+    .customer-header-row {
+        display: flex;
+        min-width: 100%;
+        padding-bottom: 0.5em;
+    }
+
+    .customer-header-row input{
+        flex-grow: 1;
+    }
+
+    .customer-data {
 		width: 100%;
 		display: flex;
 		flex-direction: row;
@@ -44,13 +78,30 @@
 		flex-grow: 1;
 	}
 
-	#customer-left-panel {
-		margin-right: 10em;
-	}
-
 	#customer-right-panel {
 		margin-right: 2em;
 	}
+
+    @media screen and (max-width: 470px) {
+        .lms-ui-address-box tr {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .cell-flex  > div textarea{
+            max-width: 190px;
+        }
+
+        .lms-ui-wysiwyg-editor textarea{
+            max-width: 230px;
+        }
+    }
+
+    @media screen and (min-width: 470px) {
+        #customer-left-panel {
+            margin-right: 10em;
+        }
+    }
 
 </style>
 <FORM name="customeradd" id="customeradd" method="POST" action="?m=customeradd">
@@ -59,50 +110,26 @@
 </p>
 <TABLE class="lmsbox">
 	<THEAD>
-	<TR>
-		<TD style="width: 100%;">
-			<TABLE width="100%">
-				<TR>
-					<TD class="customer-header">
-						<div>
-							<TABLE>
-								<TR>
-									<TD class="bold">
-										{trans("Name/Surname:")}
-									</TD>
-									<TD>&nbsp;</TD>
-									<TD>
-										<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" required {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
-									</TD>
-								</TR>
-								<TR>
-									<TD class="bold">
-										{trans("First name:")}
-									</TD>
-									<TD>&nbsp;</TD>
-									<TD>
-										<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="name" bold=1}>
-									</TD>
-								</TR>
-							</TABLE>
-						</div>
-						<div>
-							<TABLE>
-								<TR>
-									<TD style="width: 1%;" class="bold nobr">
-										{trans("External system identifier:")}
-									</TD>
-									<TD style="width: 99%;">
-										<input type="text" size="20" maxlength="20" name="customeradd[extid]" value="{$customeradd.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
-									</TD>
-								</TR>
-							</TABLE>
-						</div>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
+    <TR>
+        <TD style="width: 100%;">
+            <div class="customer-header">
+                <div class="customer-header-left-panel">
+                    <div class="customer-header-row">
+                        <label for="customeradd[lastname]"><strong>{trans("Name/Surname:")}</strong></label>
+                        <INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" required {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
+                    </div>
+                    <div class="customer-header-row">
+                        <label for="customeradd[name]"><strong>{trans("First name:")}</strong></label>
+                        <INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" {tip text="Enter customer name" trigger="name" bold=1}>
+                    </div>
+                </div>
+                <div class="customer-header-right-panel">
+                    <label for="customeradd[extid]"><strong>{trans("External system identifier:")}</strong>
+                        <input type="text" size="20" maxlength="20" name="customeradd[extid]" value="{$customeradd.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}></label>
+                </div>
+            </div>
+        </TD>
+    </TR>
 	</THEAD>
 	<TBODY>
 	<TR>
@@ -223,7 +250,7 @@
 							{/if}
 						{/foreach}
 
-						{* if postal address is not set *}
+{*						 if postal address is not set*}
 						{if $addr_found == 0}
 							{$tmp['location_address_type'] = $smarty.const.POSTAL_ADDRESS}
 							{$tmp['prefix'] = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
@@ -296,11 +323,16 @@
 					<TD class="valign-top">
 						<IMG src="img/serialnumber.gif" alt="">
 					</TD>
-					<TD>
+					<TD class="cell-flex">
+                        <div>
 						<TABLE width="100%">
-							<TR>
-								<TD style="width: 1%;">{trans("ICN")}:</TD>
-								<TD style="width: 99%;">
+                            <COLGROUP>
+                                <COL style="width: 1%;">
+                                <COL style="width: 99%;">
+                            </COLGROUP>
+                            <TR>
+								<TD>{trans("ICN")}:</TD>
+								<TD>
 									{if $customeradd.icnwarning}
 									<INPUT type="hidden" name="customeradd[icnwarning]" value="1">
 									{/if}
@@ -308,8 +340,8 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">{trans("SSN")}:</TD>
-								<TD style="width: 99%;">
+								<TD>{trans("SSN")}:</TD>
+								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.ssn}" name="customeradd[ssn]" {tip text="Enter customer Social Security Number (optional)" trigger="ssn"}>
 									{if $customeradd.ssnwarning}
 									<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
@@ -320,8 +352,8 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">{trans("TEN")}:</TD>
-								<TD style="width: 99%;">
+								<TD>{trans("TEN")}:</TD>
+								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
 									{if $customeradd.tenwarning}
 									<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
@@ -333,26 +365,27 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">{trans("REGON")}:</TD>
-								<TD style="width: 99%;">
+								<TD>{trans("REGON")}:</TD>
+								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.regon}" name="customeradd[regon]" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">{trans("RBE Name:")}</TD>
-								<TD style="width: 99%;">
+								<TD>{trans("RBE Name:")}</TD>
+								<TD>
 									<TEXTAREA name="customeradd[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customeradd.rbename|escape}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">{trans("RBE")}:</TD>
-								<TD style="width: 99%;">
+								<TD>{trans("RBE")}:</TD>
+								<TD>
 									<INPUT type="text" size="30" value="{$customeradd.rbe}" name="customeradd[rbe]" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 									<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 								</TD>
 							</TR>
 						</TABLE>
+                        </div>
 					</TD>
 				</TR>
 				<TR>

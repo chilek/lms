@@ -13,55 +13,123 @@
 	.customer-contacts .contacts .contact-buttons {
 		display: flex;
 		flex-flow: column;
-	}
-
-	.customer-contacts .contacts .contact-buttons {
-		display: flex;
-		flex-flow: column;
+		align-items: center;
 	}
 
 	.customer-contacts .contacts .contact-buttons > *:not(:first-child) {
 		margin-top: 0.2em;
 	}
 
+	.contactbox-inner-col {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.contactbox-inner-row {
+		display: flex;
+	}
+
+	.contactbox-inner-row > input{
+		flex-grow: 1;
+	}
+
+	.contactbox-inner-row-cell-checks {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.contactbox-inner-row-cell-checks div{
+		flex-grow: 1;
+	}
+
+	@media screen and (max-width: 600px) {
+		.contactbox-inner-row {
+			flex-direction: column;
+		}
+
+		.contactbox-inner-row-cell-checks{
+			flex-direction: column;
+		}
+
+		.contactbox-inner-row > input{
+			text-overflow: ellipsis;
+        }
+
+        .contactbox-inner-row-cell > input{
+			max-width: {$properties.ui.size}
+		}
+	}
+
+	@media screen and (max-width: 360px) {
+        .contactbox-inner-row-cell-checks-labels {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+	@media screen and (max-width: 470px) {
+        .contactbox-inner-row-cell > input {
+            max-width: 150px;
+            text-overflow: ellipsis;
+        }
+    }
+
+	@media screen and (min-width: 600px) {
+		.contacttype-visible {
+			max-width: 500px;
+		}
+	}
+
 </style>
 
 <script>
-
 	function newcontact(type) {
 		var table = $('table.contacts[data-type="' + type + '"]');
-		var innerHTML = '<tr class="contact"><td class="nobr">';
+		var innerHTML = '<tr class="contact"><td>';
 		var nr = $('tr', table).length - 1;
-		innerHTML += '<table class="lmsbox-inner"><tr><td>';
+		innerHTML += '<div class="contactbox-inner-col">' +
+						'<div class="contactbox-inner-row">' +
+							'<div class="contactbox-inner-row-cell">';
 		switch (type) {
-			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
+		{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
 			case '{$contacttype}':
-				{if isset($properties.ui.typeselectors)}
+			{if isset($properties.ui.typeselectors)}
 				innerHTML += '<SELECT name="{$formelemprefix}[{$contacttype}s][' + nr + '][typeselector]">'
-					{foreach $properties.ui.typeselectors as $typeselector}
-					+ '<OPTION value="{$typeselector}">{$_CONTACTTYPES[$typeselector]}</OPTION>'
-					{/foreach}
-					+ '</SELECT>&nbsp;';
-				{/if}
-				innerHTML += '<INPUT TYPE="text" size="{$properties.ui.size}" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][contact]"'
-					+ ' title="{$properties.ui.tip}"></td><td class="valign-top">';
-				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}{if $flagproperties@index && !($flagproperties@index % 3)}<br>{/if}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
-				innerHTML += '</td></tr><tr><td colspan="2"><INPUT TYPE="text" size="68" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][name]"'
-					+ ' title="{trans("Enter contact name/description (optional)")}">';
+						{foreach $properties.ui.typeselectors as $typeselector}
+						+ '<OPTION value="{$typeselector}">{$_CONTACTTYPES[$typeselector]}</OPTION>'
+						{/foreach}
+						+ '</SELECT>&nbsp;';
+			{/if}
+				innerHTML += '<INPUT TYPE="text" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+						+ ' title="{$properties.ui.tip}">';
+				innerHTML += '</div>' +
+						'<div class="contactbox-inner-row-cell-checks">' +
+							'<div class="contactbox-inner-row-cell-checks-labels">';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}{if $flagproperties@index && !($flagproperties@index % 3)}</div><div class="contactbox-inner-row-cell-checks-labels">{/if}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+				innerHTML += '</div>' +
+						'<div>';
+				innerHTML += '</div>' +
+						'</div>' +
+						'</div>' +
+						'<div class="contactbox-inner-row">';
+				innerHTML += '<INPUT TYPE="text" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][name]"'
+						+ ' title="{trans("Enter contact name/description (optional)")}">';
 				break;
-			{/foreach}
+		{/foreach}
+				innerHTML += '</div>' +
+						'</div>' +
+					'</div>';
+
 		}
-		innerHTML += '</td></tr></table>';
 		innerHTML += '</td>';
 		innerHTML += '<td>' + $('#contact-button-template').html() + '</td>';
 		innerHTML += '</tr>';
 		table.append(innerHTML);
-/*
-		// don't remember what it did
-		$('[title]', table).tooltip({
-			position: { my: "left top" }
-		});
-*/
+		/*
+                // don't remember what it did
+                $('[title]', table).tooltip({
+                    position: { my: "left top" }
+                });
+        */
 		table.append($('.newcontact', table));
 	}
 
@@ -72,48 +140,51 @@
 	<TD style="width: 1%;" class="valign-top">
 		<i class="{$properties.ui.legend.icon}"></i>
 	</TD>
-	<TD style="width: 99%;" class="nobr">
+	<TD style="width: 99%;">
 		{$ctype=$type|cat:'s'}
 		<span class="contacttype-hidden bold" data-type="{$type}"{if isset($customerinfo[$ctype]) && count($customerinfo[$ctype])} style="display: none;"{/if}>
 			<a class="contacttype-show" data-type="{$type}">{$properties.ui.legend.text} &raquo;&raquo;&raquo;</a>
 		</span>
-		<fieldset class="contacttype-visible nobr" data-type="{$type}" style="width: 1%;{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
+		<fieldset class="contacttype-visible" ata-type="{$type}" style="{if !isset($customerinfo[$ctype]) || !count($customerinfo[$ctype])} display: none;{/if}">
 			<legend class="bold">
 				<a class="contacttype-hide" data-type="{$type}">{$properties.ui.legend.text} &laquo;&laquo;&laquo;</a>
 			</legend>
-			<table class="contacts" data-type="{$type}">
+			<table style="width: 100%;" class="contacts" data-type="{$type}">
 				{foreach $customerinfo[$ctype] as $key => $item}
 				<TR class="contact">
-					<TD>
-						<table class="lmsbox-inner">
-							<TR>
-								<TD>
-									{if isset($properties.ui.typeselectors)}
-									<SELECT name="{$formelemprefix}[{$type}s][{$key}][typeselector]">
-										{foreach $properties.ui.typeselectors as $typeselector}
-										<OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
-										{/foreach}
-									</SELECT>
-									{/if}
-									<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="{$formelemprefix}[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
-								</TD>
-								<TD class="valign-top">
-									{foreach $properties.ui.flags as $flagtype => $flagproperties}
-									{if $flagproperties@index && !($flagproperties@index % 3)}<br>{/if}
-									<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
-										<INPUT type="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$type}s][{$key}][type][]"{if isset($item.type) && ($item.type & $flagtype)} checked{/if}>
-										{$flagproperties.label}
-									</label>
-									{/foreach}
-									</TD>
-							</TR>
-							<TR>
-								<TD colspan="2">
-									<INPUT type="text" size="68" value="{$item.name}" name="{$formelemprefix}[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
-								</TD>
-							</TR>
-						</table>
-					</TD>
+                    <TD>
+                        <div class="contactbox-inner-col">
+                            <div class="contactbox-inner-row">
+                                <div class="contactbox-inner-row-cell">
+                                    {if isset($properties.ui.typeselectors)}
+                                        <SELECT name="{$formelemprefix}[{$type}s][{$key}][typeselector]">
+                                            {foreach $properties.ui.typeselectors as $typeselector}
+                                                <OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
+                                            {/foreach}
+                                        </SELECT>
+                                    {/if}
+                                    <INPUT type="{$properties.ui.inputtype}"
+                                           value="{$item.contact}"
+                                           name="{$formelemprefix}[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
+                                </div>
+                                <div class="contactbox-inner-row-cell-checks">
+                                    <div class="contactbox-inner-row-cell-checks-labels">
+                                    {foreach $properties.ui.flags as $flagtype => $flagproperties}
+                                        {if $flagproperties@index && !($flagproperties@index % 3)}</div><div class="contactbox-inner-row-cell-checks-labels">{/if}
+                                            <label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
+                                                <INPUT type="checkbox" value="{$flagtype}"
+                                                       name="{$formelemprefix}[{$type}s][{$key}][type][]"{if isset($item.type) && ($item.type & $flagtype)} checked{/if}>
+                                                {$flagproperties.label}
+                                            </label>
+                                    {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contactbox-inner-row">
+                                    <INPUT type="text" value="{$item.name}" name="{$formelemprefix}[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+                            </div>
+                        </div>
+                    </TD>
 					<TD>
 						<div class="contact-buttons">
 							{button icon="trash" class="delete-contact" tip="Delete"}
