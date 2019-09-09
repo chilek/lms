@@ -10,6 +10,11 @@
         white-space: nowrap;
     }
 
+    .cell-flex {
+		display: flex;
+        flex-wrap: wrap;
+	}
+
 	.node-data {
 		width: 100%;
 		display: flex;
@@ -23,8 +28,25 @@
 		flex-grow: 1;
 	}
 
-	#node-right-panel {
-		margin-right: -0.75em;
+	@media screen and (max-width: 400px) {
+		.tab-beautify tr td:nth-child(2) {
+			white-space: normal;
+		}
+
+		.cell-flex > div {
+			max-width: 165px;
+			white-space: normal;
+		}
+
+		.cell-flex > span {
+			max-width: 165px;
+			white-space: normal;
+		}
+
+		#node-right-panel {
+			margin-right: -5em;
+		}
+
 	}
 
 </style>
@@ -62,8 +84,8 @@
 									<td>
 										{trans("Network:")}
 									</td>
-									<td>
-										<a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
+									<td class="cell-flex">
+										<span><a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a></span>
 									</td>
 								</tr>
 								<tr>
@@ -136,8 +158,10 @@
 									<td>
 										{trans("Location:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+                                        <div>
 										{if $nodeinfo.location_name}{$nodeinfo.location_name} ,{/if}{$nodeinfo.location}
+                                        </div>
 									</td>
 								</tr>
 								{/if}
@@ -314,14 +338,15 @@
 									<td>
 										{trans("Description:")}
 									</td>
-									<td>
-										<table style="width: 100%;" cellpadding="5">
+									<td class="cell-flex">
+										<div><table style="width: 100%;" cellpadding="5">
 											<tr>
 												<td class="fall superlight">
-													{$nodeinfo.info|replace:"\n":"<br>"}
+													<div>{$nodeinfo.info|replace:"\n":"<br>"}</div>
 												</td>
 											</tr>
 										</table>
+										</div>
 									</td>
 								</tr>
 								{/if}
@@ -404,8 +429,10 @@
 									<td>
 										{trans("last online:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+										<div>
 										{$nodeinfo.lastonlinedate}
+										</div>
 									</td>
 								</tr>
 								{/if}
@@ -418,9 +445,10 @@
 										{trans("Created:")}<br>
 										{trans("Modified:")}
 									</td>
-									<td>
-										{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
-										{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+									<td class="cell-flex">
+										<div>{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
+											{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+										</div>
 									</td>
 								</tr>
 							{/block}

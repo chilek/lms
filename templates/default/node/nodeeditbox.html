@@ -8,6 +8,11 @@
 		white-space: nowrap;
 	}
 
+	.cell-flex {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
 	.node-data {
 		width: 100%;
 		display: flex;
@@ -21,8 +26,39 @@
 		flex-grow: 1;
 	}
 
-	#node-right-panel {
-		margin-right: 2em;
+	#netdev {
+		max-width: 250px;
+	}
+
+	@media screen and (max-width: 500px) {
+		.cell-flex > div select {
+			max-width: 185px;
+			white-space: normal;
+		}
+
+		#netdev {
+			max-width: 185px;
+			white-space: normal;
+		}
+
+		.cell-flex > div {
+			max-width: 165px;
+		}
+	}
+
+	@media screen and (max-width: 420px) {
+		.tab-beautify tr td:nth-child(2) {
+			white-space: normal;
+		}
+
+		.lms-ui-wysiwyg-editor textarea{
+			max-width: 200px;
+		}
+
+		.ui-selectmenu-button.ui-button {
+			width: 14em;
+			white-space: normal;
+		}
 	}
 
 </style>
@@ -65,14 +101,16 @@
 									<td>
 										{trans("Network:")}
 									</td>
-									<td>
-										<select size="1" name="nodeedit[netid]" {tip text="Choose network" trigger="netid"}>
+									<td class="cell-flex">
+                                        <div>
+										<select size="1" class="smaller-select" name="nodeedit[netid]" {tip text="Choose network" trigger="netid"}>
 											<option value="0">{trans("- automatic selection -")}</option>
 											{foreach $networks as $net}
 												<option value="{$net.id}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="lms-ui-error"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
 											{/foreach}
 										</select>
 										<label><input type="checkbox" name="nodeedit[wholenetwork]" value="1" onchange="change_wholenetwork()"{if $nodeinfo.wholenetwork} checked{/if}>&nbsp;{trans("the whole network")}</label>
+                                        </div>
 									</td>
 								</tr>
 
@@ -83,7 +121,8 @@
 									<td>
 										{trans("IP address:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+										<div>
 										<input type="text" name="nodeedit[ipaddr]" value="{$nodeinfo.ipaddr}" required {tip text="Enter IP address" trigger="ipaddr"}>
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
 												ipelem: document.editnode['nodeedit[ipaddr]'],
@@ -92,6 +131,7 @@
 												netid: document.editnode['nodeedit[netid]'].value
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 										<br>
+										</div>
 										<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
 									</td>
 								</tr>
@@ -116,7 +156,8 @@
 									<td>
 										{trans("Pub. IP address:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+										<div>
 										<input type="hidden" name="nodeedit[pubnetid]" value="{if $nodeinfo.pubnetid}{$nodeinfo.pubnetid}{else}0{/if}">
 										<input type="text" name="nodeedit[ipaddr_pub]" {if $nodeinfo.ipaddr_pub != "0.0.0.0"}value="{$nodeinfo.ipaddr_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
 										<a href="javascript: void(0);" onClick="return ipchoosewin({
@@ -126,6 +167,7 @@
 												netid: document.editnode['nodeedit[pubnetid]'].value,
 												privnetid: document.editnode['nodeedit[netid]'].value
 											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+										</div>
 									</td>
 								</tr>
 								{/if}
@@ -163,9 +205,10 @@
 									<td>
 										{trans("Net devices:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+										<div>
 				                        <a href="javascript: void(0);" onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
-										<select size="1" name="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);" style="max-width:250px;">
+										<select size="1" name="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);">
 											<option value="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</option>
 											{section name="netdev" loop=$netdevices}
 											<option value="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} selected{/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</option>
@@ -201,6 +244,7 @@
 											<option value="{$key}"{if $key==$nodeinfo.linkspeed} selected{/if}>{$item}</option>
 											{/foreach}
 										</select>
+										</div>
 									</td>
 								</tr>
 								{/if}
@@ -234,7 +278,8 @@
 									<td>
 										{trans("Customer:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+                                        <div>
 										{customerlist
 											form        = "editnode"
 											customers   = $customers
@@ -248,6 +293,7 @@
 											required    = true
 											customOnChange = "customer_change();"
 										}
+                                        </div>
 									</td>
 								</tr>
 
@@ -391,9 +437,11 @@
 										{trans("Created:")}<br>
 										{trans("Modified:")}
 									</td>
-									<td>
+									<td class="cell-flex">
+										<div>
 										{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<br>
 										{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
+										</div>
 									</td>
 								</tr>
 							</table>

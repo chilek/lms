@@ -25,6 +25,35 @@
 		margin-right: 2em;
 	}
 
+	.cell-flex {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	@media screen and (max-width: 420px) {
+		.tab-beautify tr td:nth-child(2) {
+			white-space: normal;
+		}
+
+		.cell-flex > div .chosen-container {
+			min-width: 243px;
+		}
+
+		.cell-flex > span {
+            white-space: normal;
+        }
+
+		.cell-flex > div select {
+			max-width: 185px;
+			white-space: normal;
+		}
+
+        .lms-ui-wysiwyg-editor textarea{
+            max-width: 200px;
+        }
+    }
+
+
 </style>
 
 {include file="google-maps.html"}
@@ -54,9 +83,16 @@
 							{block name="nodeaddbox-leftcolumn"}
 							<TR>
 								<TD style="width: 1%;">
+								<colgroup>
+									<col style="width: 1%;">
+									<col style="width: 99%;">
+								</colgroup>
+								<TR>
+								<TD>
 									<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 								</TD>
-								<TD style="width: 99%;">
+								<TD class="cell-flex">
+									<div>
 									<SELECT class="lms-ui-advanced-select" SIZE="1" name="nodedata[netid]" {tip text="Choose network" trigger="netid"}>
 										<OPTION VALUE="0">{trans("- automatic selection -")}</OPTION>
 										{foreach $networks as $net}
@@ -67,13 +103,14 @@
 										<input type="checkbox" name="nodedata[wholenetwork]" value="1" onchange="change_wholenetwork()"{if $nodedata.wholenetwork} checked{/if}>
 										{trans("the whole network")}
 									</label>
+									</div>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									<INPUT TYPE="TEXT" NAME="nodedata[ipaddr]" VALUE="{$nodedata.ipaddr}" required {tip text="Enter IP address" trigger="ipaddr"}>
 									<a href="javascript:void(0);" onClick="return ipchoosewin({
 											ipelem: document.nodeadd['nodedata[ipaddr]'],
@@ -99,10 +136,10 @@
 							</script>
 							{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									<input type="hidden" name="nodedata[pubnetid]" value="{if $nodedata.pubnetid}{$nodeinfo.pubnetid}{else}0{/if}">
 									<INPUT TYPE="TEXT" NAME="nodedata[ipaddr_pub]" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}>
 									<a href="javascript:void(0);" onClick="return ipchoosewin({
@@ -116,30 +153,31 @@
 							</TR>
 							{/if}
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 								</TD>
-								<td style="width: 99%;" class="lms-ui-mac-address-selection" COLSPAN="2">
+								<td class="lms-ui-mac-address-selection" COLSPAN="2">
 									{mac_address_selection form="nodedata" macs=$nodedata.macs}
 								</td>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript:GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 								</TD>
 							</TR>
 
 							{if $netdevices}
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 								</TD>
-								<TD style="width: 99%; white-space: nowrap;">
+								<TD class="cell-flex">
+									<div>
 												<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodeadd.elements['nodedata[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
-									<SELECT class="lms-ui-advanced-select" SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)" style="max-width:250px;">
+									<SELECT class="lms-ui-advanced-select" SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
 										<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{trans("- select device -")}</OPTION>
 										{section name=netdevices loop=$netdevices}
 										<OPTION VALUE="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</OPTION>
@@ -167,14 +205,15 @@
 										<OPTION value="{$key}"{if $nodedata.linkspeed == $key} selected{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
+									</div>
 								</TD>
 							</TR>
 							{/if}
 							<TR>
-								<TD WIDTH="2%" NOWRAP >
+								<TD>
 									<IMG SRC="img/money.gif" ALT="{trans("Investment project:")}">
 								</TD>
-								<TD WIDTH="98%">
+								<TD>
 									<SELECT NAME="nodedata[invprojectid]" ID="project" VALUE="{$nodedata.invprojectid}" {tip text="Select project"}>
 										<OPTION value="-2" {if ($nodedata.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
 										<OPTION value="-1" {if ($nodedata.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
@@ -190,10 +229,10 @@
 								</TD>
 							</TR>
 							<tr>
-								<td style="width: 1%;">
+								<td>
 									<img src="img/customer.gif" alt="{trans("Customer:")}">
 								</td>
-								<td style="width: 99%;">
+								<td>
 									{customerlist
 										form       = "nodeadd"
 										customers  = $customers
@@ -210,29 +249,29 @@
 							</tr>
 
 							<tr>
-								<td style="width: 1%; vertical-align: top;">
+								<td>
 									<img src="img/home.gif" alt="{trans("Location:")}">
 								</td>
-								<td style="width: 99%; white-space: nowrap;" colspan="2">
+								<td colspan="2">
 									<select id="customer_addresses" name="nodedata[address_id]" {tip trigger="address_id"}></select>
 									<input type="hidden" name="customer_addresses_warning" value="{if $customer_addresses_warning}1{else}0{/if}">
 								</td>
 							</tr>
 
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/options.gif" ALT="">
 								</TD>
-								<TD style="width: 99%; white-space: nowrap;">
+								<TD>
 									<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodedata.chkmac} checked{/if}>&nbsp;
 									<label for="halfduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/netdev.gif" ALT="">
 								</TD>
-								<TD style="width: 99%;">
+								<TD>
 									{foreach $_SESSIONTYPES as $idx => $sessiontype}
 									<label>
 										<INPUT TYPE="checkbox" NAME="nodedata[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($nodedata.authtype & $idx) == $idx} checked{/if}>
@@ -249,49 +288,56 @@
 							{block name="nodeaddbox-rightcolumn"}
 							<tr>
 								<td width="1%">
+                                <colgroup>
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 98%;">
+                                </colgroup>
+                                <tr>
+								<td>
 									<img src="img/network.gif" alt="">
 								</td>
-								<td colspan="2" width="99%">
+								<td colspan="2">
 									<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
 								</td>
 							</tr>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 								</TD>
-								<TD style="width: 1%; white-space: nowrap;">
+								<TD class="cell-flex" style="white-space: nowrap;">
 									<span class="bold">{trans("GPS longitude:")}</span>
 								</TD>
-								<TD style="width: 98%; white-space: nowrap;">
+								<TD>
 									<INPUT ID="longitude" TYPE="text" NAME="nodedata[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)"} trigger="longitude">
 									<a href="javascript:void(0);" onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[longitude]'], document.nodeadd.elements['nodedata[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 								</TD>
-								<TD style="width: 1%; white-space: nowrap;">
+								<TD class="cell-flex" style="white-space: nowrap;">
 									<span class="bold">{trans("GPS latitude:")}</span>
 								</TD>
-								<TD style="width: 98%; white-space: nowrap;">
+								<TD>
 									<INPUT ID="latitude" TYPE="text" NAME="nodedata[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)"} trigger="latitude">
 									<a href="javascript:void(0);" onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[longitude]'], document.nodeadd.elements['nodedata[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
 								</TD>
-								<TD style="width: 99%;" COLSPAN="2">
+								<TD COLSPAN="2">
 									<TEXTAREA NAME="nodedata[info]" class="lms-ui-wysiwyg-editor" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}{if isset($nodedata.wysiwyg.info)} data-wysiwyg="{$nodedata.wysiwyg.info}"{/if}>{$nodedata.info}</TEXTAREA>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" ALT="">
 								</TD>
-								<TD style="width: 99%;" COLSPAN="2">
+								<TD COLSPAN="2">
 									<SELECT SIZE="1" NAME="nodedata[access]" {tip text="Select node status" trigger="access"}>
 										<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
 										<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{trans("disconnected<!singular>")}</OPTION>
@@ -299,10 +345,10 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG SRC="img/warning{if !$nodedata.warning}off{else}on{/if}.gif" ALT="">
 								</TD>
-								<TD style="width: 99%;" COLSPAN="2">
+								<TD COLSPAN="2">
 									<SELECT SIZE="1" NAME="nodedata[warning]" {tip text="Set notice for node"}>
 										<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{trans("enabled")}</OPTION>
 										<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{trans("disabled")}</OPTION>

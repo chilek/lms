@@ -29,6 +29,40 @@
 		flex-wrap: wrap;
 	}
 
+	.customer-header-left-panel {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		flex-basis: 420px;
+		padding-left: 0.5em;
+        padding-right: 0.5em;
+	}
+
+	.customer-header-right-panel {
+		display: flex;
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+	}
+
+	.customer-header label{
+		padding-right: 0.5em;
+	}
+
+    .customer-header label > *:not(:first-child){
+        padding-right: 0.5em;
+    }
+	.customer-header-row {
+		display: flex;
+		min-width: 100%;
+		padding-bottom: 0.5em;
+	}
+
+	.customer-header-row input{
+		flex-grow: 1;
+	}
+
 	.customer-data {
 		width: 100%;
 		display: flex;
@@ -46,6 +80,26 @@
 		margin-right: 2em;
 	}
 
+	.cell-flex {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	@media screen and (max-width: 470px) {
+		.lms-ui-address-box tr {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.cell-flex  > div textarea{
+			max-width: 190px;
+		}
+
+		.lms-ui-wysiwyg-editor textarea{
+			max-width: 230px;
+		}
+	}
+
 </style>
 
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
@@ -56,46 +110,22 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;">
-			<TABLE width="100%">
-				<TR>
-					<TD class="customer-header">
-						<div>
-							<TABLE>
-							<TR>
-								<TD class="bold">
-									{trans("Name/Surname:")}
-								</TD>
-									<TD>&nbsp;</TD>
-								<TD>
-									<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" required {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
-								</TD>
-							</TR>
-							<TR>
-								<TD class="bold">
-									{trans("First name:")}
-								</TD>
-								<TD>&nbsp;</TD>
-								<TD>
-									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
-								</TD>
-							</TR>
-						</TABLE>
-						</div>
-						<div>
-							<TABLE>
-							<TR>
-								<TD style="width: 1%;" class="bold nobr">
-									{trans("External system identifier:")}
-								</TD>
-								<TD style="width: 99%;">
-									<input type="text" size="20" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
-								</TD>
-							</TR>
-						</TABLE>
-						</div>
-					</TD>
-				</TR>
-			</TABLE>
+			<div class="customer-header">
+				<div class="customer-header-left-panel">
+					<div class="customer-header-row">
+						<label for="customerdata[lastname]"><strong>{trans("Name/Surname:")}</strong></label>
+						<INPUT type="text" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" required {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+					</div>
+					<div class="customer-header-row">
+						<label for="customerdata[name]"><strong>{trans("First name:")}</strong></label>
+						<INPUT type="text" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+					</div>
+				</div>
+				<div class="customer-header-right-panel">
+					<label for="customerdata[extid]"><strong>{trans("External system identifier:")}</strong>
+					<input type="text" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}></label>
+				</div>
+			</div>
 		</TD>
 	</TR>
 	</THEAD>
@@ -213,14 +243,14 @@
 								{foreach $customerinfo.addresses as $v}
 									{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
 									<tr>
-										<td style="width: 1%;" class="valign-top">
+										<td class="valign-top">
 											{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
 												<img src="img/pin_blue.png" alt="" title="{trans('default location address')}" class="location-box-image">
 											{else}
 												<img src="img/location.png" alt="" title="{trans('location/recipient address')}" class="location-box-image">
 											{/if}
 										</td>
-										<td style="width: 99%;">
+										<td>
 											{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
 											{$address_idx = $addr_counter}
 											{$v.default_type = 1}
@@ -263,11 +293,16 @@
 									<TD class="valign-top">
 										<IMG src="img/serialnumber.gif" alt="">
 									</TD>
-									<TD style="width: 99%;">
+									<TD class="cell-flex">
+										<div>
 										<TABLE width="100%">
+											<COLGROUP>
+												<COL style="width: 1%;">
+												<COL style="width: 99%;">
+											</COLGROUP>
 											<TR>
-												<TD style="width: 1%;">{trans("ICN")}:</TD>
-												<TD style="width: 99%;">
+												<TD>{trans("ICN")}:</TD>
+												<TD>
 													{if $customerinfo.icnwarning}
 													<INPUT type="hidden" name="customerdata[icnwarning]" value="1">
 													{/if}
@@ -275,8 +310,8 @@
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;">{trans("SSN")}:</TD>
-												<TD style="width: 99%;">
+												<TD>{trans("SSN")}:</TD>
+												<TD>
 													<INPUT type="text" name="customerdata[ssn]" value="{$customerinfo.ssn}" size="30" {tip text="Enter Social Security Number (optional)" trigger="ssn"}>
 													{if $customerinfo.ssnwarning}
 													<INPUT type="hidden" name="customerdata[ssnwarning]" value="1">
@@ -287,8 +322,8 @@
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;">{trans("TEN")}:</TD>
-												<TD style="width: 99%;">
+												<TD>{trans("TEN")}:</TD>
+												<TD>
 													<INPUT type="text" name="customerdata[ten]" value="{$customerinfo.ten}" size="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
 													{if $customerinfo.tenwarning}
 													<INPUT type="hidden" name="customerdata[tenwarning]" value="1">
@@ -300,26 +335,27 @@
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;">{trans("REGON")}:</TD>
-												<TD style="width: 99%;">
+												<TD>{trans("REGON")}:</TD>
+												<TD>
 													<INPUT type="text" value="{$customerinfo.regon}" name="customerdata[regon]" size="30" {tip text="Enter Business Registration Number (optional)" trigger="regon"}>
 													<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_REGON}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;">{trans("RBE Name:")}</TD>
-												<TD style="width: 99%;">
+												<TD>{trans("RBE Name:")}</TD>
+												<TD>
 													<TEXTAREA name="customerdata[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customerinfo.rbename|escape}</TEXTAREA>
 												</TD>
 											</TR>
 											<TR>
-												<TD style="width: 1%;">{trans("RBE")}:</TD>
-												<TD style="width: 99%;">
+												<TD>{trans("RBE")}:</TD>
+												<TD>
 													<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
 													<a class="gusapi-button" data-type="{\GusApi\RegonConstantsInterface::SEARCH_TYPE_KRS}" href="#" {tip text="Click here to autocomplete company data from GUS REGON database"}>&raquo;&raquo;&raquo;</a>
 												</TD>
 											</TR>
 										</TABLE>
+										</div>
 									</TD>
 								</TR>
 								<TR>
