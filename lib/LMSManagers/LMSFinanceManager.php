@@ -444,7 +444,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                         list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
                         $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
-                        $partial_dateto = $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
+                        $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
                         $diffdays = ($partial_dateto - $data['datefrom']) / 86400;
                         if ($diffdays > 0) {
                             list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
