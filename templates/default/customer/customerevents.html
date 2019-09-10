@@ -90,7 +90,11 @@
 				</div>
 			{sectionelse}
 				<div class="lms-ui-tab-empty-table">
-					{trans("There are no events in timetable.")}
+					{if $allevents}
+						{trans("There are no events in timetable.")}
+					{else}
+						{trans("There are no open events in timetable.")}
+					{/if}
 				</div>
 			{/section}
 		{/tab_table}

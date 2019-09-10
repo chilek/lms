@@ -2533,7 +2533,8 @@ $_LANG['Max length of auto suggest proposal, further characters will be dotted.'
 $_LANG['Transmitted [B]'] = 'Przesłane dane [B]';
 $_LANG['Customer Timetable:'] = 'Terminarz klienta:';
 $_LANG['last $a events'] = 'ostatnie $a zdarzeń';
-$_LANG['There are no events in timetable.'] = 'Brak zdarzeń w kalendarzu.';
+$_LANG['There are no events in timetable.'] = 'Brak zdarzeń w terminarzu.';
+$_LANG['There are no open events in timetable.'] = 'Brak otwartych zdarzeń w terminarzu.';
 $_LANG['Notices'] = 'Powiadomienia';
 $_LANG['Allows you to send notices to customers'] = 'Pozwala wysyłać powiadomienia do klientów';
 $_LANG['Allows you to send messages to customers'] = 'Pozwala wysyłać wiadomości do klientów';
