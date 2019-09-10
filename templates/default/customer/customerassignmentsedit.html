@@ -3,7 +3,40 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<style>
+	.customerassignment-header {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: flex-start;
+        width: 100%;
+	}
 
+    .customerassignment-header label{
+        padding-right: 0.5em;
+    }
+
+    .customerassignment-header-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+    }
+
+	.customerassignment-header-row select{
+        width: 100%;
+        flex-grow: 1;
+    }
+
+	.customerassignment-header > div:last-child {
+		padding-left: 5.5em;
+	}
+
+    customerassignment-header-cell {
+        display: flex;
+    }
+
+
+</style>
 {$speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000)}
 {$speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5)}
 
@@ -19,17 +52,14 @@
     <THEAD>
 		<TR>
 			<TD colspan="3">
-				<table>
-					<tr>
-						<td>
-							<IMG src="img/money.gif" alt="">
-						</TD>
-						<TD class="bold">
-							{trans("Type")}/{trans("Tariff")}:
-						</TD>
-						<td>
+				<div class="customerassignment-header">
+					<div class="customerassignment-header-row">
+						<div class="customerassignment-header-cell">
+							<label for="customerdata[lastname]"><strong>{trans("Type")}/{trans("Tariff")}:</strong></label>
+						</div>
+						<div class="customerassignment-header-cell">
 							<input type="hidden" value="" name="assignment[tarifftype]" id="tarifftype">
-							<select id="tariff-select" size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"}>
+							<select id="tariff-select" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"}>
 								{block name="customerassignmentsedit-special-tariffs"}
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
@@ -46,27 +76,27 @@
 									</option>
 								{/foreach}
 							</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-						</td>
-						<td>
+						</div>
+					</div>
+					<div class="customerassignment-header-row">
+						<div class="customerassignment-header-cell">
 							<label>
 								<input type="checkbox" name="assignment[alltariffs]" {tip text="Check if all tariffs should be displayed" trigger="alltariffs"}{if $assignment.alltariffs} checked{/if}>
 								{trans("show all tariffs")}
 							</label>
-							{if !empty($tags)}
-							&nbsp;&nbsp;{trans("Tags:")}
-							{/if}
-							<SELECT size="5" id="assignment-tags" name="assignment[tags][]" class="lms-ui-multiselect" {tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}>
+						</div>
+						{if !empty($tags)}
+						<div class="customerassignment-header-cell">
+							<label for="assignment-tags">{trans("Tags:")}</label>
+							<SELECT id="assignment-tags" name="assignment[tags][]" class="lms-ui-multiselect" {tip text="Select tariff tags"} multiple onchange="javascript:updateTariffs();"{if empty($tags)} style="display: none;"{/if}>
 								{foreach $tags as $tag}
 								<OPTION value="{$tag.id}">{$tag.name}</OPTION>
 								{/foreach}
 							</SELECT>
-						</td>
-					</tr>
-				</table>
+						</div>
+						{/if}
+					</div>
+				</div>
 			</td>
 		</TR>
     </THEAD>
@@ -79,9 +109,9 @@
 		</TR>
 
 		<TR>
-			<TD class="buttons" colspan="3">
-				<A href="#" id="submit-button">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
-				<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+			<TD class="lms-ui-box-buttons" colspan="3">
+				{button id="submit-button" icon="save" label="Submit"}
+				{button id="cancel-button" icon="cancel" label="Cancel" onclick="location.href = '?m=customerinfo&id={$customerinfo.id}';"}
 			</TD>
 		</TR>
     </TBODY>

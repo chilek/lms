@@ -32,6 +32,70 @@
 		cursor: pointer;
 	}
 
+	.customerassignment-data {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.customerassignment > div {
+		flex-grow: 1;
+	}
+
+	#customerassignment-right-panel {
+		margin-right: 2em;
+		flex-grow: 1;
+	}
+
+	#customerassignment-left-panel {
+		display: flex;
+		margin-right: 10em;
+		flex-grow: 1;
+	}
+
+	.schema-tariff-container-row {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	@media screen and (max-width: 600px) {
+		#customerassignment-left-panel {
+			margin-right: 0em;
+		}
+		#customerassignment-right-panel {
+			margin-right: 0em;
+		}
+	}
+
+	@media screen and (max-width: 450px) {
+		.customerdevices .lms-ui-multiselect-wrapper{
+			width: 170px;
+			div.lms-ui-multiselect {
+				min-width: 170px;
+			}
+		}
+
+		[name="assignment[name]"] {
+			width: 150px;
+		}
+
+		[name="assignment[numberplanid]"] {
+			width: 150px;
+		}
+
+		[name="assignment[attribute]"] {
+			width: 150px;
+		}
+
+		#recipient-select {
+			width: 150px;
+		}
+	}
+
+
 </style>
 
 {if isset($promotion_only)}
@@ -40,14 +104,12 @@
 </select>
 {/if}
 
-<table class="lmsbox-inner">
-	<COLGROUP>
-		<COL style="width: 50%;">
-		<COL style="width: 50%;">
-	</COLGROUP>
+<table class="lmsbox-inner" width="100%">
 	<TBODY>
 	<tr>
-		<td class="valign-top">
+		<td>
+		<div class="customerassignment-data">
+			<div id="customerassignment-left-panel">
 			<table width="100%;" cellpadding="3">
 				{if !empty($promotions)}
 				<tr>
@@ -108,7 +170,7 @@
 															{if isset($item.single)}
 															<td class="valign-top{if !$item.single.optional} blend{/if}">
 																<table>
-																	<tr>
+																	<tr class="schema-tariff-container-row">
 																		<td>
 																			<label>
 																				<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]"
@@ -156,7 +218,7 @@
 															{else}
 															<td class="valign-top">
 																<table>
-																	<tr>
+																	<tr class="schema-tariff-container-row">
 																		<td>
 																			<select class="schema-tariff-selection" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]" data-label="{$label}">
 																				{if !$item.selection.required}
@@ -301,7 +363,7 @@
 								<TD class="bold nobr">
 									{trans("Period:")}
 								</TD>
-								<TD class="nobr">
+								<TD>
 									{trans("from:")}
 									<INPUT type="TEXT" name="{$variable_prefix}[datefrom]" value="{if $variables.datefrom}{$variables.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
 
@@ -427,8 +489,8 @@
 					</td>
 				</tr>
 			</table>
-		</td>
-		<td class="valign-top">
+			</div>
+			<div id="customerassignment-right-panel">
 			<TABLE style="width: 100%;" cellpadding="3">
 				<COLGROUP>
 					<COL style="width: 1%;">
@@ -444,7 +506,7 @@
 					<TD class="bold">
 						{trans("Options:")}
 					</TD>
-					<TD class="nobr">
+					<TD>
 						<label>
 							{trans("document type:")}&nbsp;
 							<SELECT name="{$variable_prefix}[invoice]">
@@ -490,7 +552,7 @@
 					<TD class="bold">
 						{trans("Existing assignments:")}
 					</TD>
-					<TD class="nobr">
+					<TD>
 						<select name="{$variable_prefix}[existing_assignments][operation]">
 							{foreach $_EXISTINGASSIGNMENTS as $operid => $operation}
 							<option value="{$operid}"{if $variables.existing_assignments.operation == $operid} selected{/if}>{$operation}</option>
@@ -518,7 +580,7 @@
 					<td class="bold">
 						{trans("Nodes:")}
 					</td>
-					<td class="nobr" id="nodelist">
+					<td id="nodelist">
 						{foreach $customernodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
@@ -543,7 +605,7 @@
 					<td class="bold">
 						{trans("Network Devices:")}
 					</td>
-					<td class="nobr" id="nodelist">
+					<td id="nodelist">
 						{foreach $customernetdevnodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 							<label>
@@ -565,7 +627,7 @@
 					<td class="bold">
 						{trans("Phones:")}
 					</td>
-					<td class="nobr" id="nodelist">
+					<td id="nodelist">
 						{foreach $voipaccounts as $account}
 						{foreach $account.phones as $phone}
 						<label>
@@ -592,6 +654,8 @@
 				{/if}
 				</TBODY>
 			</TABLE>
+			</div>
+		</div>
 		</td>
 	</tr>
 	</TBODY>
