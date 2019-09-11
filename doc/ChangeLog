@@ -65,6 +65,7 @@ version 25-git (????-??-??):
   - improvement: phpui.datatables_max_records can have 0 value which means
     no record limit [chilan]
   - enhancement: added optional bandwidth link distribution for uke income report [chilan]
+  - improvement: allow to search customers with balance calculated on given day [chilan]
 
 version 24.0 (2019-05-16):
 
