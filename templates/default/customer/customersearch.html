@@ -4,7 +4,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT type="text/javascript">
-<!-- 
+<!--
 	function PrintList() {
 		document.customersearch.action = "?m=customersearch&search=1&print=1";
 		document.customersearch.target = "_BLANK";
@@ -371,6 +371,8 @@
 				{trans("greater or equal")}
 			</label>
 			&nbsp;<input type="text" name="search[balance]" size="7">
+			{trans("on day")}
+			<input type="text" name="search[balance_date]" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar"}>
 		</TD>
 	</TR>
 	<TR>

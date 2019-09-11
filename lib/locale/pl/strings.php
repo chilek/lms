@@ -4418,3 +4418,5 @@ $_LANG['Bandwidth interval'] = 'Przedział przepływności';
 $_LANG['<!link>Private links'] = 'Łącza prywatne';
 $_LANG['<!link>Bussiness links'] = 'Łącza biznesowe';
 $_LANG['<!link>$a ($b)'] = '$a ($b)';
+
+$_LANG['on day'] = 'na dzień';

@@ -32,7 +32,7 @@ if (isset($_POST['search'])) {
     if (!empty($search['tariffs'])) {
         $search['tariffs'] = implode(",", $search['tariffs']);
     }
-    
+
     if ($search['createdfrom']) {
         list($year, $month, $day) = explode('/', $search['createdfrom']);
         $search['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
@@ -48,6 +48,10 @@ if (isset($_POST['search'])) {
     if ($search['deletedto']) {
         list($year, $month, $day) = explode('/', $search['deletedto']);
         $search['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
+    }
+    if ($search['balance_date']) {
+        list ($year, $month, $day) = explode('/', $search['balance_date']);
+        $time = mktime(23, 59, 59, $month, $day, $year);
     }
 }
 
@@ -120,8 +124,7 @@ if (isset($_GET['search'])) {
         "sqlskey",
         "nodegroup",
         "division",
-        "balance",
-        "balance_relation"
+        "time"
     ));
 
     $listdata['total'] = $customerlist['total'];
