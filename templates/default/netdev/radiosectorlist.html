@@ -194,7 +194,7 @@
 	</div>
 
 	<div class="lms-ui-tab-table-column buttons">
-		{if ConfigHelper::checkPrivilege('privileges.network_management')}
+		{if ConfigHelper::checkPrivilege('network_management')}
 		{button type="link" onclick="javascript:toggleEditRadioSector({$rsid});"
 			id="edit_button_{$rsid}" visible=!$edit icon="edit" tip="Edit radio sector"}
 		{button type="link" onclick="javascript:updateRadioSector({$rsid});"
