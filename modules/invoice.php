@@ -344,7 +344,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
         $jpk_data .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         if ($jpk_type == 'fa') {
-            $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2016/03/09/03095/\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
+            $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2019/03/21/03211/\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
         } else {
             $jpk_data .= "<JPK xmlns=\""
                 . ($jpk_vat_version == 2 ? "http://jpk.mf.gov.pl/wzor/2016/10/26/10261/"
@@ -377,8 +377,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
             $tns = '';
         } else {
-            $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (1)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
-            $jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
+            $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (2)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
+            $jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
             $tns = 'etd:';
         }
         $jpk_data .= "\t\t<CelZlozenia>" . ($jpk_vat_version == 2 || $jpk_type == 'fa' ? '1' : '0') . "</CelZlozenia>\n";
