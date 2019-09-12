@@ -1,9 +1,11 @@
 <?php
 
+use PragmaRX\Google2FA\Google2FA;
+
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -90,6 +92,15 @@ if ($userinfo) {
     }
 
     if (!$error) {
+        $userdata = $LMS->GetUserInfo($id);
+        if ($userinfo['twofactorauth'] == -1 || ($userinfo['twofactorauth'] == 1 && empty($userdata['twofactorsecretkey']))) {
+            $userinfo['twofactorauth'] = 1;
+            $google2fa = new Google2FA();
+            $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
+        } else {
+            $userinfo['twofactorauthsecretkey'] = null;
+        }
+
         $userinfo['accessfrom'] = $accessfrom;
         $userinfo['accessto'] = $accessto;
         $LMS->UserUpdate($userinfo);

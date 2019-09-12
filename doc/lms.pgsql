@@ -32,6 +32,8 @@ CREATE TABLE users (
 	accessto integer DEFAULT 0 NOT NULL,
 	settings text NOT NULL DEFAULT '',
 	persistentsettings text NOT NULL DEFAULT '',
+	twofactorauth smallint NOT NULL DEFAULT 0,
+	twofactorauthsecretkey varchar(255) DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
@@ -3579,6 +3581,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019090200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091200');
 
 COMMIT;

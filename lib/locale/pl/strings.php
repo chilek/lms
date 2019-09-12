@@ -4420,3 +4420,7 @@ $_LANG['<!link>Bussiness links'] = 'Łącza biznesowe';
 $_LANG['<!link>$a ($b)'] = '$a ($b)';
 
 $_LANG['on day'] = 'na dzień';
+
+$_LANG['Two factor authentication:'] = 'Uwierzytelnianie dwuetapowe';
+$_LANG['regenerate secret key'] = 'wygeneruj na nowo tajny klucz';
+$_LANG['Secret key: $a'] = 'Tajny klucz: $a';

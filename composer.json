@@ -87,7 +87,8 @@
         "ivkremer/jquery-simple-combobox": "^1",
 		"fortawesome/font-awesome": "^5",
         "html2text/html2text": "^4",
-        "drmonty/datatables-responsive": "^2.2"
+        "drmonty/datatables-responsive": "^2.2",
+        "pragmarx/google2fa": "^6"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

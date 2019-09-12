@@ -95,6 +95,21 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD class="bold">
+			<IMG src="img/pass.gif" alt=""> {trans("Two factor authentication:")}
+		</TD>
+		<TD>
+			<label>
+				<INPUT type="radio" name="useradd[twofactorauth]" value="1"{if $useradd.twofactorauth} checked{/if}>
+				{trans("yes")}
+			</label>
+			<label>
+				<INPUT type="radio" name="useradd[twofactorauth]" value="0"{if !$useradd.twofactorauth} checked{/if}>
+				{trans("no")}
+			</label>
+		</TD>
+	</TR>
+	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/pass.gif" alt=""> {trans("Repeat password:")}
 		</TD>

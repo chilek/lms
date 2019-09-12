@@ -96,14 +96,36 @@
 		</td>
 	</tr>
 	{else}
-	<tr style="display: none;">
-		<td>
-			<input type="hidden" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" >
-			<input type="hidden" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" >
-			<input type="hidden" name="userinfo[access]" value="{if $userinfo.access}1{else}0{/if}">
-		</td>
-	</tr>
+		<tr style="display: none;">
+			<td>
+				<input type="hidden" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" >
+				<input type="hidden" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" >
+				<input type="hidden" name="userinfo[access]" value="{if $userinfo.access}1{else}0{/if}">
+			</td>
+		</tr>
 	{/if}
+	<TR>
+		<td>
+			<IMG src="img/pass.gif" alt="">
+		</td>
+		<TD class="bold">
+			{trans("Two factor authentication:")}
+		</TD>
+		<TD>
+			<label>
+				<INPUT type="radio" name="userinfo[twofactorauth]" value="1"{if $userinfo.twofactorauth} checked{/if}>
+				{trans("yes")}
+			</label>
+			<label>
+				<INPUT type="radio" name="userinfo[twofactorauth]" value="0"{if !$userinfo.twofactorauth} checked{/if}>
+				{trans("no")}
+			</label>
+			<label>
+				<INPUT type="radio" name="userinfo[twofactorauth]" value="-1"{if $userinfo.twofactorauth == -1} checked{/if}>
+				{trans("regenerate secret key")}
+			</label>
+		</TD>
+	</TR>
 	<TR>
 		<TD>
 			<IMG src="img/ip.gif" alt="">

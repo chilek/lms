@@ -103,7 +103,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     public function getUserList()
     {
         $userlist = $this->db->GetAll(
-            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, accessfrom, accessto, rname
+            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access,
+                accessfrom, accessto, rname, twofactorauth
             FROM vusers
             WHERE deleted=0
             ORDER BY login ASC'
@@ -188,10 +189,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'access' => !empty($user['access']) ? 1 : 0,
             'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
             'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
+            'twofactorauth' => $user['twofactorauth'],
+            'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
         );
         $user_inserted = $this->db->Execute(
-            'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone,
+                passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
@@ -351,10 +355,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'access' => !empty($user['access']) ? 1 : 0,
             'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
             'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
+            'twofactorauth' => empty($user['twofactorauth']) ? 0 : 1,
+            'twofactorauthsecretkey' => $user['twofactorauthsecretkey'],
             SYSLOG::RES_USER => $user['id']
         );
         $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?', array_values($args));
+				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=?,
+				twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);
         }

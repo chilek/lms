@@ -1,9 +1,12 @@
 <?php
 
+use PragmaRX\Google2FA\Google2FA;
+use Com\Tecnick\Barcode\Barcode;
+
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -57,6 +60,20 @@ if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelpe
     }
     $SMARTY->assign('transactions', $trans);
     $SMARTY->assign('userid', $id);
+}
+
+if (!empty($userinfo['twofactorauth'])) {
+    $google2fa = new Google2FA();
+    $url = $google2fa->getQRCodeUrl(
+        $userinfo['name'],
+        'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST']
+            . substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1),
+        $userinfo['twofactorauthsecretkey']
+    );
+
+    $barcode = new Barcode();
+    $barcodeObj = $barcode->getBarcodeObj('QRCODE', $url, 150, 150);
+    $SMARTY->assign('qrcode_image', base64_encode($barcodeObj->getPngData()));
 }
 
 $SMARTY->assign('userinfo', $userinfo);

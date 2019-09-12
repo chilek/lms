@@ -91,6 +91,21 @@
 		</td>
 	</tr>
 {/if}
+{if $userinfo.twofactorauth}
+	<TR class="light">
+		<TD style="width: 1%;" class="fleft nobr valign-top">
+			<IMG src="img/pass.gif" alt="">
+		</TD>
+		<TD style="width: 1%;" class="nobr valign-top">
+			<span class="bold">{trans("Two factor authentication:")}</span>
+		</TD>
+		<TD style="width: 98%;" class="fright nobr">
+			{t a=$userinfo.twofactorauthsecretkey}Secret key: $a{/t}
+			<br><br>
+			<img src="data:image/png;base64, {$qrcode_image}">
+		</TD>
+	</TR>
+{/if}
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft nobr">
 			<IMG src="img/ip.gif" alt="">
