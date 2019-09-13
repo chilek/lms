@@ -1,4 +1,11 @@
 <!--// $Id$ //-->
+<style>
+
+	#qrcode-image {
+		margin-top: 0.4em;
+	}
+
+</style>
 <TABLE style="width: 100%;" cellpadding="3">
 	<TR class="dark">
 		<TD class="fall bold nobr" colspan="3">
@@ -91,7 +98,6 @@
 		</td>
 	</tr>
 {/if}
-{if $userinfo.twofactorauth}
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft nobr valign-top">
 			<IMG src="img/pass.gif" alt="">
@@ -99,13 +105,25 @@
 		<TD style="width: 1%;" class="nobr valign-top">
 			<span class="bold">{trans("Two factor authentication:")}</span>
 		</TD>
-		<TD style="width: 98%;" class="fright nobr">
-			{t a=$userinfo.twofactorauthsecretkey}Secret key: $a{/t}
-			<br><br>
-			<img src="data:image/png;base64, {$qrcode_image}">
+		<TD style="width: 98%;" class="fright nobr valign-top">
+			{if $userinfo.twofactorauth}
+				{trans("yes")}
+				&nbsp;&nbsp;
+				{button icon="password" id="secretkey-show-button" label="Show secret key"}
+				{button icon="password" id="secretkey-hide-button" label="Hide secret key" visible=false}
+			{else}
+				{trans("no")}
+			{/if}
 		</TD>
 	</TR>
-{/if}
+	<tr class="light" id="secretkey" style="display: none;">
+		<td colspan="2" class="fleft"></td>
+		<td class="fright">
+			{$userinfo.twofactorauthsecretkey}
+			<br>
+			<img id="qrcode-image" src="data:image/png;base64, {$qrcode_image}">
+		</td>
+	</tr>
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft nobr">
 			<IMG src="img/ip.gif" alt="">
@@ -202,11 +220,27 @@
 	</TR>
 </TABLE>
 <script>
+
 	$('#delete-user').click(function() {
 		confirmDialog($t("Are you sure, you want to irreversibly delete that user account?"), this).done(function() {
 			location.href = $(this).attr('href');
 		});
 		return false;
 	});
+
+	$(function() {
+		$('#secretkey-show-button').click(function() {
+			$(this).hide();
+			$('#secretkey-hide-button').show();
+			$('#secretkey').show();
+		});
+
+		$('#secretkey-hide-button').click(function() {
+			$(this).hide();
+			$('#secretkey-show-button').show();
+			$('#secretkey').hide();
+		});
+	});
+
 </script>
 
