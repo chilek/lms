@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--// $Id$ //-->
+<html>
+<head>
+    <meta name="GENERATOR" content="LMS {$layout.lmsv}">
+    <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+    <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
+    <link href="{ConfigHelper::getConfig('phpui.style', 'css/style.css')}" rel="stylesheet" type="text/css">
+    <link href="img/lms-net.gif" rel="shortcut icon">
+    <title>::: {trans("Welcome to LMS")} {$layout.lmsv} :::</title>
+	<style>
+		body {
+			justify-content: center;
+			align-items: center;
+		}
+
+		body > div {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.login-logo-container {
+			padding: 1em;
+			display: flex;
+			justify-content: center;
+		}
+
+		.login-logo-container > img {
+			width: 10em;
+		}
+
+		.login-box-container {
+			padding: 2em;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 1em;
+		}
+
+		.lms-ui-dberrors {
+
+		}
+
+		#loginform-button {
+			margin-top: 0.4em;
+		}
+
+	</style>
+</head>
+<body>
+<div>
+	<div class="login-logo-container">
+		<img src="img/logo.png" alt="">
+	</div>
+	<div class="login-box-container loginform light">
+		<span class="bold text-center">
+			{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
+			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
+		</span>
+		<br>
+		{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}
+		<br>
+		<form method="post" name="authcodeform" action="{$target}">
+			<INPUT type="submit" class="hiddenbtn">
+			<input type="hidden" name="authcodeform[backtologinform]" value="0">
+			<table>
+				<tr>
+					<td class="text-right bold">
+						{trans("Authentication code:")}
+					</td>
+					<td>
+						<input class="bold" type="TEXT" name="authcodeform[authcode]" size="10" accesskey="l" autofocus>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						&nbsp;
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center">
+						{button type="submit" label="Login"}
+						<br>
+						{button id="loginform-button" label="Login form"}
+					</td>
+				</tr>
+			</table>
+		</form>
+		<br>
+		<br>
+		<a href="doc/html/{$_ui_language}/"><span class="blend">{trans("Documentation")}</span></a><br>
+		<a href="http://www.lms.org.pl/"><span class="blend">{trans("LMS Project Homepage")}</span></a>
+	</div>
+	{if $layout.dberrors}
+		{include file="dberrors.html"}
+	{/if}
+</div>
+<script>
+
+	document.forms['authcodeform'].elements['authcodeform[authcode]'].focus();
+
+	$(function() {
+		$('#loginform-button').click(function() {
+			$('[name="authcodeform[backtologinform]"]').val(1);
+			$('[name="authcodeform"]').submit();
+		});
+	});
+
+</script>
+</body>
+</html>
