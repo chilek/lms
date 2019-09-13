@@ -126,6 +126,18 @@
 			</label>
 		</TD>
 	</TR>
+	<TR id="twofactorauthsecretkey"{if $userinfo.twofactorauth != 1} style="display: none;"{/if}>
+		<td>
+			<IMG src="img/pass.gif" alt="">
+		</td>
+		<TD class="bold">
+			{trans("Secret key:")}
+		</TD>
+		<TD>
+			<input type="text" name="userinfo[twofactorauthsecretkey]" value="{$userinfo.twofactorauthsecretkey}"
+					maxlength="16" {tip trigger="twofactorauthsecretkey"}>
+		</TD>
+	</TR>
 	<TR>
 		<TD>
 			<IMG src="img/ip.gif" alt="">
@@ -201,10 +213,15 @@
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="useredit"] [name="userinfo[login]"]').focus();
-});
-//-->
-</SCRIPT>
+<script>
+
+	$(function() {
+		$('form[name="useredit"] [name="userinfo[login]"]').focus();
+
+		$('[name="userinfo[twofactorauth]"]').click(function() {
+			var twofactorauth = parseInt($(this).val());
+			$('#twofactorauthsecretkey').toggle(twofactorauth == 1);
+		});
+	});
+
+</script>

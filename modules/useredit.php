@@ -91,14 +91,17 @@ if ($userinfo) {
         $userinfo['ntype'] = array_sum(Utils::filterIntegers($userinfo['ntype']));
     }
 
+    if ($userinfo['twofactorauth'] == 1 && strlen($userinfo['twofactorauthsecretkey']) != 16) {
+        $error['twofactorauthsecretkey'] = trans('Incorrect secret key format!');
+    }
+
     if (!$error) {
-        $userdata = $LMS->GetUserInfo($id);
-        if ($userinfo['twofactorauth'] == -1 || ($userinfo['twofactorauth'] == 1 && empty($userdata['twofactorsecretkey']))) {
+        if ($userinfo['twofactorauth'] == -1) {
             $userinfo['twofactorauth'] = 1;
             $google2fa = new Google2FA();
             $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
-        } else {
-            $userinfo['twofactorauthsecretkey'] = null;
+        } elseif (empty($userinfo['twofactorauth'])) {
+            $useradd['twofactorauthsecretkey'] = null;
         }
 
         $userinfo['accessfrom'] = $accessfrom;

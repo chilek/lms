@@ -100,13 +100,26 @@
 		</TD>
 		<TD>
 			<label>
-				<INPUT type="radio" name="useradd[twofactorauth]" value="1"{if $useradd.twofactorauth} checked{/if}>
+				<INPUT type="radio" name="useradd[twofactorauth]" value="1"{if $useradd.twofactorauth == 1} checked{/if}>
 				{trans("yes")}
 			</label>
 			<label>
 				<INPUT type="radio" name="useradd[twofactorauth]" value="0"{if !$useradd.twofactorauth} checked{/if}>
 				{trans("no")}
 			</label>
+			<label>
+				<INPUT type="radio" name="useradd[twofactorauth]" value="-1"{if $useradd.twofactorauth == -1} checked{/if}>
+				{trans("generate secret key")}
+			</label>
+		</TD>
+	</TR>
+	<TR id="twofactorauthsecretkey"{if $useradd.twofactorauth != 1} style="display: none;"{/if}>
+		<TD class="bold">
+			<IMG src="img/pass.gif" alt=""> {trans("Secret key:")}
+		</TD>
+		<TD>
+			<input type="text" name="useradd[twofactorauthsecretkey]" value="{$useradd.twofactorauthsecretkey}"
+					maxlength="16" {tip trigger="twofactorauthsecretkey"}>
 		</TD>
 	</TR>
 	<TR>
@@ -180,11 +193,16 @@
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="useradd"] [name="useradd[login]"]').focus();
-});
-//-->
-</SCRIPT>
+<script>
+
+	$(function() {
+		$('form[name="useradd"] [name="useradd[login]"]').focus();
+
+		$('[name="useradd[twofactorauth]"]').click(function() {
+			var twofactorauth = parseInt($(this).val());
+			$('#twofactorauthsecretkey').toggle(twofactorauth == 1);
+		});
+	});
+
+</script>
 {/block}
