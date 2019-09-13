@@ -4424,3 +4424,5 @@ $_LANG['on day'] = 'na dzień';
 $_LANG['Two factor authentication:'] = 'Uwierzytelnianie dwuetapowe';
 $_LANG['regenerate secret key'] = 'wygeneruj na nowo tajny klucz';
 $_LANG['Secret key: $a'] = 'Tajny klucz: $a';
+$_LANG['Authentication code:'] = 'Kod uwierzytelniający:';
+$_LANG['Wrong authentication code.'] = 'Niepoprawny kod uwierzytelniający.';

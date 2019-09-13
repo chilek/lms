@@ -418,7 +418,11 @@ if ($AUTH->islogged) {
     if (!$api) {
         $SMARTY->assign('error', $AUTH->error);
         $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
-        $SMARTY->display('login.html');
+        if ($AUTH->authCodeRequired()) {
+            $SMARTY->display('authcode.html');
+        } else {
+            $SMARTY->display('login.html');
+        }
     }
 }
 
