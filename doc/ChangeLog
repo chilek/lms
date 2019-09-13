@@ -66,6 +66,7 @@ version 25-git (????-??-??):
     no record limit [chilan]
   - enhancement: added optional bandwidth link distribution for uke income report [chilan]
   - improvement: allow to search customers with balance calculated on given day [chilan]
+  - enhancement: google authenticator support added [chilan]
 
 version 24.0 (2019-05-16):
 
