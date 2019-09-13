@@ -1,0 +1,91 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<style>
+
+    #qrcode-image {
+        margin-top: 0.4em;
+    }
+
+</style>
+
+<FORM name="twofactorauthedit" id="twofactorauthedit" method="post" action="?m=twofactorauthedit">
+    <INPUT type="submit" class="hiddenbtn">
+</FORM>
+
+<TABLE class="lmsbox" cellpadding="3">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 98%;">
+    </colgroup>
+    <thead>
+    <TR>
+        <TD class="bold nobr" colspan="3">
+            <IMG src="img/pass.gif" alt="">
+            {$userinfo.login} ({$userinfo.id|string_format:"%04d"})
+        </TD>
+    </TR>
+    </thead>
+    <tbody>
+    <TR>
+        <TD class="fleft nobr valign-top">
+            <IMG src="img/pass.gif" alt="">
+        </TD>
+        <TD class="nobr bold">
+            {trans("Two factor authentication:")}
+        </TD>
+        <TD class="fright nobr">
+            <label>
+                <INPUT type="radio" name="userinfo[twofactorauth]" value="1"{if $userinfo.twofactorauth} checked{/if}
+                       form="twofactorauthedit">
+                {trans("yes")}
+            </label>
+            <label>
+                <INPUT type="radio" name="userinfo[twofactorauth]" value="0"{if !$userinfo.twofactorauth} checked{/if}
+                       form="twofactorauthedit">
+                {trans("no")}
+            </label>
+            <label>
+                <INPUT type="radio" name="userinfo[twofactorauth]" value="-1"{if $userinfo.twofactorauth == -1} checked{/if}
+                       form="twofactorauthedit">
+                {trans("regenerate secret key")}
+            </label>
+        </TD>
+    </TR>
+    <TR id="twofactorauthsecretkey"{if $userinfo.twofactorauth != 1} style="display: none;"{/if}>
+        <td>
+            <IMG src="img/pass.gif" alt="">
+        </td>
+        <TD class="bold">
+            {trans("Secret key:")}
+        </TD>
+        <TD>
+            <input type="text" name="userinfo[twofactorauthsecretkey]" value="{$userinfo.twofactorauthsecretkey}"
+                   maxlength="16" {tip trigger="twofactorauthsecretkey"} form="twofactorauthedit">
+        </TD>
+    </TR>
+    <tr>
+        <td colspan="3" class="lms-ui-box-buttons">
+            {button type="submit" icon="submit" label="Save" form="twofactorauthedit"}
+            {button icon="cancel" label="Cancel" onclick="location.href = '?m=twofactorauthinfo';"}
+        </td>
+    </tr>
+    </tbody>
+</TABLE>
+
+<script>
+
+    $(function() {
+        $('[name="userinfo[twofactorauth]"]').click(function() {
+            var twofactorauth = parseInt($(this).val());
+            $('#twofactorauthsecretkey').toggle(twofactorauth == 1);
+        });
+    });
+
+</script>
+
+{/block}

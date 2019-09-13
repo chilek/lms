@@ -735,13 +735,27 @@ $menu = array(
             ),
         ),
 
-        'password' => array(
-            'name' => trans('Password'),
+        'auth' => array(
+            'name' => trans('Authentication'),
             'css' => 'lms-ui-icon-password',
             'link' => '?m=chpasswd',
-            'tip' => trans('Allows you to change your password'),
-            'accesskey' => 'p',
-            'prio' => 65,
+            'tip' => trans('Authentication management'),
+            'accesskey' => '',
+            'prio' => 63,
+            'submenu' => array(
+                array(
+                    'name' => trans('Password'),
+                    'link' => '?m=chpasswd',
+                    'tip' => trans('Allows you to change your password'),
+                    'prio' => 10,
+                ),
+                array(
+                    'name' => trans('Settings'),
+                    'link' => '?m=twofactorauthinfo',
+                    'tip' => trans('Allows you to view current two factor authentication settings'),
+                    'prio' => 20,
+                ),
+            ),
         ),
 
         'config' => array(

@@ -54,11 +54,14 @@ function smarty_function_button(array $params, Smarty_Internal_Template $templat
     $accesskey = isset($params['accesskey']) ? $params['accesskey'] : null;
     // optional - contents copied to clipboard
     $clipboard = isset($params['clipboard']) ? $params['clipboard'] : null;
+    // optional - form id
+    $form = isset($params['form']) ? $params['form'] : null;
 
     return '<' . ($type == 'link' ? 'a' . ($href ? ' href="' . $href . '"' : '') : 'button type="' . $type . '"')
             . ' class="' . ($type == 'link' ? '' : 'lms-ui-button') . ($icon && !$custom_icon ? ' lms-ui-button-' . $icon : '')
             . ($class ? ' ' . $class : '') . '"'
             . ($id ? ' id="' . $id . '"' : '') . ($onclick ? ' onclick="' . $onclick . '"' : '')
+            . ($form ? ' form="' . $form . '"' : '')
             . ($tip ? ' title="' . $tip . '"' : '')
             . ($external ? ' rel="external"' : '')
             . ($resourceid ? ' data-resourceid="' . $resourceid . '"' : '')

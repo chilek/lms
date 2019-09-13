@@ -51,6 +51,20 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         }
     }
 
+    public function SetUserAuthentication($id, $twofactorauth, $twofactorauthsecretkey)
+    {
+        $args = array(
+            'twofactorauth' => $twofactorauth,
+            'twofactorauthsecretkey' => $twofactorauthsecretkey,
+            SYSLOG::RES_USER => $id,
+        );
+        $this->db->Execute('UPDATE users SET twofactorauth = ?, twofactorauthsecretkey = ?
+            WHERE id = ?', array_values($args));
+        if ($this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERAUTCHANGE, $args);
+        }
+    }
+
     /**
      * Returns user name
      *
