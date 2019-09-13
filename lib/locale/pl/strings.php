@@ -4429,6 +4429,7 @@ $_LANG['Secret key:'] = 'Tajny klucz:';
 $_LANG['Show secret key'] = 'Pokaż tajny klucz';
 $_LANG['Hide secret key'] = 'Ukryj tajny klucz';
 $_LANG['Incorrect secret key format!'] = 'Niepoprawny format tajnego klucza!';
+$_LANG['Secret key contains invalid characters!'] = 'Tajny klucz zawiera niepoprawne znaki!';
 $_LANG['Authentication code:'] = 'Kod uwierzytelniający:';
 $_LANG['Wrong authentication code.'] = 'Niepoprawny kod uwierzytelniający.';
 $_LANG['Allows you to view current two factor authentication settings'] = 'Umożliwia objerzenie aktualnych ustawień uwierzytelniania dwuetapowego';

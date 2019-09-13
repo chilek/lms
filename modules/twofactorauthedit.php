@@ -38,8 +38,15 @@ $layout['pagetitle'] = trans('Authentication Modification: $a', $userinfo['login
 if (isset($_POST['userinfo'])) {
     $userinfo = $_POST['userinfo'];
 
-    if ($userinfo['twofactorauth'] == 1 && strlen($userinfo['twofactorauthsecretkey']) != 16) {
-        $error['twofactorauthsecretkey'] = trans('Incorrect secret key format!');
+    if ($userinfo['twofactorauth'] == 1) {
+        if (strlen($userinfo['twofactorauthsecretkey']) != 16) {
+            $error['twofactorauthsecretkey'] = trans('Incorrect secret key format!');
+        } else {
+            $google2fa = new Google2FA();
+            if ($google2fa->removeInvalidChars($userinfo['twofactorauthsecretkey']) != $userinfo['twofactorauthsecretkey']) {
+                $error['twofactorauthsecretkey'] = trans('Secret key contains invalid characters!');
+            }
+        }
     }
 
     if (!$error) {

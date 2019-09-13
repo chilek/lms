@@ -91,8 +91,15 @@ if ($userinfo) {
         $userinfo['ntype'] = array_sum(Utils::filterIntegers($userinfo['ntype']));
     }
 
-    if ($userinfo['twofactorauth'] == 1 && strlen($userinfo['twofactorauthsecretkey']) != 16) {
-        $error['twofactorauthsecretkey'] = trans('Incorrect secret key format!');
+    if ($userinfo['twofactorauth'] == 1) {
+        if (strlen($userinfo['twofactorauthsecretkey']) != 16) {
+            $error['twofactorauthsecretkey'] = trans('Incorrect secret key format!');
+        } else {
+            $google2fa = new Google2FA();
+            if ($google2fa->removeInvalidChars($userinfo['twofactorauthsecretkey']) != $userinfo['twofactorauthsecretkey']) {
+                $error['twofactorauthsecretkey'] = trans('Secret key contains invalid characters!');
+            }
+        }
     }
 
     if (!$error) {

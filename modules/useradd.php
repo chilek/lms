@@ -98,8 +98,15 @@ if (count($useradd)) {
         $useradd['ntype'] = array_sum(Utils::filterIntegers($useradd['ntype']));
     }
 
-    if ($useradd['twofactorauth'] == 1 && strlen($useradd['twofactorauthsecretkey']) != 16) {
-        $error['twofactorauthsecretkey'] = trans('Incorrect secret key format!');
+    if ($useradd['twofactorauth'] == 1) {
+        if (strlen($useradd['twofactorauthsecretkey']) != 16) {
+            $error['twofactorauthsecretkey'] = trans('Incorrect secret key format!');
+        } else {
+            $google2fa = new Google2FA();
+            if ($google2fa->removeInvalidChars($useradd['twofactorauthsecretkey']) != $useradd['twofactorauthsecretkey']) {
+                $error['twofactorauthsecretkey'] = trans('Secret key contains invalid characters!');
+            }
+        }
     }
 
     $hook_data = $LMS->executeHook('useradd_validation_before_submit', array(
