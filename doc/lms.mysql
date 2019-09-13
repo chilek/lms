@@ -150,6 +150,7 @@ DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
 DROP TABLE IF EXISTS countries;
+DROP TABLE IF EXISTS twofactorauthcodes;
 DROP TABLE IF EXISTS users;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -193,6 +194,21 @@ CREATE TABLE users (
 CREATE VIEW vusers AS
 	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
 	FROM users;
+
+# --------------------------------------------------------
+#
+# Structure of table twofactorauthcodehistory
+#
+
+CREATE TABLE twofactorauthcodehistory (
+    id int(11) NOT NULL auto_increment,
+    userid int(11) NOT NULL,
+    authcode varchar(10) NOT NULL,
+    uts int(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT twofactorauthcodehistory_userid_fkey
+        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -3530,4 +3546,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091300');

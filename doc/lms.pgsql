@@ -38,6 +38,21 @@ CREATE TABLE users (
 	UNIQUE (login)
 );
 
+/* --------------------------------------------------------
+  Structure of table "twofactorauthcodes"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS twofactorauthcodehistory_id_seq;
+CREATE SEQUENCE twofactorauthcodehistory_id_seq;
+DROP TABLE IF EXISTS twofactorauthcodehistory CASCADE;
+CREATE TABLE twofactorauthcodehistory (
+    id integer DEFAULT nextval('twofactorauthcodehistory_id_seq'::text) NOT NULL,
+    userid integer NOT NULL
+        CONSTRAINT twofactorauthcodehistory_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    authcode varchar(10) NOT NULL,
+    uts integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
 /* ---------------------------------------------------
  Structure of table "countries"
 ------------------------------------------------------*/
@@ -3581,6 +3596,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091300');
 
 COMMIT;

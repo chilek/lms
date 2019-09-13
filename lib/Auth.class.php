@@ -317,8 +317,29 @@ class Auth
             if ($this->authcoderequired) {
                 $google2fa = new Google2FA();
                 if ($google2fa->verifyKey($user['twofactorauthsecretkey'], $this->authcode)) {
-                    $this->authcoderequired = '';
-                    $this->islogged = true;
+                    $this->DB->Execute(
+                        'DELETE FROM twofactorauthcodehistory WHERE userid = ? AND uts < ?NOW? - 3 * 60',
+                        array($this->id)
+                    );
+
+                    if ($this->DB->GetOne(
+                        'SELECT id FROM twofactorauthcodehistory
+                            WHERE userid = ? AND authcode = ?',
+                        array(
+                            $this->id,
+                            $this->authcode
+                        )
+                    )) {
+                        $this->islogged = false;
+
+                        $this->error = trans("Wrong authentication code.");
+                    } else {
+                        $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts)
+                            VALUES (?, ?, ?NOW?)', array($this->id, $this->authcode));
+
+                        $this->authcoderequired = '';
+                        $this->islogged = true;
+                    }
                 } else {
                     $this->error = trans("Wrong authentication code.");
                 }
