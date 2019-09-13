@@ -127,7 +127,7 @@ class Auth
 
             if (isset($loginform)) {
                 $this->DB->Execute('UPDATE users SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
-                writesyslog('User '.$this->login.' logged in.', LOG_INFO);
+                writesyslog('User '.$this->login . (empty($this->authcode) ? '' : ' (authentication code)') . ' logged in.', LOG_INFO);
                 if ($this->SYSLOG) {
                     $this->SYSLOG->NewTransaction('auth', $this->id);
                     $this->SYSLOG->AddMessage(
@@ -147,7 +147,7 @@ class Auth
         } else {
             if (isset($loginform)) {
                 if ($this->id) {
-                    if ($this>$this->authcoderequired) {
+                    if ($this->authcoderequired) {
                         writesyslog('Bad authentication code (' . $this->authcode . ') for ' . $this->login, LOG_WARNING);
                     } else {
                         if (!$this->hostverified) {
