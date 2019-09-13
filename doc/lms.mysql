@@ -205,6 +205,8 @@ CREATE TABLE twofactorauthcodehistory (
     userid int(11) NOT NULL,
     authcode varchar(10) NOT NULL,
     uts int(11) NOT NULL,
+    ipaddr int(16) DEFAULT NULL,
+    success smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT twofactorauthcodehistory_userid_fkey
         FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -3546,4 +3548,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091301');

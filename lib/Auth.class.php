@@ -315,30 +315,50 @@ class Auth
             $this->passwdlastchange = $user['passwdlastchange'];
 
             if ($this->authcoderequired) {
-                $google2fa = new Google2FA();
-                if ($google2fa->verifyKey($user['twofactorauthsecretkey'], $this->authcode)) {
-                    $this->DB->Execute(
-                        'DELETE FROM twofactorauthcodehistory WHERE userid = ? AND uts < ?NOW? - 3 * 60',
-                        array($this->id)
-                    );
+                $this->DB->Execute(
+                    'DELETE FROM twofactorauthcodehistory
+                        WHERE userid = ? AND success = ? AND uts < ?NOW? - 3 * 60 AND (INET_NTOA(ipaddr) = ? OR ipaddr IS NULL)',
+                    array($this->id, 0, $this->lastip)
+                );
 
-                    if ($this->DB->GetOne(
-                        'SELECT id FROM twofactorauthcodehistory
-                            WHERE userid = ? AND authcode = ?',
-                        array(
-                            $this->id,
-                            $this->authcode
-                        )
-                    )) {
-                        $this->islogged = false;
+                if ($this->DB->GetOne(
+                    'SELECT COUNT(*) FROM twofactorauthcodehistory
+                        WHERE userid = ? AND success = ? AND INET_NTOA(ipaddr) = ?',
+                    array(
+                        $this->id,
+                        0,
+                        $this->lastip
+                    )
+                ) < 10) {
+                    $google2fa = new Google2FA();
+                    if ($google2fa->verifyKey($user['twofactorauthsecretkey'], $this->authcode)) {
+                        $this->DB->Execute(
+                            'DELETE FROM twofactorauthcodehistory WHERE userid = ? AND success = ? AND uts < ?NOW? - 3 * 60',
+                            array($this->id, 1)
+                        );
+
+                        if ($this->DB->GetOne(
+                            'SELECT id FROM twofactorauthcodehistory
+                                WHERE userid = ? AND success = ? AND authcode = ?',
+                            array(
+                                $this->id,
+                                1,
+                                $this->authcode
+                            )
+                        )) {
+                            $this->error = trans("Wrong authentication code.");
+                        } else {
+                            $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, success, ipaddr)
+                                VALUES (?, ?, ?NOW?, ?, INET_ATON(?))', array($this->id, $this->authcode, 1, $this->lastip));
+
+                            $this->authcoderequired = '';
+                            $this->islogged = true;
+                        }
+                    } else {
+                        $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, ipaddr)
+                            VALUES (?, ?, ?NOW?, INET_ATON(?))', array($this->id, $this->authcode, $this->lastip));
 
                         $this->error = trans("Wrong authentication code.");
-                    } else {
-                        $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts)
-                            VALUES (?, ?, ?NOW?)', array($this->id, $this->authcode));
-
-                        $this->authcoderequired = '';
-                        $this->islogged = true;
                     }
                 } else {
                     $this->error = trans("Wrong authentication code.");
