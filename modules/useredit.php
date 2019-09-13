@@ -100,8 +100,6 @@ if ($userinfo) {
             $userinfo['twofactorauth'] = 1;
             $google2fa = new Google2FA();
             $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
-        } elseif (empty($userinfo['twofactorauth'])) {
-            $useradd['twofactorauthsecretkey'] = null;
         }
 
         $userinfo['accessfrom'] = $accessfrom;

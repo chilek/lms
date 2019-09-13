@@ -419,7 +419,7 @@ if ($AUTH->islogged) {
         $SMARTY->assign('error', $AUTH->error);
         $SMARTY->assign('target', '?'.$_SERVER['QUERY_STRING']);
         if ($AUTH->authCodeRequired()) {
-            $SMARTY->display('authcode.html');
+            $SMARTY->display('twofactorauth/twofactorauthcode.html');
         } else {
             $SMARTY->display('login.html');
         }
