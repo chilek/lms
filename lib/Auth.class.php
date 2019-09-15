@@ -346,7 +346,7 @@ class Auth
                                 $this->authcode
                             )
                         )) {
-                            $this->error = trans("Wrong authentication code.");
+                            $this->error = trans("This code has already been used before the moment.");
                         } else {
                             $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, success, ipaddr)
                                 VALUES (?, ?, ?NOW?, ?, INET_ATON(?))', array($this->id, $this->authcode, 1, $this->lastip));
@@ -361,7 +361,7 @@ class Auth
                         $this->error = trans("Wrong authentication code.");
                     }
                 } else {
-                    $this->error = trans("Wrong authentication code.");
+                    $this->error = trans("Too many failed login attempts in short time period.<br>Try again in a few minutes.");
                 }
             } else {
                 $this->passverified = $this->VerifyPassword($user['passwd']);
