@@ -409,4 +409,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         }
         return false;
     }
+
+    public function checkPassword($password)
+    {
+        $dbpasswd = $this->db->GetOne(
+            'SELECT passwd FROM users WHERE id = ?',
+            array(Auth::GetCurrentUser())
+        );
+        return crypt($password, $dbpasswd) == $dbpasswd;
+    }
 }

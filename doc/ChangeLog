@@ -67,6 +67,7 @@ version 25-git (????-??-??):
   - enhancement: added optional bandwidth link distribution for uke income report [chilan]
   - improvement: allow to search customers with balance calculated on given day [chilan]
   - enhancement: google authenticator support added [chilan]
+  - enhancement: old password required to change current user password [chilan]
 
 version 24.0 (2019-05-16):
 

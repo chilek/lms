@@ -4439,3 +4439,7 @@ $_LANG['Authentication'] = 'Uwierzytelnianie';
 $_LANG['Authentication management'] = 'Zarządzanie uwierzytelnianiem';
 $_LANG['Authentication Settings: $a'] = 'Ustawienia uwierzytelniania: $a';
 $_LANG['Authentication Modification: $a'] = 'Modyfikacja uwierzytelniania: $a';
+
+$_LANG['Wrong current password!'] = 'Niepoprawne aktualne hasło!';
+$_LANG['Current password:'] = 'Aktualne hasło:';
+$_LANG['Enter current password'] = 'Wprowadź aktualne hasło';

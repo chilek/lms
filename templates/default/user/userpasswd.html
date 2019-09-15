@@ -16,12 +16,22 @@
 	</TR>
 	</THEAD>
 	<TBODY>
+	{if isset($current_password_required)}
+	<TR>
+		<TD class="text-right bold nobr">
+			{trans("Current password:")}
+		</TD>
+		<TD class="nobr">
+			<input type="password" name="password[currentpasswd]" {tip text="Enter current password" trigger="currentpasswd"}>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD class="text-right bold nobr">
 			{trans("New password:")}
 		</TD>
 		<TD class="nobr">
-			<input type="password" name="passwd[passwd]" {tip text="Enter password" trigger="password"}>
+			<input type="password" name="password[passwd]" {tip text="Enter password" trigger="passwd"}>
 		</TD>
 	</TR>
 	<TR>
@@ -29,7 +39,7 @@
 			{trans("Repeat password:")}
 		</TD>
 		<TD class="nobr">
-			<input type="password" name="passwd[confirm]" {tip text="Confirm password" trigger="password"}>
+			<input type="password" name="password[confirm]" {tip text="Confirm password" trigger="passwd"}>
 		</TD>
 	</TR>
 	<TR>
@@ -40,11 +50,15 @@
 	</TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-$(function() {
-	$('form[name="password"] [name="passwd[passwd]"]').focus();
-});
-//-->
-</SCRIPT>
+<script>
+
+	$(function() {
+		{if isset($current_password_required)}
+			$('form[name="password"] [name="password[currentpasswd]"]').focus();
+		{else}
+			$('form[name="password"] [name="password[passwd]"]').focus();
+		{/if}
+	});
+
+</script>
 {/block}

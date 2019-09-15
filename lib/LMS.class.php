@@ -457,6 +457,12 @@ class LMS
         return $manager->PasswdExistsInHistory($id, $passwd);
     }
 
+    public function checkPassword($password)
+    {
+        $manager = $this->getUserManager();
+        return $manager->checkPassword($password);
+    }
+
     /*
      *  Customers functions
      */
