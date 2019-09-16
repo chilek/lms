@@ -111,10 +111,27 @@ function GetEvents($date = null, $userid = 0, $type = 0, $customerid = 0, $priva
 $date = $_GET['day'];
 
 if (empty($date)) {
-    $date=date_to_timestamp(time());
+    $date = time();
 }
 
-$eventlist = GetEvents($date, $_GET['a'], $_GET['t'], $_GET['u'], intval($_GET['privacy']), $_GET['closed']);
+list ($year, $month, $day) = explode('/', date('Y/m/d', $date));
+
+$eventlist = $LMS->GetEventList(
+    array(
+        'year' => $year,
+        'month' => $month,
+        'day' => $day,
+        'forward' => 1,
+        'userid' => $_GET['a'],
+        'type' => $_GET['t'],
+        'customerid' => $_GET['u'],
+        'privacy' => $_GET['privacy'],
+        'closed' => $_GET['closed'],
+        'count' => false,
+    )
+);
+
+//$eventlist = GetEvents($date, $_GET['a'], $_GET['t'], $_GET['u'], intval($_GET['privacy']), $_GET['closed']);
 
 $layout['pagetitle'] = trans('Timetable');
 
