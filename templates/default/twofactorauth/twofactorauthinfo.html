@@ -53,6 +53,21 @@
                 <img id="qrcode-image" src="data:image/png;base64, {$qrcode_image}">
             </td>
         </tr>
+        <TR>
+            <TD class="nobr">
+                <IMG src="img/network.gif" alt="">
+            </TD>
+            <TD class="nobr bold">
+                {trans("Trusted devices:")}
+            </TD>
+            <TD class="nobr">
+                {$userinfo.trusteddevices}
+                {if $userinfo.trusteddevices}
+                    &nbsp;
+                    {button icon="delete" label="Remove trusted devices" id="remove-trusted-devices"}
+                {/if}
+            </TD>
+        </TR>
         <tr>
             <td colspan="3" class="lms-ui-box-buttons">
                 {button icon="modify" label="Change" onclick="location.href = '?m=twofactorauthedit';"}
@@ -74,6 +89,13 @@
             $(this).hide();
             $('#secretkey-show-button').show();
             $('#secretkey').hide();
+        });
+
+        $('#remove-trusted-devices').click(function() {
+            confirmDialog($t("Are you sure you want to remove all trusted devices?"), this).done(function() {
+                location.href = '?m=twofactorauthedit&removetrusteddevices=1';
+            });
+            return false;
         });
     });
 

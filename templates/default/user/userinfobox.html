@@ -116,6 +116,7 @@
 			{/if}
 		</TD>
 	</TR>
+{if $userinfo.twofactorauth}
 	<tr class="light" id="secretkey" style="display: none;">
 		<td colspan="2" class="fleft"></td>
 		<td class="fright">
@@ -124,6 +125,22 @@
 			<img id="qrcode-image" src="data:image/png;base64, {$qrcode_image}">
 		</td>
 	</tr>
+	<TR class="light">
+		<TD class="fleft nobr">
+			<IMG src="img/network.gif" alt="">
+		</TD>
+		<TD class="nobr bold">
+			{trans("Trusted devices:")}
+		</TD>
+		<TD class="nobr fright">
+			{$userinfo.trusteddevices}
+			{if $userinfo.trusteddevices}
+				&nbsp;
+				{button icon="delete" id="remove-trusted-devices" label="Remove trusted devices"}
+			{/if}
+		</TD>
+	</TR>
+{/if}
 	<TR class="light">
 		<TD style="width: 1%;" class="fleft nobr">
 			<IMG src="img/ip.gif" alt="">
@@ -239,6 +256,13 @@
 			$(this).hide();
 			$('#secretkey-show-button').show();
 			$('#secretkey').hide();
+		});
+
+		$('#remove-trusted-devices').click(function() {
+			confirmDialog($t("Are you sure you want to remove all trusted devices?"), this).done(function() {
+				location.href = '?m=useredit&id={$userinfo.id}&removetrusteddevices=1';
+			});
+			return false;
 		});
 	});
 

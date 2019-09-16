@@ -667,8 +667,8 @@ $_LANG['Enter customer Social Security Number (optional)'] = 'Wprowadź numer PE
 $_LANG['Enter customer last name or company name'] = 'Wprowadź nazwisko lub nazwę firmy';
 $_LANG['Enter customer Tax Exempt Number (optional)'] = 'Podaj NIP klienta (opcjonalnie)';
 $_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means current date) or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
-$_LANG['Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD (puste pole oznacza dzisiejszą lub kliknij żeby wybrać datę z kalendarza';
-$_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD GG:MM (puste pole oznacza dzisiejszą lub kliknij żeby wybrać datę z kalendarza';
+$_LANG['Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD (puste pole oznacza dzisiejszą) lub kliknij żeby wybrać datę z kalendarza';
+$_LANG['Enter date in YYYY/MM/DD hh:mm format (empty field means today) or click to choose it from calendar'] = 'Podaj datę w formacie RRRR/MM/DD GG:MM (puste pole oznacza dzisiejszą) lub kliknij żeby wybrać datę z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd hh:mm\' format (empty field means current date) or click to choose date from calendar'] = 'Podaj datę w formacie rrrr/mm/dd gg:mm (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd\' format (empty field means 1970/01/01) or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza 1970/01/01) lub kliknij żeby wybrać ją z kalendarza';
 $_LANG['Enter date in \'yyyy/mm/dd\' format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' lub kliknij żeby wybrać ją z kalendarza';
@@ -2535,7 +2535,8 @@ $_LANG['Max length of auto suggest proposal, further characters will be dotted.'
 $_LANG['Transmitted [B]'] = 'Przesłane dane [B]';
 $_LANG['Customer Timetable:'] = 'Terminarz klienta:';
 $_LANG['last $a events'] = 'ostatnie $a zdarzeń';
-$_LANG['There are no events in timetable.'] = 'Brak zdarzeń w kalendarzu.';
+$_LANG['There are no events in timetable.'] = 'Brak zdarzeń w terminarzu.';
+$_LANG['There are no open events in timetable.'] = 'Brak otwartych zdarzeń w terminarzu.';
 $_LANG['Notices'] = 'Powiadomienia';
 $_LANG['Allows you to send notices to customers'] = 'Pozwala wysyłać powiadomienia do klientów';
 $_LANG['Allows you to send messages to customers'] = 'Pozwala wysyłać wiadomości do klientów';
@@ -4413,3 +4414,39 @@ $_LANG['This item is already bound with another assignment!'] = 'Ten element jes
 
 $_LANG['Enable lock'] = 'Włącz blokadę';
 $_LANG['Disable lock'] = 'Wyłącz blokadę';
+
+$_LANG['Bandwidth distribution:'] = 'Rozkład przepływności:';
+$_LANG['Bandwidth interval'] = 'Przedział przepływności';
+$_LANG['<!link>Private links'] = 'Łącza prywatne';
+$_LANG['<!link>Bussiness links'] = 'Łącza biznesowe';
+$_LANG['<!link>$a ($b)'] = '$a ($b)';
+
+$_LANG['on day'] = 'na dzień';
+
+$_LANG['Two factor authentication:'] = 'Uwierzytelnianie dwuetapowe';
+$_LANG['regenerate secret key'] = 'wygeneruj na nowo tajny klucz';
+$_LANG['generate secret key'] = 'wygeneruj tajny klucz';
+$_LANG['Secret key: $a'] = 'Tajny klucz: $a';
+$_LANG['Secret key:'] = 'Tajny klucz:';
+$_LANG['Show secret key'] = 'Pokaż tajny klucz';
+$_LANG['Hide secret key'] = 'Ukryj tajny klucz';
+$_LANG['Incorrect secret key format!'] = 'Niepoprawny format tajnego klucza!';
+$_LANG['Secret key contains invalid characters!'] = 'Tajny klucz zawiera niepoprawne znaki!';
+$_LANG['Authentication code:'] = 'Kod uwierzytelniający:';
+$_LANG['Wrong authentication code.'] = 'Niepoprawny kod uwierzytelniający.';
+$_LANG['Too many failed login attempts in short time period.<br>Try again in a few minutes.'] = 'Zbyt wiele nieudanych prób logowań w któtkim okresie czasu.<br>Spróbuj ponownie za kilka minut.';
+$_LANG['This code has already been used before the moment.'] = 'Ten kod został już użyty przed momentem.';
+$_LANG['Allows you to view current two factor authentication settings'] = 'Umożliwia objerzenie aktualnych ustawień uwierzytelniania dwuetapowego';
+$_LANG['Authentication'] = 'Uwierzytelnianie';
+$_LANG['Authentication management'] = 'Zarządzanie uwierzytelnianiem';
+$_LANG['Authentication Settings: $a'] = 'Ustawienia uwierzytelniania: $a';
+$_LANG['Authentication Modification: $a'] = 'Modyfikacja uwierzytelniania: $a';
+
+$_LANG['Wrong current password!'] = 'Niepoprawne aktualne hasło!';
+$_LANG['Current password:'] = 'Aktualne hasło:';
+$_LANG['Enter current password'] = 'Wprowadź aktualne hasło';
+
+$_LANG['trust this device till $a'] = 'ufaj temu urządzeniu do $a';
+$_LANG['Trusted devices:'] = 'Zaufane urządzenia:';
+$_LANG['Remove trusted devices'] = 'Usuń zaufane urządzenia';
+$_LANG['Are you sure you want to remove all trusted devices?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zaufane urządzenia';

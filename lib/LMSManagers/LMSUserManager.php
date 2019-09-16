@@ -293,6 +293,11 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $userinfo = $this->db->GetRow('SELECT * FROM vusers WHERE id = ?', array($id));
         if ($userinfo) {
+            $userinfo['trusteddevices'] = $this->db->GetOne(
+                'SELECT COUNT(*) FROM twofactorauthtrusteddevices WHERE userid = ?',
+                array($id)
+            );
+
             $this->cache->setCache('users', $id, null, $userinfo);
 
             if ($userinfo['id'] == Auth::GetCurrentUser()) {
