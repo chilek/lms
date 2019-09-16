@@ -54,9 +54,9 @@
 			{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
 			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
 		</span>
-		<br>
+		&nbsp;<br>
 		{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}
-		<br>
+		&nbsp;<br>
 		<form method="post" name="loginform" action="{$target}">
 			<table>
 				<tr>

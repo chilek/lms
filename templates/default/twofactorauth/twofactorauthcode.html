@@ -64,9 +64,9 @@
 			{trans("LMS version")} {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}<br><br>
 			&copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers
 		</span>
-		<br>
+		&nbsp;<br>
 		{if $error}<span class="lms-ui-error bold">{$error}</span>{else}&nbsp;{/if}
-		<br>
+		&nbsp;<br>
 		<form method="post" name="authcodeform" action="{$target}">
 			<INPUT type="submit" class="hiddenbtn">
 			<input type="hidden" name="authcodeform[backtologinform]" value="0">
