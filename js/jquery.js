@@ -398,8 +398,8 @@ $(function() {
 			var ifNewWindow = (e.which == 2 || e.ctrlKey);
 			var column = target.closest('td,.lms-ui-tab-table-column');
 
-			if (ifButton || (ifLink && link.attr('href'))
-				|| (column.length && column.is('.lms-ui-buttons,.buttons'))) {
+			if (ifButton || (ifLink && link.attr('href')) ||
+				(column.length && column.is('.lms-ui-buttons,.buttons'))) {
 				return;
 			}
 
