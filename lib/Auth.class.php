@@ -506,8 +506,8 @@ class Auth
                     list ($expires, $rand, $signature) = explode(':', $plain_content, 3);
                     if ($this->DB->GetOne(
                         'SELECT COUNT(*) FROM twofactorauthtrusteddevices
-                        WHERE userid = ? AND cookiename = ?',
-                        array($this->id, $name)
+                        WHERE userid = ? AND cookiename = ? AND expires = ?',
+                        array($this->id, $name, $expires)
                     ) && $expires > $now && ($expires - $now) <= ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_time', 86400)) {
                         $signature_verification = hash_hmac(
                             'sha512',
