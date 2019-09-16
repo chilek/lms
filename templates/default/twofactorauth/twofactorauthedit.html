@@ -45,8 +45,8 @@
                 {trans("yes")}
             </label>
             <label>
-                <INPUT type="radio" name="userinfo[twofactorauth]" value="0"{if !$userinfo.twofactorauth} checked{/if}
-                       form="twofactorauthedit">
+                <INPUT type="radio" id="twofactorauthdisabled" name="userinfo[twofactorauth]" value="0"{if !$userinfo.twofactorauth} checked{/if}
+                       form="twofactorauthedit" {tip trigger="twofactorauthdisabled"}>
                 {trans("no")}
             </label>
             <label>

@@ -56,10 +56,16 @@ if (isset($_POST['userinfo'])) {
             $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
         }
 
+        if ($userinfo['twofactorauth'] && ConfigHelper::checkConfig('phpui.two_factor_auth_required')) {
+            $SESSION->save('session_twofactorauthrequiredchange', false);
+        }
+
         $LMS->SetUserAuthentication($userid, $userinfo['twofactorauth'], $userinfo['twofactorauthsecretkey']);
 
         $SESSION->redirect('?m=twofactorauthinfo');
     }
+} else if (ConfigHelper::checkConfig('phpui.two_factor_auth_required') && !$userinfo['twofactorauth']) {
+    $error['twofactorauthdisabled'] = trans('Two factor authentication is required in system configuration!');
 }
 
 $SMARTY->assign('error', $error);

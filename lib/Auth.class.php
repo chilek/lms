@@ -44,7 +44,8 @@ class Auth
     public $last;
     public $ip;
     public $lastip;
-    public $passwdrequiredchange = false;
+    private $passwdrequiredchange = false;
+    private $twofactorauthrequiredchange = false;
     public $error;
     public $_version = '1.11-git';
     public $_revision = '$Revision$';
@@ -117,6 +118,7 @@ class Auth
 
         if ($this->islogged || ($this->login && $this->VerifyUser())) {
             $this->SESSION->restore('session_passwdrequiredchange', $this->passwdrequiredchange);
+            $this->SESSION->restore('session_twofactorauthrequiredchange', $this->twofactorauthrequiredchange);
             if (empty($this->last)) {
                 $this->SESSION->restore('session_last', $this->last);
                 $this->SESSION->restore('session_lastip', $this->lastip);
@@ -313,6 +315,7 @@ class Auth
             $this->lastip = $user['lastloginip'];
             $this->passwdexpiration = $user['passwdexpiration'];
             $this->passwdlastchange = $user['passwdlastchange'];
+            $this->twofactorauth = $user['twofactorauth'];
 
             if ($this->authcoderequired) {
                 $this->DB->Execute(
@@ -379,14 +382,29 @@ class Auth
 
             $this->SESSION->save('session_authcoderequired', $this->authcoderequired);
 
-            if ($this->islogged && $this->passwdexpiration
-                && (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration']) {
-                $this->SESSION->save('session_passwdrequiredchange', true);
+            if ($this->islogged) {
+                if ($this->passwdexpiration
+                    && (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration']) {
+                    $this->SESSION->save('session_passwdrequiredchange', true);
+                }
+                if (!$this->twofactorauth && ConfigHelper::checkConfig('phpui.two_factor_auth_required')) {
+                    $this->SESSION->save('session_twofactorauthrequiredchange', true);
+                }
             }
         } else {
             $this->error = trans('Wrong password or login.');
         }
 
         return $this->islogged;
+    }
+
+    public function requiredPasswordChange()
+    {
+        return $this->passwdrequiredchange;
+    }
+
+    public function requiredTwoFactorAuthChange()
+    {
+        return $this->twofactorauthrequiredchange;
     }
 }
