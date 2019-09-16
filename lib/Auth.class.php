@@ -525,8 +525,6 @@ class Auth
                     }
                 }
             }
-        } else {
-            $this->DB->Execute('DELETE FROM twofactorauthtrusteddevices WHERE cookiename = ?', array($name));
         }
 
         return false;
