@@ -559,15 +559,15 @@ class SYSLOG
         return $result;
     }
 
-    public function AddResources($namesArray, $keysArray = NULL)
+    public function AddResources($namesArray, $keysArray = null)
     {
-        if(is_array($namesArray)) {
-            foreach($namesArray as $key => $value) {
+        if (is_array($namesArray)) {
+            foreach ($namesArray as $key => $value) {
                 self::$resources[$key] = $value;
             }
         }
-        if($keysArray != NULL && is_array($keysArray)) {
-            foreach($keysArray as $key => $value) {
+        if ($keysArray != null && is_array($keysArray)) {
+            foreach ($keysArray as $key => $value) {
                 self::$resource_keys[$key] = $value;
             }
         }
