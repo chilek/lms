@@ -150,7 +150,8 @@ DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
 DROP TABLE IF EXISTS countries;
-DROP TABLE IF EXISTS twofactorauthcodes;
+DROP TABLE IF EXISTS twofactorauthcodehistory;
+DROP TABLE IF EXISTS twofactorauthtrusteddevices;
 DROP TABLE IF EXISTS users;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -209,6 +210,23 @@ CREATE TABLE twofactorauthcodehistory (
     success smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT twofactorauthcodehistory_userid_fkey
+        FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table twofactorauthtrusteddevices
+#
+
+CREATE TABLE twofactorauthtrusteddevices (
+    id         int(11)      NOT NULL auto_increment,
+    userid     int(11)      NOT NULL,
+    cookiename varchar(64)  NOT NULL,
+    useragent  varchar(256) NOT NULL,
+    ipaddr int(16) DEFAULT NULL,
+    expires    int(11)      NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT twofactorauthtrusteddevices_userid_fkey
         FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -3548,4 +3566,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091600');

@@ -85,4 +85,47 @@ class Utils
             return $result;
         }
     }
+
+    // taken from RoundCube
+    /**
+     * Generate a random string
+     *
+     * @param int  $length String length
+     * @param bool $raw    Return RAW data instead of ascii
+     *
+     * @return string The generated random string
+     */
+    public static function randomBytes($length, $raw = false)
+    {
+        $hextab  = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $tabsize = strlen($hextab);
+
+        // Use PHP7 true random generator
+        if ($raw && function_exists('random_bytes')) {
+            return random_bytes($length);
+        }
+
+        if (!$raw && function_exists('random_int')) {
+            $result = '';
+            while ($length-- > 0) {
+                $result .= $hextab[random_int(0, $tabsize - 1)];
+            }
+
+            return $result;
+        }
+
+        $random = openssl_random_pseudo_bytes($length);
+
+        if ($random === false && $length > 0) {
+            throw new Exception("Failed to get random bytes");
+        }
+
+        if (!$raw) {
+            for ($x = 0; $x < $length; $x++) {
+                $random[$x] = $hextab[ord($random[$x]) % $tabsize];
+            }
+        }
+
+        return $random;
+    }
 }

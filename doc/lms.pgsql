@@ -39,7 +39,7 @@ CREATE TABLE users (
 );
 
 /* --------------------------------------------------------
-  Structure of table "twofactorauthcodes"
+  Structure of table "twofactorauthcodehistory"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS twofactorauthcodehistory_id_seq;
 CREATE SEQUENCE twofactorauthcodehistory_id_seq;
@@ -52,6 +52,23 @@ CREATE TABLE twofactorauthcodehistory (
     uts integer NOT NULL,
     ipaddr bigint DEFAULT NULL,
     success smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+/* --------------------------------------------------------
+  Structure of table "twofactorauthtrusteddevices"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS twofactorauthtrusteddevices_id_seq;
+CREATE SEQUENCE twofactorauthtrusteddevices_id_seq;
+DROP TABLE IF EXISTS twofactorauthtrusteddevices CASCADE;
+CREATE TABLE twofactorauthtrusteddevices (
+    id integer DEFAULT nextval('twofactorauthtrusteddevices_id_seq'::text),
+    userid integer NOT NULL
+        CONSTRAINT twofactorauthtrusteddevices_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    cookiename varchar(64) NOT NULL,
+    useragent varchar(256) NOT NULL,
+    ipaddr bigint DEFAULT NULL,
+    expires integer NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -3598,6 +3615,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091301');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019091600');
 
 COMMIT;

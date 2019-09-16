@@ -4443,3 +4443,5 @@ $_LANG['Authentication Modification: $a'] = 'Modyfikacja uwierzytelniania: $a';
 $_LANG['Wrong current password!'] = 'Niepoprawne aktualne hasło!';
 $_LANG['Current password:'] = 'Aktualne hasło:';
 $_LANG['Enter current password'] = 'Wprowadź aktualne hasło';
+
+$_LANG['trust this device till $a'] = 'ufaj temu urządzeniu do $a';

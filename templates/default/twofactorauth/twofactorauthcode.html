@@ -48,6 +48,10 @@
 			margin-top: 0.4em;
 		}
 
+		#trust-device-checkbox {
+			padding-top: 0.7em;
+		}
+
 	</style>
 </head>
 <body>
@@ -73,6 +77,15 @@
 					</td>
 					<td>
 						<input class="bold" type="TEXT" name="authcodeform[authcode]" size="10" accesskey="l" autofocus>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" id="trust-device-checkbox">
+						{$two_factor_auth_trust_device_time = ConfigHelper::getConfig('phpui.two_factor_auth_trust_device_time', 86400)}
+						<label>
+							<input type="checkbox" name="authcodeform[trusteddevice]" value="1">
+							{t a=date('Y/m/d H:m:s', time() + $two_factor_auth_trust_device_time)}trust this device till $a{/t}
+						</label>
 					</td>
 				</tr>
 				<tr>
