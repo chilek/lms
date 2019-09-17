@@ -219,9 +219,9 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="3" class="text-right">
-			<A href="javascript:document.useredit.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A href="?m=userinfo&amp;id={$userinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+		<TD colspan="3" class="lms-ui-box-buttons">
+			{button type="submit" icon="save" label="Submit"}
+			{button icon="cancel" label="Cancel" onclick="location.href = '?m=userinfo&id={$userinfo.id}';"}
 		</TD>
 	</TR>
 	</TBODY>
