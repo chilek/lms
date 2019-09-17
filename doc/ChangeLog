@@ -72,6 +72,7 @@ version 25-git (????-??-??):
     authentication is required for all users [chilan]
   - enhancement: two factor authentication trusted device support [chilan]
   - enhancement: admin can set force password change flag fo users [chilan]
+  - enhancement: split payment support paytype supplement on invoices [chilan]
 
 version 24.0 (2019-05-16):
 
