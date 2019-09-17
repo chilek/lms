@@ -134,7 +134,7 @@
 		</TD>
 		<TD class="nobr fright">
 			{$userinfo.trusteddevices}
-			{if $userinfo.trusteddevices}
+			{if $userinfo.trusteddevices && ConfigHelper::checkPrivilege('user_management')}
 				&nbsp;
 				{button icon="delete" id="remove-trusted-devices" label="Remove"}
 			{/if}

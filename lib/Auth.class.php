@@ -416,17 +416,27 @@ class Auth
         return $this->twofactorauthrequiredchange;
     }
 
-    private function getTrustedDeviceParams()
+    private function getDesKey()
     {
-        $des_key = ConfigHelper::getConfig('phpui.des_key');
+        $des_key = $this->DB->GetOne(
+            'SELECT keyvalue FROM dbinfo WHERE keytype = ?',
+            array('deskey')
+        );
 
         if (empty($des_key)) {
             $des_key = Utils::randomBytes(24);
             $this->DB->Execute(
-                'INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)',
-                array('phpui', 'des_key', $des_key)
+                'INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)',
+                array('deskey', $des_key)
             );
         }
+
+        return $des_key;
+    }
+
+    private function getTrustedDeviceParams()
+    {
+        $des_key = $this->getDesKey();
 
         $user_agent = hash_hmac(
             'md5',
