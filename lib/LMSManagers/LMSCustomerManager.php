@@ -1664,4 +1664,33 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         return $this->db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($id));
     }
+
+    public function isSplitPaymentSuggested($customerid, $cdate, $value)
+    {
+        if (empty($customerid) || empty($value)) {
+            return false;
+        }
+
+        $customerid = intval($customerid);
+        $value = floatval($value);
+
+        if (empty($cdate)) {
+            $cdate = time();
+        } else {
+            list ($year, $month, $day) = explode('/', $cdate);
+            $cdate = mktime(0, 0, 0, $month, $day, $year);
+        }
+
+        $default_value = $cdate >= mktime(0, 0, 0, 11, 1, 2019) ? 15000 : -1;
+        $split_payment_threshold_value = floatval(ConfigHelper::getConfig('invoices.split_payment_threshold_value', $default_value));
+        if ($split_payment_threshold_value == -1) {
+            return false;
+        }
+
+        return $this->db->GetOne(
+            'SELECT c.id FROM customers c
+            WHERE c.id = ? AND c.type = ?',
+            array($customerid, CTYPES_COMPANY)
+        ) && $value >= $split_payment_threshold_value;
+    }
 }

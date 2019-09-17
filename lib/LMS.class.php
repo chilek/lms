@@ -665,6 +665,12 @@ class LMS
         return $manager->GetCustomerDivision($id);
     }
 
+    public function isSplitPaymentSuggested($customerid, $cdate, $value)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->isSplitPaymentSuggested($customerid, $cdate, $value);
+    }
+
     /*
      * Customer groups
      */

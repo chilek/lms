@@ -72,13 +72,13 @@
 		</TD>
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
+				<INPUT type="text" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12"
 						placeholder="{trans("yyyy/mm/dd")}" data-cdate="{$invoice.cdate}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 				{if $invoice.cdatewarning}
 					<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
 				{/if}
 			{else}
-				<input type="hidden" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}">
+				<input type="hidden" name="invoice[cdate]" id="cdate" value="{$invoice.cdate|date_format:"%Y/%m/%d"}">
 				{$invoice.cdate|date_format:"%Y/%m/%d"}
 			{/if}
 		</TD>
@@ -116,6 +116,10 @@
 				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
 				{/foreach}
 			</SELECT>
+			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>
+				<input type="checkbox" name="invoice[splitpayment]" value="1"{if $is_split_payment_suggested && $invoice.splitpayment} checked{/if}>
+				{trans("split payment")}
+			</label>
 		</TD>
 	</TR>
 	{if isset($invoice.proformaid) && !empty($invoice.proformaid)}
@@ -232,10 +236,30 @@
 	 * \brief Update customer addresses list on select change.
 	 * Using when big_networks is set as false.
 	 */
+
+	function isSplitPaymentSuggested() {
+		$.ajax({
+			data: {
+				splitpaymentcheck: 1,
+				customerid: $('#ownerid_input').val(),
+				cdate: $('#cdate').val(),
+				value: $('#s-valuebrutto').val()
+			},
+			dataType: "json",
+			success: function(result) {
+				$('#splitpayment').toggle(result.splitpayment);
+				if (!result.splitpayment) {
+					$('[name="invoice[splitpayment]"]').prop('checked', false);
+				}
+			}
+		});
+	}
+
 	function customer_change() {
 		getCustomerAddresses($('#ownerid_input').val(), function(addresses) {
 			customer_addresses.setAddressList( addresses );
 		});
+		isSplitPaymentSuggested();
 	}
 
 	$(function() {
@@ -247,6 +271,10 @@
 			$( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
 			{/if}
 			customer_addresses.init();
+		});
+
+		$('[name="invoice[cdate]"]').change(function() {
+			isSplitPaymentSuggested();
 		});
 	});
 

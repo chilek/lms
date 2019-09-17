@@ -655,4 +655,17 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
 
+$total_value = 0;
+if (!empty($contents)) {
+    foreach ($contents as $item) {
+        $total_value += $item['s_valuebrutto'];
+    }
+}
+
+$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
+    isset($customer) ? $customer['id'] : null,
+    date('Y/m/d', $invoice['cdate']),
+    $total_value
+));
+
 $SMARTY->display('invoice/invoicenew.html');

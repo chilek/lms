@@ -63,7 +63,7 @@
 		</TD>
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
+				<INPUT TYPE="TEXT" NAME="invoice[cdate]" id="cdate" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
 						placeholder="{trans("yyyy/mm/dd")}" date-cdate="{$invoice.cdate}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 				{if $invoice.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
@@ -106,6 +106,10 @@
 				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
 				{/foreach}
 			</SELECT>
+			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>
+				<input type="checkbox" name="invoice[splitpayment]" value="1"{if $is_split_payment_suggested && $invoice.splitpayment} checked{/if}>
+				{trans("split payment")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
@@ -156,7 +160,25 @@
     var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
     var recipient_addr;
 
-    /*!
+	function isSplitPaymentSuggested() {
+		$.ajax({
+			data: {
+				splitpaymentcheck: 1,
+				customerid: $('#ownerid_input').val(),
+				cdate: $('#cdate').val(),
+				value: $('#s-valuebrutto').val()
+			},
+			dataType: "json",
+			success: function(result) {
+				$('#splitpayment').toggle(result.splitpayment);
+				if (!result.splitpayment) {
+					$('[name="invoice[splitpayment]"]').prop('checked', false);
+				}
+			}
+		});
+	}
+
+	/*!
      * \brief Update customer addresses list on select change.
      */
     function customer_change() {
@@ -171,6 +193,7 @@
             customer_addresses.appendAddressList( addresses );
             customer_addresses.refresh();
         });
+        isSplitPaymentSuggested();
     }
 
 {if $invoice.customerid && $invoice.recipient_address_id }
@@ -198,6 +221,10 @@
 
 	$(function() {
 		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
+
+		$('#cdate').change(function() {
+			isSplitPaymentSuggested();
+		});
 	});
 
 </SCRIPT>

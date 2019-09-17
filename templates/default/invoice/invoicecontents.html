@@ -184,12 +184,16 @@
                 &nbsp;
             </TD>
             <TD class="bold text-right nobr">
-                {sum array=$contents column=s_valuebrutto string_format="%01.2f"}
+                {sum assign="s_valuebrutto" array=$contents column=s_valuebrutto string_format="%01.2f"}
+                {$s_valuebrutto}
+                <input type="hidden" id="s-valuebrutto" value="{$s_valuebrutto}">
             </TD>
             <TD>
                 &nbsp;
             </TD>
         </TR>
+        {else}
+            <input type="hidden" id="s-valuebrutto" value="0">
         {/if}
         </TBODY>
         <TFOOT>

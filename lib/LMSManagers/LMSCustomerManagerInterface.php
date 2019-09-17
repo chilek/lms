@@ -87,4 +87,6 @@ interface LMSCustomerManagerInterface
     public function GetCustomerContacts($id, $mask = null);
 
     public function GetCustomerDivision($id);
+
+    public function isSplitPaymentSuggested($customerid, $cdate, $value);
 }

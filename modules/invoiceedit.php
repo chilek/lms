@@ -511,6 +511,7 @@ switch ($action) {
             'sdate' => $sdate,
             'paytime' => $paytime,
             'paytype' => $invoice['paytype'],
+            'splitpayment' => empty($invoice['splitpayment']) ? 0 : 1,
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
@@ -555,7 +556,7 @@ switch ($action) {
         $args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
         //$args['recipient_address_id'] = $invoice
         $args[SYSLOG::RES_DOC] = $iid;
-        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
+        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
@@ -718,5 +719,18 @@ $invoice = $hook_data['invoice'];
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('invoice', $invoice);
+
+$total_value = 0;
+if (!empty($contents)) {
+    foreach ($contents as $item) {
+        $total_value += $item['s_valuebrutto'];
+    }
+}
+
+$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
+    isset($customer) ? $customer['id'] : null,
+    date('Y/m/d', $invoice['cdate']),
+    $total_value
+));
 
 $SMARTY->display('invoice/invoiceedit.html');

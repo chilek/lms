@@ -884,6 +884,9 @@ class LMSTcpdfInvoice extends LMSInvoice
         }
         if (!ConfigHelper::checkConfig('invoices.hide_payment_type')) {
             $this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
+            if (!empty($this->data['splitpayment'])) {
+                $this->backend->writeHTMLCell(0, 0, '', '', '<b>' . trans('(split payment)') . '</b>', 0, 1, 0, true, 'R');
+            }
         }
     }
 
