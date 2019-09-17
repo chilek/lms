@@ -355,7 +355,7 @@ class Auth
                             $this->error = trans("This code has already been used before the moment.");
                         } else {
                             $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, success, ipaddr)
-                                VALUES (?, ?, ?NOW?, ?, INET_ATON(?))', array($this->id, $this->authcode, 1, $this->lastip));
+                                VALUES (?, ?, ?NOW?, ?, INET_ATON(?))', array($this->id, !empty($this->authcode) ?: '', 1, $this->lastip));
 
                             $this->authcoderequired = '';
                             $this->islogged = true;
@@ -363,7 +363,7 @@ class Auth
                         }
                     } else {
                         $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, ipaddr)
-                            VALUES (?, ?, ?NOW?, INET_ATON(?))', array($this->id, $this->authcode, $this->lastip));
+                            VALUES (?, ?, ?NOW?, INET_ATON(?))', array($this->id, !empty($this->authcode) ?: '', $this->lastip));
 
                         $this->error = trans("Wrong authentication code.");
                     }
