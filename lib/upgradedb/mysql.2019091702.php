@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-if ($this->ResourceExists('documents.splitpayment', LMSDB::RESOURCE_TYPE_COLUMN)) {
+if (!$this->ResourceExists('documents.splitpayment', LMSDB::RESOURCE_TYPE_COLUMN)) {
     $this->Execute("ALTER TABLE documents ADD COLUMN splitpayment smallint NOT NULL DEFAULT 0");
 }
 
