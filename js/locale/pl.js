@@ -4449,3 +4449,11 @@ $_LANG['Enter current password'] = 'Wprowadź aktualne hasło';
 $_LANG['trust this device till $a'] = 'ufaj temu urządzeniu do $a';
 $_LANG['Trusted devices:'] = 'Zaufane urządzenia:';
 $_LANG['Are you sure you want to remove all trusted devices?'] = 'Jesteś pewien, że chcesz usunąć wszystkie zaufane urządzenia?';
+$_LANG['Are you sure you want to remove this trusted device?'] = 'Jesteś pewien, że chcesz usunąć to zaufane urządzenie?';
+$_LANG['Remove trusted device'] = 'Usuń zaufane urządzenie';
+
+$_LANG['Trusted devices ($a):'] = 'Zaufane urządzenia ($a):';
+$_LANG['<!trusteddevices>Web browser:'] = 'Przeglądarka www:';
+$_LANG['<!trusteddevices>Added from IP:'] = 'Dodano z IP:';
+$_LANG['<!trusteddevices>Expires:'] = 'Wygasa:';
+$_LANG['No trusted devices in database.'] = 'Brak zaufanych urządzeń w bazie danych.';

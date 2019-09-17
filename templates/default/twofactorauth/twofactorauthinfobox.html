@@ -1,0 +1,67 @@
+<TABLE class="lmsbox" cellpadding="3">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 98%;">
+    </colgroup>
+    <thead>
+    <TR>
+        <TD class="bold nobr" colspan="3">
+            <IMG src="img/pass.gif" alt="">
+            {$userinfo.login} ({$userinfo.id|string_format:"%04d"})
+        </TD>
+    </TR>
+    </thead>
+    <tbody>
+    <TR>
+        <TD class="nobr">
+            <IMG src="img/pass.gif" alt="">
+        </TD>
+        <TD class="nobr bold">
+            {trans("Two factor authentication:")}
+        </TD>
+        <TD class="nobr">
+            {if $userinfo.twofactorauth}
+                {trans("yes")}
+                &nbsp;&nbsp;
+                {button icon="password" id="secretkey-show-button" label="Show secret key"}
+                {button icon="password" id="secretkey-hide-button" label="Hide secret key" visible=false}
+            {else}
+                {trans("no")}
+            {/if}
+        </TD>
+    </TR>
+    <tr id="secretkey" style="display: none;">
+        <td colspan="2"></td>
+        <td>
+            {$userinfo.twofactorauthsecretkey}
+            <br>
+            <img id="qrcode-image" src="data:image/png;base64, {$qrcode_image}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" class="lms-ui-box-buttons">
+            {button icon="modify" label="Change" onclick="location.href = '?m=twofactorauthedit';"}
+        </td>
+    </tr>
+    </tbody>
+</TABLE>
+
+
+<script>
+
+    $(function() {
+        $('#secretkey-show-button').click(function() {
+            $(this).hide();
+            $('#secretkey-hide-button').show();
+            $('#secretkey').show();
+        });
+
+        $('#secretkey-hide-button').click(function() {
+            $(this).hide();
+            $('#secretkey-show-button').show();
+            $('#secretkey').hide();
+        });
+    });
+
+</script>

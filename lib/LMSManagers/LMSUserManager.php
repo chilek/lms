@@ -294,8 +294,10 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         $userinfo = $this->db->GetRow('SELECT * FROM vusers WHERE id = ?', array($id));
         if ($userinfo) {
             $userinfo['trusteddevices'] = $this->db->GetAll(
-                'SELECT useragent, useragent, INET_NTOA(ipaddr) AS ip, expires
-                    FROM twofactorauthtrusteddevices WHERE userid = ?',
+                'SELECT id, useragent, useragent, INET_NTOA(ipaddr) AS ip, expires
+                    FROM twofactorauthtrusteddevices
+                    WHERE userid = ?
+                    ORDER BY expires',
                 array($id)
             );
             if (empty($userinfo['trusteddevices'])) {

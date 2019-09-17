@@ -32,7 +32,7 @@ if (!$LMS->UserExists($id)) {
 }
 
 if (isset($_GET['removetrusteddevices'])) {
-    $AUTH->removeAllTrustedDevices($id);
+    $AUTH->removeTrustedDevices($id, isset($_GET['deviceid']) ? $_GET['deviceid'] : null);
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
 

@@ -540,8 +540,12 @@ class Auth
         return false;
     }
 
-    public function removeAllTrustedDevices($userid = null)
+    public function removeTrustedDevices($userid = null, $deviceid = null)
     {
-        $this->DB->Execute('DELETE FROM twofactorauthtrusteddevices WHERE userid = ?', array(empty($userid) ? $this->id : $userid));
+        $this->DB->Execute(
+            'DELETE FROM twofactorauthtrusteddevices
+            WHERE userid = ?' . (empty($deviceid) ? '' : ' AND id = ' . intval($deviceid)),
+            array(empty($userid) ? $this->id : $userid)
+        );
     }
 }

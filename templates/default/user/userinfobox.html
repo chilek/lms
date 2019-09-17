@@ -135,21 +135,6 @@
 				<img id="qrcode-image" src="data:image/png;base64, {$qrcode_image}">
 			</td>
 		</tr>
-		<TR>
-			<TD class="nobr">
-				<IMG src="img/node.gif" alt="">
-			</TD>
-			<TD class="nobr bold">
-				{trans("Trusted devices:")}
-			</TD>
-			<TD class="nobr">
-				{count($userinfo.trusteddevices)}
-				{if count($userinfo.trusteddevices) && ConfigHelper::checkPrivilege('user_management')}
-					&nbsp;
-					{button icon="delete" id="remove-trusted-devices" label="Remove"}
-				{/if}
-			</TD>
-		</TR>
 {/if}
 		<TR>
 			<TD class="nobr">

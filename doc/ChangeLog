@@ -70,7 +70,7 @@ version 25-git (????-??-??):
   - enhancement: old password required to change current user password [chilan]
   - enhancement: phpui.two_factor_auth_required ('false' by default) controls if two factor
     authentication is required for all users [chilan]
-  - enhancement: 2FA trusted device support [chilan]
+  - enhancement: two factor authentication trusted device support [chilan]
 
 version 24.0 (2019-05-16):
 
