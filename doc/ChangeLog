@@ -72,7 +72,10 @@ version 25-git (????-??-??):
     authentication is required for all users [chilan]
   - enhancement: two factor authentication trusted device support [chilan]
   - enhancement: admin can set force password change flag fo users [chilan]
-  - enhancement: split payment support paytype supplement on invoices [chilan]
+  - enhancement: split payment support paytype supplement on invoices - configuration variable
+    'invoices.split_payment_threshold_value' controls value threshold for 'split-payment'
+    capability ('15000' for invoices issued after 10/31/2019 and '-1' for ones issued
+    before 11/01/2019 where this last value means exclusion) [chilan]
 
 version 24.0 (2019-05-16):
 
