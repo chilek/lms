@@ -107,13 +107,13 @@
 		</tr>
 {/if}
 		<TR>
-			<TD class="nobr valign-top">
+			<TD class="nobr">
 				<IMG src="img/pass.gif" alt="">
 			</TD>
-			<TD class="bold nobr valign-top">
+			<TD class="bold nobr">
 				{trans("Two factor authentication:")}
 			</TD>
-			<TD class="nobr valign-top">
+			<TD class="nobr">
 				{if $userinfo.twofactorauth}
 					{trans("yes")}
 					{if ConfigHelper::checkPrivilege('user_management')}
