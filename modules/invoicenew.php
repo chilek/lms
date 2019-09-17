@@ -25,6 +25,7 @@
  */
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
 // Invoiceless liabilities: Zobowiazania/obciazenia na ktore nie zostala wystawiona faktura
 function GetCustomerCovenants($customerid)

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
+
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -153,6 +155,10 @@ switch ($action) {
             foreach ($cnote as $key => $val) {
                 $cnote[$key] = $val;
             }
+        }
+
+        if (!isset($cnote['splitpayment'])) {
+            $cnote['splitpayment'] = 0;
         }
 
         $cnote['oldcdate'] = $oldcdate;
@@ -407,6 +413,7 @@ switch ($action) {
             'sdate' => $sdate,
             'paytime' => $paytime,
             'paytype' => $cnote['paytype'],
+            'splitpayment' => $cnote['splitpayment'],
             SYSLOG::RES_CUST => $cnote['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $cnote['name'],
             'address' => $use_current_customer_data ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
@@ -448,7 +455,7 @@ switch ($action) {
         $args[SYSLOG::RES_NUMPLAN] = $cnote['numberplanid'];
         $args[SYSLOG::RES_DOC] = $iid;
 
-        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
+        $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, reason = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
@@ -583,5 +590,18 @@ $args = array(
 );
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
+
+$total_value = 0;
+if (!empty($contents)) {
+    foreach ($contents as $item) {
+        $total_value += $item['s_valuebrutto'];
+    }
+}
+
+$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
+    $cnote['customerid'],
+    date('Y/m/d', $cnote['cdate']),
+    $total_value
+));
 
 $SMARTY->display('invoice/invoicenotemodify.html');

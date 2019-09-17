@@ -15,12 +15,34 @@
 		document.save.submit();
 	}
 
+	function isSplitPaymentSuggested() {
+		$.ajax({
+			data: {
+				splitpaymentcheck: 1,
+				customerid: {$refdoc.customerid},
+				cdate: $('#cdate').val(),
+				value: $('#s-valuebrutto').val()
+			},
+			dataType: "json",
+			success: function(result) {
+				$('#splitpayment').toggle(result.splitpayment);
+				if (!result.splitpayment) {
+					$('[name="cnote[splitpayment]"]').prop('checked', false);
+				}
+			}
+		});
+	}
+
 	$(function() {
 		$('form[name="setheader"] [name="cnote[number]"]').focus();
 
 		$('.note-alert').click(function() {
 			alertDialog($t("There are errors in credit note main information!"), this);
 			return;
+		});
+
+		$('#cdate').change(function() {
+			isSplitPaymentSuggested();
 		});
 	});
 
@@ -77,13 +99,13 @@
 		</TD>
 		<TD class="nobr">
 			{if ConfigHelper::checkPrivilege("invoice_consent_date")}
-				<INPUT TYPE="TEXT" NAME="cnote[cdate]" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
+				<INPUT TYPE="TEXT" NAME="cnote[cdate]" id="cdate" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}" SIZE="10"
 						placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 				{if $cnote.cdatewarning}
 					<INPUT TYPE="HIDDEN" NAME="cnote[cdatewarning]" VALUE="1">
 				{/if}
 			{else}
-				<INPUT TYPE="hidden" NAME="cnote[cdate]" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}">
+				<INPUT TYPE="hidden" NAME="cnote[cdate]" id="cdate" VALUE="{$cnote.cdate|date_format:"%Y/%m/%d"}">
 				{$cnote.cdate|date_format:"%Y/%m/%d"}
 			{/if}
 		</TD>
@@ -121,6 +143,10 @@
 					<OPTION value="{$key}"{if $cnote.paytype==$key} selected{/if}>{$item}</OPTION>
 				{/foreach}
 			</SELECT>
+			<label id="splitpayment"{if !$is_split_payment_suggested} style="display: none;"{/if}>
+				<input type="checkbox" name="cnote[splitpayment]" value="1"{if $is_split_payment_suggested && $cnote.splitpayment} checked{/if}>
+				{trans("split payment")}
+			</label>
 		</TD>
 	</TR>
 	{if $refdoc.divisionid != $refdoc.current_divisionid}
@@ -327,12 +353,16 @@
 				&nbsp;
 			</TD>
 			<TD class="bold nobr text-right">
-				{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
+				{sum assign="s_valuebrutto" array=$contents column=s_valuebrutto string_format="%01.2f"}
+				{$s_valuebrutto}
+				<input type="hidden" id="s-valuebrutto" value="{$s_valuebrutto}">
 			</TD>
 			<TD>
 				&nbsp;
 			</TD>
 		</TR>
+	{else}
+		<input type="hidden" id="s-valuebrutto" value="0">
 	{/if}
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="9" class="text-right">

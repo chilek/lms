@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
+
 $action = isset($_GET['action']) ? $_GET['action'] : null;
 
 if (isset($_GET['id']) && $action == 'init') {
@@ -93,6 +95,7 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['sdate'] = $invoice['sdate'];
     $cnote['reason'] = '';
     $cnote['paytype'] = $invoice['paytype'];
+    $cnote['splitpayment'] = $invoice['splitpayment'];
 
     $t = $invoice['cdate'] + $invoice['paytime'] * 86400;
     $deadline = mktime(23, 59, 59, date('m', $t), date('d', $t), date('Y', $t));
@@ -441,6 +444,7 @@ switch ($action) {
             'sdate' => $cnote['sdate'],
             'paytime' => $cnote['paytime'],
             'paytype' => $cnote['paytype'],
+            'splitpayment' => empty($cnote['splitpayment']) ? 0 : 1,
             SYSLOG::RES_USER => Auth::GetCurrentUser(),
             SYSLOG::RES_CUST => $invoice['customerid'],
             'name' => $use_current_customer_data ? $customer['customername'] : $invoice['name'],
@@ -474,12 +478,12 @@ switch ($action) {
             'recipient_address_id' => $invoice['recipient_address_id'],
             'post_address_id' => $invoice['post_address_id'],
         );
-        $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
+        $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype, splitpayment,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
 				recipient_address_id, post_address_id)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $id = $DB->GetOne(
@@ -599,4 +603,18 @@ $SMARTY->assign('refdoc', $invoice);
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->assign('numberplanlist', $numberplanlist);
 $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates(TMPL_CNOTE_REASON));
+
+$total_value = 0;
+if (!empty($contents)) {
+    foreach ($contents as $item) {
+        $total_value += $item['s_valuebrutto'];
+    }
+}
+
+$SMARTY->assign('is_split_payment_suggested', $LMS->isSplitPaymentSuggested(
+    $invoice['customerid'],
+    date('Y/m/d', $cnote['cdate']),
+    $total_value
+));
+
 $SMARTY->display('invoice/invoicenotemodify.html');

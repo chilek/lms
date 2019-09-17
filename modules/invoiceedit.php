@@ -25,6 +25,7 @@
  */
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
