@@ -108,15 +108,17 @@
 		<TD style="width: 98%;" class="fright nobr valign-top">
 			{if $userinfo.twofactorauth}
 				{trans("yes")}
-				&nbsp;&nbsp;
-				{button icon="password" id="secretkey-show-button" label="Show secret key"}
-				{button icon="password" id="secretkey-hide-button" label="Hide secret key" visible=false}
+				{if ConfigHelper::checkPrivilege('user_management')}
+					&nbsp;&nbsp;
+					{button icon="password" id="secretkey-show-button" label="Show secret key"}
+					{button icon="password" id="secretkey-hide-button" label="Hide secret key" visible=false}
+				{/if}
 			{else}
 				{trans("no")}
 			{/if}
 		</TD>
 	</TR>
-{if $userinfo.twofactorauth}
+{if ConfigHelper::checkPrivilege('user_management') && $userinfo.twofactorauth}
 	<tr class="light" id="secretkey" style="display: none;">
 		<td colspan="2" class="fleft"></td>
 		<td class="fright">
