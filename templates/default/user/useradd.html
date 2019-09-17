@@ -95,6 +95,14 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/pass.gif" alt=""> {trans("Repeat password:")}
+		</TD>
+		<TD>
+			<INPUT type="password" name="useradd[confirm]" required {tip text="Confirm password" trigger="password"}>
+		</TD>
+	</TR>
+	<TR>
 		<TD class="bold">
 			<IMG src="img/pass.gif" alt=""> {trans("Two factor authentication:")}
 		</TD>
@@ -120,14 +128,6 @@
 		<TD>
 			<input type="text" name="useradd[twofactorauthsecretkey]" value="{$useradd.twofactorauthsecretkey}"
 					maxlength="16" {tip trigger="twofactorauthsecretkey"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="bold nobr">
-			<IMG src="img/pass.gif" alt=""> {trans("Repeat password:")}
-		</TD>
-		<TD>
-			<INPUT type="password" name="useradd[confirm]" required {tip text="Confirm password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR>
