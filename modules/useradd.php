@@ -117,11 +117,11 @@ if (count($useradd)) {
     $error = $hook_data['error'];
 
     if (!$error) {
-        if ($userinfo['twofactorauth'] == -1) {
-            $userinfo['twofactorauth'] = 1;
+        if ($useradd['twofactorauth'] == -1) {
+            $useradd['twofactorauth'] = 1;
             $google2fa = new Google2FA();
-            $userinfo['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
-        } elseif (empty($userinfo['twofactorauth'])) {
+            $useradd['twofactorauthsecretkey'] = $google2fa->generateSecretKey();
+        } elseif (empty($useradd['twofactorauth'])) {
             $useradd['twofactorauthsecretkey'] = null;
         }
 

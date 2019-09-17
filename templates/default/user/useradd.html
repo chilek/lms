@@ -103,6 +103,17 @@
 		</TD>
 	</TR>
 	<TR>
+		<td class="bold nobr">
+			<label for="passwdforcechange">
+				<IMG src="img/pass.gif" alt=""> {trans("Force password change:")}
+			</label>
+		</td>
+		<TD>
+			<input type="checkbox" name="useradd[passwdforcechange]" value="1"
+					id="passwdforcechange"{if isset($useradd.passwdforcechange)} checked{/if}>
+		</TD>
+	</TR>
+	<TR>
 		<TD class="bold">
 			<IMG src="img/pass.gif" alt=""> {trans("Two factor authentication:")}
 		</TD>

@@ -213,6 +213,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'position' => $user['position'],
             'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
             'phone' => !empty($user['phone']) ? $user['phone'] : null,
+            'passwdforcechange' => isset($user['passwdforcechange']) ? 1 : 0,
             'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
             'access' => !empty($user['access']) ? 1 : 0,
             'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
@@ -222,8 +223,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         );
         $user_inserted = $this->db->Execute(
             'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone,
-                passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                passwdforcechange, passwdexpiration, access, accessfrom, accessto, twofactorauth, twofactorauthsecretkey)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
@@ -390,6 +391,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'position' => $user['position'],
             'ntype' => !empty($user['ntype']) ? $user['ntype'] : null,
             'phone' => !empty($user['phone']) ? $user['phone'] : null,
+            'passwdforcechange' => isset($user['passwdforcechange']) ? 1 : 0,
             'passwdexpiration' => !empty($user['passwdexpiration']) ? $user['passwdexpiration'] : 0,
             'access' => !empty($user['access']) ? 1 : 0,
             'accessfrom' => !empty($user['accessfrom']) ? $user['accessfrom'] : 0,
@@ -399,8 +401,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             SYSLOG::RES_USER => $user['id']
         );
         $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
-				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=?,
-				twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
+				hosts=?, position=?, ntype=?, phone=?, passwdforcechange=?, passwdexpiration=?, access=?,
+				accessfrom=?, accessto=?, twofactorauth=?, twofactorauthsecretkey=? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);
         }

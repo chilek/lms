@@ -95,6 +95,20 @@
 			{trans('to')}:<input type="text" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
 		</td>
 	</tr>
+	<TR>
+		<td>
+			<IMG src="img/pass.gif" alt="">
+		</td>
+		<TD class="bold">
+			<label for="passwdforcechange">
+				{trans("Force password change:")}
+			</label>
+		</TD>
+		<TD>
+			<input type="checkbox" name="userinfo[passwdforcechange]" value="1" id="passwdforcechange"
+					{if isset($userinfo.passwdforcechange) && !empty($userinfo.passwdforcechange)} checked{/if}>
+		</TD>
+	</TR>
 	{else}
 		<tr style="display: none;">
 			<td>
