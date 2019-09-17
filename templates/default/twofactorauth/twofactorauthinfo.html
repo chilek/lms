@@ -61,8 +61,8 @@
                 {trans("Trusted devices:")}
             </TD>
             <TD class="nobr">
-                {$userinfo.trusteddevices}
-                {if $userinfo.trusteddevices}
+                {count($userinfo.trusteddevices)}
+                {if count($userinfo.trusteddevices)}
                     &nbsp;
                     {button icon="delete" label="Remove" id="remove-trusted-devices"}
                 {/if}

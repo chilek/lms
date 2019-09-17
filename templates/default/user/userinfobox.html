@@ -6,237 +6,246 @@
 	}
 
 </style>
-<TABLE style="width: 100%;" cellpadding="3">
-	<TR class="dark">
-		<TD class="fall bold nobr" colspan="3">
-			<IMG src="img/pass.gif" alt="">
-			{$userinfo.login} ({$userinfo.id|string_format:"%04d"})
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft">
-			<IMG src="img/users.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("First name:")}
-		</TD>
-		<TD style="width: 98%;" class="fright bold">
-			{$userinfo.firstname}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft">
-			<IMG src="img/users.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Last name:")}
-		</TD>
-		<TD style="width: 98%;" class="fright bold">
-			{$userinfo.lastname}
-		</TD>
-	</TR>
+<TABLE class="lmsbox" style="width: 100%;" cellpadding="3">
+	<colgroup>
+		<col style="width: 1%;">
+		<col style="width: 1%;">
+		<col style="width: 98%;">
+	</colgroup>
+	<THEAD>
+		<TR>
+			<TD class="bold nobr" colspan="3">
+				<IMG src="img/pass.gif" alt="">
+				{$userinfo.login} ({$userinfo.id|string_format:"%04d"})
+			</TD>
+		</TR>
+	</THEAD>
+	<TBODY>
+		<TR>
+			<TD>
+				<IMG src="img/users.gif" alt="">
+			</TD>
+			<TD class="bold nobr">
+				{trans("First name:")}
+			</TD>
+			<TD class="bold">
+				{$userinfo.firstname}
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				<IMG src="img/users.gif" alt="">
+			</TD>
+			<TD class="bold nobr">
+				{trans("Last name:")}
+			</TD>
+			<TD class="bold">
+				{$userinfo.lastname}
+			</TD>
+		</TR>
 {if $userinfo.position}
-	<TR class="light">
-		<TD style="width: 1%" class="fleft nobr">
-			<IMG src="img/info.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">{trans("Position:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			{$userinfo.position}
-		</TD>
-	</TR>
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/info.gif" alt="">
+			</TD>
+			<TD class="bold">{trans("Position:")}</TD>
+			<TD>
+				{$userinfo.position}
+			</TD>
+		</TR>
 {/if}
 {if $userinfo.email}
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/mail.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">{trans("E-mail:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			<A href="mailto:{$userinfo.email}">{$userinfo.email}</A>
-		</TD>
-	</TR>
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/mail.gif" alt="">
+			</TD>
+			<TD class="bold">{trans("E-mail:")}</TD>
+			<TD>
+				<A href="mailto:{$userinfo.email}">{$userinfo.email}</A>
+			</TD>
+		</TR>
 {/if}
 {if $userinfo.phone}
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/sms.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">{trans("Phone:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			{$userinfo.phone}
-		</TD>
-	</TR>
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/sms.gif" alt="">
+			</TD>
+			<TD class="bold">{trans("Phone:")}</TD>
+			<TD>
+				{$userinfo.phone}
+			</TD>
+		</TR>
 {/if}
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/options.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold">{trans("Notification:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			{if !$userinfo.ntype}{trans("none")}{else}{$userinfo.ntype}{/if}
-		</TD>
-	</TR>
-	<tr class="light">
-		<td style="width: 1%;" class="fleft nobr">
-			<img src="img/{if !$userinfo.access}no{/if}access.gif" alt="">
-		</td>
-		<td style="width: 1%;" class="bold">{trans("Account active:")}</td>
-		<td style="width: 98%;" class="fright">
-			{if !$userinfo.access}{trans("no")}{else}{trans("yes")}{/if}
-		</td>
-	</tr>
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/options.gif" alt="">
+			</TD>
+			<TD class="bold">{trans("Notification:")}</TD>
+			<TD>
+				{if !$userinfo.ntype}{trans("none")}{else}{$userinfo.ntype}{/if}
+			</TD>
+		</TR>
+		<tr>
+			<td class="nobr">
+				<img src="img/{if !$userinfo.access}no{/if}access.gif" alt="">
+			</td>
+			<td class="bold">{trans("Account active:")}</td>
+			<td>
+				{if !$userinfo.access}{trans("no")}{else}{trans("yes")}{/if}
+			</td>
+		</tr>
 {if $userinfo.accessfrom || $userinfo.accessto}
-	<tr class="light">
-		<td style="width: 1%;" class="fleft nobr">
-			<img src="img/calendar.gif" alt="">
-		</td>
-		<td style="width: 1%;" class="bold">{trans("Account active:")}</td>
-		<td style="width: 98%;" class="fright">
-			{if $userinfo.accessfrom}<span class="bold">{trans("from")}:</span> {$userinfo.accessfrom}{/if}
-			{if $userinfo.accessto}<span class="bold"> {trans("to")}:</span> {$userinfo.accessto}{/if}
-		</td>
-	</tr>
+		<tr>
+			<td class="nobr">
+				<img src="img/calendar.gif" alt="">
+			</td>
+			<td class="bold">{trans("Account active:")}</td>
+			<td>
+				{if $userinfo.accessfrom}<span class="bold">{trans("from")}:</span> {$userinfo.accessfrom}{/if}
+				{if $userinfo.accessto}<span class="bold"> {trans("to")}:</span> {$userinfo.accessto}{/if}
+			</td>
+		</tr>
 {/if}
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr valign-top">
-			<IMG src="img/pass.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="nobr valign-top">
-			<span class="bold">{trans("Two factor authentication:")}</span>
-		</TD>
-		<TD style="width: 98%;" class="fright nobr valign-top">
-			{if $userinfo.twofactorauth}
-				{trans("yes")}
-				{if ConfigHelper::checkPrivilege('user_management')}
-					&nbsp;&nbsp;
-					{button icon="password" id="secretkey-show-button" label="Show secret key"}
-					{button icon="password" id="secretkey-hide-button" label="Hide secret key" visible=false}
-				{/if}
-			{else}
-				{trans("no")}
-			{/if}
-		</TD>
-	</TR>
-{if ConfigHelper::checkPrivilege('user_management') && $userinfo.twofactorauth}
-	<tr class="light" id="secretkey" style="display: none;">
-		<td colspan="2" class="fleft"></td>
-		<td class="fright">
-			{$userinfo.twofactorauthsecretkey}
-			<br>
-			<img id="qrcode-image" src="data:image/png;base64, {$qrcode_image}">
-		</td>
-	</tr>
-	<TR class="light">
-		<TD class="fleft nobr">
-			<IMG src="img/node.gif" alt="">
-		</TD>
-		<TD class="nobr bold">
-			{trans("Trusted devices:")}
-		</TD>
-		<TD class="nobr fright">
-			{$userinfo.trusteddevices}
-			{if $userinfo.trusteddevices && ConfigHelper::checkPrivilege('user_management')}
-				&nbsp;
-				{button icon="delete" id="remove-trusted-devices" label="Remove"}
-			{/if}
-		</TD>
-	</TR>
-{/if}
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/ip.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="nobr">
-			<span class="bold">{trans("Allowed hosts:")}</span>
-		</TD>
-		<TD style="width: 98%;" class="fright nobr">
-			{if $userinfo.hosts}{$userinfo.hosts}{else}{trans("all")}{/if}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/passwd.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Password expiration:")}
-		</TD>
-		<TD style="width: 98%;" class="fright nobr">
-			{$_PASSWDEXPIRATIONS[$userinfo.passwdexpiration]}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft nobr">
-			<IMG src="img/passwd.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">
-			{trans("Last password change:")}
-		</TD>
-		<TD style="width: 98%;" class="fright nobr">
-			{$userinfo.passwdlastchange}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft">
-			<IMG src="img/pass.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">{trans("Access rights:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			<ul>
-			{foreach $accesslist as $access}
-			{if $access.enabled}
-			<li class="acl">{$access.name}</li>
-			{/if}
-			{/foreach}
-			</ul>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft">
-			<IMG src="img/group.gif" alt="">
-		</TD>
-		<TD style="width: 1%;" class="bold nobr">{trans("Excluded groups:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			{foreach from=$excludedgroups item=item}
-			{if $item@first}<ul>{/if}
-			<li class="acl"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
-			{if $item@last}</ul>{/if}
-			{foreachelse}
-			-
-			{/foreach}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft"></TD>
-		<TD style="width: 1%;" class="bold nobr">{trans("Last login:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip != $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD style="width: 1%;" class="fleft"></TD>
-		<TD style="width: 1%;" class="bold nobr">{trans("Last failed login:")}</TD>
-		<TD style="width: 98%;" class="fright">
-			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip != $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
-		</TD>
-	</TR>
-        {block name="other-information"}
-        {/block}
-	<TR class="light">
-		<TD COLSPAN="3" class="fbottomu text-right">
-			{if $layout.logid ne $userinfo.id}
-				{if !$userinfo.access}
-				<a href="?m=useraccess&amp;id={$userinfo.id}&amp;access=1">{trans("Connect")} <img src="img/noaccess.gif" alt=""></a>
+		<TR>
+			<TD class="nobr valign-top">
+				<IMG src="img/pass.gif" alt="">
+			</TD>
+			<TD class="bold nobr valign-top">
+				{trans("Two factor authentication:")}
+			</TD>
+			<TD class="nobr valign-top">
+				{if $userinfo.twofactorauth}
+					{trans("yes")}
+					{if ConfigHelper::checkPrivilege('user_management')}
+						&nbsp;&nbsp;
+						{button icon="password" id="secretkey-show-button" label="Show secret key"}
+						{button icon="password" id="secretkey-hide-button" label="Hide secret key" visible=false}
+					{/if}
 				{else}
-				<a href="?m=useraccess&amp;id={$userinfo.id}&amp;access=0">{trans("Disconnect")} <img src="img/access.gif" alt=""></a>
+					{trans("no")}
 				{/if}
-			{/if}
-			<A href="?m=useredit&amp;id={$userinfo.id}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-			<A id="delete-user" href="?m=userdel&id={$userinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
-			<A href="?m=userpasswd&amp;id={$userinfo.id}">{trans("Change password")} <IMG src="img/keys.gif" alt=""> </A>
-			<a href="?m=userlist">{trans("User list")} <img src="img/users.gif" alt=""></a>
-		</TD>
-	</TR>
+			</TD>
+		</TR>
+{if ConfigHelper::checkPrivilege('user_management') && $userinfo.twofactorauth}
+		<tr id="secretkey" style="display: none;">
+			<td colspan="2"></td>
+			<td>
+				{$userinfo.twofactorauthsecretkey}
+				<br>
+				<img id="qrcode-image" src="data:image/png;base64, {$qrcode_image}">
+			</td>
+		</tr>
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/node.gif" alt="">
+			</TD>
+			<TD class="nobr bold">
+				{trans("Trusted devices:")}
+			</TD>
+			<TD class="nobr">
+				{count($userinfo.trusteddevices)}
+				{if count($userinfo.trusteddevices) && ConfigHelper::checkPrivilege('user_management')}
+					&nbsp;
+					{button icon="delete" id="remove-trusted-devices" label="Remove"}
+				{/if}
+			</TD>
+		</TR>
+{/if}
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/ip.gif" alt="">
+			</TD>
+			<TD class="nobr">
+				<span class="bold">{trans("Allowed hosts:")}</span>
+			</TD>
+			<TD class="nobr">
+				{if $userinfo.hosts}{$userinfo.hosts}{else}{trans("all")}{/if}
+			</TD>
+		</TR>
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/passwd.gif" alt="">
+			</TD>
+			<TD class="bold nobr">
+				{trans("Password expiration:")}
+			</TD>
+			<TD class="nobr">
+				{$_PASSWDEXPIRATIONS[$userinfo.passwdexpiration]}
+			</TD>
+		</TR>
+		<TR>
+			<TD class="nobr">
+				<IMG src="img/passwd.gif" alt="">
+			</TD>
+			<TD class="bold nobr">
+				{trans("Last password change:")}
+			</TD>
+			<TD class="nobr">
+				{$userinfo.passwdlastchange}
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				<IMG src="img/pass.gif" alt="">
+			</TD>
+			<TD class="bold nobr">{trans("Access rights:")}</TD>
+			<TD>
+				<ul>
+				{foreach $accesslist as $access}
+				{if $access.enabled}
+				<li class="acl">{$access.name}</li>
+				{/if}
+				{/foreach}
+				</ul>
+			</TD>
+		</TR>
+		<TR>
+			<TD>
+				<IMG src="img/group.gif" alt="">
+			</TD>
+			<TD class="bold nobr">{trans("Excluded groups:")}</TD>
+			<TD>
+				{foreach from=$excludedgroups item=item}
+				{if $item@first}<ul>{/if}
+				<li class="acl"><a href="?m=customergroupinfo&id={$item.id}">{$item.name}</a></li>
+				{if $item@last}</ul>{/if}
+				{foreachelse}
+				-
+				{/foreach}
+			</TD>
+		</TR>
+		<TR>
+			<TD></TD>
+			<TD class="bold nobr">{trans("Last login:")}</TD>
+			<TD>
+				{$userinfo.lastlogin}, {$userinfo.lastloginip} {if $userinfo.lastloginip != $userinfo.lastloginhost}({$userinfo.lastloginhost}){/if}
+			</TD>
+		</TR>
+		<TR>
+			<TD></TD>
+			<TD class="bold nobr">{trans("Last failed login:")}</TD>
+			<TD>
+				{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip != $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
+			</TD>
+		</TR>
+		{block name="other-information"}
+		{/block}
+		<TR>
+			<TD COLSPAN="3" class="text-right">
+				{if $layout.logid ne $userinfo.id}
+					{if !$userinfo.access}
+					<a href="?m=useraccess&amp;id={$userinfo.id}&amp;access=1">{trans("Connect")} <img src="img/noaccess.gif" alt=""></a>
+					{else}
+					<a href="?m=useraccess&amp;id={$userinfo.id}&amp;access=0">{trans("Disconnect")} <img src="img/access.gif" alt=""></a>
+					{/if}
+				{/if}
+				<A href="?m=useredit&amp;id={$userinfo.id}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
+				<A id="delete-user" href="?m=userdel&id={$userinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+				<A href="?m=userpasswd&amp;id={$userinfo.id}">{trans("Change password")} <IMG src="img/keys.gif" alt=""> </A>
+				<a href="?m=userlist">{trans("User list")} <img src="img/users.gif" alt=""></a>
+			</TD>
+		</TR>
+	</TBODY>
 </TABLE>
 <script>
 
