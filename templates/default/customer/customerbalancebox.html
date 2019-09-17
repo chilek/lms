@@ -534,7 +534,7 @@
 		});
 
 		$('[name="aggregate_documents"]:checkbox').click(function() {
-			location.href = '?m={$layout.module}&id={$id}&aggregate_documents=' +
+			location.href = '?m={$layout.module}&id={$objectid}&aggregate_documents=' +
 				($(this).prop('checked') ? '1' : '0');
 		});
 	});

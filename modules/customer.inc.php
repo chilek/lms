@@ -141,6 +141,7 @@ if ($receipt = $SESSION->get('receiptprint')) {
 
 $SMARTY->assign(array(
     'id' => $customerinfo['id'],
+    'objectid' => $customerinfo['id'],
     'aggregate_documents' => $aggregate_documents,
     'commited' => $commited,
     'allevents' => $allevents,
