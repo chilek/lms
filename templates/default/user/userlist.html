@@ -69,6 +69,7 @@
 			    {else}
 				<a href="?m=useraccess&amp;id={$user.id}&amp;access=0"><img src="img/access.gif" alt="{trans('Disconnect')}" title="{trans('Disconnect')}"></a>
 			    {/if}
+				<a href="?m=useredit&id={$user.id}&forcepasswdchange=1"><img src="img/keys.gif" alt="{trans("Force password change")}" title="{trans("Force password change")}"></a>
 			{/if}
 			<a href="?m=userpasswd&amp;id={$user.id}"><img src="img/keys.gif" alt="{trans("Change password")}" title="{trans("Change password")}"></a>
 			{if $user.id != $layout.logid}<a class="delete-user" href="?m=userdel&id={$user.id}"><img src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></a>{/if}
