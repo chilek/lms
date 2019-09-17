@@ -4457,3 +4457,6 @@ $_LANG['<!trusteddevices>Web browser:'] = 'Przeglądarka www:';
 $_LANG['<!trusteddevices>Added from IP:'] = 'Dodano z IP:';
 $_LANG['<!trusteddevices>Expires:'] = 'Wygasa:';
 $_LANG['No trusted devices in database.'] = 'Brak zaufanych urządzeń w bazie danych.';
+
+$_LANG['Force password change'] = 'Wymuś zmianę hasła';
+$_LANG['Force password change:'] = 'Wymuś zmianę hasła:';

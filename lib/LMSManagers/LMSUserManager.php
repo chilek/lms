@@ -41,13 +41,27 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'passwd' => crypt($passwd),
+            'passwdforcechange' => 0,
             SYSLOG::RES_USER => $id
         );
-        $this->db->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array_values($args));
+        $this->db->Execute('UPDATE users SET passwd = ?, passwdlastchange = ?NOW?, passwdforcechange = ?
+            WHERE id=?', array_values($args));
         $this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
         if ($this->syslog) {
             unset($args['passwd']);
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERPASSWDCHANGE, $args);
+        }
+    }
+
+    public function forcePasswordChange($id)
+    {
+        $args = array(
+            'passwdforcechange' => 1,
+            SYSLOG::RES_USER => $id
+        );
+        $this->db->Execute('UPDATE users SET passwdforcechange = ? WHERE id = ?', array_values($args));
+        if ($this->syslog) {
+            $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);
         }
     }
 

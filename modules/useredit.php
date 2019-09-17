@@ -36,6 +36,11 @@ if (isset($_GET['removetrusteddevices'])) {
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
 }
 
+if (isset($_GET['forcepasswdchange'])) {
+    $LMS->forcePasswordChange($id);
+    $SESSION->redirect($_SERVER['HTTP_REFERER']);
+}
+
 $userinfo = isset($_POST['userinfo']) ? $_POST['userinfo'] : false;
 
 if ($userinfo) {

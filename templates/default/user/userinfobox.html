@@ -106,6 +106,19 @@
 			</td>
 		</tr>
 {/if}
+{if $userinfo.passwdforcechange}
+	<TR>
+		<TD class="nobr">
+			<IMG src="img/pass.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Force password change:")}
+		</TD>
+		<TD class="nobr">
+			{trans("yes")}
+		</TD>
+	</TR>
+{/if}
 		<TR>
 			<TD class="nobr">
 				<IMG src="img/pass.gif" alt="">
@@ -216,18 +229,21 @@
 		{block name="other-information"}
 		{/block}
 		<TR>
-			<TD COLSPAN="3" class="text-right">
+			<TD COLSPAN="3" class="lms-ui-box-buttons">
 				{if $layout.logid ne $userinfo.id}
 					{if !$userinfo.access}
-					<a href="?m=useraccess&amp;id={$userinfo.id}&amp;access=1">{trans("Connect")} <img src="img/noaccess.gif" alt=""></a>
+						{button label="Connect" icon="disconnected" onclick="location.href = '?m=useraccess&id={$userinfo.id}&access=1';"}
 					{else}
-					<a href="?m=useraccess&amp;id={$userinfo.id}&amp;access=0">{trans("Disconnect")} <img src="img/access.gif" alt=""></a>
+						{button label="Disconnect" icon="connected" onclick="location.href = '?m=useraccess&id={$userinfo.id}&access=0';"}
 					{/if}
 				{/if}
-				<A href="?m=useredit&amp;id={$userinfo.id}" accesskey="E">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-				<A id="delete-user" href="?m=userdel&id={$userinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
-				<A href="?m=userpasswd&amp;id={$userinfo.id}">{trans("Change password")} <IMG src="img/keys.gif" alt=""> </A>
-				<a href="?m=userlist">{trans("User list")} <img src="img/users.gif" alt=""></a>
+				{button label="Edit" icon="edit" onclick="location.href = '?m=useredit&id={$userinfo.id}';"}
+				{button label="Delete" icon="delete" id="delete-user" href="?m=userdel&id={$userinfo.id}"}
+				{if $layout.logid ne $userinfo.id}
+					{button label="Force password change" icon="password" onclick="location.href = '?m=useredit&id={$userinfo.id}&forcepasswdchange=1';"}
+				{/if}
+				{button label="Change password" icon="password" onclick="location.href = '?m=userpasswd&id={$userinfo.id}';"}
+				{button label="User list" icon="list" onclick="location.href = '?m=userlist';"}
 			</TD>
 		</TR>
 	</TBODY>

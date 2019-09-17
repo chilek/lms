@@ -298,10 +298,12 @@ if ($AUTH->islogged) {
     }
     $module = $res['module'];
 
-    if ($AUTH->requiredPasswordChange()) {
-        $module = 'chpasswd';
-    } elseif ($AUTH->requiredTwoFactorAuthChange()) {
-        $module = 'twofactorauthedit';
+    if ($module != 'logout') {
+        if ($AUTH->requiredPasswordChange()) {
+            $module = 'chpasswd';
+        } elseif ($AUTH->requiredTwoFactorAuthChange()) {
+            $module = 'twofactorauthedit';
+        }
     }
 
     if ($module == '') {

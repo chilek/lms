@@ -308,13 +308,14 @@ class Auth
         $this->islogged = false;
 
         if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip,
-				passwdexpiration, passwdlastchange, access, accessfrom, accessto,
+				passwdforcechange, passwdexpiration, passwdlastchange, access, accessfrom, accessto,
 				twofactorauth, twofactorauthsecretkey
 			FROM vusers WHERE login=? AND deleted=0', array($this->login))) {
             $this->logname = $user['name'];
             $this->id = $user['id'];
             $this->last = $user['lastlogindate'];
             $this->lastip = $user['lastloginip'];
+            $this->passwdforcechange = $user['passwdforcechange'];
             $this->passwdexpiration = $user['passwdexpiration'];
             $this->passwdlastchange = $user['passwdlastchange'];
             $this->twofactorauth = $user['twofactorauth'];
@@ -391,8 +392,9 @@ class Auth
             $this->SESSION->save('session_authcoderequired', $this->authcoderequired);
 
             if ($this->islogged) {
-                if ($this->passwdexpiration
-                    && (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration']) {
+                if (($this->passwdexpiration
+                    && (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration'])
+                    || $this->passwdforcechange) {
                     $this->SESSION->save('session_passwdrequiredchange', true);
                 }
                 if (!$this->twofactorauth && ConfigHelper::checkConfig('phpui.two_factor_auth_required')) {

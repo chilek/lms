@@ -373,6 +373,12 @@ class LMS
         return $manager->setUserPassword($id, $passwd);
     }
 
+    public function forcePasswordChange($id)
+    {
+        $manager = $this->getUserManager();
+        return $manager->forcePasswordChange($id);
+    }
+
     public function SetUserAuthentication($id, $twofactorauth, $twofactorauthsecretkey)
     {
         $manager = $this->getUserManager();
