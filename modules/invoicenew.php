@@ -392,11 +392,11 @@ switch ($action) {
             }
         }
 
-        if (!isset($error)) {
-            if ($LMS->CustomerExists($cid)) {
-                $customer = $LMS->GetCustomer($cid, true);
-            }
+        if ($LMS->CustomerExists($cid)) {
+            $customer = $LMS->GetCustomer($cid, true);
+        }
 
+        if (!isset($error)) {
             // finally check if selected customer can use selected numberplan
             if ($invoice['numberplanid'] && isset($customer)) {
                 if (!$DB->GetOne('SELECT 1 FROM numberplanassignments
