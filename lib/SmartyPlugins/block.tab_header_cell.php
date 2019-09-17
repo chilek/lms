@@ -30,7 +30,7 @@ function smarty_block_tab_header_cell($params, $content, $template, $repeat)
         $icon = isset($params['icon']) ? $params['icon'] : null;
         return '
 			<div class="lms-ui-tab-header-cell">
-				' . ($icon ? (strpos($icon, '/') === false ? '<i class="' . $icon . '"></i>'
+				' . ($icon ? (strpos($icon, '/') === false ? '<i class="' . $icon . ' lms-ui-sortable-handle"></i>'
                     : '<img src="' . $icon . '">') : '') . '
 				' . $content . '
 			</div>';

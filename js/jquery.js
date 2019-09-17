@@ -1030,7 +1030,8 @@ $(function() {
 
 	$('.lms-ui-sortable-persistent').sortable({
 		items: "> .lms-ui-sortable",
-		handle: ".lmsbox-titlebar",
+		//handle: ".lmsbox-titlebar",
+		handle: ".lms-ui-sortable-handle",
 		axis: "y",
 		opacity: 0.9,
 		update: function(event, ui) {

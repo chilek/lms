@@ -35,7 +35,7 @@
 
 </style>
 
-<TABLE class="lmsbox{if $customerpanel} sortable{/if}" id="customerinfobox">
+<TABLE class="lmsbox{if $customerpanel} lms-ui-sortable{/if}" id="customerinfobox">
 	<COLGROUP>
 		<COL style="width: 99%;">
 		<COL style="width: 1%;">
@@ -45,7 +45,7 @@
 		<TD colspan="2">
 			<div class="customer-header">
 				<div class="bold">
-					<IMG SRC="img/customer.gif" ALT="">
+					<IMG SRC="img/customer.gif" ALT=""{if $customerpanel} class="lms-ui-sortable-handle"{/if}>
 					{if $customerpanel}{trans("Owner:")}{/if}
 					{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}
 				</div>
