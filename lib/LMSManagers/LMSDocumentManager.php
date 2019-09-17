@@ -729,10 +729,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $docs = $this->db->GetCol(
             'SELECT d.id
 				FROM documents d
-				JOIN docrights r ON r.doctype = d.type
+				' . ($userid ? ' JOIN docrights r ON r.doctype = d.type' : '') . '
 				WHERE d.closed = 1 AND d.archived = 0 AND d.id IN (' . implode(',', $ids) . ')
-					AND r.userid = ? AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0',
-            array($userid)
+					' . ($userid ? ' AND r.userid = ' . $userid . ' AND (r.rights & ' . DOCRIGHT_ARCHIVE . ') > 0' : '')
         );
         if (empty($docs)) {
             return;
@@ -743,7 +742,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $this->db->Execute(
             'UPDATE documents SET archived = 1, adate = ?NOW?, auserid = ?
 			WHERE id IN (' . implode(',', $docs) . ')',
-            array(Auth::GetCurrentUser())
+            array($userid)
         );
 
         $this->db->CommitTrans();

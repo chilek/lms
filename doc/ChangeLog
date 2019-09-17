@@ -76,6 +76,8 @@ version 25-git (????-??-??):
     notes - configuration variable 'invoices.split_payment_threshold_value' controls value
     threshold for 'split-payment' capability ('15000' for invoices issued after 10/31/2019
     and '-1' for ones issued before 11/01/2019 where this last value means exclusion) [chilan]
+  - enhancement: lms-archive-documents.php backend script introduced as it allow
+    to archive many non-trade documents at once [chilan]
 
 version 24.0 (2019-05-16):
 
