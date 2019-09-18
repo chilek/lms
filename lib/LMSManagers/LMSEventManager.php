@@ -156,6 +156,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
      *          single integer value,
      *          1 = public events,
      *          2 = private events assigned to current user,
+     *      singleday - only one day presentation - helpfull for event print for given day
      *      closed - event close flag (default: '' = any value): single integer value or empty string,
      *      count - count records only or return selected record interval
      *          true - count only,
@@ -183,6 +184,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         if (!isset($count)) {
             $count = false;
         }
+        $singleday = isset($singleday) && $singleday;
 
         $t = time();
 
@@ -325,29 +327,32 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     $row['multiday'] = $days > 0;
                     $row['enddate'] = $row['date'] + 86400;
                     //$row['endtime'] = 0;
-                    $dst = date('I', $row['date']);
                     $list2[] = $row;
-                    while ($days) {
-                        //if ($days == 1)
-                            $row['endtime'] = $endtime;
-                        $row['date'] += 86400;
-                        $newdst = date('I', $row['date']);
-                        if ($newdst != $dst) {
-                            if ($newdst < $dst) {
-                                $row['date'] += 3600;
-                            } else {
-                                $row['date'] -= 3600;
-                            }
+                    if (!$singleday) {
+                        $dst = date('I', $row['date']);
+                        while ($days) {
+                            //if ($days == 1) {
+                                $row['endtime'] = $endtime;
+                            //}
+                            $row['date'] += 86400;
                             $newdst = date('I', $row['date']);
+                            if ($newdst != $dst) {
+                                if ($newdst < $dst) {
+                                    $row['date'] += 3600;
+                                } else {
+                                    $row['date'] -= 3600;
+                                }
+                                $newdst = date('I', $row['date']);
+                            }
+                            list ($year, $month, $day) = explode('/', date('Y/n/j', $row['date']));
+                            $row['date'] = mktime(0, 0, 0, $month, $day, $year);
+                            $row['enddate'] = $row['date'] + 86400;
+                            if ($days > 1 || $endtime) {
+                                $list2[] = $row;
+                            }
+                            $days--;
+                            $dst = $newdst;
                         }
-                        list ($year, $month, $day) = explode('/', date('Y/n/j', $row['date']));
-                        $row['date'] = mktime(0, 0, 0, $month, $day, $year);
-                        $row['enddate'] = $row['date'] + 86400;
-                        if ($days > 1 || $endtime) {
-                            $list2[] = $row;
-                        }
-                        $days--;
-                        $dst = $newdst;
                     }
                 } else {
                     $list2[] = $row;

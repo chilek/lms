@@ -43,6 +43,7 @@ $eventlist = $LMS->GetEventList(
         'customerid' => $_GET['u'],
         'privacy' => $_GET['privacy'],
         'closed' => $_GET['closed'],
+        'singleday' => true,
         'count' => false,
     )
 );
