@@ -3133,7 +3133,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 AND t.type NOT IN (?, ?, ?) 
                 AND commited = 1
                 AND (a.dateto = 0 OR a.dateto > ?NOW?)
-                AND a.datefrom < ?NOW?)', array($customerid, SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV))) {
+                AND a.datefrom < ?NOW?', array($customerid, SERVICE_INTERNET, SERVICE_PHONE, SERVICE_TV))) {
             foreach ($limits as $row) {
                 foreach ($row as $idx => $val) {
                     if ($idx == 'alias_limit' || $idx == 'domain_limit') {
