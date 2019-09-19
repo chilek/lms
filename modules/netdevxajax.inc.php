@@ -226,7 +226,7 @@ function getFirstFreeAddress($netid, $elemid)
     $result = new xajaxResponse();
 
     $ip = $LMS->GetFirstFreeAddress($netid);
-    if ($ip != FALSE) {
+    if ($ip != false) {
         $result->assign($elemid, 'value', $ip);
     }
 

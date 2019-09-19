@@ -82,5 +82,4 @@ interface LMSNetworkManagerInterface
     public function GetPublicNetworkID($netid);
 
     public function getFirstFreeAddress($netid);
-
 }

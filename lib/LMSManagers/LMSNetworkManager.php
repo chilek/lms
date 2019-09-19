@@ -791,7 +791,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         $reservedaddresses = intval(ConfigHelper::getConfig('phpui.first_reserved_addresses', 0, true));
         $net = $this->GetNetworkRecord($netid);
-        $ip = FALSE;
+        $ip = false;
 
         foreach ($net['nodes']['id'] as $idx => $nodeid) {
             if ($idx < $reservedaddresses) {
@@ -799,7 +799,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             }
             if ($nodeid) {
                 $firstnodeid = $idx;
-                $ip = FALSE;
+                $ip = false;
             }
             if (!$nodeid && !isset($net['nodes']['name'][$idx]) && empty($ip)) {
                 $ip = $net['nodes']['address'][$idx];
