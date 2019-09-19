@@ -80,4 +80,7 @@ interface LMSNetworkManagerInterface
     public function GetNetworkPageForIp($netid, $ip);
 
     public function GetPublicNetworkID($netid);
+
+    public function getFirstFreeAddress($netid);
+
 }

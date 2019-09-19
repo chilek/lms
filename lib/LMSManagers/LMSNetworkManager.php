@@ -786,4 +786,28 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         return $this->db->GetOne('SELECT pubnetid FROM networks WHERE id = ?', array($netid));
     }
+
+    public function getFirstFreeAddress($netid)
+    {
+        $reservedaddresses = intval(ConfigHelper::getConfig('phpui.first_reserved_addresses', 0, true));
+        $net = $this->GetNetworkRecord($netid);
+        $ip = FALSE;
+
+        foreach ($net['nodes']['id'] as $idx => $nodeid) {
+            if ($idx < $reservedaddresses) {
+                continue;
+            }
+            if ($nodeid) {
+                $firstnodeid = $idx;
+                $ip = FALSE;
+            }
+            if (!$nodeid && !isset($net['nodes']['name'][$idx]) && empty($ip)) {
+                $ip = $net['nodes']['address'][$idx];
+                if (isset($firstnodeid)) {
+                    break;
+                }
+            }
+        }
+        return $ip;
+    }
 }

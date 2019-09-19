@@ -1433,6 +1433,12 @@ class LMS
         return $manager->GetNetworkRecord($id, $page, $plimit, $firstfree);
     }
 
+    public function GetFirstFreeAddress($netid)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->getFirstFreeAddress($netid);
+    }
+
     /*
      *   Network Devices
      */

@@ -255,30 +255,10 @@ function getFirstFreeAddress($netid, $elemid)
 {
     global $LMS;
 
-    $DB = LMSDB::getInstance();
-
     $result = new xajaxResponse();
 
-    $reservedaddresses = intval(ConfigHelper::getConfig('phpui.first_reserved_addresses', 0, true));
-    $net = $LMS->GetNetworkRecord($netid);
-    $ip = '';
-
-    foreach ($net['nodes']['id'] as $idx => $nodeid) {
-        if ($idx < $reservedaddresses) {
-            continue;
-        }
-        if ($nodeid) {
-            $firstnodeid = $idx;
-            $ip = '';
-        }
-        if (!$nodeid && !isset($net['nodes']['name'][$idx]) && empty($ip)) {
-            $ip = $net['nodes']['address'][$idx];
-            if (isset($firstnodeid)) {
-                break;
-            }
-        }
-    }
-    if (!empty($ip)) {
+    $ip = $LMS->GetFirstFreeAddress($netid);
+    if ($ip != FALSE) {
         $result->assign($elemid, 'value', $ip);
     }
 
