@@ -442,6 +442,7 @@ class SYSLOG
                 } else {
                     $data['value'] = $data['value'];
                 }
+                break;
             default:
                 $data['value'] = $data['value'];
         }
