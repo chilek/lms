@@ -452,7 +452,7 @@ switch ($action) {
         } else {
             $args['fullnumber'] = null;
         }
-        $args[SYSLOG::RES_NUMPLAN] = $cnote['numberplanid'];
+        $args[SYSLOG::RES_NUMPLAN] = !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null;
         $args[SYSLOG::RES_DOC] = $iid;
 
         $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, customerid = ?,
