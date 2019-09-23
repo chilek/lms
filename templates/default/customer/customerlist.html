@@ -2,6 +2,60 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+	<style>
+		@media screen and (max-width: 500px) {
+			.lms-ui-filter-container {
+				flex-wrap: wrap;
+			}
+
+			thead tr {
+				display: flex;
+				flex-direction: column;
+			}
+			thead td.text-right {
+				text-align: left;
+			}
+			thead td:last-child {
+				text-align: right;
+			}
+			thead td:first-child > img {
+				display: none;
+			}
+
+			tbody tr {
+				display: flex;
+				flex-direction: column;
+			}
+			tbody td.text-right{
+				text-align: left;
+				padding-left: 0.3em;
+			}
+			tbody td:first-child > img:first-child {
+				display: none;
+			}
+			tbody td:first-child > img:last-child {
+				display: none;
+			}
+
+			tfoot tr {
+				display: flex;
+				justify-content: space-between;
+			}
+			tfoot td{
+			 flex-grow: 1
+			}
+			.summary td:last-child {
+				text-align: right;
+			}
+			.summary td:nth-last-child(2) {
+				text-align: left;
+			}
+
+			table.lmsbox>tfoot>tr:first-child, table.lmsbox>thead>tr:first-child {
+				border-top: 0px;
+			}
+		}
+	</style>
 <H1>{$layout.pagetitle}</H1>
 
 <FORM method="get" action="?m={$layout.module}" name="choosefilter">
@@ -47,7 +101,8 @@
 		<TD colspan="{$number_of_table_columns}" class="nobr">
 			<div class="lms-ui-filter-container">
 			<div class="lms-ui-filter-definition">
-			<span class="bold">{trans("Filter:")}</span> {trans("Customers:")}
+			<span class="bold">{trans("Filter:")}</span>
+			<label for="s">{trans("Customers:")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $filter.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
 				{foreach $_CSTATUSES as $statusidx => $status}
@@ -77,13 +132,16 @@
 				<OPTION VALUE="69"{if $filter.state == 69} SELECTED{/if}>{trans("without city")}</OPTION>
 				<OPTION VALUE="70"{if $filter.state == 70} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
 			</SELECT>
-			{trans("Division")}:
+			</label>
+			<label for="d">{trans("Division")}:
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE=""{if !$filter.division} selected{/if}>- {trans("all")} -</OPTION>
 				{foreach $divisions as $division}
 				<OPTION VALUE="{$division.id}"{if $filter.division == $division.id} selected{/if}>{$division.shortname|truncate:30:"...":true}</OPTION>
 				{/foreach}
 			</SELECT>
+			</label>
+			<label for="n">
 			{trans("Network:")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 				<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
@@ -91,8 +149,10 @@
 				<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 				{/section}
 			</SELECT>
+			</label>
 
 			{if is_array($customergroups) && count($customergroups)}
+				<label for="g[]">
 				{trans("Group:")}
 				<input type="hidden" name="g[]" value="">
 				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all groups -")}">
@@ -102,11 +162,13 @@
 							|| (!is_array($filter.customergroup) && $filter.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"...":true}</OPTION>
 					{/foreach}
 				</SELECT>
+				</label>
 			{else}
 			      <input type="hidden" name="g[]" value="">
 			{/if}
 
 			{if !empty($nodegroups) && count($nodegroups)}
+				<label for="ng">
 				{trans("Nodes Group:<!short>")}
 				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
@@ -114,10 +176,12 @@
 					<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 					{/foreach}
 				</SELECT>
+				</label>
 			{else}
 				<input type="hidden" name="ng" value="">
 			{/if}
 
+			<label for="assignments">
 			{trans("Assignments:")}
 			<select size="1" name="assignments" onchange="document.choosefilter.submit();" {if $filter.assignments}class="active"{/if}>
 				<option value="0" {if $filter.assignments eq '0'} selected {/if}>{trans('- all -')}</option>
@@ -129,6 +193,7 @@
 				<option value="-3" {if $filter.assignments eq '-3'} selected {/if}>{trans('active, with invoice')}</option>
 				<option value="-4" {if $filter.assignments eq '-4'} selected {/if}>{trans('suspended')}</option>
 			</select>
+			</label>
 
 			</div>
 			{persistent_filter}
@@ -193,6 +258,8 @@
 			<BR>
 			{if $customer.account}
 				<i class="lms-ui-tooltip-nodelist lms-ui-icon-node{if !$customer.online}off{else}on{/if}" data-resourceid="{$customer.id}"></i>
+			{else}
+				---
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
