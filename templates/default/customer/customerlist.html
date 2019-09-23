@@ -54,6 +54,10 @@
 			table.lmsbox>tfoot>tr:first-child, table.lmsbox>thead>tr:first-child {
 				border-top: 0px;
 			}
+
+            lms-ui-filter-definition label {
+                text-align: left;
+            }
 		}
 	</style>
 <H1>{$layout.pagetitle}</H1>
@@ -141,7 +145,7 @@
 				{/foreach}
 			</SELECT>
 			</label>
-			<label for="n">
+			<label for="n" class="nobr">
 			{trans("Network:")}
 			<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 				<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
