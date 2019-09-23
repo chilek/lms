@@ -26,82 +26,122 @@
 					<div class="lms-ui-tab-table-wrapper col-8">
 						<div class="lms-ui-tab-table-wrapper name-azimuth-width-altitude-range-license col-4">
 							<div class="lms-ui-tab-table-column name">
-								<i class="lms-ui-icon-wireless"></i>
-								<input type="text" size="20" name="name" id="name" value="{$formdata.name}"
-										class="radio-sector-edit-field"
-										{tip text="Enter name" trigger="name"}
-										form="radiosectoradd">
+								<label>
+									<strong>{trans("Name:")}</strong>
+									<br>
+									<i class="lms-ui-icon-wireless"></i>
+									<input type="text" size="20" name="name" id="name" value="{$formdata.name}"
+											class="radio-sector-edit-field"
+											{tip text="Enter name" trigger="name"}
+											form="radiosectoradd">
+								</label>
 							</div>
 							<div class="lms-ui-tab-table-wrapper azimuth-width-altitude-range-license col-3">
 								<div class="lms-ui-tab-table-wrapper azimuth-width-altitude-range col-2">
 									<div class="lms-ui-tab-table-column azimuth-width">
-										<input type="text" size="6" name="azimuth" id="azimuth" value="{$formdata.azimuth}"
-												class="radio-sector-edit-field"
-												{tip text="Enter azimuth in degrees" trigger="azimuth"}
-												form="radiosectoradd">
+										<label>
+											<strong>{trans("Azimuth:")}</strong>
+											<br>
+											<input type="text" size="6" name="azimuth" id="azimuth" value="{$formdata.azimuth}"
+													class="radio-sector-edit-field"
+													{tip text="Enter azimuth in degrees" trigger="azimuth"}
+													form="radiosectoradd">
+										</label>
 										<br>
-										<input type="text" size="6" name="width" id="width" value="{$formdata.width}"
-												class="radio-sector-edit-field"
-												{tip text="Enter angular width in degrees" trigger="width"}
-												form="radiosectoradd">
+										<label>
+											<strong>{trans("Width:")}</strong>
+											<br>
+											<input type="text" size="6" name="width" id="width" value="{$formdata.width}"
+													class="radio-sector-edit-field"
+													{tip text="Enter angular width in degrees" trigger="width"}
+													form="radiosectoradd">
+										</label>
 									</div>
 									<div class="lms-ui-tab-table-column altitude-range">
-										<input type="text" size="3" name="altitude" id="altitude" value="{$formdata.altitude}"
-												class="radio-sector-edit-field"
-												{tip text="Enter altitude in meters" trigger="altitude"}
-												form="radiosectoradd">
+										<label>
+											<strong>{trans("Altitude:")}</strong>
+											<br>
+											<input type="text" size="3" name="altitude" id="altitude" value="{$formdata.altitude}"
+													class="radio-sector-edit-field"
+													{tip text="Enter altitude in meters" trigger="altitude"}
+													form="radiosectoradd">
+										</label>
 										<br>
-										<input type="text" size="6" name="rsrange" id="rsrange" value="{$formdata.rsrange}"
-												class="radio-sector-edit-field"
-												{tip text="Enter range in meters" trigger="rsrange"}
-												form="radiosectoradd">
+										<label>
+											<strong>{trans("Range:")}</strong>
+											<br>
+											<input type="text" size="6" name="rsrange" id="rsrange" value="{$formdata.rsrange}"
+													class="radio-sector-edit-field"
+													{tip text="Enter range in meters" trigger="rsrange"}
+													form="radiosectoradd">
+										</label>
 									</div>
 								</div>
 								<div class="lms-ui-tab-table-column license">
-									<input type="text" size="18" name="license" id="license" value="{$formdata.license}"
-											class="radio-sector-edit-field"
-											{tip text="Enter radio license number" trigger="license"}
-											form="radiosectoradd">
+									<label>
+										<strong>{trans("License number:")}</strong>
+										<br>
+										<input type="text" size="18" name="license" id="license" value="{$formdata.license}"
+												class="radio-sector-edit-field"
+												{tip text="Enter radio license number" trigger="license"}
+												form="radiosectoradd">
+									</label>
 								</div>
 							</div>
 						</div>
 						<div class="lms-ui-tab-table-wrapper link-tech-intf-type-frequency-bandwidth-node-devices-enc-key col-4">
 							<div class="lms-ui-tab-table-wrapper link-tech-intf-type-frequency-bandwidth col-2">
 								<div class="lms-ui-tab-table-column link-tech-intf-type">
-									<SELECT NAME="technology" id="technology"
-											class="radio-sector-edit-field"
-											{tip trigger="technology" text="Select link technology"}
-											form="radiosectoradd">
-										<OPTION value="0">{trans("- unknown -")}</OPTION>
-										{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
-											<OPTION value="{$technologyidx}"{if $formdata.technology == $technologyidx} selected{/if}>{$technology}</OPTION>
-										{/foreach}
-									</SELECT>
+									<label>
+										<strong>{trans("Link technology:")}</strong>
+										<br>
+										<SELECT NAME="technology" id="technology"
+												class="radio-sector-edit-field"
+												{tip trigger="technology" text="Select link technology"}
+												form="radiosectoradd">
+											<OPTION value="0">{trans("- unknown -")}</OPTION>
+											{foreach $_LINKTECHNOLOGIES[1] as $technologyidx => $technology}
+												<OPTION value="{$technologyidx}"{if $formdata.technology == $technologyidx} selected{/if}>{$technology}</OPTION>
+											{/foreach}
+										</SELECT>
+									</label>
 									<br>
-									<SELECT NAME="type" id="type"
-											class="radio-sector-edit-field"
-											{tip trigger="type" text="Select network interface type"}
-											form="radiosectoradd">
-										{foreach $_NETWORK_INTERFACE_TYPES as $typeidx => $type}
-											<OPTION value="{$typeidx}"{if $formdata.type == $typeidx} selected{/if}>{$type.label}</OPTION>
-										{/foreach}
-									</SELECT>
+									<label>
+										<strong>{trans("Network interface type:")}</strong>
+										<br>
+										<SELECT NAME="type" id="type"
+												class="radio-sector-edit-field"
+												{tip trigger="type" text="Select network interface type"}
+												form="radiosectoradd">
+											{foreach $_NETWORK_INTERFACE_TYPES as $typeidx => $type}
+												<OPTION value="{$typeidx}"{if $formdata.type == $typeidx} selected{/if}>{$type.label}</OPTION>
+											{/foreach}
+										</SELECT>
+									</label>
 								</div>
 								<div class="lms-ui-tab-table-column frequency-bandwidth">
-									<input type="text" size="6" name="frequency" id="frequency" value="{$formdata.frequency}"
-											class="radio-sector-edit-field"
-											{tip text="Enter frequency in GHz" trigger="frequency"}
-											form="radiosectoradd">
-									/
-									<input type="text" size="6" name="frequency2" id="frequency2" value="{$formdata.frequency2}"
-											class="radio-sector-edit-field"
-											{tip text="Enter frequency in GHz" trigger="frequency2"}
-											form="radiosectoradd">
+									<label>
+										<strong>{trans("Frequency:")}</strong>
+										<br>
+										<input type="text" size="6" name="frequency" id="frequency" value="{$formdata.frequency}"
+												class="radio-sector-edit-field"
+												{tip text="Enter frequency in GHz" trigger="frequency"}
+												form="radiosectoradd">
+										/
+										<input type="text" size="6" name="frequency2" id="frequency2" value="{$formdata.frequency2}"
+												class="radio-sector-edit-field"
+												{tip text="Enter frequency in GHz" trigger="frequency2"}
+												form="radiosectoradd">
+									</label>
 									<br>
-									<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}"
-											class="radio-sector-edit-field"
-											{tip text="Enter bandwidth in MHz" trigger="bandwidth"}
-											form="radiosectoradd" class="radio-sector-edit-field">
+									<label>
+										<strong>{trans("Bandwidth:")}</strong>
+										<br>
+										<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}"
+												class="radio-sector-edit-field"
+												{tip text="Enter bandwidth in MHz" trigger="bandwidth"}
+												form="radiosectoradd" class="radio-sector-edit-field">
+									</label>
 								</div>
 							</div>
 							<div class="lms-ui-tab-table-wrapper node-devices-enc-key col-2">
@@ -109,10 +149,14 @@
 									-<br>-
 								</div>
 								<div class="lms-ui-tab-table-column enc-key">
-									<input type="text" size="14" name="secret" id="secret" value="{$formdata.secret}"
-											class="radio-sector-edit-field"
-											{tip text="Enter encryption key" trigger="secret"}
-											form="radiosectoradd" class="radio-sector-edit-field">
+									<label>
+										<strong>{trans("Encryption key:")}</strong>
+										<br>
+										<input type="text" size="14" name="secret" id="secret" value="{$formdata.secret}"
+												class="radio-sector-edit-field"
+												{tip text="Enter encryption key" trigger="secret"}
+												form="radiosectoradd" class="radio-sector-edit-field">
+									</label>
 								</div>
 							</div>
 						</div>
