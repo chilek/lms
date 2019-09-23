@@ -467,10 +467,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t<SprzedazWiersz" . ($jpk_vat_version == 2 ? " typ=\"G\"" : '') . ">\n";
 
                 $jpk_data .= "\t\t<LpSprzedazy>" . ($idx + 1) . "</LpSprzedazy>\n";
-                if (empty($invoice['ten'])) {
-                    $invoice['ten'] = 'brak';
-                }
-                $jpk_data .= "\t\t<NrKontrahenta>" . preg_replace('/[\s\-]/', '', $invoice['ten']) . "</NrKontrahenta>\n";
+                $ten = empty($invoice['ten']) ? 'brak' : preg_replace('/[\s\-]/', '', $invoice['ten']);
+                $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
                 $jpk_data .= "\t\t<NazwaKontrahenta>" . str_replace('&', '&amp;', $invoice['name']) . "</NazwaKontrahenta>\n";
                 $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
                     . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</AdresKontrahenta>\n";
