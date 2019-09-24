@@ -2,6 +2,59 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+<style>
+	@media screen and (max-width: 500px) {
+		.lms-ui-filter-container {
+			flex-wrap: wrap;
+		}
+
+		thead tr {
+			display: flex;
+			flex-direction: column;
+		}
+		thead td.text-right {
+			text-align: left;
+		}
+		thead td:last-child {
+			text-align: right;
+		}
+		thead img {
+			display: none;
+		}
+
+		tbody tr {
+			display: flex;
+			flex-direction: column;
+		}
+		tbody td.text-right{
+			text-align: left;
+			padding-left: 0.3em;
+		}
+		tbody td:not(:first-child) img {
+			display: none;
+		}
+		tbody td:first-child img:first-child {
+			display: none;
+		}
+
+		tfoot tr {
+			display: flex;
+			justify-content: space-between;
+		}
+		tfoot td{
+			flex-grow: 1
+		}
+
+		table.lmsbox>tfoot>tr:first-child, table.lmsbox>thead>tr:first-child {
+			border-top: 0px;
+		}
+
+		.lms-ui-filter-definition label {
+			text-align: left;
+		}
+	}
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
@@ -46,7 +99,7 @@
 			<div class="lms-ui-filter-definition">
 
 				<SPAN class="bold">{trans("Filter:")}</SPAN>&nbsp;
-				<SPAN class="nobr">{trans("Status:")}
+				<label for="s"><SPAN class="nobr">{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="0"{if $filter.status == 0} SELECTED{/if}>{trans("- all -")}</OPTION>
 					<OPTION VALUE="1"{if $filter.status == 1} SELECTED{/if}>{trans("connected<!plural:item>")}</OPTION>
@@ -58,45 +111,49 @@
 					<OPTION VALUE="7"{if $filter.status == 7} SELECTED{/if}>{trans("with warning")}</OPTION>
 					<OPTION value="8"{if $filter.status == 8} selected{/if}>{trans("without gps coords")}</OPTION>
 				</SELECT></SPAN>
+				</label>
 
 				{if count($networks) > 1}
-					<SPAN class="nobr">{trans("Network:")}</SPAN>
+					<label for="n" class="nobr"><SPAN>{trans("Network:")}</SPAN>
 					<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="0" {if !$filter.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
 						{section name=networks loop=$networks}
 						<OPTION value="{$networks[networks].id}" {if $filter.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 						{/section}
 					</SELECT>
+					</label>
 				{else}
 					<input type="hidden" name="n" value="0">
 				{/if}
 
 				{if !empty($nodegroups) && count($nodegroups)}
-					<SPAN class="nobr">{trans("Group:")}</SPAN>
+					<label for="ng"><SPAN class="nobr">{trans("Group:")}</SPAN>
 					<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="" {if !$filter.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 						{foreach from=$nodegroups item=nodegroup}
 						<OPTION value="{$nodegroup.id}" {if $filter.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 						{/foreach}
 					</SELECT>
+					</label>
 				{else}
 					<input type="hidden" name="ng" value="">
 				{/if}
 
 				{if count($customergroups) > 0}
-					<SPAN class="nobr">{trans("Customers Group:")}</SPAN>
+					<label for="g"><SPAN class="nobr">{trans("Customers Group:")}</SPAN>
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="" {if !$filter.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 						{section name=customergroups loop=$customergroups}
 						<OPTION value="{$customergroups[customergroups].id}" {if $filter.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 						{/section}
 					</SELECT>
+					</label>
 				{else}
 					<input type="hidden" name="g" value="">
 				{/if}
 
 				{if !empty($NNprojects)}
-					<SPAN class="nobr">{trans("Project:")}</SPAN>
+					<label for="p"><SPAN class="nobr">{trans("Project:")}</SPAN>
 					<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 						<OPTION VALUE="-1"{if $filter.search.project == -1} selected{/if}>- {trans("all")} -</OPTION>
 						<OPTION VALUE="-2"{if $filter.search.project == -2} selected{/if}>- {trans("without project")} -</OPTION>
@@ -104,6 +161,7 @@
 						<OPTION VALUE="{$project.id}"{if $filter.search.project == $project.id} selected{/if}>{$project.name}</OPTION>
 						{/foreach}
 					</SELECT>
+					</label>
 				{else}
 					<input type="hidden" name="p" value="-1">
 				{/if}
@@ -131,12 +189,12 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD colspan="3" class="text-right bold">
+		<TD colspan="4" class="text-right bold">
 			{trans("Total:")}<BR>
 			{trans("Connected<!nodes>:")}<BR>
 			{trans("Disconnected:")}
 		</TD>
-		<TD colspan="2" class="text-right bold">
+		<TD colspan="1" class="text-left bold">
 			{if $filter.total}{$filter.total}{else}0{/if}<BR>
 			{if $filter.totalon}{$filter.totalon}{else}0{/if}<BR>
 			{if $filter.totaloff}{$filter.totaloff}{else}0{/if}
