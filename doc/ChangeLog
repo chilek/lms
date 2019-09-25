@@ -78,6 +78,7 @@ version 25-git (????-??-??):
     and '-1' for ones issued before 11/01/2019 where this last value means exclusion) [chilan]
   - enhancement: lms-archive-documents.php backend script introduced as it allow
     to archive many non-trade documents at once [chilan]
+  - improvement: allow to filter customers by overdue receivables [chilan]
 
 version 24.0 (2019-05-16):
 
