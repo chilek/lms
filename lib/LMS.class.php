@@ -2189,8 +2189,7 @@ class LMS
                 }
                 $params['persist'] = $persist;
 
-                $error = $this->mail_object = & Mail::factory('smtp', $params);
-                //if (PEAR::isError($error))
+                $error = $this->mail_object = Mail::factory('smtp', $params);
                 if (is_a($error, 'PEAR_Error')) {
                     return $error->getMessage();
                 }
