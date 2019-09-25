@@ -592,6 +592,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 70:
                 $withoutteryt = 1;
                 break;
+            case 71:
+                $overduereceivables = 1;
+                break;
         }
 
         if (isset($assignments)) {
@@ -803,6 +806,29 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         $sql .= 'FROM customerview c
+            ' . ($overduereceivables ? '
+            LEFT JOIN (
+                SELECT cash.customerid, SUM(value) AS balance FROM cash
+                LEFT JOIN customers ON customers.id = cash.customerid
+                LEFT JOIN divisions ON divisions.id = customers.divisionid
+                LEFT JOIN documents d ON d.id = cash.docid
+                LEFT JOIN (
+                    SELECT SUM(value) AS totalvalue, docid FROM cash
+                    JOIN documents ON documents.id = cash.docid
+                    WHERE documents.type = ' . DOC_CNOTE . '
+                    GROUP BY docid
+                ) tv ON tv.docid = cash.docid
+                WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < ' . ($time ?: time()) . ')
+                    OR (cash.type = 0 AND cash.time + (CASE customers.paytime WHEN -1 THEN
+                        (CASE WHEN divisions.inv_paytime IS NULL THEN '
+                            . ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0))
+                        . ' ELSE divisions.inv_paytime END) ELSE customers.paytime END) * 86400 < ' . ($time ?: time()) . ')))
+                    OR (cash.docid IS NOT NULL AND ((d.type = ' . DOC_RECEIPT . ' AND cash.time < ' . ($time ?: time()) . ')
+                        OR (d.type = ' . DOC_CNOTE . ' AND cash.time < ' . ($time ?: time()) . ' AND tv.totalvalue >= 0)
+                        OR (((d.type = ' . DOC_CNOTE . ' AND tv.totalvalue < 0)
+                            OR d.type IN (' . DOC_INVOICE . ',' . DOC_DNOTE . ')) AND d.cdate + d.paytime  * 86400 < ' . ($time ?: time()) . ')))
+                GROUP BY cash.customerid
+            ) b2 ON b2.customerid = c.id' : '') . '
             LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
             FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
             LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS phone
@@ -952,6 +978,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             AND (dateto >= ?NOW? OR dateto = 0)
                             AND suspended = 1 AND commited = 1)
                         ))' : '')
+                . (isset($overduereceivables) ? ' AND b2.balance < 0' : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction : '')
                 . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')

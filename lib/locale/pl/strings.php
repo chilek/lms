@@ -4461,3 +4461,5 @@ $_LANG['No trusted devices in database.'] = 'Brak zaufanych urządzeń w bazie d
 
 $_LANG['Force password change'] = 'Wymuś zmianę hasła';
 $_LANG['Force password change:'] = 'Wymuś zmianę hasła:';
+
+$_LANG['overdue receivables'] = 'przeterminowane należności';

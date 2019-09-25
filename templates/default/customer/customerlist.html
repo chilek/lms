@@ -114,10 +114,11 @@
 				{/foreach}
 				<OPTION VALUE="50"{if $filter.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
 				<OPTION VALUE="51"{if $filter.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
-				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-				<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
-				<OPTION VALUE="57"{if $filter.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
-				<OPTION VALUE="58"{if $filter.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
+				{if !ConfigHelper::checkPrivilege('hide_finances')}
+					<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
+					<OPTION VALUE="57"{if $filter.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
+					<OPTION VALUE="58"{if $filter.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
+					<option value="71"{if $filter.state == 71} selected{/if}>{trans("overdue receivables")}</option>
 				{/if}
 				<OPTION value="59"{if $filter.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
 				<OPTION value="60"{if $filter.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>

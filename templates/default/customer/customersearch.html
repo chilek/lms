@@ -344,9 +344,12 @@
 				{/foreach}
 				<OPTION VALUE="50">{trans("deleted<!plural>")}</OPTION>
 				<OPTION VALUE="51">{trans("with disconnected nodes")}</OPTION>
-				<OPTION VALUE="52">{trans("in debt")}</OPTION>
-				<OPTION VALUE="57">{trans("in debt above 100%")}</OPTION>
-				<OPTION VALUE="58">{trans("in debt above 200%")}</OPTION>
+				{if !ConfigHelper::checkPrivilege('hide_finances')}
+					<OPTION VALUE="52">{trans("in debt")}</OPTION>
+					<OPTION VALUE="57">{trans("in debt above 100%")}</OPTION>
+					<OPTION VALUE="58">{trans("in debt above 200%")}</OPTION>
+					<option value="71">{trans("overdue receivables")}</option>
+				{/if}
 				<OPTION VALUE="53">{trans("online")}</OPTION>
 				<OPTION VALUE="54">{trans("without group")}</OPTION>
 				<OPTION VALUE="55">{trans("without tariff")}</OPTION>
