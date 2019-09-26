@@ -4,7 +4,8 @@
 	<TR>
 		<TD width="99%" class="hand" onclick="showOrHide('promotionschemas');">
 			<IMG SRC="img/promoschema.gif" alt="">
-			<B>{t a=$promotion.schemas|@count}Promotion's Schemas ($a):{/t}</B>
+			{if empty($promotion.schemas)}{$count = 0}{else}{$count = count($promotion.schemas)}{/if}
+			<B>{t a=$count}Promotion's Schemas ($a):{/t}</B>
 		</TD>
 		<TD width="1%" align="right" nowrap>
 			<A HREF="?m=promotionschemaadd&id={$promotion.id}">{trans("New Schema")} &raquo;</A>&nbsp;

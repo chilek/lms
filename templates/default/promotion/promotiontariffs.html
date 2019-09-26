@@ -4,7 +4,8 @@
 	<TR>
 		<TD style="width: 100%;" class="hand text-left bold nobr" onClick="showOrHide('promotiontariffs');">
 			<IMG src="img/money.gif" alt="">
-			{t a=$promotion.tariffs|@count}Promotion's Tariffs ($a):{/t}
+			{if empty($promotion.tariffs)}{$count = 0}{else}{$count = count($promotion.tariffs)}{/if}
+			{t a=$count}Promotion's Tariffs ($a):{/t}
 		</TD>
 	</TR>
 	</THEAD>
