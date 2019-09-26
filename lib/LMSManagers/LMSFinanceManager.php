@@ -449,8 +449,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         if ($diffdays > 0) {
                             list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
                             $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
-                            $v = $diffdays * $discounted_val / $month_days;
-                            $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
+
                             $partial_dateto--;
                             if ($data['at'] >= $dom + 1) {
                                 $partial_at = $data['at'];
@@ -459,6 +458,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             }
 
                             if ($value != 'NULL') {
+                                $v = $diffdays * $discounted_val / $month_days;
+                                $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
+
                                 $args = array(
                                     SYSLOG::RES_TARIFF => $tariffid,
                                     SYSLOG::RES_CUST => $data['customerid'],
