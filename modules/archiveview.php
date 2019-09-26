@@ -201,7 +201,7 @@ if ($SYSLOG) {
             $SYSLOG->DecodeTransaction($trans[$idx]);
         }
     }
-    $layout['pagetitle'] = trans('Transaction Log View ($a transactions)', count($trans));
+    $layout['pagetitle'] = trans('Transaction Log View ($a transactions)', empty($trans) ? 0 : count($trans));
     $SMARTY->assign('transactions', $trans);
 }
 
