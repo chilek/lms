@@ -175,12 +175,16 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 // receipt positions adding with double click protection
 function additem(&$content, $item)
 {
-    for ($i=0, $x=count($content); $i<$x; $i++) {
-        if ($content[$i]['value'] == $item['value']
-            && $content[$i]['description'] == $item['description']
-            && $content[$i]['posuid'] + 1 > $item['posuid']) {
-            break;
+    if (is_array($content)) {
+        for ($i=0, $x=count($content); $i<$x; $i++) {
+            if ($content[$i]['value'] == $item['value']
+                && $content[$i]['description'] == $item['description']
+                && $content[$i]['posuid'] + 1 > $item['posuid']) {
+                break;
+            }
         }
+    } else {
+        $content = array();
     }
 
     if ($i == $x) {
