@@ -1185,7 +1185,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $stariffs = $data['stariffid'][$schemaid];
         $values = $data['values'][$schemaid];
 
-        if (!is_array($values)) {
+        if (is_array($values)) {
             foreach ($values as $label => &$tariffs) {
                 if (!isset($stariffs[$label]) || empty($stariffs[$label])) {
                     unset($values[$label]);
