@@ -30,7 +30,7 @@
 		<TD>
 			<TABLE class="lmsbox lms-ui-background-cycle">
 				<COLGROUP>
-					<COL style="width: {math x=100 y=count($_DOCRIGHTS) equation=x-y}%;">
+					<COL style="width: {math x=100 y=count($_DOCRIGHTS) equation="x-y"}%;">
 					{foreach $_DOCRIGHTS as $right}
 					<COL style="width: 1%;">
 					{/foreach}
@@ -56,7 +56,7 @@
 					{/foreach}
 				</TR>
 				{/foreach}
-				<TR class="highlight {cycle}">
+				<TR class="highlight">
 					<TD class="nobr text-right">
 						{trans("Check All")}
 					</TD>
