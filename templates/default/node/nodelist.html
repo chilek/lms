@@ -139,7 +139,7 @@
 					<input type="hidden" name="ng" value="">
 				{/if}
 
-				{if count($customergroups) > 0}
+				{if !empty($customergroups) && count($customergroups)}
 					<label for="g"><SPAN class="nobr">{trans("Customers Group:")}</SPAN>
 					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 						<OPTION value="" {if !$filter.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
