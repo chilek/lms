@@ -177,7 +177,8 @@
 	<TR>
 		<TD width="99%" align="left" nowrap="nowrap">
 			<IMG src="img/alias.gif" alt="">
-			<B>{t a=$account.aliases|@count}Account aliases ($a):{/t}</B>
+			{if empty($account.aliases)}{$count = 0}{else}{$count = count($account.aliases)}{/if}
+			<B>{t a=$count}Account aliases ($a):{/t}</B>
 		</TD>
 		<TD width="1%" align="right" nowrap>
 		        <A href="?m=aliasadd&accountid={$account.id}">{trans("New alias")} &raquo;</A>&nbsp;
