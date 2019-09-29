@@ -33,12 +33,15 @@ if ($this->ResourceExists('location_buildings_ibfk_2', LMSDB::RESOURCE_TYPE_CONS
 		DROP FOREIGN KEY location_buildings_ibfk_2");
 }
 
-$this->Execute("ALTER TABLE location_buildings ADD CONSTRAINT location_buildings_city_id_fkey
-	FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE");
+if (!$this->ResourceExists('location_buildings_city_id_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE location_buildings ADD CONSTRAINT location_buildings_city_id_fkey
+	    FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE");
+}
 
-$this->Execute("ALTER TABLE location_buildings ADD CONSTRAINT location_buildings_street_id_fkey
-	FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE");
-
+if (!$this->ResourceExists('location_buildings_street_id_fkey', LMSDB::RESOURCE_TYPE_CONSTRAINT)) {
+    $this->Execute("ALTER TABLE location_buildings ADD CONSTRAINT location_buildings_street_id_fkey
+	    FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE CASCADE ON UPDATE CASCADE");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019032700', 'dbversion'));
 
