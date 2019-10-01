@@ -107,22 +107,30 @@ $date = strtotime(urldecode($_GET['date']));
 
 switch ($status) {
     case 'doreczono':
-        $DB->Execute('UPDATE messageitems SET status = ?, lastdate = ? WHERE id = ?',
-            array(MSG_DELIVERED, $date, $msgitemid));
+        $DB->Execute(
+            'UPDATE messageitems SET status = ?, lastdate = ? WHERE id = ?',
+            array(MSG_DELIVERED, $date, $msgitemid)
+        );
         break;
     case 'niedoreczono':
         $error = isset($_GET['error']) ? urldecode($_GET['error']) : '';
-        $DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?, error = ? WHERE id = ?',
-            array(MSG_ERROR, $date, $error, $msgitemid));
+        $DB->Execute(
+            'UPDATE messageitems SET status = ?, lastdate = ?, error = ? WHERE id = ?',
+            array(MSG_ERROR, $date, $error, $msgitemid)
+        );
         break;
     case 'niewyslano':
         $error = isset($_GET['error']) ? urldecode($_GET['error']) : '';
-        $DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?, error = ? WHERE id = ?',
-            array(MSG_ERROR, $date, $error, $msgitemid));
+        $DB->Execute(
+            'UPDATE messageitems SET status = ?, lastdate = ?, error = ? WHERE id = ?',
+            array(MSG_ERROR, $date, $error, $msgitemid)
+        );
         break;
     case 'oczekiwanie':
-        $DB->Execute('UPDATE messageitems SET lastdate = ? WHERE id = ?',
-            array($date, $msgitemid));
+        $DB->Execute(
+            'UPDATE messageitems SET lastdate = ? WHERE id = ?',
+            array($date, $msgitemid)
+        );
         break;
 }
 
