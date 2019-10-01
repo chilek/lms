@@ -134,4 +134,7 @@ switch ($status) {
         break;
 }
 
+header('Content-Type: text/plain');
+echo 'OK';
+
 $DB->Destroy();
