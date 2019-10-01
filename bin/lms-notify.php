@@ -452,7 +452,7 @@ function send_sms($msgid, $cid, $phone, $data)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
-    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
+    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgitemid);
     $query = "UPDATE messageitems
         SET status = ?, lastdate = ?NOW?, error = ?
         WHERE messageid = ? AND customerid = ? AND id = ?";
