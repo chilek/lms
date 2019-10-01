@@ -671,6 +671,12 @@ class LMS
         return $manager->isSplitPaymentSuggested($customerid, $cdate, $value);
     }
 
+    public function getCustomerSMSOptions()
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerSMSOptions();
+    }
+
     /*
      * Customer groups
      */
@@ -2410,7 +2416,7 @@ class LMS
         }
     }
 
-    public function SendSMS($number, $message, $messageid = 0, $script_service = null)
+    public function SendSMS($number, $message, $messageid = null, $sms_options = null)
     {
         $msg_len = mb_strlen($message);
 
@@ -2418,12 +2424,12 @@ class LMS
             return trans('SMS message is empty!');
         }
 
-        $debug_phone = ConfigHelper::getConfig('sms.debug_phone');
+        $debug_phone = isset($sms_options['debug_phone']) ? $sms_options['debug_phone'] : ConfigHelper::getConfig('sms.debug_phone');
         if (!empty($debug_phone)) {
-            $number = ConfigHelper::getConfig('sms.debug_phone');
+            $number = $debug_phone;
         }
 
-        $prefix = ConfigHelper::getConfig('sms.prefix', '');
+        $prefix = isset($sms_options['prefix']) ? $sms_options['prefix'] : ConfigHelper::getConfig('sms.prefix', '');
         $number = preg_replace('/[^0-9]/', '', $number);
         $number = preg_replace('/^0+/', '', $number);
 
@@ -2439,29 +2445,30 @@ class LMS
 
         $message = preg_replace("/\r/", "", $message);
 
-        if (ConfigHelper::checkConfig('sms.transliterate_message')) {
+        $transliterate_message = isset($sms_options['transliterate_message']) ? $sms_options['transliterate_message']
+            : ConfigHelper::getConfig('sms.transliterate_message');
+        if (ConfigHelper::checkValue($transliterate_message)) {
             $message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
         }
 
-        $max_length = ConfigHelper::getConfig('sms.max_length');
+        $max_length = isset($sms_options['max_length']) ? $sms_options['max_length']
+            : ConfigHelper::getConfig('sms.max_length');
         if (!empty($max_length) && intval($max_length) > 6 && $msg_len > intval($max_length)) {
             $message = mb_substr($message, 0, $max_length - 6) . ' [...]';
         }
 
-        $service = ConfigHelper::getConfig('sms.service');
-        if ($script_service) {
-            $service = $script_service;
-        } elseif (empty($service)) {
+        $service = isset($sms_options['service']) ? $sms_options['service'] : ConfigHelper::getConfig('sms.service');
+        if (empty($service)) {
             return trans('SMS "service" not set!');
         }
 
         $errors = array();
         foreach (explode(',', $service) as $service) {
             $data = array(
-            'number' => $number,
-            'message' => $message,
-            'messageid' => $messageid,
-            'service' => $service,
+                'number' => $number,
+                'message' => $message,
+                'messageid' => $messageid,
+                'service' => $service,
             );
 
             // call external SMS handler(s)
@@ -2481,23 +2488,22 @@ class LMS
             $message = $data['message'];
             $messageid = $data['messageid'];
 
-
             if (in_array($service, array('smscenter', 'serwersms', 'smsapi'))) {
                 if (!function_exists('curl_init')) {
                     $errors[] = trans('Curl extension not loaded!');
                     continue;
                 }
-                $username = ConfigHelper::getConfig('sms.username');
+                $username = isset($sms_options['username']) ? $sms_options['username'] : ConfigHelper::getConfig('sms.username');
                 if (empty($username)) {
                     $errors[] = trans('SMSCenter username not set!');
                     continue;
                 }
-                $password = ConfigHelper::getConfig('sms.password');
+                $password = isset($sms_options['password']) ? $sms_options['password'] : ConfigHelper::getConfig('sms.password');
                 if (empty($password)) {
                     $errors[] = trans('SMSCenter username not set!');
                     continue;
                 }
-                $from = ConfigHelper::getConfig('sms.from');
+                $from = isset($sms_options['from']) ? $sms_options['from'] : ConfigHelper::getConfig('sms.from');
                 if (empty($from)) {
                     $errors[] = trans('SMS "from" not set!');
                     continue;
@@ -2520,16 +2526,17 @@ class LMS
                         continue 2;
                     }
 
-                    $type = ConfigHelper::getConfig('sms.smscenter_type', 'dynamic');
+                    $type = isset($sms_options['smscenter_type']) ? $sms_options['smscenter_type']
+                        : ConfigHelper::getConfig('sms.smscenter_type', 'dynamic');
                     $message .= ($type == 'static') ? "\n\n" . $from : '';
 
                     $args = array(
-                    'user' => ConfigHelper::getConfig('sms.username'),
-                    'pass' => ConfigHelper::getConfig('sms.password'),
-                    'type' => $type_sms,
-                    'number' => $number,
-                    'text' => $message,
-                    'from' => $from
+                        'user' => $username,
+                        'pass' => $password,
+                        'type' => $type_sms,
+                        'number' => $number,
+                        'text' => $message,
+                        'from' => $from
                     );
 
                     $encodedargs = array();
@@ -2600,7 +2607,8 @@ class LMS
                     }
                     break;
                 case 'smstools':
-                    $dir = ConfigHelper::getConfig('sms.smstools_outdir', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'spool' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'outgoing');
+                    $dir = isset($sms_options['smstools_outdir']) ? $sms_options['smstools_outdir']
+                        : ConfigHelper::getConfig('sms.smstools_outdir', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'spool' . DIRECTORY_SEPARATOR . 'sms' . DIRECTORY_SEPARATOR . 'outgoing');
 
                     if (!file_exists($dir)) {
                         $errors[] = trans('SMSTools outgoing directory not exists ($a)!', $dir);
@@ -2622,7 +2630,8 @@ class LMS
                         $message = iconv('UTF-8', 'UNICODEBIG', $message);
                     }
 
-                    $queue = ConfigHelper::getConfig('sms.queue', '', true);
+                    $queue = isset($sms_options['queue']) ? $sms_options['queue']
+                        : ConfigHelper::getConfig('sms.queue', '', true);
                     if (!empty($queue)) {
                         $headers['Queue'] = $queue;
                     }
@@ -2646,18 +2655,24 @@ class LMS
                     return MSG_NEW;
                 case 'serwersms':
                     $args = array(
-                    'akcja' => 'wyslij_sms',
-                    'login' => ConfigHelper::getConfig('sms.username'),
-                    'haslo' => ConfigHelper::getConfig('sms.password'),
-                    'numer' => $number,
-                    'wiadomosc' => $message,
-                    'nadawca' => $from,
+                        'akcja' => 'wyslij_sms',
+                        'login' => $username,
+                        'haslo' => $password,
+                        'numer' => $number,
+                        'wiadomosc' => $message,
+                        'nadawca' => $from,
                     );
+                    if (!ConfigHelper::checkValue($transliterate_message)) {
+                        $trans_message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
+                        if (strlen($message) != strlen($trans_message)) {
+                            $args['kodowanie'] = 'UTF-8';
+                        }
+                    }
                     if ($messageid) {
                         $args['usmsid'] = $messageid;
                     }
-                    $fast = ConfigHelper::getConfig('sms.fast');
-                    if (!empty($fast)) {
+                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast');
+                    if (ConfigHelper::checkValue($fast)) {
                         $args['speed'] = 1;
                     }
 
@@ -2703,15 +2718,15 @@ class LMS
                     return MSG_SENT;
                 case 'smsapi':
                     $args = array(
-                    'username' => ConfigHelper::getConfig('sms.username'),
-                    'password' => md5(ConfigHelper::getConfig('sms.password')),
-                    'to' => $number,
-                    'message' => $message,
-                    'from' => !empty($from) ? $from : 'ECO',
-                    'encoding' => 'utf-8',
+                        'username' => $username,
+                        'password' => md5($password),
+                        'to' => $number,
+                        'message' => $message,
+                        'from' => !empty($from) ? $from : 'ECO',
+                        'encoding' => 'utf-8',
                     );
-                    $fast = ConfigHelper::getConfig('sms.fast');
-                    if (!empty($fast)) {
+                    $fast = isset($sms_options['fast']) ? $sms_options['fast'] : ConfigHelper::getConfig('sms.fast');
+                    if (ConfigHelper::checkValue($fast)) {
                         $args['fast'] = 1;
                     }
                     if ($messageid) {

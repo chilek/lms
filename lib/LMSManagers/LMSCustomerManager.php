@@ -1720,4 +1720,51 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             array($customerid, CTYPES_COMPANY)
         ) && $value >= $split_payment_threshold_value;
     }
+
+    public function getCustomerSMSOptions()
+    {
+        $options = array();
+
+        $variable_mapping = array(
+            'service' => 'sms-customers.service',
+            'username' => 'sms-customers.username',
+            'password' => 'sms-customers.password',
+            'debug_phone' => 'sms-customers.debug_phone',
+            'prefix' => 'sms-customers.prefix',
+            'transliterate_message' => 'sms-customers.transliterate_message',
+            'max_length' => 'sms-customers.max_length',
+            'smscenter_type' => 'sms-customers.smscenter_type',
+            'smstools_outdir' => 'sms-customers.smstools_outdir',
+            'queue' => 'sms-customers.queue',
+            'fast' => 'sms-customers.fast',
+            'from' => 'sms-customers.from',
+        );
+
+        foreach ($variable_mapping as $option_name => $variable_name) {
+            if (is_array($variable_name)) {
+                $exists = false;
+                foreach ($variable_name as $vname) {
+                    if (ConfigHelper::variableExists($vname)) {
+                        $exists = true;
+                        break;
+                    }
+                }
+                if (!$exists) {
+                    continue;
+                }
+                $variable_name = $vname;
+            } else if (!ConfigHelper::variableExists($variable_name)) {
+                continue;
+            }
+
+            $variable = ConfigHelper::getConfig($variable_name);
+            if (empty($variable)) {
+                continue;
+            }
+
+            $options[$option_name] = $variable;
+        }
+
+        return $options;
+    }
 }

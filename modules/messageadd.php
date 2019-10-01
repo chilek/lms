@@ -700,7 +700,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
                     $result = MSG_SENT;
                 } else {
-                    $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination]);
+                    $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], $LMS->getCustomerSMSOptions());
                 }
 
                 if (is_string($result)) {
