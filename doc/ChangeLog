@@ -81,6 +81,8 @@ version 25-git (????-??-??):
   - improvement: allow to filter customers by overdue receivables [chilan]
   - improvement: message item identifiers are set as sent sms message identifiers [chilan]
   - enhancement: allow to define separate configuration for sms sent to customers [chilan]
+  - enhancement: added backend script lms-serwersms-callback.php script which
+    is called back by serwersms.pl and updates sent sms message status [chilan]
 
 version 24.0 (2019-05-16):
 
