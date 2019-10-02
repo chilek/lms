@@ -174,9 +174,10 @@ if ($id && !isset($_POST['ticket'])) {
                                     'Reply-To' => $from,
                                     'Subject' => $custmail_subject,
                                 );
+                                $smtp_options = $LMS->GetRTSmtpOptions();
                                 foreach (explode(',', $info['emails']) as $email) {
                                     $custmail_headers['To'] = '<' . $email . '>';
-                                    $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                                    $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
                                 }
                             }
                         }

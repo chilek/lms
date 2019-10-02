@@ -136,6 +136,8 @@ if (isset($_POST['message'])) {
             unset($file);
         }
 
+        $smtp_options = $LMS->GetRTSmtpOptions();
+
         foreach ($tickets as $ticketid) {
             $queue = $LMS->GetQueueByTicketId($ticketid);
 
@@ -198,7 +200,7 @@ if (isset($_POST['message'])) {
 
                     $body = $message['body'];
 
-                    $LMS->SendMail($recipients, $headers, $body, $attachments, null, $LMS->GetRTSmtpOptions());
+                    $LMS->SendMail($recipients, $headers, $body, $attachments, null, $smtp_options);
                 } else {
                     if ($message['customerid'] || $message['userid']) {
                         $message['mailfrom'] = '';
@@ -267,7 +269,7 @@ if (isset($_POST['message'])) {
                         . '?m=rtticketview&id=' . $ticketid . (isset($msgid) ? '#rtmessage-' . $msgid : '');
                 }
 
-                $LMS->SendMail($recipients, $headers, $body, $attachments, null, $LMS->GetRTSmtpOptions());
+                $LMS->SendMail($recipients, $headers, $body, $attachments, null, $smtp_options);
             }
 
             $hook_data = $LMS->executeHook(
@@ -418,7 +420,7 @@ if (isset($_POST['message'])) {
                         );
                         foreach ($emails as $email) {
                             $custmail_headers['To'] = '<' . $email . '>';
-                            $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                            $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
                         }
                     }
                 } elseif (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {

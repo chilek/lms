@@ -979,7 +979,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             isset($ticket['replyto']) ? $ticket['replyto'] : '',
             isset($ticket['headers']) ? $ticket['headers'] : '',
         ));
-        
+
         if ($ticket['note']) {
                     $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
                         subject, body, mailfrom, phonefrom, messageid, replyto, type)
@@ -997,7 +997,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
                 $msgid = $this->db->GetLastInsertID('rtmessages');
-        
+
 
         if (!empty($ticket['categories'])) {
             foreach (array_keys($ticket['categories']) as $catid) {
@@ -1216,7 +1216,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         } else {
             $props['cause'] = $ticket['cause'];
         }
-        
+
         if ($ticket['source'] != $props['source'] && isset($props['source'])) {
             $notes[] = trans('Ticket\'s source has been changed from $a to $b.', $RT_SOURCES[$ticket['source']], $RT_SOURCES[$props['source']]);
             $type = $type | RTMESSAGE_SOURCE_CHANGE;
@@ -1656,6 +1656,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         // send email
         $args['type'] = MSG_MAIL;
 
+        $smtp_options = $this->GetRTSmtpOptions();
+
         if ($params['verifierid']) {
             $verifier_email = $this->db->GetOne('SELECT email FROM users WHERE users.id = ?', array($params['verifierid']));
             $params['mail_headers']['To'] = '<' . $verifier_email . '>';
@@ -1665,7 +1667,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $params['mail_body'],
                 $notification_attachments && isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
                 null,
-                $this->GetRTSmtpOptions()
+                $smtp_options
             );
         } else {
             if ($recipients = $this->db->GetCol(
@@ -1699,7 +1701,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                         $params['mail_body'],
                         $notification_attachments && isset($params['attachments']) && !empty($params['attachments']) ? $params['attachments'] : null,
                         null,
-                        $this->GetRTSmtpOptions()
+                        $smtp_options
                     );
                 }
             }
@@ -1961,7 +1963,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         return $this->db->GetAll('SELECT id FROM rttickets WHERE parentid = ?', array($ticketid));
     }
-    
+
     public function GetTicketParentID($ticketid)
     {
         if (!empty($ticketid)) {

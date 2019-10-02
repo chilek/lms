@@ -281,9 +281,10 @@ if (isset($_POST['ticket'])) {
                         'Reply-To' => $headers['From'],
                         'Subject' => $custmail_subject,
                     );
+                    $smtp_options = $LMS->GetRTSmtpOptions();
                     foreach ($emails as $email) {
                         $custmail_headers['To'] = '<' . $info['email'] . '>';
-                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $LMS->GetRTSmtpOptions());
+                        $LMS->SendMail($email, $custmail_headers, $custmail_body, null, null, $smtp_options);
                     }
                 }
             } elseif (!empty($requestor) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
