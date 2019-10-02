@@ -71,6 +71,21 @@ try {
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
+$allow_from = ConfigHelper::getConfig(
+    'sms-customers.callback_allow_from',
+    ConfigHelper::getConfig('sms.callback_allow_from', null, true)
+);
+
+if ($allow_from) {
+    // delete ipv6 prefix if it's present:
+    $ipaddr = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
+
+    if (!Utils::isAllowedIP($ipaddr, $allow_from)) {
+        header('Content-Type: text/plain');
+        die('OK');
+    }
+}
+
 // Include required files (including sequence is important)
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');

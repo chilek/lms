@@ -30,51 +30,21 @@ $allow_from = ConfigHelper::getConfig('phpui.allow_from', null);
 
 if ($allow_from) {
     // delete ipv6 prefix if it's present:
-    
+
     $ipaddr = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
-    $allowedlist = explode(',', $allow_from);
-
-    $isin = false;
-
-    foreach ($allowedlist as $value) {
-        $net = '';
-        $mask = '';
-        
-        if (strpos($value, '/')===false) {
-            $net = $value;
-        } else {
-            list($net, $mask) = explode('/', $value);
-        }
-        
-        $net = trim($net);
-        $mask = trim($mask);
-
-        if ($mask == '') {
-            $mask = '255.255.255.255';
-        } elseif (is_numeric($mask)) {
-            $mask = prefix2mask($mask);
-        }
-
-        if (isipinstrict($ipaddr, $net, $mask)) {
-            $isin = true;
-            break;
-        }
-    }
-
-    if (!$isin) {
+    if (!Utils::isAllowedIP($ipaddr, $allow_from)) {
         header('HTTP/1.1 403 Forbidden');
-        echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+        echo '<!DOCTYPE html>
 		<HTML><HEAD>
 		<TITLE>403 Forbidden</TITLE>
 		</HEAD><BODY>
 		<H1>Forbidden</H1>
-		You don\'t have permission to access '.$_SERVER['REQUEST_URI'].'
+		You don\'t have permission to access ' . $_SERVER['REQUEST_URI'] . '
 		on this server.<P>
 		<HR>
-		'.$_SERVER['SERVER_SIGNATURE'].'
-		</BODY></HTML>
-		';
+		' . $_SERVER['SERVER_SIGNATURE'] . '
+		</BODY></HTML>';
         exit(0);
     }
 }

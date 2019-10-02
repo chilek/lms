@@ -128,4 +128,38 @@ class Utils
 
         return $random;
     }
+
+    public static function isAllowedIP($ip, $allow_from)
+    {
+        if (empty($allow_from)) {
+            return true;
+        }
+
+        $allowedlist = explode(',', $allow_from);
+
+        foreach ($allowedlist as $value) {
+            $mask = '';
+
+            if (strpos($value, '/') === false) {
+                $net = $value;
+            } else {
+                list ($net, $mask) = explode('/', $value);
+            }
+
+            $net = trim($net);
+            $mask = trim($mask);
+
+            if ($mask == '') {
+                $mask = '255.255.255.255';
+            } elseif (is_numeric($mask)) {
+                $mask = prefix2mask($mask);
+            }
+
+            if (isipinstrict($ip, $net, $mask)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
