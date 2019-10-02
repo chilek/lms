@@ -85,6 +85,8 @@ version 25-git (????-??-??):
     is called back by serwersms.pl and updates sent sms message status [chilan]
   - enhancement: added backend script lms-smsapi-callback.php script which is called back
     by smsapi.pl and updates sent sms message status [chilan]
+  - enhancement: allow to copy access rights from other existing user selected
+    from list [chilan]
 
 version 24.0 (2019-05-16):
 
