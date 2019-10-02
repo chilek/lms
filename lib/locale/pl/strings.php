@@ -4464,3 +4464,7 @@ $_LANG['Force password change'] = 'Wymuś zmianę hasła';
 $_LANG['Force password change:'] = 'Wymuś zmianę hasła:';
 
 $_LANG['overdue receivables'] = 'przeterminowane należności';
+
+$_LANG['<!access-rights>- empty -'] = '- puste -';
+$_LANG['Copy rights'] = 'Kopiuj uprawnienia';
+$_LANG['of selected user:'] = 'wybranego użytkownika:';

@@ -26,6 +26,11 @@ use PragmaRX\Google2FA\Google2FA;
  *  $Id$
  */
 
+if (isset($_GET['fromuser'])) {
+    header('Content-Type: application/json');
+    die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
+}
+
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
 $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
@@ -170,6 +175,7 @@ $layout['pagetitle'] = trans('New User');
 $SMARTY->assign('useradd', $useradd);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('accesslist', $accesslist);
+$SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
 
 $SMARTY->display('user/useradd.html');

@@ -167,23 +167,44 @@
 		</TD>
 		<TD class="nobr">
 			<table style="width: 100%;">
-				<tr>
-					<td style="width: 50%;" class="valign-top nobr">
-						{foreach $accesslist as $name => $access}
-						{if $access@index <= floor($access@total / 2) - 1}
-						<INPUT type="checkbox" id="acl_{$access@index}" name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-						{/if}
-						{/foreach}
-					</td>
-					<td style="width: 50%;" class="valign-top nobr">
-						{foreach $accesslist as $name => $access}
-						{if $access@index > floor($access@total / 2) - 1}
-						<INPUT type="checkbox" id="acl_{$access@index}" name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
-						{/if}
-						{/foreach}
-						{assign var="name" value=""}
-					</td>
-				</tr>
+				<colgroup>
+					<col style="width: 50%;">
+					<col style="width: 50%;">
+				</colgroup>
+				<tbody>
+					<tr>
+						<td colspan="2">
+							{button icon="clone" id="copy-rights" label="Copy rights"}
+							&nbsp;{trans("of selected user:")}
+							&nbsp;
+							<select id="from-user">
+								<option value="">{trans("<!access-rights>- empty -")}</option>
+								{foreach $users as $user}
+									<option value="{$user.id}">{$user.rname} ({$user.login})</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr id="user-rights">
+						<td class="valign-top nobr">
+							{foreach $accesslist as $name => $access}
+							{if $access@index <= floor($access@total / 2) - 1}
+							<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+								   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
+							{/if}
+							{/foreach}
+						</td>
+						<td class="valign-top nobr">
+							{foreach $accesslist as $name => $access}
+							{if $access@index > floor($access@total / 2) - 1}
+							<INPUT type="checkbox" data-right-name="{$name}" id="acl_{$access@index}"
+								   name="acl[{$name}]" value="1" {if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
+							{/if}
+							{/foreach}
+							{assign var="name" value=""}
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</TD>
 	</TR>
@@ -212,6 +233,25 @@
 		$('[name="useradd[twofactorauth]"]').click(function() {
 			var twofactorauth = parseInt($(this).val());
 			$('#twofactorauthsecretkey').toggle(twofactorauth == 1);
+		});
+
+		$('#copy-rights').click(function() {
+			$('[data-right-name]').prop('checked', false);
+			var from_user;
+			if (from_user = parseInt($('#from-user').val())) {
+				$.ajax({
+					data: {
+						fromuser: from_user
+					},
+					dataType: "json",
+					success: function(data) {
+						var user_rights = $('#user-rights');
+						$.each(data, function(key, value) {
+							$('[data-right-name="'  + value + '"]', user_rights).prop('checked', true);
+						});
+					}
+				});
+			}
 		});
 	});
 

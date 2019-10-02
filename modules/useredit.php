@@ -31,6 +31,11 @@ if (!$LMS->UserExists($id)) {
     $SESSION->redirect('?m=userlist');
 }
 
+if (isset($_GET['fromuser'])) {
+    header('Content-Type: application/json');
+    die(json_encode($LMS->GetUserRights($_GET['fromuser'])));
+}
+
 if (isset($_GET['removetrusteddevices'])) {
     $AUTH->removeTrustedDevices($id, isset($_GET['deviceid']) ? $_GET['deviceid'] : null);
     $SESSION->redirect($_SERVER['HTTP_REFERER']);
@@ -206,6 +211,7 @@ if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelpe
 
 $SMARTY->assign('accesslist', $accesslist);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergroups ORDER BY name', 'id'));
+$SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('error', $error);
 
