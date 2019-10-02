@@ -286,6 +286,8 @@ if (!empty($mail_fname)) {
     $mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
 }
 
+$sms_options = $LMS->getCustomerSMSOptions();
+
 //include(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'mtsms.php');
 
 function parse_customer_data($data, $row)
@@ -440,7 +442,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
 
 function send_sms($msgid, $cid, $phone, $data)
 {
-    global $LMS;
+    global $LMS, $sms_options;
 
     $DB = LMSDB::getInstance();
 
@@ -452,7 +454,7 @@ function send_sms($msgid, $cid, $phone, $data)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
-    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgitemid, $LMS->getCustomerSMSOptions());
+    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgitemid, $sms_options);
     $query = "UPDATE messageitems
         SET status = ?, lastdate = ?NOW?, error = ?
         WHERE messageid = ? AND customerid = ? AND id = ?";

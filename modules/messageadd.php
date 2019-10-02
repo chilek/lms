@@ -658,6 +658,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
         }
 
+        if ($message['type'] == MSG_SMS || $message['type'] == MSG_ANYSMS) {
+            $sms_options = $LMS->getCustomerSMSOptions();
+        }
+
         foreach ($recipients as $key => $row) {
             $body = $message['body'];
 
@@ -700,7 +704,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 } elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT) {
                     $result = MSG_SENT;
                 } else {
-                    $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], $LMS->getCustomerSMSOptions());
+                    $result = $LMS->SendSMS($destination, $body, $msgitems[$customerid][$orig_destination], $sms_options);
                 }
 
                 if (is_string($result)) {
