@@ -71,6 +71,12 @@ try {
     die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
+// Include required files (including sequence is important)
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+
 $allow_from = ConfigHelper::getConfig(
     'sms-customers.callback_allow_from',
     ConfigHelper::getConfig('sms.callback_allow_from', null, true)
@@ -81,16 +87,10 @@ if ($allow_from) {
     $ipaddr = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
     if (!Utils::isAllowedIP($ipaddr, $allow_from)) {
-        header('Content-Type: text/plain');
-        die('OK');
+        header('HTTP/1.1 403 Forbidden');
+        die;
     }
 }
-
-// Include required files (including sequence is important)
-
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
