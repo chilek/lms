@@ -83,6 +83,8 @@ version 25-git (????-??-??):
   - enhancement: allow to define separate configuration for sms sent to customers [chilan]
   - enhancement: added backend script lms-serwersms-callback.php script which
     is called back by serwersms.pl and updates sent sms message status [chilan]
+  - enhancement: added backend script lms-smsapi-callback.php script which is called back
+    by smsapi.pl and updates sent sms message status [chilan]
 
 version 24.0 (2019-05-16):
 
