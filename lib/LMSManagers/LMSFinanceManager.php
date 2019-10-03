@@ -66,7 +66,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				WHEN ' . HALFYEARLY . ' THEN 1/6.0
 				WHEN ' . QUARTERLY . ' THEN 1/3.0
 				ELSE 0 END)
-			END)) * a.count
+			END) * a.count)
 		    FROM assignments a
 		    LEFT JOIN tariffs t ON t.id = a.tariffid
 		    LEFT JOIN liabilities l ON l.id = a.liabilityid
