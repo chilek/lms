@@ -995,7 +995,7 @@ foreach ($assigns as $assign) {
                     $tmp_itemid = $DB->GetOne(
                         "SELECT itemid FROM invoicecontents 
                         WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-                        array($assign['tariffid'], $val / $assign['count'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])
+                        array($assign['tariffid'], str_replace(',', '.', $val / $assign['count']), $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])
                     );
                 }
 
@@ -1034,7 +1034,7 @@ foreach ($assigns as $assign) {
                             "INSERT INTO invoicecontents (docid, value, taxid, prodid, 
                             content, count, description, tariffid, itemid, pdiscount, vdiscount) 
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            array($invoices[$cid], $val / $assign['count'], $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
+                            array($invoices[$cid], str_replace(',', '.', $val / $assign['count']), $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
                                 $desc,
                                 empty($assign['tariffid']) ? null : $assign['tariffid'],
                                 $itemid,
@@ -1134,7 +1134,7 @@ foreach ($assigns as $assign) {
                         $tmp_itemid = $DB->GetOne(
                             "SELECT itemid FROM invoicecontents
 						WHERE tariffid = ? AND value = ? AND docid = ? AND description = ?",
-                            array($assign['tariffid'], $value / $assign['count'], $invoices[$cid], $sdesc)
+                            array($assign['tariffid'], str_replace(',', '.', $value / $assign['count']), $invoices[$cid], $sdesc)
                         );
                     }
 
@@ -1165,7 +1165,7 @@ foreach ($assigns as $assign) {
                                 "INSERT INTO invoicecontents (docid, value, taxid, prodid,
 								content, count, description, tariffid, itemid, pdiscount, vdiscount)
 								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                                array($invoices[$cid], $value / $assign['count'], $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
+                                array($invoices[$cid], str_replace(',', '.', $value / $assign['count']), $assign['taxid'], $assign['prodid'], $unit_name, $assign['count'],
                                 $sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'],
                                 $itemid,
                                 $assign['pdiscount'],
