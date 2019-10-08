@@ -1054,6 +1054,12 @@ class LMS
         return $manager->GetCustomerAssignments($id, $show_expired, $show_approved);
     }
 
+    public function GetCustomerServicesBalance($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->GetCustomerServicesBalance($id);
+    }
+
     public function DeleteAssignment($id)
     {
         $manager = $this->getFinanceManager();
