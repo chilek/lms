@@ -1701,6 +1701,7 @@ $_LANG['Enter message body.<br><br>'
     . '<strong>%cid</strong> - customer identifier,<br>'
     . '<strong>%pin</strong> - customer pin,<br>'
     . '<strong>%bankaccount</strong> - bank account for payments,<br>'
+    . '<strong>%services</strong> - customer service summary,<br>'
     . '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
     'Wprowadź treść wiadomości.<br><br>'
     . 'Obsługiwane podstawienia/zmienne:<br>'
@@ -1709,6 +1710,7 @@ $_LANG['Enter message body.<br><br>'
     . '<strong>%cid</strong> - identyfikator klienta,<br>'
     . '<strong>%pin</strong> - pin klienta,<br>'
     . '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
+    . '<strong>%services</strong> - podsumowanie usług klienta,<br>'
     . '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
@@ -2131,6 +2133,7 @@ $_LANG['Lists and reports printing'] = 'Wydruk list i raportów';
 $_LANG['Reports'] = 'Raporty';
 $_LANG['Requests Stats'] = 'Statystyki zgłoszeń';
 $_LANG['Total'] = 'Razem';
+$_LANG['Total:'] = 'Razem:';
 $_LANG['- all queues -'] = '- wszystkie -';
 $_LANG['No such requests in database.'] = 'Brak zgłoszeń w bazie danych';
 $_LANG['Request date'] = 'Data zgłoszenia';

@@ -87,6 +87,7 @@ version 25-git (????-??-??):
     by smsapi.pl and updates sent sms message status [chilan]
   - enhancement: allow to copy access rights from other existing user selected
     from list [chilan]
+  - improvement: added support for %services replace symbol in messages [ravvar]
 
 version 24.0 (2019-05-16):
 

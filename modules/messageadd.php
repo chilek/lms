@@ -240,6 +240,13 @@ function BodyVars(&$body, $data)
 {
     global $LMS, $LANGDEFS;
 
+    $data['services'] = $LMS->GetCustomerServiceSummary($data['id']);
+
+    $hook_data = $LMS->ExecuteHook('messageadd_data_parser', array(
+        'data' => $data
+    ));
+    $data = $hook_data['data'];
+
     $body = str_replace('%customer', $data['customername'], $body);
     $body = str_replace('%balance', $data['balance'], $body);
     $body = str_replace('%cid', $data['id'], $body);
@@ -259,6 +266,22 @@ function BodyVars(&$body, $data)
             }
         }
         $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
+    }
+
+    if (strpos($body, '%services') !== false) {
+        $services = $data['services'];
+        $lN = '';
+        if (!empty($services)) {
+            $lN .= "----------------------------------------------------\n";
+            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $services['total_value'])) . "\n";
+            unset($services['total_value']);
+            foreach ($services as $row) {
+                $lN .= strtoupper($row['tarifftypename']) .": ";
+                $lN .= sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $row['sumvalue'])) . "\n";
+            }
+            $lN .= "----------------------------------------------------\n";
+        }
+        $body = str_replace('%services', $lN, $body);
     }
 
     $hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(

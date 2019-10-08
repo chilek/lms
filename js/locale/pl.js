@@ -23,6 +23,9 @@
  *  $Id$
  */
 
+$_LANG['split payment'] = 'podzielona płatność';
+$_LANG['(split payment)'] = '(podzielona płatność)';
+
 $_LANG['There is no assigned parent ticket.'] = 'Nie ma przypisanego zgłoszenia nadrzędnego.';
 $_LANG['Are you sure, you want to unlink ticket \'$a\'?'] = 'Czy jesteś pewien, że chcesz odwiązać zgłoszenie \'$a\'?';
 $_LANG['Cannot link ticket because of related ticket loop!'] = 'Nie można powiązać zgłoszenia z powodu pętli powiązań!';
@@ -150,9 +153,6 @@ $_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Unit size<!voip>'] = 'Rozmiar jednostki';
 $_LANG['Start call:'] = 'Dokąd:';
-
-$_LANG['billing'] = 'billing';
-
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -1656,6 +1656,7 @@ $_LANG['Tickets searching'] = 'Wyszukiwanie zgłoszeń';
 $_LANG['Time'] = 'Czas';
 $_LANG['Time:'] = 'Czas:';
 $_LANG['WWW session timeout. After that time (in seconds) user will be logged out if action has been made. Default: 600.'] = 'Czas wygaśnięcia sesji. Po tym czasie (określonym w sekundach) użytkownik zostanie wylogowany jeżeli nie podejmie żadnej akcji. Domyślnie: 600.';
+$_LANG['Session expires after:'] = 'Sesja wygaśnie za:';
 $_LANG['Timetable'] = 'Terminarz';
 $_LANG['Show in timetable'] = 'Pokaż w terminarzu';
 $_LANG['timetable management'] = 'zarządzanie terminarzem';
@@ -1699,6 +1700,7 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%cid</strong> - customer identifier,<br>'
     + '<strong>%pin</strong> - customer pin,<br>'
     + '<strong>%bankaccount</strong> - bank account for payments,<br>'
+    + '<strong>%services</strong> - customer service summary,<br>'
     + '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
     'Wprowadź treść wiadomości.<br><br>'
     + 'Obsługiwane podstawienia/zmienne:<br>'
@@ -1707,6 +1709,7 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%cid</strong> - identyfikator klienta,<br>'
     + '<strong>%pin</strong> - pin klienta,<br>'
     + '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
+    + '<strong>%services</strong> - podsumowanie usług klienta,<br>'
     + '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
@@ -2129,6 +2132,7 @@ $_LANG['Lists and reports printing'] = 'Wydruk list i raportów';
 $_LANG['Reports'] = 'Raporty';
 $_LANG['Requests Stats'] = 'Statystyki zgłoszeń';
 $_LANG['Total'] = 'Razem';
+$_LANG['Total:'] = 'Razem:';
 $_LANG['- all queues -'] = '- wszystkie -';
 $_LANG['No such requests in database.'] = 'Brak zgłoszeń w bazie danych';
 $_LANG['Request date'] = 'Data zgłoszenia';
@@ -3206,7 +3210,7 @@ $_LANG['node assignment<!syslog>'] = 'powiązanie zobowiązania z komputerem';
 $_LANG['node<!syslog>'] = 'komputer';
 $_LANG['mac<!syslog>'] = 'mac';
 $_LANG['customer<!syslog>'] = 'klient';
-$_LANG['customer contact<!syslog>'] = 'numer telefonu klienta';
+$_LANG['customer contact<!syslog>'] = 'kontakt klienta';
 $_LANG['IM contact<!syslog>'] = 'kontakt IM';
 $_LANG['customer group<!syslog>'] = 'grupa klientów';
 $_LANG['customer assignment<!syslog>'] = 'powiązanie klienta z grupą';
@@ -4460,3 +4464,9 @@ $_LANG['No trusted devices in database.'] = 'Brak zaufanych urządzeń w bazie d
 
 $_LANG['Force password change'] = 'Wymuś zmianę hasła';
 $_LANG['Force password change:'] = 'Wymuś zmianę hasła:';
+
+$_LANG['overdue receivables'] = 'przeterminowane należności';
+
+$_LANG['<!access-rights>- empty -'] = '- puste -';
+$_LANG['Copy rights'] = 'Kopiuj uprawnienia';
+$_LANG['of selected user:'] = 'wybranego użytkownika:';

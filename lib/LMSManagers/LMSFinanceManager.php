@@ -209,6 +209,52 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $assignments;
     }
 
+    public function GetCustomerServiceSummary($id)
+    {
+        global $SERVICETYPES;
+
+        $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
+        $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
+
+        $servicesassignments = $this->db->GetAll('SELECT
+            t.type AS tarifftype,
+            ROUND(SUM((CASE a.suspended
+                    WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+                    ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+            * (CASE t.period
+                    WHEN ' . MONTHLY . ' THEN 1
+                    WHEN ' . YEARLY . ' THEN 1/12.0
+                    WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                    WHEN ' . QUARTERLY . ' THEN 1/3.0
+                    ELSE (CASE a.period
+                        WHEN ' . MONTHLY . ' THEN 1
+                        WHEN ' . YEARLY . ' THEN 1/12.0
+                        WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                        WHEN ' . QUARTERLY . ' THEN 1/3.0
+                        ELSE 0 END)
+                END) * a.count), 2) AS sumvalue
+            FROM
+            assignments a
+            LEFT JOIN tariffs t ON a.tariffid = t.id
+            LEFT JOIN liabilities l ON a.liabilityid = l.id
+            WHERE a.customerid= ?
+            AND a.commited = 1
+            AND a.period <> ' . DISPOSABLE . '
+            AND a.datefrom <= ' . $now . ' AND (a.dateto > ' . $now . ' OR a.dateto = 0)
+            GROUP BY tarifftype', array($id));
+
+        if ($servicesassignments) {
+            $total_value = 0;
+            foreach ($servicesassignments as $idx => $row) {
+                $servicesassignments[$idx]['tarifftypename'] = $SERVICETYPES[$row['tarifftype']];
+                $total_value += $row['sumvalue'];
+            }
+            $servicesassignments['total_value'] = $total_value;
+        }
+
+        return $servicesassignments;
+    }
+
     public function DeleteAssignment($id)
     {
         if ($this->syslog) {
