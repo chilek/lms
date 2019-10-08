@@ -1701,7 +1701,7 @@ $_LANG['Enter message body.<br><br>'
     . '<strong>%cid</strong> - customer identifier,<br>'
     . '<strong>%pin</strong> - customer pin,<br>'
     . '<strong>%bankaccount</strong> - bank account for payments,<br>'
-    . '<strong>%services</strong> - client service summary,<br>'
+    . '<strong>%services</strong> - customer service summary,<br>'
     . '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
     'Wprowadź treść wiadomości.<br><br>'
     . 'Obsługiwane podstawienia/zmienne:<br>'

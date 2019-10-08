@@ -425,7 +425,7 @@
 			{trans("Message body:")}
 		</TD>
 		<TD style="width: 98%;">
-			<TEXTAREA name="message[mailbody]" cols="80" rows="20" {tip class="lms-ui-wysiwyg-editor" text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong> - customer balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - client service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>" trigger="mailbody"}{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</TEXTAREA>
+			<TEXTAREA name="message[mailbody]" cols="80" rows="20" {tip class="lms-ui-wysiwyg-editor" text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong> - customer balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - customer service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>" trigger="mailbody"}{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
@@ -436,7 +436,7 @@
 			{trans("Message body:")}
 		</TD>
 		<TD style="width: 98%;">
-			<TEXTAREA name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)" onkeyup="countChars(this)" {tip text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong> - customer balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - client service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>" trigger="smsbody"}>{$message.body}</TEXTAREA>
+			<TEXTAREA name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)" onkeyup="countChars(this)" {tip text="Enter message body.<br><br>Supported substitutions/variables:<br><strong>%customer</strong> - customer first name and last name or name,<br><strong>%balance</strong> - customer balance,<br><strong>%cid</strong> - customer identifier,<br><strong>%pin</strong> - customer pin,<br><strong>%bankaccount</strong> - bank account for payments,<br><strong>%services</strong> - customer service summary,<br><strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>" trigger="smsbody"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
