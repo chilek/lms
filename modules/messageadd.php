@@ -272,14 +272,12 @@ function BodyVars(&$body, $data)
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
-            $lN .= "----------------------------------------------------\n";
             $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $services['total_value'])) . "\n";
             unset($services['total_value']);
             foreach ($services as $row) {
                 $lN .= strtoupper($row['tarifftypename']) .": ";
                 $lN .= sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $row['sumvalue'])) . "\n";
             }
-            $lN .= "----------------------------------------------------\n";
         }
         $body = str_replace('%services', $lN, $body);
     }
