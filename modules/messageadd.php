@@ -240,7 +240,7 @@ function BodyVars(&$body, $data)
 {
     global $LMS, $LANGDEFS;
 
-    $data['services'] = $LMS->GetCustomerServicesBalance($data['id']);
+    $data['services'] = $LMS->GetCustomerServiceSummary($data['id']);
 
     $hook_data = $LMS->ExecuteHook('messageadd_data_parser', array(
         'data' => $data

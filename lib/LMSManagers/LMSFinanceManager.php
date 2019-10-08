@@ -209,7 +209,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $assignments;
     }
 
-    public function GetCustomerServicesBalance($id)
+    public function GetCustomerServiceSummary($id)
     {
         global $SERVICETYPES;
 

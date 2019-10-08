@@ -38,7 +38,7 @@ interface LMSFinanceManagerInterface
 
     public function GetCustomerAssignments($id, $show_expired = false, $show_approved = true);
 
-    public function GetCustomerServicesBalance($id);
+    public function GetCustomerServiceSummary($id);
 
     public function DeleteAssignment($id);
 

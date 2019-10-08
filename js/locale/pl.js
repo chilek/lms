@@ -1700,7 +1700,7 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%cid</strong> - customer identifier,<br>'
     + '<strong>%pin</strong> - customer pin,<br>'
     + '<strong>%bankaccount</strong> - bank account for payments,<br>'
-    + '<strong>%services</strong> - client services balance,<br>'
+    + '<strong>%services</strong> - client service summary,<br>'
     + '<strong>%last_N_in_a_table</strong> - last N operation in customer financial history (N means number).<br>'] =
     'Wprowadź treść wiadomości.<br><br>'
     + 'Obsługiwane podstawienia/zmienne:<br>'
@@ -1709,7 +1709,7 @@ $_LANG['Enter message body.<br><br>'
     + '<strong>%cid</strong> - identyfikator klienta,<br>'
     + '<strong>%pin</strong> - pin klienta,<br>'
     + '<strong>%bankaccount</strong> - konto bankowe do płatności,<br>'
-    + '<strong>%services</strong> - slado usług klienta,<br>'
+    + '<strong>%services</strong> - podsumowanie usług klienta,<br>'
     + '<strong>%last_N_in_a_table</strong> - ostatnie N operacji w historii finansowej klienta (N oznacza liczbę).<br>';
 $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['User'] = 'Użytkownik';
@@ -4466,3 +4466,7 @@ $_LANG['Force password change'] = 'Wymuś zmianę hasła';
 $_LANG['Force password change:'] = 'Wymuś zmianę hasła:';
 
 $_LANG['overdue receivables'] = 'przeterminowane należności';
+
+$_LANG['<!access-rights>- empty -'] = '- puste -';
+$_LANG['Copy rights'] = 'Kopiuj uprawnienia';
+$_LANG['of selected user:'] = 'wybranego użytkownika:';
