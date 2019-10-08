@@ -688,9 +688,11 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         foreach ($recipients as $key => $row) {
             $body = $message['body'];
 
-            BodyVars($body, $row);
-
             $customerid = isset($row['id']) ? $row['id'] : 0;
+
+            if (!empty($customerid)) {
+                BodyVars($body, $row);
+            }
 
             foreach ($row['destination'] as $destination) {
                 $orig_destination = $destination;
