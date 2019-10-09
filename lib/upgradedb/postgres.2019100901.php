@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE messages ADD COLUMN contenttype varchar(255) DEFAULT 'text/plain'");
-$this->Execute("UPDATE messages SET contenttype='text/plain' WHERE contenttype IS NULL");
+//$this->Execute("UPDATE messages SET contenttype='text/plain' WHERE contenttype IS NULL");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019100901', 'dbversion'));
 

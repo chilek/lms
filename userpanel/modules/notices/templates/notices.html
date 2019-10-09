@@ -58,20 +58,26 @@
 										<strong>{trans("Body:")}</strong><br />
 										{if $items.mibody}
 											{if $items.contenttype == 'text/plain'}
-												{$items.mibody|nl2br}
-											{else}
+												{nl2br(htmlspecialchars($items.mibody), false)}
+											{elseif $items.contenttype == 'text/html'}
 												{$items.mibody}
-											{/if}<br /><br />
-											{if $items.status != $smarty.const.MSG_DELIVERED}
-												<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
-											{else}&nbsp;
+											{else}
+												{nl2br($items.mibody, false)}
 											{/if}
 										{else}
-											{$items.body}<br /><br />
-											{if $items.status != $smarty.const.MSG_DELIVERED}
-												<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
-											{else}&nbsp;
+											{if $items.contenttype == 'text/plain'}
+												{nl2br(htmlspecialchars($items.body), false)}
+											{elseif $items.contenttype == 'text/html'}
+												{$items.body}
+											{else}
+												{nl2br($items.body)}
 											{/if}
+										{/if}
+										<br /><br />
+										{if $items.status != $smarty.const.MSG_DELIVERED}
+											<a href="?m=notices&confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
+										{else}
+											&nbsp;
 										{/if}
 									</td>
 								</tr>

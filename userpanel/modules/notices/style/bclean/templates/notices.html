@@ -40,15 +40,26 @@
 						<h3>{trans("Body:")}</h3>
 						{if $items.mibody}
 							{if $items.contenttype == 'text/plain'}
-								{$items.mibody|nl2br}
-							{else}
+								{nl2br(htmlspecialchars($items.mibody), false)}
+							{elseif $items.contenttype == 'text/html'}
 								{$items.mibody}
-							{/if}<br /><br />
-							{if $items.status != $smarty.const.MSG_DELIVERED}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
+							{else}
+								{nl2br($items.mibody, false)}
+							{/if}
 						{else}
-							{$items.body}<br /><br />
-							{if $items.status != $smarty.const.MSG_DELIVERED}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
+							{if $items.contenttype == 'text/plain'}
+								{nl2br(htmlspecialchars($items.body), false)}
+							{elseif $items.contenttype == 'text/html'}
+								{$items.body}
+							{else}
+								{nl2br($items.body, false)}
+							{/if}
 						{/if}
+						<br><br>
+						{if $items.status != $smarty.const.MSG_DELIVERED}
+							<a class="btn btn-primary" href="?m=notices&confirm={$items.id}">{trans("I confirm reading")}</a>
+						{/if}
+					</td>
 				</tr>
 				<SCRIPT type="text/javascript">
 					<!--

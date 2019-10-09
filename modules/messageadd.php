@@ -586,6 +586,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
         }
 
+        $message['contenttype'] = $html_format ? 'text/html' : 'text/plain';
+
         $SMARTY->assign('message', $message);
         $SMARTY->assign('recipcount', count($recipients));
         $SMARTY->display('message/messagesend.html');
@@ -599,7 +601,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 $message['body'],
                 Auth::GetCurrentUser(),
                 $message['type'] == MSG_MAIL ? '"' . $message['from'] . '" <' . $message['sender'] . '>' : '',
-                $html_format ? "text/html" : "text/plain",
+                $message['contenttype'],
             ));
 
         $msgid = $DB->GetLastInsertID('messages');

@@ -72,9 +72,11 @@
 				<TR>
 					<TD CLASS="fall superlight">
 						{if $message.contenttype == 'text/plain'}
-							{$message.body|nl2br}
-						{else}
+							{nl2br(htmlspecialchars($message.body), false)}
+						{elseif $message.contenttype == 'text/html'}
 							{$message.body}
+						{else}
+							{nl2br($message.body)}
 						{/if}
 					</TD>
 				</TR>
@@ -169,9 +171,11 @@
 			{if $item.body}
 				<div id="{$item.id}" style="display: none;" class="fall superlight">
 					{if $message.contenttype == 'text/plain'}
-						{$item.body|nl2br}
-					{else}
+						{nl2br(htmlspecialchars($item.body), false)}
+					{elseif $message.contenttype == 'text/html'}
 						{$item.body}
+					{else}
+						{nl2br($item.body, false)}
 					{/if}
 				</div>
 			{/if}
