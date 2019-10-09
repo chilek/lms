@@ -902,7 +902,13 @@ class LMSTcpdfInvoice extends LMSInvoice
     protected function invoice_comment()
     {
         if (!empty($this->data['comment'])) {
-            $this->backend->writeHTMLCell(0, 0, '', '', trans('Comment:') . ' ' . $this->data['comment'], 0, 1, 0, true, 'C');
+            if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
+                $width = 150;
+            } else {
+                $width = 0;
+            }
+            $this->backend->Ln(5);
+            $this->backend->writeHTMLCell($width, 0, '', '', trans('Comment:') . ' ' . $this->data['comment'], 0, 1, 0, true, 'C');
         }
     }
 
@@ -926,7 +932,13 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->SetFont('arial', '', 8);
             //$h = $this->backend->getStringHeight(0, $tmp);
             $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-            $this->backend->writeHTMLCell(0, 0, '', '', $tmp, 0, 1, 0, true, 'C');
+            if (ConfigHelper::checkConfig('invoices.qr2pay') && !isset($this->data['rebate'])) {
+                $width = 150;
+            } else {
+                $width = 0;
+            }
+            $this->backend->Ln(5);
+            $this->backend->writeHTMLCell($width, 0, '', '', $tmp, 0, 1, 0, true, 'C');
         }
     }
 
