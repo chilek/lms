@@ -1204,32 +1204,26 @@ $(function() {
 		var editor = tinymce.get(id);
 		if (editor == null) {
 			init_visual_editor(id);
-			return;
+		} else {
+			if (editor.isHidden()) {
+				editor.show();
+			}
 		}
-		if (editor.isHidden())
-			editor.show();
 	}
 
 	function hide_visual_editor(id) {
 		var editor = tinymce.get(id);
-		if (editor == null) {
-			init_visual_editor(id);
-			return;
+		if (editor != null) {
+			editor.remove();
 		}
-		if (!editor.isHidden())
-			editor.hide();
 	}
 
 	function toggle_visual_editor(id) {
 		var editor = tinymce.get(id);
 		if (editor == null) {
 			init_visual_editor(id);
-			return;
-		}
-		if (editor.isHidden()) {
-			editor.show();
 		} else {
-			editor.hide();
+			editor.remove();
 		}
 	}
 
