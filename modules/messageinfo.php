@@ -171,6 +171,13 @@ $page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.messagelist_pagelimit', $listdata['total']);
 $SESSION->save('milp', $page);
 
+if ($message['contenttype'] == 'text/html') {
+    $message['body'] = preg_replace('/\r?\n/', "", $message['body']);
+    foreach ($itemlist as &$item) {
+        $item['body'] = preg_replace('/\r?\n/', "", $item['body']);
+    }
+}
+
 $layout['pagetitle'] = trans('Message Info: $a', $subject);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
