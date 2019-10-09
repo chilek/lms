@@ -2360,6 +2360,7 @@ CREATE TABLE messageitems (
 	error 		text		DEFAULT NULL,
 	lastreaddate 	integer		DEFAULT 0 NOT NULL,
 	externalmsgid	integer		DEFAULT 0 NOT NULL,
+    body 		text		DEFAULT NULL,
         PRIMARY KEY (id)
 );
 
@@ -3617,6 +3618,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019092000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019100900');
 
 COMMIT;
