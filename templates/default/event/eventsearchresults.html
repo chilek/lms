@@ -17,5 +17,5 @@
         {include file="event/eventlistbox.html"}
     </TBODY>
 </TABLE>
-<H2>{trans("Total events:")} {count($eventlist)}</H2>
+<H2>{trans("Total events:")} {if empty($eventlist)}0{else}{count($eventlist)}{/if}</H2>
 {/block}
