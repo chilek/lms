@@ -348,15 +348,15 @@ function parse_customer_data($data, $row)
             $lN = '';
         } else {
             // ok, now we are going to rise up system's load
-            $lN = "-----------+-----------+-----------+----------------------------------------------------\n";
+            $lN = '-----------+-----------+-----------+----------------------------------------------------<eol>';
             foreach ($lastN as $row_s) {
                 $op_time = strftime("%Y/%m/%d", $row_s['time']);
                 $op_amount = sprintf("%9.2f", $row_s['value']);
                 $op_after = sprintf("%9.2f", $row_s['after']);
                 $for_what = sprintf("%-52s", $row_s['comment']);
-                $lN = $lN . "$op_time | $op_amount | $op_after | $for_what\n";
+                $lN .= $op_time . '|' . $op_amount  . '|' . $op_after . '|' . $for_what . '<eol>';
             }
-            $lN = $lN . "-----------+-----------+-----------+----------------------------------------------------\n";
+            $lN .= '-----------+-----------+-----------+----------------------------------------------------<eol>';
         }
         $data = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $data);
     }
@@ -392,7 +392,12 @@ function create_message($type, $subject, $template)
     $DB->Execute(
         "INSERT INTO messages (type, cdate, subject, body, contenttype)
         VALUES (?, ?NOW?, ?, ?, ?)",
-        array($type, $subject, $template, $content_types[$type])
+        array(
+            $type,
+            str_replace('<eol>', $content_types[$type] == 'text/html' ? '<br>' : "\n", $subject),
+            str_replace('<eol>', $content_types[$type] == 'text/html' ? '<br>' : "\n", $template),
+            $content_types[$type]
+        )
     );
     return $DB->GetLastInsertID('messages');
 }
