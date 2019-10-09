@@ -90,6 +90,7 @@ version 25-git (????-??-??):
   - improvement: added support for %services replace symbol in messages [ravvar]
   - improvement: allow display message body with wildcards for particular message [ravvar]
   - improvement: added different content type of messages based on mime types [chilan/ravvar]
+  - enhancement: lms-notify.php supports userpanel and userpanel urgent message emitions [chilan]
 
 version 24.0 (2019-05-16):
 
