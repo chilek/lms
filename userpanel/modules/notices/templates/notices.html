@@ -57,7 +57,11 @@
 									<td width="10%" align="center" colspan="4" >
 										<strong>{trans("Body:")}</strong><br />
 										{if $items.mibody}
-											{$items.mibody|nl2br}<br /><br />
+											{if $items.contenttype == 'text/plain'}
+												{$items.mibody|nl2br}
+											{else}
+												{$items.mibody}
+											{/if}<br /><br />
 											{if $items.status != $smarty.const.MSG_DELIVERED}
 												<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
 											{else}&nbsp;

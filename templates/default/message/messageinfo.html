@@ -71,7 +71,11 @@
 			<TABLE WIDTH="100%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="fall superlight">
-						{$message.body|replace:"\n":"<BR>"}
+						{if $message.contenttype == 'text/plain'}
+							{$message.body|nl2br}
+						{else}
+							{$message.body}
+						{/if}
 					</TD>
 				</TR>
 			</TABLE>
@@ -164,7 +168,11 @@
 			{trans("{$item.destination|escape}")}
 			{if $item.body}
 				<div id="{$item.id}" style="display: none;" class="fall superlight">
-					{$item.body|nl2br}
+					{if $message.contenttype == 'text/plain'}
+						{$item.body|nl2br}
+					{else}
+						{$item.body}
+					{/if}
 				</div>
 			{/if}
 		</TD>
