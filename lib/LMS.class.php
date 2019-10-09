@@ -2379,7 +2379,7 @@ class LMS
             if ($headers['X-LMS-Format'] == 'html') {
                 $this->mail_object->isHTML(true);
                 $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
-                $this->mail_object->msgHTML(preg_replace('/\r?\n/', '<br>', $body));
+                $this->mail_object->msgHTML(preg_replace('/\r?\n/', "\n", $body));
             } else {
                 $this->mail_object->isHTML(false);
                 $this->mail_object->Body = $body;
