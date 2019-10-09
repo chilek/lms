@@ -153,14 +153,14 @@
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
 	<TR class="{if $item.body}showitem{/if} {if $item.status==$smarty.const.MSG_ERROR} lms-ui-error{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-itemid="{$item.id}">
-		<TD class="nobr" style="vertical-align: top">
+		<TD class="nobr valign-top">
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
 				{trans("none")}
 			{/if}
 		</TD>
-		<TD class="nobr" style="vertical-align: top">
+		<TD class="nobr valign-top">
 			{trans("{$item.destination|escape}")}
 			{if $item.body}
 				<div id="{$item.id}" style="display: none;" class="fall superlight">
@@ -168,7 +168,7 @@
 				</div>
 			{/if}
 		</TD>
-		<TD class="text-right" style="vertical-align: top">
+		<TD class="text-right valign-top">
 			{if $item.status == $smarty.const.MSG_SENT}
 				{trans("sent")}
 			{elseif $item.status == $smarty.const.MSG_ERROR}
@@ -179,7 +179,7 @@
 				{trans("waiting")}
 			{/if}
 		</TD>
-		<TD class="text-right" style="vertical-align: top">
+		<TD class="text-right valign-top">
 			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD class="text-right">
@@ -187,7 +187,7 @@
 				&& ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
 				&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
-		<TD class="text-right nobr" style="vertical-align: top">
+		<TD class="text-right nobr valign-top">
 		</TD>
 	</TR>
 	{sectionelse}
