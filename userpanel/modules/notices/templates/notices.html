@@ -56,10 +56,18 @@
 								<tr id="{$items.id}"  style="display:none;">
 									<td width="10%" align="center" colspan="4" >
 										<strong>{trans("Body:")}</strong><br />
-										{$items.body}<br /><br />
-										{if $items.status != $smarty.const.MSG_DELIVERED}
-										<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
-										{else}&nbsp;
+										{if $items.mibody}
+											{$items.mibody|nl2br}<br /><br />
+											{if $items.status != $smarty.const.MSG_DELIVERED}
+												<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
+											{else}&nbsp;
+											{/if}
+										{else}
+											{$items.body}<br /><br />
+											{if $items.status != $smarty.const.MSG_DELIVERED}
+												<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
+											{else}&nbsp;
+											{/if}
 										{/if}
 									</td>
 								</tr>

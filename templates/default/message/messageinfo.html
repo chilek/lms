@@ -25,7 +25,7 @@
     <TBODY>
 	<TR>
 		<TD>
-			<IMG SRC="img/users.gif" ALT=""> 
+			<IMG SRC="img/users.gif" ALT="">
 		</TD>
 		<TD class="bold">
 			{trans("User:")}
@@ -38,7 +38,7 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG SRC="img/time.gif" ALT=""> 
+			<IMG SRC="img/time.gif" ALT="">
 		</TD>
 		<TD class="bold">
 			{trans("Creation date:")}
@@ -50,7 +50,7 @@
 {if $message.sender}
 	<TR>
 		<TD>
-			<IMG SRC="img/mail.gif" ALT=""> 
+			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
 		<TD class="bold">
 			{trans("Sender:")}
@@ -62,7 +62,7 @@
 {/if}
 	<TR>
 		<TD>
-			<IMG SRC="img/edit.gif" ALT=""> 
+			<IMG SRC="img/edit.gif" ALT="">
 		</TD>
 		<TD class="bold nobr">
 			{trans("Message body:")}
@@ -85,7 +85,7 @@
     </TBODY>
 </TABLE>
 <BR>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox lms-ui-background-cycle">
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -140,7 +140,7 @@
 			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
 		</TD>
-	</TR>		
+	</TR>
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="lms-ui-pagination" COLSPAN="6">
@@ -150,21 +150,25 @@
 	{/if}
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
 	{section name=itemlist loop=$itemlist start=$start max=$pagelimit}
 	{assign var=item value=$itemlist[itemlist]}
-	<TR class="{cycle}{if $item.status==$smarty.const.MSG_ERROR} lms-ui-error{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-		<TD class="nobr">
+	<TR class="{if $item.body}showitem{/if} {if $item.status==$smarty.const.MSG_ERROR} lms-ui-error{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-itemid="{$item.id}">
+		<TD class="nobr valign-top">
 			{if $item.customerid}
 				<A href="?m=customerinfo&id={$item.customerid}">{$item.customer|truncate:45:"...":true} ({$item.customerid|string_format:"%04d"})</A>
 			{else}
 				{trans("none")}
 			{/if}
 		</TD>
-		<TD class="nobr">
+		<TD class="nobr valign-top">
 			{trans("{$item.destination|escape}")}
+			{if $item.body}
+				<div id="{$item.id}" style="display: none;" class="fall superlight">
+					{$item.body|nl2br}
+				</div>
+			{/if}
 		</TD>
-		<TD class="text-right">
+		<TD class="text-right valign-top">
 			{if $item.status == $smarty.const.MSG_SENT}
 				{trans("sent")}
 			{elseif $item.status == $smarty.const.MSG_ERROR}
@@ -175,7 +179,7 @@
 				{trans("waiting")}
 			{/if}
 		</TD>
-		<TD class="text-right">
+		<TD class="text-right valign-top">
 			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD class="text-right">
@@ -183,7 +187,7 @@
 				&& ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
 				&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="text-right nobr valign-top">
 		</TD>
 	</TR>
 	{sectionelse}
@@ -191,7 +195,7 @@
 		<TD COLSPAN="6" class="empty-table">
 			<p>{trans("No such recipients in database.")}</p>
 		</TD>
-	</TR>	
+	</TR>
 	{/section}
     </TBODY>
     <TFOOT>
@@ -209,4 +213,12 @@
 	</TR>
     </TFOOT>
 </TABLE>
+	<script>
+		$(function () {
+			$('.showitem').on('click', function () {
+				var itemid = $(this).attr('data-itemid');
+				$('#'+itemid).toggle();
+			});
+		});
+	</script>
 {/block}

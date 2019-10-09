@@ -76,7 +76,7 @@ function GetItemList($id, $order = 'id,desc', $search = null, $cat = null, $stat
         $where = ' AND '.implode(' AND ', $where);
     }
 
-    $result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error,
+    $result = $DB->GetAll('SELECT i.id, i.customerid, i.status, i.error, i.body,
 			i.destination, i.lastdate, i.lastreaddate,'
             .$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customer
 		FROM messageitems i
