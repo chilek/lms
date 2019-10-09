@@ -188,6 +188,9 @@
 				&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD class="text-right nobr valign-top">
+			{if $item.body}
+				<i class="lms-ui-icon-info" {tip text="Show message body"}></i>
+			{/if}
 		</TD>
 	</TR>
 	{sectionelse}
