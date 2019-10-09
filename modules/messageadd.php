@@ -689,7 +689,12 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             $customerid = isset($row['id']) ? $row['id'] : 0;
 
             if (!empty($customerid)) {
+                $plain_body = $body;
                 BodyVars($body, $row);
+                if (strcmp($plain_body, $body) != 0) {
+                    $DB->Execute('UPDATE messageitems SET body = ?
+                    WHERE messageid = ? AND customerid = ?', array($body, $msgid, $customerid));
+                }
             }
 
             foreach ($row['destination'] as $destination) {
