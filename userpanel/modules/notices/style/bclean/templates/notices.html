@@ -39,7 +39,11 @@
 					<td colspan="4" >
 						<h3>{trans("Body:")}</h3>
 						{if $items.mibody}
-							{$items.mibody|nl2br}<br /><br />
+							{if $items.contenttype == 'text/plain'}
+								{$items.mibody|nl2br}
+							{else}
+								{$items.mibody}
+							{/if}<br /><br />
 							{if $items.status != $smarty.const.MSG_DELIVERED}<a class="btn btn-primary" href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")}</a>{/if}</td>
 						{else}
 							{$items.body}<br /><br />

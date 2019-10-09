@@ -236,7 +236,7 @@ function GetRecipient($customerid)
 		FROM customerview c WHERE c.id = ?', array($customerid));
 }
 
-function BodyVars(&$body, $data)
+function BodyVars(&$body, $data, $eol)
 {
     global $LMS, $LANGDEFS;
 
@@ -262,7 +262,7 @@ function BodyVars(&$body, $data)
             foreach ($lastN as $r) {
                 $lN .= date("Y/m/d | ", $r['time']);
                 $lN .= sprintf("%20s | ", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $r['value']));
-                $lN .= $r['comment']."\n";
+                $lN .= $r['comment'].$eol;
             }
         }
         $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
@@ -272,11 +272,11 @@ function BodyVars(&$body, $data)
         $services = $data['services'];
         $lN = '';
         if (!empty($services)) {
-            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $services['total_value'])) . "\n";
+            $lN .= strtoupper(trans("Total:"))  . " " . sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $services['total_value'])) . $eol;
             unset($services['total_value']);
             foreach ($services as $row) {
                 $lN .= strtoupper($row['tarifftypename']) .": ";
-                $lN .= sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $row['sumvalue'])) . "\n";
+                $lN .= sprintf("%2s", sprintf($LANGDEFS[$LMS->ui_lang]['money_format'], $row['sumvalue'])) . $eol;
             }
         }
         $body = str_replace('%services', $lN, $body);
@@ -576,6 +576,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         $message['body'] = str_replace("\r", '', $message['body']);
 
         $html_format = isset($message['wysiwyg']) && isset($message['wysiwyg']['mailbody']) && ConfigHelper::checkValue($message['wysiwyg']['mailbody']);
+        $eol = $html_format ? '<br>' : "\n";
 
         if ($message['type'] == MSG_MAIL) {
             if (!$html_format) {
@@ -591,13 +592,14 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $DB->BeginTrans();
 
-        $DB->Execute('INSERT INTO messages (type, cdate, subject, body, userid, sender)
-			VALUES (?, ?NOW?, ?, ?, ?, ?)', array(
+        $DB->Execute('INSERT INTO messages (type, cdate, subject, body, userid, sender, contenttype)
+			VALUES (?, ?NOW?, ?, ?, ?, ?, ?)', array(
                 $message['type'],
                 $message['subject'],
                 $message['body'],
                 Auth::GetCurrentUser(),
                 $message['type'] == MSG_MAIL ? '"' . $message['from'] . '" <' . $message['sender'] . '>' : '',
+                $html_format ? "text/html" : "text/plain",
             ));
 
         $msgid = $DB->GetLastInsertID('messages');
@@ -690,7 +692,9 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
             if (!empty($customerid)) {
                 $plain_body = $body;
-                BodyVars($body, $row);
+
+                BodyVars($body, $row, $eol);
+
                 if (strcmp($plain_body, $body) != 0) {
                     $DB->Execute('UPDATE messageitems SET body = ?
                     WHERE messageid = ? AND customerid = ?', array($body, $msgid, $customerid));

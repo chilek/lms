@@ -2336,6 +2336,7 @@ CREATE TABLE messages (
 	userid 	integer		DEFAULT NULL
 		CONSTRAINT messages_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	sender 	varchar(255) 	DEFAULT NULL,
+	contenttype 	varchar(255) 	DEFAULT 'text/plain',
         PRIMARY KEY (id)
 );
 
@@ -3618,6 +3619,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019100900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019100901');
 
 COMMIT;
