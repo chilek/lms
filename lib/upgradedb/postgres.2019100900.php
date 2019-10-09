@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE messageitems ADD COLUMN body text DEFAULT NULL;");
+$this->Execute("ALTER TABLE messageitems ADD COLUMN body text DEFAULT NULL");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019100900', 'dbversion'));
 
