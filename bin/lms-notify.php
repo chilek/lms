@@ -206,7 +206,18 @@ $notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '', t
 $reply_email = ConfigHelper::getConfig($config_section . '.reply_email', '', true);
 $dsn_email = ConfigHelper::getConfig($config_section . '.dsn_email', '', true);
 $mdn_email = ConfigHelper::getConfig($config_section . '.mdn_email', '', true);
-$mail_format = ConfigHelper::getConfig($config_section . '.mail_format', 'text');
+$format = ConfigHelper::getConfig($config_section . '.format', 'text');
+$mail_format = ConfigHelper::getConfig($config_section . '.mail_format', $format);
+$content_type = $format == 'html' ? 'text/html' : 'text/plain';
+$mail_content_type = $mail_format == 'html' ? 'text/html' : 'text/plain';
+
+$content_types = array(
+    MSG_MAIL => $mail_content_type,
+    MSG_SMS => 'text/plain',
+    MSG_USERPANEL => $content_type,
+    MSG_USERPANEL_URGENT => $content_type,
+    MSG_WWW => $content_type,
+);
 
 $debug_phone = ConfigHelper::getConfig($config_section . '.debug_phone', '', true);
 $script_service = ConfigHelper::getConfig($config_section . '.service', '', true);
@@ -374,12 +385,14 @@ function parse_node_data($data, $row)
 
 function create_message($type, $subject, $template)
 {
+    global $content_types;
+
     $DB = LMSDB::getInstance();
 
     $DB->Execute(
-        "INSERT INTO messages (type, cdate, subject, body)
-        VALUES (?, ?NOW?, ?, ?)",
-        array($type, $subject, $template)
+        "INSERT INTO messages (type, cdate, subject, body, contenttype)
+        VALUES (?, ?NOW?, ?, ?, ?)",
+        array($type, $subject, $template, $content_types[$type])
     );
     return $DB->GetLastInsertID('messages');
 }
@@ -464,6 +477,18 @@ function send_sms($msgid, $cid, $phone, $data)
     } elseif ($result == 2) { // MSG_SENT
         $DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
     }
+}
+
+function send_to_userpanel($msgid, $cid, $destination)
+{
+    $DB = LMSDB::getInstance();
+
+    $DB->Execute(
+        "INSERT INTO messageitems
+        (messageid, customerid, destination, status)
+        VALUES (?, ?, ?, ?)",
+        array($msgid, $cid, $destination, MSG_SENT)
+    );
 }
 
 function send_mail_to_user($rmail, $rname, $subject, $body)
@@ -659,6 +684,20 @@ if (empty($types) || in_array('documents', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/documents] %s (%04d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/documents] %s (%04d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
             }
 
             if (!$debug) {
@@ -680,6 +719,14 @@ if (empty($types) || in_array('documents', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
@@ -767,6 +814,20 @@ if (empty($types) || in_array('contracts', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/contracts] %s (%04d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/contracts] %s (%04d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
             }
 
             if (!$debug) {
@@ -788,6 +849,14 @@ if (empty($types) || in_array('contracts', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
@@ -891,6 +960,20 @@ if (empty($types) || in_array('debtors', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/debtors] %s (%04d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/debtors] %s (%04d)" . PHP_EOL,
+                        $recipient_name,
+                        $row['id']
+                    );
+                }
             }
 
             if (!$debug) {
@@ -912,6 +995,14 @@ if (empty($types) || in_array('debtors', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
@@ -1031,6 +1122,22 @@ if (empty($types) || in_array('reminder', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/reminder] %s (%04d) %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/reminder] %s (%04d) %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
             }
 
             if (!$debug) {
@@ -1052,6 +1159,14 @@ if (empty($types) || in_array('reminder', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
@@ -1156,6 +1271,22 @@ if (empty($types) || in_array('income', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/income] %s (%04d) - %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        moneyf($row['value'])
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/income] %s (%04d) - %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        moneyf($row['value'])
+                    );
+                }
             }
 
             if (!$debug) {
@@ -1177,6 +1308,14 @@ if (empty($types) || in_array('income', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
@@ -1268,6 +1407,22 @@ if (empty($types) || in_array('invoices', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/invoices] %s (%04d): %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/invoices] %s (%04d): %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
             }
 
             if (!$debug) {
@@ -1289,6 +1444,14 @@ if (empty($types) || in_array('invoices', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
@@ -1378,6 +1541,22 @@ if (empty($types) || in_array('notes', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/notes] %s (%04d): %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/notes] %s (%04d): %s" . PHP_EOL,
+                        $row['name'],
+                        $row['id'],
+                        $row['doc_number']
+                    );
+                }
             }
 
             if (!$debug) {
@@ -1399,6 +1578,14 @@ if (empty($types) || in_array('notes', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
@@ -1469,6 +1656,20 @@ if (empty($types) || in_array('warnings', $types)) {
                         );
                     }
                 }
+                if (in_array('userpanel', $channels)) {
+                    printf(
+                        "[userpanel/warnings] %s (%04d)" . PHP_EOL,
+                        $row['name'],
+                        $row['id']
+                    );
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    printf(
+                        "[userpanel-urgent/warnings] %s (%04d)" . PHP_EOL,
+                        $row['name'],
+                        $row['id']
+                    );
+                }
             }
 
             if (!$debug) {
@@ -1490,6 +1691,14 @@ if (empty($types) || in_array('warnings', $types)) {
                     foreach ($recipient_phones as $recipient_phone) {
                         send_sms($msgid, $row['id'], $recipient_phone, $message);
                     }
+                }
+                if (in_array('userpanel', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel'));
+                }
+                if (in_array('userpanel-urgent', $channels)) {
+                    $msgid = create_message(MSG_USERPANEL_URGENT, $subject, $message);
+                    send_to_userpanel($msgid, $row['id'], trans('userpanel urgent'));
                 }
             }
         }
