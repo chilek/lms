@@ -1120,6 +1120,7 @@ $_LANG['Members:'] = 'Członkowie:';
 $_LANG['Members Count:'] = 'Ilość członków:';
 $_LANG['Message:'] = 'Wiadomość:';
 $_LANG['Message body:'] = 'Treść wiadomości:';
+$_LANG['Show message body'] = 'Pokaż treść wiadomości';
 $_LANG['Message body is required!'] = 'Treść wiadomości jest wymagana!';
 $_LANG['Message body not specified!'] = 'Brak treści wiadomości!';
 $_LANG['Notices'] = 'Powiadomienia';
