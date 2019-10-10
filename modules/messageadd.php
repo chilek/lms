@@ -639,7 +639,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 }
                 unset($file);
                 $LMS->AddFileContainer(array(
-                    'description' => '',
+                    'description' => 'message-' . $msgid,
                     'files' => $files,
                     'type' => 'messageid',
                     'resourceid' => $msgid,
