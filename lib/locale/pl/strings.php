@@ -4150,6 +4150,7 @@ $_LANG['- select public network -'] = '- wybierz sieć publiczną -';
 
 $_LANG['Creator:'] = 'Twórca:';
 $_LANG['Download file container as zip archive'] = 'Pobierz kontener plikowy jako archiwum zip';
+$_LANG['Download as zip archive'] = 'Pobierz jako archiwum zip';
 $_LANG['Delete file container'] = 'Usuń kontener plikowy';
 $_LANG['Show file list'] = 'Pokaż listę plików';
 $_LANG['Are you sure you want to delete this file container?'] = 'Jesteś pewien, że chcesz usunąć ten kontener plikowy?';

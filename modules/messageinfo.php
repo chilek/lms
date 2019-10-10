@@ -182,5 +182,6 @@ $SMARTY->assign('start', ($page - 1) * $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('marks', $marks);
 $SMARTY->assign('itemlist', $itemlist);
+$SMARTY->assign('filecontainers', $LMS->GetFileContainers('messageid', $message['id']));
 
 $SMARTY->display('message/messageinfo.html');

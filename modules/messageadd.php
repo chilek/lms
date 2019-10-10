@@ -632,6 +632,21 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             }
         }
 
+        if ($message['type'] == MSG_MAIL) {
+            if (!empty($files)) {
+                foreach ($files as &$file) {
+                    $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+                }
+                unset($file);
+                $LMS->AddFileContainer(array(
+                    'description' => '',
+                    'files' => $files,
+                    'type' => 'messageid',
+                    'resourceid' => $msgid,
+                ));
+            }
+        }
+
         $DB->CommitTrans();
 
         if ($message['type'] == MSG_MAIL) {
