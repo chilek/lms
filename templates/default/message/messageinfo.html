@@ -3,6 +3,13 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<style>
+
+	.lms-ui-button-fileupload {
+		margin-top: 0.5em;
+	}
+
+</style>
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -85,10 +92,10 @@
 	</TR>
 	{if $filecontainers}
 		<TR>
-			<TD>
+			<TD class="valign-top">
 				<IMG SRC="img/mail.gif" ALT="">
 			</TD>
-			<TD class="bold">
+			<TD class="bold valign-top">
 				{trans("Attachments:")}
 			</TD>
 			<TD>
