@@ -91,7 +91,7 @@ version 25-git (????-??-??):
   - improvement: allow display message body with wildcards for particular message [ravvar]
   - improvement: added different content type of messages based on mime types [chilan/ravvar]
   - enhancement: lms-notify.php supports userpanel and userpanel urgent message emitions [chilan]
-  - enhancement: storing of email message attachments in documents files [ravvar]
+  - enhancement: message file attachement are stored in message history [chilan/ravvar]
 
 version 24.0 (2019-05-16):
 
