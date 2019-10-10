@@ -10,13 +10,7 @@
 <TABLE CELLPADDING="5" width="100%">
 	<TR>
 		<TD class="fall superlight">
-			<PRE>
-				{if $message.contenttype == 'text/plain'}
-					{nl2br(htmlspecialchars($message.body), false)}
-				{else}
-					{$message.body}
-				{/if}
-			</PRE>
+			<PRE>{if $message.contenttype == 'text/plain'}{nl2br(htmlspecialchars($message.body), false)}{else}{$message.body}{/if}</PRE>
 		</TD>
 	</TR>
 </TABLE>
