@@ -70,7 +70,7 @@
 											{elseif $items.contenttype == 'text/html'}
 												{$items.body}
 											{else}
-												{nl2br($items.body)}
+												{nl2br($items.body, false)}
 											{/if}
 										{/if}
 										<br /><br />

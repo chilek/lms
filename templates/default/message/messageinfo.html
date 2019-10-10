@@ -76,7 +76,7 @@
 						{elseif $message.contenttype == 'text/html'}
 							{$message.body}
 						{else}
-							{nl2br($message.body)}
+							{nl2br($message.body, false)}
 						{/if}
 					</TD>
 				</TR>
