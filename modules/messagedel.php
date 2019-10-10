@@ -27,6 +27,7 @@
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     if ($id) {
+        $LMS->DeleteFileContainers('messageid', $id);
         $DB->BeginTrans();
         $DB->Execute('DELETE FROM messageitems WHERE messageid = ?', array($id));
         $DB->Execute('DELETE FROM messages WHERE id = ?', array($id));
@@ -35,6 +36,9 @@ if (isset($_GET['id'])) {
 } elseif (isset($_POST['marks'])) {
     $ids = implode(',', Utils::filterIntegers($_POST['marks']));
     if (!empty($ids)) {
+        foreach ($_POST['marks'] as $mkey => $mark) {
+            $LMS->DeleteFileContainers('messageid', $mkey);
+        }
         $DB->BeginTrans();
         $DB->Execute('DELETE FROM messageitems WHERE messageid IN (' . $ids . ')');
         $DB->Execute('DELETE FROM messages WHERE id IN (' . $ids . ')');

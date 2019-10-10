@@ -83,6 +83,27 @@
 			</TABLE>
 		</TD>
 	</TR>
+	{if $filecontainers}
+		<TR>
+			<TD>
+				<IMG SRC="img/mail.gif" ALT="">
+			</TD>
+			<TD class="bold">
+				{trans("Attachments:")}
+			</TD>
+			<TD>
+				{foreach $filecontainers as $container}
+						{foreach $container.files as $file}
+							{documentview id="{$container.id}-{$file.id}" type=$file.contenttype name=$file.filename
+							url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$container.id}&fileid={$file.id}" external=true
+							text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+							<br>
+						{/foreach}
+					{button id="downloadzippedcontainer" onclick="location.href = '?m=attachments&attachmentaction=downloadzippedcontainer&type=messageid&id={$container.id}';" label="Download as zip archive" icon="fileupload"}
+				{/foreach}
+			</TD>
+		</TR>
+	{/if}
 	<TR>
 		<TD COLSPAN="3" class="buttons">
 			<A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>

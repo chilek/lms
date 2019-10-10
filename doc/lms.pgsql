@@ -2569,6 +2569,8 @@ CREATE TABLE filecontainers (
 		CONSTRAINT filecontainers_netdevid_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	netnodeid integer DEFAULT NULL
 		CONSTRAINT filecontainers_netnodeid_fkey REFERENCES netnodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	messageid integer DEFAULT NULL
+		CONSTRAINT filecontainers_messageid_fkey REFERENCES messages (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 
@@ -3619,6 +3621,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019100901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019101000');
 
 COMMIT;
