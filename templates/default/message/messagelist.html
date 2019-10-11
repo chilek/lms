@@ -102,6 +102,17 @@
 			{$message.cnt|default:0}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
+			{if $message.files}
+				{button class="toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$message.filecontainerid}}
+				<div id="files-{$message.filecontainerid}" style="display: none;" class="files">
+					{foreach $message.files as $file}
+						{documentview id="{$message.id}-{$file.id}" type=$file.contenttype name=$file.filename
+						url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$message.filecontainerid}&fileid={$file.id}" external=true
+						text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+						<br>
+					{/foreach}
+				</div>
+			{/if}
 			{button type="link" icon="delete" class="delete-message" tip="Delete" href="?m=messagedel&id={$message.id}"}
 			{button type="link" icon="info" tip="Info" onclick="location.href = '?m=messageinfo&id={$message.id}';"}
 			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="lms-ui-multi-check"{if $marks.messageid} checked{/if}>
@@ -157,6 +168,14 @@
 			});
 		}
 		return false;
+	});
+
+	$(function () {
+		$('.toggle-file-list').click(function () {
+			var containerid = parseInt($(this).attr('data-resourceid'));
+			var elem = $('#files-' + containerid);
+			elem.toggle();
+		});
 	});
 
 </script>
