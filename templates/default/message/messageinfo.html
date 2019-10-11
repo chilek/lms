@@ -113,7 +113,7 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="3" class="lms-ui-box-buttons">
-			{button icon="delete" label="Delete" class="delete-message"}
+			{button id="delete-message" icon="delete" label="Delete"}
 			{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
 		</TD>
 	</TR>
@@ -264,7 +264,7 @@
 				$('#'+itemid).toggle();
 			});
 
-			$('.delete-message').click(function() {
+			$('#delete-message').click(function() {
 				confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
 					location.href =  '?m=messagedel&id={$message.id}';
 				});
