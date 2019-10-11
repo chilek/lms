@@ -588,9 +588,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         $message['contenttype'] = $html_format ? 'text/html' : 'text/plain';
 
-        $SMARTY->assign('message', $message);
         $SMARTY->assign('recipcount', count($recipients));
-        $SMARTY->display('message/messagesend.html');
 
         $DB->BeginTrans();
 
@@ -648,6 +646,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
         }
 
         $DB->CommitTrans();
+
+        $message['id'] = $msgid;
+        $SMARTY->assign('message', $message);
+        $SMARTY->display('message/messagesend.html');
 
         if ($message['type'] == MSG_MAIL) {
             $attachments = null;
