@@ -112,8 +112,9 @@
 		</TR>
 	{/if}
 	<TR>
-		<TD COLSPAN="3" class="buttons">
-			<A HREF="?m=messagelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+		<TD COLSPAN="3" class="lms-ui-box-buttons">
+			{button icon="delete" label="Delete" onclick="location.href = '?m=messagedel&id={$message.id}';"}
+			{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
 		</TD>
 	</TR>
     </TBODY>
