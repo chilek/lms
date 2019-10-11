@@ -113,7 +113,7 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="3" class="lms-ui-box-buttons">
-			{button icon="delete" label="Delete" onclick="location.href = '?m=messagedel&id={$message.id}';"}
+			{button icon="delete" label="Delete" class="delete-message"}
 			{button icon="cancel" label="Cancel" onclick="location.href = '?m=messagelist';"}
 		</TD>
 	</TR>
@@ -262,6 +262,13 @@
 			$('.showitem').on('click', function () {
 				var itemid = $(this).attr('data-itemid');
 				$('#'+itemid).toggle();
+			});
+
+			$('.delete-message').click(function() {
+				confirmDialog($t("Are you sure, you want to delete that message?"), this).done(function() {
+					location.href =  '?m=messagedel&id={$message.id}';
+				});
+				return false;
 			});
 		});
 	</script>
