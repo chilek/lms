@@ -92,8 +92,8 @@ version 25-git (????-??-??):
   - improvement: added different content type of messages based on mime types [chilan/ravvar]
   - enhancement: lms-notify.php supports userpanel and userpanel urgent message emitions [chilan]
   - enhancement: message file attachement are stored in message history
-    (introduced sendinvoice.message_attachments config to allow store attachments from message
-    for invoice send) [chilan/ravvar]
+    (introduced sendinvoices.message_attachments configuration variable which enables/disables
+    attachment storage for send invoice messages; 'false' by default) [chilan/ravvar]
 
 version 24.0 (2019-05-16):
 
