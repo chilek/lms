@@ -14,7 +14,11 @@
 		</TD>
 	</TR>
 </TABLE>
-{if $recipcount}
+<BR>
+{button id="showmessage" onclick="location.href = '?m=messageinfo&id={$message.id}';" label="Info" icon="info"}
+{button id="msglist" onclick="location.href = '?m=messagelist';" label="Messages List" icon="list"}
+<BR>
+	{if $recipcount}
 <BR><B>{trans("Sending messages to:")}</B><BR>
 {/if}
 {/block}
