@@ -340,7 +340,7 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
         }
 
         $result = $this->db->GetAll('SELECT m.id, m.cdate, m.type, m.subject,
-			x.cnt, x.sent, x.error, x.delivered
+			x.cnt, x.sent, x.error, x.delivered, fc.id AS filecontainerid
 			FROM messages m
 			JOIN (
 				SELECT i.messageid,
@@ -356,12 +356,24 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 				) e ON (e.customerid = i.customerid)
 				WHERE e.customerid IS NULL
 				GROUP BY i.messageid
-			) x ON (x.messageid = m.id) '
+			) x ON (x.messageid = m.id)
+			LEFT JOIN filecontainers fc ON fc.messageid = m.id '
             .(!empty($userjoin) ? 'JOIN users u ON (u.id = m.userid) ' : '')
             .(!empty($where) ? $where : '')
             .$sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
+
+        if (!empty($result)) {
+            $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+            foreach ($result as &$message) {
+                if (!empty($message['filecontainerid'])) {
+                    $file_containers = $file_manager->GetFileContainers('messageid', $message['id']);
+                    $message['files'] = $file_containers[0]['files'];
+                }
+            }
+            unset($message);
+        }
 
         $result['type'] = $type;
         $result['status'] = $status;
