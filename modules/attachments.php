@@ -44,6 +44,15 @@ switch ($attachmenttype) {
             }
         }
         break;
+    case 'messageid':
+        if (!ConfigHelper::checkPrivilege('messaging')) {
+            if (isset($_GET['type'])) {
+                access_denied();
+            } else {
+                return;
+            }
+        }
+        break;
 }
 
 if (isset($_GET['attachmentaction'])) {
