@@ -173,12 +173,9 @@ class LMSFileManager extends LMSManager implements LMSFileManagerInterface
             @mkdir($path, 0700);
             if (!file_exists($name)) {
                 if (isset($file['data'])) {
-                    $fh = fopen($name, 'w');
-                    if ($fh === false) {
+                    if (file_put_contents($name, $file['data']) === false) {
                         die(trans('Can\'t save file in "$a" directory!', $path));
                     }
-                    fwrite($fh, $file['data']);
-                    fclose($fh);
                 } elseif (!@rename($file['name'], $name)) {
                     die(trans('Can\'t save file in "$a" directory!', $path));
                 }
