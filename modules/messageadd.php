@@ -634,6 +634,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
             if (!empty($files)) {
                 foreach ($files as &$file) {
                     $file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+                    $file['data'] = file_get_contents($file['name']);
                 }
                 unset($file);
                 $LMS->AddFileContainer(array(
@@ -657,8 +658,8 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
                 foreach ($files as $file) {
                     $attachments[] = array(
                         'content_type' => $file['type'],
-                        'filename' => $file['name'],
-                        'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
+                        'filename' => basename($file['name']),
+                        'data' => $file['data'],
                     );
                 }
 
