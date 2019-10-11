@@ -4289,6 +4289,9 @@ class LMS
 
                 if (isset($mail_format) && $mail_format == 'html') {
                     $headers['X-LMS-Format'] = 'html';
+                    $content_type = 'text/html';
+                } else {
+                    $content_type = 'text/plain';
                 }
 
                 $data = array(
@@ -4303,11 +4306,28 @@ class LMS
 
                 if ($add_message) {
                     $this->DB->Execute(
-                        'INSERT INTO messages (subject, body, cdate, type, userid)
-						VALUES (?, ?, ?NOW?, ?, ?)',
-                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser())
+                        'INSERT INTO messages (subject, body, cdate, type, userid, contenttype)
+						VALUES (?, ?, ?NOW?, ?, ?, ?)',
+                        array($subject, $body, MSG_MAIL, Auth::GetCurrentUser(), $content_type)
                     );
                     $msgid = $this->DB->GetLastInsertID('messages');
+
+                    if ($message_attachments) {
+                        if (!empty($files)) {
+                            foreach ($files as &$file) {
+                                $file['name'] = $file['filename'];
+                                $file['type'] = $file['content_type'];
+                            }
+                            unset($file);
+                            $this->AddFileContainer(array(
+                                'description' => 'message-' . $msgid,
+                                'files' => $files,
+                                'type' => 'messageid',
+                                'resourceid' => $msgid,
+                            ));
+                        }
+                    }
+
                     foreach (explode(',', $custemail) as $email) {
                         $this->DB->Execute(
                             'INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)

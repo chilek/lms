@@ -249,6 +249,7 @@ if ($backup || $archive) {
     $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
     $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
     $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
+    $message_attachments = ConfigHelper::checkConfig('sendinvoices.message_attachments');
     $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
     $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
     $count_limit = ConfigHelper::getConfig('sendinvoices.limit', '0');
@@ -447,6 +448,7 @@ if (!empty($docs)) {
             'quiet',
             'test',
             'add_message',
+            'message_attachments',
             'interval',
             'no_attachments',
             'smtp_options'
