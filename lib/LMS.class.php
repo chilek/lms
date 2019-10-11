@@ -4249,7 +4249,6 @@ class LMS
             }
 
             if (!$test) {
-                check_file_uploads();
                 $files = array();
 
                 if (!$no_attachments) {
