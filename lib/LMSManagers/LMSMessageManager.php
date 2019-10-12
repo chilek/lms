@@ -33,15 +33,31 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function GetMessages($customerid, $limit = null)
     {
-        return $this->db->GetAll('SELECT i.messageid AS id, i.status, i.error,
+        $result = $this->db->GetAll('SELECT i.messageid AS id, i.status, i.error,
 		        i.destination, i.lastdate, i.lastreaddate, m.subject, m.type, m.cdate,
-		        u.name AS username, u.id AS userid
+		        u.name AS username, u.id AS userid, fc.id AS filecontainerid
 			FROM messageitems i
 			JOIN messages m ON (m.id = i.messageid)
+			LEFT JOIN filecontainers fc ON fc.messageid = m.id
 			LEFT JOIN vusers u ON u.id = m.userid
 			WHERE i.customerid = ?
 			ORDER BY m.cdate DESC'
                         . ($limit ? ' LIMIT ' . $limit : ''), array($customerid));
+
+        if (!empty($result)) {
+            foreach ($result as &$message) {
+                if (!empty($message['filecontainerid'])) {
+                    if (!isset($file_manager)) {
+                        $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
+                    $file_containers = $file_manager->GetFileContainers('messageid', $message['id']);
+                    $message['files'] = $file_containers[0]['files'];
+                }
+            }
+            unset($message);
+        }
+
+        return $result;
     }
 
     public function MessageTemplateExists($type, $name)
@@ -365,9 +381,11 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             . (isset($offset) ? ' OFFSET ' . $offset : ''));
 
         if (!empty($result)) {
-            $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
             foreach ($result as &$message) {
                 if (!empty($message['filecontainerid'])) {
+                    if (!isset($file_manager)) {
+                        $file_manager = new LMSFileManager($this->db, $this->auth, $this->cache, $this->syslog);
+                    }
                     $file_containers = $file_manager->GetFileContainers('messageid', $message['id']);
                     $message['files'] = $file_containers[0]['files'];
                 }

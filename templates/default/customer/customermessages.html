@@ -88,10 +88,21 @@
 							&& $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD class="text-right nobr">
+						{if $item.files}
+							{button class="toggle-file-list" type="link" icon="fileupload" tip="Show file list" resourceid={$item.filecontainerid}}
+						{/if}
 						{button type="link" icon="delete" class="delete-message" href="?m=messagedel&id={$item.id}"
 							tip="Delete"}
 						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}"
 							form="customermessages-form">
+						<div id="files-{$item.filecontainerid}" style="display: none;" class="files">
+							{foreach $item.files as $file}
+								{documentview id="{$item.id}-{$file.id}" type=$file.contenttype name=$file.filename
+								url="?m=attachments&attachmentaction=viewfile&type=messageid&id={$item.filecontainerid}&fileid={$file.id}" external=true
+								text="{$file.filename} <img src=\"img/{if preg_match('/pdf/',$file.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$file.contenttype)}xls{else}view{/if}.gif\">"}
+								<br>
+							{/foreach}
+						</div>
 					</TD>
 				</TR>
 				{foreachelse}

@@ -37,4 +37,10 @@ $(function() {
 		});
 		return false;
 	});
+
+	$('.toggle-file-list').click(function () {
+		var containerid = parseInt($(this).attr('data-resourceid'));
+		var elem = $('#files-' + containerid);
+		elem.toggle();
+	});
 });
