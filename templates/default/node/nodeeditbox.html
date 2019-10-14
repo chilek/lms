@@ -109,7 +109,7 @@
 												<option value="{$net.id}" data-pubnetid="{$net.pubnetid}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="lms-ui-error"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</option>
 											{/foreach}
 										</select>
-										{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only'))}
+										{if (ConfigHelper::checkConfig('phpui.show_assigned_networks_only')) && ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
 										<script>
 											$('[name="nodeedit[netid]"]').change(function() {
 												var pubnetid = parseInt($('option:selected', this).attr('data-pubnetid'));
