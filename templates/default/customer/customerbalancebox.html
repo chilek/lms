@@ -167,13 +167,13 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
+									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
+										resourceid="{$item.docid}" icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
+								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Invoice"}
+									resourceid="{$item.docid}" icon_tip="Invoice"}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}
 								{if !$item.cancelled && !$item.archived && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
@@ -204,13 +204,13 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-invoiceinfo"
+									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-invoiceinfo"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
+										resourceid="{$item.docid}" icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-invoiceinfo"
+								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-invoiceinfo"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="pro forma invoice"}
+									resourceid="{$item.docid}" icon_tip="pro forma invoice"}
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								{if !$item.cancelled && !$item.referenced}
 									{button type="link" icon="correction" href="?m=invoicenote&id={$item.docid}&action=init"
@@ -228,13 +228,13 @@
 									{/if}
 								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
-									{button type="link" icon="view" class="lms-ui-tooltip-docnumber"
+									{button type="link" icon="view" class="print-invoice lms-ui-tooltip-docnumber"
 										href="?m=invoice&id={$item.docid}&dontpublish=1"
-										resourceid="{$item.docid}" external=true icon_tip="View"}
+										resourceid="{$item.docid}" icon_tip="View"}
 								{/if}
-								{button type="link" icon="print" class="lms-ui-tooltip-docnumber"
+								{button type="link" icon="print" class="print-invoice lms-ui-tooltip-docnumber"
 									href="?m=invoice&id={$item.docid}"
-									resourceid="{$item.docid}" external=true icon_tip="Credit note"}
+									resourceid="{$item.docid}" icon_tip="Credit note"}
 								{if !$item.archived && !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 									{textformat assign="onclick" wrap=5000}
 										{if $item.published}
@@ -460,6 +460,22 @@
 		document.addbalance.submit();
 	});
 
+	$('.print-invoice').click(function() {
+		var add = "";
+		if(document.addbalance.original.checked)
+			add = "&original=1";
+		if(document.addbalance.copy.checked)
+			add += "&copy=1";
+		if (document.addbalance.duplicate.checked) {
+			add += "&duplicate=1";
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
+		window.open($(this).attr('href') + add);
+		return false;
+	});
 
 	$('#print-invoices,#print-notes').click(function() {
 		if (!$(this).closest('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
@@ -575,7 +591,19 @@
 	$('.send-invoice').click(function(e) {
 		confirmDialog($t('Are you sure, you want to send invoice to customer \'$a\'?', '{$customerinfo.customername|escape:"javascript"|escape:"html"}'), this)
 			.done(function() {
-				window.open($(this).attr('href'));
+				var add = "";
+				if(document.addbalance.original.checked)
+					add = "&original=1";
+				if(document.addbalance.copy.checked)
+					add += "&copy=1";
+				if(document.addbalance.duplicate.checked) {
+					add += "&duplicate=1";
+					var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+					if (duplicate_date > 0) {
+						add += "&duplicate-date=" + duplicate_date;
+					}
+				}
+				window.open($(this).attr('href') + add);
 			});
 		return false;
 	});
