@@ -201,11 +201,13 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         if ($with_disabled == false) {
             return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
+				pubnetid
 				FROM networks WHERE disabled=0 ORDER BY name');
         } else {
             return $this->db->GetAll('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled 
+				address AS addresslong, mask, mask2prefix(inet_aton(mask)) AS prefix, disabled,
+				pubnetid
 				FROM networks ORDER BY name');
         }
     }
