@@ -298,7 +298,7 @@ if (isset($_POST['schema'])) {
                     }
                 } else {
                     // removed periods
-                    $tdata = array_slice($tdata, 0, $data_cnt);
+                    $tdata = array_slice($tdata, 0, $data_cnt - 1);
                 }
 
                 $tdata[] = $last_data;
