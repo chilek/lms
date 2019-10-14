@@ -620,7 +620,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $ending_period_date = mktime(23, 59, 59, $month, 0, $year);
                     }
 
-                    if (!$ending_period_date || $ending_period_end > $datefrom) {
+                    $__datefrom = $idx ? $datefrom : 0;
+                    $__dateto = $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date;
+
+                    if ($__datefrom < $__dateto || !$__dateto) {
                         // creates assignment record for schema period
                         $args = array(
                             SYSLOG::RES_TARIFF => empty($tariffid) ? null : $tariffid,
@@ -633,8 +636,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && $idx == 1 ? 1 : 0,
                             SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : null,
                             'paytype' => !empty($data['paytype']) ? $data['paytype'] : null,
-                            'datefrom' => $idx ? $datefrom : 0,
-                            'dateto' => $idx && ($idx < count($data_tariff) - 1) ? $dateto : $ending_period_date,
+                            'datefrom' => $__datefrom,
+                            'dateto' => $__dateto,
                             'pdiscount' => 0,
                             'vdiscount' => 0,
                             'attribute' => !empty($data['attribute']) ? $data['attribute'] : null,
