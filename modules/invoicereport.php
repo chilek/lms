@@ -24,16 +24,6 @@
  *  $Id$
  */
 
-function set_taxes($taxid)
-{
-    global $taxes, $DB;
-
-    if (empty($taxes[$taxid])) {
-        $taxes[$taxid] = $DB->GetRow('SELECT id, value, label, taxed
-			FROM taxes WHERE id = ?', array($taxid));
-    }
-}
-
 $from = $_POST['from'];
 $to = $_POST['to'];
 
@@ -163,18 +153,12 @@ if (!empty($_POST['numberplanid'])) {
     }
 }
 
-// we can't simply get documents with SUM(value*count)
-// because we need here invoices-like round-off
-
 $args = array($doctypes, $unixfrom, $unixto);
 
-$items = $DB->GetAll('SELECT c.docid, c.itemid,' . (in_array(DOC_DNOTE, $doctypes) ? '1 AS count,' : ' c.taxid, c.count,') . ' -cash.value AS value,
-	d.number, d.cdate, d.sdate, d.paytime, d.customerid, d.reference,
-	d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
+$taxes = $DB->GetAllByKey('SELECT id, value, label, taxed FROM taxes', 'id');
+
+$documents = $DB->GetAll('SELECT d.id, d.type
 	    FROM documents d
-		' . (in_array(DOC_DNOTE, $doctypes) ? 'LEFT JOIN debitnotecontents c ON c.docid = d.id'
-            : 'LEFT JOIN invoicecontents c ON c.docid = d.id') . '
-				LEFT JOIN cash ON cash.docid = d.id AND cash.itemid = c.itemid
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id' .
         ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
         . ' WHERE cancelled = 0 AND d.type IN ? AND (' . $wherecol . ' BETWEEN ? AND ?) '
@@ -188,57 +172,81 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid,' . (in_array(DOC_DNOTE, $doctype
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
 	    ORDER BY ' . $sortcol . ', d.id', $args);
 
-if ($items) {
-    foreach ($items as $row) {
-        $idx = $row['docid'];
-        $taxid = $row['taxid'];
+if ($documents) {
+    foreach ($documents as $document) {
+        $idx = $document['id'];
+        $doctype = $document['type'];
 
-        set_taxes($taxid);
+        switch ($doctype) {
+            case DOC_INVOICE:
+            case DOC_CNOTE:
+                $document = $LMS->GetInvoiceContent($idx);
+                break;
+            case DOC_DNOTE:
+                $document = $LMS->GetNoteContent($idx);
+                break;
+        }
 
-        $invoicelist[$idx]['custname'] = $row['name'];
-        $invoicelist[$idx]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
-        $invoicelist[$idx]['ten'] = ($row['ten'] ? trans('TEN').' '.$row['ten'] : ($row['ssn'] ? trans('SSN').' '.$row['ssn'] : ''));
+        $invoicelist[$idx]['custname'] = $document['name'];
+        $invoicelist[$idx]['custaddress'] = $document['address'];
+        $invoicelist[$idx]['ten'] = ($document['ten'] ? trans('TEN') . ' ' . $document['ten'] : ($document['ssn'] ? trans('SSN') . ' ' . $document['ssn'] : ''));
         $invoicelist[$idx]['number'] = docnumber(array(
-            'number' => $row['number'],
-            'template' => $row['template'],
-            'cdate' => $row['cdate'],
-            'customerid' => $row['customerid'],
+            'number' => $document['number'],
+            'template' => $document['template'],
+            'cdate' => $document['cdate'],
+            'customerid' => $document['customerid'],
         ));
-        $invoicelist[$idx]['cdate'] = $row['cdate'];
-        $invoicelist[$idx]['sdate'] = $row['sdate'];
-        $invoicelist[$idx]['pdate'] = $row['cdate'] + ($row['paytime'] * 86400);
-        $invoicelist[$idx]['customerid'] = $row['customerid'];
+        $invoicelist[$idx]['cdate'] = $document['cdate'];
+        $invoicelist[$idx]['sdate'] = $document['sdate'];
+        $invoicelist[$idx]['pdate'] = $document['pdate'];
+        $invoicelist[$idx]['customerid'] = $document['customerid'];
 
-        if (!isset($invoicelist[$idx][$taxid])) {
-            $invoicelist[$idx][$taxid]['tax'] = 0;
-            $invoicelist[$idx][$taxid]['val'] = 0;
+        foreach ($document['content'] as $itemid => $item) {
+            $taxid = intval($item['taxid']);
+
+            if (!isset($invoicelist[$idx][$taxid])) {
+                $invoicelist[$idx][$taxid]['tax'] = 0;
+                $invoicelist[$idx][$taxid]['val'] = 0;
+            }
+
+            if (!isset($invoicelist[$idx]['tax'])) {
+                $invoicelist[$idx]['tax'] = 0;
+            }
+            if (!isset($invoicelist[$idx]['brutto'])) {
+                $invoicelist[$idx]['brutto'] = 0;
+            }
+
+            if ($doctype == DOC_DNOTE) {
+                $tax = 0;
+                $brutto = $item['value'];
+                $netto = $item['value'];
+            } elseif (isset($document['invoice'])) {
+                $tax = $item['totaltax'] - $document['invoice']['content'][$itemid]['totaltax'];
+                $netto = $item['totalbase'] - $document['invoice']['content'][$itemid]['totalbase'];
+                $brutto = $item['total'] - $document['invoice']['content'][$itemid]['total'];
+            } else {
+                $tax = $item['totaltax'];
+                $netto = $item['totalbase'];
+                $brutto = $item['total'];
+            }
+
+            $invoicelist[$idx][$taxid]['tax'] += $tax;
+            $invoicelist[$idx][$taxid]['val'] += $netto;
+            $invoicelist[$idx]['tax'] += $tax;
+            $invoicelist[$idx]['brutto'] += $brutto;
+
+            if (!isset($listdata[$taxid])) {
+                $listdata[$taxid]['tax'] = 0;
+                $listdata[$taxid]['val'] = 0;
+            }
+
+            $listdata[$taxid]['tax'] += $tax;
+            $listdata[$taxid]['val'] += $netto;
+            $listdata['tax'] += $tax;
+            $listdata['brutto'] += $brutto;
         }
 
-        if (!isset($invoicelist[$idx]['tax'])) {
-            $invoicelist[$idx]['tax'] = 0;
-        }
-        if (!isset($invoicelist[$idx]['brutto'])) {
-            $invoicelist[$idx]['brutto'] = 0;
-        }
 
-        $val = ($row['value'] / ($taxes[$taxid]['value'] + 100)) * 100;
-        $tax = round($row['value'] - $val, 2);
-        $val = round($val, 2);
-
-        $invoicelist[$idx][$taxid]['tax'] += $tax;
-        $invoicelist[$idx][$taxid]['val'] += $val;
-        $invoicelist[$idx]['tax'] += $tax;
-        $invoicelist[$idx]['brutto'] += $row['value'];
-
-        if (!isset($listdata[$taxid])) {
-            $listdata[$taxid]['tax'] = 0;
-            $listdata[$taxid]['val'] = 0;
-        }
-
-        $listdata[$taxid]['tax'] += $tax;
-        $listdata[$taxid]['val'] += $val;
-        $listdata['tax'] += $tax;
-        $listdata['brutto'] += $row['value'];
     }
 
     // get used tax rates for building report table
