@@ -139,7 +139,7 @@ if (empty($doctypes)) {
 }
 
 if (in_array(DOC_DNOTE, $doctypes)) {
-    $taxescount = -1;
+    $taxescount = 0;
 } else {
     $taxescount = 1;
 }
