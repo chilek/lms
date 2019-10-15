@@ -245,8 +245,6 @@ if ($documents) {
             $listdata['tax'] += $tax;
             $listdata['brutto'] += $brutto;
         }
-
-
     }
 
     // get used tax rates for building report table
