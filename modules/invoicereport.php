@@ -141,7 +141,7 @@ if (empty($doctypes)) {
 if (in_array(DOC_DNOTE, $doctypes)) {
     $taxescount = -1;
 } else {
-    $taxescount = 0;
+    $taxescount = 1;
 }
 
 if (!empty($_POST['numberplanid'])) {
