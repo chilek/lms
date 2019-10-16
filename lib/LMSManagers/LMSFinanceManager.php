@@ -1479,6 +1479,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTradeDocument($doc)
     {
+        global $DOCENTITIES;
+
         if (isset($doc['archived']) && !empty($doc['archived'])) {
             $document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
             return $document_manager->GetArchiveDocument($doc['id']);
@@ -1536,8 +1538,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $filename = str_replace('%number', $document_number, $filename);
         $filename = preg_replace('/[^[:alnum:]_\.]/i', '_', $filename);
 
-        if (!isset($doc['which']) || !count($doc['which'])) {
-            $which = array(trans('ORIGINAL'));
+        if (!isset($doc['which']) || !$doc['which']) {
+            $which = DOC_ENTITY_ORIGINAL;
         } else {
             $which = $doc['which'];
         }
@@ -1546,13 +1548,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if (isset($data['lang'])) {
             refresh_ui_language($data['lang']);
         }
-        foreach ($which as $type) {
-            $data['type'] = $type;
-            $data['duplicate-date'] = $doc['duplicate-date'];
-            $document->Draw($data);
-            $idx++;
-            if ($idx < count($which)) {
-                $document->NewPage();
+
+        $count = Utils::docEntityCount($which);
+        foreach (array_keys($DOCENTITIES) as $type) {
+            if ($which & $type) {
+                $data['type'] = $type;
+                $data['duplicate-date'] = $doc['duplicate-date'];
+                $document->Draw($data);
+                $idx++;
+                if ($idx < $count) {
+                    $document->NewPage();
+                }
             }
         }
         if (isset($data['lang'])) {

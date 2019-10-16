@@ -162,4 +162,9 @@ class Utils
 
         return false;
     }
+
+    public static function docEntityCount($entities)
+    {
+        return substr_count(sprintf("%b", $entities), '1');
+    }
 }

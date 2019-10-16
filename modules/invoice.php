@@ -62,7 +62,7 @@ function parse_address($address)
 
 function try_generate_archive_invoices($ids)
 {
-    global $LMS, $invoice_type, $which, $document, $classname, $dontpublish;
+    global $LMS, $invoice_type, $which, $document, $classname, $dontpublish, $DOCENTITIES;
 
     $SMARTY = LMSSmarty::getInstance();
 
@@ -73,7 +73,7 @@ function try_generate_archive_invoices($ids)
         die('Currently you can only print many documents of type text/html or application/pdf!');
     }
 
-    if (!empty($archive_stats) && $archive_stats['archive'] > 0 && !in_array(trans('DUPLICATE'), $which)) {
+    if (!empty($archive_stats) && $archive_stats['archive'] > 0 && !($which & DOC_ENTITY_DUPLICATE)) {
         if ($archive_stats['rtype'] && $archive_stats['rtype'] != $invoice_type) {
             $invoice_type = $archive_stats['rtype'];
         }
@@ -93,7 +93,7 @@ function try_generate_archive_invoices($ids)
             if ($LMS->isArchiveDocument($invoiceid)) {
                 $file = $LMS->GetArchiveDocument($invoiceid);
             } else {
-                $count = count($which);
+                $count = Utils::docEntityCount($which);
                 $i = 0;
 
                 if (!$document) {
@@ -106,13 +106,15 @@ function try_generate_archive_invoices($ids)
 
                 $invoice = $LMS->GetInvoiceContent($invoiceid);
                 $invoice['dontpublish'] = $dontpublish;
-                foreach ($which as $type) {
-                    $i++;
-                    if ($i == $count) {
-                        $invoice['last'] = true;
+                foreach (array_keys($DOCENTITIES) as $type) {
+                    if ($which & $type) {
+                        $i++;
+                        if ($i == $count) {
+                            $invoice['last'] = true;
+                        }
+                        $invoice['type'] = $type;
+                        invoice_body($document, $invoice);
                     }
-                    $invoice['type'] = $type;
-                    invoice_body($document, $invoice);
                 }
                 $file['data'] = $document->WriteToString();
 
@@ -224,28 +226,19 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
     $layout['pagetitle'] = trans('Invoices');
 
-    $which = array();
-
-    if (!empty($_GET['original'])) {
-        $which[] = trans('ORIGINAL');
-    }
-    if (!empty($_GET['copy'])) {
-        $which[] = trans('COPY');
-    }
-    if (!empty($_GET['duplicate'])) {
-        $which[] = trans('DUPLICATE');
+    $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
+    if ($which & DOC_ENTITY_DUPLICATE) {
         $duplicate_date = isset($_GET['duplicate-date']) ? intval($_GET['duplicate-date']) : 0;
     } else {
         $duplicate_date = 0;
     }
-
-    if (!count($which)) {
-        $which[] = trans('ORIGINAL');
+    if (!$which) {
+        $which = DOC_ENTITY_ORIGINAL;
     }
 
     try_generate_archive_invoices($ids);
 
-    $count = count($ids) * count($which);
+    $count = count($ids) * Utils::docEntityCount($which);
     $i = 0;
 
     foreach ($ids as $idx => $invoiceid) {
@@ -260,15 +253,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         }
 
         $invoice['dontpublish'] = $dontpublish;
-        foreach ($which as $type) {
-            $i++;
-            if ($i == $count) {
-                $invoice['last'] = true;
-            }
-            $invoice['type'] = $type;
-            $invoice['duplicate-date'] = $duplicate_date;
+        foreach (array_keys($DOCENTITIES) as $type) {
+            if ($which & $type) {
+                $i++;
+                if ($i == $count) {
+                    $invoice['last'] = true;
+                }
+                $invoice['type'] = $type;
+                $invoice['duplicate-date'] = $duplicate_date;
 
-            invoice_body($document, $invoice);
+                invoice_body($document, $invoice);
+            }
         }
     }
 } elseif (isset($_GET['fetchallinvoices'])) {
@@ -309,20 +304,14 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         die;
     }
 
-    $which = array();
-
-    if (!empty($_GET['original'])) {
-        $which[] = trans('ORIGINAL');
+    $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
+    if ($which & DOC_ENTITY_DUPLICATE) {
+        $duplicate_date = isset($_GET['duplicate-date']) ? intval($_GET['duplicate-date']) : 0;
+    } else {
+        $duplicate_date = 0;
     }
-    if (!empty($_GET['copy'])) {
-        $which[] = trans('COPY');
-    }
-    if (!empty($_GET['duplicate'])) {
-        $which[] = trans('DUPLICATE');
-    }
-
-    if (!count($which)) {
-        $which[] = trans('ORIGINAL');
+    if (!$which) {
+        $which = DOC_ENTITY_ORIGINAL;
     }
 
     if ($jpk) {
@@ -425,7 +414,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         try_generate_archive_invoices($ids);
     }
 
-    $count = count($ids) * count($which);
+    $count = count($ids) * Utils::docEntityCount($which);
     $i = 0;
 
     $invoices = array();
@@ -827,13 +816,15 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t</Faktura>\n";
             }
         } else {
-            foreach ($which as $type) {
-                $i++;
-                if ($i == $count) {
-                    $invoice['last'] = true;
+            foreach (array_keys($DOCENTITIES) as $type) {
+                if ($which & $type) {
+                    $i++;
+                    if ($i == $count) {
+                        $invoice['last'] = true;
+                    }
+                    $invoice['type'] = $type;
+                    invoice_body($document, $invoice);
                 }
-                $invoice['type'] = $type;
-                invoice_body($document, $invoice);
             }
         }
     }
@@ -922,39 +913,34 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         $layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
     }
 
-    $which = array();
-
-    if (!empty($_GET['original'])) {
-        $which[] = trans('ORIGINAL');
-    }
-    if (!empty($_GET['copy'])) {
-        $which[] = trans('COPY');
-    }
-    if (!empty($_GET['duplicate'])) {
-        $which[] = trans('DUPLICATE');
+    $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
+    if ($which & DOC_ENTITY_DUPLICATE) {
         $duplicate_date = isset($_GET['duplicate-date']) ? intval($_GET['duplicate-date']) : 0;
     } else {
         $duplicate_date = 0;
     }
+    if (!$which) {
+        $which = DOC_ENTITY_ORIGINAL;
+    }
 
-    if (!count($which)) {
+    if (!$which) {
         $tmp = explode(',', ConfigHelper::getConfig('invoices.default_printpage'));
         foreach ($tmp as $t) {
             if (trim($t) == 'original') {
-                $which[] = trans('ORIGINAL');
+                $which |= DOC_ENTITY_ORIGINAL;
             } elseif (trim($t) == 'copy') {
-                $which[] = trans('COPY');
+                $which |= DOC_ENTITY_COPY;
             } elseif (trim($t) == 'duplicate') {
-                $which[] = trans('DUPLICATE');
+                $which |= DOC_ENTITY_DUPLICATE;
             }
         }
 
-        if (!count($which)) {
-            $which[] = trans('ORIGINAL');
+        if (!$which) {
+            $which = DOC_ENTITY_ORIGINAL;
         }
     }
 
-    if ($invoice['archived'] && !in_array(trans('DUPLICATE'), $which)) {
+    if ($invoice['archived'] && !($which & DOC_ENTITY_DUPLICATE)) {
         $invoice = $LMS->GetArchiveDocument($_GET['id']);
         if ($invoice) {
             header('Content-Type: ' . $invoice['content-type']);
@@ -965,19 +951,21 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         die;
     }
 
-    $count = count($which);
+    $count = Utils::docEntityCount($which);
     $i = 0;
 
     $invoice['dontpublish'] = $dontpublish;
-    foreach ($which as $type) {
-        $i++;
-        if ($i == $count) {
-            $invoice['last'] = true;
-        }
-        $invoice['type'] = $type;
-        $invoice['duplicate-date'] = $duplicate_date;
+    foreach (array_keys($DOCENTITIES) as $type) {
+        if ($which & $type) {
+            $i++;
+            if ($i == $count) {
+                $invoice['last'] = true;
+            }
+            $invoice['type'] = $type;
+            $invoice['duplicate-date'] = $duplicate_date;
 
-        invoice_body($document, $invoice);
+            invoice_body($document, $invoice);
+        }
     }
 } else {
     $SESSION->redirect('?m=invoicelist');

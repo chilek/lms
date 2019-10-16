@@ -230,7 +230,7 @@ class LMSEzpdfReceipt extends LMSDocument
 
         $y = 800;
 
-        foreach ($this->data['which'] as $which) {
+        for ($i = 0; $i < Utils::docEntityCount($this->data['which']); $i++) {
             $y = $this->receipt_header(80, $y);
             $y = $this->receipt_buyer(80, $y);
             $y = $this->receipt_data(80, $y);

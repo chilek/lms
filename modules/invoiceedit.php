@@ -663,11 +663,12 @@ switch ($action) {
         $DB->CommitTrans();
 
         if (isset($_GET['print'])) {
+            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+
             $SESSION->save('invoiceprint', array(
                 'invoice' => $invoice['id'],
-                'original' => !empty($_GET['original']) ? 1 : 0,
-                'copy' => !empty($_GET['copy']) ? 1 : 0,
-                'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
+                'which' => $which
+            ));
         }
 
         $SESSION->redirect('?m=invoicelist' . (isset($invoice['proforma']) && $invoice['proforma'] === 'edit' ? '&proforma=1' : ''));

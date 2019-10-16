@@ -107,22 +107,14 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
         );
 
         if (!empty($docs)) {
-            $which = array();
-            if (!empty($_GET['original'])) {
-                $which[] = trans('ORIGINAL');
-            }
-            if (!empty($_GET['copy'])) {
-                $which[] = trans('COPY');
-            }
-            if (!empty($_GET['duplicate'])) {
-                $which[] = trans('DUPLICATE');
+            $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
+            if ($which & DOC_ENTITY_DUPLICATE) {
                 $duplicate_date = isset($_GET['duplicate-date']) ? intval($_GET['duplicate-date']) : 0;
             } else {
                 $duplicate_date = 0;
             }
-
-            if (empty($which)) {
-                $which[] = trans('ORIGINAL');
+            if (!$which) {
+                $which = DOC_ENTITY_ORIGINAL;
             }
 
             $currtime = time();

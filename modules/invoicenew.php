@@ -561,9 +561,9 @@ switch ($action) {
         $SESSION->remove('invoicenewerror');
 
         if (isset($_GET['print'])) {
-            $SESSION->save('invoiceprint', array('invoice' => $iid,
-                'original' => !empty($_GET['original']) ? 1 : 0,
-                'copy' => !empty($_GET['copy']) ? 1 : 0));
+            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+
+            $SESSION->save('invoiceprint', array('invoice' => $iid, 'which' => $which));
         }
 
         if (isset($_POST['reuse']) || isset($_GET['print'])) {
@@ -612,8 +612,8 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
 }
 
 if ($newinvoice = $SESSION->get('invoiceprint')) {
-        $SMARTY->assign('newinvoice', $newinvoice);
-        $SESSION->remove('invoiceprint');
+    $SMARTY->assign('newinvoice', $newinvoice);
+    $SESSION->remove('invoiceprint');
 }
 
 $SMARTY->assign('covenantlist', $covenantlist);

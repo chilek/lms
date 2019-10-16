@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -224,9 +224,9 @@ switch ($action) {
         if (!$receipt['regid'] || !$receipt['type']) {
             break;
         }
-        
+
         $receipt['cdate'] = time();
-        
+
         if ($receipt['type'] == 'in') {
             $receipt['numberplanid'] = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
         } elseif ($receipt['type'] == 'out') {
@@ -235,7 +235,7 @@ switch ($action) {
                 $error['regid'] = trans('There is no cash in selected registry!');
             }
         }
-        
+
         if ($receipt['numberplanid']) {
             if (strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==false) {
                 $receipt['extended'] = true;
@@ -719,8 +719,9 @@ switch ($action) {
             $SESSION->remove('receiptadderror');
 
             if (isset($_GET['print'])) {
-                $SESSION->save('receiptprint', array('receipt' => $rid,
-                    'which' => (isset($_GET['which']) ? $_GET['which'] : '')));
+                $which = isset($_GET['which']) ? $_GET['which'] : 0;
+
+                $SESSION->save('receiptprint', array('receipt' => $rid, 'which' => $which));
             }
 
             $SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);
@@ -883,8 +884,9 @@ switch ($action) {
             $SESSION->remove('receiptadderror');
 
             if (isset($_GET['print'])) {
-                $SESSION->save('receiptprint', array('receipt' => $rid,
-                    'which' => (isset($_GET['which']) ? $_GET['which'] : '')));
+                $which = isset($_GET['which']) ? $_GET['which'] : 0;
+
+                $SESSION->save('receiptprint', array('receipt' => $rid, 'which' => $which));
             }
 
             $SESSION->redirect('?m=receiptlist&regid='.$receipt['regid'].'#'.$rid);

@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 {if !$receipt.last}<div style="page-break-after: always;">{/if}
-{if in_array("original", $type)}
+{if ($type & $smarty.const.DOC_ENTITY_ORIGINAL)}
 <div>
 <table width="100%">
 	<tr><td>
@@ -129,7 +129,7 @@
 			    </tr>
 			    <tr>
 				<td width="100%" class="fbottom">{trans("item")}</td>
-			    </tr> 
+			    </tr>
 			</table>
 		</td>
 		{if $receipt.type == "out"}
@@ -158,9 +158,9 @@
 	<tr><td style="border-top-width: 1pt; border-top-style: dashed;"></td></tr>
 </table>
 </div>
-{if in_array("copy", $type)}<br><br>{/if}
+{if ($type & $smarty.const.DOC_ENTITY_COPY)}<br><br>{/if}
 {/if}
-{if in_array("copy", $type)}
+{if ($type & $smarty.const.DOC_ENTITY_COPY)}
 <div>
 <table width="100%">
 	<tr><td>
@@ -287,7 +287,7 @@
 			    </tr>
 			    <tr>
 				<td width="100%" class="fbottom">{trans("item")}</td>
-			    </tr> 
+			    </tr>
 			</table>
 		</td>
 		{if $receipt.type == "out"}

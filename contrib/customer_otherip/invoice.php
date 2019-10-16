@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -56,7 +56,7 @@ $docnumber = docnumber(array(
 ));
 $layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
 $invoice['last'] = true;
-$invoice['type'] = trans('ORIGINAL');
+$invoice['type'] = DOC_ENTITY_ORIGINAL;
 
 $document->Draw($invoice);
 

@@ -6,15 +6,12 @@
 <SCRIPT>
 	function savereceipt(print)
 	{
-		var add = "";
-		if (document.additem.original.checked && document.additem.copy.checked)
-			add = "";
-		else if (document.additem.original.checked && !document.additem.copy.checked)
-			add = "&which=original";
-		else if (!document.additem.original.checked && document.additem.copy.checked)
-			add = "&which=copy";
+		var which = 0;
+		$('form[name="additem"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
 
-		document.additem.action = "?m=receiptedit&action=save" + add;
+		document.additem.action = "?m=receiptedit&action=save&which=" + which;
 
 		if (print == 1) {
 			document.additem.action += "&print=1";
@@ -291,12 +288,16 @@
 	<TR>
 		<TD COLSPAN="4" CLASS="{if $covenantlist}flr{else}fbottomu{/if}" ALIGN="RIGHT">
 			<label>
-				<INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}>
-				{trans("original")}
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+						{if preg_match('/original/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
 			</label>
 			<label>
-				<INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
-				{trans("copy")}
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+						value="{$smarty.const.DOC_ENTITY_COPY}"
+						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 			</label>
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}

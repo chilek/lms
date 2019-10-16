@@ -685,7 +685,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         //$this->backend->SetFont('arial', '', 16);
         //$this->backend->Write(0, $this->data['type'], '', 0, 'C', true, 0, false, false, 0);
 
-        if ($this->data['type'] == trans('DUPLICATE')) {
+        if ($this->data['type'] == DOC_ENTITY_DUPLICATE) {
             $this->backend->SetFont('arial', '', 10);
             $title = trans('DUPLICATE, draw-up date:') . ' ' . date('d.m.Y', $this->data['duplicate-date']
                 ? $this->data['duplicate-date'] : time());

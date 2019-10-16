@@ -134,13 +134,15 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
 
     $layout['pagetitle'] = trans('Cash Receipts');
 
-    $type = array();
-    if (isset($_GET['which']) && !empty($_GET['which'])) {
-        $type = explode(',', $_GET['which']);
-    }
-    if (empty($type)) {
-        $type = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
-    }
+    $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
+    if (!$which) {
+        foreach (explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy')) as $t) {
+            if (trim($t) == 'original') {
+                $which |= DOC_ENTITY_ORIGINAL;
+            } elseif (trim($t) == 'copy') {
+                $which |= DOC_ENTITY_COPY;
+            }
+        }
 
     $i = 0;
     $count = count($ids);
@@ -154,7 +156,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
                 $receipt['last'] = true;
             }
             $receipt['first'] = $i <= 1;
-            $receipt['which'] = $type;
+            $receipt['which'] = $which;
             $document->Draw($receipt);
         }
     }
@@ -173,13 +175,18 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
     $receipt['last'] = true;
     $receipt['first'] = true;
 
-    $receipt['which'] = array();
-    if (isset($_GET['which']) && !empty($_GET['which'])) {
-        $receipt['which'] = explode(',', $_GET['which']);
+    $which = isset($_GET['which']) ? intval($_GET['which']) : 0;
+    if (!$which) {
+        foreach (explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy')) as $t) {
+            if (trim($t) == 'original') {
+                $which |= DOC_ENTITY_ORIGINAL;
+            } elseif (trim($t) == 'copy') {
+                $which |= DOC_ENTITY_COPY;
+            }
+        }
     }
-    if (empty($receipt['which'])) {
-        $receipt['which'] = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
-    }
+
+    $receipt['which'] = $which;
 
     $document->Draw($receipt);
 }

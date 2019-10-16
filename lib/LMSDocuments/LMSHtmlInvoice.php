@@ -43,7 +43,7 @@ class LMSHtmlInvoice extends LMSHtmlDocument
             $template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
         }
         $this->smarty->assign('type', $this->data['type']);
-        $this->smarty->assign('duplicate', $this->data['type'] == trans('DUPLICATE'));
+        $this->smarty->assign('duplicate', $this->data['type'] == DOC_ENTITY_DUPLICATE);
         $this->smarty->assign('invoice', $this->data);
         $this->contents .= $this->smarty->fetch('file:' . $template_file);
     }

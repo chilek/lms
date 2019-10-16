@@ -273,7 +273,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         //$font_size = 16;
         //$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['type']);
 
-        if ($this->data['type'] == trans('DUPLICATE')) {
+        if ($this->data['type'] == DOC_ENTITY_DUPLICATE) {
             $font_size = 10;
             $y = $y - $this->backend->text_align_left($x, $y+4, $font_size, trans('DUPLICATE, draw-up date:') . ' '
                 . date('Y/m/d', $this->data['duplicate-date'] ? $this->data['duplicate-date'] : time()));

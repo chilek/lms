@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -568,9 +568,9 @@ switch ($action) {
         $SESSION->remove('cnoteerror');
 
         if (isset($_GET['print'])) {
-            $SESSION->save('invoiceprint', array('invoice' => $id,
-                'original' => !empty($_GET['original']) ? 1 : 0,
-                'copy' => !empty($_GET['copy']) ? 1 : 0));
+            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+
+            $SESSION->save('invoiceprint', array('invoice' => $id, 'which' => $which));
         }
 
         $SESSION->redirect('?m=invoicelist');

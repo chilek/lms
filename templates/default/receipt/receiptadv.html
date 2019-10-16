@@ -20,9 +20,14 @@
 
 	function savereceipt(print)
 	{
-		document.receipt.action = "?m=receiptadv&id={$receipt.id}";
+		var which = 0;
+		$('form[name="receipt"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
 
-		if(print == 1) {
+		document.receipt.action = "?m=receiptadv&id={$receipt.id}&which=" + which;
+
+		if (print == 1) {
 			document.receipt.action += "&print=1";
 		}
 		document.receipt.submit();
@@ -137,12 +142,16 @@
 	<TR CLASS="light">
 		<TD WIDTH="100%" ALIGN="right" CLASS="fbottomu">
 			<label>
-				<INPUT type="checkbox" name="original"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
-				{trans("original")}
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
 			</label>
 			<label>
-				<INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
-				{trans("copy")}
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 			</label>
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			<A HREF="javascript: savereceipt(0);">{trans("Save")} <IMG SRC="img/save.gif" ALT=""></A>&nbsp;

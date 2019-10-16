@@ -13,15 +13,12 @@
 <!--
 	function prints()
 	{
-		var add = "";
-		if (document.page.original.checked && document.page.copy.checked)
-			add = "&which=original,copy";
-		else if (document.page.original.checked && !document.page.copy.checked)
-			add = "&which=original";
-		else if (!document.page.original.checked && document.page.copy.checked)
-			add = "&which=copy";
+		var which = 0;
+		$('form[name="page"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
 
-		document.page.action = "?m=receipt&print=cached" + add;
+		document.page.action = "?m=receipt&print=cached&which=" + which;
 		document.page.target = "_blank";
 		document.page.submit();
 	}
@@ -170,12 +167,16 @@
 					<TD ALIGN="left" nowrap>
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
 						 <label>
-							<INPUT type="checkbox" id="original" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}>
-							{trans("original")}
+							<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+									value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+									{if preg_match('/original/i', $default_printpage)} checked{/if}>
+							{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
 						</label>
 						<label>
-							<INPUT type="checkbox" id="copy" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
-							{trans("copy")}
+							<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+									value="{$smarty.const.DOC_ENTITY_COPY}"
+									{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+							{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 						</label>
 					</TD>
 					<TD class="text-right nobr">

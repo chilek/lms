@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,19 +45,19 @@ if (isset($_GET['id'])) {
     if (!$record) {
         $SESSION->redirect('?'.$SESSION->get('backto'));
     }
-    
+
     $record['value'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents 
 			    WHERE docid = ?', array($record['id']));
 
     if (strpos($record['template'], '%I') !== false) {
         $receipt['out_extended'] = true;
     }
-    
+
     if (strpos($DB->GetOne('SELECT template FROM numberplans 
 			    WHERE id IN (SELECT in_numberplanid FROM cashregs WHERE id = ?)', array($regid)), '%I') !== false) {
         $receipt['in_extended'] = true;
     }
-    
+
         $receipt['id'] = $id;
         $receipt['regid'] = $regid;
 }
@@ -75,13 +75,13 @@ if (isset($_POST['receipt'])) {
     $in_extended = isset($receipt['in_extended']) ? $receipt['in_extended'] : null;
 
     $receipt = $_POST['receipt'];
-    
+
     $receipt['out_extended'] = $out_extended;
     $receipt['in_extended'] = $in_extended;
     $receipt['regid'] = $regid;
-    
+
     $value = f_round($receipt['value']);
-    
+
     if ($receipt['type'] == 'return') {
         $receipt['cdate'] = $_POST['receiptr']['cdate'];
     }
@@ -166,7 +166,7 @@ if (isset($_POST['receipt'])) {
     if (!$error) {
         $DB->BeginTrans();
         $DB->LockTables(array('documents', 'numberplans'));
-        
+
         if ($receipt['type'] == 'return') {
             if (!$receipt['number']) {
                 $in_number = $LMS->GetNewDocumentNumber(array(
@@ -211,7 +211,7 @@ if (isset($_POST['receipt'])) {
                         $fullnumber,
                         )
         );
-                        
+
         $rid = $DB->GetLastInsertId('documents');
 
         if ($receipt['type'] == 'settle') {
@@ -243,12 +243,12 @@ if (isset($_POST['receipt'])) {
                         $fullnumber,
                         )
             );
-                        
+
             $rid2 = $DB->GetLastInsertId('documents');
         }
-        
+
         $DB->UnLockTables();
-            
+
         $DB->Execute(
             'INSERT INTO receiptcontents (docid, itemid, value, description, regid)
 					VALUES(?, 1, ?, ?, ?)',
@@ -299,8 +299,9 @@ if (isset($_POST['receipt'])) {
         $DB->CommitTrans();
 
         if (isset($_GET['print'])) {
-            $SESSION->save('receiptprint', array('receipt' => $rid, 'receipt2' => $rid2,
-                                'which' => (isset($_GET['which']) ? $_GET['which'] : '')));
+            $which = isset($_GET['which']) ? $_GET['which'] : 0;
+
+            $SESSION->save('receiptprint', array('receipt' => $rid, 'receipt2' => $rid2, 'which' => $which));
         }
 
         $SESSION->redirect('?m=receiptlist&regid='.$regid.'#'.$rid);

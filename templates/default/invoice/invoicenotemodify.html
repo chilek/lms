@@ -5,13 +5,23 @@
 <H1>{$layout.pagetitle}</H1>
 <script>
 
-	function printinvoice() {
-		var add = "";
-		if (document.save.original.checked)
-			add += "&original=1";
-		if (document.save.copy.checked)
-			add += "&copy=1";
-		document.save.action = "?m={$layout.module}&action=save&print=1" + add;
+	function saveInvoice() {
+		var which = 0;
+		$('form[name="save"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+
+		document.save.action += "&which=" + which;
+		document.save.submit();
+	}
+
+	function printInvoice() {
+		var which = 0;
+		$('form[name="save"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+
+		document.save.action = "?m={$layout.module}&action=save&print=1&which=" + which;
 		document.save.submit();
 	}
 
@@ -367,11 +377,21 @@
 	<TR class="lms-ui-button-panel">
 		<TD COLSPAN="9" class="text-right">
 			{$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
+			<label>
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+						value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+						{if preg_match('/original/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
+			</label>
+			<label>
+				<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+						value="{$smarty.const.DOC_ENTITY_COPY}"
+						{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
+			</label>&nbsp;
 			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="javascript:document.save.submit()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+			<A HREF="javascript:saveInvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="javascript:printInvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
 	</TBODY>

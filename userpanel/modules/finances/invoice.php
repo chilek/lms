@@ -28,11 +28,11 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 use setasign\Fpdi\PdfParser\StreamReader;
 
 global $LMS, $SESSION, $SMARTY, $layout;
-global $invoice_type, $type, $document, $classname;
+global $invoice_type, $which, $document, $classname;
 
 function try_generate_archive_invoices($ids)
 {
-    global $LMS, $SESSION, $invoice_type, $type, $document, $classname;
+    global $LMS, $SESSION, $invoice_type, $which, $document, $classname;
 
     $SMARTY = LMSSmarty::getInstance();
 
@@ -43,7 +43,7 @@ function try_generate_archive_invoices($ids)
         die('Currently you can only print many documents of type text/html or application/pdf!');
     }
 
-    if (!empty($archive_stats) && $archive_stats['archive'] > 0 && $type != trans('DUPLICATE')) {
+    if (!empty($archive_stats) && $archive_stats['archive'] > 0 && $which != DOC_ENTITY_DUPLICATE) {
         if ($archive_stats['rtype'] && $archive_stats['rtype'] != $invoice_type) {
             $invoice_type = $archive_stats['rtype'];
         }
@@ -87,7 +87,7 @@ function try_generate_archive_invoices($ids)
                     continue;
                 }
 
-                $invoice['type'] = $type;
+                $invoice['type'] = $which;
 
                 refresh_ui_language($invoice['lang']);
                 $document->Draw($invoice);
@@ -134,7 +134,7 @@ function try_generate_archive_invoices($ids)
     }
 }
 
-$type = ConfigHelper::checkConfig('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
+$which = ConfigHelper::checkConfig('userpanel.invoice_duplicate') ? DOC_ENTITY_DUPLICATE : DOC_ENTITY_ORIGINAL;
 
 $attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
 $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
@@ -189,7 +189,7 @@ if (!empty($_POST['inv'])) {
         if ($i == $count) {
             $invoice['last'] = true;
         }
-        $invoice['type'] = $type;
+        $invoice['type'] = $which;
 
         refresh_ui_language($invoice['lang']);
 
@@ -210,7 +210,7 @@ if (!empty($_POST['inv'])) {
         die;
     }
 
-    if ($invoice['archived'] && $type != trans('DUPLICATE')) {
+    if ($invoice['archived'] && $which != DOC_ENTITY_DUPLICATE) {
         $invoice = $LMS->GetArchiveDocument($_GET['id']);
         if ($invoice) {
             header('Content-Type: ' . $invoice['content-type']);
@@ -222,7 +222,7 @@ if (!empty($_POST['inv'])) {
     }
 
     $invoice['last'] = true;
-    $invoice['type'] = $type;
+    $invoice['type'] = $which;
 
     $docnumber = docnumber(array(
         'number' => $invoice['number'],

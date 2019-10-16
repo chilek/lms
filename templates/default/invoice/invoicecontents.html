@@ -260,9 +260,25 @@
                             {/if}
                         </TD>
                         <TD class="text-right">
-                            <INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{trans("original")}</A>
-                            <INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{trans("copy")}</A>
-                            <INPUT type="checkbox" name="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('duplicate');">{trans("duplicate")}</A>&nbsp;
+                            <label>
+                                <INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+                                        value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+                                        {if preg_match('/original/i', $default_printpage)} checked{/if}>
+                                {$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
+                            </label>
+                            <label>
+                                <INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+                                        value="{$smarty.const.DOC_ENTITY_COPY}"
+                                        {if preg_match('/copy/i', $default_printpage)} checked{/if}>
+                                {$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
+                            </label>
+                            <label>
+                                <INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_DUPLICATE}]"
+                                        value="{$smarty.const.DOC_ENTITY_DUPLICATE}"
+                                        {if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
+                                {$_DOCENTITIES[$smarty.const.DOC_ENTITY_DUPLICATE]}
+                            </label>
+                            &nbsp;
                             <A HREF="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}">{trans("Cancel")} <IMG src="img/cancel.gif"></A>
                             <A href="?m={$layout.module}&action=init{if $layout.module == 'invoiceedit'}&id={$invoice.id}{/if}">{trans("Clear Contents")} <IMG src="img/delete.gif" alt=""></A>
                             {if !$customer}
@@ -304,10 +320,6 @@
             e.tariffid.value = '';
             e.count.value = 1
         }
-	}
-
-	function setType(type) {
-		document.contents.elements[type].checked = !document.contents.elements[type].checked;
 	}
 
 	function addItem() {
@@ -352,20 +364,22 @@
 	}
 
 	function saveInvoice() {
-		document.contents.action += '&action=save';
+        var which = 0;
+        $('form[name="contents"] [name^="which"]:checked').each(function() {
+            which += parseInt($(this).val());
+        });
+
+		document.contents.action += '&action=save&which=' + which;
 		document.contents.submit();
 	}
 
 	function printInvoice() {
-		var add = "";
-		if (document.contents.original.checked)
-			add += "&original=1";
-		if (document.contents.copy.checked)
-			add += "&copy=1";
-		if (document.contents.duplicate.checked)
-			add += "&duplicate=1";
+        var which = 0;
+        $('form[name="contents"] [name^="which"]:checked').each(function() {
+            which += parseInt($(this).val());
+        });
 
-		document.contents.action += "&action=save&print=1" + add;
+		document.contents.action += "&action=save&print=1&which=" + which;
 		document.contents.submit();
 	}
 

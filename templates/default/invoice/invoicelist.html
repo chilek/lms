@@ -33,7 +33,7 @@
 <script>
 
 	{if $invoice.invoice}
-	window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy={$invoice.copy}&duplicate={$invoice.duplicate}');
+	window.open('?m=invoice&id={$invoice.invoice}&which={$invoice.which}');
 	{/if}
 
 	function filter()
@@ -80,7 +80,7 @@
 	</TR>
 	<TR>
 		<TD colspan="7">
-				<B>{trans("Filter:")} </B> 
+				<B>{trans("Filter:")} </B>
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
@@ -141,7 +141,7 @@
 			{$number}
 		</TD>
 		<TD class="text-right nobr">
-			{$invoice.value|money_format} 
+			{$invoice.value|money_format}
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.count}
@@ -244,7 +244,7 @@
 		<TD class="empty-table" COLSPAN="7">
 			<P>{trans("No such invoices in database.")}</P>
 		</TD>
-	</TR>	
+	</TR>
 	{/foreach}
     </TBODY>
     <TFOOT>
@@ -275,18 +275,23 @@
 						{/if}
 						{button icon="print" label="Print" id="print-invoices"}
 						<label>
-							<INPUT type="checkbox" name="original" {if preg_match('/original/i', $default_printpage)} checked{/if}>
-							{trans("original")}
+							<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_ORIGINAL}]"
+									value="{$smarty.const.DOC_ENTITY_ORIGINAL}"
+									{if preg_match('/original/i', $default_printpage)} checked{/if}>
+							{$_DOCENTITIES[$smarty.const.DOC_ENTITY_ORIGINAL]}
 						</label>
 						<label>
-							<INPUT type="checkbox" name="copy" {if preg_match('/copy/i', $default_printpage)} checked{/if}>
-							{trans("copy")}
+							<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_COPY}]"
+									value="{$smarty.const.DOC_ENTITY_COPY}"
+									{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+							{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 						</label>
 						<div id="duplicate-box">
 							<label>
-								<INPUT type="checkbox" name="duplicate" id="duplicate-checkbox"
+								<INPUT type="checkbox" name="which[{$smarty.const.DOC_ENTITY_DUPLICATE}]" id="duplicate-checkbox"
+										value="{$smarty.const.DOC_ENTITY_DUPLICATE}"
 										{if preg_match('/duplicate/i', $default_printpage)} checked{/if}>
-								{trans("duplicate")}
+								{$_DOCENTITIES[$smarty.const.DOC_ENTITY_DUPLICATE]}
 							</label>
 							<div id="duplicate-box-date-selector"
 									{if !preg_match('/duplicate/i', $default_printpage)} style="display: none;"{/if}>
@@ -399,19 +404,20 @@
 		}
 
 		confirmDialog($t("Are you sure, you want to send invoices to customers?"), this).done(function () {
-			if (document.page.original.checked)
-				add = "&original=1";
-			if (document.page.copy.checked)
-				add += "&copy=1";
-			if (document.page.duplicate.checked) {
-				add += "&duplicate=1";
+			var add = "";
+			var which = 0;
+			$('form[name="page"] [name^="which"]:checked').each(function() {
+				which += parseInt($(this).val());
+			});
+			add += "&which=" + which;
+			if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
 				var duplicate_date = parseInt($('[name="duplicate-date"]').val());
 				if (duplicate_date > 0) {
 					add += "&duplicate-date=" + duplicate_date;
 				}
 			}
 
-			document.page.action = "?m=invoicesend&marks=invoice";
+			document.page.action = "?m=invoicesend&marks=invoice" + add;
 			document.page.target = "_blank";
 			document.page.submit();
 		});
@@ -447,12 +453,12 @@
 		}
 
 		var add = "";
-		if (document.page.original.checked)
-			add = "&original=1";
-		if (document.page.copy.checked)
-			add += "&copy=1";
-		if (document.page.duplicate.checked) {
-			add += "&duplicate=1";
+		var which = 0;
+		$('form[name="page"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+		add += "&which=" + which;
+		if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
 			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
 			if (duplicate_date > 0) {
 				add += "&duplicate-date=" + duplicate_date;

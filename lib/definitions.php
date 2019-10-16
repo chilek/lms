@@ -540,6 +540,16 @@ $DOCTYPES = array(
     DOC_OTHER       =>  trans('other')
 );
 
+define('DOC_ENTITY_ORIGINAL', 1);
+define('DOC_ENTITY_COPY', 2);
+define('DOC_ENTITY_DUPLICATE', 4);
+
+$DOCENTITIES = array(
+    DOC_ENTITY_ORIGINAL => trans('original'),
+    DOC_ENTITY_COPY => trans('copy'),
+    DOC_ENTITY_DUPLICATE => trans('duplicate'),
+);
+
 define('DOCRIGHT_VIEW', 1);
 define('DOCRIGHT_CREATE', 2);
 define('DOCRIGHT_CONFIRM', 4);
@@ -955,6 +965,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_MESSAGETEMPLATES', $MESSAGETEMPLATES);
     $SMARTY->assign('_ACCOUNTTYPES', $ACCOUNTTYPES);
     $SMARTY->assign('_DOCTYPES', $DOCTYPES);
+    $SMARTY->assign('_DOCENTITIES', $DOCENTITIES);
     $SMARTY->assign('_DOCRIGHTS', $DOCRIGHTS);
     $SMARTY->assign('_PERIODS', $PERIODS);
     $SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);
