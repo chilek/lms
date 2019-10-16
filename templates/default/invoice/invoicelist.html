@@ -226,15 +226,15 @@
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
 				{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-					{button type="link" icon="view" external=true href="?m=invoice&id={$invoice.id}&dontpublish=1"}
+					{button type="link" icon="view" class="print-invoice" href="?m=invoice&id={$invoice.id}&dontpublish=1"}
 				{/if}
-				{button type="link" icon="print" external=true href="?m=invoice&id={$invoice.id}"}
+				{button type="link" icon="print" class="print-invoice" href="?m=invoice&id={$invoice.id}"}
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
 				{if !$invoice.published || ConfigHelper::checkPrivilege('published_document_modification')}
-					{button type="link" icon="view" external=true href="?m=invoice&id={$invoice.id}&dontpublish=1"}
+					{button type="link" icon="view" class="print-invoice" href="?m=invoice&id={$invoice.id}&dontpublish=1"}
 				{/if}
-				{button type="link" icon="print" external=true href="?m=invoice&id={$invoice.id}"}
+				{button type="link" icon="print" class="print-invoice" href="?m=invoice&id={$invoice.id}"}
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="lms-ui-multi-check"{if $marks.$invoiceid} checked{/if}>
 		</TD>
@@ -445,6 +445,24 @@
 			document.page.target = "";
 			document.page.submit();
 		});
+	});
+
+	$('.print-invoice').click(function() {
+		var add = "";
+		var which = 0;
+		$('form[name="page"] [name^="which"]:checked').each(function() {
+			which += parseInt($(this).val());
+		});
+		add += "&which=" + which;
+		if (which & {$smarty.const.DOC_ENTITY_DUPLICATE}) {
+			var duplicate_date = parseInt($('[name="duplicate-date"]').val());
+			if (duplicate_date > 0) {
+				add += "&duplicate-date=" + duplicate_date;
+			}
+		}
+
+		window.open($(this).attr('href') + add);
+		return false;
 	});
 
 	$('#print-invoices').click(function() {
