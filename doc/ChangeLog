@@ -94,6 +94,8 @@ version 25-git (????-??-??):
   - enhancement: message file attachement are stored in message history
     (introduced sendinvoices.message_attachments configuration variable which enables/disables
     attachment storage for send invoice messages; 'false' by default) [chilan/ravvar]
+  - enhancement: invoices.post_address configuration variable controls post box address
+    visibility on invoices ('true' by default) [chilan]
 
 version 24.0 (2019-05-16):
 
