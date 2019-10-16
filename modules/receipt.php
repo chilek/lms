@@ -143,6 +143,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
                 $which |= DOC_ENTITY_COPY;
             }
         }
+    }
 
     $i = 0;
     $count = count($ids);
