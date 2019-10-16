@@ -127,7 +127,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && count($_POST['marks']
     }
 
     if (isset($_GET['cash'])) {
-        $ids = $DB->GetDocumentsForBalanceRecords($ids, array(DOC_RECEIPT));
+        $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_RECEIPT));
     }
 
     sort($ids);
