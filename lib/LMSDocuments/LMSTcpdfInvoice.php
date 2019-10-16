@@ -749,29 +749,31 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         $y = $this->backend->GetY();
 
-        $postbox = '';
-        if ($this->data['post_name'] || $this->data['post_address']) {
-            $lines = document_address(array(
-                'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
-                'address' => $this->data['post_address'],
-                'street' => $this->data['post_street'],
-                'zip' => $this->data['post_zip'],
-                'postoffice' => $this->data['post_postoffice'],
-                'city' => $this->data['post_city'],
-            ));
-            $postbox .= implode('<br>', $lines);
-        } else {
-            $postbox .= $this->data['name'] . '<br>';
-            $postbox .= $this->data['address'] . '<br>';
-            $postbox .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
-        }
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))) {
+            $postbox = '';
+            if ($this->data['post_name'] || $this->data['post_address']) {
+                $lines = document_address(array(
+                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'address' => $this->data['post_address'],
+                    'street' => $this->data['post_street'],
+                    'zip' => $this->data['post_zip'],
+                    'postoffice' => $this->data['post_postoffice'],
+                    'city' => $this->data['post_city'],
+                ));
+                $postbox .= implode('<br>', $lines);
+            } else {
+                $postbox .= $this->data['name'] . '<br>';
+                $postbox .= $this->data['address'] . '<br>';
+                $postbox .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
+            }
 
-        if ($this->data['division_countryid'] && $this->data['post_countryid'] && $this->data['division_countryid'] != $this->data['post_countryid']) {
-            $postbox .= ', ' . trans($this->data['post_country']) . '<br>';
-        }
+            if ($this->data['division_countryid'] && $this->data['post_countryid'] && $this->data['division_countryid'] != $this->data['post_countryid']) {
+                $postbox .= ', ' . trans($this->data['post_country']) . '<br>';
+            }
 
-        $this->backend->SetFont('arial', 'B', 10);
-        $this->backend->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
+            $this->backend->SetFont('arial', 'B', 10);
+            $this->backend->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
+        }
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
             $pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $this->data['customerid'])) . '</b><br>';

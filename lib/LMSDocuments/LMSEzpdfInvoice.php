@@ -320,28 +320,32 @@ class LMSEzpdfInvoice extends LMSInvoice
         foreach ($tmp as $line)
             $y = $y - $this->backend->text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
-        if ($this->data['post_name'] || $this->data['post_address']) {
-            $lines = document_address(array(
-                'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
-                'address' => $this->data['post_address'],
-                'street' => $this->data['post_street'],
-                'zip' => $this->data['post_zip'],
-                'postoffice' => $this->data['post_postoffice'],
-                'city' => $this->data['post_city'],
-            ));
-            $i = 0;
-            foreach ($lines as $line) {
-                if ($i) {
-                    $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $line . '</b>');
-                } else {
-                    $y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $line . '</b>', 'left');
+
+        if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))) {
+            if ($this->data['post_name'] || $this->data['post_address']) {
+                $lines = document_address(array(
+                    'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+                    'address' => $this->data['post_address'],
+                    'street' => $this->data['post_street'],
+                    'zip' => $this->data['post_zip'],
+                    'postoffice' => $this->data['post_postoffice'],
+                    'city' => $this->data['post_city'],
+                ));
+                $i = 0;
+                foreach ($lines as $line) {
+                    if ($i) {
+                        $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $line . '</b>');
+                    } else {
+                        $y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $line . '</b>', 'left');
+                    }
                 }
+            } else {
+                $y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['name'] . '</b>', 'left');
+                $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['address'] . '</b>');
+                $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['zip'] . " " . $this->data['city'] . '</b>');
             }
-        } else {
-            $y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['name'] . '</b>', 'left');
-            $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['address'] . '</b>');
-            $y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['zip'] . " " . $this->data['city'] . '</b>');
         }
+
         return $y;
     }
 

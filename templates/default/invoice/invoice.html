@@ -96,18 +96,20 @@
 			{/if}
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
-			<BR>
-			<BR>
-			<BR>
-			<B>
-			{if $invoice.post_name || $invoice.post_address}
-				{if $invoice.post_name}{$name=$invoice.post_name}{else}{$name=$invoice.name}{/if}
-				{document_address name=$name address=$invoice.post_address street=$invoice.post_street zip=$invoice.post_zip postoffice=$invoice.post_postoffice city=$invoice.post_city}
-			{else}
-			{$invoice.name}<BR>
-			{$invoice.address}<BR>
-	    		{$invoice.zip} {$invoice.city}
-			{/if}</B>
+			{if ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.post_address', true))}
+				<BR>
+				<BR>
+				<BR>
+				<B>
+				{if $invoice.post_name || $invoice.post_address}
+					{if $invoice.post_name}{$name=$invoice.post_name}{else}{$name=$invoice.name}{/if}
+					{document_address name=$name address=$invoice.post_address street=$invoice.post_street zip=$invoice.post_zip postoffice=$invoice.post_postoffice city=$invoice.post_city}
+				{else}
+					{$invoice.name}<BR>
+					{$invoice.address}<BR>
+					{$invoice.zip} {$invoice.city}
+				{/if}</B>
+			{/if}
 		</TD>
 	</TR>
 	<TR>
