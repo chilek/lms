@@ -318,7 +318,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result = $this->db->GetAll('SELECT comment, value, time FROM cash
 				WHERE customerid = ?
 				ORDER BY time ' . $order . '
-				LIMIT ?', array($customerid, $limit));
+				LIMIT ?', array($customerid, intval($limit)));
 
         if (empty($result)) {
             return null;
