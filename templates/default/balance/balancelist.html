@@ -4,29 +4,31 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT>
-	function DeleteMarked()
-	{
-		if ($('tr[data-published="1"] :checked').length) {
-			{if ConfigHelper::checkPrivilege('published_document_modification')}
-				confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"), $('#deletemarked')).done(function() {
-					document.page.action="?m=balancedel";
-					document.page.target="";
-					document.page.submit();
-				});
-				return false;
-			{else}
-				alertDialog($t("Some documents have been published already!"), $('#deletemarked'));
-				return;
-			{/if}
-		}
 
-		confirmDialog($t("Are you sure, you want to delete selected operation(s) and/or document item(s)?"), $('#deletemarked')).done(function() {
-			document.page.action="?m=balancedel";
-			document.page.target="";
-			document.page.submit();
+	$(function() {
+		$('#deletemarked').click(function() {
+			if ($('tr[data-published="1"] :checked').length) {
+				{if ConfigHelper::checkPrivilege('published_document_modification')}
+					confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"), this).done(function() {
+						document.page.action="?m=balancedel";
+						document.page.target="";
+						document.page.submit();
+					});
+					return false;
+				{else}
+					alertDialog($t("Some documents have been published already!"), this);
+					return;
+				{/if}
+			}
+
+			confirmDialog($t("Are you sure, you want to delete selected operation(s) and/or document item(s)?"), this).done(function() {
+				document.page.action="?m=balancedel";
+				document.page.target="";
+				document.page.submit();
+			});
+			return false;
 		});
-		return false;
-	}
+	});
 
 	function printr()
 	{
@@ -228,7 +230,7 @@
     <TFOOT>
 	<TR>
 		<TD COLSPAN="8" class="nobr">
-			<A id="deletemarked" HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
+			<A id="deletemarked" HREF="#">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<label>
