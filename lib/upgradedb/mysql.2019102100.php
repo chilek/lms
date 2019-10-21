@@ -23,9 +23,11 @@
 
 $this->BeginTrans();
 
-$this->Execute("DELETE FROM rttickets WHERE id NOT IN (SELECT DISTINCT ticketid FROM rtmessages)");
-$this->Execute("ALTER TABLE rttickets ADD COLUMN modtime int(11) NOT NULL DEFAULT 0");
-$this->Execute("UPDATE rttickets t SET modtime = (SELECT MAX(createtime) FROM rtmessages m WHERE m.ticketid = t.id)");
+if (!$this->ResourceExists('rttickets.modtime', LMSDB::RESOURCE_TYPE_COLUMN)) {
+    $this->Execute("DELETE FROM rttickets WHERE id NOT IN (SELECT DISTINCT ticketid FROM rtmessages)");
+    $this->Execute("ALTER TABLE rttickets ADD COLUMN modtime int(11) NOT NULL DEFAULT 0");
+    $this->Execute("UPDATE rttickets t SET modtime = (SELECT MAX(createtime) FROM rtmessages m WHERE m.ticketid = t.id)");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2019102100', 'dbversion'));
 
