@@ -96,6 +96,7 @@ version 25-git (????-??-??):
     attachment storage for send invoice messages; 'false' by default) [chilan/ravvar]
   - enhancement: invoices.post_address configuration variable controls post box address
     visibility on invoices ('true' by default) [chilan]
+  - improvement: optimalised performance of queue/ticket statistic generation [chilan]
 
 version 24.0 (2019-05-16):
 
