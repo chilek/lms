@@ -24,6 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("
+    DELETE FROM rttickets WHERE id NOT IN (SELECT DISTINCT ticketid FROM rtmessages);
     ALTER TABLE rttickets ADD COLUMN modtime integer NOT NULL DEFAULT 0;
     UPDATE rttickets t SET modtime = (SELECT MAX(createtime) FROM rtmessages m WHERE m.ticketid = t.id)
 ");
