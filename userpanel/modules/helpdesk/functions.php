@@ -571,7 +571,7 @@ function module_main()
 
     $helpdesklist = $LMS->GetCustomerTickets($SESSION->id);
 
-    $queues = ConfigHelper::getConfig('userpanel.queues'));
+    $queues = ConfigHelper::getConfig('userpanel.queues');
     if (!empty($queues)) {
         $queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN ('
             . str_replace(';', ',', $queues) . ')');
