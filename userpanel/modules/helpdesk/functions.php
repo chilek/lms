@@ -571,8 +571,13 @@ function module_main()
 
     $helpdesklist = $LMS->GetCustomerTickets($SESSION->id);
 
-    $queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN ('
-        . str_replace(';', ',', ConfigHelper::getConfig('userpanel.queues')) . ')');
+    $queues = ConfigHelper::getConfig('userpanel.queues'));
+    if (!empty($queues)) {
+        $queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN ('
+            . str_replace(';', ',', $queues) . ')');
+    } else {
+        $queues = array();
+    }
     $SMARTY->assign('queues', $queues);
     $SMARTY->assign('helpdesklist', $helpdesklist);
     $SMARTY->display('module:helpdesk.html');
