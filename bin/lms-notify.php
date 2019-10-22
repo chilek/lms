@@ -404,7 +404,7 @@ function create_message($type, $subject, $template)
 
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
 {
-    global $LMS, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email, $mail_format;
+    global $LMS, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email, $content_types;
     global $smtp_options;
 
     $DB = LMSDB::getInstance();
@@ -417,6 +417,9 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
+    $subject = str_replace('<eol>', $content_types[MSG_MAIL] == 'text/html' ? '<br>' : "\n", $subject);
+    $body = str_replace('<eol>', $content_types[MSG_MAIL] == 'text/html' ? '<br>' : "\n", $body);
+
     $headers = array(
         'From' => empty($dsn_email) ? $mail_from : $dsn_email,
         'To' => qp_encode($rname) . " <$rmail>",
@@ -424,7 +427,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body)
         'Reply-To' => empty($reply_email) ? $mail_from : $reply_email,
     );
 
-    if ($mail_format == 'html') {
+    if ($content_types[MSG_MAIL] == 'text/html') {
         $headers['X-LMS-Format'] = 'html';
     }
 
@@ -472,7 +475,7 @@ function send_sms($msgid, $cid, $phone, $data)
     );
     $msgitemid = $DB->GetLastInsertID('messageitems');
 
-    $result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgitemid, $sms_options);
+    $result = $LMS->SendSMS(str_replace(' ', '', $phone), str_replace('<eol>', "\n", $data), $msgitemid, $sms_options);
     $query = "UPDATE messageitems
         SET status = ?, lastdate = ?NOW?, error = ?
         WHERE messageid = ? AND customerid = ? AND id = ?";
