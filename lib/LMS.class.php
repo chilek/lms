@@ -4202,15 +4202,15 @@ class LMS
                     $lN = '';
                 } else {
                     // ok, now we are going to rise up system's load
-                    $lN = "-----------+-----------+-----------+----------------------------------------------------\n";
+                    $lN = "-----------+-----------+-----------+----------------------------------------------------<eol>";
                     foreach ($lastN as $row_s) {
                         $op_time = strftime("%Y/%m/%d", $row_s['time']);
                         $op_amount = sprintf("%9.2f", $row_s['value']);
                         $op_after = sprintf("%9.2f", $row_s['after']);
                         $for_what = sprintf("%-52s", $row_s['comment']);
-                        $lN = $lN . "$op_time | $op_amount | $op_after | $for_what\n";
+                        $lN = $lN . "$op_time | $op_amount | $op_after | $for_what<eol>";
                     }
-                    $lN = $lN . "-----------+-----------+-----------+----------------------------------------------------\n";
+                    $lN = $lN . "-----------+-----------+-----------+----------------------------------------------------<eol>";
                 }
                 $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
             }
@@ -4290,8 +4290,10 @@ class LMS
                 if (isset($mail_format) && $mail_format == 'html') {
                     $headers['X-LMS-Format'] = 'html';
                     $content_type = 'text/html';
+                    $body = str_replace('<eol>', '<br>', $body);
                 } else {
                     $content_type = 'text/plain';
+                    $body = str_replace('<eol>', "\n", $body);
                 }
 
                 $data = array(
