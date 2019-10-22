@@ -187,6 +187,24 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             format_bankaccount(bankaccount($note['customerid'], $note['account'])),
             $note['division_header']
         );
+
+        if (!empty($note['division_footer'])) {
+            $tmp = $note['division_footer'];
+
+            $accounts = array(bankaccount($note['customerid'], $note['account']));
+            if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
+                $accounts = array_merge($accounts, $note['bankaccounts']);
+            }
+            foreach ($accounts as &$account) {
+                $account = format_bankaccount($account);
+            }
+            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+            $note['bankaccounts'] = implode("\n", $accounts);
+            $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
+            $note['division_footer'] = $tmp;
+        }
+
+
         refresh_ui_language($note['lang']);
         $document->Draw($note);
 
@@ -242,6 +260,23 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             format_bankaccount(bankaccount($note['customerid'], $note['account'])),
             $note['division_header']
         );
+
+        if (!empty($note['division_footer'])) {
+            $tmp = $note['division_footer'];
+
+            $accounts = array(bankaccount($note['customerid'], $note['account']));
+            if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
+                $accounts = array_merge($accounts, $note['bankaccounts']);
+            }
+            foreach ($accounts as &$account) {
+                $account = format_bankaccount($account);
+            }
+            $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+            $note['bankaccounts'] = implode("\n", $accounts);
+            $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
+            $note['division_footer'] = $tmp;
+        }
+
         refresh_ui_language($note['lang']);
         $document->Draw($note);
     }
@@ -274,6 +309,23 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         format_bankaccount(bankaccount($note['customerid'], $note['account'])),
         $note['division_header']
     );
+
+    if (!empty($note['division_footer'])) {
+        $tmp = $note['division_footer'];
+
+        $accounts = array(bankaccount($note['customerid'], $note['account']));
+        if (ConfigHelper::checkConfig('invoices.show_all_accounts')) {
+            $accounts = array_merge($accounts, $note['bankaccounts']);
+        }
+        foreach ($accounts as &$account) {
+            $account = format_bankaccount($account);
+        }
+        $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+        $note['bankaccounts'] = implode("\n", $accounts);
+        $tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
+        $note['division_footer'] = $tmp;
+    }
+
     refresh_ui_language($note['lang']);
     $document->Draw($note);
     reset_ui_language();

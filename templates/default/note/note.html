@@ -4,6 +4,8 @@
 {trans("Draw-up date:")} {$note.cdate|date_format:"%Y/%m/%d"}{if $note.division_cplace != ""}, {$note.division_cplace}{/if}
 <BR>
 {trans("Deadline:")} {$note.pdate|date_format:"%Y/%m/%d"}
+<BR>
+{trans("Expositor:")} {if $note.user}{$note.user}{else}{$note.division_author}{/if}
 </DIV>
 
 <H2 align="center" class="hdf">
@@ -17,25 +19,37 @@
 
 <TABLE WIDTH="100%" CELLSPACING="3" class="sdr">
 	<TR>
-		<TD WIDTH="50%" class="sdr">
+		<TD WIDTH="50%" class="sdr valign-top">
 			<B>{trans("Note drawer:")}</B><BR>
 			<BR>
 			{$note.division_header|replace:"\n":"<BR>"}
 		</TD>
-		<TD WIDTH="50%" class="sdr">
+		<TD WIDTH="50%" class="sdr valign-top">
 			<B>{trans("Note recipient:")}</B><BR>
 			<BR>
 			{$note.name}<BR>
 			{$note.address}<BR>
 			{$note.zip} {$note.city}
-			{if $note.ten}<BR>{t}TEN{/t} {$note.ten}{/if}
+			{if $note.ten}
+				<BR>{t a=$note.ten}TEN $a{/t}
+			{elseif $note.ssn}
+				<BR>{t a=$note.ssn}SSN $a{/t}
+			{/if}
+			{if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true)))}
+				<BR><strong>{t a=$note.bankaccounts}Bank account: $a{/t}</strong>
+			{/if}
+			{if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true)))}
+				{if $note.customerpin}
+					<BR>
+					<strong>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}<BR>
+					PIN: {$note.customerpin|string_format:"%04d"}</strong>
+					<BR>
+				{/if}
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
 <BR>
-<P class="sdr">
-Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg poniższego zestawienia:
-</P>
 <TABLE WIDTH="100%" CELLPADDING="3">
     <TR CLASS="fall">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
@@ -73,9 +87,6 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 <BR>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
-		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2" CLASS="sdr">
-			{trans("Expositor:")} {if $note.user}{$note.user}{else}{$note.division_author}{/if}
-		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
 			{trans("To pay:")} {$note.value|money_format}
 		</TD>
@@ -96,29 +107,13 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" COLSPAN="2">
-			<B>{trans("Cautions:")}</B><BR>
-			<BLOCKQUOTE>
-			{trans("If you have any questions or doubts, contact with our Customer Service Representative. Prepare your Customer ID, please.")}<BR>
-			{trans("You may use our automated Customer Care Web Panel, just remember your PIN (it's printed on the other side of this page)")}
-			</BLOCKQUOTE>
-			<BR>
+		<TD WIDTH="100%" ALIGN="center">
+			{$note.division_footer}
 		</TD>
 	</TR>
 </TABLE>
 </TD>
 </TR>
-
-<!-- The Other Page of Invoice customerbalancelist + customerpin -->
-<!-- insert page break here and buy auto-duplex printer :p -->
-{if (ConfigHelper::checkValue(ConfigHelper::getConfig('notes.customer_credentials', true)))}
-	{if $note.customerpin}
-		<BR><BR>
-		<B>{trans("Customer ID:")} {$note.customerid|string_format:"%04d"}</B><BR>
-		PIN: <CODE>{$note.customerpin|string_format:"%04d"}</CODE>
-		<BR><BR>
-	{/if}
-{/if}
 
 {*
 customer's balance: {$note.customerbalancelist.balance}
