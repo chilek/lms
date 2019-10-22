@@ -2122,7 +2122,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
-            $result['protection_password'] = ConfigHelper::getConfig('invoice.protection_password');
+            $result['protection_password'] = ConfigHelper::getConfig('invoices.protection_password');
 
             return $result;
         } else {
