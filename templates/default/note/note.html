@@ -28,6 +28,7 @@
 			{$note.name}<BR>
 			{$note.address}<BR>
 			{$note.zip} {$note.city}
+			{if $note.ten}<BR>{t}TEN{/t} {$note.ten}{/if}
 		</TD>
 	</TR>
 </TABLE>
@@ -119,8 +120,8 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 	{/if}
 {/if}
 
-{* 
-customer's balance: {$note.customerbalancelist.balance} 
+{*
+customer's balance: {$note.customerbalancelist.balance}
 *}
 
 {if $note.customerbalancelist.list}
@@ -154,7 +155,7 @@ customer's balance: {$note.customerbalancelist.balance}
 		<TD width="93%">{$item.comment}</TD>
         </TR>
 	{/section}
-</TABLE>	
-{/if}	
+</TABLE>
+{/if}
 
 </DIV>
