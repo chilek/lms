@@ -97,6 +97,7 @@ version 25-git (????-??-??):
   - enhancement: invoices.post_address configuration variable controls post box address
     visibility on invoices ('true' by default) [chilan]
   - improvement: optimalised performance of queue/ticket statistic generation [chilan]
+  - improvement: html and pdf debit note templates are in feature parity [ravvar]
 
 version 24.0 (2019-05-16):
 
