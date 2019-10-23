@@ -909,7 +909,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function DocumentAttachmentExists($md5sum)
     {
         return $this->db->GetOne(
-            'SELECT docid FROM documentattachments WHERE md5sum = ?',
+            'SELECT COUNT(docid) FROM documentattachments WHERE md5sum = ?',
             array($md5sum)
         );
     }
