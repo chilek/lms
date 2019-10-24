@@ -568,11 +568,9 @@
 					            <TD style="width: 1%;" class="bold nobr">
 						            {trans("Period:")}
 					            </TD>
-					            <TD style="width: 1%;" class="nobr">
+					            <TD style="width: 98%;" colspan="2" class="nobr">
 									{date_period_preset from="#invoicereport [name=\"from\"]" to="#invoicereport [name=\"to\"]"}
 									{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					            </TD>
-					            <TD style="width: 98%;" class="nobr">
 						            {trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					        </TR>
@@ -589,10 +587,10 @@
 					            </TD>
 					        </TR>
 					        <TR>
-								<TD style="width: 1%;">
+								<TD>
 									<IMG src="img/docum.gif" alt="">
 								</TD>
-								<TD style="width: 1%;" class="bold nobr">
+								<TD class="bold nobr">
 									{trans("Type:")}
 								</TD>
 								<TD colspan="2">
