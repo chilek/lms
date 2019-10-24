@@ -51,8 +51,8 @@ if ($LMS->UserExists($id)) {
             }
             if (!$error) {
                 $LMS->SetUserPassword($id, $passwd['passwd']);
-                $SESSION->save('session_passwdrequiredchange', false);
-                header('Location: ?' . $SESSION->get('backto'));
+                $SESSION->remove('session_passwdrequiredchange');
+                $SESSION->redirect('?' . $SESSION->get('backto'));
             }
         }
     }
