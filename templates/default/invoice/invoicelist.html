@@ -267,6 +267,7 @@
 							{button icon="cash" label="Check/Uncheck as accounted" id="account-invoices"}
 						{/if}
 						{button icon="mail" id="send-invoices" label="Send invoices"}
+						{button icon="delete" id="delete-invoices" label="Delete"}
 						{if ConfigHelper::checkPrivilege('trade_document_archiving')}
 							{button icon="archive" id="archive-invoices" label="Archive"}
 						{/if}
@@ -330,6 +331,37 @@
 			});
 		}
 		return false;
+	});
+
+	$('#delete-invoices').click(function() {
+		if (!$(this).closest('tfoot').siblings('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			return;
+		}
+
+		if ($('tr[data-published="1"] :checked').length) {
+			{if ConfigHelper::checkPrivilege('published_document_modification')}
+			confirmDialog($t("Some documents have been published already! Are you sure you want to delete them despite this?"), this)
+					.done(function () {
+						confirmDialog($t("Are you sure, you want to delete selected documents?"), this)
+								.done(function () {
+									document.page.action = "?m=invoicedel";
+									document.page.target = "";
+									document.page.submit();
+								});
+					});
+			return;
+			{else}
+			alertDialog($t("Some documents have been published already!"), this);
+			return;
+			{/if}
+		}
+
+		confirmDialog($t("Are you sure, you want to delete selected documents?"), this)
+				.done(function() {
+					document.page.action = "?m=invoicedel";
+					document.page.target = "";
+					document.page.submit();
+				});
 	});
 
 	$('.delete-proforma-invoice').click(function () {

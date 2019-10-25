@@ -24,29 +24,38 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+if (isset($_POST['marks'])) {
+    $ids = $_POST['marks'];
+} else {
+    $ids = array($_GET['id']);
+}
+$ids = Utils::filterIntegers($ids);
+if (empty($ids)) {
+    return;
+}
 
-if ($id) {
+foreach ($ids as $id) {
     if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification')) {
-        return;
+        continue;
     }
 
     if ($LMS->isDocumentReferenced($id)) {
-        return;
+        continue;
     }
 
     if ($LMS->isArchiveDocument($id)) {
-        return;
+        continue;
     }
 
     $hook_data = $LMS->executeHook('invoicedel_before_delete', array(
         'id' => $id,
     ));
-    if (!isset($hook_data['continue']) || !empty($hook_data['continue'])) {
-        $DB->BeginTrans();
-        $LMS->InvoiceDelete($id);
-        $DB->CommitTrans();
+    if (isset($hook_data['continue']) && empty($hook_data['continue'])) {
+        continue;
     }
+    $DB->BeginTrans();
+    $LMS->InvoiceDelete($id);
+    $DB->CommitTrans();
 }
 
 $SESSION->redirect($_SERVER['HTTP_REFERER']);
