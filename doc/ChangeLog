@@ -98,6 +98,7 @@ version 25-git (????-??-??):
     visibility on invoices ('true' by default) [chilan]
   - improvement: optimalised performance of queue/ticket statistic generation [chilan]
   - improvement: html and pdf debit note templates are in feature parity [ravvar]
+  - enhancement: invoice list: allow to delete many invoices in single operation [chilan]
 
 version 24.0 (2019-05-16):
 
