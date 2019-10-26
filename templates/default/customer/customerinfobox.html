@@ -410,7 +410,7 @@
 						</TD>
 						<TD WIDTH="98%">
 							{if $customerinfo.balance < 0}
-							<span class="lms-ui-error">{$customerinfo.balance|money_format}</span>
+							<span class="lms-ui-error">{moneyf($customerinfo.balance)}</span>
 							{if $instantpayment}
 							<FORM name="instantpayment" method="POST" action="?m=balanceadd&id={$customerinfo.id}&receipt=1">
 								<script>

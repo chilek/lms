@@ -203,7 +203,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $totime = time();
             }
             return $this->db->GetOne(
-                'SELECT SUM(value) FROM cash
+                'SELECT SUM(value * currencyvalue) FROM cash
 				LEFT JOIN documents d ON d.id = cash.docid
 				LEFT JOIN customers c ON c.id = cash.customerid
 				LEFT JOIN divisions ON divisions.id = c.divisionid
@@ -223,7 +223,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             );
         } else {
             return $this->db->GetOne(
-                'SELECT SUM(value)
+                'SELECT SUM(value * currencyvalue)
 				FROM cash
 				WHERE customerid = ?' . ($totime ? ' AND time < ' . intval($totime) : ''),
                 array($id)
@@ -247,7 +247,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $result['list'] = $this->db->GetAll(
             '(SELECT cash.id AS id, time, cash.type AS type,
-                cash.value AS value, taxes.label AS tax, cash.customerid AS customerid,
+                cash.value AS value, cash.currency, cash.currencyvalue,
+                taxes.label AS tax, cash.customerid AS customerid,
                 cash.comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, documents.archived, cash.importid,
@@ -263,7 +264,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
             UNION
             (SELECT ic.itemid AS id, d.cdate AS time, 0 AS type,
-            		(-ic.value * ic.count) AS value, NULL AS tax, d.customerid,
+            		(-ic.value * ic.count) AS value, d.currency, d.currencyvalue, NULL AS tax, d.customerid,
             		ic.description AS comment, d.id AS docid, vusers.name AS username,
             		d.type AS doctype, d.closed AS closed,
             		d.published, 0 AS archived, NULL AS importid,
@@ -296,8 +297,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
                     $row['after'] = $result['balance'];
                 } else {
-                    $row['after'] = round($result['balance'] + $row['value'], 2);
-                    $result['balance'] += $row['value'];
+                    $row['after'] = round($result['balance'] + ($row['value'] * $row['currencyvalue']), 2);
+                    $result['balance'] += $row['value'] * $row['currencyvalue'];
                 }
                 $row['date'] = date('Y/m/d H:i', $row['time']);
             }

@@ -121,7 +121,7 @@ $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_S
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
 }
 
 // Init database
@@ -430,6 +430,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) * a.count AS value,
+		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,	
 		a.count AS count,
 		(SELECT COUNT(id) FROM assignments
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
@@ -451,7 +452,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
         .(!empty($groupnames) ? $customergroups : "")
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, value DESC, a.id";
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
 $services = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
     DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
     $currtime, $currtime));
@@ -463,7 +464,7 @@ $query = "SELECT
 			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, voipphones.phones,
+			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
 			(SELECT COUNT(id)
 				FROM assignments
@@ -522,7 +523,7 @@ $query = "SELECT
 		   a.datefrom <= ? AND
 		  (a.dateto > ? OR a.dateto = 0)))"
         .(!empty($groupnames) ? $customergroups : "")
-    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, voipcost.value DESC, a.id";
+    ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
     DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
@@ -739,6 +740,7 @@ if (!empty($node_assignments)) {
 
 $suspended = 0;
 $invoices = array();
+$currencies = array();
 $doctypes = array();
 $paytypes = array();
 $addresses = array();
@@ -755,6 +757,31 @@ $result = $LMS->ExecuteHook(
 if ($result['assignments']) {
     $assigns = $result['assignments'];
 }
+
+$currency_quotes = array();
+foreach ($assigns as &$assign) {
+    $currency = $assign['currency'];
+    if (empty($currency)) {
+        $assign['currency'] = $_currency;
+        continue;
+    }
+    if ($currency != $_currency) {
+        if (!isset($currency_quotes[$currency])) {
+            $currency_quotes[$currency] = str_replace(',', '.', $LMS->getCurrencyValue($currency, $currtime));
+            if (!isset($currency_quotes[$currency])) {
+                die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
+            }
+        }
+    }
+}
+unset($assign);
+if (!empty($currency_quotes) && !$quiet) {
+    print "Currency quotes:" . PHP_EOL;
+    foreach ($currency_quotes as $currency => $value) {
+        print '1 ' . $currency . ' = ' . $value . ' ' . $_currency . PHP_EOL;
+    }
+}
+$currency_quotes[$_currency] = 1.0;
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
@@ -849,6 +876,7 @@ foreach ($assigns as $assign) {
 
     if ($assign['value'] != 0) {
         $val = $assign['value'];
+        $currency = $assign['currency'];
         if ($assign['t_period'] && $assign['period'] != DISPOSABLE
             && $assign['t_period'] != $assign['period']) {
             if ($assign['t_period'] == YEARLY) {
@@ -894,7 +922,8 @@ foreach ($assigns as $assign) {
             }
 
             if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
-                || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]) {
+                || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid]
+                || $currencies[$cid] != $currency) {
                 if (!isset($numbers[$assign['invoice']][$plan])) {
                     $period = get_period($periods[$plan]);
                     $numbers[$assign['invoice']][$plan] = (($number = $DB->GetOne(
@@ -951,37 +980,41 @@ foreach ($assigns as $assign) {
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-					recipient_address_id)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    array($numbers[$assign['invoice']][$plan], $plan ? $plan : null,
-                    $assign['invoice'],
-                    $customer['countryid'] ? $customer['countryid'] : null,
-                    $customer['divisionid'], $cid,
-                    $customer['lastname']." ".$customer['name'],
-                    ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
-                        ? $customer['city'] . ', ' : '') . $customer['address'],
-                    $customer['zip'] ? $customer['zip'] : null,
-                    $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
-                    $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
-                    ($division['name'] ? $division['name'] : ''),
-                    ($division['shortname'] ? $division['shortname'] : ''),
-                    ($division['address'] ? $division['address'] : ''),
-                    ($division['city'] ? $division['city'] : ''),
-                    ($division['zip'] ? $division['zip'] : ''),
-                    ($division['countryid'] ? $division['countryid'] : null),
-                    ($division['ten'] ? $division['ten'] : ''),
-                    ($division['regon'] ? $division['regon'] : ''),
-                    ($division['account'] ? $division['account'] : ''),
-                    ($division['inv_header'] ? $division['inv_header'] : ''),
-                    ($division['inv_footer'] ? $division['inv_footer'] : ''),
-                    ($division['inv_author'] ? $division['inv_author'] : ''),
-                    ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-                    $fullnumber,
-                    $recipient_address_id,
+					recipient_address_id, currency, currencyvalue)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    array(
+                        $numbers[$assign['invoice']][$plan], $plan ? $plan : null,
+                        $assign['invoice'],
+                        $customer['countryid'] ? $customer['countryid'] : null,
+                        $customer['divisionid'], $cid,
+                        $customer['lastname']." ".$customer['name'],
+                        ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+                            ? $customer['city'] . ', ' : '') . $customer['address'],
+                        $customer['zip'] ? $customer['zip'] : null,
+                        $customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
+                        $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
+                        ($division['name'] ? $division['name'] : ''),
+                        ($division['shortname'] ? $division['shortname'] : ''),
+                        ($division['address'] ? $division['address'] : ''),
+                        ($division['city'] ? $division['city'] : ''),
+                        ($division['zip'] ? $division['zip'] : ''),
+                        ($division['countryid'] ? $division['countryid'] : null),
+                        ($division['ten'] ? $division['ten'] : ''),
+                        ($division['regon'] ? $division['regon'] : ''),
+                        ($division['account'] ? $division['account'] : ''),
+                        ($division['inv_header'] ? $division['inv_header'] : ''),
+                        ($division['inv_footer'] ? $division['inv_footer'] : ''),
+                        ($division['inv_author'] ? $division['inv_author'] : ''),
+                        ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+                        $fullnumber,
+                        $recipient_address_id,
+                        $currency,
+                        $currency_quotes[$currency],
                     )
                 );
 
                 $invoices[$cid] = $DB->GetLastInsertID("documents");
+                $currencies[$cid] = $currency;
                 $doctypes[$cid] = $assign['invoice'];
                 $LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
                 $paytypes[$cid] = $inv_paytype;
@@ -996,7 +1029,14 @@ foreach ($assigns as $assign) {
                     $tmp_itemid = $DB->GetOne(
                         "SELECT itemid FROM invoicecontents 
                         WHERE tariffid=? AND value=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-                        array($assign['tariffid'], str_replace(',', '.', $val / $assign['count']), $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])
+                        array(
+                            $assign['tariffid'],
+                            str_replace(',', '.', $val / $assign['count']),
+                            $invoices[$cid],
+                            $desc,
+                            $assign['pdiscount'],
+                            $assign['vdiscount']
+                        )
                     );
                 }
 
@@ -1045,9 +1085,20 @@ foreach ($assigns as $assign) {
                     }
                     if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                         $DB->Execute(
-                            "INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                            array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $invoices[$cid], $itemid, $linktechnology)
+                            "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            array(
+                                $currtime,
+                                str_replace(',', '.', $val * -1),
+                                $currency,
+                                $currency_quotes[$currency],
+                                $assign['taxid'],
+                                $cid,
+                                $desc,
+                                $invoices[$cid],
+                                $itemid,
+                                $linktechnology
+                            )
                         );
                     }
                 }
@@ -1055,15 +1106,24 @@ foreach ($assigns as $assign) {
         } else {
             if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
                 $DB->Execute(
-                    "INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology) 
-                    VALUES (?, ?, ?, ?, ?, ?)",
-                    array($currtime, str_replace(',', '.', $val * -1), $assign['taxid'], $cid, $desc, $linktechnology)
+                    "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    array(
+                        $currtime,
+                        str_replace(',', '.', $val * -1),
+                        $currency,
+                        $currency_quotes[$currency],
+                        $assign['taxid'],
+                        $cid,
+                        $desc,
+                        $linktechnology
+                    )
                 );
             }
         }
 
         if (!$quiet && (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom'])) {
-            print "CID:$cid\tVAL:$val\tDESC:$desc" . PHP_EOL;
+            print "CID:$cid\tVAL:$val $currency\tDESC:$desc" . PHP_EOL;
         }
 
         // settlement accounting
@@ -1175,22 +1235,42 @@ foreach ($assigns as $assign) {
                         }
                         if ($assign['invoice'] == DOC_INVOICE || $assign['invoice'] == DOC_DNOTE || $proforma_generates_commitment) {
                             $DB->Execute(
-                                "INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid, linktechnology)
-								VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
-                                array($currtime, str_replace(',', '.', $value * -1), $assign['taxid'], $cid, $sdesc, $invoices[$cid], $itemid, $linktechnology)
+                                "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid, linktechnology)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                array(
+                                    $currtime,
+                                    str_replace(',', '.', $value * -1),
+                                    $currency,
+                                    $currency_quotes[$currency],
+                                    $assign['taxid'],
+                                    $cid,
+                                    $sdesc,
+                                    $invoices[$cid],
+                                    $itemid,
+                                    $linktechnology
+                                )
                             );
                         }
                     }
                 } else {
                     $DB->Execute(
-                        "INSERT INTO cash (time, value, taxid, customerid, comment, linktechnology)
-						VALUES (?, ?, ?, ?, ?, ?)",
-                        array($currtime, str_replace(',', '.', $value * -1), $assign['taxid'], $cid, $sdesc, $linktechnology)
+                        "INSERT INTO cash (time, value, currency, currencyvalue, taxid, customerid, comment, linktechnology)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        array(
+                            $currtime,
+                            str_replace(',', '.', $value * -1),
+                            $currency,
+                            $currency_quotes[$currency],
+                            $assign['taxid'],
+                            $cid,
+                            $sdesc,
+                            $linktechnology
+                        )
                     );
                 }
 
                 if (!$quiet) {
-                    print "CID:$cid\tVAL:$value\tDESC:$sdesc" . PHP_EOL;
+                    print "CID:$cid\tVAL:$value $currency\tDESC:$sdesc" . PHP_EOL;
                 }
             }
 
@@ -1223,5 +1303,3 @@ if ($delete_old_assignments_after_days) {
 $DB->Execute("DELETE FROM voip_rule_states");
 
 $DB->Destroy();
-
-?>
