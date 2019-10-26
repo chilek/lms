@@ -7,7 +7,7 @@
 <!--
     function getText(index) {
         {section name=lt loop=$tariffs}
-        if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({$tariffs[lt].value|money_format})';
+        if (index == {$tariffs[lt].id}) return '{$tariffs[lt].name|escape} ({moneyf($tariffs[lt].value, $tariffs[lt].currency)})';
         {/section}
     }
 
@@ -91,7 +91,7 @@
                                 <TD><IMG SRC="img/value.gif" ALT=""></TD>
                                 <TD>{trans("Value:")}</TD>
                                 <TD>
-                                    {$tariff.value|money_format}
+                                    {moneyf($tariff.value, $tariff.currency)}
                                     {if $tariff.period}
                                         {assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
                                     {else}
@@ -154,7 +154,12 @@
                             <TR>
                                 <TD><IMG SRC="img/values.gif" ALT=""></TD>
                                 <TD>{trans("Avg. monthly income:")}</TD>
-                                <TD>{$tariff.totalval|money_format}</TD>
+                                <td>
+                                    {foreach $tariff.totalval as $currency => $totalval}
+                                        {if !$totalval@first}<br>{/if}
+                                        {moneyf($totalval, $currency)}
+                                    {/foreach}
+                                </td>
                             </TR>
                             {/if}
 
@@ -426,7 +431,7 @@
                             <SELECT SIZE="1" NAME="to">
                                 {foreach from=$tariffs item=v}
                                     {if $v.id != $tariff.id}
-                                        <OPTION VALUE="{$v.id}">{$v.name} ({$v.value|money_format})</OPTION>
+                                        <OPTION VALUE="{$v.id}">{$v.name} ({moneyf($v.value, $v.currency)})</OPTION>
                                     {/if}
                                 {/foreach}
                             </SELECT>

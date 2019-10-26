@@ -156,7 +156,7 @@
 			{if $tariff.upceil_n}({convert_to_units($tariff.upceil_n * $speed_unit_type, $speed_unit_aggregation_threshold, $speed_unit_type)}/s){/if}
 		</TD>
 		<TD class="text-right nobr">
-			<B>{$tariff.value|money_format}</B><BR>
+			<B>{moneyf($tariff.value, $tariff.currency)}</B><BR>
 			{$tariff.tax}
 		</TD>
 		<TD class="text-right nobr">
@@ -166,7 +166,7 @@
 		</TD>
 		<TD class="text-right">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			{$tariff.income|money_format}
+			{moneyf($tariff.income, $tariff.currency)}
 			{/if}
 		</TD>
 		<TD class="lms-ui-buttons text-right nobr">
@@ -205,7 +205,10 @@
 		</TD>
 		<TD class="text-right nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			<B>{$listdata.totalincome|money_format}</B>
+				{foreach $listdata.totalincome as $currency => $totalincome}
+					{if !$totalincome@first}<br>{/if}
+					<B>{moneyf($totalincome, $currency)}</B>
+				{/foreach}
 			{/if}
 		</TD>
 		<TD>&nbsp;</TD>

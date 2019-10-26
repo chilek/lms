@@ -4476,3 +4476,6 @@ $_LANG['overdue receivables'] = 'przeterminowane należności';
 $_LANG['<!access-rights>- empty -'] = '- puste -';
 $_LANG['Copy rights'] = 'Kopiuj uprawnienia';
 $_LANG['of selected user:'] = 'wybranego użytkownika:';
+
+$_LANG['Select currency'] = 'Wybierz walutę';
+$_LANG['Invalid currency selection!'] = 'Błędny wybór waluty!';

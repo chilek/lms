@@ -68,12 +68,12 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
             break;
     }
 
-    $totalincome = 0;
+    $totalincome = array();
     $totalcustomers = 0;
     $totalcount = 0;
     $totalactivecount = 0;
 
-    if ($tarifflist = $DB->GetAllByKey('SELECT t.id, t.name, t.value,
+    if ($tarifflist = $DB->GetAllByKey('SELECT t.id, t.name, t.value, t.currency,
 			taxes.label AS tax, taxes.value AS taxvalue, t.datefrom, t.dateto, prodid, t.disabled,
 			t.uprate, t.downrate, t.upceil, t.downceil, t.climit, t.plimit,
 			t.uprate_n, t.downrate_n, t.upceil_n, t.downceil_n, t.climit_n, t.plimit_n,
@@ -155,17 +155,21 @@ function GetTariffList($order = 'name,asc', $type = null, $access = 0, $customer
 					WHERE ps.promotionid = ' .intval($promotionid).')' : '')
             .') x GROUP BY tariffid', 'tariffid');
 
-        foreach ($tarifflist as $idx => $row) {
+        foreach ($tarifflist as $idx => &$row) {
             // count of 'active' assignments
-            $tarifflist[$idx]['activecount'] = $row['count'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['count'] : 0);
+            $row['activecount'] = $row['count'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['count'] : 0);
             // avg monthly income
-            $tarifflist[$idx]['income'] = $row['sumval'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['value'] : 0);
+            $row['income'] = $row['sumval'] - (isset($unactive[$row['id']]) ? $unactive[$row['id']]['value'] : 0);
 
-            $totalincome += $tarifflist[$idx]['income'];
-            $totalcount += $tarifflist[$idx]['count'];
-            $totalcustomers += $tarifflist[$idx]['customerscount'];
-            $totalactivecount += $tarifflist[$idx]['activecount'];
+            if (!isset($totalincome[$row['currency']])) {
+                $totalincome[$row['currency']] = 0;
+            }
+            $totalincome[$row['currency']] += $row['income'];
+            $totalcount += $row['count'];
+            $totalcustomers += $row['customerscount'];
+            $totalactivecount += $row['activecount'];
         }
+        unset($row);
 
         switch ($order) {
             case 'income':

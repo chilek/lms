@@ -98,14 +98,14 @@ function hostname()
         default:
             $return = trans('unknown OS ($a)', PHP_OS);
     }
-    
+
     if (!$hostname) {
         $hostname = $_ENV['HOSTNAME'] ? $_ENV['HOSTNAME'] : $_SERVER['SERVER_NAME'];
     }
     if (!$hostname) {
         $hostname='N.A.';
     }
-        
+
     return $hostname;
 }
 
@@ -138,7 +138,7 @@ function check_ipv6($ip)
     if (strlen($ip) < 3) {
             return $ip == '::';
     }
-    
+
     // Check if part is in IPv4 format
     if (strpos($ip, '.')) {
         $lastcolon = strrpos($ip, ':');
@@ -149,17 +149,17 @@ function check_ipv6($ip)
         // replace IPv4 part with dummy
         $ip = substr($ip, 0, $lastcolon) . ':0:0';
     }
-    
+
     // check uncompressed
     if (strpos($ip, '::') === false) {
         return preg_match('/^(?:[a-f0-9]{1,4}:){7}[a-f0-9]{1,4}$/i', $ip);
     }
-    
+
     // check colon-count for compressed format
     if (substr_count($ip, ':') < 8) {
         return preg_match('/^(?::|(?:[a-f0-9]{1,4}:)+):(?:(?:[a-f0-9]{1,4}:)*[a-f0-9]{1,4})?$/i', $ip);
     }
-    
+
     return false;
 }
 
@@ -253,7 +253,7 @@ function mask2prefix($mask)
 function check_mac(&$macaddr)
 {
     // save passed macaddr for future use
-    
+
     $oldmac = $macaddr;
 
     // strip EVERYTHING that doesnt match 0-9 and a-f,
@@ -265,9 +265,9 @@ function check_mac(&$macaddr)
     if (!preg_match('/^[0-9a-f]{12}$/i', $macaddr)) {
         // mac address isn't valid, restore it (cause we working on
         // reference) and return false
-    
+
         $macaddr = $oldmac;
-    
+
         return false;
     } else {
         // mac address is valid, return nice mac address that LMS
@@ -306,10 +306,10 @@ function textwrap($text, $wrap = 76, $break = "\n")
             if ($char == ' ' || $char == chr(13) || $char == chr(10)) {
                 $lastWhite = $lastChar; // note the position of the last whitespace
             }
-            
+
             $lastChar = $lastChar + 1; // advance the last character position by one
         }
-        
+
         $h .= substr($text, $lastBreak); // build line
     } else {
         $h = $text; // in this case everything can fit on one line
@@ -508,7 +508,7 @@ function r_trim($array)
             $array[$key] = trim($value);
         }
     }
-    
+
     return $array;
 }
 
@@ -522,10 +522,12 @@ function isboolean($value)
     }
 }
 
-function moneyf($value)
+function moneyf($value, $currency = null)
 {
-    global $LANGDEFS, $_language;
-    return sprintf($LANGDEFS[$_language]['money_format'], $value);
+    if (empty($currency)) {
+        $currency = $GLOBALS['_currency'];
+    }
+    return sprintf('%01.2f %s', $value, $currency);
 }
 
 function moneyf_in_words($value)
@@ -698,11 +700,11 @@ function lms_ucwords($str)
 {
     $result = array();
     $arr = preg_split('/\s+/', $str);
-    
+
     foreach ($arr as $word) {
         $result[] = mb_strlen($word) > 1 ? mb_convert_case($word, MB_CASE_TITLE) : $word;
     }
-    
+
     return implode(' ', $result);
 }
 
@@ -1171,7 +1173,7 @@ function trans()
     $content = preg_replace('/<![^>]+>/', '', $content);
     return $content;
 }
-        
+
 function check_url($url)
 {
     $components = parse_url($url);

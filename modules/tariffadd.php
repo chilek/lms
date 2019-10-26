@@ -248,6 +248,10 @@ if (isset($_POST['tariff'])) {
         }
     }
 
+    if (!isset($CURRENCIES[$tariff['currency']])) {
+        $error['currency'] = trans('Invalid currency selection!');
+    }
+
     if (!$error) {
         $SESSION->redirect('?m=tariffinfo&id='.$LMS->TariffAdd($tariff));
     }
@@ -268,6 +272,7 @@ if (isset($_POST['tariff'])) {
     if (!empty($default_assignment_period)) {
         $tariff['period'] = $default_assignment_period;
     }
+    $tariff['currency'] = $_default_currency;
 }
 
 $layout['pagetitle'] = trans('New Subscription');

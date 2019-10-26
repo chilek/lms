@@ -2384,6 +2384,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'name' => $tariff['name'],
             'description' => $tariff['description'],
             'value' => $tariff['value'],
+            'currency' => $tariff['currency'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
             SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
@@ -2426,7 +2427,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
         }
         $result = $this->db->Execute(
-            'INSERT INTO tariffs (name, description, value,
+            'INSERT INTO tariffs (name, description, value, currency,
 				period, taxid, numberplanid, datefrom, dateto, prodid, uprate, downrate,
 				upceil, up_burst_time, up_burst_threshold, up_burst_limit,
 				downceil, down_burst_time, down_burst_threshold, down_burst_limit,
@@ -2435,7 +2436,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				downceil_n, down_burst_time_n, down_burst_threshold_n, down_burst_limit_n,
 				climit_n, plimit_n, dlimit, type, domain_limit, alias_limit, authtype, '
                 . implode(', ', array_keys($args2)) . ')
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
 					?,?,?,?,?,?,?,?,?,?,?,?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
             array_values(array_merge($args, $args2))
         );
@@ -2459,6 +2460,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'name' => $tariff['name'],
             'description' => $tariff['description'],
             'value' => $tariff['value'],
+            'currency' => $tariff['currency'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
             SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
@@ -2506,6 +2508,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $args = array_merge($args, $args2);
         $args[SYSLOG::RES_TARIFF] = $tariff['id'];
         $res = $this->db->Execute('UPDATE tariffs SET name = ?, description = ?, value = ?,
+            currency = ?,
             period = ?, taxid = ?, numberplanid = ?, datefrom = ?, dateto = ?, prodid = ?,
             uprate = ?, downrate = ?,
             upceil = ?, up_burst_time = ?, up_burst_threshold = ?, up_burst_limit = ?,
@@ -2578,7 +2581,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                 . 'GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
 
-        $unactive = $this->db->GetRow('SELECT SUM(a.count) AS count,
+        $unactive = $this->db->GetAllByKey('SELECT SUM(a.count) AS count,
             SUM(CASE t.period
 				WHEN ' . MONTHLY . ' THEN t.value
 				WHEN ' . QUARTERLY . ' THEN t.value/3
@@ -2591,7 +2594,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    WHEN ' . YEARLY . ' THEN t.value/12
 				    ELSE 0
 				    END)
-				END) AS value
+				END) AS value,
+				t.currency
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
 			WHERE t.id = ? AND a.commited = 1 AND (
@@ -2604,9 +2608,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						    AND liabilityid IS NULL AND tariffid IS NULL
 						    AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 				    )
-			)', array($id));
+			)
+			GROUP BY t.currency', 'currency', array($id));
 
-        $all = $this->db->GetRow('SELECT SUM(a.count) AS count,
+        $all = $this->db->GetAllByKey('SELECT SUM(a.count) AS count,
 			SUM(CASE t.period
 				WHEN ' . MONTHLY . ' THEN t.value
 				WHEN ' . QUARTERLY . ' THEN t.value/3
@@ -2619,19 +2624,34 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				    WHEN ' . YEARLY . ' THEN t.value/12
 				    ELSE 0
 				    END)
-				 END) AS value
+				 END) AS value,
+				 t.currency
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
-			WHERE tariffid = ? AND commited = 1', array($id));
+			WHERE tariffid = ? AND commited = 1
+			GROUP BY t.currency', 'currency', array($id));
 
         // count of all customers with that tariff
         $result['customerscount'] = empty($result['customers']) ? 0 : count($result['customers']);
-        // count of all assignments
-        $result['count'] = $all['count'];
-        // count of 'active' assignments
-        $result['activecount'] = $all['count'] - $unactive['count'];
-        // avg monthly income (without unactive assignments)
-        $result['totalval'] = $all['value'] - $unactive['value'];
+
+        $result['count'] = 0;
+        $result['activecount'] = 0;
+        $result['totalval'] = array();
+        if (!empty($all)) {
+            foreach ($all as $currency => $row) {
+                // count of all assignments
+                $result['count'] += $row['count'];
+                // count of 'active' assignments
+                $result['activecount'] += $row['count']
+                    - (isset($unactive[$currency]) ? $unactive[$currency]['count'] : 0);
+                // avg monthly income (without unactive assignments)
+                if (!isset($result['totalval'][$currency])) {
+                    $result['totalval'][$currency] = 0;
+                }
+                $result['totalval'][$currency] = $row['value']
+                    - (isset($unactive[$currency]) ? $unactive[$currency]['value'] : 0);
+            }
+        }
 
         $result['rows'] = ceil($result['customerscount'] / 2);
         return $result;
@@ -2639,7 +2659,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTariffs($forced_id = null)
     {
-        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid, t.authtype,
+        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, t.currency, uprate, taxid, t.authtype,
 				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
 				prodid, downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
 				taxes.label AS tax, t.period, t.type AS tarifftype, ' . $this->db->GroupConcat('ta.tarifftagid') . ' AS tags

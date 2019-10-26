@@ -257,6 +257,10 @@ if (isset($_POST['tariff'])) {
         }
     }
 
+    if (!isset($CURRENCIES[$tariff['currency']])) {
+        $error['currency'] = trans('Invalid currency selection!');
+    }
+
     if (!$error) {
         $LMS->TariffUpdate($tariff);
         $SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);
