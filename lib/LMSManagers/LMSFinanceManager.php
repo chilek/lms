@@ -30,6 +30,8 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
+    private $currency_values = array();
+
     public function GetPromotionNameBySchemaID($id)
     {
         return $this->db->GetOne('SELECT p.name FROM promotionschemas AS s
@@ -3972,5 +3974,38 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
         return $result;
+    }
+
+    public function getCurrencyValue($currency, $date = null)
+    {
+        if ($currency == $GLOBALS['currency']) {
+            return 1.0;
+        }
+        if (function_exists('get_currency_value')) {
+            if (!isset($GLOBALS['CURRENCIES'][$currency])) {
+                return null;
+            }
+            if (empty($date)) {
+                $date = mktime(12, 0, 0);
+            } elseif (strpos($date, '/') !== false) {
+                list ($year, $month, $day) = explode('/', $date);
+                $date = mktime(12, 0, 0, $month, $day, $year);
+            } else {
+                $date = mktime(
+                    12,
+                    0,
+                    0,
+                    date('n', $date),
+                    date('j', $date),
+                    date('Y', $date)
+                );
+            }
+            if (!isset($this->currency_values[$currency][$date])) {
+                $this->currency_values[$currency][$date] = get_currency_value($currency, $date);
+            }
+            return $this->currency_values[$currency][$date];
+        } else {
+            return null;
+        }
     }
 }

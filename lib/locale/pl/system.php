@@ -54,22 +54,22 @@ function check_ssn($ssn)
     if (!preg_match('/^[0-9]{11}$/', $ssn)) {
         return false;
     }
-    
+
     $steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
     $sum_nb = 0;
-    
+
     for ($x = 0; $x < 10; $x++) {
         $sum_nb += $steps[$x] * $ssn[$x];
     }
-    
+
     $sum_m = 10 - $sum_nb % 10;
-    
+
     if ($sum_m == 10) {
         $sum_c = 0;
     } else {
         $sum_c = $sum_m;
     }
-    
+
     if ($sum_c == $ssn[10]) {
         return true;
     }
@@ -94,54 +94,54 @@ function check_regon($regon)
 
     if (strlen($regon) == 14) {
         $steps = array(2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8);
-    
+
         for ($x = 0; $x < 13; $x++) {
             $sum_nb += $steps[$x] * $regon[$x];
         }
-    
+
         $mod = $sum_nb % 11;
-        
+
         if ($mod == 10) {
             $mod = 0;
         }
-    
+
         if ($mod == $regon[13]) {
             return true;
         }
     } else if (strlen($regon) == 9) {
         $steps = array(8, 9, 2, 3, 4, 5, 6, 7);
-    
+
         for ($x = 0; $x < 8; $x++) {
             $sum_nb += $steps[$x] * $regon[$x];
         }
-    
+
         $mod = $sum_nb % 11;
-        
+
         if ($mod == 10) {
             $mod = 0;
         }
-    
+
         if ($mod == $regon[8]) {
             return true;
         }
     } elseif (strlen($regon) == 7) {
         $steps = array(2, 3, 4, 5, 6, 7);
-    
+
         for ($x = 0; $x < 6; $x++) {
             $sum_nb += $steps[$x] * $regon[$x];
         }
 
         $mod = $sum_nb % 11;
-        
+
         if ($mod == 10) {
             $mod = 0;
         }
-    
+
         if ($mod == $regon[6]) {
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -203,4 +203,34 @@ function getHolidays($year = null)
 function generateRandomPostcode()
 {
     return sprintf("%02d", rand(0, 99)) . '-' . sprintf("%03d", rand(0, 999));
+}
+
+function get_currency_value($currency, $date = null)
+{
+    if ($date) {
+        $day_of_week = date('N', $date);
+        if ($day_of_week > 5) {
+            $date -= ($day_of_week - 5) * 86400;
+        }
+    }
+
+    $i = 0;
+    do {
+        $result = file_get_contents('https://api.nbp.pl/api/exchangerates/rates/A/' . $currency . '/'
+            . (empty($date) ? '' : date('Y-m-d', $date) . '/') . '?format=json');
+        if ($result !== false) {
+            break;
+        }
+        $date -= 86400;
+        $i++;
+    } while ($result === false && $i < 5);
+    if ($i == 5) {
+        return null;
+    }
+
+    $result = json_decode($result, true);
+    if ($result === null) {
+        return null;
+    }
+    return $result['rates'][0]['mid'];
 }

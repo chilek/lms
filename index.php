@@ -162,7 +162,7 @@ $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 $_default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
-if (empty($_default_currency) || !in_array($_default_currency, $CURRENCIES)) {
+if (empty($_default_currency) || !isset($CURRENCIES[$_default_currency])) {
     $_default_currency = $_currency;
 }
 $LMS->currency = $_currency;

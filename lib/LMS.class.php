@@ -3143,6 +3143,12 @@ class LMS
         return $manager->CheckNodeTariffRestrictions($aid, $nodes);
     }
 
+    public function getCurrencyValue($currency, $date = null)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->getCurrencyValue($currency, $date);
+    }
+
     /**
      * VoIP functions
      */
