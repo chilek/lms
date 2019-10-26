@@ -113,7 +113,7 @@
 				data-commited="{$a.commited}"
 				data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-					data-value="{$a.real_value|default:"0"|replace:",":"."}"
+					data-value="{$a.real_value|default:"0"|replace:",":"."}" data-currency="{$a.currency}"
 				{/if}
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 					data-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
@@ -151,7 +151,7 @@
 							<div class="lms-ui-tab-table-column value">
 								{if $a.tariffid || $a.liabilityid}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-										{$a.value|money_format}
+										{moneyf($a.value, $a.currency)}
 										{if $a.count != 1}({$a.unitary_value} x {$a.count}){/if}
 									{/if}
 								{/if}
@@ -159,7 +159,7 @@
 							<div class="lms-ui-tab-table-column discount">
 								{if $a.tariffid || $a.liabilityid}
 									{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-										{if $a.pdiscount != 0}{$a.pdiscount}%{elseif $a.vdiscount != 0}{$a.vdiscount|money_format}
+										{if $a.pdiscount != 0}{$a.pdiscount}%{elseif $a.vdiscount != 0}{moneyf($a.vdiscount, $a.currency)}
 											{if $a.count != 1}({$a.unitary_vdiscount} x {$a.count}){/if}{else}-{/if}
 									{/if}
 								{/if}
@@ -296,7 +296,7 @@
 	tariff_types[{$type}] = '{$name}';
 	{/foreach}
 
-	var money_format = '{$LANGDEFS.$_language.money_format}';
+	var money_format = '%01.2f %s';
 
 	var assignment_types = [];
 	var documents = [];
@@ -371,22 +371,43 @@
 
 		var total_downceil = 0;
 		var total_upceil = 0;
-		var total_value = 0;
-		var total_disc_value = 0;
+		var total_value = {};
+		var total_disc_value = {};
 		$('.lms-ui-tab-table-row' + selector).each(function() {
 			total_downceil += parseInt($(this).attr('data-downceil'));
 			total_upceil += parseInt($(this).attr('data-upceil'));
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			total_value += parseFloat($(this).attr('data-value'));
-			total_disc_value += parseFloat($(this).attr('data-disc-value'));
+			var currency = $(this).attr('data-currency');
+			if (!total_value.hasOwnProperty(currency)) {
+				total_value[currency] = 0;
+			}
+			total_value[currency] += parseFloat($(this).attr('data-value'));
+			if (!total_disc_value.hasOwnProperty(currency)) {
+				total_disc_value[currency] = 0;
+			}
+			total_disc_value[currency] += parseFloat($(this).attr('data-disc-value'));
 			{/if}
-			});
+		});
 
 		$('#total-downceil').html(total_downceil ? convert_to_units(total_downceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
 		$('#total-upceil').html(total_upceil ? convert_to_units(total_upceil * {$speed_unit_type}, {$speed_unit_aggregation_threshold}, {$speed_unit_type}) + '/s' : '-');
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-		$('#total-value').html(sprintf(money_format, total_value));
-		$('#total-disc-value').html('(' + sprintf(money_format, total_disc_value) + ')');
+		var html = '';
+		$.each(total_value, function(currency, value) {
+			if (html.length) {
+				html += '<br>';
+			}
+			html += sprintf(money_format, value, currency);
+		});
+		$('#total-value').html(html);
+		var html = '';
+		$.each(total_disc_value, function(currency, value) {
+			if (html.length) {
+				html += '<br>';
+			}
+			html += sprintf(money_format, value, currency);
+		});
+		$('#total-disc-value').html('(' + html + ')');
 		{/if}
 
 		if ($('.lms-ui-tab-table-row[data-tariff-type]').length) {

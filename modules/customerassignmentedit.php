@@ -281,6 +281,10 @@ if (isset($_POST['assignment'])) {
         }
     }
 
+    if (!isset($CURRENCIES[$a['currency']])) {
+        $error['currency'] = trans('Invalid currency selection!');
+    }
+
     $hook_data = $LMS->executeHook(
         'customerassignmentedit_validation_before_submit',
         array(
@@ -312,12 +316,13 @@ if (isset($_POST['assignment'])) {
             } else {
                 $args = array(
                     'value' => str_replace(',', '.', $a['value']),
+                    'currency' => $a['currency'],
                     'name' => $a['name'],
                     SYSLOG::RES_TAX => intval($a['taxid']),
                     'prodid' => $a['prodid'],
                     SYSLOG::RES_LIAB => $a['liabilityid']
                 );
-                $DB->Execute('UPDATE liabilities SET value=?, name=?, taxid=?, prodid=? WHERE id=?', array_values($args));
+                $DB->Execute('UPDATE liabilities SET value=?, currency=?, name=?, taxid=?, prodid=? WHERE id=?', array_values($args));
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CUST] = $customer['id'];
                     $SYSLOG->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_UPDATE, $args);
@@ -327,11 +332,12 @@ if (isset($_POST['assignment'])) {
             $args = array(
                 'name' => $a['name'],
                 'value' => $a['value'],
+                'currency' => $a['currency'],
                 SYSLOG::RES_TAX => intval($a['taxid']),
                 'prodid' => $a['prodid']
             );
-            $DB->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-				VALUES (?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO liabilities (name, value, currency, taxid, prodid)
+				VALUES (?, ?, ?, ?, ?)', array_values($args));
 
             $a['liabilityid'] = $DB->GetLastInsertID('liabilities');
 
@@ -444,7 +450,8 @@ if (isset($_POST['assignment'])) {
 				a.at, a.count, a.datefrom, a.dateto, a.numberplanid, a.paytype,
 				a.invoice, a.separatedocument, a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
 				(CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
-				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid,
+				liabilities.value AS value, liabilities.currency AS currency,
+				liabilities.prodid AS prodid, liabilities.taxid AS taxid,
 				recipient_address_id
 				FROM assignments a
 				LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
@@ -498,6 +505,10 @@ if (isset($_POST['assignment'])) {
 
     // phone numbers assignments
     $a['phones'] = $DB->GetCol('SELECT number_id FROM voip_number_assignments WHERE assignment_id=?', array($a['id']));
+
+    if (empty($a['currency'])) {
+        $a['currency'] = $_default_currency;
+    }
 }
 
 $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');

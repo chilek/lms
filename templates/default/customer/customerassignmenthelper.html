@@ -381,6 +381,12 @@
 								</TD>
 								<TD>
 									<INPUT type="text" name="{$variable_prefix}[value]" value="{if $variables.value}{$variables.value}{/if}" size="10" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
+
+									<select name="{$variable_prefix}[currency]" {tip text="Select currency" trigger="currency"}>
+										{foreach $_CURRENCIES as $currency}
+											<option value="{$currency}"{if $variables.currency == $currency} selected{/if}>{$currency}</option>
+										{/foreach}
+									</select>
 								</TD>
 							</TR>
 

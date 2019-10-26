@@ -99,6 +99,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS unitary_value,
                                             a.count,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) * a.count AS value,
+                                            (CASE WHEN t.currency IS NULL THEN l.currency ELSE t.currency END) AS currency,
                                             (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
                                             d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
                                             d.fullnumber,
@@ -308,7 +309,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         // Create assignments according to promotion schema
         if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
             $data['tariffid'] = $data['promotiontariffid'];
-            $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.value, t.period,
+            $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.value, t.currency, t.period,
                                          	t.id, t.prodid, t.taxid
 					                     FROM
 					                     	promotionassignments a
@@ -349,10 +350,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args = array(
                             'name' => trans('Activation payment'),
                             'value' => str_replace(',', '.', $value),
+                            'currency' => $tariff['currency'],
                             SYSLOG::RES_TAX => intval($tariff['taxid']),
                             'prodid' => $tariff['prodid']
                         );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid) VALUES (?, ?, ?, ?)', array_values($args));
+                        $this->db->Execute('INSERT INTO liabilities (name, value, currency, taxid, prodid)
+                            VALUES (?, ?, ?, ?, ?)', array_values($args));
 
                         $lid = $this->db->GetLastInsertID('liabilities');
 
@@ -394,21 +397,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 														   WHERE
 																name   = ? AND
 																value  = ? AND
+																currency = ? AND
 																period = ?
 														   LIMIT 1',
                                 array($tariff['name'],
                                     empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
+                                    $tariff['currency'],
                                     $tariff['period'])
                             );
                         } else {
                             $tariffid = $this->db->GetOne(
                                 '
 								SELECT id FROM tariffs
-								WHERE name = ? AND value = ? AND period IS NULL
+								WHERE name = ? AND value = ? AND currency = ? AND period IS NULL
 								LIMIT 1',
                                 array(
                                     $tariff['name'],
                                     empty($value) || $value == 'NULL' ? 0 : str_replace(',', '.', $value),
+                                    $tariff['currency'],
                                 )
                             );
                         }
@@ -416,7 +422,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         // ... if not found clone tariff
                         if (!$tariffid) {
                             $args = $this->db->GetRow('SELECT
-														  name, value, period, taxid, type,
+														  name, value, currency, period, taxid, type,
 														  upceil, downceil, uprate, downrate,
 														  up_burst_time, up_burst_threshold, up_burst_limit, 
 														  down_burst_time, down_burst_threshold, down_burst_limit, 
@@ -439,7 +445,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             unset($args['taxid']);
 
                             $this->db->Execute('INSERT INTO tariffs
-												   (name, value, period, type,
+												   (name, value, currency, period, type,
 												   upceil, downceil, uprate, downrate,
 												   up_burst_time, up_burst_threshold, up_burst_limit, 
 												   down_burst_time, down_burst_threshold, down_burst_limit, 
@@ -451,7 +457,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 												   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
 												   authtype, taxid)
 												VALUES
-												   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+												   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
 												   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
                             $tariffid = $this->db->GetLastInsertId('tariffs');
@@ -721,11 +727,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args = array(
                             'name' => $data['name'],
                             'value' => str_replace(',', '.', $data['value']),
+                            'currency' => $data['currency'],
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid']
                         );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-					    VALUES (?, ?, ?, ?)', array_values($args));
+                        $this->db->Execute('INSERT INTO liabilities (name, value, currency, taxid, prodid)
+					    VALUES (?, ?, ?, ?, ?)', array_values($args));
                         $lid = $this->db->GetLastInsertID('liabilities');
                         if ($this->syslog) {
                             $args[SYSLOG::RES_LIAB] = $lid;
@@ -785,11 +792,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args = array(
                             'name' => $data['name'],
                             'value' => str_replace(',', '.', $data['value']),
+                            'currency' => $data['currency'],
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid']
                         );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-					    VALUES (?, ?, ?, ?)', array_values($args));
+                        $this->db->Execute('INSERT INTO liabilities (name, value, currency, taxid, prodid)
+					    VALUES (?, ?, ?, ?, ?)', array_values($args));
                         $lid = $this->db->GetLastInsertID('liabilities');
                         if ($this->syslog) {
                             $args[SYSLOG::RES_LIAB] = $lid;
@@ -835,11 +843,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $args = array(
                         'name' => $data['name'],
                         'value' => str_replace(',', '.', $data['value']),
+                        'currency' => $data['currency'],
                         SYSLOG::RES_TAX => intval($data['taxid']),
                         'prodid' => $data['prodid']
                     );
-                    $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-							VALUES (?, ?, ?, ?)', array_values($args));
+                    $this->db->Execute('INSERT INTO liabilities (name, value, currency, taxid, prodid)
+							VALUES (?, ?, ?, ?, ?)', array_values($args));
                     $lid = $this->db->GetLastInsertID('liabilities');
                     if ($this->syslog) {
                         $args[SYSLOG::RES_LIAB] = $lid;
@@ -1228,8 +1237,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $error['fromdate'] = $error['datefrom'];
         }
 
-            $result['error'] = $error;
-            $result['a'] = $a;
+        if (!isset($GLOBALS['CURRENCIES'][$a['currency']])) {
+            $error['currency'] = trans('Invalid currency selection!');
+        }
+
+        $result['error'] = $error;
+
+        $result['a'] = $a;
             $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count'));
 
             return $result;

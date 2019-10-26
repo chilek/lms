@@ -32,6 +32,7 @@ $this->Execute("
     ALTER TABLE tariffs DROP CONSTRAINT tariffs_name_key;
     ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period);
     ALTER TABLE assignments ADD COLUMN currency varchar(3);
+    ALTER TABLE liabilities ADD COLUMN currency varchar(3);
     ALTER TABLE documents ADD COLUMN currency varchar(3)
 ");
 

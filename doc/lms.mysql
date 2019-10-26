@@ -937,6 +937,7 @@ CREATE TABLE voip_emergency_numbers (
 CREATE TABLE liabilities (
 	id int(11)              NOT NULL auto_increment,
 	value decimal(9,2)      NOT NULL DEFAULT '0',
+	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
 	taxid int(11)           NOT NULL,
 	prodid varchar(255)     NOT NULL DEFAULT '',
