@@ -429,6 +429,7 @@ CREATE TABLE documents (
 	auserid integer DEFAULT NULL
 		CONSTRAINT documents_auserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	adate integer DEFAULT 0 NOT NULL,
+    currency varchar(3),
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -749,8 +750,9 @@ CREATE TABLE tariffs (
 	datefrom integer	NOT NULL DEFAULT 0,
 	dateto integer		NOT NULL DEFAULT 0,
 	authtype smallint 	DEFAULT 0 NOT NULL,
+    currency varchar(3),
 	PRIMARY KEY (id),
-	CONSTRAINT tariffs_name_key UNIQUE (name, value, period)
+	CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period)
 );
 CREATE INDEX tariffs_type_idx ON tariffs (type);
 
@@ -854,6 +856,7 @@ CREATE TABLE assignments (
 	commited smallint DEFAULT 1 NOT NULL,
 	separatedocument smallint DEFAULT 0 NOT NULL,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
+    currency varchar(3),
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -1002,6 +1005,8 @@ CREATE TABLE cash (
 	sourceid integer	DEFAULT NULL
 		CONSTRAINT cash_sourceid_fkey REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	linktechnology integer DEFAULT NULL,
+    currency varchar(3),
+    currencyvalue numeric(9,4) DEFAULT 1.0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX cash_customerid_idx ON cash (customerid);
@@ -3622,6 +3627,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102500');
 
 COMMIT;

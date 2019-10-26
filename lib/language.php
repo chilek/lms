@@ -34,6 +34,7 @@ $LANGDEFS = array(
             'html' => 'pl',
             'money_format' => '%01.2f zł',
             'money_format_in_words' => '%s złotych %s groszy',
+            'currency' => 'PLN',
 //          'mobile' => '(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}',
             ),
         'lt' => array(
@@ -44,6 +45,7 @@ $LANGDEFS = array(
             'html' => 'lt',
             'money_format' => '%01.2f EUR',
             'money_format_in_words' => '%s euro %s centų',
+            'currency' => 'EUR',
 //          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
         'en' => array(
@@ -54,6 +56,7 @@ $LANGDEFS = array(
             'html' => 'en',
             'money_format' => '$ %01.2f',
             'money_format_in_words' => '%s dollars %s cents',
+            'currency' => 'USD',
 //          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
         'sk' => array(
@@ -64,6 +67,7 @@ $LANGDEFS = array(
             'html' => 'sk',
             'money_format' => '%01.2f EUR',
             'money_format_in_words' => '%s euro %s centov',
+            'currency' => 'EUR',
 //          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
         'ro' => array(
@@ -74,6 +78,7 @@ $LANGDEFS = array(
             'html' => 'ro',
             'money_format' => '%01.2f RON',
             'money_format_in_words' => '%s RON %s bani',
+            'currency' => 'RON',
 //          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
         'cs' => array(
@@ -84,6 +89,7 @@ $LANGDEFS = array(
             'html' => 'cs',
             'money_format' => '%01.2f Kč',
             'money_format_in_words' => '%s Kč %s haléř',
+            'currency' => 'CZK',
 //          'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
             ),
         );
@@ -120,6 +126,8 @@ if (!empty($lang)) {
 } else {
     $_language = 'en'; // default language
 }
+
+$_currency = $LANGDEFS[$_language]['currency'];
 
 // Use system lang for UI if any of browser langs isn't supported
 // or browser langs aren't set

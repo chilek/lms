@@ -951,6 +951,47 @@ define('EXISTINGASSIGNMENT_SUSPEND', 1);
 define('EXISTINGASSIGNMENT_CUT', 2);
 define('EXISTINGASSIGNMENT_DELETE', 3);
 
+$CURRENCIES = array(
+    'AUD',
+    'BGN',
+    'BRL',
+    'CAD',
+    'CHF',
+    'CLP',
+    'CNY',
+    'CZK',
+    'DKK',
+    'EUR',
+    'GBP',
+    'HKD',
+    'HRK',
+    'HUF',
+    'IDR',
+    'ILS',
+    'INR',
+    'ISK',
+    'JPY',
+    'KRW',
+    'LTL',
+    'LVL',
+    'MXN',
+    'MYR',
+    'NOK',
+    'NZD',
+    'PHP',
+    'PLN',
+    'RON',
+    'RUB',
+    'SEK',
+    'SGD',
+    'THB',
+    'TRY',
+    'UAH',
+    'USD',
+    'XDR',
+    'ZAR',
+);
+
 $EXISTINGASSIGNMENTS = array(
     EXISTINGASSIGNMENT_KEEP => trans('<!existingassignment>keep'),
     EXISTINGASSIGNMENT_SUSPEND => trans('<!existingassignment>suspend'),
@@ -996,6 +1037,7 @@ if (isset($SMARTY)) {
     $SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
     $SMARTY->assign('_CATEGORY_DEFAULT_STYLE', $CATEGORY_DEFAULT_STYLE);
     $SMARTY->assign('_EXISTINGASSIGNMENTS', $EXISTINGASSIGNMENTS);
+    $SMARTY->assign('_CURRENCIES', $CURRENCIES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

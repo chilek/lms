@@ -553,6 +553,7 @@ CREATE TABLE documents (
 	archived tinyint(1) NOT NULL DEFAULT 0,
 	auserid int(11) DEFAULT NULL,
 	adate int(11) DEFAULT 0 NOT NULL,
+    currency varchar(3),
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -873,8 +874,9 @@ CREATE TABLE tariffs (
 	datefrom            int(11) NOT NULL DEFAULT '0',
 	dateto              int(11) NOT NULL DEFAULT '0',
 	authtype tinyint(1) NOT NULL DEFAULT '0',
+    currency varchar(3),
 	PRIMARY KEY  (id),
-	UNIQUE KEY name (name, value, period),
+	UNIQUE KEY tariffs_name_key (name, value, currency, period),
 	INDEX type (type),
 	FOREIGN KEY (numberplanid)        REFERENCES numberplans  (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (voip_tariff_id)      REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -969,6 +971,7 @@ CREATE TABLE assignments (
 	commited tinyint(1) NOT NULL DEFAULT '1',
 	separatedocument tinyint(1) NOT NULL DEFAULT 0,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
+    currency varchar(3),
 	PRIMARY KEY (id),
 	INDEX tariffid (tariffid),
 	INDEX customerid (customerid),
@@ -1118,6 +1121,8 @@ CREATE TABLE cash (
   importid int(11) DEFAULT NULL,
   sourceid int(11) DEFAULT NULL,
   linktechnology int(11) DEFAULT NULL,
+  currency varchar(3),
+  currencyvalue decimal(9,4) DEFAULT 1.0,
   PRIMARY KEY  (id),
   INDEX customerid (customerid),
   INDEX docid (docid),
@@ -3574,4 +3579,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102500');
