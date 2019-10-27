@@ -316,7 +316,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     public function GetCustomerShortBalanceList($customerid, $limit = 10, $order = 'DESC')
     {
-        $result = $this->db->GetAll('SELECT comment, value, time FROM cash
+        $result = $this->db->GetAll('SELECT comment, value, currency, currencyvalue, time FROM cash
 				WHERE customerid = ?
 				ORDER BY time ' . $order . '
 				LIMIT ?', array($customerid, intval($limit)));
@@ -333,7 +333,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         foreach ($result as &$record) {
             $record['after'] = $balance;
-            $balance -= $record['value'];
+            $balance -= $record['value'] * $record['currencyvalue'];
         }
         unset($record);
 
