@@ -98,6 +98,14 @@
 		</TD>
 	</TR>
 	{/if}
+	<tr>
+		<td class="bold nobr">
+			{trans("Currency:")}
+		</td>
+		<td class="nobr">
+			{currency_selection elementname="receipt[currency]" selected=$receipt.currency locked=$receipt.currency_locked}
+		</td>
+	</tr>
 	{if $receipt.type && $rights}
 	<TR>
 		<TD WIDTH="1%">
@@ -314,7 +322,7 @@
 <P>
 <TABLE class="lmsbox">
     <THEAD>
-	{if $receipt.o_type == "customer"}
+	{if $receipt.o_type == "customer" && $receipt['currency'] == LMS::$currency}
 	<TR>
 		<TD colspan="4">
 			<FORM name="additemlist" method="POST" action="?m=receiptadd&amp;action=additemlist">
@@ -405,7 +413,7 @@
 			{$item.description}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.value|money_format}<BR>
+			{$item.value|string_format:"%01.2f"}<BR>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A HREF="?m=receiptadd&amp;action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
@@ -424,7 +432,7 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{sum array=$contents column=value assign="total_value"}{moneyf($total_value)}
+			{sum array=$contents column=value assign="total_value"}{$total_value|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%"></TD>
 	</TR>
@@ -462,7 +470,7 @@
 				{$_DOCENTITIES[$smarty.const.DOC_ENTITY_COPY]}
 			</label>
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
-			<A HREF="?m=receiptadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
+			<A HREF="?m=receiptadd&action=init&type={$receipt.type}">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
 				<A HREF="javascript:alertDialog($t('Customer not selected!'));">
 			{elseif !$contents}

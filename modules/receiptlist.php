@@ -151,7 +151,12 @@ unset($receiptlist['order']);
 unset($receiptlist['direction']);
 
 $listdata['total'] = $total;
-$listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid=?', array($regid));
+$listdata['cashstate'] = $DB->GetOne(
+    'SELECT SUM(value * d.currencyvalue) FROM receiptcontents c
+    JOIN documents d ON d.id = c.docid
+    WHERE regid = ?',
+    array($regid)
+);
 if ($from > 0) {
     $listdata['startbalance'] = $DB->GetOne(
         'SELECT SUM(value) FROM receiptcontents

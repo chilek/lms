@@ -300,6 +300,10 @@ switch ($action) {
                 }
             }
         }
+
+        $receipt['currency_locked'] = false;
+        $receipt['currency'] = LMS::$default_currency;
+
         break;
 
     case 'setreg':
@@ -690,6 +694,10 @@ switch ($action) {
         if ($contents && $customer) {
             $receipt['customer'] = $customer;
             $receipt['contents'] = $contents;
+            $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
+            if (!isset($receipt['currencyvalue'])) {
+                die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+            }
             $result = $LMS->AddReceipt($receipt);
             if (is_array($result)) {
                 $error = array_merge($error, $result);
@@ -708,6 +716,10 @@ switch ($action) {
         } elseif ($contents && ($receipt['o_type'] == 'other'
                 || $receipt['o_type'] == 'advance')) {
             $receipt['contents'] = $contents;
+            $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
+            if (!isset($receipt['currencyvalue'])) {
+                die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+            }
             $result = $LMS->AddReceipt($receipt);
             if (is_array($result)) {
                 $error = array_merge($error, $result);
@@ -744,6 +756,11 @@ switch ($action) {
             if ($cash < $value) {
                 $error['nocash'] = trans('There is no cash in selected registry! You can expense only $a.', moneyf($cash));
                 break;
+            }
+
+            $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
+            if (!isset($receipt['currencyvalue'])) {
+                die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
             }
 
             $DB->BeginTrans();
@@ -795,12 +812,13 @@ switch ($action) {
                 'name' => '',
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
-                'currency' => LMS::$currency,
+                'currency' => isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
             );
-            $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency, currencyvalue)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-            $rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid']));
+            $rid = $DB->GetLastInsertID('documents');
 
             if ($SYSLOG) {
                 unset($args[SYSLOG::RES_USER]);
@@ -859,12 +877,13 @@ switch ($action) {
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
-                'currency' => LMS::$currency,
+                'currency' => isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
             );
-            $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber, currency)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber, currency, currencyvalue)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
-            $did = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $number, $receipt['cdate'], $numberplan));
+            $did = $DB->GetLastInsertID('documents');
 
             if ($SYSLOG) {
                 $args[SYSLOG::RES_DOC] = $did;
@@ -936,7 +955,7 @@ $invoicelist = array();
 if (isset($list)) {
     if ($contents) {
         foreach ($list as $idx => $row) {
-            for ($i=0, $x=count($contents); $i<$x; $i++) {
+            for ($i = 0, $x = count($contents); $i < $x; $i++) {
                 if (isset($contents[$i]['docid']) && $row['id'] == $contents[$i]['docid']) {
                     break;
                 }
@@ -949,6 +968,19 @@ if (isset($list)) {
         $invoicelist = $list;
     }
     $invoicelist = array_slice($invoicelist, 0, 10);
+}
+
+if ($contents) {
+    $locked = false;
+    foreach ($contents as $item) {
+        if (isset($item['docid'])) {
+            $locked = true;
+        }
+    }
+    if ($locked) {
+        $receipt['currency'] = LMS::$currency;
+        $receipt['currency_locked'] = true;
+    }
 }
 
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {

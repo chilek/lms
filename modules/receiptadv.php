@@ -58,8 +58,9 @@ if (isset($_GET['id'])) {
         $receipt['in_extended'] = true;
     }
 
-        $receipt['id'] = $id;
-        $receipt['regid'] = $regid;
+    $receipt['id'] = $id;
+    $receipt['regid'] = $regid;
+    $receipt['currency'] = $record['currency'];
 }
 
 $titlenumber = docnumber(array(
@@ -164,6 +165,11 @@ if (isset($_POST['receipt'])) {
     }
 
     if (!$error) {
+        $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $cdate);
+        if (!isset($receipt['currencyvalue'])) {
+            die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+        }
+
         $DB->BeginTrans();
         $DB->LockTables(array('documents', 'numberplans'));
 
@@ -199,8 +205,8 @@ if (isset($_POST['receipt'])) {
 
         // add cash-in receipt
         $DB->Execute(
-            'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency)
-					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
+            'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency, currencyvalue)
+					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)',
             array(
                 DOC_RECEIPT,
                 $in_number,
@@ -210,7 +216,8 @@ if (isset($_POST['receipt'])) {
                 Auth::GetCurrentUser(),
                 $record['name'],
                 $fullnumber,
-                LMS::$currency,
+                isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
             )
         );
 
@@ -233,8 +240,8 @@ if (isset($_POST['receipt'])) {
             ));
 
             $DB->Execute(
-                'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency)
-					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
+                'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency, currencyvalue)
+					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)',
                 array(
                     DOC_RECEIPT,
                     $receipt['out_number'],
@@ -244,7 +251,8 @@ if (isset($_POST['receipt'])) {
                     Auth::GetCurrentUser(),
                     $receipt['name'],
                     $fullnumber,
-                    LMS::$currency,
+                    isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                    isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
                 )
             );
 
@@ -264,13 +272,14 @@ if (isset($_POST['receipt'])) {
         );
 
         $DB->Execute(
-            'INSERT INTO cash (time, type, docid, itemid, value, currency, comment, userid)
-					VALUES(?, 1, ?, 1, ?, ?, ?, ?)',
+            'INSERT INTO cash (time, type, docid, itemid, value, currency, currencyvalue, comment, userid)
+					VALUES(?, 1, ?, 1, ?, ?, ?, ?, ?)',
             array(
                 $cdate,
                 $rid,
                 str_replace(',', '.', $record['value'] * -1),
-                LMS::$currency,
+                isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
                 trans('Advance return') . ' - ' . $titlenumber,
                 Auth::GetCurrentUser()
             )
@@ -288,13 +297,14 @@ if (isset($_POST['receipt'])) {
             );
 
             $DB->Execute(
-                'INSERT INTO cash (time, type, docid, itemid, value, currency, comment, userid)
-					VALUES(?, 1, ?, 1, ?, ?, ?, ?)',
+                'INSERT INTO cash (time, type, docid, itemid, value, currency, currencyvalue, comment, userid)
+					VALUES(?, 1, ?, 1, ?, ?, ?, ?, ?)',
                 array(
                     $cdate,
                     $rid,
                     str_replace(',', '.', $value * -1),
-                    LMS::$currency,
+                    isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                    isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
                     $receipt['description'],
                     Auth::GetCurrentUser()
                 )

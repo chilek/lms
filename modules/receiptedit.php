@@ -383,6 +383,11 @@ switch ($action) {
 
         break;
     case 'save':
+        $receipt['currencyvalue'] = $LMS->getCurrencyValue($receipt['currency'], $receipt['cdate']);
+        if (!isset($receipt['currencyvalue'])) {
+            die('Fatal error: couldn\'t get quote for ' . $receipt['currency'] . ' currency!<br>');
+        }
+
         if ($contents && $customer) {
             $DB->BeginTrans();
             $DB->LockTables('documents');
@@ -419,10 +424,12 @@ switch ($action) {
                 'city' => $customer['city'],
                 'closed' => $receipt['closed'],
                 'fullnumber' => $fullnumber,
+                'currency' => $receipt['currency'],
+                'currencyvalue' => $receipt['currencyvalue'],
             );
             $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
-					fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					fullnumber, currency, currencyvalue)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
             $DB->UnLockTables();
 
             $rid = $DB->GetLastInsertId('documents');
@@ -488,12 +495,14 @@ switch ($action) {
                     SYSLOG::RES_DOC => $rid,
                     'itemid' => $iid,
                     'value' => $value,
+                    'currency' => $receipt['currency'],
+                    'currencyvalue' => $receipt['currencyvalue'],
                     'comment' => $item['description'],
                     SYSLOG::RES_USER => Auth::GetCurrentUser(),
                     SYSLOG::RES_CUST => $customer['id']
                 );
-                $DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid, customerid)
-						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                $DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, currency, currencyvalue, comment, userid, customerid)
+						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
                     unset($args[SYSLOG::RES_USER]);
@@ -529,10 +538,12 @@ switch ($action) {
                 'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
                 'closed' => $receipt['closed'],
                 'fullnumber' => $fullnumber,
+                'currency' => $receipt['currency'],
+                'currencyvalue' => $receipt['currencyvalue'],
             );
             $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed,
-					fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					fullnumber, currency, currencyvalue)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
             $DB->UnLockTables();
 
             $rid = $DB->GetLastInsertId('documents');
@@ -596,11 +607,13 @@ switch ($action) {
                     SYSLOG::RES_DOC => $rid,
                     'itemid' => $iid,
                     'value' => $value,
+                    'currency' => $receipt['currency'],
+                    'currencyvalue' => $receipt['currencyvalue'],
                     'comment' => $item['description'],
                     SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 );
-                $DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid)
-						VALUES(?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                $DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, currency, currencyvalue, comment, userid)
+						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
                     $args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
                     unset($args[SYSLOG::RES_USER]);

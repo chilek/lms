@@ -119,10 +119,10 @@
 			{$receipt.number}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="lms-ui-error"{/if}>
-			{if $receipt.value > 0}{$receipt.value|money_format}{else}-{/if}
+			{if $receipt.value > 0}{moneyf($receipt.value, $receipt.currency)}{else}-{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT"{if !$receipt.closed} class="lms-ui-error"{/if}>
-			{if $receipt.value < 0}{($receipt.value*-1)|money_format}{else}-{/if}
+			{if $receipt.value < 0}{moneyf($receipt.value*-1, $receipt.currency)}{else}-{/if}
 		</TD>
 		<TD WIDTH="45%"{if !$receipt.closed} class="lms-ui-error"{/if}>
 			{if $receipt.customerid}<A HREF="?m=customerinfo&id={$receipt.customerid}">{/if}
@@ -199,18 +199,19 @@
 		</TD>
 		<TD class="nobr text-right valign-top">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			{$listdata.totalincome|money_format}<HR>
-			{$listdata.startbalance|money_format}<BR>
-			{$listdata.endbalance|money_format}
+			{moneyf($listdata.totalincome)}<HR>
+			{moneyf($listdata.startbalance)}<BR>
+			{moneyf($listdata.endbalance)}
 			{/if}
 		</TD>
 		<TD nowrap align="right" style="vertical-align: top;">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			{$listdata.totalexpense|money_format}<HR>
+			{moneyf($listdata.totalexpense)}<HR>
 			{/if}
 		</TD>
 		<TD colspan="3" align="right">
-			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}<H1>{trans("Cash state:")} <B>{$listdata.cashstate|money_format}</B></H1>{/if}
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
+			<H1>{trans("Cash state:")} <B>{moneyf($listdata.cashstate)}</B></H1>{/if}
 			<A href="?m=cashreglogview&regid={$listdata.regid}">{trans("Cash history")} <img src="img/value.gif" alt=""></A>&nbsp;
 			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}"><img src="img/kp.png" alt=""> {trans("New Cash-in Receipt")}</A>&nbsp;
 			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}"><img src="img/kw.png" alt=""> {trans("New Cash-out Receipt")}</A>

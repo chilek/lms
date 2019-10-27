@@ -58,7 +58,11 @@ function GetReceipt($id)
 				LEFT JOIN countries c ON c.id = d.countryid'));
         }
 
-        $receipt['contents'] = $db->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
+        $receipt['contents'] = $db->GetAll(
+            'SELECT * FROM receiptcontents c
+            WHERE docid = ? ORDER BY itemid',
+            array($id)
+        );
         $receipt['total'] = 0;
 
         foreach ($receipt['contents'] as $row) {

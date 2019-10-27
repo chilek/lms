@@ -77,7 +77,7 @@
 	<tr class="{cycle name=one}">
 		<td class="flr sdr" colspan="4" valign="top"><b>{counter name=one}.</b> {$row.description|replace:"\n":"<BR>"}</td>
 		<td class="flr sdr" align="right" valign="top" nowrap>
-			{$row.value|money_format}
+			{moneyf($row.value, $receipt.currency)}
 		</td>
 		<td class="flr"></td>
 	</tr>
@@ -85,7 +85,7 @@
 	<tr>
 		<td width="51%" class="fleftu" colspan="3"></td>
 		<td width="17%" class="fbt sdr" align="right" nowrap><b>{trans("Total:")}</b></td>
-		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
+		<td class="fall sdr" align="right" nowrap><b>{moneyf($receipt.total, $receipt.currency)}</b></td>
 		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
 	</tr>
 	<tr>
@@ -93,12 +93,10 @@
 			<table width="100%">
 			    <tr>
 				<td width="1%" valign="top" nowrap>{trans("In words:")}</td>
-				<td width="99%" class="sdr"><b>
-					{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
-						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
-					{else}
-						{moneyf_in_words($receipt.total)}
-					{/if}</b>
+				<td width="99%" class="sdr">
+					<b>
+						{moneyf_in_words($receipt.total, $receipt.currency)}
+					</b>
 				</td>
 			    </tr>
 			</table>
@@ -236,14 +234,14 @@
 	{foreach item="row" from=$receipt.contents}
 	<tr class="{cycle name=two}">
 		<td class="flr sdr" colspan="4" valign="top"><b>{counter name=two}.</b> {$row.description|replace:"\n":"<BR>"}</td>
-		<td class="flr sdr" align="right" valign="top" nowrap>{$row.value|money_format}</td>
+		<td class="flr sdr" align="right" valign="top" nowrap>{moneyf($row.value, $receipt.currency)}</td>
 		<td class="flr"></td>
 	</tr>
 	{/foreach}
 	<tr>
 		<td width="51%" class="fleftu" colspan="3"></td>
 		<td width="17%" class="fbt sdr" align="right" nowrap><b>{trans("Total:")}</b></td>
-		<td class="fall sdr" align="right" nowrap><b>{$receipt.total|money_format}</b></td>
+		<td class="fall sdr" align="right" nowrap><b>{moneyf($receipt.total, $receipt.currency)}</b></td>
 		<td class="fall" align="center">Symbole<br>PL. KAS. Nr</td>
 	</tr>
 	<tr>
@@ -251,12 +249,10 @@
 			<table width="100%">
 			    <tr>
 				<td width="1%" valign="top" nowrap>{trans("In words:")}</td>
-				<td width="99%" class="sdr"><b>
-					{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
-						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
-					{else}
-						{moneyf_in_words($receipt.total)}
-					{/if}</b>
+				<td width="99%" class="sdr">
+					<b>
+						{moneyf_in_words($receipt.total, $receipt.currency)}
+					</b>
 				</td>
 			    </tr>
 			</table>

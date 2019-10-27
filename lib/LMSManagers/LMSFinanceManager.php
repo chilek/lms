@@ -3416,8 +3416,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN vusers ON (userid = vusers.id)
 				JOIN (
 					SELECT documents.id AS id,
-						(CASE WHEN SUM(value) > 0 THEN SUM(value) ELSE 0 END) AS income,
-						(CASE WHEN SUM(value) < 0 THEN -SUM(value) ELSE 0 END) AS expense 
+						(CASE WHEN SUM(value * documents.currencyvalue) > 0 THEN SUM(value * documents.currencyvalue) ELSE 0 END) AS income,
+						(CASE WHEN SUM(value * documents.currencyvalue) < 0 THEN -SUM(value * documents.currencyvalue) ELSE 0 END) AS expense 
 					FROM documents
 					JOIN receiptcontents ON documents.id = docid AND type = ?
 					WHERE regid = ?
@@ -3435,7 +3435,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         }
 
         if ($list = $this->db->GetAll(
-            'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid,
+            'SELECT documents.id AS id, SUM(value) AS value, currency, currencyvalue, number, cdate, customerid,
 			documents.name AS customer, address, zip, city, numberplans.template, extnumber, closed,
 			MIN(description) AS title, COUNT(*) AS posnumber, vusers.rname AS user
 			FROM documents
@@ -3444,7 +3444,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
 			WHERE regid = ?'
             .$where
-            .' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, numberplans.template, vusers.rname, extnumber, closed '
+            .' GROUP BY documents.id, currency, currencyvalue, number, cdate, customerid, documents.name, address, zip, city, numberplans.template,
+            vusers.rname, extnumber, closed '
             .$having
             .($sqlord != '' ? $sqlord : '')
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -3561,14 +3562,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'closed' => $customer || $receipt['o_type'] != 'advance' ? 1 : 0,
             'fullnumber' => $fullnumber,
-            'currency' => LMS::$currency,
+            'currency' => isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+            'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
         );
         $this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid,
 			name, address, zip, city, countryid, 
 			divisionid, div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace,
-			closed, fullnumber, currency)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			closed, fullnumber, currency, currencyvalue)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $this->db->UnLockTables();
 
         $rid = $this->db->GetLastInsertId('documents');
@@ -3608,13 +3610,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 SYSLOG::RES_DOC => $rid,
                 'itemid' => $iid,
                 'value' => $value,
-                'currency' => LMS::$currency,
+                'currency' => isset($receipt['currency']) ? $receipt['currency'] : LMS::$currency,
+                'currencyvalue' => isset($receipt['currencyvalue']) ? $receipt['currencyvalue'] : 1.0,
                 'comment' => $item['description'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
             );
-            $this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, currency, comment, userid, customerid)
-						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, currency, currencyvalue, comment, userid, customerid)
+						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
             if ($SYSLOG) {
                 $args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
                 unset($args[SYSLOG::RES_USER]);

@@ -84,6 +84,14 @@
 			{/if}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold nobr">
+			{trans("Currency:")}
+		</td>
+		<td class="nobr">
+			{currency_selection elementname="receipt[currency]" selected=$receipt.currency}
+		</td>
+	</tr>
 	<TR>
 		<TD WIDTH="1%">
 			<B>{trans("Target:")}</B>
@@ -243,7 +251,7 @@
 			{$item.description}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.value|money_format}<BR>
+			{$item.value|string_format:"%01.2f"}<BR>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A HREF="?m=receiptedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
@@ -262,7 +270,7 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{sum array=$contents column=value string_format=$LANGDEFS.$_language.money_format}
+			{sum array=$contents column=value assign="total_value"}{$total_value|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%"></TD>
 	</TR>
