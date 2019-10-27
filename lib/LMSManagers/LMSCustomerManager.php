@@ -365,12 +365,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $tmp = $this->db->GetRow(
             'SELECT SUM(a.value)*-1 AS debtvalue, COUNT(*) AS debt
             FROM (
-                SELECT SUM(value) AS value
+                SELECT SUM(value * currencyvalue) AS value
                 FROM cash
                 LEFT JOIN customerview ON (customerid = customerview.id)
                 WHERE deleted = 0
                 GROUP BY customerid
-                HAVING SUM(value) < 0
+                HAVING SUM(value * currencyvalue) < 0
             ) a'
         );
 
@@ -809,12 +809,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $sql .= 'FROM customerview c
             ' . ($overduereceivables ? '
             LEFT JOIN (
-                SELECT cash.customerid, SUM(value) AS balance FROM cash
+                SELECT cash.customerid, SUM(value * cash.currencyvalue) AS balance FROM cash
                 LEFT JOIN customers ON customers.id = cash.customerid
                 LEFT JOIN divisions ON divisions.id = customers.divisionid
                 LEFT JOIN documents d ON d.id = cash.docid
                 LEFT JOIN (
-                    SELECT SUM(value) AS totalvalue, docid FROM cash
+                    SELECT SUM(value * currencyvalue) AS totalvalue, docid FROM cash
                     JOIN documents ON documents.id = cash.docid
                     WHERE documents.type = ' . DOC_CNOTE . '
                     GROUP BY docid
@@ -840,7 +840,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
                         . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
             		GROUP BY customerassignments.customerid) ca ON ca.customerid = c.id ' : '')
-            . 'LEFT JOIN (SELECT SUM(value) AS value, customerid FROM cash'
+            . 'LEFT JOIN (SELECT SUM(value * currencyvalue) AS value, customerid FROM cash'
             . ($time ? ' WHERE time < ' . $time : '') . '
                 GROUP BY customerid
             ) b ON (b.customerid = c.id)
