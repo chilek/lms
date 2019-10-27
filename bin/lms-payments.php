@@ -379,7 +379,7 @@ if ($check_invoices) {
 			WHERE c.time <= ?NOW?
 				" . (!empty($groupnames) ? $customergroups : '') . "
 			GROUP BY c.customerid
-			HAVING SUM(c.value) >= 0
+			HAVING SUM(c.value * c.currencyvalue) >= 0
 		) AND type IN (?, ?, ?)
 			AND cdate <= ?NOW?
 			AND closed = 0",
