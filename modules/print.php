@@ -347,7 +347,7 @@ switch ($type) {
         $layout['pagetitle'] = trans('Total Invoiceless Income ($a to $b)', ($from ? $from : ''), $to);
 
         $incomelist = $DB->GetAll(
-            'SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
+            'SELECT floor(time/86400)*86400 AS date, SUM(value * currencyvalue) AS value
 			FROM cash c
 			WHERE value>0 AND time>=? AND time<=? AND docid IS NULL
 				AND NOT EXISTS (
