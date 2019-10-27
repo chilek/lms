@@ -108,6 +108,16 @@ window.open('?m=note&id={$newnoteid}');
 			{/if}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold">{trans("Currency:")}</td>
+		<td>
+			<select name="note[currency]" {tip text="Select currency"}>
+				{foreach $_CURRENCIES as $currency}
+					<option value="{$currency}"{if $note.currency == $currency} selected{/if}>{$currency}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
 	<TR>
 		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
@@ -160,7 +170,7 @@ window.open('?m=note&id={$newnoteid}');
 			{$item.description}
 		</TD>
 		<TD NOWRAP ALIGN="RIGHT">
-			{$item.value|money_format}
+			{$item.value|string_format:"%01.2f"}
 		</TD>
 		<TD NOWRAP>
 			<A HREF="?m=noteadd&amp;action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>

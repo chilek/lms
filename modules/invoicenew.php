@@ -393,6 +393,10 @@ switch ($action) {
             }
         }
 
+        if (!isset($CURRENCIES[$invoice['currency']])) {
+            $error['currency'] = trans('Invalid currency selection!');
+        }
+
         if ($LMS->CustomerExists($cid)) {
             $customer = $LMS->GetCustomer($cid, true);
         }

@@ -112,13 +112,13 @@ switch ($action) {
         unset($customer);
         unset($error);
         $error = null;
-        
+
         if ($note = $_POST['note']) {
             foreach ($note as $key => $val) {
                 $note[$key] = $val;
             }
         }
-        
+
         $note['oldcdate'] = $oldcdate;
         $note['oldnumber'] = $oldnumber;
         $note['oldnumberplanid'] = $oldnumberplanid;
@@ -178,6 +178,10 @@ switch ($action) {
             }
         }
 
+        if (!isset($CURRENCIES[$note['currency']])) {
+            $error['currency'] = trans('Invalid currency selection!');
+        }
+
         if (!$error) {
             if ($LMS->CustomerExists($note['customerid'])) {
                 $customer = $LMS->GetCustomer($note['customerid'], true);
@@ -189,6 +193,11 @@ switch ($action) {
         if ($contents && $customer) {
             if (!ConfigHelper::checkPrivilege('invoice_consent_date')) {
                 $note['cdate'] = $note['oldcdate'];
+            }
+
+            $note['currencyvalue'] = $LMS->getCurrencyValue($note['currency'], $note['cdate']);
+            if (!isset($note['currencyvalue'])) {
+                die('Fatal error: couldn\'t get quote for ' . $note['currency'] . ' currency!<br>');
             }
 
             $SESSION->restore('noteid', $note['id']);
@@ -274,6 +283,8 @@ switch ($action) {
                 'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
                 'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
                 'fullnumber' => $fullnumber,
+                'currency' => $note['currency'],
+                'currencyvalue' => $note['currencyvalue'],
                 SYSLOG::RES_DOC => $note['id'],
             );
             $DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
@@ -281,7 +292,7 @@ switch ($action) {
 				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?
+				div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?, currency = ?, currencyvalue = ?
 				WHERE id = ?', array_values($args));
 
             $LMS->UpdateDocumentPostAddress($note['id'], $customer['id']);
@@ -337,6 +348,8 @@ switch ($action) {
                 $LMS->AddBalance(array(
                     'time' => $cdate,
                     'value' => $item['value']*-1,
+                    'currency' => $note['currency'],
+                    'currencyvalue' => $note['currencyvalue'],
                     'taxid' => 0,
                     'customerid' => $customer['id'],
                     'comment' => $item['description'],

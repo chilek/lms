@@ -94,6 +94,16 @@
 			{/if}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold">{trans("Currency:")}</td>
+		<td>
+			<select name="note[currency]" {tip text="Select currency"}>
+				{foreach $_CURRENCIES as $currency}
+					<option value="{$currency}"{if $note.currency == $currency} selected{/if}>{$currency}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
 	<TR>
 		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
@@ -149,7 +159,7 @@
 			{$item.description}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.value|string_format:"%.2f"}
+			{$item.value|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<A HREF="?m=noteedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
