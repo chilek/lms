@@ -400,6 +400,10 @@ switch ($action) {
             $invoice['sdate'] = $invoice['cdate'];
         }
 
+        if (!isset($CURRENCIES[$invoice['currency']])) {
+            $error['currency'] = trans('Invalid currency selection!');
+        }
+
         $hook_data = array(
             'contents' => $contents,
             'invoice' => $invoice,
@@ -445,6 +449,11 @@ switch ($action) {
         $comment = $invoice['comment'] ? $invoice['comment'] : null;
         $paytime = round(($deadline - $cdate) / 86400);
         $iid   = $invoice['id'];
+
+        $invoice['currencyvalue'] = $LMS->getCurrencyValue($invoice['currency'], $sdate);
+        if (!isset($invoice['currencyvalue'])) {
+            die('Fatal error: couldn\'t get quote for ' . $invoice['currency'] . ' currency!<br>');
+        }
 
         $DB->BeginTrans();
         $tables = array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions',
@@ -540,6 +549,8 @@ switch ($action) {
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'comment' => ($invoice['comment'] ? $invoice['comment'] : null),
+            'currency' => $invoice['currency'],
+            'currencyvalue' => $invoice['currencyvalue'],
         );
 
         $args['type'] = $invoice['proforma'] === 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
@@ -561,7 +572,8 @@ switch ($action) {
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?, comment = ?, type = ?, number = ?, fullnumber = ?, numberplanid = ?
+				div_inv_author = ?, div_inv_cplace = ?, comment = ?, currency = ?, currencyvalue = ?,
+				type = ?, number = ?, fullnumber = ?, numberplanid = ?
 				WHERE id = ?', array_values($args));
         if ($SYSLOG) {
             $SYSLOG->AddMessage(
@@ -627,6 +639,8 @@ switch ($action) {
                     $LMS->AddBalance(array(
                         'time' => $cdate,
                         'value' => $item['valuebrutto']*$item['count']*-1,
+                        'currency' => $invoice['currency'],
+                        'currencyvalue' => $invoice['currencyvalue'],
                         'taxid' => $item['taxid'],
                         'customerid' => $invoice['customerid'],
                         'comment' => $item['name'],
