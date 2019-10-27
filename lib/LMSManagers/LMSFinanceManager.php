@@ -1709,6 +1709,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed,
 			d.cancelled, d.published, d.archived,
 			-SUM(cash.value) AS value,
+			d.currency, d.currencyvalue,
 			COUNT(a.docid) AS count,
 			i.sendinvoices,
 			(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
@@ -1739,7 +1740,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 						AND customerid = d.customerid)' : '')
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
             .' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
-			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices, d.archived '
+			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
+			d.cancelled, d.published, sendinvoices, d.archived, d.currency, d.currencyvalue '
             . (isset($having) ? $having : '')
             .$sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -2251,7 +2253,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result = $this->db->GetAll('SELECT d.id AS id, number, cdate, numberplans.template, closed, published,
 			archived, cancelled,
 			d.customerid, d.name, address, zip, city, c.name AS country,
-			SUM(n.value) AS value, COUNT(n.docid) AS count
+			SUM(n.value) AS value, COUNT(n.docid) AS count,
+			d.currency, d.currencyvalue
 			FROM documents d
 			JOIN debitnotecontents n ON (n.docid = d.id)
 			LEFT JOIN countries c ON (c.id = d.countryid)
@@ -2268,7 +2271,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group).'
 			            AND customerid = d.customerid)' : '')
             .' GROUP BY d.id, number, cdate, archived, cancelled, d.customerid,
-			d.name, address, zip, city, numberplans.template, closed, published, c.name '
+			d.name, address, zip, city, numberplans.template, closed, published, c.name, d.currency, d.currencyvalue '
             .(isset($having) ? $having : '')
             .$sqlord.' '.$direction
             . (isset($limit) ? ' LIMIT ' . $limit : '')
@@ -2289,7 +2292,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         global $LMS;
 
         if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
-				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
+                d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.cancelled, d.published, d.archived, d.divisionid, d.paytime,
 				(SELECT name FROM vusers WHERE id = d.userid) AS user, n.template,
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
@@ -2916,7 +2919,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             return $summary;
         }
 
-        if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value, 
+        if ($balancelist = $this->db->GetAll('SELECT cash.id AS id, time, cash.userid AS userid, cash.value AS value,
+                cash.currency, cash.currencyvalue, 
 				cash.customerid AS customerid, cash.comment, docid, cash.type AS type,
 				documents.type AS doctype, documents.closed AS closed,
 				documents.published, documents.archived, '
@@ -2936,7 +2940,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $userlist = $this->db->GetAllByKey('SELECT id, name FROM vusers', 'id');
 
             $after = $this->db->GetOne('SELECT SUM(value) FROM (
-				SELECT (CASE WHEN cash.customerid IS NULL OR cash.type <> 0 THEN value ELSE 0 END) AS value
+				SELECT (CASE WHEN cash.customerid IS NULL OR cash.type <> 0 THEN value * cash.currencyvalue ELSE 0 END) AS value
 				FROM cash
 				LEFT JOIN customerview c ON (cash.customerid = c.id)
 				LEFT JOIN documents ON (documents.id = docid)
@@ -2959,7 +2963,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $row['after'] = $row['before'];
                     $row['covenant'] = true;
                 } else {
-                    $row['after'] = $row['before'] + $row['value'];
+                    $row['after'] = $row['before'] + ($row['value'] * $row['currencyvalue']);
                 }
 
                 $after = $row['after'];

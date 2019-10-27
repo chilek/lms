@@ -175,19 +175,19 @@
 			{if $balance.userid}{$balance.user|truncate:16:"...":true}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $balance.covenant}{($balance.value*-1)|money_format}{else}-{/if}
+			{if $balance.covenant}{moneyf($balance.value*-1, $balance.currency)}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-                        {if !$balance.covenant && $balance.value > 0}{$balance.value|money_format}{else}-{/if}
+                        {if !$balance.covenant && $balance.value > 0}{moneyf($balance.value, $balance.currency)}{else}-{/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if !$balance.covenant && $balance.value < 0}{($balance.value*-1)|money_format}{else}-{/if}
+			{if !$balance.covenant && $balance.value < 0}{moneyf($balance.value*-1, $balance.currency)}{else}-{/if}
 		</TD>
 		<TD class="text-center">
 			&raquo;
 		</TD>
 		<TD class="text-right nobr">
-                        {if $balance.covenant}-{else}{$balance.after|money_format}{/if}
+                        {if $balance.covenant}-{else}{moneyf($balance.after)}{/if}
 		</TD>
 		<TD class="text-right nobr">
 			{if $balance.customerid}<A HREF="?m=customerinfo&id={$balance.customerid}">{$balance.customername|truncate:20:"...":true}</A>{else} - {/if}

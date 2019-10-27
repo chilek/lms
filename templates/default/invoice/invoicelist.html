@@ -141,7 +141,7 @@
 			{$number}
 		</TD>
 		<TD class="text-right nobr">
-			{$invoice.value|money_format}
+			{moneyf($invoice.value, $invoice.currency)}
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.count}
