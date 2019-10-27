@@ -530,10 +530,17 @@ function moneyf($value, $currency = null)
     return sprintf('%01.2f %s', $value, $currency);
 }
 
-function moneyf_in_words($value)
+function moneyf_in_words($value, $currency = null)
 {
-    global $LANGDEFS, $_language;
-    return sprintf($LANGDEFS[$_language]['money_format_in_words'], to_words(floor($value)), to_words(round(($value - floor($value)) * 100)));
+    if (empty($currency) || $currency == $GLOBALS['_currency']) {
+        $currency = $GLOBALS['_currency'];
+    }
+    return sprintf(
+        $GLOBALS['LANGDEFS'][$GLOBALS['_language']]['money_format_in_words'],
+        to_words(floor($value)),
+        $currency,
+        round(($value - floor($value)) * 100)
+    );
 }
 
 if (!function_exists('bcmod')) {

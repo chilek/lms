@@ -182,23 +182,23 @@
 	</TD>
 	{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|money_format}{/if}
+		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
 	</TD>
 	{/if}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.basevalue|money_format}
+		{$item.basevalue|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.totalbase|money_format}
+		{$item.totalbase|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.taxlabel}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.totaltax|money_format}
+		{$item.totaltax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.total|money_format}
+		{$item.total|string_format:"%01.2f"}
 	</TD>
     </TR>
 {/foreach}
@@ -207,16 +207,16 @@
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{$invoice.invoice.totalbase|money_format}
+		{$invoice.invoice.totalbase|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$invoice.invoice.totaltax|money_format}
+		{$invoice.invoice.totaltax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$invoice.invoice.total|money_format}
+		{$invoice.invoice.total|string_format:"%01.2f"}
 	</TD>
     </TR>
     <TR>
@@ -233,16 +233,16 @@
 		&nbsp;
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{$item.base|money_format}
+		{$item.base|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		{$item.taxlabel}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$item.tax|money_format}
+		{$item.tax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$item.total|money_format}
+		{$item.total|string_format:"%01.2f"}
 	</TD>
     </TR>
 {/foreach}
@@ -271,23 +271,23 @@
 	</TD>
 	{if !$hide_discount && ($invoice.pdiscount != 0 || $invoice.vdiscount != 0)}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"} %{else}{$item.vdiscount|money_format}{/if}
+		{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f"} %{else}{$item.vdiscount|string_format:"%01.2f"}{/if}
 	</TD>
 	{/if}
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.basevalue|money_format}
+		{$item.basevalue|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.totalbase|money_format}
+		{$item.totalbase|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
 		{$item.taxlabel}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.totaltax|money_format}
+		{$item.totaltax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.total|money_format}
+		{$item.total|string_format:"%01.2f"}
 	</TD>
     </TR>
     {/foreach}
@@ -296,16 +296,16 @@
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{$invoice.totalbase|money_format}
+		{$invoice.totalbase|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$invoice.totaltax|money_format}
+		{$invoice.totaltax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$invoice.total|money_format}
+		{$invoice.total|string_format:"%01.2f"}
 	</TD>
     </TR>
     <TR>
@@ -322,16 +322,16 @@
 		&nbsp;
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{$item.base|money_format}
+		{$item.base|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		{$item.taxlabel}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$item.tax|money_format}
+		{$item.tax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$item.total|money_format}
+		{$item.total|string_format:"%01.2f"}
 	</TD>
     </TR>
     {/foreach}
@@ -347,16 +347,16 @@
 		<B>{trans("Difference value:")}</B>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{if $totalbase > 0}+{/if}{$totalbase|money_format}
+		{if $totalbase > 0}+{/if}{$totalbase|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{if $totaltax > 0}+{/if}{$totaltax|money_format}
+		{if $totaltax > 0}+{/if}{$totaltax|string_format:"%01.2f"}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{if $total > 0}+{/if}{$total|money_format}
+		{if $total > 0}+{/if}{$total|string_format:"%01.2f"}
 	</TD>
     </TR>
     {/if}
@@ -374,12 +374,12 @@
 			{if $invoice.rebate}
 				{if $use_alert_color}<span style="color: red; font-weight: bold;">{/if}
 				{trans("To repay:")}
-				{$invoice.value|money_format}
+				{moneyf($invoice.value, $invoice.currency)}
 				{if $use_alert_color}</span>{/if}
 			{else}
 				{if $use_alert_color}<span style="color: red; font-weight: bold;">{/if}
 				{trans("To pay:")}
-				{$invoice.value|money_format}
+				{moneyf($invoice.value, $invoice.currency)}
 				{if $use_alert_color}</span>{/if}
 			{/if}
 		</TD>
@@ -396,7 +396,7 @@
 			{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 				{$invoice.value|string_format:"%d"|to_words:0:"":1} {$invoice.valuep|string_format:"%02d"}/100
 			{else}
-				{moneyf_in_words($invoice.value)}
+				{moneyf_in_words($invoice.value, $invoice.currency)}
 			{/if}
 		</TD>
 	</TR>
@@ -494,12 +494,12 @@ customer's balance: {$invoice.customerbalancelist.balance}
 	{$item=$invoice.customerbalancelist.list[balancelist]}
 	<TR>
 		<TD width="1%" class="nobr">{$item.date}</TD>
-		<TD width="1%" align="right" class="nobr">{if $item.value > 0}+{/if}{$item.value|money_format}</TD>
+		<TD width="1%" align="right" class="nobr">{if $item.value > 0}+{/if}{moneyf($item.value, $item.currency)}</TD>
 		<TD width="1%" align="right" class="nobr">{$item.tax}</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right" class="nobr">
 			{if $item.after < 0}<STRONG>{/if}
-			    {$item.after|money_format}
+			    {moneyf($item.after)}
 			{if $item.after < 0}</STRONG>{/if}
 		</TD>
 		<TD width="93%">{$item.comment}</TD>
