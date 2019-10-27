@@ -135,11 +135,7 @@
 	<tr>
 		<td class="bold">{trans("Currency:")}</td>
 		<td>
-			<select name="invoice[currency]" {tip text="Select currency"}>
-				{foreach $_CURRENCIES as $currency}
-					<option value="{$currency}"{if $invoice.currency == $currency} selected{/if}>{$currency}</option>
-				{/foreach}
-			</select>
+			{currency_selection selected=$invoice.currency elementname="invoice[currency]"}
 		</td>
 	</tr>
 	<tr>

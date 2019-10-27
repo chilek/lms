@@ -41,11 +41,7 @@
 				    <TD WIDTH="98%" NOWRAP>
 					    <INPUT TYPE="TEXT" SIZE="8" NAME="tariff[value]" VALUE="{$tariff.value}" {tip text="Enter value" trigger="value"}>
 
-						<select name="tariff[currency]" {tip text="Select currency"}>
-							{foreach $_CURRENCIES as $currency}
-								<option value="{$currency}"{if $tariff.currency == $currency} selected{/if}>{$currency}</option>
-							{/foreach}
-						</select>
+						{currency_selection selected=$tariff.currency elementname="tariff[currency]"}
 
 			            <SELECT size="1" name="tariff[period]" {tip text="Select time period of tariff accounting"}>
             				<OPTION value=""{if $tariff.period == $key} SELECTED{/if}>{trans("undefined")}</OPTION>

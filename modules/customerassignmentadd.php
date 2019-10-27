@@ -156,7 +156,7 @@ if (isset($_POST['assignment'])) {
     }
     $a['count'] = 1;
 
-    $a['currency'] = $_default_currency;
+    $a['currency'] = LMS::$default_currency;
 }
 
 $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='.$customer['id'].'">'.$customer['name'].'</A>');

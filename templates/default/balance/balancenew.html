@@ -69,11 +69,7 @@
 					</TD>
 					<TD WIDTH="98%" class="nobr">
 						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}>
-						<select name="addbalance[currency]" {tip text="Select currency"}>
-							{foreach $_CURRENCIES as $currency}
-								<option value="{$currency}"{if $invoice.currency == $currency} selected{/if}>{$currency}</option>
-							{/foreach}
-						</select>
+						{currency_selection elementname="addbalance[currency]"}
 					</TD>
 				</TR>
 				<TR>

@@ -111,11 +111,7 @@ window.open('?m=note&id={$newnoteid}');
 	<tr>
 		<td class="bold">{trans("Currency:")}</td>
 		<td>
-			<select name="note[currency]" {tip text="Select currency"}>
-				{foreach $_CURRENCIES as $currency}
-					<option value="{$currency}"{if $note.currency == $currency} selected{/if}>{$currency}</option>
-				{/foreach}
-			</select>
+			{currency_selection selected=$note.currency elementname="note[currency]"}
 		</td>
 	</tr>
 	<TR>
