@@ -71,20 +71,20 @@
 								<td></td>
 								<td class="text-center text-nowrap table-success text-success">
 									{if $item.value > 0 && $item.type != 4}+{/if}
-									{$item.value|money_format}
+									{moneyf($item.value, $item.currency)}
 								</td>
 							{else}
 								<td class="text-center text-nowrap table-danger text-danger">
 									{if $item.type == 4}-{/if}
-									{$item.value|money_format}
+									{moneyf($item.value, $item.currency)}
 								</td>
 								<td></td>
 							{/if}
 							<td class="text-right text-nowrap">
 								{if $item.after < 0}
-									<strong>{$item.after|money_format}</strong>
+									<strong>{moneyf($item.after)}</strong>
 								{else}
-									{$item.after|money_format}
+									{moneyf($item.after)}
 								{/if}
 							</td>
 							<td>{$item.comment}</td>

@@ -171,6 +171,7 @@ $SESSION = new Session($DB, $_TIMEOUT);
 $USERPANEL = new USERPANEL($DB, $SESSION);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
+LMS::$currency = $_currency;
 
 // Initialize modules
 
