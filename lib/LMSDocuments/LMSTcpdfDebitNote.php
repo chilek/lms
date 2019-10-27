@@ -142,7 +142,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             foreach ($this->data['content'] as $item) {
                 $t_width['no'] = 7;
                 $t_width['name'] = $this->backend->getStringWidth($item['description']);
-                $t_width['total'] = $this->backend->getStringWidth(moneyf($item['value'])) + 1;
+                $t_width['total'] = $this->backend->getStringWidth(sprintf('%01.2f', $item['value'])) + 1;
             }
         }
 
@@ -185,7 +185,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         foreach ($this->data['content'] as $item) {
             $this->backend->Cell($h_width['no'], 6, $i . '.', 1, 0, 'C', 0, '', 1);
             $this->backend->Cell($h_width['name'], 6, $item['description'], 1, 0, 'L', 0, '', 1);
-            $this->backend->Cell($h_width['total'], 6, moneyf($item['value']), 1, 0, 'R', 0, '', 1);
+            $this->backend->Cell($h_width['total'], 6, sprintf('%01.2f', $item['value']), 1, 0, 'R', 0, '', 1);
             $this->backend->Ln();
             $i++;
         }
@@ -201,7 +201,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
         $this->backend->SetFont('arial', 'B', 8);
         $this->backend->Cell($sum, 5, trans('Total:'), 0, 0, 'R', 0, '', 1);
         $this->backend->SetFont('arial', '', 8);
-        $this->backend->Cell($h_width['total'], 5, moneyf($this->data['value']), 1, 0, 'R', 0, '', 1);
+        $this->backend->Cell($h_width['total'], 5, sprintf('%01.2f', $this->data['value']), 1, 0, 'R', 0, '', 1);
         $this->backend->Ln();
         $this->backend->Ln(3);
     }
@@ -210,10 +210,10 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
     {
         $this->backend->Ln(0);
         $this->backend->SetFont('arial', 'B', 14);
-        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value']), 0, 1, 0, true, 'R');
+        $this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');
 
         $this->backend->SetFont('arial', '', 10);
-        $this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value']), 0, 1, 0, true, 'R');
+        $this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value'], $this->data['currency']), 0, 1, 0, true, 'R');
     }
 
     public function Draw($note)

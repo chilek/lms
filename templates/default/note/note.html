@@ -71,7 +71,7 @@
 		{$item.description}
 	</TD>
 	<TD CLASS="flr" ALIGN="RIGHT" NOWRAP>
-		{$item.value|money_format}
+		{$item.value|string_format:"%01.2f"}
 	</TD>
     </TR>
     {/foreach}
@@ -80,7 +80,7 @@
 		<P ALIGN="RIGHT"><B>{trans("Total:")}</B></P>
 	</TD>
 	<TD CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$note.value|money_format}
+		{$note.value|string_format:"%01.2f"}
 	</TD>
     </TR>
 </TABLE>
@@ -88,17 +88,13 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
-			{trans("To pay:")} {$note.value|money_format}
+			{trans("To pay:")} {moneyf($note.value, $note.currency)}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="sdr">
 			{trans("In words:")}
-			{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
-				{$note.value|string_format:"%d"|to_words:0:"":1} {$note.valuep|string_format:"%02d"}/100
-			{else}
-				{moneyf_in_words($note.value+($note.valuep/100))}
-			{/if}
+			{moneyf_in_words($note.value, $note.currency)}
 		</TD>
 	</TR>
 	<TR>
@@ -139,12 +135,12 @@ customer's balance: {$note.customerbalancelist.balance}
 	{$item=$note.customerbalancelist.list[balancelist]}
 	<TR>
 		<TD width="1%" class="nobr">{$item.date}</TD>
-		<TD width="1%" align="right" class="nobr">{if $item.value > 0}+{/if}{$item.value|money_format}</TD>
+		<TD width="1%" align="right" class="nobr">{if $item.value > 0}+{/if}{moneyf($item.value, $item.currency)}</TD>
 		<TD width="1%" align="right" class="nobr">{$item.tax}</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right" class="nobr">
 			{if $item.after < 0}<STRONG>{/if}
-			    {$item.after|money_format}
+			    {moneyf($item.after)}
 			{if $item.after < 0}</STRONG>{/if}
 		</TD>
 		<TD width="93%">{$item.comment}</TD>

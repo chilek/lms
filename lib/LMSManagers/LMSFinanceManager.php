@@ -2317,7 +2317,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				        ELSE cn.ccode
 				    END)
 				    ELSE NULL
-				END) AS lang
+				END) AS lang,
+				d.currency, d.currencyvalue
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
