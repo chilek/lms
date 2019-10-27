@@ -47,13 +47,13 @@
 			{$balancelist.date[balancelist]}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}
+			{if !$balancelist.type[balancelist]}{moneyf($balancelist.value[balancelist]*-1, $balancelist.currency[balancelist])}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{$balancelist.value[balancelist]|money_format}{else}-{/if}
+			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}{moneyf($balancelist.value[balancelist], $balancelist.currency[balancelist])}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}
+			{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{moneyf($balancelist.value[balancelist]*-1, $balancelist.currency[balancelist])}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist.after[balancelist]|money_format}

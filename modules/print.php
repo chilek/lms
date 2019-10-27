@@ -71,6 +71,7 @@ switch ($type) {
         $list['customerid'] = $id;
 
         if ($tslist = $DB->GetAll('SELECT c.id AS id, time, c.type, c.value AS value,
+                    c.currency, c.currencyvalue,
 				    taxes.label AS taxlabel, c.customerid, c.comment, vusers.name AS username,
 				    c.docid, d.number, d.cdate, d.type AS doctype, numberplans.template
 				    FROM cash c
@@ -99,9 +100,9 @@ switch ($type) {
             $saldolist['balance'] = 0;
 
             foreach ($saldolist['id'] as $i => $v) {
-                $saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i];
-                $saldolist['balance'] += $saldolist['value'][$i];
-                    $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
+                $saldolist['after'][$i] = $saldolist['balance'] + $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
+                $saldolist['balance'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
+                $saldolist['date'][$i] = date('Y/m/d H:i', $saldolist['time'][$i]);
 
                 if ($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to']) {
                     $list['id'][] = $saldolist['id'][$i];
@@ -113,17 +114,18 @@ switch ($type) {
                     $list['date'][] = date('Y/m/d H:i', $saldolist['time'][$i]);
                     $list['username'][] = $saldolist['username'][$i];
                     $list['comment'][] = $saldolist['comment'][$i];
-                    $list['summary'] += $saldolist['value'][$i];
+                    $list['currency'][] = $saldolist['currency'][$i];
+                    $list['summary'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
 
                     if ($saldolist['type'][$i]) {
                         if ($saldolist['value'][$i] > 0) {
                                 //income
-                                $list['income'] += $saldolist['value'][$i];
+                                $list['income'] += $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
                         } else { //expense
-                                $list['expense'] -= $saldolist['value'][$i];
+                                $list['expense'] -= $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
                         }
                     } else {
-                        $list['liability'] -= $saldolist['value'][$i];
+                        $list['liability'] -= $saldolist['value'][$i] * $saldolist['currencyvalue'][$i];
                     }
                 }
             }
