@@ -144,6 +144,16 @@
 		</TD>
 	</TR>
 	<tr>
+		<td class="bold">{trans("Currency:")}</td>
+		<td>
+			<select name="invoice[currency]" {tip text="Select currency"}>
+				{foreach $_CURRENCIES as $currency}
+					<option value="{$currency}"{if $invoice.currency == $currency} selected{/if}>{$currency}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr>
 		<td class="bold">{trans("Recipient address:")}</td>
 		<td>
 			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
@@ -206,9 +216,9 @@
 					<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></TD>
 					<TD class="text-right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
 					<TD class="text-right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}" size="3"></TD>
-					<TD class="text-right nobr">{$covenantlist[covenantlist].net|money_format}</TD>
+					<TD class="text-right nobr">{moneyf($covenantlist[covenantlist].net, $covenantlist[covenantlist].currency)}</TD>
 					<TD class="text-right nobr">{$covenantlist[covenantlist].tax}</TD>
-					<TD class="text-right nobr">{$covenantlist[covenantlist].value|money_format}</TD>
+					<TD class="text-right nobr">{moneyf($covenantlist[covenantlist].value, $covenantlist[covenantlist].currency)}</TD>
 					<TD class="text-right">
 						<INPUT TYPE="checkbox" NAME="marks[]" VALUE="{$covenantlist[covenantlist].cashid}">
 					</TD>

@@ -28,7 +28,7 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoiceajax.inc.php');
 
 // Invoiceless liabilities: Zobowiazania/obciazenia na ktore nie zostala wystawiona faktura
-function GetCustomerCovenants($customerid)
+function GetCustomerCovenants($customerid, $currency)
 {
     global $DB;
 
@@ -36,13 +36,13 @@ function GetCustomerCovenants($customerid)
         return null;
     }
 
-    return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.comment, c.taxid, 
+    return $DB->GetAll('SELECT c.time, c.value*-1 AS value, c.currency, c.comment, c.taxid, 
 			taxes.label AS tax, c.id AS cashid,
 			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net
 			FROM cash c
 			LEFT JOIN taxes ON (c.taxid = taxes.id)
-			WHERE c.customerid = ? AND c.docid IS NULL AND c.value < 0
-			ORDER BY time', array($customerid));
+			WHERE c.customerid = ? AND c.docid IS NULL AND c.currency = ? AND c.value < 0
+			ORDER BY time', array($customerid, $currency));
 }
 
 $taxeslist = $LMS->GetTaxes();
@@ -114,6 +114,7 @@ switch ($action) {
                 $customer = $LMS->GetCustomer($_GET['customerid'], true);
                 $invoice['customerid'] = $_GET['customerid'];
             }
+            $invoice['currency'] = $_default_currency;
         }
         $invoice['number'] = '';
         $invoice['numberplanid'] = null;
@@ -455,6 +456,10 @@ switch ($action) {
             $invoice['sdate'] = $invoice['cdate'];
         }
 
+        if (!isset($CURRENCIES[$invoice['currency']])) {
+            $error['currency'] = trans('Invalid currency selection!');
+        }
+
         $hook_data = array(
             'customer' => $customer,
             'contents' => $contents,
@@ -467,6 +472,11 @@ switch ($action) {
 
         if (!empty($error)) {
             break;
+        }
+
+        $invoice['currencyvalue'] = $LMS->getCurrencyValue($invoice['currency'], $invoice['sdate']);
+        if (!isset($invoice['currencyvalue'])) {
+            die('Fatal error: couldn\'t get quote for ' . $invoice['currency'] . ' currency!<br>');
         }
 
         $DB->BeginTrans();
@@ -586,7 +596,7 @@ if ($action) {
 }
 
 $covenantlist = array();
-$list = GetCustomerCovenants($customer['id']);
+$list = GetCustomerCovenants($customer['id'], $invoice['currency']);
 
 if (isset($list)) {
     if ($contents) {

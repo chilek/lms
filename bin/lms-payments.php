@@ -767,7 +767,7 @@ foreach ($assigns as &$assign) {
     }
     if ($currency != $_currency) {
         if (!isset($currency_quotes[$currency])) {
-            $currency_quotes[$currency] = str_replace(',', '.', $LMS->getCurrencyValue($currency, $currtime));
+            $currency_quotes[$currency] = $LMS->getCurrencyValue($currency, $currtime);
             if (!isset($currency_quotes[$currency])) {
                 die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
             }

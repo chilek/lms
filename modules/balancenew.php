@@ -27,8 +27,8 @@
 $layout['pagetitle'] = trans('New Balance');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, taxes.label AS tax, 
-		customerid, time, comment, '.$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
+$last = $DB->GetRow('SELECT cash.id AS id, cash.value AS value, cash.currency, cash.currencyvalue,
+        taxes.label AS tax, customerid, time, comment, '.$DB->Concat('UPPER(c.lastname)', "' '", 'c.name').' AS customername,
 		s.name AS sourcename
 		FROM cash 
 		LEFT JOIN customers c ON (customerid = c.id)

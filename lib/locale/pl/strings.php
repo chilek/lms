@@ -4479,3 +4479,4 @@ $_LANG['of selected user:'] = 'wybranego użytkownika:';
 
 $_LANG['Select currency'] = 'Wybierz walutę';
 $_LANG['Invalid currency selection!'] = 'Błędny wybór waluty!';
+$_LANG['Currency:'] = 'Waluta:';

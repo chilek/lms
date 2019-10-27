@@ -373,6 +373,11 @@
 					<INPUT type="text" form="addbalance-form" name="addbalance[time]" size="15" maxlength="16" {tip class="lms-ui-datetime" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
 					{$layout.logname|truncate:16:"...":true}
 					<INPUT type="text" size="8" form="addbalance-form" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
+					<select name="addbalance[currency]" form="addbalance-form" {tip text="Select currency"}>
+						{foreach $_CURRENCIES as $currency}
+							<option value="{$currency}"{if $_default_currency == $currency} selected{/if}>{$currency}</option>
+						{/foreach}
+					</select>
 					<SELECT SIZE="1" form="addbalance-form" name="addbalance[taxid]" {tip text="Select Tax value"}>
 						{foreach item=tax from=$taxeslist}
 						<OPTION value="{$tax.id}" {if ($taxid && $tax.id == $taxid) || (!$taxid && $tax.value == $default_taxrate)}selected{/if}>{$tax.label}</OPTION>

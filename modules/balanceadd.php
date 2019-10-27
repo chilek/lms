@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: 6e70ce491793915f20304fc291211ebd78873916 $
+ *  $Id$
  */
 
 $addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : $_POST['instantpayment'];
@@ -75,6 +75,10 @@ if ($addbalance['type'] == 0) {
 }
 
 if (isset($addbalance['mcustomerid'])) {
+    $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
+    if (!isset($addbalance['currencyvalue'])) {
+        die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+    }
     foreach ($addbalance['mcustomerid'] as $value) {
         if ($LMS->CustomerExists($value)) {
             $addbalance['customerid'] = $value;
@@ -152,6 +156,10 @@ if (isset($addbalance['mcustomerid'])) {
                     }
                 }
             } else {
+                $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
+                if (!isset($addbalance['currencyvalue'])) {
+                    die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+                }
                 $LMS->AddBalance($addbalance);
             }
         }
@@ -160,8 +168,12 @@ if (isset($addbalance['mcustomerid'])) {
     $addbalance['customerid'] = null;
     $addbalance['taxid'] = '0';
     $addbalance['type'] = '1';
-    
+
     if ($addbalance['value'] != 0) {
+        $addbalance['currencyvalue'] = $LMS->getCurrencyValue($addbalance['currency'], $addbalance['time']);
+        if (!isset($addvalance['currencyvalue'])) {
+            die('Fatal error: couldn\'t get quote for ' . $addbalance['currency'] . ' currency!<br>');
+        }
         $LMS->AddBalance($addbalance);
     }
 }

@@ -108,21 +108,21 @@
                     <OPTION value="{$smarty.const.DISCOUNT_AMOUNT}"{if $item.vdiscount != 0} selected{/if}>{$_DISCOUNTTYPES[$smarty.const.DISCOUNT_AMOUNT]}</OPTION>
                 </SELECT>
                 <span class="invoice-contents-field-value nobr">
-				{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f %%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
+				{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%01.2f %%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%01.2f"}{/if}{/if}
 			</span>
             </TD>
             <TD class="text-right">
 				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuenetto]"
 					value="{$valuenetto}" SIZE="6" {tip text="Enter unitary value without discount"} style="display: none;">
 				<span class="invoice-contents-field-value nobr">
-				{$item.valuenetto|money_format}
+				{$item.valuenetto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.valuenetto_custom_contents)}
 					{$item.valuenetto_custom_contents}
 				{/if}
 				<span class="invoice-contents-field-value nobr">
 				<BR>
-				{$item.s_valuenetto|money_format}
+				{$item.s_valuenetto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.s_valuenetto_custom_contents)}
 					{$item.s_valuenetto_custom_contents}
@@ -142,14 +142,14 @@
 				<INPUT TYPE="text" class="invoice-contents-field-edit" NAME="invoice-contents[{$posuid}][valuebrutto]" SIZE="6"
 					value="{$valuebrutto}" {tip text="Enter unitary value without discount"} style="display: none;">
 				<span class="invoice-contents-field-value nobr">
-				{$item.valuebrutto|money_format}
+				{$item.valuebrutto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.valuebrutto_custom_contents)}
 					{$item.valuebrutto_custom_contents}
 				{/if}
 				<span class="invoice-contents-field-value nobr">
 				<BR>
-				{$item.s_valuebrutto|money_format}
+				{$item.s_valuebrutto|string_format:"%01.2f"}
 				</span>
 				{if isset($item.s_valuebrutto_custom_contents)}
 					{$item.s_valuebrutto_custom_contents}
@@ -184,8 +184,8 @@
                 &nbsp;
             </TD>
             <TD class="bold text-right nobr">
-                {sum assign="s_valuebrutto" array=$contents column=s_valuebrutto string_format="%01.2f"}
-                {$s_valuebrutto}
+                {sum assign="s_valuebrutto" array=$contents column=s_valuebrutto}
+                {$s_valuebrutto|string_format:"%01.2f"}
                 <input type="hidden" id="s-valuebrutto" value="{$s_valuebrutto}">
             </TD>
             <TD>
@@ -208,8 +208,10 @@
                 <INPUT TYPE="text" NAME="name" SIZE="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
                 <SELECT SIZE="1" NAME="ttariffid" style="width: 300px" onchange="setItem(document.contents.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
                     <OPTION value="0">-</OPTION>
-                    {foreach from=$tariffs item=tariff}
-                    <OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
+                    {foreach $tariffs as $tariff}
+                        {if $tariff.currency == $invoice.currency}
+                            <OPTION VALUE="{$tariff.id}">{$tariff.name} ({moneyf($tariff.value, $tariff.currency)})</OPTION>
+                        {/if}
                     {/foreach}
                 </SELECT>
                 {/block}

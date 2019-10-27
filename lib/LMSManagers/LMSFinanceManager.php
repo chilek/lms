@@ -1827,6 +1827,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'comment' => $invoice['invoice']['comment'],
             'recipient_address_id' => $invoice['invoice']['recipient_address_id'],
             'post_address_id' => $invoice['invoice']['post_address_id'],
+            'currency' => $invoice['invoice']['currency'],
+            'currencyvalue' => $invoice['invoice']['currencyvalue'],
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
@@ -1834,8 +1836,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			comment, recipient_address_id, post_address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			comment, recipient_address_id, post_address_id, currency, currencyvalue)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -1883,6 +1885,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->AddBalance(array(
                     'time' => $cdate,
                     'value' => $item['valuebrutto'] * $item['count'] * -1,
+                    'currency' => $invoice['invoice']['currency'],
+                    'currencyvalue' => $invoice['invoice']['currencyvalue'],
                     'taxid' => $item['taxid'],
                     'customerid' => $invoice['customer']['id'],
                     'comment' => $item['name'],
@@ -2980,6 +2984,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
             SYSLOG::RES_USER => isset($addbalance['userid']) && !empty($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
+            'currency' => $addbalance['currency'],
+            'currencyvalue' => $addbalance['currencyvalue'],
             'type' => isset($addbalance['type']) ? $addbalance['type'] : 0,
             SYSLOG::RES_TAX => isset($addbalance['taxid']) && !empty($addbalance['taxid']) ? $addbalance['taxid'] : null,
             SYSLOG::RES_CUST => $addbalance['customerid'],
@@ -2989,9 +2995,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : null,
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : null,
         );
-        $res = $this->db->Execute('INSERT INTO cash (time, userid, value, type, taxid,
+        $res = $this->db->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, type, taxid,
 			customerid, comment, docid, itemid, importid, sourceid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         if ($res) {
             $cashid = $this->db->GetLastInsertID('cash');
@@ -4041,7 +4047,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 );
             }
             if (!isset($this->currency_values[$currency][$date])) {
-                $this->currency_values[$currency][$date] = get_currency_value($currency, $date);
+                $this->currency_values[$currency][$date] = str_replace(',', '.', get_currency_value($currency, $date));
             }
             return $this->currency_values[$currency][$date];
         } else {

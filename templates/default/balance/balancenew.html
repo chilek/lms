@@ -67,8 +67,13 @@
 					<TD WIDTH="1%">
 						<B>{trans("Value:")}</B>
 					</TD>
-					<TD WIDTH="98%">
-						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}><BR>
+					<TD WIDTH="98%" class="nobr">
+						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}>
+						<select name="addbalance[currency]" {tip text="Select currency"}>
+							{foreach $_CURRENCIES as $currency}
+								<option value="{$currency}"{if $invoice.currency == $currency} selected{/if}>{$currency}</option>
+							{/foreach}
+						</select>
 					</TD>
 				</TR>
 				<TR>
@@ -163,7 +168,7 @@
 						<B>{trans("Value:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						{$last.value|money_format}
+						{moneyf($last.value, $last.currency)}
 					</TD>
 				</TR>
 				{if $last.tax}
