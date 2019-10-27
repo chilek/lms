@@ -588,7 +588,7 @@ switch ($type) {
                     'SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, '
                     .$DB->Concat('city', "' '", 'address').' AS address, ten,
 					SUM((((((100 - a.pdiscount) * t.value) / 100) - a.vdiscount) *
-						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100))
+						((CASE WHEN a.suspended = 0 AND allsuspended.suspended IS NULL THEN 100.0 ELSE '.$suspension_percentage.' END) / 100))
 					* (CASE a.period
 						WHEN '.YEARLY.' THEN 12
 						WHEN '.HALFYEARLY.' THEN 6
@@ -602,11 +602,19 @@ switch ($type) {
 						WHEN '.QUARTERLY.' THEN 1.0/3
 						ELSE 1 END)
 					) AS value, t.currency
-					FROM assignments a, tariffs t, customerview c
-					WHERE a.customerid = c.id AND status = 3
-                        AND a.tariffid = t.id AND t.taxid=?
+                    FROM assignments a
+                    LEFT JOIN tariffs t ON t.id = a.tariffid
+                    LEFT JOIN customerview c ON c.id = a.customerid
+                    LEFT JOIN (
+                        SELECT COUNT(id) AS suspended, customerid FROM assignments
+                        WHERE tariffid IS NULL AND liabilityid IS NULL
+                            AND datefrom <= ? AND (dateto >= ? OR dateto = 0)
+                        GROUP BY customerid
+                    ) allsuspended ON allsuspended.customerid = a.customerid
+                    WHERE c.status = ?
+                        AND t.taxid=?
                         AND c.deleted=0
-                        AND a.datefrom <= ? AND (a.dateto>=? OR a.dateto=0)
+                        AND a.datefrom <= ? AND (a.dateto >= ? OR a.dateto = 0)
                         AND ((a.period='.DISPOSABLE.' AND a.at=?)
                             OR (a.period='.WEEKLY.'. AND a.at=?)
                             OR (a.period='.MONTHLY.' AND a.at=?)
@@ -617,18 +625,26 @@ switch ($type) {
                         . ($divisionid ? ' AND c.divisionid=' . $divisionid : '')
                     . ' GROUP BY a.customerid, lastname, c.name, city, address, ten, t.currency',
                     'id',
-                    array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
+                    array($reportday, $reportday, CSTATUS_CONNECTED, $tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
                 );
 
                 $list2 = $DB->GetAllByKey(
                     'SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, '
                     .$DB->Concat('city', "' '", 'address').' AS address, ten,
 					SUM(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
-						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value,
+						((CASE WHEN a.suspended = 0 AND allsuspended.customerid IS NULL THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value,
 						l.currency
-					FROM assignments a, liabilities l, customerview c
-					WHERE a.customerid = c.id AND status = 3
-                        AND a.liabilityid = l.id AND l.taxid=?
+                    FROM assignments a
+                    LEFT JOIN liabilities l ON l.id = a.liabilityid
+                    LEFT JOIN customerview c ON c.id = a.customerid
+                    LEFT JOIN (
+                        SELECT COUNT(id) AS suspended, customerid FROM assignments
+                        WHERE tariffid IS NULL AND liabilityid IS NULL
+                            AND datefrom <= ? AND (dateto >= ? OR dateto = 0)
+                        GROUP BY customerid
+                    ) allsuspended ON allsuspended.customerid = a.customerid
+                    WHERE c.status = ?
+                        AND l.taxid=?
                         AND c.deleted=0
                         AND a.datefrom <= ? AND (a.dateto>=? OR a.dateto=0)
                         AND ((a.period='.DISPOSABLE.' AND a.at=?)
@@ -640,7 +656,7 @@ switch ($type) {
                         .($customerid ? 'AND a.customerid='.$customerid : '').
                     ' GROUP BY a.customerid, lastname, c.name, city, address, ten, l.currency',
                     'id',
-                    array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
+                    array($reportday, $reportday, CSTATUS_CONNECTED, $tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
                 );
 
                 if (empty($list1) && empty($list2)) {
