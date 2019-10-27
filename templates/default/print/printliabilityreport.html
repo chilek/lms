@@ -36,8 +36,10 @@
 			{trans("Total Tax")}
 		</TD>
 	</TR>
+	{$total_value = array()}
+	{$total_tax = array()}
 	{cycle values="white,grey" print=false}
-	{foreach item=report from=$reportlist}
+	{foreach $reportlist as $report}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}.
@@ -48,19 +50,39 @@
 			{if $report.ten}<BR>{$report.ten}{/if}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$report.value|string_format:"%01.2f"}
+			{foreach $report.values as $currency => $values}
+				{if !$values@first}<br>{/if}
+				{moneyf($values.value, $currency)}
+				{if !isset($total_value[$currency])}
+					{$total_value[$currency] = 0}
+				{/if}
+				{$total_value[$currency] = $total_value[$currency] + $values.value}
+			{/foreach}
 		</TD>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
-			{$report.$taxid.netto|string_format:"%01.2f"}
+			{foreach $report.values as $currency => $values}
+				{if !$values@first}<br>{/if}
+				{moneyf($values[$taxid].netto, $currency)}
+			{/foreach}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$report.$taxid.tax|string_format:"%01.2f"}
+			{foreach $report.values as $currency => $values}
+				{if !$values@first}<br>{/if}
+				{moneyf($values[$taxid].tax, $currency)}
+			{/foreach}
 		</TD>
 		{/foreach}
 		<TD ALIGN="RIGHT">
-			{$report.taxsum|string_format:"%01.2f"}
+			{foreach $report.values as $currency => $values}
+				{if !$values@first}<br>{/if}
+				{moneyf($values.taxsum, $currency)}
+				{if !isset($total_tax[$currency])}
+					{$total_tax[$currency] = 0}
+				{/if}
+				{$total_tax[$currency] = $total_tax[$currency] + $values.taxsum}
+			{/foreach}
 		</TD>
 	</TR>
 	{foreachelse}
@@ -75,19 +97,39 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{sum array=$reportlist column="value" string_format="%01.2f"}</B>
+			<B>
+				{foreach $total_value as $currency => $value}
+					{if !$value@first}<br>{/if}
+					{moneyf($value, $currency)}
+				{/foreach}
+			</B>
 		</TD>
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{$total.netto.$taxid|string_format:"%01.2f"}</B>
+			<B>
+				{foreach $total.netto as $currency => $total_netto}
+					{if !$total_netto@first}<br>{/if}
+					{moneyf($total_netto.$taxid, $currency)}
+				{/foreach}
+			</B>
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{$total.tax.$taxid|string_format:"%01.2f"}</B>
+			<B>
+				{foreach $total.tax as $currency => $total_tax}
+					{if !$total_tax@first}<br>{/if}
+					{moneyf($total_tax.$taxid, $currency)}
+				{/foreach}
+			</B>
 		</TD>
 		{/foreach}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
-			<B>{sum array=$reportlist column="taxsum" string_format="%01.2f"}</B>
+			<B>
+				{foreach $total_tax as $currency => $tax}
+					{if !$tax@first}<br>{/if}
+					{moneyf($tax, $currency)}
+				{/foreach}
+			</B>
 		</TD>
 	</TR>
 </TABLE>

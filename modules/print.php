@@ -601,21 +601,21 @@ switch ($type) {
 						WHEN '.HALFYEARLY.' THEN 1.0/6
 						WHEN '.QUARTERLY.' THEN 1.0/3
 						ELSE 1 END)
-					) AS value
+					) AS value, t.currency
 					FROM assignments a, tariffs t, customerview c
 					WHERE a.customerid = c.id AND status = 3
-					AND a.tariffid = t.id AND t.taxid=?
-					AND c.deleted=0
-					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0)
-					AND ((a.period='.DISPOSABLE.' AND a.at=?)
-						OR (a.period='.WEEKLY.'. AND a.at=?)
-						OR (a.period='.MONTHLY.' AND a.at=?)
-						OR (a.period='.QUARTERLY.' AND a.at=?)
-						OR (a.period='.HALFYEARLY.' AND a.at=?)
-						OR (a.period='.YEARLY.' AND a.at=?)) '
-                    . ($customerid ? ' AND a.customerid=' . $customerid : '')
-                    . ($divisionid ? ' AND c.divisionid=' . $divisionid : '')
-                    . ' GROUP BY a.customerid, lastname, c.name, city, address, ten ',
+                        AND a.tariffid = t.id AND t.taxid=?
+                        AND c.deleted=0
+                        AND a.datefrom <= ? AND (a.dateto>=? OR a.dateto=0)
+                        AND ((a.period='.DISPOSABLE.' AND a.at=?)
+                            OR (a.period='.WEEKLY.'. AND a.at=?)
+                            OR (a.period='.MONTHLY.' AND a.at=?)
+                            OR (a.period='.QUARTERLY.' AND a.at=?)
+                            OR (a.period='.HALFYEARLY.' AND a.at=?)
+                            OR (a.period='.YEARLY.' AND a.at=?)) '
+                        . ($customerid ? ' AND a.customerid=' . $customerid : '')
+                        . ($divisionid ? ' AND c.divisionid=' . $divisionid : '')
+                    . ' GROUP BY a.customerid, lastname, c.name, city, address, ten, t.currency',
                     'id',
                     array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
                 );
@@ -624,20 +624,21 @@ switch ($type) {
                     'SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)', "' '", 'c.name').' AS customername, '
                     .$DB->Concat('city', "' '", 'address').' AS address, ten,
 					SUM(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
-						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value
+						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value,
+						l.currency
 					FROM assignments a, liabilities l, customerview c
 					WHERE a.customerid = c.id AND status = 3
-					AND a.liabilityid = l.id AND l.taxid=?
-					AND c.deleted=0
-					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0)
-					AND ((a.period='.DISPOSABLE.' AND a.at=?)
-						OR (a.period='.WEEKLY.'. AND a.at=?)
-						OR (a.period='.MONTHLY.' AND a.at=?)
-						OR (a.period='.QUARTERLY.' AND a.at=?)
-						OR (a.period='.HALFYEARLY.' AND a.at=?)
-						OR (a.period='.YEARLY.' AND a.at=?)) '
-                    .($customerid ? 'AND a.customerid='.$customerid : '').
-                    ' GROUP BY a.customerid, lastname, c.name, city, address, ten ',
+                        AND a.liabilityid = l.id AND l.taxid=?
+                        AND c.deleted=0
+                        AND a.datefrom <= ? AND (a.dateto>=? OR a.dateto=0)
+                        AND ((a.period='.DISPOSABLE.' AND a.at=?)
+                            OR (a.period='.WEEKLY.'. AND a.at=?)
+                            OR (a.period='.MONTHLY.' AND a.at=?)
+                            OR (a.period='.QUARTERLY.' AND a.at=?)
+                            OR (a.period='.HALFYEARLY.' AND a.at=?)
+                            OR (a.period='.YEARLY.' AND a.at=?)) '
+                        .($customerid ? 'AND a.customerid='.$customerid : '').
+                    ' GROUP BY a.customerid, lastname, c.name, city, address, ten, l.currency',
                     'id',
                     array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday)
                 );
@@ -656,13 +657,29 @@ switch ($type) {
                             $reportlist[$idx]['customername'] = $row['customername'];
                             $reportlist[$idx]['address'] = $row['address'];
                             $reportlist[$idx]['ten'] = $row['ten'];
+                            $reportlist[$idx]['values'] = array();
                         }
-                        $reportlist[$idx]['value'] += $row['value'];
-                        $reportlist[$idx][$tax['id']]['netto'] = round($row['value']/($tax['value']+100)*100, 2);
-                        $reportlist[$idx][$tax['id']]['tax'] = $row['value'] - $reportlist[$idx][$tax['id']]['netto'];
-                        $reportlist[$idx]['taxsum'] += $reportlist[$idx][$tax['id']]['tax'];
-                        $total['netto'][$tax['id']] += $reportlist[$idx][$tax['id']]['netto'];
-                        $total['tax'][$tax['id']] += $reportlist[$idx][$tax['id']]['tax'];
+                        if (!isset($reportlist[$idx]['values'][$row['currency']])) {
+                            $reportlist[$idx]['values'][$row['currency']] = array(
+                                'value' => 0,
+                                'taxsum' => 0,
+                            );
+                        }
+                        $reportlist[$idx]['values'][$row['currency']]['value'] += $row['value'];
+                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'] =
+                            round($row['value']/($tax['value']+100)*100, 2);
+                        $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'] =
+                            $row['value'] - $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
+                        $reportlist[$idx]['values'][$row['currency']]['taxsum'] +=
+                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
+                        if (!isset($total['netto'][$row['currency']][$tax['id']])) {
+                            $total['netto'][$row['currency']][$tax['id']] = 0;
+                            $total['tax'][$row['currency']][$tax['id']] = 0;
+                        }
+                        $total['netto'][$row['currency']][$tax['id']] +=
+                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['netto'];
+                        $total['tax'][$row['currency']][$tax['id']] +=
+                            $reportlist[$idx]['values'][$row['currency']][$tax['id']]['tax'];
                     }
                 }
             }
