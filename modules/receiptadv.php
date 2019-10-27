@@ -199,17 +199,19 @@ if (isset($_POST['receipt'])) {
 
         // add cash-in receipt
         $DB->Execute(
-            'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?)',
-            array(  DOC_RECEIPT,
-                        $in_number,
-                        $in_extnumber,
-                        $in_plan,
-                        $cdate,
-                        Auth::GetCurrentUser(),
-                        $record['name'],
-                        $fullnumber,
-                        )
+            'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency)
+					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
+            array(
+                DOC_RECEIPT,
+                $in_number,
+                $in_extnumber,
+                $in_plan,
+                $cdate,
+                Auth::GetCurrentUser(),
+                $record['name'],
+                $fullnumber,
+                LMS::$currency,
+            )
         );
 
         $rid = $DB->GetLastInsertId('documents');
@@ -231,17 +233,19 @@ if (isset($_POST['receipt'])) {
             ));
 
             $DB->Execute(
-                'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?)',
-                array(  DOC_RECEIPT,
-                        $receipt['out_number'],
-                        isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
-                        $record['numberplanid'],
-                        $cdate,
-                        Auth::GetCurrentUser(),
-                        $receipt['name'],
-                        $fullnumber,
-                        )
+                'INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency)
+					VALUES(?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
+                array(
+                    DOC_RECEIPT,
+                    $receipt['out_number'],
+                    isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
+                    $record['numberplanid'],
+                    $cdate,
+                    Auth::GetCurrentUser(),
+                    $receipt['name'],
+                    $fullnumber,
+                    LMS::$currency,
+                )
             );
 
             $rid2 = $DB->GetLastInsertId('documents');
@@ -260,14 +264,16 @@ if (isset($_POST['receipt'])) {
         );
 
         $DB->Execute(
-            'INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
-					VALUES(?, 1, ?, 1, ?, ?, ?)',
-            array($cdate,
-                        $rid,
-                        str_replace(',', '.', $record['value'] * -1),
-                        trans('Advance return').' - '.$titlenumber,
-                        Auth::GetCurrentUser()
-                    )
+            'INSERT INTO cash (time, type, docid, itemid, value, currency, comment, userid)
+					VALUES(?, 1, ?, 1, ?, ?, ?, ?)',
+            array(
+                $cdate,
+                $rid,
+                str_replace(',', '.', $record['value'] * -1),
+                LMS::$currency,
+                trans('Advance return') . ' - ' . $titlenumber,
+                Auth::GetCurrentUser()
+            )
         );
 
         if ($receipt['type'] == 'settle') {
@@ -282,14 +288,16 @@ if (isset($_POST['receipt'])) {
             );
 
             $DB->Execute(
-                'INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
-					VALUES(?, 1, ?, 1, ?, ?, ?)',
-                array($cdate,
-                        $rid,
-                        str_replace(',', '.', $value * -1),
-                        $receipt['description'],
-                        Auth::GetCurrentUser()
-                    )
+                'INSERT INTO cash (time, type, docid, itemid, value, currency, comment, userid)
+					VALUES(?, 1, ?, 1, ?, ?, ?, ?)',
+                array(
+                    $cdate,
+                    $rid,
+                    str_replace(',', '.', $value * -1),
+                    LMS::$currency,
+                    $receipt['description'],
+                    Auth::GetCurrentUser()
+                )
             );
         }
 
