@@ -114,7 +114,7 @@ switch ($action) {
                 $customer = $LMS->GetCustomer($_GET['customerid'], true);
                 $invoice['customerid'] = $_GET['customerid'];
             }
-            $invoice['currency'] = $_default_currency;
+            $invoice['currency'] = LMS::$default_currency;
         }
         $invoice['number'] = '';
         $invoice['numberplanid'] = null;
