@@ -161,12 +161,11 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-$_default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
-if (empty($_default_currency) || !isset($CURRENCIES[$_default_currency])) {
-    $_default_currency = $_currency;
+LMS::$currency = $_currency;
+LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
+if (empty(LMS::$default_currency) || !isset($CURRENCIES[LMS::$default_currency])) {
+    LMS::$default_currency = $_currency;
 }
-$LMS->currency = $_currency;
-$LMS->default_currency = $_default_currency;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
@@ -209,8 +208,8 @@ if (!$api) {
     $SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
     $SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
     $SMARTY->assignByRef('_language', $LMS->lang);
-    $SMARTY->assignByRef('_currency', $_currency);
-    $SMARTY->assignByRef('_default_currency', $_default_currency);
+    $SMARTY->assignByRef('_currency', LMS::$currency);
+    $SMARTY->assignByRef('_default_currency', LMS::$default_currency);
 }
 
 $error = null; // initialize error variable needed for (almost) all modules
@@ -295,6 +294,11 @@ if ($AUTH->islogged) {
         'force_user_settings_only' => true,
         'user_id' => Auth::GetCurrentUser(),
     ));
+
+    LMS::$default_currency = ConfigHelper::getConfig('phpui.default_currency', '', true);
+    if (empty(LMS::$default_currency) || !isset($CURRENCIES[LMS::$default_currency])) {
+        LMS::$default_currency = LMS::$currency;
+    }
 
     $module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
     $deny = $allow = false;

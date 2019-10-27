@@ -125,7 +125,7 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->text_autosize(550*$scale+$x, 495*$scale+$y, 30*$scale, "*".number_format($this->data['total'], 2, ',', '')."*", 400*$scale);
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
             $value = $this->data['customerbalance'] * -1;
-            $currency = $GLOBALS['_currency'];
+            $currency = LMS::$currency;
         } else {
             $value = $this->data['total'];
             $currency = $this->data['currency'];

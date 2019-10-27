@@ -533,7 +533,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             $this->backend->Text(7, 249, trans('Payment for liabilities'));
 
             $value = $this->data['customerbalance'] * -1;
-            $currency = $GLOBALS['_currency'];
+            $currency = LMS::$currency;
         } else {
             /* title */
             $this->backend->Text(7, 249, trans('Payment for invoice No. $a', null));
@@ -581,7 +581,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         /* amount */
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
             $value = $this->data['customerbalance'] * -1;
-            $currency = $GLOBALS['_currency'];
+            $currency = LMS::$currency;
         } else {
             $value = $this->data['value'];
             $currency = $this->data['currency'];

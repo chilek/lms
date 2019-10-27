@@ -525,15 +525,15 @@ function isboolean($value)
 function moneyf($value, $currency = null)
 {
     if (empty($currency)) {
-        $currency = $GLOBALS['_currency'];
+        $currency = LMS::$currency;
     }
     return sprintf('%01.2f %s', $value, $currency);
 }
 
 function moneyf_in_words($value, $currency = null)
 {
-    if (empty($currency) || $currency == $GLOBALS['_currency']) {
-        $currency = $GLOBALS['_currency'];
+    if (empty($currency) || $currency == LMS::$currency) {
+        $currency = LMS::$currency;
     }
     return sprintf(
         $GLOBALS['LANGDEFS'][$GLOBALS['_language']]['money_format_in_words'],

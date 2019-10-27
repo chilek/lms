@@ -4024,7 +4024,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function getCurrencyValue($currency, $date = null)
     {
-        if ($currency == $GLOBALS['_currency']) {
+        if ($currency == LMS::$currency) {
             return 1.0;
         }
         if (function_exists('get_currency_value')) {

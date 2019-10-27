@@ -38,6 +38,8 @@ class LMS
     public $xajax;  // xajax object
     public $_version = '25-git'; // class version
     public $_revision = '$Format:%cI$'; // %H for last commit checksum
+    public static $currency = null;
+    public static $default_currency = null;
     private $mail_object = null;
     private static $lms = null;
     protected $plugin_manager;
