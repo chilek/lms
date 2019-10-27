@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,8 +27,6 @@
 /**
  * LMSCashManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 {
@@ -456,6 +454,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
                     );
                     $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
                 }
+                $balance['currency'] = LMS::$currency;
                 $finance_manager->AddBalance($balance);
 
                 $this->db->CommitTrans();

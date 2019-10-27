@@ -29,7 +29,7 @@ $layout['pagetitle'] = trans('Cash Operations Import');
 if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     $search = array('"', "\n");
     $replace = array('""', ' ');
-    
+
     if (isset($_GET['division']) && $_GET['division'] != '') {
         if (intval($_GET['division'])) {
             $div = ' AND c.divisionid = '.intval($_GET['division']);
@@ -39,13 +39,13 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
     } else {
         $div = '';
     }
-    
+
     $filename = 'import-'.date('Y-m-d').($div ? '-'.intval($_GET['division']) : '').'.csv';
-    
+
     header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename='.$filename);
     header('Pragma: public');
-    
+
     if ($importlist = $DB->GetAll('SELECT i.date, i.value, i.customer, i.description,
 		i.customerid, c.divisionid, '.$DB->Concat('UPPER(lastname)', "' '", 'name').' AS customername
 		FROM cashimport i
@@ -241,6 +241,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'csv') {
                 $SYSLOG->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
             }
 
+            $balance['currency'] = LMS::$currency;
             $LMS->AddBalance($balance);
 
             $DB->CommitTrans();
