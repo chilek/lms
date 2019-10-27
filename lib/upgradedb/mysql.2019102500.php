@@ -36,6 +36,7 @@ $this->Execute("ALTER TABLE documents ADD COLUMN currency varchar(3)");
 $this->Execute("ALTER TABLE documents ADD COLUMN currencyvalue decimal(9,4) DEFAULT 1.0");
 
 $this->Execute("UPDATE cash SET currencyvalue = ?", array(1.0));
+$this->Execute("UPDATE documents SET currencyvalue = ?", array(1.0));
 
 foreach (array('cash', 'tariffs', 'assignments', 'documents') as $sql_table) {
     $this->Execute("UPDATE " . $sql_table . " SET currency = ?", array($_currency));
