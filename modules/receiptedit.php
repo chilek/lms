@@ -404,7 +404,8 @@ switch ($action) {
 
             $fullnumber = docnumber(array(
                 'number' => $receipt['number'],
-                'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+                'template' => empty($receipt['numberplanid'])
+                    ? null : $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
                 'cdate' => $receipt['cdate'],
                 'customerid' => $customer['id'],
             ));
@@ -414,7 +415,7 @@ switch ($action) {
                 'type' => DOC_RECEIPT,
                 'number' => $receipt['number'],
                 'extnumber' => $receipt['extnumber'] ? $receipt['extnumber'] : '',
-                SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
+                SYSLOG::RES_NUMPLAN => empty($receipt['numberplanid']) ? null : $receipt['numberplanid'],
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_CUST => $customer['id'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
@@ -524,7 +525,8 @@ switch ($action) {
 
             $fullnumber = docnumber(array(
                 'number' => $receipt['number'],
-                'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+                'template' => empty($receipt['nnumberplanid'])
+                    ? null : $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
                 'cdate' => $receipt['cdate'],
             ));
 
@@ -532,7 +534,7 @@ switch ($action) {
                 'type' => DOC_RECEIPT,
                 'number' => $receipt['number'],
                 'extnumber' => $receipt['extnumber'] ? $receipt['extnumber'] : '',
-                SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
+                SYSLOG::RES_NUMPLAN => empty($receipt['numberplanid']) ? null : $receipt['numberplanid'],
                 'cdate' => $receipt['cdate'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
