@@ -96,6 +96,8 @@ if (isset($_GET['id']) && $action == 'init') {
     $cnote['reason'] = '';
     $cnote['paytype'] = $invoice['paytype'];
     $cnote['splitpayment'] = $invoice['splitpayment'];
+    $cnote['currency'] = $invoice['currency'];
+    $cnote['oldcurrency'] = $invoice['currency'];
 
     $t = $invoice['cdate'] + $invoice['paytime'] * 86400;
     $deadline = mktime(23, 59, 59, date('m', $t), date('d', $t), date('Y', $t));
@@ -159,6 +161,8 @@ switch ($action) {
         break;
 
     case 'setheader':
+        $oldcurrency = $cnote['oldcurrency'];
+
         $cnote = null;
         $error = null;
 
@@ -238,6 +242,8 @@ switch ($action) {
                 $error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
             }
         }
+
+        $cnote['currency'] = $oldcurrency;
 
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
@@ -342,6 +348,8 @@ switch ($action) {
 
         $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 
+        $cnote['currency'] = $cnote['oldcurrency'];
+
         $hook_data = array(
             'invoice' => $invoice,
             'contents' => $contents,
@@ -366,6 +374,11 @@ switch ($action) {
                 $contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx];
             }
             break;
+        }
+
+        $cnote['currencyvalue'] = $LMS->getCurrencyValue($cnote['currency'], $cnote['sdate']);
+        if (!isset($cnote['currencyvalue'])) {
+            die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
         }
 
         $DB->BeginTrans();
@@ -477,14 +490,16 @@ switch ($action) {
             'fullnumber' => $fullnumber,
             'recipient_address_id' => $invoice['recipient_address_id'],
             'post_address_id' => $invoice['post_address_id'],
+            'currency' => $cnote['currency'],
+            'currencyvalue' => $cnote['currencyvalue'],
         );
         $DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype, splitpayment,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-				recipient_address_id, post_address_id)
+				recipient_address_id, post_address_id, currency, currencyvalue)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $id = $DB->GetOne(
             'SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
@@ -536,14 +551,16 @@ switch ($action) {
                     'time' => $cnote['cdate'],
                     SYSLOG::RES_USER => Auth::GetCurrentUser(),
                     'value' => str_replace(',', '.', $item['cash']),
+                    'currency' => $cnote['currency'],
+                    'currencyvalue' => $cnote['currencyvalue'],
                     SYSLOG::RES_TAX => $item['taxid'],
                     SYSLOG::RES_CUST => $invoice['customerid'],
                     'comment' => $item['name'],
                     SYSLOG::RES_DOC => $id,
                     'itemid' => $idx,
                 );
-                $DB->Execute('INSERT INTO cash (time, userid, value, taxid, customerid, comment, docid, itemid)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+                $DB->Execute('INSERT INTO cash (time, userid, value, currency, currencyvalue, taxid, customerid, comment, docid, itemid)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                 if ($SYSLOG) {
                     unset($args[SYSLOG::RES_USER]);
                     $args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');

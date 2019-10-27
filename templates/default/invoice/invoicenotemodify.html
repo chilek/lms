@@ -179,6 +179,12 @@
 					{if $cnote.use_current_customer_data} checked{/if} {tip text="Check it if you want to use current customer data"}>
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold">{trans("Currency:")}</td>
+		<td>
+			{$cnote.currency}
+		</td>
+	</tr>
 	<TR{if empty($messagetemplates)} style="display: none;"{/if}>
 		<td class="bold nobr">
 			{trans("Reason template:")}

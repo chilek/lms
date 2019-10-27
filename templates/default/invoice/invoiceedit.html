@@ -124,6 +124,14 @@
 			{/if}
 		</TD>
 	</TR>
+	<TR>
+		<td class="bold nobr">
+			<label for="use_current_customer_data">{trans("Use current customer data:")}</label>
+		</td>
+		<TD class="nobr">
+			<input type="checkbox" id="use_current_customer_data" name="invoice[use_current_customer_data]" value="1"{if $invoice.use_current_customer_data} checked{/if} {tip text="Check it if you want to use current customer data"}>
+		</TD>
+	</TR>
 	<tr>
 		<td class="bold">{trans("Currency:")}</td>
 		<td>
@@ -134,14 +142,6 @@
 			</select>
 		</td>
 	</tr>
-	<TR>
-		<td class="bold nobr">
-			<label for="use_current_customer_data">{trans("Use current customer data:")}</label>
-		</td>
-		<TD class="nobr">
-			<input type="checkbox" id="use_current_customer_data" name="invoice[use_current_customer_data]" value="1"{if $invoice.use_current_customer_data} checked{/if} {tip text="Check it if you want to use current customer data"}>
-		</TD>
-	</TR>
 	<tr>
 		<td class="bold">{trans("Recipient address:")}</td>
 		<td>

@@ -99,6 +99,7 @@ if (isset($_GET['id']) && $action == 'edit') {
     $cnote['oldnumber'] = $cnote['number'];
     $cnote['oldnumberplanid'] = $cnote['numberplanid'];
     $cnote['oldcustomerid'] = $cnote['customerid'];
+    $cnote['oldcurrency'] = $cnote['currency'];
 
     $hook_data = array(
         'contents' => $cnotecontents,
@@ -146,6 +147,7 @@ switch ($action) {
         $oldnumber = $cnote['oldnumber'];
         $oldnumberplanid = $cnote['oldnumberplanid'];
         $oldcustomerid = $cnote['oldcustomerid'];
+        $oldcurrency = $cnote['oldcurrency'];
 
         $oldcnote = $cnote;
         $cnote = null;
@@ -166,6 +168,7 @@ switch ($action) {
         $cnote['oldnumber'] = $oldnumber;
         $cnote['oldnumberplanid'] = $oldnumberplanid;
         $cnote['oldcustomerid'] = $oldcustomerid;
+        $cnote['oldcurrency'] = $oldcurrency;
 
         $invoice = $oldcnote['invoice'];
 
@@ -272,6 +275,8 @@ switch ($action) {
             $sdate = $cnote['oldsdate'];
         }
 
+        $cnote['currency'] = $cnote['oldcurrency'];
+
         $deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
         $paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
         $iid   = $cnote['id'];
@@ -364,6 +369,11 @@ switch ($action) {
             break;
         }
 
+        $cnote['currencyvalue'] = $LMS->getCurrencyValue($cnote['currency'], $sdate);
+        if (!isset($cnote['currencyvalue'])) {
+            die('Fatal error: couldn\'t get quote for ' . $cnote['currency'] . ' currency!<br>');
+        }
+
         $DB->BeginTrans();
 
         $use_current_customer_data = isset($cnote['use_current_customer_data']);
@@ -440,6 +450,8 @@ switch ($action) {
             'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
+            'currency' => $cnote['currency'],
+            'currencyvalue' => $cnote['currencyvalue'],
         );
         $args['number'] = $cnote['number'];
         if ($cnote['numberplanid']) {
@@ -459,7 +471,8 @@ switch ($action) {
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, reason = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?, number = ?, fullnumber = ?, numberplanid = ?
+				div_inv_author = ?, div_inv_cplace = ?, currency = ?, currencyvalue = ?,
+				number = ?, fullnumber = ?, numberplanid = ?
 				WHERE id = ?', array_values($args));
         if ($SYSLOG) {
             $SYSLOG->AddMessage(
@@ -522,6 +535,8 @@ switch ($action) {
                 $LMS->AddBalance(array(
                     'time' => $cdate,
                     'value' => $item['cash'],
+                    'currency' => $cnote['currency'],
+                    'currencyvalue' => $cnote['currencyvalue'],
                     'taxid' => $item['taxid'],
                     'customerid' => $cnote['customerid'],
                     'comment' => $item['name'],
