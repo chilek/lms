@@ -200,6 +200,8 @@ if ($documents) {
         $invoicelist[$idx]['sdate'] = $document['sdate'];
         $invoicelist[$idx]['pdate'] = $document['pdate'];
         $invoicelist[$idx]['customerid'] = $document['customerid'];
+        $invoicelist[$idx]['currency'] = $document['currency'];
+        $invoicelist[$idx]['currencyvalue'] = $document['currencyvalue'];
 
         foreach ($document['content'] as $itemid => $item) {
             $taxid = intval($item['taxid']);
@@ -240,10 +242,10 @@ if ($documents) {
                 $listdata[$taxid]['val'] = 0;
             }
 
-            $listdata[$taxid]['tax'] += $tax;
-            $listdata[$taxid]['val'] += $netto;
-            $listdata['tax'] += $tax;
-            $listdata['brutto'] += $brutto;
+            $listdata[$taxid]['tax'] += $tax * $document['currencyvalue'];
+            $listdata[$taxid]['val'] += $netto * $document['currencyvalue'];
+            $listdata['tax'] += $tax * $document['currencyvalue'];
+            $listdata['brutto'] += $brutto * $document['currencyvalue'];
         }
     }
 
@@ -282,12 +284,12 @@ if (isset($_POST['extended'])) {
 
         $page = ceil($i/$rows);
 
-        $totals[$page]['total'] += $row['brutto'];
-        $totals[$page]['sumtax'] += $row['tax'];
+        $totals[$page]['total'] += $row['brutto'] * $row['currencyvalue'];
+        $totals[$page]['sumtax'] += $row['tax'] * $row['currencyvalue'];
 
         foreach ($taxeslist as $idx => $tax) {
-            $totals[$page]['val'][$idx] += $row[$idx]['val'];
-            $totals[$page]['tax'][$idx] += $row[$idx]['tax'];
+            $totals[$page]['val'][$idx] += $row[$idx]['val'] * $row['currencyvalue'];
+            $totals[$page]['tax'][$idx] += $row[$idx]['tax'] * $row['currencyvalue'];
         }
 
         $i++;

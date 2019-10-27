@@ -53,7 +53,7 @@
 	</TR>
 	{if !isset($printonlysummary)}
 	{cycle values="grey,white" print=false}
-	{foreach item=invoice from=$invoicelist}
+	{foreach $invoicelist as $invoice}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}.
@@ -71,22 +71,26 @@
 			{$invoice.custaddress}
 		</TD>
 		<TD ALIGN="RIGHT">
-			{$invoice.brutto|string_format:"%01.2f"}
+			{($invoice.brutto * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.brutto, $invoice.currency)}){/if}
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
-			{$invoice.$taxid.val|string_format:"%01.2f"}
+			{($invoice.$taxid.val * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.$taxid.val, $invoice.currency)}){/if}
 		</TD>
 		{if $tax.value}
 		<TD ALIGN="RIGHT">
-			{$invoice.$taxid.tax|string_format:"%01.2f"}
+			{($invoice.$taxid.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.$taxid.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 		{/foreach}
 		<TD ALIGN="RIGHT">
-			{$invoice.tax|string_format:"%01.2f"}
+			{($invoice.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 	</TR>

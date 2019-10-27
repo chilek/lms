@@ -61,6 +61,7 @@
 	{cycle values="grey,white" print=false}
 	{math assign=start equation="(x-1)*y" x=$item y=$rows}
 	{section name=invoicelist loop=$invoicelist start=$start max=$rows}
+	{$invoice = $invoicelist[invoicelist]}
 	<TR class="{cycle}">
 		<TD ALIGN="CENTER">
 			{counter}.
@@ -81,21 +82,25 @@
 		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].$taxid.val|string_format:"%01.2f"}
+			{($invoice.$taxid.val * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.$taxid.val, $invoice.currency)}){/if}
 		</TD>
 		{if $tax.value}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].$taxid.tax|string_format:"%01.2f"}
+			{($invoice.$taxid.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.$taxid.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 		{/foreach}
 		{/if}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].brutto|string_format:"%01.2f"}
+			{($invoice.brutto * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.brutto, $invoice.currency)}){/if}
 		</TD>
 		{if !in_array(DOC_DNOTE, $doctypes)}
 		<TD ALIGN="RIGHT">
-			{$invoicelist[invoicelist].tax|string_format:"%01.2f"}
+			{($invoice.tax * $invoice.currencyvalue)|string_format:"%01.2f"}
+			{if $invoice.currency != LMS::$currency}<br>({moneyf($invoice.tax, $invoice.currency)}){/if}
 		</TD>
 		{/if}
 	</TR>
