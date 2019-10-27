@@ -207,7 +207,7 @@ switch ($type) {
 
         if (isset($date['from'])) {
             $lastafter = $DB->GetOne(
-                'SELECT SUM(CASE WHEN c.customerid IS NOT NULL AND type=0 THEN 0 ELSE value END)
+                'SELECT SUM(CASE WHEN c.customerid IS NOT NULL AND type=0 THEN 0 ELSE value * c.currencyvalue END)
 					FROM cash c '
                     .($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
                     .'WHERE time<?'
@@ -227,7 +227,8 @@ switch ($type) {
             $lastafter = 0;
         }
 
-        if ($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid, c.value AS value,
+        if ($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid,
+                    c.value AS value, c.currency, c.currencyvalue,
 					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
 					FROM cash c
 					LEFT JOIN taxes ON (taxid = taxes.id) '
@@ -262,6 +263,8 @@ switch ($type) {
                 }
 
                 $list[$x]['value'] = $row['value'];
+                $list[$x]['currency'] = $row['currency'];
+                $list[$x]['currencyvalue'] = $row['currencyvalue'];
                 $list[$x]['taxlabel'] = $row['taxlabel'];
                 $list[$x]['time'] = $row['time'];
                 $list[$x]['comment'] = $row['comment'];
@@ -271,16 +274,16 @@ switch ($type) {
                             // customer covenant
                         $list[$x]['after'] = $lastafter;
                     $list[$x]['covenant'] = true;
-                    $listdata['liability'] -= $row['value'];
+                    $listdata['liability'] -= $row['value'] * $row['currencyvalue'];
                 } else {
                     //customer payment
-                    $list[$x]['after'] = $lastafter + $list[$x]['value'];
+                    $list[$x]['after'] = $lastafter + $list[$x]['value'] * $row['currencyvalue'];
 
                     if ($row['value'] > 0) {
                             //income
-                        $listdata['income'] += $list[$x]['value'];
+                        $listdata['income'] += $list[$x]['value'] * $row['currencyvalue'];
                     } else { //expense
-                        $listdata['expense'] -= $list[$x]['value'];
+                        $listdata['expense'] -= $list[$x]['value'] * $row['currencyvalue'];
                     }
                 }
 

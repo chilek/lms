@@ -56,19 +56,19 @@
 			{$balancelist[balancelist].time|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $balancelist[balancelist].covenant}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
+			{if $balancelist[balancelist].covenant}{moneyf($balancelist[balancelist].value*-1, $balancelist[balancelist].currency)}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{moneyf($balancelist[balancelist].value, $balancelist[balancelist].currency)}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{moneyf($balancelist[balancelist].value*-1, $balancelist[balancelist].currency)}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{if $balancelist[balancelist].covenant}
 			-
 			{else}
-			{$balancelist[balancelist].after|money_format}
+			{moneyf($balancelist[balancelist].after)}
 			{/if}
 		</TD>
 		<TD ALIGN="LEFT" NOWRAP>
