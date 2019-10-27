@@ -3561,13 +3561,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'closed' => $customer || $receipt['o_type'] != 'advance' ? 1 : 0,
             'fullnumber' => $fullnumber,
+            'currency' => LMS::$currency,
         );
         $this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid,
 			name, address, zip, city, countryid, 
 			divisionid, div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace,
-			closed, fullnumber)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			closed, fullnumber, currency)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $this->db->UnLockTables();
 
         $rid = $this->db->GetLastInsertId('documents');
@@ -3607,12 +3608,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 SYSLOG::RES_DOC => $rid,
                 'itemid' => $iid,
                 'value' => $value,
+                'currency' => LMS::$currency,
                 'comment' => $item['description'],
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
             );
-            $this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
-						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, currency, comment, userid, customerid)
+						VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
             if ($SYSLOG) {
                 $args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
                 unset($args[SYSLOG::RES_USER]);

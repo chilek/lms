@@ -32,14 +32,15 @@ function GetCustomerCovenants($id)
         return null;
     }
 
-    if ($invoicelist = $DB->GetAllByKey('SELECT docid AS id, cdate, SUM(value)*-1 AS value, number, numberplans.template,
+    if ($invoicelist = $DB->GetAllByKey('SELECT docid AS id, cdate, SUM(value)*-1 AS value,
+                cash.currency, cash.currencyvalue, number, numberplans.template,
 				d.customerid, reference AS ref,
 				(SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 			FROM cash
 			LEFT JOIN documents d ON (docid = d.id)
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			WHERE cash.customerid = ? AND d.type IN (?,?) AND d.closed = 0
-			GROUP BY docid, cdate, number, numberplans.template, reference, d.customerid
+			GROUP BY docid, cdate, number, numberplans.template, reference, d.customerid, cash.currency, cash.currencyvalue
 			HAVING SUM(value) < 0
 			ORDER BY cdate DESC', 'id', array($id, DOC_INVOICE, DOC_CNOTE))) {
         foreach ($invoicelist as $idx => $row) {
@@ -59,12 +60,13 @@ function GetCustomerCovenants($id)
             if ($row['reference']) {
                 // get cnotes values if those values decreases invoice value
                 if ($cnotes = $DB->GetAll(
-                    'SELECT SUM(value) AS value, cdate, number, numberplans.template, d.customerid
+                    'SELECT SUM(value) AS value, cash.currency, cash.currencyvalue,
+                            cdate, number, numberplans.template, d.customerid
 						FROM cash
 						LEFT JOIN documents d ON (docid = d.id)
 						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						WHERE reference = ? AND d.closed = 0
-						GROUP BY docid, cdate, number, numberplans.template, d.customerid',
+						GROUP BY docid, cdate, number, numberplans.template, d.customerid, cash.currency, cash.currencyvalue',
                     array($row['id'])
                 )) {
                     $invoicelist[$idx]['number'] .= ' (';
@@ -89,12 +91,14 @@ function GetCustomerCovenants($id)
     }
 
     if ($notelist = $DB->GetAllByKey('
-		SELECT d.id, d.cdate, number, np.template, d.customerid, SUM(value) AS value
+		SELECT d.id, d.cdate, number, np.template, d.customerid, SUM(n.value) AS value,
+		    c.currency, c.currencyvalue
 		FROM documents d
 		LEFT JOIN debitnotecontents n ON (n.docid = d.id)
+		JOIN cash c ON c.docid = d.id AND c.itemid = n.itemid
 		LEFT JOIN numberplans np ON (numberplanid = np.id)
 		WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
-		GROUP BY d.id, d.cdate, number, np.template, d.customerid
+		GROUP BY d.id, d.cdate, number, np.template, d.customerid, c.currency, c.currencyvalue
 		ORDER BY d.cdate DESC', 'id', array($id, DOC_DNOTE))) {
         foreach ($notelist as $idx => $row) {
             $notelist[$idx]['number'] = docnumber(array(
@@ -374,15 +378,17 @@ switch ($action) {
             $cash = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHERE regid = ?', array($receipt['regid']));
 
             foreach ($_POST['marks'] as $id) {
-                $row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, numberplans.template, documents.type AS type, documents.customerid,
+                $row = $DB->GetRow('SELECT SUM(value) AS value, cash.currency, cash.currencyvalue,
+                            number, cdate, numberplans.template, documents.type AS type, documents.customerid,
 						    (SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 						    FROM cash 
 						    LEFT JOIN documents ON (docid = documents.id)
 						    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						    WHERE docid = ?
-						    GROUP BY docid, number, cdate, numberplans.template, documents.type, documents.customerid', array($id));
+						    GROUP BY docid, number, cdate, numberplans.template, documents.type, documents.customerid,
+						        cash.currency, cash.currencyvalue', array($id));
 
-                $itemdata['value'] = $receipt['type']=='in' ? -$row['value'] : $row['value'];
+                $itemdata['value'] = ($receipt['type']=='in' ? -$row['value'] : $row['value']) * $row['currencyvalue'];
                 $itemdata['docid'] = $id;
                 $itemdata['posuid'] = (string) (getmicrotime()+$id);
 
@@ -789,9 +795,10 @@ switch ($action) {
                 'name' => '',
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
+                'currency' => LMS::$currency,
             );
-            $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber, currency)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
             $rid = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $receipt['number'], $receipt['cdate'], $receipt['numberplanid']));
 
@@ -852,9 +859,10 @@ switch ($action) {
                 SYSLOG::RES_USER => Auth::GetCurrentUser(),
                 'closed' => 1,
                 'fullnumber' => $fullnumber,
+                'currency' => LMS::$currency,
             );
-            $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?)', array_values($args));
+            $DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, userid, closed, fullnumber, currency)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
             $did = $DB->GetOne('SELECT id FROM documents WHERE type=? AND number=? AND cdate=? AND numberplanid=?', array(DOC_RECEIPT, $number, $receipt['cdate'], $numberplan));
 

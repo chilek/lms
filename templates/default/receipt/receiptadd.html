@@ -343,9 +343,14 @@
 							{cycle values="light,lucid" print=false}
 							{foreach from=$invoicelist item=item}
 							<TR class="highlight {cycle}"  >
-							        <TD onclick="checkElement('mark{$item.id}')" class="nobr">{$item.cdate|date_format:"%Y/%m/%d"}</TD>
+								<TD onclick="checkElement('mark{$item.id}')" class="nobr">{$item.cdate|date_format:"%Y/%m/%d"}</TD>
 								<TD onclick="checkElement('mark{$item.id}')">{$item.number}</TD>
-							        <TD align="right" onclick="checkElement('mark{$item.id}')" class="nobr">{$item.value|money_format}</TD>
+								<TD align="right" onclick="checkElement('mark{$item.id}')" class="nobr">
+									{moneyf($item.value * $item.currencyvalue)}
+									{if $item.currency != LMS::$currency}
+										<br>({moneyf($item.value, $item.currency)})
+									{/if}
+								</TD>
 								<TD align="right">
 									<INPUT TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}" checked>
 								</TD>
@@ -419,7 +424,7 @@
 			<B>{trans("Total:")}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{sum array=$contents column=value string_format=$LANGDEFS.$_language.money_format}
+			{sum array=$contents column=value assign="total_value"}{moneyf($total_value)}
 		</TD>
 		<TD WIDTH="1%"></TD>
 	</TR>
