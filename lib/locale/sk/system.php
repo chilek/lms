@@ -54,22 +54,22 @@ function check_ssn($ssn)
     if (!preg_match('/^[0-9]{11}$/', $ssn)) {
         return false;
     }
-    
+
     $steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
     $sum_nb = 0;
-    
+
     for ($x = 0; $x < 10; $x++) {
         $sum_nb += $steps[$x] * $ssn[$x];
     }
-    
+
     $sum_m = 10 - $sum_nb % 10;
-    
+
     if ($sum_m == 10) {
         $sum_c = 0;
     } else {
         $sum_c = $sum_m;
     }
-    
+
     if ($sum_c == $ssn[10]) {
         return true;
     }
@@ -93,38 +93,38 @@ function check_regon($regon)
 
     if (strlen($regon) == 9) {
         $steps = array(8, 9, 2, 3, 4, 5, 6, 7);
-    
+
         for ($x = 0; $x < 8; $x++) {
             $sum_nb += $steps[$x] * $regon[$x];
         }
-    
+
         $mod = $sum_nb % 11;
-        
+
         if ($mod == 10) {
             $mod = 0;
         }
-    
+
         if ($mod == $regon[8]) {
             return true;
         }
     } elseif (strlen($regon) == 7) {
         $steps = array(2, 3, 4, 5, 6, 7);
-    
+
         for ($x = 0; $x < 6; $x++) {
             $sum_nb += $steps[$x] * $regon[$x];
         }
 
         $mod = $sum_nb % 11;
-        
+
         if ($mod == 10) {
             $mod = 0;
         }
-    
+
         if ($mod == $regon[6]) {
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -167,4 +167,9 @@ function getHolidays($year = null)
 function generateRandomPostcode()
 {
     return sprintf("%03d", rand(0, 999)) . ' ' . sprintf("%02d", rand(0, 99));
+}
+
+function get_currency_value($currency, $date = null)
+{
+    return exchangeratesapi_get_currency_value($currency, $date);
 }

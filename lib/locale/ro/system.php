@@ -32,11 +32,11 @@ function check_ten($ten)
 function check_ssn($ssn)
 {
     $ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
-    
+
     if (!is_numeric($ssn) || strlen($ssn) < 13) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -87,4 +87,9 @@ function getHolidays($year = null)
 function generateRandomPostcode()
 {
     return sprintf("%06d", rand(0, 999999));
+}
+
+function get_currency_value($currency, $date = null)
+{
+    return exchangeratesapi_get_currency_value($currency, $date);
 }

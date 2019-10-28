@@ -64,7 +64,7 @@ function check_ssn($ssn)
     if (!preg_match('/^[0-9]{11}$/', $ssn)) {
         return false;
     }
-    
+
     $sum_nb = 0;
     for ($x = 0; $x < 10; $x++) {
         if ($x == 9) {
@@ -99,38 +99,38 @@ function check_regon($regon)
 
     if (strlen($regon) == 9) {
         $steps = array(8, 9, 2, 3, 4, 5, 6, 7);
-    
+
         for ($x = 0; $x < 8; $x++) {
             $sum_nb += $steps[$x] * $regon[$x];
         }
-    
+
         $mod = $sum_nb % 11;
-        
+
         if ($mod == 10) {
             $mod = 0;
         }
-    
+
         if ($mod == $regon[8]) {
             return true;
         }
     } elseif (strlen($regon) == 7) {
         $steps = array(2, 3, 4, 5, 6, 7);
-    
+
         for ($x = 0; $x < 6; $x++) {
             $sum_nb += $steps[$x] * $regon[$x];
         }
 
         $mod = $sum_nb % 11;
-        
+
         if ($mod == 10) {
             $mod = 0;
         }
-    
+
         if ($mod == $regon[6]) {
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -171,4 +171,9 @@ function getHolidays($year = null)
 function generateRandomPostcode()
 {
     return sprintf("%05d", rand(0, 99999));
+}
+
+function get_currency_value($currency, $date = null)
+{
+    return exchangeratesapi_get_currency_value($currency, $date);
 }

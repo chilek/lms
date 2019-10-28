@@ -1406,3 +1406,22 @@ function geocode($location)
         'raw-result' => $page,
     );
 }
+
+function exchangeratesapi_get_currency_value($currency, $date = null)
+{
+    $result = file_get_contents('https://api.exchangeratesapi.io/'
+        . (empty($date) ? 'latest' : date('Y-m-d', $date)) . '?base=' . $currency . '&symbols=' . LMS::$currency);
+    if ($result === false) {
+        return null;
+    }
+
+    $result = json_decode($result, true);
+    if ($result === null) {
+        return null;
+    }
+
+    if (!isset($result['rates'][LMS::$currency])) {
+        return null;
+    }
+    return $result['rates'][LMS::$currency];
+}
