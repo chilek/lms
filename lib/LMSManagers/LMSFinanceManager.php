@@ -4041,6 +4041,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             } elseif (strpos($date, '/') !== false) {
                 list ($year, $month, $day) = explode('/', $date);
                 $date = mktime(12, 0, 0, $month, $day, $year);
+            } elseif ($date > time()) {
+                $date = mktime(12, 0, 0);
             } else {
                 $date = mktime(
                     12,

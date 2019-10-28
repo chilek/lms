@@ -571,6 +571,67 @@ if ($billings) {
 }
 unset($services);
 
+$currency_quotes = array();
+
+// correct currency values for foreign currency documents with today's cdate or sdate
+// which have estimated currency value earlier (in the moment of document issue)
+$daystart = mktime(0, 0, 0, date('n', $currtime), date('j', $currtime), date('Y', $currtime));
+$dayend = $daystart + 86399;
+
+$documents = $DB->GetAll(
+    'SELECT d.id, d.currency FROM documents d
+    WHERE ((d.type IN (?, ?, ?) AND sdate >= ? AND sdate <= ?)
+        OR (d.type IN (?, ?) AND cdate >= ? AND cdate <= ?))
+        AND currency <> ?',
+    array(
+        DOC_INVOICE,
+        DOC_CNOTE,
+        DOC_INVOICE_PRO,
+        $daystart,
+        $dayend,
+        DOC_RECEIPT,
+        DOC_DNOTE,
+        $daystart,
+        $dayend,
+        LMS::$currency,
+    )
+);
+if (!empty($documents)) {
+    foreach ($documents as &$document) {
+        $currency = $document['currency'];
+        if (empty($currency)) {
+            continue;
+        }
+        if (!isset($currency_quotes[$currency])) {
+            $currency_quotes[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            if (!isset($currency_quotes[$currency])) {
+                echo 'Unable to determine currency value for document ID ' . $document['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
+                continue;
+            }
+        }
+        $DB->Execute(
+            'UPDATE documents
+            SET currencyvalue = ?
+            WHERE id = ?',
+            array(
+                $currency_quotes[$currency],
+                $document['id'],
+            )
+        );
+        $DB->Execute(
+            'UPDATE cash
+            SET currencyvalue = ?
+            WHERE docid = ?',
+            array(
+                $currency_quotes[$currency],
+                $document['id'],
+            )
+        );
+        echo 'Corrected currency value for document ID ' . $document['id'] . ' with currency ' . $currency . '.' . PHP_EOL;
+    }
+    unset($document);
+}
+
 if (empty($assigns)) {
     die;
 }
@@ -758,14 +819,14 @@ if ($result['assignments']) {
     $assigns = $result['assignments'];
 }
 
-$currency_quotes = array();
+// determine currency values for assignments with foreign currency
 foreach ($assigns as &$assign) {
     $currency = $assign['currency'];
     if (empty($currency)) {
-        $assign['currency'] = $_currency;
+        $assign['currency'] = LMS::$currency;
         continue;
     }
-    if ($currency != $_currency) {
+    if ($currency != LMS::$currency) {
         if (!isset($currency_quotes[$currency])) {
             $currency_quotes[$currency] = $LMS->getCurrencyValue($currency, $currtime);
             if (!isset($currency_quotes[$currency])) {
@@ -775,13 +836,14 @@ foreach ($assigns as &$assign) {
     }
 }
 unset($assign);
+
 if (!empty($currency_quotes) && !$quiet) {
     print "Currency quotes:" . PHP_EOL;
     foreach ($currency_quotes as $currency => $value) {
-        print '1 ' . $currency . ' = ' . $value . ' ' . $_currency . PHP_EOL;
+        print '1 ' . $currency . ' = ' . $value . ' ' . LMS::$currency . PHP_EOL;
     }
 }
-$currency_quotes[$_currency] = 1.0;
+$currency_quotes[LMS::$currency] = 1.0;
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
