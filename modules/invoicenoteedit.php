@@ -192,7 +192,7 @@ switch ($action) {
                 $cnote['cdate'] = $currtime;
             }
         } else {
-            $cnote['cdate'] = $cnote['oldcdate'];
+            $cnote['cdate'] = $currtime;
         }
 
         if (ConfigHelper::checkPrivilege('invoice_sale_date')) {
