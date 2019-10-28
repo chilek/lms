@@ -413,7 +413,7 @@
 
 			<span style="font-weight: bold">
 				{if $use_alert_color}<span style="color: red;">{/if}
-				{trans('Your balance on date of invoice issue: $a $b', moneyf($invoice.customerbalance), $comment)}
+				{trans('Your balance on date of invoice issue: $a $b', moneyf($invoice.customerbalance / $invoice.currencyvalue, $invoice.currency), $comment)}
 				{if $use_alert_color}</span>{/if}
 				<br>
 				{trans('Balance includes current invoice')}

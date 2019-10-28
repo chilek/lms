@@ -70,11 +70,11 @@ class LMSEzpdfInvoice extends LMSInvoice
         //$this->backend->text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
         $this->backend->text_autosize(15*$scale+$x, 683*$scale+$y, 30*$scale, format_bankaccount($account), 350*$scale);
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
-            $value = $this->data['customerbalance'] * -1;
+            $value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
             $value = $this->data['total'];
         }
-        $this->backend->text_autosize(15*$scale+$x, 445*$scale+$y, 30*$scale, "*".number_format($value, 2, ',', '')."*", 350*$scale);
+        $this->backend->text_autosize(15*$scale+$x, 445*$scale+$y, 30*$scale, '*' . moneyf($value, $this->data['currency']) . '*', 350*$scale);
 
         $this->backend->text_autosize(15*$scale+$x, 390*$scale+$y, 30*$scale, $this->data['name'], 350*$scale);
         $this->backend->text_autosize(15*$scale+$x, 356*$scale+$y, 30*$scale, $this->data['address'], 350*$scale);
@@ -124,17 +124,15 @@ class LMSEzpdfInvoice extends LMSInvoice
         $this->backend->addtext(330*$scale+$x, 495*$scale+$y, 30*$scale, 'X');
         $this->backend->text_autosize(550*$scale+$x, 495*$scale+$y, 30*$scale, "*".number_format($this->data['total'], 2, ',', '')."*", 400*$scale);
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
-            $value = $this->data['customerbalance'] * -1;
-            $currency = LMS::$currency;
+            $value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
             $value = $this->data['total'];
-            $currency = $this->data['currency'];
         }
         $this->backend->text_autosize(
             15*$scale+$x,
             434*$scale+$y,
             30*$scale,
-            moneyf_in_words($value, $currency),
+            moneyf_in_words($value, $this->data['currency']),
             950*$scale
         );
         $this->backend->text_autosize(15*$scale+$x, 372*$scale+$y, 30*$scale, $this->data['name'], 950*$scale);
@@ -1038,7 +1036,11 @@ class LMSEzpdfInvoice extends LMSInvoice
             $y,
             9,
             ($this->use_alert_color ? '<c:color:255,0,0>' : '') . '<b>'
-                . trans('Your balance on date of invoice issue: $a $b', moneyf($balance), $comment)
+                . trans(
+                    'Your balance on date of invoice issue: $a $b',
+                    moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
+                    $comment
+                )
                 . ($this->use_alert_color ? '</c:color>' : '') . '</b>'
         );
         $y = $y - $this->backend->text_align_left(

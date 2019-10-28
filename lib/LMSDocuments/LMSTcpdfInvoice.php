@@ -532,8 +532,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             /* title */
             $this->backend->Text(7, 249, trans('Payment for liabilities'));
 
-            $value = $this->data['customerbalance'] * -1;
-            $currency = LMS::$currency;
+            $value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
             /* title */
             $this->backend->Text(7, 249, trans('Payment for invoice No. $a', null));
@@ -546,11 +545,10 @@ class LMSTcpdfInvoice extends LMSInvoice
             )));
 
             $value = $this->data['value'];
-            $currency = $this->data['currency'];
         }
         /* amount */
         $this->backend->SetFont('arial', 'B', 10);
-        $this->backend->Text(7, 263, moneyf($value, $currency));
+        $this->backend->Text(7, 263, moneyf($value, $this->data['currency']));
     }
 
     protected function invoice_main_form_fill()
@@ -580,14 +578,12 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         /* amount */
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
-            $value = $this->data['customerbalance'] * -1;
-            $currency = LMS::$currency;
+            $value = ($this->data['customerbalance'] / $this->data['currencyvalue']) * -1;
         } else {
             $value = $this->data['value'];
-            $currency = $this->data['currency'];
         }
-        $this->backend->Text(142, 224, moneyf($value, $currency));
-        $this->backend->Text(67, 233, moneyf_in_words($value, $currency));
+        $this->backend->Text(142, 224, moneyf($value, $this->data['currency']));
+        $this->backend->Text(67, 233, moneyf_in_words($value, $this->data['currency']));
 
         /* customer name */
         $this->backend->SetFont('arial', '', 9);
@@ -863,7 +859,11 @@ class LMSTcpdfInvoice extends LMSInvoice
             0,
             '',
             '',
-            trans('Your balance on date of invoice issue: $a $b', moneyf($balance), $comment),
+            trans(
+                'Your balance on date of invoice issue: $a $b',
+                moneyf($balance / $this->data['currencyvalue'], $this->data['currency']),
+                $comment
+            ),
             0,
             1,
             0,
