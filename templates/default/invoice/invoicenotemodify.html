@@ -182,7 +182,7 @@
 	<tr>
 		<td class="bold">{trans("Currency:")}</td>
 		<td>
-			{$cnote.currency}
+			{currency_selection selected=$cnote.currency elementname="cnote[currency]" locked=true}
 		</td>
 	</tr>
 	<TR{if empty($messagetemplates)} style="display: none;"{/if}>
