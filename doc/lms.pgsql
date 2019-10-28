@@ -430,7 +430,7 @@ CREATE TABLE documents (
 		CONSTRAINT documents_auserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	adate integer DEFAULT 0 NOT NULL,
     currency varchar(3),
-    currencyvalue numeric(9,4) DEFAULT 1.0,
+    currencyvalue numeric(17,10) DEFAULT 1.0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -1008,7 +1008,7 @@ CREATE TABLE cash (
 		CONSTRAINT cash_sourceid_fkey REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	linktechnology integer DEFAULT NULL,
     currency varchar(3),
-    currencyvalue numeric(9,4) DEFAULT 1.0,
+    currencyvalue numeric(17,10) DEFAULT 1.0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX cash_customerid_idx ON cash (customerid);

@@ -27,14 +27,14 @@ $this->BeginTrans();
 
 $this->Execute("
     ALTER TABLE cash ADD COLUMN currency varchar(3);
-    ALTER TABLE cash ADD COLUMN currencyvalue numeric(9,4) DEFAULT 1.0;
+    ALTER TABLE cash ADD COLUMN currencyvalue numeric(17,10) DEFAULT 1.0;
     ALTER TABLE tariffs ADD COLUMN currency varchar(3);
     ALTER TABLE tariffs DROP CONSTRAINT tariffs_name_key;
     ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE (name, value, currency, period);
     ALTER TABLE assignments ADD COLUMN currency varchar(3);
     ALTER TABLE liabilities ADD COLUMN currency varchar(3);
     ALTER TABLE documents ADD COLUMN currency varchar(3);
-    ALTER TABLE documents ADD COLUMN currencyvalue numeric(9,4) DEFAULT 1.0;
+    ALTER TABLE documents ADD COLUMN currencyvalue numeric(17,10) DEFAULT 1.0;
 ");
 
 $this->Execute("UPDATE cash SET currencyvalue = ?", array(1.0));

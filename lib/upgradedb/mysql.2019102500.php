@@ -26,14 +26,14 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE cash ADD COLUMN currency varchar(3)");
-$this->Execute("ALTER TABLE cash ADD COLUMN currencyvalue decimal(9,4) DEFAULT 1.0");
+$this->Execute("ALTER TABLE cash ADD COLUMN currencyvalue decimal(17,10) DEFAULT 1.0");
 $this->Execute("ALTER TABLE tariffs ADD COLUMN currency varchar(3)");
 $this->Execute("ALTER TABLE tariffs DROP INDEX name");
 $this->Execute("ALTER TABLE tariffs ADD UNIQUE KEY tariffs_name_key (name, value, currency, period)");
 $this->Execute("ALTER TABLE assignments ADD COLUMN currency varchar(3)");
 $this->Execute("ALTER TABLE liabilities ADD COLUMN currency varchar(3)");
 $this->Execute("ALTER TABLE documents ADD COLUMN currency varchar(3)");
-$this->Execute("ALTER TABLE documents ADD COLUMN currencyvalue decimal(9,4) DEFAULT 1.0");
+$this->Execute("ALTER TABLE documents ADD COLUMN currencyvalue decimal(17,10) DEFAULT 1.0");
 
 $this->Execute("UPDATE cash SET currencyvalue = ?", array(1.0));
 $this->Execute("UPDATE documents SET currencyvalue = ?", array(1.0));
