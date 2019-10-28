@@ -65,13 +65,13 @@
 			{/foreach}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|money_format}{else}-{/if}
+			{if $receiptlist[receiptlist].value > 0}{moneyf($receiptlist[receiptlist].value, $receiptlist[receiptlist].currency)}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $receiptlist[receiptlist].value < 0}{($receiptlist[receiptlist].value*-1)|money_format}{else}-{/if}
+			{if $receiptlist[receiptlist].value < 0}{moneyf($receiptlist[receiptlist].value*-1, $receiptlist[receiptlist].currency)}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$receiptlist[receiptlist].after|money_format}
+			{moneyf($receiptlist[receiptlist].after)}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -89,13 +89,13 @@
 			{if $listdata.advances}<BR><B>{trans("Not accounted advances:")}</B>{/if}
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" nowrap>
-			<B>{$listdata.totalincome|money_format}</B><HR>
-			<B>{$listdata.startbalance|money_format}</B><BR>
-			<B>{$listdata.endbalance|money_format}</B>
-			{if $listdata.advances}<BR><B>{$listdata.advances|money_format}</B>{/if}
+			<B>{moneyf($listdata.totalincome)}</B><HR>
+			<B>{moneyf($listdata.startbalance)}</B><BR>
+			<B>{moneyf($listdata.endbalance)}</B>
+			{if $listdata.advances}<BR><B>{moneyf($listdata.advances)}</B>{/if}
 		</TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" nowrap>
-			<B>{$listdata.totalexpense|money_format}</B><HR>
+			<B>{moneyf($listdata.totalexpense)}</B><HR>
 		</TD>
 		<TD CLASS="HEADGREY"></TD>
 	</TR>

@@ -69,13 +69,13 @@
 			{/foreach}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $receiptlist[receiptlist].value > 0}{$receiptlist[receiptlist].value|string_format:"%.2f"}{else}-{/if}
+			{if $receiptlist[receiptlist].value > 0}{moneyf($receiptlist[receiptlist].value, $receiptlist[receiptlist].currency)}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{if $receiptlist[receiptlist].value < 0}{($receiptlist[receiptlist].value*-1)|string_format:"%.2f"}{else}-{/if}
+			{if $receiptlist[receiptlist].value < 0}{moneyf($receiptlist[receiptlist].value*-1, $receiptlist[receiptlist].currency)}{else}-{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$receiptlist[receiptlist].after|string_format:"%.2f"}
+			{moneyf($receiptlist[receiptlist].after)}
 		</TD>
 	</TR>
 	{/section}
@@ -84,10 +84,10 @@
 			<B>{trans("Page total:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT">
-		        <B>{$totals.$item.income|string_format:"%01.2f"}</B>
+		        <B>{moneyf($totals.$item.income)}</B>
 		</TD>
 		<TD ALIGN="RIGHT">
-		        <B>{$totals.$item.expense|string_format:"%01.2f"}</B>
+		        <B>{moneyf($totals.$item.expense)}</B>
 		</TD>
 		<TD></TD>
 	</TR>
@@ -96,10 +96,10 @@
 			<B>{trans("Transfered from previous page:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT">
-		        <B>{$totals.$previtem.totalincome|string_format:"%01.2f"}</B>
+		        <B>{moneyf($totals.$previtem.totalincome)}</B>
 		</TD>
 		<TD ALIGN="RIGHT">
-		        <B>{$totals.$previtem.totalexpense|string_format:"%01.2f"}</B>
+		        <B>{moneyf($totals.$previtem.totalexpense)}</B>
 		</TD>
 		<TD></TD>
 	</TR>
@@ -108,10 +108,10 @@
 			<B>{trans("Total from start of period:")}</B>
 		</TD>
 		<TD ALIGN="RIGHT">
-			<B>{$totals.$item.totalincome|string_format:"%01.2f"}</B>
+			<B>{moneyf($totals.$item.totalincome)}</B>
 		</TD>
 		<TD ALIGN="RIGHT">
-			<B>{$totals.$item.totalexpense|string_format:"%01.2f"}</B>
+			<B>{moneyf($totals.$item.totalexpense)}</B>
 		</TD>
 		<TD></TD>
 	</TR>

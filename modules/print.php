@@ -789,7 +789,7 @@ switch ($type) {
 
         if ($from > 0) {
             $listdata['startbalance'] = $DB->GetOne(
-                'SELECT SUM(value) FROM receiptcontents
+                'SELECT SUM(value * d.currencyvalue) FROM receiptcontents
 						LEFT JOIN documents d ON (docid = d.id AND type = ?)
 						WHERE cdate < ?'
                         .($registry ? ' AND regid='.$registry : '')
@@ -808,7 +808,7 @@ switch ($type) {
         $listdata['advances'] = 0;
 
         if ($list = $DB->GetAll(
-            'SELECT d.id AS id, SUM(value) AS value, number, cdate, customerid,
+            'SELECT d.id AS id, SUM(value) AS value, d.currency, d.currencyvalue, number, cdate, customerid,
 				d.name, address, zip, city, numberplans.template, extnumber, closed,
 				MIN(description) AS title, COUNT(*) AS posnumber
 			FROM documents d
@@ -839,19 +839,19 @@ switch ($type) {
 
                 // summary
                 if ($row['value'] > 0) {
-                    $listdata['totalincome'] += $row['value'];
+                    $listdata['totalincome'] += $row['value'] * $row['currencyvalue'];
                 } else {
-                    $listdata['totalexpense'] += -$row['value'];
+                    $listdata['totalexpense'] += -$row['value'] * $row['currencyvalue'];
                 }
 
                 if ($idx==0) {
-                    $list[$idx]['after'] = $listdata['startbalance'] + $row['value'];
+                    $list[$idx]['after'] = $listdata['startbalance'] + $row['value'] * $row['currencyvalue'];
                 } else {
-                    $list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'];
+                    $list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'] * $row['currencyvalue'];
                 }
 
                 if (!$row['closed']) {
-                    $listdata['advances'] -= $row['value'];
+                    $listdata['advances'] -= $row['value'] * $row['currencyvalue'];
                 }
             }
         }
@@ -918,9 +918,9 @@ switch ($type) {
                 $page = $x;
 
                 if ($row['value']>0) {
-                    $totals[$page]['income'] += $row['value'];
+                    $totals[$page]['income'] += $row['value'] * $row['currencyvalue'];
                 } else {
-                    $totals[$page]['expense'] += -$row['value'];
+                    $totals[$page]['expense'] += -$row['value'] * $row['currencyvalue'];
                 }
 
                 $totals[$page]['rows'] = $rows;
