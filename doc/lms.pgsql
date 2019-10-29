@@ -242,6 +242,7 @@ CREATE TABLE divisions (
 	rbe			varchar(255)	NOT NULL DEFAULT '',
 	rbename		varchar(255)	NOT NULL DEFAULT '',
 	telecomnumber varchar(255)    NOT NULL DEFAULT '',
+	bank        varchar(100)    DEFAULT NULL,
 	account		varchar(48) 	NOT NULL DEFAULT '',
 	inv_header 	text		NOT NULL DEFAULT '',
 	inv_footer 	text		NOT NULL DEFAULT '',
@@ -408,6 +409,7 @@ CREATE TABLE documents (
 		CONSTRAINT documents_div_countryid_fkey REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	div_ten varchar(255)	DEFAULT '' NOT NULL,
 	div_regon varchar(255)	DEFAULT '' NOT NULL,
+	div_bank varchar(100)   DEFAULT NULL,
 	div_account varchar(48)	DEFAULT '' NOT NULL,
 	div_inv_header text	DEFAULT '' NOT NULL,
 	div_inv_footer text	DEFAULT '' NOT NULL,
@@ -3631,6 +3633,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102902');
 
 COMMIT;

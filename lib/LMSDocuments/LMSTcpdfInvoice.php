@@ -710,6 +710,7 @@ class LMSTcpdfInvoice extends LMSInvoice
             . implode("\n", $accounts)
             . ($this->use_alert_color ? '</span>' : '');
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
+        $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<B>' . $account_text . '<B>';
@@ -934,6 +935,7 @@ class LMSTcpdfInvoice extends LMSInvoice
                 $account = format_bankaccount($account);
             }
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+            $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
             $this->backend->SetFont('arial', '', 8);
             //$h = $this->backend->getStringHeight(0, $tmp);

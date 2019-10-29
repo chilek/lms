@@ -83,6 +83,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'rbe'             => $division['rbe'],
             'rbename'         => $division['rbename'] ? $division['rbename'] : '',
             'telecomnumber'   => $division['telecomnumber'] ? $division['telecomnumber'] : '',
+            'bank'            => empty($division['bank']) ? null : $division['bank'],
             'account'         => $division['account'],
             'inv_header'      => $division['inv_header'],
             'inv_footer'      => $division['inv_footer'],
@@ -96,9 +97,9 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         );
 
         $this->db->Execute('INSERT INTO divisions (name, shortname,
-			ten, regon, rbe, rbename, telecomnumber, account, inv_header, inv_footer, inv_author,
+			ten, regon, rbe, rbename, telecomnumber, bank, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
         $divisionid = $this->db->GetLastInsertID('divisions');
 
@@ -150,6 +151,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
             'rbe'         => $division['rbe'] ? $division['rbe'] : '',
             'rbename'     => $division['rbename'] ? $division['rbename'] : '',
             'telecomnumber'     => $division['telecomnumber'] ? $division['telecomnumber'] : '',
+            'bank'            => empty($division['bank']) ? null : $division['bank'],
             'account'     => $division['account'],
             'inv_header'  => $division['inv_header'],
             'inv_footer'  => $division['inv_footer'],
@@ -164,7 +166,7 @@ class LMSDivisionManager extends LMSManager implements LMSDivisionManagerInterfa
         );
 
         $this->db->Execute('UPDATE divisions SET name=?, shortname=?,
-			ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, account=?, inv_header=?,
+			ten=?, regon=?, rbe=?, rbename=?, telecomnumber=?, bank=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));

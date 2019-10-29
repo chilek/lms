@@ -381,9 +381,7 @@ switch ($action) {
             $customer = $LMS->GetCustomer($cnote['customerid'], true);
         }
 
-        $division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-			account, inv_header, inv_footer, inv_author, inv_cplace 
-			FROM vdivisions WHERE id = ?', array($use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid']));
+        $division = $LMS->GetDivision($use_current_customer_data ? $customer['divisionid'] : $cnote['divisionid']);
 
         if (!$cnote['number']) {
             $cnote['number'] = $LMS->GetNewDocumentNumber(array(
@@ -445,6 +443,7 @@ switch ($action) {
             'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : 0),
             'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
             'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_bank' => $division['bank'] ?: null,
             'div_account' => ($division['account'] ? $division['account'] : ''),
             'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
             'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
@@ -470,7 +469,7 @@ switch ($action) {
         $DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, splitpayment = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, reason = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
-				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
+				div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
 				div_inv_author = ?, div_inv_cplace = ?, currency = ?, currencyvalue = ?,
 				number = ?, fullnumber = ?, numberplanid = ?
 				WHERE id = ?', array_values($args));

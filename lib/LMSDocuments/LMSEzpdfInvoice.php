@@ -225,6 +225,7 @@ class LMSEzpdfInvoice extends LMSInvoice
             .  implode("</c:color>\n<c:color:255,0,0>", $accounts)
             . ($this->use_alert_color ? '</c:color>' : '');
         $tmp = str_replace('%bankaccount', $account_text, $tmp);
+        $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
         if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_bankaccount', true))) {
             $tmp .= "\n" . trans('Bank account:') . "\n" . '<b>' . $account_text . '</b>';
@@ -1086,6 +1087,7 @@ class LMSEzpdfInvoice extends LMSInvoice
                 $account = format_bankaccount($account);
             }
             $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+            $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
             $tmp = preg_split('/\r?\n/', $tmp);
             foreach ($tmp as $line) {

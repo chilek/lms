@@ -1040,9 +1040,7 @@ foreach ($assigns as $assign) {
 						FROM customeraddressview WHERE id = $cid");
 
                 if (!isset($divisions[$customer['divisionid']])) {
-                    $divisions[$customer['divisionid']] = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
-						account, inv_header, inv_footer, inv_author, inv_cplace, inv_paytime
-						FROM vdivisions WHERE id = ?", array($customer['divisionid']));
+                    $divisions[$customer['divisionid']] = $LMS->GetDivision($customer['divisionid']);
                 }
                 $division = $divisions[$customer['divisionid']];
 
@@ -1078,9 +1076,9 @@ foreach ($assigns as $assign) {
                     "INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+					div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
 					recipient_address_id, currency, currencyvalue)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     array(
                         $numbers[$assign['invoice']][$plan], $plan ? $plan : null,
                         $assign['invoice'],
@@ -1100,6 +1098,7 @@ foreach ($assigns as $assign) {
                         ($division['countryid'] ? $division['countryid'] : null),
                         ($division['ten'] ? $division['ten'] : ''),
                         ($division['regon'] ? $division['regon'] : ''),
+                        $division['bank'] ?: null,
                         ($division['account'] ? $division['account'] : ''),
                         ($division['inv_header'] ? $division['inv_header'] : ''),
                         ($division['inv_footer'] ? $division['inv_footer'] : ''),

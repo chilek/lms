@@ -67,6 +67,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice
             $account = format_bankaccount($account);
         }
         $tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
+        $tmp = str_replace('%bankname', $this->data['div_bank'], $tmp);
 
         $tmp = preg_split('/\r?\n/', $tmp);
         foreach ($tmp as $line) {

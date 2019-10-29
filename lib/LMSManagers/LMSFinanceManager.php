@@ -1777,9 +1777,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $fullnumber = null;
         }
 
-        $division = $this->db->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace
-				FROM vdivisions WHERE id = ?', array($invoice['customer']['divisionid']));
+        $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $division = $division_manager->GetDivision($invoice['customer']['divisionid']);
 
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
@@ -1825,6 +1824,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
             'div_ten' => ($division['ten'] ? $division['ten'] : ''),
             'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_bank' => $division['bank'] ?: null,
             'div_account' => ($division['account'] ? $division['account'] : ''),
             'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
             'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
@@ -1842,9 +1842,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			cdate, sdate, paytime, paytype, splitpayment, userid, customerid, name, address,
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
 			comment, recipient_address_id, post_address_id, currency, currencyvalue)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -1984,7 +1984,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid,
-				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
+				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_bank AS div_bank, d.div_account AS account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.recipient_address_id, d.post_address_id,
@@ -2309,7 +2309,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_name AS division_name, d.div_shortname AS division_shortname,
 				d.div_address AS division_address, d.div_zip AS division_zip,
 				d.div_city AS division_city, d.div_countryid AS division_countryid,
-				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
+				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_bank AS div_bank, d.div_account AS account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.post_address_id,
@@ -3527,9 +3527,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
         }
 
-        $division = $this->db->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace
-				FROM vdivisions WHERE id = ?', array($receipt['customer']['divisionid']));
+        $division_manager = new LMSDivisionManager($this->db, $this->auth, $this->cache, $this->syslog);
+        $division = $division_manager->GetDivision($receipt['customer']['divisionid']);
 
         $fullnumber = docnumber(array(
             'number' => $receipt['number'],
@@ -3562,6 +3561,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : null),
             'div_ten' => ($division['ten'] ? $division['ten'] : ''),
             'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+            'div_bank' => $division['bank'] ?: null,
             'div_account' => ($division['account'] ? $division['account'] : ''),
             'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
             'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
@@ -3575,9 +3575,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid,
 			name, address, zip, city, countryid, 
 			divisionid, div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace,
+			div_bank, div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace,
 			closed, fullnumber, currency, currencyvalue)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $this->db->UnLockTables();
 
         $rid = $this->db->GetLastInsertId('documents');

@@ -240,9 +240,7 @@ switch ($action) {
 
             $cdate = !empty($note['cdate']) ? $note['cdate'] : time();
 
-            $division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM vdivisions WHERE id = ?', array($customer['divisionid']));
+            $division = $LMS->GetDivision($customer['divisionid']);
 
             if ($note['numberplanid']) {
                 $fullnumber = docnumber(array(
@@ -277,6 +275,7 @@ switch ($action) {
                 'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => (!empty($division['countryid']) ? $division['countryid'] : null),
                 'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
                 'div_regon' => ($division['regon'] ? $division['regon'] : ''),
+                'div_bank' => $division['bank'] ?: null,
                 'div_account' => ($division['account'] ? $division['account'] : ''),
                 'div_inv_header' => ($division['inv_header'] ? $division['inv_header'] : ''),
                 'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
@@ -291,7 +290,7 @@ switch ($action) {
 				cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
 				ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
-				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
+				div_ten = ?, div_regon = ?, div_bank = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
 				div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?, currency = ?, currencyvalue = ?
 				WHERE id = ?', array_values($args));
 

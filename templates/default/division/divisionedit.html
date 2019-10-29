@@ -2,6 +2,15 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	[name="division[account]"] {
+		margin-top: 0.2em;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <script src="js/location_box.js"></script>
 <FORM method="POST" action="?m=divisionedit&id={$division.id}" name="division">
@@ -143,13 +152,17 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD class="valign-top">
 			<IMG src="img/card.gif" alt="">
 		</TD>
-		<TD class="bold nobr">
+		<TD class="bold nobr valign-top">
 			{trans("Bank account:")}
 		</TD>
 		<TD>
+			{trans("Bank:")}
+			<input type="text" name="division[bank]" value="{$division.bank}" size="45" {tip text="Enter bank name (optional)" trigger="bank"}>
+			<br>
+			{trans("Number:")}
 			<INPUT type="text" name="division[account]" VALUE="{$division.account}" SIZE="45" {tip text="Enter bank account or mass payments account prefix (optional)" trigger="account"}>
 		</TD>
 	</TR>
