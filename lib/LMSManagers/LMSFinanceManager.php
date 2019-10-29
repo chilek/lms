@@ -133,7 +133,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['period'] = trans('weekly');
                         break;
                     case MONTHLY:
-                        $row['payday'] = trans('monthly ($a)', $row['at']);
+                        $row['payday'] = trans('monthly ($a)', $row['at'] ?: trans('last day'));
                         $row['period'] = trans('monthly');
                         break;
                     case QUARTERLY:
@@ -996,21 +996,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 break;
 
             case MONTHLY:
-                $at = sprintf('%d', $a['at']);
-
-                if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0) {
-                    $at = date('j', time());
+                if ($a['at'] == '') {
+                    if (ConfigHelper::checkConfig('phpui.use_current_payday')) {
+                        $at = date('j', time());
+                    } elseif (!ConfigHelper::checkConfig('phpui.use_current_payday')
+                        && ConfigHelper::getConfig('phpui.default_monthly_payday') > 0) {
+                        $at = ConfigHelper::getConfig('phpui.default_monthly_payday');
+                    } else {
+                        $at = -1;
+                    }
+                } else {
+                    $at = intval($a['at']);
                 }
 
-                if (!ConfigHelper::checkConfig('phpui.use_current_payday')
-                    && ConfigHelper::getConfig('phpui.default_monthly_payday') > 0 && $at == 0) {
-                    $at = ConfigHelper::getConfig('phpui.default_monthly_payday');
-                }
-
-                $a['at'] = $at;
-
-                if ($at > 28 || $at < 1) {
+                if ($at > 28 || $at < 0) {
                     $error['at'] = trans('Incorrect day of month (1-28)!');
+                } else {
+                    $a['at'] = $at;
                 }
                 break;
 

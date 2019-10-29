@@ -411,6 +411,15 @@ $('[name^="assignment[nodes]"],[name^="assignment[phones]"]').click(function() {
 	updateCheckAllNodes();
 });
 
+$('#last-day-of-month').click(function() {
+	var checked = $(this).prop('checked');
+	$('#a-day-of-month').toggle(!checked).prop('disabled', checked);
+});
+
+$('#assignment-period').change(function() {
+	$('#last-day-of-month').closest('label').toggle($(this).val() == lmsSettings.monthlyPeriod);
+});
+
 function tariffSelectionHandler() {
 	var promotion_select = parseInt($('#promotion-select').val());
 	var tariff_select = $('#tariff-select');

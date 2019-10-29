@@ -187,6 +187,7 @@ $dom = intval(strftime("%d", localtime2()));
 $year = strftime("%Y", localtime2());
 $weekday = strftime("%u", localtime2());
 $yearday = strftime("%j", localtime2());
+$last_dom = date('j', mktime(0, 0, 0, $month + 1, 0, $year)) == date('j', $currtime);
 
 if (is_leap_year($year) && $yearday > 31 + 28) {
     $yearday -= 1;
@@ -454,7 +455,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
         .(!empty($groupnames) ? $customergroups : "")
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, a.separatedocument, currency, value DESC, a.id";
 $services = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
     $currtime, $currtime));
 
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods (for %phones)');
@@ -526,7 +527,7 @@ $query = "SELECT
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
 $billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
-    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+    DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
     $currtime, $currtime));
 
 $assigns = array();

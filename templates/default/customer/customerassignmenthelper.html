@@ -343,13 +343,22 @@
 									{trans("Accounting:")}
 								</TD>
 								<TD>
-									<SELECT size="1" name="{$variable_prefix}[period]" {tip text="Select time period to account liability"}>
+									<SELECT id="assignment-period" size="1" name="{$variable_prefix}[period]" {tip text="Select time period to account liability"}>
 										{foreach from=$_PERIODS key=key item=item}
 										<OPTION value="{$key}"{if $variables.period == $key} SELECTED{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
 
-									<INPUT type="TEXT" name="{$variable_prefix}[at]" value="{if $variables.at}{$variables.at}{/if}" {tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="8">
+									<INPUT id="a-day-of-month" type="TEXT" name="{$variable_prefix}[at]"
+										value="{if $variables.at}{$variables.at}{/if}"
+										{tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"}
+										{if $variables.at == 0 && $variables.at != ''} style="display: none;" disabled{/if}
+										SIZE="8">
+									<label{if $variables.period != $smarty.const.MONTHLY} style="display: none;"{/if}>
+										<input type="checkbox" id="last-day-of-month" name="{$variable_prefix}[at]" value="0"
+											{if $variables.period != $smarty.const.MONTHLY} disabled{else}{if $variables.at == 0 && $variables.at != ''} checked{/if}{/if}>
+										{trans("last day of month")}
+									</label>
 									{if $variables.atwarning}
 									<INPUT type="hidden" name="{$variable_prefix}[atwarning]" value="1">
 									{/if}

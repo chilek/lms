@@ -4482,3 +4482,6 @@ $_LANG['of selected user:'] = 'wybranego użytkownika:';
 $_LANG['Select currency'] = 'Wybierz walutę';
 $_LANG['Invalid currency selection!'] = 'Błędny wybór waluty!';
 $_LANG['Currency:'] = 'Waluta:';
+
+$_LANG['last day of month'] = 'ostatni dzień miesiąca';
+$_LANG['last day'] = 'ostatni dzień';

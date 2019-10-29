@@ -73,20 +73,25 @@ if (isset($_POST['assignment'])) {
             break;
 
         case MONTHLY:
-            $at = sprintf('%d', $a['at']);
-
-            if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0) {
-                $at = date('j', time());
-            } elseif (!ConfigHelper::checkConfig('phpui.use_current_payday')
-                 && ConfigHelper::getConfig('phpui.default_monthly_payday') > 0 && $at == 0) {
-                $at = ConfigHelper::getConfig('phpui.default_monthly_payday');
+            if ($a['at'] == '') {
+                if (ConfigHelper::checkConfig('phpui.use_current_payday')) {
+                    $at = date('j', time());
+                } elseif (!ConfigHelper::checkConfig('phpui.use_current_payday')
+                    && ConfigHelper::getConfig('phpui.default_monthly_payday') > 0) {
+                    $at = ConfigHelper::getConfig('phpui.default_monthly_payday');
+                } else {
+                    $at = -1;
+                }
+            } else {
+                $at = intval($a['at']);
             }
 
-            $a['at'] = $at;
-
-            if ($at > 28 || $at < 1) {
+            if ($at > 28 || $at < 0) {
                 $error['at'] = trans('Incorrect day of month (1-28)!');
+            } else {
+                $a['at'] = $at;
             }
+
             break;
 
         case QUARTERLY:
