@@ -550,6 +550,7 @@ CREATE TABLE voipaccounts (
 	cost_limit	numeric(12,2) NULL DEFAULT NULL,
 	address_id integer
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    description text NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
 );
 
@@ -3630,6 +3631,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102901');
 
 COMMIT;

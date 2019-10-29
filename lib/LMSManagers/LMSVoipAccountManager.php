@@ -252,8 +252,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         $voip_account_inserted = $DB->Execute(
             'INSERT INTO voipaccounts (ownerid, login, passwd, creatorid, creationdate, access,
-            balance, flags, cost_limit, address_id)
-            VALUES (?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)',
+            balance, flags, cost_limit, address_id, description)
+            VALUES (?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
             array(
                 $voipaccountdata['ownerid'],
                 $voipaccountdata['login'],
@@ -264,6 +264,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
                 $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
                 $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
+                $voipaccountdata['description'],
             )
         );
 
@@ -336,7 +337,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $result = $this->db->GetRow(
             '
             SELECT v.id, ownerid, login, passwd, creationdate, moddate, creatorid,
-                modid, access, balance, lb.name AS borough_name,
+                modid, access, balance, description, lb.name AS borough_name,
                 ld.name AS district_name, lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
                 lt.name AS street_type, v.address_id, v.flags, v.balance,
@@ -435,7 +436,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $result = $this->db->Execute(
             'UPDATE voipaccounts
              SET login=?, passwd=?, moddate=?NOW?, access=?, modid=?,
-                 ownerid=?, flags=?, balance=?, cost_limit=?, address_id=?
+                 ownerid=?, flags=?, balance=?, cost_limit=?, address_id=?,
+                 description = ?
              WHERE id=?',
             array(
                 $data['login'],
@@ -447,7 +449,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $data['balance']    ? $data['balance']    : 0,
                 $data['cost_limit'] ? $data['cost_limit'] : null,
                 $data['address_id'] ? $data['address_id'] : null,
-                $data['id']
+                $data['description'],
+                $data['id'],
              )
         );
 
