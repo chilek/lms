@@ -859,6 +859,7 @@ CREATE TABLE assignments (
 	separatedocument smallint DEFAULT 0 NOT NULL,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
     currency varchar(3),
+    splitpayment smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -3629,6 +3630,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102900');
 
 COMMIT;

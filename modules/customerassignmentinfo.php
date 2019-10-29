@@ -27,7 +27,8 @@
 $a = $DB->GetRow('SELECT a.invoice, a.settlement,
         a.numberplanid, a.paytype, n.template, n.period, a.attribute,
         d.number AS docnumber, d.type AS doctype, d.cdate,
-        n2.template AS numtemplate, a.customerid, a.separatedocument
+        n2.template AS numtemplate, a.customerid, a.separatedocument,
+        a.splitpayment
     FROM assignments a
     LEFT JOIN numberplans n ON (n.id = a.numberplanid)
     LEFT JOIN documents d ON d.id = a.docid

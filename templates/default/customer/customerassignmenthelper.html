@@ -525,6 +525,11 @@
 						</label>
 						<br>
 						<label>
+							<input type="checkbox" name="{$variable_prefix}[splitpayment]" value="1"{if $variables.splitpayment} checked{/if}>
+							{trans("split payment")}
+						</label>
+						<br>
+						<label>
 							{if $variables.id}
 							<INPUT type="checkbox" name="{$variable_prefix}[settlement]" value="1"{if $variables.settlement} checked{/if}>
 							{trans("with settlement of first deficient period")}

@@ -413,7 +413,7 @@ if (!empty($assigns)) {
 // let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
-		a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
+		a.invoice, a.separatedocument, a.splitpayment, t.description AS description, a.id AS assignmentid,
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE -1 END) AS tarifftype,
@@ -461,7 +461,7 @@ $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice
 
 $query = "SELECT
 			a.id, a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
-			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
+			0 AS pdiscount, 0 AS vdiscount, a.invoice, a.separatedocument, a.splitpayment, t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
@@ -975,6 +975,7 @@ foreach ($assigns as $assign) {
     if ($assign['value'] != 0) {
         $val = $assign['value'];
         $currency = $assign['currency'];
+        $splitpayment = $assign['splitpayment'];
         if ($assign['t_period'] && $assign['period'] != DISPOSABLE
             && $assign['t_period'] != $assign['period']) {
             if ($assign['t_period'] == YEARLY) {
@@ -1118,6 +1119,13 @@ foreach ($assigns as $assign) {
                 $paytypes[$cid] = $inv_paytype;
                 $addresses[$cid] = $assign['recipient_address_id'];
                 $numberplans[$cid] = $plan;
+            }
+
+            if ($splitpayment) {
+                $DB->Execute(
+                    "UPDATE documents SET splitpayment = ? WHERE id = ?",
+                    array(1, $invoices[$cid])
+                );
             }
 
             if (!$prefer_settlement_only || !$assign['settlement'] || !$assign['datefrom']) {
