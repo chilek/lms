@@ -23,6 +23,13 @@
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 
+// Document types
+define('DOC_INVOICE', 1);
+define('DOC_RECEIPT', 2);
+define('DOC_CNOTE', 3);
+define('DOC_DNOTE', 5);
+define('DOC_INVOICE_PRO', 6);
+
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE cash ADD COLUMN currency varchar(3)");
