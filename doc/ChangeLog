@@ -101,6 +101,7 @@ version 25-git (????-??-??):
   - enhancement: invoice list: allow to delete many invoices in single operation [chilan]
   - enhancement: multi-currency support ('phpui.default_currency' allows to override
     default currency determined from language settings - none by default) [chilan]
+  - enhancement: split payment support for assignments [chilan]
 
 version 24.0 (2019-05-16):
 
