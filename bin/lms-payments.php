@@ -571,7 +571,7 @@ if ($billings) {
 }
 unset($services);
 
-$currency_quotes = array();
+$currencyvalues = array();
 
 // correct currency values for foreign currency documents with today's cdate or sdate
 // which have estimated currency value earlier (in the moment of document issue)
@@ -602,9 +602,9 @@ if (!empty($documents)) {
         if (empty($currency)) {
             continue;
         }
-        if (!isset($currency_quotes[$currency])) {
-            $currency_quotes[$currency] = $LMS->getCurrencyValue($currency, $daystart);
-            if (!isset($currency_quotes[$currency])) {
+        if (!isset($currencyvalues[$currency])) {
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            if (!isset($currencyvalues[$currency])) {
                 echo 'Unable to determine currency value for document ID ' . $document['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
                 continue;
             }
@@ -614,7 +614,7 @@ if (!empty($documents)) {
             SET currencyvalue = ?
             WHERE id = ?',
             array(
-                $currency_quotes[$currency],
+                $currencyvalues[$currency],
                 $document['id'],
             )
         );
@@ -623,7 +623,7 @@ if (!empty($documents)) {
             SET currencyvalue = ?
             WHERE docid = ?',
             array(
-                $currency_quotes[$currency],
+                $currencyvalues[$currency],
                 $document['id'],
             )
         );
@@ -827,9 +827,9 @@ foreach ($assigns as &$assign) {
         continue;
     }
     if ($currency != LMS::$currency) {
-        if (!isset($currency_quotes[$currency])) {
-            $currency_quotes[$currency] = $LMS->getCurrencyValue($currency, $currtime);
-            if (!isset($currency_quotes[$currency])) {
+        if (!isset($currencyvalues[$currency])) {
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $currtime);
+            if (!isset($currencyvalues[$currency])) {
                 die('Fatal error: couldn\'t get quote for ' . $currency . ' currency!' . PHP_EOL);
             }
         }
@@ -837,13 +837,13 @@ foreach ($assigns as &$assign) {
 }
 unset($assign);
 
-if (!empty($currency_quotes) && !$quiet) {
+if (!empty($currencyvalues) && !$quiet) {
     print "Currency quotes:" . PHP_EOL;
-    foreach ($currency_quotes as $currency => $value) {
+    foreach ($currencyvalues as $currency => $value) {
         print '1 ' . $currency . ' = ' . $value . ' ' . LMS::$currency . PHP_EOL;
     }
 }
-$currency_quotes[LMS::$currency] = 1.0;
+$currencyvalues[LMS::$currency] = 1.0;
 
 foreach ($assigns as $assign) {
     $cid = $assign['customerid'];
@@ -1071,7 +1071,7 @@ foreach ($assigns as $assign) {
                         $fullnumber,
                         $recipient_address_id,
                         $currency,
-                        $currency_quotes[$currency],
+                        $currencyvalues[$currency],
                     )
                 );
 
@@ -1153,7 +1153,7 @@ foreach ($assigns as $assign) {
                                 $currtime,
                                 str_replace(',', '.', $val * -1),
                                 $currency,
-                                $currency_quotes[$currency],
+                                $currencyvalues[$currency],
                                 $assign['taxid'],
                                 $cid,
                                 $desc,
@@ -1174,7 +1174,7 @@ foreach ($assigns as $assign) {
                         $currtime,
                         str_replace(',', '.', $val * -1),
                         $currency,
-                        $currency_quotes[$currency],
+                        $currencyvalues[$currency],
                         $assign['taxid'],
                         $cid,
                         $desc,
@@ -1303,7 +1303,7 @@ foreach ($assigns as $assign) {
                                     $currtime,
                                     str_replace(',', '.', $value * -1),
                                     $currency,
-                                    $currency_quotes[$currency],
+                                    $currencyvalues[$currency],
                                     $assign['taxid'],
                                     $cid,
                                     $sdesc,
@@ -1322,7 +1322,7 @@ foreach ($assigns as $assign) {
                             $currtime,
                             str_replace(',', '.', $value * -1),
                             $currency,
-                            $currency_quotes[$currency],
+                            $currencyvalues[$currency],
                             $assign['taxid'],
                             $cid,
                             $sdesc,
