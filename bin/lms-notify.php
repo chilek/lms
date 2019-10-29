@@ -1089,7 +1089,7 @@ if (empty($types) || in_array('reminder', $types)) {
         JOIN (
             SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
-            GROUP BY docid
+            GROUP BY docid, currency
         ) v ON (v.docid = d.id)
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         WHERE d.type = ? AND d.closed = 0 AND b2.balance < ?
@@ -1376,7 +1376,7 @@ if (empty($types) || in_array('invoices', $types)) {
         ) x ON (x.customerid = c.id)
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
-            GROUP BY docid
+            GROUP BY docid, currency
         ) v ON (v.docid = d.id)
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         LEFT JOIN (SELECT SUM(value * currencyvalue) AS balance, customerid
@@ -1512,7 +1512,7 @@ if (empty($types) || in_array('notes', $types)) {
         ) x ON (x.customerid = c.id)
         JOIN (SELECT SUM(value) * -1 AS value, currency, docid
             FROM cash
-            GROUP BY docid
+            GROUP BY docid, currency
         ) v ON (v.docid = d.id)
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
         LEFT JOIN (SELECT SUM(value * currencyvalue) AS balance, customerid
