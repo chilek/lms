@@ -102,6 +102,7 @@ version 25-git (????-??-??):
   - enhancement: multi-currency support ('phpui.default_currency' allows to override
     default currency determined from language settings - none by default) [chilan]
   - enhancement: split payment support for assignments [chilan]
+  - enhancement: added description field to voip accounts [chilan]
 
 version 24.0 (2019-05-16):
 
