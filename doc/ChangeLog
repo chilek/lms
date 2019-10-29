@@ -104,6 +104,7 @@ version 25-git (????-??-??):
   - enhancement: split payment support for assignments [chilan]
   - enhancement: added description field to voip accounts [chilan]
   - enhancement: added bank name property to divisions [chilan]
+  - enhancement: last day of month at support for monthly assignments [chilan]
 
 version 24.0 (2019-05-16):
 
