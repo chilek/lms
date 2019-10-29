@@ -632,6 +632,42 @@ if (!empty($documents)) {
     unset($document);
 }
 
+$cashes = $DB->GetAll(
+    'SELECT id, currency FROM cash
+    WHERE currency <> ? AND time >= ? AND time <= ?',
+    array(
+        LMS::$currency,
+        $daystart,
+        $dayend,
+    )
+);
+if (!empty($cashes)) {
+    foreach ($cashes as &$cash) {
+        $currency = $cash['currency'];
+        if (empty($currency)) {
+            continue;
+        }
+        if (!isset($currencyvalues[$currency])) {
+            $currencyvalues[$currency] = $LMS->getCurrencyValue($currency, $daystart);
+            if (!isset($currencyvalues[$currency])) {
+                echo 'Unable to determine currency value for cash ID ' . $cash['id'] . ' and currency ' . $currency . '.' . PHP_EOL;
+                continue;
+            }
+        }
+        $DB->Execute(
+            'UPDATE cash
+            SET currencyvalue = ?
+            WHERE id = ?',
+            array(
+                $currencyvalues[$currency],
+                $cash['id'],
+            )
+        );
+        echo 'Corrected currency value for cash ID ' . $cash['id'] . ' with currency ' . $currency . '.' . PHP_EOL;
+    }
+    unset($cash);
+}
+
 if (empty($assigns)) {
     die;
 }
