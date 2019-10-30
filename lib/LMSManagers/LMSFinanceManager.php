@@ -1841,8 +1841,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'comment' => $invoice['invoice']['comment'],
             'recipient_address_id' => $invoice['invoice']['recipient_address_id'],
             'post_address_id' => $invoice['invoice']['post_address_id'],
-            'currency' => $invoice['invoice']['currency'],
-            'currencyvalue' => $invoice['invoice']['currencyvalue'],
+            'currency' => isset($invoice['invoice']['currency']) ? $invoice['invoice']['currency'] : LMS::$currency,
+            'currencyvalue' => isset($invoice['invoice']['currencyvalue']) ? $invoice['invoice']['currencyvalue'] : 1.0,
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
@@ -2421,7 +2421,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'name' => $tariff['name'],
             'description' => $tariff['description'],
             'value' => $tariff['value'],
-            'currency' => $tariff['currency'],
+            'currency' => isset($tariff['currency']) ? $tariff['currency'] : LMS::$currency,
             'period' => $tariff['period'] ? $tariff['period'] : null,
             SYSLOG::RES_TAX => empty($tariff['taxid']) ? null : $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
