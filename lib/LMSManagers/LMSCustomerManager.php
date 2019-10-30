@@ -393,6 +393,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
 
+        $customeradd['name'] = str_replace(array('”', '„'), '"', $customeradd['name']);
+        $customeradd['lastname'] = str_replace(array('”', '„'), '"', $customeradd['lastname']);
+
         $args = array(
             'extid'          => $customeradd['extid'],
             'name'           => $customeradd['name'],
@@ -1294,6 +1297,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function customerUpdate($customerdata)
     {
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+        $customerdata['name'] = str_replace(array('”', '„'), '"', $customerdata['name']);
+        $customerdata['lastname'] = str_replace(array('”', '„'), '"', $customerdata['lastname']);
 
         $args = array(
             'extid'          => $customerdata['extid'],
