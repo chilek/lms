@@ -232,9 +232,9 @@ if ($backup || $archive) {
     $smtp_options = array(
         'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
         'port' => ConfigHelper::getConfig('sendinvoices.smtp_port'),
-        'user' => ConfigHelper::getConfig('sendinvoices.smtp_user'),
-        'pass' => ConfigHelper::getConfig('sendinvoices.smtp_pass'),
-        'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth'),
+        'user' => ConfigHelper::getConfig('sendinvoices.smtp_username', ConfigHelper::getConfig('sendinvoices.smtp_user')),
+        'pass' => ConfigHelper::getConfig('sendinvoices.smtp_password', ConfigHelper::getConfig('sendinvoices.smtp_pass')),
+        'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth_type', ConfigHelper::getConfig('sendinvoices.smtp_auth')),
         'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer', true)),
         'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer_name', true)),
         'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),

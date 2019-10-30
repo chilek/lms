@@ -191,9 +191,9 @@ try {
 $smtp_options = array(
     'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
     'port' => ConfigHelper::getConfig($config_section . '.smtp_port'),
-    'user' => ConfigHelper::getConfig($config_section . '.smtp_user'),
-    'pass' => ConfigHelper::getConfig($config_section . '.smtp_pass'),
-    'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth'),
+    'user' => ConfigHelper::getConfig($config_section . '.smtp_username', ConfigHelper::getConfig($config_section . '.smtp_user')),
+    'pass' => ConfigHelper::getConfig($config_section . '.smtp_password', ConfigHelper::getConfig($config_section . '.smtp_pass')),
+    'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth_type', ConfigHelper::getConfig($config_section . '.smtp_auth')),
     'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)),
     'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)),
     'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
