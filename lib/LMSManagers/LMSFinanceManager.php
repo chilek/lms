@@ -342,9 +342,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         if (ConfigHelper::checkConfig('phpui.promotion_activation_at_next_day')) {
                             $_datefrom = $data['datefrom'];
                             $datefrom = time() + 86400;
-                        } elseif ($start_day > $data['at']) {
+                        } elseif (($data['at'] === 0 && $start_day >= date('j', mktime(12, 0, 0, $start_month + 1, 0, $start_year)))
+                            || ($data['at'] > 0 && $start_day >= $data['at'])) {
                             $_datefrom = $data['datefrom'];
-                            $datefrom = mktime(0, 0, 0, $start_month + 1, $data['at'], $start_year);
+                            $datefrom = mktime(0, 0, 0, $start_month + ($data['at'] === 0 ? 2 : 1), $data['at'], $start_year);
+                        } elseif ($data['at'] === 0) {
+                            $_datefrom = $data['datefrom'];
+                            $datefrom = mktime(0, 0, 0, $start_month + 1, 0, $start_year);
                         }
 
                         $args = array(
@@ -367,7 +371,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                         $tariffid = 0;
                         $period   = DISPOSABLE;
-                        $at       = $datefrom;
+                        $at = $datefrom;
                     } else {
                         continue;
                     }
@@ -381,8 +385,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     $datefrom  = !empty($_datefrom) ? $_datefrom : $datefrom;
                     $_datefrom = 0;
-                    $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && !empty($data['at'])
-                                               ? $data['at'] : $this->CalcAt($period, $datefrom));
+                    $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && $data['at'] !== '')
+                                               ? $data['at'] : $this->CalcAt($period, $datefrom);
                     $length    = $data_schema[$idx - 1];
                     $month     = date('n', $datefrom);
                     $year      = date('Y', $datefrom);
@@ -498,14 +502,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                         list ($year, $month, $dom) = explode('/', date('Y/m/d', $data['datefrom']));
                         $nextperiod = mktime(0, 0, 0, $month + 1, 1, $year);
-                        $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1: $nextperiod;
+                        $partial_dateto = !empty($data['dateto']) && $nextperiod > $data['dateto'] ? $data['dateto'] + 1 : $nextperiod;
                         $diffdays = ($partial_dateto - $data['datefrom']) / 86400;
                         if ($diffdays > 0) {
                             list ($y, $m) = explode('/', date('Y/m', $partial_dateto - 1));
                             $month_days = strftime("%d", mktime(0, 0, 0, $m + 1, 0, $y));
 
                             $partial_dateto--;
-                            if ($data['at'] >= $dom + 1) {
+                            if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                                 $partial_at = $data['at'];
                             } else {
                                 $partial_at = $dom + 1;
@@ -592,7 +596,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             $v = $diffdays * $discounted_val / $month_days;
                             $partial_vdiscount = str_replace(',', '.', round(abs($v - $val), 2));
                             $partial_datefrom = $prevperiod;
-                            if ($data['at'] < $dom) {
+                            if ($data['at'] > 0 && $data['at'] < $dom) {
                                 $partial_at = $data['at'];
                             } else {
                                 $partial_at = $dom - 1;
@@ -720,7 +724,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
                     $partial_dateto--;
-                    if ($data['at'] >= $dom + 1) {
+                    if (($data['at'] > 0 && $data['at'] >= $dom + 1) || ($data['at'] === 0 && $month_days >= $dom + 1)) {
                         $partial_at = $data['at'];
                     } else {
                         $partial_at = $dom + 1;
@@ -786,7 +790,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $value = $diffdays * $discounted_val / $month_days;
                     $partial_vdiscount = str_replace(',', '.', round(abs($value - $val), 2));
                     $partial_datefrom = $prevperiod;
-                    if ($data['at'] < $dom) {
+                    if ($data['at'] > 0 && $data['at'] < $dom) {
                         $partial_at = $data['at'];
                     } else {
                         $partial_at = $dom - 1;
