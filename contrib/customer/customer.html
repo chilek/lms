@@ -71,7 +71,14 @@
 						<B>{trans("Monthly payments:")}</B>
 					</TD>
 					<TD WIDTH="54%">
-						{$customerinfo.tariffsvalue|money_format}
+						{foreach $customerinfo.tariffsvalue as $currency => $value}
+							{if !$value@first}
+								<br>
+							{/if}
+							{moneyf($value.value, $currency)}
+						{foreachelse}
+							{moneyf(0)}
+						{/foreach}
 					</TD>
 				</TR>
 				{else}
