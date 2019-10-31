@@ -2,6 +2,15 @@
 {block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+
+<style>
+
+	#message-body {
+		line-height: 0.7em;
+	}
+
+</style>
+
 <H1>{$layout.pagetitle}</H1>
 <P class="txt">
 {if $message.from}<B>{trans("Sender:")}</B> {$message.from} &lt;{$message.sender}&gt;<BR>{/if}
@@ -10,7 +19,7 @@
 <TABLE CELLPADDING="5" width="100%">
 	<TR>
 		<TD class="fall superlight">
-			<PRE>{if $message.contenttype == 'text/plain'}{nl2br(htmlspecialchars($message.body), false)}{else}{$message.body}{/if}</PRE>
+			<PRE id="message-body">{if $message.contenttype == 'text/plain'}{nl2br(htmlspecialchars($message.body), false)}{else}{$message.body}{/if}</PRE>
 		</TD>
 	</TR>
 </TABLE>

@@ -586,7 +586,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
         if ($message['type'] == MSG_MAIL) {
             if (!$html_format) {
-                $message['body'] = wordwrap($message['body'], 76, "\n");
+                $message['body'] = wordwrap($message['body'], 128, "\n");
             }
             $dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
             $mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
