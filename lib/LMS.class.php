@@ -4210,15 +4210,15 @@ class LMS
                     $lN = '';
                 } else {
                     // ok, now we are going to rise up system's load
-                    $lN = "-----------+---------------+---------------+----------------------------------------------------<eol>";
+                    $lN = "-----------+--------------+---------------+----------------------------------------------------<eol>";
                     foreach ($lastN as $row_s) {
-                        $op_time = strftime("%Y/%m/%d", $row_s['time']);
-                        $op_amount = sprintf("%9.2f %s", $row_s['value'], $row_s['currency']);
-                        $op_after = sprintf("%9.2f %s", $row_s['after'], LMS::$currency);
+                        $op_time = strftime("%Y/%m/%d ", $row_s['time']);
+                        $op_amount = sprintf("%9.2f %s ", $row_s['value'], $row_s['currency']);
+                        $op_after = sprintf("%9.2f %s ", $row_s['after'], LMS::$currency);
                         $for_what = sprintf("%-52s", $row_s['comment']);
                         $lN = $lN . "$op_time | $op_amount | $op_after | $for_what<eol>";
                     }
-                    $lN = $lN . "-----------+---------------+---------------+----------------------------------------------------<eol>";
+                    $lN = $lN . "-----------+--------------+---------------+----------------------------------------------------<eol>";
                 }
                 $body = preg_replace('/%last_[0-9]+_in_a_table/', $lN, $body);
             }
