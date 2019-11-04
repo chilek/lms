@@ -78,7 +78,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 
         $ids = Utils::filterIntegers($marks);
 
-        if (!empty($ids)) {
+        if ($_GET['marks'] == 'cash' && !empty($ids)) {
             $ids = $LMS->GetDocumentsForBalanceRecords($ids, array(DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO, DOC_DNOTE));
         }
     } elseif (isset($_GET['id']) && intval($_GET['id'])) {
