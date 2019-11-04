@@ -264,7 +264,7 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                 $subpartid = array_shift($parts);
                 $subpart = mailparse_msg_get_part($mail, $subpartid);
                 $subpartdata = mailparse_msg_get_part_data($subpart);
-                if (preg_match('/text/', $subpartdata['content-type']) && $mail_body == '') {
+                if (preg_match('/text/', $subpartdata['content-type']) && trim($mail_body) == '') {
                     $mail_body = substr($buffer, $subpartdata['starting-pos-body'], $subpartdata['ending-pos-body'] - $subpartdata['starting-pos-body']);
                     $charset = $subpartdata['content-charset'];
                     $transfer_encoding = isset($subpartdata['transfer-encoding']) ? $subpartdata['transfer-encoding'] : '';
@@ -277,6 +277,10 @@ if (preg_match('#multipart/#', $partdata['content-type']) && !empty($parts)) {
                             break;
                     }
                     $mail_body = iconv($charset, 'UTF-8', $mail_body);
+                    if ($subpartdata['content-type'] == 'text/html') {
+                        $html2text = new \Html2Text\Html2Text($mail_body, array());
+                        $mail_body = $html2text->getText();
+                    }
                 }
             }
         } elseif (isset($partdata['content-disposition']) && ($partdata['content-disposition'] == 'attachment'
