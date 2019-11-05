@@ -317,14 +317,21 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
     if ($jpk) {
         if ($jpk_type == 'vat') {
             // if date from for report is earlier than 1 I 2018
-            $jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
-        }
+            //$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
             // if current date is earlier than 1 I 2018
             //$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
+            $jpk_vat_version = 3;
+        } else {
+            // if date from for report is earlier than 2 XII 2019
+            //$jpk_fa_version = $datefrom < mktime(0, 0, 0, 12, 2, 2019) ? 2 : 3;
+            // if current date is earlier than 1 I 2018
+            $jpk_fa_version = time() < mktime(0, 0, 0, 12, 2, 2019) ? 2 : 3;
+        }
 
         $jpk_data .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         if ($jpk_type == 'fa') {
-            $jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2019/03/21/03211/\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
+            $jpk_data .= "<JPK xmlns=\"" . ($jpk_fa_version == 2 ? 'http://jpk.mf.gov.pl/wzor/2019/03/21/03211/' : 'http://jpk.mf.gov.pl/wzor/2019/09/27/09271/')
+                . "\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2018/08/24/eD/DefinicjeTypy/\">\n";
         } else {
             $jpk_data .= "<JPK xmlns=\""
                 . ($jpk_vat_version == 2 ? "http://jpk.mf.gov.pl/wzor/2016/10/26/10261/"
@@ -357,8 +364,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
             $tns = '';
         } else {
-            $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (2)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
-            $jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+            if ($jpk_fa_version == 2) {
+                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (2)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
+                $jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+            } else {
+                $jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (3)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
+                $jpk_data .= "\t\t<WariantFormularza>3</WariantFormularza>\n";
+            }
             $tns = 'etd:';
         }
         $jpk_data .= "\t\t<CelZlozenia>" . ($jpk_vat_version == 2 || $jpk_type == 'fa' ? '1' : '0') . "</CelZlozenia>\n";
@@ -367,7 +379,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         $jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
 
         if ($jpk_type == 'fa' || $jpk_vat_version == 2) {
-            $jpk_data .= "\t\t<DomyslnyKodWaluty>PLN</DomyslnyKodWaluty>\n";
+            if ($jpk_type == 'vat' || $jpk_fa_version == 2) {
+                $jpk_data .= "\t\t<DomyslnyKodWaluty>PLN</DomyslnyKodWaluty>\n";
+            }
             $jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
                 : ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
         } else {
@@ -382,7 +396,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t<IdentyfikatorPodmiotu>\n";
             $jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
             $jpk_data .= "\t\t\t<etd:PelnaNazwa>" . htmlspecialchars($division['name']) . "</etd:PelnaNazwa>\n";
-            $jpk_data .= "\t\t\t<etd:REGON>" . $division['regon'] . "</etd:REGON>\n";
+            if ($jpk_type == 'vat' || $jpk_fa_version == 2) {
+                $jpk_data .= "\t\t\t<etd:REGON>" . $division['regon'] . "</etd:REGON>\n";
+            }
             $jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
             $jpk_data .= "\t\t<AdresPodmiotu>\n";
             $jpk_data .= "\t\t\t<${tns}KodKraju>PL</${tns}KodKraju>\n";
@@ -400,7 +416,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             }
             $jpk_data .= "\t\t\t<${tns}Miejscowosc>" . $division['city'] . "</${tns}Miejscowosc>\n";
             $jpk_data .= "\t\t\t<${tns}KodPocztowy>" . $division['zip'] . "</${tns}KodPocztowy>\n";
-            $jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig('jpk.division_postal_city', $division['city']) . "</${tns}Poczta>\n";
+            if ($jpk_type == 'vat' || $jpk_fa_version == 2) {
+                $jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig('jpk.division_postal_city',
+                        $division['city']) . "</${tns}Poczta>\n";
+            }
             $jpk_data .= "\t\t</AdresPodmiotu>\n";
         } else {
             $jpk_data .= "\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
@@ -643,7 +662,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t</SprzedazWiersz>\n";
             } else {
                 // JPK body positions (invoices)
-                $jpk_data .= "\t<Faktura typ=\"G\">\n";
+                $jpk_data .= "\t<Faktura" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
+                if ($jpk_fa_version == 3) {
+                    $jpk_data .= "\t\t<KodWaluty>PLN</KodWaluty>\n";
+                }
                 $jpk_data .= "\t\t<P_1>" . strftime('%Y-%m-%d', $invoice['cdate']) . "</P_1>\n";
                 $invoices[$invoiceid] = $invoice;
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";
@@ -823,11 +845,21 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t\t<P_16>false</P_16>\n";
                     $jpk_data .= "\t\t<P_17>false</P_17>\n";
                     $jpk_data .= "\t\t<P_18>" . (isset($invoice['taxest']['-2']['base']) ? 'true' : 'false') . "</P_18>\n";
+                    if ($jpk_fa_version == 3) {
+                        $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                        $jpk_data .= "\t\t<P_18A>" . ($splitpayment ? 'true' : 'false') . "</P_18A>\n";
+                    }
                     $jpk_data .= "\t\t<P_19>false</P_19>\n";
                     $jpk_data .= "\t\t<P_20>false</P_20>\n";
                     $jpk_data .= "\t\t<P_21>false</P_21>\n";
+                    if ($jpk_fa_version == 3) {
+                        $jpk_data .= "\t\t<P_22>false</P_22>\n";
+                    }
                     $jpk_data .= "\t\t<P_23>false</P_23>\n";
                     $jpk_data .= "\t\t<P_106E_2>false</P_106E_2>\n";
+                    if ($jpk_fa_version == 3) {
+                        $jpk_data .= "\t\t<P_106E_3>false</P_106E_3>\n";
+                    }
                     $jpk_data .= "\t\t<RodzajFaktury>" . (isset($invoice['invoice']) ? 'KOREKTA' : 'VAT') . "</RodzajFaktury>\n";
                 if (isset($invoice['invoice'])) {
                     $jpk_data .= "\t\t<PrzyczynaKorekty>" . (empty($invoice['reason']) ? 'błędne wystawienie faktury' : $invoice['reason']) . "</PrzyczynaKorekty>\n";
@@ -876,19 +908,21 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             } else {
                 $taxrates = array_merge($taxrates, array_fill(0, 5 - count($taxrates), 0));
             }
-            $jpk_data .= "\t<StawkiPodatku>\n";
-            $i = 1;
-            foreach ($taxrates as $taxrate) {
-                $jpk_data .= "\t\t<Stawka" . $i . ">" . str_replace(',', '.', sprintf('%.2f', $taxrate / 100))
-                    . "</Stawka" . $i . ">\n";
-                $i++;
+            if ($jpk_fa_version == 2) {
+                $jpk_data .= "\t<StawkiPodatku>\n";
+                $i = 1;
+                foreach ($taxrates as $taxrate) {
+                    $jpk_data .= "\t\t<Stawka" . $i . ">" . str_replace(',', '.', sprintf('%.2f', $taxrate / 100))
+                        . "</Stawka" . $i . ">\n";
+                    $i++;
+                }
+                $jpk_data .= "\t</StawkiPodatku>\n";
             }
-            $jpk_data .= "\t</StawkiPodatku>\n";
 
             $positions = 0;
             foreach ($invoices as $invoice) {
                 foreach ($invoice['content'] as $idx => $position) {
-                    $jpk_data .="\t<FakturaWiersz typ=\"G\">\n";
+                    $jpk_data .="\t<FakturaWiersz" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
                     $jpk_data .="\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
                     $jpk_data .="\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>\n";
                     $jpk_data .="\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
