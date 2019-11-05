@@ -417,8 +417,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t\t<${tns}Miejscowosc>" . $division['city'] . "</${tns}Miejscowosc>\n";
             $jpk_data .= "\t\t\t<${tns}KodPocztowy>" . $division['zip'] . "</${tns}KodPocztowy>\n";
             if ($jpk_type == 'vat' || $jpk_fa_version == 2) {
-                $jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig('jpk.division_postal_city',
-                        $division['city']) . "</${tns}Poczta>\n";
+                $jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig(
+                    'jpk.division_postal_city',
+                    $division['city']
+                ) . "</${tns}Poczta>\n";
             }
             $jpk_data .= "\t\t</AdresPodmiotu>\n";
         } else {
@@ -845,21 +847,21 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                     $jpk_data .= "\t\t<P_16>false</P_16>\n";
                     $jpk_data .= "\t\t<P_17>false</P_17>\n";
                     $jpk_data .= "\t\t<P_18>" . (isset($invoice['taxest']['-2']['base']) ? 'true' : 'false') . "</P_18>\n";
-                    if ($jpk_fa_version == 3) {
-                        $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
-                        $jpk_data .= "\t\t<P_18A>" . ($splitpayment ? 'true' : 'false') . "</P_18A>\n";
-                    }
+                if ($jpk_fa_version == 3) {
+                    $splitpayment = isset($invoice['splitpayment']) && !empty($invoice['splitpayment']);
+                    $jpk_data .= "\t\t<P_18A>" . ($splitpayment ? 'true' : 'false') . "</P_18A>\n";
+                }
                     $jpk_data .= "\t\t<P_19>false</P_19>\n";
                     $jpk_data .= "\t\t<P_20>false</P_20>\n";
                     $jpk_data .= "\t\t<P_21>false</P_21>\n";
-                    if ($jpk_fa_version == 3) {
-                        $jpk_data .= "\t\t<P_22>false</P_22>\n";
-                    }
+                if ($jpk_fa_version == 3) {
+                    $jpk_data .= "\t\t<P_22>false</P_22>\n";
+                }
                     $jpk_data .= "\t\t<P_23>false</P_23>\n";
                     $jpk_data .= "\t\t<P_106E_2>false</P_106E_2>\n";
-                    if ($jpk_fa_version == 3) {
-                        $jpk_data .= "\t\t<P_106E_3>false</P_106E_3>\n";
-                    }
+                if ($jpk_fa_version == 3) {
+                    $jpk_data .= "\t\t<P_106E_3>false</P_106E_3>\n";
+                }
                     $jpk_data .= "\t\t<RodzajFaktury>" . (isset($invoice['invoice']) ? 'KOREKTA' : 'VAT') . "</RodzajFaktury>\n";
                 if (isset($invoice['invoice'])) {
                     $jpk_data .= "\t\t<PrzyczynaKorekty>" . (empty($invoice['reason']) ? 'błędne wystawienie faktury' : $invoice['reason']) . "</PrzyczynaKorekty>\n";
