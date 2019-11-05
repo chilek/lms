@@ -105,6 +105,7 @@ version 25-git (????-??-??):
   - enhancement: added description field to voip accounts [chilan]
   - enhancement: added bank name property to divisions [chilan]
   - enhancement: last day of month at support for monthly assignments [chilan]
+  - enhancement: JPK-FA variant 3 support added [chilan]
 
 version 24.0 (2019-05-16):
 
