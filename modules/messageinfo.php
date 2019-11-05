@@ -167,8 +167,11 @@ if ($SESSION->is_set('milp') && !isset($_GET['page'])) {
     $SESSION->restore('milp', $_GET['page']);
 }
 
-$page = (empty($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.messagelist_pagelimit', $listdata['total']);
+$page = (empty($_GET['page']) ? 1 : $_GET['page']);
+if (($page - 1) * $pagelimit >= $listdata['total']) {
+    $page = 1;
+}
 $SESSION->save('milp', $page);
 
 $layout['pagetitle'] = trans('Message Info: $a', $subject);
