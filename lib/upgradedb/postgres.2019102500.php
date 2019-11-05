@@ -50,7 +50,7 @@ $this->Execute(
     array(1.0, array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE, DOC_RECEIPT))
 );
 
-foreach (array('cash', 'tariffs', 'assignments') as $sql_table) {
+foreach (array('cash', 'tariffs', 'assignments', 'liabilities') as $sql_table) {
     $this->Execute("UPDATE " . $sql_table . " SET currency = ?", array($_currency));
 }
 $this->Execute(
