@@ -381,7 +381,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
         if ($jpk_type == 'fa' || $jpk_vat_version == 2) {
             $jpk_data .= "\t\t<IdentyfikatorPodmiotu>\n";
             $jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
-            $jpk_data .= "\t\t\t<etd:PelnaNazwa>" . str_replace('&', '&amp;', $division['name']) . "</etd:PelnaNazwa>\n";
+            $jpk_data .= "\t\t\t<etd:PelnaNazwa>" . htmlspecialchars($division['name']) . "</etd:PelnaNazwa>\n";
             $jpk_data .= "\t\t\t<etd:REGON>" . $division['regon'] . "</etd:REGON>\n";
             $jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
             $jpk_data .= "\t\t<AdresPodmiotu>\n";
@@ -404,7 +404,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
             $jpk_data .= "\t\t</AdresPodmiotu>\n";
         } else {
             $jpk_data .= "\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
-            $jpk_data .= "\t\t<PelnaNazwa>" . str_replace('&', '&amp;', $division['name']) . "</PelnaNazwa>\n";
+            $jpk_data .= "\t\t<PelnaNazwa>" . htmlspecialchars($division['name']) . "</PelnaNazwa>\n";
         }
 
         $jpk_data .= "\t</Podmiot1>\n";
@@ -450,7 +450,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<LpSprzedazy>" . ($idx + 1) . "</LpSprzedazy>\n";
                 $ten = empty($invoice['ten']) ? 'brak' : preg_replace('/[\s\-]/', '', $invoice['ten']);
                 $jpk_data .= "\t\t<NrKontrahenta>" . $ten . "</NrKontrahenta>\n";
-                $jpk_data .= "\t\t<NazwaKontrahenta>" . str_replace('&', '&amp;', $invoice['name']) . "</NazwaKontrahenta>\n";
+                $jpk_data .= "\t\t<NazwaKontrahenta>" . htmlspecialchars($invoice['name']) . "</NazwaKontrahenta>\n";
                 $jpk_data .= "\t\t<AdresKontrahenta>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
                     . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</AdresKontrahenta>\n";
                 $jpk_data .= "\t\t<DowodSprzedazy>" . $invoice['fullnumber'] . "</DowodSprzedazy>\n";
@@ -647,10 +647,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 $jpk_data .= "\t\t<P_1>" . strftime('%Y-%m-%d', $invoice['cdate']) . "</P_1>\n";
                 $invoices[$invoiceid] = $invoice;
                 $jpk_data .= "\t\t<P_2A>" . $invoice['fullnumber'] . "</P_2A>\n";
-                $jpk_data .= "\t\t<P_3A>" . str_replace('&', '&amp;', $invoice['name']) . "</P_3A>\n";
+                $jpk_data .= "\t\t<P_3A>" . htmlspecialchars($invoice['name']) . "</P_3A>\n";
                 $jpk_data .= "\t\t<P_3B>" . ($invoice['postoffice'] && $invoice['postoffice'] != $invoice['city'] && $invoice['street'] ? $invoice['city'] . ', ' : '')
                     . $invoice['address'] . ', ' . (empty($invoice['zip']) ? '' : $invoice['zip'] . ' ') . ($invoice['postoffice'] ? $invoice['postoffice'] : $invoice['city']) . "</P_3B>\n";
-                $jpk_data .= "\t\t<P_3C>" . str_replace('&', '&amp;', $invoice['division_name']) . "</P_3C>\n";
+                $jpk_data .= "\t\t<P_3C>" . htmlspecialchars($invoice['division_name']) . "</P_3C>\n";
                 $jpk_data .= "\t\t<P_3D>" . $invoice['division_address'] . ', '
                     . (empty($invoice['division_zip']) ? $invoice['division_city'] : $invoice['division_zip'] . ' ' . $invoice['division_city']) . "</P_3D>\n";
                 if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[0-9]+)$/', $invoice['division_ten'], $m)) {
@@ -890,8 +890,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 foreach ($invoice['content'] as $idx => $position) {
                     $jpk_data .="\t<FakturaWiersz typ=\"G\">\n";
                     $jpk_data .="\t\t<P_2B>" . $invoice['fullnumber'] . "</P_2B>\n";
-                    $jpk_data .="\t\t<P_7>" . str_replace('&', '&amp;', $position['description']) . "</P_7>\n";
-                    $jpk_data .="\t\t<P_8A>" . str_replace('&', '&amp;', $position['content']) . "</P_8A>\n";
+                    $jpk_data .="\t\t<P_7>" . htmlspecialchars($position['description']) . "</P_7>\n";
+                    $jpk_data .="\t\t<P_8A>" . htmlspecialchars($position['content']) . "</P_8A>\n";
 
                     if (isset($invoice['invoice'])) {
                         $count = $position['count'] - $invoice['invoice']['content'][$idx]['count'];
