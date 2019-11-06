@@ -75,7 +75,7 @@
 			{if $item.vdiscount != 0}
 				{$valuebrutto = $item.valuebrutto + $item.vdiscount}
 			{elseif $item.pdiscount != 0}
-				{$valuebrutto = ((100 - $item.pdiscount) * $item.valuebrutto) / 100}
+				{$valuebrutto = (100 * $item.valuebrutto ) / (100 - $item.pdiscount)}
 			{else}
 				{$valuebrutto = $item.valuebrutto}
 			{/if}
