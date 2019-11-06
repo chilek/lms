@@ -3,6 +3,17 @@
 {css}
 {js}
 
+<script>
+
+	$(function() {
+		$('[name="customer-events-from-date"]').change(function() {
+			location.href = '?m={$layout.module}&id={$objectid}&events-from-date=' +
+				$(this).val();
+		});
+	});
+
+</script>
+
 {tab_container id="customerevents"}
 
 	{tab_header content_id="eventspanel"}
@@ -11,6 +22,9 @@
 			{if $limit}
 				({t a=$limit}last $a events{/t})
 			{/if}
+			{trans("From")}&nbsp;<INPUT type="text" name="customer-events-from-date" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}"
+				{tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}
+				value="{$events_from_date}">
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>

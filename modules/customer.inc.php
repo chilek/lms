@@ -54,6 +54,10 @@ $messagelist          = $LMS->GetMessages($customerid);
 $params = array(
     'customerid' => $customerid,
 );
+if (isset($_GET['events-from-date'])) {
+    $params['datefrom'] = date_to_timestamp($_GET['events-from-date']);
+    $SMARTY->assign('events_from_date', $_GET['events-from-date']);
+}
 if ($allevents) {
     $params['closed'] = '';
 }
