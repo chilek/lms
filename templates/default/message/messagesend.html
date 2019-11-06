@@ -11,6 +11,14 @@
 
 </style>
 
+<script>
+
+	$(function() {
+		show_pagecontent();
+	});
+
+</script>
+
 <H1>{$layout.pagetitle}</H1>
 <P class="txt">
 {if $message.from}<B>{trans("Sender:")}</B> {$message.from} &lt;{$message.sender}&gt;<BR>{/if}
