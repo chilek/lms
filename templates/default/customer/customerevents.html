@@ -10,6 +10,17 @@
 			location.href = '?m={$layout.module}&id={$objectid}&events-from-date=' +
 				$(this).val();
 		});
+
+		$('#show-in-timetable').click(function() {
+			var from_date = $('[name="customer-events-from-date"]').val();
+			if (from_date != '') {
+				var date = from_date.split('/');
+				location.href = $(this).attr('href') + '&day=' + date[2] + '&month=' + date[1] + '&year=' + date[0];
+			} else {
+				location.href = $(this).attr('href');
+			}
+			return false;
+		});
 	});
 
 </script>
@@ -28,6 +39,7 @@
 		{/tab_header_cell}
 		{tab_header_cell}
 			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>
+			<a id="show-in-timetable" href="?m=eventlist&u={$customerinfo.id}">{trans("Show in timetable")} &raquo;</a>
 			<A href="?m={$layout.module}&id={if $nodeinfo.id}{$nodeinfo.id}{else}{$customerinfo.id}{/if}&allevents={if $allevents}0{else}1{/if}">{if $allevents}{trans("Hide closed")}{else}{trans("Show closed")}{/if} &raquo;</A>
 		{/tab_header_cell}
 	{/tab_header}
