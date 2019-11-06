@@ -4485,3 +4485,5 @@ $_LANG['Currency:'] = 'Waluta:';
 
 $_LANG['last day of month'] = 'ostatni dzień miesiąca';
 $_LANG['last day'] = 'ostatni dzień';
+
+$_LANG['No document of given type has been selected!'] = 'Żaden dokument danego typu nie został wskazany!';
