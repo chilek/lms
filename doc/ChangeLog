@@ -106,6 +106,7 @@ version 25-git (????-??-??):
   - enhancement: added bank name property to divisions [chilan]
   - enhancement: last day of month at support for monthly assignments [chilan]
   - enhancement: JPK-FA variant 3 support added [chilan]
+  - improvement: from date selection in customer event box [chilan]
 
 version 24.0 (2019-05-16):
 
