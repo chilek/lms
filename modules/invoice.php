@@ -666,7 +666,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                 // JPK body positions (invoices)
                 $jpk_data .= "\t<Faktura" . ($jpk_fa_version == 2 ? ' typ="G"' : '') . ">\n";
                 if ($jpk_fa_version == 3) {
-                    $jpk_data .= "\t\t<KodWaluty>PLN</KodWaluty>\n";
+                    $jpk_data .= "\t\t<KodWaluty>" . (isset($invoice['currency']) ? $invoice['currency'] : 'PLN') . "</KodWaluty>\n";
                 }
                 $jpk_data .= "\t\t<P_1>" . strftime('%Y-%m-%d', $invoice['cdate']) . "</P_1>\n";
                 $invoices[$invoiceid] = $invoice;
@@ -702,11 +702,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $jpk_data .= "\t\t<P_13_1>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_1>\n";
                         $tax = ($invoice['taxest']['23.00']['tax'] - $invoice['invoice']['taxest']['23.00']['tax']) * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_1W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1W>\n";
+                        }
                     } elseif (isset($invoice['invoice']['taxest']['23.00'])) {
                         $base = -$invoice['invoice']['taxest']['23.00']['base'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_1>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_1>\n";
                         $tax = -$invoice['invoice']['taxest']['23.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_1W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1W>\n";
+                        }
                     } else {
                         $base = $tax = 0;
                     }
@@ -717,11 +723,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $jpk_data .= "\t\t<P_13_1>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_1>\n";
                         $tax = ($invoice['taxest']['22.00']['tax'] - $invoice['invoice']['taxest']['22.00']['tax']) * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_1W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1W>\n";
+                        }
                     } elseif (isset($invoice['invoice']['taxest']['22.00'])) {
                         $base = -$invoice['invoice']['taxest']['22.00']['base'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_1>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_1>\n";
                         $tax = -$invoice['invoice']['taxest']['22.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_1W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1W>\n";
+                        }
                     } else {
                         $base = $tax = 0;
                     }
@@ -732,11 +744,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $jpk_data .= "\t\t<P_13_2>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_2>\n";
                         $tax = ($invoice['taxest']['8.00']['tax'] - $invoice['invoice']['taxest']['8.00']['tax']) * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_2>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_2W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2W>\n";
+                        }
                     } elseif (isset($invoice['invoice']['taxest']['8.00'])) {
                         $base = -$invoice['invoice']['taxest']['8.00']['base'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_2>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_2>\n";
                         $tax = -$invoice['invoice']['taxest']['8.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_2>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_2W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2W>\n";
+                        }
                     } else {
                         $base = $tax = 0;
                     }
@@ -747,11 +765,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $jpk_data .= "\t\t<P_13_2>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_2>\n";
                         $tax = ($invoice['taxest']['7.00']['tax'] - $invoice['invoice']['taxest']['7.00']['tax']) * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_2>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_2W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2W>\n";
+                        }
                     } elseif (isset($invoice['invoice']['taxest']['7.00'])) {
                         $base = -$invoice['invoice']['taxest']['7.00']['base'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_2>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_2>\n";
                         $tax = -$invoice['invoice']['taxest']['7.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_2>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_2W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2W>\n";
+                        }
                     } else {
                         $base = $tax = 0;
                     }
@@ -762,11 +786,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $jpk_data .= "\t\t<P_13_3>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_3>\n";
                         $tax = ($invoice['taxest']['5.00']['tax'] - $invoice['invoice']['taxest']['5.00']['tax']) * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_3>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_3>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_3W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_3W>\n";
+                        }
                     } elseif (isset($invoice['invoice']['taxest']['5.00'])) {
                         $base = -$invoice['invoice']['taxest']['5.00']['base'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_3>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_3>\n";
                         $tax = -$invoice['invoice']['taxest']['5.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_14_3>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_3>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_3W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_3W>\n";
+                        }
                     } else {
                         $base = $tax = 0;
                     }
@@ -801,12 +831,18 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $tax = $invoice['taxest']['23.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_1>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_1>\n";
                         $jpk_data .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_1W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1W>\n";
+                        }
                     }
                     if (isset($invoice['taxest']['22.00'])) {
                         $base = $invoice['taxest']['22.00']['base'] * $currencyvalue;
                         $tax = $invoice['taxest']['22.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_1>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_1>\n";
                         $jpk_data .= "\t\t<P_14_1>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_1W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_1W>\n";
+                        }
                     }
 
                     if (isset($invoice['taxest']['8.00'])) {
@@ -814,12 +850,18 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $tax = $invoice['taxest']['8.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_2>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_2>\n";
                         $jpk_data .= "\t\t<P_14_2>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_2W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2W>\n";
+                        }
                     }
                     if (isset($invoice['taxest']['7.00'])) {
                         $base = $invoice['taxest']['7.00']['base'] * $currencyvalue;
                         $tax = $invoice['taxest']['7.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_2>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_2>\n";
                         $jpk_data .= "\t\t<P_14_2>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_2W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_2W>\n";
+                        }
                     }
 
                     if (isset($invoice['taxest']['5.00'])) {
@@ -827,6 +869,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
                         $tax = $invoice['taxest']['5.00']['tax'] * $currencyvalue;
                         $jpk_data .= "\t\t<P_13_3>" . str_replace(',', '.', sprintf('%.2f', $base)) . "</P_13_3>\n";
                         $jpk_data .= "\t\t<P_14_3>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_3>\n";
+                        if ($jpk_fa_version == 3 && isset($invoice['currency']) && $invoice['currency'] != LMS::$currency) {
+                            $jpk_data .= "\t\t<P_14_3W>" . str_replace(',', '.', sprintf('%.2f', $tax)) . "</P_14_3W>\n";
+                        }
                     }
 
                     if (isset($invoice['taxest']['0.00'])) {
