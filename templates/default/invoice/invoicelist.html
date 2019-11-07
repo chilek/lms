@@ -335,6 +335,7 @@
 
 	$('#delete-invoices').click(function() {
 		if (!$(this).closest('tfoot').siblings('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
 
@@ -420,6 +421,7 @@
 
 	$('#account-invoices').click(function () {
 		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
 
@@ -432,6 +434,7 @@
 
 	$('#send-invoices').click(function () {
 		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
 
@@ -457,6 +460,7 @@
 
 	$('#archive-invoices').click(function () {
 		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
 
@@ -469,6 +473,7 @@
 
 	$('#unarchive-invoices').click(function () {
 		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
 
@@ -499,6 +504,7 @@
 
 	$('#print-invoices').click(function() {
 		if (!$(this).closest('tfoot').prev('.lms-ui-multi-check').find('input.lms-ui-multi-check:checked').length) {
+			alertDialog($t('No document of given type has been selected!'), this);
 			return;
 		}
 
