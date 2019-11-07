@@ -828,6 +828,7 @@ CREATE TABLE tariffs (
 	name varchar(255) 	NOT NULL DEFAULT '',
 	type tinyint 		NOT NULL DEFAULT '1',
 	value decimal(9,2) 	NOT NULL DEFAULT '0',
+    splitpayment smallint NOT NULL DEFAULT 0,
 	taxid int(11) 	NOT NULL,
 	numberplanid integer DEFAULT NULL,
 	period smallint   DEFAULT NULL,
@@ -941,6 +942,7 @@ CREATE TABLE voip_emergency_numbers (
 CREATE TABLE liabilities (
 	id int(11)              NOT NULL auto_increment,
 	value decimal(9,2)      NOT NULL DEFAULT '0',
+    splitpayment smallint NOT NULL DEFAULT 0,
 	currency varchar(3),
 	name text               NOT NULL DEFAULT '',
 	taxid int(11)           NOT NULL,
@@ -977,7 +979,6 @@ CREATE TABLE assignments (
 	separatedocument tinyint(1) NOT NULL DEFAULT 0,
 	count numeric(9,3) DEFAULT 1 NOT NULL,
     currency varchar(3),
-    splitpayment smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
 	INDEX tariffid (tariffid),
 	INDEX customerid (customerid),
@@ -3585,4 +3586,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019102902');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019110700');

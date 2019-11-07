@@ -392,6 +392,11 @@
 									<INPUT type="text" name="{$variable_prefix}[value]" value="{if $variables.value}{$variables.value}{/if}" size="10" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
 
 									{currency_selection selected=$variables.currency elementname=$variable_prefix|cat:"[currency]"}
+
+									<label>
+										<input type="checkbox" name="{$variable_prefix}[splitpayment]" value="1"{if $variables.splitpayment} checked{/if}>
+										{trans("split payment")}
+									</label>
 								</TD>
 							</TR>
 
@@ -531,11 +536,6 @@
 						<label>
 							<input type="checkbox" name="{$variable_prefix}[separatedocument]" value="1"{if $variables.separatedocument} checked{/if}>
 							{trans("separate document")}
-						</label>
-						<br>
-						<label>
-							<input type="checkbox" name="{$variable_prefix}[splitpayment]" value="1"{if $variables.splitpayment} checked{/if}>
-							{trans("split payment")}
 						</label>
 						<br>
 						<label>

@@ -28,11 +28,13 @@ $a = $DB->GetRow('SELECT a.invoice, a.settlement,
         a.numberplanid, a.paytype, n.template, n.period, a.attribute,
         d.number AS docnumber, d.type AS doctype, d.cdate,
         n2.template AS numtemplate, a.customerid, a.separatedocument,
-        a.splitpayment
+        (CASE WHEN l.splitpayment IS NULL THEN t.splitpayment ELSE l.splitpayment END) AS splitpayment
     FROM assignments a
     LEFT JOIN numberplans n ON (n.id = a.numberplanid)
     LEFT JOIN documents d ON d.id = a.docid
     LEFT JOIN numberplans n2 ON n2.id = d.numberplanid
+    LEFT JOIN tariffs t ON t.id = a.tariffid
+    LEFT JOIN liabilities l ON l.id = a.liabilityid
     WHERE a.id = ?', array($_GET['id']));
 
 if ($a['template']) {

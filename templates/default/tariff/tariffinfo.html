@@ -101,6 +101,13 @@
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
+                                <TD>{trans("Split payment:")}</TD>
+                                <TD>
+                                    {if $tariff.splitpayment}{trans("yes")}{else}{trans("no")}{/if}
+                                </TD>
+                            </TR>
+                            <TR>
+                                <TD><IMG SRC="img/tax.gif" ALT=""></TD>
                                 <TD>{trans("Tax:")}</TD>
                                 <TD>{$tariff.tax}</TD>
                             </TR>

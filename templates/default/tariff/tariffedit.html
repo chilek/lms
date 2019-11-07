@@ -93,6 +93,19 @@
                                     </SELECT>
                                 </TD>
                             </TR>
+                            <tr>
+                                <TD>
+                                    <IMG SRC="img/tax.gif" ALT="">
+                                </TD>
+                                <TD class="bold nobr">
+                                    <label for="splitpayment">
+                                        {trans("Split payment:")}
+                                    </label>
+                                </TD>
+                                <td>
+                                    <input type="checkbox" id="splitpayment" name="tariff[splitpayment]" value="1"{if $tariff.splitpayment} checked{/if}>
+                                </td>
+                            </tr>
                             <TR>
                                 <TD><IMG SRC="img/tax.gif" ALT=""></TD>
                                 <TD>{trans("Tax:")}</TD>
