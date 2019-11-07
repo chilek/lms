@@ -734,7 +734,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args = array(
                             'name' => $data['name'],
                             'value' => str_replace(',', '.', $data['value']),
-                            'splitpayment' => $data['splitpayment'],
+                            'splitpayment' => isset($data['splitpayment']) ? $data'splitpayment'] : 0,
                             'currency' => $data['currency'],
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid']
@@ -800,7 +800,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args = array(
                             'name' => $data['name'],
                             'value' => str_replace(',', '.', $data['value']),
-                            'splitpayment' => $data['splitpayment'],
+                            'splitpayment' => isset($data['splitpayment']) ? $data['splitpayment'] : 0,
                             'currency' => $data['currency'],
                             SYSLOG::RES_TAX => intval($data['taxid']),
                             'prodid' => $data['prodid']
@@ -852,7 +852,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $args = array(
                         'name' => $data['name'],
                         'value' => str_replace(',', '.', $data['value']),
-                        'splitpayment' => $data['splitpayment'],
+                        'splitpayment' => isset($data['splitpayment']) ? $data['splitpayment'] : 0,
                         'currency' => $data['currency'],
                         SYSLOG::RES_TAX => intval($data['taxid']),
                         'prodid' => $data['prodid']
