@@ -101,13 +101,13 @@ version 25-git (????-??-??):
   - enhancement: invoice list: allow to delete many invoices in single operation [chilan]
   - enhancement: multi-currency support ('phpui.default_currency' allows to override
     default currency determined from language settings - none by default) [chilan]
-  - enhancement: split payment support for assignments [chilan]
   - enhancement: added description field to voip accounts [chilan]
   - enhancement: added bank name property to divisions [chilan]
   - enhancement: last day of month at support for monthly assignments [chilan]
   - enhancement: JPK-FA variant 3 support added [chilan]
   - improvement: from date selection in customer event box and allow to quick jump
     to timetable [chilan]
+  - enhancement: added separated split payment support for tariffs and liabilities [chilan]
 
 version 24.0 (2019-05-16):
 
