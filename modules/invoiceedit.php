@@ -190,7 +190,7 @@ switch ($action) {
 
         if ($itemdata['count'] > 0 && $itemdata['name'] != '') {
             $taxvalue = $taxeslist[$itemdata['taxid']]['value'];
-            if ($itemdata['valuenetto'] != 0) {
+            if ($itemdata['valuenetto'] != 0 && $itemdata['valuebrutto'] == 0) {
                 $itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto']
                     * f_round($itemdata['pdiscount']) / 100)
                     - ((100 * $itemdata['vdiscount']) / (100 + $taxvalue)));

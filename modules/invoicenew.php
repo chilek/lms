@@ -215,7 +215,7 @@ switch ($action) {
 
         if ($itemdata['count'] > 0 && $itemdata['name'] != '') {
             $taxvalue = isset($itemdata['taxid']) ? $taxeslist[$itemdata['taxid']]['value'] : 0;
-            if ($itemdata['valuenetto'] != 0) {
+            if ($itemdata['valuenetto'] != 0 && $itemdata['valuebrutto'] == 0) {
                 $itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * $itemdata['pdiscount'] / 100)
                     - ((100 * $itemdata['vdiscount']) / (100 + $taxvalue)));
                 $itemdata['valuebrutto'] = $itemdata['valuenetto'] * ($taxvalue / 100 + 1);
