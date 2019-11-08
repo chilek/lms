@@ -123,6 +123,10 @@ switch ($type) {
                 $layout['pagetitle'] = trans('Customers With Expiring Contracts List $a$b', ($_POST['network'] ? trans(' (Net: $a)', $LMS->GetNetworkName($_POST['network'])) : ''), ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
                 $SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
                 break;
+            case 63:
+                $layout['pagetitle'] = trans('List of Connected Customers $a$b', ($_POST['network'] ? trans(' (Net: $a)', $LMS->GetNetworkName($_POST['network'])) : ''), ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+                $SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
+                break;
             case -1:
                 $layout['pagetitle'] = trans('Customers Without Nodes List $a$b', ($_POST['network'] ? trans(' (Net: $a)', $LMS->GetNetworkName($_POST['network'])) : ''), ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
                 $SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
