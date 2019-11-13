@@ -305,41 +305,122 @@ switch ($action) {
             $contents[$idx]['vdiscount'] = f_round($contents[$idx]['vdiscount']);
             $taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 
-            if ($contents[$idx]['valuenetto'] != $item['valuenetto']) {
-                $contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
-            } elseif (f_round($contents[$idx]['valuebrutto']) == f_round($item['valuebrutto'])) {
-                $contents[$idx]['valuebrutto'] = $item['valuebrutto'];
-            }
-
-            if ((isset($item['deleted']) && $item['deleted']) || empty($contents[$idx]['count'])) {
-                $contents[$idx]['valuebrutto'] = f_round(-1 * $invoicecontents[$idx]['valuebrutto']);
-                $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
-                $contents[$idx]['count'] = f_round(-1 * $invoicecontents[$idx]['count'], 3);
-            } elseif ($contents[$idx]['count'] == $item['count']) {
-                $contents[$idx]['cash'] = f_round(-1 * f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']) * $contents[$idx]['count'], 2);
-                $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
-                $contents[$idx]['count'] = 0;
-            } elseif ($contents[$idx]['valuenetto'] != $item['valuenetto']
-                    || $contents[$idx]['valuebrutto'] != $item['valuebrutto']
-                    || (empty($invoicecontents['count']) && !empty($contents[$idx]['count']))) {
-                if (empty($invoicecontents[$idx]['count']) && !empty($contents[$idx]['count'])) {
-                    // cash value for recovered/restored invoice position
+            $contents[$idx]['old_discount_type'] = $invoicecontents[$idx]['pdiscount'] != 0 ? DISCOUNT_PERCENTAGE : DISCOUNT_AMOUNT;
+            $discount_method = ConfigHelper::getConfig('invoices.credit_note_relation_to_invoice', 'first');
+            //if discount was changed
+            if (!(isset($item['deleted']) && $item['deleted'])
+                && $contents[$idx]['valuenetto'] == $item['valuenetto'] && $contents[$idx]['valuebrutto'] == $item['valuebrutto'] && $contents[$idx]['count'] == $item['count']
+                && ($newcontents['discount'][$idx] != $item['pdiscount'] || $newcontents['discount'][$idx] != $item['vdiscount'] || $contents[$idx]['discount_type'] != $contents[$idx]['old_discount_type'])) {
+                if ($contents[$idx]['pdiscount'] == 0 && $contents[$idx]['vdiscount'] == 0) {
+                    //when discount is removed or zeroed restore last document value
+                    if ($contents[$idx]['old_discount_type'] == DISCOUNT_PERCENTAGE) {
+                        $old_valuebrutto = $invoicecontents[$idx]['valuebrutto'] / (1 - $invoicecontents[$idx]['pdiscount'] / 100);
+                        $contents[$idx]['valuebrutto'] = f_round($old_valuebrutto - $invoicecontents[$idx]['valuebrutto']);
+                    } else {
+                        $contents[$idx]['valuebrutto'] = f_round($invoicecontents[$idx]['vdiscount']);
+                    }
+                } else {
+                    //when discount is changed, not removed or zeroed
+                        //if discount type was changed (discount value could be changed too)
+                    if ($contents[$idx]['discount_type'] != $contents[$idx]['old_discount_type']) {
+                        // if document type was changed
+                        if ($contents[$idx]['old_discount_type'] == DISCOUNT_PERCENTAGE) {
+                            $contents[$idx]['diff_pdiscount'] = 0;
+                            //change pdiscount to vdiscount
+                            if ($discount_method == 'first') {
+                                //calculate vdiscount as difference between current value and first document value
+                                $old_valuebrutto = $invoicecontents[$idx]['valuebrutto'] / (1 - $invoicecontents[$idx]['pdiscount'] / 100);
+                                $pdiscount_to_vdiscount = $old_valuebrutto * $invoicecontents[$idx]['pdiscount'] / 100;
+                                $contents[$idx]['diff_vdiscount'] = floatval($contents[$idx]['vdiscount'] - $pdiscount_to_vdiscount);
+                            } else {
+                                //calculate vdiscount as difference between current value and last document value
+                                $old_valuebrutto = $contents[$idx]['valuebrutto'];
+                                $contents[$idx]['diff_vdiscount'] = floatval($contents[$idx]['vdiscount']);
+                            }
+                        } else {
+                            $contents[$idx]['diff_vdiscount'] = 0;
+                            //change vdiscount to pdiscount
+                            if ($discount_method == 'first') {
+                                //calculate pdiscount as difference between current value and first document value
+                                $old_valuebrutto = $invoicecontents[$idx]['valuebrutto'] + $invoicecontents[$idx]['vdiscount'];
+                                $vdiscount_to_pdiscount = ($invoicecontents[$idx]['vdiscount'] / $old_valuebrutto) * 100;
+                            } else {
+                                //calculate pdiscount as difference between current value and last document value
+                                $old_valuebrutto = $contents[$idx]['valuebrutto'];
+                                $vdiscount_to_pdiscount = ($contents[$idx]['vdiscount'] / $old_valuebrutto) * 100;
+                            }
+                            $contents[$idx]['diff_pdiscount'] = floatval($contents[$idx]['pdiscount'] - $vdiscount_to_pdiscount);
+                        }
+                        $contents[$idx]['valuebrutto'] = f_round((($old_valuebrutto - $old_valuebrutto * $contents[$idx]['diff_pdiscount'] / 100) - $contents[$idx]['diff_vdiscount']) - $old_valuebrutto);
+                    } else {
+                        //only discount value was changed and document type was not changed
+                        if ($discount_method == 'first') {
+                            if ($contents[$idx]['discount_type'] == DISCOUNT_PERCENTAGE) {
+                                $orig_valuebrutto = isset($invoice['invoice']['invoice']['content'][$idx]['value']) ? $invoice['invoice']['invoice']['content'][$idx]['value'] : $invoice['invoice']['content'][$idx]['value'];
+                                $new_valuebrutto = f_round($orig_valuebrutto - $orig_valuebrutto * $contents[$idx]['pdiscount'] / 100);
+                                $old_valuebrutto = $invoicecontents[$idx]['valuebrutto'];
+                                $contents[$idx]['valuebrutto'] = f_round($new_valuebrutto - $old_valuebrutto);
+                            } else {
+                                $contents[$idx]['diff_vdiscount'] = !empty($invoicecontents[$idx]['vdiscount']) ? floatval($contents[$idx]['vdiscount'] - $invoicecontents[$idx]['vdiscount']) : 0;
+                                $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $contents[$idx]['diff_vdiscount'] - $invoicecontents[$idx]['valuebrutto']);
+                            }
+                        } else {
+                            //difference between current value and last document value
+                            $contents[$idx]['diff_pdiscount'] = !empty($invoicecontents[$idx]['pdiscount']) ? floatval($contents[$idx]['pdiscount']) : 0;
+                            $contents[$idx]['diff_vdiscount'] = !empty($invoicecontents[$idx]['vdiscount']) ? floatval($contents[$idx]['vdiscount']) : 0;
+                            $contents[$idx]['valuebrutto'] = f_round((($contents[$idx]['valuebrutto'] - $contents[$idx]['valuebrutto'] * $contents[$idx]['diff_pdiscount'] / 100) - $contents[$idx]['diff_vdiscount']) - $invoicecontents[$idx]['valuebrutto']);
+                        }
+                    }
+                }
+                if (!empty($invoicecontents[$idx]['count']) && !empty($contents[$idx]['count'])) {
+                    //cash value for recovered/restored invoice position
                     $contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
                 } else {
-                    $contents[$idx]['cash'] = f_round(-1 * ($contents[$idx]['valuebrutto'] * $contents[$idx]['count']
-                        - $invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count']), 2);
+                    $contents[$idx]['cash'] = 0;
                 }
 
-                // determine new brutto value only if invoice position is NOT recovered/restored
-                if (!empty($invoicecontents[$idx]['count']) || empty($contents[$idx]['count'])) {
-                    $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
-                }
-
-                $contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
-            } else {
-                $contents[$idx]['cash'] = 0;
-                $contents[$idx]['valuebrutto'] = 0;
                 $contents[$idx]['count'] = 0;
+            } else { // if discount type or discount value dosen't change
+                //zeroing discounts
+                $contents[$idx]['pdiscount'] = 0;
+                $contents[$idx]['vdiscount'] = 0;
+
+                if ($contents[$idx]['valuenetto'] != $item['valuenetto']) {
+                    $contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
+                } elseif (f_round($contents[$idx]['valuebrutto']) == f_round($item['valuebrutto'])) {
+                    $contents[$idx]['valuebrutto'] = $item['valuebrutto'];
+                }
+
+                if ((isset($item['deleted']) && $item['deleted']) || empty($contents[$idx]['count'])) {
+                    $contents[$idx]['valuebrutto'] = f_round(-1 * $invoicecontents[$idx]['valuebrutto']);
+                    $contents[$idx]['cash'] = f_round($invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count'], 2);
+                    $contents[$idx]['count'] = f_round(-1 * $invoicecontents[$idx]['count'], 3);
+                } elseif ($contents[$idx]['count'] == $item['count']) {
+                    $contents[$idx]['cash'] = f_round(-1 * f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']) * $contents[$idx]['count'], 2);
+                    $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
+                    $contents[$idx]['count'] = 0;
+                } elseif ($contents[$idx]['valuenetto'] != $item['valuenetto']
+                    || $contents[$idx]['valuebrutto'] != $item['valuebrutto']
+                    || (empty($invoicecontents['count']) && !empty($contents[$idx]['count']))) {
+                    if (empty($invoicecontents[$idx]['count']) && !empty($contents[$idx]['count'])) {
+                        // cash value for recovered/restored invoice position
+                        $contents[$idx]['cash'] = f_round(-1 * $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
+                    } else {
+                        $contents[$idx]['cash'] = f_round(-1 * ($contents[$idx]['valuebrutto'] * $contents[$idx]['count']
+                                - $invoicecontents[$idx]['valuebrutto'] * $invoicecontents[$idx]['count']), 2);
+                    }
+
+                    // determine new brutto value only if invoice position is NOT recovered/restored
+                    if (!empty($invoicecontents[$idx]['count']) || empty($contents[$idx]['count'])) {
+                        $contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['valuebrutto']);
+                    }
+
+                    $contents[$idx]['count'] = f_round($contents[$idx]['count'] - $invoicecontents[$idx]['count'], 3);
+                } else {
+                    $contents[$idx]['cash'] = 0;
+                    $contents[$idx]['valuebrutto'] = 0;
+                    $contents[$idx]['count'] = 0;
+                }
             }
             $contents[$idx]['cash'] = str_replace(',', '.', $contents[$idx]['cash']);
             $contents[$idx]['valuebrutto'] = str_replace(',', '.', $contents[$idx]['valuebrutto']);

@@ -108,6 +108,10 @@ version 25-git (????-??-??):
   - improvement: from date selection in customer event box and allow to quick jump
     to timetable [chilan]
   - enhancement: added separated split payment support for tariffs and liabilities [chilan]
+  - enhancement: add possibility to set values in credit note through discount
+    settings - configuration variable 'invoices.credit_note_relation_to_invoice' controls
+    discount calculation in relation to invoice document (first)
+    or last credit note document (last) [ravvar]
 
 version 24.0 (2019-05-16):
 
