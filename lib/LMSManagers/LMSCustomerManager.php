@@ -798,7 +798,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS balanceover,
             	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS balancebelow ';
         } else {
-            $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+            $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+            $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
             	c.type,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
