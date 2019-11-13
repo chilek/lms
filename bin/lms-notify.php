@@ -293,6 +293,7 @@ LMS::$currency = $_currency;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+$plugin_manager->executeHook('lms_initialized', $LMS);
 
 if (!empty($mail_fname)) {
     $mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
