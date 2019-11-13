@@ -926,7 +926,7 @@ if (empty($types) || in_array('debtors', $types)) {
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
                     OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
+                        OR d.type IN (?, ?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -948,6 +948,7 @@ if (empty($types) || in_array('debtors', $types)) {
             DOC_CNOTE,
             DOC_CNOTE,
             DOC_INVOICE,
+            DOC_INVOICE_PRO,
             DOC_DNOTE,
             $days,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
@@ -1073,7 +1074,7 @@ if (empty($types) || in_array('reminder', $types)) {
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
                     OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?)) AND (" . ($days > 0 ? 'cash.docid = d.id OR ' : '') . "d.cdate + d.paytime * 86400 < $currtime))))
+                        OR d.type IN (?, ?, ?)) AND (" . ($days > 0 ? 'cash.docid = d.id OR ' : '') . "d.cdate + d.paytime * 86400 < $currtime))))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1102,6 +1103,7 @@ if (empty($types) || in_array('reminder', $types)) {
             DOC_CNOTE,
             DOC_CNOTE,
             DOC_INVOICE,
+            DOC_INVOICE_PRO,
             DOC_DNOTE,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
@@ -1237,7 +1239,7 @@ if (empty($types) || in_array('income', $types)) {
                 OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
                     OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
                     OR (((d.type = ? AND tv.totalvalue < 0)
-                        OR d.type IN (?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
+                        OR d.type IN (?, ?, ?)) AND d.cdate + d.paytime * 86400 < $currtime)))
             GROUP BY cash.customerid
         ) b2 ON b2.customerid = c.id
         LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
@@ -1258,6 +1260,7 @@ if (empty($types) || in_array('income', $types)) {
             DOC_CNOTE,
             DOC_CNOTE,
             DOC_INVOICE,
+            DOC_INVOICE_PRO,
             DOC_DNOTE,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
@@ -1383,7 +1386,7 @@ if (empty($types) || in_array('invoices', $types)) {
             FROM cash
             GROUP BY customerid
         ) ca ON (ca.customerid = d.customerid)
-        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?)
+        WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?, ?)
             AND d.cdate >= ? AND d.cdate <= ?"
             . ($notifications['invoices']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
         array(
@@ -1392,6 +1395,7 @@ if (empty($types) || in_array('invoices', $types)) {
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
             DOC_INVOICE,
+            DOC_INVOICE_PRO,
             DOC_CNOTE,
             $daystart,
             $dayend
