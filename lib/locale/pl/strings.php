@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
+$_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z adresem docelowym $c ($d)!';
+
 $_LANG['split payment'] = 'podzielona płatność';
 $_LANG['Split payment:'] = 'Podzielona płatność:';
 $_LANG['(split payment)'] = '(podzielona płatność)';

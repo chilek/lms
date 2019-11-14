@@ -645,6 +645,69 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         return $counter;
     }
 
+    public function MoveHostsBetweenNetworks($src, $dst)
+    {
+        $network['source'] = $this->GetNetworkRecord($src);
+        $network['dest'] = $this->GetNetworkRecord($dst);
+
+        if ($network['source']['prefix'] != $network['dest']['prefix']) {
+            return array(trans('Networks don\'t have the same mask!'));
+        }
+
+        $errors = array();
+        $srcnet = $network['source']['addresslong'];
+        $dstnet = $network['dest']['addresslong'];
+        $dstnodes = array();
+
+        foreach ($network['source']['nodes']['id'] as $idx => $nodeid) {
+            if ($nodeid) {
+                if ($network['dest']['nodes']['id'][$idx]) {
+                    $errors[] = trans(
+                        'Source address $a ($b) collides with destination address $c ($d)!',
+                        long_ip($srcnet + $idx),
+                        $network['source']['name'],
+                        long_ip($dstnet + $idx),
+                        $network['dest']['name']
+                    );
+                } else {
+                    $dstnodes[$dstnet + $idx] = $nodeid;
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            return $errors;
+        }
+
+        foreach ($dstnodes as $dstip => $nodeid) {
+            $srcip = $srcnet + ($dstip - $dstnet);
+            if ($this->db->Execute('UPDATE nodes SET ipaddr=?, netid=? WHERE netid=? AND ipaddr=?', array($dstip, $dst, $src, $srcip))) {
+                if ($this->syslog) {
+                    $node = $this->db->GetRow('SELECT id, ownerid FROM vnodes WHERE netid = ? AND ipaddr = ?', array($dst, $srcip));
+                    $args = array(
+                        SYSLOG::RES_NODE => $node['id'],
+                        SYSLOG::RES_CUST => $node['ownerid'],
+                        SYSLOG::RES_NETWORK => $dst,
+                        'ipaddr' => $dstip,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
+                }
+            } elseif ($this->db->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($dstip, $srcip))) {
+                if ($this->syslog) {
+                    $node = $this->db->GetRow('SELECT id, ownerid FROM vnodes WHERE netid = ? AND ipaddr_pub = ?', array($dst, $srcip));
+                    $args = array(
+                        SYSLOG::RES_NODE => $node['id'],
+                        SYSLOG::RES_CUST => $node['ownerid'],
+                        'ipaddr' => $dstip,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
+                }
+            }
+        }
+
+        return count($dstnodes);
+    }
+
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false)
     {
         $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, inet_ntoa(ne.address) AS address,

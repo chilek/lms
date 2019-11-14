@@ -37,7 +37,16 @@ if ($network['source']['assigned'] > $network['dest']['free']) {
 
 if (!$error) {
     if ($_GET['is_sure']) {
-        $LMS->NetworkRemap($network['source']['id'], $network['dest']['id']);
+        //$LMS->NetworkRemap($network['source']['id'], $network['dest']['id']);
+        $result = $LMS->MoveHostsBetweenNetworks($network['source']['id'], $network['dest']['id']);
+        if (is_array($result)) {
+            $SMARTY->display('header.html');
+            foreach ($result as $error) {
+                echo $error . '<br>';
+            }
+            $SMARTY->display('footer.html');
+            die;
+        }
         $SESSION->redirect('?m=netinfo&id='.$network['dest']['id']);
     } else {
         $layout['pagetitle'] = trans('Readdressing Network $a', strtoupper($network['source']['name']));

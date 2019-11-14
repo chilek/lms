@@ -1441,6 +1441,12 @@ class LMS
         return $manager->NetworkRemap($src, $dst);
     }
 
+    public function MoveHostsBetweenNetworks($src, $dst)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->MoveHostsBetweenNetworks($src, $dst);
+    }
+
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false)
     {
         $manager = $this->getNetworkManager();
