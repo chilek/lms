@@ -112,6 +112,7 @@ version 25-git (????-??-??):
     settings - configuration variable 'invoices.credit_note_relation_to_invoice' controls
     discount calculation in relation to invoice document (first)
     or last credit note document (last) [ravvar]
+  - enhancement: host transfers between networks preserve host map [chilan]
 
 version 24.0 (2019-05-16):
 
