@@ -26,6 +26,8 @@
 
 $_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
 $_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z adresem docelowym $c ($d)!';
+$_LANG['with compacting'] = 'z porządkowaniem';
+$_LANG['Network readdressing errors'] = 'Błędy przeadresowania sieci';
 
 $_LANG['split payment'] = 'podzielona płatność';
 $_LANG['Split payment:'] = 'Podzielona płatność:';

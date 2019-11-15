@@ -3,6 +3,16 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+
+{if $unlockedit}
+<form name="remap" id="remap" action="" method="get">
+	<INPUT type="submit" class="hiddenbtn">
+	<input type="hidden" name="is_sure" value="1">
+	<input type="hidden" name="m" value="netremap">
+	<input type="hidden" name="id" value="{$network.id}">
+</form>
+{/if}
+
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 2%;">
@@ -239,31 +249,34 @@
 	</TR>
 	{/if}
 	{if $unlockedit}</form>{/if}
+	{if $unlockedit && $netlistsize > 1}
+	<TR>
+		<TD class="text-right" colspan="4">
+			<a id="change-net" data-name="{$network.name}" href="#">{trans("Reassign to network:")}</A>
+			<select size="1" name="mapto" form="remap" {tip text="Select network to which you want to move computers"}>
+				{section name=networks loop=$networks}
+					{if $networks[networks].id != $network.id}
+						<option value="{$networks[networks].id}">{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})</option>
+					{/if}
+				{/section}
+			</select>
+			&nbsp;
+			<label>
+				{trans("with compacting")}
+				<input type="checkbox" name="compact" value="1" form="remap">
+			</label>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD class="text-right" colspan="4">
 			{if $unlockedit}
-				<form name="remap" action="" method="get">
-				<INPUT type="submit" class="hiddenbtn">
 				<A id="putinorder-net" href="?m=netcmp&id={$network.id}" >{trans("Put in order")} <img src="img/cmp.gif" alt="{trans("Put in order")}"></A>
-				<input type="hidden" name="is_sure" value="1">
-				<input type="hidden" name="m" value="netremap">
-				<input type="hidden" name="id" value="{$network.id}">
-				{if $netlistsize > 1}
-					<a id="change-net" data-name="{$network.name}" href="#">{trans("Reassign to network:")}</A>
-					<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
-						{section name=networks loop=$networks}
-						{if $networks[networks].id != $network.id}
-						<option value="{$networks[networks].id}">{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})</option>
-						{/if}
-						{/section}
-					</select>
-				{/if}
 				<A href="javascript:document.netedit.submit()" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt="{trans("Submit")}"></a>
 				<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
-				<A href="?m=netinfo&amp;id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="{trans("Cancel")}"></A>
-				</form>
+				<A href="?m=netinfo&id={$network.id}">{trans("Cancel")} <img src="img/cancel.gif" alt="{trans("Cancel")}"></A>
 			{else}
-				<A href="?m=netedit&amp;id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="{trans("Edit")}"></A>
+				<A href="?m=netedit&id={$network.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="{trans("Edit")}"></A>
 				<A id="delete-net" href="?m=netdel&id={$network.id}" data-name="{$network.name}">{trans("Remove")} <img src="img/delete.gif" alt="{trans("Remove")}"></A>
 			{/if}
 		</TD>
