@@ -40,7 +40,7 @@ function smarty_function_currency_selection($params, $template)
         $result .= '</select>';
     } else {
         $result = LMS::$currency . '<input type="hidden" name="' . $elementname . '"'
-            . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . '" value="' . LMS::$currency . '">';
+            . (isset($params['form']) ? ' form="' . $params['form'] . '"' : '') . ' value="' . LMS::$currency . '">';
     }
 
     return $result;

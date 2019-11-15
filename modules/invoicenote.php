@@ -244,6 +244,7 @@ switch ($action) {
         }
 
         $cnote['currency'] = $oldcurrency;
+        $cnote['oldcurrency'] = $oldcurrency;
 
         // finally check if selected customer can use selected numberplan
         $divisionid = !empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid'];
