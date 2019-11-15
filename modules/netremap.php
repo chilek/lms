@@ -38,6 +38,8 @@ if ($network['source']['assigned'] > $network['dest']['free']) {
 if (!$error) {
     if ($_GET['is_sure']) {
         if (isset($_GET['compact'])) {
+            $LMS->NetworkRemap($network['source']['id'], $network['dest']['id']);
+        } else {
             $result = $LMS->MoveHostsBetweenNetworks($network['source']['id'], $network['dest']['id']);
             if (is_array($result)) {
                 $layout['pagetitle'] = trans('Network remap errors');
@@ -45,8 +47,6 @@ if (!$error) {
                 $SMARTY->display('netremap.html');
                 die;
             }
-        } else {
-            $LMS->NetworkRemap($network['source']['id'], $network['dest']['id']);
         }
         $SESSION->redirect('?m=netinfo&id='.$network['dest']['id']);
     } else {
