@@ -2705,7 +2705,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
 				LEFT JOIN taxes ON t.taxid = taxes.id
 				WHERE t.disabled = 0' . (empty($forced_id) ? '' : ' OR t.id = ' . intval($forced_id)) . '
-				GROUP BY t.id, t.name, t.value, uprate, taxid, t.authtype, datefrom, dateto, prodid, downrate, upceil, downceil, climit, plimit,
+				GROUP BY t.id, t.name, t.value, t.splitpayment, uprate, taxid, t.authtype, datefrom, dateto, prodid, downrate, upceil, downceil, climit, plimit,
 					taxes.value, taxes.label, t.period, t.type
 				ORDER BY t.name, t.value DESC', 'id');
     }
