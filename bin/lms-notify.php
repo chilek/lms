@@ -1094,7 +1094,7 @@ if (empty($types) || in_array('reminder', $types)) {
             GROUP BY docid, currency
         ) v ON (v.docid = d.id)
         LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-        WHERE d.type = ? AND d.closed = 0 AND b2.balance < ?
+        WHERE d.type IN (?, ?) AND d.closed = 0 AND b2.balance < ?
             AND ((d.cdate / 86400) + d.paytime - ?) * 86400 >= $daystart
             AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $dayend"
             . ($notifications['reminder']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
@@ -1111,6 +1111,7 @@ if (empty($types) || in_array('reminder', $types)) {
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
             DOC_INVOICE,
+            DOC_INVOICE_PRO,
             $limit,
             $days,
             $days
