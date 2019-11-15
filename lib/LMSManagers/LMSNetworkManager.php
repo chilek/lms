@@ -592,6 +592,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         $network['source'] = $this->GetNetworkRecord($src);
         $network['dest'] = $this->GetNetworkRecord($dst);
         $address = $network['dest']['addresslong'] + 1;
+        $gateway = ip_long($network['dest']['gateway']);
         $broadcast = $network['dest']['addresslong'] + $network['dest']['size'];
         foreach ($network['source']['nodes']['id'] as $idx => $value) {
             if ($value) {
@@ -607,6 +608,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         $counter = 0;
 
         for ($i = $address; $i < $broadcast; $i++) {
+            if ($i == $gateway) {
+                continue;
+            }
             if (!count($nodes)) {
                 break;
             }
