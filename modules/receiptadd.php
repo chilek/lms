@@ -213,6 +213,9 @@ switch ($action) {
             unset($customer);
             unset($error);
 
+        $receipt['currency_locked'] = false;
+        $receipt['currency'] = LMS::$default_currency;
+
         // get default receipt's numberplanid and next number
         $receipt['regid'] = isset($_GET['regid']) ? $_GET['regid'] : $oldreg;
         $receipt['type'] = isset($_GET['type']) ? $_GET['type'] : (isset($_POST['type']) ? $_POST['type'] : 0);
@@ -300,9 +303,6 @@ switch ($action) {
                 }
             }
         }
-
-        $receipt['currency_locked'] = false;
-        $receipt['currency'] = LMS::$default_currency;
 
         break;
 
