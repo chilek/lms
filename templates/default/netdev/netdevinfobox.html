@@ -201,12 +201,25 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $netdev.login}
+		<TR>
+			<TD WIDTH="1%">
+				<IMG SRC="img/radius.gif" ALT="">
+			</TD>
+			<TD WIDTH="1%" class="bold nobr">
+				{trans("Login:")}
+			</TD>
+			<TD WIDTH="98%">
+				{$netdev.login}
+			</TD>
+		</TR>
+	{/if}
 	{if $netdev.secret}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/radius.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" class="nowrap bold">
+		<TD WIDTH="1%" class="bold nobr">
 			{trans("Secret:")}
 		</TD>
 		<TD WIDTH="98%">

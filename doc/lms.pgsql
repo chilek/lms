@@ -1232,6 +1232,7 @@ CREATE TABLE netdevices (
 	shortname varchar(32) 	DEFAULT '' NOT NULL,
 	nastype integer 	DEFAULT 0 NOT NULL,
 	clients integer 	DEFAULT 0 NOT NULL,
+    login varchar(60) 	DEFAULT '' NOT NULL,
 	secret varchar(60) 	DEFAULT '' NOT NULL,
 	community varchar(50) 	DEFAULT '' NOT NULL,
 	channelid integer 	DEFAULT NULL
@@ -3634,6 +3635,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019110700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019112000');
 
 COMMIT;

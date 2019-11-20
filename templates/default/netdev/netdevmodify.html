@@ -114,6 +114,11 @@
 							{tip trigger="clients" text="Enter max clients (optional)"}>
 				{/box_row}
 
+				{box_row icon="img/radius.gif" label="Login:"}
+					<input type="text" name="netdev[login]" value="{$netdev.login}" maxlength="60"
+							{tip text="Enter login (optional)"}>
+				{/box_row}
+
 				{box_row icon="img/radius.gif" label="Secret:"}
 					<input type="text" name="netdev[secret]" value="{$netdev.secret}" maxlength="60"
 							{tip text="Enter secret (optional)"}>

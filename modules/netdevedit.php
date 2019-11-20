@@ -696,6 +696,9 @@ if (isset($netdev)) {
             if (!isset($netdev['shortname'])) {
                 $netdev['shortname'] = '';
             }
+            if (!isset($netdev['login'])) {
+                $netdev['login'] = '';
+            }
             if (!isset($netdev['secret'])) {
                 $netdev['secret'] = '';
             }

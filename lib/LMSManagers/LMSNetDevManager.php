@@ -289,6 +289,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if (array_key_exists('clients', $data)) {
             $args['clients'] = empty($data['clients']) ? 0 : $data['clients'];
         }
+        if (array_key_exists('login', $data)) {
+            $args['login'] = empty($data['login']) ? '' : $data['login'];
+        }
         if (array_key_exists('secret', $data)) {
             $args['secret'] = empty($data['secret']) ? '' : $data['secret'];
         }
@@ -414,6 +417,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'shortname'        => empty($data['shortname']) ? '' : $data['shortname'],
             'nastype'          => empty($data['nastype']) ? 0 : $data['nastype'],
             'clients'          => empty($data['clients']) ? 0 : $data['clients'],
+            'login'            => empty($data['login']) ? '' : $data['login'],
             'secret'           => empty($data['secret']) ? '' : $data['secret'],
             'community'        => empty($data['community']) ? '' : $data['community'],
             'channelid'        => !empty($data['channelid']) ? $data['channelid'] : null,
@@ -448,9 +452,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
         if ($this->db->Execute('INSERT INTO netdevices (name,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
-				nastype, clients, secret, community, channelid,
+				nastype, clients, login, secret, community, channelid,
 				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('netdevices');
 
             if (empty($data['ownerid'])) {

@@ -2381,6 +2381,7 @@ $_LANG['month (YYYY/MM)'] = 'miesiąc (RRRR/MM)';
 $_LANG['day (YYYY/MM/DD)'] = 'dzień (RRRR/MM/DD)';
 $_LANG['Allows you to search for account, alias, domain'] = 'Wyszukiwanie kont, aliasów, domen';
 $_LANG['Enter login or it\'s fragment'] = 'Wprowadź login lub jego fragment';
+$_LANG['Enter login (optional)'] = 'Wprowadź login (opcjonalnie)';
 $_LANG['Enter prefix'] = 'Wprowadź prefiks';
 $_LANG['Enter account or alias name and press Enter'] = 'Wprowadź nazwę konta lub aliasu i naciśnij Enter';
 $_LANG['Enter domain name or it\'s fragment'] = 'Wprowadź nazwę domeny lub jej fragment';
