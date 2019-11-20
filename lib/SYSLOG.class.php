@@ -78,6 +78,10 @@ class SYSLOG
     const RES_USERASSIGN = 50;
     const RES_TARIFFTAG = 51;
     const RES_TARIFFASSIGN = 52;
+    const RES_EVENT = 53;
+    const RES_EVENTASSIGN = 54;
+    const RES_ADDRESS = 55;
+    const RES_TICKET = 56;
 
     const OPER_ADD = 1;
     const OPER_DELETE = 2;
@@ -143,6 +147,10 @@ class SYSLOG
         self::RES_USERASSIGN => 'user assignment<!syslog>',
         self::RES_TARIFFTAG => 'tariff tag<!syslog>',
         self::RES_TARIFFASSIGN => 'tariff assignment<!syslog>',
+        self::RES_EVENT => 'event<!syslog>',
+        self::RES_EVENTASSIGN => 'event assignment<!syslog>',
+        self::RES_ADDRESS => 'address<!syslog>',
+        self::RES_TICKET => 'ticket<!syslog>',
     );
     private static $resource_keys = array(
         self::RES_USER => 'userid',
@@ -197,6 +205,10 @@ class SYSLOG
         self::RES_USERASSIGN => 'userassignmentid',
         self::RES_TARIFFTAG => 'tarifftagid',
         self::RES_TARIFFASSIGN => 'tariffassignmentid',
+        self::RES_EVENT => 'eventid',
+        self::RES_EVENTASSIGN => 'eventassignmentid',
+        self::RES_ADDRESS => 'address_id',
+        self::RES_TICKET => 'ticketid',
     );
     private static $operations = array(
         self::OPER_ADD => 'addition<!syslog>',
@@ -305,7 +317,10 @@ class SYSLOG
             foreach ($data as $resourcetype => $val) {
                 if (((is_int($resourcetype) && isset(self::$resource_keys[$resourcetype]))
                 || (!is_int($resourcetype) && is_array($keys) && in_array($resourcetype, $keys)))
-                && (is_int($val) || preg_match('/^[0-9]+$/', $val))) {
+                && (is_int($val) || preg_match('/^[0-9]+$/', $val) || !isset($val))) {
+                    if (!isset($val)) {
+                        $val = 0;
+                    }
                     $this->DB->Execute(
                         'INSERT INTO logmessagekeys (logmessageid, name, value)
 						VALUES(?, ?, ?)',

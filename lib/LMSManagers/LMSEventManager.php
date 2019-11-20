@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,34 +32,50 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 {
     public function EventAdd($event)
     {
+        $args = array(
+            'title' => $event['title'],
+            'description' => $event['description'],
+            'date' => $event['date'],
+            'begintime' => $event['begintime'],
+            'enddate' => $event['enddate'],
+            'endtime' => $event['endtime'],
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
+            'private' => $event['private'],
+            SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
+            'type' => $event['type'],
+            SYSLOG::RES_ADDRESS => $event['address_id'],
+            SYSLOG::RES_NODE => $event['nodeid'],
+            SYSLOG::RES_TICKET => empty($event['ticketid']) ? null : $event['ticketid'],
+        );
+
         $this->db->BeginTrans();
 
         $this->db->Execute(
             'INSERT INTO events (title, description, date, begintime, enddate,
 				endtime, userid, creationdate, private, customerid, type, address_id, nodeid, ticketid)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
-            array($event['title'],
-                    $event['description'],
-                    $event['date'],
-                    $event['begintime'],
-                    $event['enddate'],
-                    $event['endtime'],
-                    Auth::GetCurrentUser(),
-                    $event['private'],
-                    empty($event['custid']) ? null : $event['custid'],
-                    $event['type'],
-                    $event['address_id'],
-                    $event['nodeid'],
-                    empty($event['ticketid']) ? null : $event['ticketid'],
-                )
+            array_values($args)
         );
 
         $id = $this->db->GetLastInsertID('events');
 
+        if ($this->syslog) {
+            $args[SYSLOG::RES_EVENT] = $id;
+            unset($args[SYSLOG::RES_USER]);
+            $this->syslog->AddMessage(SYSLOG::RES_EVENT, SYSLOG::OPER_ADD, $args);
+        }
+
         if (!empty($event['userlist'])) {
             foreach ($event['userlist'] as $userid) {
+                $args = array(
+                    SYSLOG::RES_EVENT => $id,
+                    SYSLOG::RES_USER => $userid,
+                );
                 $this->db->Execute('INSERT INTO eventassignments (eventid, userid)
-					VALUES (?, ?)', array($id, $userid));
+					VALUES (?, ?)', array_values($args));
+                if ($this->syslog) {
+                    $this->syslog->AddMessage(SYSLOG::RES_EVENTASSIGN, SYSLOG::OPER_ADD, $args);
+                }
             }
         }
 
@@ -70,17 +86,51 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
     public function EventUpdate($event)
     {
+        $args = array(
+            'title' => $event['title'],
+            'description' => $event['description'],
+            'date' => $event['date'],
+            'begintime' => $event['begintime'],
+            'enddate' => $event['enddate'],
+            'endtime' => $event['endtime'],
+            'private' => $event['private'],
+            'note' => $event['note'],
+            SYSLOG::RES_CUST => empty($event['custid']) ? null : $event['custid'],
+            'type' => $event['type'],
+            SYSLOG::RES_ADDRESS => $event['address_id'],
+            SYSLOG::RES_NODE => $event['nodeid'],
+            SYSLOG::RES_TICKET => $event['helpdesk'],
+            'moddate' => time(),
+            'mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER) => Auth::getCurrentUser(),
+            SYSLOG::RES_EVENT => $event['id'],
+        );
+
         $this->db->BeginTrans();
 
         $this->db->Execute(
             'UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?,
-				note=?, customerid=?, type=?, address_id=?, nodeid=?, ticketid=? WHERE id=?',
-            array($event['title'], $event['description'], $event['date'], $event['begintime'], $event['enddate'], $event['endtime'],
-                $event['private'], $event['note'], empty($event['custid']) ? null : $event['custid'], $event['type'], $event['address_id'],
-                $event['nodeid'],
-            $event['helpdesk'],
-            $event['id'])
+				note=?, customerid=?, type=?, address_id=?, nodeid=?, ticketid=?, moddate = ?, moduserid = ? WHERE id=?',
+            array_values($args)
         );
+
+        if ($this->syslog) {
+            $this->syslog->AddMessage(
+                SYSLOG::RES_EVENT,
+                SYSLOG::OPER_UPDATE,
+                $args,
+                array('mod' . SYSLOG::getResourceKey(SYSLOG::RES_USER))
+            );
+            $users = $this->db->GetCol('SELECT userid FROM eventassignments WHERE eventid = ?', array($event['id']));
+            if (!empty($users)) {
+                foreach ($users as $userid) {
+                    $args = array(
+                        SYSLOG::RES_EVENT => $event['id'],
+                        SYSLOG::RES_USER => $userid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_EVENTASSIGN, SYSLOG::OPER_DELETE, $args);
+                }
+            }
+        }
 
         $this->db->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
         if (!empty($event['userlist']) && is_array($event['userlist'])) {
@@ -89,20 +139,44 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                     'INSERT INTO eventassignments (eventid, userid) VALUES (?, ?)',
                     array($event['id'], $userid)
                 );
+                if ($this->syslog) {
+                    $args = array(
+                        SYSLOG::RES_EVENT => $event['id'],
+                        SYSLOG::RES_USER => $userid,
+                    );
+                    $this->syslog->AddMessage(SYSLOG::RES_EVENTASSIGN, SYSLOG::OPER_ADD, $args);
+                }
             }
         }
-
-        $this->db->Execute(
-            'UPDATE events SET moddate=?NOW?, moduserid=? WHERE id=?',
-            array(Auth::GetCurrentUser(), $event['id'])
-        );
 
         $this->db->CommitTrans();
     }
 
     public function EventDelete($id)
     {
-        if ($this->db->Execute('DELETE FROM events WHERE id = ?', array($id))) {
+        $event = $this->db->GetRow('SELECT id, customerid, address_id, nodeid, ticketid FROM events WHERE id = ?', array($id));
+        if ($event) {
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_EVENT => $id,
+                    SYSLOG::RES_CUST => $event['customerid'],
+                    SYSLOG::RES_ADDRESS => $event['address_id'],
+                    SYSLOG::RES_NODE => $event['nodeid'],
+                    SYSLOG::RES_TICKET => $event['ticketid'],
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_EVENT, SYSLOG::OPER_DELETE, $args);
+                $users = $this->db->GetCol('SELECT userid FROM eventassignments WHERE eventid = ?', array($id));
+                if ($users) {
+                    foreach ($users as $userid) {
+                        $args = array(
+                            SYSLOG::RES_EVENT => $id,
+                            SYSLOG::RES_USER => $userid,
+                        );
+                        $this->syslog->AddMessage(SYSLOG::RES_EVENTASSIGN, SYSLOG::OPER_DELETE, $args);
+                    }
+                }
+            }
+            $this->db->Execute('DELETE FROM events WHERE id = ?', array($id));
             $this->db->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($id));
         }
     }
@@ -514,12 +588,26 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
     {
         if (!$this->db->GetOne('SELECT eventid FROM eventassignments WHERE eventid = ? AND userid = ?', array($id, $userid))) {
             $this->db->Execute('INSERT INTO eventassignments (eventid, userid) VALUES (?, ?)', array($id, $userid));
+            if ($this->syslog) {
+                $args = array(
+                    SYSLOG::RES_EVENT => $id,
+                    SYSLOG::RES_USER => $userid,
+                );
+                $this->syslog->AddMessage(SYSLOG::RES_EVENTASSIGN, SYSLOG::OPER_ADD, $args);
+            }
         }
     }
 
     public function UnassignUserFromEvent($id, $userid)
     {
         $this->db->Execute('DELETE FROM eventassignments WHERE eventid = ? AND userid = ?', array($id, $userid));
+        if ($this->syslog) {
+            $args = array(
+                SYSLOG::RES_EVENT => $id,
+                SYSLOG::RES_USER => $userid,
+            );
+            $this->syslog->AddMessage(SYSLOG::RES_EVENTASSIGN, SYSLOG::OPER_ADD, $args);
+        }
     }
 
     public function MoveEvent($id, $delta)
