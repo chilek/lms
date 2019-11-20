@@ -113,6 +113,7 @@ version 25-git (????-??-??):
     discount calculation in relation to invoice document (first)
     or last credit note document (last) [ravvar]
   - enhancement: host transfers between networks preserve host map [chilan]
+  - enhancement: log timetable event changes in transaction log [chilan]
 
 version 24.0 (2019-05-16):
 
