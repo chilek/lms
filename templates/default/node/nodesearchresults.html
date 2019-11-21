@@ -194,7 +194,7 @@
 	changeOperation(1);
 
 	function applyOperation() {
-		if ($('#submit-button').is(':visible')) {
+		if (!$('#submit-button').is(':visible')) {
 			alertDialog($t("Previous operation has not been finished yet!"), $('#submit-button'));
 			return;
 		}
