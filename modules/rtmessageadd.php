@@ -353,7 +353,7 @@ if (isset($_POST['message'])) {
             }
 
             // Users notification
-            if (isset($message['notify']) && ($user['email'] || $queue['email'])) {
+            if (isset($message['notify'])) {
                 $mailfname = '';
 
                 $helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
