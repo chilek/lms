@@ -865,7 +865,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 LEFT JOIN divisions ON divisions.id = customers.divisionid
                 LEFT JOIN documents d ON d.id = cash.docid
                 LEFT JOIN (
-                    SELECT SUM(value * currencyvalue) AS totalvalue, docid FROM cash
+                    SELECT SUM(value * cash.currencyvalue) AS totalvalue, docid FROM cash
                     JOIN documents ON documents.id = cash.docid
                     WHERE documents.type = ' . DOC_CNOTE . '
                     GROUP BY docid
