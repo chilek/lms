@@ -117,6 +117,7 @@ version 25-git (????-??-??):
   - enhancement: network device login radius property support [chilan]
   - enhancement: search node owners can be assign to (or unassign from) customer group [chilan]
   - enhancement: add hooks to event editing and deleting scripts [ravvar]
+  - enhancement: customer search by simultaneously selecting many statuses [chilan]
 
 version 24.0 (2019-05-16):
 
