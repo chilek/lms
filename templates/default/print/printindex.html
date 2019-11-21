@@ -33,8 +33,8 @@
 								<TD style="width: 1%;"><IMG src="img/customer.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Status:")}</TD>
 								<TD style="width: 98%;">
-									<SELECT size="1" name="filter" {tip text="Select customer's group"}>
-										<OPTION value="0">- {trans("all<!customers>")} -</OPTION>
+									<SELECT size="1" name="filter[]" {tip class="lms-ui-multiselect" text="Select customer's group"}
+											data-default-value="- {trans("all<!customers>")} -" multiple>
 										{foreach $_CSTATUSES as $statusidx => $status}
 										<OPTION value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} selected{/if}>{$status.plurallabel}</OPTION>
 										{/foreach}
@@ -46,8 +46,16 @@
 										<OPTION value="59">{trans("without contracts")}</OPTION>
 										<OPTION value="60">{trans("with expired contracts")}</OPTION>
 										<OPTION value="61">{trans("with expiring contracts")}</OPTION>
-										<OPTION value="-1">{trans("without nodes")}</OPTION>
+										<OPTION value="-1" data-exclusive>{trans("without nodes")}</OPTION>
 									</SELECT>
+									<label>
+										<INPUT class="radio" type="radio" value="AND" name="sk"{if $sk!='OR'} checked{/if}>
+										{trans("and")}
+									</label>
+									<label>
+										<INPUT class="radio" type="radio" value="OR" name="sk"{if $sk=='OR'} checked{/if}>
+										{trans("or")}
+									</label>
 								</TD>
 							</TR>
 							<TR>
