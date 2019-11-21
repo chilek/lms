@@ -474,6 +474,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      *
      * @param string $order Order
      * @param int $state State
+     * @param string $statesqlskey Logical conjunction used for state field
      * @param boolean $network With or without network params
      * @param int $customergroup Customer group
      * @param array $search Search parameters
@@ -525,80 +526,126 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
         }
 
-        switch ($state) {
-            case 50:
-                // When customer is deleted we have no assigned groups or nodes, see DeleteCustomer().
-                // Return empty list in this case
-                if (!empty($network) || !empty($customergroup) || !empty($nodegroup)) {
-                    $customerlist['total'] = 0;
-                    $customerlist['state'] = 0;
-                    $customerlist['order'] = $order;
-                    $customerlist['direction'] = $direction;
-                    return $customerlist;
-                }
-                $deleted = 1;
-                break;
-            case 51:
-                $disabled = 1;
-                break;
-            case 52:
-                $indebted = 1;
-                break;
-            case 53:
-                $online = 1;
-                break;
-            case 54:
-                $groupless = 1;
-                break;
-            case 55:
-                $tariffless = 1;
-                break;
-            case 56:
-                $suspended = 1;
-                break;
-            case 57:
-                $indebted2 = 1;
-                break;
-            case 58:
-                $indebted3 = 1;
-                break;
-            case 59:
-            case 60:
-            case 61:
-                    $contracts = $state - 58;
+        if (!isset($statesqlskey)) {
+            $statesqlskey = 'AND';
+        }
+
+        if (!is_array($state) && !empty($state)) {
+            $state = array($state);
+        }
+
+        $customer_statuses = array();
+        $state_conditions = array();
+
+        foreach ($state as $state_item) {
+            switch ($state_item) {
+                case 50:
+                    // When customer is deleted we have no assigned groups or nodes, see DeleteCustomer().
+                    // Return empty list in this case
+                    if (!empty($network) || !empty($customergroup) || !empty($nodegroup)) {
+                        $customerlist['total'] = 0;
+                        $customerlist['state'] = 0;
+                        $customerlist['order'] = $order;
+                        $customerlist['direction'] = $direction;
+                        return $customerlist;
+                    }
+                    $state_conditions[] = 'c.deleted = 1';
+                    break;
+                case 51:
+                    $state_conditions[] = '(s.ownerid IS NOT null AND s.account > s.acsum)';
+                    break;
+                case 52:
+                    $state_conditions[] = 'b.value < 0';
+                    break;
+                case 53:
+                    $state_conditions[] = 's.online = 1';
+                    break;
+                case 54:
+                    $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM customerassignments a
+                    WHERE c.id = a.customerid)';
+                    break;
+                case 55:
+                    $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM assignments a
+                    WHERE a.customerid = c.id
+                    	AND a.commited = 1
+                        AND datefrom <= ?NOW?
+                        AND (dateto >= ?NOW? OR dateto = 0)
+                        AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL))';
+                    break;
+                case 56:
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM assignments a
+                    WHERE a.customerid = c.id AND (
+                        (tariffid IS NULL AND liabilityid IS NULL
+                            AND datefrom <= ?NOW?
+                            AND (dateto >= ?NOW? OR dateto = 0))
+                        OR (datefrom <= ?NOW?
+                            AND (dateto >= ?NOW? OR dateto = 0)
+                            AND suspended = 1 AND commited = 1)
+                        ))';
+                    break;
+                case 57:
+                    $state_conditions[] = 'b.value < -t.value';
+                    break;
+                case 58:
+                    $state_conditions[] = 'b.value < -t.value * 2';
+                    break;
+                case 59:
+                case 60:
+                case 61:
+                    $contracts = $state_item - 58;
                     $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
                     $contracts_expiration_type = ConfigHelper::getConfig('contracts.expiration_type', 'documents');
-                break;
-            case 62:
-                    $einvoice =1;
-                break;
-            case 63:
-                    $withactivenodes = 1;
-                break;
-            case 64:
-                    $withnodes = 1;
-                break;
-            case 65:
-                    $withoutnodes = 1;
-                break;
-            case 66:
-                    $withoutinvoiceflag =1;
-                break;
-            case 67:
-                    $withoutbuildingnumber =1;
-                break;
-            case 68:
-                    $withoutzip =1;
-                break;
-            case 69:
-                    $withoutcity = 1;
-                break;
-            case 70:
-                $withoutteryt = 1;
-                break;
-            case 71:
-                $overduereceivables = 1;
-                break;
+                    if ($contracts == 1) {
+                        if ($contracts_expiration_type == 'documents') {
+                            $state_conditions[] = 'd.customerid IS NULL';
+                        } else {
+                            $state_conditions[] = 'ass.customerid IS NULL';
+                        }
+                    }
+                    break;
+                case 62:
+                    $state_conditions[] = 'c.einvoice = 1';
+                    break;
+                case 63:
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND access = 1)';
+                    break;
+                case 64:
+                    $state_conditions[] = 'EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)';
+                    break;
+                case 65:
+                    $state_conditions[] = 'NOT EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)';
+                    break;
+                case 66:
+                    $state_conditions[] = 'c.id IN (SELECT DISTINCT customerid FROM assignments WHERE invoice = 0 AND commited = 1)';
+                    break;
+                case 67:
+                    $state_conditions[] = 'c.building IS NULL';
+                    break;
+                case 68:
+                    $state_conditions[] = 'c.zip IS NULL';
+                    break;
+                case 69:
+                    $state_conditions[] = 'c.city IS NULL';
+                    break;
+                case 70:
+                    $state_conditions[] = 'c.id IN (SELECT DISTINCT ca.customer_id
+                        FROM customer_addresses ca
+                        JOIN addresses a ON a.id = ca.address_id
+                        WHERE a.city_id IS NULL)';
+                    break;
+                case 71:
+                    $overduereceivables = 1;
+                    $state_conditions[] = 'b2.balance < 0';
+                    break;
+                default:
+                    if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
+                        $customer_statuses[] = intval($state_item);
+                    }
+                    break;
+            }
+        }
+        if (!empty($customer_statuses)) {
+            $state_conditions[] = '(c.status = ' . implode(' AND c.status = ', $customer_statuses) . ')';
         }
 
         if (isset($assignments)) {
@@ -714,13 +761,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             } else {
                                 $searchargs[] = 'moddate >= ' . intval($value);
                             }
-                            $deleted = 1;
+                            $state_conditions[] = 'c.deleted = 1';
                             break;
                         case 'deletedto':
                             if (!isset($searchargs['deletedfrom'])) {
                                 $searchargs[] = 'moddate <= ' . intval($value);
                             }
-                            $deleted = 1;
+                            $state_conditions[] = 'c.deleted = 1';
                             break;
                         case 'type':
                             $searchargs[] = 'type = ' . intval($value);
@@ -894,8 +941,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							WHERE dateto > 0
 							GROUP BY customerid
 							HAVING MAX(dateto) < ?NOW?
-						) ass ON ass.customerid = c.id') : '')
-                . ($contracts == 2 ?
+						) ass ON ass.customerid = c.id') :
+                ($contracts == 2 ?
                     ($contracts_expiration_type == 'documents' ?
                         'JOIN (
 							SELECT SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END),
@@ -913,8 +960,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							WHERE dateto > 0
 							GROUP BY customerid
 							HAVING MAX(dateto) < ?NOW?
-						) ass ON ass.customerid = c.id') : '')
-                . ($contracts == 3 ?
+						) ass ON ass.customerid = c.id') :
+                ($contracts == 3 ?
                     ($contracts_expiration_type == 'documents' ?
                         'JOIN (
 							SELECT DISTINCT d.customerid FROM documents d
@@ -928,31 +975,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							WHERE dateto > 0
 							GROUP BY customerid
 							HAVING MAX(dateto) >= ?NOW? AND MAX(dateto) <= ?NOW? + 86400 * ' . $contracts_days . '
-						) ass ON ass.customerid = c.id') : '')
-                . ' WHERE c.deleted = ' . intval($deleted)
-                . (($state < 50 && $state > 0) ? ' AND c.status = ' . intval($state) : '')
+						) ass ON ass.customerid = c.id') : '')))
+                . ' WHERE '
+                . (empty($state_conditions) ? '1 = 1' : implode(' ' . $statesqlskey . ' ', $state_conditions))
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
-                . ($online ? ' AND s.online = 1' : '')
-                . ($indebted ? ' AND b.value < 0' : '')
-                . ($indebted2 ? ' AND b.value < -t.value' : '')
-                . ($indebted3 ? ' AND b.value < -t.value * 2' : '')
-                . ($einvoice ? ' AND c.einvoice = 1' : '')
-                . ($withactivenodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND access = 1)' : '')
-                . ($withnodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
-                . ($withoutnodes ? ' AND NOT EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
-                . ($withoutinvoiceflag ? ' AND c.id IN (SELECT DISTINCT customerid FROM assignments WHERE invoice = 0 AND commited = 1)' : '')
-                . ($withoutbuildingnumber ? ' AND c.building IS NULL' : '')
-                . ($withoutzip ? ' AND c.zip IS NULL' : '')
-                . ($withoutcity ? ' AND c.city IS NULL' : '')
-                . ($withoutteryt ? ' AND c.id IN (SELECT DISTINCT ca.customer_id
-					FROM customer_addresses ca
-					JOIN addresses a ON a.id = ca.address_id
-					WHERE a.city_id IS NULL)' : '')
-                . ($contracts == 1 ? ($contracts_expiration_type == 'documents' ?
-                        ' AND d.customerid IS NULL' :
-                        ' AND ass.customerid IS NULL') : '')
                 . ($assignment ? ' AND c.id IN ('.$assignment.')' : '')
-                . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
                 . ($network ? ' AND (EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
                 		AND (netid' . (is_array($network) ? ' IN (' . implode(',', $network) . ')' : ' = ' . $network) . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))
@@ -966,24 +993,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
                     JOIN vnodes n ON (n.id = na.nodeid)
                     WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
-                . ($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a
-                    WHERE c.id = a.customerid)' : '')
-                . ($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a
-                    WHERE a.customerid = c.id
-                    	AND a.commited = 1
-                        AND datefrom <= ?NOW?
-                        AND (dateto >= ?NOW? OR dateto = 0)
-                        AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL))' : '')
-                . ($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
-                    WHERE a.customerid = c.id AND (
-                        (tariffid IS NULL AND liabilityid IS NULL
-                            AND datefrom <= ?NOW?
-                            AND (dateto >= ?NOW? OR dateto = 0))
-                        OR (datefrom <= ?NOW?
-                            AND (dateto >= ?NOW? OR dateto = 0)
-                            AND suspended = 1 AND commited = 1)
-                        ))' : '')
-                . (isset($overduereceivables) ? ' AND b2.balance < 0' : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction : '')
                 . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')

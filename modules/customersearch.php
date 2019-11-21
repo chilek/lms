@@ -75,6 +75,13 @@ if (!isset($_POST['s'])) {
 }
 $SESSION->save('csls', $state);
 
+if (!isset($_POST['sk'])) {
+    $SESSION->restore('cslsk', $statesqlskey);
+} else {
+    $statesqlskey = $_POST['sk'];
+}
+$SESSION->save('cslsk', $statesqlskey);
+
 if (!isset($_POST['n'])) {
     $SESSION->restore('csln', $network);
 } else if ($_POST['n'] == 'all') {
@@ -117,6 +124,7 @@ if (isset($_GET['search'])) {
     $customerlist = $LMS->GetCustomerList(compact(
         "order",
         "state",
+        "statesqlskey",
         "network",
         "customergroup",
         "search",
@@ -194,5 +202,6 @@ if (isset($_GET['search'])) {
     $SMARTY->assign('tariffs', $LMS->GetTariffs());
     $SMARTY->assign('divisions', $LMS->GetDivisions());
     $SMARTY->assign('k', $sqlskey);
+    $SMARTY->assign('sk', $statesqlskey);
     $SMARTY->display('customer/customersearch.html');
 }

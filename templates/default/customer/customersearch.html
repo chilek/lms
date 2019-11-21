@@ -337,8 +337,7 @@
 			<IMG src="img/access.gif" width="16" alt=""> {trans("Status:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT SIZE="1" name="s">
-				<OPTION VALUE="0">{trans("- all -")}</OPTION>
+			<SELECT SIZE="1" name="s[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
 				{foreach $_CSTATUSES as $statusidx => $status}
 				<OPTION VALUE="{$statusidx}">{$status.plurallabel}</OPTION>
 				{/foreach}
@@ -358,6 +357,14 @@
 				<OPTION value="60">{trans("with expired contracts")}</OPTION>
 				<OPTION value="61">{trans("with expiring contracts")}</OPTION>
 			</SELECT>
+			<label>
+				<INPUT class="radio" type="radio" value="AND" name="sk"{if $sk!='OR'} checked{/if}>
+				{trans("and")}
+			</label>
+			<label>
+				<INPUT class="radio" type="radio" value="OR" name="sk"{if $sk=='OR'} checked{/if}>
+				{trans("or")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
