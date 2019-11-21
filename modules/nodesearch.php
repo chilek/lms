@@ -170,6 +170,50 @@ function unassign_nodes($nodeids, $nodegroupid)
     return $JSResponse;
 }
 
+function assign_nodes_to_customer_group($nodeids, $customergroupid)
+{
+    $JSResponse = new xajaxResponse();
+
+    $DB = LMSDB::getInstance();
+
+    $customerids = $DB->GetCol(
+        'SELECT DISTINCT n.ownerid FROM nodes n
+        WHERE n.id IN ? AND NOT EXISTS (
+            SELECT id FROM customerassignments ca WHERE ca.customergroupid = ? AND n.ownerid = ca.customerid
+        )',
+        array($nodeids, $customergroupid)
+    );
+    foreach ($customerids as $customerid) {
+        $DB->Execute(
+            "INSERT INTO customerassignments (customerid, customergroupid) VALUES (?, ?)",
+            array($customerid, $customergroupid)
+        );
+    }
+
+    $JSResponse->call('operation_finished');
+
+    return $JSResponse;
+}
+
+function unassign_nodes_from_customer_group($nodeids, $customergroupid)
+{
+    $JSResponse = new xajaxResponse();
+
+    $DB = LMSDB::getInstance();
+
+    $customerids = $DB->GetCol('SELECT DISTINCT ownerid FROM nodes WHERE id IN ?', array($nodeids));
+    foreach ($customerids as $customerid) {
+        $DB->Execute(
+            "DELETE FROM customerassignments WHERE customerid = ? AND customergroupid = ?",
+            array($customerid, $customergroupid)
+        );
+    }
+
+    $JSResponse->call('operation_finished');
+
+    return $JSResponse;
+}
+
 function macformat($mac)
 {
     $res = str_replace('-', ':', $mac);
@@ -232,7 +276,9 @@ $nodesearch['mac'] = macformat($nodesearch['mac']);
 $LMS->InitXajax();
 
 if (isset($_GET['search'])) {
-    $LMS->RegisterXajaxFunction(array('connect_nodes', 'assign_nodes', 'unassign_nodes'));
+    $LMS->RegisterXajaxFunction(
+        array('connect_nodes', 'assign_nodes', 'unassign_nodes', 'assign_nodes_to_customer_group', 'unassign_nodes_from_customer_group')
+    );
     $SMARTY->assign('xajax', $LMS->RunXajax());
 
     $error = null;
@@ -303,6 +349,7 @@ if (isset($_GET['search'])) {
             $SESSION->redirect('?m=nodeinfo&id=' . $nodelist[0]['id']);
         } else {
             $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
+            $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
             $SMARTY->display('node/nodesearchresults.html');
         }
         $SESSION->close();

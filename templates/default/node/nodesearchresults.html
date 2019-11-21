@@ -99,6 +99,8 @@
 								<option value="1">{trans("Connect to device")}</option>
 								<option value="2">{trans("Assign to node group")}</option>
 								<option value="3">{trans("Unassign from node group")}</option>
+								<option value="4">{trans("Assign to customer group")}</option>
+								<option value="5">{trans("Unassign from customer group")}</option>
 							</select>
 						</label>
 					</td>
@@ -134,6 +136,15 @@
 									<select id="nodegroup">
 										{foreach $nodegroups as $nodegroup}
 										<option value="{$nodegroup.id}"{if $key==$nodegroup.id} selected{/if}>{$nodegroup.name}</option>
+										{/foreach}
+									</select>
+								</td>
+							</tr>
+							<tr id="customergroups" class="operationparams" style="display: none;">
+								<td>
+									<select id="customergroup">
+										{foreach $customergroups as $customergroup}
+											<option value="{$customergroup.id}"{if $key==$customergroup.id} selected{/if}>{$customergroup.name}</option>
 										{/foreach}
 									</select>
 								</td>
@@ -188,6 +199,10 @@
 			case 3:
 				$('#nodegroups').show();
 				break;
+			case 4:
+			case 5:
+				$('#customergroups').show();
+				break;
 		}
 	}
 
@@ -222,6 +237,12 @@
 				break;
 			case 3:
 				xajax_unassign_nodes(nodeids, $('#nodegroup').val());
+				break;
+			case 4:
+				xajax_assign_nodes_to_customer_group(nodeids, $('#customergroup').val());
+				break;
+			case 5:
+				xajax_unassign_nodes_from_customer_group(nodeids, $('#customergroup').val());
 				break;
 		}
 	}

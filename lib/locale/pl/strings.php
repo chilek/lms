@@ -4099,6 +4099,8 @@ $_LANG['<!settlement>current period'] = 'bieżący okres';
 
 $_LANG['Assign to node group'] = 'Przypisz do grupy komputerów';
 $_LANG['Unassign from node group'] = 'Usuń z grupy komputerów';
+$_LANG['Assign to customer group'] = 'Przypisz do grupy klientów';
+$_LANG['Unassign from customer group'] = 'Usuń z grupy klientów';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia operacja nie została jeszcze zakończona!';
 
 $_LANG['Download burst time:'] = 'Download burst time:';
