@@ -115,6 +115,7 @@ version 25-git (????-??-??):
   - enhancement: host transfers between networks preserve host map [chilan]
   - enhancement: log timetable event changes in transaction log [chilan]
   - enhancement: network device login radius property support [chilan]
+  - enhancement: search node owners can be assign to (or unassign from) customer group [chilan]
 
 version 24.0 (2019-05-16):
 
