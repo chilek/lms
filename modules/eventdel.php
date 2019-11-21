@@ -27,6 +27,12 @@
 $id = $_GET['id'];
 
 if ($id) {
+    $LMS->executeHook(
+        'eventdel_before_submit',
+        array(
+            'id' => $id
+        )
+    );
     $LMS->EventDelete($id);
 }
 

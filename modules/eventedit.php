@@ -167,6 +167,16 @@ if (isset($_POST['event'])) {
         }
     }
 
+    $hook_data = $LMS->executeHook(
+        'eventedit_validation_before_submit',
+        array(
+            'event' => $event,
+            'error'   => $error,
+        )
+    );
+    $event = $hook_data['event'];
+    $error = $hook_data['error'];
+
     if (!$error) {
         $event['private'] = isset($event['private']) ? 1 : 0;
 
@@ -179,6 +189,14 @@ if (isset($_POST['event'])) {
         $event['endtime'] = $endtime;
         $event['helpdesk'] = isset($event['helpdesk']) ? $event['ticketid'] : null;
         $LMS->EventUpdate($event);
+
+        $hook_data = $LMS->executeHook(
+            'eventedit_after_submit',
+            array(
+                'event' => $event
+            )
+        );
+        $event = $hook_data['event'];
 
         $SESSION->redirect('?m=eventlist'
             . ($SESSION->is_set('backid') ? '#' . $SESSION->get('backid') : ''));
