@@ -117,8 +117,8 @@ function CustomerAssignmentHelper(options) {
 		var selected_option = $('option:selected', this);
 		var schema_title = selected_option.attr('title');
 		var promo_title = selected_option.closest('optgroup').attr('title');
-		$('#promotion-schema-info').removeAttr('data-tooltip').attr('title', !promo_title.length && !schema_title.length ? '' :
-			(promo_title.length ? promo_title : '-') + '<hr>' + (schema_title.length ? schema_title : '-'));
+		$('#promotion-schema-info').removeAttr('data-tooltip').attr('title', (!promo_title || !promo_title.length) && (!schema_title || !schema_title.length) ? '' :
+			(promo_title && promo_title.length ? promo_title : '-') + '<hr>' + (schema_title && schema_title.length ? schema_title : '-'));
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
