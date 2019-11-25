@@ -194,8 +194,12 @@ $usereventlistcount = count($usereventlist);
 $usereventlistdates = array();
 foreach ($usereventlist as $userid => $userevents) {
     $usereventlistdates[$userid]['username'] = $userevents['username'];
-    foreach ($userevents['events'] as $event) {
-        $usereventlistdates[$userid]['events'][$event['date']][] = $event;
+    if ($userevents['events']) {
+        foreach ($userevents['events'] as $event) {
+            $usereventlistdates[$userid]['events'][$event['date']][] = $event;
+        }
+    } else {
+        $usereventlistdates[$userid]['events'] = array();
     }
 }
 //</editor-fold>
@@ -209,43 +213,55 @@ $SMARTY->assign('times', $times);
 
 //<editor-fold desc="set events in columns">
 $usereventlistgrid = $usereventlistdates;
+$allevents = 0;
+foreach ($usereventlistgrid as $guserid => $guserevents) {
+    foreach ($guserevents['events'] as $gdekey => $gdateevent) {
+            $allevents += count($gdateevent);
+    }
+}
+
 $column = 0;
 do {
     foreach ($usereventlistgrid as $guserid => $guserevents) {
-        $gusereventscount = count($guserevents['events']);
-        foreach ($guserevents['events'] as $gdekey => $gdateevent) {
-            $last_gevent_endtime = 0;
-            $last_gevent_begintime = 0;
-            foreach ($gdateevent as $gekey => $gevent) {
-                if ($gekey == 0) {
-                    $usereventlistgrid[$guserid]['addedevents'][$gevent['date']]['columns'][$column][$gevent['id']] = $gevent;
-                    unset($usereventlistgrid[$guserid]['events'][$gevent['date']][$gekey]);
-                } else {
-                    $addedcolumn = $usereventlistgrid[$guserid]['addedevents'][$gevent['date']]['columns'][$column];
-                    foreach ($addedcolumn as $addedevent) {
-                        if ($gevent['begintime'] >= $addedevent['endtime'] || $gevent['endtime'] <= $addedevent['begintime']) {
-                            $noconflict = true;
-                        } else {
-                            $noconflict = false;
-                            break;
-                        }
-                    }
-                    if ($noconflict) {
+        if (count($guserevents['events']) != 0) {
+            foreach ($guserevents['events'] as $gdekey => $gdateevent) {
+                $last_gevent_endtime = 0;
+                $last_gevent_begintime = 0;
+                foreach ($gdateevent as $gekey => $gevent) {
+                    if ($gekey == 0) {
                         $usereventlistgrid[$guserid]['addedevents'][$gevent['date']]['columns'][$column][$gevent['id']] = $gevent;
                         unset($usereventlistgrid[$guserid]['events'][$gevent['date']][$gekey]);
+                        $allevents --;
+                    } else {
+                        $addedcolumn = $usereventlistgrid[$guserid]['addedevents'][$gevent['date']]['columns'][$column];
+                        foreach ($addedcolumn as $addedevent) {
+                            if ($gevent['begintime'] >= $addedevent['endtime'] || $gevent['endtime'] <= $addedevent['begintime']) {
+                                $noconflict = true;
+                            } else {
+                                $noconflict = false;
+                                break;
+                            }
+                        }
+                        if ($noconflict) {
+                            $usereventlistgrid[$guserid]['addedevents'][$gevent['date']]['columns'][$column][$gevent['id']] = $gevent;
+                            unset($usereventlistgrid[$guserid]['events'][$gevent['date']][$gekey]);
+                            $allevents --;
+                        }
                     }
                 }
-            }
 
-            if (count($usereventlistgrid[$guserid]['events'][$gdekey]) > 0) {
-                $usereventlistgrid[$guserid]['events'][$gdekey] = array_values($usereventlistgrid[$guserid]['events'][$gdekey]);
-            } else {
-                unset($usereventlistgrid[$guserid]['events'][$gdekey]);
+                if (count($usereventlistgrid[$guserid]['events'][$gdekey]) > 0) {
+                    $usereventlistgrid[$guserid]['events'][$gdekey] = array_values($usereventlistgrid[$guserid]['events'][$gdekey]);
+                } else {
+                    unset($usereventlistgrid[$guserid]['events'][$gdekey]);
+                }
             }
+        } else {
+            continue;
         }
     }
     $column += 1;
-} while ($gusereventscount != 0);
+} while ($allevents != 0);
 //</editor-fold>
 
 //<editor-fold desc="Set grid (row for every time period as events cells)">
