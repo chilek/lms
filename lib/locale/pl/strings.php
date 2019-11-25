@@ -4511,6 +4511,8 @@ $_LANG['last day'] = 'ostatni dzień';
 
 $_LANG['No document of given type has been selected!'] = 'Żaden dokument danego typu nie został wskazany!';
 
+$_LANG['Schedule'] = 'Plan';
+
 $_LANG['and<!operator>'] = 'i';
 $_LANG['or<!operator>'] = 'lub';
 $_LANG['$a Customer List $b'] = 'Lista klientów o statusie $a $b';

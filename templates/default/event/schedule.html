@@ -1,0 +1,15 @@
+{extends file="layout.html"}
+{block name=title}LMS: {$layout.pagetitle|striphtml}{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+{$eventlist_mode = true}
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+    <THEAD>
+        {include file="event/schedulefilter.html"}
+    </THEAD>
+</TABLE>
+<div>
+    {include file="event/schedulebox.html" overdue="0"}
+</div>
+{/block}

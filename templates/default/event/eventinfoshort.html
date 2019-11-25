@@ -1,0 +1,263 @@
+<TABLE class="lmsbox-inner" id="table">
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 98%;">
+    </COLGROUP>
+    <THEAD>
+    <TR>
+        <TD>
+            <IMG src="img/calendar.gif" alt="">
+        </TD>
+        <TD class="bold">
+            {trans("Title:")}
+        </TD>
+        <TD class="bold">
+            {$event.title}
+        </TD>
+    </TR>
+    </THEAD>
+    <TBODY>
+    <TR>
+        <TD>
+            <IMG src="img/time.gif" alt="">
+        </TD>
+        <TD class="bold nobr">
+            {trans("Begin time:")}
+        </TD>
+        <TD>
+            {$event.date|date_format:"%x (%A)"}
+            {($event.date + $event.begintime)|date_format:"%H:%M"}
+        </TD>
+    </TR>
+    {if $event.begintime != $event.endtime || $event.enddate > $event.date}
+        <TR>
+            <TD>
+                <IMG src="img/time.gif" alt="">
+            </TD>
+            <TD class="bold nobr">
+                {trans("End time:")}
+            </TD>
+            <TD>
+                {if $event.enddate}
+                    {$event.enddate|date_format:"%x (%A)"}
+                    {($event.enddate + $event.endtime)|date_format:"%H:%M"}
+                {else}
+                    {$event.date|date_format:"%x (%A)"}
+                    {($event.date + $event.endtime)|date_format:"%H:%M"}
+                {/if}
+            </TD>
+        </TR>
+    {/if}
+    {if $event.description}
+        <TR>
+            <TD>
+                <IMG src="img/info.gif" alt="">
+            </TD>
+            <TD class="bold nobr">
+                {trans("Description:")}
+            </TD>
+            <TD>
+                <TABLE WIDTH="90%" CELLPADDING="5">
+                    <TR>
+                        <TD CLASS="fall superlight">
+                            {$event.description|replace:"\n":"<BR>"}
+                        </TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+    {/if}
+    <TR>
+        <TD>
+            <IMG src="img/desc.gif" alt="">
+        </TD>
+        <TD class="bold">
+            {trans("Type:")}
+        </TD>
+        <TD class="nobr">
+            {$_EVENTTYPES[$event.type]}
+        </TD>
+    </TR>
+    <TR>
+        <TD>
+            <IMG src="img/access.gif" alt="">
+        </TD>
+        <TD class="bold">
+            {trans("Status:")}
+        </TD>
+        <TD class="nobr">
+            {if $event.private}{trans("private")}{else}{trans("public")}{/if}
+        </TD>
+    </TR>
+    <TR>
+        <TD>
+            <IMG src="img/users.gif" alt="">
+        </TD>
+        <TD class="bold">
+            {trans("Created by:")}
+        </TD>
+        <TD class="nobr">
+            <A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
+        </TD>
+    </TR>
+    {if $event.creationdate != 0}
+        <TR>
+            <TD>
+                <IMG src="img/time.gif" alt="">
+            </TD>
+            <TD class="bold">
+                {trans("Creation time:")}
+            </TD>
+            <TD>
+                {$event.creationdate|date_format:"%x (%X)"}
+            </TD>
+        </TR>
+    {/if}
+    {if $event.moduserid != 0}
+        <TR>
+            <TD>
+                <IMG src="img/users.gif" alt="">
+            </TD>
+            <TD class="bold">
+                <B>{trans("Last modified by:")}</B>
+            </TD>
+            <TD class="nobr">
+                <A href="?m=userinfo&id={$event.moduserid}">{$event.modusername}</A>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.moddate != 0}
+        <TR>
+            <TD>
+                <IMG src="img/time.gif" alt="">
+            </TD>
+            <TD class="bold">
+                {trans("Last modification time:")}
+            </TD>
+            <TD>
+                {$event.moddate|date_format:"%x (%X)"}
+            </TD>
+        </TR>
+    {/if}
+    {if $event.closeduserid != 0}
+        <TR>
+            <TD>
+                <IMG src="img/users.gif" alt="">
+            </TD>
+            <TD class="bold nobr">
+                <B>{trans("Closed by")}:</B>
+            </TD>
+            <TD class="nobr">
+                <A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.closeddate != 0}
+        <TR>
+            <TD>
+                <IMG src="img/time.gif" alt="">
+            </TD>
+            <TD class="bold nobr">
+                {trans("Closed time")}:
+            </TD>
+            <TD>
+                {$event.closeddate|date_format:"%x (%X)"}
+            </TD>
+        </TR>
+    {/if}
+    <TR>
+        <TD>
+            <IMG src="img/customer.gif" alt="">
+        </TD>
+        <TD class="bold">
+            {trans("Customer:")}
+        </TD>
+        <TD class="nobr">
+            <A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
+        </TD>
+    </TR>
+    <TR>
+        <TD>
+            <IMG src="img/home.gif" alt="">
+        </TD>
+        <TD class="bold">
+            {trans("Location:")}
+        </TD>
+        <TD>
+            {if !empty($event.address_id)}{$event.location}{else}{$event.customerlocation}{/if}
+        </TD>
+    </TR>
+    {if !empty($event.nodeid)}
+        <TR>
+            <TD>
+                <IMG src="img/node.gif" alt="">
+            </TD>
+            <TD class="bold">
+                {trans("Node:")}
+            </TD>
+            <TD class="nobr">
+                <a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location}</a>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.note}
+        <TR>
+            <TD>
+                <IMG src="img/note.gif" alt="">
+            </TD>
+            <TD class="bold nobr">
+                {trans("Note:")}
+            </TD>
+            <TD>
+                <TABLE WIDTH="90%" CELLPADDING="5">
+                    <TR>
+                        <TD class="fall superlight">
+                            {$event.note|replace:"\n":"<BR>"}
+                        </TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+    {/if}
+    {if $event.userlist}
+        <TR>
+            <TD>
+                <IMG src="img/users.gif" alt="">
+            </TD>
+            <TD class="bold">
+                {trans("Users:")}
+            </TD>
+            <TD class="nobr">
+                {foreach $event.userlist as $userid}
+                    <A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname}</A><BR>
+                {/foreach}
+            </TD>
+        </TR>
+    {/if}
+    {if isset($event.ticketid)}
+        <TR>
+            <TD>
+                <IMG src="img/helpdesk.png" alt="">
+            </TD>
+            <TD class="bold">
+                {trans("Helpdesk assignment:")}
+            </TD>
+            <TD>
+                <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a>
+            </TD>
+        </TR>
+    {/if}
+    <TR>
+        <TD class="text-right" colspan="3">
+            <a id="delete-event" href="?m=eventdel&id={$event.id}"><img src="img/delete.gif" alt=""> {trans("Delete")}</A>
+            <A href="?m=eventedit&id={$event.id}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>
+            {if !$event.closed}
+                <A href="?m=eventedit&id={$event.id}&action=close"><IMG src="img/dead.gif" alt=""> {trans("Close")}</A>
+            {else}
+                <A href="?m=eventedit&id={$event.id}&action=open"><IMG src="img/open.gif" alt=""> {trans("Open")}</A>
+            {/if}
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
