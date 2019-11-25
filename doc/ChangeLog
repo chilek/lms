@@ -121,7 +121,7 @@ version 25-git (????-??-??):
   - enhancement: introduce schedule - a new timetable view with
     configurable working day hours and interval time - configuration variable
     phpui.timetable_working_hours (default "08:00-19:00")
-    and phpui.timetable_working_hours_interval (default 30 minuntes)[ravvar]
+    and phpui.timetable_working_hours_interval (default: '30' [minutes])[ravvar]
 
 version 24.0 (2019-05-16):
 
