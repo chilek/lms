@@ -221,13 +221,15 @@ function multiselect(options) {
 	old_selected = new_selected;
 	if (!tiny || selection_group) {
 		checkall_div = $('<div/>').appendTo(div);
-		$('<label><input type="checkbox" class="checkall" value="1">' + $t('check all<!items>') + '</label>').appendTo(checkall_div);
+		$('<input type="checkbox" class="checkall" value="1"><span>' + $t('check all<!items>') + '</span>').appendTo(checkall_div);
 
 		updateCheckAll();
 
 		$(checkall_div).click(function(e) {
-			var checkbox = $('.checkall', this);
-			checkbox.prop('checked', !checkbox.prop('checked'))
+			if (!$(e.target).is('input.checkall')) {
+				var checkbox = $('.checkall', this);
+				checkbox.prop('checked', !checkbox.prop('checked'))
+			}
 			checkAllElements();
 			e.stopPropagation();
 		});
