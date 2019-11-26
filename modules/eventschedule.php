@@ -154,9 +154,13 @@ $layout['pagetitle'] = trans('Timetable');
 $filter['forward'] = ConfigHelper::getConfig('phpui.timetable_days_forward');
 $eventlist = $LMS->GetEventList($filter);
 
-
 $userid = $filter['userid'];
+
 $userlist = $LMS->GetUserNames();
+$SMARTY->assign('userlist', $userlist);
+if (in_array('-1', $userid)) {
+    $userlist[-1]['id'] = -1;
+}
 $usereventlist = array();
 if (!isset($userid) || empty($userid)) {
     unset($filter['userid']);
@@ -172,20 +176,15 @@ if (!isset($userid) || empty($userid)) {
 
     $filter['userid'] = $userid;
 } else if (is_array($userid)) {
-    if (in_array('-1', $userid)) {
-        $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
-        $usereventlist[$user['id']]['username'] = trans("unassigned");
-    } else {
-        unset($filter['userid']);
-        foreach ($userlist as $user) {
-            if (in_array($user['id'], $userid)) {
-                $filter['userid'] = $user['id'];
-                $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
-                $usereventlist[$user['id']]['username'] = $user['name'];
-            }
+    unset($filter['userid']);
+    foreach ($userlist as $user) {
+        if (in_array($user['id'], $userid)) {
+            $filter['userid'] = $user['id'];
+            $usereventlist[$user['id']]['events'] = $LMS->GetEventList($filter);
+            $usereventlist[$user['id']]['username'] = $user['name'];
         }
-        $filter['userid'] = $userid;
     }
+    $filter['userid'] = $userid;
 }
 
 $usereventlistcount = count($usereventlist);
@@ -340,7 +339,6 @@ $SMARTY->assign('days', $days);
 $SMARTY->assign('daylist', $daylist);
 $SMARTY->assign('date', $date);
 $SMARTY->assign('error', $error);
-$SMARTY->assign('userlist', $userlist);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
