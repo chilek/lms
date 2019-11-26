@@ -116,7 +116,7 @@ $access_table = array(
     ),
     'timetable_management' => array(
         'label' => trans('timetable management'),
-        'allow_regexp' => '^(event(list|edit|add|del|info|print|search|note)|choosecustomer)$',
+        'allow_regexp' => '^(event(list|edit|add|del|info|print|search|note|schedule)|choosecustomer)$',
     ),
     'daemon_management' => array(
         'label' => trans('daemon management and configuration'),
