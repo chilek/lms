@@ -266,19 +266,22 @@ do {
 
 //<editor-fold desc="Set grid (row for every time period as events cells)">
 foreach ($usereventlistgrid as $guserid => $guserevents) {
-    foreach ($guserevents['addedevents'] as $gdekey => $gdateevent) {
-        foreach ($gdateevent['columns'] as $colkey => $column) {
-            foreach ($column as $ekey => $event) {
-                foreach ($times as $ktime => $time) {
-                    if (($ktime > ($event['begintime'] - $working_hours_interval_ts) && $ktime < $event['endtime'] && $event['endtime'] != $event['begintime'])
-                        || ($ktime > ($event['begintime'] -$working_hours_interval_ts) && $ktime <= $event['endtime'] && $event['endtime'] == $event['begintime'])) {
-                        $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$ktime][$colkey] = $event;
+    if (isset($guserevents['addedevents'])) {
+        foreach ($guserevents['addedevents'] as $gdekey => $gdateevent) {
+            $usereventlistgrid[$guserid]['gridhelper'][$gdekey] = array();
+            foreach ($gdateevent['columns'] as $colkey => $column) {
+                foreach ($column as $ekey => $event) {
+                    foreach ($times as $ktime => $time) {
+                        if (($ktime > ($event['begintime'] - $working_hours_interval_ts) && $ktime < $event['endtime'] && $event['endtime'] != $event['begintime'])
+                            || ($ktime > ($event['begintime'] - $working_hours_interval_ts) && $ktime <= $event['endtime'] && $event['endtime'] == $event['begintime'])) {
+                            $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$ktime][$colkey] = $event;
 
-                        if (!array_key_exists($event['id'], $usereventlistgrid[$guserid]['gridhelper'][$gdekey])) {
-                            $usereventlistgrid[$guserid]['gridhelper'][$gdekey][$event['id']]['id'] = $event['id'];
-                            $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$ktime][$colkey]['position'] = 0;
-                        } else {
-                            $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$ktime][$colkey]['position'] = 1;
+                            if (!array_key_exists($event['id'], $usereventlistgrid[$guserid]['gridhelper'][$gdekey])) {
+                                $usereventlistgrid[$guserid]['gridhelper'][$gdekey][$event['id']]['id'] = $event['id'];
+                                $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$ktime][$colkey]['position'] = 0;
+                            } else {
+                                $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$ktime][$colkey]['position'] = 1;
+                            }
                         }
                     }
                 }
@@ -288,13 +291,15 @@ foreach ($usereventlistgrid as $guserid => $guserevents) {
 }
 //set empty value for cell to place cell in proper column
 foreach ($usereventlistgrid as $guserid => $guserevents) {
-    foreach ($guserevents['eventsgrid'] as $gdekey => $gdateevent) {
-        foreach ($gdateevent['grid'] as $gekey => $gevents) {
-            $maxgdkey = max(array_keys($gevents));
-            if ($maxgdkey > 0) {
-                for ($i = $maxgdkey; $i >= 0; $i--) {
-                    if (!array_key_exists($i, $gevents)) {
-                        $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$gekey][$i] = array();
+    if (isset($guserevents['eventsgrid'])) {
+        foreach ($guserevents['eventsgrid'] as $gdekey => $gdateevent) {
+            foreach ($gdateevent['grid'] as $gekey => $gevents) {
+                $maxgdkey = max(array_keys($gevents));
+                if ($maxgdkey > 0) {
+                    for ($i = $maxgdkey; $i >= 0; $i--) {
+                        if (!array_key_exists($i, $gevents)) {
+                            $usereventlistgrid[$guserid]['eventsgrid'][$gdekey]['grid'][$gekey][$i] = array();
+                        }
                     }
                 }
             }
@@ -302,12 +307,6 @@ foreach ($usereventlistgrid as $guserid => $guserevents) {
     }
 }
 //</editor-fold>
-
-if (ConfigHelper::checkConfig('phpui.timetable_overdue_events')) {
-    $filter['forward'] = -1;
-    $filter['closed'] = 0;
-    $overdue_events = $LMS->GetEventList($filter);
-}
 
 // create calendars
 for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
@@ -336,15 +335,11 @@ $SMARTY->assign('usereventlist', $usereventlist);
 $SMARTY->assign('usereventlistcount', $usereventlistcount);
 $SMARTY->assign('usereventlistdates', $usereventlistdates);
 $SMARTY->assign('usereventlistgrid', $usereventlistgrid);
-if (ConfigHelper::checkConfig('phpui.timetable_overdue_events')) {
-    $SMARTY->assign('overdue_events', $overdue_events);
-}
 
 $SMARTY->assign('days', $days);
 $SMARTY->assign('daylist', $daylist);
 $SMARTY->assign('date', $date);
 $SMARTY->assign('error', $error);
-//$SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('userlist', $userlist);
 if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
