@@ -360,7 +360,9 @@ class Auth
 
                             $this->authcoderequired = '';
                             $this->islogged = true;
-                            $this->addTrustedDevice();
+                            if ($this->trusteddevice) {
+                                $this->addTrustedDevice();
+                            }
                         }
                     } else {
                         $this->DB->Execute('INSERT INTO twofactorauthcodehistory (userid, authcode, uts, ipaddr)
