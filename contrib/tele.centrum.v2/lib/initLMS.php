@@ -29,8 +29,9 @@ ini_set('error_reporting', E_ALL &~ E_NOTICE &~ E_DEPRECATED);
 
 $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
-if (!is_readable($CONFIG_FILE))
+if (!is_readable($CONFIG_FILE)) {
         die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+}
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
