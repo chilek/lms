@@ -41,7 +41,7 @@ function refresh($params)
         case 2:
             $arping_helper = ConfigHelper::getConfig('phpui.arping_helper');
             if (empty($arping_helper)) {
-                $cmd = 'arping %i -c 1 -w 1.0';
+                $cmd = 'arping %i -c 1 -w 1';
             } else {
                 $cmd = $arping_helper;
             }
@@ -53,7 +53,7 @@ function refresh($params)
         default:
             $ping_helper = ConfigHelper::getConfig('phpui.ping_helper');
             if (empty($ping_helper)) {
-                $cmd = 'ping %i -c 1 -s 1450 -w 1.0';
+                $cmd = 'ping %i -c 1 -s 1450 -w 1';
             } else {
                 $cmd = $ping_helper;
             }
