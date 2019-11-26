@@ -722,7 +722,7 @@ $menu = array(
                 ),
                 array(
                     'name' => trans('Schedule'),
-                    'link' => '?m=schedule',
+                    'link' => '?m=eventschedule',
                     'tip' => trans('Schedule'),
                     'prio' => 11,
                 ),

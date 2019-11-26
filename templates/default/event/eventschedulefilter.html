@@ -1,22 +1,22 @@
-{block name=schedulefilter}
+{block name=eventschedulefilter}
 	<TR>
 		<TD class="text-center nobr no-print">
-			<A href="?m=schedule&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
+			<A href="?m=eventschedule&day=1&month={if $filter.month == 1}12{else}{math equation="x-1" x=$filter.month}{/if}&amp;year={if $filter.month == 1}{math equation="x-1" x=$filter.year}{else}{$filter.year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
 				{if !$days.dow[days]}<span class="light">{/if}
-				<A href="?m=schedule&day={$days.day[days]}&month={$filter.month}&year={$filter.year}">&nbsp;{if $days.sel[days]}
+				<A href="?m=eventschedule&day={$days.day[days]}&month={$filter.month}&year={$filter.year}">&nbsp;{if $days.sel[days]}
 				<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if}
 				</A>{if !$days.dow[days]}</span>{/if}
 			{/section}
-			<A href="?m=schedule&day=1&month={if $filter.month == 12}1{else}{math equation="x+1" x=$filter.month}{/if}&amp;year={if $filter.month == 12}{math equation="x+1" x=$filter.year}{else}{$filter.year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
+			<A href="?m=eventschedule&day=1&month={if $filter.month == 12}1{else}{math equation="x+1" x=$filter.month}{/if}&amp;year={if $filter.month == 12}{math equation="x+1" x=$filter.year}{else}{$filter.year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
 		</TD>
 	</TR>
 	<TR>
 		<TD class="nobr no-print">
 			<div class="lms-ui-filter-container">
 				<div class="lms-ui-filter-definition">
-					<FORM method="POST" action="?m=schedule" name="filter">
-						<INPUT type="submit" class="hiddenbtn"> <INPUT type="HIDDEN" name="m" value="schedule">
+					<FORM method="POST" action="?m=eventschedule" name="filter">
+						<INPUT type="submit" class="hiddenbtn"> <INPUT type="HIDDEN" name="m" value="eventschedule">
 						<span class="bold">{trans("Filter:")} </span>
 						{trans("Type:")}
 						<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all -")}">
@@ -40,7 +40,7 @@
 						</SELECT>
 						{trans("Customer:")}
 						{customerlist form="filter" customers=$customers selected=$filter.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
-						{button label="Today" onclick="location.href='?m=schedule&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}';"}
+						{button label="Today" onclick="location.href='?m=eventschedule&day={$smarty.now|date_format:"%d"}&month={$smarty.now|date_format:"%m"}&year={$smarty.now|date_format:"%Y"}';"}
 						<input type="text" name="date" class="lms-ui-date" value="{if $filter.year}{$filter.year}/{$filter.month}/{$filter.day}{/if}" onchange="document.filter.submit();">
 						{trans("Status:")}
 						<SELECT name="closed" onchange="document.filter.submit();">
