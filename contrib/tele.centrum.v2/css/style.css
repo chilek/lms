@@ -1,0 +1,122 @@
+html
+{
+    font-size: 12px;
+    font-family: Verdana, Arial;
+}
+
+#form
+{
+    background-color: #EEE;
+    border-radius: 10px;
+    width: 1000px;
+    padding: 20px;
+    margin: auto;
+    margin-top: 20px;
+    border: 1px solid #999;
+}
+
+div.message
+{
+    background-color: #add6ad;
+    border-radius: 10px;
+    width: 700px;
+    padding: 20px;
+    margin: auto;
+    margin-top: 20px;
+    border: 1px solid #999;
+    font-weight: bold;
+}
+
+div.message.error
+{
+    background-color: #e0a7a7;
+    font-weight: bold;
+}
+
+input,
+textarea
+{
+    border-radius: 2px;
+    padding: 10px;
+    border: 1px solid #999;
+}
+
+input.error,
+textarea.error
+{
+    background-color: #ffff80;
+}
+
+span.error
+{
+    color: red;
+    font-size: 10px;
+}
+
+td.label
+{
+    text-align: right;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+td
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+input[type=checkbox],
+label {
+    cursor: pointer;
+}
+
+#panel {
+	position: fixed;
+    background: #efefef;
+	display: none;
+    z-index: 9;
+    left: 0;
+    top: 0;
+    width: 35%;
+    height: 100%;
+	overflow-y: scroll;
+	box-shadow: 1px -1px 20px 5px #c3c3c3;
+}
+
+#panel table {
+	margin-top: 15px;
+	padding: 10px;
+	font-size: 14px;
+}
+
+#panel table tr td:first-child{
+	font-weight: bold;
+	color: #464646;
+	vertical-align: top;
+}
+
+#panel table td {
+	border-bottom: 1px solid #d8d8d8;
+	text-align: center;
+}
+
+.showPanel {
+	position: fixed;
+    z-index: 99;
+    top: 5;
+    left: 0;
+    background: #eeeeef;
+	padding: 0;
+}
+.showPanel a {
+	padding: 5px 20px;
+	cursor: pointer;
+	display: block;
+	border: 1px solid #999;
+}
+
+.showPanel a:hover {
+	background: #d5d5d6;
+}
