@@ -235,7 +235,7 @@ do {
                     } else {
                         $addedcolumn = $usereventlistgrid[$guserid]['addedevents'][$gevent['date']]['columns'][$column];
                         foreach ($addedcolumn as $addedevent) {
-                            if ($gevent['begintime'] >= $addedevent['endtime'] || $gevent['endtime'] <= $addedevent['begintime']) {
+                            if (($gevent['begintime'] >= $addedevent['endtime'] && $gevent['begintime'] != $addedevent['begintime']) || ($gevent['endtime'] <= $addedevent['begintime'] && $gevent['begintime'] != $addedevent['begintime'])) {
                                 $noconflict = true;
                             } else {
                                 $noconflict = false;
