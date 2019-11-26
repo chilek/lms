@@ -345,4 +345,4 @@ if (!ConfigHelper::checkConfig('phpui.big_networks')) {
     $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 }
 $SMARTY->assign('getHolidays', getHolidays($year));
-$SMARTY->display('event/schedule.html');
+$SMARTY->display('event/eventschedule.html');
