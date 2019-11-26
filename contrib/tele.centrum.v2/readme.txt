@@ -1,35 +1,35 @@
-W konfiguracji utworzyæ nowy interfejs u¿ytkownika 'callcenter'.
+W konfiguracji utworzyÄ‡ nowy interfejs uÅ¼ytkownika 'callcenter'.
 
-Uzupe³niæ o opcjê:
-- callcenterip - podaæ adres IP z którego ³¹czyæ siê bêd¹ agenci callcenter,
-- networks - adresacja sieci, która mo¿e wyœwietlaæ formularz callcenter np. 10.10.10.0/24 (mo¿na podaæ kilka sieci oddzielonych przecinkiem), 
+UzupeÅ‚niÄ‡ o opcjÄ™:
+- callcenterip - podaÄ‡ adres IP z ktÃ³rego Å‚Ä…czyÄ‡ siÄ™ bÄ™dÄ… agenci callcenter,
+- networks - adresacja sieci, ktÃ³ra moÅ¼e wyÅ›wietlaÄ‡ formularz callcenter np. 10.10.10.0/24 (moÅ¼na podaÄ‡ kilka sieci oddzielonych przecinkiem), 
 - queues - id kolejek w LMS, odzielone przecinkami. 
 
-Kolejno Zg³oszenie awarii, informacja handlowa oraz sprawy finansowe,
-- categories - id kategorii zg³oszeñ w LMS, odzielone przecinkami. 
+Kolejno ZgÅ‚oszenie awarii, informacja handlowa oraz sprawy finansowe,
+- categories - id kategorii zgÅ‚oszeÅ„ w LMS, odzielone przecinkami. 
 
-Kolejno Internet, telewizja, telefon oraz ogólna, 
-(UWAGA! ZACHOWANIE KOLEJNOŒCI JEST WYMAGANE DO POPRAWNEGO DZIA£ANIA.)
-- queueuser - id u¿ytkownika do którego ma byæ przypisane zg³oszenie (mo¿e byæ 0),
-- warning - treœæ wiadomoœci specjalnej wyœwietlanej na górze strony,
-- information - mo¿liwoœæ dodanie dodatkowych informacji do wysuwaj¹cego siê panelu (np. tabela z godzinami pracy).
+Kolejno Internet, telewizja, telefon oraz ogÃ³lna, 
+(UWAGA! ZACHOWANIE KOLEJNOÅšCI JEST WYMAGANE DO POPRAWNEGO DZIAÅANIA.)
+- queueuser - id uÅ¼ytkownika do ktÃ³rego ma byÄ‡ przypisane zgÅ‚oszenie (moÅ¼e byÄ‡ 0),
+- warning - treÅ›Ä‡ wiadomoÅ›ci specjalnej wyÅ›wietlanej na gÃ³rze strony,
+- information - moÅ¼liwoÅ›Ä‡ dodanie dodatkowych informacji do wysuwajÄ…cego siÄ™ panelu (np. tabela z godzinami pracy).
 
 
-Skrypt który piszuje nagrania do poprawnych zg³oszeñ znajdujê siê w folderze bin. 
+Skrypt ktÃ³ry piszuje nagrania do poprawnych zgÅ‚oszeÅ„ znajdujÄ™ siÄ™ w folderze bin. 
 Skrypt wymaga rozszerzenia imap dla PHP.
 
 
-Nale¿y ustawiæ go cyklicznie w cron. 
+NaleÅ¼y ustawiÄ‡ go cyklicznie w cron. 
 
-Wymagane do pobierania nagrañ z rozmów:
+Wymagane do pobierania nagraÅ„ z rozmÃ³w:
 - hostname - nazwa hosta poczty,
-- user - nazwa u¿ytkownika poczty,
-- pass - has³o u¿ytkownika,
+- user - nazwa uÅ¼ytkownika poczty,
+- pass - hasÅ‚o uÅ¼ytkownika,
 - mailfrom - nazwa maila callcenter.
 
 
 
-Dodatkowo, nale¿y upewniæ siê czy w sekcji 'rt' utworzona jest opcja 'mail_dir' z lokalizacj¹ folderu. 
-Bêdzie ona wykorzystywana do zapisywanie nagrañ z rozmów.
+Dodatkowo, naleÅ¼y upewniÄ‡ siÄ™ czy w sekcji 'rt' utworzona jest opcja 'mail_dir' z lokalizacjÄ… folderu. 
+BÄ™dzie ona wykorzystywana do zapisywanie nagraÅ„ z rozmÃ³w.
 
-Numer telefonu pobierany jest na podstawie URL. System callcenter automatycznie dodaje do URL takie dane jak: ID konsultanta, nr tel. dzwoni¹cego, nr sprawy, które potem wykorzystywane s¹ w skrypcie.
+Numer telefonu pobierany jest na podstawie URL. System callcenter automatycznie dodaje do URL takie dane jak: ID konsultanta, nr tel. dzwoniÄ…cego, nr sprawy, ktÃ³re potem wykorzystywane sÄ… w skrypcie.
