@@ -160,6 +160,7 @@ $userlist = $LMS->GetUserNames();
 $SMARTY->assign('userlist', $userlist);
 if (in_array('-1', $userid)) {
     $userlist[-1]['id'] = -1;
+    $userlist[-1]['name'] = trans("unassigned");
 }
 $usereventlist = array();
 if (!isset($userid) || empty($userid)) {
