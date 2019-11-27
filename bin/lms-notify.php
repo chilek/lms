@@ -801,9 +801,9 @@ if (empty($types) || in_array('contracts', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id)
-        WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400
+        WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
+            . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0') . "
         GROUP BY c.id, c.pin, c.lastname, c.name, d.dateto, m.email, x.phone",
-            . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
