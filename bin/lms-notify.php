@@ -783,7 +783,7 @@ if (empty($types) || in_array('contracts', $types)) {
                 FROM assignments a
                 WHERE a.dateto > 0
                 GROUP BY a.customerid
-                HAVING(a.dateto) >= $daystart + $days * 86400 AND d.dateto < $daystart + ($days + 1) * 86400
+                HAVING MAX(a.dateto) >= $daystart + $days * 86400 AND MAX(a.dateto) < $daystart + ($days + 1) * 86400
             ) d ON d.customerid = c.id" :
             "JOIN (
                 SELECT DISTINCT customerid, 0 AS dateto FROM documents
@@ -801,8 +801,8 @@ if (empty($types) || in_array('contracts', $types)) {
             WHERE (type & ?) = ?
             GROUP BY customerid
         ) x ON (x.customerid = c.id)
-        GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone
-        WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400"
+        WHERE d.dateto >= $daystart + ? * 86400 AND d.dateto < $daystart + (? + 1) * 86400
+        GROUP BY c.id, c.pin, c.lastname, c.name, d.dateto, m.email, x.phone",
             . ($notifications['contracts']['deleted_customers'] ? '' : ' AND c.deleted = 0'),
         array(
             CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
