@@ -69,9 +69,12 @@ function show_pagecontent() {
 				$('#lms-ui-contents').css('margin-top', viewportTop);
 			}, 50, viewportTop);
 */
-		window.setTimeout(function() {
-				$('#lms-ui-contents')[0].scrollIntoView();
-			}, 50);
+		var contents = $('#lms-ui-contents');
+		if (contents.length) {
+			window.setTimeout(function() {
+					contents[0].scrollIntoView();
+				}, 50);
+		}
 	} else if (history.state) {
 		window.setTimeout(function(scrollTop) {
 				$('#lms-ui-module-view').scrollTop(scrollTop);
