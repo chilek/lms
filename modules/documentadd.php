@@ -346,6 +346,8 @@ if (isset($_POST['document'])) {
             }
 
             if ($selected_assignment['schemaid']) {
+                $schemaid = $selected_assignment['schemaid'];
+
                 // create assignments basing on selected promotion schema
                 $selected_assignment['period'] = $period;
                 $selected_assignment['at'] = $at;
