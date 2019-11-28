@@ -354,7 +354,7 @@ if (isset($_POST['document'])) {
                 $selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
 
                 if (is_array($selected_assignment['stariffid'][$schemaid])) {
-                    $modifiedvalues = $a['values'][$schemaid];
+                    $modifiedvalues = $selected_assignment['values'][$schemaid];
                     $copy_a = $selected_assignment;
                     $snodes = $selected_assignment['snodes'][$schemaid];
                     $sphones = $selected_assignment['sphones'][$schemaid];
