@@ -1605,7 +1605,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetInvoiceList(array $params)
     {
         extract($params);
-        foreach (array('search', 'cat', 'group', 'numberplan', 'exclude', 'hideclosed', 'page') as $var) {
+        foreach (array('search', 'cat', 'group', 'numberplan', 'division', 'exclude', 'hideclosed', 'page') as $var) {
             if (!isset($$var)) {
                 $$var = null;
             }
@@ -1714,6 +1714,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 					AND customerid = d.customerid)' : '')
                 . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
+                . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
                 . ' GROUP BY d.id '
                 . (isset($having) ? $having : '') . ') a');
         }
@@ -1752,6 +1753,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			SELECT 1 FROM customerassignments WHERE customergroupid IN (' . implode(',', $group) . ')
 						AND customerid = d.customerid)' : '')
             . (!empty($numberplan) ? ' AND d.numberplanid IN (' . implode(',', $numberplan) . ')' : '')
+            . (!empty($division) ? ' AND d.divisionid = ' . intval($division) : '')
             .' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid,
 			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name,
 			d.cancelled, d.published, sendinvoices, d.archived, d.currency, d.currencyvalue '

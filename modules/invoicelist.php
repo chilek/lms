@@ -77,6 +77,17 @@ if (isset($_POST['numberplanid'])) {
 }
 $SESSION->save('ilnp', $np);
 
+if (isset($_POST['divisionid'])) {
+    if (empty($_POST['divisionid'])) {
+        $div = 0;
+    } else {
+        $div = $_POST['divisionid'];
+    }
+} else {
+    $SESSION->restore('ildiv', $div);
+}
+$SESSION->save('ildiv', $div);
+
 if (isset($_POST['search'])) {
     $h = isset($_POST['hideclosed']);
 } elseif (($h = $SESSION->get('ilh')) === null) {
@@ -107,7 +118,7 @@ if ($c == 'cdate' && $s && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $s)) {
 }
 
 $total = intval($LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
+    'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'proforma' => $proforma, 'count' => true)));
 
 $limit = intval(ConfigHelper::getConfig('phpui.invoicelist_pagelimit', 100));
 $page = !isset($_GET['page']) ? ceil($total / $limit) : $_GET['page'];
@@ -118,7 +129,7 @@ $page = intval($page);
 $offset = ($page - 1) * $limit;
 
 $invoicelist = $LMS->GetInvoiceList(array('search' => $s, 'cat' => $c, 'group' => $g, 'exclude'=> $ge,
-    'numberplan' => $np, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset, 'proforma' => $proforma,
+    'numberplan' => $np, 'division' => $div, 'hideclosed' => $h, 'order' => $o, 'limit' => $limit, 'offset' => $offset, 'proforma' => $proforma,
     'count' => false));
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
@@ -128,6 +139,7 @@ $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
 $SESSION->restore('ilnp', $listdata['numberplanid']);
+$SESSION->restore('ildiv', $listdata['divisionid']);
 $SESSION->restore('ilh', $listdata['hideclosed']);
 
 $listdata['total'] = $total;
@@ -165,5 +177,6 @@ $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
 )));
 
 $SMARTY->assign('proforma', $proforma);
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->display('invoice/invoicelist.html');

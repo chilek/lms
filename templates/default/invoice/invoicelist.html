@@ -102,6 +102,13 @@
 						<OPTION value="{$plan.id}"{if !empty($listdata.numberplanid) && in_array($plan.id, $listdata.numberplanid)} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
 					{/foreach}
 				</SELECT>
+				{trans("Division")}:
+				<select size="1" name="divisionid" {tip text="Select division"}>
+					<OPTION value="0">- {trans("all")} -</OPTION>
+					{foreach $divisions as $division}
+						<option value="{$division.id}"{if $division.id == $listdata.divisionid} selected{/if}>{$division.shortname}</option>
+					{/foreach}
+				</select>
 				{trans("Group:")}
 				<input type="hidden" name="group" value="all">
 				<SELECT size="1" name="group[]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all groups -")}">
