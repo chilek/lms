@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #LMS Dependencies
-apt install -y php7.3 apache2 postgresql php7.3-gd git bash-completion net-tools patch wget mtr php-pgsql php-bcmath php-soap php-snmp php-imap composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl php-pear makepasswd sudo bsd-mailx
+apt install -y php7.3 apache2 postgresql php-gd git bash-completion net-tools patch wget mtr php-pgsql php-bcmath php-soap php-snmp php-imap composer libdbi-perl libconfig-inifiles-perl libdbd-pg-perl php-pear makepasswd sudo bsd-mailx php-gmp
 
 dbname='lmsdb'
 dbuser='lmsdbuser'
