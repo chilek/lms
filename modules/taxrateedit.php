@@ -65,7 +65,7 @@ if (count($taxrateedit)) {
         $error['value'] = trans('Incorrect tax rate percentage value (0-100)!');
     } elseif ($taxrateedit['value'] != $taxrate['value']) {
         if ($DB->GetOne('SELECT COUNT(*) FROM cash WHERE taxid=?', array($taxrateedit['id'])) +
-            $DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE taxid=?', array($taxrateedit['id'])) > 0 ) {
+            $DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE taxid=?', array($taxrateedit['id'])) > 0) {
             $error['value'] = trans('Can\'t change value of tax rate which was used in the past!');
         }
     }

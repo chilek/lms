@@ -278,7 +278,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
             );
         } else {
             if (!$netnodedata['address_id'] || $netnodedata['address_id']
-                && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($netnodedata['address_id'])) ) {
+                && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($netnodedata['address_id']))) {
                 $address_id = $location_manager->InsertAddress($netnodedata);
 
                 $this->db->Execute(

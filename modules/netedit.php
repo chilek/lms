@@ -101,7 +101,7 @@ if (isset($_POST['networkdata'])) {
                     }
                     
                     if (($node['first'] && $node['first'] < $networkdata['addresslong']) ||
-                        ($node['last'] && $node['last'] >= ip_long(getbraddr($networkdata['address'], prefix2mask($networkdata['prefix'])))) ) {
+                        ($node['last'] && $node['last'] >= ip_long(getbraddr($networkdata['address'], prefix2mask($networkdata['prefix']))))) {
                         $shift = $networkdata['addresslong'] - $network['addresslong'];
                         if ($node['first'] + $shift < $networkdata['addresslong'] ||
                             $node['last'] + $shift >= ip_long(getbraddr($networkdata['address'], prefix2mask($networkdata['prefix'])))
