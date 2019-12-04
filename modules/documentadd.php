@@ -332,7 +332,7 @@ if (isset($_POST['document'])) {
         if (isset($selected_assignment)) {
             $selected_assignment['docid'] = $docid;
             $selected_assignment['customerid'] = $document['customerid'];
-            $selected_assignment['reference'] = $document['reference']['id'];
+            $selected_assignment['reference'] = isset($document['reference']['id']) ? $document['reference']['id'] : null;
             if (empty($from)) {
                 list ($year, $month, $day) = explode('/', date('Y/m/d'));
                 $selected_assignment['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
