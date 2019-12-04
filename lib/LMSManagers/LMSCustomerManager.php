@@ -537,6 +537,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $customer_statuses = array();
         $state_conditions = array();
 
+        if (!isset($state) || !is_array($state)) {
+            $state = array();
+        }
         foreach ($state as $state_item) {
             switch ($state_item) {
                 case 50:
