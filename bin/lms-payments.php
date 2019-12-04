@@ -433,7 +433,7 @@ $query = "SELECT a.id, a.tariffid, a.liabilityid, a.customerid, a.recipient_addr
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) * a.count AS value,
-		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,	
+		(CASE WHEN a.liabilityid IS NULL THEN t.currency ELSE l.currency END) AS currency,
 		a.count AS count,
 		(SELECT COUNT(id) FROM assignments
 			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
@@ -470,6 +470,7 @@ $query = "SELECT
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value, t.currency, voipphones.phones,
 			'set' AS liabilityid, '$billing_invoice_description' AS name,
+			? AS count,
 			(SELECT COUNT(id)
 				FROM assignments
 				WHERE
@@ -529,7 +530,7 @@ $query = "SELECT
         .(!empty($groupnames) ? $customergroups : "")
     ." ORDER BY a.customerid, a.recipient_address_id, a.invoice, a.paytype, a.numberplanid, a.separatedocument, currency, voipcost.value DESC, a.id";
 
-$billings = $DB->GetAll($query, array(CTYPES_PRIVATE, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
+$billings = $DB->GetAll($query, array(CTYPES_PRIVATE, 1, CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, SERVICE_PHONE,
     DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $last_dom ? 0 : $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
     $currtime, $currtime));
 
