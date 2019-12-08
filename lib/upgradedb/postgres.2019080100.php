@@ -28,7 +28,7 @@ $this->Execute("
 		REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE;
 	ALTER TABLE uiconfig ADD COLUMN configid integer DEFAULT NULL
 		REFERENCES uiconfig (id) ON UPDATE CASCADE ON DELETE RESTRICT;
-    ALTER TABLE uiconfig DROP CONSTRAINT uiconfig_section_key;
+        ALTER TABLE uiconfig DROP CONSTRAINT IF EXISTS uiconfig_section_key;
 	ALTER TABLE uiconfig ADD CONSTRAINT uiconfig_section_key UNIQUE (section, var, userid);
 ");
 
