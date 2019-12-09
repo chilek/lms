@@ -540,7 +540,7 @@
 	function new_transfer_form_type_changed() {
 		var type = $('[name="newtransferform"]').val();
 		$('#newtransferformanchor').attr('href', '?m=customertransferform&id={$balancelist.customerid}&type=' + type +
-			'value=' + $('[name="newtransferformcustomvalue"]').val());
+			'&value=' + $('[name="newtransferformcustomvalue"]').val());
 		if (type == {LMSHtmlTransferForm::VALUE_CUSTOM}) {
 			$('[name="newtransferformcustomvalue"]').show().focus();
 		} else {
