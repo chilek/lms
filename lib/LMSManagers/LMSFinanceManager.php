@@ -1181,11 +1181,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // promotion schema
                 case -2:
                     $schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
-                    if (count($a['stariffid'][$schemaid]) == 1) {
-                        $a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
-                    } else {
-                        $a['promotiontariffid'] = $a['stariffid'][$schemaid];
-                    }
+                    $a['promotiontariffid'] = $a['stariffid'][$schemaid];
 
                     $values = $a['values'][$schemaid];
                     foreach ($a['promotiontariffid'] as $label => $tariffid) {
