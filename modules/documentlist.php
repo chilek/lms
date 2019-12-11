@@ -135,6 +135,18 @@ if (!isset($_GET['init'])) {
     $SESSION->saveFilter($filter);
 }
 
+if (isset($_GET['init'])) {
+    $default_current_period = ConfigHelper::getConfig('phpui.documentlist_default_current_period', '', true);
+    if (preg_match('/^(day|month)$/', $default_current_period)) {
+        list ($year, $month, $day) = explode('/', date('Y/m/d'));
+        if ($default_current_period == 'day') {
+            $filter['from'] = mktime(0, 0, 0, $month, $day, $year);
+        } else {
+            $filter['from'] = mktime(0, 0, 0, $month, 1, $year);
+        }
+    }
+}
+
 $filter['count'] = true;
 $filter['total'] = intval($LMS->GetDocumentList($filter));
 
@@ -145,10 +157,17 @@ if (empty($filter['page'])) {
 }
 $filter['offset'] = ($filter['page'] - 1) * $filter['limit'];
 
-$SESSION->saveFilter($filter);
-
 $filter['count'] = false;
 $documentlist = $LMS->GetDocumentList($filter);
+
+//if (isset($_GET['init']) && isset($filter['from'])) {
+//    $from = $filter['from'];
+//    unset($filter['from']);
+//    $SESSION->saveFilter($filter);
+//    $filter['from'] = $from;
+//} else {
+    $SESSION->saveFilter($filter);
+//}
 
 $pagination = LMSPaginationFactory::getPagination(
     $filter['page'],

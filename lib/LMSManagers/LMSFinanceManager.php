@@ -2878,6 +2878,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 case 'cdate':
                     $where = ' AND cash.time >= '.intval($search).' AND cash.time < '.(intval($search)+86400);
                     break;
+                case 'month':
+                    $where = ' AND cash.time >= ' . intval($search) . ' AND cash.time < ' . strtotime('+1 month', $search);
+                    break;
                 case 'ten':
                     $where = ' AND c.ten = ' . $this->db->Escape($search);
                     break;

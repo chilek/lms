@@ -24,10 +24,23 @@
  *  $Id$
  */
 
+$default_current_period = ConfigHelper::getConfig('phpui.balancelist_default_current_period', '', true);
+if (!preg_match('/^(day|month)$/', $default_current_period)) {
+    $default_current_period = '';
+}
+
 if (isset($_POST['search'])) {
         $s = $_POST['search'];
 } else {
     $SESSION->restore('bls', $s);
+}
+if (!isset($s) && $default_current_period) {
+    list ($year, $month, $day) = explode('/', date('Y/m/d'));
+    if ($default_current_period == 'day') {
+        $s = date('Y/m/d', mktime(0, 0, 0, $month, $day, $year));
+    } else {
+        $s = date('Y/m', mktime(0, 0, 0, $month, 1, $year));
+    }
 }
 
 if (isset($_POST['cat'])) {
@@ -35,8 +48,12 @@ if (isset($_POST['cat'])) {
 } else {
     $SESSION->restore('blc', $c);
 }
-if (!isset($c)) {
-    $c="cdate";
+if (!isset($c) && $default_current_period) {
+    if ($default_current_period == 'day') {
+        $c = 'cdate';
+    } else {
+        $c = 'month';
+    }
 }
 $SESSION->save('blc', $c);
 
@@ -52,12 +69,18 @@ $SESSION->save('blge', $ge);
 
 $SESSION->save('bls', $s);
 
-if ($c == 'cdate' && $s) {
-    $date = date_to_timestamp($s);
-    if (empty($date)) {
-        $s = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
-    } else {
-        $s = $date;
+if (($c == 'cdate' || $c == 'month') && $s) {
+    if (preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})(?:\/(?<day>[0-9]{2}))?$/', $s, $m)) {
+        if (!isset($m['day'])) {
+            $m['day'] = 1;
+        }
+        if (checkdate($m['month'], $m['day'], $m['year'])) {
+            $s = $date = mktime(0, 0, 0, $m['month'], $m['day'], $m['year']);
+        }
+    }
+    if (!isset($date)) {
+        list ($year, $month, $day) = explode('/', date('Y/m/d'));
+        $s = mktime(0, 0, 0, $month, $c == 'cdate' ? $day : 1, $year);
     }
 }
 
