@@ -342,6 +342,7 @@
 				<OPTION VALUE="{$statusidx}">{$status.plurallabel}</OPTION>
 				{/foreach}
 				<OPTION VALUE="50">{trans("deleted<!plural>")}</OPTION>
+				<OPTION VALUE="72">{trans("existing<!plural>")}</OPTION>
 				<OPTION VALUE="51">{trans("with disconnected nodes")}</OPTION>
 				{if !ConfigHelper::checkPrivilege('hide_finances')}
 					<OPTION VALUE="52">{trans("in debt")}</OPTION>

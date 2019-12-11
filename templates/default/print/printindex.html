@@ -38,6 +38,8 @@
 										{foreach $_CSTATUSES as $statusidx => $status}
 										<OPTION value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} selected{/if}>{$status.plurallabel}</OPTION>
 										{/foreach}
+										<OPTION VALUE="50">{trans("deleted<!plural>")}</OPTION>
+										<OPTION VALUE="72">{trans("existing<!plural>")}</OPTION>
 										<OPTION value="51">{trans("with disconnected nodes")}</OPTION>
 										<OPTION value="63">{trans("with connected nodes")}</OPTION>
 										<OPTION value="52">{trans("in debt")}</OPTION>

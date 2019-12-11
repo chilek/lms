@@ -113,6 +113,7 @@
 				<OPTION VALUE="{$statusidx}"{if $filter.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
 				{/foreach}
 				<OPTION VALUE="50"{if $filter.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
+				<OPTION VALUE="72"{if $filter.state == 72} SELECTED{/if}>{trans("existing<!plural>")}</OPTION>
 				<OPTION VALUE="51"{if $filter.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
 				{if !ConfigHelper::checkPrivilege('hide_finances')}
 					<OPTION VALUE="52"{if $filter.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>

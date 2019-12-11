@@ -640,6 +640,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $overduereceivables = 1;
                     $state_conditions[] = 'b2.balance < 0';
                     break;
+                case 72:
+                    $state_conditions[] = 'c.deleted = 0';
+                    break;
                 default:
                     if ($state_item > 0 && $state_item < 50 && intval($state_item)) {
                         $customer_statuses[] = intval($state_item);
