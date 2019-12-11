@@ -123,6 +123,9 @@ version 25-git (????-??-??):
     phpui.timetable_working_hours (default "08:00-19:00")
     and phpui.timetable_working_hours_interval (default: '30' [minutes])[ravvar]
   - enhancement: allow to filter invoice list by selected division [chilan]
+  - enhancement: 'phpui.balancelist_default_current_period' and 'phpui.documentlist_default_current_period'
+    specify default current period in balance list and document list
+    (they are undefined by default) [chilan]
 
 version 24.0 (2019-05-16):
 
