@@ -198,20 +198,20 @@ if (!empty($_POST['marks'])) {
         } else {
             header('Content-Type: ' . $doc['contenttype']);
 
-            if (!preg_match('/^text/i', $doc['contenttype'])) {
-                $pdf = preg_match('/pdf/i', $doc['contenttype']);
-                if (empty($_GET['save'])) {
+            $pdf = preg_match('/pdf/i', $doc['contenttype']);
+            if (isset($_GET['save'])) {
+                header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
+            } else {
+                if (!preg_match('/^text/i', $doc['contenttype'])) {
                     if ($pdf) {
-                        header('Content-Disposition: inline; filename="'.$doc['filename'] . '"');
+                        header('Content-Disposition: inline; filename="' . $doc['filename'] . '"');
                         header('Content-Transfer-Encoding: binary');
                         header('Content-Length: ' . filesize($filename) . ' bytes');
                     } else {
-                        header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
+                        header('Content-Disposition: attachment; filename="' . $doc['filename'] . '"');
                     }
-                } else {
-                    header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
+                    header('Pragma: public');
                 }
-                header('Pragma: public');
             }
 
             readfile($filename);
