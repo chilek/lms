@@ -23,7 +23,13 @@
  *  $Id$
  */
 
+$_LANG['Networks don\'t have the same mask!'] = 'Sieci nie posiadają tej samej maski!';
+$_LANG['Source address $a ($b) collides with destination address $c ($d)!'] = 'Adres źródłowy $a ($b) koliduje z adresem docelowym $c ($d)!';
+$_LANG['with compacting'] = 'z porządkowaniem';
+$_LANG['Network readdressing errors'] = 'Błędy przeadresowania sieci';
+
 $_LANG['split payment'] = 'podzielona płatność';
+$_LANG['Split payment:'] = 'Podzielona płatność:';
 $_LANG['(split payment)'] = '(podzielona płatność)';
 
 $_LANG['There is no assigned parent ticket.'] = 'Nie ma przypisanego zgłoszenia nadrzędnego.';
@@ -350,6 +356,7 @@ $_LANG['Attachment:'] = 'Załącznik:';
 $_LANG['Attachments:'] = 'Załączniki:';
 $_LANG['Avg. monthly income:'] = 'Śr. mies. przychód:';
 $_LANG['awaiting'] = 'oczekujący';
+$_LANG['Awaiting'] = 'oczekujący';
 $_LANG['List of awaiting customers $a'] = 'Lista klientów oczekujących $a';
 $_LANG['<B>$a</B>'] = '<B>$a</B>';
 $_LANG['Backup Delete'] = 'Backup Delete';
@@ -443,8 +450,10 @@ $_LANG['Connect'] = 'Podłącz';
 $_LANG['Connect All'] = 'Podłącz wszystkie';
 $_LANG['connected<!plural:item>'] = 'podłączone';
 $_LANG['connected<!plural>'] = 'podłączeni';
+$_LANG['existing<!plural>'] = 'istniejący';
 $_LANG['connected<!singular>'] = 'podłączony';
 $_LANG['Connected:'] = 'Podłączeni:';
+$_LANG['Connected<!status>'] = 'podłączony';
 $_LANG['List of Connected Customers $a$b'] = 'Lista podłączonych klientów $a$b';
 $_LANG['List of Debt Collection Customers $a$b'] = 'Lista windykowanych klientów $a$b';
 $_LANG['Connected devices ($a):'] = 'Podłączone urządzenia ($a):';
@@ -587,6 +596,7 @@ $_LANG['disconnected<!plural:item>'] = 'odłączone';
 $_LANG['disconnected<!plural>'] = 'odłączeni';
 $_LANG['disconnected<!singular>'] = 'odłączony';
 $_LANG['Disconnected:'] = 'Odłączone:';
+$_LANG['Disconnected<!status>'] = 'odłączony';
 $_LANG['Documents List'] = 'Lista dokumentów';
 $_LANG['List of Disconnected Customers $a$b'] = 'Lista klientów odłączonych $a$b';
 $_LANG['List of Disconnected Nodes'] = 'Lista odłączonych komputerów';
@@ -962,6 +972,7 @@ $_LANG['in debt (expired)'] = 'zadłużeni (przeterminowane)';
 $_LANG['Indicator (+R)'] = 'Wskaźniki (+O)';
 $_LANG['Nodes List for Customers In Debt'] = 'Lista komputerów zadłużonych klientów';
 $_LANG['Indebted Customers List $a$b'] = 'Lista klientów zadłużonych $a$b';
+$_LANG['Indebted<!status>'] = 'zadłużony';
 $_LANG['indebted owner'] = 'zadłużony właściciel';
 $_LANG['Info'] = 'Informacje';
 $_LANG['Info Network: $a'] = 'Informacje o Sieci: $a';
@@ -978,6 +989,7 @@ $_LANG['interested<!plural>'] = 'zainteresowani';
 $_LANG['interested<!singular>'] = 'zainteresowany';
 $_LANG['Interested:'] = 'Zainteresowani:';
 $_LANG['Interested Customers List $a'] = 'Lista zainteresowanych klientów $a';
+$_LANG['Interested<!status>'] = 'zainteresowany';
 $_LANG['Interface:'] = 'Interfejs:';
 $_LANG['Invalid chars in group name!'] = 'Niedozwolone znaki w nazwie grupy!';
 $_LANG['Invalid date format!'] = 'Nieprawidłowy format daty!';
@@ -1156,7 +1168,7 @@ $_LANG['Producer'] = 'Producent';
 $_LANG['Name/Surname:'] = 'Nazwa/Nazwisko:';
 $_LANG['First/last or Company name'] = 'Nazwa/Nazwisko i imię';
 $_LANG['First/last or Company name:'] = 'Nazwa/Nazwisko i imię:';
-$_LANG[' (Net: $a)'] = ' (Sieć: $a)';
+$_LANG['Network: $a'] = 'Sieć: $a';
 $_LANG['Net device:'] = 'Urządzenie sieciowe:';
 $_LANG['Net devices:'] = 'Urządzenia sieciowe:';
 $_LANG['Net Devices'] = 'Osprzęt sieciowy';
@@ -1766,6 +1778,7 @@ $_LANG['With receipt:'] = 'W tym faktury wyst. na podst. parag. fisk.:';
 $_LANG['with invoice'] = 'z fakturą';
 $_LANG['Without receipt:'] = 'Różnica (kwoty do uwzgl. w VAT-7):';
 $_LANG['without nodes'] = 'bez komputerów';
+$_LANG['Without Nodes'] = 'bez komputerów';
 $_LANG['with warning'] = 'z ostrzeżeniem';
 $_LANG['With warning'] = 'Z ostrzeżeniem';
 $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybierz maskę';
@@ -2377,6 +2390,7 @@ $_LANG['month (YYYY/MM)'] = 'miesiąc (RRRR/MM)';
 $_LANG['day (YYYY/MM/DD)'] = 'dzień (RRRR/MM/DD)';
 $_LANG['Allows you to search for account, alias, domain'] = 'Wyszukiwanie kont, aliasów, domen';
 $_LANG['Enter login or it\'s fragment'] = 'Wprowadź login lub jego fragment';
+$_LANG['Enter login (optional)'] = 'Wprowadź login (opcjonalnie)';
 $_LANG['Enter prefix'] = 'Wprowadź prefiks';
 $_LANG['Enter account or alias name and press Enter'] = 'Wprowadź nazwę konta lub aliasu i naciśnij Enter';
 $_LANG['Enter domain name or it\'s fragment'] = 'Wprowadź nazwę domeny lub jej fragment';
@@ -3259,6 +3273,10 @@ $_LANG['network link<!syslog>'] = 'połączenie sieciowe';
 $_LANG['management url<!syslog>'] = 'adres url do zarządzania';
 $_LANG['template<!syslog>'] = 'szablon';
 $_LANG['radio sector<!syslog>'] = 'sektor radiowy';
+$_LANG['event<!syslog>'] = 'zdarzenie terminarza';
+$_LANG['event assignment<!syslog>'] = 'powiązanie użytkownika ze zdarzeniem terminarza';
+$_LANG['address<!syslog>'] = 'adres';
+$_LANG['ticket<!syslog>'] = 'zgłoszenie Helpdesk';
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';
 $_LANG['update<!syslog>'] = 'aktualizacja';
@@ -3600,8 +3618,11 @@ $_LANG['Document number:'] = 'Numer dokumentu:';
 $_LANG['Customer e-mail:'] = 'E-mail klienta:';
 
 $_LANG['without contracts'] = 'bez umów';
+$_LANG['Without Contracts'] = 'bez umów';
 $_LANG['with expired contracts'] = 'z przeterminowanymi umowami';
+$_LANG['Expired Contracts'] = 'przeterminowane umowy';
 $_LANG['with expiring contracts'] = 'z umowami bliskimi przeterminowania';
+$_LANG['Expiring Contracts'] = 'umowy bliskie przeterminowania';
 $_LANG['Customers Without Contracts List $a$b'] = 'Lista klientów bez umów $a$b';
 $_LANG['Customers With Expired Contracts List $a$b'] = 'Lista klientów z przeterminowanymi umowami $a$b';
 $_LANG['Customers With Expiring Contracts List $a$b'] = 'Lista klientów z umowami bliskimi przeterminowania $a$b';
@@ -3737,6 +3758,7 @@ $_LANG['with nodes'] = 'z komputerami';
 
 $_LANG['debt collection'] = 'windykacja należności';
 $_LANG['Debt Collection:<!summary>'] = 'Windykacja należności:';
+$_LANG['Debt Collection<!status>'] = 'windykacja należności';
 
 $_LANG['All sessions'] = 'Wszystkie sesje';
 $_LANG['Node Sessions'] = 'Sesje komputerów';
@@ -4090,6 +4112,8 @@ $_LANG['<!settlement>current period'] = 'bieżący okres';
 
 $_LANG['Assign to node group'] = 'Przypisz do grupy komputerów';
 $_LANG['Unassign from node group'] = 'Usuń z grupy komputerów';
+$_LANG['Assign to customer group'] = 'Przypisz do grupy klientów';
+$_LANG['Unassign from customer group'] = 'Usuń z grupy klientów';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia operacja nie została jeszcze zakończona!';
 
 $_LANG['Download burst time:'] = 'Download burst time:';
@@ -4489,3 +4513,12 @@ $_LANG['last day of month'] = 'ostatni dzień miesiąca';
 $_LANG['last day'] = 'ostatni dzień';
 
 $_LANG['No document of given type has been selected!'] = 'Żaden dokument danego typu nie został wskazany!';
+
+$_LANG['Schedule'] = 'Plan';
+
+$_LANG['and<!operator>'] = 'i';
+$_LANG['or<!operator>'] = 'lub';
+$_LANG['$a Customer List $b'] = 'Lista klientów o statusie $a $b';
+
+$_LANG['No document has been selected!'] = 'Żaden dokument nie został wybrany!';
+$_LANG['One or more of selected documents are not confirmed!'] = 'Jeden lub więcej spośród wybranych dokumentów nie jest zatwierdzony!';

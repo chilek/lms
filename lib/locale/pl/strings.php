@@ -4517,3 +4517,6 @@ $_LANG['Schedule'] = 'Plan';
 $_LANG['and<!operator>'] = 'i';
 $_LANG['or<!operator>'] = 'lub';
 $_LANG['$a Customer List $b'] = 'Lista klientów o statusie $a $b';
+
+$_LANG['No document has been selected!'] = 'Żaden dokument nie został wybrany!';
+$_LANG['One or more of selected documents are not confirmed!'] = 'Jeden lub więcej spośród wybranych dokumentów nie jest zatwierdzony!';
