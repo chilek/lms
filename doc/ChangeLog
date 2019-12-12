@@ -127,6 +127,7 @@ version 25-git (????-??-??):
     specify default current period in balance list and document list
     (they are undefined by default) [chilan]
   - enhancement: existing (not deleted) filter in customer list [chilan]
+  - enhancement: allow to select location without end-points in promotion schema selection window [chilan]
 
 version 24.0 (2019-05-16):
 

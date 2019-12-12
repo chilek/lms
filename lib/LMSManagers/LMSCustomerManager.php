@@ -1790,4 +1790,36 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         return $options;
     }
+
+    public function GetCustomerAddressesWithoutEndPoints($customerid)
+    {
+        $customerid = intval($customerid);
+
+        return $this->db->GetAllByKey(
+            'SELECT * FROM vaddresses a
+                JOIN customer_addresses ca ON ca.address_id = a.id
+                WHERE ca.customer_id = ? AND a.id NOT IN (
+                    (
+                        SELECT DISTINCT (CASE WHEN nd.address_id IS NULL
+                                THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
+                                ELSE nd.address_id END
+                            ) AS address_id FROM netdevices nd
+                        LEFT JOIN customer_addresses ca ON ca.customer_id = nd.ownerid AND ca.type = ?
+                        LEFT JOIN customer_addresses ca2 ON ca2.customer_id = nd.ownerid AND ca.type = ?
+                        WHERE nd.ownerid = ?
+                    ) UNION (
+                        SELECT DISTINCT (CASE WHEN n.address_id IS NULL
+                                THEN (CASE WHEN ca.address_id IS NULL THEN ca2.address_id ELSE ca.address_id END)
+                                ELSE n.address_id END
+                            ) AS address_id FROM nodes n
+                        LEFT JOIN customer_addresses ca ON ca.customer_id = n.ownerid AND ca.type = ?
+                        LEFT JOIN customer_addresses ca2 ON ca2.customer_id = n.ownerid AND ca.type = ?
+                        WHERE n.ownerid = ?
+                    )
+                )',
+            'id',
+            array($customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid, DEFAULT_LOCATION_ADDRESS, BILLING_ADDRESS, $customerid)
+        );
+    }
 }
+

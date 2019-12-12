@@ -370,12 +370,24 @@ function CustomerAssignmentHelper(options) {
 
 				options = '<option value="">' + $t('- all -') + '</option>';
 				if (data.locations) {
+					options += '<optgroup label="' + $t("with end-points") + '">';
 					$.each(data.locations, function(key, value) {
 						options += '<option value="' + value + '"' +
 							(("location" in selected) && selected.location == value ? ' selected' : '') + '>' +
 							value + '</option>';
 					});
+					options += '</optgroup>';
 				}
+				if (data['without-end-points']) {
+					options += '<optgroup label="' + $t("without end-points") + '">';
+					$.each(data['without-end-points'], function(key, value) {
+						options += '<option value="' + value['location'] + '"' +
+							(("location" in selected) && selected.location == value['location'] ? ' selected' : '') + '>' +
+							value['location'] + '</option>';
+					});
+					options += '</optgroup>';
+				}
+
 				$('#location-select').html(options);
 
 				options = '<option value="-1">' + $t('none') + '</option>';

@@ -34,6 +34,7 @@ $data = array(
 
 if (isset($_GET['customerid'])) {
     $data['locations'] = $LMS->GetUniqueNodeLocations($_GET['customerid']);
+    $data['without-end-points'] = $LMS->GetCustomerAddressesWithoutEndPoints($_GET['customerid']);
     $data['nodes'] = $LMS->GetCustomerNodes($_GET['customerid']);
     $data['netdevnodes'] = $LMS->getCustomerNetDevNodes($_GET['customerid']);
     $data['voipaccounts'] = $LMS->GetCustomerVoipAccounts($_GET['customerid']);

@@ -4522,3 +4522,6 @@ $_LANG['No document has been selected!'] = 'Żaden dokument nie został wybrany!
 $_LANG['One or more of selected documents are not confirmed!'] = 'Jeden lub więcej spośród wybranych dokumentów nie jest zatwierdzony!';
 
 $_LANG['Purpose:'] = 'Przeznaczenie:';
+
+$_LANG['with end-points'] = 'z punktami końcowymi';
+$_LANG['without end-points'] = 'bez punktów końcowych';

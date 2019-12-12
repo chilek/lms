@@ -69,7 +69,7 @@ class LMS
 
     public function __construct(&$DB, &$AUTH, &$SYSLOG)
     {
-    // class variables setting
+        // class variables setting
         $this->DB = &$DB;
         $this->AUTH = &$AUTH;
         $this->SYSLOG = &$SYSLOG;
@@ -217,7 +217,7 @@ class LMS
 
     public function DBDump($filename = null, $gzipped = false, $stats = false)
     {
- // dump database to file
+        // dump database to file
         $dbtype = ConfigHelper::getConfig('database.type');
 
         if (!$filename) {
@@ -350,7 +350,7 @@ class LMS
 
     public function DatabaseCreate($gzipped = false, $stats = false)
     {
- // create database backup
+        // create database backup
         $basename = 'lms-' . time() . '-' . DBVERSION;
         if (($gzipped) && (extension_loaded('zlib'))) {
             $filename = $basename . '.sql.gz';
@@ -677,6 +677,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerSMSOptions();
+    }
+
+    public function GetCustomerAddressesWithoutEndPoints($customerid)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerAddressesWithoutEndPoints($customerid);
     }
 
     /*

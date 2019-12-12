@@ -91,4 +91,6 @@ interface LMSCustomerManagerInterface
     public function isSplitPaymentSuggested($customerid, $cdate, $value);
 
     public function getCustomerSMSOptions();
+
+    public function GetCustomerAddressesWithoutEndPoints($customerid);
 }
