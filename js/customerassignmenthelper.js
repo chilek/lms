@@ -393,9 +393,9 @@ function CustomerAssignmentHelper(options) {
 				if (data['without-end-points']) {
 					options += '<optgroup label="' + $t("without end-points") + '">';
 					$.each(data['without-end-points'], function(key, value) {
-						options += '<option value="' + value['location'] + '"' +
-							(("location" in selected) && selected.location == value['location'] ? ' selected' : '') + '>' +
-							value['location'] + '</option>';
+						options += '<option value="' + value.location + '"' +
+							(("location" in selected) && selected.location == value.location ? ' selected' : '') + '>' +
+							value.location + '</option>';
 					});
 					options += '</optgroup>';
 				}
