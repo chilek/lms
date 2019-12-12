@@ -226,6 +226,9 @@ function multiselect(options) {
 		updateCheckAll();
 
 		$(checkall_div).click(function(e) {
+			if (!all_items.filter(':visible').length) {
+				return;
+			}
 			if (!$(e.target).is('input.checkall')) {
 				var checkbox = $('.checkall', this);
 				checkbox.prop('checked', !checkbox.prop('checked'))
@@ -408,6 +411,7 @@ function multiselect(options) {
 	this.hideOption = function(index) {
 		$(all_items.get(index)).removeClass('selected').hide()
 			.find('input:checkbox').prop('checked', false);
+		updateCheckAll();
 	}
 
 	this.refreshSelection = function() {

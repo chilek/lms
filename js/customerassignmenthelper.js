@@ -154,26 +154,33 @@ function CustomerAssignmentHelper(options) {
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
-		var ms;
+		var ms = [];
 		if (tarifftype == helper.phoneTariffType) {
-			ms = tr.find('div.phones .lms-ui-multiselect').data('multiselect-object');
+			ms.push(tr.find('div.phones .lms-ui-multiselect'));
 		} else {
-			ms = tr.find('div.nodes .lms-ui-multiselect,div.netdevnodes .lms-ui-multiselect').data('multiselect-object');
+			ms.push(tr.find('div.nodes .lms-ui-multiselect'));
+			ms.push(tr.find('div.netdevnodes .lms-ui-multiselect'));
 		}
-        if (!ms) {
+        if (!ms.length) {
 			return;
 		}
-		ms.getOptions().each(function(key) {
-			var authtype = parseInt($(this).attr('data-tariffaccess'));
-			var location = $(this).attr('data-location');
-			if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
-				(location == location_select || !location_select.length)) {
-				ms.showOption(key);
-			} else {
-				ms.hideOption(key);
+        $.each(ms, function(index, select) {
+			if (!select) {
+				return;
 			}
+        	var ms = select.data('multiselect-object');
+			ms.getOptions().each(function (key) {
+				var authtype = parseInt($(this).attr('data-tariffaccess'));
+				var location = $(this).attr('data-location');
+				if (((authtype && (authtype & tariffaccess)) || !tariffaccess) &&
+					(location == location_select || !location_select.length)) {
+					ms.showOption(key);
+				} else {
+					ms.hideOption(key);
+				}
+			});
+			ms.refreshSelection();
 		});
-		ms.refreshSelection();
 	}
 
 	this.tariffCheckboxHandler = function() {
