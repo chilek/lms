@@ -402,11 +402,19 @@ if (isset($_POST['document'])) {
 
     $default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
     if (!empty($default_assignment_invoice)) {
-        $document['assignment']['invoice'] = true;
+        if (preg_match('/^[0-9]+$/', $default_assignment_invoice)) {
+            $document['assignment']['invoice'] = $default_assignment_invoice;
+        } elseif (ConfigHelper::checkValue($default_assignment_invoice)) {
+            $document['assignment']['invoice'] = DOC_INVOICE;
+        }
     }
     $default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
     if (!empty($default_assignment_settlement)) {
-        $document['assignment']['settlement'] = true;
+        if (preg_match('/^[0-9]+$/', $default_assignment_settlement)) {
+            $document['assignment']['settlement'] = $default_assignment_settlement;
+        } elseif (ConfigHelper::checkValue($default_assignment_settlement)) {
+            $document['assignment']['settlement'] = 1;
+        }
     }
     $default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
     if (!empty($default_assignment_period)) {
