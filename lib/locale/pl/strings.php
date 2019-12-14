@@ -4525,3 +4525,4 @@ $_LANG['Purpose:'] = 'Przeznaczenie:';
 
 $_LANG['with end-points'] = 'z punktami końcowymi';
 $_LANG['without end-points'] = 'bez punktów końcowych';
+$_LANG['indefinitely'] = 'bezterminowo';
