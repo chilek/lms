@@ -61,7 +61,7 @@
 			{/if}
 
 			{foreach $documents as $doc}
-			<div class="lms-ui-tab-table-row{if $doc.closed} blend{/if}{if $doc.archived} lms-ui-document-archived{/if}">
+			<div class="lms-ui-tab-table-row{if $doc.closed} lms-ui-document-closed{/if}{if $doc.archived} lms-ui-document-archived{/if}">
 
 				<div class="lms-ui-tab-table-wrapper col-6">
 					<div class="lms-ui-tab-table-wrapper col-4">
