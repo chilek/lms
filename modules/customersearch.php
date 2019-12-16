@@ -51,7 +51,7 @@ if (isset($_POST['search'])) {
     }
     if ($search['balance_date']) {
         list ($year, $month, $day) = explode('/', $search['balance_date']);
-        $time = mktime(23, 59, 59, $month, $day, $year);
+        $search['balance_date'] = mktime(23, 59, 59, $month, $day, $year);
     }
 }
 
@@ -59,6 +59,10 @@ if (!isset($search)) {
     $SESSION->restore('customersearch', $search);
 } else {
     $SESSION->save('customersearch', $search);
+}
+
+if (isset($search['balance_date']) && !empty($search['balance_date'])) {
+    $time = intval($search['balance_date']);
 }
 
 if (!isset($_GET['o'])) {
@@ -131,8 +135,7 @@ if (isset($_GET['search'])) {
         "time",
         "sqlskey",
         "nodegroup",
-        "division",
-        "time"
+        "division"
     ));
 
     $listdata['total'] = $customerlist['total'];
