@@ -94,18 +94,25 @@ if (!empty($schema['tariffs'])) {
     $schema['selections'] = array_unique($schema['selections']);
 }
 
-$tariffs = $DB->GetAll('SELECT t.name, t.value, t.id, t.upceil, t.downceil
-    FROM tariffs t
-    ' . (ConfigHelper::checkConfig('phpui.promotion_tariff_duplicates') ? '' : ' WHERE t.id NOT IN (
-        SELECT tariffid FROM promotionassignments
-        WHERE promotionschemaid = ?)') . '
-    ORDER BY t.name, t.value DESC', array($schema['id']));
+$tariffs = $DB->GetAllByKey('SELECT t.id, t.name, t.value, t.currency, t.authtype,
+				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
+				uprate, downrate, upceil, downceil,
+				t.type AS tarifftype, ' . $DB->GroupConcat('ta.tarifftagid') . ' AS tags
+				FROM tariffs t
+				LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
+				WHERE t.disabled = 0' . (ConfigHelper::checkConfig('phpui.promotion_tariff_duplicates') ? '' : ' AND t.id NOT IN (
+                    SELECT tariffid FROM promotionassignments
+                    WHERE promotionschemaid = ' . $schema['id'] . ')') . '
+				GROUP BY t.id, t.name, t.value, t.splitpayment, t.authtype, datefrom, dateto, uprate, downrate, upceil, downceil,
+					t.type
+				ORDER BY t.name, t.value DESC', 'id');
 
 $layout['pagetitle'] = trans('Schema Info: $a', $schema['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $tariffs);
+$SMARTY->assign('tags', $LMS->TarifftagGetAll());
 $SMARTY->assign('users', $users);
 $SMARTY->assign('schema', $schema);
 $SMARTY->display('promotion/promotionschemainfo.html');
