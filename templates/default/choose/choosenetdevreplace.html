@@ -32,7 +32,9 @@
 				result += inputTags[i].value;
 			}
 		}
-		window.parent.location='?m=netdevedit&action=replace&id={$objectid}&netdev='+result;
+		if (result.length) {
+			window.parent.location = '?m=netdevedit&action=replace&id={$objectid}&netdev=' + result;
+		}
 		window.parent.popclick();
 	}
 
