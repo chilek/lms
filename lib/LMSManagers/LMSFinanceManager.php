@@ -3852,7 +3852,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				p.id AS promotion_id, ps.id AS schema_id, pa.id AS assignment_id,
 				t.name as tariff_name, pa.optional, pa.data AS adata,
 				(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 't.id') . ' ELSE label END) AS label,
-				t.id as tariffid, t.type AS tarifftype, t.value, t.authtype
+				t.id as tariffid, t.type AS tarifftype, t.value, t.authtype, t.currency
 			FROM promotions p
 				LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
 				LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
@@ -3908,14 +3908,25 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 $period_labels = $promotions[$pid]['schemas'][$sid]['period_labels'];
                 $periods = array();
+                $period_values = array();
                 $adata = explode(';', $assign['adata']);
                 foreach ($period_labels as $period_label_idx => $period_label) {
                     if (isset($adata[$period_label_idx])) {
                         $props = explode(':', $adata[$period_label_idx]);
-                        $period = array(
-                            'label' => $period_label,
-                            'value' => $props[0] == 'NULL' ? '' : $props[0],
-                        );
+                        if ($props[0] == 'NULL') {
+                            $period = array(
+                                'label' => $period_label,
+                                'value' => '',
+                            );
+                            $period_values[] = '-';
+                        } else {
+                            $period = array(
+                                'label' => $period_label,
+                                'value' => $props[0],
+                            );
+                            $period_values[] = moneyf($props[0], $assign['currency']);
+                        }
+
                         if (count($props) > 2 && !empty($props[2])) {
                             $users = explode(',', $props[2]);
                             $period['modifiable'] = in_array($userid, $users);
@@ -3935,6 +3946,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'authtype' => $assign['authtype'],
                     'type' => $assign['tarifftype'],
                     'periods' => $periods,
+                    'periodvalues' => $period_values,
                 );
 
                 if (preg_match('/^unlabeled_(?<tariffid>[0-9]+)$/', $assign['label'], $m)) {

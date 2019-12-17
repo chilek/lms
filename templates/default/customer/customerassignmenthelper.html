@@ -1,3 +1,5 @@
+{$promotion_show_period_values = ConfigHelper::checkConfig('phpui.promotion_show_period_values')}
+
 <style>
 
     div.lms-ui-multiselect hr {
@@ -188,7 +190,11 @@
 																						{if isset($variables.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
 																				{if !$item.single.optional} disabled data-mandatory="1"{/if}
 																				data-tariffaccess="{$item.single.authtype}">
-																				{$item.single.tariff}
+																				{if $promotion_show_period_values}
+																					{t a=$item.single.tariff b=moneyf($item.single.value, $item.single.currency) c=implode(' / ', $item.single.periodvalues)}$a (default: $b; $c){/t}
+																				{else}
+																					{t a=$item.single.tariff b=moneyf($item.single.value, $item.single.currency)}$a (default: $b){/t}
+																				{/if}
 																			</label>
 																		</td>
 																		<td>
@@ -235,7 +241,8 @@
 																				{foreach $item.selection.items as $item}
 																				<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"
 																						data-tarifftype="{$item.type}" data-assignment-id="{$item.assignmentid}"
-																						{if in_array($item.tariffid, (array)$variables.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
+																						{if in_array($item.tariffid, (array)$variables.stariffid[$schemaid])} selected{/if}
+																					>{if $promotion_show_period_values}{t a=$item.tariff b=moneyf($item.value, $item.currency) c=implode(' / ', $item.periodvalues)}$a (default: $b; $c){/t}{else}{t a=$item.tariff b=moneyf($item.value, $item.currency)}$a (default: $b){/t}{/if}</option>
 																				{/foreach}
 																			</select>
 																		</td>

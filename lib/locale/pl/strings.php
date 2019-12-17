@@ -4526,3 +4526,6 @@ $_LANG['Purpose:'] = 'Przeznaczenie:';
 $_LANG['with end-points'] = 'z punktami końcowymi';
 $_LANG['without end-points'] = 'bez punktów końcowych';
 $_LANG['indefinitely'] = 'bezterminowo';
+
+$_LANG['$a (default: $b; $c)'] = '$a (domyślnie: $b; $c)';
+$_LANG['$a (default: $b)'] = '$a (domyślnie: $b)';

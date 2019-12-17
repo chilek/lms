@@ -428,7 +428,10 @@ if (isset($_POST['document'])) {
 
 $SMARTY->setDefaultResourceType('extendsall');
 
-$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
+$rights = $DB->GetCol(
+    'SELECT doctype FROM docrights WHERE userid = ? AND (rights & ?) > 0',
+    array(Auth::GetCurrentUser(), DOCRIGHT_CREATE)
+);
 
 if (!$rights) {
     $SMARTY->display('noaccess.html');
@@ -473,8 +476,6 @@ $SMARTY->assign('promotions', $promotions);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('numberplanlist', $numberplans);
 // --- promotion support
-
-$tariffs = $LMS->GetTariffs();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('docrights', $rights);
