@@ -129,6 +129,8 @@ version 25-git (????-??-??):
   - enhancement: existing (not deleted) filter in customer list [chilan]
   - enhancement: allow to select location without end-points in promotion schema selection window [chilan]
   - improvement: added tariff selection filtering by valid tariffs and tariff tags [chilan]
+  - enhancement: phpui.promotion_show_period_values controls if period values are presented
+    in promotion tariff selection lists [chilan]
 
 version 24.0 (2019-05-16):
 
