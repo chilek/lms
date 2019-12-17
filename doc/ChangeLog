@@ -128,6 +128,7 @@ version 25-git (????-??-??):
     (they are undefined by default) [chilan]
   - enhancement: existing (not deleted) filter in customer list [chilan]
   - enhancement: allow to select location without end-points in promotion schema selection window [chilan]
+  - improvement: added tariff selection filtering by valid tariffs and tariff tags [chilan]
 
 version 24.0 (2019-05-16):
 
