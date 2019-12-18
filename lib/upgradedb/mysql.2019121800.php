@@ -32,18 +32,10 @@ $this->Execute("
     ) ENGINE=InnoDB
 ");
 
-$customerbalances = $this->GetAll("
-    SELECT SUM(value * currencyvalue) AS balance, customerid FROM cash
-    WHERE customerid IS NOT NULL
-    GROUP BY customerid
+$this->Execute("
+    INSERT INTO customerbalances (customerid, balance)
+        (SELECT customerid, SUM(value * currencyvalue) AS balance FROM cash WHERE customerid IS NOT NULL GROUP BY customerid)
 ");
-if (!empty($customerbalances)) {
-    $values = array();
-    foreach ($customerbalances as $customerbalance) {
-        $values[] = '(' . $customerbalance['customerid'] . ',' . (empty($customerbalance['balance']) ? 0 : $customerbalance['balance']) . ')';
-    }
-    $this->Execute("INSERT INTO customerbalances (customerid, balance) VALUES " . implode(',', $values) . '');
-}
 
 $this->Execute("
     CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
