@@ -131,6 +131,8 @@ version 25-git (????-??-??):
   - improvement: added tariff selection filtering by valid tariffs and tariff tags [chilan]
   - enhancement: phpui.promotion_show_period_values controls if period values are presented
     in promotion tariff selection lists [chilan]
+  - devel/optimalisation: cache customer balance in separate table 'customerbalances' for
+    meaningfull database offload [chilan]
 
 version 24.0 (2019-05-16):
 
