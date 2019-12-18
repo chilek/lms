@@ -11,6 +11,7 @@
         <option value="location_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_name)} selected{/if}>{trans("<!qs>location name")}</option>
         <option value="location_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
         <option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("<!qs>email")}</option>
+		<option value="additional-info"{if !isset($qs_properties.customer) || isset($qs_properties.customer['additional-info'])} selected{/if}>{trans("<!qs>additional information")}</option>
     </select>
     <input type="text" name="qs[customer]" value="" size="15" {tip text="Enter some property value and press Enter. Icon on left allows to choose which properties are considered." class="blend lms-ui-quick-search-input"}>
 </div>

@@ -4201,10 +4201,11 @@ $_LANG['<!qs>customer id'] = 'identyfikator klienta';
 $_LANG['<!qs>customer name'] = 'nazwa klienta';
 $_LANG['<!qs>address'] = 'adres';
 $_LANG['<!qs>post name'] = 'nazwa korespondencyjna';
-$_LANG['<!qs>post address'] = 'adres korespondencyjny';
 $_LANG['<!qs>location name'] = 'nazwa lokalizacji';
+$_LANG['<!qs>post address'] = 'adres korespondencyjny';
 $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'email';
+$_LANG['<!qs>additional information'] = 'informacje dodatkowe';
 
 $_LANG['<!qs>node id'] = 'identyfikator komputera';
 $_LANG['<!qs>node name'] = 'nazwa komputera';
