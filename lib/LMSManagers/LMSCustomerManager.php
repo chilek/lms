@@ -884,12 +884,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         OR (((d.type = ' . DOC_CNOTE . ' AND tv.totalvalue < 0)
                             OR d.type IN (' . DOC_INVOICE . ',' . DOC_DNOTE . ')) AND d.cdate + d.paytime  * 86400 < ' . ($time ?: time()) . ')))
                 GROUP BY cash.customerid
-            ) b2 ON b2.customerid = c.id' : '') . '
-            LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
-            FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
-            LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS phone
-            FROM customercontacts WHERE (type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE) .' > 0) GROUP BY customerid) ccp ON ccp.customerid = c.id
-            LEFT JOIN countries ON (c.countryid = countries.id) '
+            ) b2 ON b2.customerid = c.id' : '')
+            . ($count ? '' : '
+                LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
+                FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
+                LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS phone
+                FROM customercontacts WHERE (type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE) .' > 0) GROUP BY customerid) ccp ON ccp.customerid = c.id
+                LEFT JOIN countries ON (c.countryid = countries.id) ')
             . (!empty($customergroup) ? 'LEFT JOIN (SELECT customerassignments.customerid, COUNT(*) AS gcount
             	FROM customerassignments '
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
