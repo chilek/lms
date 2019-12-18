@@ -2607,6 +2607,15 @@ CREATE TABLE files (
 CREATE INDEX files_md5sum_idx ON files (md5sum);
 
 /* ---------------------------------------------------
+ Structure of table customerbalances
+------------------------------------------------------*/
+CREATE TABLE customerbalances (
+    customerid integer NOT NULL
+        CONSTRAINT customerbalances_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    balance numeric(9,2) NOT NULL
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -3098,6 +3107,50 @@ CREATE VIEW customermailsview AS
 CREATE VIEW vusers AS
 	SELECT *, (firstname || ' ' || lastname) AS name, (lastname || ' ' || firstname) AS rname
 	FROM users;
+
+CREATE FUNCTION customerbalances_update()
+    RETURNS trigger
+    LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF (TG_OP = 'TRUNCATE') THEN
+        DELETE FROM customerbalances;
+        RETURN NULL;
+    ELSEIF (TG_OP = 'DELETE') THEN
+        IF NOT EXISTS (SELECT 1 FROM cash WHERE customerid = OLD.customerid) THEN
+            DELETE FROM customerbalances WHERE customerid = OLD.customerid;
+        ELSE
+            IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
+                UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid) WHERE customerid = OLD.customerid;
+            ELSE
+                INSERT INTO customerbalances (customerid, balance) VALUES (OLD.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid));
+            END IF;
+        END IF;
+        RETURN NULL;
+    ELSEIF (TG_OP = 'UPDATE') THEN
+        IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
+            UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid) WHERE customerid = NEW.customerid;
+        ELSE
+            INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
+        END IF;
+        RETURN NEW;
+    ELSE
+        IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
+            UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid) WHERE customerid = NEW.customerid;
+        ELSE
+            INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid,  (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
+        END IF;
+        RETURN NEW;
+    END IF;
+END;
+$$;
+
+CREATE TRIGGER cash_customerbalances_update_trigger AFTER INSERT OR UPDATE OR DELETE ON cash
+    FOR EACH ROW
+    EXECUTE PROCEDURE customerbalances_update();
+
+CREATE TRIGGER cash_customerbalances_truncate_trigger AFTER TRUNCATE ON cash
+    EXECUTE PROCEDURE customerbalances_update();
 
 /* ---------------------------------------------------
  Data records
@@ -3635,6 +3688,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019112000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019121800');
 
 COMMIT;

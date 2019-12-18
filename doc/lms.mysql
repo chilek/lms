@@ -4,6 +4,10 @@
 
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TRIGGER IF EXISTS cash_customerbalances_delete_trigger;
+DROP TRIGGER IF EXISTS cash_customerbalances_update_trigger;
+DROP TRIGGER IF EXISTS cash_customerbalances_insert_trigger;
+
 DROP VIEW IF EXISTS vnetworks;
 DROP VIEW IF EXISTS customermailsview;
 DROP VIEW IF EXISTS teryt_ulic;
@@ -2657,6 +2661,17 @@ CREATE TABLE files (
 
 # --------------------------------------------------------
 #
+# Structure of table customerbalances
+#
+CREATE TABLE customerbalances (
+    customerid int(11) NOT NULL,
+    balance decimal(9,2) NOT NULL,
+    CONSTRAINT customerbalances_customerid_fkey
+        FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table up_rights (Userpanel)
 #
 CREATE TABLE up_rights (
@@ -3052,6 +3067,46 @@ RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 DROP FUNCTION IF EXISTS int2txt;
 CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
+
+DELIMITER $$
+CREATE TRIGGER cash_customerbalances_insert_trigger AFTER INSERT ON cash
+    FOR EACH ROW
+    BEGIN
+        IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
+            UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid) WHERE customerid = NEW.customerid;
+        ELSE
+            INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid,  (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
+        END IF;
+    END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER cash_customerbalances_update_trigger AFTER UPDATE ON cash
+    FOR EACH ROW
+    BEGIN
+        IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = NEW.customerid) THEN
+            UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid) WHERE customerid = NEW.customerid;
+        ELSE
+            INSERT INTO customerbalances (customerid, balance) VALUES (NEW.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = NEW.customerid));
+        END IF;
+    END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER cash_customerbalances_delete_trigger AFTER DELETE ON cash
+    FOR EACH ROW
+    BEGIN
+        IF NOT EXISTS (SELECT 1 FROM cash WHERE customerid = OLD.customerid) THEN
+            DELETE FROM customerbalances WHERE customerid = OLD.customerid;
+        ELSE
+            IF EXISTS (SELECT 1 FROM customerbalances WHERE customerid = OLD.customerid) THEN
+                UPDATE customerbalances SET balance = (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid) WHERE customerid = OLD.customerid;
+            ELSE
+                INSERT INTO customerbalances (customerid, balance) VALUES (OLD.customerid, (SELECT SUM(value * currencyvalue) FROM cash WHERE customerid = OLD.customerid));
+            END IF;
+        END IF;
+    END $$
+DELIMITER ;
 
 INSERT INTO rtcategories (name, description)
 	VALUES ('default', 'default category');
@@ -3587,4 +3642,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019112000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2019121800');

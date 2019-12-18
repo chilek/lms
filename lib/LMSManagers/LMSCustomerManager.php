@@ -365,12 +365,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $tmp = $this->db->GetRow(
             'SELECT SUM(a.value)*-1 AS debtvalue, COUNT(*) AS debt
             FROM (
-                SELECT SUM(value * currencyvalue) AS value
-                FROM cash
+                SELECT balance AS value
+                FROM customerbalances
                 LEFT JOIN customerview ON (customerid = customerview.id)
-                WHERE deleted = 0
-                GROUP BY customerid
-                HAVING SUM(value * currencyvalue) < 0
+                WHERE deleted = 0 AND balance < 0
             ) a'
         );
 
@@ -897,10 +895,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
                         . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
             		GROUP BY customerassignments.customerid) ca ON ca.customerid = c.id ' : '')
-            . 'LEFT JOIN (SELECT SUM(value * currencyvalue) AS value, customerid FROM cash'
-            . ($time ? ' WHERE time < ' . $time : '') . '
-                GROUP BY customerid
-            ) b ON (b.customerid = c.id)
+            . 'LEFT JOIN ('
+                . ($time ?
+                    'SELECT SUM(value * currencyvalue) AS value, customerid FROM cash
+                    WHERE time < ' . $time . ' GROUP BY customerid'
+                    : 'SELECT balance AS value, customerid FROM customerbalances')
+            . ') b ON (b.customerid = c.id)
             LEFT JOIN (SELECT a.customerid,
                 SUM((CASE a.suspended
                 WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
