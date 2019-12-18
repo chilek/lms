@@ -556,7 +556,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $state_conditions[] = '(s.ownerid IS NOT null AND s.account > s.acsum)';
                     break;
                 case 52:
-                    $state_conditions[] = 'b.value < 0';
+                    $state_conditions[] = 'b.balance < 0';
                     break;
                 case 53:
                     $state_conditions[] = 's.online = 1';
@@ -585,10 +585,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         ))';
                     break;
                 case 57:
-                    $state_conditions[] = 'b.value < -t.value';
+                    $state_conditions[] = 'b.balance < -t.value';
                     break;
                 case 58:
-                    $state_conditions[] = 'b.value < -t.value * 2';
+                    $state_conditions[] = 'b.balance < -t.value * 2';
                     break;
                 case 59:
                 case 60:
@@ -824,7 +824,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'balance_relation':
                             if ($key == 'balance' && isset($search['balance_relation'])) {
                                 $balance_relation = intval($search['balance_relation']);
-                                $searchargs[] = 'b.value' . ($balance_relation == -1 ? '<=' : '>=') . ' ' . str_replace(',', '.', floatval($value));
+                                $searchargs[] = 'b.balance' . ($balance_relation == -1 ? '<=' : '>=') . ' ' . str_replace(',', '.', floatval($value));
                             }
                             break;
                         case 'balance_date':
@@ -846,14 +846,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($count) {
             $sql .= 'SELECT COUNT(DISTINCT c.id) AS total,
-            	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS balanceover,
-            	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS balancebelow ';
+            	SUM(CASE WHEN b.balance > 0 THEN b.balance ELSE 0 END) AS balanceover,
+            	SUM(CASE WHEN b.balance < 0 THEN b.balance ELSE 0 END) AS balancebelow ';
         } else {
             $capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
             $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat($capitalize_customer_names ? 'UPPER(lastname)' : 'lastname', "' '", 'c.name') . ' AS customername,
             	c.type,
                 status, full_address, post_full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
-                extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
+                extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.balance, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
                 (CASE WHEN s.account = s.acsum THEN 1
                     WHEN s.acsum > 0 THEN 2 ELSE 0 END) AS nodeac,
@@ -895,12 +895,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     . (is_array($customergroup) || $customergroup > 0 ? ' WHERE customergroupid IN ('
                         . (is_array($customergroup) ? implode(',', Utils::filterIntegers($customergroup)) : intval($customergroup)) . ')' : '') . '
             		GROUP BY customerassignments.customerid) ca ON ca.customerid = c.id ' : '')
-            . 'LEFT JOIN ('
-                . ($time ?
-                    'SELECT SUM(value * currencyvalue) AS value, customerid FROM cash
-                    WHERE time < ' . $time . ' GROUP BY customerid'
-                    : 'SELECT balance AS value, customerid FROM customerbalances')
-            . ') b ON (b.customerid = c.id)
+            . ($time ?
+                'LEFT JOIN (SELECT SUM(value * currencyvalue) AS balance, customerid FROM cash
+                WHERE time < ' . $time . ' GROUP BY customerid) b ON b.customerid = c.id'
+                : 'LEFT JOIN customerbalances b ON b.customerid = c.id')
+            . '
             LEFT JOIN (SELECT a.customerid,
                 SUM((CASE a.suspended
                 WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
