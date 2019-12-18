@@ -133,6 +133,7 @@ version 25-git (????-??-??):
     in promotion tariff selection lists [chilan]
   - devel/optimalisation: cache customer balance in separate table 'customerbalances' for
     meaningfull database offload [chilan]
+  - enhancement: allow to quick search customers by additional information [chilan]
 
 version 24.0 (2019-05-16):
 
