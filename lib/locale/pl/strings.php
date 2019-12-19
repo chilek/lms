@@ -4206,6 +4206,7 @@ $_LANG['<!qs>post address'] = 'adres korespondencyjny';
 $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'email';
 $_LANG['<!qs>additional information'] = 'informacje dodatkowe';
+$_LANG['<!qs>notes'] = 'notatki';
 
 $_LANG['<!qs>node id'] = 'identyfikator komputera';
 $_LANG['<!qs>node name'] = 'nazwa komputera';
