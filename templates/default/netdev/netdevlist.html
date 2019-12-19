@@ -151,7 +151,7 @@
 			{/foreach}
 			<a class="delete-netdev" href="?m=netdevdel&id={$netdev.id}&is_sure=1"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 			<a href="?m=netdevedit&amp;id={$netdev.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-			<a href="?m=netdevadd&amp;id={$netdev.id}"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+			<a href="?m=netdevadd&amp;id={$netdev.id}&clone=1"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 			<a href="?m=netdevinfo&amp;id={$netdev.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>

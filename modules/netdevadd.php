@@ -191,6 +191,7 @@ if (isset($netdev)) {
     }
 
     $netdev['name'] = trans('$a (clone)', $netdev['name']);
+    $netdev['clone'] = isset($_GET['clone']) ? $_GET['clone'] : null;
     $netdev['teryt'] = !empty($netdev['location_city']) && !empty($netdev['location_street']);
     $SMARTY->assign('netdev', $netdev);
 } else {
