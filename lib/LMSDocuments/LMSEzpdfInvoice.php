@@ -1091,7 +1091,7 @@ class LMSEzpdfInvoice extends LMSInvoice
 
             $tmp = preg_split('/\r?\n/', $tmp);
             foreach ($tmp as $line) {
-                $y = $this->backend->text_wrap($x, $y, $width, $font_size, $line, "full");
+                $y = $this->backend->text_wrap($x, $y, $width, $font_size, $line, 'left');
             }
         }
     }
