@@ -3942,6 +3942,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'tariffid' => $assign['tariffid'],
                     'tariff'   => $assign['tariff_name'],
                     'value'    => $assign['value'],
+                    'currency' => $assign['currency'],
                     'optional' => $assign['optional'],
                     'authtype' => $assign['authtype'],
                     'type' => $assign['tarifftype'],

@@ -218,7 +218,7 @@
 																							{if $period.value == ''}
 																								-
 																							{else}
-																								{$period.value|money_format}
+																								{moneyf($period.value, $item.single.currency)}
 																							{/if}
 																						{/if}
 																					</td>
