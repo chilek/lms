@@ -1288,7 +1288,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'SELECT data
                         FROM promotionassignments
                         WHERE promotionschemaid = ? AND tariffid = ? AND label = ?',
-                        array($schemaid, $tariffid, $label)
+                        array($schemaid, $tariffid, strval($label))
                     );
                     $a_periods = explode(';', $a_data);
                     $allowed_period_indexes = array();
