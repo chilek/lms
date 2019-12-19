@@ -195,6 +195,7 @@ switch ($mode) {
         $s['zip'] = $search;
         $s['city'] = $search;
         $s['email'] = $search;
+        $s['info'] = $search;
 
         $SESSION->save('customersearch', $s);
         $SESSION->save('cslk', 'OR');
