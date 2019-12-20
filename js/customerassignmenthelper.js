@@ -133,6 +133,9 @@ function CustomerAssignmentHelper(options) {
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr.schema-tariff-container');
 		var period_tables = tr.find('.single-assignment[data-assignment-id]');
+
+		tr.find('.schema-tariff-count').toggle(selected_tariff.val() != 0);
+
 		tr = tr.next('.customerdevices');
 
 		tr.toggle(tariffaccess != -1);
@@ -194,6 +197,9 @@ function CustomerAssignmentHelper(options) {
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr.schema-tariff-container');
 		var period_table = tr.find('.single-assignment[data-assignment-id="' + assignment_id + '"]');
+
+		tr.find('.schema-tariff-count').toggle(checked);
+
 		tr = tr.next('.customerdevices');
 
 		tr.toggle(checked);

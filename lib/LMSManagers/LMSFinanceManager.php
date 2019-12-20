@@ -527,7 +527,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     SYSLOG::RES_CUST => $data['customerid'],
                                     'period' => $period,
                                     'at' => $partial_at,
-                                    'count' => 1,
+                                    'count' => $data['count'],
                                     'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
                                     'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                                     'settlement' => 0,
@@ -609,7 +609,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                 SYSLOG::RES_CUST    => $data['customerid'],
                                 'period'            => $period,
                                 'at'                => $partial_at,
-                                'count'             => 1,
+                                'count'             => $data['count'],
                                 'invoice'           => isset($data['invoice']) ? $data['invoice'] : 0,
                                 'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                                 'settlement'        => 0,
@@ -645,7 +645,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_CUST => $data['customerid'],
                             'period' => $period,
                             'at' => $at,
-                            'count' => 1,
+                            'count' => $data['count'],
                             'invoice' => isset($data['invoice']) ? $data['invoice'] : 0,
                             'separatedocument' => isset($data['separatedocument']) ? 1 : 0,
                             'settlement' => isset($data['settlement']) && $data['settlement'] == 1 && $idx == 1 ? 1 : 0,
@@ -1184,6 +1184,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $a['promotiontariffid'] = $a['stariffid'][$schemaid];
 
                     $values = $a['values'][$schemaid];
+                    $counts = $a['counts'][$schemaid];
                     foreach ($a['promotiontariffid'] as $label => $tariffid) {
                         if (empty($tariffid)) {
                             continue;
@@ -1196,6 +1197,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                     . '-' . $tariffid . '-' . $period_idx] = trans('Incorrect value!');
                                 }
                             }
+                        }
+                        if (isset($counts[$label]) && !preg_match('/^[0-9]+$/', $counts[$label])) {
+                            $error['counts-' . $schemaid . '-'
+                            . iconv('UTF-8', 'ASCII//TRANSLIT', preg_replace('/[ _]/', '-', $label))] =
+                                trans('Incorrect value!');
                         }
                     }
 
@@ -1253,9 +1259,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result['error'] = $error;
 
         $result['a'] = $a;
-            $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count'));
+        $result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid', 'count'));
 
-            return $result;
+        return $result;
     }
 
     public function CheckSchemaModifiedValues($data)
