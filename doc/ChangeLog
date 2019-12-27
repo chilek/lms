@@ -135,6 +135,7 @@ version 25-git (????-??-??):
     meaningfull database offload [chilan]
   - enhancement: allow to quick search customers by additional information and notes [chilan]
   - enhancement: count can be specified for selected promotion schema tariff components [chilan]
+  - enhancement: added plugin support allows to use external send sms handlers [chilan]
 
 version 24.0 (2019-05-16):
 
