@@ -294,7 +294,7 @@ foreach ($networks as $networkid => $net) {
     foreach ($nodes as $node) {
         if (empty($node['ownerid'])) {
             foreach (explode(',', $node['mac']) as $mac) {
-                $netdevices[] = $mac;
+                $netdevices[$mac] = true;
             }
         }
     }
@@ -383,7 +383,7 @@ foreach ($networks as $networkid => $net) {
 
         $node_info = "";
         foreach ($hosts as $mac => $host) {
-            if (empty($node['ownerid']) || !array_search($mac, $netdevices)) {
+            if (empty($node['ownerid']) || !isset($netdevices[$mac])) {
                 $node_info .= "\t\thost " . $host['name'] . " { # ID: " . $host['id'] . "\n";
                 $node_info .= "\t\t\thardware ethernet " . $mac . ";\n";
                 $node_info .= "\t\t\tfixed-address " . $host['fixed_address'] . ";\n";
