@@ -387,7 +387,13 @@ foreach ($networks as $networkid => $net) {
                 $node_info .= "\t\thost " . $host['name'] . " { # ID: " . $host['id'] . "\n";
                 $node_info .= "\t\t\thardware ethernet " . $mac . ";\n";
                 $node_info .= "\t\t\tfixed-address " . $host['fixed_address'] . ";\n";
+                $mac = preg_replace('/[^0-9a-fA-F]/', '', $mac);
                 foreach ($host['options'] as $name => $value) {
+                    $value = str_replace(
+                        array('%mac%', '%MAC%'),
+                        array(strtolower($mac), strtoupper($mac)),
+                        $value
+                    );
                     $node_info .= "\t\t\toption " . $name . " " . $value . ";\n";
                 }
                 $node_info .= "\t\t}\n";
