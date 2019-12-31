@@ -81,7 +81,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
                     }
                     break;
                 case 'divisionid':
-                    if ($val != -1) {
+                    if ($val != -1 && !empty($val)) {
                         $where[] = 'n.divisionid = ' . $val;
                     }
             }
