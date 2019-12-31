@@ -67,9 +67,9 @@
 			<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
 				<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
-				{section name=project loop=$NNprojects}
-				<OPTION VALUE="{$NNprojects[project].id}" {if ($listdata.invprojectid == $NNprojects[project].id ) } SELECTED {/if} >{$NNprojects[project].name}</OPTION>
-				{/section}
+				{foreach $NNprojects as $project}
+				<OPTION VALUE="{$project.id}"{if ($listdata.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
+				{/foreach}
 			</SELECT>
 			{trans("Ownership:")}
 			<SELECT SIZE="1" NAME="w" ONCHANGE="document.choosefilter.submit();">
