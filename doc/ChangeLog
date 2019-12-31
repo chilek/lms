@@ -138,6 +138,7 @@ version 25-git (????-??-??):
   - enhancement: added plugin support allows to use external send sms handlers [chilan]
   - enhancement: %mac% and %MAC% special symbols are supported for option value modifications
     in lms-makedhcpconf.php backend script [chilan]
+  - enhancement: added stats and live traffic support for network device ip addresses [chilan]
 
 version 24.0 (2019-05-16):
 
