@@ -26,6 +26,19 @@
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'managementurls.inc.php');
 
+function NodeStats($id, $dt)
+{
+    $DB = LMSDB::getInstance();
+    if ($stats = $DB->GetRow('SELECT SUM(download) AS download, SUM(upload) AS upload
+		FROM stats WHERE nodeid = ? AND dt > ?', array($id, time() - $dt))) {
+        list($result['download']['data'], $result['download']['units']) = setunits($stats['download']);
+        list($result['upload']['data'], $result['upload']['units']) = setunits($stats['upload']);
+        $result['downavg'] = $stats['download'] * 8 / 1000 / $dt;
+        $result['upavg'] = $stats['upload'] * 8 / 1000 / $dt;
+    }
+    return $result;
+}
+
 function getManagementUrls()
 {
     $result = new xajaxResponse();
@@ -233,8 +246,80 @@ function getFirstFreeAddress($netid, $elemid)
     return $result;
 }
 
+function getThroughput($ip)
+{
+    $result = new xajaxResponse();
+    $cmd = ConfigHelper::getConfig('phpui.live_traffic_helper');
+    if (empty($cmd)) {
+        return $result;
+    }
+
+    $cmd = str_replace('%i', $ip, $cmd);
+    exec($cmd, $output);
+    if (!is_array($output) && count($output) != 1) {
+        return $result;
+    }
+
+    $stats = explode(' ', $output[0]);
+    if (count($stats) != 4) {
+        return $result;
+    }
+
+    $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
+    $speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5);
+
+    array_walk($stats, 'intval');
+    foreach (array(0, 2) as $idx) {
+        $stats[$idx] = convert_to_units($stats[$idx], $speed_unit_aggregation_threshold, $speed_unit_type) . '/s';
+    }
+    $result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2] . ' (' . $stats[1] . ' pps / ' . $stats[3] . ' pps)');
+    $result->call('live_traffic_finished');
+
+    return $result;
+}
+
+function getNodeStats($nodeid)
+{
+    $DB = LMSDB::getInstance();
+    $SMARTY = LMSSmarty::getInstance();
+
+    $nodeid = intval($nodeid);
+    $result = new xajaxResponse();
+
+    $nodestats['hour'] = NodeStats($nodeid, 60 * 60);
+    $nodestats['day'] = NodeStats($nodeid, 60 * 60 * 24);
+    $nodestats['month'] = NodeStats($nodeid, 60 * 60 * 24 * 30);
+
+    $SMARTY->assign('nodeid', $nodeid);
+    $nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM vnodes WHERE id = ?', array($nodeid));
+    $SMARTY->assign('nodeip', $nodeip);
+    $SMARTY->assign('nodestats', $nodestats);
+    $contents = $SMARTY->fetch('node/nodestats.html');
+    $result->append('netdevipinfo', 'innerHTML', $contents);
+
+    if (ConfigHelper::getConfig('phpui.live_traffic_helper')) {
+        $script = '
+			live_traffic_start = function() {
+				xajax.config.waitCursor = false;
+				xajax_getThroughput(\'' . $nodeip . '\');
+			}
+
+			live_traffic_finished = function() {
+				xajax.config.waitCursor = true;
+				setTimeout("live_traffic_start()", 3000);
+			}
+		';
+
+        $result->script($script);
+        $result->script("live_traffic_start()");
+    }
+
+    return $result;
+}
+
+
 $LMS->RegisterXajaxFunction(array(
     'getManagementUrls','addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
     'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
-    'getRadioSectorsForNetdev', 'getFirstFreeAddress'
+    'getRadioSectorsForNetdev', 'getFirstFreeAddress', 'getThroughput', 'getNodeStats'
 ));

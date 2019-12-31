@@ -165,7 +165,7 @@
                             </table>
 						</td>
 						<td width="50%" class="valign-top">
-							<table width="100%" class="tab-beautify">
+							<table width="100%" class="tab-beautify" id="netdevipinfo">
 								<colgroup>
 									<col style="width: 1%;">
 									<col style="width: 1%;">
@@ -242,8 +242,10 @@
     </tbody>
 </table>
 
-<script type="text/javascript">
-<!--
+<script>
+
+	xajax_getNodeStats({$nodeipdata.id});
+
     {if !$disable_active_links}
     $( function() {
         var link = '?m=netdevedit&id={$netdev.id}';
@@ -289,5 +291,4 @@
 		return false;
 	});
 
-//-->
 </script>

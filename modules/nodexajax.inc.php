@@ -159,15 +159,12 @@ function getThroughput($ip)
         return $result;
     }
 
-    array_walk($stats, intval);
+    $speed_unit_type = ConfigHelper::getConfig('phpui.speed_unit_type', 1000);
+    $speed_unit_aggregation_threshold = ConfigHelper::getConfig('phpui.speed_unit_aggregation_threshold', 5);
+
+    array_walk($stats, 'intval');
     foreach (array(0, 2) as $idx) {
-        if ($stats[$idx] > 1000000) {
-            $stats[$idx] = (round(floatval($stats[$idx]) / 1000000.0, 2)) . ' Mbit/s';
-        } elseif ($stats[$idx] > 1000) {
-            $stats[$idx] = (round(floatval($stats[$idx]) / 1000.0, 2)) . ' Kbit/s';
-        } else {
-            $stats[$idx] = $stats[$idx] . ' bit/s';
-        }
+        $stats[$idx] = convert_to_units($stats[$idx], $speed_unit_aggregation_threshold, $speed_unit_type) . '/s';
     }
     $result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2] . ' (' . $stats[1] . ' pps / ' . $stats[3] . ' pps)');
     $result->call('live_traffic_finished');
