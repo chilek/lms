@@ -24,12 +24,6 @@
  *  $Id$
  */
 
-list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.ezpdf_margins', '40,30,40,30'));
-define('PDF_MARGIN_TOP', trim($margin_top));
-define('PDF_MARGIN_RIGHT', trim($margin_right));
-define('PDF_MARGIN_BOTTOM', trim($margin_bottom));
-define('PDF_MARGIN_LEFT', trim($margin_left));
-
 // brzydkie hacki dla ezpdf
 @setlocale(LC_NUMERIC, 'C');
 
@@ -81,6 +75,7 @@ class LMSEzpdfBackend extends Cezpdf
         $this->addInfo('Title', $title);
         $this->addInfo('Creator', 'LMS '.$layout['lmsv']);
         $this->setPreferences('FitWindow', '1');
+		list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.ezpdf_margins', '40,30,40,30'));
         $this->ezSetMargins(PDF_MARGIN_TOP, PDF_MARGIN_BOTTOM, PDF_MARGIN_LEFT, PDF_MARGIN_RIGHT);
         $this->setLineStyle(0.5);
         $this->setFontFamily('arial', array('b' => 'arialbd'));
