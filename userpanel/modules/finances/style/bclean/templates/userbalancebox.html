@@ -10,7 +10,7 @@
 		});
 
 		$(".table-click[data-href] td:last-child").click(function(e) {
-			if (!$(e.target).is('.custom-control-label')) {
+			if (!$(e.target).is('.custom-control-label') && !$(e.target).is('input')) {
 				$(this).find(':checkbox').trigger('click');
 			}
 		});
