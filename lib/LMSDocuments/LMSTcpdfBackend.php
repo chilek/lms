@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,6 +29,12 @@
  *  http://xcache.lighttpd.net/
  *  This reduces execution time by ~30-50%
  */
+
+list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.tcpdf_margins', '27,15,25,15'));
+define('PDF_MARGIN_TOP', trim($margin_top));
+define('PDF_MARGIN_RIGHT', trim($margin_right));
+define('PDF_MARGIN_BOTTOM', trim($margin_bottom));
+define('PDF_MARGIN_LEFT', trim($margin_left));
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 

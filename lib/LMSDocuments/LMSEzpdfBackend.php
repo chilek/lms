@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2019 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,10 +24,11 @@
  *  $Id$
  */
 
-define('PDF_MARGIN_BOTTOM', 40);
-define('PDF_MARGIN_TOP', 40);
-define('PDF_MARGIN_LEFT', 30);
-define('PDF_MARGIN_RIGHT', 30);
+list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.ezpdf_margins', '40,30,40,30'));
+define('PDF_MARGIN_TOP', trim($margin_top));
+define('PDF_MARGIN_RIGHT', trim($margin_right));
+define('PDF_MARGIN_BOTTOM', trim($margin_bottom));
+define('PDF_MARGIN_LEFT', trim($margin_left));
 
 // brzydkie hacki dla ezpdf
 @setlocale(LC_NUMERIC, 'C');
