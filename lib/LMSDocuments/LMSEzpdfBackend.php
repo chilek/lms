@@ -75,8 +75,9 @@ class LMSEzpdfBackend extends Cezpdf
         $this->addInfo('Title', $title);
         $this->addInfo('Creator', 'LMS '.$layout['lmsv']);
         $this->setPreferences('FitWindow', '1');
-		list ($margin_top, $margin_right, $margin_bottom, $margin_left) = explode(',', ConfigHelper::getConfig('invoices.ezpdf_margins', '40,30,40,30'));
-        $this->ezSetMargins(PDF_MARGIN_TOP, PDF_MARGIN_BOTTOM, PDF_MARGIN_LEFT, PDF_MARGIN_RIGHT);
+        list ($margin_top, $margin_right, $margin_bottom, $margin_left) =
+            explode(',', ConfigHelper::getConfig('invoices.ezpdf_margins', '40,30,40,30'));
+        $this->ezSetMargins(trim($margin_top), trim($margin_bottom), trim($margin_left), trim($margin_right));
         $this->setLineStyle(0.5);
         $this->setFontFamily('arial', array('b' => 'arialbd'));
         $this->selectFont(
