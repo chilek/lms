@@ -11,6 +11,8 @@
         <option value="location_name"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_name)} selected{/if}>{trans("<!qs>location name")}</option>
         <option value="location_address"{if !isset($qs_properties.customer) || isset($qs_properties.customer.location_address)} selected{/if}>{trans("<!qs>location address")}</option>
         <option value="email"{if !isset($qs_properties.customer) || isset($qs_properties.customer.email)} selected{/if}>{trans("<!qs>email")}</option>
+		<option value="ten"{if !isset($qs_properties.ten) || isset($qs_properties.customer.ten)} selected{/if}>{trans("<!qs>TEN")}</option>
+		<option value="ssn"{if !isset($qs_properties.ssn) || isset($qs_properties.customer.ssn)} selected{/if}>{trans("<!qs>SSN")}</option>
 		<option value="additional-info"{if !isset($qs_properties.customer) || isset($qs_properties.customer['additional-info'])} selected{/if}>{trans("<!qs>additional information")}</option>
 		<option value="notes"{if !isset($qs_properties.customer) || isset($qs_properties.customer['notes'])} selected{/if}>{trans("<!qs>notes")}</option>
     </select>

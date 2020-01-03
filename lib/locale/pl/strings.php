@@ -4205,6 +4205,8 @@ $_LANG['<!qs>location name'] = 'nazwa lokalizacji';
 $_LANG['<!qs>post address'] = 'adres korespondencyjny';
 $_LANG['<!qs>location address'] = 'adres lokalizacyjny';
 $_LANG['<!qs>email'] = 'email';
+$_LANG['<!qs>TEN'] = 'NIP';
+$_LANG['<!qs>SSN'] = 'PESEL';
 $_LANG['<!qs>additional information'] = 'informacje dodatkowe';
 $_LANG['<!qs>notes'] = 'notatki';
 
