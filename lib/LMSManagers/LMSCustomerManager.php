@@ -829,6 +829,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             break;
                         case 'balance_date':
                             break;
+                        case 'ten':
+                            $searchargs[] = "REPLACE(REPLACE(ten, '-', ''), ' ', '') ?LIKE? " . $this->db->Escape('%' . preg_replace('/[\- ]/', '', $value) . '%');
+                            break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }
