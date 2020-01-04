@@ -139,6 +139,7 @@ version 25-git (????-??-??):
   - enhancement: %mac% and %MAC% special symbols are supported for option value modifications
     in lms-makedhcpconf.php backend script [chilan]
   - enhancement: added stats and live traffic support for network device ip addresses [chilan]
+  - enhancement: userpanel/info: allow to hide archived documents [chilan]
 
 version 24.0 (2019-05-16):
 
