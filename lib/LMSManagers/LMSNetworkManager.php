@@ -371,7 +371,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'SELECT 
 				n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
 				address AS addresslong, mask, interface, gateway, dns, dns2, 
-				domain, wins, dhcpstart, dhcpend,
+				domain, wins, dhcpstart, dhcpend, inet_ntoa(snat) AS snat,
 				mask2prefix(inet_aton(mask)) AS prefix,
 				broadcast(address, inet_aton(mask)) AS broadcastlong, vlanid,
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
