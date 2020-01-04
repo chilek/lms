@@ -46,8 +46,9 @@ function module_main()
 		JOIN documents d ON (c.docid = d.id)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 		WHERE d.customerid = ?'
-            . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only') ? ' AND d.closed = 1': '') . '
-		ORDER BY cdate', array($SESSION->id));
+            . (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only') ? ' AND d.closed = 1': '')
+            . (ConfigHelper::checkConfig('userpanel.hide_archived_documents') ? ' AND d.archived = 0': '')
+            . ' ORDER BY cdate', array($SESSION->id));
 
     if (!empty($documents)) {
         foreach ($documents as &$doc) {
@@ -141,7 +142,7 @@ function module_updateusersave()
                                 array($id, $v, CONTACT_LANDLINE)
                             );
                         }
-                
+
                         $userinfo[$type][$i][$checked_property] = $v;
                     } elseif (isset($right['edit_contact_ack']) && ($v || isset($userinfo[$type][$i]))) {
                         if (!isset($userinfo[$type][$i]) || $userinfo[$type][$i][$checked_property] != $v) {
@@ -592,6 +593,7 @@ if (defined('USERPANEL_SETUPMODE')) {
         $SMARTY->assign('hide_documentbox', ConfigHelper::getConfig('userpanel.hide_documentbox'));
         $SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
         $SMARTY->assign('show_confirmed_documents_only', ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'));
+        $SMARTY->assign('hide_archived_documents', ConfigHelper::checkConfig('userpanel.hide_archived_documents'));
         $SMARTY->assign('pin_changes', ConfigHelper::checkConfig('userpanel.pin_changes'));
         $SMARTY->assign('change_notification_mail_sender', ConfigHelper::getConfig('userpanel.change_notification_mail_sender'));
         $SMARTY->assign('change_notification_mail_recipient', ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'));
@@ -624,6 +626,14 @@ if (defined('USERPANEL_SETUPMODE')) {
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
             array(isset($_POST['show_confirmed_documents_only']) ? 'true' : 'false', 'userpanel', 'show_confirmed_documents_only')
+        );
+        $DB->Execute(
+            'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+            array(
+                isset($_POST['hide_archived_documents']) ? 'true' : 'false',
+                'userpanel',
+                'hide_archived_documents'
+            )
         );
         $DB->Execute(
             'UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',

@@ -32,6 +32,14 @@
 		</TR>
 		<TR>
 			<TD WIDTH="1%" NOWRAP>
+				<label for="hide_archived_documents">{trans("Hide archived documents:")}</label>
+			</TD>
+			<TD WIDTH="99%" NOWRAP>
+				<INPUT type="checkbox" NAME="hide_archived_documents" ID="hide_archived_documents" value="1"{if $hide_archived_documents} checked{/if} {tip text="Hide archived documents"}>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH="1%" NOWRAP>
 				{trans("Text of data processing agreement:")}
 			</TD>
 			<TD WIDTH="99%" NOWRAP>
