@@ -357,7 +357,7 @@ sub instance($)
 		$srcnetwork = uc($srcnetwork);
 		print "debug: starting network $srcnetwork\n" if $debug;
 		my $dbq = $dbase->prepare("SELECT id, name, inet_ntoa(address) AS address, mask, interface, 
-				gateway, dns, dns2, domain, wins, dhcpstart, dhcpend 
+				gateway, dns, dns2, domain, wins, dhcpstart, dhcpend, inet_ntoa(snat) as snat
 				FROM networks WHERE name = '$srcnetwork'");
 		$dbq->execute();
 		my $row = $dbq->fetchrow_hashref();
@@ -385,6 +385,7 @@ sub instance($)
 			$tnh =~ s/\%WINS/$row->{'wins'}/g;
 			$tnh =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
 			$tnh =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+			$tnh =~ s/\%SNAT/$row->{'snat'}/g;
 			$tnh =~ s/\%TIMES/$times/g;
 			$tnh =~ s/\%TIME/$time/g;
 			$tnh =~ s/\%UTIME/$utime/g;
@@ -401,7 +402,7 @@ sub instance($)
 			{
 				$dstnetwork = uc($dstnetwork);
 				my $sdbq = $dbase->prepare("SELECT id, name, inet_ntoa(address) AS address, 
-						mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend 
+						mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend, inet_ntoa(snat) as snat
 						FROM networks WHERE name = '$dstnetwork'");
 				$sdbq->execute();
 				my $srow = $sdbq->fetchrow_hashref();
@@ -419,6 +420,7 @@ sub instance($)
 				$dtnh =~ s/\%WINS/$row->{'wins'}/g;
 				$dtnh =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
 				$dtnh =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+				$dtnh =~ s/\%SNAT/$row->{'snat'}/g;
 				$dtnh =~ s/\%TIMES/$times/g;
 				$dtnh =~ s/\%TIME/$time/g;
 				$dtnh =~ s/\%UTIME/$utime/g;
@@ -435,6 +437,7 @@ sub instance($)
 				$dtnh =~ s/\%DWINS/$srow->{'wins'}/g;
 				$dtnh =~ s/\%DDHCPS/$srow->{'dhcpstart'}/g;
 				$dtnh =~ s/\%DDHCPE/$srow->{'dhcpend'}/g;
+				$dtnh =~ s/\%DSNAT/$srow->{'snat'}/g;
 				$dtnh =~ s/\\n/\n/g;
 				$dtnh =~ s/\\t/\t/g;
 				print OUTFILE $dtnh."\n";
@@ -457,6 +460,7 @@ sub instance($)
 			$tnb =~ s/\%WINS/$row->{'wins'}/g;
 			$tnb =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
 			$tnb =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+			$tnb =~ s/\%SNAT/$row->{'snat'}/g;
 			$tnb =~ s/\%TIMES/$times/g;
 			$tnb =~ s/\%TIME/$time/g;
 			$tnb =~ s/\%UTIME/$utime/g;
@@ -723,6 +727,7 @@ sub instance($)
 			$rule =~ s/\%NWINS/$row->{'wins'}/g;
 			$rule =~ s/\%NDHCPS/$row->{'dhcpstart'}/g;
 			$rule =~ s/\%NDHCPE/$row->{'dhcpend'}/g;
+			$rule =~ s/\%NSNAT/$row->{'snat'}/g;
 			$rule =~ s/\%UPRATE/$uprate/g;
 			$rule =~ s/\%NUPRATE/$uprate_n/g;
 			$rule =~ s/\%DOWNRATE/$downrate/g;
@@ -783,6 +788,7 @@ sub instance($)
 			$tnh =~ s/\%WINS/$row->{'wins'}/g;
 			$tnh =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
 			$tnh =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+			$tnh =~ s/\%SNAT/$row->{'snat'}/g;
 			$tnh =~ s/\%TIMES/$times/g;
 			$tnh =~ s/\%TIME/$time/g;
 			$tnh =~ s/\%UTIME/$utime/g;
