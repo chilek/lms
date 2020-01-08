@@ -944,3 +944,16 @@ function convert_to_units(value, threshold, multiplier) {
 			' G' + unit_suffix;
 	}
 }
+
+function get_revdns(search) {
+	$.ajax({
+		url: '?m=dns&type=revdns&api=1',
+		method: "POST",
+		dataType: 'json',
+		data: search
+	}).done(function(data) {
+		$.each(data, function(key, value) {
+			$(key).html(value);
+		});
+	});
+}

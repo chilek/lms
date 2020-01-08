@@ -138,45 +138,48 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             ORDER BY login ASC'
         );
         if ($userlist) {
-            foreach ($userlist as $idx => $row) {
+            foreach ($userlist as &$row) {
                 if ($row['id'] == Auth::GetCurrentUser()) {
                     $row['lastlogindate'] = $this->auth->last;
-                    $userlist[$idx]['lastlogindate'] = $this->auth->last;
+                    $row['lastlogindate'] = $this->auth->last;
                     $row['lastloginip'] = $this->auth->lastip;
-                    $userlist[$idx]['lastloginip'] = $this->auth->lastip;
+                    $row['lastloginip'] = $this->auth->lastip;
                 }
 
                 if ($row['accessfrom']) {
-                    $userlist[$idx]['accessfrom'] = date('Y/m/d', $row['accessfrom']);
+                    $row['accessfrom'] = date('Y/m/d', $row['accessfrom']);
                 } else {
-                    $userlist[$idx]['accessfrom'] = '-';
+                    $row['accessfrom'] = '-';
                 }
 
                 if ($row['accessto']) {
-                    $userlist[$idx]['accessto'] = date('Y/m/d', $row['accessto']);
+                    $row['accessto'] = date('Y/m/d', $row['accessto']);
                 } else {
-                    $userlist[$idx]['accessto'] = '-';
+                    $row['accessto'] = '-';
                 }
 
                 if ($row['lastlogindate']) {
-                    $userlist[$idx]['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
+                    $row['lastlogin'] = date('Y/m/d H:i', $row['lastlogindate']);
                 } else {
-                    $userlist[$idx]['lastlogin'] = '-';
+                    $row['lastlogin'] = '-';
                 }
 
                 if ($row['passwdlastchange']) {
-                    $userlist[$idx]['passwdlastchange'] = date('Y/m/d H:i', $row['passwdlastchange']);
+                    $row['passwdlastchange'] = date('Y/m/d H:i', $row['passwdlastchange']);
                 } else {
-                    $userlist[$idx]['passwdlastchange'] = '-';
+                    $row['passwdlastchange'] = '-';
                 }
 
                 if (check_ip($row['lastloginip'])) {
-                    $userlist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
+                    // moved to '?m=dns&revdns=1&api=1'
+                    //$row['lastloginhost'] = gethostbyaddr($row['lastloginip']);
+                    $row['lastloginhost'] = '-';
                 } else {
-                    $userlist[$idx]['lastloginhost'] = '-';
-                    $userlist[$idx]['lastloginip'] = '-';
+                    $row['lastloginhost'] = '-';
+                    $row['lastloginip'] = '-';
                 }
             }
+            unset($row);
         }
 
         $userlist['total'] = empty($userlist) ? 0 : count($userlist);
