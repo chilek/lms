@@ -140,6 +140,7 @@ version 25-git (????-??-??):
     in lms-makedhcpconf.php backend script [chilan]
   - enhancement: added stats and live traffic support for network device ip addresses [chilan]
   - enhancement: userpanel/info: allow to hide archived documents [chilan]
+  - improvement: userlist: revDNS queries are launched asynchronously by ajax request [chilan]
 
 version 24.0 (2019-05-16):
 
