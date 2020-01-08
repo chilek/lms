@@ -34,7 +34,12 @@ $result = array();
 foreach ($_POST as $key => $value) {
     if (preg_match('/^#hostname-[0-9]+$/', $key) && check_ip($value)) {
         if (isset($_GET['type']) && $_GET['type'] == 'revdns') {
-            $result[$key] = gethostbyaddr($value);
+            $outvalue = gethostbyaddr($value);
+            if ($outvalue == $value) {
+                $result[$key] = '-';
+            } else {
+                $result[$key] = $outvalue;
+            }
         }
     }
 }
