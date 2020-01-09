@@ -1011,12 +1011,32 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $customerlist = $this->db->GetAll($sql);
 
             if (!empty($customerlist)) {
+                $customer_idx_by_cids = array();
                 foreach ($customerlist as $idx => $row) {
                     // summary
                     if ($row['balance'] > 0) {
                         $over += $row['balance'];
                     } elseif ($row['balance'] < 0) {
                         $below += $row['balance'];
+                    }
+
+                    $customer_idx_by_cids[$row['id']] = $idx;
+                }
+
+                if (isset($customernodes) && !empty($customernodes)) {
+                    $nodes = $this->db->GetAll(
+                        'SELECT n.id, n.name, n.mac, n.ownerid, INET_NTOA(n.ipaddr) AS ip FROM vnodes n
+                            WHERE n.ownerid IN (' . implode(',', array_keys($customer_idx_by_cids)) . ')'
+                    );
+                    if (empty($nodes)) {
+                        $nodes = array();
+                    }
+                    foreach ($nodes as $node) {
+                        $idx = $customer_idx_by_cids[$node['ownerid']];
+                        if (!isset($customerlist[$idx]['nodes'])) {
+                            $customerlist[$idx]['nodes'] = array();
+                        }
+                        $customerlist[$idx]['nodes'][] = $node;
                     }
                 }
             }

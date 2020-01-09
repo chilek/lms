@@ -24,11 +24,16 @@
 		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
 			{trans("External ID")}
 		</TD>
-		<TD WIDTH="400" CLASS="HEAD">
+		<TD WIDTH="{if $customernodes}250{else}400{/if}" CLASS="HEAD">
 			<B>{trans("First/last name")} / {trans("Name")}</B><BR>
 			{trans("Address")}<BR>
 			{trans("Phone")}
 		</TD>
+		{if $customernodes}
+			<td width="150" class="HEADER" align="right">
+				{trans("Nodes")}
+			</td>
+		{/if}
 		<TD WIDTH="150" CLASS="HEAD" ALIGN="RIGHT">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Subscription")}<BR>{/if}
 			{trans("E-mail")}<BR>
@@ -57,6 +62,14 @@
 			{$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].address}<BR>
 			{if $contactlist.$cid.type}{trans("mobile")}{else}{trans("phone<!plural>")}{/if} {$contactlist.$cid.phone}
 		</TD>
+		{if $customernodes}
+			<td align="right">
+				{foreach $customerlist[customerlist].nodes as $node}
+					{$node.name} ({$node.ip} / {$node.mac})
+					{if !$node@last}<br>{/if}
+				{/foreach}
+			</td>
+		{/if}
 		<TD ALIGN="RIGHT">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$customerlist[customerlist].tariffvalue|money_format}<BR>{/if}
 			{if $customerlist[customerlist].email}{$customerlist[customerlist].email}<BR>{/if}
@@ -71,7 +84,7 @@
 	{/if}{/section}
 	{if ConfigHelper::checkConfig('privileges.superuser') || (!ConfigHelper::checkConfig('privileges.hide_finances') && !ConfigHelper::checkConfig('privileges.hide_summaries'))}
 	<TR>
-		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
+		<TD CLASS="HEADGREY" COLSPAN="{if $customernodes}5{else}4{/if}" ALIGN="RIGHT"><B>{trans("Total:")}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 		<TD CLASS="HEADGREY" ALIGN="RIGHT" NOWRAP><B>{sum array=$customerlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
 	</TR>

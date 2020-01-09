@@ -209,12 +209,26 @@
 									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="lms-ui-date" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
 							</TR>
-                                                        <TR>
-                                                                <TD style="width: 1%;"><INPUT type="checkbox" name="sendingregister" value="1" id="sendingregister"}{tip text="Check if would like to print cutomerlist as sending register"}></TD>
-                                                                <TD style="width: 99%;" class="nobr" colspan="2">
-                                                                        <span class="bold nobr">{trans ("Sending register format")}</span>
-                                                                </TD>
-                                                        </TR>
+							<TR>
+								<TD>
+									<INPUT type="checkbox" name="sendingregister" value="1" id="sendingregister" {tip text="Check if would like to print cutomerlist as sending register"}>
+								</TD>
+								<TD class="bold nobr" colspan="2">
+									<label for="sendingregister">
+										{trans("sending register format")}
+									</label>
+								</TD>
+							</TR>
+							<TR>
+								<TD>
+									<INPUT type="checkbox" name="customernodes" value="1" id="customernodes">
+								</TD>
+								<TD class="bold nobr" colspan="2">
+									<label for="customernodes">
+										{trans("include customer node info")}
+									</label>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>

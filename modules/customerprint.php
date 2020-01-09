@@ -75,7 +75,8 @@ switch ($type) {
         $customergroup = $_POST['customergroup'];
         $sqlskey = 'AND';
         $nodegroup = $_POST['nodegroup'];
-        $sendingregister = $_POST['sendingregister'];
+        $sendingregister = isset($_POST['sendingregister']);
+        $customernodes = isset($_POST['customernodes']);
 
         $without_nodes = false;
         $state_labels = array();
@@ -156,7 +157,9 @@ switch ($type) {
             }
             $SMARTY->assign('customerlist', $ncustomerlist);
         } else {
-            $SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "statesqlskey", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
+            $SMARTY->assign('customerlist', $LMS->GetCustomerList(
+                compact("order", "state", "statesqlskey", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "customernodes")
+            ));
         }
 
         $SMARTY->assign('contactlist', $DB->GetAllByKey(
@@ -166,6 +169,8 @@ switch ($type) {
             'customerid',
             array()
         ));
+
+        $SMARTY->assign('customernodes', $customernodes);
 
         if ($sendingregister) {
             $print_template = 'print/printcustomerlist-sendingbook.html';
