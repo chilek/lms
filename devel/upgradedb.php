@@ -66,7 +66,6 @@ upgradedb.php
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
--t, --test                      print only invoices to send;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -o, --update-order=<core,plugins>
