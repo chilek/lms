@@ -36,11 +36,13 @@ if (["portrait", "landscape"].lastIndexOf(program.orientation) == -1) {
 var landscape = program.orientation === "landscape";
 
 async function readStream(stream) {
-    let buffer = Buffer.alloc(0);
-    for await (const chunk of stream) {
-        buffer = Buffer.concat([buffer, chunk]);
-    }
-    return buffer.toString('utf8');
+    return new Promise((resolve, reject) => {
+        let data = "";
+
+        stream.on("data", chunk => data += chunk);
+        stream.on("end", function() { resolve(data); });
+        stream.on("error", error => reject(error));
+    });
 }
 
 (async () => {
