@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/*jshint esversion: 8 */
+
 const puppeteer = require('puppeteer-core');
 const program = require('commander');
 const fs = require('fs');
