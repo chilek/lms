@@ -26,7 +26,7 @@ $this->BeginTrans();
 $this->Execute("
     DROP TRIGGER cash_customerbalances_truncate_trigger ON cash; 
     DROP TRIGGER cash_customerbalances_update_trigger ON cash;
-    DROP FUNCTION customerbalances_update
+    DROP FUNCTION customerbalances_update()
 ");
 
 $this->Execute("
