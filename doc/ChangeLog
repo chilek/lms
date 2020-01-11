@@ -142,6 +142,8 @@ version 25-git (????-??-??):
   - enhancement: userpanel/info: allow to hide archived documents [chilan]
   - improvement: userlist: revDNS queries are launched asynchronously by ajax request [chilan]
   - improvement: optional customer node column in customer print report [chilan]
+  - enhancement: allow convert html to pdf on-fly using external commands - now puppeteer script connecting to
+    google chrome working in headless mode is supported [chilan]
 
 version 24.0 (2019-05-16):
 
