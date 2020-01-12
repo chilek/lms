@@ -11,7 +11,8 @@ program
     .option("-o, --out-file <output-file>", "output file")
     .option("-f, --format <paper-format>", "output paper format", "A4")
     .option("-r, --orientation <paper-orientation>", "output paper orientation", "portrait")
-    .option("-m, --media-type <screen|print>", "for specified media type", "print")
+    .option("-m, --media-type <screen|print>", "force specified media type", "print")
+    .option("-w, --wait-until <load|domcontentloaded|networkidle0|networkidle2>", "wait for specified event in web browser", "load")
     .parse(process.argv);
 
 var url = null;
@@ -46,6 +47,11 @@ if (["print", "screen", "null"].lastIndexOf(program.mediaType) == -1) {
     process.exit(1);
 }
 
+if (["load", "domcontentloaded", "networkidle0", "networkidle2"].lastIndexOf(program.waitUntil) == -1) {
+    console.error("Invalid wait until value!");
+    process.exit(1);
+}
+
 async function readStream(stream) {
     return new Promise((resolve, reject) => {
         let data = "";
@@ -65,12 +71,10 @@ async function readStream(stream) {
         const page = await browser.newPage();
         await page.emulateMediaType(program.mediaType);
         if (url) {
-            await page.goto(url, {waitUntil: "networkidle0"});
-            //await page.goto(url);
+            await page.goto(url, {waitUntil: program.waitUntil});
         } else {
             const content = await readStream(process.stdin);
-            await page.setContent(content, {waitUntil: "networkidle0"});
-            //await page.setContent(content);
+            await page.setContent(content, {waitUntil: program.waitUntil});
         }
         var options = {
             format: program.format,
