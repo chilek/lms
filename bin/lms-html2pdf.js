@@ -11,7 +11,7 @@ program
     .option("-o, --out-file <output-file>", "output file")
     .option("-f, --format <paper-format>", "output paper format", "A4")
     .option("-r, --orientation <paper-orientation>", "output paper orientation", "portrait")
-    .option("-m, --media-type <screen|print>", "force specified media type", "print")
+    .option("-m, --media-type <screen|print|null>", "force specified media type", "print")
     .option("-w, --wait-until <load|domcontentloaded|networkidle0|networkidle2>", "wait for specified event in web browser", "load")
     .parse(process.argv);
 
