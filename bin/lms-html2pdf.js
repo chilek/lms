@@ -11,6 +11,7 @@ program
     .option("-o, --out-file <output-file>", "output file")
     .option("-f, --format <paper-format>", "output paper format", "A4")
     .option("-r, --orientation <paper-orientation>", "output paper orientation", "portrait")
+    .option("-m, --media-type <screen|print>", "for specified media type", "print")
     .parse(process.argv);
 
 var url = null;
@@ -40,6 +41,11 @@ if (["portrait", "landscape"].lastIndexOf(program.orientation) == -1) {
 }
 var landscape = program.orientation === "landscape";
 
+if (["print", "screen", "null"].lastIndexOf(program.mediaType) == -1) {
+    console.error("Invalid media type!");
+    process.exit(1);
+}
+
 async function readStream(stream) {
     return new Promise((resolve, reject) => {
         let data = "";
@@ -57,6 +63,7 @@ async function readStream(stream) {
         });
 
         const page = await browser.newPage();
+        await page.emulateMediaType(program.mediaType);
         if (url) {
             await page.goto(url, {waitUntil: "networkidle0"});
             //await page.goto(url);
