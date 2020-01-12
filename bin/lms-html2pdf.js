@@ -13,13 +13,18 @@ program
     .option("-r, --orientation <paper-orientation>", "output paper orientation", "portrait")
     .parse(process.argv);
 
-var inFile = null;
+var url = null;
 if (program.inFile) {
-    if (!fs.existsSync(program.inFile)) {
-        console.error(`File ${program.inFile} does not exist!`);
-        process.exit(1);
+    if (program.inFile.match(/^file:/) || !program.inFile.match(/^https?:/)) {
+        var inFile = program.inFile.replace(/^file:/g, '');
+        if (!fs.existsSync(inFile)) {
+            console.error(`File ${inFile} does not exist!`);
+            process.exit(1);
+        }
+        url = "file:" + inFile;
+    } else {
+        url = program.inFile;
     }
-    inFile = program.inFile;
 }
 
 var outFile = program.outFile ? program.outFile : null;
@@ -52,13 +57,13 @@ async function readStream(stream) {
         });
 
         const page = await browser.newPage();
-        if (inFile) {
-            //await page.goto(`file:${inFile}`, {waitUntil: "networkidle2"});
-            await page.goto(`file:${inFile}`);
+        if (url) {
+            await page.goto(url, {waitUntil: "networkidle0"});
+            //await page.goto(url);
         } else {
             const content = await readStream(process.stdin);
-            //await page.setContent(content, {waitUntil: "networkidle2"});
-            await page.setContent(content);
+            await page.setContent(content, {waitUntil: "networkidle0"});
+            //await page.setContent(content);
         }
         var options = {
             format: program.format,
