@@ -21,8 +21,7 @@
  *
  */
 
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 $numberplans = $this->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 
