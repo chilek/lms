@@ -578,8 +578,8 @@ class LMSTcpdfInvoice extends LMSInvoice
 
         /* currency */
         $this->backend->SetFont('arial', 'B', 10);
-        $this->backend->setFontSpacing(2.5);
-        $this->backend->Text(120, 224, 'PLN');
+        $this->backend->setFontSpacing(2.2);
+        $this->backend->Text(120, 223.5, 'PLN');
         $this->backend->setFontSpacing(0);
 
         /* amount */
