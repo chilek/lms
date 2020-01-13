@@ -338,7 +338,7 @@ class LMSTcpdfInvoice extends LMSInvoice
         /* draw simple form */
         $this->backend->Line(0, 190, 210, 190, $line_light);
         $this->backend->Line(60, 190, 60, 297, $line_light);
-        $this->backend->Rect(6, 192, 54, 105, 'F', '', array(245, 200, 200));
+        $this->backend->Rect(6, 192, 54, 103, 'F', '', array(245, 200, 200));
 
         /* division name */
         $this->backend->Rect(7, 193, 17, 3, 'F', '', array(255, 255, 255));
