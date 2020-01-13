@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2014 LMS Developers
+ *  Copyright (C) 2001-2020 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -63,10 +63,19 @@ abstract class LMSPlugin implements ObserverInterface
         global $_ui_language, $_LANG;
 
         $reflector = new ReflectionClass(get_called_class());
-        $filename = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR
-            . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
+        $localebasedir = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib'
+            . DIRECTORY_SEPARATOR . 'locale';
+        $filename = $localebasedir . DIRECTORY_SEPARATOR . $_ui_language
+            . DIRECTORY_SEPARATOR . 'strings.php';
         if (@is_readable($filename)) {
             require_once($filename);
+        } else {
+            // fallback locale selection using language code shortcut
+            $filename = $localebasedir . DIRECTORY_SEPARATOR . substr($_ui_language, 0, 2)
+                . DIRECTORY_SEPARATOR . 'strings.php';
+            if (@is_readable($filename)) {
+                require_once($filename);
+            }
         }
     }
 
