@@ -4534,3 +4534,5 @@ $_LANG['indefinitely'] = 'bezterminowo';
 
 $_LANG['$a (default: $b; $c)'] = '$a (domyślnie: $b; $c)';
 $_LANG['$a (default: $b)'] = '$a (domyślnie: $b)';
+
+$_LANG['Login form'] = 'Formularz logowania';
