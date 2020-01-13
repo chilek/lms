@@ -78,7 +78,8 @@ async function readStream(stream) {
         }
         var options = {
             format: program.format,
-            landscape: landscape
+            landscape: landscape,
+            printBackground: true
         }
         if (outFile) {
             options.path = outFile;
